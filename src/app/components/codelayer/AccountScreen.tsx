@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Edit, Phone, CreditCard, Lock, Bell, Shield, ChevronRight, Camera, X, Check, AlertCircle, Trash2, Car as CarIcon, MapPin, Building, User as UserIcon, Mail, Calendar, Settings, LogOut, HelpCircle, Save, Cloud } from "lucide-react";
-import { formatPhoneNumber, unformatPhoneNumber } from "../src/app/utils/formatters";
-import { compressImage, blobToBase64, getBase64Size, formatBytes } from "../src/app/utils/imageCompression";
-import { uploadPhoto } from "../src/app/services/supabaseService";
-import { LANDING_PAGE_IMAGES } from "../src/app/constants";
-import { ImageWithFallback } from "../src/app/components/figma/ImageWithFallback";
-import { supabase } from "../src/app/services/supabaseService";
-import GoToAdminButton from "../src/app/components/GoToAdminButton";
-import { projectId } from "../utils/supabase/info";
+import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
+import { compressImage, blobToBase64, getBase64Size, formatBytes } from "../../utils/imageCompression";
+import { uploadPhoto } from "../../services/supabaseService";
+import { LANDING_PAGE_IMAGES } from "../../constants";
+import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { supabase } from "../../services/supabaseService";
+import GoToAdminButton from "../GoToAdminButton";
+import { projectId } from "../../../../utils/supabase/info";
 
 type AccountScreenProps = {
   userType: string;

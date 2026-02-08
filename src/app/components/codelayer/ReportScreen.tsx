@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Camera, ArrowLeft, ArrowRight, X, Image, Check, Info, Upload, Car, Cloud, CheckCircle2, Trash2 } from "lucide-react";
-import { ImageWithFallback } from "../src/app/components/figma/ImageWithFallback";
-import PhotoGuide from "../src/app/components/PhotoGuide";
-import { uploadImageToSupabase } from "../src/app/services/supabaseService";
+import { ImageWithFallback } from "../figma/ImageWithFallback";
+import PhotoGuide from "../PhotoGuide";
+import { uploadImageToSupabase } from "../../services/supabaseService";
 
 type ReportScreenProps = {
   primaryColor?: string;
