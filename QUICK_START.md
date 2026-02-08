@@ -20,23 +20,18 @@ Get BidOnDent running in **5 minutes**.
 npm install
 ```
 
-### 2️⃣ Configure Environment (2 minutes)
+### 2️⃣ Configure Keys (2 minutes)
 
-Create `.env` file in project root:
+Update the key files in the repo:
 
-```env
-# Clerk (from dashboard.clerk.com)
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxx
-
-# Supabase (from supabase.com project settings)
-VITE_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-VITE_SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
+- `utils/clerk/info.tsx` → set `clerkPublishableKey`
+- `utils/supabase/info.tsx` → set `projectId` and `publicAnonKey`
 
 **Where to find these:**
 - **Clerk**: Dashboard → Your App → API Keys
-- **Supabase**: Project Settings → API → Project URL & anon/service_role keys
+- **Supabase**: Project Settings → API → Project URL & anon key
+
+`.env.example` is included as a reference if you want to wire keys to Vite env later.
 
 ### 3️⃣ Setup Database (2 minutes)
 
@@ -130,10 +125,10 @@ window.clearBidondentSession()
 ## Troubleshooting
 
 ### "Environment variables not found"
-→ Make sure `.env` file exists and contains all required keys
+→ Make sure `utils/clerk/info.tsx` and `utils/supabase/info.tsx` contain valid keys
 
 ### Clerk sign-up form not appearing
-→ Check `VITE_CLERK_PUBLISHABLE_KEY` is correct and starts with `pk_`
+→ Check `clerkPublishableKey` is correct and starts with `pk_`
 
 ### Database errors on first use
 → Run the SQL migrations in Supabase (Step 3)

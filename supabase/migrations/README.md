@@ -9,11 +9,15 @@ This directory contains SQL migration files to set up the Bidondent database sch
 1. Go to your Supabase project dashboard
 2. Navigate to **SQL Editor** in the left sidebar
 3. Click **New Query**
-4. Copy and paste the contents of each migration file in order:
-   - `001_create_profiles_table.sql`
-   - `002_create_vehicles_table.sql`
-   - `003_create_damage_reports_table.sql`
-5. Click **Run** for each migration
+4. Copy and paste the contents of each migration file in order. Recommended order:
+    - `001_initial_schema.sql`
+    - `004_fix_profiles_recursion.sql`
+    - `20231223000001_create_storage_buckets.sql`
+5. If you are applying the legacy files instead, run in this order:
+    - `001_create_profiles_table.sql`
+    - `002_create_vehicles_table.sql`
+    - `003_create_damage_reports_table.sql`
+6. Click **Run** for each migration
 
 ### Option 2: Using Supabase CLI
 
@@ -25,6 +29,9 @@ supabase db push
 ```
 
 ## Migration Files
+
+### 001_initial_schema.sql
+Creates the baseline tables and policies for profiles, vehicles, damage reports, and bids.
 
 ### 001_create_profiles_table.sql
 Creates the `profiles` table to store user account information including:
@@ -61,6 +68,12 @@ Includes Row Level Security policies so:
 - Users can access their own damage reports
 - Shops and insurers can view all damage reports
 - Users can only modify their own reports
+
+### 004_fix_profiles_recursion.sql
+Fixes a recursion issue in profile policies.
+
+### 20231223000001_create_storage_buckets.sql
+Creates the required Supabase Storage buckets for profile, vehicle, and damage photos.
 
 ## Database Schema Overview
 

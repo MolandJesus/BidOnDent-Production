@@ -1,13 +1,21 @@
 import { useState, useRef, useEffect } from "react";
-import { Edit, Phone, CreditCard, Lock, Bell, Shield, ChevronRight, Camera, X, Check, AlertCircle, Trash2, Car as CarIcon, MapPin, Building, User as UserIcon, Mail, Calendar, Settings, LogOut, HelpCircle, Save, Cloud } from "lucide-react";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
 import { compressImage, blobToBase64, getBase64Size, formatBytes } from "../../utils/imageCompression";
 import { uploadPhoto } from "../../services/supabaseService";
 import { LANDING_PAGE_IMAGES } from "../../constants";
-import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { supabase } from "../../services/supabaseService";
 import GoToAdminButton from "../GoToAdminButton";
 import { projectId } from "../../../../utils/supabase/info";
+import AccountHeader from "./account/AccountHeader";
+import AccountInfoCard from "./account/AccountInfoCard";
+import AccountMenu from "./account/AccountMenu";
+import AccountOverlays from "./account/AccountOverlays";
+import DeleteAccountModal from "./account/DeleteAccountModal";
+import EditProfileModal from "./account/EditProfileModal";
+import HelpModal from "./account/HelpModal";
+import PaymentModal from "./account/PaymentModal";
+import SettingsModal from "./account/SettingsModal";
+import ShopProfileModal from "./account/ShopProfileModal";
 
 type AccountScreenProps = {
   userType: string;
@@ -309,6 +317,26 @@ export default function AccountScreen({
       }
     }
   };
+
+  const handleEditCancel = () => {
+    setShowEditProfile(false);
+    setEditableName(userName);
+    setEditableEmail(userEmail);
+    setEditablePhone(formatPhoneNumber(userPhone));
+  };
+
+  const handleEditablePhoneChange = (value: string) => {
+    setEditablePhone(formatPhoneNumber(value));
+  };
+
+  const handleShopPhoneChange = (value: string) => {
+    setEditablePhone(value);
+  };
+
+  const handleCloseDeleteAccount = () => {
+    setShowDeleteAccount(false);
+    setDeleteConfirmText("");
+  };
   
   const saveProfileChanges = async () => {
     setIsSaving(true);
@@ -553,711 +581,84 @@ export default function AccountScreen({
 
   return (
     <div className="pb-20">
-      {/* Loading Overlay for Image Upload */}
-      {isSaving && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 flex flex-col items-center">
-            <svg className="animate-spin h-12 w-12 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ color: primaryColor }}>
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p className="font-medium text-gray-700">Uploading image...</p>
-            <p className="text-sm text-gray-500">Compressing and saving to cloud</p>
-          </div>
-        </div>
-      )}
-      
-      {/* Success Toast */}
-      {saveSuccess && (
-        <div className="fixed top-20 right-4 bg-white border-l-4 px-4 py-3 rounded shadow-lg z-50 flex items-center gap-3 animate-slide-in-right" style={{ borderColor: primaryColor }}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: `${primaryColor}15` }}>
-            <svg className="w-5 h-5" style={{ color: primaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-            </svg>
-          </div>
-          <div className="flex-1">
-            <p className="font-medium text-gray-900">Profile Saved</p>
-            <p className="text-sm text-gray-500">Changes synced to cloud</p>
-          </div>
-        </div>
-      )}
-      
-      {/* Profile header */}
-      <div 
-        className="px-4 pt-6 pb-8 text-white"
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)` }}
-      >
-        <div className="flex items-center">
-          <div className="relative">
-            {profileImage ? (
-              <div className="w-20 h-20 rounded-full overflow-hidden bg-white">
-                <ImageWithFallback
-                  src={profileImage}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
-              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center">
-                <UserIcon className="w-10 h-10" />
-              </div>
-            )}
-            <button 
-              className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-md"
-              onClick={handleProfileImageClick}
-            >
-              <Camera className="w-4 h-4 text-blue-600" />
-            </button>
-          </div>
-          
-          <div className="ml-4 flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold">{userInfo.name}</h1>
-              <div className="bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full flex items-center gap-1 text-xs">
-                <Cloud className="w-3 h-3" />
-                <span>Synced</span>
-              </div>
-            </div>
-            <p className="text-white/80">
-              {userType === "customer" && "Car Owner"}
-              {userType === "shop" && userInfo.shopName}
-              {userType === "insurer" && userInfo.companyName}
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      {/* Account information */}
+      <AccountOverlays isSaving={isSaving} saveSuccess={saveSuccess} primaryColor={primaryColor} />
+
+      <AccountHeader
+        profileImage={profileImage}
+        userInfo={userInfo}
+        userType={userType}
+        primaryColor={primaryColor}
+        onProfileImageClick={handleProfileImageClick}
+      />
+
       <div className="px-4 py-5">
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="font-bold">Account Information</h2>
-            <button className="text-blue-600" onClick={() => setShowEditProfile(true)}>
-              <Edit className="w-5 h-5" />
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm text-gray-500">Name</p>
-              <p>{userInfo.name}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Email</p>
-              <p>{userInfo.email}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Phone</p>
-              <p>{userInfo.phone}</p>
-            </div>
-            {userType === "customer" && userInfo.vehicles.length > 0 && (
-              <div>
-                <p className="text-sm text-gray-500">Vehicle</p>
-                {userInfo.vehicles.map((vehicle, index) => (
-                  <p key={index}>{vehicle.year} {vehicle.make} {vehicle.model}</p>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Go to Admin Account Button - Only visible to test accounts */}
-        <GoToAdminButton 
-          userEmail={userEmail} 
-          primaryColor={primaryColor} 
+        <AccountInfoCard
+          userType={userType}
+          userInfo={userInfo}
+          onEditProfile={() => setShowEditProfile(true)}
         />
-        
-        {/* Settings menu */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="border-b border-gray-100 hover:bg-gray-50">
-            <button className="w-full py-4 px-4 flex items-center justify-between" onClick={() => setShowSettings(true)}>
-              <div className="flex items-center">
-                <Settings className="w-5 h-5 mr-3 text-gray-500" />
-                <span>Settings</span>
-              </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
-          </div>
 
-          <div className="border-b border-gray-100 hover:bg-gray-50">
-            <button className="w-full py-4 px-4 flex items-center justify-between" onClick={() => setShowPayment(true)}>
-              <div className="flex items-center">
-                <CreditCard className="w-5 h-5 mr-3 text-gray-500" />
-                <span>Payment Methods</span>
-              </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
-          </div>
+        <GoToAdminButton userEmail={userEmail} primaryColor={primaryColor} />
 
-          {userType === "customer" && (
-            <div className="border-b border-gray-100 hover:bg-gray-50">
-              <button className="w-full py-4 px-4 flex items-center justify-between" onClick={onViewVehicles}>
-                <div className="flex items-center">
-                  <CarIcon className="w-5 h-5 mr-3 text-gray-500" />
-                  <span>My Vehicles</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
-          )}
-
-          {userType === "shop" && (
-            <div className="border-b border-gray-100 hover:bg-gray-50">
-              <button className="w-full py-4 px-4 flex items-center justify-between" onClick={() => setShowShopProfile(true)}>
-                <div className="flex items-center">
-                  <Settings className="w-5 h-5 mr-3 text-gray-500" />
-                  <span>Shop Profile</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
-          )}
-
-          <div className="border-b border-gray-100 hover:bg-gray-50">
-            <button className="w-full py-4 px-4 flex items-center justify-between" onClick={() => setShowHelp(true)}>
-              <div className="flex items-center">
-                <HelpCircle className="w-5 h-5 mr-3 text-gray-500" />
-                <span>Help & Support</span>
-              </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
-          </div>
-
-          <div className="border-b border-gray-100 hover:bg-red-50">
-            <button className="w-full py-4 px-4 flex items-center text-red-600" onClick={() => setShowDeleteAccount(true)}>
-              <Trash2 className="w-5 h-5 mr-3" />
-              <span>Delete Account</span>
-            </button>
-          </div>
-
-          <div className="hover:bg-gray-50">
-            <button className="w-full py-4 px-4 flex items-center text-red-600" onClick={handleLogout}>
-              <LogOut className="w-5 h-5 mr-3" />
-              <span>Sign Out</span>
-            </button>
-          </div>
-        </div>
+        <AccountMenu
+          userType={userType}
+          onOpenSettings={() => setShowSettings(true)}
+          onOpenPayment={() => setShowPayment(true)}
+          onOpenShopProfile={() => setShowShopProfile(true)}
+          onOpenHelp={() => setShowHelp(true)}
+          onOpenDeleteAccount={() => setShowDeleteAccount(true)}
+          onLogout={handleLogout}
+          onViewVehicles={onViewVehicles}
+        />
       </div>
 
-      {/* Edit Profile Modal */}
-      {showEditProfile && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl z-10">
-              <div className="flex justify-between items-center">
-                <h2 className="font-bold text-gray-900">Edit Profile</h2>
-                <button 
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100" 
-                  onClick={() => {
-                    setShowEditProfile(false);
-                    setEditableName(userName);
-                    setEditableEmail(userEmail);
-                    setEditablePhone(formatPhoneNumber(userPhone));
-                  }}
-                  disabled={isSaving}
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
+      <EditProfileModal
+        isOpen={showEditProfile}
+        primaryColor={primaryColor}
+        isSaving={isSaving}
+        profileImage={profileImage}
+        defaultProfileImage={LANDING_PAGE_IMAGES.DEFAULT_PROFILE}
+        editableName={editableName}
+        editableEmail={editableEmail}
+        editablePhone={editablePhone}
+        onChangeName={setEditableName}
+        onChangeEmail={setEditableEmail}
+        onChangePhone={handleEditablePhoneChange}
+        onCancel={handleEditCancel}
+        onSave={saveProfileChanges}
+        onImageClick={handleImageClick}
+        fileInputRef={fileInputRef}
+        onImageChange={handleImageChange}
+      />
 
-            {/* Content */}
-            <div className="px-6 py-6 space-y-6">
-              {/* Profile Image Section */}
-              <div className="flex flex-col items-center">
-                <div className="relative">
-                  <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
-                    {profileImage ? (
-                      <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
-                    ) : (
-                      <img
-                        src={LANDING_PAGE_IMAGES.DEFAULT_PROFILE}
-                        alt="Default Profile"
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    className="absolute bottom-0 right-0 rounded-full p-1.5 shadow-lg hover:shadow-xl transition-all"
-                    style={{ backgroundColor: primaryColor }}
-                    onClick={handleImageClick}
-                  >
-                    <Camera className="w-3 h-3 text-white" />
-                  </button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageChange}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                </div>
-                <p className="text-xs text-gray-500 mt-2">Click camera to change photo</p>
-              </div>
+      <SettingsModal
+        isOpen={showSettings}
+        primaryColor={primaryColor}
+        onClose={() => setShowSettings(false)}
+      />
 
-              {/* Form Fields */}
-              <div className="space-y-4">
-                {/* Name Field */}
-                <div>
-                  <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    <input
-                      id="edit-name"
-                      type="text"
-                      value={editableName}
-                      onChange={(e) => setEditableName(e.target.value)}
-                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                      placeholder="Enter your name"
-                    />
-                  </div>
-                </div>
+      <PaymentModal isOpen={showPayment} onClose={() => setShowPayment(false)} />
 
-                {/* Email Field */}
-                <div>
-                  <label htmlFor="edit-email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    <input
-                      id="edit-email"
-                      type="email"
-                      value={editableEmail}
-                      onChange={(e) => setEditableEmail(e.target.value)}
-                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                </div>
+      <ShopProfileModal
+        isOpen={showShopProfile}
+        primaryColor={primaryColor}
+        shopName={shopName}
+        editablePhone={editablePhone}
+        onShopNameChange={setShopName}
+        onPhoneChange={handleShopPhoneChange}
+        onClose={() => setShowShopProfile(false)}
+      />
 
-                {/* Phone Field */}
-                <div>
-                  <label htmlFor="edit-phone" className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Phone Number
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    <input
-                      id="edit-phone"
-                      type="tel"
-                      value={editablePhone}
-                      onChange={(e) => setEditablePhone(formatPhoneNumber(e.target.value))}
-                      placeholder="(555) 123-4567"
-                      maxLength={14}
-                      className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+      <HelpModal isOpen={showHelp} primaryColor={primaryColor} onClose={() => setShowHelp(false)} />
 
-            {/* Footer Actions */}
-            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 rounded-b-2xl flex gap-3 z-10">
-              <button 
-                type="button"
-                className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50 text-sm" 
-                onClick={() => {
-                  setShowEditProfile(false);
-                  setEditableName(userName);
-                  setEditableEmail(userEmail);
-                  setEditablePhone(formatPhoneNumber(userPhone));
-                }}
-                disabled={isSaving}
-              >
-                Cancel
-              </button>
-              <button 
-                type="button"
-                className="flex-1 px-4 py-2.5 rounded-lg font-medium text-white flex items-center justify-center disabled:opacity-50 transition-all shadow-md hover:shadow-lg text-sm"
-                style={{ backgroundColor: primaryColor }}
-                onClick={saveProfileChanges}
-                disabled={isSaving}
-              >
-                {isSaving ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Changes
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Settings Modal */}
-      {showSettings && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Settings</h2>
-              <button className="text-gray-500 hover:text-gray-700" onClick={() => setShowSettings(false)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div className="border-b pb-4">
-                <h3 className="font-semibold mb-2">Notifications</h3>
-                <label className="flex items-center justify-between">
-                  <span className="text-sm">Email notifications</span>
-                  <input type="checkbox" defaultChecked className="w-5 h-5" style={{ accentColor: primaryColor }} />
-                </label>
-                <label className="flex items-center justify-between mt-2">
-                  <span className="text-sm">SMS notifications</span>
-                  <input type="checkbox" defaultChecked className="w-5 h-5" style={{ accentColor: primaryColor }} />
-                </label>
-              </div>
-              
-              <div className="border-b pb-4">
-                <h3 className="font-semibold mb-2">Privacy</h3>
-                <label className="flex items-center justify-between">
-                  <span className="text-sm">Share data with shops</span>
-                  <input type="checkbox" defaultChecked className="w-5 h-5" style={{ accentColor: primaryColor }} />
-                </label>
-                <label className="flex items-center justify-between mt-2">
-                  <span className="text-sm">Show profile to insurers</span>
-                  <input type="checkbox" className="w-5 h-5" style={{ accentColor: primaryColor }} />
-                </label>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold mb-2">Language</h3>
-                <select className="w-full p-2 border border-gray-300 rounded">
-                  <option>English</option>
-                  <option>Spanish</option>
-                  <option>French</option>
-                </select>
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <button 
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
-                onClick={() => setShowSettings(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                className="px-4 py-2 text-white rounded flex items-center gap-2"
-                style={{ backgroundColor: primaryColor }}
-                onClick={() => {
-                  setShowSettings(false);
-                  alert("Settings saved!");
-                }}
-              >
-                <Save className="w-4 h-4" />
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Payment Methods Modal */}
-      {showPayment && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Payment Methods</h2>
-              <button className="text-gray-500 hover:text-gray-700" onClick={() => setShowPayment(false)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div className="border rounded-lg p-4 bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="w-6 h-6 text-gray-600" />
-                    <div>
-                      <p className="font-medium">•••• •••• •••• 4242</p>
-                      <p className="text-sm text-gray-500">Expires 12/25</p>
-                    </div>
-                  </div>
-                  <button className="text-sm text-blue-600 hover:underline">Remove</button>
-                </div>
-              </div>
-              
-              <div className="border rounded-lg p-4 bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="w-6 h-6 text-gray-600" />
-                    <div>
-                      <p className="font-medium">•••• •••• •••• 1234</p>
-                      <p className="text-sm text-gray-500">Expires 08/26</p>
-                    </div>
-                  </div>
-                  <button className="text-sm text-blue-600 hover:underline">Remove</button>
-                </div>
-              </div>
-              
-              <button 
-                className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-gray-400 hover:text-gray-800 font-medium"
-                onClick={() => alert("Add new payment method clicked!")}
-              >
-                + Add New Payment Method
-              </button>
-            </div>
-            <div className="mt-6 flex justify-end">
-              <button 
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
-                onClick={() => setShowPayment(false)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Shop Profile Modal */}
-      {showShopProfile && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Shop Profile</h2>
-              <button className="text-gray-500 hover:text-gray-700" onClick={() => setShowShopProfile(false)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
-                <input
-                  type="text"
-                  value={shopName}
-                  onChange={(e) => setShopName(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Business Address</label>
-                <input
-                  type="text"
-                  defaultValue="123 Main St, City, State 12345"
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input
-                  type="tel"
-                  value={editablePhone}
-                  onChange={(e) => setEditablePhone(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Business Hours</label>
-                <input
-                  type="text"
-                  defaultValue="Mon-Fri: 8AM-6PM, Sat: 9AM-3PM"
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Certifications</label>
-                <textarea
-                  defaultValue="ASE Certified, I-CAR Gold Class"
-                  className="w-full p-2 border border-gray-300 rounded"
-                  rows={3}
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <button 
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
-                onClick={() => setShowShopProfile(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                className="px-4 py-2 text-white rounded flex items-center gap-2"
-                style={{ backgroundColor: primaryColor }}
-                onClick={() => {
-                  setShowShopProfile(false);
-                  alert("Shop profile updated!");
-                }}
-              >
-                <Save className="w-4 h-4" />
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Help & Support Modal */}
-      {showHelp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Help & Support</h2>
-              <button className="text-gray-500 hover:text-gray-700" onClick={() => setShowHelp(false)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <div className="border-b pb-4">
-                <h3 className="font-semibold mb-2">Contact Support</h3>
-                <div className="space-y-2 text-sm">
-                  <p className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-500" />
-                    <span>(555) 123-4567</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-500" />
-                    <span>support@bidondent.com</span>
-                  </p>
-                </div>
-              </div>
-              
-              <div className="border-b pb-4">
-                <h3 className="font-semibold mb-2">Frequently Asked Questions</h3>
-                <div className="space-y-2">
-                  <button className="w-full text-left text-sm text-blue-600 hover:underline">
-                    How do I submit a damage report?
-                  </button>
-                  <button className="w-full text-left text-sm text-blue-600 hover:underline">
-                    How long does it take to receive bids?
-                  </button>
-                  <button className="w-full text-left text-sm text-blue-600 hover:underline">
-                    Can I cancel my account?
-                  </button>
-                  <button className="w-full text-left text-sm text-blue-600 hover:underline">
-                    How do I update my payment method?
-                  </button>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold mb-2">Send us a message</h3>
-                <textarea
-                  placeholder="Describe your issue..."
-                  className="w-full p-2 border border-gray-300 rounded"
-                  rows={4}
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end gap-2">
-              <button 
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
-                onClick={() => setShowHelp(false)}
-              >
-                Close
-              </button>
-              <button 
-                className="px-4 py-2 text-white rounded"
-                style={{ backgroundColor: primaryColor }}
-                onClick={() => {
-                  setShowHelp(false);
-                  alert("Message sent! We'll get back to you soon.");
-                }}
-              >
-                Send Message
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Account Confirmation Modal */}
-      {showDeleteAccount && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                  <AlertCircle className="w-6 h-6 text-red-600" />
-                </div>
-                <h2 className="text-xl font-bold text-gray-900">Delete Account?</h2>
-              </div>
-              <button 
-                className="text-gray-500 hover:text-gray-700" 
-                onClick={() => {
-                  setShowDeleteAccount(false);
-                  setDeleteConfirmText('');
-                }}
-                disabled={isDeleting}
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm text-red-800 font-medium mb-2">⚠️ This action cannot be undone!</p>
-                <p className="text-sm text-red-700">Deleting your account will permanently remove:</p>
-                <ul className="list-disc list-inside text-sm text-red-700 mt-2 space-y-1">
-                  <li>Your profile and account information</li>
-                  <li>All your vehicles and damage reports</li>
-                  <li>All bids and repair history</li>
-                  <li>Access to the Bidondent platform</li>
-                </ul>
-              </div>
-
-              <div>
-                <label htmlFor="delete-confirm" className="block text-sm font-medium text-gray-700 mb-2">
-                  Type <span className="font-bold text-red-600">DELETE</span> to confirm:
-                </label>
-                <input
-                  id="delete-confirm"
-                  type="text"
-                  value={deleteConfirmText}
-                  onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  placeholder="Type DELETE here"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  disabled={isDeleting}
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex gap-3">
-              <button 
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
-                onClick={() => {
-                  setShowDeleteAccount(false);
-                  setDeleteConfirmText('');
-                }}
-                disabled={isDeleting}
-              >
-                Cancel
-              </button>
-              <button 
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={handleDeleteAccount}
-                disabled={isDeleting || deleteConfirmText.toLowerCase() !== 'delete'}
-              >
-                {isDeleting ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Deleting...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete Forever
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteAccountModal
+        isOpen={showDeleteAccount}
+        isDeleting={isDeleting}
+        deleteConfirmText={deleteConfirmText}
+        onDeleteConfirmTextChange={setDeleteConfirmText}
+        onClose={handleCloseDeleteAccount}
+        onDelete={handleDeleteAccount}
+      />
     </div>
   );
 }

@@ -43,13 +43,11 @@
 2. Navigate to **API** section
 3. Copy these values:
 
-   ```env
-   VITE_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-   VITE_SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-   ```
+   - Project URL (for `projectId`)
+   - Anon key (for `publicAnonKey`)
+   - Service role key (for Edge Function secrets)
 
-4. Add to your `.env` file in project root
+4. Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`
 
 ---
 
@@ -226,8 +224,8 @@ After setup, verify everything works:
 Run this in your app's browser console:
 
 ```javascript
-// This should return your Supabase project URL
-console.log(import.meta.env.VITE_SUPABASE_URL);
+// Verify the Supabase project ID is set in utils/supabase/info.tsx
+console.log("Supabase project configured");
 
 // This should log without errors
 window.checkBidondentSession();
@@ -260,7 +258,7 @@ window.checkBidondentSession();
 **Fix**: Run Step 4 to create storage buckets
 
 ### "Invalid API key"
-**Fix**: Double-check `.env` file has correct `VITE_SUPABASE_ANON_KEY`
+**Fix**: Double-check `publicAnonKey` in `utils/supabase/info.tsx`
 
 ### Photos upload but don't display
 **Fix**: 
@@ -283,7 +281,7 @@ User Action (Frontend)
   ↓
 Clerk Authentication (if needed)
   ↓
-Supabase Service Layer (/src/app/services/supabaseService.ts)
+Supabase Service Layer (/src/app/services/supabaseService.ts, re-exporting /src/app/services/supabase/*)
   ↓
 Supabase Database / Storage
   ↓
@@ -340,7 +338,7 @@ When adding new features that need database changes:
    - Dashboard: Copy/paste into SQL Editor
    - CLI: `supabase db push`
 
-4. Update TypeScript types in `/src/app/services/supabaseService.ts`
+4. Update TypeScript types in `/src/app/services/supabase/types.ts`
 
 ---
 

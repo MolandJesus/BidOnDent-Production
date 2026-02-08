@@ -1,29 +1,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { 
-  Users, 
-  Trash2, 
-  LogIn, 
-  Shield, 
-  Database,
-  CheckCircle,
-  XCircle,
-  RefreshCw,
-  UserPlus,
-  UserMinus,
-  Mail,
-  Lock,
-  User,
-  Save,
-  HardDrive,
-  Trash,
-  Settings
-} from "lucide-react";
 import { TEST_ACCOUNTS } from "../config/adminConfig";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { supabase } from "../services/supabaseService";
 import StorageDebugPanel from "./StorageDebugPanel";
 import AdminAccountManager from "./AdminAccountManager";
+import AdminHeader from "./admin/AdminHeader";
+import QuickActions from "./admin/QuickActions";
+import AdminManagementPanel from "./admin/AdminManagementPanel";
+import NewAccountForm from "./admin/NewAccountForm";
+import LinkedTestAccounts from "./admin/LinkedTestAccounts";
+import AdminInfoPanel from "./admin/AdminInfoPanel";
+import SwitchBackPanel from "./admin/SwitchBackPanel";
 
 /**
  * 🚨 PRODUCTION REMOVAL: Delete this file when removing admin features
@@ -788,393 +776,66 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <div className="flex items-center gap-3 mb-2">
-          <Shield className="w-8 h-8" style={{ color: primaryColor }} />
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        </div>
-        <p className="text-gray-600">
-          Manage test accounts and system administration
-        </p>
-        <div className="mt-2 inline-flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
-          <Shield className="w-4 h-4 text-blue-600" />
-          <span className="text-sm text-blue-600 font-medium">
-            Logged in as: {adminEmail}
-          </span>
-        </div>
-      </motion.div>
+      <AdminHeader primaryColor={primaryColor} adminEmail={adminEmail} />
 
-      {/* Admin Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
-      >
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Database className="w-5 h-5" style={{ color: primaryColor }} />
-          Quick Actions
-        </h2>
-        
-        <div className="flex gap-3">
-          <button
-            onClick={checkAllAccounts}
-            disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-            Check All Accounts
-          </button>
-          
-          <button
-            onClick={() => setShowNewAccountForm(!showNewAccountForm)}
-            disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            <UserPlus className="w-4 h-4" />
-            {showNewAccountForm ? 'Cancel' : 'Create Custom Test Account'}
-          </button>
-          
-          <button
-            onClick={checkEdgeFunctionHealth}
-            disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            <HardDrive className="w-4 h-4" />
-            Check Edge Function Health
-          </button>
-          
-          <button
-            onClick={verifyDatabase}
-            disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            <Database className="w-4 h-4" />
-            Verify Database
-          </button>
-        </div>
-
-        {operationStatus && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className={`mt-4 p-4 rounded-lg whitespace-pre-wrap ${
-              operationStatus.startsWith("✅") 
-                ? "bg-green-50 text-green-800 border border-green-200" 
-                : "bg-red-50 text-red-800 border border-red-200"
-            }`}
-          >
-            {operationStatus}
-          </motion.div>
-        )}
-      </motion.div>
+      <QuickActions
+        primaryColor={primaryColor}
+        isLoading={isLoading}
+        showNewAccountForm={showNewAccountForm}
+        operationStatus={operationStatus}
+        onCheckAllAccounts={checkAllAccounts}
+        onToggleNewAccountForm={() => setShowNewAccountForm(!showNewAccountForm)}
+        onCheckEdgeFunctionHealth={checkEdgeFunctionHealth}
+        onVerifyDatabase={verifyDatabase}
+      />
 
       {/* Admin Management Section - Only for Super Admin */}
-      {adminEmail === 'molalign5@gmail.com' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
-        >
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5" style={{ color: primaryColor }} />
-            Admin Management
-            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-2">Super Admin Only</span>
-          </h2>
-          
-          <p className="text-sm text-gray-600 mb-4">
-            Promote or demote users to grant/revoke admin dashboard access. Admin accounts can access the Admin Dashboard but cannot promote others (only you can).
-          </p>
-
-          <div className="space-y-3">
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Enter email address to promote/demote"
-                value={targetAdminEmail}
-                onChange={(e) => setTargetAdminEmail(e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={isManagingAdmin}
-              />
-              <button
-                onClick={() => handleManageAdmin(true)}
-                disabled={isManagingAdmin || !targetAdminEmail}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-              >
-                <UserPlus className="w-4 h-4" />
-                Promote to Admin
-              </button>
-              <button
-                onClick={() => handleManageAdmin(false)}
-                disabled={isManagingAdmin || !targetAdminEmail}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-              >
-                <UserMinus className="w-4 h-4" />
-                Revoke Admin
-              </button>
-            </div>
-            
-            {adminManagementStatus && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className={`p-4 rounded-lg whitespace-pre-wrap ${
-                  adminManagementStatus.startsWith("✅") 
-                    ? "bg-green-50 text-green-800 border border-green-200" 
-                    : "bg-red-50 text-red-800 border border-red-200"
-                }`}
-              >
-                {adminManagementStatus}
-              </motion.div>
-            )}
-          </div>
-        </motion.div>
+      {adminEmail === "molalign5@gmail.com" && (
+        <AdminManagementPanel
+          primaryColor={primaryColor}
+          targetAdminEmail={targetAdminEmail}
+          isManagingAdmin={isManagingAdmin}
+          adminManagementStatus={adminManagementStatus}
+          onTargetAdminEmailChange={setTargetAdminEmail}
+          onPromote={() => handleManageAdmin(true)}
+          onRevoke={() => handleManageAdmin(false)}
+        />
       )}
 
       {/* New Test Account Form */}
       {showNewAccountForm && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          className="bg-white rounded-lg shadow-sm border-2 border-green-300 p-6 mb-6"
-        >
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <UserPlus className="w-5 h-5" style={{ color: primaryColor }} />
-            Create Custom Test Account
-          </h2>
-          
-          <p className="text-sm text-gray-600 mb-4">
-            Create a test account for other people or additional testing purposes. This account will be fully functional and can be used to test all features.
-          </p>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address *
-              </label>
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  value={newAccountEmail}
-                  onChange={(e) => setNewAccountEmail(e.target.value)}
-                  placeholder="test@example.com"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name (optional)
-              </label>
-              <div className="flex items-center gap-3">
-                <User className="w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={newAccountName}
-                  onChange={(e) => setNewAccountName(e.target.value)}
-                  placeholder="John Doe"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password *
-              </label>
-              <div className="flex items-center gap-3">
-                <Lock className="w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={newAccountPassword}
-                  onChange={(e) => setNewAccountPassword(e.target.value)}
-                  placeholder="test123 (min. 6 characters)"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  disabled={isLoading}
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-1 ml-8">
-                Tip: Use simple passwords like "test123" for testing accounts
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Account Type *
-              </label>
-              <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-gray-400" />
-                <select
-                  value={newAccountType}
-                  onChange={(e) => setNewAccountType(e.target.value as 'customer' | 'shop' | 'insurer')}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  disabled={isLoading}
-                >
-                  <option value="customer">Customer (Car Owner)</option>
-                  <option value="shop">Shop (Auto Repair Shop)</option>
-                  <option value="insurer">Insurer (Insurance Company)</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={createCustomAccount}
-                disabled={isLoading || !newAccountEmail || !newAccountPassword}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-              >
-                <UserPlus className="w-4 h-4" />
-                {isLoading ? 'Creating...' : 'Create Account'}
-              </button>
-              
-              <button
-                onClick={() => {
-                  setShowNewAccountForm(false);
-                  setNewAccountEmail("");
-                  setNewAccountName("");
-                  setNewAccountPassword("");
-                }}
-                disabled={isLoading}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </motion.div>
+        <NewAccountForm
+          primaryColor={primaryColor}
+          isLoading={isLoading}
+          newAccountEmail={newAccountEmail}
+          newAccountName={newAccountName}
+          newAccountPassword={newAccountPassword}
+          newAccountType={newAccountType}
+          onEmailChange={setNewAccountEmail}
+          onNameChange={setNewAccountName}
+          onPasswordChange={setNewAccountPassword}
+          onTypeChange={setNewAccountType}
+          onCreate={createCustomAccount}
+          onCancel={() => {
+            setShowNewAccountForm(false);
+            setNewAccountEmail("");
+            setNewAccountName("");
+            setNewAccountPassword("");
+          }}
+        />
       )}
 
       {/* Linked Test Accounts */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
-      >
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Users className="w-5 h-5" style={{ color: primaryColor }} />
-          Linked Test Accounts
-        </h2>
-
-        <div className="space-y-4">
-          {TEST_ACCOUNTS.map((account, index) => {
-            const status = accountStatuses[account.email];
-            
-            return (
-              <motion.div
-                key={account.email}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-                className={`border rounded-lg p-4 transition-all ${
-                  selectedAccount === account.email
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-lg">{account.label}</h3>
-                      
-                      {/* Status Badge */}
-                      {status?.loading ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                          <RefreshCw className="w-3 h-3 animate-spin" />
-                          Checking...
-                        </span>
-                      ) : status?.exists ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
-                          <CheckCircle className="w-3 h-3" />
-                          Active
-                        </span>
-                      ) : status ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
-                          <XCircle className="w-3 h-3" />
-                          Not Created
-                        </span>
-                      ) : null}
-                      
-                      {/* Account Type Badge */}
-                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                        account.type === 'customer' 
-                          ? 'bg-blue-100 text-blue-700'
-                          : account.type === 'shop'
-                          ? 'bg-purple-100 text-purple-700'
-                          : 'bg-orange-100 text-orange-700'
-                      }`}>
-                        {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
-                      </span>
-                    </div>
-                    
-                    <p className="text-sm text-gray-600 mb-2">{account.description}</p>
-                    <p className="text-sm text-gray-500 font-mono">{account.email}</p>
-                    
-                    {status?.userId && (
-                      <p className="text-xs text-gray-400 mt-1">
-                        User ID: {status.userId}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-col gap-2 ml-4">
-                    {status?.exists ? (
-                      <>
-                        <button
-                          onClick={() => switchToAccount(account.email)}
-                          disabled={isLoading}
-                          className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                        >
-                          <LogIn className="w-4 h-4" />
-                          Switch To
-                        </button>
-                        <button
-                          onClick={() => deleteAccount(account.email)}
-                          disabled={isLoading}
-                          className="flex items-center gap-2 px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          Delete
-                        </button>
-                      </>
-                    ) : status && !status.loading ? (
-                      <button
-                        onClick={() => createAccount(account.email, account.type)}
-                        disabled={isLoading}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                      >
-                        <UserPlus className="w-4 h-4" />
-                        Create
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => checkAccountStatus(account.email)}
-                        disabled={isLoading}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                      >
-                        <RefreshCw className="w-4 h-4" />
-                        Check
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </motion.div>
+      <LinkedTestAccounts
+        primaryColor={primaryColor}
+        accountStatuses={accountStatuses}
+        selectedAccount={selectedAccount}
+        isLoading={isLoading}
+        onSwitchToAccount={switchToAccount}
+        onDeleteAccount={deleteAccount}
+        onCreateAccount={createAccount}
+        onCheckAccount={checkAccountStatus}
+      />
 
       {/* Manage Custom Test Accounts - Account Manager Tool */}
       <motion.div
@@ -1186,50 +847,9 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
         <AdminAccountManager />
       </motion.div>
 
-      {/* Info Panel */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
-      >
-        <h3 className="font-semibold text-blue-900 mb-2">ℹ️ Admin System Info</h3>
-        <ul className="text-sm text-blue-800 space-y-1 list-disc pl-5">
-          <li>All test accounts are linked to your admin account ({adminEmail})</li>
-          <li>You can create, delete, and switch between test accounts</li>
-          <li>Use "Create Custom Test Account" to create accounts for other people</li>
-          <li>Each account type has its own dashboard and features</li>
-          <li>Account data is isolated between different account types</li>
-          <li>Use "Switch To" to test features as different user types</li>
-        </ul>
-      </motion.div>
+      <AdminInfoPanel adminEmail={adminEmail} />
 
-      {/* Switch Back Warning */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.55 }}
-        className="mt-4 bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-6"
-      >
-        <h3 className="font-semibold text-green-900 mb-2 flex items-center gap-2">
-          ✅ "Go Back to Admin Account" Feature
-        </h3>
-        <div className="text-sm text-green-800 space-y-2">
-          <p>
-            <strong>How test accounts switch back to this admin account:</strong>
-          </p>
-          <ol className="list-decimal pl-5 space-y-1">
-            <li>Click the "Go to Admin Account" button in the test account dashboard</li>
-            <li>Confirm the switch in the dialog</li>
-            <li>Enter your admin password for <code className="bg-green-100 px-2 py-0.5 rounded font-mono font-semibold">{adminEmail}</code></li>
-            <li>You'll be automatically signed in and redirected to the admin dashboard</li>
-          </ol>
-          <p className="mt-3 pt-3 border-t border-green-300">
-            <strong>✨ Security:</strong> Your actual admin password is required each time you switch back. 
-            No hardcoded passwords are used. Works with any auth method (email/password, Google, Apple, etc.)
-          </p>
-        </div>
-      </motion.div>
+      <SwitchBackPanel adminEmail={adminEmail} />
 
       {/* Storage Debug Panel */}
       <motion.div

@@ -102,9 +102,10 @@ BidOnDent creates a streamlined digital marketplace where:
 - `src/app/services/` - Supabase/Clerk and business logic
 - `src/assets/` - Images used by UI components
 
-**Environment variables:**
-- Copy `.env.example` to `.env` and fill in the keys listed there.
-- Keep `.env` out of git (already ignored in `.gitignore`).
+**Configuration keys:**
+- Update `clerkPublishableKey` in `utils/clerk/info.tsx`.
+- Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`.
+- `.env.example` is included as a reference if you prefer wiring keys to Vite env later.
 
 ---
 
@@ -301,10 +302,10 @@ Claims Tab → "In Progress" claims
    npm install
    ```
 
-2. **Set Up Environment Variables**
-   - Copy `.env.example` to `.env` (if available)
-   - Add your Clerk API keys from [clerk.com](https://clerk.com)
-   - Add your Supabase project details from [supabase.com](https://supabase.com)
+2. **Set Up Keys**
+  - Update `clerkPublishableKey` in `utils/clerk/info.tsx`
+  - Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`
+  - `.env.example` is included as a reference if you want to wire keys to Vite env later
 
 3. **Run the App**
    ```bash
@@ -368,13 +369,14 @@ bidondent/
 │   │   └── ...
 │   ├── services/                  # Business logic services
 │   │   ├── clerkService.ts       # Clerk auth utilities
-│   │   ├── supabaseService.ts    # Supabase data operations
+│   │   ├── supabase/             # Modular Supabase services
+│   │   ├── supabaseService.ts    # Supabase re-exports
 │   │   ├── demoAuthService.ts    # Demo mode management
 │   │   └── storageMonitor.ts     # Storage tracking
 │   ├── hooks/                     # Custom React hooks
 │   │   ├── useUserData.ts        # User data management
 │   │   ├── useNavigation.ts      # Navigation state
-│   │   └── useAuth.tsx           # Auth wrapper
+│   │   └── useAuth.tsx           # Legacy hook (unused)
 │   ├── config/                    # Configuration files
 │   │   ├── adminConfig.ts        # Admin settings
 │   │   └── demoMode.ts           # Demo mode config
@@ -498,12 +500,9 @@ Press: Ctrl+Shift+S
 - Supabase project with database and storage
 - Node.js 18+ runtime
 
-### Environment Variables
-```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJ...
-```
+### Configuration Keys
+- `utils/clerk/info.tsx` → `clerkPublishableKey`
+- `utils/supabase/info.tsx` → `projectId`, `publicAnonKey`
 
 ### Build
 ```bash
