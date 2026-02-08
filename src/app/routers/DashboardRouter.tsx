@@ -2,10 +2,10 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 
 // Import all screens
-import HomeScreen from "../../../codelayer/HomeScreen";
-import ReportScreen from "../../../codelayer/ReportScreen";
-import BidsScreen from "../../../codelayer/BidsScreen";
-import AccountScreen from "../../../codelayer/AccountScreen";
+import HomeScreen from "../components/codelayer/HomeScreen";
+import ReportScreen from "../components/codelayer/ReportScreen";
+import BidsScreen from "../components/codelayer/BidsScreen";
+import AccountScreen from "../components/codelayer/AccountScreen";
 import ShopRequestsScreen from "../components/ShopRequestsScreen";
 import ShopActiveJobsScreen from "../components/ShopActiveJobsScreen";
 import InsurerClaimsScreen from "../components/InsurerClaimsScreen";
