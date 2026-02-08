@@ -128,12 +128,12 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ **Tailwind CSS v4** styling
 - ✅ Modular component structure
 - ✅ Custom React hooks:
-  - `useAuth` - Clerk authentication wrapper
   - `useUserData` - User data management
   - `useNavigation` - Navigation state & demo mode
 - ✅ Service layer architecture:
   - `clerkService.ts` - Clerk utilities
-  - `supabaseService.ts` - Database operations
+  - `services/supabase/` - Modular database/storage operations
+  - `supabaseService.ts` - Re-exports for backward compatibility
   - `demoAuthService.ts` - Demo mode logic
   - `storageMonitor.ts` - Storage tracking
 - ✅ Centralized routing (DashboardRouter)
@@ -254,9 +254,10 @@ Storage Monitor Updated
 │   ├── InsurerClaimsScreen.tsx   # Insurer claims
 │   └── InsurerPartnerShopsScreen.tsx  # Insurer partners
 └── services/
-    ├── supabaseService.ts        # All database operations
-    └── realtime/
-        └── RealtimeBidService.ts # Real-time subscriptions
+  ├── supabase/                 # Modular Supabase service modules
+  ├── supabaseService.ts        # Re-exports for Supabase modules
+  └── realtime/
+    └── RealtimeBidService.ts # Real-time subscriptions
 ```
 
 ### Authentication & User Management
@@ -265,9 +266,9 @@ Storage Monitor Updated
 ├── services/
 │   ├── clerkService.ts           # Clerk auth utilities
 │   ├── demoAuthService.ts        # Demo mode management
-│   └── supabaseService.ts        # Data operations
+│   ├── supabase/                 # Modular Supabase service modules
+│   └── supabaseService.ts        # Supabase re-exports
 ├── hooks/
-│   ├── useAuth.tsx               # Clerk wrapper hook
 │   ├── useUserData.ts            # User data state
 │   └── useNavigation.ts          # Navigation + demo mode
 ├── components/

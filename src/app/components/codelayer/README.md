@@ -22,6 +22,9 @@ This directory contains legacy screen components that are still actively used in
 - Handles vehicle selection, photo upload, description
 - Imported by: `DashboardRouter.tsx`
 
+**ReportScreen subcomponents**
+- Extracted into `codelayer/report/` for maintainability
+
 **BidsScreen.tsx**
 - Displays received bids for damage reports
 - Allows bid comparison and shop selection
@@ -31,6 +34,9 @@ This directory contains legacy screen components that are still actively used in
 - User account settings and profile management
 - Password change, profile photo upload
 - Imported by: `DashboardRouter.tsx`
+
+**AccountScreen subcomponents**
+- Extracted into `codelayer/account/` for maintainability
 
 **ImageWithFallback.tsx**
 - Image component with error handling and fallback
@@ -54,5 +60,5 @@ These components live in `src/app/components/codelayer` to keep legacy screens g
 
 ---
 
-**Last Updated**: December 23, 2024  
+**Last Updated**: February 8, 2026  
 **Status**: Active (In Production Use)

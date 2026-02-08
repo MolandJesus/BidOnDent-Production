@@ -5,7 +5,8 @@
 ```
 services/
 ├── index.ts                         # Centralized exports
-├── supabaseService.ts              # Database & auth operations
+├── supabaseService.ts              # Supabase re-exports (backward compatible)
+├── supabase/                        # Modular Supabase service modules
 ├── realtime/
 │   └── RealtimeBidService.ts       # Real-time subscriptions
 ├── performance/
@@ -48,7 +49,7 @@ import {
 
 ### 1. Supabase Service (`supabaseService.ts`)
 
-**Purpose:** Database operations, authentication, storage
+**Purpose:** Database operations, storage (Clerk handles auth)
 
 **Key Functions:**
 
