@@ -1,0 +1,152 @@
+/**
+ * ============================================================================
+ * BIDONDENT SERVICES - CENTRALIZED EXPORTS
+ * ============================================================================
+ * 
+ * Import all services from one location for convenience:
+ * 
+ * import {
+ *   realtimeBidService,
+ *   performanceOptimizer,
+ *   storageService,
+ *   supabase
+ * } from './services';
+ * 
+ * ============================================================================
+ */
+
+// ============================================================================
+// SUPABASE CLIENT & DATABASE FUNCTIONS
+// ============================================================================
+
+export { supabase } from './supabaseService';
+
+// Profile operations
+export {
+  getProfile,
+  saveProfile,
+  type Profile
+} from './supabaseService';
+
+// Vehicle operations
+export {
+  getVehicles,
+  saveVehicle,
+  deleteVehicle,
+  type Vehicle
+} from './supabaseService';
+
+// Damage report operations
+export {
+  getDamageReports,
+  getAllDamageReports,
+  saveDamageReport,
+  deleteDamageReport,
+  type DamageReport
+} from './supabaseService';
+
+// Bid operations (NEW!)
+export {
+  getBidsForReport,
+  submitBid,
+  updateBidStatus,
+  getMyBids,
+  deleteBid,
+  type Bid
+} from './supabaseService';
+
+// Storage operations
+export {
+  uploadPhoto,
+  deletePhoto
+} from './supabaseService';
+
+// ============================================================================
+// REAL-TIME SERVICES (NEW!)
+// ============================================================================
+
+export { 
+  realtimeBidService,
+  RealtimeBidService,
+  type BidCallback,
+  type BidUpdateCallback,
+  type BidDeleteCallback,
+  type ConnectionStatusCallback
+} from './realtime/RealtimeBidService';
+
+// ============================================================================
+// PERFORMANCE OPTIMIZATION (NEW!)
+// ============================================================================
+
+export {
+  performanceOptimizer,
+  PerformanceOptimizer
+} from './performance/PerformanceOptimizer';
+
+// ============================================================================
+// CLOUD STORAGE ABSTRACTION (NEW!)
+// ============================================================================
+
+export {
+  storageService,
+  StorageService
+} from './storage/StorageService';
+
+export {
+  SupabaseStorageAdapter
+} from './storage/SupabaseStorageAdapter';
+
+export type {
+  IStorageProvider,
+  UploadOptions,
+  UploadResult,
+  DeleteOptions,
+  DeleteResult,
+  ListOptions,
+  ListResult,
+  SignedUrlOptions,
+  SignedUrlResult,
+  StorageFile,
+  StorageProviderType,
+  StorageConfig
+} from './storage/types';
+
+// ============================================================================
+// CONVENIENCE BUNDLES
+// ============================================================================
+
+/**
+ * All real-time services
+ */
+export const realtime = {
+  bidService: realtimeBidService
+};
+
+/**
+ * All performance services
+ */
+export const performance = {
+  optimizer: performanceOptimizer
+};
+
+/**
+ * All storage services
+ */
+export const storage = {
+  service: storageService
+};
+
+// ============================================================================
+// VERSION & INFO
+// ============================================================================
+
+export const BIDONDENT_SERVICES_VERSION = '2.0.0';
+
+export const features = {
+  realtimeBids: true,
+  performanceOptimization: true,
+  cloudAgnosticStorage: true,
+  supabasePro: true
+};
+
+console.log('📦 Bidondent Services v2.0.0 loaded', features);
