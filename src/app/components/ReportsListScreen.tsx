@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft, Clock, MapPin, DollarSign, Star, ChevronRight, Filter, ZoomIn, X, ChevronLeft } from "lucide-react";
-import ImageWithFallback from "../../../codelayer/ImageWithFallback";
+import ImageWithFallback from "./codelayer/ImageWithFallback";
 
 type Report = {
   id: number;

@@ -91,6 +91,23 @@ BidOnDent creates a streamlined digital marketplace where:
 
 ---
 
+## 🧭 Developer Quick Map
+
+**Project structure (most-used paths):**
+- `src/main.tsx` - App entry
+- `src/app/App.tsx` - Root app component
+- `src/app/components/` - Main UI components
+- `src/app/components/codelayer/` - Legacy screens used by the dashboard router
+- `src/app/routers/` - Screen routing and view composition
+- `src/app/services/` - Supabase/Clerk and business logic
+- `src/assets/` - Images used by UI components
+
+**Environment variables:**
+- Copy `.env.example` to `.env` and fill in the keys listed there.
+- Keep `.env` out of git (already ignored in `.gitignore`).
+
+---
+
 ## 🔐 Account System & Demo Mode
 
 ### Three Account Types
