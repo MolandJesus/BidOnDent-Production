@@ -306,9 +306,9 @@ export default function ProfileDropdown({
               className="w-12 h-12 rounded-full object-cover"
             />
           ) : (
-            <img 
-              src={LANDING_PAGE_IMAGES.defaultProfileImage} 
-              alt="Default Profile" 
+            <img
+              src={LANDING_PAGE_IMAGES.DEFAULT_PROFILE}
+              alt="Default Profile"
               className="w-12 h-12 rounded-full object-cover"
             />
           )}

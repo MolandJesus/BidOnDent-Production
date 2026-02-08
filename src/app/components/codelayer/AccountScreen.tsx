@@ -39,7 +39,9 @@ export default function AccountScreen({
   onViewReport
 }: AccountScreenProps) {
   // Use default profile image if none provided
-  const [profileImage, setProfileImage] = useState<string | null>(initialProfileImage || LANDING_PAGE_IMAGES.defaultProfile);
+  const [profileImage, setProfileImage] = useState<string | null>(
+    initialProfileImage || LANDING_PAGE_IMAGES.DEFAULT_PROFILE
+  );
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
@@ -769,7 +771,11 @@ export default function AccountScreen({
                     {profileImage ? (
                       <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      <img src={LANDING_PAGE_IMAGES.defaultProfile} alt="Default Profile" className="w-full h-full object-cover" />
+                      <img
+                        src={LANDING_PAGE_IMAGES.DEFAULT_PROFILE}
+                        alt="Default Profile"
+                        className="w-full h-full object-cover"
+                      />
                     )}
                   </div>
                   <button
