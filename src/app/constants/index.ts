@@ -1,5 +1,5 @@
 // Application constants for Bidondent
-import { Home, Camera, FileCheck, User, ClipboardList, Wrench, Shield, Building2, Settings } from "lucide-react";
+import { Home, Camera, FileCheck, User, ClipboardList, Wrench, Shield, Building2 } from "lucide-react";
 import type { NavTab } from "../types";
 
 // Import NEW professional auto body repair photos - January 2025
@@ -46,13 +46,6 @@ export const INSURER_NAV_TABS: NavTab[] = [
   { id: "home", label: "Dashboard", icon: Home },
   { id: "claims", label: "Claims", icon: Shield },
   { id: "shops", label: "Partner Shops", icon: Building2 },
-  { id: "account", label: "Account", icon: User }
-];
-
-// Admin navigation tabs (only for molalign5@gmail.com)
-export const ADMIN_NAV_TABS: NavTab[] = [
-  { id: "home", label: "Dashboard", icon: Home },
-  { id: "admin", label: "Admin", icon: Settings },
   { id: "account", label: "Account", icon: User }
 ];
 

@@ -4,7 +4,6 @@ import { compressImage, blobToBase64, getBase64Size, formatBytes } from "../../u
 import { uploadPhoto } from "../../services/supabaseService";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import { supabase } from "../../services/supabaseService";
-import GoToAdminButton from "../GoToAdminButton";
 import { projectId } from "../../../../utils/supabase/info";
 import AccountHeader from "./account/AccountHeader";
 import AccountInfoCard from "./account/AccountInfoCard";
@@ -27,6 +26,7 @@ type AccountScreenProps = {
   vehicles?: any[];
   reports?: any[];
   onLogout?: () => void;
+  onOpenSmokeTest?: () => void;
   onSaveProfile?: (data: { name: string; email: string; phone: string; profileImage?: string }) => void;
   onViewVehicles?: () => void;
   onViewReport?: (reportId: string) => void;
@@ -44,7 +44,8 @@ export default function AccountScreen({
   onLogout,
   onSaveProfile,
   onViewVehicles,
-  onViewReport
+    onViewReport,
+    onOpenSmokeTest
 }: AccountScreenProps) {
   // Use default profile image if none provided
   const [profileImage, setProfileImage] = useState<string | null>(
@@ -598,14 +599,13 @@ export default function AccountScreen({
           onEditProfile={() => setShowEditProfile(true)}
         />
 
-        <GoToAdminButton userEmail={userEmail} primaryColor={primaryColor} />
-
         <AccountMenu
           userType={userType}
           onOpenSettings={() => setShowSettings(true)}
           onOpenPayment={() => setShowPayment(true)}
           onOpenShopProfile={() => setShowShopProfile(true)}
           onOpenHelp={() => setShowHelp(true)}
+          onOpenSmokeTest={onOpenSmokeTest}
           onOpenDeleteAccount={() => setShowDeleteAccount(true)}
           onLogout={handleLogout}
           onViewVehicles={onViewVehicles}

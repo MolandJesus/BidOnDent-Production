@@ -82,6 +82,7 @@ export type ViewMode =
   | 'liked-shops' 
   | 'vehicles' 
   | 'new-claim'
+  | 'smoke-test'
   | 'demo-switcher';
 
 export type LoginView = 

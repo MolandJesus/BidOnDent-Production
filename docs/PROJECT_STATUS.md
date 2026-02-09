@@ -33,7 +33,6 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ Google OAuth integration
 - ✅ User profile in Clerk metadata (name, phone, account_type)
 - ✅ Account setup flow with type selection
-- ✅ Auto-admin recognition (`bidondent@gmail.com`)
 - ✅ Persistent sessions with auto-refresh
 - ✅ Multi-device support
 - ✅ Secure sign-out
@@ -90,26 +89,19 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
   - Total project usage display
   - Visual progress bars
   - Free tier limit warnings
-- ✅ **Automatic cleanup system**
-  - Admin cleanup endpoints
+-- ✅ **Automatic cleanup system**
+  - Cleanup endpoints
   - Batch deletion support
   - Orphaned file detection
   - Storage reclamation
-- ✅ **StorageMonitor component**
-  - Admin-only dev tool
+-- ✅ **StorageMonitor component**
+  - Dev tool for monitoring
   - Live usage statistics
   - User-level breakdowns
   - Manual cleanup triggers
 
-### Admin System
-- ✅ **Auto-admin email**: `bidondent@gmail.com`
-- ✅ Admin detection via Clerk metadata
-- ✅ Admin-only tools and components
-- ✅ Storage Inspector (`Ctrl+Shift+S`)
-- ✅ User management utilities
-- ✅ Delete user functionality
-- ✅ System monitoring dashboard
-- ✅ Demo mode controls
+### Smoke Testing
+- ✅ In-app smoke test checklist available from the Smoke Test tab
 
 ### Design & UX
 - ✅ Deep royal blue (#003d82) color scheme
@@ -130,6 +122,8 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ Custom React hooks:
   - `useUserData` - User data management
   - `useNavigation` - Navigation state & demo mode
+  - `useAppEffects` - Shared app effects
+  - `useAppHandlers` - Shared app handlers
 - ✅ Service layer architecture:
   - `clerkService.ts` - Clerk utilities
   - `services/supabase/` - Modular database/storage operations
@@ -270,27 +264,28 @@ Storage Monitor Updated
 │   └── supabaseService.ts        # Supabase re-exports
 ├── hooks/
 │   ├── useUserData.ts            # User data state
-│   └── useNavigation.ts          # Navigation + demo mode
+│   ├── useNavigation.ts          # Navigation + demo mode
+│   ├── useAppEffects.ts          # Shared app effects
+│   └── useAppHandlers.ts         # Shared app handlers
 ├── components/
 │   ├── ClerkAccountTypeSelector.tsx  # Account setup
 │   ├── DemoModeBanner.tsx            # Demo mode UI
 │   └── DemoAccountSwitcher.tsx       # Account switcher
 └── config/
-    ├── adminConfig.ts            # Admin settings
-    └── demoMode.ts               # Demo configuration
+  └── demoMode.ts               # Demo configuration
 ```
 
 ### Storage & Images
 ```
 /src/app/
 ├── utils/
+│   ├── buildDashboardRouterProps.ts # Dashboard router props builder
 │   ├── imageCompression.ts       # Aggressive compression
 │   └── photoUtils.ts             # Photo handling
 ├── services/
 │   └── storageMonitor.ts         # Storage tracking
 └── components/
-    ├── StorageMonitor.tsx        # Admin monitoring UI
-    └── StorageInspector.tsx      # Debug tool
+  └── StorageMonitor.tsx        # Storage monitoring UI
 ```
 
 ### Backend (Supabase Edge Functions)
@@ -307,7 +302,6 @@ Storage Monitor Updated
 ## 🧪 Testing Approach
 
 ### Manual Testing
-- Admin account: `bidondent@gmail.com`
 - Demo mode: Use account switcher for all types
 - Browser console tools: `window.checkBidondentSession()`
 
@@ -321,7 +315,6 @@ Storage Monitor Updated
 - ✅ Bid submission and comparison
 - ✅ Vehicle CRUD operations
 - ✅ Storage monitoring accuracy
-- ✅ Admin tools functionality
 - ✅ Mobile responsive behavior
 - ✅ Session persistence across refreshes
 
@@ -385,7 +378,7 @@ Storage Monitor Updated
 ### Essential Documentation
 - ✅ **README.md** - Project overview and features
 - ✅ **PROJECT_STATUS.md** - This file (current status)
-- ✅ **QUICK_START.md** - 5-minute setup guide
+- ✅ **GETTING_STARTED.md** - Local setup and first login
 - ✅ **SUPABASE_SETUP_GUIDE.md** - Database and storage setup
 - ✅ **GOOGLE_OAUTH_SETUP.md** - Google sign-in configuration
 - ✅ **ATTRIBUTIONS.md** - Credits and licenses
@@ -404,7 +397,7 @@ Storage Monitor Updated
 - ✅ Insurer claims management operational
 - ✅ Comprehensive RLS security policies
 - ✅ Storage monitoring and optimization
-- ✅ Admin system with utilities
+- ✅ In-app smoke test checklist
 
 ### Ready for Next Phase
 - Production deployment preparation

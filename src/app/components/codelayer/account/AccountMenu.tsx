@@ -1,4 +1,4 @@
-import { Car as CarIcon, ChevronRight, CreditCard, HelpCircle, LogOut, Settings, Trash2 } from "lucide-react";
+import { Car as CarIcon, ChevronRight, CreditCard, HelpCircle, LogOut, Settings, Trash2, CheckSquare } from "lucide-react";
 
 type AccountMenuProps = {
   userType: string;
@@ -6,6 +6,7 @@ type AccountMenuProps = {
   onOpenPayment: () => void;
   onOpenShopProfile: () => void;
   onOpenHelp: () => void;
+  onOpenSmokeTest?: () => void;
   onOpenDeleteAccount: () => void;
   onLogout: () => void;
   onViewVehicles?: () => void;
@@ -17,6 +18,7 @@ export default function AccountMenu({
   onOpenPayment,
   onOpenShopProfile,
   onOpenHelp,
+  onOpenSmokeTest,
   onOpenDeleteAccount,
   onLogout,
   onViewVehicles
@@ -76,6 +78,18 @@ export default function AccountMenu({
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
       </div>
+
+      {onOpenSmokeTest && (
+        <div className="border-b border-gray-100 hover:bg-gray-50">
+          <button className="w-full py-4 px-4 flex items-center justify-between" onClick={onOpenSmokeTest}>
+            <div className="flex items-center">
+              <CheckSquare className="w-5 h-5 mr-3 text-gray-500" />
+              <span>Smoke Test Checklist</span>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-400" />
+          </button>
+        </div>
+      )}
 
       <div className="border-b border-gray-100 hover:bg-red-50">
         <button className="w-full py-4 px-4 flex items-center text-red-600" onClick={onOpenDeleteAccount}>

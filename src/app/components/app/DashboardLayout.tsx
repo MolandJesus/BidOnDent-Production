@@ -2,10 +2,8 @@ import { Car, Menu, X } from "lucide-react";
 import type { RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Activity, Bid, NavTab, Notification, Vehicle } from "../../types";
-import DeleteUserUtility from "../DeleteUserUtility";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
-import StorageInspector from "../StorageInspector";
 
 type UserProfile = {
   name: string;
@@ -15,7 +13,7 @@ type UserProfile = {
 };
 
 type ProfileDropdownData = {
-  userType: string;
+  userType: "customer" | "shop" | "insurer";
   userEmail: string;
   profileImage: string;
   notifications: Notification[];
@@ -27,7 +25,7 @@ type ProfileDropdownData = {
   onNavigate: (destination: string, tab?: string) => void;
   onClose: () => void;
   onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement>;
+  forwardedRef: RefObject<HTMLDivElement | null>;
 };
 
 type DashboardLayoutProps = {
@@ -38,7 +36,7 @@ type DashboardLayoutProps = {
   viewMode: string;
   showMobileMenu: boolean;
   showProfileDropdown: boolean;
-  profileDropdownRef: RefObject<HTMLDivElement>;
+  profileDropdownRef: RefObject<HTMLDivElement | null>;
   userProfile: UserProfile;
   userImageUrl: string;
   notifications: Notification[];
@@ -53,9 +51,6 @@ type DashboardLayoutProps = {
   onProfileToggle: () => void;
   profileDropdownData?: ProfileDropdownData;
   dashboardRouterProps: React.ComponentProps<typeof DashboardRouter>;
-  isAdmin: boolean;
-  showStorageInspector: boolean;
-  onCloseStorageInspector: () => void;
 };
 
 export default function DashboardLayout({
@@ -80,10 +75,7 @@ export default function DashboardLayout({
   onMobileMenuTabClick,
   onProfileToggle,
   profileDropdownData,
-  dashboardRouterProps,
-  isAdmin,
-  showStorageInspector,
-  onCloseStorageInspector
+  dashboardRouterProps
 }: DashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -235,11 +227,6 @@ export default function DashboardLayout({
         onTabClick={(tabId) => onMobileMenuTabClick(tabId)}
       />
 
-      {showStorageInspector && isAdmin && (
-        <StorageInspector onClose={onCloseStorageInspector} />
-      )}
-
-      {isAdmin && <DeleteUserUtility />}
     </div>
   );
 }
