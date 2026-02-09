@@ -52,7 +52,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
           </div>
         </div>
         <div className="border-t border-gray-300 pt-8 text-center text-gray-600">
-          <p>&copy; 2024 Bidondent. All rights reserved.</p>
+          <p>&copy; 2026 Bidondent. All rights reserved.</p>
         </div>
       </div>
     </footer>

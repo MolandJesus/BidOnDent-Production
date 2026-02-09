@@ -1,7 +1,7 @@
 import { Car, Home, Settings, Camera, FileCheck, Wrench, ClipboardList, Building2, FileText, LogOut } from "lucide-react";
 import { SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { LANDING_PAGE_IMAGES } from "../constants";
+import type { RedirectInfo } from "../types";
 
 interface LandingPageHeaderProps {
   isLoggedIn: boolean;
@@ -10,12 +10,12 @@ interface LandingPageHeaderProps {
   showLandingPage: boolean;
   showProfileDropdown: boolean;
   userInfo: { name: string; email: string; profileImage: string };
-  redirectInfo: { type: string } | null;
-  profileDropdownRef: React.RefObject<HTMLDivElement>;
+  redirectInfo: RedirectInfo | null;
+  profileDropdownRef: React.RefObject<HTMLDivElement | null>;
   onLoginClick: () => void;
   onProfileClick: () => void;
   onViewDashboard: () => void;
-  onLogout: () => void;
+  onLogout?: () => void;
   defaultProfileImage: string;
 }
 

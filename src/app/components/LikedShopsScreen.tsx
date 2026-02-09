@@ -24,7 +24,7 @@ export default function LikedShopsScreen({
       specialties: ["Collision Repair", "Paintless Dent Removal"],
       certifications: ["ASE Certified", "I-CAR Gold Class"],
       image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-      lastUsed: "2024-12-15"
+      lastUsed: "2026-12-15"
     },
     {
       id: 2,
@@ -36,7 +36,7 @@ export default function LikedShopsScreen({
       specialties: ["Luxury Vehicle Repair", "Frame Straightening"],
       certifications: ["Tesla Certified", "BMW Certified"],
       image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-      lastUsed: "2024-11-20"
+      lastUsed: "2026-11-20"
     }
   ]);
 

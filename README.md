@@ -100,6 +100,7 @@ BidOnDent creates a streamlined digital marketplace where:
 - `src/app/components/codelayer/` - Legacy screens used by the dashboard router
 - `src/app/routers/` - Screen routing and view composition
 - `src/app/services/` - Supabase/Clerk and business logic
+- `src/app/hooks/` - Shared app effects/handlers and state hooks
 - `src/assets/` - Images used by UI components
 
 **Configuration keys:**
@@ -293,35 +294,11 @@ Claims Tab → "In Progress" claims
 
 ---
 
-## 🎯 Quick Start
+## 🎯 Getting Started
 
-### For Development
+Use the setup guide for a clean, step-by-step local install:
 
-1. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-2. **Set Up Keys**
-  - Update `clerkPublishableKey` in `utils/clerk/info.tsx`
-  - Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`
-  - `.env.example` is included as a reference if you want to wire keys to Vite env later
-
-3. **Run the App**
-   ```bash
-   npm run dev
-   ```
-
-4. **First Time Setup**
-   - Sign up with email: `bidondent@gmail.com` (auto-recognized as admin)
-   - Complete the account setup flow
-   - Start exploring!
-
-### For Users
-
-- **Sign Up**: Click "Get Started Now" on the landing page
-- **Choose Account Type**: Customer, Shop, or Insurer
-- **Start Using**: Access your personalized dashboard immediately
+- [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
 
 ---
 
@@ -330,7 +307,6 @@ Claims Tab → "In Progress" claims
 ### Authentication & User Management
 - **Clerk** - Complete authentication system (sign up, login, OAuth)
 - User profiles stored in Clerk metadata (name, phone, account type)
-- Admin account: `bidondent@gmail.com` (auto-recognized)
 
 ### Data Storage
 - **Supabase** - PostgreSQL database for application data
@@ -376,11 +352,12 @@ bidondent/
 │   ├── hooks/                     # Custom React hooks
 │   │   ├── useUserData.ts        # User data management
 │   │   ├── useNavigation.ts      # Navigation state
-│   │   └── useAuth.tsx           # Legacy hook (unused)
+│   │   ├── useAppEffects.ts      # Shared app effects
+│   │   └── useAppHandlers.ts     # Shared app handlers
 │   ├── config/                    # Configuration files
-│   │   ├── adminConfig.ts        # Admin settings
 │   │   └── demoMode.ts           # Demo mode config
 │   └── utils/                     # Utility functions
+│       ├── buildDashboardRouterProps.ts # Dashboard router props builder
 │       ├── imageCompression.ts   # Aggressive image compression
 │       └── photoUtils.ts         # Photo handling
 │
@@ -398,37 +375,25 @@ bidondent/
 │   ├── clerk/info.tsx            # Clerk configuration
 │   └── supabase/info.tsx         # Supabase configuration
 │
-└── Documentation (see below)
+└── docs/                          # Documentation hub
+  ├── GETTING_STARTED.md
+  ├── PROJECT_STATUS.md
+  ├── SUPABASE_SETUP_GUIDE.md
+  ├── GOOGLE_OAUTH_SETUP.md
+  └── ATTRIBUTIONS.md
 ```
 
 ---
 
-## 📚 Documentation
+## 📚 Docs Index
 
-### Getting Started
-- **[QUICK_START.md](./QUICK_START.md)** - Get up and running in 5 minutes
-- **[PROJECT_STATUS.md](./PROJECT_STATUS.md)** - Current development status
+All documentation lives in the docs folder:
 
-### Setup Guides
-- **[SUPABASE_SETUP_GUIDE.md](./SUPABASE_SETUP_GUIDE.md)** - Database setup
-- **[GOOGLE_OAUTH_SETUP.md](./GOOGLE_OAUTH_SETUP.md)** - Google sign-in setup
-
-### Project Info
-- **[ATTRIBUTIONS.md](./ATTRIBUTIONS.md)** - Credits and licenses
-
----
-
-## 🔑 Admin Account
-
-The system automatically recognizes **`bidondent@gmail.com`** as the admin account:
-
-- **No special setup required** - Just sign up with this email
-- **Auto-admin privileges** - Regardless of initial account type selection
-- **Admin Tools Access**:
-  - Storage Inspector (`Ctrl+Shift+S`)
-  - User Management
-  - Demo Mode Controls
-  - System Monitoring
+- **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)** - Local setup and first login
+- **[docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)** - Current development status
+- **[docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md)** - Database setup
+- **[docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md)** - Google sign-in setup
+- **[docs/ATTRIBUTIONS.md](docs/ATTRIBUTIONS.md)** - Credits and licenses
 
 ---
 
@@ -464,7 +429,7 @@ To stay within Supabase's free tier limits, we use **extremely aggressive compre
 - **Built-in Monitor**: Real-time storage usage tracking
 - **Automatic Cleanup**: Endpoints for removing old images
 - **User Limits**: Per-user storage quotas
-- **Admin Tools**: Storage inspector for debugging
+- **Debug Tools**: Storage monitoring utilities
 
 ---
 
@@ -476,7 +441,6 @@ npm run dev
 ```
 
 ### Test Accounts
-- **Admin**: `bidondent@gmail.com`
 - **Demo Mode**: Use the demo switcher for all account types
 
 ### Browser Console Tools
@@ -487,8 +451,7 @@ window.checkBidondentSession()
 // Clear session data
 window.clearBidondentSession()
 
-// Storage Inspector (Admin only)
-Press: Ctrl+Shift+S
+// Use demo mode to test multiple account types
 ```
 
 ---
@@ -567,16 +530,16 @@ Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 
 ## 🙏 Credits
 
-See [ATTRIBUTIONS.md](./ATTRIBUTIONS.md) for full credits and licenses.
+See [docs/ATTRIBUTIONS.md](docs/ATTRIBUTIONS.md) for full credits and licenses.
 
 ---
 
 ## 🆘 Need Help?
 
-- **Quick Start Issues**: See [QUICK_START.md](./QUICK_START.md)
-- **Setup Problems**: Check [SUPABASE_SETUP_GUIDE.md](./SUPABASE_SETUP_GUIDE.md)
-- **OAuth Setup**: Follow [GOOGLE_OAUTH_SETUP.md](./GOOGLE_OAUTH_SETUP.md)
-- **Current Status**: Review [PROJECT_STATUS.md](./PROJECT_STATUS.md)
+- **Getting Started Issues**: See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
+- **Setup Problems**: Check [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md)
+- **OAuth Setup**: Follow [docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md)
+- **Current Status**: Review [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)
 
 ---
 

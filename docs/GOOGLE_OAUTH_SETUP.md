@@ -92,6 +92,7 @@ After setup, verify:
 - **Clerk Google OAuth Docs**: https://clerk.com/docs/authentication/social-connections/google
 - **Google OAuth Setup**: https://support.google.com/cloud/answer/6158849
 - **Clerk Dashboard**: https://dashboard.clerk.com
+- **BidOnDent Getting Started**: ./GETTING_STARTED.md
 
 ---
 

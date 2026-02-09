@@ -5,7 +5,7 @@ import { LANDING_PAGE_IMAGES } from "../../constants";
 import { supabase } from "../../services/supabaseService";
 
 interface Notification {
-  id: string;
+  id: string | number;
   message: string;
   time: string;
   read: boolean;
@@ -26,7 +26,7 @@ interface ProfileDropdownProps {
   onClose: () => void;
   onNavigate: (destination: string, tab?: string) => void;
   onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement>;
+  forwardedRef: RefObject<HTMLDivElement | null>;
   onNewNotification?: (notification: Notification) => void;
   userEmail?: string;
   // Account-specific data props

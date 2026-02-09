@@ -9,11 +9,9 @@ import TrustStatsSection from "../landing/TrustStatsSection";
 import WhoWeServeSection from "../landing/WhoWeServeSection";
 import LandingPageHeader from "../LandingPageHeader";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
-import DeleteUserUtility from "../DeleteUserUtility";
-import StorageInspector from "../StorageInspector";
 
 type ProfileDropdownData = {
-  userType: string;
+  userType: "customer" | "shop" | "insurer";
   userEmail: string;
   profileImage: string;
   notifications: Notification[];
@@ -25,7 +23,7 @@ type ProfileDropdownData = {
   onNavigate: (destination: string, tab?: string) => void;
   onClose: () => void;
   onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement>;
+  forwardedRef: RefObject<HTMLDivElement | null>;
 };
 
 type LandingPageLayoutProps = {
@@ -44,14 +42,11 @@ type LandingPageLayoutProps = {
   showProfileDropdown: boolean;
   userInfo: UserInfo;
   redirectInfo: RedirectInfo | null;
-  profileDropdownRef: RefObject<HTMLDivElement>;
+  profileDropdownRef: RefObject<HTMLDivElement | null>;
   onLoginClick: () => void;
   onProfileClick: () => void;
   onViewDashboard: () => void;
   profileDropdownData?: ProfileDropdownData;
-  isAdmin: boolean;
-  showStorageInspector: boolean;
-  onCloseStorageInspector: () => void;
 };
 
 export default function LandingPageLayout({
@@ -74,10 +69,7 @@ export default function LandingPageLayout({
   onLoginClick,
   onProfileClick,
   onViewDashboard,
-  profileDropdownData,
-  isAdmin,
-  showStorageInspector,
-  onCloseStorageInspector
+  profileDropdownData
 }: LandingPageLayoutProps) {
   return (
     <div className="min-h-screen bg-white">
@@ -88,7 +80,7 @@ export default function LandingPageLayout({
         showLandingPage={showLandingPage}
         showProfileDropdown={showProfileDropdown}
         userInfo={userInfo}
-        redirectInfo={redirectInfo ?? undefined}
+        redirectInfo={redirectInfo}
         profileDropdownRef={profileDropdownRef}
         onLoginClick={onLoginClick}
         onProfileClick={onProfileClick}
@@ -102,7 +94,12 @@ export default function LandingPageLayout({
         ctaButtonText={ctaButtonText}
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
-        onGetStartedClick={() => {}}
+        isLoggedIn={isLoggedIn}
+        userType={redirectInfo?.type as "customer" | "shop" | "insurer" | undefined}
+        onGetStarted={isLoggedIn ? onViewDashboard : onLoginClick}
+        onLearnMore={() =>
+          document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })
+        }
       />
 
       <HowItWorksSection
@@ -121,10 +118,7 @@ export default function LandingPageLayout({
 
       <WhoWeServeSection primaryColor={primaryColor} />
 
-      <TrustStatsSection
-        repairToolImage={repairToolImage}
-        primaryColor={primaryColor}
-      />
+      <TrustStatsSection />
 
       <CTASection
         primaryColor={primaryColor}
@@ -155,11 +149,6 @@ export default function LandingPageLayout({
         />
       )}
 
-      {showStorageInspector && isAdmin && (
-        <StorageInspector onClose={onCloseStorageInspector} />
-      )}
-
-      {isAdmin && <DeleteUserUtility />}
     </div>
   );
 }

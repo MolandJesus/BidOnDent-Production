@@ -19,10 +19,9 @@ import ShopDirectoryScreen from "../components/ShopDirectoryScreen";
 import InsurerNewClaimScreen from "../components/InsurerNewClaimScreen";
 import InsuranceCompaniesScreen from "../components/InsuranceCompaniesScreen";
 import CompetitorAnalysisScreen from "../components/CompetitorAnalysisScreen";
-import AdminDashboard from "../components/AdminDashboard";
 import DemoAccountSwitcher from "../components/DemoAccountSwitcher";
+import SmokeTestScreen from "../components/SmokeTestScreen";
 import { SEED_DAMAGE_REPORTS } from "../constants";
-import { isAdmin } from "../utils/adminCheck";
 
 interface DashboardRouterProps {
   // Navigation state
@@ -354,22 +353,9 @@ export default function DashboardRouter({
                 onSelectReport(reportId);
                 onViewModeChange("report-detail");
               }}
-            />
-          </motion.div>
-        )}
-        
-        {/* Admin Dashboard Screen (Only for Admin) */}
-        {viewMode === "dashboard" && currentTab === "admin" && isAdmin(userInfo.email) && (
-          <motion.div
-            key="admin"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <AdminDashboard
-              primaryColor={primaryColor}
-              adminEmail={userInfo.email}
+              onOpenSmokeTest={() => {
+                onViewModeChange("smoke-test");
+              }}
             />
           </motion.div>
         )}
@@ -417,6 +403,18 @@ export default function DashboardRouter({
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
             />
+          </motion.div>
+        )}
+
+        {viewMode === "smoke-test" && (
+          <motion.div
+            key="smoke-test"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <SmokeTestScreen primaryColor={primaryColor} />
           </motion.div>
         )}
         

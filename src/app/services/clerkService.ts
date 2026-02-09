@@ -5,7 +5,7 @@
  * Stores user profile data in Clerk's metadata instead of Supabase
  */
 
-export type UserType = 'customer' | 'shop' | 'insurer' | 'admin';
+export type UserType = 'customer' | 'shop' | 'insurer';
 
 export interface UserProfile {
   id: string;
@@ -24,27 +24,17 @@ export function extractUserProfile(clerkUser: any): UserProfile | null {
   if (!clerkUser) return null;
   
   const metadata = clerkUser.unsafeMetadata || {};
+  const rawType = metadata.user_type as string | undefined;
+  const normalizedType = rawType === 'admin' ? 'customer' : rawType;
   
   return {
     id: clerkUser.id,
     email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
     name: (metadata.name as string) || '',
     phone: (metadata.phone as string) || '',
-    user_type: (metadata.user_type as UserType) || 'customer',
+    user_type: (normalizedType as UserType) || 'customer',
     account_setup_completed: (metadata.account_setup_completed as boolean) || false,
   };
-}
-
-/**
- * Check if user is admin based on Clerk data
- */
-export function isAdminUser(userProfile: UserProfile | null): boolean {
-  if (!userProfile) return false;
-  
-  return (
-    userProfile.user_type === 'admin' ||
-    userProfile.email.toLowerCase() === 'bidondent@gmail.com'
-  );
 }
 
 /**

@@ -57,10 +57,9 @@
 
 1. Go to **SQL Editor** in left sidebar
 2. Click **New Query**
-3. Copy the entire contents of `/supabase/migrations/001_initial_schema.sql`
-4. Paste into SQL Editor
-5. Click **Run** (or `Ctrl+Enter`)
-6. ✅ Expected: `Success. No rows returned`
+3. Follow the migration order in `/supabase/migrations/README.md`
+4. Paste each migration into SQL Editor and run in order
+5. ✅ Expected: `Success. No rows returned`
 
 **This creates**:
 - `profiles` table (optional Clerk sync)
@@ -69,6 +68,7 @@
 - `bids` table
 - Row Level Security (RLS) policies
 - Indexes for performance
+- Storage buckets (if you run the storage migration)
 
 #### Option B: Using Supabase CLI (Advanced)
 
@@ -364,7 +364,7 @@ When adding new features that need database changes:
 - **Edge Function**: 500K invocations/month
 - **Bandwidth**: 5 GB/month
 
-**Tip**: Use the StorageMonitor component (admin only) to track usage in real-time.
+**Tip**: Use the StorageMonitor component to track usage in real-time.
 
 ---
 
@@ -376,7 +376,7 @@ When adding new features that need database changes:
 - [GitHub Issues](https://github.com/supabase/supabase/issues)
 
 ### BidOnDent Resources
-- [Quick Start Guide](./QUICK_START.md)
+- [Getting Started](./GETTING_STARTED.md)
 - [Project Status](./PROJECT_STATUS.md)
 - [Google OAuth Setup](./GOOGLE_OAUTH_SETUP.md)
 
@@ -388,7 +388,7 @@ After completing Supabase setup:
 
 1. **Configure Google OAuth** → [GOOGLE_OAUTH_SETUP.md](./GOOGLE_OAUTH_SETUP.md)
 2. **View Project Status** → [PROJECT_STATUS.md](./PROJECT_STATUS.md)
-3. **Return to Quick Start** → [QUICK_START.md](./QUICK_START.md)
+3. **Return to Getting Started** → [GETTING_STARTED.md](./GETTING_STARTED.md)
 4. **Review Main Documentation** → [README.md](./README.md)
 
 ---

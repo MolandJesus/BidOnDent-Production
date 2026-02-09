@@ -26,8 +26,8 @@ export default function ShopActiveJobsScreen({
       vehicle: "2022 Honda Accord",
       damageType: "Front Bumper Repair",
       bidAmount: 1250,
-      startDate: "Dec 18, 2024",
-      estimatedCompletion: "Dec 22, 2024",
+      startDate: "Dec 18, 2026",
+      estimatedCompletion: "Dec 22, 2026",
       status: "in-progress",
       progress: 60,
       tasks: [
@@ -40,7 +40,7 @@ export default function ShopActiveJobsScreen({
       ],
       insuranceClaim: true,
       insuranceCompany: "State Farm",
-      claimNumber: "SF-2024-12345",
+      claimNumber: "SF-2026-12345",
       notes: "Customer requested metallic silver paint match. Parts arrived on schedule."
     },
     {
@@ -51,8 +51,8 @@ export default function ShopActiveJobsScreen({
       vehicle: "2020 Toyota Camry",
       damageType: "Side Panel & Door Replacement",
       bidAmount: 2100,
-      startDate: "Dec 15, 2024",
-      estimatedCompletion: "Dec 25, 2024",
+      startDate: "Dec 15, 2026",
+      estimatedCompletion: "Dec 25, 2026",
       status: "awaiting-parts",
       progress: 30,
       tasks: [
@@ -73,8 +73,8 @@ export default function ShopActiveJobsScreen({
       vehicle: "2019 Ford F-150",
       damageType: "Rear Hatch & Frame Repair",
       bidAmount: 3500,
-      startDate: "Dec 20, 2024",
-      estimatedCompletion: "Dec 28, 2024",
+      startDate: "Dec 20, 2026",
+      estimatedCompletion: "Dec 28, 2026",
       status: "pending",
       progress: 10,
       tasks: [
@@ -86,7 +86,7 @@ export default function ShopActiveJobsScreen({
       ],
       insuranceClaim: true,
       insuranceCompany: "Geico",
-      claimNumber: "GC-2024-67890",
+      claimNumber: "GC-2026-67890",
       notes: "Waiting for insurance adjuster approval for frame work."
     },
     {
@@ -97,8 +97,8 @@ export default function ShopActiveJobsScreen({
       vehicle: "2021 BMW 330i",
       damageType: "Front End Collision Repair",
       bidAmount: 5200,
-      startDate: "Dec 10, 2024",
-      estimatedCompletion: "Dec 21, 2024",
+      startDate: "Dec 10, 2026",
+      estimatedCompletion: "Dec 21, 2026",
       status: "in-progress",
       progress: 85,
       tasks: [
@@ -111,7 +111,7 @@ export default function ShopActiveJobsScreen({
       ],
       insuranceClaim: true,
       insuranceCompany: "Allstate",
-      claimNumber: "AL-2024-11223",
+      claimNumber: "AL-2026-11223",
       notes: "Premium paint required. Customer will pick up Dec 21."
     }
   ];
