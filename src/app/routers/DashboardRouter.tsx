@@ -121,8 +121,6 @@ export default function DashboardRouter({
   onEnableDemoMode,
   onExitDemoMode,
   onProfileUpdate,
-  onPasswordChange,
-  onDeleteAccount,
   onSaveVehicles,
   onSaveVehicle,
   hasSeenPhotoGuide,

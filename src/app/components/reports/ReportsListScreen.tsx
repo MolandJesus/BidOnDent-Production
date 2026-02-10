@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Clock, MapPin, DollarSign, Star, ChevronRight, Filter, ZoomIn, X, ChevronLeft } from "lucide-react";
+import { ArrowLeft, Clock, DollarSign, ChevronRight, ZoomIn, X, ChevronLeft } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 
 type Report = {
@@ -31,8 +31,7 @@ export default function ReportsListScreen({
   reports,
   onBack,
   onSelectReport,
-  primaryColor = "#003d82",
-  secondaryColor = "#00a0e9"
+  primaryColor = "#003d82"
 }: ReportsListScreenProps) {
   const [filter, setFilter] = useState("all"); // all, pending, active, completed
   const [selectedPhotos, setSelectedPhotos] = useState<string[] | null>(null);

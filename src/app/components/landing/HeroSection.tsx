@@ -1,4 +1,4 @@
-import { ChevronRight, Car } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
 

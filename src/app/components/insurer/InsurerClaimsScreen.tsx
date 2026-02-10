@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, MapPin, Calendar, DollarSign, Phone, Mail, FileText, ChevronRight, AlertCircle, CheckCircle, Clock, Users, Building2, Car, Image as ImageIcon, Shield, TrendingUp, XCircle } from "lucide-react";
+import { Search, MapPin, Calendar, Phone, Mail, FileText, ChevronRight, AlertCircle, CheckCircle, Clock, Building2, Image as ImageIcon, TrendingUp, XCircle } from "lucide-react";
 
 type InsurerClaimsScreenProps = {
   primaryColor?: string;
@@ -10,7 +10,6 @@ type InsurerClaimsScreenProps = {
 
 export default function InsurerClaimsScreen({
   primaryColor = "#003d82",
-  secondaryColor = "#00a0e9",
   onApproveClaim,
   onContactShop
 }: InsurerClaimsScreenProps) {

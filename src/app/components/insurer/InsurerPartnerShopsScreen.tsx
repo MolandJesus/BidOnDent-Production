@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { Search, MapPin, Phone, Mail, MessageSquare, Plus, Building2, Star, CheckCircle, XCircle, ChevronRight, TrendingUp, Calendar, Award } from "lucide-react";
+import { Search, MapPin, Phone, Mail, MessageSquare, Plus, Star, CheckCircle, TrendingUp, Award } from "lucide-react";
 
 type InsurerPartnerShopsScreenProps = {
   primaryColor?: string;
-  secondaryColor?: string;
   onAddShop?: (shopData: any) => void;
 };
 
 export default function InsurerPartnerShopsScreen({
   primaryColor = "#003d82",
-  secondaryColor = "#00a0e9",
   onAddShop
 }: InsurerPartnerShopsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");

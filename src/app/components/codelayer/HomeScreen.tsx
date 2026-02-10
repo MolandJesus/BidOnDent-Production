@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, Camera, FileCheck, Wrench, Clock, DollarSign, Shield, ArrowRight, FileText, Star, Store, TrendingUp, Building2, Sparkles, Eye } from "lucide-react";
+import { ChevronRight, Camera, FileCheck, Wrench, Clock, DollarSign, Shield, ArrowRight, FileText, Star, Store, TrendingUp, Building2, Eye } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 
 type HomeScreenProps = {
@@ -23,7 +23,6 @@ type HomeScreenProps = {
   originalAccountType?: string;
   onExitDemoMode?: () => void;
   reports?: any[];
-  activities?: any[];
 };
 
 export default function HomeScreen({
@@ -46,8 +45,7 @@ export default function HomeScreen({
   demoMode,
   originalAccountType,
   onExitDemoMode,
-  reports = [],
-  activities = []
+  reports = []
 }: HomeScreenProps) {
   return (
     <div className="pb-20">

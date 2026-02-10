@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, MapPin, Calendar, Phone, Mail, MessageSquare, CheckCircle, Clock, Wrench, Package, ChevronRight, Star, AlertCircle, User } from "lucide-react";
+import { Search, Calendar, Phone, Mail, MessageSquare, CheckCircle, Clock, Wrench, Package, ChevronRight, Star, AlertCircle, User } from "lucide-react";
 
 type ShopActiveJobsScreenProps = {
   primaryColor?: string;
@@ -9,7 +9,6 @@ type ShopActiveJobsScreenProps = {
 
 export default function ShopActiveJobsScreen({
   primaryColor = "#003d82",
-  secondaryColor = "#00a0e9",
   onUpdateJobStatus
 }: ShopActiveJobsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");

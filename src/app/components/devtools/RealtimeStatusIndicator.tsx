@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Wifi, WifiOff, Radio } from 'lucide-react';
+import { WifiOff, Radio } from 'lucide-react';
 
 interface RealtimeStatusIndicatorProps {
   isConnected: boolean;

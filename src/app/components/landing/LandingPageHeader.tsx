@@ -1,6 +1,5 @@
-import { Car, Home, Settings, Camera, FileCheck, Wrench, ClipboardList, Building2, FileText, LogOut } from "lucide-react";
+import { Car, Home } from "lucide-react";
 import { SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
-import { ImageWithFallback } from "../figma/ImageWithFallback";
 import type { RedirectInfo } from "../../types";
 
 interface LandingPageHeaderProps {

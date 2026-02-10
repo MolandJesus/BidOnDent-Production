@@ -15,7 +15,6 @@ type AccountStatus = {
 type LinkedTestAccountsProps = {
   primaryColor: string;
   accountStatuses: Record<string, AccountStatus>;
-  selectedAccount: string | null;
   isLoading: boolean;
   onSwitchToAccount: (email: string) => void;
   onDeleteAccount: (email: string) => void;
@@ -26,7 +25,6 @@ type LinkedTestAccountsProps = {
 export default function LinkedTestAccounts({
   primaryColor,
   accountStatuses,
-  selectedAccount,
   isLoading,
   onSwitchToAccount,
   onDeleteAccount,
@@ -55,9 +53,7 @@ export default function LinkedTestAccounts({
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 + index * 0.1 }}
-              className={`border rounded-lg p-4 transition-all ${
-                selectedAccount === account.email ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-gray-300"
-              }`}
+              className="border rounded-lg p-4 transition-all border-gray-200 hover:border-gray-300"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">

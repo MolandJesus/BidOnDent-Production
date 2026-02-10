@@ -43,10 +43,8 @@ interface CustomAccount {
 }
 
 export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'legacy' | 'accounts'>('accounts');
   const [accountStatuses, setAccountStatuses] = useState<Record<string, AccountStatus>>({});
   const [customAccounts, setCustomAccounts] = useState<CustomAccount[]>([]);
-  const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const [operationStatus, setOperationStatus] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   
@@ -56,10 +54,6 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
   const [newAccountName, setNewAccountName] = useState("");
   const [newAccountType, setNewAccountType] = useState<'customer' | 'shop' | 'insurer'>('customer');
   const [newAccountPassword, setNewAccountPassword] = useState("");
-
-  // User activity tracking state
-  const [userActivity, setUserActivity] = useState<any[]>([]);
-  const [showActivity, setShowActivity] = useState(false);
 
   // Admin management state
   const [targetAdminEmail, setTargetAdminEmail] = useState("");
@@ -632,96 +626,6 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
     loadCustomAccounts();
   }, []);
 
-  // Load user activity (all accounts with last_login info)
-  const loadUserActivity = async () => {
-    setIsLoading(true);
-    setOperationStatus("Loading user activity...");
-
-    try {
-      console.log('📊 Querying user activity from database...');
-      
-      // Add timeout to prevent hanging
-      const timeoutPromise = new Promise<null>((resolve) => {
-        setTimeout(() => {
-          console.log('⏱️ User activity query timed out after 5 seconds');
-          resolve(null);
-        }, 5000);
-      });
-      
-      // Try to get all profiles with created_at and last_login
-      // Note: last_login might not exist yet if migration hasn't run
-      const queryPromise = supabase
-        .from('profiles')
-        .select('email, name, account_type, created_at, last_login, setup_completed')
-        .order('created_at', { ascending: false }); // Order by created_at as fallback
-
-      const result = await Promise.race([queryPromise, timeoutPromise]);
-      
-      // If timeout occurred
-      if (result === null) {
-        console.log('⚠️ User activity query timed out');
-        setOperationStatus(`⚠️ Query timed out. Please try refreshing the page.`);
-        setUserActivity([]);
-        setIsLoading(false);
-        setTimeout(() => setOperationStatus(""), 5000);
-        return;
-      }
-
-      const { data: profiles, error } = result as any;
-
-      if (error) {
-        console.error('❌ Database query error:', error);
-        
-        // Check if error is because last_login column doesn't exist
-        if (error.message && error.message.includes('last_login')) {
-          setOperationStatus(`❌ Database Error: The 'last_login' column hasn't been added yet.\\n\\nPlease refresh the page to trigger the database migration.`);
-        } else {
-          setOperationStatus(`❌ Database Error: ${error.message}`);
-        }
-        
-        setUserActivity([]);
-        setIsLoading(false);
-        setTimeout(() => setOperationStatus(""), 5000);
-        return;
-      }
-
-      if (!profiles || profiles.length === 0) {
-        setOperationStatus(`⚠️ No user activity found`);
-        setUserActivity([]);
-        setIsLoading(false);
-        setTimeout(() => setOperationStatus(""), 3000);
-        return;
-      }
-
-      console.log('✅ Found user activity:', profiles);
-      
-      // Sort by last_login if it exists, otherwise by created_at
-      const sortedProfiles = [...profiles].sort((a, b) => {
-        if (a.last_login && b.last_login) {
-          return new Date(b.last_login).getTime() - new Date(a.last_login).getTime();
-        } else if (a.last_login) {
-          return -1; // a has login, b doesn't - a comes first
-        } else if (b.last_login) {
-          return 1; // b has login, a doesn't - b comes first
-        } else {
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-        }
-      });
-      
-      setUserActivity(sortedProfiles);
-      setShowActivity(true);
-      setOperationStatus(`✅ Loaded activity for ${profiles.length} user(s)`);
-      setTimeout(() => setOperationStatus(""), 3000);
-      
-    } catch (error) {
-      console.error("❌ Load user activity error:", error);
-      setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      setUserActivity([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // Admin management functions
   const handleManageAdmin = async (promote: boolean) => {
     if (!targetAdminEmail) {
@@ -829,7 +733,6 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       <LinkedTestAccounts
         primaryColor={primaryColor}
         accountStatuses={accountStatuses}
-        selectedAccount={selectedAccount}
         isLoading={isLoading}
         onSwitchToAccount={switchToAccount}
         onDeleteAccount={deleteAccount}

@@ -1,5 +1,4 @@
 import { Camera, FileCheck, Wrench } from "lucide-react";
-import { RefObject } from "react";
 
 interface HowItWorksSectionProps {
   vehicleInspectionImage: string;

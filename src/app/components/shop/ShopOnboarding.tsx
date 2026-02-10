@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ArrowRight, Building, MapPin, Clock, Award, DollarSign } from "lucide-react";
+import { Check, ArrowRight, Building, Clock, Award } from "lucide-react";
 import { motion } from "motion/react";
 
 type ShopOnboardingProps = {

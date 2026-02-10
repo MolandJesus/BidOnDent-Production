@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useState } from "react";
-import { Settings, Car, Camera, FileCheck, ClipboardList, Wrench, FileText, Building2, LogOut, DollarSign, Radio, AlertCircle, Bell, Package, TrendingUp, Clock, CheckCircle, Users, MapPin, Shield, Award, BarChart3 } from "lucide-react";
+import { Settings, Car, Camera, FileCheck, ClipboardList, Wrench, FileText, Building2, LogOut, DollarSign, Radio, AlertCircle, Bell, Package, TrendingUp, Clock, CheckCircle, Award } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import { supabase } from "../../services/supabaseService";
@@ -46,11 +46,9 @@ export default function ProfileDropdown({
   onLogout,
   forwardedRef,
   onNewNotification,
-  userEmail,
   reports,
   vehicles,
-  bids,
-  activities
+  bids
 }: ProfileDropdownProps) {
   const [realtimeConnected, setRealtimeConnected] = useState(false);
   const [localNotifications, setLocalNotifications] = useState<Notification[]>(notifications);
@@ -197,7 +195,7 @@ export default function ProfileDropdown({
       channels.forEach(channel => supabase.removeChannel(channel));
       setRealtimeConnected(false);
     };
-  }, [userType, isOpen, onNewNotification, userEmail]);
+  }, [userType, isOpen, onNewNotification]);
 
   // Sync local notifications with props
   useEffect(() => {
