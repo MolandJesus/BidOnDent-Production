@@ -11,8 +11,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Shield, ArrowRight, X, Lock, AlertCircle } from "lucide-react";
-import { canSwitchToAdmin, ADMIN_EMAIL } from "../config/adminConfig";
-import { supabase } from "../services/supabaseService";
+import { canSwitchToAdmin, ADMIN_EMAIL } from "../../config/adminConfig";
+import { supabase } from "../../services/supabaseService";
 
 interface GoToAdminButtonProps {
   userEmail: string | undefined;

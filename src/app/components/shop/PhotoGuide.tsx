@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Camera, Check, Lightbulb, Move, ZoomIn, X, ChevronRight, ChevronLeft, Smartphone, Sun, Image as ImageIcon, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import exampleImage from "../../assets/13eb756e2ed4bdb051be7975fe6ff4218705fddf.png";
+import exampleImage from "../../../assets/report-photo-perfect.jpg";
 
 type PhotoGuideProps = {
   onClose: () => void;

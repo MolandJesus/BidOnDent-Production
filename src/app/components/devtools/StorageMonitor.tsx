@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Database, HardDrive, Trash2, AlertTriangle } from 'lucide-react';
-import { getStorageStats, cleanupOldReports, type StorageStats } from '../services/storageMonitor';
+import { getStorageStats, cleanupOldReports, type StorageStats } from "../../services/storageMonitor";
 
 export function StorageMonitor() {
   const [stats, setStats] = useState<StorageStats | null>(null);

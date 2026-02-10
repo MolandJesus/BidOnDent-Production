@@ -10,7 +10,7 @@
  * To remove admin features for production deployment:
  * 
  * 1. DELETE this entire file: /src/app/config/adminConfig.ts
- * 2. DELETE /src/app/components/AdminDashboard.tsx
+ * 2. DELETE /src/app/components/admin/AdminDashboard.tsx
  * 3. REMOVE admin-related imports from:
  *    - /src/app/App.tsx
  *    - /src/app/routers/DashboardRouter.tsx
