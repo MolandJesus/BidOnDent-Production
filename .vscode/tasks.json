@@ -16,6 +16,9 @@
       "command": "npm",
       "args": ["run", "build"],
       "isBackground": false,
+      "presentation": {
+        "clear": true
+      },
       "problemMatcher": [],
       "group": "build"
     }
