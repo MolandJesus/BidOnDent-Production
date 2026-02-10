@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { X, Database, HardDrive, Trash2, RefreshCw, CheckCircle, AlertCircle } from "lucide-react";
 import { supabase } from "../../services/supabaseService";
 

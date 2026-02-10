@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ArrowRight, Shield, Users, DollarSign, FileText } from "lucide-react";
+import { Check, ArrowRight, Shield, DollarSign, FileText } from "lucide-react";
 import { motion } from "motion/react";
 
 type InsurerOnboardingProps = {

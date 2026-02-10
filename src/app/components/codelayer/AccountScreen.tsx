@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
-import { compressImage, blobToBase64, getBase64Size, formatBytes } from "../../utils/imageCompression";
+import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
 import { uploadPhoto } from "../../services/supabaseService";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import { supabase } from "../../services/supabaseService";
@@ -40,12 +40,10 @@ export default function AccountScreen({
   userPhone = "(555) 123-4567",
   profileImage: initialProfileImage = "",
   vehicles = [],
-  reports = [],
   onLogout,
   onSaveProfile,
   onViewVehicles,
-    onViewReport,
-    onOpenSmokeTest
+  onOpenSmokeTest
 }: AccountScreenProps) {
   // Use default profile image if none provided
   const [profileImage, setProfileImage] = useState<string | null>(
@@ -58,8 +56,6 @@ export default function AccountScreen({
   const [showHelp, setShowHelp] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [sessionChecked, setSessionChecked] = useState(false);
-  const [sessionValid, setSessionValid] = useState(false);
   const [showDeleteAccount, setShowDeleteAccount] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');

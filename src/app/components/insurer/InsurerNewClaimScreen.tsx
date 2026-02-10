@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { Search, MapPin, Phone, Mail, MessageSquare, ChevronRight, AlertCircle, User, Car, Building2, ArrowLeft, Plus, CheckCircle } from "lucide-react";
+import { Search, MapPin, Phone, Mail, MessageSquare, ChevronRight, User, Car, Building2, ArrowLeft, Plus, CheckCircle } from "lucide-react";
 
 type InsurerNewClaimScreenProps = {
   primaryColor?: string;
-  secondaryColor?: string;
   onBack?: () => void;
   onCreateClaim?: (claimData: any) => void;
 };
 
 export default function InsurerNewClaimScreen({
   primaryColor = "#003d82",
-  secondaryColor = "#00a0e9",
   onBack,
   onCreateClaim
 }: InsurerNewClaimScreenProps) {

@@ -10,7 +10,6 @@ import {
   saveProfile,
   saveVehicle,
   saveDamageReport,
-  uploadPhoto,
   supabase
 } from "../services/supabaseService";
 import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";

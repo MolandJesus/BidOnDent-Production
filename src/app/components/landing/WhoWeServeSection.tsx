@@ -1,5 +1,4 @@
 import { Car, Wrench, Shield, CheckCircle2 } from "lucide-react";
-import { RefObject } from "react";
 
 interface WhoWeServeSectionProps {
   primaryColor: string;

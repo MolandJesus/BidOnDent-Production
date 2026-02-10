@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { Home, Camera, FileText, User, Menu, X, Bell } from "lucide-react";
 

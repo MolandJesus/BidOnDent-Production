@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Users, AlertCircle, RefreshCw, UserPlus, CheckCircle } from 'lucide-react';
-import { supabase } from "../../services/supabaseService";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { ADMIN_EMAIL } from "../../config/adminConfig";
 

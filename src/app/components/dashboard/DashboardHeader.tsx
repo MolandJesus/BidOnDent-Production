@@ -1,4 +1,4 @@
-import { Car, Bell } from "lucide-react";
+import { Car } from "lucide-react";
 import { RefObject } from "react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 

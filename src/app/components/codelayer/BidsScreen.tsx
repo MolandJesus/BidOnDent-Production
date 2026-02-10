@@ -12,7 +12,6 @@ type BidsScreenProps = {
 
 export default function BidsScreen({
   primaryColor = "#0056b3",
-  secondaryColor = "#00a0e9",
   onBack,
   userType = "customer"
 }: BidsScreenProps) {

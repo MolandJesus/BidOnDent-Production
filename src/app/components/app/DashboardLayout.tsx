@@ -61,7 +61,6 @@ export default function DashboardLayout({
   viewMode,
   showMobileMenu,
   showProfileDropdown,
-  profileDropdownRef,
   userProfile,
   userImageUrl,
   notifications,

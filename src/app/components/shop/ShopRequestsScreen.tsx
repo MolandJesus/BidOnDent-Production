@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, MapPin, Calendar, DollarSign, Image as ImageIcon, Phone, Mail, Filter, ChevronRight, Star, AlertCircle } from "lucide-react";
+import { Search, MapPin, Calendar, DollarSign, Image as ImageIcon, Phone, Mail, ChevronRight, Star, AlertCircle } from "lucide-react";
 
 type ShopRequestsScreenProps = {
   primaryColor?: string;
@@ -9,7 +9,6 @@ type ShopRequestsScreenProps = {
 
 export default function ShopRequestsScreen({
   primaryColor = "#003d82",
-  secondaryColor = "#00a0e9",
   onSubmitBid
 }: ShopRequestsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");

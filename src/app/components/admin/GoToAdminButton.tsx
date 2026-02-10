@@ -8,7 +8,7 @@
  * See /src/app/config/adminConfig.ts for complete removal instructions
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Shield, ArrowRight, X, Lock, AlertCircle } from "lucide-react";
 import { canSwitchToAdmin, ADMIN_EMAIL } from "../../config/adminConfig";
@@ -19,7 +19,7 @@ interface GoToAdminButtonProps {
   primaryColor: string;
 }
 
-const GoToAdminButton: React.FC<GoToAdminButtonProps> = ({ userEmail, primaryColor }) => {
+const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
   const [showModal, setShowModal] = useState(false);
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);

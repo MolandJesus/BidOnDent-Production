@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Clock, MapPin, DollarSign, Star, Phone, MessageSquare, ChevronRight } from "lucide-react";
+import { ArrowLeft, Clock, MapPin, Star, Phone } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 
 type Report = {
@@ -33,8 +33,7 @@ type ReportDetailScreenProps = {
 export default function ReportDetailScreen({
   report,
   onBack,
-  primaryColor = "#003d82",
-  secondaryColor = "#00a0e9"
+  primaryColor = "#003d82"
 }: ReportDetailScreenProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   

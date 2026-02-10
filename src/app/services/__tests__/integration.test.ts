@@ -18,11 +18,6 @@
 import { realtimeBidService } from '../realtime/RealtimeBidService';
 import { performanceOptimizer } from '../performance/PerformanceOptimizer';
 import { storageService } from '../storage/StorageService';
-import {
-  getBidsForReport,
-  submitBid,
-  updateBidStatus
-} from '../supabaseService';
 
 /**
  * Test Suite 1: Real-time Bid Service
