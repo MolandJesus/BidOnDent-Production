@@ -1,6 +1,6 @@
 # Project Status - BidOnDent
 
-**Last Updated**: February 8, 2026  
+**Last Updated**: February 10, 2026  
 **Version**: 4.0 (Complete Three-Sided Marketplace)  
 **Status**: ✅ Production Ready with Demo Mode
 
@@ -99,6 +99,9 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
   - Live usage statistics
   - User-level breakdowns
   - Manual cleanup triggers
+- ✅ **Per-user local cache (speed only)**
+  - Supabase remains the source of truth
+  - Cache is scoped by user email to prevent cross-account bleed
 
 ### Smoke Testing
 - ✅ In-app smoke test checklist available from the Smoke Test tab
@@ -241,12 +244,15 @@ Storage Monitor Updated
 │   │   ├── ProfileDropdown.tsx   # Profile menu with notifications
 │   │   ├── DesktopNavTabs.tsx    # Desktop navigation
 │   │   └── MobileBottomNav.tsx   # Mobile navigation
-│   ├── HomeScreen.tsx            # Customer home
-│   ├── ReportsListScreen.tsx     # Customer reports
-│   ├── ShopRequestsScreen.tsx    # Shop repair requests
-│   ├── ShopActiveJobsScreen.tsx  # Shop active jobs
-│   ├── InsurerClaimsScreen.tsx   # Insurer claims
-│   └── InsurerPartnerShopsScreen.tsx  # Insurer partners
+│   ├── admin/                    # Admin tools
+│   ├── auth/                     # Auth flows
+│   ├── demo/                     # Demo mode screens
+│   ├── devtools/                 # Debug tools
+│   ├── insurer/                  # Insurer screens
+│   ├── landing/                  # Landing page UI
+│   ├── reports/                  # Reports list/detail
+│   ├── shop/                     # Shop screens
+│   └── codelayer/                # Legacy screens used by router
 └── services/
   ├── supabase/                 # Modular Supabase service modules
   ├── supabaseService.ts        # Re-exports for Supabase modules
@@ -268,9 +274,8 @@ Storage Monitor Updated
 │   ├── useAppEffects.ts          # Shared app effects
 │   └── useAppHandlers.ts         # Shared app handlers
 ├── components/
-│   ├── ClerkAccountTypeSelector.tsx  # Account setup
-│   ├── DemoModeBanner.tsx            # Demo mode UI
-│   └── DemoAccountSwitcher.tsx       # Account switcher
+│   ├── auth/                     # Clerk account setup
+│   └── demo/                     # Demo mode UI
 └── config/
   └── demoMode.ts               # Demo configuration
 ```
@@ -285,7 +290,7 @@ Storage Monitor Updated
 ├── services/
 │   └── storageMonitor.ts         # Storage tracking
 └── components/
-  └── StorageMonitor.tsx        # Storage monitoring UI
+  └── devtools/StorageMonitor.tsx # Storage monitoring UI
 ```
 
 ### Backend (Supabase Edge Functions)
