@@ -12,8 +12,6 @@ import StepVehicleInfo from "./report/StepVehicleInfo";
 
 type ReportScreenProps = {
   primaryColor?: string;
-  secondaryColor?: string;
-  userType?: string;
   onReportSubmit?: (report: any) => void;
   onViewReports?: () => void;
   onBackToDashboard?: () => void;

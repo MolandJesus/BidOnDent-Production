@@ -1,5 +1,4 @@
 import { Car } from "lucide-react";
-import { RefObject } from "react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 
 interface DashboardHeaderProps {
@@ -8,23 +7,19 @@ interface DashboardHeaderProps {
     email: string;
     profileImage?: string;
   };
-  userType: "customer" | "shop" | "insurer";
   unreadCount: number;
   primaryColor: string;
   secondaryColor: string;
   onLogoClick: () => void;
-  onNotificationClick: () => void;
   onProfileClick: () => void;
-  showProfileDropdown: boolean;
-  profileDropdownRef: RefObject<HTMLDivElement>;
 }
 
 export default function DashboardHeader({
   userInfo,
-  unreadCount,
   primaryColor,
   secondaryColor,
   onLogoClick,
+  unreadCount,
   onProfileClick
 }: DashboardHeaderProps) {
   return (

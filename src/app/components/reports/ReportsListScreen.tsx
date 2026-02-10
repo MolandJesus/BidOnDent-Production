@@ -24,7 +24,6 @@ type ReportsListScreenProps = {
   onBack: () => void;
   onSelectReport: (reportId: number) => void;
   primaryColor?: string;
-  secondaryColor?: string;
 };
 
 export default function ReportsListScreen({

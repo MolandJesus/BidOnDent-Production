@@ -110,7 +110,6 @@ function AppContent() {
   const repairToolImage = LANDING_PAGE_IMAGES.REPAIR_TOOLS;
   const dentRepairImage = LANDING_PAGE_IMAGES.DENT_REPAIR;
   const precisionRepairImage = LANDING_PAGE_IMAGES.PRECISION_REPAIR;
-  const defaultProfileImage = LANDING_PAGE_IMAGES.DEFAULT_PROFILE;
 
   const landingUserInfo = userProfile
     ? { name: userProfile.name, email: userProfile.email, profileImage: "" }
@@ -123,14 +122,10 @@ function AppContent() {
   const landingProfileDropdownData = userProfile
     ? {
         userType: userProfile.user_type,
-        userEmail: userProfile.email,
-        profileImage: user?.imageUrl || "",
         notifications: userData.notifications,
-        unreadCount: userData.notifications.filter((notification) => !notification.read).length,
         reports: userData.reports,
         vehicles: userData.vehicles,
         bids: userData.bids,
-        activities: userData.activities,
         onNavigate: (destination: string, tab?: string) => {
           if (tab) {
             navigation.setCurrentTab(tab);
@@ -139,7 +134,6 @@ function AppContent() {
           navigation.setShowProfileDropdown(false);
           navigation.setShowLandingPage(false);
         },
-        onClose: () => navigation.setShowProfileDropdown(false),
         onLogout: handleLogout,
         forwardedRef: navigation.profileDropdownRef
       }
@@ -157,14 +151,11 @@ function AppContent() {
       repairToolImage={repairToolImage}
       dentRepairImage={dentRepairImage}
       precisionRepairImage={precisionRepairImage}
-      defaultProfileImage={defaultProfileImage}
       showLandingPage={navigation.showLandingPage}
       showProfileDropdown={navigation.showProfileDropdown}
       userInfo={landingUserInfo}
       redirectInfo={landingRedirectInfo}
-      profileDropdownRef={navigation.profileDropdownRef}
       onLoginClick={handleLogin}
-      onProfileClick={() => navigation.setShowProfileDropdown(!navigation.showProfileDropdown)}
       onViewDashboard={() => navigation.setShowLandingPage(false)}
       profileDropdownData={landingProfileDropdownData}
     />
@@ -218,14 +209,9 @@ function AppContent() {
 
     const profileDropdownData = {
       userType: userProfile.user_type,
-      userEmail: userProfile.email,
-      profileImage: user?.imageUrl || "",
-      notifications: userData.notifications,
-      unreadCount: userData.notifications.filter((notification) => !notification.read).length,
       reports: userData.reports,
       vehicles: userData.vehicles,
       bids: userData.bids,
-      activities: userData.activities,
       onNavigate: (destination: string, tab?: string) => {
         if (tab) {
           navigation.setCurrentTab(tab);
@@ -233,7 +219,6 @@ function AppContent() {
         navigation.setViewMode(destination as any);
         navigation.setShowProfileDropdown(false);
       },
-      onClose: () => navigation.setShowProfileDropdown(false),
       onLogout: handleLogout,
       forwardedRef: navigation.profileDropdownRef
     };
@@ -243,10 +228,6 @@ function AppContent() {
       navigation.setViewMode("dashboard");
     };
 
-    const handleMobileMenuTabClick = (tabId: string) => {
-      handleTabClick(tabId);
-      navigation.setShowMobileMenu(false);
-    };
 
     const dashboardRouterProps = buildDashboardRouterProps({
       navigation,
@@ -267,20 +248,16 @@ function AppContent() {
         currentNavTabs={currentNavTabs}
         currentTab={navigation.currentTab}
         viewMode={navigation.viewMode}
-        showMobileMenu={navigation.showMobileMenu}
         showProfileDropdown={navigation.showProfileDropdown}
-        profileDropdownRef={navigation.profileDropdownRef}
         userProfile={userProfile}
         userImageUrl={user?.imageUrl || ""}
         notifications={userData.notifications}
         reports={userData.reports}
         vehicles={userData.vehicles}
         bids={userData.bids}
-        activities={userData.activities}
         onLogoClick={() => navigation.setShowLandingPage(true)}
         onTabClick={handleTabClick}
-        onMobileMenuToggle={() => navigation.setShowMobileMenu(!navigation.showMobileMenu)}
-        onMobileMenuTabClick={handleMobileMenuTabClick}
+        onMobileMenuTabClick={handleTabClick}
         onProfileToggle={() => navigation.setShowProfileDropdown(!navigation.showProfileDropdown)}
         profileDropdownData={profileDropdownData}
         dashboardRouterProps={dashboardRouterProps}

@@ -39,8 +39,6 @@ interface DashboardRouterProps {
   reports: any[];
   vehicles: any[];
   bids: any[];
-  shops: any[];
-  activities?: any[];
   photoStorage: { [key: string]: string[] };
   selectedReportId: string | null;
   demoMode?: boolean;
@@ -65,7 +63,6 @@ interface DashboardRouterProps {
   onViewCompetitors?: () => void;
   onViewInsurers?: () => void;
   onSelectReport: (reportId: string) => void;
-  onBack: () => void;
   onViewModeChange: (mode: string) => void;
   onTabChange: (tab: string) => void;
   onLogout: () => void;
@@ -93,8 +90,6 @@ export default function DashboardRouter({
   reports,
   vehicles,
   bids,
-  shops,
-  activities,
   photoStorage,
   selectedReportId,
   primaryColor,
@@ -113,7 +108,6 @@ export default function DashboardRouter({
   onViewCompetitors,
   onViewInsurers,
   onSelectReport,
-  onBack,
   onViewModeChange,
   onTabChange,
   onLogout,
@@ -167,7 +161,6 @@ export default function DashboardRouter({
               demoMode={demoMode}
               originalAccountType={originalAccountType || undefined}
               onExitDemoMode={onExitDemoMode}
-              activities={activities || []}
               reports={
                 // For shops and insurers, show seed reports (available requests/claims)
                 // For customers, show only their own reports
@@ -193,8 +186,6 @@ export default function DashboardRouter({
           >
             <ReportScreen
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
-              userType={userType}
               vehicles={vehicles}
               onSaveVehicle={onSaveVehicle}
               hasSeenPhotoGuide={hasSeenPhotoGuide}
@@ -224,7 +215,6 @@ export default function DashboardRouter({
           >
             <BidsScreen
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
               userType={userType}
               onBack={() => {
                 onTabChange("home");
@@ -245,7 +235,6 @@ export default function DashboardRouter({
           >
             <ShopRequestsScreen
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
               onSubmitBid={(requestId, bidAmount) => {
                 // Find the report to get more details
                 const report = reports.find(r => r.id === requestId.toString());
@@ -275,7 +264,6 @@ export default function DashboardRouter({
           >
             <ShopActiveJobsScreen
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
             />
           </motion.div>
         )}
@@ -291,10 +279,6 @@ export default function DashboardRouter({
           >
             <InsurerClaimsScreen
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
-              onBack={onBack}
-              onViewModeChange={onViewModeChange}
-              onTabChange={onTabChange}
             />
           </motion.div>
         )}
@@ -310,7 +294,6 @@ export default function DashboardRouter({
           >
             <InsurerPartnerShopsScreen
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
             />
           </motion.div>
         )}
@@ -378,7 +361,6 @@ export default function DashboardRouter({
                 onViewModeChange("report-detail");
               }}
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
             />
           </motion.div>
         )}
@@ -399,7 +381,6 @@ export default function DashboardRouter({
               }}
               onBack={() => onViewModeChange("reports-list")}
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
             />
           </motion.div>
         )}
@@ -443,7 +424,6 @@ export default function DashboardRouter({
             transition={{ duration: 0.2 }}
           >
             <LikedShopsScreen
-              shops={shops}
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
@@ -497,12 +477,7 @@ export default function DashboardRouter({
           >
             <InsurerNewClaimScreen
               primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
               onBack={() => onViewModeChange("dashboard")}
-              onComplete={() => {
-                onViewModeChange("dashboard");
-                onTabChange("claims");
-              }}
             />
           </motion.div>
         )}
