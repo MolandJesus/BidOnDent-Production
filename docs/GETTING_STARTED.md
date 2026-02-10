@@ -51,6 +51,12 @@ Regular user:
 - Choose account type: Customer, Shop, or Insurer
 - Complete account setup
 
+## Data persistence notes
+
+- Supabase stores profiles, vehicles, reports, and photo URLs.
+- localStorage is used as a per-user cache for speed.
+- Report drafts are local-only and do not sync across devices.
+
 ## Common issues
 
 - Missing keys: re-check `utils/clerk/info.tsx` and `utils/supabase/info.tsx`.

@@ -96,7 +96,15 @@ BidOnDent creates a streamlined digital marketplace where:
 **Project structure (most-used paths):**
 - `src/main.tsx` - App entry
 - `src/app/App.tsx` - Root app component
-- `src/app/components/` - Main UI components
+- `src/app/components/` - Feature-based UI components
+- `src/app/components/admin/` - Admin tools
+- `src/app/components/auth/` - Auth flows and Clerk helpers
+- `src/app/components/demo/` - Demo mode UI
+- `src/app/components/devtools/` - Debug and storage tools
+- `src/app/components/insurer/` - Insurer screens
+- `src/app/components/landing/` - Landing page sections
+- `src/app/components/reports/` - Reports list/detail screens
+- `src/app/components/shop/` - Shop screens
 - `src/app/components/codelayer/` - Legacy screens used by the dashboard router
 - `src/app/routers/` - Screen routing and view composition
 - `src/app/services/` - Supabase/Clerk and business logic
@@ -107,6 +115,11 @@ BidOnDent creates a streamlined digital marketplace where:
 - Update `clerkPublishableKey` in `utils/clerk/info.tsx`.
 - Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`.
 - `.env.example` is included as a reference if you prefer wiring keys to Vite env later.
+
+**Data persistence:**
+- Supabase is the source of truth for profiles, vehicles, reports, and photo URLs.
+- localStorage is cache-only and scoped per user for faster initial loads.
+- Report drafts are stored locally and do not sync across devices.
 
 ---
 
