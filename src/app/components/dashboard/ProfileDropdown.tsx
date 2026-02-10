@@ -21,26 +21,21 @@ interface ProfileDropdownProps {
   };
   userType: "customer" | "shop" | "insurer";
   notifications: Notification[];
-  unreadCount: number;
   isOpen: boolean;
-  onClose: () => void;
   onNavigate: (destination: string, tab?: string) => void;
   onLogout: () => void;
   forwardedRef: RefObject<HTMLDivElement | null>;
   onNewNotification?: (notification: Notification) => void;
-  userEmail?: string;
   // Account-specific data props
   reports?: any[];
   vehicles?: any[];
   bids?: any[];
-  activities?: any[];
 }
 
 export default function ProfileDropdown({
   userInfo,
   userType,
   notifications,
-  unreadCount,
   isOpen,
   onNavigate,
   onLogout,

@@ -3,7 +3,6 @@ import { Search, MapPin, Calendar, DollarSign, Image as ImageIcon, Phone, Mail, 
 
 type ShopRequestsScreenProps = {
   primaryColor?: string;
-  secondaryColor?: string;
   onSubmitBid?: (requestId: number, bidAmount: number) => void;
 };
 

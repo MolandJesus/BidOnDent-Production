@@ -3,15 +3,12 @@ import { Search, MapPin, Calendar, Phone, Mail, FileText, ChevronRight, AlertCir
 
 type InsurerClaimsScreenProps = {
   primaryColor?: string;
-  secondaryColor?: string;
   onApproveClaim?: (claimId: number, amount: number) => void;
-  onContactShop?: (shopId: number) => void;
 };
 
 export default function InsurerClaimsScreen({
   primaryColor = "#003d82",
-  onApproveClaim,
-  onContactShop
+  onApproveClaim
 }: InsurerClaimsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "reviewing" | "approved" | "denied">("all");

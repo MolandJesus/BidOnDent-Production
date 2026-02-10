@@ -1,7 +1,7 @@
-import { Car, Menu, X } from "lucide-react";
+import { Car } from "lucide-react";
 import type { RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
-import type { Activity, Bid, NavTab, Notification, Vehicle } from "../../types";
+import type { Bid, NavTab, Notification, Vehicle } from "../../types";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
 
@@ -14,16 +14,10 @@ type UserProfile = {
 
 type ProfileDropdownData = {
   userType: "customer" | "shop" | "insurer";
-  userEmail: string;
-  profileImage: string;
-  notifications: Notification[];
-  unreadCount: number;
   reports: any[];
   vehicles: Vehicle[];
   bids: Bid[];
-  activities: Activity[];
   onNavigate: (destination: string, tab?: string) => void;
-  onClose: () => void;
   onLogout: () => void;
   forwardedRef: RefObject<HTMLDivElement | null>;
 };
@@ -34,19 +28,15 @@ type DashboardLayoutProps = {
   currentNavTabs: NavTab[];
   currentTab: string;
   viewMode: string;
-  showMobileMenu: boolean;
   showProfileDropdown: boolean;
-  profileDropdownRef: RefObject<HTMLDivElement | null>;
   userProfile: UserProfile;
   userImageUrl: string;
   notifications: Notification[];
   reports: any[];
   vehicles: Vehicle[];
   bids: Bid[];
-  activities: Activity[];
   onLogoClick: () => void;
   onTabClick: (tabId: string) => void;
-  onMobileMenuToggle: () => void;
   onMobileMenuTabClick: (tabId: string) => void;
   onProfileToggle: () => void;
   profileDropdownData?: ProfileDropdownData;
@@ -59,7 +49,6 @@ export default function DashboardLayout({
   currentNavTabs,
   currentTab,
   viewMode,
-  showMobileMenu,
   showProfileDropdown,
   userProfile,
   userImageUrl,
@@ -67,10 +56,8 @@ export default function DashboardLayout({
   reports,
   vehicles,
   bids,
-  activities,
   onLogoClick,
   onTabClick,
-  onMobileMenuToggle,
   onMobileMenuTabClick,
   onProfileToggle,
   profileDropdownData,
@@ -158,59 +145,18 @@ export default function DashboardLayout({
                   }}
                   userType={profileDropdownData.userType}
                   notifications={notifications}
-                  unreadCount={profileDropdownData.unreadCount}
                   isOpen={showProfileDropdown}
-                  onClose={profileDropdownData.onClose}
                   onNavigate={profileDropdownData.onNavigate}
                   onLogout={profileDropdownData.onLogout}
                   forwardedRef={profileDropdownData.forwardedRef}
-                  userEmail={profileDropdownData.userEmail}
                   reports={reports}
                   vehicles={vehicles}
                   bids={bids}
-                  activities={activities}
                 />
               )}
             </div>
 
-            <button
-              onClick={onMobileMenuToggle}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-            >
-              {showMobileMenu ? (
-                <X className="w-6 h-6 text-gray-600" />
-              ) : (
-                <Menu className="w-6 h-6 text-gray-600" />
-              )}
-            </button>
           </div>
-
-          {showMobileMenu && (
-            <div className="md:hidden py-4 border-t border-gray-200">
-              <div className="space-y-2">
-                {currentNavTabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = currentTab === tab.id && viewMode === "dashboard";
-
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => onMobileMenuTabClick(tab.id)}
-                      className={`w-full px-4 py-3 rounded-lg font-medium transition-colors text-left ${
-                        isActive ? "text-white" : "text-gray-600 hover:bg-gray-100"
-                      }`}
-                      style={isActive ? { backgroundColor: primaryColor } : {}}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className="w-5 h-5" />
-                        <span>{tab.label}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

@@ -3,7 +3,6 @@ import { Search, Calendar, Phone, Mail, MessageSquare, CheckCircle, Clock, Wrenc
 
 type ShopActiveJobsScreenProps = {
   primaryColor?: string;
-  secondaryColor?: string;
   onUpdateJobStatus?: (jobId: number, status: string) => void;
 };
 

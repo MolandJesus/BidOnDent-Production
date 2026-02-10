@@ -5,7 +5,6 @@ import ShopRatingModal from "../shop/ShopRatingModal";
 
 type BidsScreenProps = {
   primaryColor?: string;
-  secondaryColor?: string;
   onBack?: () => void;
   userType?: "customer" | "shop" | "insurer";
 };

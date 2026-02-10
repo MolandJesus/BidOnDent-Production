@@ -27,7 +27,6 @@ type ReportDetailScreenProps = {
   report: Report;
   onBack: () => void;
   primaryColor?: string;
-  secondaryColor?: string;
 };
 
 export default function ReportDetailScreen({

@@ -46,8 +46,6 @@ export function buildDashboardRouterProps({
     vehicles: userData.vehicles,
     reports: userData.reports,
     bids: userData.bids,
-    shops: [],
-    activities: userData.activities,
     photoStorage: userData.photoStorage,
     selectedReportId: navigation.selectedReportId === null
       ? null
@@ -98,9 +96,6 @@ export function buildDashboardRouterProps({
     },
     onSelectReport: (reportId: string) => {
       navigation.setSelectedReportId(parseInt(reportId));
-    },
-    onBack: () => {
-      navigation.setViewMode("dashboard");
     },
     onViewModeChange: (mode: string) => {
       navigation.setViewMode(mode as any);

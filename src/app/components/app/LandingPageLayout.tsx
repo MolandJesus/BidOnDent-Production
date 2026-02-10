@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import type { Activity, Bid, Notification, RedirectInfo, UserInfo, Vehicle } from "../../types";
+import type { Bid, Notification, RedirectInfo, UserInfo, Vehicle } from "../../types";
 import CTASection from "../landing/CTASection";
 import BenefitsSection from "../landing/BenefitsSection";
 import FooterSection from "../landing/FooterSection";
@@ -12,16 +12,11 @@ import ProfileDropdown from "../dashboard/ProfileDropdown";
 
 type ProfileDropdownData = {
   userType: "customer" | "shop" | "insurer";
-  userEmail: string;
-  profileImage: string;
   notifications: Notification[];
-  unreadCount: number;
   reports: any[];
   vehicles: Vehicle[];
   bids: Bid[];
-  activities: Activity[];
   onNavigate: (destination: string, tab?: string) => void;
-  onClose: () => void;
   onLogout: () => void;
   forwardedRef: RefObject<HTMLDivElement | null>;
 };
@@ -37,14 +32,11 @@ type LandingPageLayoutProps = {
   repairToolImage: string;
   dentRepairImage: string;
   precisionRepairImage: string;
-  defaultProfileImage: string;
   showLandingPage: boolean;
   showProfileDropdown: boolean;
   userInfo: UserInfo;
   redirectInfo: RedirectInfo | null;
-  profileDropdownRef: RefObject<HTMLDivElement | null>;
   onLoginClick: () => void;
-  onProfileClick: () => void;
   onViewDashboard: () => void;
   profileDropdownData?: ProfileDropdownData;
 };
@@ -60,14 +52,11 @@ export default function LandingPageLayout({
   repairToolImage,
   dentRepairImage,
   precisionRepairImage,
-  defaultProfileImage,
   showLandingPage,
   showProfileDropdown,
   userInfo,
   redirectInfo,
-  profileDropdownRef,
   onLoginClick,
-  onProfileClick,
   onViewDashboard,
   profileDropdownData
 }: LandingPageLayoutProps) {
@@ -78,15 +67,7 @@ export default function LandingPageLayout({
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
         showLandingPage={showLandingPage}
-        showProfileDropdown={showProfileDropdown}
-        userInfo={userInfo}
-        redirectInfo={redirectInfo}
-        profileDropdownRef={profileDropdownRef}
-        onLoginClick={onLoginClick}
-        onProfileClick={onProfileClick}
         onViewDashboard={onViewDashboard}
-        onLogout={profileDropdownData?.onLogout}
-        defaultProfileImage={defaultProfileImage}
       />
 
       <HeroSection
@@ -135,17 +116,13 @@ export default function LandingPageLayout({
           userInfo={userInfo}
           userType={profileDropdownData.userType}
           notifications={profileDropdownData.notifications}
-          unreadCount={profileDropdownData.unreadCount}
           isOpen={showProfileDropdown}
-          onClose={profileDropdownData.onClose}
           onNavigate={profileDropdownData.onNavigate}
           onLogout={profileDropdownData.onLogout}
           forwardedRef={profileDropdownData.forwardedRef}
-          userEmail={profileDropdownData.userEmail}
           reports={profileDropdownData.reports}
           vehicles={profileDropdownData.vehicles}
           bids={profileDropdownData.bids}
-          activities={profileDropdownData.activities}
         />
       )}
 

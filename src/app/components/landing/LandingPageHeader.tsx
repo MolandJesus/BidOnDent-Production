@@ -7,15 +7,7 @@ interface LandingPageHeaderProps {
   primaryColor: string;
   secondaryColor: string;
   showLandingPage: boolean;
-  showProfileDropdown: boolean;
-  userInfo: { name: string; email: string; profileImage: string };
-  redirectInfo: RedirectInfo | null;
-  profileDropdownRef: React.RefObject<HTMLDivElement | null>;
-  onLoginClick: () => void;
-  onProfileClick: () => void;
   onViewDashboard: () => void;
-  onLogout?: () => void;
-  defaultProfileImage: string;
 }
 
 export default function LandingPageHeader({
@@ -23,15 +15,7 @@ export default function LandingPageHeader({
   primaryColor,
   secondaryColor,
   showLandingPage,
-  showProfileDropdown,
-  userInfo,
-  redirectInfo,
-  profileDropdownRef,
-  onLoginClick,
-  onProfileClick,
   onViewDashboard,
-  onLogout,
-  defaultProfileImage,
 }: LandingPageHeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50 shadow-sm">

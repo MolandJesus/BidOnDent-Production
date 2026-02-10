@@ -37,9 +37,6 @@ export function useNavigation() {
   const [showLandingPage, setShowLandingPage] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   
-  // Mobile menu state (added at end to preserve hook order)
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-  
   // Demo mode state - MUST be at the end to preserve hook order
   const [demoMode, setDemoMode] = useState(false);
   const [demoAccountType, setDemoAccountType] = useState<"customer" | "shop" | "insurer" | null>(null);
@@ -117,7 +114,6 @@ export function useNavigation() {
     showProfileDropdown,
     showLandingPage,
     isUploadingImage,
-    showMobileMenu,
     demoMode,
     demoAccountType,
     whoWeServeRef,
@@ -133,7 +129,6 @@ export function useNavigation() {
     setShowProfileDropdown,
     setShowLandingPage,
     setIsUploadingImage,
-    setShowMobileMenu,
     
     // Actions
     navigateToTab,
