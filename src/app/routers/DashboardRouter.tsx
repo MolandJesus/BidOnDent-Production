@@ -6,21 +6,21 @@ import HomeScreen from "../components/codelayer/HomeScreen";
 import ReportScreen from "../components/codelayer/ReportScreen";
 import BidsScreen from "../components/codelayer/BidsScreen";
 import AccountScreen from "../components/codelayer/AccountScreen";
-import ShopRequestsScreen from "../components/ShopRequestsScreen";
-import ShopActiveJobsScreen from "../components/ShopActiveJobsScreen";
-import InsurerClaimsScreen from "../components/InsurerClaimsScreen";
-import InsurerPartnerShopsScreen from "../components/InsurerPartnerShopsScreen";
-import ReportsListScreen from "../components/ReportsListScreen";
-import ReportDetailScreen from "../components/ReportDetailScreen";
-import InsurerConnectionScreen from "../components/InsurerConnectionScreen";
-import LikedShopsScreen from "../components/LikedShopsScreen";
-import VehicleProfileScreen from "../components/VehicleProfileScreen";
-import ShopDirectoryScreen from "../components/ShopDirectoryScreen";
-import InsurerNewClaimScreen from "../components/InsurerNewClaimScreen";
-import InsuranceCompaniesScreen from "../components/InsuranceCompaniesScreen";
-import CompetitorAnalysisScreen from "../components/CompetitorAnalysisScreen";
-import DemoAccountSwitcher from "../components/DemoAccountSwitcher";
-import SmokeTestScreen from "../components/SmokeTestScreen";
+import ShopRequestsScreen from "../components/shop/ShopRequestsScreen";
+import ShopActiveJobsScreen from "../components/shop/ShopActiveJobsScreen";
+import LikedShopsScreen from "../components/shop/LikedShopsScreen";
+import VehicleProfileScreen from "../components/shop/VehicleProfileScreen";
+import ShopDirectoryScreen from "../components/shop/ShopDirectoryScreen";
+import InsurerClaimsScreen from "../components/insurer/InsurerClaimsScreen";
+import InsurerPartnerShopsScreen from "../components/insurer/InsurerPartnerShopsScreen";
+import InsurerConnectionScreen from "../components/insurer/InsurerConnectionScreen";
+import InsurerNewClaimScreen from "../components/insurer/InsurerNewClaimScreen";
+import InsuranceCompaniesScreen from "../components/insurer/InsuranceCompaniesScreen";
+import ReportsListScreen from "../components/reports/ReportsListScreen";
+import ReportDetailScreen from "../components/reports/ReportDetailScreen";
+import CompetitorAnalysisScreen from "../components/reports/CompetitorAnalysisScreen";
+import DemoAccountSwitcher from "../components/demo/DemoAccountSwitcher";
+import SmokeTestScreen from "../components/demo/SmokeTestScreen";
 import { SEED_DAMAGE_REPORTS } from "../constants";
 
 interface DashboardRouterProps {
@@ -372,7 +372,7 @@ export default function DashboardRouter({
             <ReportsListScreen
               reports={reports.map(report => ({
                 ...report,
-                photos: photoStorage[report.id] || []
+                photos: photoStorage[report.id] || report.photos || []
               }))}
               onBack={() => onViewModeChange("dashboard")}
               onSelectReport={(reportId) => {
@@ -397,7 +397,7 @@ export default function DashboardRouter({
             <ReportDetailScreen
               report={{
                 ...reports.find(r => r.id === selectedReportId)!,
-                photos: photoStorage[selectedReportId] || []
+                photos: photoStorage[selectedReportId] || reports.find(r => r.id === selectedReportId)?.photos || []
               }}
               onBack={() => onViewModeChange("reports-list")}
               primaryColor={primaryColor}

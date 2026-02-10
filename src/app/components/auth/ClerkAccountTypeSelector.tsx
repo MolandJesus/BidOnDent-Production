@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Car, Wrench, Shield } from 'lucide-react';
-import { updateUserMetadata } from '../services/clerkService';
-import type { UserType } from '../services/clerkService';
+import { updateUserMetadata } from "../../services/clerkService";
+import type { UserType } from "../../services/clerkService";
 
 export default function ClerkAccountTypeSelector() {
   const { user } = useUser();

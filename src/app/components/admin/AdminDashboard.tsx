@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { TEST_ACCOUNTS } from "../config/adminConfig";
+import { TEST_ACCOUNTS } from "../../config/adminConfig";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
-import { supabase } from "../services/supabaseService";
-import StorageDebugPanel from "./StorageDebugPanel";
+import { supabase } from "../../services/supabaseService";
+import StorageDebugPanel from "../devtools/StorageDebugPanel";
 import AdminAccountManager from "./AdminAccountManager";
-import AdminHeader from "./admin/AdminHeader";
-import QuickActions from "./admin/QuickActions";
-import AdminManagementPanel from "./admin/AdminManagementPanel";
-import NewAccountForm from "./admin/NewAccountForm";
-import LinkedTestAccounts from "./admin/LinkedTestAccounts";
-import AdminInfoPanel from "./admin/AdminInfoPanel";
-import SwitchBackPanel from "./admin/SwitchBackPanel";
+import AdminHeader from "./AdminHeader";
+import QuickActions from "./QuickActions";
+import AdminManagementPanel from "./AdminManagementPanel";
+import NewAccountForm from "./NewAccountForm";
+import LinkedTestAccounts from "./LinkedTestAccounts";
+import AdminInfoPanel from "./AdminInfoPanel";
+import SwitchBackPanel from "./SwitchBackPanel";
 
 /**
  * 🚨 PRODUCTION REMOVAL: Delete this file when removing admin features

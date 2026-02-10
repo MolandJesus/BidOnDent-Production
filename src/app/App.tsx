@@ -27,9 +27,9 @@ import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
 import AppLoading from "./components/app/AppLoading";
 import DashboardLayout from "./components/app/DashboardLayout";
 import LandingPageLayout from "./components/app/LandingPageLayout";
-import ClerkAccountTypeSelector from "./components/ClerkAccountTypeSelector";
-import ShopOnboarding from "./components/ShopOnboarding";
-import InsurerOnboarding from "./components/InsurerOnboarding";
+import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector";
+import ShopOnboarding from "./components/shop/ShopOnboarding";
+import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 
 import { projectId, publicAnonKey } from "../../utils/supabase/info";
 import { clerkPublishableKey } from "../../utils/clerk/info";

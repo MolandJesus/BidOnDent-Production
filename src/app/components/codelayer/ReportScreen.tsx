@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import PhotoGuide from "../PhotoGuide";
+import PhotoGuide from "../shop/PhotoGuide";
 import { uploadImageToSupabase } from "../../services/supabaseService";
 import ReportAutoSaveIndicator from "./report/ReportAutoSaveIndicator";
 import ReportHeader from "./report/ReportHeader";

@@ -3,8 +3,8 @@ import { motion } from "motion/react";
 import { 
   X, Mail, Lock, EyeOff, Eye, Car, Wrench, Shield, ChevronRight, AlertCircle, Phone
 } from "lucide-react";
-import type { LoginView } from "../types";
-import { formatPhoneNumber } from "../utils/formatters";
+import type { LoginView } from "../../types";
+import { formatPhoneNumber } from "../../utils/formatters";
 
 interface LoginModalProps {
   show: boolean;

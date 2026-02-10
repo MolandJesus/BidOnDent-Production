@@ -121,6 +121,7 @@ export function getNotificationsByUserType(userType: "customer" | "shop" | "insu
 // Local storage keys
 export const STORAGE_KEYS = {
   USER_DATA: "bidondent_user",
+  USER_DATA_LAST_ACTIVE: "bidondent_user_last_active",
   DAMAGE_REPORT_DRAFT: "bidondent_damage_report_draft",
   KEEP_SIGNED_IN: "bidondent_keep_signed_in"
 };

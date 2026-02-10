@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search, Star, MapPin, Award, TrendingUp, Filter, ChevronRight } from "lucide-react";
-import ImageWithFallback from "./codelayer/ImageWithFallback";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 
 type ShopDirectoryScreenProps = {
   primaryColor?: string;

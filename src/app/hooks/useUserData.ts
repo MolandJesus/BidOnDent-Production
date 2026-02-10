@@ -29,13 +29,38 @@ export function useUserData(clerkUserId?: string) {
   const isSavingRef = useRef(false);
   const isLoadingFromCloudRef = useRef(false);
 
+  const normalizeEmail = (email?: string) => (email ? email.toLowerCase() : "");
+  const getUserCacheKey = (email?: string) => {
+    const normalized = normalizeEmail(email);
+    return normalized ? `${STORAGE_KEYS.USER_DATA}:${normalized}` : STORAGE_KEYS.USER_DATA;
+  };
+  const getLastActiveEmail = () => {
+    const lastActive = localStorage.getItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
+    return normalizeEmail(lastActive || undefined);
+  };
+  const buildPhotoStorageFromReports = (reportsData: any[]) => {
+    const photoStorageData: Record<string, string[]> = {};
+    reportsData.forEach((report: any) => {
+      if (report?.id && Array.isArray(report.photos) && report.photos.length > 0) {
+        photoStorageData[report.id] = report.photos;
+      }
+    });
+    return photoStorageData;
+  };
+
   // ============================================================================
   // CLOUD-FIRST DATA LOADING
   // ============================================================================
   useEffect(() => {
     const loadUserData = async () => {
       // Step 1: Load from localStorage CACHE for instant UI (optional)
-      const cachedData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+      const lastActiveEmail = getLastActiveEmail();
+      const lastActiveCacheKey = lastActiveEmail
+        ? getUserCacheKey(lastActiveEmail)
+        : STORAGE_KEYS.USER_DATA;
+      const cachedData =
+        localStorage.getItem(lastActiveCacheKey) ||
+        localStorage.getItem(STORAGE_KEYS.USER_DATA);
       if (cachedData) {
         try {
           const userData: UserData = JSON.parse(cachedData);
@@ -50,6 +75,8 @@ export function useUserData(clerkUserId?: string) {
               userData.notifications || getNotificationsByUserType(userData.redirectInfo.type)
             );
             setHasSeenPhotoGuide(userData.hasSeenPhotoGuide || false);
+            const cachedPhotoStorage = userData.photoStorage || buildPhotoStorageFromReports(userData.reports || []);
+            setPhotoStorage(cachedPhotoStorage);
           }
         } catch (error) {
           console.error('Error loading cached data:', error);
@@ -72,6 +99,14 @@ export function useUserData(clerkUserId?: string) {
         if (!email) {
           console.error('❌ No email in session');
           return;
+        }
+
+        const normalizedEmail = normalizeEmail(email);
+        const userCacheKey = getUserCacheKey(normalizedEmail);
+        const legacyCache = localStorage.getItem(STORAGE_KEYS.USER_DATA);
+        if (legacyCache && !localStorage.getItem(userCacheKey)) {
+          localStorage.setItem(userCacheKey, legacyCache);
+          localStorage.removeItem(STORAGE_KEYS.USER_DATA);
         }
 
         // Load profile
@@ -163,10 +198,17 @@ export function useUserData(clerkUserId?: string) {
               email: profileData.email
             },
             notifications: getNotificationsByUserType(profileData.account_type),
-            hasSeenPhotoGuide: false
+            hasSeenPhotoGuide: false,
+            photoStorage: reportsData.reduce((acc: Record<string, string[]>, report: any) => {
+              if (report?.id && Array.isArray(report.photo_urls)) {
+                acc[report.id] = report.photo_urls;
+              }
+              return acc;
+            }, {})
           };
           
-          localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(freshUserData));
+          localStorage.setItem(userCacheKey, JSON.stringify(freshUserData));
+          localStorage.setItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE, normalizedEmail);
           console.log('💾 Cache updated with fresh Supabase data');
           
         } else {
@@ -225,9 +267,12 @@ export function useUserData(clerkUserId?: string) {
           userPhone,
           redirectInfo,
           notifications,
-          hasSeenPhotoGuide
+          hasSeenPhotoGuide,
+          photoStorage
         };
-        localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
+        const cacheKey = getUserCacheKey(userInfo.email);
+        localStorage.setItem(cacheKey, JSON.stringify(userData));
+        localStorage.setItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE, normalizeEmail(userInfo.email));
         console.log('💾 Cache updated (localStorage)');
       }, 500);
 
@@ -392,11 +437,19 @@ export function useUserData(clerkUserId?: string) {
 
   const clearSession = () => {
     // Clear cache only - Supabase data persists
+    const cacheKey = getUserCacheKey(userInfo.email);
+    const lastActiveEmail = getLastActiveEmail();
+    localStorage.removeItem(cacheKey);
     localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+    if (lastActiveEmail && lastActiveEmail === normalizeEmail(userInfo.email)) {
+      localStorage.removeItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
+    }
     setRedirectInfo(null);
     setUserInfo({ name: "", email: "", profileImage: "" });
     setVehicles([]);
     setReports([]);
+    setBids([]);
+    setActivities([]);
     setUserPhone("");
     setNotifications([]);
     setHasSeenPhotoGuide(false);

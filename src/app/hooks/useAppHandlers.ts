@@ -37,14 +37,9 @@ export function useAppHandlers({
 
       await signOut();
 
-      userData.setRedirectInfo(null);
-      userData.setUserInfo({ name: "", email: "", profileImage: "" });
-      userData.setUserPhone("");
-      userData.setVehicles([]);
-      userData.setReports([]);
+      userData.clearSession();
       userData.setBids([]);
       userData.setActivities([]);
-      userData.setNotifications([]);
 
       navigation.setShowLandingPage(true);
       navigation.setShowProfileDropdown(false);
@@ -52,14 +47,9 @@ export function useAppHandlers({
       console.log("Logged out successfully - Clerk session ended and local state cleared");
     } catch (error) {
       console.error("Error during logout:", error);
-      userData.setRedirectInfo(null);
-      userData.setUserInfo({ name: "", email: "", profileImage: "" });
-      userData.setUserPhone("");
-      userData.setVehicles([]);
-      userData.setReports([]);
+      userData.clearSession();
       userData.setBids([]);
       userData.setActivities([]);
-      userData.setNotifications([]);
       navigation.setShowLandingPage(true);
       navigation.setShowProfileDropdown(false);
     }
@@ -188,9 +178,21 @@ export function useAppHandlers({
         id: data.report?.id || report.id
       };
       userData.setReports([...userData.reports, savedReport]);
+      if (savedReport?.id && Array.isArray(savedReport.photos)) {
+        userData.setPhotoStorage({
+          ...userData.photoStorage,
+          [savedReport.id]: savedReport.photos
+        });
+      }
     } catch (error) {
       console.error("Error submitting report:", error);
       userData.setReports([...userData.reports, report]);
+      if (report?.id && Array.isArray(report.photos)) {
+        userData.setPhotoStorage({
+          ...userData.photoStorage,
+          [report.id]: report.photos
+        });
+      }
     }
   };
 

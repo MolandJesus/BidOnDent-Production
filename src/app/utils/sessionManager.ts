@@ -1,5 +1,6 @@
 // Session Manager - Handles proactive token refresh and session monitoring
 import { supabase } from "../services/supabaseService";
+import { STORAGE_KEYS } from "../constants";
 
 /**
  * Session Manager Configuration
@@ -97,7 +98,9 @@ export async function validateSessionOnStartup(): Promise<{
     console.log('🔐 Startup: Validating session...');
     
     // Check if we have localStorage data
-    const hasLocalData = localStorage.getItem('bidondent_user_data');
+    const hasLocalData = Object.keys(localStorage).some((key) =>
+      key.startsWith(STORAGE_KEYS.USER_DATA)
+    );
     
     if (!hasLocalData) {
       console.log('ℹ️ No local data - user not signed in (normal on first visit)');

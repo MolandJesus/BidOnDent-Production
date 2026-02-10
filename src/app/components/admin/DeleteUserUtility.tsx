@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
-import { isAdmin } from "../utils/adminCheck";
+import { isAdmin } from "../../utils/adminCheck";
 
 /**
  * TEMPORARY ADMIN UTILITY - Delete User Account

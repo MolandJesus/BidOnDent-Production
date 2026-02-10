@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Shield, Check, AlertCircle } from "lucide-react";
-import { supabase } from "../services/supabaseService";
+import { supabase } from "../../services/supabaseService";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
-import { ADMIN_EMAIL } from "../config/adminConfig";
+import { ADMIN_EMAIL } from "../../config/adminConfig";
 
 /**
  * Admin Account Setup Component

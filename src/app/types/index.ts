@@ -107,5 +107,6 @@ export interface UserData {
   redirectInfo: RedirectInfo;
   notifications: Notification[];
   hasSeenPhotoGuide: boolean;
+  photoStorage?: Record<string, string[]>;
   activities?: Activity[];
 }

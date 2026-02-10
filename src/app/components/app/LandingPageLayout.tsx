@@ -7,7 +7,7 @@ import HeroSection from "../landing/HeroSection";
 import HowItWorksSection from "../landing/HowItWorksSection";
 import TrustStatsSection from "../landing/TrustStatsSection";
 import WhoWeServeSection from "../landing/WhoWeServeSection";
-import LandingPageHeader from "../LandingPageHeader";
+import LandingPageHeader from "../landing/LandingPageHeader";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 
 type ProfileDropdownData = {

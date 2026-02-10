@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft, Car, Plus, Edit2, Trash2, Check } from "lucide-react";
-import type { Vehicle } from "../types";
+import type { Vehicle } from "../../types";
 
 type VehicleProfileScreenProps = {
   onBack: () => void;

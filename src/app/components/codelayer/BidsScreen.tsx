@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DollarSign, Clock, MapPin, Star, ChevronDown, ChevronUp, Phone, MessageSquare, ExternalLink, ThumbsUp, ArrowLeft } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
-import ShopRatingModal from "../ShopRatingModal";
+import ShopRatingModal from "../shop/ShopRatingModal";
 
 type BidsScreenProps = {
   primaryColor?: string;
