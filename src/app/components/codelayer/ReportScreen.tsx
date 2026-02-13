@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import PhotoGuide from "../shop/PhotoGuide";
 import { uploadImageToSupabase } from "../../services/supabaseService";
 import ReportAutoSaveIndicator from "./report/ReportAutoSaveIndicator";
@@ -29,7 +30,7 @@ export default function ReportScreen({
   hasSeenPhotoGuide = false,
   onPhotoGuideComplete,
   vehicles = [],
-  onSaveVehicle
+  onSaveVehicle,
 }: ReportScreenProps) {
   const [step, setStep] = useState(1);
   const [photos, setPhotos] = useState<string[]>([]);
@@ -39,7 +40,7 @@ export default function ReportScreen({
     make: "",
     model: "",
     year: "",
-    vin: ""
+    vin: "",
   });
   const [damageArea, setDamageArea] = useState("front");
   const [description, setDescription] = useState("");
@@ -47,11 +48,12 @@ export default function ReportScreen({
   const [showPhotoGuide, setShowPhotoGuide] = useState(false);
   const [showSaveIndicator, setShowSaveIndicator] = useState(false);
   const [hasSeenGuideThisSession, setHasSeenGuideThisSession] = useState(false);
+  const saveIndicatorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // Local storage key for draft report
-  const DRAFT_STORAGE_KEY = 'bidondent_damage_report_draft';
+  const DRAFT_STORAGE_KEY = "bidondent_damage_report_draft";
 
   // Load draft from localStorage on mount
   useEffect(() => {
@@ -59,7 +61,7 @@ export default function ReportScreen({
       const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
       if (savedDraft) {
         const draft = JSON.parse(savedDraft);
-        console.log('📋 Loaded draft report from local storage');
+        console.log("📋 Loaded draft report from local storage");
         setStep(draft.step || 1);
         // Don't restore photos - they're too large for localStorage
         setVehicle(draft.vehicle || { make: "", model: "", year: "", vin: "" });
@@ -68,7 +70,7 @@ export default function ReportScreen({
         setIncident(draft.incident || "");
       }
     } catch (error) {
-      console.error('Error loading draft from localStorage:', error);
+      console.error("Error loading draft from localStorage:", error);
     }
   }, []);
 
@@ -87,40 +89,38 @@ export default function ReportScreen({
       damageArea,
       description,
       incident,
-      savedAt: new Date().toISOString()
+      savedAt: new Date().toISOString(),
     };
 
     try {
       localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
-      console.log('💾 Draft auto-saved to local storage (text data only)');
-      
-      // Show save indicator
-      setShowSaveIndicator(true);
-      
-      // Hide after 2 seconds
-      const timer = setTimeout(() => {
-        setShowSaveIndicator(false);
-      }, 2000);
-      
-      return () => clearTimeout(timer);
+      console.log("💾 Draft auto-saved to local storage (text data only)");
     } catch (error) {
-      console.error('Error saving draft to localStorage:', error);
+      console.error("Error saving draft to localStorage:", error);
       // If still failing, clear the draft to prevent repeated errors
       try {
         localStorage.removeItem(DRAFT_STORAGE_KEY);
       } catch (e) {
-        console.error('Failed to clear draft:', e);
+        console.error("Failed to clear draft:", e);
       }
     }
   }, [step, vehicle, damageArea, description, incident]); // Removed photos from dependencies
+
+  useEffect(() => {
+    return () => {
+      if (saveIndicatorTimeoutRef.current) {
+        clearTimeout(saveIndicatorTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Clear draft from localStorage
   const clearDraft = () => {
     try {
       localStorage.removeItem(DRAFT_STORAGE_KEY);
-      console.log('🗑️ Cleared draft from local storage');
+      console.log("🗑️ Cleared draft from local storage");
     } catch (error) {
-      console.error('Error clearing draft:', error);
+      console.error("Error clearing draft:", error);
     }
   };
 
@@ -131,7 +131,7 @@ export default function ReportScreen({
     { id: "driver", label: "Driver Side" },
     { id: "passenger", label: "Passenger Side" },
     { id: "roof", label: "Roof" },
-    { id: "other", label: "Other" }
+    { id: "other", label: "Other" },
   ];
 
   // Handle photo upload with FileList
@@ -150,17 +150,17 @@ export default function ReportScreen({
         const compressedBase64 = await new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = (e) => {
-            const img = document.createElement('img');
+            const img = document.createElement("img");
             img.onload = () => {
               // Create canvas for compression
-              const canvas = document.createElement('canvas');
-              const ctx = canvas.getContext('2d');
-              
+              const canvas = document.createElement("canvas");
+              const ctx = canvas.getContext("2d");
+
               // Calculate new dimensions (max 800px for MUCH smaller files)
               let width = img.width;
               let height = img.height;
               const maxSize = 800; // Reduced from 1200 for smaller files
-              
+
               if (width > maxSize || height > maxSize) {
                 if (width > height) {
                   height = (height / width) * maxSize;
@@ -170,32 +170,32 @@ export default function ReportScreen({
                   height = maxSize;
                 }
               }
-              
+
               canvas.width = width;
               canvas.height = height;
-              
+
               // Draw and compress
               ctx?.drawImage(img, 0, 0, width, height);
-              
+
               // Start with 0.5 quality for aggressive compression
               let quality = 0.5;
-              let compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-              
+              let compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+
               // Target: 500KB max (accounting for base64 overhead and storage limits)
               const maxBase64Size = 500 * 1024; // 500KB in bytes
               while (compressedDataUrl.length > maxBase64Size && quality > 0.2) {
                 quality -= 0.05;
-                compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
               }
-              
-              console.log('🗜️ Compressed:', {
+
+              console.log("🗜️ Compressed:", {
                 originalSize: `${(file.size / 1024).toFixed(0)}KB`,
                 compressedSize: `${(compressedDataUrl.length / 1024).toFixed(0)}KB`,
-                quality: Math.round(quality * 100) + '%',
+                quality: Math.round(quality * 100) + "%",
                 dimensions: `${Math.round(width)}x${Math.round(height)}`,
-                reduction: `${Math.round((1 - compressedDataUrl.length / file.size) * 100)}%`
+                reduction: `${Math.round((1 - compressedDataUrl.length / file.size) * 100)}%`,
               });
-              
+
               resolve(compressedDataUrl);
             };
             img.onerror = reject;
@@ -205,40 +205,39 @@ export default function ReportScreen({
           reader.readAsDataURL(file);
         });
 
-        console.log('📸 Photo compressed, size:', compressedBase64.length, 'bytes');
+        console.log("📸 Photo compressed, size:", compressedBase64.length, "bytes");
 
         // Try to upload to Supabase Storage
         setUploadProgress(`Uploading photo ${i + 1} of ${files.length}...`);
         const timestamp = Date.now();
         const random = Math.random().toString(36).substring(7);
         const imagePath = `damage-reports/${timestamp}-${random}.jpg`;
-        
-        console.log('☁️ Attempting Supabase upload...');
+
+        console.log("☁️ Attempting Supabase upload...");
         const url = await uploadImageToSupabase(compressedBase64, imagePath);
-        
+
         if (url) {
           // Store Supabase URL instead of base64
-          console.log('✅ Photo uploaded to Supabase:', url);
-          setPhotos(prev => [...prev, url]);
+          console.log("✅ Photo uploaded to Supabase:", url);
+          setPhotos((prev) => [...prev, url]);
         } else {
           // Fallback to base64 if upload fails
-          console.warn('⚠️ Supabase upload failed, using base64 fallback');
-          setPhotos(prev => [...prev, compressedBase64]);
+          console.warn("⚠️ Supabase upload failed, using base64 fallback");
+          setPhotos((prev) => [...prev, compressedBase64]);
         }
       }
 
-      setUploadProgress('Upload complete!');
+      setUploadProgress("Upload complete!");
       setTimeout(() => {
         setUploadingPhoto(false);
-        setUploadProgress('');
+        setUploadProgress("");
       }, 1500);
-
     } catch (error) {
-      console.error('Error uploading photos:', error);
-      setUploadProgress('Upload failed');
+      console.error("Error uploading photos:", error);
+      setUploadProgress("Upload failed");
       setTimeout(() => {
         setUploadingPhoto(false);
-        setUploadProgress('');
+        setUploadProgress("");
       }, 2000);
     }
   };
@@ -260,7 +259,21 @@ export default function ReportScreen({
   };
 
   const nextStep = () => {
-    setStep(step + 1);
+    setStep((previousStep) => {
+      const next = Math.min(previousStep + 1, 5);
+
+      if (next <= 5) {
+        setShowSaveIndicator(true);
+        if (saveIndicatorTimeoutRef.current) {
+          clearTimeout(saveIndicatorTimeoutRef.current);
+        }
+        saveIndicatorTimeoutRef.current = setTimeout(() => {
+          setShowSaveIndicator(false);
+        }, 1500);
+      }
+
+      return next;
+    });
   };
 
   const prevStep = () => {
@@ -280,8 +293,8 @@ export default function ReportScreen({
 
   const handleVehicleContinue = () => {
     if (onSaveVehicle && vehicle.make && vehicle.model && vehicle.year) {
-      const isNewVehicle = !vehicles.some((v: any) =>
-        v.make === vehicle.make && v.model === vehicle.model && v.year === vehicle.year
+      const isNewVehicle = !vehicles.some(
+        (v: any) => v.make === vehicle.make && v.model === vehicle.model && v.year === vehicle.year
       );
       if (isNewVehicle) {
         onSaveVehicle({
@@ -289,7 +302,7 @@ export default function ReportScreen({
           make: vehicle.make,
           model: vehicle.model,
           year: vehicle.year,
-          vin: vehicle.vin || ""
+          vin: vehicle.vin || "",
         });
       }
     }
@@ -315,7 +328,7 @@ export default function ReportScreen({
         incident,
         status: "pending" as const,
         submittedAt: new Date().toISOString(),
-        bidsCount: 0
+        bidsCount: 0,
       };
       onReportSubmit(report);
     }
@@ -340,7 +353,7 @@ export default function ReportScreen({
 
   const renderStep = () => {
     console.log("Rendering step:", step, "Photos:", photos.length);
-    
+
     try {
       switch (step) {
         case 1:
@@ -432,26 +445,40 @@ export default function ReportScreen({
   const progress = Math.min(Math.round((step / 5) * 100), 100);
 
   return (
-    <div>
+    <div className="min-h-[calc(100vh-10rem)]">
       <ReportHeader step={step} onCancel={resetForm} showCancel={step < 5} />
 
       <ReportProgress progress={progress} primaryColor={primaryColor} />
-      
-      <div className="pb-20">
-        {renderStep() || (
-          <div className="px-4 py-5">
-            <div className="text-center">
-              <p className="text-gray-600">Error: Invalid step {step}</p>
-              <button
-                onClick={() => setStep(1)}
-                className="mt-4 py-2 px-4 rounded-md text-white font-medium"
-                style={{ backgroundColor: primaryColor }}
+
+      <div className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 bg-gradient-to-b from-slate-50 to-slate-100 min-h-[calc(100vh-8rem)]">
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22 }}
               >
-                Start Over
-              </button>
-            </div>
+                {renderStep() || (
+                  <div className="px-4 py-5">
+                    <div className="text-center">
+                      <p className="text-gray-600">Error: Invalid step {step}</p>
+                      <button
+                        onClick={() => setStep(1)}
+                        className="mt-4 py-2 px-4 rounded-md text-white font-medium"
+                        style={{ backgroundColor: primaryColor }}
+                      >
+                        Start Over
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Photo Guide Modal */}
@@ -471,9 +498,7 @@ export default function ReportScreen({
       )}
 
       {/* Save Indicator */}
-      {showSaveIndicator && (
-        <ReportAutoSaveIndicator />
-      )}
+      {showSaveIndicator && <ReportAutoSaveIndicator />}
     </div>
   );
 }

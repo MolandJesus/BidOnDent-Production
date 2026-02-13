@@ -1,13 +1,33 @@
-import { useState } from "react";
-import { ChevronRight, Camera, FileCheck, Wrench, Clock, DollarSign, Shield, ArrowRight, FileText, Star, Store, TrendingUp, Building2, Eye } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  Camera,
+  ChevronRight,
+  CircleCheck,
+  ClipboardList,
+  Clock,
+  DollarSign,
+  Eye,
+  FileCheck,
+  FileText,
+  Shield,
+  Store,
+  TrendingUp,
+  Wrench,
+  type LucideIcon,
+} from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 
 type HomeScreenProps = {
   userType: string;
+  userInfo?: {
+    name?: string;
+  };
   primaryColor?: string;
   secondaryColor?: string;
   onStartReport: () => void;
   onViewAllReports: () => void;
+  onOpenReport?: (reportId: string) => void;
   onConnectInsurance?: () => void;
   onViewLikedShops?: () => void;
   onViewBids?: () => void;
@@ -25,12 +45,87 @@ type HomeScreenProps = {
   reports?: any[];
 };
 
+type ActionItem = {
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  onClick?: () => void;
+};
+
+type StatItem = {
+  label: string;
+  value: string;
+  icon: LucideIcon;
+  tone: "blue" | "green" | "purple" | "amber";
+};
+
+const toneClasses: Record<StatItem["tone"], string> = {
+  blue: "bg-blue-50 text-blue-600",
+  green: "bg-emerald-50 text-emerald-600",
+  purple: "bg-violet-50 text-violet-600",
+  amber: "bg-amber-50 text-amber-600",
+};
+
+const statusClasses: Record<string, string> = {
+  pending: "bg-amber-100 text-amber-700",
+  "in-review": "bg-blue-100 text-blue-700",
+  active: "bg-blue-100 text-blue-700",
+  completed: "bg-emerald-100 text-emerald-700",
+  resolved: "bg-emerald-100 text-emerald-700",
+};
+
+function formatDate(value?: string) {
+  if (!value) return "No date";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "No date";
+  return parsed.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function formatStatus(status?: string) {
+  if (!status) return "Unknown";
+  if (status === "pending") return "Pending Bids";
+  if (status === "in-review" || status === "active") return "Reviewing Bids";
+  if (status === "completed" || status === "resolved") return "Completed";
+  return status.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function getReportTitle(report: any, userType: string) {
+  if (userType === "insurer" && report?.claimNumber) {
+    return `Claim #${report.claimNumber}`;
+  }
+
+  if (report?.vehicle) {
+    const year = report.vehicle.year ?? "";
+    const make = report.vehicle.make ?? "";
+    const model = report.vehicle.model ?? "";
+    return `${year} ${make} ${model}`.trim() || "Repair Request";
+  }
+
+  return "Repair Request";
+}
+
+function getReportDescription(report: any, userType: string) {
+  if (userType === "insurer" && report?.policyholder) {
+    return `Policyholder: ${report.policyholder}`;
+  }
+
+  if (report?.description) return report.description;
+  if (report?.damageArea) return `${report.damageArea} damage`;
+  return "No description provided";
+}
+
 export default function HomeScreen({
   userType = "customer",
+  userInfo,
   primaryColor = "#0056b3",
   secondaryColor = "#00a0e9",
   onStartReport,
   onViewAllReports,
+  onOpenReport,
   onConnectInsurance,
   onViewLikedShops,
   onViewBids,
@@ -45,608 +140,468 @@ export default function HomeScreen({
   demoMode,
   originalAccountType,
   onExitDemoMode,
-  reports = []
+  reports = [],
 }: HomeScreenProps) {
+  const firstName = userInfo?.name?.trim()?.split(" ")[0] || "there";
+  const safeReports = Array.isArray(reports) ? reports : [];
+  const sortedReports = [...safeReports].sort((a, b) => {
+    const aTime = new Date(a?.submittedAt ?? 0).getTime();
+    const bTime = new Date(b?.submittedAt ?? 0).getTime();
+    return bTime - aTime;
+  });
+
+  const activeCount = sortedReports.filter((report) => {
+    const status = String(report?.status ?? "").toLowerCase();
+    return status !== "completed" && status !== "resolved";
+  }).length;
+  const completedCount = sortedReports.filter((report) => {
+    const status = String(report?.status ?? "").toLowerCase();
+    return status === "completed" || status === "resolved";
+  }).length;
+  const totalBids = sortedReports.reduce(
+    (count, report) => count + (Number(report?.bidsCount) || 0),
+    0
+  );
+
+  const customerStats: StatItem[] = [
+    { label: "Active Requests", value: String(activeCount), icon: ClipboardList, tone: "blue" },
+    { label: "Total Bids Received", value: String(totalBids), icon: DollarSign, tone: "green" },
+    {
+      label: "Completed Repairs",
+      value: String(completedCount),
+      icon: CircleCheck,
+      tone: "purple",
+    },
+    {
+      label: "Money Saved",
+      value: `$${(totalBids * 150).toLocaleString()}`,
+      icon: TrendingUp,
+      tone: "amber",
+    },
+  ];
+
+  const shopStats: StatItem[] = [
+    { label: "Open Requests", value: String(activeCount || 12), icon: ClipboardList, tone: "blue" },
+    {
+      label: "Active Jobs",
+      value: String(Math.max(3, completedCount)),
+      icon: Wrench,
+      tone: "green",
+    },
+    {
+      label: "Completed Jobs",
+      value: String(Math.max(completedCount, 6)),
+      icon: CircleCheck,
+      tone: "purple",
+    },
+    {
+      label: "Potential Revenue",
+      value: `$${(Math.max(totalBids, 8) * 400).toLocaleString()}`,
+      icon: DollarSign,
+      tone: "amber",
+    },
+  ];
+
+  const insurerStats: StatItem[] = [
+    { label: "Active Claims", value: String(activeCount || 18), icon: FileCheck, tone: "blue" },
+    {
+      label: "Claims Resolved",
+      value: String(Math.max(completedCount, 9)),
+      icon: CircleCheck,
+      tone: "green",
+    },
+    { label: "Partner Shops", value: "24", icon: Store, tone: "purple" },
+    { label: "Avg Cycle Time", value: "2.8d", icon: Clock, tone: "amber" },
+  ];
+
+  const stats =
+    userType === "shop" ? shopStats : userType === "insurer" ? insurerStats : customerStats;
+
+  const customerActions: ActionItem[] = [
+    {
+      title: "New Repair Request",
+      description: "Submit a new damage report",
+      icon: Camera,
+      onClick: onStartReport,
+    },
+    {
+      title: "View Bids",
+      description: "Compare and review bids",
+      icon: FileCheck,
+      onClick: onViewBids,
+    },
+    {
+      title: "Connect Insurance",
+      description: "Add insurance details",
+      icon: Shield,
+      onClick: onConnectInsurance,
+    },
+    {
+      title: "Find Shops",
+      description: "Browse trusted repair shops",
+      icon: Wrench,
+      onClick: onViewLikedShops,
+    },
+  ];
+
+  const shopActions: ActionItem[] = [
+    {
+      title: "Open Requests",
+      description: "Review incoming requests",
+      icon: ClipboardList,
+      onClick: onViewRequests,
+    },
+    {
+      title: "Active Jobs",
+      description: "Manage jobs in progress",
+      icon: Wrench,
+      onClick: onViewJobs,
+    },
+    {
+      title: "Competitors",
+      description: "Track market pricing",
+      icon: TrendingUp,
+      onClick: onViewCompetitors,
+    },
+    {
+      title: "Browse Insurers",
+      description: "Explore insurance partners",
+      icon: Shield,
+      onClick: onViewInsurers,
+    },
+  ];
+
+  const insurerActions: ActionItem[] = [
+    {
+      title: "View Claims",
+      description: "Review submitted claims",
+      icon: FileCheck,
+      onClick: onViewClaims,
+    },
+    {
+      title: "Create New Claim",
+      description: "Start a claim manually",
+      icon: FileText,
+      onClick: onCreateNewClaim,
+    },
+    {
+      title: "Partner Shops",
+      description: "Manage repair network",
+      icon: Store,
+      onClick: onViewShops,
+    },
+    {
+      title: "Browse Insurers",
+      description: "View carrier directory",
+      icon: Shield,
+      onClick: onViewInsurers,
+    },
+  ];
+
+  const quickActions =
+    userType === "shop" ? shopActions : userType === "insurer" ? insurerActions : customerActions;
+
+  const primaryAction =
+    userType === "shop"
+      ? { label: "View Requests", onClick: onViewRequests }
+      : userType === "insurer"
+        ? { label: "Start New Claim", onClick: onCreateNewClaim }
+        : { label: "New Repair Request", onClick: onStartReport };
+
+  const listHeader = userType === "insurer" ? "Recent Claims" : "Recent Repair Requests";
+  const listViewAllAction = userType === "insurer" ? onViewClaims : onViewAllReports;
+
+  const activityItems = sortedReports.slice(0, 4).map((report) => {
+    const status = String(report?.status ?? "pending").toLowerCase();
+    const title = getReportTitle(report, userType);
+
+    if (status === "completed" || status === "resolved") {
+      return {
+        id: report.id,
+        label: `${title} marked as completed`,
+        time: formatDate(report?.submittedAt),
+        icon: CircleCheck,
+        tone: "text-emerald-600 bg-emerald-50",
+      };
+    }
+
+    if ((Number(report?.bidsCount) || 0) > 0) {
+      return {
+        id: report.id,
+        label: `New bid activity on ${title}`,
+        time: formatDate(report?.submittedAt),
+        icon: DollarSign,
+        tone: "text-blue-600 bg-blue-50",
+      };
+    }
+
+    return {
+      id: report.id,
+      label: `${title} is waiting for review`,
+      time: formatDate(report?.submittedAt),
+      icon: Clock,
+      tone: "text-amber-600 bg-amber-50",
+    };
+  });
+
+  const actionIconTones = [
+    "bg-blue-50 text-blue-600",
+    "bg-emerald-50 text-emerald-600",
+    "bg-amber-50 text-amber-600",
+    "bg-violet-50 text-violet-600",
+  ];
+
   return (
-    <div className="pb-20">
-      {/* Hero Banner */}
-      <div 
-        className="px-4 py-6 text-white relative" 
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-      >
-        <h1 className="text-2xl font-bold mb-2">Welcome to BidOnDent</h1>
-        <p className="text-white text-opacity-90 mb-4">
-          {userType === "customer" && "Get repair estimates without the hassle"}
-          {userType === "shop" && "Access qualified repair opportunities"}
-          {userType === "insurer" && "Streamline your claims process"}
-        </p>
-        
-        {/* Action Buttons Container */}
-        <div className="flex items-center gap-2">
-          <button 
-            className="px-4 py-2 bg-white text-blue-600 rounded-lg font-medium flex items-center"
-            onClick={onStartReport}
-          >
-            {userType === "customer" && (
-              <>Report Damage <ChevronRight className="w-5 h-5 ml-1" /></>
-            )}
-            {userType === "shop" && (
-              <>View Requests <ChevronRight className="w-5 h-5 ml-1" /></>
-            )}
-            {userType === "insurer" && (
-              <>Start New Claim <ChevronRight className="w-5 h-5 ml-1" /></>
-            )}
-          </button>
-          
-          {/* Exit Demo Mode Button (next to action button on mobile) */}
-          {demoMode && onExitDemoMode && userType !== originalAccountType && (
+    <div className="space-y-5 pb-20 md:pb-10">
+      <section className="px-1 md:px-0">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-2xl md:text-4xl font-semibold tracking-tight text-slate-900">
+              Welcome back, {firstName}!
+            </h1>
+            <p className="text-slate-500 mt-1 text-base md:text-xl leading-tight md:max-w-3xl">
+              {userType === "customer" && "Here is what is happening with your repairs"}
+              {userType === "shop" && "Track incoming requests and active repairs"}
+              {userType === "insurer" && "Monitor claims and partner shop performance"}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 md:gap-3">
             <button
-              onClick={onExitDemoMode}
-              className="px-2 py-2 sm:px-3 sm:py-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg text-white text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2 transition-all duration-200 hover:scale-105 active:scale-95 border border-white/30 flex-shrink-0"
+              onClick={primaryAction.onClick}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all"
+              style={{
+                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+              }}
             >
-              <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 rotate-180 flex-shrink-0" />
-              <span className="hidden sm:inline">Exit Demo View</span>
-              <span className="sm:hidden">Exit Demo</span>
+              {primaryAction.label}
+              <ArrowRight className="w-4 h-4" />
             </button>
-          )}
+
+            {demoMode && onExitDemoMode && userType !== originalAccountType && (
+              <button
+                onClick={onExitDemoMode}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium hover:bg-slate-50 transition-colors"
+              >
+                Exit Demo View
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-      
-      {/* Quick Actions */}
-      <div className="px-4 py-5">
-        <h2 className="text-lg font-bold mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {userType === "customer" && (
-            <>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onStartReport}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <Camera className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Report Damage</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewBids}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <FileCheck className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">View Bids</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onConnectInsurance}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <Shield className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Connect Insurance</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewLikedShops}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <Wrench className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Liked Shops</span>
-              </button>
-            </>
-          )}
-          
-          {userType === "shop" && (
-            <>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewRequests}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <FileCheck className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Open Requests</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewJobs}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <Wrench className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Active Repairs</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewCompetitors}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <TrendingUp className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Competitor Analysis</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewInsurers}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <Building2 className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Browse Insurers</span>
-              </button>
-            </>
-          )}
-          
-          {userType === "insurer" && (
-            <>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewClaims}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <FileCheck className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">View All Claims</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onCreateNewClaim}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <FileText className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Create New Claim</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewShops}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <Store className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Partnered Shops</span>
-              </button>
-              <button
-                className="bg-white rounded-lg p-4 flex flex-col items-center justify-center shadow-sm border border-gray-100 transition-all duration-300 ease-out hover:shadow-xl hover:-translate-y-1 active:scale-95 active:shadow-sm group"
-                onClick={onViewShops}
-              >
-                <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center mb-2 shadow-sm transition-all duration-300 ease-out group-hover:shadow-lg group-hover:scale-110"
-                  style={{ 
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    transition: 'background 0.3s ease-out'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'linear-gradient(135deg, #002a5c 0%, #007ab3 100%)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
-                  }}
-                >
-                  <Clock className="w-6 h-6 text-white transition-transform duration-300 group-hover:rotate-12" />
-                </div>
-                <span className="text-sm font-medium">Pending Reviews</span>
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-      
-      {/* Recent Activity */}
-      <div className="px-4 py-5">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold">Recent Activity</h2>
-          {((userType === "customer" || userType === "shop") && reports.length > 0) && (
-            <button 
-              className="text-blue-600 text-sm font-medium flex items-center"
-              onClick={onViewAllReports}
+      </section>
+
+      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {stats.map((item, index) => {
+          const Icon = item.icon;
+          const delta = index + 1;
+
+          return (
+            <article
+              key={item.label}
+              className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm min-h-[158px]"
             >
-              View All <ArrowRight className="w-4 h-4 ml-1" />
-            </button>
-          )}
-          {userType === "insurer" && reports.length > 0 && (
-            <button 
-              className="text-blue-600 text-sm font-medium flex items-center"
-              onClick={onViewClaims}
-            >
-              View All <ArrowRight className="w-4 h-4 ml-1" />
-            </button>
-          )}
-        </div>
-        
-        {reports.length === 0 ? (
-          <div className="bg-white rounded-lg p-5 shadow-sm mb-4 border border-gray-100">
-            <div className="flex items-start">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mr-3"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                {userType === "customer" && <Camera className="w-5 h-5 text-white" />}
-                {userType === "shop" && <FileCheck className="w-5 h-5 text-white" />}
-                {userType === "insurer" && <Shield className="w-5 h-5 text-white" />}
+              <div className="flex items-start justify-between mb-5">
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center ${toneClasses[item.tone]}`}
+                >
+                  <Icon className="w-6 h-6" />
+                </div>
+                <span className="text-sm font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+                  +{delta}
+                </span>
               </div>
-              <div className="flex-1">
-                <div className="font-medium mb-1">
-                  {userType === "customer" && "No recent activity"}
-                  {userType === "shop" && "No recent requests"}
-                  {userType === "insurer" && "No recent claims"}
-                </div>
-                <p className="text-sm text-gray-500">
-                  {userType === "customer" && "When you report damage or receive bids, they will appear here"}
-                  {userType === "shop" && "New repair requests will appear here"}
-                  {userType === "insurer" && "New claims submissions will appear here"}
+              <p className="text-4xl font-semibold text-slate-900 leading-none mb-2">
+                {item.value}
+              </p>
+              <p className="text-slate-500 text-lg">{item.label}</p>
+            </article>
+          );
+        })}
+      </section>
+
+      <section className="grid grid-cols-1 xl:grid-cols-12 gap-5">
+        <div className="xl:col-span-8 space-y-5">
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold text-slate-900">{listHeader}</h2>
+              <button
+                onClick={listViewAllAction}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
+              >
+                View All
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {sortedReports.length === 0 && (
+              <div className="rounded-xl border border-dashed border-slate-300 p-6 bg-slate-50">
+                <p className="font-medium text-slate-900 mb-1">No activity yet</p>
+                <p className="text-slate-600 text-sm">
+                  {userType === "customer" && "Submit your first report to start receiving bids."}
+                  {userType === "shop" && "New customer requests will appear here."}
+                  {userType === "insurer" && "Submitted claims will appear here for review."}
                 </p>
               </div>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {reports.slice(0, 3).map((report) => (
-              <div 
-                key={report.id}
-                className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex items-start gap-3"
-              >
-                {/* Report Thumbnail */}
-                {report.photos && report.photos.length > 0 && (
-                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
-                    <ImageWithFallback
-                      src={report.photos[0]}
-                      alt={userType === "insurer" ? "Claim photo" : "Damage photo"}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                
-                {/* Report/Claim Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between mb-1">
-                    <h3 className="font-medium">
-                      {userType === "insurer" && report.claimNumber && (
-                        <>Claim #{report.claimNumber}</>
-                      )}
-                      {userType !== "insurer" && (
-                        <>{report.vehicle.year} {report.vehicle.make} {report.vehicle.model}</>
-                      )}
-                    </h3>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      report.status === "pending" 
-                        ? "bg-yellow-100 text-yellow-700"
-                        : report.status === "active" || report.status === "in-review"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-green-100 text-green-700"
-                    }`}>
-                      {report.status}
-                    </span>
-                  </div>
-                  {userType === "insurer" && report.policyholder && (
-                    <p className="text-sm text-gray-600 mb-1">
-                      Policyholder: {report.policyholder}
-                    </p>
-                  )}
-                  {userType === "insurer" && report.vehicle && (
-                    <p className="text-sm text-gray-500 mb-2">
-                      {report.vehicle.year} {report.vehicle.make} {report.vehicle.model}
-                    </p>
-                  )}
-                  {userType !== "insurer" && (
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                      {report.description || `Damage to ${report.damageArea}`}
-                    </p>
-                  )}
-                  <div className="flex items-center text-xs text-gray-500">
-                    <Clock className="w-3 h-3 mr-1" />
-                    <span>{new Date(report.submittedAt).toLocaleDateString()}</span>
-                    {userType !== "insurer" && report.bidsCount > 0 && (
-                      <>
-                        <span className="mx-2">•</span>
-                        <span className="font-medium text-blue-600">{report.bidsCount} bids</span>
-                      </>
-                    )}
-                    {userType === "insurer" && report.estimatedCost && (
-                      <>
-                        <span className="mx-2">•</span>
-                        <span className="font-medium text-blue-600">${report.estimatedCost.toLocaleString()}</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      {/* Quick Stats Section */}
-      <div className="px-4 py-5">
-        <h2 className="text-lg font-bold mb-4">Your Activity</h2>
-        
-        {userType === "customer" && (
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">{reports.length}</div>
-              <p className="text-gray-600 text-xs">Reports</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <DollarSign className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">$0</div>
-              <p className="text-gray-600 text-xs">Saved</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <Clock className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">0</div>
-              <p className="text-gray-600 text-xs">Pending</p>
-            </div>
-          </div>
-        )}
-        
-        {userType === "shop" && (
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-gray-600 text-xs">New Requests</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <Wrench className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">5</div>
-              <p className="text-gray-600 text-xs">Active Jobs</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <Star className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">4.8</div>
-              <p className="text-gray-600 text-xs">Rating</p>
-            </div>
-          </div>
-        )}
-        
-        {userType === "insurer" && (
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">48</div>
-              <p className="text-gray-600 text-xs">Active Claims</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <Wrench className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">15</div>
-              <p className="text-gray-600 text-xs">Partner Shops</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 text-center">
-              <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-              >
-                <Clock className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-2xl font-bold">2.5</div>
-              <p className="text-gray-600 text-xs">Avg Days</p>
-            </div>
-          </div>
-        )}
-      </div>
+            )}
 
-      {/* Demo Mode Section */}
-      {onEnterDemoMode && (
-        <div className="px-4 py-5">
-          <h2 className="text-lg font-bold mb-3">Demo Mode</h2>
-          <button
-            onClick={onEnterDemoMode}
-            className="w-full bg-white hover:bg-gray-50 rounded-xl p-6 shadow-sm border-2 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 active:scale-98 relative overflow-hidden group"
-            style={{ borderColor: `${primaryColor}20` }}
-          >
-            {/* Subtle gradient overlay on hover */}
-            <div 
-              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
-              style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-            ></div>
-            
-            <div className="relative flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div 
-                  className="p-3 rounded-lg shadow-sm"
-                  style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
-                >
-                  <Eye className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-left">
-                  <div className="font-bold text-gray-900 mb-1">Experience All Account Types</div>
-                  <p className="text-sm text-gray-600">
-                    Switch between Customer, Shop, and Insurer views
-                  </p>
-                </div>
+            {sortedReports.length > 0 && (
+              <div className="space-y-3">
+                {sortedReports.slice(0, 4).map((report) => {
+                  const status = String(report?.status ?? "pending").toLowerCase();
+                  const statusClass = statusClasses[status] ?? "bg-slate-100 text-slate-700";
+                  const title = getReportTitle(report, userType);
+                  const description = getReportDescription(report, userType);
+                  const hasPhoto = Array.isArray(report?.photos) && report.photos.length > 0;
+                  const canOpenReport = Boolean(onOpenReport && report?.id);
+
+                  return (
+                    <article
+                      key={report.id}
+                      className={`rounded-xl border border-slate-200 p-4 bg-white transition-shadow ${
+                        canOpenReport ? "hover:shadow-md cursor-pointer" : ""
+                      }`}
+                      onClick={canOpenReport ? () => onOpenReport?.(String(report.id)) : undefined}
+                      role={canOpenReport ? "button" : undefined}
+                      tabIndex={canOpenReport ? 0 : undefined}
+                      onKeyDown={
+                        canOpenReport
+                          ? (event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                onOpenReport?.(String(report.id));
+                              }
+                            }
+                          : undefined
+                      }
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                          {hasPhoto ? (
+                            <ImageWithFallback
+                              src={report.photos[0]}
+                              alt="Damage report"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-400">
+                              <Camera className="w-7 h-7" />
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="text-xl font-semibold text-slate-900 truncate">
+                              {title}
+                            </h3>
+                            <span
+                              className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusClass}`}
+                            >
+                              {formatStatus(status)}
+                            </span>
+                          </div>
+                          <p className="text-slate-600 mt-1 line-clamp-2">{description}</p>
+
+                          <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-slate-500">
+                            <span className="inline-flex items-center gap-1.5">
+                              <Calendar className="w-4 h-4" />
+                              {formatDate(report?.submittedAt)}
+                            </span>
+                            {userType !== "insurer" && (
+                              <span className="inline-flex items-center gap-1.5">
+                                <DollarSign className="w-4 h-4" />
+                                {Number(report?.bidsCount || 0)} bids received
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <ChevronRight className="w-5 h-5 text-slate-400 mt-7 flex-shrink-0" />
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
-              <ChevronRight 
-                className="w-5 h-5 group-hover:translate-x-1 transition-transform flex-shrink-0" 
-                style={{ color: primaryColor }}
-              />
-            </div>
-          </button>
-          <p className="text-xs text-gray-500 mt-3 text-center flex items-center justify-center gap-1">
-            <Eye className="w-3 h-3" />
-            Preview how each user type experiences the platform
-          </p>
+            )}
+          </div>
         </div>
-      )}
+
+        <aside className="xl:col-span-4 space-y-5">
+          <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-3">
+              {quickActions.map((action, index) => {
+                const Icon = action.icon;
+                const isDisabled = !action.onClick;
+                const iconTone = actionIconTones[index % actionIconTones.length];
+
+                return (
+                  <button
+                    key={action.title}
+                    onClick={action.onClick}
+                    disabled={isDisabled}
+                    className={`text-left rounded-xl border p-4 transition-all ${
+                      isDisabled
+                        ? "border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed"
+                        : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm"
+                    }`}
+                  >
+                    <div
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3 ${iconTone}`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <h3 className="font-semibold text-slate-900">{action.title}</h3>
+                    <p className="text-sm text-slate-600 mt-1">{action.description}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
+            {activityItems.length === 0 && (
+              <p className="text-slate-600 text-sm">No recent activity to show yet.</p>
+            )}
+            {activityItems.length > 0 && (
+              <div className="space-y-3">
+                {activityItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={item.id} className="flex items-start gap-3">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center ${item.tone}`}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-slate-900 leading-snug">{item.label}</p>
+                        <p className="text-sm text-slate-500 mt-1">{item.time}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+
+          <section
+            className="rounded-2xl p-5 text-white shadow-sm"
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+            }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <Eye className="w-5 h-5" />
+              <h3 className="text-xl font-semibold">Pro Tip</h3>
+            </div>
+            <p className="text-white/90 text-sm">
+              Compare at least 3 bids before selecting a shop. Review warranty terms and timeline to
+              avoid surprises.
+            </p>
+          </section>
+        </aside>
+      </section>
     </div>
   );
 }

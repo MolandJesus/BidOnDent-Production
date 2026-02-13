@@ -1,7 +1,6 @@
 import { Car, Home } from "lucide-react";
 import { SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
-import type { RedirectInfo } from "../../types";
 
 interface LandingPageHeaderProps {
   isLoggedIn: boolean;
@@ -30,17 +29,26 @@ export default function LandingPageHeader({
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled
-        ? "bg-white/90 backdrop-blur-2xl border-b border-gray-200/50 shadow-lg"
-        : "bg-white/30 backdrop-blur-md border-b border-transparent"
-    }`}>
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/90 backdrop-blur-2xl border-b border-gray-200/50 shadow-lg"
+          : "bg-white/30 backdrop-blur-md border-b border-transparent"
+      }`}
+    >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between max-w-7xl">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-white shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer"
+          className="flex items-center gap-2.5 py-1 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
         >
-          <Car className="w-5 h-5" style={{ color: primaryColor }} />
+          <span
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md"
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+            }}
+          >
+            <Car className="w-5 h-5" />
+          </span>
           <h1 className="text-lg font-bold tracking-tight">
             <span
               style={{

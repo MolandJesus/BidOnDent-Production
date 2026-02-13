@@ -13,74 +13,78 @@ export default function CTASection({ primaryColor, onNavigateToDashboard }: CTAS
 
   return (
     <section
-      className="py-20 bg-gradient-to-br from-blue-50 to-white relative overflow-hidden"
+      className="py-20 md:py-24 bg-gradient-to-b from-[#edf5fb] via-[#f6f9fc] to-[#ffffff] relative overflow-hidden"
       ref={sectionRef}
     >
-      {/* Decorative floating blobs */}
-      <div className="absolute top-10 left-10 w-20 h-20 bg-orange-300 rounded-full opacity-40 blur-sm animate-blob" />
-      <div
-        className="absolute bottom-16 right-16 w-28 h-28 bg-blue-300 rounded-full opacity-30 blur-sm animate-blob"
-        style={{ animationDelay: "3s" }}
-      />
-      <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-green-300 rounded-full opacity-25 blur-sm animate-float-slow" />
-
-      <div className="container mx-auto px-4 max-w-4xl text-center relative">
-        {/* Badge */}
+      <div className="container mx-auto px-4 max-w-6xl text-center relative">
         <div
-          className={`mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`relative mx-auto max-w-4xl rounded-[28px] bg-white border border-gray-100 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.55)] px-6 md:px-16 py-12 md:py-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-sm font-medium">
-            <Sparkles className="w-4 h-4 mr-2" />
-            Start Your Repair Journey
-          </span>
-        </div>
+          <div className="absolute -top-6 -left-4 md:-left-6 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-amber-300 to-orange-400 rotate-12 shadow-lg" />
+          <div
+            className="absolute -bottom-6 -right-4 md:-right-6 w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-cyan-300 to-blue-400 shadow-lg"
+            style={{ animationDelay: "1.2s" }}
+          />
 
-        <h3
-          className={`text-4xl md:text-5xl font-bold mb-6 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-          style={{ transitionDelay: "0.15s" }}
-        >
-          Ready to Get Started?
-        </h3>
-        <p
-          className={`text-xl text-gray-600 mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-          style={{ transitionDelay: "0.3s" }}
-        >
-          Join thousands of satisfied customers and experience hassle-free auto repair today.
-        </p>
+          <div
+            className={`mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          >
+            <span className="inline-flex items-center px-4 py-2 rounded-full bg-[#dff3ff] text-[#1776c4] text-sm md:text-base font-semibold">
+              <Sparkles className="w-4 h-4 mr-2" />
+              Start Your Repair Journey
+            </span>
+          </div>
 
-        <div
-          className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-          style={{ transitionDelay: "0.45s" }}
-        >
-          {isSignedIn ? (
-            <button
-              onClick={onNavigateToDashboard}
-              className="px-12 py-5 rounded-xl text-white font-bold text-xl transition-all duration-300 inline-flex items-center shadow-2xl hover:shadow-3xl hover:-translate-y-1 active:scale-[0.97] hover:brightness-110"
-              style={{ backgroundColor: primaryColor }}
-            >
-              Go to Dashboard
-              <ChevronRight className="ml-2 w-6 h-6" />
-            </button>
-          ) : (
-            <SignUpButton mode="modal">
+          <h3
+            className={`text-4xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            style={{ transitionDelay: "0.15s" }}
+          >
+            Ready to Get Started?
+          </h3>
+          <p
+            className={`mx-auto max-w-2xl text-lg md:text-[2rem] leading-tight text-slate-600 mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            style={{ transitionDelay: "0.3s" }}
+          >
+            Join thousands of satisfied customers and experience hassle-free auto repair today.
+          </p>
+
+          <div
+            className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            style={{ transitionDelay: "0.45s" }}
+          >
+            {isSignedIn ? (
               <button
-                className="px-12 py-5 rounded-xl text-white font-bold text-xl transition-all duration-300 inline-flex items-center shadow-2xl hover:shadow-3xl hover:-translate-y-1 active:scale-[0.97] hover:brightness-110"
-                style={{ backgroundColor: primaryColor }}
+                onClick={onNavigateToDashboard}
+                className="px-8 md:px-16 py-4 md:py-5 rounded-2xl text-white font-bold text-xl md:text-[1.85rem] leading-none transition-all duration-300 inline-flex items-center shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-[0.97]"
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, #147dd6 100%)`,
+                }}
               >
-                Get Started Now
-                <ChevronRight className="ml-2 w-6 h-6" />
+                Go to Dashboard
+                <ChevronRight className="ml-3 w-7 h-7" />
               </button>
-            </SignUpButton>
-          )}
-        </div>
+            ) : (
+              <SignUpButton mode="modal">
+                <button
+                  className="px-8 md:px-16 py-4 md:py-5 rounded-2xl text-white font-bold text-xl md:text-[1.85rem] leading-none transition-all duration-300 inline-flex items-center shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-[0.97]"
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor} 0%, #147dd6 100%)`,
+                  }}
+                >
+                  Get Started Now
+                  <ChevronRight className="ml-3 w-7 h-7" />
+                </button>
+              </SignUpButton>
+            )}
+          </div>
 
-        {/* Tagline */}
-        <p
-          className={`mt-6 text-sm text-gray-500 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-          style={{ transitionDelay: "0.6s" }}
-        >
-          Free to use &bull; No obligation &bull; Get quotes in minutes
-        </p>
+          <p
+            className={`mt-8 text-lg text-slate-500 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+            style={{ transitionDelay: "0.6s" }}
+          >
+            Free to use &bull; No obligation &bull; Get quotes in minutes
+          </p>
+        </div>
       </div>
     </section>
   );

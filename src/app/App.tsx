@@ -1,4 +1,4 @@
-import { ClerkProvider, useUser, useClerk } from '@clerk/clerk-react';
+import { ClerkProvider, useUser, useClerk } from "@clerk/clerk-react";
 
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
@@ -17,7 +17,7 @@ import {
   CUSTOMER_NAV_TABS,
   SHOP_NAV_TABS,
   INSURER_NAV_TABS,
-  LANDING_PAGE_IMAGES
+  LANDING_PAGE_IMAGES,
 } from "./constants";
 
 // Import helpers
@@ -35,9 +35,11 @@ import { projectId, publicAnonKey } from "../../utils/supabase/info";
 import { clerkPublishableKey } from "../../utils/clerk/info";
 
 // Validate Clerk key
-console.log('Clerk Key loaded:', clerkPublishableKey?.substring(0, 20) + '...');
+console.log("Clerk Key loaded:", clerkPublishableKey?.substring(0, 20) + "...");
 if (!clerkPublishableKey || clerkPublishableKey.includes("PASTE_YOUR")) {
-  throw new Error(`Please add your Clerk Publishable Key to /utils/clerk/info.tsx. Current value: ${clerkPublishableKey?.substring(0, 30)}...`);
+  throw new Error(
+    `Please add your Clerk Publishable Key to /utils/clerk/info.tsx. Current value: ${clerkPublishableKey?.substring(0, 30)}...`
+  );
 }
 
 // Main App content (wrapped by ClerkProvider)
@@ -48,17 +50,17 @@ function AppContent() {
   const { user, isLoaded: isUserLoaded } = useUser();
   const { signOut, openSignUp } = useClerk();
   const userProfile = user ? extractUserProfile(user) : null;
-  
+
   // ============================================================================
   // CUSTOM HOOKS - Centralized State Management
   // ============================================================================
-  
+
   // User data state (profile, vehicles, reports, Supabase sync)
   const userData = useUserData(user?.id);
-  
+
   // Navigation state (tabs, views, modals, refs)
   const navigation = useNavigation();
-  
+
   const { handleLogin, handleLogout, submitBid, handleReportSubmit } = useAppHandlers({
     userId: user?.id,
     signOut,
@@ -66,44 +68,48 @@ function AppContent() {
     userData,
     navigation,
     projectId,
-    publicAnonKey
+    publicAnonKey,
   });
 
   useAppEffects({
     navigation,
     userProfile,
-    userData
+    userData,
   });
 
   // ============================================================================
   // CONSTANTS - Imported from /constants
   // ============================================================================
-  
+
   const primaryColor = PRIMARY_COLOR;
   const secondaryColor = SECONDARY_COLOR;
   const ctaButtonText = CTA_BUTTON_TEXT;
-  
+
   // ============================================================================
   // COMPUTED VALUES
   // ============================================================================
-  
+
   // Determine which nav tabs to show based on user type
   const navTabs = CUSTOMER_NAV_TABS;
   const shopNavTabs = SHOP_NAV_TABS;
   const insurerNavTabs = INSURER_NAV_TABS;
   // Navigation tabs config - Switch based on demo mode or actual user type
-  const effectiveUserType = navigation.demoMode && navigation.demoAccountType 
-    ? navigation.demoAccountType 
-    : userProfile?.user_type;
-    
-  const currentNavTabs = effectiveUserType === "shop" ? shopNavTabs : 
-                        effectiveUserType === "insurer" ? insurerNavTabs : 
-                        navTabs;
+  const effectiveUserType =
+    navigation.demoMode && navigation.demoAccountType
+      ? navigation.demoAccountType
+      : userProfile?.user_type;
+
+  const currentNavTabs =
+    effectiveUserType === "shop"
+      ? shopNavTabs
+      : effectiveUserType === "insurer"
+        ? insurerNavTabs
+        : navTabs;
 
   // ============================================================================
   // LANDING PAGE IMAGES (from constants)
   // ============================================================================
-  
+
   const heroImage = LANDING_PAGE_IMAGES.HERO;
   const vehicleInspectionImage = LANDING_PAGE_IMAGES.VEHICLE_INSPECTION;
   const mechanicImage = LANDING_PAGE_IMAGES.MECHANIC;
@@ -115,9 +121,7 @@ function AppContent() {
     ? { name: userProfile.name, email: userProfile.email, profileImage: "" }
     : userData.userInfo;
 
-  const landingRedirectInfo = userProfile
-    ? { type: userProfile.user_type }
-    : userData.redirectInfo;
+  const landingRedirectInfo = userProfile ? { type: userProfile.user_type } : userData.redirectInfo;
 
   const landingProfileDropdownData = userProfile
     ? {
@@ -135,7 +139,7 @@ function AppContent() {
           navigation.setShowLandingPage(false);
         },
         onLogout: handleLogout,
-        forwardedRef: navigation.profileDropdownRef
+        forwardedRef: navigation.profileDropdownRef,
       }
     : undefined;
 
@@ -220,14 +224,13 @@ function AppContent() {
         navigation.setShowProfileDropdown(false);
       },
       onLogout: handleLogout,
-      forwardedRef: navigation.profileDropdownRef
+      forwardedRef: navigation.profileDropdownRef,
     };
 
     const handleTabClick = (tabId: string) => {
       navigation.setCurrentTab(tabId);
       navigation.setViewMode("dashboard");
     };
-
 
     const dashboardRouterProps = buildDashboardRouterProps({
       navigation,
@@ -238,7 +241,7 @@ function AppContent() {
       onReportSubmit: handleReportSubmit,
       primaryColor,
       secondaryColor,
-      userImageUrl: user?.imageUrl || ""
+      userImageUrl: user?.imageUrl || "",
     });
 
     return (
@@ -258,7 +261,8 @@ function AppContent() {
         onLogoClick={() => navigation.setShowLandingPage(true)}
         onTabClick={handleTabClick}
         onMobileMenuTabClick={handleTabClick}
-        onProfileToggle={() => navigation.setShowProfileDropdown(!navigation.showProfileDropdown)}
+        onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
+        onOpenDemoMode={() => navigation.setViewMode("demo-switcher" as any)}
         profileDropdownData={profileDropdownData}
         dashboardRouterProps={dashboardRouterProps}
       />

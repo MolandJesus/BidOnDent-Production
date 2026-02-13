@@ -1,4 +1,5 @@
 import { Edit } from "lucide-react";
+import { motion } from "motion/react";
 
 type AccountInfoCardProps = {
   userType: string;
@@ -11,40 +12,75 @@ type AccountInfoCardProps = {
   onEditProfile: () => void;
 };
 
-export default function AccountInfoCard({ userType, userInfo, onEditProfile }: AccountInfoCardProps) {
+export default function AccountInfoCard({
+  userType,
+  userInfo,
+  onEditProfile,
+}: AccountInfoCardProps) {
+  const hasPhone = Boolean(userInfo.phone && userInfo.phone.trim().length > 0);
+  const hasVehicles = userType === "customer" ? userInfo.vehicles.length > 0 : true;
+  const completionScore = [
+    userInfo.name,
+    userInfo.email,
+    hasPhone ? "yes" : "",
+    hasVehicles ? "yes" : "",
+  ].filter(Boolean).length;
+  const completionPercent = Math.round((completionScore / 4) * 100);
+
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <motion.section
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: 0.05 }}
+      className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-5"
+    >
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold">Account Information</h2>
-        <button className="text-blue-600" onClick={onEditProfile}>
+        <h2 className="font-semibold text-slate-900 text-xl">Account Information</h2>
+        <button
+          className="text-blue-600 hover:text-blue-700 transition-colors"
+          onClick={onEditProfile}
+        >
           <Edit className="w-5 h-5" />
         </button>
       </div>
 
-      <div className="space-y-3">
-        <div>
-          <p className="text-sm text-gray-500">Name</p>
-          <p>{userInfo.name}</p>
+      <div className="mb-5">
+        <div className="flex items-center justify-between text-sm mb-1.5">
+          <p className="text-slate-600 font-medium">Profile completion</p>
+          <p className="text-slate-700 font-semibold">{completionPercent}%</p>
         </div>
-        <div>
-          <p className="text-sm text-gray-500">Email</p>
-          <p>{userInfo.email}</p>
+        <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500"
+            style={{ width: `${completionPercent}%` }}
+          />
         </div>
-        <div>
-          <p className="text-sm text-gray-500">Phone</p>
-          <p>{userInfo.phone}</p>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <p className="text-xs uppercase tracking-wide text-slate-500">Name</p>
+          <p className="text-slate-900 font-medium mt-1">{userInfo.name || "-"}</p>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <p className="text-xs uppercase tracking-wide text-slate-500">Email</p>
+          <p className="text-slate-900 font-medium mt-1 break-words">{userInfo.email || "-"}</p>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <p className="text-xs uppercase tracking-wide text-slate-500">Phone</p>
+          <p className="text-slate-900 font-medium mt-1">{userInfo.phone || "-"}</p>
         </div>
         {userType === "customer" && userInfo.vehicles.length > 0 && (
-          <div>
-            <p className="text-sm text-gray-500">Vehicle</p>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Vehicles</p>
             {userInfo.vehicles.map((vehicle, index) => (
-              <p key={index}>
+              <p key={index} className="text-slate-900 font-medium mt-1">
                 {vehicle.year} {vehicle.make} {vehicle.model}
               </p>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </motion.section>
   );
 }

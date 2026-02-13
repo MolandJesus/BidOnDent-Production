@@ -1,5 +1,24 @@
 import { RefObject, useEffect, useState } from "react";
-import { Settings, Car, Camera, FileCheck, ClipboardList, Wrench, FileText, Building2, LogOut, DollarSign, Radio, AlertCircle, Bell, Package, TrendingUp, Clock, CheckCircle, Award } from "lucide-react";
+import {
+  Settings,
+  Car,
+  Camera,
+  FileCheck,
+  ClipboardList,
+  Wrench,
+  FileText,
+  Building2,
+  LogOut,
+  DollarSign,
+  Radio,
+  AlertCircle,
+  Bell,
+  Package,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  Award,
+} from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import { supabase } from "../../services/supabaseService";
@@ -9,7 +28,7 @@ interface Notification {
   message: string;
   time: string;
   read: boolean;
-  type?: 'repair_request' | 'bid' | 'claim' | 'update' | 'message';
+  type?: "repair_request" | "bid" | "claim" | "update" | "message";
   reportData?: any;
 }
 
@@ -30,6 +49,7 @@ interface ProfileDropdownProps {
   reports?: any[];
   vehicles?: any[];
   bids?: any[];
+  variant?: "popover" | "embedded";
 }
 
 export default function ProfileDropdown({
@@ -43,7 +63,8 @@ export default function ProfileDropdown({
   onNewNotification,
   reports,
   vehicles,
-  bids
+  bids,
+  variant = "popover",
 }: ProfileDropdownProps) {
   const [realtimeConnected, setRealtimeConnected] = useState(false);
   const [localNotifications, setLocalNotifications] = useState<Notification[]>(notifications);
@@ -57,39 +78,39 @@ export default function ProfileDropdown({
     // ============================================================================
     // SHOP ACCOUNTS - Subscribe to new damage reports (repair requests)
     // ============================================================================
-    if (userType === 'shop') {
-      console.log('🏪 ProfileDropdown: Setting up SHOP real-time subscriptions');
+    if (userType === "shop") {
+      console.log("🏪 ProfileDropdown: Setting up SHOP real-time subscriptions");
 
       const shopChannel = supabase
-        .channel('shop-notifications')
+        .channel("shop-notifications")
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'damage_reports'
+            event: "INSERT",
+            schema: "public",
+            table: "damage_reports",
           },
           (payload) => {
-            console.log('🏪 New repair request received!', payload);
-            
+            console.log("🏪 New repair request received!", payload);
+
             const newReport = payload.new;
             const notification: Notification = {
               id: `repair-${newReport.id}-${Date.now()}`,
               message: `New repair request: ${newReport.vehicle_year} ${newReport.vehicle_make} ${newReport.vehicle_model}`,
-              time: 'Just now',
+              time: "Just now",
               read: false,
-              type: 'repair_request',
-              reportData: newReport
+              type: "repair_request",
+              reportData: newReport,
             };
 
-            setLocalNotifications(prev => [notification, ...prev]);
+            setLocalNotifications((prev) => [notification, ...prev]);
             if (onNewNotification) onNewNotification(notification);
             playNotificationSound();
           }
         )
         .subscribe((status) => {
-          console.log('🏪 Shop subscription status:', status);
-          setRealtimeConnected(status === 'SUBSCRIBED');
+          console.log("🏪 Shop subscription status:", status);
+          setRealtimeConnected(status === "SUBSCRIBED");
         });
 
       channels.push(shopChannel);
@@ -98,42 +119,42 @@ export default function ProfileDropdown({
     // ============================================================================
     // CUSTOMER ACCOUNTS - Subscribe to new bids on their reports
     // ============================================================================
-    else if (userType === 'customer') {
-      console.log('👤 ProfileDropdown: Setting up CUSTOMER real-time subscriptions');
+    else if (userType === "customer") {
+      console.log("👤 ProfileDropdown: Setting up CUSTOMER real-time subscriptions");
 
       const customerChannel = supabase
-        .channel('customer-notifications')
+        .channel("customer-notifications")
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'bids'
+            event: "INSERT",
+            schema: "public",
+            table: "bids",
           },
           (payload) => {
-            console.log('👤 New bid received!', payload);
-            
+            console.log("👤 New bid received!", payload);
+
             const newBid = payload.new;
-            
+
             // Only notify if this bid is for one of the customer's reports
             // We'll check the report ownership via email or user_id
             const notification: Notification = {
               id: `bid-${newBid.id}-${Date.now()}`,
-              message: `New bid: $${newBid.amount} from ${newBid.shop_name || 'Auto Shop'}`,
-              time: 'Just now',
+              message: `New bid: $${newBid.amount} from ${newBid.shop_name || "Auto Shop"}`,
+              time: "Just now",
               read: false,
-              type: 'bid',
-              reportData: newBid
+              type: "bid",
+              reportData: newBid,
             };
 
-            setLocalNotifications(prev => [notification, ...prev]);
+            setLocalNotifications((prev) => [notification, ...prev]);
             if (onNewNotification) onNewNotification(notification);
             playNotificationSound();
           }
         )
         .subscribe((status) => {
-          console.log('👤 Customer subscription status:', status);
-          setRealtimeConnected(status === 'SUBSCRIBED');
+          console.log("👤 Customer subscription status:", status);
+          setRealtimeConnected(status === "SUBSCRIBED");
         });
 
       channels.push(customerChannel);
@@ -142,43 +163,43 @@ export default function ProfileDropdown({
     // ============================================================================
     // INSURER ACCOUNTS - Subscribe to damage reports with insurance claims
     // ============================================================================
-    else if (userType === 'insurer') {
-      console.log('🛡️ ProfileDropdown: Setting up INSURER real-time subscriptions');
+    else if (userType === "insurer") {
+      console.log("🛡️ ProfileDropdown: Setting up INSURER real-time subscriptions");
 
       const insurerChannel = supabase
-        .channel('insurer-notifications')
+        .channel("insurer-notifications")
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'damage_reports'
+            event: "INSERT",
+            schema: "public",
+            table: "damage_reports",
           },
           (payload) => {
-            console.log('🛡️ New claim notification received!', payload);
-            
+            console.log("🛡️ New claim notification received!", payload);
+
             const newReport = payload.new;
-            
+
             // Only notify insurers about reports with insurance information
             if (newReport.insurance_company) {
               const notification: Notification = {
                 id: `claim-${newReport.id}-${Date.now()}`,
                 message: `New claim filed: ${newReport.vehicle_year} ${newReport.vehicle_make} ${newReport.vehicle_model}`,
-                time: 'Just now',
+                time: "Just now",
                 read: false,
-                type: 'claim',
-                reportData: newReport
+                type: "claim",
+                reportData: newReport,
               };
 
-              setLocalNotifications(prev => [notification, ...prev]);
+              setLocalNotifications((prev) => [notification, ...prev]);
               if (onNewNotification) onNewNotification(notification);
               playNotificationSound();
             }
           }
         )
         .subscribe((status) => {
-          console.log('🛡️ Insurer subscription status:', status);
-          setRealtimeConnected(status === 'SUBSCRIBED');
+          console.log("🛡️ Insurer subscription status:", status);
+          setRealtimeConnected(status === "SUBSCRIBED");
         });
 
       channels.push(insurerChannel);
@@ -187,7 +208,7 @@ export default function ProfileDropdown({
     // Cleanup all subscriptions when dropdown closes
     return () => {
       console.log(`🔴 Cleaning up ${userType} real-time subscriptions`);
-      channels.forEach(channel => supabase.removeChannel(channel));
+      channels.forEach((channel) => supabase.removeChannel(channel));
       setRealtimeConnected(false);
     };
   }, [userType, isOpen, onNewNotification]);
@@ -200,7 +221,7 @@ export default function ProfileDropdown({
   // Play notification sound
   const playNotificationSound = () => {
     try {
-      const audio = new Audio('/notification.mp3');
+      const audio = new Audio("/notification.mp3");
       audio.volume = 0.3;
       audio.play().catch(() => {
         // Silently fail if audio doesn't play
@@ -213,18 +234,18 @@ export default function ProfileDropdown({
   if (!isOpen) return null;
 
   // Calculate unread count including real-time notifications
-  const totalUnreadCount = localNotifications.filter(n => !n.read).length;
+  const totalUnreadCount = localNotifications.filter((n) => !n.read).length;
 
   // Get notification icon based on type
   const getNotificationIcon = (type?: string) => {
     switch (type) {
-      case 'repair_request':
+      case "repair_request":
         return <AlertCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />;
-      case 'bid':
+      case "bid":
         return <DollarSign className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />;
-      case 'claim':
+      case "claim":
         return <FileText className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />;
-      case 'update':
+      case "update":
         return <Package className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />;
       default:
         return <Bell className="w-4 h-4 text-gray-600 flex-shrink-0 mt-0.5" />;
@@ -243,16 +264,14 @@ export default function ProfileDropdown({
     }
 
     switch (userType) {
-      case 'shop':
+      case "shop":
         return (
           <div className="flex flex-col gap-1">
             <span>No notifications yet</span>
-            <span className="text-xs text-gray-400">
-              ✓ Watching for new repair requests...
-            </span>
+            <span className="text-xs text-gray-400">✓ Watching for new repair requests...</span>
           </div>
         );
-      case 'customer':
+      case "customer":
         return (
           <div className="flex flex-col gap-1">
             <span>No notifications yet</span>
@@ -261,41 +280,44 @@ export default function ProfileDropdown({
             </span>
           </div>
         );
-      case 'insurer':
+      case "insurer":
         return (
           <div className="flex flex-col gap-1">
             <span>No notifications yet</span>
-            <span className="text-xs text-gray-400">
-              ✓ Watching for new insurance claims...
-            </span>
+            <span className="text-xs text-gray-400">✓ Watching for new insurance claims...</span>
           </div>
         );
       default:
-        return 'No notifications';
+        return "No notifications";
     }
   };
 
   // Handle notification click based on type and user role
   const handleNotificationClick = (notification: Notification) => {
-    if (notification.type === 'repair_request' && userType === 'shop') {
+    if (notification.type === "repair_request" && userType === "shop") {
       onNavigate("dashboard", "requests");
-    } else if (notification.type === 'bid' && userType === 'customer') {
+    } else if (notification.type === "bid" && userType === "customer") {
       onNavigate("dashboard", "bids");
-    } else if (notification.type === 'claim' && userType === 'insurer') {
+    } else if (notification.type === "claim" && userType === "insurer") {
       onNavigate("dashboard", "claims");
     }
   };
 
+  const containerClasses =
+    variant === "embedded"
+      ? "w-full bg-white rounded-xl border border-slate-200 shadow-sm"
+      : "absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50";
+
   return (
-    <div ref={forwardedRef} className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+    <div ref={forwardedRef} className={containerClasses}>
       {/* Profile Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           {/* Profile Picture */}
           {userInfo.profileImage ? (
-            <ImageWithFallback 
-              src={userInfo.profileImage} 
-              alt="Profile" 
+            <ImageWithFallback
+              src={userInfo.profileImage}
+              alt="Profile"
               className="w-12 h-12 rounded-full object-cover"
             />
           ) : (
@@ -372,7 +394,9 @@ export default function ProfileDropdown({
           <div className="mt-3 pt-3 border-t border-orange-100 flex items-center justify-between text-xs">
             <div className="flex items-center gap-1 text-gray-600">
               <TrendingUp className="w-3 h-3 text-green-600" />
-              <span>Revenue this month: <span className="font-semibold text-gray-900">$8,450</span></span>
+              <span>
+                Revenue this month: <span className="font-semibold text-gray-900">$8,450</span>
+              </span>
             </div>
           </div>
         </div>
@@ -406,7 +430,9 @@ export default function ProfileDropdown({
           <div className="mt-3 pt-3 border-t border-purple-100 flex items-center justify-between text-xs">
             <div className="flex items-center gap-1 text-gray-600">
               <Clock className="w-3 h-3 text-blue-600" />
-              <span>Avg response: <span className="font-semibold text-gray-900">2.3 hrs</span></span>
+              <span>
+                Avg response: <span className="font-semibold text-gray-900">2.3 hrs</span>
+              </span>
             </div>
           </div>
         </div>
@@ -419,23 +445,23 @@ export default function ProfileDropdown({
             <span>Notifications</span>
             {/* Real-time indicator for ALL account types */}
             <div className="flex items-center gap-1">
-              <Radio 
-                className={`w-3 h-3 ${realtimeConnected ? 'text-green-500 animate-pulse' : 'text-gray-400'}`}
+              <Radio
+                className={`w-3 h-3 ${realtimeConnected ? "text-green-500 animate-pulse" : "text-gray-400"}`}
               />
-              <span className={`text-xs ${realtimeConnected ? 'text-green-600' : 'text-gray-500'}`}>
-                {realtimeConnected ? 'Live' : 'Offline'}
+              <span className={`text-xs ${realtimeConnected ? "text-green-600" : "text-gray-500"}`}>
+                {realtimeConnected ? "Live" : "Offline"}
               </span>
             </div>
           </div>
           {totalUnreadCount > 0 && (
-            <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5">{totalUnreadCount}</span>
+            <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+              {totalUnreadCount}
+            </span>
           )}
         </div>
         <div className="max-h-48 overflow-y-auto">
           {localNotifications.length === 0 ? (
-            <div className="px-4 py-3 text-sm text-gray-500">
-              {getEmptyStateMessage()}
-            </div>
+            <div className="px-4 py-3 text-sm text-gray-500">{getEmptyStateMessage()}</div>
           ) : (
             localNotifications.slice(0, 5).map((notification) => (
               <div
@@ -470,7 +496,7 @@ export default function ProfileDropdown({
           <Settings className="w-4 h-4 text-gray-500" />
           <span className="text-sm">Account Settings</span>
         </button>
-        
+
         {/* Customer-specific options */}
         {userType === "customer" && (
           <>
@@ -497,7 +523,7 @@ export default function ProfileDropdown({
             </button>
           </>
         )}
-        
+
         {/* Shop-specific options */}
         {userType === "shop" && (
           <>
@@ -517,7 +543,7 @@ export default function ProfileDropdown({
             </button>
           </>
         )}
-        
+
         {/* Insurer-specific options */}
         {userType === "insurer" && (
           <>
@@ -537,7 +563,7 @@ export default function ProfileDropdown({
             </button>
           </>
         )}
-        
+
         <button
           onClick={onLogout}
           className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2 text-red-600"

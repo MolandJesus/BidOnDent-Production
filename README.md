@@ -11,18 +11,21 @@ BidOnDent is a comprehensive web-based marketplace that revolutionizes the auto 
 ### 🎯 The Problem We Solve
 
 **For Customers:**
+
 - 🤷 Difficulty finding trustworthy repair shops
 - 💰 Uncertainty about fair pricing
 - 📱 Time-consuming process of calling multiple shops
 - 📋 No centralized way to track repair quotes
 
 **For Auto Body Shops:**
+
 - 📉 Inconsistent lead generation
 - 🎯 Difficulty reaching customers actively seeking repairs
 - 💼 Manual quote management processes
 - 🤝 Limited visibility to potential customers
 
 **For Insurance Companies:**
+
 - 🏢 Challenges maintaining preferred shop networks
 - 📊 Inefficient claim processing workflows
 - 🔍 Difficulty tracking repair progress
@@ -41,9 +44,19 @@ BidOnDent creates a streamlined digital marketplace where:
 
 ## 🌟 Key Features at a Glance
 
+### Latest UI Updates (February 2026)
+
+- Modernized dashboard layout with tighter spacing and improved visual hierarchy
+- Redesigned bids experience with richer comparison cards and smoother animations
+- Refined 5-step report flow styling and progress behavior
+- Updated account screen to match the newer dashboard design system
+- Improved sidebar/top-right profile menu behavior and demo mode placement
+- Landing page CTA and logo treatment polished for a more app-like feel
+
 ### For Customers 👤
 
 **Damage Reporting Made Easy:**
+
 - **5-step guided workflow** - No confusion, just follow the steps
 - **Photo documentation** - Camera capture or file upload
 - **Vehicle management** - Store multiple vehicles for quick selection
@@ -52,6 +65,7 @@ BidOnDent creates a streamlined digital marketplace where:
 - **Repair tracking** - Monitor status from quote to completion
 
 **User Experience Highlights:**
+
 - Auto-save drafts (never lose your progress)
 - Mobile-optimized camera capture
 - Visual progress indicators
@@ -61,6 +75,7 @@ BidOnDent creates a streamlined digital marketplace where:
 ### For Auto Body Shops 🏪
 
 **Efficient Lead Management:**
+
 - **Real-time request notifications** - Never miss an opportunity
 - **Quick bid submission** - Submit quotes in minutes
 - **Active job tracking** - Manage all ongoing repairs
@@ -68,6 +83,7 @@ BidOnDent creates a streamlined digital marketplace where:
 - **Service area definition** - Target your ideal customers
 
 **Business Tools:**
+
 - Live notification system (<500ms latency)
 - Visual indicators for new requests
 - Professional shop profile pages
@@ -77,6 +93,7 @@ BidOnDent creates a streamlined digital marketplace where:
 ### For Insurance Companies 🛡️
 
 **Streamlined Claim Management:**
+
 - **Partner shop network** - Add and manage preferred shops
 - **Claim creation workflow** - Digital claim filing
 - **Bid approval system** - Review and approve shop quotes
@@ -84,6 +101,7 @@ BidOnDent creates a streamlined digital marketplace where:
 - **Analytics dashboard** - Insights on costs and partnerships
 
 **Network Management:**
+
 - Browse and recruit new partner shops
 - Track partnership performance
 - Manage claim assignments
@@ -94,6 +112,7 @@ BidOnDent creates a streamlined digital marketplace where:
 ## 🧭 Developer Quick Map
 
 **Project structure (most-used paths):**
+
 - `src/main.tsx` - App entry
 - `src/app/App.tsx` - Root app component
 - `src/app/components/` - Feature-based UI components
@@ -112,11 +131,13 @@ BidOnDent creates a streamlined digital marketplace where:
 - `src/assets/` - Images used by UI components
 
 **Configuration keys:**
+
 - Update `clerkPublishableKey` in `utils/clerk/info.tsx`.
 - Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`.
 - `.env.example` is included as a reference if you prefer wiring keys to Vite env later.
 
 **Data persistence:**
+
 - Supabase is the source of truth for profiles, vehicles, reports, and photo URLs.
 - localStorage is cache-only and scoped per user for faster initial loads.
 - Report drafts are stored locally and do not sync across devices.
@@ -128,6 +149,7 @@ BidOnDent creates a streamlined digital marketplace where:
 ### Three Account Types
 
 **1. Customer Account**
+
 ```
 Sign Up → Select "I need repairs" → Access Customer Dashboard
 - Report damage
@@ -138,6 +160,7 @@ Sign Up → Select "I need repairs" → Access Customer Dashboard
 ```
 
 **2. Shop Account**
+
 ```
 Sign Up → Select "I'm a repair shop" → Access Shop Dashboard
 - View repair requests
@@ -148,6 +171,7 @@ Sign Up → Select "I'm a repair shop" → Access Shop Dashboard
 ```
 
 **3. Insurer Account**
+
 ```
 Sign Up → Select "I'm an insurer" → Access Insurer Dashboard
 - Manage partner shops
@@ -170,6 +194,7 @@ One of BidOnDent's unique features is **Demo Mode**, allowing users to instantly
 5. **Exit anytime** - Return to your real account with one click
 
 **Benefits:**
+
 - ✨ **No additional signups** - One account explores everything
 - 🔄 **Instant switching** - Change account types in real-time
 - 📊 **Realistic demo data** - Pre-populated scenarios
@@ -178,6 +203,7 @@ One of BidOnDent's unique features is **Demo Mode**, allowing users to instantly
 - 👁️ **Visual indicator** - Clear banner shows demo mode is active
 
 **Perfect for:**
+
 - Prospective users evaluating the platform
 - Stakeholders understanding all perspectives
 - Demonstrations and presentations
@@ -190,18 +216,21 @@ One of BidOnDent's unique features is **Demo Mode**, allowing users to instantly
 ### Customer Journey: Reporting Damage
 
 **Step 1: Create Account**
+
 ```
 Landing Page → "Get Started Now" → Sign Up with Google/Email
 → Choose "I need repairs" → Enter name & phone → Dashboard
 ```
 
 **Step 2: Add Vehicle (Optional)**
+
 ```
 Dashboard → Vehicles Tab → "Add Vehicle"
 → Enter: Make, Model, Year, License Plate → Upload photo → Save
 ```
 
 **Step 3: Report Damage**
+
 ```
 Dashboard → Home Tab → "Report Damage" → 5-Step Flow:
 
@@ -213,6 +242,7 @@ Dashboard → Home Tab → "Report Damage" → 5-Step Flow:
 ```
 
 **Step 4: Receive & Compare Bids**
+
 ```
 Dashboard → Reports Tab → Select damage report
 → View all shop bids side-by-side
@@ -221,6 +251,7 @@ Dashboard → Reports Tab → Select damage report
 ```
 
 **Step 5: Track Repair**
+
 ```
 Dashboard → Reports Tab → "In Progress" status
 → View shop details, contact info, updates
@@ -230,6 +261,7 @@ Dashboard → Reports Tab → "In Progress" status
 ### Shop Journey: Winning a Bid
 
 **Step 1: Create Shop Account**
+
 ```
 Landing Page → "Get Started Now" → Sign Up
 → Choose "I'm a repair shop" → Setup profile
@@ -237,6 +269,7 @@ Landing Page → "Get Started Now" → Sign Up
 ```
 
 **Step 2: Receive Notification**
+
 ```
 🔔 Real-time notification: "New repair request in your area"
 → Click notification → View damage report
@@ -244,6 +277,7 @@ Landing Page → "Get Started Now" → Sign Up
 ```
 
 **Step 3: Submit Bid**
+
 ```
 Repair Request Detail → "Submit Bid" button
 → Enter: Quote amount, estimated timeline, notes
@@ -252,6 +286,7 @@ Repair Request Detail → "Submit Bid" button
 ```
 
 **Step 4: Win the Job**
+
 ```
 🎉 Notification: "Your bid was accepted!"
 → Dashboard → Active Jobs Tab → New job appears
@@ -260,6 +295,7 @@ Repair Request Detail → "Submit Bid" button
 ```
 
 **Step 5: Complete & Get Paid**
+
 ```
 Active Jobs → Select job → "Mark Complete"
 → Upload completion photos
@@ -270,12 +306,14 @@ Active Jobs → Select job → "Mark Complete"
 ### Insurer Journey: Managing Claims
 
 **Step 1: Create Insurer Account**
+
 ```
 Landing Page → Sign Up → Choose "I'm an insurer"
 → Setup: Company name, contact details
 ```
 
 **Step 2: Build Partner Network**
+
 ```
 Dashboard → Partner Shops Tab → "Browse Shops"
 → Filter: Location, certifications, ratings
@@ -283,6 +321,7 @@ Dashboard → Partner Shops Tab → "Browse Shops"
 ```
 
 **Step 3: Create Insurance Claim**
+
 ```
 Dashboard → Claims Tab → "New Claim"
 → Enter: Policy number, customer info, incident details
@@ -291,6 +330,7 @@ Dashboard → Claims Tab → "New Claim"
 ```
 
 **Step 4: Review Bids & Approve**
+
 ```
 Claims Tab → Select claim → View shop bids
 → Compare: Estimates, shop credentials, timeline
@@ -299,6 +339,7 @@ Claims Tab → Select claim → View shop bids
 ```
 
 **Step 5: Track to Completion**
+
 ```
 Claims Tab → "In Progress" claims
 → Monitor: Status updates, milestones, costs
@@ -318,10 +359,12 @@ Use the setup guide for a clean, step-by-step local install:
 ## 🏗️ Architecture Overview
 
 ### Authentication & User Management
+
 - **Clerk** - Complete authentication system (sign up, login, OAuth)
 - User profiles stored in Clerk metadata (name, phone, account type)
 
 ### Data Storage
+
 - **Supabase** - PostgreSQL database for application data
   - Vehicles
   - Damage reports
@@ -333,6 +376,7 @@ Use the setup guide for a clean, step-by-step local install:
   - Damage report photos
 
 ### Key Features
+
 - **Multi-User System**: 3 account types (Customer, Shop, Insurer)
 - **Demo Mode**: Switch between account types without creating new accounts
 - **5-Step Damage Reporting**: Guided flow with photo uploads
@@ -415,12 +459,14 @@ All documentation lives in the docs folder:
 Demo Mode allows users to experience all three account types without creating multiple accounts:
 
 ### How to Use
+
 1. **Enable**: Click your profile → "Switch Demo Account"
 2. **Choose Type**: Customer, Shop, or Insurer
 3. **Explore**: Full functionality with demo data
 4. **Exit**: Return to your real account anytime
 
 ### Features
+
 - Real-time account type switching
 - Persistent demo data
 - Dynamic navigation tabs
@@ -439,6 +485,7 @@ To stay within Supabase's free tier limits, we use **extremely aggressive compre
 - **Format**: JPEG with optimized encoding
 
 ### Storage Management
+
 - **Built-in Monitor**: Real-time storage usage tracking
 - **Automatic Cleanup**: Endpoints for removing old images
 - **User Limits**: Per-user storage quotas
@@ -449,20 +496,23 @@ To stay within Supabase's free tier limits, we use **extremely aggressive compre
 ## 🧪 Testing
 
 ### Manual Testing
+
 ```bash
 npm run dev
 ```
 
 ### Test Accounts
+
 - **Demo Mode**: Use the demo switcher for all account types
 
 ### Browser Console Tools
+
 ```javascript
 // Check current session
-window.checkBidondentSession()
+window.checkBidondentSession();
 
 // Clear session data
-window.clearBidondentSession()
+window.clearBidondentSession();
 
 // Use demo mode to test multiple account types
 ```
@@ -472,20 +522,24 @@ window.clearBidondentSession()
 ## 🚀 Deployment
 
 ### Prerequisites
+
 - Clerk account with publishable key
 - Supabase project with database and storage
 - Node.js 18+ runtime
 
 ### Configuration Keys
+
 - `utils/clerk/info.tsx` → `clerkPublishableKey`
 - `utils/supabase/info.tsx` → `projectId`, `publicAnonKey`
 
 ### Build
+
 ```bash
 npm run build
 ```
 
 ### Deploy
+
 Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 
 ---
@@ -493,6 +547,7 @@ Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **React 18** - UI framework
 - **TypeScript** - Type safety
 - **Tailwind CSS v4** - Styling
@@ -500,6 +555,7 @@ Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 - **Lucide React** - Icons
 
 ### Backend & Services
+
 - **Clerk** - Authentication & user management
 - **Supabase** - Database & storage
   - PostgreSQL database
@@ -508,6 +564,7 @@ Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 - **Hono** - Edge function router
 
 ### Libraries
+
 - **@clerk/clerk-react** - Clerk integration
 - **@supabase/supabase-js** - Supabase client
 - **react-slick** - Carousels
@@ -518,6 +575,7 @@ Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 ## 📊 Current Status
 
 ✅ **Production Ready Features:**
+
 - Clerk authentication fully integrated
 - Multi-user dashboard system
 - 5-step damage reporting with photo uploads
@@ -528,6 +586,7 @@ Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 - Real-time notifications
 
 🚧 **In Development:**
+
 - Shop discovery and filtering
 - Insurance claim integration
 - Payment processing

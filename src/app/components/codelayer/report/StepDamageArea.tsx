@@ -1,4 +1,5 @@
 import { ImageWithFallback } from "../../figma/ImageWithFallback";
+import { ChevronRight, MapPin } from "lucide-react";
 
 type DamageArea = {
   id: string;
@@ -20,50 +21,55 @@ export default function StepDamageArea({
   damageArea,
   onSelectDamageArea,
   onBack,
-  onContinue
+  onContinue,
 }: StepDamageAreaProps) {
   return (
-    <div className="px-4 py-5">
-      <h2 className="text-xl font-bold mb-6">Select Damaged Areas</h2>
-      <p className="text-gray-600 mb-6">Tap the areas of your vehicle that are damaged.</p>
+    <div className="px-4 md:px-6 py-4 md:py-4">
+      <h2 className="text-2xl font-semibold text-slate-900 mb-1">Where is the damage?</h2>
+      <p className="text-slate-600 mb-6">Choose the area that best matches what you see.</p>
 
-      <div className="relative mb-8 bg-gray-100 rounded-lg overflow-hidden max-w-md mx-auto md:max-w-sm">
+      <div className="relative mb-6 bg-slate-100 rounded-xl overflow-hidden max-w-md mx-auto md:max-w-sm border border-slate-200">
         <ImageWithFallback
           src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
           alt="Car diagram"
           className="w-full aspect-[4/3] object-cover"
         />
-
-        <div className="grid grid-cols-3 gap-2 mt-4">
-          {damageAreas.map((area) => (
-            <button
-              key={area.id}
-              className={`py-2 px-3 text-sm border rounded-md ${
-                damageArea === area.id
-                  ? "bg-blue-100 border-blue-500 text-blue-700"
-                  : "bg-white border-gray-300 text-gray-700"
-              }`}
-              onClick={() => onSelectDamageArea(area.id)}
-            >
-              {area.label}
-            </button>
-          ))}
+        <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-medium inline-flex items-center gap-1.5">
+          <MapPin className="w-3.5 h-3.5" />
+          Select one area
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
+        {damageAreas.map((area) => (
+          <button
+            key={area.id}
+            className={`py-2.5 px-3 text-sm border rounded-lg font-medium transition-all ${
+              damageArea === area.id
+                ? "bg-blue-50 border-blue-400 text-blue-700 shadow-sm"
+                : "bg-white border-slate-300 text-slate-700 hover:border-slate-400"
+            }`}
+            onClick={() => onSelectDamageArea(area.id)}
+          >
+            {area.label}
+          </button>
+        ))}
       </div>
 
       <div className="flex space-x-3">
         <button
           onClick={onBack}
-          className="flex-1 py-2 px-4 border border-gray-300 rounded-md font-medium"
+          className="flex-1 py-2.5 px-4 border border-slate-300 rounded-xl font-medium hover:bg-slate-50 transition-colors"
         >
           Back
         </button>
         <button
           onClick={onContinue}
-          className="flex-1 py-2 px-4 rounded-md text-white font-medium"
-          style={{ backgroundColor: primaryColor }}
+          className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
         >
           Continue
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     </div>

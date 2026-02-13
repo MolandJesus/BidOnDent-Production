@@ -5,6 +5,7 @@ This directory contains legacy screen components that are still actively used in
 ## ⚠️ Important
 
 **Do NOT delete this directory** - These components are imported and used by:
+
 - `/src/app/routers/DashboardRouter.tsx`
 - Various screen components
 
@@ -13,39 +14,42 @@ This directory contains legacy screen components that are still actively used in
 ### Active Components (In Use)
 
 **HomeScreen.tsx**
+
 - Customer/Shop/Insurer dashboard home screen
 - Shows contextual stats and quick actions
 - Imported by: `DashboardRouter.tsx`
 
 **ReportScreen.tsx**
+
 - 5-step damage reporting flow
 - Handles vehicle selection, photo upload, description
 - Imported by: `DashboardRouter.tsx`
 
 **ReportScreen subcomponents**
+
 - Extracted into `codelayer/report/` for maintainability
 
 **BidsScreen.tsx**
+
 - Displays received bids for damage reports
 - Allows bid comparison and shop selection
 - Imported by: `DashboardRouter.tsx`
 
 **AccountScreen.tsx**
+
 - User account settings and profile management
 - Password change, profile photo upload
 - Imported by: `DashboardRouter.tsx`
 
 **AccountScreen subcomponents**
+
 - Extracted into `codelayer/account/` for maintainability
 
 **ImageWithFallback.tsx**
+
 - Image component with error handling and fallback
 - Used by multiple screen components
 - Imported by: Various screens in `/src/app/components/`
-
-### Unused Components (Safe to Remove)
-
-**AppLayout.tsx** - Not currently imported anywhere
 
 ## 🔄 Organization Notes
 
@@ -60,5 +64,5 @@ These components live in `src/app/components/codelayer` to keep legacy screens g
 
 ---
 
-**Last Updated**: February 8, 2026  
+**Last Updated**: February 13, 2026  
 **Status**: Active (In Production Use)
