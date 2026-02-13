@@ -1,6 +1,7 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, CheckCircle, Star, Play } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
+import { useEffect, useState } from "react";
 
 interface HeroSectionProps {
   heroImage: string;
@@ -21,8 +22,15 @@ export default function HeroSection({
   isLoggedIn,
   userType,
   onGetStarted,
-  onLearnMore
+  onLearnMore,
 }: HeroSectionProps) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const getButtonText = () => {
     if (isLoggedIn) {
       if (userType === "customer") return "Start New Report";
@@ -34,24 +42,52 @@ export default function HeroSection({
   };
 
   return (
-    <section className="pt-32 pb-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <section className="pt-32 pb-20 bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden relative">
+      {/* Decorative background blobs */}
+      <div className="absolute top-20 right-0 w-72 h-72 bg-blue-100 rounded-full opacity-20 blur-3xl animate-blob" />
+      <div
+        className="absolute bottom-10 left-0 w-96 h-96 bg-blue-200 rounded-full opacity-15 blur-3xl animate-blob"
+        style={{ animationDelay: "4s" }}
+      />
+
+      <div className="container mx-auto px-4 max-w-7xl relative">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="md:w-1/2 space-y-6">
+            {/* Trusted badge */}
+            <div
+              className={`transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
+            >
+              <span className="inline-flex items-center px-4 py-2 rounded-full bg-green-50 border border-green-200 text-green-700 text-sm font-medium">
+                <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
+                Trusted by 10,000+ customers
+              </span>
+            </div>
+
             {/* Main Content */}
             <div className="space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+              <h2
+                className={`text-3xl md:text-5xl font-bold leading-tight transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                style={{ transitionDelay: "0.2s" }}
+              >
                 <span className="text-gray-800">Get the </span>
-                <span style={{ color: '#002a5c' }}>Best Price</span>
+                <span style={{ color: "#002a5c" }}>Best Price</span>
                 <span className="text-gray-800"> on Your </span>
-                <span style={{ color: '#2b8abf' }}>Auto Body Repair</span>
+                <br />
+                <span style={{ color: "#2b8abf" }}>Auto Body Repair</span>
               </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Compare competitive bids from trusted local shops and choose the solution that works best for you.
+              <p
+                className={`text-lg text-gray-600 leading-relaxed transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                style={{ transitionDelay: "0.35s" }}
+              >
+                Compare competitive bids from trusted local shops and choose the solution that works
+                best for you.
               </p>
-              <div className="space-y-3 pt-2">
+              <div
+                className={`space-y-3 pt-2 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                style={{ transitionDelay: "0.5s" }}
+              >
                 <p className="text-base text-gray-700 leading-relaxed flex items-start">
-                  <span 
+                  <span
                     className="mr-3 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-sm mt-0.5"
                     style={{ backgroundColor: primaryColor }}
                   >
@@ -60,16 +96,19 @@ export default function HeroSection({
                   <span>Connect with trusted local auto body collision repair shops</span>
                 </p>
                 <p className="text-base text-gray-700 leading-relaxed flex items-start">
-                  <span 
+                  <span
                     className="mr-3 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-sm mt-0.5"
                     style={{ backgroundColor: primaryColor }}
                   >
                     ✓
                   </span>
-                  <span>Obtain competitive bids for repairs in your area, with or without an insurance claim</span>
+                  <span>
+                    Obtain competitive bids for repairs in your area, with or without an insurance
+                    claim
+                  </span>
                 </p>
                 <p className="text-base text-gray-700 leading-relaxed flex items-start">
-                  <span 
+                  <span
                     className="mr-3 flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-sm mt-0.5"
                     style={{ backgroundColor: primaryColor }}
                   >
@@ -79,37 +118,99 @@ export default function HeroSection({
                 </p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button 
+
+            {/* CTA Buttons */}
+            <div
+              className={`flex flex-col sm:flex-row gap-4 pt-4 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              style={{ transitionDelay: "0.65s" }}
+            >
+              <button
                 onClick={onGetStarted}
-                className="px-8 py-4 rounded-lg text-white font-semibold text-lg hover:opacity-90 transition-all inline-flex items-center justify-center shadow-lg hover:shadow-xl"
+                className="px-8 py-4 rounded-xl text-white font-semibold text-lg transition-all duration-300 inline-flex items-center justify-center shadow-lg hover:shadow-2xl hover:-translate-y-1 active:scale-[0.97] hover:brightness-110"
                 style={{ backgroundColor: primaryColor }}
               >
                 {getButtonText()}
                 <ChevronRight className="ml-2 w-5 h-5" />
               </button>
-              <button 
+              <button
                 onClick={onLearnMore}
-                className="px-8 py-4 rounded-lg border-2 font-semibold text-lg hover:bg-gray-50 transition-all duration-300 inline-flex items-center justify-center hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
+                className="px-8 py-4 rounded-xl border-2 font-semibold text-lg hover:bg-gray-50 transition-all duration-300 inline-flex items-center justify-center hover:shadow-lg hover:-translate-y-1 active:scale-[0.97] gap-2"
                 style={{ borderColor: primaryColor, color: primaryColor }}
               >
+                <Play className="w-4 h-4 fill-current" />
                 Learn More
               </button>
             </div>
+
+            {/* Review avatars & rating */}
+            <div
+              className={`flex items-center gap-3 pt-2 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              style={{ transitionDelay: "0.9s" }}
+            >
+              <div className="flex -space-x-2">
+                {["A", "B", "C", "D"].map((letter, i) => (
+                  <div
+                    key={letter}
+                    className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm"
+                    style={{
+                      backgroundColor: ["#1e40af", "#059669", "#d97706", "#7c3aed"][i],
+                      zIndex: 4 - i,
+                    }}
+                  >
+                    {letter}
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-4 h-4 text-gray-300" />
+                ))}
+              </div>
+              <span className="text-sm text-gray-600 font-medium">4.9/5 from 2,000+ reviews</span>
+            </div>
           </div>
-          
-          <div className="md:w-1/2">
+
+          {/* Hero Image with floating elements */}
+          <div
+            className={`md:w-1/2 relative transition-all duration-1000 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-12"}`}
+            style={{ transitionDelay: "0.3s" }}
+          >
             <ImageErrorBoundary>
-              <ImageWithFallback 
-                src={heroImage} 
-                alt="Professional auto body repair service - Precision dent removal and paintless dent repair" 
-                className="rounded-2xl shadow-2xl w-full h-auto object-cover hover:shadow-3xl transition-shadow"
+              <ImageWithFallback
+                src={heroImage}
+                alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
+                className="rounded-2xl shadow-2xl w-full h-auto object-cover"
                 style={{
-                  aspectRatio: '16/10',
-                  maxHeight: '600px'
+                  aspectRatio: "16/10",
+                  maxHeight: "600px",
                 }}
               />
             </ImageErrorBoundary>
+
+            {/* Floating "500+ Partner Shops" badge */}
+            <div
+              className={`absolute -top-2 -right-2 md:top-4 md:-right-6 bg-white rounded-xl shadow-lg px-4 py-3 animate-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}
+              style={{ transitionDelay: "1.2s" }}
+            >
+              <div className="text-2xl font-bold" style={{ color: primaryColor }}>
+                500+
+              </div>
+              <div className="text-xs text-gray-500 font-medium">Partner Shops</div>
+            </div>
+
+            {/* Floating notification card */}
+            <div
+              className={`absolute bottom-4 left-0 md:-left-6 md:bottom-8 bg-white rounded-xl shadow-xl px-4 py-3 flex items-center gap-3 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}
+              style={{ transitionDelay: "1.6s", animationDelay: "1s" }}
+            >
+              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-6 h-6 text-green-500" />
+              </div>
+              <div>
+                <div className="font-semibold text-sm text-gray-800">Repair Completed!</div>
+                <div className="text-xs text-gray-500">Saved $1,240 on repair costs</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
