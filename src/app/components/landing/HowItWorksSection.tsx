@@ -1,4 +1,4 @@
-import { Camera, FileCheck, Wrench, ArrowRight } from "lucide-react";
+import { Camera, FileCheck, Wrench } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 
 interface HowItWorksSectionProps {
@@ -37,7 +37,7 @@ export default function HowItWorksSection({
   ];
 
   return (
-    <section id="how-it-works" className="py-20 bg-gray-50" ref={sectionRef}>
+    <section id="how-it-works" className="pt-20 pb-8 md:pb-12 bg-gray-50" ref={sectionRef}>
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Section badge */}
         <div
@@ -86,7 +86,7 @@ export default function HowItWorksSection({
               <div className="mb-4">
                 <span
                   className="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold"
-                  style={{ backgroundColor: '#22c55e' }}
+                  style={{ backgroundColor: "#22c55e" }}
                 >
                   {step.number}
                 </span>
@@ -96,24 +96,6 @@ export default function HowItWorksSection({
               <p className="text-gray-600 leading-relaxed">{step.description}</p>
             </div>
           ))}
-        </div>
-
-        {/* Watch how it works button */}
-        <div
-          className={`text-center mt-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-          style={{ transitionDelay: "0.8s" }}
-        >
-          <button
-            className="inline-flex items-center gap-3 px-7 py-3.5 rounded-full bg-white border border-gray-200 text-gray-700 font-medium hover:border-blue-300 hover:text-blue-600 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 group"
-            onClick={() =>
-              document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })
-            }
-          >
-            Watch how it works
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 text-white group-hover:bg-blue-600 transition-colors duration-300">
-              <ArrowRight className="w-4 h-4" />
-            </span>
-          </button>
         </div>
       </div>
     </section>
