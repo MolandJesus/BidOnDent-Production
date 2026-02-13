@@ -27,7 +27,7 @@ interface DashboardRouterProps {
   // Navigation state
   viewMode: string;
   currentTab: string;
-  
+
   // User data
   userType: "customer" | "shop" | "insurer";
   userInfo: {
@@ -43,14 +43,19 @@ interface DashboardRouterProps {
   selectedReportId: string | null;
   demoMode?: boolean;
   originalAccountType?: "customer" | "shop" | "insurer" | null;
-  
+
   // Styling
   primaryColor: string;
   secondaryColor: string;
-  
+
   // Handlers
   onStartReport: () => void;
-  onSubmitBid: (reportId: string, bidAmount: number, estimatedDays: number, description: string) => void;
+  onSubmitBid: (
+    reportId: string,
+    bidAmount: number,
+    estimatedDays: number,
+    description: string
+  ) => void;
   onViewAllReports: () => void;
   onConnectInsurance: () => void;
   onViewLikedShops: () => void;
@@ -69,9 +74,14 @@ interface DashboardRouterProps {
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: "customer" | "shop" | "insurer") => void;
   onExitDemoMode?: () => void;
-  
+
   // Account-specific handlers
-  onProfileUpdate: (info: { name: string; email: string; phone?: string; profileImage?: string }) => void;
+  onProfileUpdate: (info: {
+    name: string;
+    email: string;
+    phone?: string;
+    profileImage?: string;
+  }) => void;
   onPasswordChange: (passwords: { current: string; new: string }) => void;
   onDeleteAccount: () => void;
   onSaveVehicles: (vehicles: any[]) => void;
@@ -121,16 +131,15 @@ export default function DashboardRouter({
   onPhotoGuideComplete,
   onReportSubmit,
   demoMode,
-  originalAccountType
+  originalAccountType,
 }: DashboardRouterProps) {
-  
   // Scroll to top whenever view changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [viewMode, currentTab]);
-  
+
   return (
-    <div className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className="w-full">
       <AnimatePresence mode="wait">
         {/* Dashboard Home Screen */}
         {viewMode === "dashboard" && currentTab === "home" && (
@@ -141,12 +150,29 @@ export default function DashboardRouter({
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
           >
-            <HomeScreen 
-              userType={userType} 
+            <HomeScreen
+              userType={userType}
+              userInfo={userInfo}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
               onStartReport={onStartReport}
               onViewAllReports={onViewAllReports}
+              onOpenReport={(reportId) => {
+                if (userType === "customer") {
+                  onSelectReport(reportId);
+                  onViewModeChange("report-detail");
+                  return;
+                }
+
+                if (userType === "shop") {
+                  onTabChange("requests");
+                  onViewModeChange("dashboard");
+                  return;
+                }
+
+                onTabChange("claims");
+                onViewModeChange("dashboard");
+              }}
               onConnectInsurance={onConnectInsurance}
               onViewLikedShops={onViewLikedShops}
               onViewBids={onViewBids}
@@ -164,17 +190,17 @@ export default function DashboardRouter({
               reports={
                 // For shops and insurers, show seed reports (available requests/claims)
                 // For customers, show only their own reports
-                userType === 'shop' || userType === 'insurer'
+                userType === "shop" || userType === "insurer"
                   ? SEED_DAMAGE_REPORTS
-                  : reports.map(report => ({
+                  : reports.map((report) => ({
                       ...report,
-                      photos: photoStorage[report.id] || []
+                      photos: photoStorage[report.id] || [],
                     }))
               }
             />
           </motion.div>
         )}
-        
+
         {/* Customer: Report Screen */}
         {viewMode === "dashboard" && currentTab === "report" && userType === "customer" && (
           <motion.div
@@ -203,7 +229,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Customer: Bids Screen */}
         {viewMode === "dashboard" && currentTab === "bids" && userType === "customer" && (
           <motion.div
@@ -223,7 +249,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Shop: Requests Screen */}
         {viewMode === "dashboard" && currentTab === "requests" && userType === "shop" && (
           <motion.div
@@ -237,7 +263,7 @@ export default function DashboardRouter({
               primaryColor={primaryColor}
               onSubmitBid={(requestId, bidAmount) => {
                 // Find the report to get more details
-                const report = reports.find(r => r.id === requestId.toString());
+                const report = reports.find((r) => r.id === requestId.toString());
                 if (report) {
                   // Call the bid submission handler with all required parameters
                   // For now, using default values for estimated days and description
@@ -252,7 +278,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Shop: Active Jobs Screen */}
         {viewMode === "dashboard" && currentTab === "jobs" && userType === "shop" && (
           <motion.div
@@ -262,12 +288,10 @@ export default function DashboardRouter({
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
           >
-            <ShopActiveJobsScreen
-              primaryColor={primaryColor}
-            />
+            <ShopActiveJobsScreen primaryColor={primaryColor} />
           </motion.div>
         )}
-        
+
         {/* Insurer: Claims Screen */}
         {viewMode === "dashboard" && currentTab === "claims" && userType === "insurer" && (
           <motion.div
@@ -277,12 +301,10 @@ export default function DashboardRouter({
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
           >
-            <InsurerClaimsScreen
-              primaryColor={primaryColor}
-            />
+            <InsurerClaimsScreen primaryColor={primaryColor} />
           </motion.div>
         )}
-        
+
         {/* Insurer: Partner Shops Screen */}
         {viewMode === "dashboard" && currentTab === "shops" && userType === "insurer" && (
           <motion.div
@@ -292,12 +314,10 @@ export default function DashboardRouter({
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
           >
-            <InsurerPartnerShopsScreen
-              primaryColor={primaryColor}
-            />
+            <InsurerPartnerShopsScreen primaryColor={primaryColor} />
           </motion.div>
         )}
-        
+
         {/* Account Screen (All Users) */}
         {viewMode === "dashboard" && currentTab === "account" && (
           <motion.div
@@ -323,7 +343,7 @@ export default function DashboardRouter({
                   name: data.name,
                   email: data.email,
                   phone: data.phone,
-                  profileImage: data.profileImage  // Use new profile image directly
+                  profileImage: data.profileImage, // Use new profile image directly
                 });
               }}
               onViewVehicles={() => {
@@ -340,7 +360,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Reports List Screen */}
         {viewMode === "reports-list" && (
           <motion.div
@@ -351,9 +371,9 @@ export default function DashboardRouter({
             transition={{ duration: 0.2 }}
           >
             <ReportsListScreen
-              reports={reports.map(report => ({
+              reports={reports.map((report) => ({
                 ...report,
-                photos: photoStorage[report.id] || report.photos || []
+                photos: photoStorage[report.id] || report.photos || [],
               }))}
               onBack={() => onViewModeChange("dashboard")}
               onSelectReport={(reportId) => {
@@ -364,7 +384,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Report Detail Screen */}
         {viewMode === "report-detail" && selectedReportId && (
           <motion.div
@@ -376,8 +396,11 @@ export default function DashboardRouter({
           >
             <ReportDetailScreen
               report={{
-                ...reports.find(r => r.id === selectedReportId)!,
-                photos: photoStorage[selectedReportId] || reports.find(r => r.id === selectedReportId)?.photos || []
+                ...reports.find((r) => r.id === selectedReportId)!,
+                photos:
+                  photoStorage[selectedReportId] ||
+                  reports.find((r) => r.id === selectedReportId)?.photos ||
+                  [],
               }}
               onBack={() => onViewModeChange("reports-list")}
               primaryColor={primaryColor}
@@ -396,7 +419,7 @@ export default function DashboardRouter({
             <SmokeTestScreen primaryColor={primaryColor} />
           </motion.div>
         )}
-        
+
         {/* Insurer Connect Screen */}
         {viewMode === "insurer-connect" && (
           <motion.div
@@ -413,7 +436,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Liked Shops Screen */}
         {viewMode === "liked-shops" && (
           <motion.div
@@ -430,7 +453,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Vehicles Screen */}
         {viewMode === "vehicles" && (
           <motion.div
@@ -448,7 +471,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Shop Directory Screen */}
         {viewMode === "shop-directory" && (
           <motion.div
@@ -465,7 +488,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Insurer New Claim Screen */}
         {viewMode === "new-claim" && userType === "insurer" && (
           <motion.div
@@ -481,7 +504,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Insurance Companies Screen */}
         {viewMode === "insurance-companies" && (
           <motion.div
@@ -499,7 +522,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Competitor Analysis Screen */}
         {viewMode === "competitor-analysis" && (
           <motion.div
@@ -516,7 +539,7 @@ export default function DashboardRouter({
             />
           </motion.div>
         )}
-        
+
         {/* Demo Account Switcher */}
         {viewMode === "demo-switcher" && (
           <motion.div

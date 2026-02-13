@@ -16,23 +16,30 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
           className={`grid md:grid-cols-4 gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <div>
-          <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-white mb-4 inline-flex">
-            <Car className="w-5 h-5" style={{ color: primaryColor }} />
-            <h3 className="text-lg font-bold">
+            <div className="flex items-center gap-2.5 px-3 py-2 rounded-full bg-white mb-4 inline-flex shadow-sm">
               <span
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
                 }}
               >
-                Bid
+                <Car className="w-4 h-4" />
               </span>
-              <span style={{ color: "#70c0ee" }}>On</span>
-              <span className="text-gray-800">Dent</span>
-            </h3>
-          </div>
+              <h3 className="text-lg font-bold">
+                <span
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  Bid
+                </span>
+                <span style={{ color: "#70c0ee" }}>On</span>
+                <span className="text-gray-800">Dent</span>
+              </h3>
+            </div>
             <p className="text-gray-400 mb-4">
               The smart way to handle auto repairs. Connect with trusted shops, compare bids, and
               get your car fixed with confidence.

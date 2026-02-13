@@ -1,7 +1,7 @@
 # Project Status - BidOnDent
 
-**Last Updated**: February 10, 2026  
-**Version**: 4.0 (Complete Three-Sided Marketplace)  
+**Last Updated**: February 13, 2026  
+**Version**: 4.1 (Modernized Dashboard UX)  
 **Status**: ✅ Production Ready with Demo Mode
 
 ---
@@ -14,7 +14,19 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 
 ## ✅ Completed Features
 
+### February 2026 UX Refresh
+
+- ✅ Landing page CTA and branding polish (header/footer logo treatment updates)
+- ✅ Dashboard visual refresh (card hierarchy, compact spacing, mobile-first alignment)
+- ✅ Bids screen redesign with richer card UI and motion-based interactions
+- ✅ Report flow redesign with updated step framing and progress behavior polish
+- ✅ Account screen redesign aligned with dashboard visual language
+- ✅ Demo mode entry moved to sidebar nav for cleaner dashboard composition
+- ✅ Sidebar profile panel behavior improvements (toggle + inline panel placement)
+- ✅ Top-right profile menu restored with simplified quick actions
+
 ### Core Marketplace Functionality
+
 - ✅ **Complete three-sided marketplace** (Customer, Shop, Insurer)
 - ✅ 5-step damage reporting flow with photo uploads
 - ✅ Camera capture integration for damage photos
@@ -29,6 +41,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ Responsive navigation (desktop tabs + mobile bottom nav)
 
 ### Authentication & User Management (Clerk)
+
 - ✅ Clerk authentication (email/password)
 - ✅ Google OAuth integration
 - ✅ User profile in Clerk metadata (name, phone, account_type)
@@ -38,6 +51,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ Secure sign-out
 
 ### Data Storage (Supabase)
+
 - ✅ PostgreSQL database with complete schema
   - Profiles (optional sync from Clerk)
   - Vehicles
@@ -56,6 +70,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ Row Level Security (RLS) policies on all tables
 
 ### Real-Time Notifications System
+
 - ✅ **Universal notifications dropdown** in profile menu
 - ✅ **Live badge counts** showing unread notifications
 - ✅ **Account-specific notifications**:
@@ -69,6 +84,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ **Persistent storage**: Notifications survive page refresh
 
 ### Demo Mode System
+
 - ✅ **Real-time account switching** without sign-out
 - ✅ Switch between Customer, Shop, and Insurer
 - ✅ Full functionality preservation during demo
@@ -79,6 +95,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ No additional signups required
 
 ### Storage Management & Optimization
+
 - ✅ **Extremely aggressive image compression**
   - 800px max dimensions
   - 50% JPEG quality
@@ -89,12 +106,12 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
   - Total project usage display
   - Visual progress bars
   - Free tier limit warnings
--- ✅ **Automatic cleanup system**
+    -- ✅ **Automatic cleanup system**
   - Cleanup endpoints
   - Batch deletion support
   - Orphaned file detection
   - Storage reclamation
--- ✅ **StorageMonitor component**
+    -- ✅ **StorageMonitor component**
   - Dev tool for monitoring
   - Live usage statistics
   - User-level breakdowns
@@ -104,9 +121,11 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
   - Cache is scoped by user email to prevent cross-account bleed
 
 ### Smoke Testing
+
 - ✅ In-app smoke test checklist available from the Smoke Test tab
 
 ### Design & UX
+
 - ✅ Deep royal blue (#003d82) color scheme
 - ✅ Professional auto repair imagery (Unsplash)
 - ✅ Motion animations for smooth interactions
@@ -118,6 +137,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 - ✅ Toast notifications (Sonner)
 
 ### Architecture
+
 - ✅ **React 18** with TypeScript
 - ✅ **Vite** build system
 - ✅ **Tailwind CSS v4** styling
@@ -143,6 +163,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 ## 🏗️ Architecture Highlights
 
 ### Complete Dashboard System
+
 ```
 Customer Dashboard
   ├── Home (report damage, view stats)
@@ -165,6 +186,7 @@ Insurer Dashboard
 ```
 
 ### Real-Time Notification Flow
+
 ```
 Database Change (INSERT)
   ↓
@@ -180,6 +202,7 @@ UI Reflects New Notification
 ```
 
 ### Authentication Flow
+
 ```
 User Sign Up/In (Clerk)
   ↓
@@ -195,6 +218,7 @@ Dashboard Access
 ```
 
 ### Demo Mode Flow
+
 ```
 Logged In User
   ↓
@@ -212,6 +236,7 @@ Return to Real Account
 ```
 
 ### Image Upload Flow
+
 ```
 User Selects Photo
   ↓
@@ -234,6 +259,7 @@ Storage Monitor Updated
 ## 📁 Key File Structure
 
 ### Dashboard & Routing
+
 ```
 /src/app/
 ├── routers/
@@ -260,7 +286,13 @@ Storage Monitor Updated
     └── RealtimeBidService.ts # Real-time subscriptions
 ```
 
+### Code Organization Cleanup
+
+- ✅ Removed unused `src/app/components/codelayer/AppLayout.tsx`
+- ✅ Standardized formatting in actively modified dashboard/landing/report/account files
+
 ### Authentication & User Management
+
 ```
 /src/app/
 ├── services/
@@ -281,6 +313,7 @@ Storage Monitor Updated
 ```
 
 ### Storage & Images
+
 ```
 /src/app/
 ├── utils/
@@ -294,6 +327,7 @@ Storage Monitor Updated
 ```
 
 ### Backend (Supabase Edge Functions)
+
 ```
 /supabase/functions/server/
 ├── index.tsx                     # Main Hono server
@@ -307,10 +341,12 @@ Storage Monitor Updated
 ## 🧪 Testing Approach
 
 ### Manual Testing
+
 - Demo mode: Use account switcher for all types
 - Browser console tools: `window.checkBidondentSession()`
 
 ### Test Scenarios Verified
+
 - ✅ Sign up flow for all account types
 - ✅ Google OAuth sign-in
 - ✅ Account type selection and setup
@@ -328,6 +364,7 @@ Storage Monitor Updated
 ## 🚀 Production Readiness
 
 ### ✅ Ready for Production
+
 - Clerk authentication fully implemented
 - Complete database schema with RLS
 - Storage buckets configured
@@ -341,6 +378,7 @@ Storage Monitor Updated
 - Notifications persist across sessions
 
 ### ⚠️ Before Production Deploy
+
 - [ ] Configure Clerk production keys
 - [ ] Set up Supabase production project
 - [ ] Configure custom domain for Clerk
@@ -357,6 +395,7 @@ Storage Monitor Updated
 ## 🔮 Future Enhancements (Not Implemented)
 
 ### Potential Features
+
 - ⏳ Payment processing integration
 - ⏳ Shop ratings and reviews system (UI exists, backend needed)
 - ⏳ Advanced analytics dashboard
@@ -369,6 +408,7 @@ Storage Monitor Updated
 - ⏳ Automated bid matching
 
 ### Technical Improvements
+
 - ⏳ Automated testing suite (Jest, React Testing Library)
 - ⏳ E2E tests (Playwright/Cypress)
 - ⏳ Performance monitoring (Lighthouse CI)
@@ -381,6 +421,7 @@ Storage Monitor Updated
 ## 📚 Documentation Files
 
 ### Essential Documentation
+
 - ✅ **README.md** - Project overview and features
 - ✅ **PROJECT_STATUS.md** - This file (current status)
 - ✅ **GETTING_STARTED.md** - Local setup and first login
@@ -393,6 +434,7 @@ Storage Monitor Updated
 ## 🎯 Current Development Status
 
 ### Completed
+
 - ✅ Three-sided marketplace fully functional
 - ✅ Real-time notifications for all account types
 - ✅ Demo mode switcher complete
@@ -405,6 +447,7 @@ Storage Monitor Updated
 - ✅ In-app smoke test checklist
 
 ### Ready for Next Phase
+
 - Production deployment preparation
 - User acceptance testing
 - Performance monitoring setup
@@ -415,6 +458,7 @@ Storage Monitor Updated
 ## 📊 System Metrics
 
 ### Performance
+
 - **First Load**: < 2s
 - **Navigation**: Instant (client-side routing)
 - **Image Upload**: < 3s per photo
@@ -422,11 +466,13 @@ Storage Monitor Updated
 - **Notification Latency**: < 500ms
 
 ### Storage Efficiency
+
 - **Image Compression**: 90%+ reduction
 - **Free Tier Viable**: 100+ test users supported
 - **Average Photo**: ~50-200KB (from 5MB+ originals)
 
 ### Real-Time Performance
+
 - **WebSocket Connection**: < 100ms
 - **Notification Delivery**: < 500ms
 - **Badge Update**: Instant (<50ms)
@@ -437,18 +483,21 @@ Storage Monitor Updated
 ## 🔐 Security
 
 ### Authentication
+
 - ✅ Clerk-managed secure auth
 - ✅ HTTPS-only in production
 - ✅ CSRF protection built-in
 - ✅ XSS prevention (React escaping)
 
 ### Database
+
 - ✅ Row Level Security (RLS) enabled on all tables
 - ✅ User-scoped queries
 - ✅ SQL injection prevention
 - ✅ Prepared statements
 
 ### Storage
+
 - ✅ Private buckets with signed URLs
 - ✅ User-scoped file access
 - ✅ File size limits enforced
