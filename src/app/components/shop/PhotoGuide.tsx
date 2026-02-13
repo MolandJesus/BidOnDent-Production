@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { Camera, Check, Lightbulb, Move, X, ChevronRight, ChevronLeft, Smartphone, Sun, Image as ImageIcon, AlertCircle } from "lucide-react";
+import {
+  Camera,
+  Check,
+  Lightbulb,
+  Move,
+  X,
+  ChevronRight,
+  ChevronLeft,
+  Smartphone,
+  Sun,
+  Image as ImageIcon,
+  AlertCircle,
+} from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import exampleImage from "../../../assets/report-photo-perfect.jpg";
 
@@ -12,7 +24,7 @@ type PhotoGuideProps = {
 export default function PhotoGuide({
   onClose,
   onComplete,
-  primaryColor = "#0056b3"
+  primaryColor = "#0056b3",
 }: PhotoGuideProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
@@ -26,7 +38,7 @@ export default function PhotoGuide({
         <div className="space-y-6">
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
             <div className="flex items-start space-x-4">
-              <div 
+              <div
                 className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: primaryColor }}
               >
@@ -35,7 +47,8 @@ export default function PhotoGuide({
               <div>
                 <h3 className="font-bold text-lg mb-2">Why Good Photos Matter</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  Clear, well-lit photos help auto body repair shops understand the damage and provide you with the most accurate quotes. Better photos = better estimates!
+                  Clear, well-lit photos help auto body repair shops understand the damage and
+                  provide you with the most accurate quotes. Better photos = better estimates!
                 </p>
               </div>
             </div>
@@ -89,11 +102,13 @@ export default function PhotoGuide({
             </div>
           </div>
         </div>
-      )
+      ),
     },
     {
       title: "Step 1: Use Your Camera",
-      subtitle: isDesktop ? "Take photos or upload from your device" : "How to capture damage photos",
+      subtitle: isDesktop
+        ? "Take photos or upload from your device"
+        : "How to capture damage photos",
       icon: <Smartphone className="w-16 h-16" />,
       content: (
         <div className="space-y-5">
@@ -110,8 +125,12 @@ export default function PhotoGuide({
                       <span className="text-white font-bold text-sm">1</span>
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900 mb-1">Take Photos on Your Phone First</p>
-                      <p className="text-sm text-gray-600">Use your phone camera for best results, then upload those photos here</p>
+                      <p className="font-medium text-gray-900 mb-1">
+                        Take Photos on Your Phone First
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Use your phone camera for best results, then upload those photos here
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
@@ -120,7 +139,10 @@ export default function PhotoGuide({
                     </div>
                     <div>
                       <p className="font-medium text-gray-900 mb-1">Upload Existing Photos</p>
-                      <p className="text-sm text-gray-600">If you already have photos, click the upload button to select them from your computer</p>
+                      <p className="text-sm text-gray-600">
+                        If you already have photos, click the upload button to select them from your
+                        computer
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -134,12 +156,14 @@ export default function PhotoGuide({
                   <h3 className="font-bold text-xl">Using Your Phone Camera</h3>
                 </div>
                 <p className="text-blue-50 mb-4">
-                  When you tap "Add Photo" on the next screen, your phone will ask for permission to use the camera. Make sure to allow access!
+                  When you tap "Add Photo" on the next screen, your phone will ask for permission to
+                  use the camera. Make sure to allow access!
                 </p>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
                   <p className="text-sm font-medium mb-2">📸 Camera Permissions</p>
                   <p className="text-xs text-blue-100">
-                    If prompted, tap "Allow" to enable camera access. You can change this later in your phone settings.
+                    If prompted, tap "Allow" to enable camera access. You can change this later in
+                    your phone settings.
                   </p>
                 </div>
               </div>
@@ -153,9 +177,21 @@ export default function PhotoGuide({
             </h4>
             <div className="grid grid-cols-1 gap-3">
               {[
-                { icon: "🎯", title: "Hold Steady", desc: "Keep your phone still when taking photos" },
-                { icon: "🔍", title: "Focus First", desc: "Tap the damaged area to focus before shooting" },
-                { icon: "🌅", title: "Check Lighting", desc: "Make sure the area is well-lit and visible" }
+                {
+                  icon: "🎯",
+                  title: "Hold Steady",
+                  desc: "Keep your phone still when taking photos",
+                },
+                {
+                  icon: "🔍",
+                  title: "Focus First",
+                  desc: "Tap the damaged area to focus before shooting",
+                },
+                {
+                  icon: "🌅",
+                  title: "Check Lighting",
+                  desc: "Make sure the area is well-lit and visible",
+                },
               ].map((tip, index) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="flex items-center space-x-3">
@@ -170,7 +206,7 @@ export default function PhotoGuide({
             </div>
           </div>
         </div>
-      )
+      ),
     },
     {
       title: "Step 2: Perfect Your Lighting",
@@ -256,7 +292,7 @@ export default function PhotoGuide({
             </div>
           </div>
         </div>
-      )
+      ),
     },
     {
       title: "Step 3: Capture All Angles",
@@ -269,13 +305,14 @@ export default function PhotoGuide({
               📸 Take At Least 4 Different Photos
             </h3>
             <p className="text-sm text-orange-800">
-              More angles = more accurate quotes. Walk around your vehicle and capture the damage from different positions.
+              More angles = more accurate quotes. Walk around your vehicle and capture the damage
+              from different positions.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white border-2 border-blue-300 rounded-xl p-4 shadow-sm">
-              <div 
+              <div
                 className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-3"
                 style={{ backgroundColor: primaryColor }}
               >
@@ -289,7 +326,7 @@ export default function PhotoGuide({
             </div>
 
             <div className="bg-white border-2 border-blue-300 rounded-xl p-4 shadow-sm">
-              <div 
+              <div
                 className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-3"
                 style={{ backgroundColor: primaryColor }}
               >
@@ -303,7 +340,7 @@ export default function PhotoGuide({
             </div>
 
             <div className="bg-white border-2 border-blue-300 rounded-xl p-4 shadow-sm">
-              <div 
+              <div
                 className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-3"
                 style={{ backgroundColor: primaryColor }}
               >
@@ -317,7 +354,7 @@ export default function PhotoGuide({
             </div>
 
             <div className="bg-white border-2 border-blue-300 rounded-xl p-4 shadow-sm">
-              <div 
+              <div
                 className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-3"
                 style={{ backgroundColor: primaryColor }}
               >
@@ -337,13 +374,14 @@ export default function PhotoGuide({
               <div className="text-sm text-blue-900">
                 <p className="font-medium mb-1">Pro Tip: Move Around!</p>
                 <p className="text-blue-700">
-                  Take steps to the left, right, up close, and further back. Each angle reveals different details that help shops give you accurate quotes.
+                  Take steps to the left, right, up close, and further back. Each angle reveals
+                  different details that help shops give you accurate quotes.
                 </p>
               </div>
             </div>
           </div>
         </div>
-      )
+      ),
     },
     {
       title: "Ready to Start!",
@@ -362,7 +400,7 @@ export default function PhotoGuide({
               <span className="font-medium">Perfect Example!</span>
             </div>
           </div>
-          
+
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-500 rounded-2xl p-6">
             <h3 className="font-bold text-xl mb-4 text-green-900 flex items-center">
               <span className="text-2xl mr-3">✅</span>
@@ -374,25 +412,30 @@ export default function PhotoGuide({
                 { text: "Find good natural lighting", emoji: "☀️" },
                 { text: "Have phone camera ready", emoji: "📱" },
                 { text: "Plan to take 4+ different angles", emoji: "📸" },
-                { text: "Make sure battery is charged", emoji: "🔋" }
+                { text: "Make sure battery is charged", emoji: "🔋" },
               ].map((item, index) => (
-                <label key={index} className="flex items-center space-x-3 cursor-pointer group p-3 bg-white rounded-lg hover:shadow-md transition-all">
-                  <input 
-                    type="checkbox" 
+                <label
+                  key={index}
+                  className="flex items-center space-x-3 cursor-pointer group p-3 bg-white rounded-lg hover:shadow-md transition-all"
+                >
+                  <input
+                    type="checkbox"
                     className="w-5 h-5 rounded border-gray-300"
                     style={{ accentColor: primaryColor }}
                   />
                   <span className="text-2xl">{item.emoji}</span>
-                  <span className="text-gray-700 group-hover:text-gray-900 font-medium">{item.text}</span>
+                  <span className="text-gray-700 group-hover:text-gray-900 font-medium">
+                    {item.text}
+                  </span>
                 </label>
               ))}
             </div>
           </div>
-          
+
           <button
             onClick={onComplete}
             className="w-full py-5 px-6 rounded-xl text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center space-x-3 group"
-            style={{ 
+            style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
             }}
           >
@@ -407,8 +450,8 @@ export default function PhotoGuide({
             </p>
           )}
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   const nextStep = () => {
@@ -426,30 +469,30 @@ export default function PhotoGuide({
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-2 md:p-4">
+    <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 sm:p-2 md:p-4">
       <motion.div
-        className="bg-white rounded-2xl md:rounded-3xl max-w-2xl w-full max-h-[95vh] md:max-h-[90vh] overflow-hidden shadow-2xl"
+        className="bg-white rounded-t-2xl sm:rounded-2xl md:rounded-3xl max-w-2xl w-full h-[88dvh] sm:h-auto sm:max-h-[92vh] md:max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
       >
         {/* Header */}
-        <div 
-          className="p-5 md:p-6 text-white relative"
+        <div
+          className="p-4 sm:p-5 md:p-6 text-white relative shrink-0"
           style={{
-            background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`
+            background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
           }}
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full"
           >
-            <X className="w-6 h-6" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
-          
-          <div className="flex items-center space-x-4 mb-4">
-            <motion.div 
-              className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
+
+          <div className="flex items-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
+            <motion.div
+              className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
               key={currentStep}
               initial={{ scale: 0.8, rotate: -10 }}
               animate={{ scale: 1, rotate: 0 }}
@@ -458,13 +501,15 @@ export default function PhotoGuide({
               {steps[currentStep].icon}
             </motion.div>
             <div className="flex-1">
-              <h2 className="text-xl md:text-2xl font-bold mb-1">{steps[currentStep].title}</h2>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-0.5 sm:mb-1 pr-6">
+                {steps[currentStep].title}
+              </h2>
               <p className="text-white/90 text-sm md:text-base">{steps[currentStep].subtitle}</p>
             </div>
           </div>
-          
+
           {/* Progress bar */}
-          <div className="w-full bg-white/20 rounded-full h-2.5 overflow-hidden">
+          <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
             <motion.div
               className="h-full bg-white rounded-full shadow-lg"
               initial={{ width: 0 }}
@@ -472,14 +517,16 @@ export default function PhotoGuide({
               transition={{ duration: 0.4, ease: "easeOut" }}
             />
           </div>
-          <div className="flex justify-between mt-2 text-xs md:text-sm text-white/90 font-medium">
-            <span>Step {currentStep + 1} of {steps.length}</span>
+          <div className="flex justify-between mt-2 text-xs sm:text-sm text-white/90 font-medium">
+            <span>
+              Step {currentStep + 1} of {steps.length}
+            </span>
             <span>{Math.round(progress)}% Complete</span>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-4 md:p-6 overflow-y-auto max-h-[calc(95vh-280px)] md:max-h-[calc(90vh-300px)]">
+        <div className="p-3 sm:p-4 md:p-6 overflow-y-auto flex-1 min-h-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
@@ -494,7 +541,7 @@ export default function PhotoGuide({
         </div>
 
         {/* Footer Navigation */}
-        <div className="border-t border-gray-200 p-4 bg-gray-50">
+        <div className="border-t border-gray-200 px-3 py-2.5 sm:p-4 bg-gray-50 shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
           <div className="flex justify-between items-center">
             <button
               onClick={prevStep}
@@ -515,12 +562,15 @@ export default function PhotoGuide({
                   key={index}
                   onClick={() => setCurrentStep(index)}
                   className={`h-2.5 rounded-full transition-all ${
-                    index === currentStep
-                      ? "w-8"
-                      : "w-2.5 hover:bg-gray-400"
+                    index === currentStep ? "w-8" : "w-2.5 hover:bg-gray-400"
                   }`}
-                  style={{ 
-                    backgroundColor: index === currentStep ? primaryColor : index < currentStep ? primaryColor + "80" : "#d1d5db"
+                  style={{
+                    backgroundColor:
+                      index === currentStep
+                        ? primaryColor
+                        : index < currentStep
+                          ? primaryColor + "80"
+                          : "#d1d5db",
                   }}
                 />
               ))}
@@ -532,8 +582,7 @@ export default function PhotoGuide({
                 className="flex items-center space-x-2 px-4 py-2.5 rounded-lg text-white font-medium transition-all hover:shadow-md active:scale-95"
                 style={{ backgroundColor: primaryColor }}
               >
-                <span className="hidden sm:inline">Next</span>
-                <span className="sm:hidden">Next</span>
+                <span>Next</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
             ) : (

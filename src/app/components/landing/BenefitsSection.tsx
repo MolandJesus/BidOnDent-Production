@@ -51,7 +51,10 @@ export default function BenefitsSection({
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50" ref={sectionRef}>
+    <section
+      className="pt-8 pb-20 md:pt-12 bg-gradient-to-br from-gray-50 to-blue-50"
+      ref={sectionRef}
+    >
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Section badge */}
         <div
