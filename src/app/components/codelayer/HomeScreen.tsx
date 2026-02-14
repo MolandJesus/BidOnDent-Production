@@ -17,6 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
+import { formatDate, formatStatus, getReportTitle, getReportDescription } from "./home-helpers";
 
 type HomeScreenProps = {
   userType: string;
@@ -73,50 +74,6 @@ const statusClasses: Record<string, string> = {
   completed: "bg-emerald-100 text-emerald-700",
   resolved: "bg-emerald-100 text-emerald-700",
 };
-
-function formatDate(value?: string) {
-  if (!value) return "No date";
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return "No date";
-  return parsed.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
-
-function formatStatus(status?: string) {
-  if (!status) return "Unknown";
-  if (status === "pending") return "Pending Bids";
-  if (status === "in-review" || status === "active") return "Reviewing Bids";
-  if (status === "completed" || status === "resolved") return "Completed";
-  return status.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function getReportTitle(report: any, userType: string) {
-  if (userType === "insurer" && report?.claimNumber) {
-    return `Claim #${report.claimNumber}`;
-  }
-
-  if (report?.vehicle) {
-    const year = report.vehicle.year ?? "";
-    const make = report.vehicle.make ?? "";
-    const model = report.vehicle.model ?? "";
-    return `${year} ${make} ${model}`.trim() || "Repair Request";
-  }
-
-  return "Repair Request";
-}
-
-function getReportDescription(report: any, userType: string) {
-  if (userType === "insurer" && report?.policyholder) {
-    return `Policyholder: ${report.policyholder}`;
-  }
-
-  if (report?.description) return report.description;
-  if (report?.damageArea) return `${report.damageArea} damage`;
-  return "No description provided";
-}
 
 export default function HomeScreen({
   userType = "customer",

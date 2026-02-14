@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import exampleImage from "../../../assets/report-photo-perfect.jpg";
+import { photoGuideTips, photoGuideContent } from "./photo-guide-helpers";
 
 type PhotoGuideProps = {
   onClose: () => void;
