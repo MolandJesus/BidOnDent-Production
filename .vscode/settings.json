@@ -7,6 +7,16 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" ]
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "cSpell.words": [
+    "supabase",
+    "bidondent",
+    "Bidondent",
+    "anon",
+    "publicAnonKey",
+    "Insurer",
+    "Editable",
+    "anonkey"
   ]
 }
