@@ -6,6 +6,7 @@ import HomeScreen from "../components/codelayer/HomeScreen";
 import ReportScreen from "../components/codelayer/ReportScreen";
 import BidsScreen from "../components/codelayer/BidsScreen";
 import AccountScreen from "../components/codelayer/AccountScreen";
+import AdminDashboard from "../components/admin/AdminDashboard";
 import ShopRequestsScreen from "../components/shop/ShopRequestsScreen";
 import ShopActiveJobsScreen from "../components/shop/ShopActiveJobsScreen";
 import LikedShopsScreen from "../components/shop/LikedShopsScreen";
@@ -22,6 +23,7 @@ import CompetitorAnalysisScreen from "../components/reports/CompetitorAnalysisSc
 import DemoAccountSwitcher from "../components/demo/DemoAccountSwitcher";
 import SmokeTestScreen from "../components/demo/SmokeTestScreen";
 import { SEED_DAMAGE_REPORTS } from "../constants";
+import { hasAdminPrivileges } from "../utils/adminCheck";
 
 interface DashboardRouterProps {
   // Navigation state
@@ -357,7 +359,51 @@ export default function DashboardRouter({
               onOpenSmokeTest={() => {
                 onViewModeChange("smoke-test");
               }}
+              onOpenAdmin={() => {
+                onViewModeChange("admin");
+              }}
             />
+          </motion.div>
+        )}
+
+        {viewMode === "admin" && hasAdminPrivileges(userInfo.email) && (
+          <motion.div
+            key="admin"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <AdminDashboard primaryColor={primaryColor} adminEmail={userInfo.email} />
+          </motion.div>
+        )}
+
+        {viewMode === "admin" && !hasAdminPrivileges(userInfo.email) && (
+          <motion.div
+            key="admin-locked"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="px-4 md:px-6 py-6">
+              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h2 className="text-xl font-semibold text-slate-900">Admin access required</h2>
+                <p className="text-slate-600 mt-2">
+                  This section is only available to admin accounts.
+                </p>
+                <button
+                  className="mt-4 px-4 py-2 rounded-lg text-white"
+                  style={{ backgroundColor: primaryColor }}
+                  onClick={() => {
+                    onTabChange("account");
+                    onViewModeChange("dashboard");
+                  }}
+                >
+                  Return to Account
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
 

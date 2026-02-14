@@ -28,6 +28,7 @@ type AccountScreenProps = {
   reports?: any[];
   onLogout?: () => void;
   onOpenSmokeTest?: () => void;
+  onOpenAdmin?: () => void;
   onSaveProfile?: (data: {
     name: string;
     email: string;
@@ -50,6 +51,7 @@ export default function AccountScreen({
   onSaveProfile,
   onViewVehicles,
   onOpenSmokeTest,
+  onOpenAdmin,
 }: AccountScreenProps) {
   // Use default profile image if none provided
   const [profileImage, setProfileImage] = useState<string | null>(
@@ -629,11 +631,13 @@ export default function AccountScreen({
 
           <AccountMenu
             userType={userType}
+            userEmail={userEmail}
             onOpenSettings={() => setShowSettings(true)}
             onOpenPayment={() => setShowPayment(true)}
             onOpenShopProfile={() => setShowShopProfile(true)}
             onOpenHelp={() => setShowHelp(true)}
             onOpenSmokeTest={onOpenSmokeTest}
+            onOpenAdmin={onOpenAdmin}
             onOpenDeleteAccount={() => setShowDeleteAccount(true)}
             onLogout={handleLogout}
             onViewVehicles={onViewVehicles}
