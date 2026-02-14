@@ -3,7 +3,7 @@
  * Common functions used across all route handlers
  */
 
-import { corsHeaders } from './constants.ts'
+import { corsHeaders } from '../config/constants.ts'
 
 /**
  * Strip Supabase function prefix from request paths
