@@ -2,9 +2,12 @@ import { Hono } from 'npm:hono@4'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { initializeDatabaseTables } from "./database_init.tsx";
 import { initializeStorageBuckets } from "./storage_init.tsx";
+import { saveVehicle, getVehicles, deleteVehicleByPost, deleteVehicleByDelete } from "./handlers/vehicles.ts";
+import { createReport, getReports, deleteReport } from "./handlers/reports.ts";
+import { healthCheck, migrateDatabase } from "./handlers/health.ts";
 
-// BUILD VERSION: 2026-02-13-v6 - Simplified CORS headers
-console.log('🚀 Edge Function Server Starting - Build: 2026-02-13-v6');
+// BUILD VERSION: 2026-02-13-v7 - Refactored with modular route handlers
+console.log('Edge Function Server Starting - Build: 2026-02-13-v7');
 
 // Initialize database tables and storage buckets on startup
 (async () => {
@@ -88,89 +91,13 @@ Deno.serve(async (req) => {
     console.log(`🔍 Path check: isDeleteMatch=${isDeleteMatch}, path=${path}, method=${req.method}`);
 
     // Health check endpoint with version
+    // ===== HEALTH & MAINTENANCE ROUTES =====
     if (path === '/make-server-9f243523/health' && req.method === 'GET') {
-      return respond({
-        status: 'ok',
-        version: '2026-02-13-v5',
-        adminEmail: 'figmaadmin@bidondent.com'
-      });
+      return healthCheck(respond);
     }
 
-    // Database migration endpoint
     if (path === '/make-server-9f243523/migrate-database' && req.method === 'POST') {
-      try {
-        await initializeDatabaseTables()
-
-        // Step 2: Manually add clerk_user_id column if it still doesn't exist
-        try {
-          const { Client } = await import('https://deno.land/x/postgres@v0.17.0/mod.ts');
-          const dbUrl = Deno.env.get('SUPABASE_DB_URL') ?? '';
-          if (dbUrl) {
-            const client = new Client(dbUrl);
-            await client.connect();
-
-            try {
-              // Check if column exists
-              const checkResult = await client.queryArray(
-                `SELECT column_name FROM information_schema.columns
-                 WHERE table_schema = 'public' AND table_name = 'vehicles' AND column_name = 'clerk_user_id'`
-              );
-
-              if (checkResult.rows.length === 0) {
-                await client.queryArray(`ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS clerk_user_id TEXT;`);
-              } else {
-              }
-
-              // Do the same for damage_reports
-              const checkReportsResult = await client.queryArray(
-                `SELECT column_name FROM information_schema.columns
-                 WHERE table_schema = 'public' AND table_name = 'damage_reports' AND column_name = 'clerk_user_id'`
-              );
-
-              if (checkReportsResult.rows.length === 0) {
-                await client.queryArray(`ALTER TABLE public.damage_reports ADD COLUMN IF NOT EXISTS clerk_user_id TEXT;`);
-              } else {
-              }
-
-            } finally {
-              await client.end();
-            }
-          }
-        } catch (postgresError: any) {
-          console.warn('⚠️ Could not verify columns via direct DB connection:', postgresError.message);
-        }
-
-        // Force PostgREST to reload schema cache via HTTP
-        try {
-          const supabaseUrl = Deno.env.get('SUPABASE_URL');
-          const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
-          if (supabaseUrl && serviceKey) {
-            // PostgREST admin endpoint for schema cache reload
-            const postgrestAdminUrl = supabaseUrl.replace('https://', 'https://') + '/rest/v1/';
-            await fetch(postgrestAdminUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'apikey': serviceKey,
-                'Prefer': 'schema-reload'
-              }
-            });
-          }
-        } catch (reloadError) {
-        }
-
-        return new Response(
-          JSON.stringify({ success: true, message: 'Database migration completed' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      } catch (error: any) {
-        console.error('Migration error:', error)
-        return new Response(
-          JSON.stringify({ error: 'Migration failed', details: error.message }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
+      return await migrateDatabase(initializeDatabaseTables, respond);
     }
 
     // Setup admin account endpoint (no auth required - only works for figmaadmin@bidondent.com)
@@ -1265,222 +1192,41 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Save vehicle (Clerk auth support)
+    // ===== VEHICLE ROUTES =====
     if (path === '/make-server-9f243523/vehicles' && req.method === 'POST') {
-      try {
-        const body = await req.json();
-        const { clerkUserId, vehicle } = body;
-
-        if (!clerkUserId) {
-          return new Response(
-            JSON.stringify({ error: 'Missing clerkUserId' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        console.log(`🚗 Saving vehicle for Clerk user: ${clerkUserId}`);
-
-        // Convert year to number if it's a string
-        const yearNum = typeof vehicle.year === 'string' ? parseInt(vehicle.year, 10) : vehicle.year;
-
-        // Check if vehicle has a valid UUID (existing vehicle)
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-        const hasValidId = vehicle.id && uuidRegex.test(vehicle.id);
-
-        let data, error;
-
-        if (hasValidId) {
-          // Update existing vehicle
-          console.log('🔄 Updating vehicle with ID:', vehicle.id);
-          const result = await supabase
-            .from('vehicles')
-            .update({
-              make: vehicle.make,
-              model: vehicle.model,
-              year: yearNum,
-              color: vehicle.color,
-              license_plate: vehicle.licensePlate || vehicle.license_plate,
-              vin: vehicle.vin,
-              image_url: vehicle.image_url
-            })
-            .eq('id', vehicle.id)
-            .eq('clerk_user_id', clerkUserId)
-            .select()
-            .single();
-
-          data = result.data;
-          error = result.error;
-        } else {
-          // Insert new vehicle
-          console.log('➕ Inserting new vehicle');
-          const result = await supabase
-            .from('vehicles')
-            .insert({
-              clerk_user_id: clerkUserId,
-              make: vehicle.make,
-              model: vehicle.model,
-              year: yearNum,
-              color: vehicle.color,
-              license_plate: vehicle.licensePlate || vehicle.license_plate,
-              vin: vehicle.vin,
-              image_url: vehicle.image_url
-            })
-            .select()
-            .single();
-
-          data = result.data;
-          error = result.error;
-        }
-
-        if (error) {
-          console.error('❌ Error saving vehicle:', error);
-          return new Response(
-            JSON.stringify({ error: error.message }),
-            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-
-        return new Response(
-          JSON.stringify({ success: true, vehicle: data }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      } catch (error: any) {
-        console.error('Error in save vehicle endpoint:', error);
-        return new Response(
-          JSON.stringify({ error: error.message }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+      return await saveVehicle(req, supabase, respond);
     }
 
     // Get vehicles (Clerk auth support)
     if (path === '/make-server-9f243523/vehicles' && req.method === 'GET') {
-      try {
-        const url = new URL(req.url);
-        const clerkUserId = url.searchParams.get('clerkUserId');
-
-        if (!clerkUserId) {
-          return new Response(
-            JSON.stringify({ error: 'Missing clerkUserId' }),
-            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-        console.log(`🚗 Fetching vehicles for Clerk user: ${clerkUserId}`);
-
-        // Use service role to bypass RLS
-        const { data, error } = await supabase
-          .from('vehicles')
-          .select('*')
-          .eq('clerk_user_id', clerkUserId)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('❌ Error fetching vehicles:', error);
-          return new Response(
-            JSON.stringify({ error: error.message }),
-            { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-
-
-        return respond({ vehicles: data });
-      } catch (error: any) {
-        console.error('Error in get vehicles endpoint:', error);
-        return respond({ error: error.message }, 500);
-      }
+      return await getVehicles(req, supabase, respond);
     }
 
-    // Delete vehicle via POST (Clerk auth support - avoiding CORS DELETE issues)
     if ((path === '/make-server-9f243523/delete-vehicle' || path === '/delete-vehicle') && req.method === 'POST') {
-      try {
-        const body = await req.json();
-        const { vehicleId, clerkUserId } = body;
-
-
-        if (!vehicleId || !clerkUserId) {
-          return respond({ error: 'Missing vehicleId or clerkUserId' }, 400);
-        }
-
-        const { error } = await supabase
-          .from('vehicles')
-          .delete()
-          .eq('id', vehicleId)
-          .eq('clerk_user_id', clerkUserId);
-
-        if (error) {
-          console.error('❌ Error deleting vehicle:', error);
-          return respond({ error: error.message }, 500);
-        }
-
-        return respond({ success: true, message: 'Vehicle deleted' });
-      } catch (error: any) {
-        console.error('Error in delete vehicle endpoint:', error);
-        return respond({ error: error.message }, 500);
-      }
+      return await deleteVehicleByPost(req, supabase, respond);
     }
 
-    // Delete vehicle (Clerk auth support)
     if (path.startsWith('/make-server-9f243523/vehicles/') && req.method === 'DELETE') {
-      try {
-        const url = new URL(req.url);
-        const vehicleId = path.split('/').pop();
-        const clerkUserId = url.searchParams.get('clerkUserId');
-
-
-        if (!vehicleId || !clerkUserId) {
-          return respond({ error: 'Missing vehicleId or clerkUserId' }, 400);
-        }
-
-
-        const { error } = await supabase
-          .from('vehicles')
-          .delete()
-          .eq('id', vehicleId)
-          .eq('clerk_user_id', clerkUserId);
-
-        if (error) {
-          console.error('❌ Error deleting vehicle:', error);
-          return respond({ error: error.message }, 500);
-        }
-
-        return respond({ success: true, message: 'Vehicle deleted' });
-      } catch (error: any) {
-        console.error('Error in delete vehicle endpoint:', error);
-        return respond({ error: error.message }, 500);
-      }
+      const vehicleId = path.split('/').pop();
+      const url = new URL(req.url);
+      const clerkUserId = url.searchParams.get('clerkUserId');
+      return await deleteVehicleByDelete(vehicleId, clerkUserId, supabase, respond);
     }
 
-    // Delete damage report (Clerk auth support)
+    // ===== REPORT ROUTES =====
+    if (path === '/make-server-9f243523/reports' && req.method === 'POST') {
+      return await createReport(req, supabase, respond);
+    }
+
+    if (path === '/make-server-9f243523/reports' && req.method === 'GET') {
+      return await getReports(req, supabase, respond);
+    }
+
     if (path.startsWith('/make-server-9f243523/reports/') && req.method === 'DELETE') {
-      try {
-        const url = new URL(req.url);
-        const reportId = path.split('/').pop();
-        const clerkUserId = url.searchParams.get('clerkUserId');
-
-
-        if (!reportId || !clerkUserId) {
-          return respond({ error: 'Missing reportId or clerkUserId' }, 400);
-        }
-
-
-        const { error } = await supabase
-          .from('damage_reports')
-          .delete()
-          .eq('id', reportId)
-          .eq('clerk_user_id', clerkUserId);
-
-        if (error) {
-          console.error('❌ Error deleting report:', error);
-          return respond({ error: error.message }, 500);
-        }
-
-        return respond({ success: true, message: 'Report deleted' });
-      } catch (error: any) {
-        console.error('Error in delete report endpoint:', error);
-        return respond({ error: error.message }, 500);
-      }
+      const reportId = path.split('/').pop();
+      const url = new URL(req.url);
+      const clerkUserId = url.searchParams.get('clerkUserId');
+      return await deleteReport(reportId, clerkUserId, supabase, respond);
     }
 
     return respond({ error: 'Not found' }, 404)
