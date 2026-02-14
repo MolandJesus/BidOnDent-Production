@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Trash2, Users, AlertCircle, RefreshCw, UserPlus, CheckCircle } from 'lucide-react';
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { useState, useEffect } from "react";
+import { Trash2, Users, AlertCircle, RefreshCw, UserPlus, CheckCircle } from "lucide-react";
+import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
 import { ADMIN_EMAIL } from "../../config/adminConfig";
 
 interface User {
@@ -21,49 +21,54 @@ export default function AdminAccountManager() {
   const [loading, setLoading] = useState(true);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   // Create test account form
   const [showCreateTest, setShowCreateTest] = useState(false);
-  const [testEmail, setTestEmail] = useState('');
-  const [testPassword, setTestPassword] = useState('Password123!');
-  const [testUserType, setTestUserType] = useState<'customer' | 'shop' | 'insurer'>('customer');
+  const [testEmail, setTestEmail] = useState("");
+  const [testPassword, setTestPassword] = useState("Password123!");
+  const [testUserType, setTestUserType] = useState<"customer" | "shop" | "insurer">("customer");
   const [creating, setCreating] = useState(false);
 
   const loadUsers = async () => {
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/list-users`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/list-users`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${publicAnonKey}`,
+          },
         }
-      });
+      );
 
       // Try to parse JSON, but handle non-JSON responses gracefully
       let result;
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
         result = await response.json();
       } else {
         const text = await response.text();
-        console.error('Non-JSON response from list-users:', text);
-        throw new Error(`Edge Function returned non-JSON response (status ${response.status}). The function may still have JWT verification enabled. Please deploy with --no-verify-jwt flag.`);
+        console.error("Non-JSON response from list-users:", text);
+        throw new Error(
+          `Edge Function returned non-JSON response (status ${response.status}). The function may still have JWT verification enabled. Please deploy with --no-verify-jwt flag.`
+        );
       }
-      
+
       if (!response.ok || result.error) {
-        setError(result.error || 'Failed to load users');
+        setError(result.error || "Failed to load users");
         return;
       }
 
       setUsers(result.users || []);
     } catch (err) {
-      console.error('Error loading users:', err);
-      setError(`Failed to load users: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      console.error("Error loading users:", err);
+      setError(`Failed to load users: ${err instanceof Error ? err.message : "Unknown error"}`);
     } finally {
       setLoading(false);
     }
@@ -85,8 +90,8 @@ export default function AdminAccountManager() {
 
   const selectAll = () => {
     const adminEmail = ADMIN_EMAIL;
-    const nonAdminUsers = users.filter(u => u.email?.toLowerCase() !== adminEmail.toLowerCase());
-    setSelectedUsers(new Set(nonAdminUsers.map(u => u.id)));
+    const nonAdminUsers = users.filter((u) => u.email?.toLowerCase() !== adminEmail.toLowerCase());
+    setSelectedUsers(new Set(nonAdminUsers.map((u) => u.id)));
   };
 
   const deselectAll = () => {
@@ -95,33 +100,36 @@ export default function AdminAccountManager() {
 
   const deleteSelected = async () => {
     if (selectedUsers.size === 0) return;
-    
+
     const confirmed = window.confirm(
       `Are you sure you want to delete ${selectedUsers.size} user(s)? This cannot be undone.`
     );
-    
+
     if (!confirmed) return;
 
     setDeleting(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/delete-users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
-        },
-        body: JSON.stringify({
-          userIds: Array.from(selectedUsers)
-        })
-      });
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/delete-users`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${publicAnonKey}`,
+          },
+          body: JSON.stringify({
+            userIds: Array.from(selectedUsers),
+          }),
+        }
+      );
 
       const result = await response.json();
-      
+
       if (!response.ok || result.error) {
-        setError(result.error || 'Failed to delete users');
+        setError(result.error || "Failed to delete users");
         return;
       }
 
@@ -129,8 +137,8 @@ export default function AdminAccountManager() {
       setSelectedUsers(new Set());
       await loadUsers();
     } catch (err) {
-      console.error('Error deleting users:', err);
-      setError('Failed to delete users');
+      console.error("Error deleting users:", err);
+      setError("Failed to delete users");
     } finally {
       setDeleting(false);
     }
@@ -138,32 +146,35 @@ export default function AdminAccountManager() {
 
   const createTestAccount = async () => {
     if (!testEmail) {
-      setError('Email is required');
+      setError("Email is required");
       return;
     }
 
     setCreating(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-test-account`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
-        },
-        body: JSON.stringify({
-          email: testEmail,
-          password: testPassword,
-          userType: testUserType
-        })
-      });
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-test-account`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${publicAnonKey}`,
+          },
+          body: JSON.stringify({
+            email: testEmail,
+            password: testPassword,
+            userType: testUserType,
+          }),
+        }
+      );
 
       const result = await response.json();
-      
+
       if (!response.ok) {
-        setError(result.error || 'Failed to create test account');
+        setError(result.error || "Failed to create test account");
         return;
       }
 
@@ -171,15 +182,15 @@ export default function AdminAccountManager() {
       if (result.success || result.created) {
         setSuccess(`Test account created: ${testEmail}`);
       } else {
-        setError('Failed to create test account');
+        setError("Failed to create test account");
       }
 
-      setTestEmail('');
+      setTestEmail("");
       setShowCreateTest(false);
       await loadUsers();
     } catch (err) {
-      console.error('Error creating test account:', err);
-      setError('Failed to create test account');
+      console.error("Error creating test account:", err);
+      setError("Failed to create test account");
     } finally {
       setCreating(false);
     }
@@ -194,16 +205,14 @@ export default function AdminAccountManager() {
             <Users className="w-6 h-6" />
             Account Management
           </h2>
-          <p className="text-gray-600 mt-1">
-            Manage all user accounts and create test accounts
-          </p>
+          <p className="text-gray-600 mt-1">Manage all user accounts and create test accounts</p>
         </div>
         <button
           onClick={loadUsers}
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           Refresh
         </button>
       </div>
@@ -215,7 +224,7 @@ export default function AdminAccountManager() {
           {error}
         </div>
       )}
-      
+
       {success && (
         <div className="flex items-center gap-2 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
           <CheckCircle className="w-5 h-5" />
@@ -261,12 +270,10 @@ export default function AdminAccountManager() {
       {showCreateTest && (
         <div className="p-6 bg-green-50 border border-green-200 rounded-lg space-y-4">
           <h3 className="font-semibold text-gray-900">Create Test Account</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input
                 type="email"
                 value={testEmail}
@@ -275,11 +282,9 @@ export default function AdminAccountManager() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input
                 type="text"
                 value={testPassword}
@@ -287,11 +292,9 @@ export default function AdminAccountManager() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Account Type
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
               <select
                 value={testUserType}
                 onChange={(e) => setTestUserType(e.target.value as any)}
@@ -310,7 +313,7 @@ export default function AdminAccountManager() {
               disabled={creating}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
-              {creating ? 'Creating...' : 'Create Account'}
+              {creating ? "Creating..." : "Create Account"}
             </button>
             <button
               onClick={() => setShowCreateTest(false)}
@@ -362,11 +365,11 @@ export default function AdminAccountManager() {
                   </td>
                 </tr>
               ) : (
-                users.map(user => {
+                users.map((user) => {
                   const isAdminUser = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-                  
+
                   return (
-                    <tr key={user.id} className={isAdminUser ? 'bg-blue-50' : ''}>
+                    <tr key={user.id} className={isAdminUser ? "bg-blue-50" : ""}>
                       <td className="px-4 py-3">
                         {!isAdminUser && (
                           <input
@@ -379,9 +382,7 @@ export default function AdminAccountManager() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-gray-900">
-                            {user.email}
-                          </span>
+                          <span className="font-medium text-gray-900">{user.email}</span>
                           {isAdminUser && (
                             <span className="px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded">
                               ADMIN
@@ -390,7 +391,7 @@ export default function AdminAccountManager() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-gray-600 capitalize">
-                        {user.user_metadata?.user_type || 'customer'}
+                        {user.user_metadata?.user_type || "customer"}
                       </td>
                       <td className="px-4 py-3">
                         {user.email_confirmed_at || user.confirmed_at ? (
@@ -407,10 +408,9 @@ export default function AdminAccountManager() {
                         {new Date(user.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
-                        {user.last_sign_in_at 
+                        {user.last_sign_in_at
                           ? new Date(user.last_sign_in_at).toLocaleDateString()
-                          : 'Never'
-                        }
+                          : "Never"}
                       </td>
                     </tr>
                   );

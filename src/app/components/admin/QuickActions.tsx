@@ -10,6 +10,7 @@ type QuickActionsProps = {
   onToggleNewAccountForm: () => void;
   onCheckEdgeFunctionHealth: () => void;
   onVerifyDatabase: () => void;
+  onCheckSupabaseConnection: () => void;
 };
 
 export default function QuickActions({
@@ -20,7 +21,8 @@ export default function QuickActions({
   onCheckAllAccounts,
   onToggleNewAccountForm,
   onCheckEdgeFunctionHealth,
-  onVerifyDatabase
+  onVerifyDatabase,
+  onCheckSupabaseConnection,
 }: QuickActionsProps) {
   return (
     <motion.div
@@ -69,6 +71,15 @@ export default function QuickActions({
         >
           <Database className="w-4 h-4" />
           Verify Database
+        </button>
+
+        <button
+          onClick={onCheckSupabaseConnection}
+          disabled={isLoading}
+          className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          <Database className="w-4 h-4" />
+          Supabase Connection
         </button>
       </div>
 
