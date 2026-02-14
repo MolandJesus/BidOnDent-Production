@@ -2,16 +2,16 @@
  * ============================================================================
  * BIDONDENT SERVICES - CENTRALIZED EXPORTS
  * ============================================================================
- * 
+ *
  * Import all services from one location for convenience:
- * 
+ *
  * import {
  *   realtimeBidService,
  *   performanceOptimizer,
  *   storageService,
  *   supabase
  * } from './services';
- * 
+ *
  * ============================================================================
  */
 
@@ -19,22 +19,13 @@
 // SUPABASE CLIENT & DATABASE FUNCTIONS
 // ============================================================================
 
-export { supabase } from './supabaseService';
+export { supabase } from "./supabaseService";
 
 // Profile operations
-export {
-  getProfile,
-  saveProfile,
-  type Profile
-} from './supabaseService';
+export { getProfile, saveProfile, type Profile } from "./supabaseService";
 
 // Vehicle operations
-export {
-  getVehicles,
-  saveVehicle,
-  deleteVehicle,
-  type Vehicle
-} from './supabaseService';
+export { getVehicles, saveVehicle, deleteVehicle, type Vehicle } from "./supabaseService";
 
 // Damage report operations
 export {
@@ -42,8 +33,8 @@ export {
   getAllDamageReports,
   saveDamageReport,
   deleteDamageReport,
-  type DamageReport
-} from './supabaseService';
+  type DamageReport,
+} from "./supabaseService";
 
 // Bid operations (NEW!)
 export {
@@ -52,49 +43,38 @@ export {
   updateBidStatus,
   getMyBids,
   deleteBid,
-  type Bid
-} from './supabaseService';
+  type Bid,
+} from "./supabaseService";
 
 // Storage operations
-export {
-  uploadPhoto,
-  deletePhoto
-} from './supabaseService';
+export { uploadPhoto, deletePhoto } from "./supabaseService";
 
 // ============================================================================
 // REAL-TIME SERVICES (NEW!)
 // ============================================================================
 
-export { 
+export {
   realtimeBidService,
   RealtimeBidService,
   type BidCallback,
   type BidUpdateCallback,
   type BidDeleteCallback,
-  type ConnectionStatusCallback
-} from './realtime/RealtimeBidService';
+  type ConnectionStatusCallback,
+} from "./realtime/RealtimeBidService";
 
 // ============================================================================
 // PERFORMANCE OPTIMIZATION (NEW!)
 // ============================================================================
 
-export {
-  performanceOptimizer,
-  PerformanceOptimizer
-} from './performance/PerformanceOptimizer';
+export { performanceOptimizer, PerformanceOptimizer } from "./performance/PerformanceOptimizer";
 
 // ============================================================================
 // CLOUD STORAGE ABSTRACTION (NEW!)
 // ============================================================================
 
-export {
-  storageService,
-  StorageService
-} from './storage/StorageService';
+export { storageService, StorageService } from "./storage/StorageService";
 
-export {
-  SupabaseStorageAdapter
-} from './storage/SupabaseStorageAdapter';
+export { SupabaseStorageAdapter } from "./storage/SupabaseStorageAdapter";
 
 export type {
   IStorageProvider,
@@ -108,8 +88,8 @@ export type {
   SignedUrlResult,
   StorageFile,
   StorageProviderType,
-  StorageConfig
-} from './storage/types';
+  StorageConfig,
+} from "./storage/types";
 
 // ============================================================================
 // CONVENIENCE BUNDLES
@@ -119,34 +99,32 @@ export type {
  * All real-time services
  */
 export const realtime = {
-  bidService: realtimeBidService
+  bidService: realtimeBidService,
 };
 
 /**
  * All performance services
  */
 export const performance = {
-  optimizer: performanceOptimizer
+  optimizer: performanceOptimizer,
 };
 
 /**
  * All storage services
  */
 export const storage = {
-  service: storageService
+  service: storageService,
 };
 
 // ============================================================================
 // VERSION & INFO
 // ============================================================================
 
-export const BIDONDENT_SERVICES_VERSION = '2.0.0';
+export const BIDONDENT_SERVICES_VERSION = "2.0.0";
 
 export const features = {
   realtimeBids: true,
   performanceOptimization: true,
   cloudAgnosticStorage: true,
-  supabasePro: true
+  supabasePro: true,
 };
-
-console.log('📦 Bidondent Services v2.0.0 loaded', features);

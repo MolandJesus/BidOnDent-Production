@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { TEST_ACCOUNTS } from "../../config/adminConfig";
 import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
-import { supabase } from "../../services/supabaseService";
+import { supabase, type Profile } from "../../services/supabaseService";
 import StorageDebugPanel from "../devtools/StorageDebugPanel";
 import AdminAccountManager from "./AdminAccountManager";
 import AdminHeader from "./AdminHeader";
@@ -37,7 +37,7 @@ interface CustomAccount {
   email: string;
   name: string;
   accountType: "customer" | "shop" | "insurer";
-  createdAt: string;
+  createdAt?: string;
   userId?: string;
   setupCompleted?: boolean;
 }
@@ -135,7 +135,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
         return;
       }
 
-      const { data: profiles, error } = result as any;
+      const { data: profiles, error } = result as { data: Profile[] | null; error: any };
 
       if (error) {
         console.error("❌ Database query error:", error);
@@ -159,11 +159,11 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       // Format the results
       let statusMessage = `✅ Found ${profiles.length} profiles in database:\\n\\n`;
 
-      profiles.forEach((profile, index) => {
+      profiles.forEach((profile: Profile, index: number) => {
         statusMessage += `${index + 1}. ${profile.email}\\n`;
         statusMessage += `   Name: ${profile.name || "N/A"}\\n`;
         statusMessage += `   Type: ${profile.account_type}\\n`;
-        statusMessage += `   Created: ${new Date(profile.created_at).toLocaleString()}\\n\\n`;
+        statusMessage += `   Created: ${profile.created_at ? new Date(profile.created_at).toLocaleString() : "N/A"}\\n\\n`;
       });
 
       console.log("✅ Database verification successful:", profiles);
@@ -251,7 +251,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
         return;
       }
 
-      const { data: profiles, error } = result as any;
+      const { data: profiles, error } = result as { data: Profile[] | null; error: any };
 
       if (error) {
         console.error("❌ Database query error:", error);
@@ -276,13 +276,13 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       // Filter out TEST_ACCOUNTS and admin email
       const testAccountEmails = TEST_ACCOUNTS.map((a) => a.email);
       const customProfiles = profiles.filter(
-        (p) => !testAccountEmails.includes(p.email) && p.email !== adminEmail
+        (p: Profile) => !testAccountEmails.includes(p.email) && p.email !== adminEmail
       );
 
       console.log("✅ Found custom accounts:", customProfiles);
 
       // Convert to CustomAccount format and update accountStatuses
-      const customAccs: CustomAccount[] = customProfiles.map((p) => ({
+      const customAccs: CustomAccount[] = customProfiles.map((p: Profile) => ({
         email: p.email,
         name: p.name || "Unknown",
         accountType: p.account_type as "customer" | "shop" | "insurer",
@@ -295,7 +295,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
       // Update account statuses for custom accounts
       const newStatuses: Record<string, AccountStatus> = {};
-      customProfiles.forEach((p) => {
+      customProfiles.forEach((p: Profile) => {
         newStatuses[p.email] = {
           email: p.email,
           exists: true,
