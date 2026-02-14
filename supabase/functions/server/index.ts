@@ -10,7 +10,6 @@
  * - handlers/ - Route-specific business logic
  */
 
-import { Hono } from 'npm:hono@4'
 import { initializeDatabaseTables } from './database_init.tsx'
 import { initializeStorageBuckets } from './storage_init.tsx'
 
