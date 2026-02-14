@@ -87,16 +87,6 @@ export async function handleDeleteAccount(
       return respond({ error: 'Admin accounts cannot be deleted' }, 403)
     }
 
-    // Prevent deletion of test accounts
-    const testEmails = [
-      'customer.test@bidondent.com',
-      'shop.test@bidondent.com',
-      'insurer.test@bidondent.com'
-    ]
-    if (profile?.email && testEmails.includes(profile.email)) {
-      return respond({ error: 'Test accounts cannot be deleted through this method' }, 403)
-    }
-
     // Delete auth user (cascade will handle related data)
     const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id)
 

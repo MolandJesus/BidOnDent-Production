@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Trash2, Users, AlertCircle, RefreshCw, UserPlus, CheckCircle } from "lucide-react";
+import { Trash2, Users, AlertCircle, RefreshCw, CheckCircle } from "lucide-react";
 import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
 import { ADMIN_EMAIL } from "../../config/adminConfig";
 
@@ -23,13 +23,6 @@ export default function AdminAccountManager() {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  // Create test account form
-  const [showCreateTest, setShowCreateTest] = useState(false);
-  const [testEmail, setTestEmail] = useState("");
-  const [testPassword, setTestPassword] = useState("Password123!");
-  const [testUserType, setTestUserType] = useState<"customer" | "shop" | "insurer">("customer");
-  const [creating, setCreating] = useState(false);
 
   const loadUsers = async () => {
     setLoading(true);
@@ -144,58 +137,6 @@ export default function AdminAccountManager() {
     }
   };
 
-  const createTestAccount = async () => {
-    if (!testEmail) {
-      setError("Email is required");
-      return;
-    }
-
-    setCreating(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-test-account`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${publicAnonKey}`,
-          },
-          body: JSON.stringify({
-            email: testEmail,
-            password: testPassword,
-            userType: testUserType,
-          }),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        setError(result.error || "Failed to create test account");
-        return;
-      }
-
-      // Check for success - handle both 'success' and 'created' fields
-      if (result.success || result.created) {
-        setSuccess(`Test account created: ${testEmail}`);
-      } else {
-        setError("Failed to create test account");
-      }
-
-      setTestEmail("");
-      setShowCreateTest(false);
-      await loadUsers();
-    } catch (err) {
-      console.error("Error creating test account:", err);
-      setError("Failed to create test account");
-    } finally {
-      setCreating(false);
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -205,7 +146,7 @@ export default function AdminAccountManager() {
             <Users className="w-6 h-6" />
             Account Management
           </h2>
-          <p className="text-gray-600 mt-1">Manage all user accounts and create test accounts</p>
+          <p className="text-gray-600 mt-1">Manage all user accounts</p>
         </div>
         <button
           onClick={loadUsers}
@@ -247,13 +188,6 @@ export default function AdminAccountManager() {
           Deselect All
         </button>
         <div className="flex-1" />
-        <button
-          onClick={() => setShowCreateTest(!showCreateTest)}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-        >
-          <UserPlus className="w-4 h-4" />
-          Create Test Account
-        </button>
         {selectedUsers.size > 0 && (
           <button
             onClick={deleteSelected}
@@ -265,65 +199,6 @@ export default function AdminAccountManager() {
           </button>
         )}
       </div>
-
-      {/* Create Test Account Form */}
-      {showCreateTest && (
-        <div className="p-6 bg-green-50 border border-green-200 rounded-lg space-y-4">
-          <h3 className="font-semibold text-gray-900">Create Test Account</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                value={testEmail}
-                onChange={(e) => setTestEmail(e.target.value)}
-                placeholder="test@example.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                type="text"
-                value={testPassword}
-                onChange={(e) => setTestPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
-              <select
-                value={testUserType}
-                onChange={(e) => setTestUserType(e.target.value as any)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-              >
-                <option value="customer">Customer</option>
-                <option value="shop">Shop</option>
-                <option value="insurer">Insurer</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={createTestAccount}
-              disabled={creating}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-            >
-              {creating ? "Creating..." : "Create Account"}
-            </button>
-            <button
-              onClick={() => setShowCreateTest(false)}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Users Table */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">

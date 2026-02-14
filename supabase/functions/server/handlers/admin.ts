@@ -138,7 +138,7 @@ export async function handleCreateUser(
       const { error: updateError } = await supabase.auth.admin.updateUserById(userId, {
         password,
         email_confirm: true,
-        user_metadata: { name: name || 'Test Account', phone: '', user_type: account_type }
+        user_metadata: { name: name || 'New User', phone: '', user_type: account_type }
       })
       if (updateError) return respond({ error: updateError.message }, 500)
     } else {
@@ -146,7 +146,7 @@ export async function handleCreateUser(
         email,
         password,
         email_confirm: true,
-        user_metadata: { name: name || 'Test Account', phone: '', user_type: account_type }
+        user_metadata: { name: name || 'New User', phone: '', user_type: account_type }
       })
       if (createError) return respond({ error: createError.message }, 500)
       if (!userData.user) return respond({ error: 'No user data returned' }, 500)
@@ -157,7 +157,7 @@ export async function handleCreateUser(
       {
         user_id: userId,
         email,
-        name: name || 'Test Account',
+        name: name || 'New User',
         phone: '',
         account_type,
         setup_completed: false,
@@ -330,60 +330,6 @@ export async function handleDeleteUsers(
       deleted,
       requested: userIds.length,
       errors: errors.length > 0 ? errors : undefined
-    })
-  } catch (error: any) {
-    return respond({ error: error.message }, 500)
-  }
-}
-
-/**
- * Create test account (admin-only)
- */
-export async function handleCreateTestAccount(
-  req: Request,
-  supabase: any,
-  respond: Function
-): Promise<Response> {
-  try {
-    const body = await req.json()
-    const { email, password, userType } = body
-
-    if (!email || !password || !userType) {
-      return respond({ error: 'email, password, and userType are required' }, 400)
-    }
-
-    const { data: userData, error: createError } = await supabase.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: {
-        name: `Test ${userType.charAt(0).toUpperCase() + userType.slice(1)}`,
-        user_type: userType,
-        created_by_admin: true
-      }
-    })
-
-    if (createError || !userData.user) {
-      return respond({ error: createError?.message || 'Failed to create user' }, 500)
-    }
-
-    const { error: profileError } = await supabase.from('profiles').insert({
-      user_id: userData.user.id,
-      email,
-      name: `Test ${userType.charAt(0).toUpperCase() + userType.slice(1)}`,
-      account_type: userType,
-      setup_completed: true
-    })
-
-    if (profileError) {
-      return respond({ error: profileError.message }, 500)
-    }
-
-    return respond({
-      success: true,
-      userId: userData.user.id,
-      email,
-      userType
     })
   } catch (error: any) {
     return respond({ error: error.message }, 500)

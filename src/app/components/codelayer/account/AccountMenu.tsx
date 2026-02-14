@@ -10,7 +10,7 @@ import {
   Shield,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { hasAdminPrivileges } from "../../../utils/adminCheck";
+import { isAdmin } from "../../../utils/adminCheck";
 
 type AccountMenuProps = {
   userType: string;
@@ -41,7 +41,7 @@ export default function AccountMenu({
 }: AccountMenuProps) {
   const rowBaseClass =
     "w-full py-3.5 px-4 flex items-center justify-between rounded-xl transition-colors";
-  const canAccessAdmin = hasAdminPrivileges(userEmail);
+  const canAccessAdmin = isAdmin(userEmail);
 
   return (
     <motion.section

@@ -72,13 +72,6 @@ export default function AccountScreen({
   // REMOVED: Supabase session checking - we now use Clerk for authentication
   // The session check was causing automatic logout when switching to account tab
 
-  // Check if user is using a test account
-  const isTestAccount = [
-    "customer.test@bidondent.com",
-    "shop.test@bidondent.com",
-    "insurer.test@bidondent.com",
-  ].includes(userEmail);
-
   // Editable user info
   const [editableName, setEditableName] = useState(userName);
   const [editableEmail, setEditableEmail] = useState(userEmail);
@@ -380,13 +373,6 @@ export default function AccountScreen({
     // Safety check: Verify confirmation text matches
     if (deleteConfirmText.toLowerCase() !== "delete") {
       alert('Please type "DELETE" to confirm account deletion');
-      return;
-    }
-
-    // Check if test account
-    if (isTestAccount) {
-      alert("This account type cannot be deleted through this method");
-      setDeleteConfirmText(""); // Reset confirmation text
       return;
     }
 

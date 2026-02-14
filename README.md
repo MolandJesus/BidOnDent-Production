@@ -501,9 +501,7 @@ To stay within Supabase's free tier limits, we use **extremely aggressive compre
 npm run dev
 ```
 
-### Test Accounts
-
-- **Demo Mode**: Use the demo switcher for all account types
+**Testing Multiple Account Types**: Use Demo Mode (see above) to test Customer, Shop, and Insurer perspectives instantly.
 
 ### Browser Console Tools
 

@@ -1,13 +1,11 @@
 import { motion } from "motion/react";
-import { Database, HardDrive, RefreshCw, UserPlus } from "lucide-react";
+import { Database, HardDrive, RefreshCw } from "lucide-react";
 
 type QuickActionsProps = {
   primaryColor: string;
   isLoading: boolean;
-  showNewAccountForm: boolean;
   operationStatus: string;
   onCheckAllAccounts: () => void;
-  onToggleNewAccountForm: () => void;
   onCheckEdgeFunctionHealth: () => void;
   onVerifyDatabase: () => void;
   onCheckSupabaseConnection: () => void;
@@ -16,10 +14,8 @@ type QuickActionsProps = {
 export default function QuickActions({
   primaryColor,
   isLoading,
-  showNewAccountForm,
   operationStatus,
   onCheckAllAccounts,
-  onToggleNewAccountForm,
   onCheckEdgeFunctionHealth,
   onVerifyDatabase,
   onCheckSupabaseConnection,
@@ -44,15 +40,6 @@ export default function QuickActions({
         >
           <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
           Check All Accounts
-        </button>
-
-        <button
-          onClick={onToggleNewAccountForm}
-          disabled={isLoading}
-          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-        >
-          <UserPlus className="w-4 h-4" />
-          {showNewAccountForm ? "Cancel" : "Create Custom Test Account"}
         </button>
 
         <button

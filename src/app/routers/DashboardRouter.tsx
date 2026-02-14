@@ -23,7 +23,7 @@ import CompetitorAnalysisScreen from "../components/reports/CompetitorAnalysisSc
 import DemoAccountSwitcher from "../components/demo/DemoAccountSwitcher";
 import SmokeTestScreen from "../components/demo/SmokeTestScreen";
 import { SEED_DAMAGE_REPORTS } from "../constants";
-import { hasAdminPrivileges } from "../utils/adminCheck";
+import { isAdmin } from "../utils/adminCheck";
 
 interface DashboardRouterProps {
   // Navigation state
@@ -366,7 +366,7 @@ export default function DashboardRouter({
           </motion.div>
         )}
 
-        {viewMode === "admin" && hasAdminPrivileges(userInfo.email) && (
+        {viewMode === "admin" && isAdmin(userInfo.email) && (
           <motion.div
             key="admin"
             initial={{ opacity: 0, x: -20 }}
@@ -378,7 +378,7 @@ export default function DashboardRouter({
           </motion.div>
         )}
 
-        {viewMode === "admin" && !hasAdminPrivileges(userInfo.email) && (
+        {viewMode === "admin" && !isAdmin(userInfo.email) && (
           <motion.div
             key="admin-locked"
             initial={{ opacity: 0, x: -20 }}

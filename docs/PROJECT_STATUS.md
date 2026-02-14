@@ -19,8 +19,7 @@ BidOnDent is a fully functional auto repair bidding platform built with modern w
 **Admin Panel Enhancements:**
 
 - ✅ Professional admin dashboard with role-based access control
-- ✅ Linked test account system for easy multi-perspective testing
-- ✅ Account type switching and management utilities
+- ✅ Account management utilities for user administration
 - ✅ User deletion and data cleanup tools
 - ✅ Comprehensive admin information panel
 

@@ -37,7 +37,6 @@ import {
   handleManageAdmin,
   handleListUsers,
   handleDeleteUsers,
-  handleCreateTestAccount,
 } from './handlers/admin.ts'
 import { handleTrackLogin, handleDeleteAccount } from './handlers/auth.ts'
 import {
@@ -107,10 +106,6 @@ Deno.serve(async (req) => {
 
     if (path === '/make-server-9f243523/admin/delete-users' && req.method === 'POST') {
       return await handleDeleteUsers(req, supabase, respond)
-    }
-
-    if (path === '/make-server-9f243523/admin/create-test-account' && req.method === 'POST') {
-      return await handleCreateTestAccount(req, supabase, respond)
     }
 
     // ===== AUTH ROUTES =====
