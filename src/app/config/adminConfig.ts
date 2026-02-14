@@ -41,12 +41,6 @@ export const SUPER_ADMIN_EMAIL = "molalign5@gmail.com";
 const ADMIN_EMAILS = [ADMIN_EMAIL, SUPER_ADMIN_EMAIL].map((email) => email.toLowerCase());
 
 /**
- * Admin password for switching accounts (dev/test only)
- * In production, this would be removed entirely
- */
-export const ADMIN_SWITCH_PASSWORD = "admin123";
-
-/**
  * Check if the given email is the main admin account
  */
 export function isAdmin(email: string | undefined): boolean {
