@@ -3,8 +3,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 import { initializeDatabaseTables } from "./database_init.tsx";
 import { initializeStorageBuckets } from "./storage_init.tsx";
 
-// BUILD VERSION: 2026-01-01-v4 - Added storage initialization
-console.log('🚀 Edge Function Server Starting - Build: 2026-01-01-v4');
+// BUILD VERSION: 2026-02-13-v6 - Simplified CORS headers
+console.log('🚀 Edge Function Server Starting - Build: 2026-02-13-v6');
 
 // Initialize database tables and storage buckets on startup
 (async () => {
@@ -12,12 +12,13 @@ console.log('🚀 Edge Function Server Starting - Build: 2026-01-01-v4');
   await initializeStorageBuckets();
 })();
 
-const corsHeaders: Record<string, string> = {
+const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Vary': 'Origin',
-}
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Max-Age': '3600',
+  'Access-Control-Expose-Headers': '*',
+};
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
@@ -32,15 +33,50 @@ const supabaseAuth = createClient(SUPABASE_URL, ANON_KEY, {
   }
 })
 
-// Helper: strip only the leading function prefix
+// Helper: strip the function prefix and extract the route path
 function stripFunctionPrefix(pathname: string): string {
-  const prefix = '/server';
-  return pathname.startsWith(prefix) ? pathname.slice(prefix.length) || '/' : pathname;
+  // Remove /functions/v1/ prefix that Supabase adds
+  let path = pathname;
+  if (path.startsWith('/functions/v1/')) {
+    path = path.slice('/functions/v1/'.length);
+  }
+  // Also handle /server prefix for local testing
+  if (path.startsWith('/server/')) {
+    path = path.slice('/server/'.length);
+  }
+  if (path.startsWith('/server')) {
+    path = path.slice('/server'.length) || '/';
+  }
+  // Ensure leading slash for routes
+  if (!path.startsWith('/')) {
+    path = '/' + path;
+  }
+  return path || '/';
 }
 
 Deno.serve(async (req) => {
+  // Helper to ensure all responses have CORS headers
+  const respond = (body: any, status = 200, additionalHeaders: Record<string, string> = {}) => {
+    return new Response(
+      typeof body === 'string' ? body : JSON.stringify(body),
+      {
+        status,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+          ...additionalHeaders,
+        }
+      }
+    );
+  };
+
+
+  // Handle OPTIONS preflight for all routes
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders
+    });
   }
 
   const url = new URL(req.url)
@@ -48,31 +84,67 @@ Deno.serve(async (req) => {
 
   try {
     // Log all incoming requests for debugging
-    console.log(`📥 Incoming ${req.method} ${url.pathname} -> route path: ${path}`);
+    const isDeleteMatch = path === '/delete-vehicle' && req.method === 'POST';
+    console.log(`🔍 Path check: isDeleteMatch=${isDeleteMatch}, path=${path}, method=${req.method}`);
 
     // Health check endpoint with version
     if (path === '/make-server-9f243523/health' && req.method === 'GET') {
-      return new Response(
-        JSON.stringify({ 
-          status: 'ok',
-          version: '2026-01-01-v4',
-          adminEmail: 'figmaadmin@bidondent.com'
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return respond({
+        status: 'ok',
+        version: '2026-02-13-v5',
+        adminEmail: 'figmaadmin@bidondent.com'
+      });
     }
 
     // Database migration endpoint
     if (path === '/make-server-9f243523/migrate-database' && req.method === 'POST') {
-      console.log('🔧 Running database migration...')
       try {
         await initializeDatabaseTables()
-        
+
+        // Step 2: Manually add clerk_user_id column if it still doesn't exist
+        try {
+          const { Client } = await import('https://deno.land/x/postgres@v0.17.0/mod.ts');
+          const dbUrl = Deno.env.get('SUPABASE_DB_URL') ?? '';
+          if (dbUrl) {
+            const client = new Client(dbUrl);
+            await client.connect();
+
+            try {
+              // Check if column exists
+              const checkResult = await client.queryArray(
+                `SELECT column_name FROM information_schema.columns
+                 WHERE table_schema = 'public' AND table_name = 'vehicles' AND column_name = 'clerk_user_id'`
+              );
+
+              if (checkResult.rows.length === 0) {
+                await client.queryArray(`ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS clerk_user_id TEXT;`);
+              } else {
+              }
+
+              // Do the same for damage_reports
+              const checkReportsResult = await client.queryArray(
+                `SELECT column_name FROM information_schema.columns
+                 WHERE table_schema = 'public' AND table_name = 'damage_reports' AND column_name = 'clerk_user_id'`
+              );
+
+              if (checkReportsResult.rows.length === 0) {
+                await client.queryArray(`ALTER TABLE public.damage_reports ADD COLUMN IF NOT EXISTS clerk_user_id TEXT;`);
+              } else {
+              }
+
+            } finally {
+              await client.end();
+            }
+          }
+        } catch (postgresError: any) {
+          console.warn('⚠️ Could not verify columns via direct DB connection:', postgresError.message);
+        }
+
         // Force PostgREST to reload schema cache via HTTP
         try {
           const supabaseUrl = Deno.env.get('SUPABASE_URL');
           const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-          
+
           if (supabaseUrl && serviceKey) {
             // PostgREST admin endpoint for schema cache reload
             const postgrestAdminUrl = supabaseUrl.replace('https://', 'https://') + '/rest/v1/';
@@ -84,12 +156,10 @@ Deno.serve(async (req) => {
                 'Prefer': 'schema-reload'
               }
             });
-            console.log('✅ PostgREST schema cache reload requested via HTTP');
           }
         } catch (reloadError) {
-          console.log('⚠️ PostgREST reload via HTTP not available (using NOTIFY instead)');
         }
-        
+
         return new Response(
           JSON.stringify({ success: true, message: 'Database migration completed' }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -106,7 +176,7 @@ Deno.serve(async (req) => {
     // Setup admin account endpoint (no auth required - only works for figmaadmin@bidondent.com)
     if (path === '/make-server-9f243523/admin/setup-admin' && req.method === 'POST') {
       console.log('🚀 Admin setup endpoint hit!');
-      
+
       try {
         const body = await req.json()
         console.log('📦 Request body:', body);
@@ -114,7 +184,6 @@ Deno.serve(async (req) => {
 
         // Only allow creating the specific admin email
         if (!email || email.toLowerCase() !== 'figmaadmin@bidondent.com') {
-          console.log(`❌ Invalid email for admin setup: ${email}`);
           return new Response(
             JSON.stringify({ error: 'This endpoint is only for setting up figmaadmin@bidondent.com' }),
             { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -135,7 +204,6 @@ Deno.serve(async (req) => {
           )
         }
 
-        console.log(`✅ Valid request - Setting up admin account: ${email}`)
 
         const { data: existingUsers } = await supabase.auth.admin.listUsers()
         const existingUser = existingUsers?.users?.find(u => u.email?.toLowerCase() === email.toLowerCase())
@@ -145,11 +213,11 @@ Deno.serve(async (req) => {
         if (existingUser) {
           console.log(`Admin user already exists in auth: ${existingUser.id}`)
           userId = existingUser.id
-        
+
           // Update password
           const { error: updateError } = await supabase.auth.admin.updateUserById(
             userId,
-            { 
+            {
               password: password,
               email_confirm: true,
               user_metadata: {
@@ -223,11 +291,10 @@ Deno.serve(async (req) => {
           )
         }
 
-        console.log(`✅ Admin account setup complete for ${email}`)
 
         return new Response(
-          JSON.stringify({ 
-            success: true, 
+          JSON.stringify({
+            success: true,
             message: 'Admin account created successfully',
             userId: userId
           }),
@@ -245,24 +312,20 @@ Deno.serve(async (req) => {
     // Check if admin account exists (no auth required - public endpoint)
     if (path === '/make-server-9f243523/admin/check-admin-exists' && req.method === 'GET') {
       console.log('🔍 Checking if admin account exists...');
-      
+
       try {
         const adminEmail = 'figmaadmin@bidondent.com';
-        
+
         // Check auth users
         const { data: existingUsers } = await supabase.auth.admin.listUsers()
-        console.log(`📊 Total users in auth: ${existingUsers?.users?.length || 0}`);
-        console.log(`📊 All user emails:`, existingUsers?.users?.map(u => u.email) || []);
-        
+
         const existingUser = existingUsers?.users?.find(u => u.email?.toLowerCase() === adminEmail)
-        
-        console.log(`📊 Admin check result: ${existingUser ? 'EXISTS' : 'NOT FOUND'}`);
+
         if (existingUser) {
-          console.log(`📊 Admin user details:`, { id: existingUser.id, email: existingUser.email, created_at: existingUser.created_at });
         }
-        
+
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             exists: !!existingUser,
             email: adminEmail,
             totalUsers: existingUsers?.users?.length || 0
@@ -272,9 +335,9 @@ Deno.serve(async (req) => {
       } catch (error: any) {
         console.error('Error checking admin:', error)
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             exists: false, // Default to false on error to show setup button
-            error: error.message 
+            error: error.message
           }),
           { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
@@ -284,9 +347,9 @@ Deno.serve(async (req) => {
     if (path === '/make-server-9f243523/admin/create-user' && req.method === 'POST') {
       const body = await req.json()
       console.log('🔍 CREATE-USER: Raw body received:', JSON.stringify(body, null, 2));
-      
+
       const { email, password, name, account_type, adminEmail } = body
-      
+
       console.log('🔍 CREATE-USER: Extracted adminEmail:', adminEmail);
       console.log('🔍 CREATE-USER: adminEmail type:', typeof adminEmail);
       console.log('🔍 CREATE-USER: adminEmail?.toLowerCase():', adminEmail?.toLowerCase());
@@ -294,14 +357,12 @@ Deno.serve(async (req) => {
 
       // Case-insensitive admin check
       if (adminEmail?.toLowerCase() !== 'figmaadmin@bidondent.com') {
-        console.log(`❌ Unauthorized admin access attempt by: ${adminEmail}`)
         return new Response(
           JSON.stringify({ error: 'Unauthorized' }),
           { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
       }
-      
-      console.log('✅ Admin check passed!');
+
 
       if (!email || !password || !account_type) {
         return new Response(
@@ -327,10 +388,10 @@ Deno.serve(async (req) => {
       if (existingUser) {
         console.log(`User already exists in auth: ${existingUser.id}`)
         userId = existingUser.id
-        
+
         const { error: updateError } = await supabase.auth.admin.updateUserById(
           userId,
-          { 
+          {
             password: password,
             email_confirm: true,
             user_metadata: {
@@ -395,9 +456,9 @@ Deno.serve(async (req) => {
       if (profileError) {
         console.error('Error creating profile:', profileError.message)
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             error: `User ${existingUser ? 'updated' : 'created'} but profile error: ${profileError.message}`,
-            userId: userId 
+            userId: userId
           }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
@@ -548,10 +609,9 @@ Deno.serve(async (req) => {
           )
         }
 
-        console.log(`✅ ${targetEmail} is now ${promote ? 'an admin' : 'a regular user'}`)
 
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             success: true,
             profile: updatedProfile,
             message: `${targetEmail} ${promote ? 'promoted to admin' : 'demoted from admin'}`
@@ -588,7 +648,7 @@ Deno.serve(async (req) => {
         }
 
         let query = supabase.from('profiles').update(updateData)
-        
+
         if (email) {
           query = query.eq('email', email)
         } else if (user_id) {
@@ -605,7 +665,6 @@ Deno.serve(async (req) => {
           )
         }
 
-        console.log(`✅ Login tracked for: ${email || user_id}`)
 
         return new Response(
           JSON.stringify({ success: true }),
@@ -624,7 +683,7 @@ Deno.serve(async (req) => {
     if (path === '/make-server-9f243523/delete-account' && req.method === 'POST') {
       // Verify user is authenticated
       const authHeader = req.headers.get('Authorization')
-      
+
       if (!authHeader) {
         console.error('❌ No Authorization header in delete request')
         return new Response(
@@ -632,15 +691,15 @@ Deno.serve(async (req) => {
           { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
       }
-      
+
       const token = authHeader.replace('Bearer ', '')
       console.log('🔍 Validating JWT token for account deletion...')
       console.log('🔑 Token length:', token.length)
       console.log('🔑 Token preview:', token.substring(0, 20) + '...')
-      
+
       // Use EXACT SAME validation pattern as upload-photo
       const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token)
-      
+
       if (authError || !user) {
         console.error('❌ JWT validation failed:', {
           error: authError?.message,
@@ -649,16 +708,14 @@ Deno.serve(async (req) => {
           errorStatus: authError?.status
         })
         return new Response(
-          JSON.stringify({ 
-            error: 'Unauthorized', 
+          JSON.stringify({
+            error: 'Unauthorized',
             details: authError?.message || 'Invalid token'
           }),
           { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
       }
 
-      console.log('✅ JWT validated for user:', user.email)
-      console.log(`🗑️ Delete account request for user: ${user.email}`)
 
       try {
         // Get user's profile to check account type and email
@@ -688,7 +745,7 @@ Deno.serve(async (req) => {
         // Safety check: Prevent deletion of test accounts
         const testEmails = [
           'customer.test@bidondent.com',
-          'shop.test@bidondent.com', 
+          'shop.test@bidondent.com',
           'insurer.test@bidondent.com'
         ]
         if (profile?.email && testEmails.includes(profile.email)) {
@@ -699,12 +756,11 @@ Deno.serve(async (req) => {
           )
         }
 
-        console.log('🗑️ Starting account deletion process...')
 
         // SIMPLIFIED APPROACH: Delete auth user first (like admin delete)
         // When auth user is deleted, Supabase CASCADE will handle related data
         const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id)
-        
+
         if (authDeleteError) {
           console.error('Error deleting auth user:', authDeleteError)
           return new Response(
@@ -713,19 +769,17 @@ Deno.serve(async (req) => {
           )
         }
 
-        console.log('✅ Auth user deleted')
 
         // Delete profile (CASCADE should have already handled this if configured, but let's be explicit)
         const { error: profileDeleteError } = await supabase
           .from('profiles')
           .delete()
           .eq('user_id', user.id)
-        
+
         if (profileDeleteError) {
           console.error('Error deleting profile:', profileDeleteError)
           // Don't return error here since auth is already deleted
         } else {
-          console.log('✅ Profile deleted')
         }
 
         // Clean up related data (in case CASCADE isn't configured)
@@ -733,13 +787,11 @@ Deno.serve(async (req) => {
         await supabase.from('bids').delete().eq('user_id', user.id)
         await supabase.from('damage_reports').delete().eq('user_id', user.id)
         await supabase.from('vehicles').delete().eq('user_id', user.id)
-        
-        console.log('✅ Related data cleaned up')
 
-        console.log(`✅ Account deleted successfully for: ${profile?.email}`)
+
 
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             success: true,
             message: 'Account deleted successfully'
           }),
@@ -758,11 +810,11 @@ Deno.serve(async (req) => {
       // For Clerk-authenticated users, we skip JWT validation
       // and allow uploads with the public anon key
       console.log('📤 Photo upload endpoint hit')
-      
+
       const formData = await req.formData()
       const file = formData.get('file') as File
       const bucket = formData.get('bucket') as string
-      
+
       if (!file || !bucket) {
         console.error('❌ Missing file or bucket in upload request')
         return new Response(
@@ -806,7 +858,6 @@ Deno.serve(async (req) => {
         .from(bucket)
         .getPublicUrl(data.path)
 
-      console.log('✅ Photo uploaded successfully:', publicUrl)
 
       return new Response(
         JSON.stringify({ publicUrl }),
@@ -818,12 +869,11 @@ Deno.serve(async (req) => {
     if (path === '/make-server-9f243523/admin/list-users' && req.method === 'GET') {
       try {
         console.log('📋 Listing all users...');
-        
+
         const { data: authData } = await supabase.auth.admin.listUsers();
         const users = authData?.users || [];
-        
-        console.log(`✅ Found ${users.length} users`);
-        
+
+
         return new Response(
           JSON.stringify({ users }),
           { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -842,41 +892,38 @@ Deno.serve(async (req) => {
       try {
         const body = await req.json();
         const { userIds } = body;
-        
+
         if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
           return new Response(
             JSON.stringify({ error: 'userIds array is required' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
-        console.log(`🗑️ Deleting ${userIds.length} users...`);
-        
+
+
         let deleted = 0;
         const errors = [];
-        
+
         for (const userId of userIds) {
           try {
             // Delete from auth
             const { error: authError } = await supabase.auth.admin.deleteUser(userId);
-            
+
             if (authError) {
               console.error(`Error deleting user ${userId}:`, authError);
               errors.push({ userId, error: authError.message });
             } else {
               deleted++;
-              console.log(`✅ Deleted user: ${userId}`);
             }
           } catch (error: any) {
             console.error(`Error deleting user ${userId}:`, error);
             errors.push({ userId, error: error.message });
           }
         }
-        
-        console.log(`✅ Deleted ${deleted}/${userIds.length} users`);
-        
+
+
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             deleted,
             requested: userIds.length,
             errors: errors.length > 0 ? errors : undefined
@@ -897,16 +944,16 @@ Deno.serve(async (req) => {
       try {
         const body = await req.json();
         const { email, password, userType } = body;
-        
+
         if (!email || !password || !userType) {
           return new Response(
             JSON.stringify({ error: 'email, password, and userType are required' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         console.log(`🧪 Creating test account: ${email} (${userType})`);
-        
+
         // Create user with email already confirmed
         const { data: userData, error: createError } = await supabase.auth.admin.createUser({
           email: email,
@@ -918,7 +965,7 @@ Deno.serve(async (req) => {
             created_by_admin: true
           }
         });
-        
+
         if (createError) {
           console.error('Error creating test user:', createError);
           return new Response(
@@ -926,14 +973,14 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         if (!userData.user) {
           return new Response(
             JSON.stringify({ error: 'Failed to create user' }),
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         // Create profile for test user
         const { error: profileError } = await supabase
           .from('profiles')
@@ -944,7 +991,7 @@ Deno.serve(async (req) => {
             account_type: userType,
             setup_completed: true
           });
-        
+
         if (profileError) {
           console.error('Error creating test profile:', profileError);
           return new Response(
@@ -952,11 +999,10 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
-        console.log(`✅ Test account created: ${email}`);
-        
+
+
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             success: true,
             userId: userData.user.id,
             email: email,
@@ -976,13 +1022,12 @@ Deno.serve(async (req) => {
     // Get storage statistics
     if (path === '/make-server-9f243523/storage-stats' && req.method === 'GET') {
       try {
-        console.log('📊 Fetching storage statistics...');
-        
+
         // Count all damage reports
         const { data: reports, error: reportsError } = await supabase
           .from('damage_reports')
           .select('photo_urls');
-        
+
         if (reportsError) {
           console.error('Error fetching reports:', reportsError);
           return new Response(
@@ -990,22 +1035,22 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         // Count total photos and estimate storage
         let totalPhotos = 0;
         let estimatedBytes = 0;
         const avgPhotoSize = 400 * 1024; // 400KB average per photo
-        
+
         reports?.forEach((report: any) => {
           const photoUrls = report.photo_urls || [];
           totalPhotos += photoUrls.length;
         });
-        
+
         estimatedBytes = totalPhotos * avgPhotoSize;
         const estimatedMB = (estimatedBytes / 1024 / 1024).toFixed(0);
         const storageLimit = 1024; // 1GB in MB
         const storagePercentage = Math.round((estimatedBytes / (storageLimit * 1024 * 1024)) * 100);
-        
+
         const stats = {
           totalReports: reports?.length || 0,
           totalPhotos,
@@ -1016,9 +1061,8 @@ Deno.serve(async (req) => {
           bandwidthWarning: storagePercentage > 50,
           needsCleanup: storagePercentage > 70
         };
-        
-        console.log('✅ Storage stats:', stats);
-        
+
+
         return new Response(
           JSON.stringify(stats),
           { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -1037,20 +1081,19 @@ Deno.serve(async (req) => {
       try {
         const body = await req.json();
         const { daysOld = 30 } = body;
-        
-        console.log(`🗑️ Cleaning up reports older than ${daysOld} days...`);
-        
+
+
         // Calculate cutoff date
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - daysOld);
         const cutoffISO = cutoffDate.toISOString();
-        
+
         // Find old reports with photos
         const { data: oldReports, error: fetchError } = await supabase
           .from('damage_reports')
           .select('id, photo_urls')
           .lt('created_at', cutoffISO);
-        
+
         if (fetchError) {
           console.error('Error fetching old reports:', fetchError);
           return new Response(
@@ -1058,7 +1101,7 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         // Delete photos from storage first
         let photosDeleted = 0;
         for (const report of (oldReports || [])) {
@@ -1071,11 +1114,11 @@ Deno.serve(async (req) => {
               const fileName = pathParts[pathParts.length - 1];
               const folder = pathParts[pathParts.length - 2];
               const filePath = `${folder}/${fileName}`;
-              
+
               const { error: deleteError } = await supabase.storage
                 .from('bidondent-damage-photos')
                 .remove([filePath]);
-              
+
               if (!deleteError) {
                 photosDeleted++;
               }
@@ -1085,13 +1128,13 @@ Deno.serve(async (req) => {
             }
           }
         }
-        
+
         // Delete the reports
         const { error: deleteError } = await supabase
           .from('damage_reports')
           .delete()
           .lt('created_at', cutoffISO);
-        
+
         if (deleteError) {
           console.error('Error deleting old reports:', deleteError);
           return new Response(
@@ -1099,12 +1142,11 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         const reportsDeleted = oldReports?.length || 0;
-        console.log(`✅ Cleanup complete: ${reportsDeleted} reports, ${photosDeleted} photos`);
-        
+
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             deleted: reportsDeleted,
             photosDeleted,
             message: `Deleted ${reportsDeleted} reports older than ${daysOld} days`
@@ -1125,16 +1167,16 @@ Deno.serve(async (req) => {
       try {
         const body = await req.json();
         const { clerkUserId, report } = body;
-        
+
         if (!clerkUserId) {
           return new Response(
             JSON.stringify({ error: 'Missing clerkUserId' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         console.log(`📝 Saving damage report for Clerk user: ${clerkUserId}`);
-        
+
         // Use service role to bypass RLS and save with clerk_user_id
         const { data, error } = await supabase
           .from('damage_reports')
@@ -1156,7 +1198,7 @@ Deno.serve(async (req) => {
           })
           .select()
           .single();
-        
+
         if (error) {
           console.error('❌ Error saving damage report:', error);
           return new Response(
@@ -1164,9 +1206,8 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
-        console.log('✅ Damage report saved successfully:', data.id);
-        
+
+
         return new Response(
           JSON.stringify({ success: true, report: data }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -1185,23 +1226,23 @@ Deno.serve(async (req) => {
       try {
         const url = new URL(req.url);
         const clerkUserId = url.searchParams.get('clerkUserId');
-        
+
         if (!clerkUserId) {
           return new Response(
             JSON.stringify({ error: 'Missing clerkUserId' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         console.log(`📋 Fetching damage reports for Clerk user: ${clerkUserId}`);
-        
+
         // Use service role to bypass RLS
         const { data, error } = await supabase
           .from('damage_reports')
           .select('*')
           .eq('clerk_user_id', clerkUserId)
           .order('created_at', { ascending: false });
-        
+
         if (error) {
           console.error('❌ Error fetching damage reports:', error);
           return new Response(
@@ -1209,9 +1250,8 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
-        console.log(`✅ Found ${data.length} damage reports`);
-        
+
+
         return new Response(
           JSON.stringify({ reports: data }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -1230,25 +1270,25 @@ Deno.serve(async (req) => {
       try {
         const body = await req.json();
         const { clerkUserId, vehicle } = body;
-        
+
         if (!clerkUserId) {
           return new Response(
             JSON.stringify({ error: 'Missing clerkUserId' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         console.log(`🚗 Saving vehicle for Clerk user: ${clerkUserId}`);
-        
+
         // Convert year to number if it's a string
         const yearNum = typeof vehicle.year === 'string' ? parseInt(vehicle.year, 10) : vehicle.year;
-        
+
         // Check if vehicle has a valid UUID (existing vehicle)
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         const hasValidId = vehicle.id && uuidRegex.test(vehicle.id);
-        
+
         let data, error;
-        
+
         if (hasValidId) {
           // Update existing vehicle
           console.log('🔄 Updating vehicle with ID:', vehicle.id);
@@ -1267,7 +1307,7 @@ Deno.serve(async (req) => {
             .eq('clerk_user_id', clerkUserId)
             .select()
             .single();
-          
+
           data = result.data;
           error = result.error;
         } else {
@@ -1287,11 +1327,11 @@ Deno.serve(async (req) => {
             })
             .select()
             .single();
-          
+
           data = result.data;
           error = result.error;
         }
-        
+
         if (error) {
           console.error('❌ Error saving vehicle:', error);
           return new Response(
@@ -1299,9 +1339,8 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
-        console.log('✅ Vehicle saved successfully:', data.id);
-        
+
+
         return new Response(
           JSON.stringify({ success: true, vehicle: data }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -1320,23 +1359,23 @@ Deno.serve(async (req) => {
       try {
         const url = new URL(req.url);
         const clerkUserId = url.searchParams.get('clerkUserId');
-        
+
         if (!clerkUserId) {
           return new Response(
             JSON.stringify({ error: 'Missing clerkUserId' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
+
         console.log(`🚗 Fetching vehicles for Clerk user: ${clerkUserId}`);
-        
+
         // Use service role to bypass RLS
         const { data, error } = await supabase
           .from('vehicles')
           .select('*')
           .eq('clerk_user_id', clerkUserId)
           .order('created_at', { ascending: false });
-        
+
         if (error) {
           console.error('❌ Error fetching vehicles:', error);
           return new Response(
@@ -1344,31 +1383,109 @@ Deno.serve(async (req) => {
             { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
-        
-        console.log(`✅ Found ${data.length} vehicles`);
-        
-        return new Response(
-          JSON.stringify({ vehicles: data }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+
+
+        return respond({ vehicles: data });
       } catch (error: any) {
         console.error('Error in get vehicles endpoint:', error);
-        return new Response(
-          JSON.stringify({ error: error.message }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        return respond({ error: error.message }, 500);
       }
     }
 
-    return new Response(
-      JSON.stringify({ error: 'Not found' }),
-      { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
-  } catch (error) {
+    // Delete vehicle via POST (Clerk auth support - avoiding CORS DELETE issues)
+    if ((path === '/make-server-9f243523/delete-vehicle' || path === '/delete-vehicle') && req.method === 'POST') {
+      try {
+        const body = await req.json();
+        const { vehicleId, clerkUserId } = body;
+
+
+        if (!vehicleId || !clerkUserId) {
+          return respond({ error: 'Missing vehicleId or clerkUserId' }, 400);
+        }
+
+        const { error } = await supabase
+          .from('vehicles')
+          .delete()
+          .eq('id', vehicleId)
+          .eq('clerk_user_id', clerkUserId);
+
+        if (error) {
+          console.error('❌ Error deleting vehicle:', error);
+          return respond({ error: error.message }, 500);
+        }
+
+        return respond({ success: true, message: 'Vehicle deleted' });
+      } catch (error: any) {
+        console.error('Error in delete vehicle endpoint:', error);
+        return respond({ error: error.message }, 500);
+      }
+    }
+
+    // Delete vehicle (Clerk auth support)
+    if (path.startsWith('/make-server-9f243523/vehicles/') && req.method === 'DELETE') {
+      try {
+        const url = new URL(req.url);
+        const vehicleId = path.split('/').pop();
+        const clerkUserId = url.searchParams.get('clerkUserId');
+
+
+        if (!vehicleId || !clerkUserId) {
+          return respond({ error: 'Missing vehicleId or clerkUserId' }, 400);
+        }
+
+
+        const { error } = await supabase
+          .from('vehicles')
+          .delete()
+          .eq('id', vehicleId)
+          .eq('clerk_user_id', clerkUserId);
+
+        if (error) {
+          console.error('❌ Error deleting vehicle:', error);
+          return respond({ error: error.message }, 500);
+        }
+
+        return respond({ success: true, message: 'Vehicle deleted' });
+      } catch (error: any) {
+        console.error('Error in delete vehicle endpoint:', error);
+        return respond({ error: error.message }, 500);
+      }
+    }
+
+    // Delete damage report (Clerk auth support)
+    if (path.startsWith('/make-server-9f243523/reports/') && req.method === 'DELETE') {
+      try {
+        const url = new URL(req.url);
+        const reportId = path.split('/').pop();
+        const clerkUserId = url.searchParams.get('clerkUserId');
+
+
+        if (!reportId || !clerkUserId) {
+          return respond({ error: 'Missing reportId or clerkUserId' }, 400);
+        }
+
+
+        const { error } = await supabase
+          .from('damage_reports')
+          .delete()
+          .eq('id', reportId)
+          .eq('clerk_user_id', clerkUserId);
+
+        if (error) {
+          console.error('❌ Error deleting report:', error);
+          return respond({ error: error.message }, 500);
+        }
+
+        return respond({ success: true, message: 'Report deleted' });
+      } catch (error: any) {
+        console.error('Error in delete report endpoint:', error);
+        return respond({ error: error.message }, 500);
+      }
+    }
+
+    return respond({ error: 'Not found' }, 404)
+  } catch (error: any) {
     console.error('Error:', error)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return respond({ error: 'Internal server error', details: error?.message }, 500)
   }
 })
