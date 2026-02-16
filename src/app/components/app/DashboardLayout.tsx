@@ -335,8 +335,8 @@ export default function DashboardLayout({
             </div>
           </header>
 
-          <main className="px-4 md:px-8 py-5 md:py-6 pb-24 md:pb-8">
-            <div className="max-w-[1400px]">
+          <main className="px-4 md:px-8 lg:px-10 2xl:px-12 py-5 md:py-6 pb-24 md:pb-8">
+            <div className="w-full">
               <DashboardRouter {...dashboardRouterProps} />
             </div>
           </main>
