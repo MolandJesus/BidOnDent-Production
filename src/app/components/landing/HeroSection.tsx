@@ -59,7 +59,7 @@ export default function HeroSection({
             >
               <span className="inline-flex items-center px-4 py-2 rounded-full bg-green-50 border border-green-200 text-green-700 text-sm font-medium">
                 <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
-                Trusted by 10,000+ customers
+                Trusted workflow for customers, shops, and insurers
               </span>
             </div>
 
@@ -193,9 +193,9 @@ export default function HeroSection({
               style={{ transitionDelay: "1.2s" }}
             >
               <div className="text-2xl font-bold" style={{ color: primaryColor }}>
-                500+
+                NY
               </div>
-              <div className="text-xs text-gray-500 font-medium">Partner Shops</div>
+              <div className="text-xs text-gray-500 font-medium">Active Service Region</div>
             </div>
 
             {/* Floating notification card */}
@@ -208,7 +208,7 @@ export default function HeroSection({
               </div>
               <div>
                 <div className="font-semibold text-sm text-gray-800">Repair Completed!</div>
-                <div className="text-xs text-gray-500">Saved $1,240 on repair costs</div>
+                <div className="text-xs text-gray-500">Bid selected and scheduled through platform</div>
               </div>
             </div>
           </div>

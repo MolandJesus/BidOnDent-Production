@@ -57,7 +57,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" style={{ color: primaryColor }} />
-                <span>San Francisco, CA</span>
+                <span>New York Service Region</span>
               </div>
             </div>
           </div>
@@ -66,7 +66,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
             <ul className="space-y-2 text-gray-400">
               <li>
                 <a
-                  href="#"
+                  href="#how-it-works"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   How It Works
@@ -74,7 +74,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#business-inquiry"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Submit Report
@@ -82,10 +82,10 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#coverage"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
-                  Find Shops
+                  Coverage
                 </a>
               </li>
             </ul>
@@ -95,7 +95,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
             <ul className="space-y-2 text-gray-400">
               <li>
                 <a
-                  href="#"
+                  href="#business-inquiry"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Shop Signup
@@ -103,7 +103,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#business-inquiry"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Insurer Partnership
@@ -111,7 +111,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#who-we-serve"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Pricing
@@ -124,7 +124,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
             <ul className="space-y-2 text-gray-400">
               <li>
                 <a
-                  href="#"
+                  href="#about-opportunity"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   About Us
@@ -132,7 +132,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#"
+                  href="mailto:hello@bidondent.com"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Contact
@@ -140,7 +140,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#"
+                  href="#about-opportunity"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Privacy Policy

@@ -2,16 +2,16 @@
  * ============================================================================
  * BIDONDENT SERVICES - CENTRALIZED EXPORTS
  * ============================================================================
- * 
+ *
  * Import all services from one location for convenience:
- * 
+ *
  * import {
  *   realtimeBidService,
  *   performanceOptimizer,
  *   storageService,
  *   supabase
  * } from './services';
- * 
+ *
  * ============================================================================
  */
 
@@ -55,6 +55,15 @@ export {
   type Bid
 } from './supabaseService';
 
+// Intake and workflow operations
+export {
+  submitShopInterest,
+  submitInsurerInterest,
+  logWorkflowEvent,
+  createJobAssignment,
+  updateJobAssignmentStatus
+} from './supabaseService';
+
 // Storage operations
 export {
   uploadPhoto,
@@ -65,7 +74,7 @@ export {
 // REAL-TIME SERVICES (NEW!)
 // ============================================================================
 
-export { 
+export {
   realtimeBidService,
   RealtimeBidService,
   type BidCallback,

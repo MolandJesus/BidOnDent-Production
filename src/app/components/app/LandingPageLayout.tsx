@@ -2,10 +2,13 @@ import type { RefObject } from "react";
 import type { Bid, Notification, RedirectInfo, UserInfo, Vehicle } from "../../types";
 import CTASection from "../landing/CTASection";
 import BenefitsSection from "../landing/BenefitsSection";
+import BusinessInquirySection from "../landing/BusinessInquirySection";
 import FooterSection from "../landing/FooterSection";
 import HeroSection from "../landing/HeroSection";
 import HowItWorksSection from "../landing/HowItWorksSection";
+import OperatingRegionsSection from "../landing/OperatingRegionsSection";
 import TrustStatsSection from "../landing/TrustStatsSection";
+import AboutOpportunitySection from "../landing/AboutOpportunitySection";
 import WhoWeServeSection from "../landing/WhoWeServeSection";
 import LandingPageHeader from "../landing/LandingPageHeader";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
@@ -99,7 +102,13 @@ export default function LandingPageLayout({
 
       <WhoWeServeSection primaryColor={primaryColor} />
 
+      <AboutOpportunitySection />
+
       <TrustStatsSection />
+
+      <OperatingRegionsSection />
+
+      <BusinessInquirySection />
 
       <CTASection
         primaryColor={primaryColor}

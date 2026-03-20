@@ -25,7 +25,7 @@ export default function BenefitsSection({
     {
       image: mechanicImage,
       alt: "Close-up of car damage showing dents and scratches needing professional repair",
-      badge: "98% Satisfaction",
+      badge: "Guided Intake",
       badgeColor: "bg-gray-200 text-gray-700",
       title: "Get Your Car Fixed Right",
       description:
@@ -34,7 +34,7 @@ export default function BenefitsSection({
     {
       image: repairToolImage,
       alt: "Professional auto body painter in spray booth ensuring quality repairs",
-      badge: "500+ Certified Shops",
+      badge: "Certified Network",
       badgeColor: "bg-gray-200 text-gray-700",
       title: "Certified Professionals",
       description:
@@ -43,7 +43,7 @@ export default function BenefitsSection({
     {
       image: dentRepairImage,
       alt: "Professional dent repair and paintless dent removal service",
-      badge: "Save up to 40%",
+      badge: "Transparent Bids",
       badgeColor: "bg-gray-200 text-gray-700",
       title: "Competitive Pricing",
       description: "Compare multiple quotes to ensure you get the best value for your money.",

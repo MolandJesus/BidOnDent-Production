@@ -83,6 +83,14 @@ export default function LandingPageHeader({
           >
             Who We Serve
           </button>
+          <button
+            onClick={() =>
+              document.getElementById("about-opportunity")?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="px-5 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-all duration-300 rounded-lg hover:bg-gray-100/60 active:scale-95"
+          >
+            About
+          </button>
         </nav>
 
         <div className="flex items-center space-x-3">
