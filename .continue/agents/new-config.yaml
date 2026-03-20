@@ -1,0 +1,35 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+
+models:
+  - name: GPT-OSS 20B (Local)
+    provider: ollama
+    model: gpt-oss:20b
+    apiBase: http://localhost:11434
+    roles:
+      - chat
+      - edit
+      - agent
+
+  - name: Nova Code (Local)
+    provider: ollama
+    model: nova-code:latest
+    apiBase: http://localhost:11434
+    roles:
+      - autocomplete
+      - edit
+
+# Option A: Internet access via Tavily MCP (fast web search)
+# 1) Create a Tavily API key (free tier exists)
+# 2) Put it in the env below
+mcpServers:
+  - name: tavily-mcp
+    command: npx
+    args:
+      - -y
+      - tavily-mcp@latest
+    env:
+      TAVILY_API_KEY: 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
+      # Optional defaults to keep results small/fast
+      DEFAULT_PARAMETERS: '{"search_depth":"basic","max_results":5}'

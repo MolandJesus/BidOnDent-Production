@@ -1,0 +1,12 @@
+name: MCP Servers
+version: 0.0.1
+schema: v1
+mcpServers:
+  - name: tavily
+    command: npx
+    args:
+      - -y
+      - tavily-mcp@latest
+    env:
+      # Set this later (shell env, VS Code env, or Continue env). Without a real key, calls will fail.
+      TAVILY_API_KEY: "${env:TAVILY_API_KEY}"
