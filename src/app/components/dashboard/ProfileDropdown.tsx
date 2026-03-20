@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from "react";
+import { RefObject } from "react";
 import {
   Settings,
   Car,
@@ -21,16 +21,7 @@ import {
 } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { LANDING_PAGE_IMAGES } from "../../constants";
-import { supabase } from "../../services/supabaseService";
-
-interface Notification {
-  id: string | number;
-  message: string;
-  time: string;
-  read: boolean;
-  type?: "repair_request" | "bid" | "claim" | "update" | "message";
-  reportData?: any;
-}
+import { Notification, useProfileDropdownRealtime } from "./profile-dropdown-realtime";
 
 interface ProfileDropdownProps {
   userInfo: {
@@ -66,170 +57,12 @@ export default function ProfileDropdown({
   bids,
   variant = "popover",
 }: ProfileDropdownProps) {
-  const [realtimeConnected, setRealtimeConnected] = useState(false);
-  const [localNotifications, setLocalNotifications] = useState<Notification[]>(notifications);
-
-  // Real-time subscriptions based on account type
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const channels: any[] = [];
-
-    // ============================================================================
-    // SHOP ACCOUNTS - Subscribe to new damage reports (repair requests)
-    // ============================================================================
-    if (userType === "shop") {
-      console.log("🏪 ProfileDropdown: Setting up SHOP real-time subscriptions");
-
-      const shopChannel = supabase
-        .channel("shop-notifications")
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "damage_reports",
-          },
-          (payload) => {
-            console.log("🏪 New repair request received!", payload);
-
-            const newReport = payload.new;
-            const notification: Notification = {
-              id: `repair-${newReport.id}-${Date.now()}`,
-              message: `New repair request: ${newReport.vehicle_year} ${newReport.vehicle_make} ${newReport.vehicle_model}`,
-              time: "Just now",
-              read: false,
-              type: "repair_request",
-              reportData: newReport,
-            };
-
-            setLocalNotifications((prev) => [notification, ...prev]);
-            if (onNewNotification) onNewNotification(notification);
-            playNotificationSound();
-          }
-        )
-        .subscribe((status) => {
-          console.log("🏪 Shop subscription status:", status);
-          setRealtimeConnected(status === "SUBSCRIBED");
-        });
-
-      channels.push(shopChannel);
-    }
-
-    // ============================================================================
-    // CUSTOMER ACCOUNTS - Subscribe to new bids on their reports
-    // ============================================================================
-    else if (userType === "customer") {
-      console.log("👤 ProfileDropdown: Setting up CUSTOMER real-time subscriptions");
-
-      const customerChannel = supabase
-        .channel("customer-notifications")
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "bids",
-          },
-          (payload) => {
-            console.log("👤 New bid received!", payload);
-
-            const newBid = payload.new;
-
-            // Only notify if this bid is for one of the customer's reports
-            // We'll check the report ownership via email or user_id
-            const notification: Notification = {
-              id: `bid-${newBid.id}-${Date.now()}`,
-              message: `New bid: $${newBid.amount} from ${newBid.shop_name || "Auto Shop"}`,
-              time: "Just now",
-              read: false,
-              type: "bid",
-              reportData: newBid,
-            };
-
-            setLocalNotifications((prev) => [notification, ...prev]);
-            if (onNewNotification) onNewNotification(notification);
-            playNotificationSound();
-          }
-        )
-        .subscribe((status) => {
-          console.log("👤 Customer subscription status:", status);
-          setRealtimeConnected(status === "SUBSCRIBED");
-        });
-
-      channels.push(customerChannel);
-    }
-
-    // ============================================================================
-    // INSURER ACCOUNTS - Subscribe to damage reports with insurance claims
-    // ============================================================================
-    else if (userType === "insurer") {
-      console.log("🛡️ ProfileDropdown: Setting up INSURER real-time subscriptions");
-
-      const insurerChannel = supabase
-        .channel("insurer-notifications")
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "damage_reports",
-          },
-          (payload) => {
-            console.log("🛡️ New claim notification received!", payload);
-
-            const newReport = payload.new;
-
-            // Only notify insurers about reports with insurance information
-            if (newReport.insurance_company) {
-              const notification: Notification = {
-                id: `claim-${newReport.id}-${Date.now()}`,
-                message: `New claim filed: ${newReport.vehicle_year} ${newReport.vehicle_make} ${newReport.vehicle_model}`,
-                time: "Just now",
-                read: false,
-                type: "claim",
-                reportData: newReport,
-              };
-
-              setLocalNotifications((prev) => [notification, ...prev]);
-              if (onNewNotification) onNewNotification(notification);
-              playNotificationSound();
-            }
-          }
-        )
-        .subscribe((status) => {
-          console.log("🛡️ Insurer subscription status:", status);
-          setRealtimeConnected(status === "SUBSCRIBED");
-        });
-
-      channels.push(insurerChannel);
-    }
-
-    // Cleanup all subscriptions when dropdown closes
-    return () => {
-      console.log(`🔴 Cleaning up ${userType} real-time subscriptions`);
-      channels.forEach((channel) => supabase.removeChannel(channel));
-      setRealtimeConnected(false);
-    };
-  }, [userType, isOpen, onNewNotification]);
-
-  // Sync local notifications with props
-  useEffect(() => {
-    setLocalNotifications(notifications);
-  }, [notifications]);
-
-  // Play notification sound
-  const playNotificationSound = () => {
-    try {
-      const audio = new Audio("/notification.mp3");
-      audio.volume = 0.3;
-      audio.play().catch(() => {
-        // Silently fail if audio doesn't play
-      });
-    } catch (e) {
-      // Ignore audio errors
-    }
-  };
+  const { realtimeConnected, localNotifications } = useProfileDropdownRealtime({
+    isOpen,
+    notifications,
+    onNewNotification,
+    userType,
+  });
 
   if (!isOpen) return null;
 

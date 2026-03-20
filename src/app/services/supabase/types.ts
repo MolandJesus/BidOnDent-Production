@@ -122,3 +122,19 @@ export interface JobAssignment {
   created_at?: string;
   updated_at?: string;
 }
+
+export interface PartnerShopMapRecord {
+  id: string;
+  shop_name: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip_code?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  rating?: number | null;
+  specialties?: string[] | null;
+  phone_number?: string | null;
+  email?: string | null;
+  is_active?: boolean | null;
+}

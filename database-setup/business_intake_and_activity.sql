@@ -41,6 +41,24 @@ CREATE TABLE IF NOT EXISTS public.platform_activity_events (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.public_partner_shops (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  shop_name TEXT NOT NULL,
+  address TEXT,
+  city TEXT,
+  state TEXT,
+  zip_code TEXT,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION,
+  specialties TEXT[] DEFAULT ARRAY[]::TEXT[],
+  rating NUMERIC(2,1) DEFAULT 4.5,
+  phone_number TEXT,
+  email TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS public.job_assignments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   damage_report_id UUID REFERENCES public.damage_reports(id) ON DELETE CASCADE NOT NULL,
@@ -68,6 +86,10 @@ CREATE INDEX IF NOT EXISTS idx_platform_activity_events_type
   ON public.platform_activity_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_platform_activity_events_created_at
   ON public.platform_activity_events(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_public_partner_shops_active
+  ON public.public_partner_shops(is_active);
+CREATE INDEX IF NOT EXISTS idx_public_partner_shops_zip_code
+  ON public.public_partner_shops(zip_code);
 CREATE INDEX IF NOT EXISTS idx_job_assignments_customer_user_id
   ON public.job_assignments(customer_user_id);
 CREATE INDEX IF NOT EXISTS idx_job_assignments_shop_user_id
@@ -82,6 +104,7 @@ CREATE INDEX IF NOT EXISTS idx_job_assignments_damage_report_id
 ALTER TABLE public.shop_interest_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.insurer_interest_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.platform_activity_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.public_partner_shops ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.job_assignments ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public shop submissions"
@@ -95,6 +118,10 @@ CREATE POLICY "Allow public insurer submissions"
 CREATE POLICY "Allow public event inserts"
   ON public.platform_activity_events FOR INSERT
   WITH CHECK (true);
+
+CREATE POLICY "Allow public read partner shops"
+  ON public.public_partner_shops FOR SELECT
+  USING (true);
 
 CREATE POLICY "Customers can view own assignments"
   ON public.job_assignments FOR SELECT
@@ -141,3 +168,36 @@ CREATE TRIGGER update_job_assignments_updated_at
   BEFORE UPDATE ON public.job_assignments
   FOR EACH ROW
   EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_public_partner_shops_updated_at ON public.public_partner_shops;
+CREATE TRIGGER update_public_partner_shops_updated_at
+  BEFORE UPDATE ON public.public_partner_shops
+  FOR EACH ROW
+  EXECUTE FUNCTION public.update_updated_at_column();
+
+INSERT INTO public.public_partner_shops (
+  shop_name,
+  city,
+  state,
+  zip_code,
+  latitude,
+  longitude,
+  specialties,
+  rating,
+  email,
+  is_active
+)
+SELECT
+  'BidOnDent Westchester Hub',
+  'White Plains',
+  'NY',
+  '10601',
+  41.033,
+  -73.7629,
+  ARRAY['Collision Repair', 'Insurance Claims'],
+  4.8,
+  'bidondent@gmail.com',
+  true
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.public_partner_shops WHERE shop_name = 'BidOnDent Westchester Hub'
+);

@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 
 // Import all screens
 import HomeScreen from "../components/codelayer/HomeScreen";
@@ -22,6 +23,21 @@ import CompetitorAnalysisScreen from "../components/reports/CompetitorAnalysisSc
 import DemoAccountSwitcher from "../components/demo/DemoAccountSwitcher";
 import SmokeTestScreen from "../components/demo/SmokeTestScreen";
 import { SEED_DAMAGE_REPORTS } from "../constants";
+
+const screenTransition = {
+  initial: { opacity: 0, x: -20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 20 },
+  transition: { duration: 0.2 },
+};
+
+function AnimatedScreen({ screenKey, children }: { screenKey: string; children: ReactNode }) {
+  return (
+    <motion.div key={screenKey} {...screenTransition}>
+      {children}
+    </motion.div>
+  );
+}
 
 interface DashboardRouterProps {
   // Navigation state
@@ -145,13 +161,7 @@ export default function DashboardRouter({
       <AnimatePresence mode="wait">
         {/* Dashboard Home Screen */}
         {viewMode === "dashboard" && currentTab === "home" && (
-          <motion.div
-            key="home"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="home">
             <HomeScreen
               userType={userType}
               userInfo={userInfo}
@@ -200,18 +210,12 @@ export default function DashboardRouter({
                     }))
               }
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Customer: Report Screen */}
         {viewMode === "dashboard" && currentTab === "report" && userType === "customer" && (
-          <motion.div
-            key="report"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="report">
             <ReportScreen
               primaryColor={primaryColor}
               vehicles={vehicles}
@@ -229,18 +233,12 @@ export default function DashboardRouter({
                 onViewModeChange("dashboard");
               }}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Customer: Bids Screen */}
         {viewMode === "dashboard" && currentTab === "bids" && userType === "customer" && (
-          <motion.div
-            key="bids"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="bids">
             <BidsScreen
               primaryColor={primaryColor}
               userType={userType}
@@ -250,28 +248,23 @@ export default function DashboardRouter({
                 onViewModeChange("dashboard");
               }}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Shop: Requests Screen */}
         {viewMode === "dashboard" && currentTab === "requests" && userType === "shop" && (
-          <motion.div
-            key="requests"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="requests">
             <ShopRequestsScreen
               primaryColor={primaryColor}
+              reports={reports}
               onSubmitBid={(requestId, bidAmount) => {
                 // Find the report to get more details
-                const report = reports.find((r) => r.id === requestId.toString());
+                const report = reports.find((r) => r.id === requestId);
                 if (report) {
                   // Call the bid submission handler with all required parameters
                   // For now, using default values for estimated days and description
                   onSubmitBid(
-                    requestId.toString(),
+                    requestId,
                     bidAmount,
                     3, // Default 3 days
                     "Professional repair service with quality guarantee" // Default description
@@ -279,57 +272,33 @@ export default function DashboardRouter({
                 }
               }}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Shop: Active Jobs Screen */}
         {viewMode === "dashboard" && currentTab === "jobs" && userType === "shop" && (
-          <motion.div
-            key="jobs"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ShopActiveJobsScreen primaryColor={primaryColor} />
-          </motion.div>
+          <AnimatedScreen screenKey="jobs">
+            <ShopActiveJobsScreen primaryColor={primaryColor} reports={reports} />
+          </AnimatedScreen>
         )}
 
         {/* Insurer: Claims Screen */}
         {viewMode === "dashboard" && currentTab === "claims" && userType === "insurer" && (
-          <motion.div
-            key="claims"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <InsurerClaimsScreen primaryColor={primaryColor} />
-          </motion.div>
+          <AnimatedScreen screenKey="claims">
+            <InsurerClaimsScreen primaryColor={primaryColor} reports={reports} />
+          </AnimatedScreen>
         )}
 
         {/* Insurer: Partner Shops Screen */}
         {viewMode === "dashboard" && currentTab === "shops" && userType === "insurer" && (
-          <motion.div
-            key="shops"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <InsurerPartnerShopsScreen primaryColor={primaryColor} />
-          </motion.div>
+          <AnimatedScreen screenKey="shops">
+            <InsurerPartnerShopsScreen primaryColor={primaryColor} reports={reports} />
+          </AnimatedScreen>
         )}
 
         {/* Account Screen (All Users) */}
         {viewMode === "dashboard" && currentTab === "account" && (
-          <motion.div
-            key="account"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="account">
             <AccountScreen
               userType={userType}
               primaryColor={primaryColor}
@@ -361,18 +330,12 @@ export default function DashboardRouter({
                 onViewModeChange("smoke-test");
               }}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Reports List Screen */}
         {viewMode === "reports-list" && (
-          <motion.div
-            key="reports-list"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="reports-list">
             <ReportsListScreen
               reports={reports.map((report) => ({
                 ...report,
@@ -385,18 +348,12 @@ export default function DashboardRouter({
               }}
               primaryColor={primaryColor}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Report Detail Screen */}
         {viewMode === "report-detail" && selectedReportId && (
-          <motion.div
-            key="report-detail"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="report-detail">
             <ReportDetailScreen
               report={{
                 ...reports.find((r) => r.id === selectedReportId)!,
@@ -408,150 +365,97 @@ export default function DashboardRouter({
               onBack={() => onViewModeChange("reports-list")}
               primaryColor={primaryColor}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {viewMode === "smoke-test" && (
-          <motion.div
-            key="smoke-test"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="smoke-test">
             <SmokeTestScreen primaryColor={primaryColor} />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Insurer Connect Screen */}
         {viewMode === "insurer-connect" && (
-          <motion.div
-            key="insurer-connect"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="insurer-connect">
             <InsurerConnectionScreen
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Liked Shops Screen */}
         {viewMode === "liked-shops" && (
-          <motion.div
-            key="liked-shops"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="liked-shops">
             <LikedShopsScreen
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Vehicles Screen */}
         {viewMode === "vehicles" && (
-          <motion.div
-            key="vehicles"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="vehicles">
             <VehicleProfileScreen
               vehicles={vehicles}
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               onSaveVehicles={onSaveVehicles}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Shop Directory Screen */}
         {viewMode === "shop-directory" && (
-          <motion.div
-            key="shop-directory"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="shop-directory">
             <ShopDirectoryScreen
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Insurer New Claim Screen */}
         {viewMode === "new-claim" && userType === "insurer" && (
-          <motion.div
-            key="new-claim"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="new-claim">
             <InsurerNewClaimScreen
               primaryColor={primaryColor}
+              reports={reports}
               onBack={() => onViewModeChange("dashboard")}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Insurance Companies Screen */}
         {viewMode === "insurance-companies" && (
-          <motion.div
-            key="insurance-companies"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="insurance-companies">
             <InsuranceCompaniesScreen
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
               userType={userType}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Competitor Analysis Screen */}
         {viewMode === "competitor-analysis" && (
-          <motion.div
-            key="competitor-analysis"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="competitor-analysis">
             <CompetitorAnalysisScreen
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
 
         {/* Demo Account Switcher */}
         {viewMode === "demo-switcher" && (
-          <motion.div
-            key="demo-switcher"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <AnimatedScreen screenKey="demo-switcher">
             <DemoAccountSwitcher
               currentAccountType={userType}
               onSelectAccountType={(type) => {
@@ -568,7 +472,7 @@ export default function DashboardRouter({
               }}
               primaryColor={primaryColor}
             />
-          </motion.div>
+          </AnimatedScreen>
         )}
       </AnimatePresence>
     </div>

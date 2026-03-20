@@ -2,6 +2,8 @@
 
 **An intelligent platform connecting customers needing car repairs with local auto body shops and insurance companies.**
 
+Implementation tracking for Jeffrey's requested updates is maintained in `docs/JEFFREY_REQUEST_IMPLEMENTATION_PLAN.md`.
+
 ---
 
 ## 📖 What is BidOnDent?

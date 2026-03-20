@@ -1,122 +1,81 @@
 import { useState } from "react";
-import { Search, Calendar, Phone, Mail, MessageSquare, CheckCircle, Clock, Wrench, Package, ChevronRight, Star, AlertCircle, User } from "lucide-react";
+import { Search, Calendar, Phone, Mail, MessageSquare, CheckCircle, Clock, Wrench, Package, ChevronRight, Star, AlertCircle, User, X } from "lucide-react";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { shopLifecycle } from "../workflow/lifecycle-presets";
 
 type ShopActiveJobsScreenProps = {
   primaryColor?: string;
+  reports?: any[];
   onUpdateJobStatus?: (jobId: number, status: string) => void;
 };
 
 export default function ShopActiveJobsScreen({
   primaryColor = "#003d82",
+  reports = [],
   onUpdateJobStatus
 }: ShopActiveJobsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "in-progress" | "awaiting-parts" | "completed">("all");
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
 
-  // Sample active jobs data - in production, this would come from Supabase
-  const sampleJobs = [
-    {
-      id: 101,
-      customerName: "Sarah Johnson",
-      customerEmail: "sarah.j@email.com",
-      customerPhone: "(555) 123-4567",
-      vehicle: "2022 Honda Accord",
-      damageType: "Front Bumper Repair",
-      bidAmount: 1250,
-      startDate: "Dec 18, 2026",
-      estimatedCompletion: "Dec 22, 2026",
-      status: "in-progress",
-      progress: 60,
-      tasks: [
-        { id: 1, name: "Initial Assessment", completed: true },
-        { id: 2, name: "Parts Ordered", completed: true },
-        { id: 3, name: "Bumper Removal", completed: true },
-        { id: 4, name: "Repair & Paint", completed: false },
-        { id: 5, name: "Reassembly", completed: false },
-        { id: 6, name: "Final Inspection", completed: false }
-      ],
-      insuranceClaim: true,
-      insuranceCompany: "State Farm",
-      claimNumber: "SF-2026-12345",
-      notes: "Customer requested metallic silver paint match. Parts arrived on schedule."
-    },
-    {
-      id: 102,
-      customerName: "Michael Chen",
-      customerEmail: "m.chen@email.com",
-      customerPhone: "(555) 234-5678",
-      vehicle: "2020 Toyota Camry",
-      damageType: "Side Panel & Door Replacement",
-      bidAmount: 2100,
-      startDate: "Dec 15, 2026",
-      estimatedCompletion: "Dec 25, 2026",
-      status: "awaiting-parts",
-      progress: 30,
-      tasks: [
-        { id: 1, name: "Initial Assessment", completed: true },
-        { id: 2, name: "Parts Ordered", completed: true },
-        { id: 3, name: "Waiting for Door Panel", completed: false },
-        { id: 4, name: "Paint & Repair", completed: false },
-        { id: 5, name: "Final Assembly", completed: false }
-      ],
-      insuranceClaim: false,
-      notes: "OEM door panel on backorder. Expected delivery Dec 23."
-    },
-    {
-      id: 103,
-      customerName: "Emily Rodriguez",
-      customerEmail: "emily.r@email.com",
-      customerPhone: "(555) 345-6789",
-      vehicle: "2019 Ford F-150",
-      damageType: "Rear Hatch & Frame Repair",
-      bidAmount: 3500,
-      startDate: "Dec 20, 2026",
-      estimatedCompletion: "Dec 28, 2026",
-      status: "pending",
-      progress: 10,
-      tasks: [
-        { id: 1, name: "Initial Assessment", completed: true },
-        { id: 2, name: "Customer Approval", completed: false },
-        { id: 3, name: "Parts Ordering", completed: false },
-        { id: 4, name: "Frame Straightening", completed: false },
-        { id: 5, name: "Hatch Replacement", completed: false }
-      ],
-      insuranceClaim: true,
-      insuranceCompany: "Geico",
-      claimNumber: "GC-2026-67890",
-      notes: "Waiting for insurance adjuster approval for frame work."
-    },
-    {
-      id: 104,
-      customerName: "David Kim",
-      customerEmail: "d.kim@email.com",
-      customerPhone: "(555) 456-7890",
-      vehicle: "2021 BMW 330i",
-      damageType: "Front End Collision Repair",
-      bidAmount: 5200,
-      startDate: "Dec 10, 2026",
-      estimatedCompletion: "Dec 21, 2026",
-      status: "in-progress",
-      progress: 85,
-      tasks: [
-        { id: 1, name: "Damage Assessment", completed: true },
-        { id: 2, name: "Parts Acquisition", completed: true },
-        { id: 3, name: "Hood Replacement", completed: true },
-        { id: 4, name: "Headlight Assembly", completed: true },
-        { id: 5, name: "Paint & Finish", completed: true },
-        { id: 6, name: "Quality Check", completed: false }
-      ],
-      insuranceClaim: true,
-      insuranceCompany: "Allstate",
-      claimNumber: "AL-2026-11223",
-      notes: "Premium paint required. Customer will pick up Dec 21."
+  const buildTasks = (status: string) => {
+    if (status === "completed") {
+      return [
+        { id: 1, name: "Intake Review", completed: true },
+        { id: 2, name: "Bid Selected", completed: true },
+        { id: 3, name: "Repair Completed", completed: true },
+      ];
     }
-  ];
 
-  const filteredJobs = sampleJobs.filter(job => {
+    if (status === "in-progress") {
+      return [
+        { id: 1, name: "Intake Review", completed: true },
+        { id: 2, name: "Bid Selected", completed: true },
+        { id: 3, name: "Repair In Progress", completed: false },
+      ];
+    }
+
+    return [
+      { id: 1, name: "Intake Review", completed: true },
+      { id: 2, name: "Bid Selection", completed: false },
+      { id: 3, name: "Repair Start", completed: false },
+    ];
+  };
+
+  const liveJobs = reports.map((report: any, index: number) => {
+    const rawStatus = String(report?.status ?? "pending").toLowerCase();
+    const status =
+      rawStatus === "completed"
+        ? "completed"
+        : rawStatus === "in-review"
+          ? "in-progress"
+          : "pending";
+    const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+    const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
+    const bidAmount = (Number(report?.bidsCount) || 1) * 400;
+    const progress = status === "completed" ? 100 : status === "in-progress" ? 60 : 20;
+
+    return {
+      id: String(report?.id ?? `job-${index}`),
+      customerName: "Customer",
+      customerEmail: "bidondent@gmail.com",
+      customerPhone: "N/A",
+      vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
+      damageType: report?.damageArea || report?.damageType || "Repair request",
+      bidAmount,
+      startDate: report?.submittedAt
+        ? new Date(report.submittedAt).toLocaleDateString()
+        : "Pending",
+      estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
+      status,
+      progress,
+      tasks: buildTasks(status),
+      insuranceClaim: false,
+      notes: report?.description || "Repair request received and queued.",
+    };
+  });
+
+  const filteredJobs = liveJobs.filter(job => {
     const matchesSearch = job.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          job.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          job.damageType.toLowerCase().includes(searchQuery.toLowerCase());
@@ -397,14 +356,5 @@ export default function ShopActiveJobsScreen({
         </div>
       )}
     </div>
-  );
-}
-
-// Add X icon import
-function X({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-    </svg>
   );
 }

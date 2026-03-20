@@ -1,168 +1,67 @@
-import { useState } from "react";
-import { Search, MapPin, Phone, Mail, MessageSquare, ChevronRight, User, Car, Building2, ArrowLeft, Plus, CheckCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  Search,
+  MapPin,
+  Phone,
+  Mail,
+  MessageSquare,
+  ChevronRight,
+  User,
+  Car,
+  Building2,
+  ArrowLeft,
+  Plus,
+  CheckCircle,
+} from "lucide-react";
+import {
+  buildClaimShops,
+  buildPolicyholders,
+  type ClaimShop,
+  type Policyholder,
+} from "./newClaimData";
 
 type InsurerNewClaimScreenProps = {
   primaryColor?: string;
+  reports?: any[];
   onBack?: () => void;
   onCreateClaim?: (claimData: any) => void;
 };
 
 export default function InsurerNewClaimScreen({
   primaryColor = "#003d82",
+  reports = [],
   onBack,
-  onCreateClaim
+  onCreateClaim,
 }: InsurerNewClaimScreenProps) {
   const [activeTab, setActiveTab] = useState<"customers" | "shops">("customers");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null);
-  const [selectedShop, setSelectedShop] = useState<any | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Policyholder | null>(null);
+  const [selectedShop, setSelectedShop] = useState<ClaimShop | null>(null);
   const [showNewClaimForm, setShowNewClaimForm] = useState(false);
   const [claimFormData, setClaimFormData] = useState({
     policyNumber: "",
     incidentDate: "",
     damageDescription: "",
     estimatedAmount: "",
-    priority: "medium"
+    priority: "medium",
   });
 
-  // Sample customers (Bidondent car owners) - in production, this would come from Supabase
-  const sampleCustomers = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.j@email.com",
-      phone: "(555) 123-4567",
-      policyNumber: "POL-5678-9012",
-      vehicles: [
-        { year: 2022, make: "Honda", model: "Accord", vin: "1HGBH41JXMN109186" }
-      ],
-      location: "San Francisco, CA",
-      memberSince: "2020",
-      activeClaims: 1,
-      status: "active"
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      email: "m.chen@email.com",
-      phone: "(555) 234-5678",
-      policyNumber: "POL-3456-7890",
-      vehicles: [
-        { year: 2020, make: "Toyota", model: "Camry", vin: "4T1B11HK5LU234567" }
-      ],
-      location: "Oakland, CA",
-      memberSince: "2019",
-      activeClaims: 0,
-      status: "active"
-    },
-    {
-      id: 3,
-      name: "Emily Rodriguez",
-      email: "emily.r@email.com",
-      phone: "(555) 345-6789",
-      policyNumber: "POL-8901-2345",
-      vehicles: [
-        { year: 2019, make: "Ford", model: "F-150", vin: "1FTFW1ET5KFC12345" }
-      ],
-      location: "San Jose, CA",
-      memberSince: "2021",
-      activeClaims: 2,
-      status: "active"
-    },
-    {
-      id: 4,
-      name: "David Kim",
-      email: "d.kim@email.com",
-      phone: "(555) 456-7890",
-      policyNumber: "POL-6789-0123",
-      vehicles: [
-        { year: 2021, make: "BMW", model: "330i", vin: "WBA8B9C51M1234567" }
-      ],
-      location: "Palo Alto, CA",
-      memberSince: "2022",
-      activeClaims: 1,
-      status: "active"
-    }
-  ];
+  const policyholders = useMemo<Policyholder[]>(() => buildPolicyholders(reports), [reports]);
 
-  // Sample auto body shops - in production, this would come from Supabase
-  const sampleShops = [
-    {
-      id: 1,
-      name: "Express Auto Body",
-      email: "info@expressauto.com",
-      phone: "(555) 987-6543",
-      address: "1234 Mission St, San Francisco, CA 94103",
-      location: "San Francisco, CA",
-      distance: "2.3 miles",
-      rating: 4.8,
-      reviewCount: 247,
-      specialties: ["Collision Repair", "Paint & Body", "Frame Straightening"],
-      certified: true,
-      partnerSince: "2019",
-      completedJobs: 156,
-      avgCompletionDays: 3.5
-    },
-    {
-      id: 2,
-      name: "Premium Collision Center",
-      email: "contact@premiumcollision.com",
-      phone: "(555) 876-5432",
-      address: "5678 Broadway, Oakland, CA 94607",
-      location: "Oakland, CA",
-      distance: "5.1 miles",
-      rating: 4.6,
-      reviewCount: 189,
-      specialties: ["Luxury Vehicles", "Insurance Claims", "Paintless Dent Repair"],
-      certified: true,
-      partnerSince: "2020",
-      completedJobs: 134,
-      avgCompletionDays: 4.2
-    },
-    {
-      id: 3,
-      name: "Quick Fix Auto Repair",
-      email: "service@quickfixauto.com",
-      phone: "(555) 765-4321",
-      address: "9012 El Camino Real, San Jose, CA 95128",
-      location: "San Jose, CA",
-      distance: "12.5 miles",
-      rating: 4.5,
-      reviewCount: 156,
-      specialties: ["Fast Service", "Minor Repairs", "Insurance Work"],
-      certified: false,
-      partnerSince: "2021",
-      completedJobs: 89,
-      avgCompletionDays: 2.8
-    },
-    {
-      id: 4,
-      name: "Luxury Auto Restoration",
-      email: "info@luxuryautorest.com",
-      phone: "(555) 654-3210",
-      address: "3456 Park Ave, Palo Alto, CA 94301",
-      location: "Palo Alto, CA",
-      distance: "8.7 miles",
-      rating: 4.9,
-      reviewCount: 312,
-      specialties: ["Luxury & Exotic Cars", "Custom Paint", "Restoration"],
-      certified: true,
-      partnerSince: "2018",
-      completedJobs: 203,
-      avgCompletionDays: 5.1
-    }
-  ];
+  const claimShops = useMemo<ClaimShop[]>(() => buildClaimShops(reports), [reports]);
 
-  const filteredCustomers = sampleCustomers.filter(customer => 
-    customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    customer.policyNumber.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCustomers = policyholders.filter(
+    (customer) =>
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.policyNumber.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredShops = sampleShops.filter(shop =>
-    shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    shop.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    shop.specialties.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredShops = claimShops.filter(
+    (shop) =>
+      shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      shop.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      shop.specialties.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const handleCreateClaim = () => {
@@ -170,10 +69,9 @@ export default function InsurerNewClaimScreen({
       const newClaim = {
         customer: selectedCustomer,
         shop: selectedShop,
-        ...claimFormData
+        ...claimFormData,
       };
       onCreateClaim?.(newClaim);
-      // Reset form
       setShowNewClaimForm(false);
       setSelectedCustomer(null);
       setSelectedShop(null);
@@ -182,29 +80,29 @@ export default function InsurerNewClaimScreen({
         incidentDate: "",
         damageDescription: "",
         estimatedAmount: "",
-        priority: "medium"
+        priority: "medium",
       });
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-4">
           <div className="flex items-center mb-4">
             {onBack && (
-              <button onClick={onBack} className="mr-3 p-1">
+              <button onClick={onBack} className="mr-3 p-1" type="button">
                 <ArrowLeft className="w-6 h-6" style={{ color: primaryColor }} />
               </button>
             )}
-            <h1 className="text-2xl font-bold" style={{ color: primaryColor }}>Create New Claim</h1>
+            <h1 className="text-2xl font-bold" style={{ color: primaryColor }}>
+              Create New Claim
+            </h1>
           </div>
           <p className="text-sm text-gray-600 mb-4">
-            Connect with policyholders and auto body shops to initiate new claims
+            Start a new claim using active policyholders and partner routing options.
           </p>
 
-          {/* Tab Navigation */}
           <div className="flex gap-2 mb-4">
             <button
               onClick={() => setActiveTab("customers")}
@@ -214,6 +112,7 @@ export default function InsurerNewClaimScreen({
                   : "bg-white border border-gray-300 text-gray-700"
               }`}
               style={activeTab === "customers" ? { backgroundColor: primaryColor } : {}}
+              type="button"
             >
               <div className="flex items-center justify-center gap-2">
                 <User className="w-4 h-4" />
@@ -228,6 +127,7 @@ export default function InsurerNewClaimScreen({
                   : "bg-white border border-gray-300 text-gray-700"
               }`}
               style={activeTab === "shops" ? { backgroundColor: primaryColor } : {}}
+              type="button"
             >
               <div className="flex items-center justify-center gap-2">
                 <Building2 className="w-4 h-4" />
@@ -236,7 +136,6 @@ export default function InsurerNewClaimScreen({
             </button>
           </div>
 
-          {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
@@ -250,7 +149,6 @@ export default function InsurerNewClaimScreen({
         </div>
       </div>
 
-      {/* Content */}
       <div className="px-4 py-4">
         {activeTab === "customers" ? (
           <div className="space-y-3">
@@ -273,7 +171,9 @@ export default function InsurerNewClaimScreen({
                     {customer.vehicles.map((vehicle, idx) => (
                       <div key={idx} className="flex items-center text-sm text-gray-700">
                         <Car className="w-4 h-4 mr-2 text-gray-400" />
-                        <span>{vehicle.year} {vehicle.make} {vehicle.model}</span>
+                        <span>
+                          {vehicle.year} {vehicle.make} {vehicle.model}
+                        </span>
                       </div>
                     ))}
                     <div className="flex items-center text-sm text-gray-600">
@@ -297,7 +197,10 @@ export default function InsurerNewClaimScreen({
                       <Mail className="w-4 h-4" />
                       <span className="text-xs">Email</span>
                     </a>
-                    <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
+                    <button
+                      className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
+                      type="button"
+                    >
                       <MessageSquare className="w-4 h-4" />
                       <span className="text-xs">Message</span>
                     </button>
@@ -307,16 +210,14 @@ export default function InsurerNewClaimScreen({
                     onClick={() => {
                       setSelectedCustomer(customer);
                       setShowNewClaimForm(true);
-                      setClaimFormData({
-                        ...claimFormData,
-                        policyNumber: customer.policyNumber
-                      });
+                      setClaimFormData((prev) => ({ ...prev, policyNumber: customer.policyNumber }));
                     }}
                     className="w-full py-3 rounded-lg text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
                     style={{ backgroundColor: primaryColor }}
+                    type="button"
                   >
                     <Plus className="w-5 h-5" />
-                    Create Claim for {customer.name.split(' ')[0]}
+                    Create Claim for {customer.name.split(" ")[0]}
                     <ChevronRight className="w-5 h-5" />
                   </button>
                 </div>
@@ -352,9 +253,7 @@ export default function InsurerNewClaimScreen({
                       <MapPin className="w-4 h-4 mr-2 text-gray-400" />
                       <span>{shop.address}</span>
                     </div>
-                    <div className="text-sm text-gray-600 ml-6">
-                      {shop.distance} away
-                    </div>
+                    <div className="text-sm text-gray-600 ml-6">{shop.distance}</div>
                   </div>
 
                   <div className="mb-3">
@@ -396,7 +295,10 @@ export default function InsurerNewClaimScreen({
                       <Mail className="w-4 h-4" />
                       <span className="text-xs">Email</span>
                     </a>
-                    <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
+                    <button
+                      className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
+                      type="button"
+                    >
                       <MessageSquare className="w-4 h-4" />
                       <span className="text-xs">Message</span>
                     </button>
@@ -410,6 +312,7 @@ export default function InsurerNewClaimScreen({
                           ? "bg-green-100 text-green-700 border-2 border-green-500"
                           : "border-2 border-gray-300 text-gray-700 hover:bg-gray-50"
                       }`}
+                      type="button"
                     >
                       {selectedShop?.id === shop.id ? (
                         <>
@@ -435,13 +338,12 @@ export default function InsurerNewClaimScreen({
         )}
       </div>
 
-      {/* New Claim Form Modal */}
       {showNewClaimForm && selectedCustomer && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-4">
           <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-4">New Claim Details</h2>
-              
+
               <div className="mb-4 p-4 bg-blue-50 rounded-lg">
                 <p className="text-sm font-medium text-blue-900 mb-1">Policyholder</p>
                 <p className="font-bold">{selectedCustomer.name}</p>
@@ -459,37 +361,37 @@ export default function InsurerNewClaimScreen({
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Policy Number
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Policy Number</label>
                   <input
                     type="text"
                     value={claimFormData.policyNumber}
-                    onChange={(e) => setClaimFormData({ ...claimFormData, policyNumber: e.target.value })}
+                    onChange={(e) =>
+                      setClaimFormData({ ...claimFormData, policyNumber: e.target.value })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="POL-XXXX-XXXX"
+                    placeholder="e.g., POL-2024-0518"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Incident Date
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Incident Date</label>
                   <input
                     type="date"
                     value={claimFormData.incidentDate}
-                    onChange={(e) => setClaimFormData({ ...claimFormData, incidentDate: e.target.value })}
+                    onChange={(e) =>
+                      setClaimFormData({ ...claimFormData, incidentDate: e.target.value })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Damage Description
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Damage Description</label>
                   <textarea
                     value={claimFormData.damageDescription}
-                    onChange={(e) => setClaimFormData({ ...claimFormData, damageDescription: e.target.value })}
+                    onChange={(e) =>
+                      setClaimFormData({ ...claimFormData, damageDescription: e.target.value })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                     rows={4}
                     placeholder="Describe the damage and incident details..."
@@ -497,15 +399,17 @@ export default function InsurerNewClaimScreen({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Estimated Amount
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Estimated Amount</label>
                   <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+                      $
+                    </span>
                     <input
                       type="number"
                       value={claimFormData.estimatedAmount}
-                      onChange={(e) => setClaimFormData({ ...claimFormData, estimatedAmount: e.target.value })}
+                      onChange={(e) =>
+                        setClaimFormData({ ...claimFormData, estimatedAmount: e.target.value })
+                      }
                       className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg"
                       placeholder="0.00"
                       step="0.01"
@@ -514,9 +418,7 @@ export default function InsurerNewClaimScreen({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Priority Level
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Priority Level</label>
                   <select
                     value={claimFormData.priority}
                     onChange={(e) => setClaimFormData({ ...claimFormData, priority: e.target.value })}
@@ -536,6 +438,7 @@ export default function InsurerNewClaimScreen({
                     setSelectedShop(null);
                   }}
                   className="flex-1 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                  type="button"
                 >
                   Cancel
                 </button>
@@ -544,6 +447,7 @@ export default function InsurerNewClaimScreen({
                   disabled={!claimFormData.policyNumber || !claimFormData.incidentDate}
                   className="flex-1 py-3 rounded-lg text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ backgroundColor: primaryColor }}
+                  type="button"
                 >
                   Create Claim
                 </button>

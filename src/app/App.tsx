@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ClerkProvider, useUser, useClerk } from "@clerk/clerk-react";
 
 // Import Clerk service
@@ -31,6 +32,9 @@ import LandingPageLayout from "./components/app/LandingPageLayout";
 import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector";
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
+import PrivacyPolicyPage from "./components/legal/PrivacyPolicyPage";
+import AboutPage from "./components/landing/AboutPage";
+import InsurerPartnershipPage from "./components/landing/InsurerPartnershipPage";
 
 import { projectId, publicAnonKey } from "../../utils/supabase/info";
 import { clerkPublishableKey } from "../../utils/clerk/info";
@@ -45,6 +49,25 @@ if (!clerkPublishableKey || clerkPublishableKey.includes("PASTE_YOUR")) {
 
 // Main App content (wrapped by ClerkProvider)
 function AppContent() {
+  const [currentHash, setCurrentHash] = useState(
+    typeof window !== "undefined" ? window.location.hash : ""
+  );
+
+  useEffect(() => {
+    const handleHashChange = () => setCurrentHash(window.location.hash);
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  const isPrivacyPolicyPage = currentHash === "#/privacy-policy";
+  const isAboutPage = currentHash === "#/about";
+  const isInsurerPartnershipPage = currentHash === "#/insurer-partnership";
+
+  const navigateHome = () => {
+    window.location.hash = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   // ============================================================================
   // CLERK AUTH - Replaces useAuth hook
   // ============================================================================
@@ -170,6 +193,18 @@ function AppContent() {
   // ============================================================================
   // RENDER LOGIC
   // ============================================================================
+
+  if (isPrivacyPolicyPage) {
+    return <PrivacyPolicyPage onBackToHome={navigateHome} />;
+  }
+
+  if (isAboutPage) {
+    return <AboutPage onBackToHome={navigateHome} />;
+  }
+
+  if (isInsurerPartnershipPage) {
+    return <InsurerPartnershipPage onBackToHome={navigateHome} />;
+  }
 
   // Wait for Clerk to load
   if (!isUserLoaded) {

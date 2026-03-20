@@ -10,6 +10,7 @@ import StepDamageArea from "./report/StepDamageArea";
 import StepDescription from "./report/StepDescription";
 import StepPhotos from "./report/StepPhotos";
 import StepVehicleInfo from "./report/StepVehicleInfo";
+import { DAMAGE_AREAS } from "./report/damageAreas";
 
 type ReportScreenProps = {
   primaryColor?: string;
@@ -123,16 +124,6 @@ export default function ReportScreen({
       console.error("Error clearing draft:", error);
     }
   };
-
-  // Sample damage areas with coordinates for interactive selector
-  const damageAreas = [
-    { id: "front", label: "Front" },
-    { id: "rear", label: "Rear" },
-    { id: "driver", label: "Driver Side" },
-    { id: "passenger", label: "Passenger Side" },
-    { id: "roof", label: "Roof" },
-    { id: "other", label: "Other" },
-  ];
 
   // Handle photo upload with FileList
   const handlePhotoUpload = async (files: FileList | null) => {
@@ -371,7 +362,7 @@ export default function ReportScreen({
           return (
             <StepDamageArea
               primaryColor={primaryColor}
-              damageAreas={damageAreas}
+              damageAreas={DAMAGE_AREAS}
               damageArea={damageArea}
               onSelectDamageArea={setDamageArea}
               onBack={prevStep}

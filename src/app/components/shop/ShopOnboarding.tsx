@@ -93,7 +93,7 @@ export default function ShopOnboarding({
         {step === 1 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -181,7 +181,7 @@ export default function ShopOnboarding({
                     // Auto-format phone number as (XXX) XXX-XXXX
                     let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                     if (value.length > 10) value = value.slice(0, 10); // Limit to 10 digits
-                    
+
                     let formatted = '';
                     if (value.length > 0) {
                       formatted = '(' + value.substring(0, 3);
@@ -192,11 +192,11 @@ export default function ShopOnboarding({
                         formatted += '-' + value.substring(6, 10);
                       }
                     }
-                    
+
                     setFormData({...formData, phone: formatted || value});
                   }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="(555) 123-4567"
+                  placeholder="Phone number"
                   inputMode="numeric"
                 />
               </div>
@@ -235,7 +235,7 @@ export default function ShopOnboarding({
         {step === 2 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -290,7 +290,7 @@ export default function ShopOnboarding({
         {step === 3 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -385,7 +385,7 @@ export default function ShopOnboarding({
         {step === 4 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ backgroundColor: "#34D399" }}
               >

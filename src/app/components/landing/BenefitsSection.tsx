@@ -45,8 +45,8 @@ export default function BenefitsSection({
       alt: "Professional dent repair and paintless dent removal service",
       badge: "Transparent Bids",
       badgeColor: "bg-gray-200 text-gray-700",
-      title: "Competitive Pricing",
-      description: "Compare multiple quotes to ensure you get the best value for your money.",
+      title: "Transparent Estimates",
+      description: "Review side-by-side estimates and timelines before selecting a repair plan.",
     },
   ];
 

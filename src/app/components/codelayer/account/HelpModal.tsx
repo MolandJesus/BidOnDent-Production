@@ -23,12 +23,8 @@ export default function HelpModal({ isOpen, primaryColor, onClose }: HelpModalPr
             <h3 className="font-semibold mb-2">Contact Support</h3>
             <div className="space-y-2 text-sm">
               <p className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-gray-500" />
-                <span>(555) 123-4567</span>
-              </p>
-              <p className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-gray-500" />
-                <span>support@bidondent.com</span>
+                <span>bidondent@gmail.com</span>
               </p>
             </div>
           </div>

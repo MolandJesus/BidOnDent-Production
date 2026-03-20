@@ -49,7 +49,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" style={{ color: primaryColor }} />
-                <span>hello@bidondent.com</span>
+                <span>bidondent@gmail.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4" style={{ color: primaryColor }} />
@@ -103,7 +103,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#business-inquiry"
+                  href="#/insurer-partnership"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Insurer Partnership
@@ -114,7 +114,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
                   href="#who-we-serve"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
-                  Pricing
+                  Free for Customers
                 </a>
               </li>
             </ul>
@@ -124,7 +124,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
             <ul className="space-y-2 text-gray-400">
               <li>
                 <a
-                  href="#about-opportunity"
+                  href="#/about"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   About Us
@@ -132,7 +132,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="mailto:hello@bidondent.com"
+                  href="mailto:bidondent@gmail.com"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Contact
@@ -140,7 +140,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               </li>
               <li>
                 <a
-                  href="#about-opportunity"
+                  href="#/privacy-policy"
                   className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Privacy Policy

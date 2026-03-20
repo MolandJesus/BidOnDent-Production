@@ -82,7 +82,7 @@ export default function InsurerOnboarding({
         {step === 1 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -181,7 +181,7 @@ export default function InsurerOnboarding({
                   value={formData.phone}
                   onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="(555) 987-6543"
+                  placeholder="Phone number (10+ digits)"
                 />
               </div>
 
@@ -219,7 +219,7 @@ export default function InsurerOnboarding({
         {step === 2 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -283,7 +283,7 @@ export default function InsurerOnboarding({
         {step === 3 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ backgroundColor: "#34D399" }}
               >

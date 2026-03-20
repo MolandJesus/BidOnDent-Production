@@ -1,5 +1,5 @@
 export { supabase } from "./supabase/client";
-export type { Bid, DamageReport, Profile, Vehicle } from "./supabase/types";
+export type { Bid, DamageReport, Profile, Vehicle, PartnerShopMapRecord } from "./supabase/types";
 export * from "./supabase/bids";
 export * from "./supabase/profiles";
 export * from "./supabase/vehicles";
@@ -8,3 +8,4 @@ export * from "./supabase/storage";
 export * from "./supabase/legacy";
 export * from "./supabase/intake";
 export * from "./supabase/workflow";
+export * from "./supabase/map";

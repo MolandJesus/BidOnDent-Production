@@ -235,9 +235,29 @@ CREATE TABLE IF NOT EXISTS platform_activity_events (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Public map-facing partner shops table
+CREATE TABLE IF NOT EXISTS public_partner_shops (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  shop_name TEXT NOT NULL,
+  address TEXT,
+  city TEXT,
+  state TEXT,
+  zip_code TEXT,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION,
+  specialties TEXT[] DEFAULT ARRAY[]::TEXT[],
+  rating NUMERIC(2,1) DEFAULT 4.5,
+  phone_number TEXT,
+  email TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 ALTER TABLE shop_interest_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE insurer_interest_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE platform_activity_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public_partner_shops ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public shop submissions"
   ON shop_interest_submissions FOR INSERT
@@ -250,6 +270,10 @@ CREATE POLICY "Allow public insurer submissions"
 CREATE POLICY "Allow public event inserts"
   ON platform_activity_events FOR INSERT
   WITH CHECK (true);
+
+CREATE POLICY "Allow public read partner shops"
+  ON public_partner_shops FOR SELECT
+  USING (true);
 
 -- ============================================================================
 -- JOB ASSIGNMENTS TABLE
@@ -308,11 +332,94 @@ CREATE INDEX IF NOT EXISTS idx_insurer_interest_submissions_status ON insurer_in
 CREATE INDEX IF NOT EXISTS idx_insurer_interest_submissions_created_at ON insurer_interest_submissions(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_platform_activity_events_type ON platform_activity_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_platform_activity_events_created_at ON platform_activity_events(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_public_partner_shops_active ON public_partner_shops(is_active);
+CREATE INDEX IF NOT EXISTS idx_public_partner_shops_zip_code ON public_partner_shops(zip_code);
 CREATE INDEX IF NOT EXISTS idx_job_assignments_customer_user_id ON job_assignments(customer_user_id);
 CREATE INDEX IF NOT EXISTS idx_job_assignments_shop_user_id ON job_assignments(shop_user_id);
 CREATE INDEX IF NOT EXISTS idx_job_assignments_insurer_user_id ON job_assignments(insurer_user_id);
 CREATE INDEX IF NOT EXISTS idx_job_assignments_status ON job_assignments(status);
 CREATE INDEX IF NOT EXISTS idx_job_assignments_damage_report_id ON job_assignments(damage_report_id);
+
+INSERT INTO public_partner_shops (
+  shop_name,
+  city,
+  state,
+  zip_code,
+  latitude,
+  longitude,
+  specialties,
+  rating,
+  email,
+  is_active
+)
+SELECT
+  'BidOnDent Westchester Hub',
+  'White Plains',
+  'NY',
+  '10601',
+  41.033,
+  -73.7629,
+  ARRAY['Collision Repair', 'Insurance Claims'],
+  4.8,
+  'bidondent@gmail.com',
+  true
+WHERE NOT EXISTS (
+  SELECT 1 FROM public_partner_shops WHERE shop_name = 'BidOnDent Westchester Hub'
+);
+
+INSERT INTO public_partner_shops (
+  shop_name,
+  city,
+  state,
+  zip_code,
+  latitude,
+  longitude,
+  specialties,
+  rating,
+  email,
+  is_active
+)
+SELECT
+  'BidOnDent Rockland Hub',
+  'New City',
+  'NY',
+  '10956',
+  41.1432,
+  -73.9896,
+  ARRAY['Paint & Body', 'Claim Workflow'],
+  4.7,
+  'bidondent@gmail.com',
+  true
+WHERE NOT EXISTS (
+  SELECT 1 FROM public_partner_shops WHERE shop_name = 'BidOnDent Rockland Hub'
+);
+
+INSERT INTO public_partner_shops (
+  shop_name,
+  city,
+  state,
+  zip_code,
+  latitude,
+  longitude,
+  specialties,
+  rating,
+  email,
+  is_active
+)
+SELECT
+  'BidOnDent Dutchess Hub',
+  'Poughkeepsie',
+  'NY',
+  '12601',
+  41.7004,
+  -73.921,
+  ARRAY['Damage Assessment', 'Partner Dispatch'],
+  4.6,
+  'bidondent@gmail.com',
+  true
+WHERE NOT EXISTS (
+  SELECT 1 FROM public_partner_shops WHERE shop_name = 'BidOnDent Dutchess Hub'
+);
 
 -- ============================================================================
 -- UPDATED_AT TRIGGER FUNCTION

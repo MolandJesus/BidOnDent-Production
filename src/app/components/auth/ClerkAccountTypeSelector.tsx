@@ -10,10 +10,10 @@ export default function ClerkAccountTypeSelector() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const handleComplete = async () => {
     if (!user || !name.trim()) return;
-    
+
     setIsLoading(true);
     try {
       await updateUserMetadata(user, {
@@ -22,7 +22,7 @@ export default function ClerkAccountTypeSelector() {
         phone: phone.trim(),
         account_setup_completed: true,
       });
-      
+
       // Reload to refresh the app with new user data
       window.location.reload();
     } catch (error) {
@@ -31,7 +31,7 @@ export default function ClerkAccountTypeSelector() {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-xl p-8 max-w-2xl w-full">
@@ -41,7 +41,7 @@ export default function ClerkAccountTypeSelector() {
         <p className="text-gray-600 mb-8">
           Let's set up your account. What type of account do you need?
         </p>
-        
+
         {/* Account Type Selection */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <button
@@ -58,7 +58,7 @@ export default function ClerkAccountTypeSelector() {
               Get repair quotes for your vehicle
             </p>
           </button>
-          
+
           <button
             onClick={() => setSelectedType('shop')}
             className={`p-6 border-2 rounded-lg transition-all ${
@@ -73,7 +73,7 @@ export default function ClerkAccountTypeSelector() {
               Bid on repair jobs
             </p>
           </button>
-          
+
           <button
             onClick={() => setSelectedType('insurer')}
             className={`p-6 border-2 rounded-lg transition-all ${
@@ -89,7 +89,7 @@ export default function ClerkAccountTypeSelector() {
             </p>
           </button>
         </div>
-        
+
         {/* Name and Phone */}
         <div className="space-y-4 mb-6">
           <div>
@@ -105,7 +105,7 @@ export default function ClerkAccountTypeSelector() {
               disabled={isLoading}
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Phone Number (Optional)
@@ -115,12 +115,12 @@ export default function ClerkAccountTypeSelector() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="(555) 123-4567"
+              placeholder="Phone number"
               disabled={isLoading}
             />
           </div>
         </div>
-        
+
         {/* Complete Button */}
         <button
           onClick={handleComplete}

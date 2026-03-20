@@ -52,6 +52,15 @@ export default function AboutOpportunitySection() {
             </div>
           ))}
         </div>
+
+        <div className="mt-8 text-center">
+          <a
+            href="#/about"
+            className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 font-medium text-slate-800 hover:bg-slate-50 transition-colors"
+          >
+            Read Full About Overview
+          </a>
+        </div>
       </div>
     </section>
   );
