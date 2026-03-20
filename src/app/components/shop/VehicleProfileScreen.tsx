@@ -13,7 +13,7 @@ export default function VehicleProfileScreen({
   onBack,
   vehicles: initialVehicles,
   onSaveVehicles,
-  primaryColor = "#003d82"
+  primaryColor = "#003d82",
 }: VehicleProfileScreenProps) {
   const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -32,7 +32,7 @@ export default function VehicleProfileScreen({
     model: "",
     vin: "",
     color: "",
-    licensePlate: ""
+    licensePlate: "",
   });
 
   const handleEdit = (vehicle: Vehicle, index: number) => {
@@ -42,7 +42,7 @@ export default function VehicleProfileScreen({
       model: vehicle.model || "",
       vin: vehicle.vin || "",
       color: vehicle.color || "",
-      licensePlate: vehicle.licensePlate || ""
+      licensePlate: vehicle.licensePlate || "",
     });
     setEditingId(vehicle.id);
     setEditingIndex(index);
@@ -50,9 +50,9 @@ export default function VehicleProfileScreen({
   };
 
   const handleDelete = (id: string | undefined, index: number) => {
-    const updatedVehicles = id 
-      ? vehicles.filter(v => v.id !== id)
-      : vehicles.filter((_, i) => i !== index);
+    const updatedVehicles = id
+      ? vehicles.filter((vehicle) => vehicle.id !== id)
+      : vehicles.filter((_, vehicleIndex) => vehicleIndex !== index);
     setVehicles(updatedVehicles);
     onSaveVehicles(updatedVehicles);
   };
@@ -68,13 +68,13 @@ export default function VehicleProfileScreen({
       // Update existing vehicle
       if (editingId) {
         // Update by ID (vehicle has UUID)
-        updatedVehicles = vehicles.map(v => 
-          v.id === editingId ? { ...formData, id: editingId } as Vehicle : v
+        updatedVehicles = vehicles.map((vehicle) =>
+          vehicle.id === editingId ? ({ ...formData, id: editingId } as Vehicle) : vehicle
         );
       } else {
         // Update by index (vehicle doesn't have UUID yet)
-        updatedVehicles = vehicles.map((v, i) => 
-          i === editingIndex ? formData as Vehicle : v
+        updatedVehicles = vehicles.map((vehicle, vehicleIndex) =>
+          vehicleIndex === editingIndex ? (formData as Vehicle) : vehicle
         );
       }
     } else {
@@ -96,7 +96,7 @@ export default function VehicleProfileScreen({
       model: "",
       vin: "",
       color: "",
-      licensePlate: ""
+      licensePlate: "",
     });
   };
 
@@ -110,7 +110,7 @@ export default function VehicleProfileScreen({
       model: "",
       vin: "",
       color: "",
-      licensePlate: ""
+      licensePlate: "",
     });
   };
 
@@ -129,7 +129,9 @@ export default function VehicleProfileScreen({
               </button>
               <div>
                 <h1 className="text-xl font-bold">My Vehicles</h1>
-                <p className="text-sm text-gray-600">{vehicles.length} vehicle{vehicles.length !== 1 ? 's' : ''}</p>
+                <p className="text-sm text-gray-600">
+                  {vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""}
+                </p>
               </div>
             </div>
             {!showAddForm && (
@@ -153,29 +155,25 @@ export default function VehicleProfileScreen({
             <h3 className="text-lg font-bold mb-4">
               {editingId ? "Edit Vehicle" : "Add New Vehicle"}
             </h3>
-            
+
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Year *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Year *</label>
                   <input
                     type="text"
                     value={formData.year}
-                    onChange={(e) => setFormData({...formData, year: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, year: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     placeholder="2021"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Make *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Make *</label>
                   <input
                     type="text"
                     value={formData.make}
-                    onChange={(e) => setFormData({...formData, make: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, make: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     placeholder="Toyota"
                   />
@@ -183,13 +181,11 @@ export default function VehicleProfileScreen({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Model *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Model *</label>
                 <input
                   type="text"
                   value={formData.model}
-                  onChange={(e) => setFormData({...formData, model: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="Camry"
                 />
@@ -202,7 +198,7 @@ export default function VehicleProfileScreen({
                 <input
                   type="text"
                   value={formData.vin}
-                  onChange={(e) => setFormData({...formData, vin: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="1HGBH41JXMN109186"
                 />
@@ -216,7 +212,7 @@ export default function VehicleProfileScreen({
                   <input
                     type="text"
                     value={formData.color}
-                    onChange={(e) => setFormData({...formData, color: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     placeholder="Silver"
                   />
@@ -228,7 +224,9 @@ export default function VehicleProfileScreen({
                   <input
                     type="text"
                     value={formData.licensePlate}
-                    onChange={(e) => setFormData({...formData, licensePlate: e.target.value.toUpperCase()})}
+                    onChange={(e) =>
+                      setFormData({ ...formData, licensePlate: e.target.value.toUpperCase() })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md uppercase"
                     placeholder="ABC1234"
                     maxLength={10}
@@ -281,49 +279,58 @@ export default function VehicleProfileScreen({
                 return true;
               })
               .map((vehicle, index) => (
-              <div
-                key={vehicle.id || `vehicle-${index}-${vehicle.make}-${vehicle.model}-${vehicle.year}`}
-                className="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      <Car className="w-5 h-5 mr-2" style={{ color: primaryColor }} />
-                      <h3 className="font-bold text-lg">
-                        {vehicle.year} {vehicle.make} {vehicle.model}
-                      </h3>
-                    </div>
-                    
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {vehicle.color && (
-                        <p>Color: <span className="text-gray-900">{vehicle.color}</span></p>
-                      )}
-                      {vehicle.licensePlate && (
-                        <p>Plate: <span className="text-gray-900">{vehicle.licensePlate}</span></p>
-                      )}
-                      {vehicle.vin && (
-                        <p className="text-xs">VIN: <span className="text-gray-900">{vehicle.vin}</span></p>
-                      )}
-                    </div>
-                  </div>
+                <div
+                  key={
+                    vehicle.id ||
+                    `vehicle-${index}-${vehicle.make}-${vehicle.model}-${vehicle.year}`
+                  }
+                  className="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center mb-2">
+                        <Car className="w-5 h-5 mr-2" style={{ color: primaryColor }} />
+                        <h3 className="font-bold text-lg">
+                          {vehicle.year} {vehicle.make} {vehicle.model}
+                        </h3>
+                      </div>
 
-                  <div className="flex gap-2 ml-4">
-                    <button
-                      onClick={() => handleEdit(vehicle, index)}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                    >
-                      <Edit2 className="w-4 h-4 text-gray-600" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(vehicle.id, index)}
-                      className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4 text-red-600" />
-                    </button>
+                      <div className="space-y-1 text-sm text-gray-600">
+                        {vehicle.color && (
+                          <p>
+                            Color: <span className="text-gray-900">{vehicle.color}</span>
+                          </p>
+                        )}
+                        {vehicle.licensePlate && (
+                          <p>
+                            Plate: <span className="text-gray-900">{vehicle.licensePlate}</span>
+                          </p>
+                        )}
+                        {vehicle.vin && (
+                          <p className="text-xs">
+                            VIN: <span className="text-gray-900">{vehicle.vin}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 ml-4">
+                      <button
+                        onClick={() => handleEdit(vehicle, index)}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        <Edit2 className="w-4 h-4 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(vehicle.id, index)}
+                        className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))
           )}
         </div>
       </div>

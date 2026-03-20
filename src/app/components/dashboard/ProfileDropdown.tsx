@@ -226,7 +226,7 @@ export default function ProfileDropdown({
       audio.play().catch(() => {
         // Silently fail if audio doesn't play
       });
-    } catch (e) {
+    } catch (audioError) {
       // Ignore audio errors
     }
   };

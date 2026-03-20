@@ -100,8 +100,8 @@ export default function ReportScreen({
       // If still failing, clear the draft to prevent repeated errors
       try {
         localStorage.removeItem(DRAFT_STORAGE_KEY);
-      } catch (e) {
-        console.error("Failed to clear draft:", e);
+      } catch (clearDraftError) {
+        console.error("Failed to clear draft:", clearDraftError);
       }
     }
   }, [step, vehicle, damageArea, description, incident]); // Removed photos from dependencies
@@ -142,19 +142,19 @@ export default function ReportScreen({
     setUploadProgress(`Uploading ${files.length} photo(s)...`);
 
     try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        setUploadProgress(`Processing photo ${i + 1} of ${files.length}...`);
+      for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+        const file = files[fileIndex];
+        setUploadProgress(`Processing photo ${fileIndex + 1} of ${files.length}...`);
 
         // Compress image before upload
         const compressedBase64 = await new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
-          reader.onload = (e) => {
+          reader.onload = (readerEvent) => {
             const img = document.createElement("img");
             img.onload = () => {
               // Create canvas for compression
               const canvas = document.createElement("canvas");
-              const ctx = canvas.getContext("2d");
+              const canvasContext = canvas.getContext("2d");
 
               // Calculate new dimensions (max 800px for MUCH smaller files)
               let width = img.width;
@@ -175,7 +175,7 @@ export default function ReportScreen({
               canvas.height = height;
 
               // Draw and compress
-              ctx?.drawImage(img, 0, 0, width, height);
+              canvasContext?.drawImage(img, 0, 0, width, height);
 
               // Start with 0.5 quality for aggressive compression
               let quality = 0.5;
@@ -199,7 +199,7 @@ export default function ReportScreen({
               resolve(compressedDataUrl);
             };
             img.onerror = reject;
-            img.src = e.target?.result as string;
+            img.src = readerEvent.target?.result as string;
           };
           reader.onerror = reject;
           reader.readAsDataURL(file);
@@ -208,7 +208,7 @@ export default function ReportScreen({
         console.log("📸 Photo compressed, size:", compressedBase64.length, "bytes");
 
         // Try to upload to Supabase Storage
-        setUploadProgress(`Uploading photo ${i + 1} of ${files.length}...`);
+        setUploadProgress(`Uploading photo ${fileIndex + 1} of ${files.length}...`);
         const timestamp = Date.now();
         const random = Math.random().toString(36).substring(7);
         const imagePath = `damage-reports/${timestamp}-${random}.jpg`;

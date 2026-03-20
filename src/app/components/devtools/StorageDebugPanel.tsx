@@ -27,8 +27,8 @@ export default function StorageDebugPanel() {
     const items: StorageItem[] = [];
     let total = 0;
 
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+    for (let itemIndex = 0; itemIndex < localStorage.length; itemIndex++) {
+      const key = localStorage.key(itemIndex);
       if (!key) continue;
 
       const value = localStorage.getItem(key) || "";
@@ -76,10 +76,14 @@ export default function StorageDebugPanel() {
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";
-    const k = 1024;
+    const bytesPerKilobyte = 1024;
     const sizes = ["B", "KB", "MB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+    const sizeUnitIndex = Math.floor(Math.log(bytes) / Math.log(bytesPerKilobyte));
+    return (
+      Math.round((bytes / Math.pow(bytesPerKilobyte, sizeUnitIndex)) * 100) / 100 +
+      " " +
+      sizes[sizeUnitIndex]
+    );
   };
 
   const deleteItem = (key: string) => {
@@ -117,7 +121,7 @@ export default function StorageDebugPanel() {
       await navigator.clipboard.writeText(value);
       setCopiedKey(key);
       setTimeout(() => setCopiedKey(null), 2000);
-    } catch (err) {
+    } catch (clipboardError) {
       alert("Failed to copy to clipboard");
     }
   };
@@ -207,7 +211,9 @@ export default function StorageDebugPanel() {
                       <code className="text-sm font-mono font-semibold text-gray-900">
                         {item.key}
                       </code>
-                      <span className={`px-2 py-0.5 text-xs rounded-full ${getBadgeColor(item.type)}`}>
+                      <span
+                        className={`px-2 py-0.5 text-xs rounded-full ${getBadgeColor(item.type)}`}
+                      >
                         {item.type}
                       </span>
                       <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">

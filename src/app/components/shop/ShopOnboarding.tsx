@@ -11,7 +11,7 @@ type ShopOnboardingProps = {
 export default function ShopOnboarding({
   primaryColor = "#003d82",
   secondaryColor = "#00a0e9",
-  onComplete
+  onComplete,
 }: ShopOnboardingProps) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ export default function ShopOnboarding({
     certifications: [] as string[],
     specialties: [] as string[],
     insurance: false,
-    estimates: false
+    estimates: false,
   });
 
   const certificationOptions = [
@@ -36,7 +36,7 @@ export default function ShopOnboarding({
     "BMW Certified",
     "Mercedes Certified",
     "AAA Approved",
-    "Porsche Approved"
+    "Porsche Approved",
   ];
 
   const specialtyOptions = [
@@ -46,12 +46,12 @@ export default function ShopOnboarding({
     "Custom Paint",
     "Luxury Vehicles",
     "Insurance Claims",
-    "Fleet Services"
+    "Fleet Services",
   ];
 
   const toggleArrayItem = (array: string[], item: string) => {
     if (array.includes(item)) {
-      return array.filter(i => i !== item);
+      return array.filter((arrayItem) => arrayItem !== item);
     } else {
       return [...array, item];
     }
@@ -93,9 +93,11 @@ export default function ShopOnboarding({
         {step === 1 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                }}
               >
                 <Building className="w-8 h-8 text-white" />
               </div>
@@ -105,13 +107,11 @@ export default function ShopOnboarding({
 
             <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Shop Name *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Shop Name *</label>
                 <input
                   type="text"
                   value={formData.shopName}
-                  onChange={(e) => setFormData({...formData, shopName: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, shopName: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="Express Auto Body"
                 />
@@ -124,7 +124,7 @@ export default function ShopOnboarding({
                 <input
                   type="text"
                   value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="123 Main St"
                 />
@@ -132,25 +132,21 @@ export default function ShopOnboarding({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    City *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
                   <input
                     type="text"
                     value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     placeholder="City"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    State *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
                   <input
                     type="text"
                     value={formData.state}
-                    onChange={(e) => setFormData({...formData, state: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     placeholder="State"
                   />
@@ -158,13 +154,11 @@ export default function ShopOnboarding({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  ZIP Code *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
                 <input
                   type="text"
                   value={formData.zip}
-                  onChange={(e) => setFormData({...formData, zip: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="12345"
                 />
@@ -179,21 +173,21 @@ export default function ShopOnboarding({
                   value={formData.phone}
                   onChange={(e) => {
                     // Auto-format phone number as (XXX) XXX-XXXX
-                    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                    let value = e.target.value.replace(/\D/g, ""); // Remove non-digits
                     if (value.length > 10) value = value.slice(0, 10); // Limit to 10 digits
-                    
-                    let formatted = '';
+
+                    let formatted = "";
                     if (value.length > 0) {
-                      formatted = '(' + value.substring(0, 3);
+                      formatted = "(" + value.substring(0, 3);
                       if (value.length >= 3) {
-                        formatted += ') ' + value.substring(3, 6);
+                        formatted += ") " + value.substring(3, 6);
                       }
                       if (value.length >= 6) {
-                        formatted += '-' + value.substring(6, 10);
+                        formatted += "-" + value.substring(6, 10);
                       }
                     }
-                    
-                    setFormData({...formData, phone: formatted || value});
+
+                    setFormData({ ...formData, phone: formatted || value });
                   }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="(555) 123-4567"
@@ -208,7 +202,7 @@ export default function ShopOnboarding({
                 <input
                   type="url"
                   value={formData.website}
-                  onChange={(e) => setFormData({...formData, website: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="https://yourshop.com"
                 />
@@ -217,7 +211,14 @@ export default function ShopOnboarding({
 
             <motion.button
               onClick={handleNext}
-              disabled={!formData.shopName || !formData.address || !formData.city || !formData.state || !formData.zip || !formData.phone}
+              disabled={
+                !formData.shopName ||
+                !formData.address ||
+                !formData.city ||
+                !formData.state ||
+                !formData.zip ||
+                !formData.phone
+              }
               className="w-full mt-6 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ backgroundColor: primaryColor }}
               whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
@@ -235,9 +236,11 @@ export default function ShopOnboarding({
         {step === 2 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                }}
               >
                 <Clock className="w-8 h-8 text-white" />
               </div>
@@ -253,11 +256,13 @@ export default function ShopOnboarding({
                 <input
                   type="text"
                   value={formData.hours}
-                  onChange={(e) => setFormData({...formData, hours: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, hours: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="Mon-Fri: 8AM-6PM, Sat: 9AM-3PM"
                 />
-                <p className="text-xs text-gray-500 mt-1">You can edit this later in your profile</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  You can edit this later in your profile
+                </p>
               </div>
             </div>
 
@@ -290,14 +295,18 @@ export default function ShopOnboarding({
         {step === 3 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                }}
               >
                 <Award className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-center mb-2">Certifications</h2>
-              <p className="text-gray-600 text-center">Select your certifications and specialties</p>
+              <p className="text-gray-600 text-center">
+                Select your certifications and specialties
+              </p>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
@@ -309,10 +318,12 @@ export default function ShopOnboarding({
                   {certificationOptions.map((cert) => (
                     <button
                       key={cert}
-                      onClick={() => setFormData({
-                        ...formData,
-                        certifications: toggleArrayItem(formData.certifications, cert)
-                      })}
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          certifications: toggleArrayItem(formData.certifications, cert),
+                        })
+                      }
                       className={`px-3 py-2 rounded-md text-sm border transition-colors ${
                         formData.certifications.includes(cert)
                           ? "bg-blue-100 border-blue-500 text-blue-700"
@@ -329,17 +340,17 @@ export default function ShopOnboarding({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Specialties
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-3">Specialties</label>
                 <div className="flex flex-wrap gap-2">
                   {specialtyOptions.map((specialty) => (
                     <button
                       key={specialty}
-                      onClick={() => setFormData({
-                        ...formData,
-                        specialties: toggleArrayItem(formData.specialties, specialty)
-                      })}
+                      onClick={() =>
+                        setFormData({
+                          ...formData,
+                          specialties: toggleArrayItem(formData.specialties, specialty),
+                        })
+                      }
                       className={`px-3 py-2 rounded-md text-sm border transition-colors ${
                         formData.specialties.includes(specialty)
                           ? "bg-blue-100 border-blue-500 text-blue-700"
@@ -385,7 +396,7 @@ export default function ShopOnboarding({
         {step === 4 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ backgroundColor: "#34D399" }}
               >
@@ -404,7 +415,7 @@ export default function ShopOnboarding({
                 <input
                   type="checkbox"
                   checked={formData.insurance}
-                  onChange={(e) => setFormData({...formData, insurance: e.target.checked})}
+                  onChange={(e) => setFormData({ ...formData, insurance: e.target.checked })}
                   className="w-5 h-5"
                   style={{ accentColor: primaryColor }}
                 />
@@ -418,7 +429,7 @@ export default function ShopOnboarding({
                 <input
                   type="checkbox"
                   checked={formData.estimates}
-                  onChange={(e) => setFormData({...formData, estimates: e.target.checked})}
+                  onChange={(e) => setFormData({ ...formData, estimates: e.target.checked })}
                   className="w-5 h-5"
                   style={{ accentColor: primaryColor }}
                 />

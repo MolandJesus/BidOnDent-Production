@@ -1,5 +1,16 @@
 import { useState } from "react";
-import { Search, MapPin, Phone, Mail, MessageSquare, Plus, Star, CheckCircle, TrendingUp, Award } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  Phone,
+  Mail,
+  MessageSquare,
+  Plus,
+  Star,
+  CheckCircle,
+  TrendingUp,
+  Award,
+} from "lucide-react";
 
 type InsurerPartnerShopsScreenProps = {
   primaryColor?: string;
@@ -8,10 +19,12 @@ type InsurerPartnerShopsScreenProps = {
 
 export default function InsurerPartnerShopsScreen({
   primaryColor = "#003d82",
-  onAddShop
+  onAddShop,
 }: InsurerPartnerShopsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "pending" | "inactive">("all");
+  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "pending" | "inactive">(
+    "all"
+  );
   const [showAddShopModal, setShowAddShopModal] = useState(false);
   const [newShopData, setNewShopData] = useState({
     name: "",
@@ -22,7 +35,7 @@ export default function InsurerPartnerShopsScreen({
     state: "",
     zip: "",
     specialties: [] as string[],
-    certifications: [] as string[]
+    certifications: [] as string[],
   });
 
   // Sample partner shops - in production, this would come from Supabase
@@ -48,7 +61,7 @@ export default function InsurerPartnerShopsScreen({
       activeJobs: 8,
       avgCompletionDays: 3.5,
       avgCost: 2850,
-      status: "active"
+      status: "active",
     },
     {
       id: 2,
@@ -71,7 +84,7 @@ export default function InsurerPartnerShopsScreen({
       activeJobs: 5,
       avgCompletionDays: 4.2,
       avgCost: 3200,
-      status: "active"
+      status: "active",
     },
     {
       id: 3,
@@ -94,7 +107,7 @@ export default function InsurerPartnerShopsScreen({
       activeJobs: 12,
       avgCompletionDays: 2.8,
       avgCost: 1950,
-      status: "active"
+      status: "active",
     },
     {
       id: 4,
@@ -117,7 +130,7 @@ export default function InsurerPartnerShopsScreen({
       activeJobs: 6,
       avgCompletionDays: 5.1,
       avgCost: 4500,
-      status: "active"
+      status: "active",
     },
     {
       id: 5,
@@ -140,8 +153,8 @@ export default function InsurerPartnerShopsScreen({
       activeJobs: 3,
       avgCompletionDays: 4.0,
       avgCost: 2400,
-      status: "pending"
-    }
+      status: "pending",
+    },
   ];
 
   const specialtyOptions = [
@@ -154,7 +167,7 @@ export default function InsurerPartnerShopsScreen({
     "Glass Repair",
     "Custom Paint",
     "Restoration",
-    "Fast Service"
+    "Fast Service",
   ];
 
   const certificationOptions = [
@@ -164,41 +177,46 @@ export default function InsurerPartnerShopsScreen({
     "Tesla Certified",
     "BMW Certified",
     "Mercedes Certified",
-    "PPG Certified"
+    "PPG Certified",
   ];
 
-  const filteredShops = sampleShops.filter(shop => {
-    const matchesSearch = shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         shop.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         shop.specialties.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredShops = sampleShops.filter((shop) => {
+    const matchesSearch =
+      shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      shop.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      shop.specialties.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesFilter = filterStatus === "all" || shop.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-100 text-green-700 border-green-200";
-      case "pending": return "bg-yellow-100 text-yellow-700 border-yellow-200";
-      case "inactive": return "bg-gray-100 text-gray-700 border-gray-200";
-      default: return "bg-gray-100 text-gray-700 border-gray-200";
+      case "active":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "inactive":
+        return "bg-gray-100 text-gray-700 border-gray-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
   const toggleSpecialty = (specialty: string) => {
-    setNewShopData(prev => ({
+    setNewShopData((prev) => ({
       ...prev,
       specialties: prev.specialties.includes(specialty)
-        ? prev.specialties.filter(s => s !== specialty)
-        : [...prev.specialties, specialty]
+        ? prev.specialties.filter((specialtyItem) => specialtyItem !== specialty)
+        : [...prev.specialties, specialty],
     }));
   };
 
   const toggleCertification = (certification: string) => {
-    setNewShopData(prev => ({
+    setNewShopData((prev) => ({
       ...prev,
       certifications: prev.certifications.includes(certification)
-        ? prev.certifications.filter(c => c !== certification)
-        : [...prev.certifications, certification]
+        ? prev.certifications.filter((certificationItem) => certificationItem !== certification)
+        : [...prev.certifications, certification],
     }));
   };
 
@@ -216,7 +234,7 @@ export default function InsurerPartnerShopsScreen({
         state: "",
         zip: "",
         specialties: [],
-        certifications: []
+        certifications: [],
       });
     }
   };
@@ -227,7 +245,9 @@ export default function InsurerPartnerShopsScreen({
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold" style={{ color: primaryColor }}>Partner Shops</h1>
+            <h1 className="text-2xl font-bold" style={{ color: primaryColor }}>
+              Partner Shops
+            </h1>
             <button
               onClick={() => setShowAddShopModal(true)}
               className="px-4 py-2 rounded-lg text-white font-medium flex items-center gap-2 hover:opacity-90 transition-opacity"
@@ -257,7 +277,7 @@ export default function InsurerPartnerShopsScreen({
                 { id: "all", label: "All Shops" },
                 { id: "active", label: "Active" },
                 { id: "pending", label: "Pending" },
-                { id: "inactive", label: "Inactive" }
+                { id: "inactive", label: "Inactive" },
               ].map((filter) => (
                 <button
                   key={filter.id}
@@ -293,7 +313,9 @@ export default function InsurerPartnerShopsScreen({
                         Certified
                       </span>
                     )}
-                    <span className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(shop.status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(shop.status)}`}
+                    >
                       {shop.status.toUpperCase()}
                     </span>
                   </div>
@@ -309,11 +331,11 @@ export default function InsurerPartnerShopsScreen({
               <div className="space-y-1 text-sm">
                 <div className="flex items-center text-gray-700">
                   <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                  <span>{shop.address}, {shop.city}, {shop.state} {shop.zip}</span>
+                  <span>
+                    {shop.address}, {shop.city}, {shop.state} {shop.zip}
+                  </span>
                 </div>
-                <div className="flex items-center text-gray-600 ml-6">
-                  {shop.distance} away
-                </div>
+                <div className="flex items-center text-gray-600 ml-6">{shop.distance} away</div>
               </div>
             </div>
 
@@ -330,7 +352,9 @@ export default function InsurerPartnerShopsScreen({
                 </div>
                 <div>
                   <p className="text-xs text-gray-500">Active Jobs</p>
-                  <p className="text-sm font-medium" style={{ color: primaryColor }}>{shop.activeJobs}</p>
+                  <p className="text-sm font-medium" style={{ color: primaryColor }}>
+                    {shop.activeJobs}
+                  </p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-500">Avg Completion</p>
@@ -342,7 +366,9 @@ export default function InsurerPartnerShopsScreen({
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-gray-500">Average Cost</p>
-                    <p className="text-lg font-bold" style={{ color: primaryColor }}>${shop.avgCost.toLocaleString()}</p>
+                    <p className="text-lg font-bold" style={{ color: primaryColor }}>
+                      ${shop.avgCost.toLocaleString()}
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Rating Trend</p>
@@ -360,7 +386,10 @@ export default function InsurerPartnerShopsScreen({
                   <p className="text-xs text-gray-500 mb-1">Specialties:</p>
                   <div className="flex flex-wrap gap-1">
                     {shop.specialties.map((specialty, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded">
+                      <span
+                        key={idx}
+                        className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded"
+                      >
                         {specialty}
                       </span>
                     ))}
@@ -374,7 +403,10 @@ export default function InsurerPartnerShopsScreen({
                   <p className="text-xs text-gray-500 mb-1">Certifications:</p>
                   <div className="flex flex-wrap gap-1">
                     {shop.certifications.map((cert, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded flex items-center gap-1">
+                      <span
+                        key={idx}
+                        className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded flex items-center gap-1"
+                      >
                         <Award className="w-3 h-3" />
                         {cert}
                       </span>
@@ -417,7 +449,7 @@ export default function InsurerPartnerShopsScreen({
           <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h2 className="text-2xl font-bold mb-4">Add Partner Shop</h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -474,9 +506,7 @@ export default function InsurerPartnerShopsScreen({
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      City
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
                     <input
                       type="text"
                       value={newShopData.city}
@@ -486,9 +516,7 @@ export default function InsurerPartnerShopsScreen({
                     />
                   </div>
                   <div className="col-span-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      State
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
                     <input
                       type="text"
                       value={newShopData.state}
@@ -499,9 +527,7 @@ export default function InsurerPartnerShopsScreen({
                     />
                   </div>
                   <div className="col-span-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      ZIP
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">ZIP</label>
                     <input
                       type="text"
                       value={newShopData.zip}
@@ -526,7 +552,11 @@ export default function InsurerPartnerShopsScreen({
                             ? "text-white border-transparent"
                             : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                         }`}
-                        style={newShopData.specialties.includes(specialty) ? { backgroundColor: primaryColor } : {}}
+                        style={
+                          newShopData.specialties.includes(specialty)
+                            ? { backgroundColor: primaryColor }
+                            : {}
+                        }
                       >
                         {specialty}
                       </button>

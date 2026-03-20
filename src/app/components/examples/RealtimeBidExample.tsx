@@ -2,26 +2,22 @@
  * ============================================================================
  * REAL-TIME BID COMPONENT EXAMPLE
  * ============================================================================
- * 
+ *
  * This is a complete working example showing how to integrate:
  * - Real-time bid subscriptions
  * - Performance optimization with caching
  * - Optimistic UI updates
  * - Cloud-agnostic storage
- * 
+ *
  * Copy this pattern for your own components!
  * ============================================================================
  */
 
-import { useState, useEffect } from 'react';
-import { DollarSign, Clock, Star, MapPin, TrendingUp, Wifi, WifiOff } from 'lucide-react';
-import { realtimeBidService } from '../../services/realtime/RealtimeBidService';
-import { performanceOptimizer } from '../../services/performance/PerformanceOptimizer';
-import { 
-  getBidsForReport, 
-  updateBidStatus,
-  type Bid 
-} from '../../services/supabaseService';
+import { useState, useEffect } from "react";
+import { DollarSign, Clock, Star, MapPin, TrendingUp, Wifi, WifiOff } from "lucide-react";
+import { realtimeBidService } from "../../services/realtime/RealtimeBidService";
+import { performanceOptimizer } from "../../services/performance/PerformanceOptimizer";
+import { getBidsForReport, updateBidStatus, type Bid } from "../../services/supabaseService";
 
 interface RealtimeBidExampleProps {
   reportId: string;
@@ -41,72 +37,67 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
 
   // Subscribe to real-time updates
   useEffect(() => {
-    console.log('🔴 Setting up real-time subscription for report:', reportId);
+    console.log("🔴 Setting up real-time subscription for report:", reportId);
 
     const unsubscribe = realtimeBidService.subscribeToReportBids(
       reportId,
-      
+
       // onNewBid callback
       (newBid) => {
-        console.log('🔴 NEW BID RECEIVED:', newBid);
-        
+        console.log("🔴 NEW BID RECEIVED:", newBid);
+
         // Add to list
-        setBids(prev => [newBid, ...prev]);
-        
+        setBids((prev) => [newBid, ...prev]);
+
         // Increment badge count
-        setNewBidCount(prev => prev + 1);
-        
+        setNewBidCount((prev) => prev + 1);
+
         // Show notification
         showNotification(
           `New bid: $${newBid.amount}`,
           `${newBid.shop_name} - ${newBid.estimated_days} days`
         );
-        
+
         // Play sound
         playNotificationSound();
-        
+
         // Invalidate cache
         performanceOptimizer.invalidateCache(`bids-${reportId}`);
       },
-      
+
       // onUpdateBid callback
       (updatedBid) => {
-        console.log('🔴 BID UPDATED:', updatedBid);
-        
-        setBids(prev => prev.map(bid => 
-          bid.id === updatedBid.id ? updatedBid : bid
-        ));
-        
-        if (updatedBid.status === 'accepted') {
-          showNotification(
-            'Bid Accepted!',
-            `You accepted ${updatedBid.shop_name}'s bid`
-          );
+        console.log("🔴 BID UPDATED:", updatedBid);
+
+        setBids((prev) => prev.map((bid) => (bid.id === updatedBid.id ? updatedBid : bid)));
+
+        if (updatedBid.status === "accepted") {
+          showNotification("Bid Accepted!", `You accepted ${updatedBid.shop_name}'s bid`);
         }
       },
-      
+
       // onDeleteBid callback
       (bidId) => {
-        console.log('🔴 BID DELETED:', bidId);
-        setBids(prev => prev.filter(bid => bid.id !== bidId));
+        console.log("🔴 BID DELETED:", bidId);
+        setBids((prev) => prev.filter((bid) => bid.id !== bidId));
       },
-      
+
       // onConnectionStatus callback
       (status) => {
-        console.log('🔴 Connection status:', status);
-        setIsConnected(status === 'connected');
-        
-        if (status === 'error') {
-          showNotification('Connection Lost', 'Trying to reconnect...', 'error');
-        } else if (status === 'connected') {
-          console.log('✅ Real-time connection established');
+        console.log("🔴 Connection status:", status);
+        setIsConnected(status === "connected");
+
+        if (status === "error") {
+          showNotification("Connection Lost", "Trying to reconnect...", "error");
+        } else if (status === "connected") {
+          console.log("✅ Real-time connection established");
         }
       }
     );
 
     // Cleanup on unmount
     return () => {
-      console.log('🔴 Cleaning up real-time subscription');
+      console.log("🔴 Cleaning up real-time subscription");
       unsubscribe();
     };
   }, [reportId]);
@@ -116,22 +107,22 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
    */
   async function loadBids() {
     setIsLoading(true);
-    
+
     try {
       const cachedBids = await performanceOptimizer.cachedQuery(
         `bids-${reportId}`,
         async () => {
-          console.log('📡 Fetching bids from database...');
+          console.log("📡 Fetching bids from database...");
           return await getBidsForReport(reportId);
         },
         30000 // Cache for 30 seconds
       );
-      
+
       setBids(cachedBids);
       console.log(`✅ Loaded ${cachedBids.length} bids`);
     } catch (error) {
-      console.error('❌ Error loading bids:', error);
-      showNotification('Error', 'Failed to load bids', 'error');
+      console.error("❌ Error loading bids:", error);
+      showNotification("Error", "Failed to load bids", "error");
     } finally {
       setIsLoading(false);
     }
@@ -146,36 +137,35 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
     }
 
     // Optimistic update - UI changes immediately
-    const optimisticBid = { ...bid, status: 'accepted' as const };
-    
+    const optimisticBid = { ...bid, status: "accepted" as const };
+
     try {
       await performanceOptimizer.optimisticUpdate(
         `bids-${reportId}`,
-        bids.map(b => b.id === bid.id ? optimisticBid : b),
+        bids.map((existingBid) => (existingBid.id === bid.id ? optimisticBid : existingBid)),
         async () => {
           // Actual server update happens in background
-          const result = await updateBidStatus(bid.id!, 'accepted');
-          
+          const result = await updateBidStatus(bid.id!, "accepted");
+
           if (!result) {
-            throw new Error('Failed to update bid status');
+            throw new Error("Failed to update bid status");
           }
-          
+
           return result;
         }
       );
-      
+
       // Update local state
-      setBids(prev => prev.map(b => 
-        b.id === bid.id ? optimisticBid : b
-      ));
-      
-      showNotification('Success!', `Accepted bid from ${bid.shop_name}`);
+      setBids((prev) =>
+        prev.map((existingBid) => (existingBid.id === bid.id ? optimisticBid : existingBid))
+      );
+
+      showNotification("Success!", `Accepted bid from ${bid.shop_name}`);
       onBidAccepted?.(optimisticBid);
-      
     } catch (error) {
-      console.error('❌ Error accepting bid:', error);
-      showNotification('Error', 'Failed to accept bid', 'error');
-      
+      console.error("❌ Error accepting bid:", error);
+      showNotification("Error", "Failed to accept bid", "error");
+
       // Optimistic update will rollback automatically
       loadBids();
     }
@@ -185,28 +175,27 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
    * Reject a bid with optimistic UI update
    */
   async function handleRejectBid(bid: Bid) {
-    const optimisticBid = { ...bid, status: 'rejected' as const };
-    
+    const optimisticBid = { ...bid, status: "rejected" as const };
+
     try {
       await performanceOptimizer.optimisticUpdate(
         `bids-${reportId}`,
-        bids.map(b => b.id === bid.id ? optimisticBid : b),
+        bids.map((existingBid) => (existingBid.id === bid.id ? optimisticBid : existingBid)),
         async () => {
-          const result = await updateBidStatus(bid.id!, 'rejected');
-          if (!result) throw new Error('Failed to update');
+          const result = await updateBidStatus(bid.id!, "rejected");
+          if (!result) throw new Error("Failed to update");
           return result;
         }
       );
-      
-      setBids(prev => prev.map(b => 
-        b.id === bid.id ? optimisticBid : b
-      ));
-      
-      showNotification('Bid Rejected', `Rejected bid from ${bid.shop_name}`);
-      
+
+      setBids((prev) =>
+        prev.map((existingBid) => (existingBid.id === bid.id ? optimisticBid : existingBid))
+      );
+
+      showNotification("Bid Rejected", `Rejected bid from ${bid.shop_name}`);
     } catch (error) {
-      console.error('❌ Error rejecting bid:', error);
-      showNotification('Error', 'Failed to reject bid', 'error');
+      console.error("❌ Error rejecting bid:", error);
+      showNotification("Error", "Failed to reject bid", "error");
       loadBids();
     }
   }
@@ -221,12 +210,12 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
   /**
    * Show toast notification
    */
-  function showNotification(title: string, message: string, type: 'success' | 'error' = 'success') {
+  function showNotification(title: string, message: string, type: "success" | "error" = "success") {
     // You can integrate with your toast library here
     console.log(`[${type.toUpperCase()}] ${title}: ${message}`);
-    
+
     // Example with native notification API
-    if ('Notification' in window && Notification.permission === 'granted') {
+    if ("Notification" in window && Notification.permission === "granted") {
       new Notification(title, { body: message });
     }
   }
@@ -236,7 +225,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
    */
   function playNotificationSound() {
     // You can add audio here
-    const audio = new Audio('/notification.mp3');
+    const audio = new Audio("/notification.mp3");
     audio.volume = 0.3;
     audio.play().catch(() => {
       // Ignore audio play errors (browser may block)
@@ -244,13 +233,13 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
   }
 
   // Calculate stats
-  const pendingBids = bids.filter(b => b.status === 'pending');
-  const lowestBid = pendingBids.length > 0 
-    ? Math.min(...pendingBids.map(b => b.amount))
-    : null;
-  const averageBid = pendingBids.length > 0
-    ? pendingBids.reduce((sum, b) => sum + b.amount, 0) / pendingBids.length
-    : null;
+  const pendingBids = bids.filter((bid) => bid.status === "pending");
+  const lowestBid =
+    pendingBids.length > 0 ? Math.min(...pendingBids.map((bid) => bid.amount)) : null;
+  const averageBid =
+    pendingBids.length > 0
+      ? pendingBids.reduce((sum, bid) => sum + bid.amount, 0) / pendingBids.length
+      : null;
 
   if (isLoading) {
     return (
@@ -268,7 +257,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
           <h2 className="text-xl font-bold">
             Bids ({bids.length})
             {newBidCount > 0 && (
-              <span 
+              <span
                 className="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full cursor-pointer"
                 onClick={clearNewBidNotification}
               >
@@ -280,7 +269,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
             {pendingBids.length} pending • Real-time updates enabled
           </p>
         </div>
-        
+
         {/* Connection indicator */}
         <div className="flex items-center gap-2">
           {isConnected ? (
@@ -305,19 +294,15 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
               <TrendingUp className="w-4 h-4" />
               <span className="text-sm font-medium">Lowest Bid</span>
             </div>
-            <div className="text-2xl font-bold text-green-900">
-              ${lowestBid?.toFixed(2)}
-            </div>
+            <div className="text-2xl font-bold text-green-900">${lowestBid?.toFixed(2)}</div>
           </div>
-          
+
           <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
             <div className="flex items-center gap-2 text-blue-700 mb-1">
               <DollarSign className="w-4 h-4" />
               <span className="text-sm font-medium">Average Bid</span>
             </div>
-            <div className="text-2xl font-bold text-blue-900">
-              ${averageBid?.toFixed(2)}
-            </div>
+            <div className="text-2xl font-bold text-blue-900">${averageBid?.toFixed(2)}</div>
           </div>
         </div>
       )}
@@ -336,9 +321,11 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
             <div
               key={bid.id}
               className={`bg-white rounded-lg shadow-sm border p-4 ${
-                bid.status === 'accepted' ? 'border-green-500 bg-green-50' :
-                bid.status === 'rejected' ? 'border-gray-300 opacity-60' :
-                'border-gray-200'
+                bid.status === "accepted"
+                  ? "border-green-500 bg-green-50"
+                  : bid.status === "rejected"
+                    ? "border-gray-300 opacity-60"
+                    : "border-gray-200"
               }`}
             >
               <div className="flex justify-between items-start mb-3">
@@ -346,17 +333,15 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
                   <h3 className="font-bold text-lg">{bid.shop_name}</h3>
                   <p className="text-sm text-gray-600">{bid.shop_email}</p>
                 </div>
-                
+
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-blue-600">
-                    ${bid.amount.toFixed(2)}
-                  </div>
-                  {bid.status === 'accepted' && (
+                  <div className="text-2xl font-bold text-blue-600">${bid.amount.toFixed(2)}</div>
+                  {bid.status === "accepted" && (
                     <span className="inline-block px-2 py-1 bg-green-600 text-white text-xs rounded-full">
                       Accepted
                     </span>
                   )}
-                  {bid.status === 'rejected' && (
+                  {bid.status === "rejected" && (
                     <span className="inline-block px-2 py-1 bg-gray-600 text-white text-xs rounded-full">
                       Rejected
                     </span>
@@ -371,14 +356,16 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
                   <Clock className="w-4 h-4" />
                   <span>{bid.estimated_days} days</span>
                 </div>
-                
+
                 {bid.shop_rating && (
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span>{bid.shop_rating} ({bid.shop_reviews} reviews)</span>
+                    <span>
+                      {bid.shop_rating} ({bid.shop_reviews} reviews)
+                    </span>
                   </div>
                 )}
-                
+
                 {bid.shop_distance && (
                   <div className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
@@ -387,7 +374,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
                 )}
               </div>
 
-              {bid.status === 'pending' && (
+              {bid.status === "pending" && (
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleAcceptBid(bid)}

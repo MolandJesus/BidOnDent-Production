@@ -2,7 +2,7 @@
  * ============================================================================
  * PERFORMANCE OPTIMIZER - SUPABASE PRO FEATURES
  * ============================================================================
- * 
+ *
  * Leverages Supabase Pro capabilities for maximum performance:
  * - Query result caching
  * - Optimistic UI updates
@@ -10,16 +10,16 @@
  * - Connection pooling optimization
  * - Smart data prefetching
  * - Image optimization with Supabase transforms
- * 
+ *
  * Usage:
  *   import { performanceOptimizer } from './services/performance/PerformanceOptimizer';
- *   
+ *
  *   // Cached query
  *   const data = await performanceOptimizer.cachedQuery('profiles', queryFn, 60000);
  * ============================================================================
  */
 
-import { supabase } from '../supabaseService';
+import { supabase } from "../supabaseService";
 
 interface CacheEntry<T> {
   data: T;
@@ -41,7 +41,7 @@ class PerformanceOptimizer {
   private prefetchQueue: Set<string> = new Set();
 
   constructor() {
-    console.log('⚡ Performance Optimizer initialized');
+    console.log("⚡ Performance Optimizer initialized");
     this.startCacheCleanup();
   }
 
@@ -76,12 +76,12 @@ class PerformanceOptimizer {
 
     try {
       const data = await promise;
-      
+
       // Cache the result
       this.cache.set(key, {
         data,
         timestamp: Date.now(),
-        ttl
+        ttl,
       });
 
       return data;
@@ -94,18 +94,18 @@ class PerformanceOptimizer {
    * Invalidate cache for a specific key or pattern
    */
   invalidateCache(keyOrPattern: string): void {
-    if (keyOrPattern.includes('*')) {
+    if (keyOrPattern.includes("*")) {
       // Pattern matching
-      const pattern = keyOrPattern.replace('*', '');
+      const pattern = keyOrPattern.replaceAll("*", "");
       let count = 0;
-      
+
       this.cache.forEach((_, key) => {
         if (key.includes(pattern)) {
           this.cache.delete(key);
           count++;
         }
       });
-      
+
       console.log(`⚡ Invalidated ${count} cache entries matching: ${keyOrPattern}`);
     } else {
       // Exact match
@@ -138,7 +138,7 @@ class PerformanceOptimizer {
     this.cache.set(cacheKey, {
       data: optimisticData,
       timestamp: Date.now(),
-      ttl: 60000
+      ttl: 60000,
     });
 
     console.log(`⚡ Optimistic update applied: ${cacheKey}`);
@@ -151,19 +151,19 @@ class PerformanceOptimizer {
       this.cache.set(cacheKey, {
         data: result,
         timestamp: Date.now(),
-        ttl: 60000
+        ttl: 60000,
       });
 
       return result;
     } catch (error) {
       // Rollback on error
       console.error(`⚡ Optimistic update failed, rolling back: ${cacheKey}`, error);
-      
+
       if (originalData) {
         this.cache.set(cacheKey, {
           data: originalData,
           timestamp: Date.now(),
-          ttl: 60000
+          ttl: 60000,
         });
       } else {
         this.cache.delete(cacheKey);
@@ -176,11 +176,9 @@ class PerformanceOptimizer {
   /**
    * Batch multiple queries into a single request
    */
-  async batchQuery<T>(
-    queries: Array<() => Promise<T>>
-  ): Promise<T[]> {
+  async batchQuery<T>(queries: Array<() => Promise<T>>): Promise<T[]> {
     console.log(`⚡ Batching ${queries.length} queries`);
-    return Promise.all(queries.map(q => q()));
+    return Promise.all(queries.map((queryFunction) => queryFunction()));
   }
 
   /**
@@ -212,7 +210,7 @@ class PerformanceOptimizer {
       width?: number;
       height?: number;
       quality?: number;
-      format?: 'webp' | 'avif' | 'origin';
+      format?: "webp" | "avif" | "origin";
     }
   ): string {
     const { data } = supabase.storage.from(bucket).getPublicUrl(path, {
@@ -220,8 +218,8 @@ class PerformanceOptimizer {
         width: options?.width,
         height: options?.height,
         quality: options?.quality || 80,
-        format: options?.format
-      }
+        format: options?.format,
+      },
     });
 
     return data.publicUrl;
@@ -238,7 +236,7 @@ class PerformanceOptimizer {
     const observer = new IntersectionObserver(
       async (entries) => {
         if (entries[0].isIntersecting) {
-          console.log('⚡ Lazy loading triggered');
+          console.log("⚡ Lazy loading triggered");
           const data = await loadFn();
           onLoad(data);
           observer.disconnect();
@@ -282,7 +280,7 @@ class PerformanceOptimizer {
       size: this.cache.size,
       pendingRequests: this.pendingRequests.size,
       prefetchQueue: this.prefetchQueue.size,
-      entries: Array.from(this.cache.keys())
+      entries: Array.from(this.cache.keys()),
     };
   }
 
@@ -290,39 +288,32 @@ class PerformanceOptimizer {
    * Preload critical app data
    */
   async preloadCriticalData(userId: string): Promise<void> {
-    console.log('⚡ Preloading critical data...');
+    console.log("⚡ Preloading critical data...");
 
     const preloadTasks = [
       this.prefetch(`profile-${userId}`, async () => {
-        const { data } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', userId)
-          .single();
+        const { data } = await supabase.from("profiles").select("*").eq("user_id", userId).single();
         return data;
       }),
 
       this.prefetch(`vehicles-${userId}`, async () => {
-        const { data } = await supabase
-          .from('vehicles')
-          .select('*')
-          .eq('user_id', userId);
+        const { data } = await supabase.from("vehicles").select("*").eq("user_id", userId);
         return data;
       }),
 
       this.prefetch(`reports-${userId}`, async () => {
         const { data } = await supabase
-          .from('damage_reports')
-          .select('*')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false })
+          .from("damage_reports")
+          .select("*")
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false })
           .limit(10);
         return data;
-      })
+      }),
     ];
 
     await Promise.all(preloadTasks);
-    console.log('⚡ Critical data preloaded');
+    console.log("⚡ Critical data preloaded");
   }
 }
 

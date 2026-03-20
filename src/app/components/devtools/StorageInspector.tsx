@@ -16,11 +16,11 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
   // Load localStorage data
   const loadLocalStorage = () => {
     const data: Record<string, any> = {};
-    
+
     // Get all bidondent-related keys
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith('bidondent')) {
+    for (let storageItemIndex = 0; storageItemIndex < localStorage.length; storageItemIndex++) {
+      const key = localStorage.key(storageItemIndex);
+      if (key && key.startsWith("bidondent")) {
         try {
           const value = localStorage.getItem(key);
           data[key] = value ? JSON.parse(value) : value;
@@ -29,7 +29,7 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
         }
       }
     }
-    
+
     setLocalStorageData(data);
   };
 
@@ -42,8 +42,10 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
 
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (!user) {
         setSupabaseData({ error: "No authenticated user" });
         return;
@@ -51,22 +53,19 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
 
       // Get profile
       const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
         .single();
 
       // Get vehicles
-      const { data: vehicles } = await supabase
-        .from('vehicles')
-        .select('*')
-        .eq('user_id', user.id);
+      const { data: vehicles } = await supabase.from("vehicles").select("*").eq("user_id", user.id);
 
       // Get damage reports
       const { data: reports } = await supabase
-        .from('damage_reports')
-        .select('*')
-        .eq('user_id', user.id);
+        .from("damage_reports")
+        .select("*")
+        .eq("user_id", user.id);
 
       setSupabaseData({
         user_id: user.id,
@@ -75,7 +74,7 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
         vehicles: vehicles || [],
         damage_reports: reports || [],
         total_vehicles: vehicles?.length || 0,
-        total_reports: reports?.length || 0
+        total_reports: reports?.length || 0,
       });
     } catch (error: any) {
       setSupabaseData({ error: error.message });
@@ -87,16 +86,16 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
   // Test: Clear localStorage and verify Supabase data persists
   const testClearLocalStorage = () => {
     const keys = Object.keys(localStorageData);
-    
+
     // Clear all bidondent localStorage
-    keys.forEach(key => localStorage.removeItem(key));
-    
-    setTestResults(prev => [
+    keys.forEach((key) => localStorage.removeItem(key));
+
+    setTestResults((prev) => [
       ...prev,
       `✅ Cleared ${keys.length} localStorage items`,
-      "🔄 Reload the page - your account data should still be there (from Supabase)!"
+      "🔄 Reload the page - your account data should still be there (from Supabase)!",
     ]);
-    
+
     loadLocalStorage();
   };
 
@@ -106,17 +105,17 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
     const testDraft = {
       currentStep: 2,
       vehicleInfo: { make: "Test", model: "Draft", year: "2024" },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
+
     localStorage.setItem(draftKey, JSON.stringify(testDraft));
-    
-    setTestResults(prev => [
+
+    setTestResults((prev) => [
       ...prev,
       `✅ Created test draft in localStorage`,
-      "📝 This draft will survive page reloads but won't go to Supabase until submitted"
+      "📝 This draft will survive page reloads but won't go to Supabase until submitted",
     ]);
-    
+
     loadLocalStorage();
   };
 
@@ -127,11 +126,14 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
   }, [userEmail]);
 
   const categorizeLocalStorage = (key: string) => {
-    if (key.includes('draft')) return { type: 'UI State', icon: '📝', color: 'text-blue-600' };
-    if (key.includes('keep_signed_in')) return { type: 'Preference', icon: '⚙️', color: 'text-green-600' };
-    if (key.includes('hasSeenPhotoGuide')) return { type: 'UI Flag', icon: '👁️', color: 'text-purple-600' };
-    if (key.includes('account_types') || key.includes('profile_')) return { type: 'Cache', icon: '💾', color: 'text-orange-600' };
-    return { type: 'Other', icon: '❓', color: 'text-gray-600' };
+    if (key.includes("draft")) return { type: "UI State", icon: "📝", color: "text-blue-600" };
+    if (key.includes("keep_signed_in"))
+      return { type: "Preference", icon: "⚙️", color: "text-green-600" };
+    if (key.includes("hasSeenPhotoGuide"))
+      return { type: "UI Flag", icon: "👁️", color: "text-purple-600" };
+    if (key.includes("account_types") || key.includes("profile_"))
+      return { type: "Cache", icon: "💾", color: "text-orange-600" };
+    return { type: "Other", icon: "❓", color: "text-gray-600" };
   };
 
   return (
@@ -185,8 +187,8 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
             {/* Test Results */}
             {testResults.length > 0 && (
               <div className="mt-4 space-y-1">
-                {testResults.map((result, i) => (
-                  <div key={i} className="text-sm text-gray-700">
+                {testResults.map((result, resultIndex) => (
+                  <div key={resultIndex} className="text-sm text-gray-700">
                     {result}
                   </div>
                 ))}
@@ -245,9 +247,7 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
                 <Database className="w-5 h-5 text-green-600" />
                 <h3 className="font-bold">Supabase (Cloud - Source of Truth)</h3>
               </div>
-              {loading && (
-                <RefreshCw className="w-4 h-4 text-green-600 animate-spin" />
-              )}
+              {loading && <RefreshCw className="w-4 h-4 text-green-600 animate-spin" />}
             </div>
             <div className="p-4">
               {!userEmail ? (
@@ -285,7 +285,9 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-green-600">☁️ Supabase:</span>
-                <span className="font-bold">Source of truth - Accounts, vehicles, reports all stored here</span>
+                <span className="font-bold">
+                  Source of truth - Accounts, vehicles, reports all stored here
+                </span>
               </div>
             </div>
           </div>
