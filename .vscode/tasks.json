@@ -7,7 +7,17 @@
       "command": "npm",
       "args": ["run", "dev"],
       "isBackground": true,
-      "problemMatcher": [],
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE",
+          "endsPattern": "Local:\\s+http://localhost"
+        }
+      },
       "group": "build"
     },
     {
