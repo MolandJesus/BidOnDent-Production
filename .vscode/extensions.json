@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    // Formatting & linting
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    // Tailwind CSS IntelliSense (class autocomplete + hover docs)
+    "bradlc.vscode-tailwindcss",
+    // Spell checker (cSpell config is already in settings.json)
+    "streetsidesoftware.code-spell-checker",
+    // TypeScript / React
+    "ms-vscode.vscode-typescript-next",
+    "dsznajder.es7-react-js-snippets",
+    // Path aliases & imports
+    "christian-kohler.path-intellisense"
+  ]
+}
