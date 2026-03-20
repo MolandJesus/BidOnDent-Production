@@ -1,11 +1,11 @@
 /**
  * Clerk Authentication Service
- * 
+ *
  * Provides a simplified interface for Clerk authentication
  * Stores user profile data in Clerk's metadata instead of Supabase
  */
 
-export type UserType = 'customer' | 'shop' | 'insurer';
+export type UserType = "customer" | "shop" | "insurer";
 
 export interface UserProfile {
   id: string;
@@ -14,6 +14,9 @@ export interface UserProfile {
   phone: string;
   user_type: UserType;
   account_setup_completed: boolean;
+  profile_image_url?: string;
+  shop_name?: string;
+  company_name?: string;
 }
 
 /**
@@ -22,18 +25,21 @@ export interface UserProfile {
  */
 export function extractUserProfile(clerkUser: any): UserProfile | null {
   if (!clerkUser) return null;
-  
+
   const metadata = clerkUser.unsafeMetadata || {};
   const rawType = metadata.user_type as string | undefined;
-  const normalizedType = rawType === 'admin' ? 'customer' : rawType;
-  
+  const normalizedType = rawType === "admin" ? "customer" : rawType;
+
   return {
     id: clerkUser.id,
-    email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
-    name: (metadata.name as string) || '',
-    phone: (metadata.phone as string) || '',
-    user_type: (normalizedType as UserType) || 'customer',
+    email: clerkUser.emailAddresses?.[0]?.emailAddress || "",
+    name: (metadata.name as string) || "",
+    phone: (metadata.phone as string) || "",
+    user_type: (normalizedType as UserType) || "customer",
     account_setup_completed: (metadata.account_setup_completed as boolean) || false,
+    profile_image_url: (metadata.profile_image_url as string) || "",
+    shop_name: (metadata.shop_name as string) || "",
+    company_name: (metadata.company_name as string) || "",
   };
 }
 
@@ -43,10 +49,10 @@ export function extractUserProfile(clerkUser: any): UserProfile | null {
  */
 export async function updateUserMetadata(
   clerkUser: any,
-  updates: Partial<Omit<UserProfile, 'id' | 'email'>>
+  updates: Partial<Omit<UserProfile, "id" | "email">>
 ) {
-  if (!clerkUser) throw new Error('No user provided');
-  
+  if (!clerkUser) throw new Error("No user provided");
+
   await clerkUser.update({
     unsafeMetadata: {
       ...clerkUser.unsafeMetadata,

@@ -289,7 +289,7 @@ export default function BusinessInquirySection() {
                 <input
                   value={shopForm.website}
                   onChange={(e) => setShopForm({ ...shopForm, website: e.target.value })}
-                  placeholder="www.shopname.com"
+                  placeholder="www.example-shop.com"
                   className="w-full h-11 px-3 border border-slate-300 rounded-lg"
                 />
               </div>

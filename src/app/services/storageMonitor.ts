@@ -3,7 +3,8 @@
  * Helps track usage and prevent exceeding free tier limits
  */
 
-import { projectId, publicAnonKey } from '../../../utils/supabase/info';
+import { publicAnonKey } from "../../../utils/supabase/info";
+import { buildEdgeFunctionUrl } from "./supabase/edgeFunctions";
 
 export interface StorageStats {
   totalReports: number;
@@ -23,26 +24,23 @@ export interface StorageStats {
 export async function getStorageStats(): Promise<StorageStats> {
   try {
     // Fetch all damage reports to count photos
-    const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/storage-stats`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await fetch(buildEdgeFunctionUrl("/storage-stats"), {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${publicAnonKey}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
-      console.warn('Unable to fetch storage stats, using estimates');
+      console.warn("Unable to fetch storage stats, using estimates");
       return getEstimatedStats();
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching storage stats:', error);
+    console.error("Error fetching storage stats:", error);
     return getEstimatedStats();
   }
 }
@@ -54,12 +52,12 @@ function getEstimatedStats(): StorageStats {
   return {
     totalReports: 0,
     totalPhotos: 0,
-    estimatedStorageUsed: '0MB',
+    estimatedStorageUsed: "0MB",
     estimatedStorageUsedBytes: 0,
-    storageLimit: '1GB',
+    storageLimit: "1GB",
     storagePercentage: 0,
     bandwidthWarning: false,
-    needsCleanup: false
+    needsCleanup: false,
   };
 }
 
@@ -90,20 +88,17 @@ export async function checkStorageLimits(): Promise<string | null> {
  */
 export async function cleanupOldReports(daysOld: number = 30): Promise<number> {
   try {
-    const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/cleanup-old-reports`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ daysOld })
-      }
-    );
+    const response = await fetch(buildEdgeFunctionUrl("/cleanup-old-reports"), {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${publicAnonKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ daysOld }),
+    });
 
     if (!response.ok) {
-      console.error('Failed to cleanup old reports');
+      console.error("Failed to cleanup old reports");
       return 0;
     }
 
@@ -111,7 +106,7 @@ export async function cleanupOldReports(daysOld: number = 30): Promise<number> {
     console.log(`🗑️ Cleaned up ${deleted} old reports`);
     return deleted;
   } catch (error) {
-    console.error('Error cleaning up old reports:', error);
+    console.error("Error cleaning up old reports:", error);
     return 0;
   }
 }

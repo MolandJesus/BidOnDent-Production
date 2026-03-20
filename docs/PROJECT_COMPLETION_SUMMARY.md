@@ -46,7 +46,7 @@ BidOnDent is now 100% production-ready with all identified issues fixed, profess
 
 #### Spelling & Text Issues Fixed (4/4)
 1. **Dictionary** ✅
-   - Fixed: "Dont" → "Don't" in cspell.json
+   - Fixed apostrophe usage for "don't" in cspell.json
 
 2. **Privacy Policy** ✅
    - Removed: "temporary legal placeholder" and "pending legal final" text

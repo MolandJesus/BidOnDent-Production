@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { ClerkProvider, useUser, useClerk } from "@clerk/clerk-react";
 
 // Import Clerk service
-import { extractUserProfile } from "./services/clerkService";
+import { extractUserProfile, updateUserMetadata } from "./services/clerkService";
 import { logWorkflowEvent } from "./services/supabaseService";
 
 // Import custom hooks (for non-auth state management)
@@ -27,17 +27,18 @@ import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
 
 // Import components
 import AppLoading from "./components/app/AppLoading";
-import DashboardLayout from "./components/app/DashboardLayout";
 import LandingPageLayout from "./components/app/LandingPageLayout";
-import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector";
-import ShopOnboarding from "./components/shop/ShopOnboarding";
-import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
-import PrivacyPolicyPage from "./components/legal/PrivacyPolicyPage";
-import AboutPage from "./components/landing/AboutPage";
-import InsurerPartnershipPage from "./components/landing/InsurerPartnershipPage";
 
 import { projectId, publicAnonKey } from "../../utils/supabase/info";
 import { clerkPublishableKey } from "../../utils/clerk/info";
+
+const DashboardLayout = lazy(() => import("./components/app/DashboardLayout"));
+const ClerkAccountTypeSelector = lazy(() => import("./components/auth/ClerkAccountTypeSelector"));
+const ShopOnboarding = lazy(() => import("./components/shop/ShopOnboarding"));
+const InsurerOnboarding = lazy(() => import("./components/insurer/InsurerOnboarding"));
+const PrivacyPolicyPage = lazy(() => import("./components/legal/PrivacyPolicyPage"));
+const AboutPage = lazy(() => import("./components/landing/AboutPage"));
+const InsurerPartnershipPage = lazy(() => import("./components/landing/InsurerPartnershipPage"));
 
 // Validate Clerk key
 console.log("Clerk Key loaded:", clerkPublishableKey?.substring(0, 20) + "...");
@@ -143,7 +144,12 @@ function AppContent() {
   const precisionRepairImage = LANDING_PAGE_IMAGES.PRECISION_REPAIR;
 
   const landingUserInfo = userProfile
-    ? { name: userProfile.name, email: userProfile.email, profileImage: "" }
+    ? {
+        name: userProfile.name,
+        email: userProfile.email,
+        profileImage:
+          userData.userInfo.profileImage || userProfile.profile_image_url || user?.imageUrl || "",
+      }
     : userData.userInfo;
 
   const landingRedirectInfo = userProfile ? { type: userProfile.user_type } : userData.redirectInfo;
@@ -195,50 +201,101 @@ function AppContent() {
   // ============================================================================
 
   if (isPrivacyPolicyPage) {
-    return <PrivacyPolicyPage onBackToHome={navigateHome} />;
+    return (
+      <Suspense fallback={<AppLoading message="Loading privacy policy..." />}>
+        <PrivacyPolicyPage onBackToHome={navigateHome} />
+      </Suspense>
+    );
   }
 
   if (isAboutPage) {
-    return <AboutPage onBackToHome={navigateHome} />;
+    return (
+      <Suspense fallback={<AppLoading message="Loading about page..." />}>
+        <AboutPage onBackToHome={navigateHome} />
+      </Suspense>
+    );
   }
 
   if (isInsurerPartnershipPage) {
-    return <InsurerPartnershipPage onBackToHome={navigateHome} />;
+    return (
+      <Suspense fallback={<AppLoading message="Loading partnership page..." />}>
+        <InsurerPartnershipPage onBackToHome={navigateHome} />
+      </Suspense>
+    );
   }
 
-  // Wait for Clerk to load
+  // Public site should render immediately while Clerk restores session.
   if (!isUserLoaded) {
-    return <AppLoading />;
+    return renderLandingPage(false);
   }
 
   // If user is logged in, show the dashboard or account setup
   if (user && userProfile) {
+    const resolvedProfileImage =
+      userData.userInfo.profileImage || userProfile.profile_image_url || user.imageUrl || "";
+
+    const handleProfileUpdate = async (info: {
+      name: string;
+      email: string;
+      phone?: string;
+      profileImage?: string;
+    }) => {
+      const nextName = info.name.trim() || userProfile.name;
+      const nextPhone = info.phone ?? userProfile.phone ?? "";
+      const nextProfileImage = info.profileImage || resolvedProfileImage;
+
+      await userData.saveProfile({
+        name: nextName,
+        email: userProfile.email,
+        phone: nextPhone,
+        profileImage: nextProfileImage,
+      });
+
+      try {
+        await updateUserMetadata(user, {
+          name: nextName,
+          phone: nextPhone,
+          profile_image_url: nextProfileImage,
+        });
+      } catch (error) {
+        console.error("Failed to persist profile metadata to Clerk:", error);
+      }
+    };
+
     // Show account type selector if setup not complete
     if (!userProfile.account_setup_completed) {
-      return <ClerkAccountTypeSelector />;
+      return (
+        <Suspense fallback={<AppLoading message="Preparing your account..." />}>
+          <ClerkAccountTypeSelector />
+        </Suspense>
+      );
     }
 
     // Show onboarding if needed
     if (navigation.showOnboarding && !navigation.onboardingComplete) {
       if (userProfile.user_type === "shop") {
         return (
-          <ShopOnboarding
-            onComplete={() => {
-              navigation.setShowOnboarding(false);
-              navigation.setOnboardingComplete(true);
-            }}
-            primaryColor={primaryColor}
-          />
+          <Suspense fallback={<AppLoading message="Loading shop workspace..." />}>
+            <ShopOnboarding
+              onComplete={() => {
+                navigation.setShowOnboarding(false);
+                navigation.setOnboardingComplete(true);
+              }}
+              primaryColor={primaryColor}
+            />
+          </Suspense>
         );
       } else if (userProfile.user_type === "insurer") {
         return (
-          <InsurerOnboarding
-            onComplete={() => {
-              navigation.setShowOnboarding(false);
-              navigation.setOnboardingComplete(true);
-            }}
-            primaryColor={primaryColor}
-          />
+          <Suspense fallback={<AppLoading message="Loading insurer workspace..." />}>
+            <InsurerOnboarding
+              onComplete={() => {
+                navigation.setShowOnboarding(false);
+                navigation.setOnboardingComplete(true);
+              }}
+              primaryColor={primaryColor}
+            />
+          </Suspense>
         );
       }
     }
@@ -275,34 +332,52 @@ function AppContent() {
       userData,
       submitBid,
       handleLogout,
+      handleProfileUpdate,
       onReportSubmit: handleReportSubmit,
       primaryColor,
       secondaryColor,
-      userImageUrl: user?.imageUrl || "",
+      userImageUrl: resolvedProfileImage,
     });
 
+    const handleNewNotification = (notification: (typeof userData.notifications)[number]) => {
+      userData.pushNotification(notification);
+    };
+
+    const handleMarkNotificationRead = (notificationId: string | number) => {
+      userData.markNotificationRead(notificationId);
+    };
+
+    const handleMarkAllNotificationsRead = () => {
+      userData.markAllNotificationsRead();
+    };
+
     return (
-      <DashboardLayout
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
-        currentNavTabs={currentNavTabs}
-        currentTab={navigation.currentTab}
-        viewMode={navigation.viewMode}
-        showProfileDropdown={navigation.showProfileDropdown}
-        userProfile={userProfile}
-        userImageUrl={user?.imageUrl || ""}
-        notifications={userData.notifications}
-        reports={userData.reports}
-        vehicles={userData.vehicles}
-        bids={userData.bids}
-        onLogoClick={() => navigation.setShowLandingPage(true)}
-        onTabClick={handleTabClick}
-        onMobileMenuTabClick={handleTabClick}
-        onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
-        onOpenDemoMode={() => navigation.setViewMode("demo-switcher" as any)}
-        profileDropdownData={profileDropdownData}
-        dashboardRouterProps={dashboardRouterProps}
-      />
+      <Suspense fallback={<AppLoading message="Loading dashboard..." />}>
+        <DashboardLayout
+          primaryColor={primaryColor}
+          secondaryColor={secondaryColor}
+          currentNavTabs={currentNavTabs}
+          currentTab={navigation.currentTab}
+          viewMode={navigation.viewMode}
+          showProfileDropdown={navigation.showProfileDropdown}
+          userProfile={userProfile}
+          userImageUrl={resolvedProfileImage}
+          notifications={userData.notifications}
+          reports={userData.reports}
+          vehicles={userData.vehicles}
+          bids={userData.bids}
+          onLogoClick={() => navigation.setShowLandingPage(true)}
+          onTabClick={handleTabClick}
+          onMobileMenuTabClick={handleTabClick}
+          onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
+          onOpenDemoMode={() => navigation.setViewMode("demo-switcher" as any)}
+          onNewNotification={handleNewNotification}
+          onMarkNotificationRead={handleMarkNotificationRead}
+          onMarkAllNotificationsRead={handleMarkAllNotificationsRead}
+          profileDropdownData={profileDropdownData}
+          dashboardRouterProps={dashboardRouterProps}
+        />
+      </Suspense>
     );
   }
 

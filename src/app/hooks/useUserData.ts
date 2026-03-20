@@ -2,17 +2,35 @@
 // ✅ Supabase is PRIMARY data source
 // ✅ localStorage is CACHE ONLY for performance
 import { useState, useEffect, useRef } from "react";
-import type { UserInfo, Vehicle, DamageReport, Notification, RedirectInfo, UserData, Bid, Activity } from "../types";
-import { 
-  getProfile,
-  getVehicles,
-  getDamageReports,
-  saveProfile,
-  saveVehicle,
-  saveDamageReport,
-  supabase
-} from "../services/supabaseService";
+import type {
+  UserInfo,
+  Vehicle,
+  DamageReport,
+  Notification,
+  RedirectInfo,
+  UserData,
+  Bid,
+  Activity,
+} from "../types";
 import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
+import {
+  getReportsByClerkUser,
+  getVehiclesByClerkUser,
+  saveReportByClerkUser,
+  saveVehicleByClerkUser,
+} from "../services/supabase/clerkEdgeData";
+import {
+  buildPhotoStorageFromReports,
+  buildUserDataCachePayload,
+  createSupabaseReportPayload,
+  extractBidsFromReports,
+  getLastActiveEmail,
+  getUserCacheKey,
+  loadCachedUserData,
+  normalizeEmail,
+  saveUserDataCache,
+  transformSupabaseReports,
+} from "./useUserDataHelpers";
 
 export function useUserData(clerkUserId?: string) {
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: "", email: "", profileImage: "" });
@@ -28,229 +46,121 @@ export function useUserData(clerkUserId?: string) {
   const isSavingRef = useRef(false);
   const isLoadingFromCloudRef = useRef(false);
 
-  const normalizeEmail = (email?: string) => (email ? email.toLowerCase() : "");
-  const getUserCacheKey = (email?: string) => {
-    const normalized = normalizeEmail(email);
-    return normalized ? `${STORAGE_KEYS.USER_DATA}:${normalized}` : STORAGE_KEYS.USER_DATA;
-  };
-  const getLastActiveEmail = () => {
-    const lastActive = localStorage.getItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
-    return normalizeEmail(lastActive || undefined);
-  };
-  const buildPhotoStorageFromReports = (reportsData: any[]) => {
-    const photoStorageData: Record<string, string[]> = {};
-    reportsData.forEach((report: any) => {
-      if (report?.id && Array.isArray(report.photos) && report.photos.length > 0) {
-        photoStorageData[report.id] = report.photos;
+  const loadUserDataFromCloud = async () => {
+    if (!clerkUserId) {
+      return;
+    }
+
+    isLoadingFromCloudRef.current = true;
+    console.log("☁️ Loading data from Clerk-aware edge functions...");
+
+    try {
+      const scope =
+        redirectInfo?.type === "shop" || redirectInfo?.type === "insurer" ? "marketplace" : "own";
+
+      const [vehiclesData, reportsData] = await Promise.all([
+        redirectInfo?.type === "customer"
+          ? getVehiclesByClerkUser(clerkUserId)
+          : Promise.resolve([]),
+        getReportsByClerkUser(clerkUserId, scope),
+      ]);
+
+      const transformedReports = transformSupabaseReports(reportsData);
+      const nextPhotoStorage = buildPhotoStorageFromReports(reportsData);
+      const nextBids = extractBidsFromReports(
+        reportsData,
+        redirectInfo?.type || "customer",
+        clerkUserId
+      );
+
+      setVehicles(vehiclesData as Vehicle[]);
+      setReports(transformedReports as DamageReport[]);
+      setBids(nextBids as Bid[]);
+      setPhotoStorage(nextPhotoStorage);
+
+      if (redirectInfo?.type) {
+        setNotifications(getNotificationsByUserType(redirectInfo.type));
       }
-    });
-    return photoStorageData;
+
+      if (userInfo.email && redirectInfo) {
+        saveUserDataCache(
+          buildUserDataCachePayload({
+            userInfo,
+            vehicles: vehiclesData as UserData["vehicles"],
+            reports: transformedReports as UserData["reports"],
+            bids: nextBids as UserData["bids"],
+            userPhone,
+            redirectInfo,
+            notifications:
+              notifications.length > 0
+                ? notifications
+                : getNotificationsByUserType(redirectInfo.type),
+            hasSeenPhotoGuide,
+            photoStorage: nextPhotoStorage,
+          }),
+          userInfo.email
+        );
+      }
+
+      console.log(
+        `✅ Loaded ${vehiclesData.length} vehicles, ${transformedReports.length} reports, and ${nextBids.length} bids from cloud`
+      );
+    } catch (error) {
+      console.error("❌ Error loading from edge functions:", error);
+    } finally {
+      isLoadingFromCloudRef.current = false;
+    }
   };
 
   // ============================================================================
-  // CLOUD-FIRST DATA LOADING
+  // CACHE LOAD
   // ============================================================================
   useEffect(() => {
-    const loadUserData = async () => {
-      // Step 1: Load from localStorage CACHE for instant UI (optional)
-      const lastActiveEmail = getLastActiveEmail();
-      const lastActiveCacheKey = lastActiveEmail
-        ? getUserCacheKey(lastActiveEmail)
-        : STORAGE_KEYS.USER_DATA;
-      const cachedData =
-        localStorage.getItem(lastActiveCacheKey) ||
-        localStorage.getItem(STORAGE_KEYS.USER_DATA);
-      if (cachedData) {
-        try {
-          const userData: UserData = JSON.parse(cachedData);
-          if (userData.redirectInfo && userData.userInfo?.email) {
-            console.log('📦 Loading cached data for instant display...');
-            setUserInfo(userData.userInfo || { name: "", email: "", profileImage: "" });
-            setVehicles(userData.vehicles || []);
-            setReports(userData.reports || []);
-            setUserPhone(userData.userPhone || "");
-            setRedirectInfo(userData.redirectInfo);
-            setNotifications(
-              userData.notifications || getNotificationsByUserType(userData.redirectInfo.type)
-            );
-            setHasSeenPhotoGuide(userData.hasSeenPhotoGuide || false);
-            const cachedPhotoStorage = userData.photoStorage || buildPhotoStorageFromReports(userData.reports || []);
-            setPhotoStorage(cachedPhotoStorage);
-          }
-        } catch (error) {
-          console.error('Error loading cached data:', error);
-        }
-      }
+    const cachedUserData = loadCachedUserData();
+    if (cachedUserData?.data.redirectInfo && cachedUserData.data.userInfo?.email) {
+      const { data: userData } = cachedUserData;
+      console.log("📦 Loading cached data for instant display...");
+      setUserInfo(userData.userInfo || { name: "", email: "", profileImage: "" });
+      setVehicles(userData.vehicles || []);
+      setReports(userData.reports || []);
+      setBids(userData.bids || []);
+      setUserPhone(userData.userPhone || "");
+      setRedirectInfo(userData.redirectInfo);
+      setNotifications(
+        userData.notifications || getNotificationsByUserType(userData.redirectInfo.type)
+      );
+      setHasSeenPhotoGuide(userData.hasSeenPhotoGuide || false);
+      setPhotoStorage(
+        userData.photoStorage || buildPhotoStorageFromReports(userData.reports || [])
+      );
+    }
+  }, []);
 
-      // Step 2: Check if user is authenticated with Supabase
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        console.log('ℹ️ No active session - user needs to sign in');
+  // ============================================================================
+  // CLOUD LOAD (Clerk-aware edge functions)
+  // ============================================================================
+  useEffect(() => {
+    if (!clerkUserId) {
+      return;
+    }
+    void loadUserDataFromCloud();
+  }, [clerkUserId, redirectInfo?.type]);
+
+  useEffect(() => {
+    if (!clerkUserId || !redirectInfo?.type) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      if (document.hidden || isSavingRef.current || isLoadingFromCloudRef.current) {
         return;
       }
 
-      // Step 3: Load from SUPABASE (PRIMARY source of truth)
-      isLoadingFromCloudRef.current = true;
-      console.log('☁️ Loading data from Supabase (PRIMARY source)...');
-      
-      try {
-        const email = session.user.email;
-        if (!email) {
-          console.error('❌ No email in session');
-          return;
-        }
+      void loadUserDataFromCloud();
+    }, 15000);
 
-        const normalizedEmail = normalizeEmail(email);
-        const userCacheKey = getUserCacheKey(normalizedEmail);
-        const legacyCache = localStorage.getItem(STORAGE_KEYS.USER_DATA);
-        if (legacyCache && !localStorage.getItem(userCacheKey)) {
-          localStorage.setItem(userCacheKey, legacyCache);
-          localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-        }
-
-        // Load profile
-        const profileData = await getProfile(email);
-        
-        if (profileData) {
-          console.log('✅ Profile loaded from Supabase:', profileData);
-          
-          // Set state from Supabase data
-          setUserInfo({ 
-            name: profileData.name, 
-            email: profileData.email,
-            profileImage: profileData.profile_image_url || "" 
-          });
-          setUserPhone(profileData.phone || "");
-          setRedirectInfo({
-            type: profileData.account_type,
-            email: profileData.email
-          });
-          setNotifications(getNotificationsByUserType(profileData.account_type));
-          
-          // Load vehicles from Supabase
-          const vehiclesData = await getVehicles();
-          setVehicles(vehiclesData);
-          console.log(`✅ Loaded ${vehiclesData.length} vehicles from Supabase`);
-          
-          // Load reports from Supabase
-          const reportsData = await getDamageReports();
-          if (reportsData.length > 0) {
-            // Transform Supabase reports to app format
-            const transformedReports = reportsData.map((report: any) => ({
-              id: report.id || '',
-              vehicle: {
-                make: report.vehicle_make || '',
-                model: report.vehicle_model || '',
-                year: report.vehicle_year?.toString() || '',
-                vin: ''
-              },
-              damageArea: report.damage_location || report.damage_type || 'unknown',
-              photos: report.photo_urls || [],
-              description: report.damage_description || '',
-              incident: report.additional_notes || '',
-              status: report.status || 'pending',
-              submittedAt: report.created_at || new Date().toISOString(),
-              bidsCount: 0
-            }));
-            
-            setReports(transformedReports);
-            
-            // Populate photoStorage from reports
-            const photoStorageData: Record<string, string[]> = {};
-            reportsData.forEach((report: any) => {
-              if (report.photo_urls && Array.isArray(report.photo_urls)) {
-                photoStorageData[report.id || ''] = report.photo_urls;
-              }
-            });
-            setPhotoStorage(photoStorageData);
-            console.log(`✅ Loaded ${transformedReports.length} reports from Supabase`);
-          }
-
-          // Step 4: Update localStorage CACHE with fresh data
-          const freshUserData: UserData = {
-            userInfo: {
-              name: profileData.name,
-              email: profileData.email,
-              profileImage: profileData.profile_image_url || ""
-            },
-            vehicles: vehiclesData,
-            reports: reportsData.map((report: any) => ({
-              id: report.id || '',
-              vehicle: {
-                make: report.vehicle_make || '',
-                model: report.vehicle_model || '',
-                year: report.vehicle_year?.toString() || '',
-                vin: ''
-              },
-              damageArea: report.damage_location || report.damage_type || 'unknown',
-              photos: report.photo_urls || [],
-              description: report.damage_description || '',
-              incident: report.additional_notes || '',
-              status: report.status || 'pending',
-              submittedAt: report.created_at || new Date().toISOString(),
-              bidsCount: 0
-            })),
-            bids: [],
-            userPhone: profileData.phone || "",
-            redirectInfo: {
-              type: profileData.account_type,
-              email: profileData.email
-            },
-            notifications: getNotificationsByUserType(profileData.account_type),
-            hasSeenPhotoGuide: false,
-            photoStorage: reportsData.reduce((acc: Record<string, string[]>, report: any) => {
-              if (report?.id && Array.isArray(report.photo_urls)) {
-                acc[report.id] = report.photo_urls;
-              }
-              return acc;
-            }, {})
-          };
-          
-          localStorage.setItem(userCacheKey, JSON.stringify(freshUserData));
-          localStorage.setItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE, normalizedEmail);
-          console.log('💾 Cache updated with fresh Supabase data');
-          
-        } else {
-          console.log('ℹ️ No profile found in Supabase - new user or needs migration');
-          
-          // Check if we have cached data for this user (migration case)
-          if (cachedData) {
-            const userData: UserData = JSON.parse(cachedData);
-            if (userData.userInfo?.email === email && userData.redirectInfo) {
-              console.log('🔄 Migrating cached data to Supabase...');
-              
-              // Create profile in Supabase from cached data
-              await saveProfile({
-                email: email,
-                name: userData.userInfo.name,
-                phone: userData.userPhone || "",
-                profile_image_url: undefined, // Don't migrate base64 images
-                account_type: userData.redirectInfo.type
-              });
-
-              // Migrate vehicles
-              if (userData.vehicles && userData.vehicles.length > 0) {
-                for (const vehicle of userData.vehicles) {
-                  await saveVehicle(vehicle);
-                }
-                console.log('✅ Migrated vehicles to Supabase');
-              }
-
-              console.log('✅ Migration complete - reloading from Supabase...');
-              // Reload to get fresh data with UUIDs
-              window.location.reload();
-            }
-          }
-        }
-      } catch (error) {
-        console.error('❌ Error loading from Supabase:', error);
-      } finally {
-        isLoadingFromCloudRef.current = false;
-      }
-    };
-
-    loadUserData();
-  }, []);
+    return () => window.clearInterval(intervalId);
+  }, [clerkUserId, redirectInfo?.type]);
 
   // ============================================================================
   // CACHE UPDATE (localStorage) - for quick offline access
@@ -258,7 +168,7 @@ export function useUserData(clerkUserId?: string) {
   useEffect(() => {
     if (redirectInfo && userInfo.email && !isLoadingFromCloudRef.current) {
       const timeoutId = setTimeout(() => {
-        const userData: UserData = {
+        const userData = buildUserDataCachePayload({
           userInfo,
           vehicles,
           reports,
@@ -267,135 +177,64 @@ export function useUserData(clerkUserId?: string) {
           redirectInfo,
           notifications,
           hasSeenPhotoGuide,
-          photoStorage
-        };
-        const cacheKey = getUserCacheKey(userInfo.email);
-        localStorage.setItem(cacheKey, JSON.stringify(userData));
-        localStorage.setItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE, normalizeEmail(userInfo.email));
-        console.log('💾 Cache updated (localStorage)');
+          photoStorage,
+        });
+        saveUserDataCache(userData, userInfo.email);
+        console.log("💾 Cache updated (localStorage)");
       }, 500);
 
       return () => clearTimeout(timeoutId);
     }
-  }, [userInfo, vehicles, reports, bids, userPhone, redirectInfo, notifications, hasSeenPhotoGuide]);
-
-  // ============================================================================
-  // CLOUD SYNC (auto-save to Supabase with debounce)
-  // ============================================================================
-  useEffect(() => {
-    if (!userInfo.email || !redirectInfo || isSavingRef.current || isLoadingFromCloudRef.current) {
-      return;
-    }
-
-    const timeoutId = setTimeout(async () => {
-      isSavingRef.current = true;
-      
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          // Only save profile image URL if it's a cloud URL (not base64)
-          const isCloudUrl = userInfo.profileImage && 
-            (userInfo.profileImage.startsWith('http://') || 
-             userInfo.profileImage.startsWith('https://'));
-          
-          await saveProfile({
-            email: userInfo.email,
-            name: userInfo.name,
-            phone: userPhone,
-            profile_image_url: isCloudUrl ? userInfo.profileImage : undefined,
-            account_type: redirectInfo.type
-          });
-          console.log('☁️ Auto-saved profile to Supabase');
-
-          // Auto-save vehicles
-          if (vehicles.length > 0) {
-            for (const vehicle of vehicles) {
-              await saveVehicle(vehicle);
-            }
-            console.log('☁️ Auto-saved vehicles to Supabase');
-          }
-
-          // Auto-save reports
-          if (reports.length > 0) {
-            for (const report of reports) {
-              const supabaseReport = {
-                id: report.id,
-                vehicle_make: report.vehicle?.make || '',
-                vehicle_model: report.vehicle?.model || '',
-                vehicle_year: parseInt(report.vehicle?.year || '0'),
-                damage_type: report.damageArea || 'unknown',
-                damage_severity: 'moderate',
-                damage_description: report.description || '',
-                damage_location: report.damageArea || '',
-                photo_urls: report.photos || [],
-                insurance_claim: false,
-                preferred_contact: 'email',
-                additional_notes: report.incident || '',
-                status: report.status || 'pending'
-              };
-              await saveDamageReport(supabaseReport, clerkUserId);
-            }
-            console.log('☁️ Auto-saved reports to Supabase');
-          }
-        }
-      } catch (error) {
-        console.error('❌ Error auto-saving to Supabase:', error);
-      } finally {
-        isSavingRef.current = false;
-      }
-    }, 2000); // 2 second debounce for cloud saves
-
-    return () => clearTimeout(timeoutId);
-  }, [userInfo, vehicles, reports, userPhone, redirectInfo, clerkUserId]);
+  }, [
+    userInfo,
+    vehicles,
+    reports,
+    bids,
+    userPhone,
+    redirectInfo,
+    notifications,
+    hasSeenPhotoGuide,
+    photoStorage,
+  ]);
 
   // ============================================================================
   // MANUAL SAVE FUNCTIONS (with cloud-first approach)
   // ============================================================================
 
   const saveUserProfile = async (profileData: any) => {
-    if (userInfo.email && redirectInfo) {
-      const isCloudUrl = profileData.profileImage && 
-        (profileData.profileImage.startsWith('http://') || 
-         profileData.profileImage.startsWith('https://'));
-      
-      const success = await saveProfile({
-        email: userInfo.email,
-        name: profileData.name || userInfo.name,
-        phone: profileData.phone || userPhone,
-        profile_image_url: isCloudUrl ? profileData.profileImage : undefined,
-        account_type: redirectInfo.type
-      });
-      
-      if (success) {
-        console.log('✅ Profile saved to Supabase');
-      }
-      return success;
+    setUserInfo((current) => ({
+      ...current,
+      name: profileData.name || current.name,
+      email: profileData.email || current.email,
+      profileImage: profileData.profileImage || current.profileImage,
+    }));
+    if (profileData.phone !== undefined) {
+      setUserPhone(profileData.phone);
     }
-    return false;
+    return true;
   };
 
   const saveUserVehicles = async (vehiclesData: Vehicle[]) => {
-    if (userInfo.email) {
+    if (clerkUserId && redirectInfo?.type === "customer") {
       try {
         isSavingRef.current = true;
-        
+
         for (const vehicle of vehiclesData) {
-          await saveVehicle(vehicle);
+          await saveVehicleByClerkUser(clerkUserId, vehicle);
         }
-        
-        // Reload vehicles from Supabase to get fresh UUIDs
-        const updatedVehicles = await getVehicles();
+
+        const updatedVehicles = await getVehiclesByClerkUser(clerkUserId);
         setVehicles(updatedVehicles);
-        
-        console.log('✅ Vehicles saved to Supabase');
-        
+
+        console.log("✅ Vehicles saved to cloud");
+
         setTimeout(() => {
           isSavingRef.current = false;
         }, 1000);
-        
+
         return true;
       } catch (error) {
-        console.error('❌ Error saving vehicles:', error);
+        console.error("❌ Error saving vehicles:", error);
         isSavingRef.current = false;
         return false;
       }
@@ -404,30 +243,15 @@ export function useUserData(clerkUserId?: string) {
   };
 
   const saveUserReports = async (reportsData: DamageReport[]) => {
-    if (userInfo.email) {
+    if (clerkUserId && redirectInfo?.type === "customer") {
       try {
         for (const report of reportsData) {
-          const supabaseReport = {
-            id: report.id,
-            vehicle_make: report.vehicle?.make || '',
-            vehicle_model: report.vehicle?.model || '',
-            vehicle_year: parseInt(report.vehicle?.year || '0'),
-            damage_type: report.damageArea || 'unknown',
-            damage_severity: 'moderate',
-            damage_description: report.description || '',
-            damage_location: report.damageArea || '',
-            photo_urls: report.photos || [],
-            insurance_claim: false,
-            preferred_contact: 'email',
-            additional_notes: report.incident || '',
-            status: report.status || 'pending'
-          };
-          await saveDamageReport(supabaseReport, clerkUserId);
+          await saveReportByClerkUser(clerkUserId, createSupabaseReportPayload(report));
         }
-        console.log('✅ Reports saved to Supabase');
+        console.log("✅ Reports saved to cloud");
         return true;
       } catch (error) {
-        console.error('❌ Error saving reports:', error);
+        console.error("❌ Error saving reports:", error);
         return false;
       }
     }
@@ -453,7 +277,34 @@ export function useUserData(clerkUserId?: string) {
     setNotifications([]);
     setHasSeenPhotoGuide(false);
     setPhotoStorage({});
-    console.log('🚪 Session cleared (cache only - cloud data preserved)');
+    console.log("🚪 Session cleared (cache only - cloud data preserved)");
+  };
+
+  const pushNotification = (notification: Notification) => {
+    setNotifications((current) => {
+      const alreadyExists = current.some(
+        (existingNotification) => `${existingNotification.id}` === `${notification.id}`
+      );
+      if (alreadyExists) {
+        return current;
+      }
+
+      return [notification, ...current].slice(0, 50);
+    });
+  };
+
+  const markNotificationRead = (notificationId: string | number) => {
+    setNotifications((current) =>
+      current.map((notification) =>
+        `${notification.id}` === `${notificationId}`
+          ? { ...notification, read: true }
+          : notification
+      )
+    );
+  };
+
+  const markAllNotificationsRead = () => {
+    setNotifications((current) => current.map((notification) => ({ ...notification, read: true })));
   };
 
   return {
@@ -470,7 +321,7 @@ export function useUserData(clerkUserId?: string) {
     photoStorage,
     isSavingRef,
     isLoadingFromCloudRef,
-    
+
     // Setters
     setUserInfo,
     setVehicles,
@@ -482,11 +333,14 @@ export function useUserData(clerkUserId?: string) {
     setNotifications,
     setHasSeenPhotoGuide,
     setPhotoStorage,
-    
+
     // Actions
     saveProfile: saveUserProfile,
     saveVehicles: saveUserVehicles,
     saveReports: saveUserReports,
-    clearSession
+    pushNotification,
+    markNotificationRead,
+    markAllNotificationsRead,
+    clearSession,
   };
 }

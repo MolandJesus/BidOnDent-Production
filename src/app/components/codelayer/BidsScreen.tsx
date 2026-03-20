@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
@@ -22,6 +22,8 @@ type BidsScreenProps = {
   primaryColor?: string;
   onBack?: () => void;
   userType?: "customer" | "shop" | "insurer";
+  bids?: any[];
+  reports?: any[];
   onAcceptBid?: (details: { shopName: string; price: number; timeframe: string }) => void;
 };
 
@@ -31,10 +33,12 @@ export default function BidsScreen({
   primaryColor = "#0056b3",
   onBack,
   userType = "customer",
+  bids: incomingBids = [],
+  reports = [],
   onAcceptBid,
 }: BidsScreenProps) {
-  const [activeBid, setActiveBid] = useState<number | null>(1);
-  const [acceptedBidId, setAcceptedBidId] = useState<number | null>(null);
+  const [activeBid, setActiveBid] = useState<string | number | null>(null);
+  const [acceptedBidId, setAcceptedBidId] = useState<string | number | null>(null);
   const [filter, setFilter] = useState<FilterType>("all");
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [selectedShop, setSelectedShop] = useState<string>("");
@@ -42,72 +46,121 @@ export default function BidsScreen({
     [key: string]: { rating: number; review: string; categoryRatings?: any };
   }>({});
 
-  const bids = [
-    {
-      id: 1,
-      shopName: "Express Auto Body",
-      rating: 4.8,
-      reviews: 124,
-      price: 850,
-      timeframe: "3-4 days",
-      distance: "2.4 miles",
-      warranty: "Lifetime warranty",
+  const liveBids = useMemo(() => {
+    return (incomingBids || []).map((bid, index) => ({
+      id: bid.id || `bid-${index}`,
+      reportId: bid.reportId,
+      shopName: bid.shopName || "Auto Shop",
+      rating: Number(bid.shopRating || 4.6),
+      reviews: Number(bid.shopReviews || 0),
+      price: Number(bid.amount || 0),
+      estimatedDays: Number(bid.estimatedDays || 0),
+      timeframe: bid.estimatedDays
+        ? `${bid.estimatedDays}-${bid.estimatedDays + 1} days`
+        : "Timeline pending",
+      distance: bid.shopDistance || "Within service area",
+      warranty: "Scope shared after acceptance",
       description:
-        "Complete bumper repair and paint matching using OEM-grade materials. Includes quality inspection before delivery.",
-      image:
-        "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 2,
-      shopName: "Premium Collision Center",
-      rating: 4.6,
-      reviews: 86,
-      price: 925,
-      timeframe: "2-3 days",
-      distance: "3.8 miles",
-      warranty: "5-year warranty",
-      description:
-        "Full bumper replacement with factory paint match. Includes rental support and daily progress updates.",
-      image:
-        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 3,
-      shopName: "Value Auto Repair",
-      rating: 4.2,
-      reviews: 56,
-      price: 675,
-      timeframe: "5-7 days",
-      distance: "1.5 miles",
-      warranty: "3-year warranty",
-      description:
-        "Budget-friendly bumper repair and repainting with free pickup and delivery within 5 miles.",
-      image:
-        "https://images.unsplash.com/photo-1666919643134-d97687c1826c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    },
-  ];
+        bid.description || "Bid details will be confirmed with the shop after selection.",
+      image: "",
+    }));
+  }, [incomingBids]);
 
-  const lowestPrice = Math.min(...bids.map((bid) => bid.price));
+  const selectedReport = useMemo(() => {
+    if (liveBids.length === 0) {
+      return null;
+    }
+
+    return reports.find((report) => report.id === liveBids[0].reportId) || null;
+  }, [liveBids, reports]);
+
+  const vehicleLabel = selectedReport
+    ? [
+        selectedReport?.vehicle?.year || selectedReport?.vehicleInfo?.year,
+        selectedReport?.vehicle?.make || selectedReport?.vehicleInfo?.make,
+        selectedReport?.vehicle?.model || selectedReport?.vehicleInfo?.model,
+      ]
+        .filter(Boolean)
+        .join(" ")
+    : "your report";
+
+  const hasLiveBids = liveBids.length > 0;
+
+  useEffect(() => {
+    if (hasLiveBids && activeBid === null) {
+      setActiveBid(liveBids[0]?.id ?? null);
+    }
+  }, [activeBid, hasLiveBids, liveBids]);
+
+  if (!hasLiveBids) {
+    return (
+      <div className="pb-20 px-4 md:px-6 py-4 md:py-5 space-y-4">
+        <motion.section
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          <div className="flex items-center gap-3">
+            {onBack && (
+              <button
+                className="p-2 rounded-xl hover:bg-slate-100 transition-colors"
+                onClick={onBack}
+                aria-label="Go back to dashboard"
+              >
+                <ArrowLeft className="w-5 h-5 text-slate-700" />
+              </button>
+            )}
+            <div className="flex-1">
+              <h1 className="font-semibold text-2xl text-slate-900">Repair Bids</h1>
+              <p className="text-slate-600">
+                No live bids have been submitted for your reports yet.
+              </p>
+            </div>
+          </div>
+        </motion.section>
+
+        <motion.section
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.05 }}
+          className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center shadow-sm"
+        >
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
+            <Clock className="h-6 w-6 text-slate-500" />
+          </div>
+          <h2 className="text-lg font-semibold text-slate-900">Waiting for shop responses</h2>
+          <p className="mt-2 text-sm text-slate-600">
+            Shops will appear here as soon as they submit live bids against your report.
+          </p>
+        </motion.section>
+      </div>
+    );
+  }
+
+  const lowestPrice = Math.min(...liveBids.map((bid) => bid.price));
   const averagePrice = Math.round(
-    bids.reduce((sum, bid) => sum + bid.price, 0) / Math.max(1, bids.length)
+    liveBids.reduce((sum, bid) => sum + bid.price, 0) / Math.max(1, liveBids.length)
   );
-  const fastestBidDays = Math.min(...bids.map((bid) => parseInt(bid.timeframe.split("-")[0], 10)));
+  const fastestBidDays = Math.min(
+    ...liveBids.map((bid) => Math.max(1, Number(bid.estimatedDays || 0)))
+  );
   const recommendedId = useMemo(() => {
-    return [...bids].sort((a, b) => b.rating - a.rating + (b.reviews - a.reviews) / 200)[0].id;
-  }, []);
+    return [...liveBids].sort((a, b) => b.rating - a.rating + (b.reviews - a.reviews) / 200)[0].id;
+  }, [liveBids]);
 
   const filteredBids = useMemo(() => {
-    return [...bids].sort((a, b) => {
+    return [...liveBids].sort((a, b) => {
       if (filter === "lowest") return a.price - b.price;
       if (filter === "fastest") {
-        const aDays = parseInt(a.timeframe.split("-")[0], 10);
-        const bDays = parseInt(b.timeframe.split("-")[0], 10);
+        const aDays = Math.max(1, Number(a.estimatedDays || 0));
+        const bDays = Math.max(1, Number(b.estimatedDays || 0));
         return aDays - bDays;
       }
       if (filter === "rating") return b.rating - a.rating;
       return 0;
     });
-  }, [filter]);
+  }, [filter, liveBids]);
 
   const handleRating = (
     shopName: string,
@@ -151,7 +204,9 @@ export default function BidsScreen({
           )}
           <div className="flex-1">
             <h1 className="font-semibold text-2xl text-slate-900">Repair Bids</h1>
-            <p className="text-slate-600">3 bids for your 2021 Toyota Camry</p>
+            <p className="text-slate-600">
+              {liveBids.length} bid{liveBids.length === 1 ? "" : "s"} for {vehicleLabel}
+            </p>
           </div>
           <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium">
             <Sparkles className="w-4 h-4" />

@@ -10,8 +10,19 @@ type BuildDashboardRouterPropsArgs = {
   navigation: NavigationState;
   userProfile: UserProfile;
   userData: UserDataState;
-  submitBid: (reportId: string, bidAmount: number) => void;
+  submitBid: (
+    reportId: string,
+    bidAmount: number,
+    estimatedDays: number,
+    description: string
+  ) => Promise<void>;
   handleLogout: () => Promise<void>;
+  handleProfileUpdate: (info: {
+    name: string;
+    email: string;
+    phone?: string;
+    profileImage?: string;
+  }) => Promise<void>;
   onReportSubmit: (report: any) => Promise<void>;
   primaryColor: string;
   secondaryColor: string;
@@ -24,10 +35,11 @@ export function buildDashboardRouterProps({
   userData,
   submitBid,
   handleLogout,
+  handleProfileUpdate,
   onReportSubmit,
   primaryColor,
   secondaryColor,
-  userImageUrl
+  userImageUrl,
 }: BuildDashboardRouterPropsArgs) {
   return {
     currentTab: navigation.currentTab,
@@ -39,18 +51,16 @@ export function buildDashboardRouterProps({
     demoMode: navigation.demoMode,
     originalAccountType: userProfile.user_type,
     userInfo: {
-      name: userProfile.name,
+      name: userData.userInfo.name || userProfile.name,
       email: userProfile.email,
-      profileImage: userImageUrl
+      profileImage: userData.userInfo.profileImage || userImageUrl,
     },
-    userPhone: userProfile.phone,
+    userPhone: userData.userPhone || userProfile.phone,
     vehicles: userData.vehicles,
     reports: userData.reports,
     bids: userData.bids,
     photoStorage: userData.photoStorage,
-    selectedReportId: navigation.selectedReportId === null
-      ? null
-      : navigation.selectedReportId.toString(),
+    selectedReportId: navigation.selectedReportId,
     primaryColor,
     secondaryColor,
     onStartReport: () => {
@@ -60,6 +70,13 @@ export function buildDashboardRouterProps({
     onSubmitBid: submitBid,
     onViewAllReports: () => {
       navigation.setViewMode("reports-list");
+    },
+    onViewCoverage: () => {
+      navigation.setShowLandingPage(true);
+      navigation.setShowProfileDropdown(false);
+      window.setTimeout(() => {
+        document.getElementById("coverage")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
     },
     onConnectInsurance: () => {
       navigation.setViewMode("insurer-connect");
@@ -96,7 +113,7 @@ export function buildDashboardRouterProps({
       navigation.setViewMode("insurance-companies" as any);
     },
     onSelectReport: (reportId: string) => {
-      navigation.setSelectedReportId(parseInt(reportId));
+      navigation.setSelectedReportId(reportId);
     },
     onViewModeChange: (mode: string) => {
       navigation.setViewMode(mode as any);
@@ -153,37 +170,25 @@ export function buildDashboardRouterProps({
     onExitDemoMode: () => {
       navigation.exitDemoMode();
     },
-    onProfileUpdate: (info: { name: string; email: string; profileImage?: string; phone?: string }) => {
-      userData.setUserInfo({
-        name: info.name,
-        email: info.email,
-        profileImage: info.profileImage || ""
-      });
-      if (info.phone) {
-        userData.setUserPhone(info.phone);
-      }
-    },
-    onPasswordChange: () => {
-      console.log("Password change not implemented");
-    },
-    onDeleteAccount: () => {
-      console.log("Delete account not implemented");
-    },
+    onProfileUpdate: handleProfileUpdate,
     onSaveVehicles: (vehicles: any[]) => {
       userData.setVehicles(vehicles);
+      void userData.saveVehicles(vehicles);
     },
     onSaveVehicle: (vehicle: any) => {
       const existingIndex = userData.vehicles.findIndex((entry) => entry.id === vehicle.id);
-      if (existingIndex >= 0) {
-        userData.setVehicles(userData.vehicles.map((entry) => (entry.id === vehicle.id ? vehicle : entry)));
-      } else {
-        userData.setVehicles([...userData.vehicles, vehicle]);
-      }
+      const nextVehicles =
+        existingIndex >= 0
+          ? userData.vehicles.map((entry) => (entry.id === vehicle.id ? vehicle : entry))
+          : [...userData.vehicles, vehicle];
+
+      userData.setVehicles(nextVehicles);
+      void userData.saveVehicles(nextVehicles);
     },
     hasSeenPhotoGuide: userData.hasSeenPhotoGuide,
     onPhotoGuideComplete: () => {
       userData.setHasSeenPhotoGuide(true);
     },
-    onReportSubmit
+    onReportSubmit,
   };
 }

@@ -26,7 +26,8 @@ import {
   deleteVehicleByPost,
   deleteVehicleByDelete,
 } from './handlers/vehicles.ts'
-import { createReport, getReports, deleteReport } from './handlers/reports.ts'
+import { createBid, getBids } from './handlers/bids.ts'
+import { createReport, getReports, updateReport, deleteReport } from './handlers/reports.ts'
 
 // New modular handlers
 import {
@@ -156,12 +157,25 @@ Deno.serve(async (req) => {
     }
 
     // ===== REPORT ROUTES =====
+    if (path === '/make-server-9f243523/bids' && req.method === 'POST') {
+      return await createBid(req, supabase, respond)
+    }
+
+    if (path === '/make-server-9f243523/bids' && req.method === 'GET') {
+      return await getBids(req, supabase, respond)
+    }
+
     if (path === '/make-server-9f243523/reports' && req.method === 'POST') {
       return await createReport(req, supabase, respond)
     }
 
     if (path === '/make-server-9f243523/reports' && req.method === 'GET') {
       return await getReports(req, supabase, respond)
+    }
+
+    if (path.startsWith('/make-server-9f243523/reports/') && req.method === 'PUT') {
+      const reportId = path.split('/').pop()
+      return await updateReport(req, reportId, supabase, respond)
     }
 
     if (path.startsWith('/make-server-9f243523/reports/') && req.method === 'DELETE') {

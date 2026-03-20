@@ -1,11 +1,7 @@
 import { useState, useRef } from "react";
 import { motion } from "motion/react";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
-import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
-import { uploadPhoto } from "../../services/supabaseService";
 import { LANDING_PAGE_IMAGES } from "../../constants";
-import { supabase } from "../../services/supabaseService";
-import { projectId } from "../../../../utils/supabase/info";
 import AccountHeader from "./account/AccountHeader";
 import AccountInfoCard from "./account/AccountInfoCard";
 import AccountMenu from "./account/AccountMenu";
@@ -14,6 +10,7 @@ import DeleteAccountModal from "./account/DeleteAccountModal";
 import EditProfileModal from "./account/EditProfileModal";
 import HelpModal from "./account/HelpModal";
 import PaymentModal from "./account/PaymentModal";
+import { uploadAccountProfileImage } from "./account/profileImageUpload";
 import SettingsModal from "./account/SettingsModal";
 import ShopProfileModal from "./account/ShopProfileModal";
 import { runDeleteAccountFlow } from "./account/accountDeletion";
@@ -96,233 +93,56 @@ export default function AccountScreen({
   };
 
   const handleProfileImageClick = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = async (e) => {
-      const target = e.target as HTMLInputElement;
-      const file = target.files?.[0];
-      if (file) {
-        try {
-          // Show loading state
-          setIsSaving(true);
-
-          console.log("🔐 Checking authentication status...");
-
-          // Add timeout wrapper for session check (5 seconds max)
-          const sessionCheckPromise = supabase.auth.getSession();
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Session check timeout")), 5000)
-          );
-
-          const {
-            data: { session: currentSession },
-            error: getSessionError,
-          } = (await Promise.race([sessionCheckPromise, timeoutPromise])) as any;
-
-          if (getSessionError) {
-            console.error("❌ Error getting session:", getSessionError.message);
-            setIsSaving(false);
-            alert("Authentication error. Please refresh the page and try again.");
-            return;
-          }
-
-          if (!currentSession) {
-            console.error("❌ No active session found");
-            setIsSaving(false);
-            alert("Session expired. Please refresh the page and sign in again.");
-            return;
-          }
-
-          console.log("✅ Active session found for:", currentSession.user?.email);
-
-          // Skip session refresh - just use current session to avoid hanging
-          console.log("⏭️ Skipping session refresh, using current session");
-
-          // Compress the image more aggressively (400x400 max, 60% quality, JPEG)
-          console.log(`📸 Original image: ${formatBytes(file.size)}`);
-          const compressedBlob = await compressImage(file, {
-            maxWidth: 400,
-            maxHeight: 400,
-            quality: 0.6,
-            outputFormat: "image/jpeg",
-          });
-          console.log(`✅ Compressed to: ${formatBytes(compressedBlob.size)}`);
-
-          // Upload to Supabase Storage with timeout (30 seconds max)
-          console.log("☁️ Uploading to cloud storage...");
-          const uploadPromise = uploadPhoto(compressedBlob, "bidondent-profiles");
-          const uploadTimeoutPromise = new Promise<null>((resolve) =>
-            setTimeout(() => {
-              console.warn("⏱️ Upload timeout - falling back to base64");
-              resolve(null);
-            }, 30000)
-          );
-
-          const publicUrl = await Promise.race([uploadPromise, uploadTimeoutPromise]);
-
-          let finalImageUrl: string;
-          if (publicUrl) {
-            finalImageUrl = publicUrl;
-            console.log("✅ Profile image uploaded to Supabase:", publicUrl);
-          } else {
-            // Fallback: convert to base64 if upload fails
-            console.warn("⚠️ Cloud upload failed, using base64 fallback");
-            const base64 = await blobToBase64(compressedBlob);
-            finalImageUrl = base64;
-            console.log("✅ Using base64 fallback for profile image");
-          }
-
-          console.log("💾 Updating profile with new image...");
-          setProfileImage(finalImageUrl);
-
-          // Auto-save the profile immediately
-          if (onSaveProfile) {
-            try {
-              await onSaveProfile({
-                name: editableName,
-                email: editableEmail,
-                phone: unformatPhoneNumber(editablePhone),
-                profileImage: finalImageUrl,
-              });
-              console.log("✅ Profile saved successfully");
-            } catch (saveError) {
-              console.error("❌ Error saving profile:", saveError);
-              // Don't throw - image is already set locally
-              console.log("⚠️ Image set locally but server save failed");
-            }
-          }
-
-          // Show success notification
-          setSaveSuccess(true);
-          setTimeout(() => setSaveSuccess(false), 2000);
-
-          setIsSaving(false);
-          console.log("🎉 Profile photo upload complete!");
-        } catch (error) {
-          console.error("❌ Error processing image:", error);
-          setIsSaving(false);
-          // Show user-friendly error without forcing reload
-          alert(
-            `Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`
-          );
-        }
-      }
-    };
-    input.click();
+    fileInputRef.current?.click();
   };
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
 
+  const processSelectedImage = async (file: File) => {
+    try {
+      setIsSaving(true);
+
+      const finalImageUrl = await uploadAccountProfileImage(file);
+
+      console.log("💾 Updating profile with new image...");
+      setProfileImage(finalImageUrl);
+
+      if (onSaveProfile) {
+        try {
+          await onSaveProfile({
+            name: editableName,
+            email: editableEmail,
+            phone: unformatPhoneNumber(editablePhone),
+            profileImage: finalImageUrl,
+          });
+          console.log("✅ Profile saved successfully");
+        } catch (saveError) {
+          console.error("❌ Error saving profile:", saveError);
+          console.log("⚠️ Image set locally but server save failed");
+        }
+      }
+
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+
+      console.log("🎉 Profile photo upload complete!");
+    } catch (error) {
+      console.error("❌ Error processing image:", error);
+      alert(
+        `Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-        // Show loading state
-        setIsSaving(true);
-
-        console.log("🔐 Checking authentication status...");
-
-        // Add timeout wrapper for session check (5 seconds max)
-        const sessionCheckPromise = supabase.auth.getSession();
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Session check timeout")), 5000)
-        );
-
-        const {
-          data: { session: currentSession },
-          error: getSessionError,
-        } = (await Promise.race([sessionCheckPromise, timeoutPromise])) as any;
-
-        if (getSessionError) {
-          console.error("❌ Error getting session:", getSessionError.message);
-          setIsSaving(false);
-          alert("Authentication error. Please refresh the page and try again.");
-          return;
-        }
-
-        if (!currentSession) {
-          console.error("❌ No active session found");
-          setIsSaving(false);
-          alert("Session expired. Please refresh the page and sign in again.");
-          return;
-        }
-
-        console.log("✅ Active session found for:", currentSession.user?.email);
-
-        // Skip session refresh - just use current session to avoid hanging
-        console.log("⏭️ Skipping session refresh, using current session");
-
-        // Compress the image more aggressively (400x400 max, 60% quality, JPEG)
-        console.log(`📸 Original image: ${formatBytes(file.size)}`);
-        const compressedBlob = await compressImage(file, {
-          maxWidth: 400,
-          maxHeight: 400,
-          quality: 0.6,
-          outputFormat: "image/jpeg",
-        });
-        console.log(`✅ Compressed to: ${formatBytes(compressedBlob.size)}`);
-
-        // Upload to Supabase Storage with timeout (30 seconds max)
-        console.log("☁️ Uploading to cloud storage...");
-        const uploadPromise = uploadPhoto(compressedBlob, "bidondent-profiles");
-        const uploadTimeoutPromise = new Promise<null>((resolve) =>
-          setTimeout(() => {
-            console.warn("⏱️ Upload timeout - falling back to base64");
-            resolve(null);
-          }, 30000)
-        );
-
-        const publicUrl = await Promise.race([uploadPromise, uploadTimeoutPromise]);
-
-        let finalImageUrl: string;
-        if (publicUrl) {
-          finalImageUrl = publicUrl;
-          console.log("✅ Profile image uploaded to Supabase:", publicUrl);
-        } else {
-          // Fallback: convert to base64 if upload fails
-          console.warn("⚠️ Cloud upload failed, using base64 fallback");
-          const base64 = await blobToBase64(compressedBlob);
-          finalImageUrl = base64;
-          console.log("✅ Using base64 fallback for profile image");
-        }
-
-        console.log("💾 Updating profile with new image...");
-        setProfileImage(finalImageUrl);
-
-        // Auto-save the profile immediately
-        if (onSaveProfile) {
-          try {
-            await onSaveProfile({
-              name: editableName,
-              email: editableEmail,
-              phone: unformatPhoneNumber(editablePhone),
-              profileImage: finalImageUrl,
-            });
-            console.log("✅ Profile saved successfully");
-          } catch (saveError) {
-            console.error("❌ Error saving profile:", saveError);
-            // Don't throw - image is already set locally
-            console.log("⚠️ Image set locally but server save failed");
-          }
-        }
-
-        // Show success notification
-        setSaveSuccess(true);
-        setTimeout(() => setSaveSuccess(false), 2000);
-
-        setIsSaving(false);
-        console.log("🎉 Profile photo upload complete!");
-      } catch (error) {
-        console.error("❌ Error processing image:", error);
-        setIsSaving(false);
-        // Show user-friendly error without forcing reload
-        alert(
-          `Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`
-        );
-      }
+      await processSelectedImage(file);
+      e.target.value = "";
     }
   };
 

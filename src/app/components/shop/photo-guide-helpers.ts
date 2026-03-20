@@ -35,7 +35,7 @@ export const photoGuideTips = {
       detail: "Clouds = even lighting!",
     },
   ],
-  lightingDont: [
+  lightingAvoid: [
     {
       title: "Camera flash",
       detail: "Creates glare and washes out details",

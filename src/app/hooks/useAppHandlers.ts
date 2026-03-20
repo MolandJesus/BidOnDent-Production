@@ -1,5 +1,6 @@
 import type { useNavigation } from "./useNavigation";
 import type { useUserData } from "./useUserData";
+import { saveReportByClerkUser, submitBidByClerkUser } from "../services/supabase/clerkEdgeData";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData> & Record<string, any>;
@@ -39,7 +40,7 @@ export function useAppHandlers({
   navigation,
   projectId,
   publicAnonKey,
-  logWorkflowEvent
+  logWorkflowEvent,
 }: UseAppHandlersArgs) {
   const handleLogin = () => {
     if (openSignUp) {
@@ -89,12 +90,17 @@ export function useAppHandlers({
       timestamp: Date.now(),
       type,
       message,
-      metadata
+      metadata,
     };
     userData.setActivities([newActivity, ...userData.activities] as any);
   };
 
-  const submitBid = (reportId: string, bidAmount: number) => {
+  const submitBid = async (
+    reportId: string,
+    bidAmount: number,
+    estimatedDays = 3,
+    description = "Professional repair service with quality guarantee"
+  ) => {
     console.log(`Submitting bid of $${bidAmount} for report ${reportId}`);
 
     const report = userData.reports.find((entry) => entry.id === reportId) as any;
@@ -105,27 +111,59 @@ export function useAppHandlers({
 
     const vehicleInfo = `${report.year} ${report.make} ${report.model}`;
 
-    const newBid = {
+    const fallbackBid = {
       id: Date.now().toString(),
       reportId,
-      shopId: userData.userInfo.email,
+      shopId: userId || userData.userInfo.email,
       shopName: userData.userInfo.name || "Shop Name",
+      shopEmail: userData.userInfo.email || "",
       amount: bidAmount,
-      estimatedDays: Math.floor(Math.random() * 7) + 1,
-      rating: (Math.random() * 1.5 + 3.5).toFixed(1),
-      reviewCount: Math.floor(Math.random() * 100) + 10,
-      shopDistance: `${(Math.random() * 5 + 0.5).toFixed(1)} miles`
+      estimatedDays,
+      description,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      shopRating: 4.8,
+      shopReviews: 42,
+      shopDistance: "Within service area",
     };
 
-    const newBids = [...userData.bids, newBid];
+    let newBid = fallbackBid;
+
+    if (userId) {
+      try {
+        const savedBidRecord = await submitBidByClerkUser(userId, {
+          damage_report_id: reportId,
+          amount: bidAmount,
+          estimated_days: estimatedDays,
+          description,
+          shop_name: fallbackBid.shopName,
+          shop_email: fallbackBid.shopEmail,
+          shop_rating: fallbackBid.shopRating,
+          shop_reviews: fallbackBid.shopReviews,
+          shop_distance: fallbackBid.shopDistance,
+        });
+
+        if (savedBidRecord?.id) {
+          newBid = {
+            ...fallbackBid,
+            id: savedBidRecord.id,
+          };
+        }
+      } catch (error) {
+        console.error("Error saving bid to edge API, keeping local fallback:", error);
+      }
+    }
+
+    const newBids = [newBid, ...userData.bids];
     userData.setBids(newBids as any);
 
     const updatedReports = userData.reports.map((entry: any) => {
       if (entry.id === reportId) {
+        const existingBids = Array.isArray(entry.bids) ? entry.bids : [];
         return {
           ...entry,
-          bidsCount: (entry.bidsCount || 0) + 1,
-          bids: [...(entry.bids || []), newBid]
+          bidsCount: existingBids.length + 1,
+          bids: [newBid, ...existingBids],
         };
       }
       return entry;
@@ -138,7 +176,7 @@ export function useAppHandlers({
       {
         reportId,
         bidAmount,
-        vehicleInfo
+        vehicleInfo,
       }
     );
 
@@ -148,17 +186,21 @@ export function useAppHandlers({
       payload: {
         report_id: reportId,
         amount: bidAmount,
+        estimated_days: estimatedDays,
       },
     });
 
     console.log("Bid submitted successfully");
-    console.log("Report bids count:", updatedReports.find((entry) => entry.id === reportId)?.bidsCount);
+    console.log(
+      "Report bids count:",
+      updatedReports.find((entry) => entry.id === reportId)?.bidsCount
+    );
     console.log("Total bids:", newBids.length);
   };
 
   const handleReportSubmit = async (report: any) => {
     try {
-      console.log("Submitting damage report to API...");
+      console.log("Submitting damage report to edge API...");
 
       const apiReport = {
         vehicle_make: report.vehicle?.make || "",
@@ -172,43 +214,33 @@ export function useAppHandlers({
         insurance_claim: false,
         preferred_contact: "email",
         additional_notes: report.incident || "",
-        status: "pending"
+        status: "pending",
       };
 
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/reports`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${publicAnonKey}`
-          },
-          body: JSON.stringify({
-            clerk_user_id: userId,
-            report: apiReport
-          })
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Failed to save report:", data.error || data.details);
+      if (!userId) {
+        console.error("Missing Clerk user ID for report submission");
         userData.setReports([...userData.reports, report]);
         return;
       }
 
-      console.log("Damage report saved to database:", data.report?.id);
+      const savedReportRecord = await saveReportByClerkUser(userId, apiReport);
+      if (!savedReportRecord) {
+        console.error("Failed to save report: edge API returned no record");
+        userData.setReports([...userData.reports, report]);
+        return;
+      }
+
+      console.log("Damage report saved to database:", savedReportRecord.id);
 
       const savedReport = {
         ...report,
-        id: data.report?.id || report.id
+        id: savedReportRecord.id || report.id,
       };
       userData.setReports([...userData.reports, savedReport]);
       if (savedReport?.id && Array.isArray(savedReport.photos)) {
         userData.setPhotoStorage({
           ...userData.photoStorage,
-          [savedReport.id]: savedReport.photos
+          [savedReport.id]: savedReport.photos,
         });
       }
 
@@ -234,7 +266,7 @@ export function useAppHandlers({
       if (report?.id && Array.isArray(report.photos)) {
         userData.setPhotoStorage({
           ...userData.photoStorage,
-          [report.id]: report.photos
+          [report.id]: report.photos,
         });
       }
     }
@@ -244,6 +276,6 @@ export function useAppHandlers({
     handleLogin,
     handleLogout,
     submitBid,
-    handleReportSubmit
+    handleReportSubmit,
   };
 }

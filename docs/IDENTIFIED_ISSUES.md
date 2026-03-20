@@ -78,11 +78,11 @@ const claimsSource = liveClaims.length > 0 ? liveClaims : sampleClaims;
 
 ## SECTION 2: SPELLING/TEXT ISSUES (4 items)
 
-### Spelling Issue #1: "Dont" vs "Don't"
-**Found In**: [cspell.json](cspell.json) - Word exception list includes "Dont" 
+### Spelling Issue #1: Apostrophe Usage in "Don't"
+**Found In**: [cspell.json](cspell.json) - Word exception list needed normalization 
 **Problem**: Inconsistent apostrophe usage; should be "Don't"  
 **Impact**: If this appears in UI text, it looks unprofessional  
-**Action**: Check all occurrences of "Dont" and replace with "Don't"
+**Action**: Check all occurrences missing the apostrophe and replace them with "Don't"
 
 ---
 
@@ -167,7 +167,7 @@ const dataSource = isDevelopment && !realData ? sampleData : realData;
 6. **Spelling #4**: Normalize UI text capitalization and formatting
 
 ### 🟡 MEDIUM (Fix Third):
-7. **Spelling #1**: Fix "Dont" → "Don't" inconsistency
+7. **Spelling #1**: Fix "Don't" apostrophe inconsistency
 8. **Code Organization**: Audit and organize folder structure
 
 ---

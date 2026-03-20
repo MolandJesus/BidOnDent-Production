@@ -1,6 +1,7 @@
-import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
 import { supabase } from "./client";
+import { edgeFunctionJson } from "./edgeFunctions";
 import type { DamageReport } from "./types";
+import { publicAnonKey } from "../../../../utils/supabase/info";
 
 export async function getDamageReports(): Promise<DamageReport[]> {
   try {
@@ -82,60 +83,12 @@ export async function saveDamageReport(
     if (report.id) {
       console.log("📝 Updating damage report:", report.id);
 
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/reports/${report.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${publicAnonKey}`
-          },
-          body: JSON.stringify({
-            clerkUserId,
-            report: {
-              vehicle_id: report.vehicle_id,
-              vehicle_make: report.vehicle_make,
-              vehicle_model: report.vehicle_model,
-              vehicle_year: report.vehicle_year,
-              damage_type: report.damage_type,
-              damage_severity: report.damage_severity,
-              damage_description: report.damage_description,
-              damage_location: report.damage_location,
-              address: report.address,
-              city: report.city,
-              state: report.state,
-              zip_code: report.zip_code,
-              photo_urls: report.photo_urls || [],
-              insurance_claim: report.insurance_claim,
-              insurance_company: report.insurance_company,
-              preferred_contact: report.preferred_contact,
-              additional_notes: report.additional_notes,
-              status: report.status || "pending"
-            }
-          })
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("❌ Failed to update damage report:", errorData);
-        return null;
-      }
-
-      const result = await response.json();
-      console.log("✅ Damage report updated successfully");
-      return result.report as DamageReport;
-    }
-
-    console.log("📝 Creating new damage report for user:", clerkUserId);
-
-    const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/reports`,
-      {
-        method: "POST",
+      const result = await edgeFunctionJson<{ report: DamageReport }>(`/reports/${report.id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${publicAnonKey}`
+          Authorization: `Bearer ${publicAnonKey}`,
+          apikey: publicAnonKey,
         },
         body: JSON.stringify({
           clerkUserId,
@@ -157,19 +110,47 @@ export async function saveDamageReport(
             insurance_company: report.insurance_company,
             preferred_contact: report.preferred_contact,
             additional_notes: report.additional_notes,
-            status: report.status || "pending"
-          }
-        })
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("❌ Failed to save report:", errorData.error || "Unknown error");
-      throw new Error(errorData.error || "Failed to save report");
+            status: report.status || "pending",
+          },
+        }),
+      });
+      console.log("✅ Damage report updated successfully");
+      return result.report as DamageReport;
     }
 
-    const result = await response.json();
+    console.log("📝 Creating new damage report for user:", clerkUserId);
+
+    const result = await edgeFunctionJson<{ report: DamageReport }>("/reports", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${publicAnonKey}`,
+        apikey: publicAnonKey,
+      },
+      body: JSON.stringify({
+        clerkUserId,
+        report: {
+          vehicle_id: report.vehicle_id,
+          vehicle_make: report.vehicle_make,
+          vehicle_model: report.vehicle_model,
+          vehicle_year: report.vehicle_year,
+          damage_type: report.damage_type,
+          damage_severity: report.damage_severity,
+          damage_description: report.damage_description,
+          damage_location: report.damage_location,
+          address: report.address,
+          city: report.city,
+          state: report.state,
+          zip_code: report.zip_code,
+          photo_urls: report.photo_urls || [],
+          insurance_claim: report.insurance_claim,
+          insurance_company: report.insurance_company,
+          preferred_contact: report.preferred_contact,
+          additional_notes: report.additional_notes,
+          status: report.status || "pending",
+        },
+      }),
+    });
     console.log("✅ Damage report created successfully");
     return result.report as DamageReport;
   } catch (error) {

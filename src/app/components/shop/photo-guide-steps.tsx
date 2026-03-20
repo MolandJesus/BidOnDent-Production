@@ -216,7 +216,7 @@ export function buildPhotoGuideSteps({
                 <h4 className="font-bold text-red-900">AVOID THIS</h4>
               </div>
               <ul className="space-y-3 text-sm">
-                {photoGuideTips.lightingDont.map((tip) => (
+                {photoGuideTips.lightingAvoid.map((tip) => (
                   <li key={tip.title} className="flex items-start">
                     <span className="text-red-600 mr-2 text-lg">✗</span>
                     <div>

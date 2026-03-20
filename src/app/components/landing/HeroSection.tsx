@@ -1,4 +1,4 @@
-import { ChevronRight, CheckCircle, Star, Play } from "lucide-react";
+import { ChevronRight, CheckCircle, Play } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
 import { useEffect, useState } from "react";
@@ -142,31 +142,20 @@ export default function HeroSection({
               </button>
             </div>
 
-            {/* Review avatars & rating */}
+            {/* Trust microcopy */}
             <div
               className={`flex items-center gap-3 pt-2 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: "0.9s" }}
             >
-              <div className="flex -space-x-2">
-                {["A", "B", "C", "D"].map((letter, i) => (
-                  <div
-                    key={letter}
-                    className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm"
-                    style={{
-                      backgroundColor: ["#1e40af", "#059669", "#d97706", "#7c3aed"][i],
-                      zIndex: 4 - i,
-                    }}
-                  >
-                    {letter}
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} className="w-4 h-4 text-gray-300" />
-                ))}
-              </div>
-              <span className="text-sm text-gray-600 font-medium">4.9/5 from 2,000+ reviews</span>
+              {["Active NY rollout", "Transparent bids", "Free for customers"].map((item) => (
+                <span
+                  key={item}
+                  className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm"
+                >
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  {item}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -208,7 +197,9 @@ export default function HeroSection({
               </div>
               <div>
                 <div className="font-semibold text-sm text-gray-800">Repair Completed!</div>
-                <div className="text-xs text-gray-500">Bid selected and scheduled through platform</div>
+                <div className="text-xs text-gray-500">
+                  Bid selected and scheduled through platform
+                </div>
               </div>
             </div>
           </div>

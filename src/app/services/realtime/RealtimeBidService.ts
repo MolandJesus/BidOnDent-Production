@@ -2,20 +2,20 @@
  * ============================================================================
  * REAL-TIME BID SERVICE
  * ============================================================================
- * 
+ *
  * Leverages Supabase Real-time subscriptions for instant bid updates.
  * No page refresh needed - bids appear instantly when shops submit them.
- * 
+ *
  * Features:
  * - Live bid notifications
  * - Real-time bid status updates
  * - Automatic UI synchronization
  * - Connection health monitoring
  * - Optimistic UI updates
- * 
+ *
  * Usage:
  *   import { realtimeBidService } from './services/realtime/RealtimeBidService';
- *   
+ *
  *   // Subscribe to bids for a damage report
  *   realtimeBidService.subscribeToReportBids(reportId, (bid) => {
  *     console.log('New bid received!', bid);
@@ -24,14 +24,14 @@
  * ============================================================================
  */
 
-import { supabase } from '../supabaseService';
-import type { RealtimeChannel } from '@supabase/supabase-js';
-import type { Bid } from '../../types';
+import { supabase } from "../supabaseService";
+import type { RealtimeChannel } from "@supabase/supabase-js";
+import type { Bid } from "../../types";
 
 export type BidCallback = (bid: Bid) => void;
 export type BidUpdateCallback = (bid: Bid) => void;
 export type BidDeleteCallback = (bidId: string) => void;
-export type ConnectionStatusCallback = (status: 'connected' | 'disconnected' | 'error') => void;
+export type ConnectionStatusCallback = (status: "connected" | "disconnected" | "error") => void;
 
 interface Subscription {
   channel: RealtimeChannel;
@@ -56,7 +56,7 @@ class RealtimeBidService {
   } = {};
 
   constructor() {
-    console.log('🔴 Real-time Bid Service initialized');
+    console.log("🔴 Real-time Bid Service initialized");
   }
 
   /**
@@ -81,61 +81,61 @@ class RealtimeBidService {
     const channel = supabase
       .channel(`report-bids-${reportId}`)
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'bids',
-          filter: `report_id=eq.${reportId}`
+          event: "INSERT",
+          schema: "public",
+          table: "bids",
+          filter: `damage_report_id=eq.${reportId}`,
         },
         (payload) => {
-          console.log('🔴 NEW BID received:', payload);
+          console.log("🔴 NEW BID received:", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onNewBid) onNewBid(bid);
           if (this.globalCallbacks.onNew) this.globalCallbacks.onNew(bid);
         }
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'bids',
-          filter: `report_id=eq.${reportId}`
+          event: "UPDATE",
+          schema: "public",
+          table: "bids",
+          filter: `damage_report_id=eq.${reportId}`,
         },
         (payload) => {
-          console.log('🔴 BID UPDATED:', payload);
+          console.log("🔴 BID UPDATED:", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onUpdateBid) onUpdateBid(bid);
           if (this.globalCallbacks.onUpdate) this.globalCallbacks.onUpdate(bid);
         }
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'bids',
-          filter: `report_id=eq.${reportId}`
+          event: "DELETE",
+          schema: "public",
+          table: "bids",
+          filter: `damage_report_id=eq.${reportId}`,
         },
         (payload) => {
-          console.log('🔴 BID DELETED:', payload);
+          console.log("🔴 BID DELETED:", payload);
           const bidId = payload.old.id;
           if (onDeleteBid) onDeleteBid(bidId);
         }
       )
       .subscribe((status) => {
         console.log(`🔴 Subscription status for ${reportId}:`, status);
-        
-        if (status === 'SUBSCRIBED') {
-          if (onConnectionStatus) onConnectionStatus('connected');
-          if (this.globalCallbacks.onStatus) this.globalCallbacks.onStatus('connected');
-        } else if (status === 'CHANNEL_ERROR') {
-          if (onConnectionStatus) onConnectionStatus('error');
-          if (this.globalCallbacks.onStatus) this.globalCallbacks.onStatus('error');
-        } else if (status === 'CLOSED') {
-          if (onConnectionStatus) onConnectionStatus('disconnected');
-          if (this.globalCallbacks.onStatus) this.globalCallbacks.onStatus('disconnected');
+
+        if (status === "SUBSCRIBED") {
+          if (onConnectionStatus) onConnectionStatus("connected");
+          if (this.globalCallbacks.onStatus) this.globalCallbacks.onStatus("connected");
+        } else if (status === "CHANNEL_ERROR") {
+          if (onConnectionStatus) onConnectionStatus("error");
+          if (this.globalCallbacks.onStatus) this.globalCallbacks.onStatus("error");
+        } else if (status === "CLOSED") {
+          if (onConnectionStatus) onConnectionStatus("disconnected");
+          if (this.globalCallbacks.onStatus) this.globalCallbacks.onStatus("disconnected");
         }
       });
 
@@ -147,8 +147,8 @@ class RealtimeBidService {
         onNew: onNewBid,
         onUpdate: onUpdateBid,
         onDelete: onDeleteBid,
-        onStatus: onConnectionStatus
-      }
+        onStatus: onConnectionStatus,
+      },
     });
 
     // Return unsubscribe function
@@ -163,7 +163,7 @@ class RealtimeBidService {
     onUpdateBid?: BidUpdateCallback,
     onConnectionStatus?: ConnectionStatusCallback
   ): () => void {
-    const channelId = 'all-bids';
+    const channelId = "all-bids";
 
     if (this.subscriptions.has(channelId)) {
       console.log(`⚠️ Already subscribed to all bids`);
@@ -173,40 +173,40 @@ class RealtimeBidService {
     console.log(`🔴 Subscribing to ALL bids`);
 
     const channel = supabase
-      .channel('all-bids-global')
+      .channel("all-bids-global")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'bids'
+          event: "INSERT",
+          schema: "public",
+          table: "bids",
         },
         (payload) => {
-          console.log('🔴 NEW BID (global):', payload);
+          console.log("🔴 NEW BID (global):", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onNewBid) onNewBid(bid);
         }
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'bids'
+          event: "UPDATE",
+          schema: "public",
+          table: "bids",
         },
         (payload) => {
-          console.log('🔴 BID UPDATED (global):', payload);
+          console.log("🔴 BID UPDATED (global):", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onUpdateBid) onUpdateBid(bid);
         }
       )
       .subscribe((status) => {
         console.log(`🔴 Global bid subscription status:`, status);
-        
-        if (status === 'SUBSCRIBED') {
-          if (onConnectionStatus) onConnectionStatus('connected');
-        } else if (status === 'CHANNEL_ERROR') {
-          if (onConnectionStatus) onConnectionStatus('error');
+
+        if (status === "SUBSCRIBED") {
+          if (onConnectionStatus) onConnectionStatus("connected");
+        } else if (status === "CHANNEL_ERROR") {
+          if (onConnectionStatus) onConnectionStatus("error");
         }
       });
 
@@ -216,8 +216,8 @@ class RealtimeBidService {
       callbacks: {
         onNew: onNewBid,
         onUpdate: onUpdateBid,
-        onStatus: onConnectionStatus
-      }
+        onStatus: onConnectionStatus,
+      },
     });
 
     return () => this.unsubscribeFromReportBids(channelId);
@@ -228,7 +228,7 @@ class RealtimeBidService {
    */
   unsubscribeFromReportBids(reportId: string): void {
     const subscription = this.subscriptions.get(reportId);
-    
+
     if (subscription) {
       console.log(`🔴 Unsubscribing from bids for report: ${reportId}`);
       supabase.removeChannel(subscription.channel);
@@ -241,11 +241,11 @@ class RealtimeBidService {
    */
   unsubscribeAll(): void {
     console.log(`🔴 Unsubscribing from all bid channels (${this.subscriptions.size} active)`);
-    
+
     this.subscriptions.forEach((subscription) => {
       supabase.removeChannel(subscription.channel);
     });
-    
+
     this.subscriptions.clear();
   }
 
@@ -280,18 +280,18 @@ class RealtimeBidService {
   private transformBidFromDb(dbBid: any): Bid {
     return {
       id: dbBid.id,
-      shopId: dbBid.shop_id || dbBid.user_id,
-      shopName: dbBid.shop_name || 'Unknown Shop',
-      shopEmail: dbBid.shop_email || '',
-      reportId: dbBid.report_id,
+      shopId: dbBid.clerk_shop_user_id || dbBid.shop_id || dbBid.shop_user_id || dbBid.user_id,
+      shopName: dbBid.shop_name || "Unknown Shop",
+      shopEmail: dbBid.shop_email || "",
+      reportId: dbBid.damage_report_id || dbBid.report_id,
       amount: parseFloat(dbBid.amount) || 0,
       estimatedDays: parseInt(dbBid.estimated_days) || 0,
-      description: dbBid.description || dbBid.notes || '',
-      status: dbBid.status || 'pending',
+      description: dbBid.description || dbBid.notes || "",
+      status: dbBid.status || "pending",
       createdAt: dbBid.created_at || new Date().toISOString(),
       shopRating: dbBid.shop_rating,
       shopReviews: dbBid.shop_reviews,
-      shopDistance: dbBid.shop_distance
+      shopDistance: dbBid.shop_distance,
     };
   }
 
@@ -306,7 +306,7 @@ class RealtimeBidService {
     return {
       healthy: this.subscriptions.size >= 0,
       activeSubscriptions: this.subscriptions.size,
-      subscriptions: Array.from(this.subscriptions.keys())
+      subscriptions: Array.from(this.subscriptions.keys()),
     };
   }
 }

@@ -1,11 +1,5 @@
-import {
-  ArrowRight,
-  Calendar,
-  Camera,
-  ChevronRight,
-  DollarSign,
-  Eye,
-} from "lucide-react";
+import { ArrowRight, Calendar, Camera, ChevronRight, DollarSign, Eye } from "lucide-react";
+import DashboardCoveragePanel from "../dashboard/DashboardCoveragePanel";
 import ImageWithFallback from "./ImageWithFallback";
 import { formatDate, formatStatus, getReportTitle, getReportDescription } from "./home-helpers";
 import {
@@ -29,6 +23,7 @@ type HomeScreenProps = {
   onStartReport: () => void;
   onViewAllReports: () => void;
   onOpenReport?: (reportId: string) => void;
+  onViewCoverage?: () => void;
   onConnectInsurance?: () => void;
   onViewLikedShops?: () => void;
   onViewBids?: () => void;
@@ -54,6 +49,7 @@ export default function HomeScreen({
   onStartReport,
   onViewAllReports,
   onOpenReport,
+  onViewCoverage,
   onConnectInsurance,
   onViewLikedShops,
   onViewBids,
@@ -77,6 +73,7 @@ export default function HomeScreen({
   const quickActions = buildQuickActions(userType, {
     onStartReport,
     onViewAllReports,
+    onViewCoverage,
     onConnectInsurance,
     onViewBids,
     onViewRequests,
@@ -281,6 +278,12 @@ export default function HomeScreen({
         </div>
 
         <aside className="xl:col-span-4 space-y-5">
+          <DashboardCoveragePanel
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            onOpenCoveragePage={onViewCoverage}
+          />
+
           <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-3">

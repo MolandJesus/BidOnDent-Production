@@ -1,5 +1,6 @@
-import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
 import { supabase } from "./client";
+import { buildEdgeFunctionUrl } from "./edgeFunctions";
+import { publicAnonKey } from "../../../../utils/supabase/info";
 
 export async function uploadPhoto(
   file: File | Blob,
@@ -18,16 +19,14 @@ export async function uploadPhoto(
 
     console.log(`📤 Uploading to bucket: ${bucket}`);
 
-    const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/upload-photo`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${publicAnonKey}`
-        },
-        body: formData
-      }
-    );
+    const response = await fetch(buildEdgeFunctionUrl("/upload-photo"), {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${publicAnonKey}`,
+        apikey: publicAnonKey,
+      },
+      body: formData,
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

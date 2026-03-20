@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../services/supabaseService";
-
-export interface Notification {
-  id: string | number;
-  message: string;
-  time: string;
-  read: boolean;
-  type?: "repair_request" | "bid" | "claim" | "update" | "message";
-  reportData?: any;
-}
+import type { Notification } from "../../types";
 
 type UseProfileDropdownRealtimeParams = {
   isOpen: boolean;

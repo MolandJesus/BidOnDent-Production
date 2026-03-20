@@ -31,6 +31,7 @@ export interface DamageReport {
   id?: string;
   user_id?: string;
   vehicle_id?: string;
+  bids?: Bid[];
   vehicle_make: string;
   vehicle_model: string;
   vehicle_year: number;
@@ -54,19 +55,22 @@ export interface DamageReport {
 
 export interface Bid {
   id?: string;
-  user_id?: string;
-  shop_id?: string;
-  report_id: string;
-  shop_name: string;
-  shop_email: string;
+  user_id?: string | null;
+  shop_id?: string | null;
+  shop_user_id?: string | null;
+  clerk_shop_user_id?: string | null;
+  damage_report_id?: string;
+  report_id?: string;
+  shop_name?: string | null;
+  shop_email?: string | null;
   amount: number;
   estimated_days: number;
-  description: string;
+  description?: string | null;
   notes?: string;
   status: "pending" | "accepted" | "rejected";
-  shop_rating?: number;
-  shop_reviews?: number;
-  shop_distance?: string;
+  shop_rating?: number | null;
+  shop_reviews?: number | null;
+  shop_distance?: string | null;
   created_at?: string;
   updated_at?: string;
 }

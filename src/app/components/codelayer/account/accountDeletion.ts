@@ -1,5 +1,5 @@
 import { supabase } from "../../../services/supabaseService";
-import { projectId } from "../../../../../utils/supabase/info";
+import { buildEdgeFunctionUrl } from "../../../services/supabase/edgeFunctions";
 
 type DeleteAccountFlowParams = {
   deleteConfirmText: string;
@@ -105,7 +105,9 @@ export async function runDeleteAccountFlow({
 
     await performDeletionRequest(session.access_token);
 
-    alert("Your account has been permanently deleted. All your data has been removed from our systems.");
+    alert(
+      "Your account has been permanently deleted. All your data has been removed from our systems."
+    );
 
     await supabase.auth.signOut();
     setIsDeleting(false);
@@ -123,15 +125,11 @@ export async function runDeleteAccountFlow({
 }
 
 async function performDeletionRequest(accessToken: string) {
-  if (!projectId) {
-    throw new Error("ProjectId is not defined - cannot construct API URL");
-  }
-
   if (!accessToken || accessToken.length < 20) {
     throw new Error("Invalid access token - too short or empty");
   }
 
-  const deleteUrl = `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/delete-account`;
+  const deleteUrl = buildEdgeFunctionUrl("/delete-account");
 
   const response = await fetch(deleteUrl, {
     method: "POST",

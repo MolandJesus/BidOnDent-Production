@@ -31,6 +31,7 @@ export type StatItem = {
 type HomeActionHandlers = {
   onStartReport: () => void;
   onViewAllReports: () => void;
+  onViewCoverage?: () => void;
   onConnectInsurance?: () => void;
   onViewBids?: () => void;
   onViewRequests?: () => void;
@@ -77,6 +78,10 @@ export function buildStats(userType: string, sortedReports: any[]): StatItem[] {
     const status = String(report?.status ?? "").toLowerCase();
     return status !== "completed" && status !== "resolved";
   }).length;
+  const awaitingReviewCount = sortedReports.filter((report) => {
+    const status = String(report?.status ?? "").toLowerCase();
+    return status === "pending" || status === "in-review";
+  }).length;
   const completedCount = sortedReports.filter((report) => {
     const status = String(report?.status ?? "").toLowerCase();
     return status === "completed" || status === "resolved";
@@ -96,45 +101,45 @@ export function buildStats(userType: string, sortedReports: any[]): StatItem[] {
       tone: "purple",
     },
     {
-      label: "Money Saved",
-      value: `$${(totalBids * 150).toLocaleString()}`,
-      icon: TrendingUp,
+      label: "Awaiting Review",
+      value: String(awaitingReviewCount),
+      icon: Clock,
       tone: "amber",
     },
   ];
 
   const shopStats: StatItem[] = [
-    { label: "Open Requests", value: String(activeCount || 12), icon: ClipboardList, tone: "blue" },
+    { label: "Open Requests", value: String(activeCount), icon: ClipboardList, tone: "blue" },
     {
-      label: "Active Jobs",
-      value: String(Math.max(3, completedCount)),
+      label: "Live Opportunities",
+      value: String(sortedReports.length),
       icon: Wrench,
       tone: "green",
     },
     {
       label: "Completed Jobs",
-      value: String(Math.max(completedCount, 6)),
+      value: String(completedCount),
       icon: CircleCheck,
       tone: "purple",
     },
     {
-      label: "Potential Revenue",
-      value: `$${(Math.max(totalBids, 8) * 400).toLocaleString()}`,
-      icon: DollarSign,
+      label: "Bid Activity",
+      value: String(totalBids),
+      icon: TrendingUp,
       tone: "amber",
     },
   ];
 
   const insurerStats: StatItem[] = [
-    { label: "Active Claims", value: String(activeCount || 18), icon: FileCheck, tone: "blue" },
+    { label: "Active Claims", value: String(activeCount), icon: FileCheck, tone: "blue" },
     {
       label: "Claims Resolved",
-      value: String(Math.max(completedCount, 9)),
+      value: String(completedCount),
       icon: CircleCheck,
       tone: "green",
     },
-    { label: "Partner Shops", value: "24", icon: Store, tone: "purple" },
-    { label: "Avg Cycle Time", value: "2.8d", icon: Clock, tone: "amber" },
+    { label: "Reports In Queue", value: String(awaitingReviewCount), icon: Store, tone: "purple" },
+    { label: "Live Submissions", value: String(sortedReports.length), icon: Clock, tone: "amber" },
   ];
 
   return userType === "shop" ? shopStats : userType === "insurer" ? insurerStats : customerStats;
@@ -162,9 +167,9 @@ export function buildQuickActions(userType: string, handlers: HomeActionHandlers
     },
     {
       title: "Coverage Updates",
-      description: "View service area and support info",
+      description: "Open live coverage and service map",
       icon: Wrench,
-      onClick: handlers.onViewAllReports,
+      onClick: handlers.onViewCoverage,
     },
   ];
 
@@ -188,10 +193,10 @@ export function buildQuickActions(userType: string, handlers: HomeActionHandlers
       onClick: handlers.onViewCompetitors,
     },
     {
-      title: "Browse Insurers",
-      description: "Explore insurance partners",
+      title: "Coverage Map",
+      description: "Review active service regions",
       icon: Shield,
-      onClick: handlers.onViewInsurers,
+      onClick: handlers.onViewCoverage,
     },
   ];
 
@@ -215,14 +220,18 @@ export function buildQuickActions(userType: string, handlers: HomeActionHandlers
       onClick: handlers.onViewShops,
     },
     {
-      title: "Browse Insurers",
-      description: "View carrier directory",
+      title: "Network Coverage",
+      description: "Review live service regions",
       icon: Shield,
-      onClick: handlers.onViewInsurers,
+      onClick: handlers.onViewCoverage,
     },
   ];
 
-  return userType === "shop" ? shopActions : userType === "insurer" ? insurerActions : customerActions;
+  return userType === "shop"
+    ? shopActions
+    : userType === "insurer"
+      ? insurerActions
+      : customerActions;
 }
 
 export function buildPrimaryAction(userType: string, handlers: HomeActionHandlers) {

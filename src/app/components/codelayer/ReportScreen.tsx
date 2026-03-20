@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import PhotoGuide from "../shop/PhotoGuide";
-import { uploadImageToSupabase } from "../../services/supabaseService";
 import ReportAutoSaveIndicator from "./report/ReportAutoSaveIndicator";
 import ReportHeader from "./report/ReportHeader";
 import ReportProgress from "./report/ReportProgress";
@@ -11,6 +10,13 @@ import StepDescription from "./report/StepDescription";
 import StepPhotos from "./report/StepPhotos";
 import StepVehicleInfo from "./report/StepVehicleInfo";
 import { DAMAGE_AREAS } from "./report/damageAreas";
+import {
+  clearReportDraft,
+  DEFAULT_VEHICLE_DRAFT,
+  loadReportDraft,
+  saveReportDraft,
+} from "./report/reportDraftStorage";
+import { uploadReportPhoto } from "./report/reportPhotoUpload";
 
 type ReportScreenProps = {
   primaryColor?: string;
@@ -37,12 +43,7 @@ export default function ReportScreen({
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
-  const [vehicle, setVehicle] = useState({
-    make: "",
-    model: "",
-    year: "",
-    vin: "",
-  });
+  const [vehicle, setVehicle] = useState({ ...DEFAULT_VEHICLE_DRAFT });
   const [damageArea, setDamageArea] = useState("front");
   const [description, setDescription] = useState("");
   const [incident, setIncident] = useState("");
@@ -53,25 +54,18 @@ export default function ReportScreen({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  // Local storage key for draft report
-  const DRAFT_STORAGE_KEY = "bidondent_damage_report_draft";
-
   // Load draft from localStorage on mount
   useEffect(() => {
-    try {
-      const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
-      if (savedDraft) {
-        const draft = JSON.parse(savedDraft);
-        console.log("📋 Loaded draft report from local storage");
-        setStep(draft.step || 1);
-        // Don't restore photos - they're too large for localStorage
-        setVehicle(draft.vehicle || { make: "", model: "", year: "", vin: "" });
-        setDamageArea(draft.damageArea || "front");
-        setDescription(draft.description || "");
-        setIncident(draft.incident || "");
-      }
-    } catch (error) {
-      console.error("Error loading draft from localStorage:", error);
+    const draft = loadReportDraft();
+
+    if (draft) {
+      console.log("📋 Loaded draft report from local storage");
+      setStep(draft.step || 1);
+      // Don't restore photos - they're too large for localStorage
+      setVehicle(draft.vehicle || { ...DEFAULT_VEHICLE_DRAFT });
+      setDamageArea(draft.damageArea || "front");
+      setDescription(draft.description || "");
+      setIncident(draft.incident || "");
     }
   }, []);
 
@@ -83,28 +77,13 @@ export default function ReportScreen({
     }
 
     // Don't include photos in draft - they're too large for localStorage
-    const draft = {
+    saveReportDraft({
       step,
-      // photos excluded to prevent quota errors
       vehicle,
       damageArea,
       description,
       incident,
-      savedAt: new Date().toISOString(),
-    };
-
-    try {
-      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
-      console.log("💾 Draft auto-saved to local storage (text data only)");
-    } catch (error) {
-      console.error("Error saving draft to localStorage:", error);
-      // If still failing, clear the draft to prevent repeated errors
-      try {
-        localStorage.removeItem(DRAFT_STORAGE_KEY);
-      } catch (e) {
-        console.error("Failed to clear draft:", e);
-      }
-    }
+    });
   }, [step, vehicle, damageArea, description, incident]); // Removed photos from dependencies
 
   useEffect(() => {
@@ -117,12 +96,7 @@ export default function ReportScreen({
 
   // Clear draft from localStorage
   const clearDraft = () => {
-    try {
-      localStorage.removeItem(DRAFT_STORAGE_KEY);
-      console.log("🗑️ Cleared draft from local storage");
-    } catch (error) {
-      console.error("Error clearing draft:", error);
-    }
+    clearReportDraft();
   };
 
   // Handle photo upload with FileList
@@ -136,86 +110,9 @@ export default function ReportScreen({
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         setUploadProgress(`Processing photo ${i + 1} of ${files.length}...`);
-
-        // Compress image before upload
-        const compressedBase64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const img = document.createElement("img");
-            img.onload = () => {
-              // Create canvas for compression
-              const canvas = document.createElement("canvas");
-              const ctx = canvas.getContext("2d");
-
-              // Calculate new dimensions (max 800px for MUCH smaller files)
-              let width = img.width;
-              let height = img.height;
-              const maxSize = 800; // Reduced from 1200 for smaller files
-
-              if (width > maxSize || height > maxSize) {
-                if (width > height) {
-                  height = (height / width) * maxSize;
-                  width = maxSize;
-                } else {
-                  width = (width / height) * maxSize;
-                  height = maxSize;
-                }
-              }
-
-              canvas.width = width;
-              canvas.height = height;
-
-              // Draw and compress
-              ctx?.drawImage(img, 0, 0, width, height);
-
-              // Start with 0.5 quality for aggressive compression
-              let quality = 0.5;
-              let compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
-
-              // Target: 500KB max (accounting for base64 overhead and storage limits)
-              const maxBase64Size = 500 * 1024; // 500KB in bytes
-              while (compressedDataUrl.length > maxBase64Size && quality > 0.2) {
-                quality -= 0.05;
-                compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
-              }
-
-              console.log("🗜️ Compressed:", {
-                originalSize: `${(file.size / 1024).toFixed(0)}KB`,
-                compressedSize: `${(compressedDataUrl.length / 1024).toFixed(0)}KB`,
-                quality: Math.round(quality * 100) + "%",
-                dimensions: `${Math.round(width)}x${Math.round(height)}`,
-                reduction: `${Math.round((1 - compressedDataUrl.length / file.size) * 100)}%`,
-              });
-
-              resolve(compressedDataUrl);
-            };
-            img.onerror = reject;
-            img.src = e.target?.result as string;
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-
-        console.log("📸 Photo compressed, size:", compressedBase64.length, "bytes");
-
-        // Try to upload to Supabase Storage
         setUploadProgress(`Uploading photo ${i + 1} of ${files.length}...`);
-        const timestamp = Date.now();
-        const random = Math.random().toString(36).substring(7);
-        const imagePath = `damage-reports/${timestamp}-${random}.jpg`;
-
-        console.log("☁️ Attempting Supabase upload...");
-        const url = await uploadImageToSupabase(compressedBase64, imagePath);
-
-        if (url) {
-          // Store Supabase URL instead of base64
-          console.log("✅ Photo uploaded to Supabase:", url);
-          setPhotos((prev) => [...prev, url]);
-        } else {
-          // Fallback to base64 if upload fails
-          console.warn("⚠️ Supabase upload failed, using base64 fallback");
-          setPhotos((prev) => [...prev, compressedBase64]);
-        }
+        const uploadedPhoto = await uploadReportPhoto(file);
+        setPhotos((prev) => [...prev, uploadedPhoto]);
       }
 
       setUploadProgress("Upload complete!");
@@ -274,7 +171,7 @@ export default function ReportScreen({
   const resetForm = () => {
     setStep(1);
     setPhotos([]);
-    setVehicle({ make: "", model: "", year: "", vin: "" });
+    setVehicle({ ...DEFAULT_VEHICLE_DRAFT });
     setDamageArea("front");
     setDescription("");
     setIncident("");

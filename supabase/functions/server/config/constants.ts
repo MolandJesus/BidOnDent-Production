@@ -15,6 +15,6 @@ export const config = {
   SUPABASE_URL: Deno.env.get('SUPABASE_URL') ?? '',
   SERVICE_ROLE: Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
   ANON_KEY: Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-  BUILD_VERSION: '2026-02-13-v8 - Modular architecture refactor',
+  BUILD_VERSION: '2026-03-20-v9 - Clerk live data and intake schema rollout',
   ADMIN_EMAIL: 'figmaadmin@bidondent.com',
 };
