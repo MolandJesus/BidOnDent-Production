@@ -1,35 +1,15 @@
 import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
+import { useAuth as useClerkAuth } from "@clerk/clerk-react";
 import { motion } from "motion/react";
 import { Activity, Building2, CircleCheck, Clock3, FileStack, Shield } from "lucide-react";
-import { supabase } from "../../services/supabaseService";
-
-type SubmissionStatus = "submitted" | "reviewing" | "approved" | "rejected";
-
-type ShopSubmission = {
-  id: string;
-  shop_name: string;
-  contact_person: string;
-  email: string;
-  state: string;
-  status: SubmissionStatus;
-  created_at: string;
-};
-
-type InsurerSubmission = {
-  id: string;
-  company_name: string;
-  contact_person: string;
-  email: string;
-  status: SubmissionStatus;
-  created_at: string;
-};
-
-type ActivityEvent = {
-  id: string;
-  event_type: string;
-  source?: string;
-  created_at: string;
-};
+import {
+  loadAdminIntakeOperations,
+  updateAdminSubmissionStatus,
+  type ActivityEvent,
+  type InsurerSubmission,
+  type ShopSubmission,
+  type SubmissionStatus,
+} from "../../services/supabase/adminIntake";
 
 type AdminIntakeOperationsPanelProps = {
   primaryColor: string;
@@ -38,6 +18,7 @@ type AdminIntakeOperationsPanelProps = {
 export default function AdminIntakeOperationsPanel({
   primaryColor,
 }: AdminIntakeOperationsPanelProps) {
+  const { getToken } = useClerkAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [shopSubmissions, setShopSubmissions] = useState<ShopSubmission[]>([]);
@@ -49,36 +30,11 @@ export default function AdminIntakeOperationsPanel({
     setStatusMessage("Loading intake operations data...");
 
     try {
-      const [shopsResult, insurersResult, eventsResult] = await Promise.all([
-        supabase
-          .from("shop_interest_submissions")
-          .select("id, shop_name, contact_person, email, state, status, created_at")
-          .order("created_at", { ascending: false })
-          .limit(25),
-        supabase
-          .from("insurer_interest_submissions")
-          .select("id, company_name, contact_person, email, status, created_at")
-          .order("created_at", { ascending: false })
-          .limit(25),
-        supabase
-          .from("platform_activity_events")
-          .select("id, event_type, source, created_at")
-          .order("created_at", { ascending: false })
-          .limit(20),
-      ]);
+      const result = await loadAdminIntakeOperations(getToken);
 
-      if (shopsResult.error || insurersResult.error || eventsResult.error) {
-        throw new Error(
-          shopsResult.error?.message ||
-            insurersResult.error?.message ||
-            eventsResult.error?.message ||
-            "Failed to load intake operations data"
-        );
-      }
-
-      setShopSubmissions((shopsResult.data || []) as ShopSubmission[]);
-      setInsurerSubmissions((insurersResult.data || []) as InsurerSubmission[]);
-      setActivityEvents((eventsResult.data || []) as ActivityEvent[]);
+      setShopSubmissions(result.shopSubmissions);
+      setInsurerSubmissions(result.insurerSubmissions);
+      setActivityEvents(result.activityEvents);
 
       setStatusMessage("✅ Intake operations data refreshed");
       setTimeout(() => setStatusMessage(""), 3000);
@@ -100,26 +56,17 @@ export default function AdminIntakeOperationsPanel({
     status: SubmissionStatus
   ) => {
     try {
-      const { error } = await supabase.from(table).update({ status }).eq("id", id);
-
-      if (error) {
-        throw error;
-      }
-
-      await supabase.from("platform_activity_events").insert({
-        event_type: `${table}_status_updated`,
-        source: "admin-ops",
-        payload: {
-          submission_id: id,
-          new_status: status,
-        },
+      await updateAdminSubmissionStatus(getToken, {
+        table,
+        id,
+        status,
       });
 
       await loadData();
     } catch (error) {
       console.error("Failed to update submission status", error);
       setStatusMessage(
-        `❌ Status update failed (check RLS/admin policies): ${
+        `❌ Status update failed: ${
           error instanceof Error ? error.message : "Unknown error"
         }`
       );

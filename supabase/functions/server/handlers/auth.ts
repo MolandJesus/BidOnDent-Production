@@ -3,6 +3,28 @@
  * User login tracking and account deletion
  */
 
+import { verifyToken } from "npm:@clerk/backend";
+
+function getAuthorizedParties(req: Request): string[] {
+  const parties = new Set<string>();
+  const origin = req.headers.get("origin");
+  const referer = req.headers.get("referer");
+
+  if (origin) {
+    parties.add(origin);
+  }
+
+  if (referer) {
+    try {
+      parties.add(new URL(referer).origin);
+    } catch {
+      // Ignore malformed referer values.
+    }
+  }
+
+  return Array.from(parties);
+}
+
 /**
  * Track user login activity
  */
@@ -47,7 +69,6 @@ export async function handleTrackLogin(
 export async function handleDeleteAccount(
   req: Request,
   supabase: any,
-  supabaseAuth: any,
   respond: Function
 ): Promise<Response> {
   try {
@@ -58,27 +79,57 @@ export async function handleDeleteAccount(
     }
 
     const token = authHeader.replace('Bearer ', '')
+    let body: Record<string, unknown> = {}
 
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token)
+    try {
+      body = await req.json()
+    } catch {
+      body = {}
+    }
 
-    if (authError || !user) {
+    const requestedClerkUserId =
+      typeof body.clerkUserId === 'string' ? body.clerkUserId : null
+    const requestedEmail = typeof body.email === 'string' ? body.email.toLowerCase() : null
+    const authorizedParties = getAuthorizedParties(req)
+
+    let verifiedToken: Record<string, unknown>
+
+    try {
+      verifiedToken = await verifyToken(
+        token,
+        authorizedParties.length > 0 ? { authorizedParties } : {}
+      )
+    } catch (authError: any) {
       return respond(
         {
           error: 'Unauthorized',
-          details: authError?.message || 'Invalid token'
+          details: authError?.message || 'Invalid Clerk session token'
         },
         401
       )
     }
 
-    // Fetch profile to check restrictions
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('email, account_type, is_admin')
-      .eq('user_id', user.id)
-      .maybeSingle()
+    const clerkUserId =
+      typeof verifiedToken.sub === 'string' ? verifiedToken.sub : null
 
-    if (profileError) {
+    if (!clerkUserId) {
+      return respond({ error: 'Unauthorized', details: 'Missing Clerk user ID' }, 401)
+    }
+
+    if (requestedClerkUserId && requestedClerkUserId !== clerkUserId) {
+      return respond({ error: 'Forbidden', details: 'Authenticated user mismatch' }, 403)
+    }
+
+    const profileResult = requestedEmail
+      ? await supabase
+          .from('profiles')
+          .select('user_id, email, account_type, is_admin')
+          .eq('email', requestedEmail)
+          .maybeSingle()
+      : { data: null, error: null }
+    const profile = profileResult.data
+
+    if (requestedEmail && profileResult.error) {
       return respond({ error: 'Failed to fetch profile' }, 500)
     }
 
@@ -93,30 +144,75 @@ export async function handleDeleteAccount(
       'shop.test@bidondent.com',
       'insurer.test@bidondent.com'
     ]
-    if (profile?.email && testEmails.includes(profile.email)) {
+    if (
+      (profile?.email && testEmails.includes(profile.email)) ||
+      (requestedEmail && testEmails.includes(requestedEmail))
+    ) {
       return respond({ error: 'Test accounts cannot be deleted through this method' }, 403)
     }
 
-    // Delete auth user (cascade will handle related data)
-    const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id)
+    const deleteBidsResult = await supabase
+      .from('bids')
+      .delete()
+      .eq('clerk_shop_user_id', clerkUserId)
 
-    if (authDeleteError) {
-      return respond(
-        {
-          error: 'Failed to delete authentication account',
-          details: authDeleteError.message
-        },
-        500
-      )
+    if (deleteBidsResult.error) {
+      return respond({ error: deleteBidsResult.error.message }, 500)
     }
 
-    // Explicitly delete profile
-    await supabase.from('profiles').delete().eq('user_id', user.id)
+    const deleteReportsResult = await supabase
+      .from('damage_reports')
+      .delete()
+      .eq('clerk_user_id', clerkUserId)
 
-    // Clean up related data
-    await supabase.from('bids').delete().eq('user_id', user.id)
-    await supabase.from('damage_reports').delete().eq('user_id', user.id)
-    await supabase.from('vehicles').delete().eq('user_id', user.id)
+    if (deleteReportsResult.error) {
+      return respond({ error: deleteReportsResult.error.message }, 500)
+    }
+
+    const deleteVehiclesResult = await supabase
+      .from('vehicles')
+      .delete()
+      .eq('clerk_user_id', clerkUserId)
+
+    if (deleteVehiclesResult.error) {
+      return respond({ error: deleteVehiclesResult.error.message }, 500)
+    }
+
+    const deleteAssignmentsResult = await supabase
+      .from('job_assignments')
+      .delete()
+      .or(
+        `customer_clerk_user_id.eq.${clerkUserId},shop_clerk_user_id.eq.${clerkUserId},insurer_clerk_user_id.eq.${clerkUserId}`
+      )
+
+    if (deleteAssignmentsResult.error) {
+      return respond({ error: deleteAssignmentsResult.error.message }, 500)
+    }
+
+    if (profile?.user_id) {
+      const { error: authDeleteError } = await supabase.auth.admin.deleteUser(profile.user_id)
+
+      if (authDeleteError) {
+        return respond(
+          {
+            error: 'Failed to delete legacy authentication account',
+            details: authDeleteError.message
+          },
+          500
+        )
+      }
+    }
+
+    if (profile?.email) {
+      const deleteProfileResult = await supabase
+        .from('profiles')
+        .delete()
+        .eq('email', profile.email)
+
+      if (deleteProfileResult.error) {
+        return respond({ error: deleteProfileResult.error.message }, 500)
+      }
+    }
 
     return respond({
       success: true,

@@ -24,6 +24,7 @@ import {
 
 // Import helpers
 import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
+import { resolveNavigationDiscoveryRole } from "./services/navigation/discoveryRole";
 
 // Import components
 import AppLoading from "./components/app/AppLoading";
@@ -103,6 +104,8 @@ function AppContent() {
     userData,
   });
 
+  const notificationSyncActive = Boolean(user && userProfile?.account_setup_completed);
+
   // ============================================================================
   // CONSTANTS - Imported from /constants
   // ============================================================================
@@ -153,11 +156,17 @@ function AppContent() {
     : userData.userInfo;
 
   const landingRedirectInfo = userProfile ? { type: userProfile.user_type } : userData.redirectInfo;
+  const initialDiscoveryRole = resolveNavigationDiscoveryRole(
+    navigation.demoMode && navigation.demoAccountType
+      ? navigation.demoAccountType
+      : landingRedirectInfo?.type
+  );
 
   const landingProfileDropdownData = userProfile
     ? {
         userType: userProfile.user_type,
         notifications: userData.notifications,
+        notificationSyncActive,
         reports: userData.reports,
         vehicles: userData.vehicles,
         bids: userData.bids,
@@ -190,6 +199,7 @@ function AppContent() {
       showProfileDropdown={navigation.showProfileDropdown}
       userInfo={landingUserInfo}
       redirectInfo={landingRedirectInfo}
+      initialDiscoveryRole={initialDiscoveryRole}
       onLoginClick={handleLogin}
       onViewDashboard={() => navigation.setShowLandingPage(false)}
       profileDropdownData={landingProfileDropdownData}
@@ -339,10 +349,6 @@ function AppContent() {
       userImageUrl: resolvedProfileImage,
     });
 
-    const handleNewNotification = (notification: (typeof userData.notifications)[number]) => {
-      userData.pushNotification(notification);
-    };
-
     const handleMarkNotificationRead = (notificationId: string | number) => {
       userData.markNotificationRead(notificationId);
     };
@@ -363,6 +369,7 @@ function AppContent() {
           userProfile={userProfile}
           userImageUrl={resolvedProfileImage}
           notifications={userData.notifications}
+          notificationSyncActive={notificationSyncActive}
           reports={userData.reports}
           vehicles={userData.vehicles}
           bids={userData.bids}
@@ -371,7 +378,6 @@ function AppContent() {
           onMobileMenuTabClick={handleTabClick}
           onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
           onOpenDemoMode={() => navigation.setViewMode("demo-switcher" as any)}
-          onNewNotification={handleNewNotification}
           onMarkNotificationRead={handleMarkNotificationRead}
           onMarkAllNotificationsRead={handleMarkAllNotificationsRead}
           profileDropdownData={profileDropdownData}

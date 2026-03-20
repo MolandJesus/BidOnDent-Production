@@ -1,16 +1,35 @@
 import { useEffect, useMemo, useState } from "react";
-import { Expand, LocateFixed, MapPin, Navigation } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
+import { useCoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
+import {
+  openDirections,
+  type NavigationProvider,
+} from "../../services/navigation/externalNavigation";
+import { markRecentNavigationLocation } from "../../services/navigation/savedLocations";
+import { loadNavigationSession } from "../../services/navigation/navigationSession";
 import { haversineMiles, zipToCoordinates } from "../../services/supabase/map";
+import type { ExternalNavigationSession } from "../../types/navigation";
+import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import ServiceCoverageMap from "../maps/ServiceCoverageMap";
+import { resolveMapSurfaceTone } from "../maps/mapSurfaceTheme";
 import type {
   CoverageNearbyShop,
+  CoveragePartnerShop,
   CoverageSearchTarget,
   MapTileMode,
 } from "../maps/serviceCoverageMapTypes";
 import CoverageMapDialog from "./CoverageMapDialog";
 import CoverageNearestShops from "./CoverageNearestShops";
+import CoverageSearchPanel from "./CoverageSearchPanel";
+import {
+  COVERAGE_STATE_STORAGE_KEY,
+  focusZoomByRadius,
+  loadSavedCoverageState,
+  type MapViewState,
+  type SavedCoverageState,
+} from "./coverageState";
 import {
   countyCenters,
   defaultCoverageCenter,
@@ -19,86 +38,13 @@ import {
   sanitizeZipInput,
 } from "./coverageData";
 
-const focusZoomByRadius: Record<string, number> = {
-  "10": 11,
-  "20": 10,
-  "25": 9,
-  "35": 8,
+type OperatingRegionsSectionProps = {
+  initialDiscoveryRole?: NavigationDiscoveryRole;
 };
 
-const COVERAGE_STATE_STORAGE_KEY = "bidondent_coverage_state";
-
-type MapViewState = {
-  center: [number, number];
-  zoom: number;
-  revision: number;
-};
-
-type SavedCoverageState = {
-  zipCode?: string;
-  radiusMiles?: string;
-  tileMode?: MapTileMode;
-  isMapExpanded?: boolean;
-  activeOriginMode?: "zip" | "geolocation";
-  currentLocationTarget?: CoverageSearchTarget | null;
-  mapView?: {
-    center?: [number, number];
-    zoom?: number;
-    revision?: number;
-  };
-};
-
-function loadSavedCoverageState(): SavedCoverageState {
-  if (typeof window === "undefined") {
-    return {};
-  }
-
-  try {
-    const savedState = localStorage.getItem(COVERAGE_STATE_STORAGE_KEY);
-    if (!savedState) {
-      return {};
-    }
-
-    const parsed = JSON.parse(savedState) as SavedCoverageState;
-    return {
-      zipCode: typeof parsed.zipCode === "string" ? sanitizeZipInput(parsed.zipCode) : undefined,
-      radiusMiles:
-        typeof parsed.radiusMiles === "string" && focusZoomByRadius[parsed.radiusMiles]
-          ? parsed.radiusMiles
-          : undefined,
-      tileMode:
-        parsed.tileMode === "roadmap" ||
-        parsed.tileMode === "night" ||
-        parsed.tileMode === "satellite"
-          ? parsed.tileMode
-          : undefined,
-      isMapExpanded: Boolean(parsed.isMapExpanded),
-      activeOriginMode:
-        parsed.activeOriginMode === "geolocation" ? "geolocation" : parsed.activeOriginMode,
-      currentLocationTarget:
-        parsed.currentLocationTarget &&
-        typeof parsed.currentLocationTarget.lat === "number" &&
-        typeof parsed.currentLocationTarget.lng === "number"
-          ? parsed.currentLocationTarget
-          : null,
-      mapView:
-        parsed.mapView &&
-        Array.isArray(parsed.mapView.center) &&
-        parsed.mapView.center.length === 2 &&
-        typeof parsed.mapView.center[0] === "number" &&
-        typeof parsed.mapView.center[1] === "number" &&
-        typeof parsed.mapView.zoom === "number" &&
-        typeof parsed.mapView.revision === "number"
-          ? parsed.mapView
-          : undefined,
-    };
-  } catch (error) {
-    console.error("Error loading coverage map state:", error);
-    return {};
-  }
-}
-
-export default function OperatingRegionsSection() {
+export default function OperatingRegionsSection({
+  initialDiscoveryRole,
+}: OperatingRegionsSectionProps) {
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
   const [savedCoverageState] = useState(loadSavedCoverageState);
   const [zipCode, setZipCode] = useState(() => savedCoverageState.zipCode || "");
@@ -114,6 +60,14 @@ export default function OperatingRegionsSection() {
   const [activeOriginMode, setActiveOriginMode] = useState<"zip" | "geolocation">(
     () => savedCoverageState.activeOriginMode || "zip"
   );
+  const [selectedShopId, setSelectedShopId] = useState(
+    () => savedCoverageState.selectedShopId || ""
+  );
+  const [preferredNavigationProvider, setPreferredNavigationProvider] =
+    useState<NavigationProvider>(() => savedCoverageState.preferredNavigationProvider || "apple");
+  const [navigationSession, setNavigationSession] = useState<ExternalNavigationSession | null>(
+    loadNavigationSession
+  );
   const [currentLocationTarget, setCurrentLocationTarget] = useState<CoverageSearchTarget | null>(
     () => savedCoverageState.currentLocationTarget || null
   );
@@ -123,6 +77,7 @@ export default function OperatingRegionsSection() {
     revision: savedCoverageState.mapView?.revision || 0,
   });
   const { partnerShops: mapPartnerShops, isLoadingShops } = useCoveragePartnerShops();
+  const surfaceTone = resolveMapSurfaceTone(tileMode);
 
   const normalizedZip = zipCode.trim();
   const lookup = useMemo(() => {
@@ -187,6 +142,42 @@ export default function OperatingRegionsSection() {
       .slice(0, 6);
   }, [listSearchTarget, mapPartnerShops, radiusMiles]);
 
+  const selectedShop = useMemo<CoveragePartnerShop | null>(
+    () =>
+      nearbyShops.find((shop) => `${shop.id || shop.name}` === selectedShopId) ||
+      mapPartnerShops.find((shop) => `${shop.id || shop.name}` === selectedShopId) ||
+      nearbyShops[0] ||
+      null,
+    [mapPartnerShops, nearbyShops, selectedShopId]
+  );
+  const navigation = useCoverageNavigationExperience({
+    selectedShop,
+    fallbackOriginTarget: listSearchTarget,
+  });
+  const routeGeometry =
+    navigation.routePreview?.geometry.map(({ lat, lng }) => [lat, lng] as [number, number]) ||
+    undefined;
+
+  useEffect(() => {
+    if (!selectedShop && nearbyShops.length > 0) {
+      setSelectedShopId(`${nearbyShops[0].id || nearbyShops[0].name}`);
+      return;
+    }
+
+    if (nearbyShops.length === 0 && selectedShopId) {
+      setSelectedShopId("");
+    }
+  }, [nearbyShops, selectedShop, selectedShopId]);
+
+  useEffect(() => {
+    const syncNavigationSession = () => {
+      setNavigationSession(loadNavigationSession());
+    };
+
+    window.addEventListener("focus", syncNavigationSession);
+    return () => window.removeEventListener("focus", syncNavigationSession);
+  }, []);
+
   useEffect(() => {
     const nextState: SavedCoverageState = {
       zipCode,
@@ -194,6 +185,8 @@ export default function OperatingRegionsSection() {
       tileMode,
       isMapExpanded,
       activeOriginMode,
+      selectedShopId,
+      preferredNavigationProvider,
       currentLocationTarget,
       mapView,
     };
@@ -209,9 +202,54 @@ export default function OperatingRegionsSection() {
     tileMode,
     isMapExpanded,
     activeOriginMode,
+    selectedShopId,
+    preferredNavigationProvider,
     currentLocationTarget,
     mapView,
   ]);
+
+  function focusMapOnShop(shop: CoveragePartnerShop, message?: string) {
+    updateMapView([shop.lat, shop.lng], 12, message || `Map focused on ${shop.name}.`);
+  }
+
+  function handleSelectShop(shop: CoveragePartnerShop, options?: { centerMap?: boolean }) {
+    setSelectedShopId(`${shop.id || shop.name}`);
+
+    if (options?.centerMap) {
+      focusMapOnShop(shop);
+    }
+  }
+
+  function handleSelectShopById(shopId: string) {
+    const shop =
+      nearbyShops.find((entry) => `${entry.id || entry.name}` === shopId) ||
+      mapPartnerShops.find((entry) => `${entry.id || entry.name}` === shopId);
+
+    if (!shop) {
+      setSelectedShopId(shopId);
+      return;
+    }
+
+    handleSelectShop(shop);
+  }
+
+  function handleOpenDirections(shop: CoveragePartnerShop) {
+    handleSelectShop(shop);
+    markRecentNavigationLocation({
+      label: shop.name,
+      subtitle: shop.addressLine || shop.countyLabel,
+      coordinate: {
+        lat: shop.lat,
+        lng: shop.lng,
+      },
+    });
+    openDirections({
+      provider: preferredNavigationProvider,
+      destination: shop,
+      origin: navigation.activeOriginTarget,
+    });
+    setNavigationSession(loadNavigationSession());
+  }
 
   function updateMapView(target: [number, number], zoom: number, message?: string) {
     setMapView((previous) => ({
@@ -236,6 +274,53 @@ export default function OperatingRegionsSection() {
       defaultCoverageCenter,
       9,
       "Coverage map returned to the New York regional overview."
+    );
+  }
+
+  function handleZipCodeChange(value: string) {
+    const nextZip = sanitizeZipInput(value);
+    setZipCode(nextZip);
+
+    if (nextZip.length >= 3) {
+      setActiveOriginMode("zip");
+      setGeoMessage("");
+    } else if (currentLocationTarget) {
+      setActiveOriginMode("geolocation");
+    }
+  }
+
+  function handleUseCurrentLocation() {
+    if (!navigator.geolocation) {
+      setGeoMessage("Geolocation is not supported on this browser.");
+      return;
+    }
+
+    setIsFindingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const target: CoverageSearchTarget = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          county: "Current location",
+          label: "Your current location",
+          source: "geolocation",
+        };
+
+        setCurrentLocationTarget(target);
+        setGeoMessage("");
+        setActiveOriginMode("geolocation");
+        centerOnTarget(target, "Coverage map centered to your live location.");
+        setIsFindingLocation(false);
+      },
+      () => {
+        setGeoMessage("Location permission denied. You can still search by ZIP code.");
+        setIsFindingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 300000,
+        timeout: 10000,
+      }
     );
   }
 
@@ -270,130 +355,36 @@ export default function OperatingRegionsSection() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-800/70 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <Navigation className="w-4 h-4 text-cyan-300" />
-              <h4 className="font-semibold">Find Coverage By ZIP and Radius</h4>
-            </div>
+          <div className="mt-8">
+            <CoverageSearchPanel
+              tone={surfaceTone}
+              zipCode={zipCode}
+              radiusMiles={radiusMiles}
+              normalizedZip={normalizedZip}
+              hasCoverageSignal={hasCoverageSignal}
+              coverageCounty={lookup?.county}
+              activeOriginMode={activeOriginMode}
+              currentLocationLabel={currentLocationTarget?.label || null}
+              geoMessage={geoMessage}
+              isFindingLocation={isFindingLocation}
+              canCenterMap={Boolean(mapFocusTarget)}
+              onZipCodeChange={handleZipCodeChange}
+              onRadiusMilesChange={setRadiusMiles}
+              onCenterMap={() => {
+                if (!mapFocusTarget) {
+                  return;
+                }
 
-            <div className="grid md:grid-cols-4 gap-3">
-              <input
-                value={zipCode}
-                onChange={(event) => {
-                  const nextZip = sanitizeZipInput(event.target.value);
-                  setZipCode(nextZip);
-
-                  if (nextZip.length >= 3) {
-                    setActiveOriginMode("zip");
-                    setGeoMessage("");
-                  } else if (currentLocationTarget) {
-                    setActiveOriginMode("geolocation");
-                  }
-                }}
-                placeholder="ZIP Code"
-                className="h-11 px-3 rounded-lg border border-slate-600 bg-slate-900 text-white placeholder:text-slate-400"
-              />
-              <select
-                value={radiusMiles}
-                onChange={(event) => setRadiusMiles(event.target.value)}
-                className="h-11 px-3 rounded-lg border border-slate-600 bg-slate-900 text-white"
-              >
-                <option value="10">10 miles</option>
-                <option value="20">20 miles</option>
-                <option value="25">25 miles</option>
-                <option value="35">35 miles</option>
-              </select>
-              <div className="h-11 px-3 rounded-lg border border-slate-600 bg-slate-900 flex items-center text-sm text-slate-300">
-                Target radius: {radiusMiles} miles
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  if (mapFocusTarget) {
-                    centerOnTarget(
-                      mapFocusTarget,
-                      mapFocusTarget.source === "geolocation"
-                        ? "Coverage map centered to your live location."
-                        : `Coverage map centered on ${mapFocusTarget.label}.`
-                    );
-                  }
-                }}
-                disabled={!mapFocusTarget}
-                className="h-11 px-3 rounded-lg border border-cyan-500/60 bg-cyan-500/10 text-cyan-200 text-sm font-medium hover:bg-cyan-500/20 transition-colors inline-flex items-center justify-center gap-2"
-              >
-                <LocateFixed className="w-4 h-4" />
-                Center Map
-              </button>
-            </div>
-
-            <div className="mt-3">
-              <button
-                type="button"
-                onClick={() => {
-                  if (!navigator.geolocation) {
-                    setGeoMessage("Geolocation is not supported on this browser.");
-                    return;
-                  }
-
-                  setIsFindingLocation(true);
-                  navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                      const target: CoverageSearchTarget = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                        county: "Current location",
-                        label: "Your current location",
-                        source: "geolocation",
-                      };
-
-                      setCurrentLocationTarget(target);
-                      setActiveOriginMode("geolocation");
-                      centerOnTarget(target, "Coverage map centered to your live location.");
-                      setIsFindingLocation(false);
-                    },
-                    () => {
-                      setGeoMessage(
-                        "Location permission denied. You can still search by ZIP code."
-                      );
-                      setIsFindingLocation(false);
-                    },
-                    {
-                      enableHighAccuracy: true,
-                      maximumAge: 300000,
-                      timeout: 10000,
-                    }
-                  );
-                }}
-                className="h-10 px-3 rounded-lg border border-slate-600 bg-slate-900 text-slate-200 text-sm font-medium hover:bg-slate-700 transition-colors"
-              >
-                {isFindingLocation ? "Finding Your Location..." : "Use My Current Location"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsMapExpanded(true)}
-                className="ml-3 h-10 px-3 rounded-lg border border-slate-600 bg-slate-900 text-slate-200 text-sm font-medium hover:bg-slate-700 transition-colors inline-flex items-center gap-2"
-              >
-                <Expand className="h-4 w-4" />
-                Full Screen Map
-              </button>
-            </div>
-
-            {normalizedZip.length > 0 && (
-              <p
-                className={`mt-3 text-sm ${hasCoverageSignal ? "text-emerald-300" : "text-amber-300"}`}
-              >
-                {hasCoverageSignal
-                  ? `${normalizedZip} is in or near ${lookup?.county} coverage. Partner assignment available in selected radius.`
-                  : `We are expanding coverage. ${normalizedZip} may require manual partner assignment.`}
-              </p>
-            )}
-
-            {geoMessage && <p className="mt-2 text-sm text-cyan-200">{geoMessage}</p>}
-
-            <p className="mt-4 text-sm text-slate-300">
-              Switch between roadmap and satellite, center on your live search target, or open the
-              map in full-screen mode for a more operational view.
-            </p>
+                centerOnTarget(
+                  mapFocusTarget,
+                  mapFocusTarget.source === "geolocation"
+                    ? "Coverage map centered to your live location."
+                    : `Coverage map centered on ${mapFocusTarget.label}.`
+                );
+              }}
+              onUseCurrentLocation={handleUseCurrentLocation}
+              onExpandMap={() => setIsMapExpanded(true)}
+            />
 
             <ServiceCoverageMap
               className="mt-4"
@@ -407,19 +398,42 @@ export default function OperatingRegionsSection() {
               radiusMeters={radiusMeters}
               radiusMiles={radiusMiles}
               regionCount={operatingRegions.length}
+              selectedShopId={selectedShopId}
+              showNavigationHud={false}
+              routeGeometry={routeGeometry}
+              routeFitKey={navigation.routePreview?.fetchedAt ?? null}
+              currentPosition={
+                navigation.currentPosition
+                  ? [navigation.currentPosition.lat, navigation.currentPosition.lng]
+                  : null
+              }
+              gpsAccuracyMeters={navigation.gpsAccuracyMeters}
+              currentSpeedMph={navigation.currentSpeedMph}
+              postedSpeedLimitMph={navigation.speedLimitSnapshot?.speedLimitMph ?? null}
+              nearestRoadName={navigation.speedLimitSnapshot?.roadName ?? null}
+              nextInstruction={navigation.nextStep?.instruction ?? null}
+              voiceMode={navigation.settings.voiceMode}
               onTileModeChange={setTileMode}
               onCenterActive={() => centerOnTarget(mapFocusTarget)}
               onResetView={resetOverviewMap}
               onExpand={() => setIsMapExpanded(true)}
+              onSelectShop={handleSelectShopById}
             />
 
-            <CoverageNearestShops
-              className="mt-4 rounded-xl border border-slate-700 bg-slate-900/60 p-4"
-              isLoadingShops={isLoadingShops}
-              activeSearchTarget={listSearchTarget}
-              nearbyShops={nearbyShops}
-              radiusMiles={radiusMiles}
-            />
+            <div className="mt-4">
+              <CoverageNearestShops
+                tone={surfaceTone}
+                isLoadingShops={isLoadingShops}
+                activeSearchTarget={listSearchTarget}
+                nearbyShops={nearbyShops}
+                radiusMiles={radiusMiles}
+                selectedShopId={selectedShopId}
+                preferredNavigationProvider={preferredNavigationProvider}
+                onSelectShop={(shop) => handleSelectShop(shop, { centerMap: true })}
+                onPreferredNavigationProviderChange={setPreferredNavigationProvider}
+                onOpenDirections={handleOpenDirections}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -440,9 +454,18 @@ export default function OperatingRegionsSection() {
         radiusMeters={radiusMeters}
         regionCount={operatingRegions.length}
         isLoadingShops={isLoadingShops}
+        selectedShopId={selectedShopId}
+        initialDiscoveryRole={initialDiscoveryRole}
+        preferredNavigationProvider={preferredNavigationProvider}
+        selectedShop={selectedShop}
+        navigationSession={navigationSession}
+        navigation={navigation}
         onTileModeChange={setTileMode}
         onCenterActive={() => centerOnTarget(mapFocusTarget)}
         onResetView={resetOverviewMap}
+        onSelectShop={(shop) => handleSelectShop(shop, { centerMap: true })}
+        onPreferredNavigationProviderChange={setPreferredNavigationProvider}
+        onOpenDirections={handleOpenDirections}
       />
     </section>
   );

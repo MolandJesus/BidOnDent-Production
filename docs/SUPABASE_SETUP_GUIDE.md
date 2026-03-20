@@ -377,7 +377,7 @@ When adding new features that need database changes:
 
 ### BidOnDent Resources
 - [Getting Started](./GETTING_STARTED.md)
-- [Project Status](./PROJECT_STATUS.md)
+- [Documentation Index](./README.md)
 - [Google OAuth Setup](./GOOGLE_OAUTH_SETUP.md)
 
 ---
@@ -387,7 +387,7 @@ When adding new features that need database changes:
 After completing Supabase setup:
 
 1. **Configure Google OAuth** → [GOOGLE_OAUTH_SETUP.md](./GOOGLE_OAUTH_SETUP.md)
-2. **View Project Status** → [PROJECT_STATUS.md](./PROJECT_STATUS.md)
+2. **Review Current Docs** → [README.md](./README.md)
 3. **Return to Getting Started** → [GETTING_STARTED.md](./GETTING_STARTED.md)
 4. **Review Main Documentation** → [README.md](./README.md)
 

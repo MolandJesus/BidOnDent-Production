@@ -1,9 +1,12 @@
-import { supabase } from "../../../services/supabaseService";
 import { buildEdgeFunctionUrl } from "../../../services/supabase/edgeFunctions";
 
 type DeleteAccountFlowParams = {
   deleteConfirmText: string;
   isTestAccount: boolean;
+  clerkUserId?: string | null;
+  userEmail?: string;
+  getClerkToken?: () => Promise<string | null>;
+  deleteClerkUser?: () => Promise<void>;
   onLogout?: () => void;
   setIsDeleting: (value: boolean) => void;
   resetDeleteState: () => void;
@@ -13,6 +16,10 @@ type DeleteAccountFlowParams = {
 export async function runDeleteAccountFlow({
   deleteConfirmText,
   isTestAccount,
+  clerkUserId,
+  userEmail,
+  getClerkToken,
+  deleteClerkUser,
   onLogout,
   setIsDeleting,
   resetDeleteState,
@@ -32,29 +39,17 @@ export async function runDeleteAccountFlow({
   setIsDeleting(true);
 
   try {
-    let {
-      data: { session },
-      error: sessionError,
-    } = await supabase.auth.getSession();
-
-    if (sessionError || !session || !session.access_token) {
-      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-
-      if (refreshError || !refreshData.session || !refreshData.session.access_token) {
-        alert("Session expired. Please sign in again.");
-        resetDeleteState();
-        closeDeleteModal();
-        setIsDeleting(false);
-        if (onLogout) {
-          onLogout();
-        }
-        return;
-      }
-
-      session = refreshData.session;
+    if (!clerkUserId || !getClerkToken || !deleteClerkUser) {
+      alert("Account deletion is unavailable until your Clerk session finishes loading.");
+      resetDeleteState();
+      closeDeleteModal();
+      setIsDeleting(false);
+      return;
     }
 
-    if (!session || !session.access_token) {
+    const accessToken = await getClerkToken();
+
+    if (!accessToken) {
       alert("Authentication error. Please sign in again.");
       resetDeleteState();
       closeDeleteModal();
@@ -65,51 +60,16 @@ export async function runDeleteAccountFlow({
       return;
     }
 
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(session.access_token);
-
-    if (userError || !user) {
-      const { data: finalRefresh, error: finalError } = await supabase.auth.refreshSession();
-
-      if (finalError || !finalRefresh.session?.access_token) {
-        alert("Session expired. Please sign in again.");
-        resetDeleteState();
-        closeDeleteModal();
-        setIsDeleting(false);
-        if (onLogout) {
-          onLogout();
-        }
-        return;
-      }
-
-      session = finalRefresh.session;
-
-      const {
-        data: { user: validatedUser },
-        error: validationError,
-      } = await supabase.auth.getUser(session.access_token);
-
-      if (validationError || !validatedUser) {
-        alert("Authentication error. Please sign in again.");
-        resetDeleteState();
-        closeDeleteModal();
-        setIsDeleting(false);
-        if (onLogout) {
-          onLogout();
-        }
-        return;
-      }
-    }
-
-    await performDeletionRequest(session.access_token);
+    await performDeletionRequest(accessToken, {
+      clerkUserId,
+      email: userEmail,
+    });
+    await deleteClerkUser();
 
     alert(
       "Your account has been permanently deleted. All your data has been removed from our systems."
     );
 
-    await supabase.auth.signOut();
     setIsDeleting(false);
     resetDeleteState();
     closeDeleteModal();
@@ -124,7 +84,10 @@ export async function runDeleteAccountFlow({
   }
 }
 
-async function performDeletionRequest(accessToken: string) {
+async function performDeletionRequest(
+  accessToken: string,
+  params: { clerkUserId: string; email?: string }
+) {
   if (!accessToken || accessToken.length < 20) {
     throw new Error("Invalid access token - too short or empty");
   }
@@ -137,7 +100,7 @@ async function performDeletionRequest(accessToken: string) {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({}),
+    body: JSON.stringify(params),
   });
 
   const responseText = await response.text();

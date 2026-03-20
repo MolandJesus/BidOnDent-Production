@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { motion } from "motion/react";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
 import { LANDING_PAGE_IMAGES } from "../../constants";
@@ -49,6 +50,9 @@ export default function AccountScreen({
   onViewVehicles,
   onOpenSmokeTest,
 }: AccountScreenProps) {
+  const { getToken } = useAuth();
+  const { user } = useUser();
+
   // Use default profile image if none provided
   const [profileImage, setProfileImage] = useState<string | null>(
     initialProfileImage || LANDING_PAGE_IMAGES.DEFAULT_PROFILE
@@ -199,6 +203,16 @@ export default function AccountScreen({
     await runDeleteAccountFlow({
       deleteConfirmText,
       isTestAccount,
+      clerkUserId: user?.id,
+      userEmail,
+      getClerkToken: () => getToken(),
+      deleteClerkUser: async () => {
+        if (!user) {
+          throw new Error("Unable to load your Clerk user account");
+        }
+
+        await user.delete();
+      },
       onLogout,
       setIsDeleting,
       resetDeleteState: () => setDeleteConfirmText(""),

@@ -1,7 +1,7 @@
 // Custom hook for managing user data with CLOUD-FIRST architecture
 // ✅ Supabase is PRIMARY data source
 // ✅ localStorage is CACHE ONLY for performance
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type {
   UserInfo,
   Vehicle,
@@ -12,7 +12,8 @@ import type {
   Bid,
   Activity,
 } from "../types";
-import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
+import { STORAGE_KEYS } from "../constants";
+import { buildNotificationsSnapshot } from "../services/notifications/notificationSnapshots";
 import {
   getReportsByClerkUser,
   getVehiclesByClerkUser,
@@ -45,8 +46,25 @@ export function useUserData(clerkUserId?: string) {
   const [photoStorage, setPhotoStorage] = useState<Record<string, string[]>>({});
   const isSavingRef = useRef(false);
   const isLoadingFromCloudRef = useRef(false);
+  const latestCacheContextRef = useRef({
+    userInfo,
+    userPhone,
+    redirectInfo,
+    notifications,
+    hasSeenPhotoGuide,
+  });
 
-  const loadUserDataFromCloud = async () => {
+  useEffect(() => {
+    latestCacheContextRef.current = {
+      userInfo,
+      userPhone,
+      redirectInfo,
+      notifications,
+      hasSeenPhotoGuide,
+    };
+  }, [userInfo, userPhone, redirectInfo, notifications, hasSeenPhotoGuide]);
+
+  const loadUserDataFromCloud = useCallback(async () => {
     if (!clerkUserId) {
       return;
     }
@@ -55,11 +73,20 @@ export function useUserData(clerkUserId?: string) {
     console.log("☁️ Loading data from Clerk-aware edge functions...");
 
     try {
+      const {
+        userInfo: currentUserInfo,
+        userPhone: currentUserPhone,
+        redirectInfo: currentRedirectInfo,
+        notifications: currentNotifications,
+        hasSeenPhotoGuide: currentHasSeenPhotoGuide,
+      } = latestCacheContextRef.current;
       const scope =
-        redirectInfo?.type === "shop" || redirectInfo?.type === "insurer" ? "marketplace" : "own";
+        currentRedirectInfo?.type === "shop" || currentRedirectInfo?.type === "insurer"
+          ? "marketplace"
+          : "own";
 
       const [vehiclesData, reportsData] = await Promise.all([
-        redirectInfo?.type === "customer"
+        currentRedirectInfo?.type === "customer"
           ? getVehiclesByClerkUser(clerkUserId)
           : Promise.resolve([]),
         getReportsByClerkUser(clerkUserId, scope),
@@ -69,7 +96,7 @@ export function useUserData(clerkUserId?: string) {
       const nextPhotoStorage = buildPhotoStorageFromReports(reportsData);
       const nextBids = extractBidsFromReports(
         reportsData,
-        redirectInfo?.type || "customer",
+        currentRedirectInfo?.type || "customer",
         clerkUserId
       );
 
@@ -78,27 +105,29 @@ export function useUserData(clerkUserId?: string) {
       setBids(nextBids as Bid[]);
       setPhotoStorage(nextPhotoStorage);
 
-      if (redirectInfo?.type) {
-        setNotifications(getNotificationsByUserType(redirectInfo.type));
-      }
+      const nextNotifications = buildNotificationsSnapshot({
+        userType: currentRedirectInfo?.type,
+        reports: transformedReports as DamageReport[],
+        bids: nextBids as Bid[],
+        existingNotifications: currentNotifications,
+      });
 
-      if (userInfo.email && redirectInfo) {
+      setNotifications(nextNotifications);
+
+      if (currentUserInfo.email && currentRedirectInfo) {
         saveUserDataCache(
           buildUserDataCachePayload({
-            userInfo,
+            userInfo: currentUserInfo,
             vehicles: vehiclesData as UserData["vehicles"],
             reports: transformedReports as UserData["reports"],
             bids: nextBids as UserData["bids"],
-            userPhone,
-            redirectInfo,
-            notifications:
-              notifications.length > 0
-                ? notifications
-                : getNotificationsByUserType(redirectInfo.type),
-            hasSeenPhotoGuide,
+            userPhone: currentUserPhone,
+            redirectInfo: currentRedirectInfo,
+            notifications: nextNotifications,
+            hasSeenPhotoGuide: currentHasSeenPhotoGuide,
             photoStorage: nextPhotoStorage,
           }),
-          userInfo.email
+          currentUserInfo.email
         );
       }
 
@@ -110,7 +139,7 @@ export function useUserData(clerkUserId?: string) {
     } finally {
       isLoadingFromCloudRef.current = false;
     }
-  };
+  }, [clerkUserId]);
 
   // ============================================================================
   // CACHE LOAD
@@ -127,7 +156,12 @@ export function useUserData(clerkUserId?: string) {
       setUserPhone(userData.userPhone || "");
       setRedirectInfo(userData.redirectInfo);
       setNotifications(
-        userData.notifications || getNotificationsByUserType(userData.redirectInfo.type)
+        buildNotificationsSnapshot({
+          userType: userData.redirectInfo.type,
+          reports: userData.reports || [],
+          bids: userData.bids || [],
+          existingNotifications: userData.notifications || [],
+        })
       );
       setHasSeenPhotoGuide(userData.hasSeenPhotoGuide || false);
       setPhotoStorage(
@@ -144,7 +178,7 @@ export function useUserData(clerkUserId?: string) {
       return;
     }
     void loadUserDataFromCloud();
-  }, [clerkUserId, redirectInfo?.type]);
+  }, [clerkUserId, redirectInfo?.type, loadUserDataFromCloud]);
 
   useEffect(() => {
     if (!clerkUserId || !redirectInfo?.type) {
@@ -160,7 +194,7 @@ export function useUserData(clerkUserId?: string) {
     }, 15000);
 
     return () => window.clearInterval(intervalId);
-  }, [clerkUserId, redirectInfo?.type]);
+  }, [clerkUserId, redirectInfo?.type, loadUserDataFromCloud]);
 
   // ============================================================================
   // CACHE UPDATE (localStorage) - for quick offline access
@@ -280,19 +314,6 @@ export function useUserData(clerkUserId?: string) {
     console.log("🚪 Session cleared (cache only - cloud data preserved)");
   };
 
-  const pushNotification = (notification: Notification) => {
-    setNotifications((current) => {
-      const alreadyExists = current.some(
-        (existingNotification) => `${existingNotification.id}` === `${notification.id}`
-      );
-      if (alreadyExists) {
-        return current;
-      }
-
-      return [notification, ...current].slice(0, 50);
-    });
-  };
-
   const markNotificationRead = (notificationId: string | number) => {
     setNotifications((current) =>
       current.map((notification) =>
@@ -338,7 +359,6 @@ export function useUserData(clerkUserId?: string) {
     saveProfile: saveUserProfile,
     saveVehicles: saveUserVehicles,
     saveReports: saveUserReports,
-    pushNotification,
     markNotificationRead,
     markAllNotificationsRead,
     clearSession,

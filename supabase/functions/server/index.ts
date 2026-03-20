@@ -15,7 +15,7 @@ import { initializeStorageBuckets } from './storage_init.tsx'
 
 // Config and clients
 import { corsHeaders, config } from './config/constants.ts'
-import { supabase, supabaseAuth } from './config/clients.ts'
+import { supabase } from './config/clients.ts'
 import { stripFunctionPrefix, createResponse } from './utils/helpers.ts'
 
 // Core handlers
@@ -35,10 +35,12 @@ import {
   handleCheckAdminExists,
   handleCreateUser,
   handleDeleteUser,
+  handleGetIntakeOperations,
   handleManageAdmin,
   handleListUsers,
   handleDeleteUsers,
   handleCreateTestAccount,
+  handleUpdateIntakeSubmissionStatus,
 } from './handlers/admin.ts'
 import { handleTrackLogin, handleDeleteAccount } from './handlers/auth.ts'
 import {
@@ -114,13 +116,24 @@ Deno.serve(async (req) => {
       return await handleCreateTestAccount(req, supabase, respond)
     }
 
+    if (path === '/make-server-9f243523/admin/intake-operations' && req.method === 'GET') {
+      return await handleGetIntakeOperations(req, supabase, respond)
+    }
+
+    if (
+      path === '/make-server-9f243523/admin/intake-operations/status' &&
+      req.method === 'POST'
+    ) {
+      return await handleUpdateIntakeSubmissionStatus(req, supabase, respond)
+    }
+
     // ===== AUTH ROUTES =====
     if (path === '/make-server-9f243523/track-login' && req.method === 'POST') {
       return await handleTrackLogin(req, supabase, respond)
     }
 
     if (path === '/make-server-9f243523/delete-account' && req.method === 'POST') {
-      return await handleDeleteAccount(req, supabase, supabaseAuth, respond)
+      return await handleDeleteAccount(req, supabase, respond)
     }
 
     // ===== STORAGE ROUTES =====

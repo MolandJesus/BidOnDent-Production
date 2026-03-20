@@ -22,7 +22,6 @@ import {
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import type { Notification } from "../../types";
-import { useProfileDropdownRealtime } from "./profile-dropdown-realtime";
 import { getNotificationDestination, getNotificationVisual } from "./notification-utils";
 
 interface ProfileDropdownProps {
@@ -33,11 +32,11 @@ interface ProfileDropdownProps {
   };
   userType: "customer" | "shop" | "insurer";
   notifications: Notification[];
+  notificationSyncActive?: boolean;
   isOpen: boolean;
   onNavigate: (destination: string, tab?: string) => void;
   onLogout: () => void;
   forwardedRef: RefObject<HTMLDivElement | null>;
-  onNewNotification?: (notification: Notification) => void;
   // Account-specific data props
   reports?: any[];
   vehicles?: any[];
@@ -49,23 +48,16 @@ export default function ProfileDropdown({
   userInfo,
   userType,
   notifications,
+  notificationSyncActive = false,
   isOpen,
   onNavigate,
   onLogout,
   forwardedRef,
-  onNewNotification,
   reports,
   vehicles,
   bids,
   variant = "popover",
 }: ProfileDropdownProps) {
-  const { realtimeConnected, localNotifications } = useProfileDropdownRealtime({
-    isOpen,
-    notifications,
-    onNewNotification,
-    userType,
-  });
-
   if (!isOpen) return null;
 
   const reportList = Array.isArray(reports) ? reports : [];
@@ -93,16 +85,14 @@ export default function ProfileDropdown({
     0
   );
 
-  // Calculate unread count including real-time notifications
-  const totalUnreadCount = localNotifications.filter((n) => !n.read).length;
+  const totalUnreadCount = notifications.filter((n) => !n.read).length;
 
-  // Get empty state message based on account type
   const getEmptyStateMessage = () => {
-    if (!realtimeConnected) {
+    if (!notificationSyncActive) {
       return (
         <div className="flex flex-col gap-1">
           <span>No notifications yet</span>
-          <span className="text-xs text-gray-400">Connecting to real-time updates...</span>
+          <span className="text-xs text-gray-400">Background refresh is paused.</span>
         </div>
       );
     }
@@ -112,7 +102,9 @@ export default function ProfileDropdown({
         return (
           <div className="flex flex-col gap-1">
             <span>No notifications yet</span>
-            <span className="text-xs text-gray-400">✓ Watching for new repair requests...</span>
+            <span className="text-xs text-gray-400">
+              Refreshes every 15 seconds for new repair requests.
+            </span>
           </div>
         );
       case "customer":
@@ -120,7 +112,7 @@ export default function ProfileDropdown({
           <div className="flex flex-col gap-1">
             <span>No notifications yet</span>
             <span className="text-xs text-gray-400">
-              ✓ Watching for new bids on your reports...
+              Refreshes every 15 seconds for bids on your reports.
             </span>
           </div>
         );
@@ -128,7 +120,9 @@ export default function ProfileDropdown({
         return (
           <div className="flex flex-col gap-1">
             <span>No notifications yet</span>
-            <span className="text-xs text-gray-400">✓ Watching for new insurance claims...</span>
+            <span className="text-xs text-gray-400">
+              Refreshes every 15 seconds for insurance-linked claims.
+            </span>
           </div>
         );
       default:
@@ -236,7 +230,7 @@ export default function ProfileDropdown({
             <div className="flex items-center gap-1 text-gray-600">
               <TrendingUp className="w-3 h-3 text-green-600" />
               <span>
-                Live bids tracked:{" "}
+                Tracked bids:{" "}
                 <span className="font-semibold text-gray-900">{shopBidCount}</span>
               </span>
             </div>
@@ -273,7 +267,7 @@ export default function ProfileDropdown({
             <div className="flex items-center gap-1 text-gray-600">
               <Clock className="w-3 h-3 text-blue-600" />
               <span>
-                Live bids tracked:{" "}
+                Tracked bids:{" "}
                 <span className="font-semibold text-gray-900">{insurerBidCount}</span>
               </span>
             </div>
@@ -286,13 +280,14 @@ export default function ProfileDropdown({
         <div className="px-4 py-2 bg-gray-50 font-semibold text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span>Notifications</span>
-            {/* Real-time indicator for ALL account types */}
             <div className="flex items-center gap-1">
               <Radio
-                className={`w-3 h-3 ${realtimeConnected ? "text-green-500 animate-pulse" : "text-gray-400"}`}
+                className={`w-3 h-3 ${notificationSyncActive ? "text-green-500 animate-pulse" : "text-gray-400"}`}
               />
-              <span className={`text-xs ${realtimeConnected ? "text-green-600" : "text-gray-500"}`}>
-                {realtimeConnected ? "Live" : "Offline"}
+              <span
+                className={`text-xs ${notificationSyncActive ? "text-green-600" : "text-gray-500"}`}
+              >
+                {notificationSyncActive ? "Synced" : "Paused"}
               </span>
             </div>
           </div>
@@ -303,10 +298,10 @@ export default function ProfileDropdown({
           )}
         </div>
         <div className="max-h-48 overflow-y-auto">
-          {localNotifications.length === 0 ? (
+          {notifications.length === 0 ? (
             <div className="px-4 py-3 text-sm text-gray-500">{getEmptyStateMessage()}</div>
           ) : (
-            localNotifications.slice(0, 5).map((notification) => (
+            notifications.slice(0, 5).map((notification) => (
               <div
                 key={notification.id}
                 className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors ${

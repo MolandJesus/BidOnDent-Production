@@ -1,51 +1,103 @@
-import type { CoverageNearbyShop, CoverageSearchTarget } from "../maps/serviceCoverageMapTypes";
+import { Compass, ExternalLink, LocateFixed } from "lucide-react";
+import { cn } from "../ui/utils";
+import {
+  getNavigationProviderLabel,
+  navigationProviderOptions,
+  type NavigationProvider,
+} from "../../services/navigation/externalNavigation";
+import { formatApproximateDriveWindow } from "../maps/mapRoutePresentation";
+import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
+import type {
+  CoverageNearbyShop,
+  CoverageSearchTarget,
+  MapSurfaceTone,
+} from "../maps/serviceCoverageMapTypes";
 
 type CoverageNearestShopsProps = {
+  tone: MapSurfaceTone;
   isLoadingShops: boolean;
   activeSearchTarget: CoverageSearchTarget | null;
   nearbyShops: CoverageNearbyShop[];
   radiusMiles: string;
+  selectedShopId?: string;
+  preferredNavigationProvider: NavigationProvider;
+  onSelectShop: (shop: CoverageNearbyShop) => void;
+  onPreferredNavigationProviderChange: (provider: NavigationProvider) => void;
+  onOpenDirections: (shop: CoverageNearbyShop) => void;
   className?: string;
 };
 
 export default function CoverageNearestShops({
+  tone,
   isLoadingShops,
   activeSearchTarget,
   nearbyShops,
   radiusMiles,
+  selectedShopId,
+  preferredNavigationProvider,
+  onSelectShop,
+  onPreferredNavigationProviderChange,
+  onOpenDirections,
   className,
 }: CoverageNearestShopsProps) {
+  const theme = getMapSurfaceTheme(tone, true);
+
   return (
-    <div className={className || "rounded-xl border border-slate-700 bg-slate-900/60 p-4"}>
+    <div className={className || cn("p-4", theme.panelStrongClassName)}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h5 className="font-semibold text-slate-100">Nearest Partner Shops</h5>
-          <p className="mt-1 text-sm text-slate-300">
+          <h5 className={cn("font-semibold", theme.titleClassName)}>Nearest Partner Shops</h5>
+          <p className={cn("mt-1 text-sm", theme.secondaryTextClassName)}>
             {activeSearchTarget
-              ? `Live routing from ${activeSearchTarget.label}`
+              ? `Launch directions from ${activeSearchTarget.label}`
               : "Enter a 5-digit ZIP code or use your live location to view the closest shops."}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {activeSearchTarget ? (
-            <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-100">
-              {radiusMiles}-mile search window
-            </span>
+            <span className={theme.softBadgeClassName}>{radiusMiles}-mile search window</span>
+          ) : null}
+          {activeSearchTarget ? (
+            <div className={theme.segmentedClassName}>
+              {navigationProviderOptions.map((provider) => (
+                <button
+                  key={provider.id}
+                  type="button"
+                  onClick={() => onPreferredNavigationProviderChange(provider.id)}
+                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
+                    preferredNavigationProvider === provider.id
+                      ? theme.activeSegmentClassName
+                      : theme.inactiveSegmentClassName
+                  }`}
+                >
+                  {provider.label}
+                </button>
+              ))}
+            </div>
           ) : null}
           {isLoadingShops ? (
-            <span className="text-xs text-slate-400">Loading live partner data...</span>
+            <span className={cn("text-xs", theme.secondaryTextClassName)}>
+              Loading live partner data...
+            </span>
           ) : null}
         </div>
       </div>
 
       {!activeSearchTarget ? (
-        <p className="mt-4 text-sm text-slate-300">
+        <p className={cn("mt-4 text-sm", theme.secondaryTextClassName)}>
           Start with a New York ZIP code or your current location to preview nearby partner
           capacity.
         </p>
       ) : nearbyShops.length === 0 ? (
-        <p className="mt-4 text-sm text-amber-300">
+        <p
+          className={cn(
+            "mt-4 rounded-[1rem] border px-4 py-3 text-sm",
+            tone === "light"
+              ? "border-amber-200 bg-amber-50 text-amber-900"
+              : "border-amber-300/20 bg-amber-500/10 text-amber-200"
+          )}
+        >
           No partner shops were found within {radiusMiles} miles. Expand the search radius or route
           the request for manual partner assignment.
         </p>
@@ -54,19 +106,64 @@ export default function CoverageNearestShops({
           {nearbyShops.map((shop) => (
             <div
               key={shop.id || shop.name}
-              className="rounded-xl border border-slate-700 bg-slate-800/70 p-4"
+              className={
+                selectedShopId === `${shop.id || shop.name}`
+                  ? theme.selectedListCardClassName
+                  : theme.listCardClassName
+              }
             >
-              <div className="text-sm font-semibold text-slate-100">{shop.name}</div>
-              <div className="mt-1 text-xs text-slate-300">
-                {shop.distanceMiles.toFixed(1)} miles away
-                {shop.label ? ` • ${shop.label}` : ""}
-              </div>
-              <div className="mt-1 text-xs text-cyan-200">{shop.countyLabel}</div>
-              {shop.specialties.length > 0 ? (
-                <div className="mt-2 text-xs text-slate-300">
-                  {shop.specialties.slice(0, 3).join(" • ")}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className={cn("text-sm font-semibold", theme.titleClassName)}>{shop.name}</div>
+                  <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                    {shop.distanceMiles.toFixed(1)} miles away
+                    {formatApproximateDriveWindow(shop.distanceMiles)
+                      ? ` • ${formatApproximateDriveWindow(shop.distanceMiles)}`
+                      : ""}
+                  </div>
+                  <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                    {shop.countyLabel}
+                  </div>
                 </div>
+                {selectedShopId === `${shop.id || shop.name}` ? (
+                  <span className={theme.badgeClassName}>Live Focus</span>
+                ) : null}
+              </div>
+
+              {shop.addressLine ? (
+                <div className={cn("mt-2 text-xs", theme.secondaryTextClassName)}>{shop.addressLine}</div>
               ) : null}
+              <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                Rating {shop.rating.toFixed(1)}
+                {shop.specialties.length > 0
+                  ? ` • ${shop.specialties.slice(0, 3).join(" • ")}`
+                  : ""}
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => onSelectShop(shop)}
+                  className={theme.secondaryButtonClassName}
+                >
+                  <LocateFixed className="h-3.5 w-3.5" />
+                  View on map
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onOpenDirections(shop)}
+                  className={theme.primaryButtonClassName}
+                >
+                  <Compass className="h-3.5 w-3.5" />
+                  Open in {getNavigationProviderLabel(preferredNavigationProvider)}
+                </button>
+                {shop.phoneNumber ? (
+                  <a href={`tel:${shop.phoneNumber}`} className={theme.secondaryButtonClassName}>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    Call
+                  </a>
+                ) : null}
+              </div>
             </div>
           ))}
         </div>

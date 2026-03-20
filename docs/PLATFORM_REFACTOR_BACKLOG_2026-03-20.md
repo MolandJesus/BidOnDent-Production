@@ -7,6 +7,8 @@ This backlog now follows the Phase 1 architecture audit.
 Primary source docs:
 
 - `docs/PHASE_1_PLATFORM_ARCHITECTURE_AUDIT_2026-03-20.md`
+- `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md`
+- `docs/BIDONDENT_NAVIGATION_REBUILD_MASTER_PLAN_2026-03-20.md`
 - `docs/CODE_ORGANIZATION_AUDIT.md`
 - `docs/PRODUCTION_READINESS_AUDIT_2026-03-20.md`
 
@@ -14,7 +16,13 @@ Primary source docs:
 
 - Public landing pages render before Clerk session hydration completes.
 - The dashboard bell opens a real notification panel.
+- Bell and profile notification surfaces now share one background-refreshed activity feed instead of booting separate live wrappers.
+- Legacy seeded notification defaults are retired in favor of honest report/bid-derived snapshots.
 - Coverage map code is reusable across landing and dashboard.
+- Coverage search now remembers ZIP/radius/map mode/focused shop/preferred directions app locally across reloads.
+- Coverage users can launch real turn-by-turn driving routes in Apple Maps, Google Maps, or Waze from partner-shop cards.
+- The last external route handoff is now stored locally so the immersive command center can resume directions context after reload.
+- The immersive command center now distinguishes between browse/setup mode and active route mode, with saved places, parked-car memory, guide cards, and active-only speed badges.
 - Report IDs now remain string-safe through selection/detail routing.
 - Missing or stale report selection now fails with a user-facing fallback state instead of a white screen.
 - Customer report persistence and shop bid submission both hit real backend routes.
@@ -22,13 +30,12 @@ Primary source docs:
 
 ## Reality Check
 
-These are **not** fully live yet:
+These are **not** fully production-finished yet:
 
 - true globe rendering
-- turn-by-turn navigation
-- voice guidance
-- current speed / speed-limit UI
-- navigation session memory
+- provider-backed real places catalog
+- role-aware customer / insurer / shop fullscreen map surfaces
+- provider-backed route geometry inside the BidOnDent map itself
 - fully truthful shop and insurer operational flows
 - requested temporary relaxed admin-access model
 
@@ -48,11 +55,19 @@ These are **not** fully live yet:
 ### Map / coverage
 
 1. Extract landing/dashboard coverage search state into a shared hook.
-2. Split the current map into:
+2. Split immersive fullscreen map chrome into dedicated modules:
+   - command-center header
+   - command-center sidebar
+   - map overlay controls
+   - map status rail
+3. Split the current map into:
    - operational embedded map
    - immersive fullscreen map
-3. Remove or quarantine the current faux orbital mode until a truthful globe path is implemented.
-4. Redesign midnight mode so it feels branded and premium rather than generic dark tiles.
+4. Keep low-zoom immersive behavior honest: world overview is acceptable, fake globe is not.
+5. Redesign midnight mode so it feels branded and premium rather than generic dark tiles.
+6. Add selected-shop highlighting and route-launch affordances across landing and fullscreen map surfaces. (Complete)
+7. Keep route-launch behavior honest: external navigation is live now, embedded navigation remains planned.
+8. Keep browse-mode content BidOnDent-specific with nearby stores, guide cards, and saved-place shortcuts instead of generic filler. (In progress)
 
 ### Role truthfulness
 
@@ -77,6 +92,8 @@ These are **not** fully live yet:
 2. Create provider adapters for routing and immersive rendering.
 3. Add route overview and turn list UI shells behind truthful capability boundaries.
 4. Add mobile-portable location and guidance abstractions.
+5. Add provider-backed real places/body-shop search and role-specific account overlays without forking the navigation foundation.
+6. Treat true globe and lane-grade native navigation as explicit provider-decision work, not visual polish.
 
 ### Notification and activity
 
@@ -115,9 +132,9 @@ Candidate directions:
 2. Keep business logic separate from desktop-only presentation.
 3. Preserve route/session/voice models so they can graduate to native later.
 
-## Docs Under Retirement Review
+## Retired Docs
 
-These are historical context, not current architecture truth:
+These older snapshots were retired on March 20, 2026 and should not be recreated as living status docs:
 
 - `docs/FIXES_APPLIED.md`
 - `docs/IDENTIFIED_ISSUES.md`
@@ -125,3 +142,5 @@ These are historical context, not current architecture truth:
 - `docs/PROJECT_STATUS.md`
 - `docs/COMPREHENSIVE_TEST_PLAN.md`
 - `docs/CROSS_ACCOUNT_TESTING_PLAN.md`
+
+Use `docs/README.md` plus the dated audit/plan docs above instead.

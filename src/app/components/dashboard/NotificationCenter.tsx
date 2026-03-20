@@ -1,16 +1,15 @@
 import { Bell, Radio, Sparkles } from "lucide-react";
 import type { Notification } from "../../types";
 import { getNotificationDestination, getNotificationVisual } from "./notification-utils";
-import { useProfileDropdownRealtime } from "./profile-dropdown-realtime";
 
 type NotificationCenterProps = {
   isOpen: boolean;
   userType: "customer" | "shop" | "insurer";
   notifications: Notification[];
+  notificationSyncActive: boolean;
   activeReportsCount: number;
   onClose: () => void;
   onNavigate: (destination: string, tab?: string) => void;
-  onNewNotification: (notification: Notification) => void;
   onMarkNotificationRead: (notificationId: string | number) => void;
   onMarkAllRead: () => void;
 };
@@ -19,25 +18,18 @@ export default function NotificationCenter({
   isOpen,
   userType,
   notifications,
+  notificationSyncActive,
   activeReportsCount,
   onClose,
   onNavigate,
-  onNewNotification,
   onMarkNotificationRead,
   onMarkAllRead,
 }: NotificationCenterProps) {
-  const { realtimeConnected, localNotifications } = useProfileDropdownRealtime({
-    isOpen,
-    notifications,
-    onNewNotification,
-    userType,
-  });
-
   if (!isOpen) {
     return null;
   }
 
-  const unreadCount = localNotifications.filter((notification) => !notification.read).length;
+  const unreadCount = notifications.filter((notification) => !notification.read).length;
 
   const handleNotificationSelect = (notification: Notification) => {
     onMarkNotificationRead(notification.id);
@@ -65,9 +57,9 @@ export default function NotificationCenter({
               <Bell className="h-3.5 w-3.5 text-blue-600" />
               Notification Center
             </div>
-            <h3 className="mt-3 text-lg font-semibold text-slate-950">Live account activity</h3>
+            <h3 className="mt-3 text-lg font-semibold text-slate-950">Account activity</h3>
             <p className="mt-1 text-sm text-slate-500">
-              Track bids, repair intake, and workflow updates without leaving the page.
+              Track bids, repair intake, and workflow updates from shared background refresh.
             </p>
           </div>
 
@@ -80,9 +72,9 @@ export default function NotificationCenter({
         <div className="mt-4 flex items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600">
             <Radio
-              className={`h-3.5 w-3.5 ${realtimeConnected ? "animate-pulse text-emerald-500" : "text-slate-400"}`}
+              className={`h-3.5 w-3.5 ${notificationSyncActive ? "animate-pulse text-emerald-500" : "text-slate-400"}`}
             />
-            {realtimeConnected ? "Live updates active" : "Polling from saved activity"}
+            {notificationSyncActive ? "Background refresh on" : "Saved snapshot only"}
           </div>
 
           <button
@@ -98,7 +90,7 @@ export default function NotificationCenter({
       </div>
 
       <div className="max-h-[28rem] overflow-y-auto">
-        {localNotifications.length === 0 ? (
+        {notifications.length === 0 ? (
           <div className="px-5 py-8 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
               <Bell className="h-5 w-5 text-slate-500" />
@@ -110,7 +102,7 @@ export default function NotificationCenter({
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {localNotifications.map((notification) => {
+            {notifications.map((notification) => {
               const visual = getNotificationVisual(notification.type);
               const Icon = visual.icon;
 

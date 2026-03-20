@@ -279,3 +279,140 @@
     }
   }
 }
+
+@layer components {
+  .coverage-map-surface .leaflet-container {
+    background: transparent;
+    font-family:
+      "SF Pro Display",
+      "SF Pro Text",
+      "Segoe UI",
+      sans-serif;
+  }
+
+  .coverage-map-surface .leaflet-bar,
+  .coverage-map-surface .leaflet-control-zoom {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .coverage-map-surface .leaflet-control-zoom {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .coverage-map-surface .leaflet-control-zoom a {
+    display: grid;
+    height: 2.75rem;
+    width: 2.75rem;
+    place-items: center;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.78);
+    color: rgb(15 23 42);
+    backdrop-filter: blur(22px);
+    box-shadow:
+      0 18px 40px rgba(15, 23, 42, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    transition:
+      transform 180ms ease,
+      background-color 180ms ease,
+      color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .coverage-map-surface .leaflet-control-zoom a:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.92);
+    color: rgb(2 132 199);
+    box-shadow:
+      0 20px 44px rgba(15, 23, 42, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.86);
+  }
+
+  .coverage-map-surface .leaflet-control-zoom a.leaflet-disabled {
+    opacity: 0.45;
+    background: rgba(255, 255, 255, 0.56);
+    color: rgb(100 116 139);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+  }
+
+  .coverage-map-surface .leaflet-control-attribution {
+    margin: 0 0.75rem 0.75rem 0;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.7);
+    padding: 0.25rem 0.65rem;
+    color: rgb(71 85 105);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+  }
+
+  .coverage-map-surface .leaflet-control-attribution a {
+    color: inherit;
+  }
+
+  .coverage-map-surface .leaflet-popup-content-wrapper,
+  .coverage-map-surface .leaflet-popup-tip {
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    background: rgba(255, 255, 255, 0.88);
+    color: rgb(15 23 42);
+    backdrop-filter: blur(24px);
+    box-shadow: 0 24px 56px rgba(15, 23, 42, 0.16);
+  }
+
+  .coverage-map-surface .leaflet-popup-content {
+    margin: 0.9rem 1rem;
+  }
+
+  .coverage-map-surface .leaflet-tooltip {
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: rgb(15 23 42);
+    padding: 0.35rem 0.65rem;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.14);
+  }
+
+  .coverage-map-surface .leaflet-tooltip::before {
+    display: none;
+  }
+
+  .coverage-map-surface[data-map-tone="dark"] .leaflet-control-zoom a {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(15, 23, 42, 0.82);
+    color: rgb(226 232 240);
+    box-shadow:
+      0 18px 40px rgba(2, 6, 23, 0.34),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .coverage-map-surface[data-map-tone="dark"] .leaflet-control-zoom a:hover {
+    background: rgba(15, 23, 42, 0.94);
+    color: rgb(103 232 249);
+  }
+
+  .coverage-map-surface[data-map-tone="dark"] .leaflet-control-zoom a.leaflet-disabled {
+    background: rgba(15, 23, 42, 0.56);
+    color: rgb(148 163 184);
+  }
+
+  .coverage-map-surface[data-map-tone="dark"] .leaflet-control-attribution {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.74);
+    color: rgb(148 163 184);
+    box-shadow: 0 14px 32px rgba(2, 6, 23, 0.28);
+  }
+
+  .coverage-map-surface[data-map-tone="dark"] .leaflet-popup-content-wrapper,
+  .coverage-map-surface[data-map-tone="dark"] .leaflet-popup-tip,
+  .coverage-map-surface[data-map-tone="dark"] .leaflet-tooltip {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.9);
+    color: rgb(241 245 249);
+    box-shadow: 0 24px 56px rgba(2, 6, 23, 0.34);
+  }
+}

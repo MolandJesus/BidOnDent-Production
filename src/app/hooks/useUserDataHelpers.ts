@@ -1,4 +1,5 @@
-import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
+import { STORAGE_KEYS } from "../constants";
+import { buildNotificationsSnapshot } from "../services/notifications/notificationSnapshots";
 import type {
   Profile,
   Bid as SupabaseBid,
@@ -192,7 +193,12 @@ export function createFreshUserData(args: {
       type: profileData.account_type,
       email: profileData.email,
     } as UserData["redirectInfo"],
-    notifications: getNotificationsByUserType(profileData.account_type),
+    notifications: buildNotificationsSnapshot({
+      userType: profileData.account_type,
+      reports: transformSupabaseReports(reportsData) as UserData["reports"],
+      bids: [],
+      existingNotifications: [],
+    }),
     hasSeenPhotoGuide: false,
     photoStorage: buildPhotoStorageFromReports(reportsData),
   };

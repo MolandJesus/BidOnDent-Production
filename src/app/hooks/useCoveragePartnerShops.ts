@@ -20,6 +20,11 @@ function mapPartnerShopRecords(publicShops: PartnerShopMapRecord[]): CoveragePar
         lat: coords.lat,
         lng: coords.lng,
         label: [shop.city, shop.state].filter(Boolean).join(", ") || "NY service region",
+        addressLine: [shop.address, shop.city, shop.state, shop.zip_code]
+          .filter(Boolean)
+          .join(", "),
+        phoneNumber: shop.phone_number || undefined,
+        email: shop.email || undefined,
         specialties: shop.specialties || [],
         rating: shop.rating || 4.6,
       };

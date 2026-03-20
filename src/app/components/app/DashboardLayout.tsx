@@ -33,6 +33,7 @@ type DashboardLayoutProps = {
   userProfile: UserProfile;
   userImageUrl: string;
   notifications: Notification[];
+  notificationSyncActive: boolean;
   reports: any[];
   vehicles: Vehicle[];
   bids: Bid[];
@@ -41,7 +42,6 @@ type DashboardLayoutProps = {
   onMobileMenuTabClick: (tabId: string) => void;
   onProfileToggle: () => void;
   onOpenDemoMode?: () => void;
-  onNewNotification: (notification: Notification) => void;
   onMarkNotificationRead: (notificationId: string | number) => void;
   onMarkAllNotificationsRead: () => void;
   profileDropdownData?: ProfileDropdownData;
@@ -58,6 +58,7 @@ export default function DashboardLayout({
   userProfile,
   userImageUrl,
   notifications,
+  notificationSyncActive,
   reports,
   vehicles,
   bids,
@@ -66,7 +67,6 @@ export default function DashboardLayout({
   onMobileMenuTabClick,
   onProfileToggle,
   onOpenDemoMode,
-  onNewNotification,
   onMarkNotificationRead,
   onMarkAllNotificationsRead,
   profileDropdownData,
@@ -181,6 +181,7 @@ export default function DashboardLayout({
                   }}
                   userType={profileDropdownData.userType}
                   notifications={notifications}
+                  notificationSyncActive={notificationSyncActive}
                   isOpen={showSidebarProfilePanel}
                   onNavigate={profileDropdownData.onNavigate}
                   onLogout={profileDropdownData.onLogout}
@@ -297,13 +298,13 @@ export default function DashboardLayout({
                       isOpen={showNotifications}
                       userType={profileDropdownData.userType}
                       notifications={notifications}
+                      notificationSyncActive={notificationSyncActive}
                       activeReportsCount={reports.length}
                       onClose={() => setShowNotifications(false)}
                       onNavigate={(destination, tab) => {
                         profileDropdownData.onNavigate(destination, tab);
                         setShowNotifications(false);
                       }}
-                      onNewNotification={onNewNotification}
                       onMarkNotificationRead={onMarkNotificationRead}
                       onMarkAllRead={onMarkAllNotificationsRead}
                     />

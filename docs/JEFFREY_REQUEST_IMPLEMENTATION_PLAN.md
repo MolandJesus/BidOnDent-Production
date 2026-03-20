@@ -16,17 +16,24 @@ This document maps Jeffrey's original request list to:
 - Remote Supabase schema now includes the missing intake/workflow tables and Clerk-compatible bid columns.
 - Customer bid screens now render live bid data instead of hardcoded samples.
 - The home coverage map is now refactored into reusable modules and upgraded with true recentering, satellite mode, and a fullscreen command-center view.
+- The fullscreen command center now has a clearer browse/setup state and a separate in-app active-route state with guide cards, saved places, parked-car memory, and active-only speed badges.
+- The fullscreen browse state now supports role-switched live nearby-place discovery so customer, insurer, and shop demos can show real public market places around the active area.
+- Real nearby places can now be selected and previewed inside the fullscreen browse flow instead of only acting as external-launch links.
+- Coverage search state now resumes locally after reload, including active ZIP/radius/map mode and preferred external directions app.
+- Partner-shop cards now launch real external driving directions in Apple Maps, Google Maps, or Waze instead of pretending in-app turn-by-turn is already implemented.
+- The last route handoff is now remembered locally so the fullscreen coverage workflow can resume context after reload.
 - Public landing routes now render immediately while auth restores in the background, avoiding the blank loading screen seen during slow startup.
 - Dashboard home no longer falls back to seeded shop/insurer home data, and the coverage system is now reachable from dashboard home as well.
-- Remaining work is now concentrated in secure realtime delivery, admin intake tooling, onboarding persistence, and Clerk-first account deletion.
+- Notification ownership is now cleaner: the bell and profile dropdown share one background-refreshed activity feed and the old seeded placeholder alerts are being retired.
+- Remaining work is now concentrated in secure realtime delivery, deployment/verification of the new admin intake and delete-account routes, and persisted onboarding state for non-customer roles.
 
 ## Request Status Matrix
 
 1. Radius map + ZIP code under Find Shops
 
-- Status: complete (v1.5)
-- Current state: interactive map now supports ZIP lookup, radius overlay, county markers, nearest partner shop matching from public Supabase partner records, live-location centering, satellite mode, and a fullscreen command-center view.
-- Completion target: enrich with advanced geospatial indexing, dynamic route-time estimation, and optional dashboard/admin reuse in v2.
+- Status: complete (v1.6 foundation)
+- Current state: interactive map now supports ZIP lookup, radius overlay, county markers, nearest partner shop matching from public Supabase partner records, live-location centering, midnight/satellite modes, fullscreen command center, local resume state, and real external route launch.
+- Completion target: enrich with advanced geospatial indexing, true provider-backed route geometry, and optional dashboard/admin reuse in v2.
 
 2. About Us should link to a dedicated Opportunity/Why page
 
@@ -102,8 +109,8 @@ This document maps Jeffrey's original request list to:
 14. Update all docs and remove obsolete planning docs
 
 - Status: complete
-- Current state: this roadmap is now supplemented by `PRODUCTION_READINESS_AUDIT_2026-03-20.md` for verified runtime/backend status.
-- Completion target: maintain this document as the single source of truth.
+- Current state: this roadmap is now supplemented by `PRODUCTION_READINESS_AUDIT_2026-03-20.md` for verified runtime/backend status and `BIDONDENT_NAVIGATION_REBUILD_MASTER_PLAN_2026-03-20.md` for the fullscreen/navigation rebuild.
+- Completion target: maintain this document as the Jeffrey-request tracker and treat the navigation master plan as the map-specific source of truth.
 
 ## Remaining Work Plan
 
@@ -128,9 +135,16 @@ This document maps Jeffrey's original request list to:
 
 ### Phase 4: Radius Map + ZIP Search (major)
 
-1. Build map module and geospatial query flow.
-2. Add ZIP + radius controls and service-area filtering.
-3. Integrate with "Find Shops" only when data and query performance are production-safe.
+1. Build map module and geospatial query flow. (Complete, v1)
+2. Add ZIP + radius controls and service-area filtering. (Complete, v1)
+3. Split immersive fullscreen map chrome from the embedded operational map so the premium layer can evolve without bloating the everyday coverage workflow. (Complete)
+4. Finish the BidOnDent-first fullscreen rebuild:
+   - real places lookup path
+   - browse-mode nearby stores and guide cards
+   - active navigation overlays
+   - parked-car and saved places
+   - insurer/customer/shop role-aware surfaces
+5. Integrate provider-backed globe/navigation features only after an approved provider decision and cost review.
 
 ## Design and Code Standards For Remaining Work
 

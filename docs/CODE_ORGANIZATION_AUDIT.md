@@ -191,7 +191,7 @@ Do not broad-stroke move the whole repo at once. The safest evolution path is:
 
 ### Docs that need retirement review
 
-These should not be blindly trusted as current architectural truth:
+These older docs were retired on March 20, 2026 because they no longer matched the live code:
 
 - `docs/FIXES_APPLIED.md`
 - `docs/IDENTIFIED_ISSUES.md`
@@ -200,7 +200,7 @@ These should not be blindly trusted as current architectural truth:
 - `docs/COMPREHENSIVE_TEST_PLAN.md`
 - `docs/CROSS_ACCOUNT_TESTING_PLAN.md`
 
-They may still contain useful historical context, but several contain older assumptions about placeholder data, admin flows, or completion status.
+Use `docs/README.md` as the current documentation entry point instead.
 
 ## Next Structural Priorities
 

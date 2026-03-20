@@ -53,6 +53,7 @@ export interface Notification {
   type: "repair_request" | "bid" | "claim" | "update" | "message";
   message: string;
   time: string;
+  createdAt?: string;
   read: boolean;
   reportData?: any;
 }

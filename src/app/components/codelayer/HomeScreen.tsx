@@ -281,6 +281,7 @@ export default function HomeScreen({
           <DashboardCoveragePanel
             primaryColor={primaryColor}
             secondaryColor={secondaryColor}
+            userType={userType as "customer" | "shop" | "insurer"}
             onOpenCoveragePage={onViewCoverage}
           />
 

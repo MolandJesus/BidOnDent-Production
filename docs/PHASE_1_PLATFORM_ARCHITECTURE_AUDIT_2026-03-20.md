@@ -114,7 +114,6 @@ Notification-related seams:
 - `src/app/components/app/DashboardLayout.tsx`
 - `src/app/components/dashboard/NotificationCenter.tsx`
 - `src/app/components/dashboard/ProfileDropdown.tsx`
-- `src/app/components/dashboard/profile-dropdown-realtime.tsx`
 - seeded defaults in `src/app/constants/index.ts`
 
 Reality:
@@ -554,7 +553,9 @@ Purpose:
 - `docs/PRODUCTION_READINESS_AUDIT_2026-03-20.md`
 - `docs/JEFFREY_REQUEST_IMPLEMENTATION_PLAN.md`
 
-## Docs that should no longer be treated as authoritative without review
+## Retired docs
+
+The following older snapshots were retired on March 20, 2026 because they no longer matched the live code:
 
 - `docs/FIXES_APPLIED.md`
 - `docs/IDENTIFIED_ISSUES.md`
@@ -562,6 +563,8 @@ Purpose:
 - `docs/PROJECT_STATUS.md`
 - `docs/COMPREHENSIVE_TEST_PLAN.md`
 - `docs/CROSS_ACCOUNT_TESTING_PLAN.md`
+
+Use `docs/README.md` as the entry point for current documentation.
 
 ## 9. Recommended Architecture Decision
 

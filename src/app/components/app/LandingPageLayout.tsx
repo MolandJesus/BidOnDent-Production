@@ -12,10 +12,12 @@ import AboutOpportunitySection from "../landing/AboutOpportunitySection";
 import WhoWeServeSection from "../landing/WhoWeServeSection";
 import LandingPageHeader from "../landing/LandingPageHeader";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
+import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 
 type ProfileDropdownData = {
   userType: "customer" | "shop" | "insurer";
   notifications: Notification[];
+  notificationSyncActive?: boolean;
   reports: any[];
   vehicles: Vehicle[];
   bids: Bid[];
@@ -39,6 +41,7 @@ type LandingPageLayoutProps = {
   showProfileDropdown: boolean;
   userInfo: UserInfo;
   redirectInfo: RedirectInfo | null;
+  initialDiscoveryRole?: NavigationDiscoveryRole;
   onLoginClick: () => void;
   onViewDashboard: () => void;
   profileDropdownData?: ProfileDropdownData;
@@ -59,9 +62,10 @@ export default function LandingPageLayout({
   showProfileDropdown,
   userInfo,
   redirectInfo,
+  initialDiscoveryRole,
   onLoginClick,
   onViewDashboard,
-  profileDropdownData
+  profileDropdownData,
 }: LandingPageLayoutProps) {
   return (
     <div className="min-h-screen bg-white">
@@ -106,25 +110,20 @@ export default function LandingPageLayout({
 
       <TrustStatsSection />
 
-      <OperatingRegionsSection />
+      <OperatingRegionsSection initialDiscoveryRole={initialDiscoveryRole} />
 
       <BusinessInquirySection />
 
-      <CTASection
-        primaryColor={primaryColor}
-        onNavigateToDashboard={onViewDashboard}
-      />
+      <CTASection primaryColor={primaryColor} onNavigateToDashboard={onViewDashboard} />
 
-      <FooterSection
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
-      />
+      <FooterSection primaryColor={primaryColor} secondaryColor={secondaryColor} />
 
       {isLoggedIn && showProfileDropdown && profileDropdownData && (
         <ProfileDropdown
           userInfo={userInfo}
           userType={profileDropdownData.userType}
           notifications={profileDropdownData.notifications}
+          notificationSyncActive={profileDropdownData.notificationSyncActive}
           isOpen={showProfileDropdown}
           onNavigate={profileDropdownData.onNavigate}
           onLogout={profileDropdownData.onLogout}
@@ -134,7 +133,6 @@ export default function LandingPageLayout({
           bids={profileDropdownData.bids}
         />
       )}
-
     </div>
   );
 }

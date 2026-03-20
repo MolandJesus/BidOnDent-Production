@@ -68,5 +68,5 @@ Regular user:
 
 - Supabase setup details: `SUPABASE_SETUP_GUIDE.md`
 - Google OAuth: `GOOGLE_OAUTH_SETUP.md`
-- Current status: `PROJECT_STATUS.md`
+- Current documentation index: `README.md`
 - Full overview: `../README.md`
