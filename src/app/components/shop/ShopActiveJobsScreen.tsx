@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Search, Calendar, Phone, Mail, MessageSquare, CheckCircle, Clock, Wrench, Package, ChevronRight, Star, AlertCircle, User } from "lucide-react";
+import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
+import { shopLifecycle } from "../workflow/lifecycle-presets";
 
 type ShopActiveJobsScreenProps = {
   primaryColor?: string;
@@ -152,7 +154,7 @@ export default function ShopActiveJobsScreen({
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-4">
           <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>Active Jobs</h1>
-          
+
           {/* Search */}
           <div className="mb-3">
             <div className="relative">
@@ -242,7 +244,7 @@ export default function ShopActiveJobsScreen({
                   <span className="text-sm font-bold" style={{ color: primaryColor }}>{job.progress}%</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
+                  <div
                     className="h-full transition-all duration-300 rounded-full"
                     style={{ width: `${job.progress}%`, backgroundColor: primaryColor }}
                   />
@@ -255,10 +257,10 @@ export default function ShopActiveJobsScreen({
                 <div className="space-y-2">
                   {job.tasks.map((task) => (
                     <div key={task.id} className="flex items-center gap-2">
-                      <div 
+                      <div
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                          task.completed 
-                            ? "border-green-500 bg-green-500" 
+                          task.completed
+                            ? "border-green-500 bg-green-500"
                             : "border-gray-300 bg-white"
                         }`}
                       >
@@ -375,6 +377,13 @@ export default function ShopActiveJobsScreen({
                     <p className="text-sm text-blue-800"><strong>Claim #:</strong> {selectedJob.claimNumber}</p>
                   </div>
                 )}
+
+                <RepairLifecycleTimeline
+                  title="Job Lifecycle"
+                  subtitle="Standardized execution phases for this repair"
+                  steps={shopLifecycle(selectedJob.status)}
+                  compact
+                />
 
                 <button
                   onClick={() => setSelectedJob(null)}

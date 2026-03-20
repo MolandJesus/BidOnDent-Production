@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Search, MapPin, Calendar, Phone, Mail, FileText, ChevronRight, AlertCircle, CheckCircle, Clock, Building2, Image as ImageIcon, TrendingUp, XCircle } from "lucide-react";
+import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
+import { insurerLifecycle } from "../workflow/lifecycle-presets";
 
 type InsurerClaimsScreenProps = {
   primaryColor?: string;
@@ -186,7 +188,7 @@ export default function InsurerClaimsScreen({
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-4">
           <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>Claims Management</h1>
-          
+
           {/* Search & Filter */}
           <div className="space-y-3">
             <div className="relative">
@@ -362,6 +364,14 @@ export default function InsurerClaimsScreen({
 
               {/* Actions */}
               <div className="p-4 bg-white border-t border-gray-100">
+                <div className="mb-3">
+                  <RepairLifecycleTimeline
+                    title="Claim Lifecycle"
+                    steps={insurerLifecycle(claim.status)}
+                    compact
+                  />
+                </div>
+
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   <a
                     href={`tel:${claim.customerPhone}`}

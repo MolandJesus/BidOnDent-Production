@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ArrowLeft, Clock, MapPin, Star, Phone } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
+import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
+import { customerLifecycle } from "../workflow/lifecycle-presets";
 
 type Report = {
   id: number | string;
@@ -35,14 +37,14 @@ export default function ReportDetailScreen({
   primaryColor = "#003d82"
 }: ReportDetailScreenProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  
+
   // Handle both nested vehicle and flattened vehicle properties
   const vehicleInfo = report.vehicle || {
     make: report.vehicle_make || '',
     model: report.vehicle_model || '',
     year: report.vehicle_year?.toString() || ''
   };
-  
+
   // Provide safe defaults for potentially undefined properties
   const status = report.status || 'pending';
   const photos = report.photos || [];
@@ -106,7 +108,7 @@ export default function ReportDetailScreen({
               <p className="text-sm text-gray-600">Report #{report.id}</p>
             </div>
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-              status === "pending" 
+              status === "pending"
                 ? "bg-yellow-100 text-yellow-700"
                 : status === "active"
                 ? "bg-blue-100 text-blue-700"
@@ -187,14 +189,20 @@ export default function ReportDetailScreen({
           <h2 className="font-bold text-lg mb-3">Submission Details</h2>
           <div className="flex items-center text-sm text-gray-600">
             <Clock className="w-4 h-4 mr-2" />
-            <span>Submitted on {new Date(submittedAt).toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            <span>Submitted on {new Date(submittedAt).toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
             })}</span>
           </div>
         </div>
+
+        <RepairLifecycleTimeline
+          title="Repair Progress"
+          subtitle="Track where your request is in the repair journey"
+          steps={customerLifecycle(status)}
+        />
 
         {/* Interested Shops */}
         <div className="bg-white rounded-lg shadow-sm p-4">
@@ -219,12 +227,12 @@ export default function ReportDetailScreen({
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between mb-1">
                       <h3 className="font-medium">{shop.name}</h3>
                       {shop.hasBid && (
-                        <span 
+                        <span
                           className="px-2 py-1 rounded-md text-xs font-bold text-white"
                           style={{ backgroundColor: primaryColor }}
                         >
@@ -232,7 +240,7 @@ export default function ReportDetailScreen({
                         </span>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center text-sm mb-2">
                       <Star className="w-3 h-3 text-yellow-400 mr-1" fill="#FBBF24" />
                       <span className="font-medium mr-1">{shop.rating}</span>
@@ -284,7 +292,7 @@ export default function ReportDetailScreen({
 
       {/* Photo Lightbox */}
       {selectedPhoto && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedPhoto(null)}
         >
