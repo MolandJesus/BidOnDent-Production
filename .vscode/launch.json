@@ -2,6 +2,25 @@
   "version": "0.2.0",
   "configurations": [
     {
+      // Starts the Vite dev server and opens the site in VS Code's
+      // built-in Simple Browser panel (no external Chrome required).
+      // Select this config in Run & Debug, then press F5.
+      "name": "Open in VS Code Browser",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "skipFiles": ["<node_internals>/**"],
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(http://localhost:\\d+)",
+        "uriFormat": "%s",
+        "action": "openSimpleBrowser"
+      }
+    },
+    {
+      // Starts the Vite dev server via the dev-server task, then opens
+      // an external Chrome window with full source-map debugging.
       "name": "Launch Chrome (dev server)",
       "type": "chrome",
       "request": "launch",
@@ -13,6 +32,7 @@
       }
     },
     {
+      // Attach to an already-running Chrome started with --remote-debugging-port=9222.
       "name": "Attach to Chrome",
       "type": "chrome",
       "request": "attach",
