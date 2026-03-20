@@ -153,7 +153,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
           className={`border-t border-gray-700 pt-8 flex flex-col md:flex-row items-center justify-between transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.3s" }}
         >
-          <p className="text-gray-500">&copy; 2026 Bidondent. All rights reserved.</p>
+          <p className="text-gray-500">&copy; 2026 BidOnDent. All rights reserved.</p>
 
           {/* Social icons */}
           <div className="flex items-center gap-4 mt-4 md:mt-0">

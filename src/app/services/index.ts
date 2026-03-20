@@ -158,4 +158,4 @@ export const features = {
   supabasePro: true
 };
 
-console.log('📦 Bidondent Services v2.0.0 loaded', features);
+console.log('📦 BidOnDent Services v2.0.0 loaded', features);

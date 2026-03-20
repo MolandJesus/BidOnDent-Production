@@ -3,13 +3,19 @@ import type { LifecycleStep } from "./RepairLifecycleTimeline";
 export function customerLifecycle(status: string): LifecycleStep[] {
   const normalized = String(status || "pending").toLowerCase();
 
-  const stepStates = {
+  const stepStates: {
+    intake: LifecycleStep["status"];
+    bids: LifecycleStep["status"];
+    selected: LifecycleStep["status"];
+    scheduled: LifecycleStep["status"];
+    completed: LifecycleStep["status"];
+  } = {
     intake: "completed",
     bids: "current",
     selected: "upcoming",
     scheduled: "upcoming",
     completed: "upcoming",
-  } as const;
+  };
 
   if (["quoted", "reviewing"].includes(normalized)) {
     stepStates.intake = "completed";

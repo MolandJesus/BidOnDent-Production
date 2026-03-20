@@ -47,7 +47,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
   const [customAccounts, setCustomAccounts] = useState<CustomAccount[]>([]);
   const [operationStatus, setOperationStatus] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // New test account form state
   const [showNewAccountForm, setShowNewAccountForm] = useState(false);
   const [newAccountEmail, setNewAccountEmail] = useState("");
@@ -101,7 +101,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
     try {
       console.log('🔍 Querying all profiles from database...');
-      
+
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise<null>((resolve) => {
         setTimeout(() => {
@@ -109,7 +109,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
           resolve(null);
         }, 5000);
       });
-      
+
       // Query only core columns that should always exist
       const queryPromise = supabase
         .from('profiles')
@@ -117,7 +117,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
         .order('created_at', { ascending: false });
 
       const result = await Promise.race([queryPromise, timeoutPromise]);
-      
+
       // If timeout occurred
       if (result === null) {
         console.log('⚠️ Database query timed out');
@@ -146,7 +146,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
       // Format the results
       let statusMessage = `✅ Found ${profiles.length} profiles in database:\\n\\n`;
-      
+
       profiles.forEach((profile, index) => {
         statusMessage += `${index + 1}. ${profile.email}\\n`;
         statusMessage += `   Name: ${profile.name || 'N/A'}\\n`;
@@ -156,7 +156,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
       console.log('✅ Database verification successful:', profiles);
       setOperationStatus(statusMessage);
-      
+
     } catch (error) {
       console.error("❌ Verify database error:", error);
       setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}\\n\\nStack: ${error instanceof Error ? error.stack : 'N/A'}`);
@@ -173,7 +173,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
     try {
       console.log('🔍 Querying custom accounts from database...');
-      
+
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise<null>((resolve) => {
         setTimeout(() => {
@@ -181,14 +181,14 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
           resolve(null);
         }, 5000);
       });
-      
+
       const queryPromise = supabase
         .from('profiles')
         .select('email, name, account_type, user_id, created_at, setup_completed')
         .order('created_at', { ascending: false });
 
       const result = await Promise.race([queryPromise, timeoutPromise]);
-      
+
       // If timeout occurred
       if (result === null) {
         console.log('⚠️ Custom accounts query timed out');
@@ -230,7 +230,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       console.log('✅ Found custom accounts:', customProfiles);
 
       // Convert to CustomAccount format and update accountStatuses
-      const customAccs: CustomAccount[] = customProfiles.map(p => ({
+      const customAccountsList: CustomAccount[] = customProfiles.map(p => ({
         email: p.email,
         name: p.name || 'Unknown',
         accountType: p.account_type as 'customer' | 'shop' | 'insurer',
@@ -239,7 +239,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
         setupCompleted: p.setup_completed
       }));
 
-      setCustomAccounts(customAccs);
+      setCustomAccounts(customAccountsList);
 
       // Update account statuses for custom accounts
       const newStatuses: Record<string, AccountStatus> = {};
@@ -253,16 +253,16 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
           loading: false
         };
       });
-      
+
       setAccountStatuses(prev => ({ ...prev, ...newStatuses }));
 
-      if (customAccs.length > 0) {
-        setOperationStatus(`✅ Loaded ${customAccs.length} custom account(s)`);
+      if (customAccountsList.length > 0) {
+        setOperationStatus(`✅ Loaded ${customAccountsList.length} custom account(s)`);
       } else {
         setOperationStatus(`✅ No custom accounts yet`);
       }
       setTimeout(() => setOperationStatus(""), 3000);
-      
+
     } catch (error) {
       console.error("❌ Load custom accounts error:", error);
       setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -281,7 +281,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
     try {
       console.log('🔍 Checking account for:', email);
-      
+
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise<null>((resolve) => {
         setTimeout(() => {
@@ -289,15 +289,15 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
           resolve(null);
         }, 5000);
       });
-      
+
       const queryPromise = supabase
         .from('profiles')
         .select('*')
         .eq('email', email)
         .maybeSingle();
-      
+
       const result = await Promise.race([queryPromise, timeoutPromise]);
-      
+
       // If timeout occurred
       if (result === null) {
         console.log('⚠️ Account check timed out for:', email);
@@ -307,7 +307,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
         }));
         return;
       }
-      
+
       const { data: profile, error: profileError } = result as any;
 
       if (profileError && profileError.code !== 'PGRST116') {
@@ -391,10 +391,10 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       } else {
         console.log('✅ Account deleted successfully');
         setOperationStatus(`✅ Successfully deleted ${email}\n\nBoth auth and profile have been removed.`);
-        
+
         // Refresh account status
         await checkAccountStatus(email);
-        
+
         // Reload custom accounts list
         await loadCustomAccounts();
       }
@@ -410,7 +410,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
   // Create account
   const createAccount = async (email: string, accountType: string) => {
     const password = prompt(`Create password for ${email}:\n\n(Use a test password like "test123" for testing)`);
-    
+
     if (!password) {
       return;
     }
@@ -425,7 +425,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
     try {
       const accountInfo = TEST_ACCOUNTS.find(a => a.email === email);
-      
+
       const requestBody = {
         email: email,
         password: password,
@@ -435,7 +435,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       };
 
       console.log('🚀 Creating account with request:', requestBody);
-      
+
       // Use server endpoint to create user with admin privileges
       const url = `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-user`;
       console.log('🌐 Calling URL:', url);
@@ -477,14 +477,14 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
       console.log('✅ Account created successfully:', result);
       setOperationStatus(`✅ Successfully created ${email}\n\nPassword: ${password}\nUser ID: ${result.userId}\nAccount Type: ${result.accountType}\n\n(Save this password for testing)`);
-      
+
       // Refresh account status
       await checkAccountStatus(email);
-      
+
       setTimeout(() => {
         alert(`Account created!\n\nEmail: ${email}\nPassword: ${password}\nUser ID: ${result.userId}\n\nSave this password for testing.`);
       }, 500);
-      
+
     } catch (error) {
       console.error("❌ Create error:", error);
       const errorMsg = `❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -522,7 +522,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       const password = newAccountPassword;
       const accountType = newAccountType;
       const name = newAccountName || 'Test Account';
-      
+
       // Use server endpoint to create user with admin privileges
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-user`,
@@ -552,20 +552,20 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
       console.log('✅ Custom account created successfully:', result);
       setOperationStatus(`✅ Successfully created ${email}\n\nPassword: ${password}\n\n(Save this password for testing)`);
-      
+
       // Reset form
       setNewAccountEmail("");
       setNewAccountName("");
       setNewAccountPassword("");
       setShowNewAccountForm(false);
-      
+
       // Reload custom accounts list
       await loadCustomAccounts();
-      
+
       setTimeout(() => {
         alert(`Test Account Created!\n\nEmail: ${email}\nPassword: ${password}\nType: ${accountType}\n\nSave this information for testing.`);
       }, 500);
-      
+
     } catch (error) {
       console.error("Create error:", error);
       setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -578,7 +578,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
   // Switch to account (login as that account)
   const switchToAccount = async (email: string) => {
     const password = prompt(`Enter password for ${email} to switch accounts:`);
-    
+
     if (!password) {
       return;
     }
@@ -589,7 +589,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
     try {
       // Sign out current user
       await supabase.auth.signOut();
-      
+
       // Sign in as the test account
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: email,
@@ -613,7 +613,7 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-      
+
     } catch (error) {
       console.error("Switch account error:", error);
       setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -663,11 +663,11 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
       console.log('✅ Admin status managed successfully:', result);
       setAdminManagementStatus(`✅ Successfully ${promote ? 'promoted' : 'revoked'} admin status for ${targetAdminEmail}`);
-      
+
       // Reset form
       setTargetAdminEmail("");
       setIsManagingAdmin(false);
-      
+
     } catch (error) {
       console.error("Admin management error:", error);
       setAdminManagementStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);

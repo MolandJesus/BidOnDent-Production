@@ -1,0 +1,46 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "package-lock.json"
+  ],
+  "ignoreRegExpList": [
+    "/\\b[A-HJ-NPR-Z0-9]{17}\\b/g"
+  ],
+  "words": [
+    "BidOnDent",
+    "bidondent",
+    "Bidondent",
+    "codelayer",
+    "Supabase",
+    "supabase",
+    "signup",
+    "signups",
+    "paintless",
+    "Geico",
+    "USAA",
+    "Westchester",
+    "backorder",
+    "subcomponents",
+    "cooldown",
+    "unformat",
+    "PGRST",
+    "Dont",
+    "XVCJ",
+    "Palo",
+    "Westside",
+    "Eastside",
+    "Embla",
+    "cmdk",
+    "vaul",
+    "unsub",
+    "Unsub",
+    "pkce",
+    "xotmekuyjpolhsxlhjlf",
+    "Camino",
+    "Rideshare",
+    "Nassau"
+  ]
+}
