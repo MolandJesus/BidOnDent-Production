@@ -71,6 +71,7 @@ interface DashboardRouterProps {
   onViewModeChange: (mode: string) => void;
   onTabChange: (tab: string) => void;
   onLogout: () => void;
+  onAcceptBid?: (details: { shopName: string; price: number; timeframe: string }) => void;
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: "customer" | "shop" | "insurer") => void;
   onExitDemoMode?: () => void;
@@ -121,6 +122,7 @@ export default function DashboardRouter({
   onViewModeChange,
   onTabChange,
   onLogout,
+  onAcceptBid,
   onEnterDemoMode,
   onEnableDemoMode,
   onExitDemoMode,
@@ -242,6 +244,7 @@ export default function DashboardRouter({
             <BidsScreen
               primaryColor={primaryColor}
               userType={userType}
+              onAcceptBid={onAcceptBid}
               onBack={() => {
                 onTabChange("home");
                 onViewModeChange("dashboard");

@@ -1,6 +1,7 @@
 import type { UserProfile } from "../services/clerkService";
 import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
+import { logWorkflowEvent } from "../services/supabaseService";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData>;
@@ -104,6 +105,41 @@ export function buildDashboardRouterProps({
       navigation.setCurrentTab(tab);
     },
     onLogout: handleLogout,
+    onAcceptBid: (details: { shopName: string; price: number; timeframe: string }) => {
+      userData.setActivities([
+        {
+          id: Date.now().toString(),
+          timestamp: Date.now(),
+          type: "job_accepted",
+          message: `Accepted bid from ${details.shopName} for $${details.price.toLocaleString()}`,
+          metadata: {
+            shopName: details.shopName,
+            price: details.price,
+            timeframe: details.timeframe,
+          },
+        },
+        ...userData.activities,
+      ] as any);
+
+      void logWorkflowEvent({
+        event_type: "bid_selected",
+        source: "dashboard",
+        payload: {
+          shop_name: details.shopName,
+          amount: details.price,
+          timeframe: details.timeframe,
+        },
+      });
+
+      void logWorkflowEvent({
+        event_type: "repair_scheduled",
+        source: "dashboard",
+        payload: {
+          shop_name: details.shopName,
+          timeframe: details.timeframe,
+        },
+      });
+    },
     onEnterDemoMode: () => {
       navigation.setViewMode("demo-switcher" as any);
     },

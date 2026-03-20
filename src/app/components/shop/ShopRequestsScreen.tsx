@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, MapPin, Calendar, DollarSign, Image as ImageIcon, Phone, Mail, ChevronRight, Star, AlertCircle } from "lucide-react";
+import { logWorkflowEvent } from "../../services/supabaseService";
 
 type ShopRequestsScreenProps = {
   primaryColor?: string;
@@ -82,6 +83,15 @@ export default function ShopRequestsScreen({
 
   const handleSubmitBid = () => {
     if (selectedRequest && bidAmount) {
+      void logWorkflowEvent({
+        event_type: "bid_submitted",
+        source: "shop-requests",
+        payload: {
+          request_id: selectedRequest.id,
+          amount: Number(bidAmount),
+          vehicle: selectedRequest.vehicle,
+        },
+      });
       onSubmitBid?.(selectedRequest.id, parseFloat(bidAmount));
       setShowBidModal(false);
       setBidAmount("");
@@ -113,7 +123,7 @@ export default function ShopRequestsScreen({
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-4">
           <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>Repair Requests</h1>
-          
+
           {/* Search & Filter */}
           <div className="space-y-3">
             <div className="relative">

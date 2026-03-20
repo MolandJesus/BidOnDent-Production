@@ -2,6 +2,7 @@ import { ClerkProvider, useUser, useClerk } from "@clerk/clerk-react";
 
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
+import { logWorkflowEvent } from "./services/supabaseService";
 
 // Import custom hooks (for non-auth state management)
 import { useUserData } from "./hooks/useUserData";
@@ -69,6 +70,7 @@ function AppContent() {
     navigation,
     projectId,
     publicAnonKey,
+    logWorkflowEvent,
   });
 
   useAppEffects({

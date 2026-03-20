@@ -12,6 +12,7 @@ import NewAccountForm from "./NewAccountForm";
 import LinkedTestAccounts from "./LinkedTestAccounts";
 import AdminInfoPanel from "./AdminInfoPanel";
 import SwitchBackPanel from "./SwitchBackPanel";
+import AdminIntakeOperationsPanel from "./AdminIntakeOperationsPanel";
 
 /**
  * 🚨 PRODUCTION REMOVAL: Delete this file when removing admin features
@@ -749,6 +750,8 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       >
         <AdminAccountManager />
       </motion.div>
+
+      <AdminIntakeOperationsPanel primaryColor={primaryColor} />
 
       <AdminInfoPanel adminEmail={adminEmail} />
 

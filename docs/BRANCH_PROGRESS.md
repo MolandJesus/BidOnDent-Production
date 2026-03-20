@@ -20,6 +20,14 @@ Track what has been delivered so far in this branch and what is queued next.
   - Reusable timeline component
   - Customer/shop/insurer timeline integration
   - job_assignments schema and workflow service operations
+- Intake operations tooling:
+  - Admin intake operations panel with live refresh
+  - Submission status controls for shop and insurer intake
+  - Event stream visibility for platform activity
+- Workflow automation hooks:
+  - report_submitted and shops_notified events on report creation
+  - bid_submitted event logging from shop requests and handler flow
+  - bid_selected and repair_scheduled events on customer bid acceptance
 
 ## Validation
 - Production build passes.

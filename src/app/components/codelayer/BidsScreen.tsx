@@ -22,6 +22,7 @@ type BidsScreenProps = {
   primaryColor?: string;
   onBack?: () => void;
   userType?: "customer" | "shop" | "insurer";
+  onAcceptBid?: (details: { shopName: string; price: number; timeframe: string }) => void;
 };
 
 type FilterType = "all" | "lowest" | "fastest" | "rating";
@@ -30,8 +31,10 @@ export default function BidsScreen({
   primaryColor = "#0056b3",
   onBack,
   userType = "customer",
+  onAcceptBid,
 }: BidsScreenProps) {
   const [activeBid, setActiveBid] = useState<number | null>(1);
+  const [acceptedBidId, setAcceptedBidId] = useState<number | null>(null);
   const [filter, setFilter] = useState<FilterType>("all");
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [selectedShop, setSelectedShop] = useState<string>("");
@@ -326,12 +329,20 @@ export default function BidsScreen({
 
                       <div className="flex flex-wrap gap-2">
                         <button
+                          onClick={() => {
+                            setAcceptedBidId(bid.id);
+                            onAcceptBid?.({
+                              shopName: bid.shopName,
+                              price: bid.price,
+                              timeframe: bid.timeframe,
+                            });
+                          }}
                           className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
                           style={{
                             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
                           }}
                         >
-                          Accept Bid
+                          {acceptedBidId === bid.id ? "Accepted" : "Accept Bid"}
                         </button>
                         <button className="px-3 py-2.5 rounded-xl border border-slate-300 font-medium hover:bg-slate-50 transition-colors">
                           <Phone className="w-4 h-4" />

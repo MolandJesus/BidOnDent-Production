@@ -12,6 +12,23 @@ type UseAppHandlersArgs = {
   navigation: NavigationState;
   projectId: string;
   publicAnonKey: string;
+  logWorkflowEvent?: (payload: {
+    event_type:
+      | "report_submitted"
+      | "shops_notified"
+      | "bid_submitted"
+      | "bid_selected"
+      | "repair_scheduled"
+      | "repair_completed"
+      | "claim_submitted"
+      | "claim_reviewed"
+      | "claim_approved"
+      | "claim_denied"
+      | "shop_interest_submitted"
+      | "insurer_interest_submitted";
+    source?: string;
+    payload?: Record<string, unknown>;
+  }) => Promise<unknown>;
 };
 
 export function useAppHandlers({
@@ -21,7 +38,8 @@ export function useAppHandlers({
   userData,
   navigation,
   projectId,
-  publicAnonKey
+  publicAnonKey,
+  logWorkflowEvent
 }: UseAppHandlersArgs) {
   const handleLogin = () => {
     if (openSignUp) {
@@ -124,6 +142,15 @@ export function useAppHandlers({
       }
     );
 
+    void logWorkflowEvent?.({
+      event_type: "bid_submitted",
+      source: "dashboard",
+      payload: {
+        report_id: reportId,
+        amount: bidAmount,
+      },
+    });
+
     console.log("Bid submitted successfully");
     console.log("Report bids count:", updatedReports.find((entry) => entry.id === reportId)?.bidsCount);
     console.log("Total bids:", newBids.length);
@@ -184,6 +211,23 @@ export function useAppHandlers({
           [savedReport.id]: savedReport.photos
         });
       }
+
+      void logWorkflowEvent?.({
+        event_type: "report_submitted",
+        source: "dashboard",
+        payload: {
+          report_id: savedReport.id,
+          damage_area: savedReport.damageArea,
+        },
+      });
+
+      void logWorkflowEvent?.({
+        event_type: "shops_notified",
+        source: "dashboard",
+        payload: {
+          report_id: savedReport.id,
+        },
+      });
     } catch (error) {
       console.error("Error submitting report:", error);
       userData.setReports([...userData.reports, report]);
