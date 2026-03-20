@@ -9,14 +9,14 @@ import { isAdmin } from "../../utils/adminCheck";
  * After use, this component can be removed.
  */
 export default function DeleteUserUtility({ userEmail }: { userEmail: string }) {
+  const [email, setEmail] = useState("molalign5+insurer@gmail.com");
+  const [status, setStatus] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
   // Only show for admin
   if (!isAdmin(userEmail)) {
     return null;
   }
-
-  const [email, setEmail] = useState("molalign5+insurer@gmail.com");
-  const [status, setStatus] = useState<string>("");
-  const [loading, setLoading] = useState(false);
 
   const handleDeleteUser = async () => {
     if (

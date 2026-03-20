@@ -503,6 +503,15 @@ npm run dev
 
 **Testing Multiple Account Types**: Use Demo Mode (see above) to test Customer, Shop, and Insurer perspectives instantly.
 
+### Linting & Formatting
+
+```bash
+npm run lint        # ESLint — checks for code issues
+npm run lint:fix    # ESLint — auto-fix issues
+npm run format      # Prettier — format all files
+npm run format:check  # Prettier — check formatting without writing
+```
+
 ### Browser Console Tools
 
 ```javascript
@@ -550,6 +559,8 @@ Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
 - **TypeScript** - Type safety
 - **Tailwind CSS v4** - Styling
 - **Vite** - Build tool
+- **ESLint** - Linting (`npm run lint`)
+- **Prettier** - Formatting (`npm run format`)
 - **Lucide React** - Icons
 
 ### Backend & Services

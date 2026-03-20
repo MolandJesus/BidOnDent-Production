@@ -38,13 +38,28 @@ This creates:
 
 ## 4) Start the app
 
+**Option A — VS Code (recommended):**
+
+Open the Run & Debug panel (**Ctrl+Shift+D**), select **"Launch Chrome (dev server)"**, and press **F5**.
+VS Code will start `npm run dev` automatically and open `http://localhost:5173` in Chrome with full source-map debugging.
+
+**Option B — terminal:**
+
 ```bash
 npm run dev
 ```
 
 Open: http://localhost:5173
 
-## 5) First login
+## 5) Lint and format
+
+```bash
+npm run lint        # ESLint code check (exits 0 = clean / warnings only)
+npm run lint:fix    # auto-fix fixable issues
+npm run format      # Prettier — reformat all files
+```
+
+## 6) First login
 
 Regular user:
 - Sign up with any email

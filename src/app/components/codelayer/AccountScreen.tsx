@@ -384,7 +384,7 @@ export default function AccountScreen({
       console.log("🔄 Step 1: Getting current session for account deletion...");
 
       // Step 1: Get current session
-      let {
+      const {
         data: { session },
         error: sessionError,
       } = await supabase.auth.getSession();
