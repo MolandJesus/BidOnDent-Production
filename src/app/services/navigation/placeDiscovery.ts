@@ -1,6 +1,7 @@
 import { haversineMiles } from "../supabase/map";
 import type { NavigationCoordinate } from "../../types/navigation";
 import { runWithProviderHealth } from "./providerHealth";
+import { readPersistedState, writePersistedState } from "./persistedState";
 
 export type NavigationDiscoveryRole = "customer" | "insurer" | "shop";
 export type NavigationDiscoveryCategory =
@@ -48,6 +49,21 @@ export type DiscoveryQualitySnapshot = {
   minimumQualityScore: number;
 };
 
+type BuildDiscoveryQualitySnapshotArgs = {
+  role: NavigationDiscoveryRole;
+  radiusMiles: number;
+  sourceElementCount: number;
+  acceptedPlaces: NavigationDiscoveryPlace[];
+  rejectedMissingCoordinateCount: number;
+  rejectedMissingCategoryCount: number;
+  rejectedMissingLabelCount: number;
+  rejectedBelowQualityThresholdCount: number;
+  dedupedCount: number;
+  trimmedByCategoryDiversityCount: number;
+  minimumQualityScore: number;
+  generatedAt?: string;
+};
+
 type DiscoveryTagRule = {
   category: NavigationDiscoveryCategory;
   key: string;
@@ -63,6 +79,7 @@ type FetchNearbyDiscoveryPlacesArgs = {
 
 const MAX_DISCOVERY_RESULTS = 15;
 const discoveryQualityStorageKey = "bidondent-navigation-discovery-quality-snapshot-v1";
+const discoveryQualityStorageVersion = 2;
 
 let latestDiscoveryQualitySnapshot: DiscoveryQualitySnapshot | null = null;
 
@@ -284,16 +301,160 @@ function applyCategoryDiversity(places: NavigationDiscoveryPlace[], role: Naviga
 
 function persistDiscoveryQualitySnapshot(snapshot: DiscoveryQualitySnapshot) {
   latestDiscoveryQualitySnapshot = snapshot;
+  writePersistedState(discoveryQualityStorageKey, discoveryQualityStorageVersion, snapshot);
+}
 
-  if (typeof localStorage === "undefined") {
-    return;
+function normalizeNonNegativeInteger(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return null;
   }
 
-  try {
-    localStorage.setItem(discoveryQualityStorageKey, JSON.stringify(snapshot));
-  } catch {
-    // Ignore local persistence failures; in-memory snapshot remains available.
+  return Math.max(0, Math.round(value));
+}
+
+function normalizeRadiusMiles(value: unknown) {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return null;
   }
+
+  return Math.max(0.5, Math.min(50, Number(value.toFixed(2))));
+}
+
+function normalizeIsoTimestamp(value: unknown) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const parsedMs = Date.parse(value);
+
+  if (Number.isNaN(parsedMs)) {
+    return null;
+  }
+
+  return new Date(parsedMs).toISOString();
+}
+
+function normalizeDiscoveryRole(value: unknown): NavigationDiscoveryRole | null {
+  if (value === "customer" || value === "insurer" || value === "shop") {
+    return value;
+  }
+
+  return null;
+}
+
+function toValidatedDiscoveryQualitySnapshot(raw: unknown): DiscoveryQualitySnapshot | null {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+
+  const candidate = raw as Record<string, unknown>;
+  const generatedAt = normalizeIsoTimestamp(candidate.generatedAt);
+  const role = normalizeDiscoveryRole(candidate.role);
+  const radiusMiles = normalizeRadiusMiles(candidate.radiusMiles);
+  const sourceElementCount = normalizeNonNegativeInteger(candidate.sourceElementCount);
+  const acceptedCount = normalizeNonNegativeInteger(candidate.acceptedCount);
+  const acceptedVerifiedCount = normalizeNonNegativeInteger(candidate.acceptedVerifiedCount);
+  const acceptedStandardCount = normalizeNonNegativeInteger(candidate.acceptedStandardCount);
+  const acceptedLimitedCount = normalizeNonNegativeInteger(candidate.acceptedLimitedCount);
+  const acceptedBodyShopCount = normalizeNonNegativeInteger(candidate.acceptedBodyShopCount);
+  const acceptedInsuranceCount = normalizeNonNegativeInteger(candidate.acceptedInsuranceCount);
+  const acceptedFuelCount = normalizeNonNegativeInteger(candidate.acceptedFuelCount);
+  const acceptedRentalCount = normalizeNonNegativeInteger(candidate.acceptedRentalCount);
+  const acceptedSupplierCount = normalizeNonNegativeInteger(candidate.acceptedSupplierCount);
+  const limitedAcceptanceRatePct = normalizeNonNegativeInteger(candidate.limitedAcceptanceRatePct);
+  const rejectedMissingCoordinateCount = normalizeNonNegativeInteger(
+    candidate.rejectedMissingCoordinateCount
+  );
+  const rejectedMissingCategoryCount = normalizeNonNegativeInteger(
+    candidate.rejectedMissingCategoryCount
+  );
+  const rejectedMissingLabelCount = normalizeNonNegativeInteger(
+    candidate.rejectedMissingLabelCount
+  );
+  const rejectedBelowQualityThresholdCount = normalizeNonNegativeInteger(
+    candidate.rejectedBelowQualityThresholdCount
+  );
+  const dedupedCount = normalizeNonNegativeInteger(candidate.dedupedCount);
+  const trimmedByCategoryDiversityCount = normalizeNonNegativeInteger(
+    candidate.trimmedByCategoryDiversityCount
+  );
+  const minimumQualityScore = normalizeNonNegativeInteger(candidate.minimumQualityScore);
+
+  if (
+    generatedAt === null ||
+    role === null ||
+    radiusMiles === null ||
+    sourceElementCount === null ||
+    acceptedCount === null ||
+    acceptedVerifiedCount === null ||
+    acceptedStandardCount === null ||
+    acceptedLimitedCount === null ||
+    acceptedBodyShopCount === null ||
+    acceptedInsuranceCount === null ||
+    acceptedFuelCount === null ||
+    acceptedRentalCount === null ||
+    acceptedSupplierCount === null ||
+    limitedAcceptanceRatePct === null ||
+    rejectedMissingCoordinateCount === null ||
+    rejectedMissingCategoryCount === null ||
+    rejectedMissingLabelCount === null ||
+    rejectedBelowQualityThresholdCount === null ||
+    dedupedCount === null ||
+    trimmedByCategoryDiversityCount === null ||
+    minimumQualityScore === null
+  ) {
+    return null;
+  }
+
+  const sumAcceptedByQuality = acceptedVerifiedCount + acceptedStandardCount + acceptedLimitedCount;
+  const sumAcceptedByCategory =
+    acceptedBodyShopCount +
+    acceptedInsuranceCount +
+    acceptedFuelCount +
+    acceptedRentalCount +
+    acceptedSupplierCount;
+  const normalizedAcceptedCount = Math.max(
+    acceptedCount,
+    sumAcceptedByQuality,
+    sumAcceptedByCategory
+  );
+  const normalizedLimitedRate =
+    normalizedAcceptedCount > 0
+      ? Math.min(100, Math.round((acceptedLimitedCount / normalizedAcceptedCount) * 100))
+      : 0;
+
+  return {
+    generatedAt,
+    role,
+    radiusMiles,
+    sourceElementCount,
+    acceptedCount: normalizedAcceptedCount,
+    acceptedVerifiedCount,
+    acceptedStandardCount,
+    acceptedLimitedCount,
+    acceptedBodyShopCount,
+    acceptedInsuranceCount,
+    acceptedFuelCount,
+    acceptedRentalCount,
+    acceptedSupplierCount,
+    limitedAcceptanceRatePct: Math.min(
+      100,
+      Math.max(limitedAcceptanceRatePct, normalizedLimitedRate)
+    ),
+    rejectedMissingCoordinateCount,
+    rejectedMissingCategoryCount,
+    rejectedMissingLabelCount,
+    rejectedBelowQualityThresholdCount,
+    dedupedCount,
+    trimmedByCategoryDiversityCount,
+    minimumQualityScore: Math.min(100, minimumQualityScore),
+  };
+}
+
+export function sanitizeDiscoveryQualitySnapshotFromRaw(
+  raw: unknown
+): DiscoveryQualitySnapshot | null {
+  return toValidatedDiscoveryQualitySnapshot(raw);
 }
 
 export function getLatestDiscoveryQualitySnapshot(): DiscoveryQualitySnapshot | null {
@@ -301,22 +462,92 @@ export function getLatestDiscoveryQualitySnapshot(): DiscoveryQualitySnapshot | 
     return latestDiscoveryQualitySnapshot;
   }
 
-  if (typeof localStorage === "undefined") {
-    return null;
-  }
+  const persistedSnapshot = readPersistedState<DiscoveryQualitySnapshot | null>({
+    storageKey: discoveryQualityStorageKey,
+    storageVersion: discoveryQualityStorageVersion,
+    fallback: null,
+    validate: (value): value is DiscoveryQualitySnapshot | null =>
+      value === null || toValidatedDiscoveryQualitySnapshot(value) !== null,
+    normalize: (value) => {
+      if (value === null) {
+        return null;
+      }
 
-  try {
-    const raw = localStorage.getItem(discoveryQualityStorageKey);
-    if (!raw) {
-      return null;
-    }
+      return toValidatedDiscoveryQualitySnapshot(value);
+    },
+    migrateLegacy: (legacyValue) => toValidatedDiscoveryQualitySnapshot(legacyValue),
+  });
 
-    const parsed = JSON.parse(raw) as DiscoveryQualitySnapshot;
-    latestDiscoveryQualitySnapshot = parsed;
-    return parsed;
-  } catch {
-    return null;
-  }
+  latestDiscoveryQualitySnapshot = persistedSnapshot;
+  return persistedSnapshot;
+}
+
+export function buildDiscoveryQualitySnapshot(
+  args: BuildDiscoveryQualitySnapshotArgs
+): DiscoveryQualitySnapshot {
+  const {
+    role,
+    radiusMiles,
+    sourceElementCount,
+    acceptedPlaces,
+    rejectedMissingCoordinateCount,
+    rejectedMissingCategoryCount,
+    rejectedMissingLabelCount,
+    rejectedBelowQualityThresholdCount,
+    dedupedCount,
+    trimmedByCategoryDiversityCount,
+    minimumQualityScore,
+    generatedAt,
+  } = args;
+
+  const acceptedVerifiedCount = acceptedPlaces.filter(
+    (place) => place.qualityLabel === "verified"
+  ).length;
+  const acceptedStandardCount = acceptedPlaces.filter(
+    (place) => place.qualityLabel === "standard"
+  ).length;
+  const acceptedLimitedCount = acceptedPlaces.filter(
+    (place) => place.qualityLabel === "limited"
+  ).length;
+  const acceptedBodyShopCount = acceptedPlaces.filter(
+    (place) => place.category === "body-shop"
+  ).length;
+  const acceptedInsuranceCount = acceptedPlaces.filter(
+    (place) => place.category === "insurance"
+  ).length;
+  const acceptedFuelCount = acceptedPlaces.filter((place) => place.category === "fuel").length;
+  const acceptedRentalCount = acceptedPlaces.filter((place) => place.category === "rental").length;
+  const acceptedSupplierCount = acceptedPlaces.filter(
+    (place) => place.category === "supplier"
+  ).length;
+  const limitedAcceptanceRatePct =
+    acceptedPlaces.length > 0
+      ? Math.round((acceptedLimitedCount / acceptedPlaces.length) * 100)
+      : 0;
+
+  return {
+    generatedAt: generatedAt || new Date().toISOString(),
+    role,
+    radiusMiles,
+    sourceElementCount,
+    acceptedCount: acceptedPlaces.length,
+    acceptedVerifiedCount,
+    acceptedStandardCount,
+    acceptedLimitedCount,
+    acceptedBodyShopCount,
+    acceptedInsuranceCount,
+    acceptedFuelCount,
+    acceptedRentalCount,
+    acceptedSupplierCount,
+    limitedAcceptanceRatePct,
+    rejectedMissingCoordinateCount,
+    rejectedMissingCategoryCount,
+    rejectedMissingLabelCount,
+    rejectedBelowQualityThresholdCount,
+    dedupedCount,
+    trimmedByCategoryDiversityCount,
+    minimumQualityScore,
+  };
 }
 
 function scorePlaceQuality(tags: Record<string, string> | undefined, distanceMiles: number) {
@@ -477,50 +708,21 @@ export async function fetchNearbyDiscoveryPlaces({
   const diversityResult = applyCategoryDiversity(dedupeResult.places, role);
   const finalPlaces = diversityResult.places;
 
-  const acceptedVerifiedCount = finalPlaces.filter(
-    (place) => place.qualityLabel === "verified"
-  ).length;
-  const acceptedStandardCount = finalPlaces.filter(
-    (place) => place.qualityLabel === "standard"
-  ).length;
-  const acceptedLimitedCount = finalPlaces.filter(
-    (place) => place.qualityLabel === "limited"
-  ).length;
-  const acceptedBodyShopCount = finalPlaces.filter(
-    (place) => place.category === "body-shop"
-  ).length;
-  const acceptedInsuranceCount = finalPlaces.filter(
-    (place) => place.category === "insurance"
-  ).length;
-  const acceptedFuelCount = finalPlaces.filter((place) => place.category === "fuel").length;
-  const acceptedRentalCount = finalPlaces.filter((place) => place.category === "rental").length;
-  const acceptedSupplierCount = finalPlaces.filter((place) => place.category === "supplier").length;
-  const limitedAcceptanceRatePct =
-    finalPlaces.length > 0 ? Math.round((acceptedLimitedCount / finalPlaces.length) * 100) : 0;
-
-  persistDiscoveryQualitySnapshot({
-    generatedAt: new Date().toISOString(),
-    role,
-    radiusMiles,
-    sourceElementCount: elements.length,
-    acceptedCount: finalPlaces.length,
-    acceptedVerifiedCount,
-    acceptedStandardCount,
-    acceptedLimitedCount,
-    acceptedBodyShopCount,
-    acceptedInsuranceCount,
-    acceptedFuelCount,
-    acceptedRentalCount,
-    acceptedSupplierCount,
-    limitedAcceptanceRatePct,
-    rejectedMissingCoordinateCount,
-    rejectedMissingCategoryCount,
-    rejectedMissingLabelCount,
-    rejectedBelowQualityThresholdCount,
-    dedupedCount: dedupeResult.dedupedCount,
-    trimmedByCategoryDiversityCount: diversityResult.trimmedCount,
-    minimumQualityScore,
-  });
+  persistDiscoveryQualitySnapshot(
+    buildDiscoveryQualitySnapshot({
+      role,
+      radiusMiles,
+      sourceElementCount: elements.length,
+      acceptedPlaces: finalPlaces,
+      rejectedMissingCoordinateCount,
+      rejectedMissingCategoryCount,
+      rejectedMissingLabelCount,
+      rejectedBelowQualityThresholdCount,
+      dedupedCount: dedupeResult.dedupedCount,
+      trimmedByCategoryDiversityCount: diversityResult.trimmedCount,
+      minimumQualityScore,
+    })
+  );
 
   return finalPlaces;
 }

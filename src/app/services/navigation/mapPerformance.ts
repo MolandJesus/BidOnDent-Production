@@ -1,3 +1,5 @@
+import { clearPersistedState, readPersistedState, writePersistedState } from "./persistedState";
+
 export type MapInteractionKind = "zoom" | "pan";
 
 export type MapInteractionSample = {
@@ -26,6 +28,7 @@ export type MapPerformanceSummary = {
 };
 
 const storageKey = "bidondent.navigation.mapPerformance.v1";
+const mapPerformanceStorageVersion = 2;
 const maxSamples = 100;
 const recentWindowMs = 15 * 60 * 1000;
 const maxFutureSkewMs = 2 * 60 * 1000;
@@ -100,64 +103,23 @@ export function sanitizeMapInteractionSamples(rawSamples: unknown): MapInteracti
   return validSamples.slice(-maxSamples);
 }
 
-function supportsStorage() {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
-}
-
 function readSamples(): MapInteractionSample[] {
-  if (!supportsStorage()) {
-    return [];
-  }
-
-  try {
-    const raw = window.localStorage.getItem(storageKey);
-
-    if (!raw) {
-      return [];
-    }
-
-    const parsed = JSON.parse(raw) as unknown;
-
-    const sanitizedSamples = sanitizeMapInteractionSamples(parsed);
-
-    if (!Array.isArray(parsed)) {
-      writeSamples(sanitizedSamples);
-      return sanitizedSamples;
-    }
-
-    if (sanitizedSamples.length !== parsed.length) {
-      writeSamples(sanitizedSamples);
-    }
-
-    return sanitizedSamples;
-  } catch {
-    clearMapInteractionSamples();
-    return [];
-  }
+  return readPersistedState<MapInteractionSample[]>({
+    storageKey,
+    storageVersion: mapPerformanceStorageVersion,
+    fallback: [],
+    validate: (value): value is MapInteractionSample[] => Array.isArray(value),
+    normalize: (value) => sanitizeMapInteractionSamples(value),
+    migrateLegacy: (legacyValue) => sanitizeMapInteractionSamples(legacyValue),
+  });
 }
 
 function writeSamples(samples: MapInteractionSample[]) {
-  if (!supportsStorage()) {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(storageKey, JSON.stringify(samples.slice(-maxSamples)));
-  } catch {
-    // Ignore write failures (quota/private mode) to avoid runtime disruption.
-  }
+  writePersistedState(storageKey, mapPerformanceStorageVersion, samples.slice(-maxSamples));
 }
 
 export function clearMapInteractionSamples() {
-  if (!supportsStorage()) {
-    return;
-  }
-
-  try {
-    window.localStorage.removeItem(storageKey);
-  } catch {
-    // Ignore reset failures in private mode/quota edge cases.
-  }
+  clearPersistedState(storageKey);
 }
 
 function isSampleRecent(sample: MapInteractionSample, now: number) {

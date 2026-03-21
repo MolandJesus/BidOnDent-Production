@@ -1,6 +1,8 @@
 import type { NavigationGuidanceSettings } from "../../types/navigation";
+import { readPersistedState, writePersistedState } from "./persistedState";
 
 export const NAVIGATION_PREFERENCES_STORAGE_KEY = "bidondent_navigation_preferences";
+const navigationPreferencesStorageVersion = 2;
 
 export function getDefaultNavigationGuidanceSettings(): NavigationGuidanceSettings {
   return {
@@ -16,19 +18,11 @@ export function getDefaultNavigationGuidanceSettings(): NavigationGuidanceSettin
 }
 
 export function loadNavigationGuidanceSettings(): NavigationGuidanceSettings {
-  if (typeof window === "undefined") {
-    return getDefaultNavigationGuidanceSettings();
-  }
+  const defaults = getDefaultNavigationGuidanceSettings();
 
-  try {
-    const stored = localStorage.getItem(NAVIGATION_PREFERENCES_STORAGE_KEY);
-
-    if (!stored) {
-      return getDefaultNavigationGuidanceSettings();
-    }
-
-    const parsed = JSON.parse(stored) as Partial<NavigationGuidanceSettings>;
-    const defaults = getDefaultNavigationGuidanceSettings();
+  const normalizeSettings = (raw: unknown): NavigationGuidanceSettings => {
+    const parsed =
+      raw && typeof raw === "object" ? (raw as Partial<NavigationGuidanceSettings>) : {};
 
     return {
       voiceMode:
@@ -37,7 +31,8 @@ export function loadNavigationGuidanceSettings(): NavigationGuidanceSettings {
           : parsed.voiceMode === "alerts-only"
             ? "alerts-only"
             : defaults.voiceMode,
-      voicePersona: parsed.voicePersona === "british-smooth" ? "british-smooth" : defaults.voicePersona,
+      voicePersona:
+        parsed.voicePersona === "british-smooth" ? "british-smooth" : defaults.voicePersona,
       voiceVolumePreset:
         parsed.voiceVolumePreset === "louder" ||
         parsed.voiceVolumePreset === "normal" ||
@@ -56,20 +51,23 @@ export function loadNavigationGuidanceSettings(): NavigationGuidanceSettings {
       routeProvider: defaults.routeProvider,
       speedLimitProvider: defaults.speedLimitProvider,
     };
-  } catch (error) {
-    console.error("Error loading navigation guidance settings:", error);
-    return getDefaultNavigationGuidanceSettings();
-  }
+  };
+
+  return readPersistedState<NavigationGuidanceSettings>({
+    storageKey: NAVIGATION_PREFERENCES_STORAGE_KEY,
+    storageVersion: navigationPreferencesStorageVersion,
+    fallback: defaults,
+    validate: (value): value is NavigationGuidanceSettings =>
+      Boolean(value) && typeof value === "object",
+    normalize: (value) => normalizeSettings(value),
+    migrateLegacy: (legacyValue) => normalizeSettings(legacyValue),
+  });
 }
 
 export function saveNavigationGuidanceSettings(settings: NavigationGuidanceSettings) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    localStorage.setItem(NAVIGATION_PREFERENCES_STORAGE_KEY, JSON.stringify(settings));
-  } catch (error) {
-    console.error("Error saving navigation guidance settings:", error);
-  }
+  writePersistedState(
+    NAVIGATION_PREFERENCES_STORAGE_KEY,
+    navigationPreferencesStorageVersion,
+    settings
+  );
 }

@@ -1,29 +1,29 @@
 import type { NavigationDiscoveryRole } from "./placeDiscovery";
+import { readPersistedState, writePersistedState } from "./persistedState";
 
 const NAVIGATION_DISCOVERY_ROLE_STORAGE_KEY = "bidondent_navigation_discovery_role";
+const navigationDiscoveryRoleStorageVersion = 2;
+
+function normalizeDiscoveryRole(value: unknown): NavigationDiscoveryRole {
+  return value === "insurer" || value === "shop" ? value : "customer";
+}
 
 export function loadNavigationDiscoveryRole(): NavigationDiscoveryRole {
-  if (typeof window === "undefined") {
-    return "customer";
-  }
-
-  try {
-    const stored = localStorage.getItem(NAVIGATION_DISCOVERY_ROLE_STORAGE_KEY);
-    return stored === "insurer" || stored === "shop" ? stored : "customer";
-  } catch (error) {
-    console.error("Error loading navigation discovery role:", error);
-    return "customer";
-  }
+  return readPersistedState<NavigationDiscoveryRole>({
+    storageKey: NAVIGATION_DISCOVERY_ROLE_STORAGE_KEY,
+    storageVersion: navigationDiscoveryRoleStorageVersion,
+    fallback: "customer",
+    validate: (value): value is NavigationDiscoveryRole =>
+      value === "customer" || value === "insurer" || value === "shop",
+    normalize: (value) => normalizeDiscoveryRole(value),
+    migrateLegacy: (legacyValue) => normalizeDiscoveryRole(legacyValue),
+  });
 }
 
 export function saveNavigationDiscoveryRole(role: NavigationDiscoveryRole) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    localStorage.setItem(NAVIGATION_DISCOVERY_ROLE_STORAGE_KEY, role);
-  } catch (error) {
-    console.error("Error saving navigation discovery role:", error);
-  }
+  writePersistedState(
+    NAVIGATION_DISCOVERY_ROLE_STORAGE_KEY,
+    navigationDiscoveryRoleStorageVersion,
+    normalizeDiscoveryRole(role)
+  );
 }

@@ -14,6 +14,7 @@ Track execution slices, validation outcomes, and next map priorities without dup
 - Explainable trust UI: In progress
 - Real discovery/routing integrity: In progress
 - Mobile and desktop quality parity: In progress
+- Workspace diagnostics and readability cleanup: In progress
 
 ## Completed Delivery Slices
 
@@ -29,6 +30,9 @@ Track execution slices, validation outcomes, and next map priorities without dup
   - `window.runMapPerformanceDiagnosticsChecks()`
   - `window.runProviderHealthDiagnosticsChecks()`
   - `window.runNavigationDiagnosticsChecks()`
+- Startup hydration for persisted navigation state now routes through a central versioned parse/validate/normalize/migrate helper so malformed or stale storage payloads cannot break boot.
+- Persisted payload self-healing now rewrites normalized envelopes for map performance, provider health, discovery quality snapshots, navigation session, guidance preferences, saved locations, parked-car location, and discovery role.
+- Added deterministic discovery-quality diagnostics checks for snapshot counter/ratio math normalization and integrated them into unified diagnostics checks.
 
 ### Explainable trust UI
 
@@ -64,15 +68,29 @@ Track execution slices, validation outcomes, and next map priorities without dup
 1. Provider telemetry can still appear healthy if upstream events become sparse without timely refresh.
 2. Discovery quality depends on third-party OSM/Overpass metadata consistency.
 3. Trust UI complexity can drift if new indicators bypass canonical summary contracts.
+4. Startup hydration can still fail in browsers carrying stale persisted diagnostics/trust payloads if cached client state drifts from current summary shape.
+5. Accumulating VS Code diagnostics/spell-check noise can hide real regressions and reduce map-code readability if cleanup does not stay aligned with canonical contracts.
 
 ## Next Priority Queue
 
-1. Add deterministic checks for discovery-quality snapshot counters and ratio math to guard future telemetry regressions.
+1. Continue provider telemetry depth and canonical risk classification with minimal UI churn.
+2. Expand trust-signal evidence weighting using canonical normalized persisted summaries only.
+3. Add focused UI copy/readability pass in planner diagnostics details where category and ratio language can be shortened further for mobile scanning.
+4. Add targeted manual stale/future-skew payload injection checklist snippets for QA runbooks.
+5. Continue map/trust feature roadmap once hydration guardrails remain stable across sessions.
 
 ## Validation Checklist Per Map Pass
 
 1. Build passes.
 2. Touched map flows verified after reload.
-3. Mobile and desktop checks completed for touched UI.
-4. Trust-state regression spot-check completed (`healthy/watch/degraded` scenarios).
-5. Master + tracker docs updated in the same pass.
+3. Startup boot verified with stale, malformed, empty, and missing persisted diagnostics payloads.
+4. VS Code diagnostics count reduced or justified for all touched files; no meaningful warnings hidden just to quiet the workspace.
+5. Spelling/readability fixes reviewed so naming and wording remain consistent with canonical map/trust terminology.
+6. Mobile and desktop checks completed for touched UI.
+7. Trust-state regression spot-check completed (`healthy/watch/degraded` scenarios).
+
+## Immediate Execution Direction
+
+1. Fix startup hydration/persisted-state resilience before broader map feature work continues.
+2. Clean current workspace diagnostics in map/trust/planner files as a readability and stability pass, not as a warning-suppression pass.
+3. Resume roadmap work with provider telemetry depth, canonical risk classification, and trust-signal refinement once startup safety and workspace cleanliness are back under control.

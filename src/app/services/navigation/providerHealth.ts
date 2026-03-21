@@ -1,3 +1,5 @@
+import { readPersistedState, writePersistedState } from "./persistedState";
+
 export type NavigationProviderHealthId =
   | "osrm-route"
   | "overpass-speed-limit"
@@ -25,6 +27,7 @@ export type ProviderHealthSummary = {
 };
 
 const providerHealthStorageKey = "bidondent.navigation.providerHealth.v1";
+const providerHealthStorageVersion = 2;
 const maxStoredEvents = 120;
 const providers: NavigationProviderHealthId[] = [
   "osrm-route",
@@ -57,10 +60,6 @@ function normalizeTimestamp(value: unknown) {
   }
 
   return new Date(timestampMs).toISOString();
-}
-
-function hasWindowStorage() {
-  return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
 }
 
 function toValidatedProviderHealthEvent(raw: unknown): ProviderHealthEvent | null {
@@ -108,58 +107,24 @@ export function sanitizeProviderHealthEventsFromRaw(rawEvents: unknown): Provide
     .slice(-maxStoredEvents);
 }
 
-function sanitizeProviderHealthEvents(rawValue: string | null): ProviderHealthEvent[] {
-  if (!rawValue) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(rawValue) as unknown;
-
-    return sanitizeProviderHealthEventsFromRaw(parsed);
-  } catch {
-    return [];
-  }
-}
-
 function readProviderHealthEvents() {
-  if (!hasWindowStorage()) {
-    return [];
-  }
-
-  const rawValue = window.localStorage.getItem(providerHealthStorageKey);
-  const sanitizedEvents = sanitizeProviderHealthEvents(rawValue);
-
-  if (!rawValue) {
-    return sanitizedEvents;
-  }
-
-  try {
-    const parsed = JSON.parse(rawValue) as unknown;
-
-    if (!Array.isArray(parsed) || parsed.length !== sanitizedEvents.length) {
-      writeProviderHealthEvents(sanitizedEvents);
-    }
-  } catch {
-    writeProviderHealthEvents([]);
-  }
-
-  return sanitizedEvents;
+  return readPersistedState<ProviderHealthEvent[]>({
+    storageKey: providerHealthStorageKey,
+    storageVersion: providerHealthStorageVersion,
+    fallback: [],
+    validate: (value): value is ProviderHealthEvent[] => Array.isArray(value),
+    normalize: (value) => sanitizeProviderHealthEventsFromRaw(value),
+    migrateLegacy: (legacyValue) =>
+      Array.isArray(legacyValue) ? sanitizeProviderHealthEventsFromRaw(legacyValue) : null,
+  });
 }
 
 function writeProviderHealthEvents(events: ProviderHealthEvent[]) {
-  if (!hasWindowStorage()) {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(
-      providerHealthStorageKey,
-      JSON.stringify(events.slice(-maxStoredEvents))
-    );
-  } catch {
-    // Ignore storage failures in private browsing / quota edge cases.
-  }
+  writePersistedState(
+    providerHealthStorageKey,
+    providerHealthStorageVersion,
+    events.slice(-maxStoredEvents)
+  );
 }
 
 export function recordProviderHealthEvent(event: ProviderHealthEvent) {

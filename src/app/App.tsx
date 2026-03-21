@@ -36,11 +36,32 @@ import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 
 import { clerkPublishableKey } from "../../utils/clerk/info";
 
-// Validate Clerk key
-console.log("Clerk Key loaded:", clerkPublishableKey?.substring(0, 20) + "...");
-if (!clerkPublishableKey || clerkPublishableKey.includes("PASTE_YOUR")) {
-  throw new Error(
-    `Please add your Clerk Publishable Key to /utils/clerk/info.tsx. Current value: ${clerkPublishableKey?.substring(0, 30)}...`
+const hasValidClerkPublishableKey =
+  typeof clerkPublishableKey === "string" &&
+  clerkPublishableKey.length > 0 &&
+  clerkPublishableKey.startsWith("pk_") &&
+  !clerkPublishableKey.includes("PASTE_YOUR");
+
+if (!hasValidClerkPublishableKey) {
+  console.error("Missing or invalid Clerk publishable key in utils/clerk/info.tsx");
+}
+
+function AuthConfigFallback() {
+  return (
+    <div className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">App setup required</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-700">
+          The app could not initialize authentication because the Clerk publishable key is missing
+          or invalid.
+        </p>
+        <ol className="mt-6 list-decimal space-y-2 pl-5 text-sm text-slate-700">
+          <li>Open utils/clerk/info.tsx</li>
+          <li>Set clerkPublishableKey to your Clerk pk_test or pk_live value</li>
+          <li>Refresh the browser</li>
+        </ol>
+      </div>
+    </div>
   );
 }
 
@@ -61,10 +82,7 @@ function AppContent() {
         sessionHint: String((user as any)?.lastSignInAt || ""),
       })
     : null;
-  const isWebsiteSessionHydrated = useWebsiteSessionSync(
-    websiteIdentity,
-    userProfile?.user_type
-  );
+  const isWebsiteSessionHydrated = useWebsiteSessionSync(websiteIdentity, userProfile?.user_type);
   const {
     businessProfile,
     error: businessProfileError,
@@ -82,14 +100,15 @@ function AppContent() {
   // Navigation state (tabs, views, modals, refs)
   const navigation = useNavigation();
 
-  const { handleLogin, handleDeleteAccount, handleLogout, submitBid, handleReportSubmit } = useAppHandlers({
-    deleteCurrentUser: user?.delete ? async () => user.delete() : undefined,
-    userId: user?.id,
-    signOut,
-    openSignUp,
-    userData,
-    navigation,
-  });
+  const { handleLogin, handleDeleteAccount, handleLogout, submitBid, handleReportSubmit } =
+    useAppHandlers({
+      deleteCurrentUser: user?.delete ? async () => user.delete() : undefined,
+      userId: user?.id,
+      signOut,
+      openSignUp,
+      userData,
+      navigation,
+    });
 
   useAppEffects({
     navigation,
@@ -164,10 +183,7 @@ function AppContent() {
     : undefined;
 
   const shouldWaitForBusinessProfile =
-    !!user &&
-    !!userProfile &&
-    userProfile.user_type !== "customer" &&
-    isBusinessProfileLoading;
+    !!user && !!userProfile && userProfile.user_type !== "customer" && isBusinessProfileLoading;
   const shouldShowBusinessOnboarding =
     !!user &&
     !!userProfile &&
@@ -285,7 +301,10 @@ function AppContent() {
       return <ClerkAccountTypeSelector />;
     }
 
-    if (shouldShowBusinessOnboarding || (navigation.showOnboarding && !navigation.onboardingComplete)) {
+    if (
+      shouldShowBusinessOnboarding ||
+      (navigation.showOnboarding && !navigation.onboardingComplete)
+    ) {
       if (userProfile.user_type === "shop") {
         return (
           <ShopOnboarding
@@ -384,6 +403,10 @@ function AppContent() {
 
 // Main App component wrapped with ClerkProvider
 export default function App() {
+  if (!hasValidClerkPublishableKey) {
+    return <AuthConfigFallback />;
+  }
+
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
       <AppContent />

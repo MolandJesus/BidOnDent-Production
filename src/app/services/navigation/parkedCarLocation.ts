@@ -1,9 +1,8 @@
-import type {
-  NavigationCoordinate,
-  NavigationParkedCarLocation,
-} from "../../types/navigation";
+import type { NavigationCoordinate, NavigationParkedCarLocation } from "../../types/navigation";
+import { clearPersistedState, readPersistedState, writePersistedState } from "./persistedState";
 
 export const NAVIGATION_PARKED_CAR_STORAGE_KEY = "bidondent_navigation_parked_car";
+const navigationParkedCarStorageVersion = 2;
 
 type SaveParkedCarArgs = {
   coordinate: NavigationCoordinate;
@@ -11,37 +10,96 @@ type SaveParkedCarArgs = {
   roadName?: string | null;
 };
 
+function normalizeCoordinate(value: unknown): NavigationCoordinate | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const candidate = value as { lat?: unknown; lng?: unknown };
+
+  if (
+    typeof candidate.lat !== "number" ||
+    !Number.isFinite(candidate.lat) ||
+    typeof candidate.lng !== "number" ||
+    !Number.isFinite(candidate.lng)
+  ) {
+    return null;
+  }
+
+  return {
+    lat: Number(candidate.lat.toFixed(6)),
+    lng: Number(candidate.lng.toFixed(6)),
+  };
+}
+
+function normalizeTimestamp(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const timestampMs = Date.parse(value);
+
+  if (Number.isNaN(timestampMs)) {
+    return null;
+  }
+
+  return new Date(timestampMs).toISOString();
+}
+
+function toValidatedParkedCarLocation(raw: unknown): NavigationParkedCarLocation | null {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+
+  const candidate = raw as Record<string, unknown>;
+  const coordinate = normalizeCoordinate(candidate.coordinate);
+  const savedAt = normalizeTimestamp(candidate.savedAt);
+
+  if (
+    typeof candidate.id !== "string" ||
+    candidate.id.trim().length === 0 ||
+    typeof candidate.label !== "string" ||
+    candidate.label.trim().length === 0 ||
+    !coordinate ||
+    savedAt === null
+  ) {
+    return null;
+  }
+
+  const accuracyMeters =
+    typeof candidate.accuracyMeters === "number" && Number.isFinite(candidate.accuracyMeters)
+      ? Math.max(0, Math.round(candidate.accuracyMeters))
+      : undefined;
+
+  return {
+    id: candidate.id,
+    coordinate,
+    label: candidate.label,
+    accuracyMeters,
+    roadName:
+      typeof candidate.roadName === "string" && candidate.roadName.trim().length > 0
+        ? candidate.roadName
+        : undefined,
+    savedAt,
+  };
+}
+
 export function loadParkedCarLocation(): NavigationParkedCarLocation | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
+  return readPersistedState<NavigationParkedCarLocation | null>({
+    storageKey: NAVIGATION_PARKED_CAR_STORAGE_KEY,
+    storageVersion: navigationParkedCarStorageVersion,
+    fallback: null,
+    validate: (value): value is NavigationParkedCarLocation | null =>
+      value === null || toValidatedParkedCarLocation(value) !== null,
+    normalize: (value) => {
+      if (value === null) {
+        return null;
+      }
 
-  try {
-    const stored = localStorage.getItem(NAVIGATION_PARKED_CAR_STORAGE_KEY);
-
-    if (!stored) {
-      return null;
-    }
-
-    const parsed = JSON.parse(stored) as NavigationParkedCarLocation;
-
-    if (
-      !parsed ||
-      typeof parsed.id !== "string" ||
-      typeof parsed.label !== "string" ||
-      !parsed.coordinate ||
-      typeof parsed.coordinate.lat !== "number" ||
-      typeof parsed.coordinate.lng !== "number" ||
-      typeof parsed.savedAt !== "string"
-    ) {
-      return null;
-    }
-
-    return parsed;
-  } catch (error) {
-    console.error("Error loading parked car location:", error);
-    return null;
-  }
+      return toValidatedParkedCarLocation(value);
+    },
+    migrateLegacy: (legacyValue) => toValidatedParkedCarLocation(legacyValue),
+  });
 }
 
 export function saveParkedCarLocation({
@@ -58,25 +116,15 @@ export function saveParkedCarLocation({
     savedAt: new Date().toISOString(),
   };
 
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(NAVIGATION_PARKED_CAR_STORAGE_KEY, JSON.stringify(parkedCar));
-    } catch (error) {
-      console.error("Error saving parked car location:", error);
-    }
-  }
+  writePersistedState(
+    NAVIGATION_PARKED_CAR_STORAGE_KEY,
+    navigationParkedCarStorageVersion,
+    parkedCar
+  );
 
   return parkedCar;
 }
 
 export function clearParkedCarLocation() {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    localStorage.removeItem(NAVIGATION_PARKED_CAR_STORAGE_KEY);
-  } catch (error) {
-    console.error("Error clearing parked car location:", error);
-  }
+  clearPersistedState(NAVIGATION_PARKED_CAR_STORAGE_KEY);
 }

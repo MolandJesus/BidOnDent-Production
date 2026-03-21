@@ -3,8 +3,10 @@ import type {
   NavigationSavedLocation,
   NavigationSavedLocationCategory,
 } from "../../types/navigation";
+import { readPersistedState, writePersistedState } from "./persistedState";
 
 export const NAVIGATION_SAVED_LOCATIONS_STORAGE_KEY = "bidondent_navigation_saved_locations";
+const navigationSavedLocationsStorageVersion = 2;
 const MAX_RECENT_LOCATIONS = 6;
 
 type CreateSavedLocationArgs = {
@@ -14,9 +16,7 @@ type CreateSavedLocationArgs = {
   coordinate: NavigationCoordinate;
 };
 
-function normalizeSavedLocations(
-  locations: NavigationSavedLocation[]
-): NavigationSavedLocation[] {
+function normalizeSavedLocations(locations: NavigationSavedLocation[]): NavigationSavedLocation[] {
   const deduplicated = new Map<string, NavigationSavedLocation>();
 
   locations.forEach((location) => {
@@ -41,19 +41,109 @@ function normalizeSavedLocations(
   return [...pinnedLocations, ...recentLocations];
 }
 
-function persistSavedLocations(locations: NavigationSavedLocation[]) {
-  if (typeof window === "undefined") {
-    return;
+function normalizeCoordinate(value: unknown): NavigationCoordinate | null {
+  if (!value || typeof value !== "object") {
+    return null;
   }
 
-  try {
-    localStorage.setItem(
-      NAVIGATION_SAVED_LOCATIONS_STORAGE_KEY,
-      JSON.stringify(normalizeSavedLocations(locations))
-    );
-  } catch (error) {
-    console.error("Error saving navigation saved locations:", error);
+  const candidate = value as { lat?: unknown; lng?: unknown };
+
+  if (
+    typeof candidate.lat !== "number" ||
+    !Number.isFinite(candidate.lat) ||
+    typeof candidate.lng !== "number" ||
+    !Number.isFinite(candidate.lng)
+  ) {
+    return null;
   }
+
+  return {
+    lat: Number(candidate.lat.toFixed(6)),
+    lng: Number(candidate.lng.toFixed(6)),
+  };
+}
+
+function normalizeTimestamp(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const timestampMs = Date.parse(value);
+
+  if (Number.isNaN(timestampMs)) {
+    return null;
+  }
+
+  return new Date(timestampMs).toISOString();
+}
+
+function isSavedLocationCategory(value: unknown): value is NavigationSavedLocationCategory {
+  return (
+    value === "home" ||
+    value === "work" ||
+    value === "saved" ||
+    value === "recent" ||
+    value === "parked-car"
+  );
+}
+
+function toValidatedSavedLocation(raw: unknown): NavigationSavedLocation | null {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+
+  const candidate = raw as Record<string, unknown>;
+  const coordinate = normalizeCoordinate(candidate.coordinate);
+  const createdAt = normalizeTimestamp(candidate.createdAt);
+  const lastUsedAt =
+    candidate.lastUsedAt === undefined
+      ? undefined
+      : normalizeTimestamp(candidate.lastUsedAt) || undefined;
+
+  if (
+    typeof candidate.id !== "string" ||
+    candidate.id.trim().length === 0 ||
+    typeof candidate.label !== "string" ||
+    candidate.label.trim().length === 0 ||
+    !isSavedLocationCategory(candidate.category) ||
+    !coordinate ||
+    createdAt === null
+  ) {
+    return null;
+  }
+
+  return {
+    id: candidate.id,
+    label: candidate.label,
+    subtitle:
+      typeof candidate.subtitle === "string" && candidate.subtitle.trim().length > 0
+        ? candidate.subtitle
+        : undefined,
+    category: candidate.category,
+    coordinate,
+    createdAt,
+    lastUsedAt,
+  };
+}
+
+function sanitizeSavedLocations(raw: unknown): NavigationSavedLocation[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+
+  return normalizeSavedLocations(
+    raw
+      .map((location) => toValidatedSavedLocation(location))
+      .filter((location): location is NavigationSavedLocation => Boolean(location))
+  );
+}
+
+function persistSavedLocations(locations: NavigationSavedLocation[]) {
+  writePersistedState(
+    NAVIGATION_SAVED_LOCATIONS_STORAGE_KEY,
+    navigationSavedLocationsStorageVersion,
+    normalizeSavedLocations(locations)
+  );
 }
 
 export function createNavigationSavedLocation({
@@ -76,40 +166,14 @@ export function createNavigationSavedLocation({
 }
 
 export function loadSavedNavigationLocations(): NavigationSavedLocation[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
-
-  try {
-    const stored = localStorage.getItem(NAVIGATION_SAVED_LOCATIONS_STORAGE_KEY);
-
-    if (!stored) {
-      return [];
-    }
-
-    const parsed = JSON.parse(stored) as NavigationSavedLocation[];
-
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-
-    return normalizeSavedLocations(
-      parsed.filter(
-        (location) =>
-          location &&
-          typeof location.id === "string" &&
-          typeof location.label === "string" &&
-          typeof location.category === "string" &&
-          location.coordinate &&
-          typeof location.coordinate.lat === "number" &&
-          typeof location.coordinate.lng === "number" &&
-          typeof location.createdAt === "string"
-      )
-    );
-  } catch (error) {
-    console.error("Error loading navigation saved locations:", error);
-    return [];
-  }
+  return readPersistedState<NavigationSavedLocation[]>({
+    storageKey: NAVIGATION_SAVED_LOCATIONS_STORAGE_KEY,
+    storageVersion: navigationSavedLocationsStorageVersion,
+    fallback: [],
+    validate: (value): value is NavigationSavedLocation[] => Array.isArray(value),
+    normalize: (value) => sanitizeSavedLocations(value),
+    migrateLegacy: (legacyValue) => sanitizeSavedLocations(legacyValue),
+  });
 }
 
 export function upsertSavedNavigationLocation(location: NavigationSavedLocation) {

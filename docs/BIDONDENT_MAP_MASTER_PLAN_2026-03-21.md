@@ -54,6 +54,7 @@ Map reliability is not hidden infrastructure. It is a user-facing quality signal
 ### Theme 1: Reliability and diagnostics
 
 - Harden telemetry ingestion and local-cache self-healing.
+- Enforce versioned persisted-state parsing and normalization on startup so stale or malformed browser payloads cannot crash hydration.
 - Keep summary generation deterministic and low overhead.
 - Expose lightweight dev-only check entry points for confidence in refactors.
 
