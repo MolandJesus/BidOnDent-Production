@@ -36,7 +36,7 @@ export default function EditProfileModal({
   onSave,
   onImageClick,
   fileInputRef,
-  onImageChange
+  onImageChange,
 }: EditProfileModalProps) {
   if (!isOpen) return null;
 
@@ -66,7 +66,11 @@ export default function EditProfileModal({
                 {profileImage ? (
                   <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
-                  <img src={defaultProfileImage} alt="Default Profile" className="w-full h-full object-cover" />
+                  <img
+                    src={defaultProfileImage}
+                    alt="Default Profile"
+                    className="w-full h-full object-cover"
+                  />
                 )}
               </div>
               <button
@@ -110,7 +114,10 @@ export default function EditProfileModal({
 
             {/* Email Field */}
             <div>
-              <label htmlFor="edit-email" className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label
+                htmlFor="edit-email"
+                className="block text-sm font-medium text-gray-700 mb-1.5"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -120,15 +127,22 @@ export default function EditProfileModal({
                   type="email"
                   value={editableEmail}
                   onChange={(e) => onChangeEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                  className="w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 transition-all text-sm cursor-not-allowed"
                   placeholder="your@email.com"
+                  readOnly
                 />
               </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Email changes are managed through your sign-in account settings.
+              </p>
             </div>
 
             {/* Phone Field */}
             <div>
-              <label htmlFor="edit-phone" className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label
+                htmlFor="edit-phone"
+                className="block text-sm font-medium text-gray-700 mb-1.5"
+              >
                 Phone Number
               </label>
               <div className="relative">
@@ -138,7 +152,7 @@ export default function EditProfileModal({
                   type="tel"
                   value={editablePhone}
                   onChange={(e) => onChangePhone(e.target.value)}
-                  placeholder="(555) 123-4567"
+                  placeholder="Phone number"
                   maxLength={14}
                   className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
                 />

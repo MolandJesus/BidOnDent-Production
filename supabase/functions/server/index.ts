@@ -1,24 +1,15 @@
 /**
  * BidOnDent Edge Function Server
- * Main router that dispatches requests to appropriate handlers
+ * Canonical route handler for website, dashboard, and map data services.
  *
- * BUILD VERSION: 2026-02-13-v8 - Modular architecture refactor
- *
- * Architecture:
- * - config/ - Configuration, constants, Supabase clients
- * - utils/ - Shared utility functions
- * - handlers/ - Route-specific business logic
+ * BUILD VERSION: 2026-03-21-v10 - website runtime + storage contract cleanup
  */
 
 import { initializeDatabaseTables } from './database_init.tsx'
 import { initializeStorageBuckets } from './storage_init.tsx'
-
-// Config and clients
 import { corsHeaders, config } from './config/constants.ts'
 import { supabase, supabaseAuth } from './config/clients.ts'
 import { stripFunctionPrefix, createResponse } from './utils/helpers.ts'
-
-// Core handlers
 import { healthCheck, migrateDatabase } from './handlers/health.ts'
 import {
   saveVehicle,
@@ -26,9 +17,12 @@ import {
   deleteVehicleByPost,
   deleteVehicleByDelete,
 } from './handlers/vehicles.ts'
-import { createReport, getReports, deleteReport } from './handlers/reports.ts'
-
-// New modular handlers
+import {
+  createReport,
+  deleteReport,
+  getReports,
+  updateReport,
+} from './handlers/reports.ts'
 import {
   handleAdminSetup,
   handleCheckAdminExists,
@@ -36,7 +30,9 @@ import {
   handleDeleteUser,
   handleManageAdmin,
   handleListUsers,
+  handleListProfiles,
   handleDeleteUsers,
+  handleCreateTestAccount,
 } from './handlers/admin.ts'
 import { handleTrackLogin, handleDeleteAccount } from './handlers/auth.ts'
 import {
@@ -44,21 +40,33 @@ import {
   handleStorageStats,
   handleCleanupOldReports,
 } from './handlers/storage.ts'
+import {
+  getWebsitePreferences,
+  saveWebsitePreferences,
+} from './handlers/preferences.ts'
+import {
+  getWebsiteRelationships,
+  saveWebsiteRelationships,
+} from './handlers/website_relationships.ts'
+import {
+  getDirectoryInventory,
+  getInsurerProfile,
+  getShopProfile,
+  saveInsurerProfile,
+  saveShopProfile,
+} from './handlers/network_profiles.ts'
+import { getUserProfile, saveUserProfile } from './handlers/profiles.ts'
 
-// Initialize on startup
 console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
 ;(async () => {
   await initializeDatabaseTables()
   await initializeStorageBuckets()
 })()
 
-// Main request handler
 Deno.serve(async (req) => {
-  // Helper to wrap responses with CORS headers
   const respond = (body: any, status = 200, additionalHeaders: Record<string, string> = {}) =>
     createResponse(body, status, additionalHeaders)
 
-  // Handle OPTIONS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
@@ -70,103 +78,152 @@ Deno.serve(async (req) => {
   const path = stripFunctionPrefix(url.pathname)
 
   try {
-    // ===== HEALTH & MAINTENANCE ROUTES =====
-    if (path === '/make-server-9f243523/health' && req.method === 'GET') {
+    if (path === '/health' && req.method === 'GET') {
       return healthCheck(respond)
     }
 
-    if (path === '/make-server-9f243523/migrate-database' && req.method === 'POST') {
+    if (path === '/migrate-database' && req.method === 'POST') {
       return await migrateDatabase(initializeDatabaseTables, respond)
     }
 
-    // ===== ADMIN ROUTES =====
-    if (path === '/make-server-9f243523/admin/setup-admin' && req.method === 'POST') {
+    if (path === '/admin/setup-admin' && req.method === 'POST') {
       return await handleAdminSetup(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/admin/check-admin-exists' && req.method === 'GET') {
+    if (path === '/admin/check-admin-exists' && req.method === 'GET') {
       return await handleCheckAdminExists(supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/admin/create-user' && req.method === 'POST') {
+    if (path === '/admin/create-user' && req.method === 'POST') {
       return await handleCreateUser(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/admin/delete-user' && req.method === 'POST') {
+    if (path === '/admin/delete-user' && req.method === 'POST') {
       return await handleDeleteUser(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/admin/manage-admin' && req.method === 'POST') {
+    if (path === '/admin/manage-admin' && req.method === 'POST') {
       return await handleManageAdmin(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/admin/list-users' && req.method === 'GET') {
+    if (path === '/admin/list-users' && req.method === 'GET') {
       return await handleListUsers(supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/admin/delete-users' && req.method === 'POST') {
+    if (path === '/admin/profiles' && req.method === 'GET') {
+      return await handleListProfiles(req, supabase, respond)
+    }
+
+    if (path === '/admin/delete-users' && req.method === 'POST') {
       return await handleDeleteUsers(req, supabase, respond)
     }
 
-    // ===== AUTH ROUTES =====
-    if (path === '/make-server-9f243523/track-login' && req.method === 'POST') {
+    if (path === '/admin/create-test-account' && req.method === 'POST') {
+      return await handleCreateTestAccount(req, supabase, respond)
+    }
+
+    if (path === '/track-login' && req.method === 'POST') {
       return await handleTrackLogin(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/delete-account' && req.method === 'POST') {
+    if (path === '/delete-account' && req.method === 'POST') {
       return await handleDeleteAccount(req, supabase, supabaseAuth, respond)
     }
 
-    // ===== STORAGE ROUTES =====
-    if (path === '/make-server-9f243523/upload-photo' && req.method === 'POST') {
+    if (path === '/upload-photo' && req.method === 'POST') {
       return await handleUploadPhoto(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/storage-stats' && req.method === 'GET') {
+    if (path === '/storage-stats' && req.method === 'GET') {
       return await handleStorageStats(supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/cleanup-old-reports' && req.method === 'POST') {
+    if (path === '/cleanup-old-reports' && req.method === 'POST') {
       return await handleCleanupOldReports(req, supabase, respond)
     }
 
-    // ===== VEHICLE ROUTES =====
-    if (path === '/make-server-9f243523/vehicles' && req.method === 'POST') {
+    if (path === '/website-preferences' && req.method === 'GET') {
+      return await getWebsitePreferences(req, supabase, respond)
+    }
+
+    if (path === '/website-preferences' && req.method === 'POST') {
+      return await saveWebsitePreferences(req, supabase, respond)
+    }
+
+    if (path === '/website-relationships' && req.method === 'GET') {
+      return await getWebsiteRelationships(req, supabase, respond)
+    }
+
+    if (path === '/website-relationships' && req.method === 'POST') {
+      return await saveWebsiteRelationships(req, supabase, respond)
+    }
+
+    if (path === '/user-profile' && req.method === 'GET') {
+      return await getUserProfile(req, supabase, respond)
+    }
+
+    if (path === '/user-profile' && req.method === 'POST') {
+      return await saveUserProfile(req, supabase, respond)
+    }
+
+    if (path === '/shop-profile' && req.method === 'GET') {
+      return await getShopProfile(req, supabase, respond)
+    }
+
+    if (path === '/shop-profile' && req.method === 'POST') {
+      return await saveShopProfile(req, supabase, respond)
+    }
+
+    if (path === '/insurer-profile' && req.method === 'GET') {
+      return await getInsurerProfile(req, supabase, respond)
+    }
+
+    if (path === '/insurer-profile' && req.method === 'POST') {
+      return await saveInsurerProfile(req, supabase, respond)
+    }
+
+    if (path === '/directory-inventory' && req.method === 'GET') {
+      return await getDirectoryInventory(req, supabase, respond)
+    }
+
+    if (path === '/vehicles' && req.method === 'POST') {
       return await saveVehicle(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/vehicles' && req.method === 'GET') {
+    if (path === '/vehicles' && req.method === 'GET') {
       return await getVehicles(req, supabase, respond)
     }
 
-    if ((path === '/make-server-9f243523/delete-vehicle' || path === '/delete-vehicle') &&
-        req.method === 'POST') {
+    if (path === '/delete-vehicle' && req.method === 'POST') {
       return await deleteVehicleByPost(req, supabase, respond)
     }
 
-    if (path.startsWith('/make-server-9f243523/vehicles/') && req.method === 'DELETE') {
+    if (path.startsWith('/vehicles/') && req.method === 'DELETE') {
       const vehicleId = path.split('/').pop()
-      const clerkUserId = new URL(req.url).searchParams.get('clerkUserId')
+      const clerkUserId = url.searchParams.get('clerkUserId')
       return await deleteVehicleByDelete(vehicleId, clerkUserId, supabase, respond)
     }
 
-    // ===== REPORT ROUTES =====
-    if (path === '/make-server-9f243523/reports' && req.method === 'POST') {
+    if (path === '/reports' && req.method === 'POST') {
       return await createReport(req, supabase, respond)
     }
 
-    if (path === '/make-server-9f243523/reports' && req.method === 'GET') {
+    if (path === '/reports' && req.method === 'GET') {
       return await getReports(req, supabase, respond)
     }
 
-    if (path.startsWith('/make-server-9f243523/reports/') && req.method === 'DELETE') {
+    if (path.startsWith('/reports/') && req.method === 'PUT') {
       const reportId = path.split('/').pop()
-      const clerkUserId = new URL(req.url).searchParams.get('clerkUserId')
+      return await updateReport(req, reportId, supabase, respond)
+    }
+
+    if (path.startsWith('/reports/') && req.method === 'DELETE') {
+      const reportId = path.split('/').pop()
+      const clerkUserId = url.searchParams.get('clerkUserId')
       return await deleteReport(reportId, clerkUserId, supabase, respond)
     }
 
-    // Route not found
-    return respond({ error: 'Not found' }, 404)
+    return respond({ error: 'Not found', path }, 404)
   } catch (error: any) {
     console.error('Error:', error)
     return respond({ error: 'Internal server error', details: error?.message }, 500)

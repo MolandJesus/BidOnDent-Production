@@ -1,5 +1,8 @@
 # Google OAuth Setup Guide for Clerk
 
+Last updated: March 21, 2026
+Status: Active setup guide
+
 ## ⚠️ **Google Sign-In Not Working?**
 
 If the "Sign up with Google" button does nothing, it's because **Google OAuth hasn't been configured** in your Clerk dashboard yet. This is a required step to enable Google authentication.
@@ -9,11 +12,13 @@ If the "Sign up with Google" button does nothing, it's because **Google OAuth ha
 ## 🔧 **How to Enable Google Sign-In**
 
 ### **Step 1: Go to Clerk Dashboard**
+
 1. Visit: https://dashboard.clerk.com
 2. Select your application (`joint-oarfish-23`)
 3. Click on **"SSO Connections"** or **"Social Connections"** in the sidebar
 
 ### **Step 2: Enable Google Provider**
+
 1. Find **"Google"** in the list of providers
 2. Click **"Configure"** or toggle it ON
 3. Clerk will provide you with:
@@ -21,6 +26,7 @@ If the "Sign up with Google" button does nothing, it's because **Google OAuth ha
    - Instructions for obtaining Google OAuth credentials
 
 ### **Step 3: Create Google OAuth Credentials**
+
 1. Go to **Google Cloud Console**: https://console.cloud.google.com
 2. Create a new project (or select existing one)
 3. Navigate to **APIs & Services** → **Credentials**
@@ -42,12 +48,14 @@ If the "Sign up with Google" button does nothing, it's because **Google OAuth ha
    - **Client Secret**
 
 ### **Step 4: Add Credentials to Clerk**
+
 1. Return to Clerk Dashboard → Google configuration
 2. Paste the **Client ID**
 3. Paste the **Client Secret**
 4. Click **"Save"**
 
 ### **Step 5: Test Google Sign-In**
+
 1. Hard refresh your Bidondent app (`Ctrl+Shift+R`)
 2. Click **"Get Started"**
 3. Select an account type (Customer/Shop/Insurer)
@@ -60,6 +68,7 @@ If the "Sign up with Google" button does nothing, it's because **Google OAuth ha
 ## ✅ **Testing Checklist**
 
 After setup, verify:
+
 - [ ] Google button appears in Clerk's sign-in modal
 - [ ] Clicking Google button opens Google's authentication page
 - [ ] After Google auth, you return to Bidondent
@@ -71,18 +80,23 @@ After setup, verify:
 ## 🔍 **Troubleshooting**
 
 ### **Issue: "Error 400: redirect_uri_mismatch"**
+
 **Solution**: Make sure the redirect URI in Google Console EXACTLY matches the one provided by Clerk.
 
 ### **Issue: "Access blocked: Authorization Error"**
+
 **Solution**: Your app needs to be verified by Google or you need to add test users in the OAuth consent screen.
 
 ### **Issue: Google button doesn't appear**
-**Solution**: 
+
+**Solution**:
+
 1. Check Clerk Dashboard → Make sure Google is enabled
 2. Hard refresh the browser
 3. Check browser console for errors
 
 ### **Issue: "The OAuth client was not found"**
+
 **Solution**: Double-check that you entered the correct Client ID and Client Secret in Clerk.
 
 ---
@@ -99,6 +113,7 @@ After setup, verify:
 ## 🎯 **Quick Summary**
 
 **Google OAuth requires 3 things:**
+
 1. ✅ Enable Google in Clerk Dashboard
 2. ✅ Create OAuth credentials in Google Cloud Console
 3. ✅ Add credentials to Clerk

@@ -3,7 +3,65 @@
  * Admin account management, user creation, and super-admin operations
  */
 
-import { corsHeaders } from '../config/constants.ts'
+import { config } from '../config/constants.ts'
+import { verifyClerkSessionRequest } from '../utils/clerk.ts'
+
+type SubmissionStatus = 'submitted' | 'reviewing' | 'approved' | 'rejected'
+
+function getAdminErrorStatus(error: any) {
+  const message = error?.message || ''
+
+  if (message === 'Admin access required') {
+    return 403
+  }
+
+  if (
+    message.startsWith('Failed to verify admin profile') ||
+    message.startsWith('Unable to resolve authenticated Clerk email')
+  ) {
+    return 500
+  }
+
+  return 401
+}
+
+async function requireAdminContext(req: Request, supabase: any) {
+  const session = await verifyClerkSessionRequest(req, { requireEmail: true })
+  const adminEmail = session.email
+
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('email, is_admin')
+    .eq('email', adminEmail)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Failed to verify admin profile: ${error.message}`)
+  }
+
+  const hasAdminAccess = Boolean(profile?.is_admin) || adminEmail === config.ADMIN_EMAIL.toLowerCase()
+
+  if (!hasAdminAccess) {
+    throw new Error('Admin access required')
+  }
+
+  return {
+    clerkUserId: session.clerkUserId,
+    adminEmail,
+  }
+}
+
+export type AdminProfileSummary = {
+  account_type: string
+  clerk_user_id?: string | null
+  created_at: string
+  email: string
+  is_admin?: boolean | null
+  name?: string | null
+  setup_completed?: boolean | null
+  user_id?: string | null
+  website_user_key?: string | null
+}
 
 /**
  * Setup or update the main admin account (figmaadmin@bidondent.com)
@@ -138,7 +196,7 @@ export async function handleCreateUser(
       const { error: updateError } = await supabase.auth.admin.updateUserById(userId, {
         password,
         email_confirm: true,
-        user_metadata: { name: name || 'New User', phone: '', user_type: account_type }
+        user_metadata: { name: name || 'Test Account', phone: '', user_type: account_type }
       })
       if (updateError) return respond({ error: updateError.message }, 500)
     } else {
@@ -146,7 +204,7 @@ export async function handleCreateUser(
         email,
         password,
         email_confirm: true,
-        user_metadata: { name: name || 'New User', phone: '', user_type: account_type }
+        user_metadata: { name: name || 'Test Account', phone: '', user_type: account_type }
       })
       if (createError) return respond({ error: createError.message }, 500)
       if (!userData.user) return respond({ error: 'No user data returned' }, 500)
@@ -157,7 +215,7 @@ export async function handleCreateUser(
       {
         user_id: userId,
         email,
-        name: name || 'New User',
+        name: name || 'Test Account',
         phone: '',
         account_type,
         setup_completed: false,
@@ -295,6 +353,44 @@ export async function handleListUsers(
 }
 
 /**
+ * List website profiles for admin dashboards and diagnostics
+ */
+export async function handleListProfiles(
+  req: Request,
+  supabase: any,
+  respond: Function
+): Promise<Response> {
+  try {
+    const url = new URL(req.url)
+    const email = url.searchParams.get('email')?.trim().toLowerCase() || null
+
+    let query = supabase
+      .from('profiles')
+      .select(
+        'email, name, account_type, user_id, clerk_user_id, website_user_key, created_at, setup_completed, is_admin'
+      )
+      .order('created_at', { ascending: false })
+
+    if (email) {
+      query = query.eq('email', email)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      return respond({ error: error.message }, 500)
+    }
+
+    return respond({
+      profiles: (data || []) as AdminProfileSummary[],
+      success: true,
+    })
+  } catch (error: any) {
+    return respond({ error: error.message }, 500)
+  }
+}
+
+/**
  * Bulk delete users (admin-only)
  */
 export async function handleDeleteUsers(
@@ -333,5 +429,182 @@ export async function handleDeleteUsers(
     })
   } catch (error: any) {
     return respond({ error: error.message }, 500)
+  }
+}
+
+/**
+ * Create test account (admin-only)
+ */
+export async function handleCreateTestAccount(
+  req: Request,
+  supabase: any,
+  respond: Function
+): Promise<Response> {
+  try {
+    const body = await req.json()
+    const { email, password, userType } = body
+
+    if (!email || !password || !userType) {
+      return respond({ error: 'email, password, and userType are required' }, 400)
+    }
+
+    const { data: userData, error: createError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: {
+        name: `Test ${userType.charAt(0).toUpperCase() + userType.slice(1)}`,
+        user_type: userType,
+        created_by_admin: true
+      }
+    })
+
+    if (createError || !userData.user) {
+      return respond({ error: createError?.message || 'Failed to create user' }, 500)
+    }
+
+    const { error: profileError } = await supabase.from('profiles').insert({
+      user_id: userData.user.id,
+      email,
+      name: `Test ${userType.charAt(0).toUpperCase() + userType.slice(1)}`,
+      account_type: userType,
+      setup_completed: true
+    })
+
+    if (profileError) {
+      return respond({ error: profileError.message }, 500)
+    }
+
+    return respond({
+      success: true,
+      userId: userData.user.id,
+      email,
+      userType
+    })
+  } catch (error: any) {
+    return respond({ error: error.message }, 500)
+  }
+}
+
+/**
+ * Load intake submissions and recent activity for admin review.
+ */
+export async function handleGetIntakeOperations(
+  req: Request,
+  supabase: any,
+  respond: Function
+): Promise<Response> {
+  try {
+    await requireAdminContext(req, supabase)
+
+    const [shopsResult, insurersResult, eventsResult] = await Promise.all([
+      supabase
+        .from('shop_interest_submissions')
+        .select('id, shop_name, contact_person, email, state, status, created_at')
+        .order('created_at', { ascending: false })
+        .limit(25),
+      supabase
+        .from('insurer_interest_submissions')
+        .select('id, company_name, contact_person, email, status, created_at')
+        .order('created_at', { ascending: false })
+        .limit(25),
+      supabase
+        .from('platform_activity_events')
+        .select('id, event_type, source, created_at')
+        .order('created_at', { ascending: false })
+        .limit(20),
+    ])
+
+    if (shopsResult.error || insurersResult.error || eventsResult.error) {
+      return respond(
+        {
+          error:
+            shopsResult.error?.message ||
+            insurersResult.error?.message ||
+            eventsResult.error?.message ||
+            'Failed to load intake operations data',
+        },
+        500
+      )
+    }
+
+    return respond({
+      shopSubmissions: shopsResult.data || [],
+      insurerSubmissions: insurersResult.data || [],
+      activityEvents: eventsResult.data || [],
+    })
+  } catch (error: any) {
+    const status = getAdminErrorStatus(error)
+    return respond({ error: error.message || 'Failed to load intake operations' }, status)
+  }
+}
+
+/**
+ * Update an intake submission review status and log the workflow event.
+ */
+export async function handleUpdateIntakeSubmissionStatus(
+  req: Request,
+  supabase: any,
+  respond: Function
+): Promise<Response> {
+  try {
+    const { adminEmail } = await requireAdminContext(req, supabase)
+    const body = await req.json()
+    const { table, id, status } = body
+
+    const isValidTable =
+      table === 'shop_interest_submissions' || table === 'insurer_interest_submissions'
+    const isValidStatus =
+      status === 'submitted' ||
+      status === 'reviewing' ||
+      status === 'approved' ||
+      status === 'rejected'
+
+    if (!isValidTable || typeof id !== 'string' || !isValidStatus) {
+      return respond(
+        {
+          error:
+            'table, id, and status are required. Valid tables: shop_interest_submissions, insurer_interest_submissions.',
+        },
+        400
+      )
+    }
+
+    const { data: updatedSubmission, error: updateError } = await supabase
+      .from(table)
+      .update({ status: status as SubmissionStatus })
+      .eq('id', id)
+      .select('id, status')
+      .maybeSingle()
+
+    if (updateError) {
+      return respond({ error: updateError.message }, 500)
+    }
+
+    if (!updatedSubmission) {
+      return respond({ error: 'Submission not found' }, 404)
+    }
+
+    const { error: activityError } = await supabase.from('platform_activity_events').insert({
+      event_type: `${table}_status_updated`,
+      source: 'admin-ops',
+      payload: {
+        submission_id: id,
+        new_status: status,
+        admin_email: adminEmail,
+      },
+    })
+
+    if (activityError) {
+      return respond({ error: activityError.message }, 500)
+    }
+
+    return respond({
+      success: true,
+      submission: updatedSubmission,
+    })
+  } catch (error: any) {
+    const status = getAdminErrorStatus(error)
+    return respond({ error: error.message || 'Failed to update submission status' }, status)
   }
 }

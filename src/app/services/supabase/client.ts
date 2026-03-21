@@ -1,5 +1,5 @@
-import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { SUPABASE_ANON_KEY, SUPABASE_BASE_URL } from "./runtime";
 
 declare global {
   interface Window {
@@ -14,7 +14,7 @@ function getSupabaseClient(): SupabaseClient {
     }
 
     console.log("🔵 Initializing Supabase client (first time)");
-    const client = createClient(`https://${projectId}.supabase.co`, publicAnonKey, {
+    const client = createClient(SUPABASE_BASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         storageKey: "bidondent-auth-token",
         autoRefreshToken: true,

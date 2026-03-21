@@ -8,6 +8,8 @@ type AccountInfoCardProps = {
     email: string;
     phone: string;
     vehicles: any[];
+    shopName?: string;
+    companyName?: string;
   };
   onEditProfile: () => void;
 };
@@ -19,13 +21,20 @@ export default function AccountInfoCard({
 }: AccountInfoCardProps) {
   const hasPhone = Boolean(userInfo.phone && userInfo.phone.trim().length > 0);
   const hasVehicles = userType === "customer" ? userInfo.vehicles.length > 0 : true;
+  const hasBusinessName =
+    userType === "shop"
+      ? Boolean(userInfo.shopName)
+      : userType === "insurer"
+        ? Boolean(userInfo.companyName)
+        : true;
   const completionScore = [
     userInfo.name,
     userInfo.email,
     hasPhone ? "yes" : "",
     hasVehicles ? "yes" : "",
+    hasBusinessName ? "yes" : "",
   ].filter(Boolean).length;
-  const completionPercent = Math.round((completionScore / 4) * 100);
+  const completionPercent = Math.round((completionScore / 5) * 100);
 
   return (
     <motion.section
@@ -70,6 +79,18 @@ export default function AccountInfoCard({
           <p className="text-xs uppercase tracking-wide text-slate-500">Phone</p>
           <p className="text-slate-900 font-medium mt-1">{userInfo.phone || "-"}</p>
         </div>
+        {userType === "shop" && (
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Shop Profile</p>
+            <p className="text-slate-900 font-medium mt-1">{userInfo.shopName || "-"}</p>
+          </div>
+        )}
+        {userType === "insurer" && (
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+            <p className="text-xs uppercase tracking-wide text-slate-500">Insurer Profile</p>
+            <p className="text-slate-900 font-medium mt-1">{userInfo.companyName || "-"}</p>
+          </div>
+        )}
         {userType === "customer" && userInfo.vehicles.length > 0 && (
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Vehicles</p>

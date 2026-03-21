@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Search, MapPin, Calendar, DollarSign, Image as ImageIcon, Phone, Mail, ChevronRight, Star, AlertCircle } from "lucide-react";
+import { logWorkflowEvent } from "../../services/supabaseService";
 
 type ShopRequestsScreenProps = {
   primaryColor?: string;
-  onSubmitBid?: (requestId: number, bidAmount: number) => void;
+  reports?: any[];
+  onSubmitBid?: (requestId: string, bidAmount: number) => void;
 };
 
 export default function ShopRequestsScreen({
   primaryColor = "#003d82",
+  reports = [],
   onSubmitBid
 }: ShopRequestsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,63 +19,36 @@ export default function ShopRequestsScreen({
   const [bidAmount, setBidAmount] = useState("");
   const [showBidModal, setShowBidModal] = useState(false);
 
-  // Sample requests data - in production, this would come from Supabase
-  const sampleRequests = [
-    {
-      id: 1,
-      customerName: "Sarah Johnson",
-      customerEmail: "sarah.j@email.com",
-      customerPhone: "(555) 123-4567",
-      vehicle: "2022 Honda Accord",
-      damageType: "Front Bumper Damage",
-      description: "Rear-ended at stop light. Front bumper has significant dent and scratches. Headlight housing cracked.",
-      location: "San Francisco, CA",
-      distance: "2.3 miles away",
-      photoCount: 4,
-      submittedDate: "2 hours ago",
-      status: "new",
-      urgency: "high",
-      insuranceClaim: true,
-      insuranceCompany: "State Farm"
-    },
-    {
-      id: 2,
-      customerName: "Michael Chen",
-      customerEmail: "m.chen@email.com",
-      customerPhone: "(555) 234-5678",
-      vehicle: "2020 Toyota Camry",
-      damageType: "Side Panel & Door",
-      description: "Parking lot incident. Driver side door dented, side panel scratched. Paint damage visible.",
-      location: "Oakland, CA",
-      distance: "5.8 miles away",
-      photoCount: 6,
-      submittedDate: "5 hours ago",
-      status: "bidding",
-      urgency: "medium",
-      insuranceClaim: false,
-      bidCount: 3
-    },
-    {
-      id: 3,
-      customerName: "Emily Rodriguez",
-      customerEmail: "emily.r@email.com",
-      customerPhone: "(555) 345-6789",
-      vehicle: "2019 Ford F-150",
-      damageType: "Rear Hatch Damage",
-      description: "Backed into pole. Rear hatch dented, taillight broken, minor frame concern.",
-      location: "San Jose, CA",
-      distance: "12.1 miles away",
-      photoCount: 5,
-      submittedDate: "1 day ago",
-      status: "bidding",
-      urgency: "low",
-      insuranceClaim: true,
-      insuranceCompany: "Geico",
-      bidCount: 5
-    },
-  ];
+  const liveRequests = reports.map((report: any, index: number) => {
+    const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+    const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
+    const status = String(report?.status ?? "pending").toLowerCase();
+    const normalizedStatus = status === "pending" ? "new" : status === "in-review" ? "bidding" : "closed";
+    const bidCount = Number(report?.bidsCount) || 0;
 
-  const filteredRequests = sampleRequests.filter(req => {
+    return {
+      id: String(report?.id ?? `request-${index}`),
+      customerName: "Customer",
+      customerEmail: "bidondent@gmail.com",
+      customerPhone: "N/A",
+      vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
+      damageType: report?.damageArea || report?.damageType || "Damage report",
+      description: report?.description || "No description provided yet.",
+      location: report?.location || "Service area available",
+      distance: "Within configured region",
+      photoCount: Array.isArray(report?.photos) ? report.photos.length : 0,
+      submittedDate: report?.submittedAt
+        ? new Date(report.submittedAt).toLocaleDateString()
+        : "Recently submitted",
+      status: normalizedStatus,
+      urgency: bidCount === 0 ? "high" : bidCount < 3 ? "medium" : "low",
+      insuranceClaim: false,
+      insuranceCompany: "",
+      bidCount,
+    };
+  });
+
+  const filteredRequests = liveRequests.filter(req => {
     const matchesSearch = req.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          req.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          req.damageType.toLowerCase().includes(searchQuery.toLowerCase());
@@ -82,7 +58,16 @@ export default function ShopRequestsScreen({
 
   const handleSubmitBid = () => {
     if (selectedRequest && bidAmount) {
-      onSubmitBid?.(selectedRequest.id, parseFloat(bidAmount));
+      void logWorkflowEvent({
+        event_type: "bid_submitted",
+        source: "shop-requests",
+        payload: {
+          request_id: selectedRequest.id,
+          amount: Number(bidAmount),
+          vehicle: selectedRequest.vehicle,
+        },
+      });
+      onSubmitBid?.(String(selectedRequest.id), parseFloat(bidAmount));
       setShowBidModal(false);
       setBidAmount("");
       setSelectedRequest(null);
@@ -113,7 +98,7 @@ export default function ShopRequestsScreen({
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-4">
           <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>Repair Requests</h1>
-          
+
           {/* Search & Filter */}
           <div className="space-y-3">
             <div className="relative">

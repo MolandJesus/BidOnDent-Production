@@ -1,27 +1,26 @@
 import type { useNavigation } from "./useNavigation";
 import type { useUserData } from "./useUserData";
+import { saveDamageReport } from "../services/supabaseService";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData> & Record<string, any>;
 
 type UseAppHandlersArgs = {
+  deleteCurrentUser?: () => Promise<void>;
   userId?: string;
   signOut: () => Promise<void>;
   openSignUp?: () => void;
   userData: UserDataState;
   navigation: NavigationState;
-  projectId: string;
-  publicAnonKey: string;
 };
 
 export function useAppHandlers({
+  deleteCurrentUser,
   userId,
   signOut,
   openSignUp,
   userData,
   navigation,
-  projectId,
-  publicAnonKey
 }: UseAppHandlersArgs) {
   const handleLogin = () => {
     if (openSignUp) {
@@ -55,6 +54,23 @@ export function useAppHandlers({
     }
   };
 
+  const handleDeleteAccount = async () => {
+    if (!userId || !deleteCurrentUser) {
+      throw new Error("Account deletion is not available for this session.");
+    }
+
+    try {
+      console.log("Deleting Clerk account...");
+      await deleteCurrentUser();
+    } finally {
+      userData.clearSession();
+      userData.setBids([]);
+      userData.setActivities([]);
+      navigation.setShowLandingPage(true);
+      navigation.setShowProfileDropdown(false);
+    }
+  };
+
   const addActivity = (
     type:
       | "bid_submitted"
@@ -71,7 +87,7 @@ export function useAppHandlers({
       timestamp: Date.now(),
       type,
       message,
-      metadata
+      metadata,
     };
     userData.setActivities([newActivity, ...userData.activities] as any);
   };
@@ -96,7 +112,7 @@ export function useAppHandlers({
       estimatedDays: Math.floor(Math.random() * 7) + 1,
       rating: (Math.random() * 1.5 + 3.5).toFixed(1),
       reviewCount: Math.floor(Math.random() * 100) + 10,
-      shopDistance: `${(Math.random() * 5 + 0.5).toFixed(1)} miles`
+      shopDistance: `${(Math.random() * 5 + 0.5).toFixed(1)} miles`,
     };
 
     const newBids = [...userData.bids, newBid];
@@ -107,7 +123,7 @@ export function useAppHandlers({
         return {
           ...entry,
           bidsCount: (entry.bidsCount || 0) + 1,
-          bids: [...(entry.bids || []), newBid]
+          bids: [...(entry.bids || []), newBid],
         };
       }
       return entry;
@@ -120,12 +136,15 @@ export function useAppHandlers({
       {
         reportId,
         bidAmount,
-        vehicleInfo
+        vehicleInfo,
       }
     );
 
     console.log("Bid submitted successfully");
-    console.log("Report bids count:", updatedReports.find((entry) => entry.id === reportId)?.bidsCount);
+    console.log(
+      "Report bids count:",
+      updatedReports.find((entry) => entry.id === reportId)?.bidsCount
+    );
     console.log("Total bids:", newBids.length);
   };
 
@@ -133,73 +152,66 @@ export function useAppHandlers({
     try {
       console.log("Submitting damage report to API...");
 
-      const apiReport = {
-        vehicle_make: report.vehicle?.make || "",
-        vehicle_model: report.vehicle?.model || "",
-        vehicle_year: report.vehicle?.year || "0",
-        damage_type: report.damageArea || "unknown",
-        damage_severity: "moderate",
-        damage_description: report.description || "",
-        damage_location: report.damageArea || "",
-        photo_urls: report.photos || [],
-        insurance_claim: false,
-        preferred_contact: "email",
-        additional_notes: report.incident || "",
-        status: "pending"
-      };
-
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/reports`,
+      const savedApiReport = await saveDamageReport(
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${publicAnonKey}`
-          },
-          body: JSON.stringify({
-            clerk_user_id: userId,
-            report: apiReport
-          })
-        }
+          vehicle_make: report.vehicle?.make || "",
+          vehicle_model: report.vehicle?.model || "",
+          vehicle_year: parseInt(report.vehicle?.year || "0", 10),
+          damage_type: report.damageArea || "unknown",
+          damage_severity: "moderate",
+          damage_description: report.description || "",
+          damage_location: report.damageArea || "",
+          photo_urls: report.photos || [],
+          insurance_claim: false,
+          preferred_contact: "email",
+          additional_notes: report.incident || "",
+          status: "pending",
+        },
+        userId
       );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Failed to save report:", data.error || data.details);
-        userData.setReports([...userData.reports, report]);
+      if (!savedApiReport) {
+        console.error("Failed to save report");
+        userData.setReports((previous: any[]) => [...previous, report]);
+        if (report?.id && Array.isArray(report.photos)) {
+          userData.setPhotoStorage((previous: Record<string, string[]>) => ({
+            ...previous,
+            [report.id]: report.photos,
+          }));
+        }
         return;
       }
 
-      console.log("Damage report saved to database:", data.report?.id);
+      console.log("Damage report saved to database:", savedApiReport.id);
 
       const savedReport = {
         ...report,
-        id: data.report?.id || report.id
+        id: savedApiReport.id || report.id,
       };
-      userData.setReports([...userData.reports, savedReport]);
+      userData.setReports((previous: any[]) => [...previous, savedReport]);
       if (savedReport?.id && Array.isArray(savedReport.photos)) {
-        userData.setPhotoStorage({
-          ...userData.photoStorage,
-          [savedReport.id]: savedReport.photos
-        });
+        userData.setPhotoStorage((previous: Record<string, string[]>) => ({
+          ...previous,
+          [savedReport.id]: savedReport.photos,
+        }));
       }
     } catch (error) {
       console.error("Error submitting report:", error);
-      userData.setReports([...userData.reports, report]);
+      userData.setReports((previous: any[]) => [...previous, report]);
       if (report?.id && Array.isArray(report.photos)) {
-        userData.setPhotoStorage({
-          ...userData.photoStorage,
-          [report.id]: report.photos
-        });
+        userData.setPhotoStorage((previous: Record<string, string[]>) => ({
+          ...previous,
+          [report.id]: report.photos,
+        }));
       }
     }
   };
 
   return {
     handleLogin,
+    handleDeleteAccount,
     handleLogout,
     submitBid,
-    handleReportSubmit
+    handleReportSubmit,
   };
 }

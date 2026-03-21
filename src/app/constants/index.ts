@@ -1,5 +1,14 @@
 // Application constants for Bidondent
-import { Home, Camera, FileCheck, User, ClipboardList, Wrench, Shield, Building2 } from "lucide-react";
+import {
+  Home,
+  Camera,
+  FileCheck,
+  User,
+  ClipboardList,
+  Wrench,
+  Shield,
+  Building2,
+} from "lucide-react";
 import type { NavTab } from "../types";
 
 // Import NEW professional auto body repair photos - January 2025
@@ -30,7 +39,7 @@ export const CUSTOMER_NAV_TABS: NavTab[] = [
   { id: "home", label: "Dashboard", icon: Home },
   { id: "report", label: "Report", icon: Camera },
   { id: "bids", label: "Bids", icon: FileCheck },
-  { id: "account", label: "Account", icon: User }
+  { id: "account", label: "Account", icon: User },
 ];
 
 // Navigation tabs for shops
@@ -38,7 +47,7 @@ export const SHOP_NAV_TABS: NavTab[] = [
   { id: "home", label: "Dashboard", icon: Home },
   { id: "requests", label: "Requests", icon: ClipboardList },
   { id: "jobs", label: "Active Jobs", icon: Wrench },
-  { id: "account", label: "Account", icon: User }
+  { id: "account", label: "Account", icon: User },
 ];
 
 // Navigation tabs for insurers
@@ -46,85 +55,75 @@ export const INSURER_NAV_TABS: NavTab[] = [
   { id: "home", label: "Dashboard", icon: Home },
   { id: "claims", label: "Claims", icon: Shield },
   { id: "shops", label: "Partner Shops", icon: Building2 },
-  { id: "account", label: "Account", icon: User }
+  { id: "account", label: "Account", icon: User },
 ];
-
-// Default notifications for customers
-export const CUSTOMER_NOTIFICATIONS = [
-  { 
-    id: 1, 
-    type: "bid" as const, 
-    message: "New bid received on your report", 
-    time: "2 hours ago", 
-    read: false 
-  },
-  { 
-    id: 2, 
-    type: "update" as const, 
-    message: "Your vehicle profile was updated", 
-    time: "1 day ago", 
-    read: true 
-  }
-];
-
-// Default notifications for shops
-export const SHOP_NOTIFICATIONS = [
-  { 
-    id: 1, 
-    type: "request" as const, 
-    message: "New repair request from customer", 
-    time: "1 hour ago", 
-    read: false 
-  },
-  { 
-    id: 2, 
-    type: "update" as const, 
-    message: "Job #1234 status updated to 'In Progress'", 
-    time: "3 hours ago", 
-    read: true 
-  }
-];
-
-// Default notifications for insurers
-export const INSURER_NOTIFICATIONS = [
-  { 
-    id: 1, 
-    type: "claim" as const, 
-    message: "New claim submitted for review", 
-    time: "30 minutes ago", 
-    read: false 
-  },
-  { 
-    id: 2, 
-    type: "update" as const, 
-    message: "Claim #5678 approved and sent to partner shop", 
-    time: "2 hours ago", 
-    read: true 
-  }
-];
-
-// Legacy - kept for backwards compatibility
-export const DEFAULT_NOTIFICATIONS = CUSTOMER_NOTIFICATIONS;
-
-// Get notifications based on user type
-export function getNotificationsByUserType(userType: "customer" | "shop" | "insurer") {
-  switch (userType) {
-    case "shop":
-      return SHOP_NOTIFICATIONS;
-    case "insurer":
-      return INSURER_NOTIFICATIONS;
-    default:
-      return CUSTOMER_NOTIFICATIONS;
-  }
-}
 
 // Local storage keys
 export const STORAGE_KEYS = {
   USER_DATA: "bidondent_user",
   USER_DATA_LAST_ACTIVE: "bidondent_user_last_active",
   DAMAGE_REPORT_DRAFT: "bidondent_damage_report_draft",
-  KEEP_SIGNED_IN: "bidondent_keep_signed_in"
+  KEEP_SIGNED_IN: "bidondent_keep_signed_in",
 };
+
+export function getNotificationsByUserType(userType: "customer" | "shop" | "insurer") {
+  if (userType === "shop") {
+    return [
+      {
+        id: 1,
+        type: "update" as const,
+        message: "New repair request is available in your area.",
+        time: "Just now",
+        read: false,
+      },
+    ];
+  }
+
+  if (userType === "insurer") {
+    return [
+      {
+        id: 1,
+        type: "update" as const,
+        message: "A new claim needs insurer review.",
+        time: "Just now",
+        read: false,
+      },
+    ];
+  }
+
+  return [
+    {
+      id: 1,
+      type: "bid" as const,
+      message: "A shop submitted a new bid to one of your reports.",
+      time: "Just now",
+      read: false,
+    },
+  ];
+}
+
+export const SEED_DAMAGE_REPORTS = [
+  {
+    id: "seed-report-1",
+    vehicleInfo: { year: "2021", make: "Toyota", model: "Camry" },
+    damageArea: "Front Bumper",
+    description: "Front bumper damage from a parking lot collision.",
+    status: "pending",
+    submittedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    bidsCount: 0,
+    photos: [],
+  },
+  {
+    id: "seed-report-2",
+    vehicleInfo: { year: "2019", make: "Honda", model: "CR-V" },
+    damageArea: "Rear Door",
+    description: "Rear passenger-side dent with light paint transfer.",
+    status: "in-review",
+    submittedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+    bidsCount: 2,
+    photos: [],
+  },
+];
 
 // ============================================================================
 // LANDING PAGE IMAGES
@@ -134,83 +133,25 @@ export const STORAGE_KEYS = {
 export const LANDING_PAGE_IMAGES = {
   // Hero section - NEW: Person on phone with damaged blue car - perfect customer context!
   HERO: heroPhoto,
-  
+
   // Benefits section "Get Your Car Fixed Right" - Damage close-up
   MECHANIC: damageCloseupPhoto,
-  
+
   // Benefits section "Certified Professionals" - Paint booth (moved from old hero)
   REPAIR_TOOLS: paintBoothPhoto,
-  
+
   // Benefits section "Competitive Pricing" - Spray painting detail work (moved from Certified Professionals)
   DENT_REPAIR: professionalPainterPhoto,
-  
+
   // NEW: Workshop mechanic in blue coveralls - active repair work
   WORKSHOP_MECHANIC: workshopMechanicPhoto,
-  
+
   // How It Works section - Vehicle inspection
   VEHICLE_INSPECTION: workshopMechanicPhoto,
-  
+
   // Benefits section - Keep original precision repair (not currently used)
   PRECISION_REPAIR: precisionRepairPhoto,
-  
-  // Default profile image
-  DEFAULT_PROFILE: defaultProfilePicture
-};
 
-// Seed damage reports for shops to view (demo data)
-export const SEED_DAMAGE_REPORTS = [
-  {
-    id: "seed-report-1",
-    vehicle: {
-      year: 2021,
-      make: "Toyota",
-      model: "Camry",
-      color: "Silver"
-    },
-    damageArea: "Front Bumper",
-    damageType: "Collision",
-    severity: "moderate",
-    description: "Front bumper damaged from parking lot incident. Paint scratches and minor dent.",
-    submittedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-    status: "pending",
-    bidsCount: 3,
-    location: "Downtown Seattle, WA",
-    photos: []
-  },
-  {
-    id: "seed-report-2",
-    vehicle: {
-      year: 2019,
-      make: "Honda",
-      model: "Civic",
-      color: "Blue"
-    },
-    damageArea: "Rear Door",
-    damageType: "Dent",
-    severity: "minor",
-    description: "Small dent on rear passenger door. No paint damage.",
-    submittedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
-    status: "pending",
-    bidsCount: 1,
-    location: "Bellevue, WA",
-    photos: []
-  },
-  {
-    id: "seed-report-3",
-    vehicle: {
-      year: 2020,
-      make: "Ford",
-      model: "F-150",
-      color: "Black"
-    },
-    damageArea: "Hood",
-    damageType: "Hail Damage",
-    severity: "severe",
-    description: "Multiple hail dents across hood and roof. Requires PDR service.",
-    submittedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-    status: "pending",
-    bidsCount: 5,
-    location: "Redmond, WA",
-    photos: []
-  }
-];
+  // Default profile image
+  DEFAULT_PROFILE: defaultProfilePicture,
+};

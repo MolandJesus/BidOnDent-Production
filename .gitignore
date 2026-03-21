@@ -1,9 +1,24 @@
 node_modules
 dist
 .vite
+
+# Local-only environment and secret files
 .env
 .env.*
+.secrets/
+*.pem
+*.key
+
+# Local-only import/export and backup artifacts
+imports/
+exports/
+data/imports/
+data/exports/
+*.dump
+*.bak
+*.backup
+*.sql.gz
+
 *.log
 .DS_Store
 coverage
-.continue/

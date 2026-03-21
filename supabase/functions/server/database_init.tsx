@@ -48,7 +48,9 @@ export async function initializeDatabaseTables() {
         -- Create profiles table
         CREATE TABLE IF NOT EXISTS public.profiles (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
+          user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+          clerk_user_id TEXT,
+          website_user_key TEXT,
           email TEXT UNIQUE NOT NULL,
           name TEXT NOT NULL,
           phone TEXT,
@@ -72,6 +74,47 @@ export async function initializeDatabaseTables() {
           ) THEN
             ALTER TABLE public.profiles ADD COLUMN setup_completed BOOLEAN DEFAULT FALSE;
             RAISE NOTICE 'Added setup_completed column to profiles table';
+          END IF;
+        END $$;
+
+        -- Add Clerk-first identity columns if they don't exist
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'profiles'
+            AND column_name = 'clerk_user_id'
+          ) THEN
+            ALTER TABLE public.profiles ADD COLUMN clerk_user_id TEXT;
+            RAISE NOTICE 'Added clerk_user_id column to profiles table';
+          END IF;
+        END $$;
+
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'profiles'
+            AND column_name = 'website_user_key'
+          ) THEN
+            ALTER TABLE public.profiles ADD COLUMN website_user_key TEXT;
+            RAISE NOTICE 'Added website_user_key column to profiles table';
+          END IF;
+        END $$;
+
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'profiles'
+            AND column_name = 'user_id'
+            AND is_nullable = 'NO'
+          ) THEN
+            ALTER TABLE public.profiles ALTER COLUMN user_id DROP NOT NULL;
+            RAISE NOTICE 'Dropped NOT NULL requirement from profiles.user_id';
           END IF;
         END $$;
 
@@ -113,7 +156,9 @@ export async function initializeDatabaseTables() {
         END $$;
 
         CREATE INDEX IF NOT EXISTS idx_profiles_email ON public.profiles(email);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_clerk_user_id ON public.profiles(clerk_user_id);
         CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON public.profiles(user_id);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_profiles_website_user_key ON public.profiles(website_user_key);
 
         ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
@@ -139,6 +184,231 @@ export async function initializeDatabaseTables() {
         DROP TRIGGER IF EXISTS set_updated_at ON public.profiles;
         CREATE TRIGGER set_updated_at
           BEFORE UPDATE ON public.profiles
+          FOR EACH ROW
+          EXECUTE FUNCTION public.handle_updated_at();
+
+        -- Create provider-agnostic website preferences table
+        CREATE TABLE IF NOT EXISTS public.website_preferences (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          website_user_key TEXT UNIQUE NOT NULL,
+          provider TEXT,
+          provider_user_id TEXT,
+          clerk_user_id TEXT,
+          normalized_email TEXT,
+          display_name TEXT,
+          account_type TEXT CHECK (account_type IN ('customer', 'shop', 'insurer')),
+          session_memory JSONB NOT NULL DEFAULT '{}'::jsonb,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_website_preferences_user_key
+          ON public.website_preferences(website_user_key);
+        CREATE INDEX IF NOT EXISTS idx_website_preferences_provider_user_id
+          ON public.website_preferences(provider_user_id);
+        CREATE INDEX IF NOT EXISTS idx_website_preferences_clerk_user_id
+          ON public.website_preferences(clerk_user_id);
+        CREATE INDEX IF NOT EXISTS idx_website_preferences_normalized_email
+          ON public.website_preferences(normalized_email);
+
+        ALTER TABLE public.website_preferences ENABLE ROW LEVEL SECURITY;
+
+        DROP POLICY IF EXISTS "Service role manages website preferences" ON public.website_preferences;
+        CREATE POLICY "Service role manages website preferences"
+          ON public.website_preferences
+          USING (false)
+          WITH CHECK (false);
+
+        DROP TRIGGER IF EXISTS set_updated_at ON public.website_preferences;
+        CREATE TRIGGER set_updated_at
+          BEFORE UPDATE ON public.website_preferences
+          FOR EACH ROW
+          EXECUTE FUNCTION public.handle_updated_at();
+
+        -- Create durable provider-agnostic relationship records
+        CREATE TABLE IF NOT EXISTS public.website_relationships (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          website_user_key TEXT NOT NULL,
+          account_type TEXT CHECK (account_type IN ('customer', 'shop', 'insurer')),
+          relationship_type TEXT NOT NULL,
+          target_type TEXT NOT NULL CHECK (target_type IN ('shop', 'insurer')),
+          target_id TEXT NOT NULL,
+          target_label TEXT,
+          target_metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW(),
+          UNIQUE (website_user_key, relationship_type, target_type, target_id)
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_website_relationships_user_key
+          ON public.website_relationships(website_user_key);
+        CREATE INDEX IF NOT EXISTS idx_website_relationships_type
+          ON public.website_relationships(relationship_type);
+
+        ALTER TABLE public.website_relationships ENABLE ROW LEVEL SECURITY;
+
+        DROP POLICY IF EXISTS "Service role manages website relationships" ON public.website_relationships;
+        CREATE POLICY "Service role manages website relationships"
+          ON public.website_relationships
+          USING (false)
+          WITH CHECK (false);
+
+        DROP TRIGGER IF EXISTS set_updated_at ON public.website_relationships;
+        CREATE TRIGGER set_updated_at
+          BEFORE UPDATE ON public.website_relationships
+          FOR EACH ROW
+          EXECUTE FUNCTION public.handle_updated_at();
+
+        -- Create provider-agnostic shop profiles table
+        CREATE TABLE IF NOT EXISTS public.shop_profiles (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+          clerk_user_id TEXT,
+          website_user_key TEXT,
+          business_name TEXT NOT NULL,
+          business_address TEXT,
+          business_city TEXT,
+          business_state TEXT,
+          business_zip TEXT,
+          business_phone TEXT,
+          website TEXT,
+          business_hours TEXT,
+          certifications TEXT[] DEFAULT '{}',
+          specialties TEXT[] DEFAULT '{}',
+          insurer_programs TEXT[] DEFAULT '{}',
+          supported_makes TEXT[] DEFAULT '{}',
+          average_rating DECIMAL(3, 2) DEFAULT 0.00,
+          total_reviews INTEGER DEFAULT 0,
+          is_accepting_bids BOOLEAN DEFAULT TRUE,
+          average_ticket_value NUMERIC(10, 2),
+          response_time_hours INTEGER DEFAULT 3,
+          completion_rate INTEGER DEFAULT 95,
+          profile_image_url TEXT,
+          about_summary TEXT,
+          geo_latitude DOUBLE PRECISION,
+          geo_longitude DOUBLE PRECISION,
+          accepts_insurance_claims BOOLEAN DEFAULT FALSE,
+          offers_estimates BOOLEAN DEFAULT FALSE,
+          is_directory_visible BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'shop_profiles'
+            AND column_name = 'user_id'
+            AND is_nullable = 'NO'
+          ) THEN
+            ALTER TABLE public.shop_profiles ALTER COLUMN user_id DROP NOT NULL;
+          END IF;
+        END $$;
+
+        ALTER TABLE public.shop_profiles
+          ADD COLUMN IF NOT EXISTS clerk_user_id TEXT,
+          ADD COLUMN IF NOT EXISTS website_user_key TEXT,
+          ADD COLUMN IF NOT EXISTS website TEXT,
+          ADD COLUMN IF NOT EXISTS business_hours TEXT,
+          ADD COLUMN IF NOT EXISTS insurer_programs TEXT[] DEFAULT '{}',
+          ADD COLUMN IF NOT EXISTS supported_makes TEXT[] DEFAULT '{}',
+          ADD COLUMN IF NOT EXISTS average_ticket_value NUMERIC(10, 2),
+          ADD COLUMN IF NOT EXISTS response_time_hours INTEGER DEFAULT 3,
+          ADD COLUMN IF NOT EXISTS completion_rate INTEGER DEFAULT 95,
+          ADD COLUMN IF NOT EXISTS profile_image_url TEXT,
+          ADD COLUMN IF NOT EXISTS about_summary TEXT,
+          ADD COLUMN IF NOT EXISTS geo_latitude DOUBLE PRECISION,
+          ADD COLUMN IF NOT EXISTS geo_longitude DOUBLE PRECISION,
+          ADD COLUMN IF NOT EXISTS accepts_insurance_claims BOOLEAN DEFAULT FALSE,
+          ADD COLUMN IF NOT EXISTS offers_estimates BOOLEAN DEFAULT FALSE,
+          ADD COLUMN IF NOT EXISTS is_directory_visible BOOLEAN DEFAULT TRUE;
+
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_shop_profiles_website_user_key
+          ON public.shop_profiles(website_user_key);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_shop_profiles_clerk_user_id
+          ON public.shop_profiles(clerk_user_id);
+
+        ALTER TABLE public.shop_profiles ENABLE ROW LEVEL SECURITY;
+
+        DROP TRIGGER IF EXISTS set_updated_at ON public.shop_profiles;
+        CREATE TRIGGER set_updated_at
+          BEFORE UPDATE ON public.shop_profiles
+          FOR EACH ROW
+          EXECUTE FUNCTION public.handle_updated_at();
+
+        -- Create provider-agnostic insurer profiles table
+        CREATE TABLE IF NOT EXISTS public.insurer_profiles (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+          clerk_user_id TEXT,
+          website_user_key TEXT,
+          company_name TEXT NOT NULL,
+          company_address TEXT,
+          company_city TEXT,
+          company_state TEXT,
+          company_zip TEXT,
+          company_phone TEXT,
+          license_number TEXT,
+          license_state TEXT,
+          website TEXT,
+          claim_types TEXT[] DEFAULT '{}',
+          preferred_shops BOOLEAN DEFAULT FALSE,
+          auto_approval BOOLEAN DEFAULT FALSE,
+          max_claim_amount NUMERIC(10, 2),
+          description TEXT,
+          repair_program_focus TEXT[] DEFAULT '{}',
+          benefits TEXT[] DEFAULT '{}',
+          account_connection_notes TEXT[] DEFAULT '{}',
+          digital_claims_experience TEXT DEFAULT 'standard',
+          popular BOOLEAN DEFAULT FALSE,
+          profile_image_url TEXT,
+          is_directory_visible BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMPTZ DEFAULT NOW(),
+          updated_at TIMESTAMPTZ DEFAULT NOW()
+        );
+
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'insurer_profiles'
+            AND column_name = 'user_id'
+            AND is_nullable = 'NO'
+          ) THEN
+            ALTER TABLE public.insurer_profiles ALTER COLUMN user_id DROP NOT NULL;
+          END IF;
+        END $$;
+
+        ALTER TABLE public.insurer_profiles
+          ADD COLUMN IF NOT EXISTS clerk_user_id TEXT,
+          ADD COLUMN IF NOT EXISTS website_user_key TEXT,
+          ADD COLUMN IF NOT EXISTS website TEXT,
+          ADD COLUMN IF NOT EXISTS claim_types TEXT[] DEFAULT '{}',
+          ADD COLUMN IF NOT EXISTS preferred_shops BOOLEAN DEFAULT FALSE,
+          ADD COLUMN IF NOT EXISTS auto_approval BOOLEAN DEFAULT FALSE,
+          ADD COLUMN IF NOT EXISTS max_claim_amount NUMERIC(10, 2),
+          ADD COLUMN IF NOT EXISTS description TEXT,
+          ADD COLUMN IF NOT EXISTS repair_program_focus TEXT[] DEFAULT '{}',
+          ADD COLUMN IF NOT EXISTS benefits TEXT[] DEFAULT '{}',
+          ADD COLUMN IF NOT EXISTS account_connection_notes TEXT[] DEFAULT '{}',
+          ADD COLUMN IF NOT EXISTS digital_claims_experience TEXT DEFAULT 'standard',
+          ADD COLUMN IF NOT EXISTS popular BOOLEAN DEFAULT FALSE,
+          ADD COLUMN IF NOT EXISTS profile_image_url TEXT,
+          ADD COLUMN IF NOT EXISTS is_directory_visible BOOLEAN DEFAULT TRUE;
+
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_insurer_profiles_website_user_key
+          ON public.insurer_profiles(website_user_key);
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_insurer_profiles_clerk_user_id
+          ON public.insurer_profiles(clerk_user_id);
+
+        ALTER TABLE public.insurer_profiles ENABLE ROW LEVEL SECURITY;
+
+        DROP TRIGGER IF EXISTS set_updated_at ON public.insurer_profiles;
+        CREATE TRIGGER set_updated_at
+          BEFORE UPDATE ON public.insurer_profiles
           FOR EACH ROW
           EXECUTE FUNCTION public.handle_updated_at();
 

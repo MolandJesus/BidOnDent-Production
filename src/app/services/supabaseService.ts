@@ -5,3 +5,5 @@ export * from "./supabase/profiles";
 export * from "./supabase/vehicles";
 export * from "./supabase/reports";
 export * from "./supabase/storage";
+export * from "./supabase/workflow";
+export * from "./supabase/admin";

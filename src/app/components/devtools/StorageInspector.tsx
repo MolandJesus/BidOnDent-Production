@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { X, Database, HardDrive, Trash2, RefreshCw, CheckCircle, AlertCircle } from "lucide-react";
-import { supabase } from "../../services/supabaseService";
+import {
+  getDamageReports,
+  getProfile,
+  getVehicles,
+} from "../../services/supabaseService";
 
 interface StorageInspectorProps {
   onClose: () => void;
@@ -42,35 +46,15 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
 
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        setSupabaseData({ error: "No authenticated user" });
-        return;
-      }
-
-      // Get profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      // Get vehicles
-      const { data: vehicles } = await supabase
-        .from('vehicles')
-        .select('*')
-        .eq('user_id', user.id);
-
-      // Get damage reports
-      const { data: reports } = await supabase
-        .from('damage_reports')
-        .select('*')
-        .eq('user_id', user.id);
+      const [profile, vehicles, reports] = await Promise.all([
+        getProfile(userEmail),
+        getVehicles(userEmail),
+        getDamageReports(userEmail),
+      ]);
 
       setSupabaseData({
-        user_id: user.id,
-        email: user.email,
+        user_id: profile?.user_id || profile?.clerk_user_id || null,
+        email: profile?.email || userEmail,
         profile: profile || null,
         vehicles: vehicles || [],
         damage_reports: reports || [],

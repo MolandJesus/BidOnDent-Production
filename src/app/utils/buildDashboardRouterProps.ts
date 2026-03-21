@@ -1,6 +1,8 @@
 import type { UserProfile } from "../services/clerkService";
+import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
+import { deleteVehicle } from "../services/supabaseService";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData>;
@@ -10,11 +12,13 @@ type BuildDashboardRouterPropsArgs = {
   userProfile: UserProfile;
   userData: UserDataState;
   submitBid: (reportId: string, bidAmount: number) => void;
+  handleDeleteAccount: () => Promise<void>;
   handleLogout: () => Promise<void>;
   onReportSubmit: (report: any) => Promise<void>;
   primaryColor: string;
   secondaryColor: string;
   userImageUrl: string;
+  websiteIdentity?: WebsiteIdentity | null;
 };
 
 export function buildDashboardRouterProps({
@@ -22,11 +26,13 @@ export function buildDashboardRouterProps({
   userProfile,
   userData,
   submitBid,
+  handleDeleteAccount,
   handleLogout,
   onReportSubmit,
   primaryColor,
   secondaryColor,
-  userImageUrl
+  userImageUrl,
+  websiteIdentity,
 }: BuildDashboardRouterPropsArgs) {
   return {
     currentTab: navigation.currentTab,
@@ -40,16 +46,15 @@ export function buildDashboardRouterProps({
     userInfo: {
       name: userProfile.name,
       email: userProfile.email,
-      profileImage: userImageUrl
+      profileImage: userImageUrl,
     },
     userPhone: userProfile.phone,
     vehicles: userData.vehicles,
     reports: userData.reports,
     bids: userData.bids,
     photoStorage: userData.photoStorage,
-    selectedReportId: navigation.selectedReportId === null
-      ? null
-      : navigation.selectedReportId.toString(),
+    selectedReportId: navigation.selectedReportId,
+    websiteIdentity,
     primaryColor,
     secondaryColor,
     onStartReport: () => {
@@ -83,19 +88,19 @@ export function buildDashboardRouterProps({
       navigation.setViewMode("dashboard");
     },
     onViewShops: () => {
-      navigation.setViewMode("shop-directory" as any);
+      navigation.setViewMode("shop-directory");
     },
     onCreateNewClaim: () => {
       navigation.setViewMode("new-claim");
     },
     onViewCompetitors: () => {
-      navigation.setViewMode("competitor-analysis" as any);
+      navigation.setViewMode("competitor-analysis");
     },
     onViewInsurers: () => {
-      navigation.setViewMode("insurance-companies" as any);
+      navigation.setViewMode("insurance-companies");
     },
     onSelectReport: (reportId: string) => {
-      navigation.setSelectedReportId(parseInt(reportId));
+      navigation.setSelectedReportId(reportId);
     },
     onViewModeChange: (mode: string) => {
       navigation.setViewMode(mode as any);
@@ -117,11 +122,16 @@ export function buildDashboardRouterProps({
     onExitDemoMode: () => {
       navigation.exitDemoMode();
     },
-    onProfileUpdate: (info: { name: string; email: string; profileImage?: string; phone?: string }) => {
+    onProfileUpdate: (info: {
+      name: string;
+      email: string;
+      profileImage?: string;
+      phone?: string;
+    }) => {
       userData.setUserInfo({
         name: info.name,
         email: info.email,
-        profileImage: info.profileImage || ""
+        profileImage: info.profileImage || "",
       });
       if (info.phone) {
         userData.setUserPhone(info.phone);
@@ -130,16 +140,30 @@ export function buildDashboardRouterProps({
     onPasswordChange: () => {
       console.log("Password change not implemented");
     },
-    onDeleteAccount: () => {
-      console.log("Delete account not implemented");
-    },
+    onDeleteAccount: handleDeleteAccount,
     onSaveVehicles: (vehicles: any[]) => {
+      // Detect vehicles that were removed and delete them from Supabase
+      const removedVehicles = userData.vehicles.filter(
+        (existing) => existing.id && !vehicles.some((v) => v.id === existing.id)
+      );
+      if (removedVehicles.length > 0) {
+        const clerkUserId = userProfile.id;
+        for (const removed of removedVehicles) {
+          if (removed.id) {
+            deleteVehicle(removed.id, clerkUserId).catch((err) =>
+              console.error("Failed to delete vehicle from Supabase:", err)
+            );
+          }
+        }
+      }
       userData.setVehicles(vehicles);
     },
     onSaveVehicle: (vehicle: any) => {
       const existingIndex = userData.vehicles.findIndex((entry) => entry.id === vehicle.id);
       if (existingIndex >= 0) {
-        userData.setVehicles(userData.vehicles.map((entry) => (entry.id === vehicle.id ? vehicle : entry)));
+        userData.setVehicles(
+          userData.vehicles.map((entry) => (entry.id === vehicle.id ? vehicle : entry))
+        );
       } else {
         userData.setVehicles([...userData.vehicles, vehicle]);
       }
@@ -148,6 +172,6 @@ export function buildDashboardRouterProps({
     onPhotoGuideComplete: () => {
       userData.setHasSeenPhotoGuide(true);
     },
-    onReportSubmit
+    onReportSubmit,
   };
 }

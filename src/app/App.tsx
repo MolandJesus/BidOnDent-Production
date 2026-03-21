@@ -2,12 +2,15 @@ import { ClerkProvider, useUser, useClerk } from "@clerk/clerk-react";
 
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
+import { buildWebsiteIdentity } from "./services/auth/websiteIdentity";
 
 // Import custom hooks (for non-auth state management)
 import { useUserData } from "./hooks/useUserData";
 import { useNavigation } from "./hooks/useNavigation";
 import { useAppEffects } from "./hooks/useAppEffects";
 import { useAppHandlers } from "./hooks/useAppHandlers";
+import { useWebsiteSessionSync } from "./hooks/useWebsiteSessionSync";
+import { useBusinessProfile } from "./hooks/useBusinessProfile";
 
 // Import constants
 import {
@@ -31,7 +34,6 @@ import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 
-import { projectId, publicAnonKey } from "../../utils/supabase/info";
 import { clerkPublishableKey } from "../../utils/clerk/info";
 
 // Validate Clerk key
@@ -50,25 +52,43 @@ function AppContent() {
   const { user, isLoaded: isUserLoaded } = useUser();
   const { signOut, openSignUp } = useClerk();
   const userProfile = user ? extractUserProfile(user) : null;
+  const websiteIdentity = userProfile
+    ? buildWebsiteIdentity({
+        provider: "clerk",
+        providerUserId: user?.id,
+        email: userProfile.email,
+        displayName: userProfile.name || user.fullName,
+        sessionHint: String((user as any)?.lastSignInAt || ""),
+      })
+    : null;
+  const isWebsiteSessionHydrated = useWebsiteSessionSync(
+    websiteIdentity,
+    userProfile?.user_type
+  );
+  const {
+    businessProfile,
+    error: businessProfileError,
+    isLoading: isBusinessProfileLoading,
+    saveProfile: saveBusinessProfile,
+  } = useBusinessProfile(websiteIdentity, userProfile?.user_type);
 
   // ============================================================================
   // CUSTOM HOOKS - Centralized State Management
   // ============================================================================
 
   // User data state (profile, vehicles, reports, Supabase sync)
-  const userData = useUserData(user?.id);
+  const userData = useUserData(user?.id, websiteIdentity?.websiteUserKey, userProfile?.email);
 
   // Navigation state (tabs, views, modals, refs)
   const navigation = useNavigation();
 
-  const { handleLogin, handleLogout, submitBid, handleReportSubmit } = useAppHandlers({
+  const { handleLogin, handleDeleteAccount, handleLogout, submitBid, handleReportSubmit } = useAppHandlers({
+    deleteCurrentUser: user?.delete ? async () => user.delete() : undefined,
     userId: user?.id,
     signOut,
     openSignUp,
     userData,
     navigation,
-    projectId,
-    publicAnonKey,
   });
 
   useAppEffects({
@@ -143,6 +163,86 @@ function AppContent() {
       }
     : undefined;
 
+  const shouldWaitForBusinessProfile =
+    !!user &&
+    !!userProfile &&
+    userProfile.user_type !== "customer" &&
+    isBusinessProfileLoading;
+  const shouldShowBusinessOnboarding =
+    !!user &&
+    !!userProfile &&
+    userProfile.user_type !== "customer" &&
+    !isBusinessProfileLoading &&
+    !businessProfileError &&
+    !businessProfile;
+
+  const handleShopOnboardingComplete = async (data: any) => {
+    if (!websiteIdentity || !userProfile) {
+      return;
+    }
+
+    await saveBusinessProfile({
+      aboutSummary: `${data.shopName} is now part of the BidOnDent network for ${data.city}, ${data.state}.`,
+      acceptsInsuranceClaims: !!data.insurance,
+      averageRating: 4.7,
+      averageTicketValue: data.specialties?.includes("Luxury Vehicles") ? 1050 : 890,
+      businessAddress: data.address,
+      businessCity: data.city,
+      businessHours: data.hours,
+      businessName: data.shopName,
+      businessPhone: data.phone,
+      businessState: data.state,
+      businessZip: data.zip,
+      certifications: data.certifications || [],
+      completionRate: 95,
+      insurerPrograms: data.insurance ? ["Progressive", "State Farm"] : [],
+      isAcceptingBids: true,
+      isDirectoryVisible: true,
+      offersEstimates: !!data.estimates,
+      profileImageUrl: null,
+      responseTimeHours: 3,
+      specialties: data.specialties || [],
+      supportedMakes: [],
+      totalReviews: 0,
+      website: data.website || null,
+    });
+  };
+
+  const handleInsurerOnboardingComplete = async (data: any) => {
+    if (!websiteIdentity || !userProfile) {
+      return;
+    }
+
+    await saveBusinessProfile({
+      accountConnectionNotes: [
+        "Provider-agnostic insurer profile created from onboarding",
+        data.autoApproval
+          ? "Auto-approval is enabled for qualified claims"
+          : "Manual review stays in place for higher-touch claims",
+      ],
+      autoApproval: !!data.autoApproval,
+      benefits: ["Claims routing", "Repair-network coordination"],
+      claimTypes: data.claimTypes || [],
+      companyAddress: data.address,
+      companyCity: data.city,
+      companyName: data.companyName,
+      companyPhone: data.phone,
+      companyState: data.state,
+      companyZip: data.zip,
+      description: `${data.companyName} is now available in the BidOnDent insurer directory.`,
+      digitalClaimsExperience: data.autoApproval ? "excellent" : "strong",
+      isDirectoryVisible: true,
+      licenseNumber: data.licenseNumber,
+      licenseState: data.state,
+      maxClaimAmount: data.maxClaimAmount ? Number(data.maxClaimAmount) : null,
+      popular: false,
+      preferredShops: !!data.preferredShops,
+      profileImageUrl: null,
+      repairProgramFocus: data.claimTypes || [],
+      website: data.website || null,
+    });
+  };
+
   const renderLandingPage = (isLoggedIn: boolean) => (
     <LandingPageLayout
       isLoggedIn={isLoggedIn}
@@ -170,7 +270,11 @@ function AppContent() {
   // ============================================================================
 
   // Wait for Clerk to load
-  if (!isUserLoaded) {
+  if (
+    !isUserLoaded ||
+    (user && websiteIdentity && !isWebsiteSessionHydrated) ||
+    shouldWaitForBusinessProfile
+  ) {
     return <AppLoading />;
   }
 
@@ -181,22 +285,25 @@ function AppContent() {
       return <ClerkAccountTypeSelector />;
     }
 
-    // Show onboarding if needed
-    if (navigation.showOnboarding && !navigation.onboardingComplete) {
+    if (shouldShowBusinessOnboarding || (navigation.showOnboarding && !navigation.onboardingComplete)) {
       if (userProfile.user_type === "shop") {
         return (
           <ShopOnboarding
-            onComplete={() => {
+            onComplete={async (data) => {
+              await handleShopOnboardingComplete(data);
               navigation.setShowOnboarding(false);
               navigation.setOnboardingComplete(true);
             }}
             primaryColor={primaryColor}
           />
         );
-      } else if (userProfile.user_type === "insurer") {
+      }
+
+      if (userProfile.user_type === "insurer") {
         return (
           <InsurerOnboarding
-            onComplete={() => {
+            onComplete={async (data) => {
+              await handleInsurerOnboardingComplete(data);
               navigation.setShowOnboarding(false);
               navigation.setOnboardingComplete(true);
             }}
@@ -237,11 +344,13 @@ function AppContent() {
       userProfile,
       userData,
       submitBid,
+      handleDeleteAccount,
       handleLogout,
       onReportSubmit: handleReportSubmit,
       primaryColor,
       secondaryColor,
       userImageUrl: user?.imageUrl || "",
+      websiteIdentity,
     });
 
     return (

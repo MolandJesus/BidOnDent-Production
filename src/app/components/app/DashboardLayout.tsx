@@ -2,6 +2,7 @@ import { Bell, Car, Search, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Bid, NavTab, Notification, Vehicle } from "../../types";
+import NotificationCenter from "../dashboard/NotificationCenter";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
 
@@ -32,6 +33,7 @@ type DashboardLayoutProps = {
   userProfile: UserProfile;
   userImageUrl: string;
   notifications: Notification[];
+  notificationSyncActive: boolean;
   reports: any[];
   vehicles: Vehicle[];
   bids: Bid[];
@@ -40,6 +42,8 @@ type DashboardLayoutProps = {
   onMobileMenuTabClick: (tabId: string) => void;
   onProfileToggle: () => void;
   onOpenDemoMode?: () => void;
+  onMarkNotificationRead: (notificationId: string | number) => void;
+  onMarkAllNotificationsRead: () => void;
   profileDropdownData?: ProfileDropdownData;
   dashboardRouterProps: React.ComponentProps<typeof DashboardRouter>;
 };
@@ -54,6 +58,7 @@ export default function DashboardLayout({
   userProfile,
   userImageUrl,
   notifications,
+  notificationSyncActive,
   reports,
   vehicles,
   bids,
@@ -62,20 +67,30 @@ export default function DashboardLayout({
   onMobileMenuTabClick,
   onProfileToggle,
   onOpenDemoMode,
+  onMarkNotificationRead,
+  onMarkAllNotificationsRead,
   profileDropdownData,
   dashboardRouterProps,
 }: DashboardLayoutProps) {
   const [showTopProfileMenu, setShowTopProfileMenu] = useState(false);
   const [showSidebarProfilePanel, setShowSidebarProfilePanel] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const topProfileMenuRef = useRef<HTMLDivElement>(null);
+  const notificationCenterRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifications.filter((notification) => !notification.read).length;
   const activeTabLabel = currentNavTabs.find((tab) => tab.id === currentTab)?.label ?? "Dashboard";
 
   useEffect(() => {
     const onDocumentClick = (event: MouseEvent) => {
-      if (!topProfileMenuRef.current) return;
-      if (!topProfileMenuRef.current.contains(event.target as Node)) {
+      if (topProfileMenuRef.current && !topProfileMenuRef.current.contains(event.target as Node)) {
         setShowTopProfileMenu(false);
+      }
+
+      if (
+        notificationCenterRef.current &&
+        !notificationCenterRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifications(false);
       }
     };
 
@@ -166,6 +181,7 @@ export default function DashboardLayout({
                   }}
                   userType={profileDropdownData.userType}
                   notifications={notifications}
+                  notificationSyncActive={notificationSyncActive}
                   isOpen={showSidebarProfilePanel}
                   onNavigate={profileDropdownData.onNavigate}
                   onLogout={profileDropdownData.onLogout}
@@ -255,16 +271,52 @@ export default function DashboardLayout({
                   />
                 </div>
 
-                <button className="relative w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition-colors">
-                  <Bell className="w-5 h-5 text-slate-600" />
-                  {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
-                  )}
-                </button>
+                <div className="relative" ref={notificationCenterRef}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowNotifications((current) => !current);
+                      setShowTopProfileMenu(false);
+                    }}
+                    className="relative w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50 transition-colors"
+                    aria-label="Open notifications"
+                    aria-expanded={showNotifications}
+                  >
+                    <Bell className="w-5 h-5 text-slate-600" />
+                    {unreadCount > 0 && (
+                      <>
+                        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
+                        <span className="absolute -right-1.5 -top-1.5 min-w-5 rounded-full bg-slate-950 px-1.5 py-0.5 text-center text-[10px] font-semibold leading-none text-white">
+                          {unreadCount > 9 ? "9+" : unreadCount}
+                        </span>
+                      </>
+                    )}
+                  </button>
+
+                  {profileDropdownData ? (
+                    <NotificationCenter
+                      isOpen={showNotifications}
+                      userType={profileDropdownData.userType}
+                      notifications={notifications}
+                      notificationSyncActive={notificationSyncActive}
+                      activeReportsCount={reports.length}
+                      onClose={() => setShowNotifications(false)}
+                      onNavigate={(destination, tab) => {
+                        profileDropdownData.onNavigate(destination, tab);
+                        setShowNotifications(false);
+                      }}
+                      onMarkNotificationRead={onMarkNotificationRead}
+                      onMarkAllRead={onMarkAllNotificationsRead}
+                    />
+                  ) : null}
+                </div>
 
                 <div className="relative" ref={topProfileMenuRef}>
                   <button
-                    onClick={() => setShowTopProfileMenu((current) => !current)}
+                    onClick={() => {
+                      setShowTopProfileMenu((current) => !current);
+                      setShowNotifications(false);
+                    }}
                     className="flex items-center gap-2 px-1.5 py-1.5 rounded-xl hover:bg-slate-100 transition-colors"
                   >
                     {userImageUrl ? (
@@ -335,8 +387,8 @@ export default function DashboardLayout({
             </div>
           </header>
 
-          <main className="px-4 md:px-8 lg:px-10 2xl:px-12 py-5 md:py-6 pb-24 md:pb-8">
-            <div className="w-full">
+          <main className="px-4 md:px-8 py-5 md:py-6 pb-24 md:pb-8">
+            <div className="max-w-[1400px]">
               <DashboardRouter {...dashboardRouterProps} />
             </div>
           </main>

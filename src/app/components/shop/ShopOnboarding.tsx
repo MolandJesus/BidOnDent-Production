@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 type ShopOnboardingProps = {
   primaryColor?: string;
   secondaryColor?: string;
-  onComplete: (data: any) => void;
+  onComplete: (data: any) => Promise<void> | void;
 };
 
 export default function ShopOnboarding({
@@ -14,6 +14,7 @@ export default function ShopOnboarding({
   onComplete
 }: ShopOnboardingProps) {
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     shopName: "",
     address: "",
@@ -65,8 +66,21 @@ export default function ShopOnboarding({
     setStep(step - 1);
   };
 
-  const handleComplete = () => {
-    onComplete(formData);
+  const handleComplete = async () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await onComplete(formData);
+    } catch (error) {
+      console.error("Error completing shop onboarding:", error);
+      window.alert("We couldn't save the shop profile yet. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const progress = Math.round((step / 4) * 100);
@@ -93,7 +107,7 @@ export default function ShopOnboarding({
         {step === 1 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -181,7 +195,7 @@ export default function ShopOnboarding({
                     // Auto-format phone number as (XXX) XXX-XXXX
                     let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
                     if (value.length > 10) value = value.slice(0, 10); // Limit to 10 digits
-                    
+
                     let formatted = '';
                     if (value.length > 0) {
                       formatted = '(' + value.substring(0, 3);
@@ -192,11 +206,11 @@ export default function ShopOnboarding({
                         formatted += '-' + value.substring(6, 10);
                       }
                     }
-                    
+
                     setFormData({...formData, phone: formatted || value});
                   }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="(555) 123-4567"
+                  placeholder="Phone number"
                   inputMode="numeric"
                 />
               </div>
@@ -235,7 +249,7 @@ export default function ShopOnboarding({
         {step === 2 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -290,7 +304,7 @@ export default function ShopOnboarding({
         {step === 3 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
               >
@@ -385,7 +399,7 @@ export default function ShopOnboarding({
         {step === 4 && (
           <div>
             <div className="mb-6">
-              <div 
+              <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ backgroundColor: "#34D399" }}
               >
@@ -428,7 +442,8 @@ export default function ShopOnboarding({
             <div className="flex gap-3 mt-6">
               <motion.button
                 onClick={handleBack}
-                className="flex-1 py-3 px-4 border border-gray-300 rounded-md font-medium"
+                disabled={isSubmitting}
+                className="flex-1 py-3 px-4 border border-gray-300 rounded-md font-medium disabled:opacity-60"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -436,7 +451,8 @@ export default function ShopOnboarding({
               </motion.button>
               <motion.button
                 onClick={handleComplete}
-                className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center"
+                disabled={isSubmitting}
+                className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-70"
                 style={{ backgroundColor: primaryColor }}
                 whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
                 whileTap={{ scale: 0.98 }}
@@ -444,7 +460,7 @@ export default function ShopOnboarding({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
               >
-                Complete Setup
+                {isSubmitting ? "Saving..." : "Complete Setup"}
                 <Check className="w-5 h-5 ml-2" />
               </motion.button>
             </div>

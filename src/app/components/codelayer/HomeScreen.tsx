@@ -195,9 +195,9 @@ export default function HomeScreen({
     },
     {
       title: "Find Shops",
-      description: "Browse trusted repair shops",
+      description: "Browse smart-matched repair shops",
       icon: Wrench,
-      onClick: onViewLikedShops,
+      onClick: onViewShops || onViewLikedShops,
     },
   ];
 

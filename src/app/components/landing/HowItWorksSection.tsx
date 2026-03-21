@@ -25,14 +25,14 @@ export default function HowItWorksSection({
       number: 2,
       title: "Receive Bids",
       description:
-        "Local certified shops review your request and submit competitive repair quotes.",
+        "Local certified shops review your request and submit competitive repair quotes with scope, timeline, and cost details.",
     },
     {
       icon: Wrench,
       number: 3,
       title: "Choose and Repair",
       description:
-        "Compare bids side by side, select the best option for you, and schedule your repair with confidence.",
+        "Compare bids side by side, select the best option for you, and move into scheduling with tracked status updates.",
     },
   ];
 

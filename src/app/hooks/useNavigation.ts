@@ -30,7 +30,7 @@ export function useNavigation() {
   // Use lazy initialization to only load once on mount
   const [currentTab, setCurrentTab] = useState(() => loadSavedState().currentTab);
   const [viewMode, setViewMode] = useState<ViewMode>(() => loadSavedState().viewMode);
-  const [selectedReportId, setSelectedReportId] = useState<number | null>(() => loadSavedState().selectedReportId);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(() => loadSavedState().selectedReportId);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -68,7 +68,7 @@ export function useNavigation() {
   };
 
   // Navigate to a specific view mode
-  const navigateToView = (mode: ViewMode, reportId?: number) => {
+  const navigateToView = (mode: ViewMode, reportId?: string) => {
     setViewMode(mode);
     if (reportId !== undefined) {
       setSelectedReportId(reportId);

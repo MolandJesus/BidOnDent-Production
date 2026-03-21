@@ -1,9 +1,14 @@
-import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
 import { supabase } from "./client";
+import {
+  requestSupabaseEdge,
+  SUPABASE_EDGE_ROUTES,
+  SUPABASE_STORAGE_BUCKETS,
+  type SupportedSupabaseBucket,
+} from "./runtime";
 
 export async function uploadPhoto(
   file: File | Blob,
-  bucket: "bidondent-profiles" | "bidondent-vehicles" | "bidondent-damage-photos",
+  bucket: SupportedSupabaseBucket,
   fileName?: string
 ): Promise<string | null> {
   try {
@@ -18,31 +23,15 @@ export async function uploadPhoto(
 
     console.log(`📤 Uploading to bucket: ${bucket}`);
 
-    const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/make-server-9f243523/upload-photo`,
+    const { publicUrl } = await requestSupabaseEdge<{ publicUrl?: string }>(
+      SUPABASE_EDGE_ROUTES.uploadPhoto,
       {
+        body: formData,
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${publicAnonKey}`
-        },
-        body: formData
       }
     );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("❌ Server error uploading photo:", {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorData
-      });
-
-      return null;
-    }
-
-    const { publicUrl } = await response.json();
     console.log("✅ Photo uploaded successfully:", publicUrl);
-    return publicUrl;
+    return publicUrl || null;
   } catch (error) {
     console.error("❌ Exception in uploadPhoto:", error);
     return null;
@@ -51,7 +40,7 @@ export async function uploadPhoto(
 
 export async function deletePhoto(
   url: string,
-  bucket: "bidondent-profiles" | "bidondent-vehicles" | "bidondent-damage-photos"
+  bucket: SupportedSupabaseBucket
 ): Promise<boolean> {
   try {
     const urlParts = url.split("/");
@@ -98,7 +87,7 @@ export async function uploadImageToSupabase(base64: string, fileName: string): P
 
     console.log("✅ Image size acceptable, proceeding with upload...");
 
-    return await uploadPhoto(blob, "bidondent-damage-photos", fileName);
+    return await uploadPhoto(blob, SUPABASE_STORAGE_BUCKETS.reportMedia, fileName);
   } catch (error) {
     console.error("Error in uploadImageToSupabase:", error);
     return null;

@@ -7,20 +7,16 @@ import {
   Settings,
   Trash2,
   CheckSquare,
-  Shield,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { isAdmin } from "../../../utils/adminCheck";
 
 type AccountMenuProps = {
   userType: string;
-  userEmail?: string;
   onOpenSettings: () => void;
   onOpenPayment: () => void;
   onOpenShopProfile: () => void;
   onOpenHelp: () => void;
   onOpenSmokeTest?: () => void;
-  onOpenAdmin?: () => void;
   onOpenDeleteAccount: () => void;
   onLogout: () => void;
   onViewVehicles?: () => void;
@@ -28,20 +24,17 @@ type AccountMenuProps = {
 
 export default function AccountMenu({
   userType,
-  userEmail,
   onOpenSettings,
   onOpenPayment,
   onOpenShopProfile,
   onOpenHelp,
   onOpenSmokeTest,
-  onOpenAdmin,
   onOpenDeleteAccount,
   onLogout,
   onViewVehicles,
 }: AccountMenuProps) {
   const rowBaseClass =
     "w-full py-3.5 px-4 flex items-center justify-between rounded-xl transition-colors";
-  const canAccessAdmin = isAdmin(userEmail);
 
   return (
     <motion.section
@@ -103,18 +96,6 @@ export default function AccountMenu({
           </div>
           <ChevronRight className="w-5 h-5 text-slate-400" />
         </button>
-
-        {onOpenAdmin && canAccessAdmin && (
-          <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenAdmin}>
-            <div className="flex items-center">
-              <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
-                <Shield className="w-5 h-5" />
-              </span>
-              <span className="font-medium text-slate-900">Admin Dashboard</span>
-            </div>
-            <ChevronRight className="w-5 h-5 text-slate-400" />
-          </button>
-        )}
 
         {onOpenSmokeTest && (
           <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenSmokeTest}>

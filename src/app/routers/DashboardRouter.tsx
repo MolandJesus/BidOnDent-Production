@@ -1,12 +1,12 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
+import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 
 // Import all screens
 import HomeScreen from "../components/codelayer/HomeScreen";
 import ReportScreen from "../components/codelayer/ReportScreen";
 import BidsScreen from "../components/codelayer/BidsScreen";
 import AccountScreen from "../components/codelayer/AccountScreen";
-import AdminDashboard from "../components/admin/AdminDashboard";
 import ShopRequestsScreen from "../components/shop/ShopRequestsScreen";
 import ShopActiveJobsScreen from "../components/shop/ShopActiveJobsScreen";
 import LikedShopsScreen from "../components/shop/LikedShopsScreen";
@@ -23,7 +23,6 @@ import CompetitorAnalysisScreen from "../components/reports/CompetitorAnalysisSc
 import DemoAccountSwitcher from "../components/demo/DemoAccountSwitcher";
 import SmokeTestScreen from "../components/demo/SmokeTestScreen";
 import { SEED_DAMAGE_REPORTS } from "../constants";
-import { isAdmin } from "../utils/adminCheck";
 
 interface DashboardRouterProps {
   // Navigation state
@@ -43,6 +42,7 @@ interface DashboardRouterProps {
   bids: any[];
   photoStorage: { [key: string]: string[] };
   selectedReportId: string | null;
+  websiteIdentity?: WebsiteIdentity | null;
   demoMode?: boolean;
   originalAccountType?: "customer" | "shop" | "insurer" | null;
 
@@ -104,6 +104,7 @@ export default function DashboardRouter({
   bids,
   photoStorage,
   selectedReportId,
+  websiteIdentity,
   primaryColor,
   secondaryColor,
   onStartReport,
@@ -316,7 +317,11 @@ export default function DashboardRouter({
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.2 }}
           >
-            <InsurerPartnerShopsScreen primaryColor={primaryColor} />
+            <InsurerPartnerShopsScreen
+              primaryColor={primaryColor}
+              identity={websiteIdentity}
+              onOpenMap={() => onViewModeChange("shop-directory")}
+            />
           </motion.div>
         )}
 
@@ -336,9 +341,11 @@ export default function DashboardRouter({
               userEmail={userInfo.email}
               userPhone={userPhone}
               profileImage={userInfo.profileImage}
+              websiteIdentity={websiteIdentity}
               vehicles={vehicles}
               reports={reports}
               onLogout={onLogout}
+              onDeleteAccount={onDeleteAccount}
               onSaveProfile={async (data) => {
                 // Update user info with new data
                 onProfileUpdate({
@@ -359,51 +366,7 @@ export default function DashboardRouter({
               onOpenSmokeTest={() => {
                 onViewModeChange("smoke-test");
               }}
-              onOpenAdmin={() => {
-                onViewModeChange("admin");
-              }}
             />
-          </motion.div>
-        )}
-
-        {viewMode === "admin" && isAdmin(userInfo.email) && (
-          <motion.div
-            key="admin"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <AdminDashboard primaryColor={primaryColor} adminEmail={userInfo.email} />
-          </motion.div>
-        )}
-
-        {viewMode === "admin" && !isAdmin(userInfo.email) && (
-          <motion.div
-            key="admin-locked"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="px-4 md:px-6 py-6">
-              <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-                <h2 className="text-xl font-semibold text-slate-900">Admin access required</h2>
-                <p className="text-slate-600 mt-2">
-                  This section is only available to admin accounts.
-                </p>
-                <button
-                  className="mt-4 px-4 py-2 rounded-lg text-white"
-                  style={{ backgroundColor: primaryColor }}
-                  onClick={() => {
-                    onTabChange("account");
-                    onViewModeChange("dashboard");
-                  }}
-                >
-                  Return to Account
-                </button>
-              </div>
-            </div>
           </motion.div>
         )}
 
@@ -479,6 +442,9 @@ export default function DashboardRouter({
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
+              identity={websiteIdentity}
+              userType={userType}
+              reports={reports}
             />
           </motion.div>
         )}
@@ -494,8 +460,10 @@ export default function DashboardRouter({
           >
             <LikedShopsScreen
               onBack={() => onViewModeChange("dashboard")}
+              onOpenMap={() => onViewModeChange("shop-directory")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
+              identity={websiteIdentity}
             />
           </motion.div>
         )}
@@ -529,8 +497,27 @@ export default function DashboardRouter({
           >
             <ShopDirectoryScreen
               onBack={() => onViewModeChange("dashboard")}
+              onOpenRelatedScreen={() => {
+                if (userType === "shop") {
+                  onViewModeChange("competitor-analysis");
+                  return;
+                }
+
+                if (userType === "insurer") {
+                  onTabChange("shops");
+                  onViewModeChange("dashboard");
+                  return;
+                }
+
+                onViewModeChange("liked-shops");
+              }}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
+              identity={websiteIdentity}
+              userType={userType}
+              userInfo={userInfo}
+              vehicles={vehicles}
+              reports={reports}
             />
           </motion.div>
         )}
@@ -580,8 +567,10 @@ export default function DashboardRouter({
           >
             <CompetitorAnalysisScreen
               onBack={() => onViewModeChange("dashboard")}
+              onOpenMap={() => onViewModeChange("shop-directory")}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
+              identity={websiteIdentity}
             />
           </motion.div>
         )}

@@ -1,24 +1,26 @@
 import { motion } from "motion/react";
-import { Database, HardDrive, RefreshCw } from "lucide-react";
+import { Database, HardDrive, RefreshCw, UserPlus } from "lucide-react";
 
 type QuickActionsProps = {
   primaryColor: string;
   isLoading: boolean;
+  showNewAccountForm: boolean;
   operationStatus: string;
   onCheckAllAccounts: () => void;
+  onToggleNewAccountForm: () => void;
   onCheckEdgeFunctionHealth: () => void;
   onVerifyDatabase: () => void;
-  onCheckSupabaseConnection: () => void;
 };
 
 export default function QuickActions({
   primaryColor,
   isLoading,
+  showNewAccountForm,
   operationStatus,
   onCheckAllAccounts,
+  onToggleNewAccountForm,
   onCheckEdgeFunctionHealth,
-  onVerifyDatabase,
-  onCheckSupabaseConnection,
+  onVerifyDatabase
 }: QuickActionsProps) {
   return (
     <motion.div
@@ -43,6 +45,15 @@ export default function QuickActions({
         </button>
 
         <button
+          onClick={onToggleNewAccountForm}
+          disabled={isLoading}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        >
+          <UserPlus className="w-4 h-4" />
+          {showNewAccountForm ? "Cancel" : "Create Custom Test Account"}
+        </button>
+
+        <button
           onClick={onCheckEdgeFunctionHealth}
           disabled={isLoading}
           className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
@@ -58,15 +69,6 @@ export default function QuickActions({
         >
           <Database className="w-4 h-4" />
           Verify Database
-        </button>
-
-        <button
-          onClick={onCheckSupabaseConnection}
-          disabled={isLoading}
-          className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-        >
-          <Database className="w-4 h-4" />
-          Supabase Connection
         </button>
       </div>
 

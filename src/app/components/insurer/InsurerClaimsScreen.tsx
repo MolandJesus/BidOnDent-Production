@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { Search, MapPin, Calendar, Phone, Mail, FileText, ChevronRight, AlertCircle, CheckCircle, Clock, Building2, Image as ImageIcon, TrendingUp, XCircle } from "lucide-react";
+import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
+import { insurerLifecycle } from "../workflow/lifecycle-presets";
 
 type InsurerClaimsScreenProps = {
   primaryColor?: string;
+  reports?: any[];
   onApproveClaim?: (claimId: number, amount: number) => void;
 };
 
 export default function InsurerClaimsScreen({
   primaryColor = "#003d82",
+  reports = [],
   onApproveClaim
 }: InsurerClaimsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,124 +20,47 @@ export default function InsurerClaimsScreen({
   const [approvalAmount, setApprovalAmount] = useState("");
   const [showApprovalModal, setShowApprovalModal] = useState(false);
 
-  // Sample claims data - in production, this would come from Supabase
-  const sampleClaims = [
-    {
-      id: 1001,
-      claimNumber: "CLM-2024-1001",
-      customerName: "Sarah Johnson",
-      customerEmail: "sarah.j@email.com",
-      customerPhone: "(555) 123-4567",
-      policyNumber: "POL-5678-9012",
-      vehicle: "2022 Honda Accord",
-      vin: "1HGBH41JXMN109186",
-      damageType: "Front Bumper Collision",
-      incidentDate: "Dec 18, 2024",
-      reportedDate: "Dec 18, 2024",
-      estimatedDamage: 2500,
-      location: "San Francisco, CA",
-      status: "pending",
-      priority: "high",
-      photoCount: 6,
-      description: "Rear-ended at stop light. Front bumper damaged, headlight housing cracked. No injuries reported.",
-      shopAssigned: null,
-      shopBids: [
-        { shopName: "Express Auto Body", amount: 2450, rating: 4.8, distance: "2.3 miles" },
-        { shopName: "Premium Collision", amount: 2600, rating: 4.6, distance: "3.1 miles" },
-        { shopName: "Quick Fix Auto", amount: 2200, rating: 4.5, distance: "5.2 miles" }
-      ]
-    },
-    {
-      id: 1002,
-      claimNumber: "CLM-2024-1002",
-      customerName: "Michael Chen",
-      customerEmail: "m.chen@email.com",
-      customerPhone: "(555) 234-5678",
-      policyNumber: "POL-3456-7890",
-      vehicle: "2020 Toyota Camry",
-      vin: "4T1B11HK5LU234567",
-      damageType: "Side Panel & Door Damage",
-      incidentDate: "Dec 16, 2024",
-      reportedDate: "Dec 17, 2024",
-      estimatedDamage: 3200,
-      location: "Oakland, CA",
-      status: "reviewing",
-      priority: "medium",
-      photoCount: 8,
-      description: "Parking lot incident. Driver side door dented, side panel scratched. Minor paint damage.",
-      shopAssigned: "Express Auto Body",
-      shopContact: "(555) 987-6543",
-      approvedAmount: 3100
-    },
-    {
-      id: 1003,
-      claimNumber: "CLM-2024-1003",
-      customerName: "Emily Rodriguez",
-      customerEmail: "emily.r@email.com",
-      customerPhone: "(555) 345-6789",
-      policyNumber: "POL-8901-2345",
-      vehicle: "2019 Ford F-150",
-      vin: "1FTFW1ET5KFC12345",
-      damageType: "Rear Hatch & Frame",
-      incidentDate: "Dec 15, 2024",
-      reportedDate: "Dec 15, 2024",
-      estimatedDamage: 4500,
-      location: "San Jose, CA",
-      status: "approved",
-      priority: "high",
-      photoCount: 7,
-      description: "Backed into concrete pole. Rear hatch dented, taillight broken, possible frame damage.",
-      shopAssigned: "Premium Collision",
-      shopContact: "(555) 876-5432",
-      approvedAmount: 4200,
-      approvalDate: "Dec 16, 2024"
-    },
-    {
-      id: 1004,
-      claimNumber: "CLM-2024-1004",
-      customerName: "David Kim",
-      customerEmail: "d.kim@email.com",
-      customerPhone: "(555) 456-7890",
-      policyNumber: "POL-6789-0123",
-      vehicle: "2021 BMW 330i",
-      vin: "WBA8B9C51M1234567",
-      damageType: "Front End Collision",
-      incidentDate: "Dec 10, 2024",
-      reportedDate: "Dec 11, 2024",
-      estimatedDamage: 6800,
-      location: "San Francisco, CA",
-      status: "approved",
-      priority: "high",
-      photoCount: 10,
-      description: "Multi-vehicle collision. Hood damaged, both headlights broken, radiator support bent.",
-      shopAssigned: "Luxury Auto Repair",
-      shopContact: "(555) 765-4321",
-      approvedAmount: 6500,
-      approvalDate: "Dec 12, 2024"
-    },
-    {
-      id: 1005,
-      claimNumber: "CLM-2024-1005",
-      customerName: "Jennifer Lopez",
-      customerEmail: "j.lopez@email.com",
-      customerPhone: "(555) 567-8901",
-      policyNumber: "POL-4567-8901",
-      vehicle: "2023 Tesla Model 3",
-      vin: "5YJ3E1EA9PF123456",
-      damageType: "Minor Scratch",
-      incidentDate: "Dec 20, 2024",
-      reportedDate: "Dec 20, 2024",
-      estimatedDamage: 800,
-      location: "Palo Alto, CA",
-      status: "denied",
-      priority: "low",
-      photoCount: 3,
-      description: "Small scratch on passenger door. Appears to be cosmetic wear and tear.",
-      denialReason: "Pre-existing condition - normal wear and tear not covered under policy"
-    }
-  ];
+  // DEPRECATED: Sample claims data removed - component now expects live data from Supabase
+  // If no data is provided, shows empty state instead
 
-  const filteredClaims = sampleClaims.filter(claim => {
+  const liveClaims = reports.map((report: any, index: number) => {
+    const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+    const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
+    const rawStatus = String(report?.status ?? "pending").toLowerCase();
+    const status =
+      rawStatus === "completed"
+        ? "approved"
+        : rawStatus === "in-review"
+          ? "reviewing"
+          : "pending";
+    const estimatedDamage = (Number(report?.bidsCount) || 1) * 600;
+
+    return {
+      id: Number(index + 1),
+      claimNumber: `CLM-${String(index + 1).padStart(4, "0")}`,
+      customerName: "Customer",
+      customerEmail: "bidondent@gmail.com",
+      customerPhone: "N/A",
+      policyNumber: "Policy on file",
+      vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
+      vin: "Not provided",
+      damageType: report?.damageArea || report?.damageType || "Damage report",
+      incidentDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
+      reportedDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
+      estimatedDamage,
+      location: report?.location || "Service region",
+      status,
+      priority: estimatedDamage >= 1800 ? "high" : estimatedDamage >= 1000 ? "medium" : "low",
+      photoCount: Array.isArray(report?.photos) ? report.photos.length : 0,
+      description: report?.description || "Claim details pending review.",
+      shopAssigned: null,
+      approvedAmount: status === "approved" ? estimatedDamage : undefined,
+    };
+  });
+
+  const claimsSource = liveClaims.length > 0 ? liveClaims : [];
+
+  const filteredClaims = claimsSource.filter(claim => {
     const matchesSearch = claim.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          claim.claimNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          claim.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -186,7 +113,7 @@ export default function InsurerClaimsScreen({
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="px-4 py-4">
           <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>Claims Management</h1>
-          
+
           {/* Search & Filter */}
           <div className="space-y-3">
             <div className="relative">
@@ -318,6 +245,9 @@ export default function InsurerClaimsScreen({
                       {claim.shopContact}
                     </a>
                   )}
+                  {!claim.shopContact && (
+                    <p className="text-xs text-blue-600 mt-1">Contact info will be provided once shop confirms assignment</p>
+                  )}
                   {claim.approvalDate && (
                     <p className="text-xs text-blue-600 mt-1">Approved: {claim.approvalDate}</p>
                   )}
@@ -362,6 +292,14 @@ export default function InsurerClaimsScreen({
 
               {/* Actions */}
               <div className="p-4 bg-white border-t border-gray-100">
+                <div className="mb-3">
+                  <RepairLifecycleTimeline
+                    title="Claim Lifecycle"
+                    steps={insurerLifecycle(claim.status)}
+                    compact
+                  />
+                </div>
+
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   <a
                     href={`tel:${claim.customerPhone}`}

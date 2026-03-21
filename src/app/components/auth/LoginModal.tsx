@@ -1,6 +1,6 @@
 // Login and Signup Modal Component
 import { motion } from "motion/react";
-import { 
+import {
   X, Mail, Lock, EyeOff, Eye, Car, Wrench, Shield, ChevronRight, AlertCircle, Phone
 } from "lucide-react";
 import type { LoginView } from "../../types";
@@ -58,7 +58,7 @@ export default function LoginModal({
   if (!show) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       style={{
         backgroundImage: 'linear-gradient(135deg, rgba(0, 61, 130, 0.95) 0%, rgba(0, 93, 166, 0.95) 100%), url("https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1920")',
@@ -66,7 +66,7 @@ export default function LoginModal({
         backgroundPosition: 'center'
       }}
     >
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="bg-white rounded-lg shadow-xl max-w-md w-full p-6"
@@ -77,7 +77,7 @@ export default function LoginModal({
             {loginView === "signup" && "Create Account"}
             {loginView === "login" && "Log In"}
           </h3>
-          <button 
+          <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
           >
@@ -89,7 +89,7 @@ export default function LoginModal({
         {loginView === "main" && (
           <div className="space-y-4">
             <p className="text-gray-600 mb-6">Choose how you want to use Bidondent</p>
-            
+
             <motion.button
               onClick={() => {
                 onUserTypeSelect("customer");
@@ -112,7 +112,7 @@ export default function LoginModal({
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </motion.button>
-            
+
             <motion.button
               onClick={() => {
                 onUserTypeSelect("shop");
@@ -135,7 +135,7 @@ export default function LoginModal({
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </motion.button>
-            
+
             <motion.button
               onClick={() => {
                 onUserTypeSelect("insurer");
@@ -176,7 +176,7 @@ export default function LoginModal({
                 placeholder="Enter your full name"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
               <div className="relative">
@@ -188,12 +188,12 @@ export default function LoginModal({
                   onKeyDown={(e) => e.key === "Enter" && onSignup()}
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
                   style={{ focusRing: primaryColor }}
-                  placeholder="(555) 123-4567"
+                  placeholder="Phone number"
                   autoComplete="tel"
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <div className="relative">
@@ -234,10 +234,10 @@ export default function LoginModal({
                 </button>
               </div>
             </div>
-            
+
             <label className="flex items-center space-x-2 cursor-pointer">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={keepMeSignedIn}
                 onChange={(e) => onKeepMeSignedInChange(e.target.checked)}
                 className="w-4 h-4 rounded"
@@ -247,7 +247,7 @@ export default function LoginModal({
             </label>
 
             {signupError && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-2"
@@ -297,7 +297,7 @@ export default function LoginModal({
                 </svg>
                 <span className="text-sm">Google</span>
               </motion.button>
-              
+
               <motion.button
                 onClick={onSignup}
                 className="w-full py-2.5 px-4 border border-gray-300 rounded-md font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
@@ -369,10 +369,10 @@ export default function LoginModal({
                 </button>
               </div>
             </div>
-            
+
             <label className="flex items-center space-x-2 cursor-pointer">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={keepMeSignedIn}
                 onChange={(e) => onKeepMeSignedInChange(e.target.checked)}
                 className="w-4 h-4 rounded"
@@ -382,7 +382,7 @@ export default function LoginModal({
             </label>
 
             {loginError && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-2"
@@ -429,7 +429,7 @@ export default function LoginModal({
                 </svg>
                 <span className="text-sm">Google</span>
               </motion.button>
-              
+
               <motion.button
                 onClick={onLogin}
                 className="w-full py-2.5 px-4 border border-gray-300 rounded-md font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"

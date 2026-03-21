@@ -12,7 +12,7 @@ type RespondFunction = (body: any, status?: number, headers?: Record<string, str
 export function healthCheck(respond: RespondFunction): Response {
   return respond({
     status: 'ok',
-    version: '2026-02-13-v5',
+    version: '2026-03-21-v10',
     adminEmail: 'figmaadmin@bidondent.com'
   });
 }
