@@ -51,6 +51,18 @@ async function requireAdminContext(req: Request, supabase: any) {
   }
 }
 
+export type AdminProfileSummary = {
+  account_type: string
+  clerk_user_id?: string | null
+  created_at: string
+  email: string
+  is_admin?: boolean | null
+  name?: string | null
+  setup_completed?: boolean | null
+  user_id?: string | null
+  website_user_key?: string | null
+}
+
 /**
  * Setup or update the main admin account (figmaadmin@bidondent.com)
  */
@@ -335,6 +347,44 @@ export async function handleListUsers(
   try {
     const { data: authData } = await supabase.auth.admin.listUsers()
     return respond({ users: authData?.users || [] })
+  } catch (error: any) {
+    return respond({ error: error.message }, 500)
+  }
+}
+
+/**
+ * List website profiles for admin dashboards and diagnostics
+ */
+export async function handleListProfiles(
+  req: Request,
+  supabase: any,
+  respond: Function
+): Promise<Response> {
+  try {
+    const url = new URL(req.url)
+    const email = url.searchParams.get('email')?.trim().toLowerCase() || null
+
+    let query = supabase
+      .from('profiles')
+      .select(
+        'email, name, account_type, user_id, clerk_user_id, website_user_key, created_at, setup_completed, is_admin'
+      )
+      .order('created_at', { ascending: false })
+
+    if (email) {
+      query = query.eq('email', email)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      return respond({ error: error.message }, 500)
+    }
+
+    return respond({
+      profiles: (data || []) as AdminProfileSummary[],
+      success: true,
+    })
   } catch (error: any) {
     return respond({ error: error.message }, 500)
   }

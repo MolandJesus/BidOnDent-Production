@@ -1,7 +1,56 @@
 import { supabase } from "./client";
 import type { Vehicle } from "./types";
+import {
+  buildWebsiteIdentityQuery,
+  requestSupabaseEdge,
+  SUPABASE_EDGE_ROUTES,
+} from "./runtime";
+import type { WebsiteProfileIdentity } from "./profiles";
 
-export async function getVehicles(): Promise<Vehicle[]> {
+function normalizeVehicleIdentity(
+  identityOrClerkUserId?: string | WebsiteProfileIdentity | null
+): WebsiteProfileIdentity | null {
+  if (!identityOrClerkUserId) {
+    return null;
+  }
+
+  if (typeof identityOrClerkUserId !== "string") {
+    return identityOrClerkUserId;
+  }
+
+  if (identityOrClerkUserId.includes("@")) {
+    return { email: identityOrClerkUserId };
+  }
+
+  if (identityOrClerkUserId.startsWith("website-user-")) {
+    return { websiteUserKey: identityOrClerkUserId };
+  }
+
+  return { clerkUserId: identityOrClerkUserId };
+}
+
+export async function getVehicles(
+  identityOrClerkUserId?: string | WebsiteProfileIdentity | null
+): Promise<Vehicle[]> {
+  const identity = normalizeVehicleIdentity(identityOrClerkUserId);
+
+  if (identity?.clerkUserId || identity?.email || identity?.websiteUserKey) {
+    try {
+      const searchParams = buildWebsiteIdentityQuery(identity);
+      const payload = await requestSupabaseEdge<{ vehicles?: Vehicle[] }>(
+        `${SUPABASE_EDGE_ROUTES.vehicles}?${searchParams.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      return payload.vehicles || [];
+    } catch (error) {
+      console.error("Error in getVehicles edge path:", error);
+      return [];
+    }
+  }
+
   try {
     const {
       data: { user }
@@ -35,7 +84,23 @@ export async function getVehicles(): Promise<Vehicle[]> {
   }
 }
 
-export async function saveVehicle(vehicle: Vehicle): Promise<boolean> {
+export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promise<boolean> {
+  if (clerkUserId) {
+    try {
+      await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.vehicles, {
+        body: JSON.stringify({
+          clerkUserId,
+          vehicle,
+        }),
+        method: "POST",
+      });
+      return true;
+    } catch (error) {
+      console.error("Error in saveVehicle edge path:", error);
+      return false;
+    }
+  }
+
   try {
     const {
       data: { user }
@@ -51,7 +116,6 @@ export async function saveVehicle(vehicle: Vehicle): Promise<boolean> {
     const hasValidId = vehicle.id && uuidRegex.test(vehicle.id);
 
     if (hasValidId) {
-      console.log("🔄 Updating vehicle with ID:", vehicle.id);
       const { error } = await supabase
         .from("vehicles")
         .update({
@@ -71,12 +135,6 @@ export async function saveVehicle(vehicle: Vehicle): Promise<boolean> {
         return false;
       }
     } else {
-      if (vehicle.id && !hasValidId) {
-        console.log("⚠️ Invalid ID detected (timestamp?), creating new vehicle:", vehicle.id);
-      } else {
-        console.log("➕ Creating new vehicle");
-      }
-
       const { error } = await supabase.from("vehicles").insert({
         user_id: user.id,
         make: vehicle.make,
@@ -102,7 +160,23 @@ export async function saveVehicle(vehicle: Vehicle): Promise<boolean> {
   }
 }
 
-export async function deleteVehicle(vehicleId: string): Promise<boolean> {
+export async function deleteVehicle(vehicleId: string, clerkUserId?: string): Promise<boolean> {
+  if (clerkUserId) {
+    try {
+      await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.deleteVehicle, {
+        body: JSON.stringify({
+          clerkUserId,
+          vehicleId,
+        }),
+        method: "POST",
+      });
+      return true;
+    } catch (error) {
+      console.error("Error in deleteVehicle edge path:", error);
+      return false;
+    }
+  }
+
   try {
     const {
       data: { user }

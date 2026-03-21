@@ -1,7 +1,7 @@
 import type { UserProfile } from "../services/clerkService";
+import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
-import { logWorkflowEvent } from "../services/supabaseService";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData>;
@@ -10,23 +10,14 @@ type BuildDashboardRouterPropsArgs = {
   navigation: NavigationState;
   userProfile: UserProfile;
   userData: UserDataState;
-  submitBid: (
-    reportId: string,
-    bidAmount: number,
-    estimatedDays: number,
-    description: string
-  ) => Promise<void>;
+  submitBid: (reportId: string, bidAmount: number) => void;
+  handleDeleteAccount: () => Promise<void>;
   handleLogout: () => Promise<void>;
-  handleProfileUpdate: (info: {
-    name: string;
-    email: string;
-    phone?: string;
-    profileImage?: string;
-  }) => Promise<void>;
   onReportSubmit: (report: any) => Promise<void>;
   primaryColor: string;
   secondaryColor: string;
   userImageUrl: string;
+  websiteIdentity?: WebsiteIdentity | null;
 };
 
 export function buildDashboardRouterProps({
@@ -34,12 +25,13 @@ export function buildDashboardRouterProps({
   userProfile,
   userData,
   submitBid,
+  handleDeleteAccount,
   handleLogout,
-  handleProfileUpdate,
   onReportSubmit,
   primaryColor,
   secondaryColor,
   userImageUrl,
+  websiteIdentity
 }: BuildDashboardRouterPropsArgs) {
   return {
     currentTab: navigation.currentTab,
@@ -51,16 +43,17 @@ export function buildDashboardRouterProps({
     demoMode: navigation.demoMode,
     originalAccountType: userProfile.user_type,
     userInfo: {
-      name: userData.userInfo.name || userProfile.name,
+      name: userProfile.name,
       email: userProfile.email,
-      profileImage: userData.userInfo.profileImage || userImageUrl,
+      profileImage: userImageUrl
     },
-    userPhone: userData.userPhone || userProfile.phone,
+    userPhone: userProfile.phone,
     vehicles: userData.vehicles,
     reports: userData.reports,
     bids: userData.bids,
     photoStorage: userData.photoStorage,
     selectedReportId: navigation.selectedReportId,
+    websiteIdentity,
     primaryColor,
     secondaryColor,
     onStartReport: () => {
@@ -70,13 +63,6 @@ export function buildDashboardRouterProps({
     onSubmitBid: submitBid,
     onViewAllReports: () => {
       navigation.setViewMode("reports-list");
-    },
-    onViewCoverage: () => {
-      navigation.setShowLandingPage(true);
-      navigation.setShowProfileDropdown(false);
-      window.setTimeout(() => {
-        document.getElementById("coverage")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 50);
     },
     onConnectInsurance: () => {
       navigation.setViewMode("insurer-connect");
@@ -101,16 +87,16 @@ export function buildDashboardRouterProps({
       navigation.setViewMode("dashboard");
     },
     onViewShops: () => {
-      navigation.setViewMode("shop-directory" as any);
+      navigation.setViewMode("shop-directory");
     },
     onCreateNewClaim: () => {
       navigation.setViewMode("new-claim");
     },
     onViewCompetitors: () => {
-      navigation.setViewMode("competitor-analysis" as any);
+      navigation.setViewMode("competitor-analysis");
     },
     onViewInsurers: () => {
-      navigation.setViewMode("insurance-companies" as any);
+      navigation.setViewMode("insurance-companies");
     },
     onSelectReport: (reportId: string) => {
       navigation.setSelectedReportId(reportId);
@@ -122,41 +108,6 @@ export function buildDashboardRouterProps({
       navigation.setCurrentTab(tab);
     },
     onLogout: handleLogout,
-    onAcceptBid: (details: { shopName: string; price: number; timeframe: string }) => {
-      userData.setActivities([
-        {
-          id: Date.now().toString(),
-          timestamp: Date.now(),
-          type: "job_accepted",
-          message: `Accepted bid from ${details.shopName} for $${details.price.toLocaleString()}`,
-          metadata: {
-            shopName: details.shopName,
-            price: details.price,
-            timeframe: details.timeframe,
-          },
-        },
-        ...userData.activities,
-      ] as any);
-
-      void logWorkflowEvent({
-        event_type: "bid_selected",
-        source: "dashboard",
-        payload: {
-          shop_name: details.shopName,
-          amount: details.price,
-          timeframe: details.timeframe,
-        },
-      });
-
-      void logWorkflowEvent({
-        event_type: "repair_scheduled",
-        source: "dashboard",
-        payload: {
-          shop_name: details.shopName,
-          timeframe: details.timeframe,
-        },
-      });
-    },
     onEnterDemoMode: () => {
       navigation.setViewMode("demo-switcher" as any);
     },
@@ -170,25 +121,35 @@ export function buildDashboardRouterProps({
     onExitDemoMode: () => {
       navigation.exitDemoMode();
     },
-    onProfileUpdate: handleProfileUpdate,
+    onProfileUpdate: (info: { name: string; email: string; profileImage?: string; phone?: string }) => {
+      userData.setUserInfo({
+        name: info.name,
+        email: info.email,
+        profileImage: info.profileImage || ""
+      });
+      if (info.phone) {
+        userData.setUserPhone(info.phone);
+      }
+    },
+    onPasswordChange: () => {
+      console.log("Password change not implemented");
+    },
+    onDeleteAccount: handleDeleteAccount,
     onSaveVehicles: (vehicles: any[]) => {
       userData.setVehicles(vehicles);
-      void userData.saveVehicles(vehicles);
     },
     onSaveVehicle: (vehicle: any) => {
       const existingIndex = userData.vehicles.findIndex((entry) => entry.id === vehicle.id);
-      const nextVehicles =
-        existingIndex >= 0
-          ? userData.vehicles.map((entry) => (entry.id === vehicle.id ? vehicle : entry))
-          : [...userData.vehicles, vehicle];
-
-      userData.setVehicles(nextVehicles);
-      void userData.saveVehicles(nextVehicles);
+      if (existingIndex >= 0) {
+        userData.setVehicles(userData.vehicles.map((entry) => (entry.id === vehicle.id ? vehicle : entry)));
+      } else {
+        userData.setVehicles([...userData.vehicles, vehicle]);
+      }
     },
     hasSeenPhotoGuide: userData.hasSeenPhotoGuide,
     onPhotoGuideComplete: () => {
       userData.setHasSeenPhotoGuide(true);
     },
-    onReportSubmit,
+    onReportSubmit
   };
 }

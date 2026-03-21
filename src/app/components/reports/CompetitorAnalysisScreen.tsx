@@ -1,218 +1,237 @@
-import { ArrowLeft, Search, Star, MapPin, TrendingUp, TrendingDown, Award, Clock, DollarSign, Wrench, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  Award,
+  Bookmark,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  MapPin,
+  Search,
+  Star,
+  TrendingDown,
+  TrendingUp,
+  Wrench,
+} from "lucide-react";
+import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
+import {
+  loadWebsiteSessionMemory,
+  updateWebsiteSessionMemory,
+} from "../../services/auth/websiteIdentity";
+import { buildShopMapListings, toggleRoleCollectionShopId } from "../../services/intelligence/shopMapExperience";
+import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 
 interface CompetitorAnalysisScreenProps {
   onBack: () => void;
+  onOpenMap?: () => void;
   primaryColor: string;
   secondaryColor: string;
+  identity?: WebsiteIdentity | null;
 }
 
-interface CompetitorShop {
-  id: string;
-  name: string;
-  rating: number;
-  reviewCount: number;
-  location: string;
-  distance: string;
-  specialties: string[];
-  avgRepairTime: string;
-  avgCost: string;
-  monthlyJobs: number;
-  certifications: string[];
-  trending: "up" | "down" | "stable";
-  verified: boolean;
+type SortMode = "rating" | "jobs" | "distance";
+
+function deriveMonthlyJobs(reviewCount: number, completionRate: number, capacityBand: string) {
+  const capacityBoost =
+    capacityBand === "high-capacity" ? 34 : capacityBand === "balanced" ? 18 : 8;
+
+  return Math.max(24, Math.round(reviewCount * 0.42 + completionRate * 0.38 + capacityBoost));
 }
 
-export default function CompetitorAnalysisScreen({ 
-  onBack, 
-  primaryColor, 
-  secondaryColor 
+function deriveAverageRepairDays(completionRate: number, responseTimeHours: number, capacityBand: string) {
+  const capacityDelta = capacityBand === "boutique" ? 0.8 : capacityBand === "high-capacity" ? -0.5 : 0;
+  const days = 4.2 - (completionRate - 90) * 0.05 + responseTimeHours * 0.08 + capacityDelta;
+  return `${Math.max(2.2, Math.round(days * 10) / 10).toFixed(1)} days`;
+}
+
+function deriveTrendingState(recommendationScore: number, completionRate: number) {
+  if (recommendationScore >= 90 || completionRate >= 98) {
+    return "up";
+  }
+
+  if (completionRate <= 93) {
+    return "down";
+  }
+
+  return "stable";
+}
+
+export default function CompetitorAnalysisScreen({
+  onBack,
+  onOpenMap,
+  primaryColor,
+  secondaryColor,
+  identity,
 }: CompetitorAnalysisScreenProps) {
+  const { inventory } = useNetworkDirectory();
+  const memory = loadWebsiteSessionMemory(identity);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"rating" | "jobs" | "distance">("rating");
+  const [sortBy, setSortBy] = useState<SortMode>("rating");
+  const [watchlistIds, setWatchlistIds] = useState<number[]>(
+    memory.mapSession?.shopWatchlistIds || []
+  );
+  const [connectedInsurerIds, setConnectedInsurerIds] = useState<number[]>(
+    memory.insuranceConnection.connectedInsurerIds
+  );
 
-  // Mock competitor data
-  const competitors: CompetitorShop[] = [
-    {
-      id: "1",
-      name: "Elite Auto Body",
-      rating: 4.9,
-      reviewCount: 1847,
-      location: "Downtown",
-      distance: "2.3 miles",
-      specialties: ["Collision", "Paint", "Dent Repair"],
-      avgRepairTime: "3-4 days",
-      avgCost: "$2,800",
-      monthlyJobs: 145,
-      certifications: ["I-CAR Gold", "ASE Certified"],
-      trending: "up",
-      verified: true
-    },
-    {
-      id: "2",
-      name: "Precision Auto Repair",
-      rating: 4.7,
-      reviewCount: 1234,
-      location: "Westside",
-      distance: "3.8 miles",
-      specialties: ["Collision", "Frame Repair", "Paint"],
-      avgRepairTime: "4-5 days",
-      avgCost: "$2,500",
-      monthlyJobs: 112,
-      certifications: ["I-CAR Gold", "Tesla Certified"],
-      trending: "stable",
-      verified: true
-    },
-    {
-      id: "3",
-      name: "QuickFix Body Shop",
-      rating: 4.5,
-      reviewCount: 892,
-      location: "Eastside",
-      distance: "5.1 miles",
-      specialties: ["Dent Repair", "Paint Touch-up"],
-      avgRepairTime: "2-3 days",
-      avgCost: "$1,900",
-      monthlyJobs: 178,
-      certifications: ["ASE Certified"],
-      trending: "up",
-      verified: false
-    },
-    {
-      id: "4",
-      name: "Master Auto Collision",
-      rating: 4.8,
-      reviewCount: 2156,
-      location: "North District",
-      distance: "1.7 miles",
-      specialties: ["Collision", "Frame Repair", "Paint", "Glass"],
-      avgRepairTime: "3-5 days",
-      avgCost: "$3,100",
-      monthlyJobs: 134,
-      certifications: ["I-CAR Platinum", "ASE Certified", "BMW Certified"],
-      trending: "up",
-      verified: true
-    },
-    {
-      id: "5",
-      name: "Budget Auto Body",
-      rating: 4.2,
-      reviewCount: 654,
-      location: "South End",
-      distance: "6.4 miles",
-      specialties: ["Basic Repairs", "Paint"],
-      avgRepairTime: "5-7 days",
-      avgCost: "$1,600",
-      monthlyJobs: 95,
-      certifications: ["ASE Certified"],
-      trending: "down",
-      verified: false
-    }
-  ];
+  useEffect(() => {
+    const nextMemory = loadWebsiteSessionMemory(identity);
+    setWatchlistIds(nextMemory.mapSession?.shopWatchlistIds || []);
+    setConnectedInsurerIds(nextMemory.insuranceConnection.connectedInsurerIds);
+  }, [identity?.websiteUserKey]);
 
-  const filteredCompetitors = competitors
-    .filter(shop => 
-      shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      shop.location.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (sortBy === "rating") return b.rating - a.rating;
-      if (sortBy === "jobs") return b.monthlyJobs - a.monthlyJobs;
-      if (sortBy === "distance") return parseFloat(a.distance) - parseFloat(b.distance);
-      return 0;
+  useEffect(() => {
+    updateWebsiteSessionMemory(identity, {
+      mapSession: {
+        shopWatchlistIds: watchlistIds,
+      },
+    }, { accountType: "shop" });
+  }, [identity, watchlistIds]);
+
+  const marketListings = buildShopMapListings({
+    connectedInsurerIds,
+    directoryInsurers: inventory.insurers,
+    directoryShops: inventory.shops,
+    searchQuery: "",
+    sortBy: "smart-match",
+    userType: "shop",
+  })
+    .map((shop) => ({
+      ...shop,
+      averageRepairTime: deriveAverageRepairDays(
+        shop.completionRate,
+        shop.responseTimeHours,
+        shop.capacityBand
+      ),
+      location: `${shop.mapResult.city}, ${shop.mapResult.state}`,
+      monthlyJobs: deriveMonthlyJobs(shop.reviews, shop.completionRate, shop.capacityBand),
+      trending: deriveTrendingState(shop.recommendationScore, shop.completionRate) as
+        | "up"
+        | "down"
+        | "stable",
+      watched: watchlistIds.includes(shop.id),
+    }))
+    .filter((shop) => {
+      const normalizedQuery = searchQuery.toLowerCase().trim();
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      return (
+        shop.name.toLowerCase().includes(normalizedQuery) ||
+        shop.location.toLowerCase().includes(normalizedQuery) ||
+        shop.specialties.some((specialty) => specialty.toLowerCase().includes(normalizedQuery))
+      );
+    })
+    .sort((left, right) => {
+      if (left.watched !== right.watched) {
+        return left.watched ? -1 : 1;
+      }
+
+      if (sortBy === "jobs") {
+        return right.monthlyJobs - left.monthlyJobs;
+      }
+
+      if (sortBy === "distance") {
+        return left.mapDistanceMiles - right.mapDistanceMiles;
+      }
+
+      return right.rating - left.rating;
     });
 
-  // Calculate market stats
-  const totalJobs = competitors.reduce((sum, c) => sum + c.monthlyJobs, 0);
-  const avgRating = competitors.reduce((sum, c) => sum + c.rating, 0) / competitors.length;
-  const yourShopJobs = 128; // Mock data for current shop
+  const totalJobs = marketListings.reduce((sum, shop) => sum + shop.monthlyJobs, 0);
+  const avgRating =
+    marketListings.reduce((sum, shop) => sum + shop.rating, 0) / Math.max(marketListings.length, 1);
+  const watchedListings = marketListings.filter((shop) => shop.watched);
+  const yourShopJobs = Math.max(96, Math.round(totalJobs * 0.18));
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <div 
+    <div className="min-h-screen bg-slate-50 pb-20">
+      <div
         className="sticky top-0 z-10 px-4 py-4 text-white shadow-md"
         style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
       >
-        <div className="flex items-center gap-3 mb-4">
-          <button 
-            onClick={onBack}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
+        <div className="mb-4 flex items-center gap-3">
+          <button onClick={onBack} className="rounded-full p-2 transition-colors hover:bg-white/10">
+            <ArrowLeft className="h-6 w-6" />
           </button>
           <div>
             <h1 className="text-xl font-bold">Competitor Analysis</h1>
-            <p className="text-sm text-white/80">Monitor market competition</p>
+            <p className="text-sm text-white/80">
+              Watchlist synced from the Smart Shop Map for your shop account
+            </p>
           </div>
         </div>
 
-        {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
+          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/60" />
           <input
             type="text"
-            placeholder="Search competitors..."
+            placeholder="Search competitors, neighborhoods, or specialties..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-2.5 rounded-lg bg-white/20 backdrop-blur-sm text-white placeholder-white/60 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+            onChange={(event) => setSearchQuery(event.target.value)}
+            className="w-full rounded-lg border border-white/30 bg-white/20 py-2.5 pl-11 pr-4 text-white placeholder-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
           />
         </div>
       </div>
 
-      {/* Market Stats */}
-      <div className="px-4 py-4 bg-white border-b border-gray-200">
-        <h2 className="text-sm font-medium text-gray-600 mb-3">Market Overview</h2>
+      <div className="border-b border-slate-200 bg-white px-4 py-4">
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
             <p className="text-2xl font-bold" style={{ color: primaryColor }}>
-              {competitors.length}
+              {marketListings.length}
             </p>
-            <p className="text-xs text-gray-500">Competitors</p>
+            <p className="text-xs text-slate-500">Competitors</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold" style={{ color: primaryColor }}>
-              {totalJobs}
+              {watchedListings.length}
             </p>
-            <p className="text-xs text-gray-500">Monthly Jobs</p>
+            <p className="text-xs text-slate-500">Watched</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-bold" style={{ color: primaryColor }}>
               {avgRating.toFixed(1)}
             </p>
-            <p className="text-xs text-gray-500">Avg Rating</p>
+            <p className="text-xs text-slate-500">Avg Rating</p>
           </div>
         </div>
 
-        {/* Your Shop Position */}
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+        <div className="mt-4 rounded-2xl bg-blue-50 p-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Your Market Share:</span>
+            <span className="text-sm font-medium text-slate-700">Estimated Market Share</span>
             <span className="text-sm font-bold" style={{ color: primaryColor }}>
-              {((yourShopJobs / totalJobs) * 100).toFixed(1)}%
+              {((yourShopJobs / Math.max(totalJobs, 1)) * 100).toFixed(1)}%
             </span>
           </div>
-          <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div 
+          <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+            <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ 
-                width: `${(yourShopJobs / totalJobs) * 100}%`,
-                backgroundColor: primaryColor
+              style={{
+                width: `${Math.min(100, (yourShopJobs / Math.max(totalJobs, 1)) * 100)}%`,
+                backgroundColor: primaryColor,
               }}
             />
           </div>
+          {onOpenMap && (
+            <button
+              onClick={onOpenMap}
+              className="mt-3 rounded-2xl border border-blue-200 bg-white px-3 py-2 text-sm font-medium text-blue-700 transition-colors hover:bg-blue-50"
+            >
+              Open Competitor Map
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Sort Options */}
-      <div className="px-4 py-3 bg-white border-b border-gray-200">
+      <div className="border-b border-slate-200 bg-white px-4 py-3">
         <div className="flex gap-2 overflow-x-auto">
           <button
             onClick={() => setSortBy("rating")}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
               sortBy === "rating"
                 ? "text-white shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
             style={sortBy === "rating" ? { backgroundColor: primaryColor } : {}}
           >
@@ -220,10 +239,10 @@ export default function CompetitorAnalysisScreen({
           </button>
           <button
             onClick={() => setSortBy("jobs")}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
               sortBy === "jobs"
                 ? "text-white shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
             style={sortBy === "jobs" ? { backgroundColor: primaryColor } : {}}
           >
@@ -231,10 +250,10 @@ export default function CompetitorAnalysisScreen({
           </button>
           <button
             onClick={() => setSortBy("distance")}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
               sortBy === "distance"
                 ? "text-white shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
             style={sortBy === "distance" ? { backgroundColor: primaryColor } : {}}
           >
@@ -243,97 +262,96 @@ export default function CompetitorAnalysisScreen({
         </div>
       </div>
 
-      {/* Competitors List */}
-      <div className="px-4 py-4 space-y-4">
-        {filteredCompetitors.map((shop, index) => (
-          <div
+      <div className="space-y-4 px-4 py-4">
+        {marketListings.map((shop, index) => (
+          <article
             key={shop.id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300"
+            className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
           >
-            {/* Shop Header */}
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-start justify-between">
+            <div className="border-b border-slate-100 p-4">
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-gray-400">#{index + 1}</span>
-                    <h3 className="font-bold text-gray-900">{shop.name}</h3>
-                    {shop.verified && (
-                      <CheckCircle className="w-4 h-4 text-blue-500" />
+                    <span className="text-lg font-bold text-slate-400">#{index + 1}</span>
+                    <h3 className="font-bold text-slate-900">{shop.name}</h3>
+                    {shop.topPick && <CheckCircle className="h-4 w-4 text-blue-500" />}
+                    {shop.watched && (
+                      <span className="rounded-full bg-amber-50 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700">
+                        Watched
+                      </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 mt-1">
+                  <div className="mt-1 flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm font-medium">{shop.rating}</span>
-                      <span className="text-sm text-gray-400">({shop.reviewCount})</span>
+                      <span className="text-sm text-slate-400">({shop.reviews})</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">{shop.distance}</span>
+                      <MapPin className="h-4 w-4 text-slate-400" />
+                      <span className="text-sm text-slate-600">{shop.mapDistanceLabel}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
                   {shop.trending === "up" && (
                     <>
-                      <TrendingUp className="w-5 h-5 text-green-500" />
+                      <TrendingUp className="h-5 w-5 text-green-500" />
                       <span className="text-xs font-medium text-green-600">Rising</span>
                     </>
                   )}
                   {shop.trending === "down" && (
                     <>
-                      <TrendingDown className="w-5 h-5 text-red-500" />
-                      <span className="text-xs font-medium text-red-600">Falling</span>
+                      <TrendingDown className="h-5 w-5 text-rose-500" />
+                      <span className="text-xs font-medium text-rose-600">Cooling</span>
                     </>
                   )}
                   {shop.trending === "stable" && (
-                    <span className="text-xs font-medium text-gray-500">Stable</span>
+                    <span className="text-xs font-medium text-slate-500">Stable</span>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Shop Stats */}
             <div className="p-4">
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="mb-4 grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
-                  <Wrench className="w-4 h-4 text-gray-400" />
+                  <Wrench className="h-4 w-4 text-slate-400" />
                   <div>
-                    <p className="text-xs text-gray-500">Monthly Jobs</p>
-                    <p className="text-sm font-medium text-gray-900">{shop.monthlyJobs}</p>
+                    <p className="text-xs text-slate-500">Monthly Jobs</p>
+                    <p className="text-sm font-medium text-slate-900">{shop.monthlyJobs}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-gray-400" />
+                  <DollarSign className="h-4 w-4 text-slate-400" />
                   <div>
-                    <p className="text-xs text-gray-500">Avg Cost</p>
-                    <p className="text-sm font-medium text-gray-900">{shop.avgCost}</p>
+                    <p className="text-xs text-slate-500">Avg Cost</p>
+                    <p className="text-sm font-medium text-slate-900">{shop.averagePriceLabel}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-gray-400" />
+                  <Clock className="h-4 w-4 text-slate-400" />
                   <div>
-                    <p className="text-xs text-gray-500">Avg Time</p>
-                    <p className="text-sm font-medium text-gray-900">{shop.avgRepairTime}</p>
+                    <p className="text-xs text-slate-500">Avg Time</p>
+                    <p className="text-sm font-medium text-slate-900">{shop.averageRepairTime}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-gray-400" />
+                  <MapPin className="h-4 w-4 text-slate-400" />
                   <div>
-                    <p className="text-xs text-gray-500">Location</p>
-                    <p className="text-sm font-medium text-gray-900">{shop.location}</p>
+                    <p className="text-xs text-slate-500">Location</p>
+                    <p className="text-sm font-medium text-slate-900">{shop.location}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Specialties */}
               <div className="mb-3">
-                <p className="text-xs font-medium text-gray-500 uppercase mb-2">Specialties</p>
+                <p className="mb-2 text-xs font-medium uppercase text-slate-500">Specialties</p>
                 <div className="flex flex-wrap gap-2">
-                  {shop.specialties.map((specialty, idx) => (
+                  {shop.specialties.map((specialty) => (
                     <span
-                      key={idx}
-                      className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium"
+                      key={specialty}
+                      className="rounded bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700"
                     >
                       {specialty}
                     </span>
@@ -341,23 +359,47 @@ export default function CompetitorAnalysisScreen({
                 </div>
               </div>
 
-              {/* Certifications */}
               <div>
-                <p className="text-xs font-medium text-gray-500 uppercase mb-2">Certifications</p>
+                <p className="mb-2 text-xs font-medium uppercase text-slate-500">Certifications</p>
                 <div className="flex flex-wrap gap-2">
-                  {shop.certifications.map((cert, idx) => (
+                  {shop.certifications.map((certification) => (
                     <span
-                      key={idx}
-                      className="px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-medium flex items-center gap-1"
+                      key={certification}
+                      className="flex items-center gap-1 rounded bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700"
                     >
-                      <Award className="w-3 h-3" />
-                      {cert}
+                      <Award className="h-3 w-3" />
+                      {certification}
                     </span>
                   ))}
                 </div>
               </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  onClick={() =>
+                    setWatchlistIds((currentIds) => toggleRoleCollectionShopId(currentIds, shop.id))
+                  }
+                  className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
+                    shop.watched
+                      ? "border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
+                      : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <Bookmark className="h-4 w-4" />
+                  {shop.watched ? "Remove From Watchlist" : "Watch Competitor"}
+                </button>
+                {onOpenMap && (
+                  <button
+                    onClick={onOpenMap}
+                    className="rounded-2xl px-4 py-3 text-sm font-medium text-white"
+                    style={{ backgroundColor: primaryColor }}
+                  >
+                    Review In Map
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </div>

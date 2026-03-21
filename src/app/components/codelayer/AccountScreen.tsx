@@ -1,7 +1,10 @@
 import { useState, useRef } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
 import { motion } from "motion/react";
+import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
+import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
+import { uploadPhoto } from "../../services/supabaseService";
+import { SUPABASE_STORAGE_BUCKETS } from "../../services/supabase/runtime";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import AccountHeader from "./account/AccountHeader";
 import AccountInfoCard from "./account/AccountInfoCard";
@@ -11,10 +14,8 @@ import DeleteAccountModal from "./account/DeleteAccountModal";
 import EditProfileModal from "./account/EditProfileModal";
 import HelpModal from "./account/HelpModal";
 import PaymentModal from "./account/PaymentModal";
-import { uploadAccountProfileImage } from "./account/profileImageUpload";
 import SettingsModal from "./account/SettingsModal";
 import ShopProfileModal from "./account/ShopProfileModal";
-import { runDeleteAccountFlow } from "./account/accountDeletion";
 
 type AccountScreenProps = {
   userType: string;
@@ -25,14 +26,16 @@ type AccountScreenProps = {
   profileImage?: string;
   vehicles?: any[];
   reports?: any[];
-  onLogout?: () => void;
+  websiteIdentity?: WebsiteIdentity | null;
+  onDeleteAccount?: () => Promise<void> | void;
+  onLogout?: () => Promise<void> | void;
   onOpenSmokeTest?: () => void;
   onSaveProfile?: (data: {
     name: string;
     email: string;
     phone: string;
     profileImage?: string;
-  }) => void;
+  }) => Promise<void> | void;
   onViewVehicles?: () => void;
   onViewReport?: (reportId: string) => void;
 };
@@ -45,14 +48,13 @@ export default function AccountScreen({
   userPhone = "(555) 123-4567",
   profileImage: initialProfileImage = "",
   vehicles = [],
+  websiteIdentity,
+  onDeleteAccount,
   onLogout,
   onSaveProfile,
   onViewVehicles,
   onOpenSmokeTest,
 }: AccountScreenProps) {
-  const { getToken } = useAuth();
-  const { user } = useUser();
-
   // Use default profile image if none provided
   const [profileImage, setProfileImage] = useState<string | null>(
     initialProfileImage || LANDING_PAGE_IMAGES.DEFAULT_PROFILE
@@ -96,42 +98,45 @@ export default function AccountScreen({
     companyName: userType === "insurer" ? companyName : "",
   };
 
-  const handleProfileImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const processSelectedImage = async (file: File) => {
+  const persistProfileImage = async (file: File | Blob) => {
     try {
       setIsSaving(true);
 
-      const finalImageUrl = await uploadAccountProfileImage(file);
+      console.log("Preparing profile image for website identity:", websiteIdentity?.websiteUserKey);
+      console.log(`📸 Original image: ${formatBytes(file.size)}`);
 
-      console.log("💾 Updating profile with new image...");
+      const compressedBlob = await compressImage(file, {
+        maxWidth: 400,
+        maxHeight: 400,
+        quality: 0.6,
+        outputFormat: "image/jpeg",
+      });
+      console.log(`✅ Compressed to: ${formatBytes(compressedBlob.size)}`);
+
+      const uploadPromise = uploadPhoto(compressedBlob, SUPABASE_STORAGE_BUCKETS.accountMedia);
+      const uploadTimeoutPromise = new Promise<null>((resolve) =>
+        setTimeout(() => {
+          console.warn("⏱️ Upload timeout - falling back to base64");
+          resolve(null);
+        }, 30000)
+      );
+
+      const publicUrl = await Promise.race([uploadPromise, uploadTimeoutPromise]);
+
+      const finalImageUrl = publicUrl || (await blobToBase64(compressedBlob));
       setProfileImage(finalImageUrl);
 
       if (onSaveProfile) {
-        try {
-          await onSaveProfile({
-            name: editableName,
-            email: editableEmail,
-            phone: unformatPhoneNumber(editablePhone),
-            profileImage: finalImageUrl,
-          });
-          console.log("✅ Profile saved successfully");
-        } catch (saveError) {
-          console.error("❌ Error saving profile:", saveError);
-          console.log("⚠️ Image set locally but server save failed");
-        }
+        await onSaveProfile({
+          name: editableName,
+          email: editableEmail,
+          phone: unformatPhoneNumber(editablePhone),
+          profileImage: finalImageUrl,
+        });
       }
 
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
-
-      console.log("🎉 Profile photo upload complete!");
     } catch (error) {
       console.error("❌ Error processing image:", error);
       alert(
@@ -142,11 +147,28 @@ export default function AccountScreen({
     }
   };
 
+  const handleProfileImageClick = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async (e) => {
+      const target = e.target as HTMLInputElement;
+      const file = target.files?.[0];
+      if (file) {
+        await persistProfileImage(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      await processSelectedImage(file);
-      e.target.value = "";
+      await persistProfileImage(file);
     }
   };
 
@@ -200,24 +222,33 @@ export default function AccountScreen({
   };
 
   const handleDeleteAccount = async () => {
-    await runDeleteAccountFlow({
-      deleteConfirmText,
-      isTestAccount,
-      clerkUserId: user?.id,
-      userEmail,
-      getClerkToken: () => getToken(),
-      deleteClerkUser: async () => {
-        if (!user) {
-          throw new Error("Unable to load your Clerk user account");
-        }
+    if (deleteConfirmText.toLowerCase() !== "delete") {
+      alert('Please type "DELETE" to confirm account deletion');
+      return;
+    }
 
-        await user.delete();
-      },
-      onLogout,
-      setIsDeleting,
-      resetDeleteState: () => setDeleteConfirmText(""),
-      closeDeleteModal: () => setShowDeleteAccount(false),
-    });
+    // Check if test account
+    if (isTestAccount) {
+      alert("This account type cannot be deleted through this method");
+      setDeleteConfirmText(""); // Reset confirmation text
+      return;
+    }
+
+    try {
+      if (!onDeleteAccount) {
+        throw new Error("Account deletion is not available for this profile.");
+      }
+
+      setIsDeleting(true);
+      await onDeleteAccount();
+      setDeleteConfirmText("");
+      setShowDeleteAccount(false);
+    } catch (error) {
+      console.error("❌ Error deleting account:", error);
+      alert(`Error: ${error instanceof Error ? error.message : "Failed to delete account"}`);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { isAdmin } from "../../utils/adminCheck";
+import { deleteAdminUser } from "../../services/supabase/admin";
 
 /**
  * TEMPORARY ADMIN UTILITY - Delete User Account
@@ -27,22 +27,12 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
     setStatus("Deleting user...");
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/delete-user`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${publicAnonKey}`,
-          },
-          body: JSON.stringify({ email, adminEmail: userEmail }),
-        }
-      );
+      const data = await deleteAdminUser(email, {
+        adminEmail: userEmail,
+      });
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setStatus(`✅ Success! ${data.message}\n\nDeleted:\n- Auth user: ${data.deleted.auth ? 'Yes' : 'No'}\n- Profile: ${data.deleted.profile ? 'Yes' : 'Yes (or didn\'t exist)'}\n- KV data: ${data.deleted.kv_data ? 'Yes' : 'Yes (or didn\'t exist)'}\n\nYou can now create a new insurer account with this email.`);
+      if (data.success) {
+        setStatus(`✅ Success! ${data.message}\n\nDeleted:\n- Auth user: ${data.deleted?.auth ? 'Yes' : 'No'}\n- Profile: ${data.deleted?.profile ? 'Yes' : 'Yes (or didn\'t exist)'}\n- KV data: ${data.deleted?.kv_data ? 'Yes' : 'Yes (or didn\'t exist)'}\n\nYou can now create a new insurer account with this email.`);
       } else {
         setStatus(`❌ Error: ${data.error || 'Failed to delete user'}`);
       }

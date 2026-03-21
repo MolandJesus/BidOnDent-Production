@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Users, AlertCircle, RefreshCw, UserPlus, CheckCircle } from 'lucide-react';
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { ADMIN_EMAIL } from "../../config/adminConfig";
+import {
+  createTestAdminAccount,
+  deleteAdminUsers,
+  listAdminUsers,
+} from "../../services/supabase/admin";
 
 interface User {
   id: string;
@@ -36,31 +40,7 @@ export default function AdminAccountManager() {
     setError('');
     
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/list-users`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
-        }
-      });
-
-      // Try to parse JSON, but handle non-JSON responses gracefully
-      let result;
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        result = await response.json();
-      } else {
-        const text = await response.text();
-        console.error('Non-JSON response from list-users:', text);
-        throw new Error(`Edge Function returned non-JSON response (status ${response.status}). The function may still have JWT verification enabled. Please deploy with --no-verify-jwt flag.`);
-      }
-      
-      if (!response.ok || result.error) {
-        setError(result.error || 'Failed to load users');
-        return;
-      }
-
-      setUsers(result.users || []);
+      setUsers(await listAdminUsers());
     } catch (err) {
       console.error('Error loading users:', err);
       setError(`Failed to load users: ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -107,23 +87,7 @@ export default function AdminAccountManager() {
     setSuccess('');
 
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/delete-users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
-        },
-        body: JSON.stringify({
-          userIds: Array.from(selectedUsers)
-        })
-      });
-
-      const result = await response.json();
-      
-      if (!response.ok || result.error) {
-        setError(result.error || 'Failed to delete users');
-        return;
-      }
+      const result = await deleteAdminUsers(Array.from(selectedUsers));
 
       setSuccess(`Successfully deleted ${result.deleted} user(s)`);
       setSelectedUsers(new Set());
@@ -147,25 +111,11 @@ export default function AdminAccountManager() {
     setSuccess('');
 
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-test-account`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
-        },
-        body: JSON.stringify({
-          email: testEmail,
-          password: testPassword,
-          userType: testUserType
-        })
+      const result = await createTestAdminAccount({
+        email: testEmail,
+        password: testPassword,
+        userType: testUserType,
       });
-
-      const result = await response.json();
-      
-      if (!response.ok) {
-        setError(result.error || 'Failed to create test account');
-        return;
-      }
 
       // Check for success - handle both 'success' and 'created' fields
       if (result.success || result.created) {

@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 type InsurerOnboardingProps = {
   primaryColor?: string;
   secondaryColor?: string;
-  onComplete: (data: any) => void;
+  onComplete: (data: any) => Promise<void> | void;
 };
 
 export default function InsurerOnboarding({
@@ -14,6 +14,7 @@ export default function InsurerOnboarding({
   onComplete
 }: InsurerOnboardingProps) {
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     companyName: "",
     licenseNumber: "",
@@ -54,8 +55,21 @@ export default function InsurerOnboarding({
     setStep(step - 1);
   };
 
-  const handleComplete = () => {
-    onComplete(formData);
+  const handleComplete = async () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await onComplete(formData);
+    } catch (error) {
+      console.error("Error completing insurer onboarding:", error);
+      window.alert("We couldn't save the insurer profile yet. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const progress = Math.round((step / 3) * 100);
@@ -345,7 +359,8 @@ export default function InsurerOnboarding({
             <div className="flex gap-3 mt-6">
               <motion.button
                 onClick={handleBack}
-                className="flex-1 py-3 px-4 border border-gray-300 rounded-md font-medium"
+                disabled={isSubmitting}
+                className="flex-1 py-3 px-4 border border-gray-300 rounded-md font-medium disabled:opacity-60"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -353,7 +368,8 @@ export default function InsurerOnboarding({
               </motion.button>
               <motion.button
                 onClick={handleComplete}
-                className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center"
+                disabled={isSubmitting}
+                className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-70"
                 style={{ backgroundColor: primaryColor }}
                 whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
                 whileTap={{ scale: 0.98 }}
@@ -361,7 +377,7 @@ export default function InsurerOnboarding({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
               >
-                Complete Setup
+                {isSubmitting ? "Saving..." : "Complete Setup"}
                 <Check className="w-5 h-5 ml-2" />
               </motion.button>
             </div>

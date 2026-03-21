@@ -28,6 +28,18 @@ export function stripFunctionPrefix(pathname: string): string {
     path = path.slice('/server'.length) || '/';
   }
 
+  if (path.startsWith('/make-server-9f243523/')) {
+    path = path.slice('/make-server-9f243523'.length);
+  } else if (path === '/make-server-9f243523') {
+    path = '/';
+  }
+
+  if (path.startsWith('/make-server-c3ef122f/')) {
+    path = path.slice('/make-server-c3ef122f'.length);
+  } else if (path === '/make-server-c3ef122f') {
+    path = '/';
+  }
+
   // Ensure leading slash for all routes
   if (!path.startsWith('/')) {
     path = '/' + path;

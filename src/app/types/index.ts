@@ -27,7 +27,7 @@ export interface DamageReport {
   damageAreas: string[];
   photos: string[];
   description: string;
-  status: "pending" | "in-review" | "completed";
+  status: 'pending' | 'in-review' | 'completed';
   createdAt: string;
   bids?: Bid[];
 }
@@ -41,7 +41,7 @@ export interface Bid {
   amount: number;
   estimatedDays: number;
   description: string;
-  status: "pending" | "accepted" | "rejected";
+  status: 'pending' | 'accepted' | 'rejected';
   createdAt: string;
   shopRating?: number;
   shopReviews?: number;
@@ -49,18 +49,16 @@ export interface Bid {
 }
 
 export interface Notification {
-  id: string | number;
-  type: "repair_request" | "bid" | "claim" | "update" | "message";
+  id: number;
+  type: 'bid' | 'update' | 'message';
   message: string;
   time: string;
-  createdAt?: string;
   read: boolean;
-  reportData?: any;
 }
 
 export interface Activity {
   id: string;
-  type: "bid_submitted" | "request_viewed" | "job_accepted" | "claim_created" | "shop_added";
+  type: 'bid_submitted' | 'request_viewed' | 'job_accepted' | 'claim_created' | 'shop_added';
   message: string;
   timestamp: string;
   metadata?: {
@@ -72,22 +70,31 @@ export interface Activity {
 }
 
 export interface RedirectInfo {
-  type: "customer" | "shop" | "insurer";
+  type: 'customer' | 'shop' | 'insurer';
+  email?: string;
   isReturning?: boolean;
 }
 
-export type ViewMode =
-  | "dashboard"
-  | "reports-list"
-  | "report-detail"
-  | "insurer-connect"
-  | "liked-shops"
-  | "vehicles"
-  | "new-claim"
-  | "smoke-test"
-  | "demo-switcher";
+export type ViewMode = 
+  | 'dashboard' 
+  | 'reports-list' 
+  | 'report-detail' 
+  | 'insurer-connect' 
+  | 'liked-shops' 
+  | 'shop-directory'
+  | 'insurance-companies'
+  | 'competitor-analysis'
+  | 'vehicles' 
+  | 'new-claim'
+  | 'smoke-test'
+  | 'demo-switcher';
 
-export type LoginView = "main" | "signup" | "customer" | "shop" | "insurer";
+export type LoginView = 
+  | 'main' 
+  | 'signup' 
+  | 'customer' 
+  | 'shop' 
+  | 'insurer';
 
 export interface NavTab {
   id: string;

@@ -3,8 +3,10 @@
  * Helps track usage and prevent exceeding free tier limits
  */
 
-import { publicAnonKey } from "../../../utils/supabase/info";
-import { buildEdgeFunctionUrl } from "./supabase/edgeFunctions";
+import {
+  requestSupabaseEdge,
+  SUPABASE_EDGE_ROUTES,
+} from "./supabase/runtime";
 
 export interface StorageStats {
   totalReports: number;
@@ -23,24 +25,12 @@ export interface StorageStats {
  */
 export async function getStorageStats(): Promise<StorageStats> {
   try {
-    // Fetch all damage reports to count photos
-    const response = await fetch(buildEdgeFunctionUrl("/storage-stats"), {
+    const data = await requestSupabaseEdge<StorageStats>(SUPABASE_EDGE_ROUTES.storageStats, {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${publicAnonKey}`,
-        "Content-Type": "application/json",
-      },
     });
-
-    if (!response.ok) {
-      console.warn("Unable to fetch storage stats, using estimates");
-      return getEstimatedStats();
-    }
-
-    const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching storage stats:", error);
+    console.error('Error fetching storage stats:', error);
     return getEstimatedStats();
   }
 }
@@ -52,12 +42,12 @@ function getEstimatedStats(): StorageStats {
   return {
     totalReports: 0,
     totalPhotos: 0,
-    estimatedStorageUsed: "0MB",
+    estimatedStorageUsed: '0MB',
     estimatedStorageUsedBytes: 0,
-    storageLimit: "1GB",
+    storageLimit: '1GB',
     storagePercentage: 0,
     bandwidthWarning: false,
-    needsCleanup: false,
+    needsCleanup: false
   };
 }
 
@@ -88,25 +78,17 @@ export async function checkStorageLimits(): Promise<string | null> {
  */
 export async function cleanupOldReports(daysOld: number = 30): Promise<number> {
   try {
-    const response = await fetch(buildEdgeFunctionUrl("/cleanup-old-reports"), {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${publicAnonKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ daysOld }),
-    });
-
-    if (!response.ok) {
-      console.error("Failed to cleanup old reports");
-      return 0;
-    }
-
-    const { deleted } = await response.json();
-    console.log(`🗑️ Cleaned up ${deleted} old reports`);
-    return deleted;
+    const { deletedReports } = await requestSupabaseEdge<{ deletedReports?: number }>(
+      SUPABASE_EDGE_ROUTES.cleanupOldReports,
+      {
+        body: JSON.stringify({ daysOld }),
+        method: "POST",
+      }
+    );
+    console.log(`🗑️ Cleaned up ${deletedReports || 0} old reports`);
+    return deletedReports || 0;
   } catch (error) {
-    console.error("Error cleaning up old reports:", error);
+    console.error('Error cleaning up old reports:', error);
     return 0;
   }
 }

@@ -46,7 +46,7 @@ BidOnDent creates a streamlined digital marketplace where:
 
 ## 🌟 Key Features at a Glance
 
-### Latest UI Updates (February 2026)
+### Latest UI Updates (March 2026)
 
 - Modernized dashboard layout with tighter spacing and improved visual hierarchy
 - Redesigned bids experience with richer comparison cards and smoother animations
@@ -54,6 +54,13 @@ BidOnDent creates a streamlined digital marketplace where:
 - Updated account screen to match the newer dashboard design system
 - Improved sidebar/top-right profile menu behavior and demo mode placement
 - Landing page CTA and logo treatment polished for a more app-like feel
+- Rebuilt the shop directory as a map-first discovery shell with a real interactive map
+- Added provider-agnostic website identity/session memory for map, insurer, and directory context
+- Connected customer saved shops, shop competitor watchlists, and insurer partner shortlists across their related screens
+- Added cloud-backed provider-agnostic website preference sync keyed by website user identity
+- Added provider-agnostic business profile persistence for shop and insurer onboarding
+- Added live directory inventory hydration so the map and insurer connection flows can merge persisted profiles with seeded fallback
+- Added durable provider-agnostic relationship records for saved shops, shop watchlists, insurer shortlists, and connected carriers
 
 ### For Customers 👤
 
@@ -126,9 +133,15 @@ BidOnDent creates a streamlined digital marketplace where:
 - `src/app/components/landing/` - Landing page sections
 - `src/app/components/reports/` - Reports list/detail screens
 - `src/app/components/shop/` - Shop screens
+- `src/app/components/shop/ShopDirectoryScreen.tsx` - Map-first shop directory experience
+- `src/app/components/shop/ShopDirectoryMapPane.tsx` - Leaflet map pane
 - `src/app/components/codelayer/` - Legacy screens used by the dashboard router
 - `src/app/routers/` - Screen routing and view composition
 - `src/app/services/` - Supabase/Clerk and business logic
+- `src/app/services/auth/websiteIdentity.ts` - Provider-agnostic website identity and session memory
+- `src/app/services/networkProfiles.ts` - Provider-agnostic business profile and shared directory inventory client
+- `src/app/services/auth/websiteRelationshipsSync.ts` - Durable relationship sync for map collections and connected carriers
+- `src/app/services/intelligence/shopMapExperience.ts` - Map geo/search adapter
 - `src/app/hooks/` - Shared app effects/handlers and state hooks
 - `src/assets/` - Images used by UI components
 
@@ -136,12 +149,25 @@ BidOnDent creates a streamlined digital marketplace where:
 
 - Update `clerkPublishableKey` in `utils/clerk/info.tsx`.
 - Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`.
+- Canonical frontend Supabase runtime now lives in `src/app/services/supabase/runtime.ts`.
+- Canonical edge function slug is `server`; `make-server-9f243523` is kept deployed as a legacy alias only.
+- Canonical website storage buckets are:
+  - `bidondent-account-media`
+  - `bidondent-vehicle-media`
+  - `bidondent-report-media`
+- Legacy buckets `bidondent-profiles`, `bidondent-vehicles`, and `bidondent-damage-photos` remain only for previously uploaded data until migration is complete.
 - `.env.example` is included as a reference if you prefer wiring keys to Vite env later.
+- Keep operator-only Supabase CLI credentials in local `.env` only:
+  `SUPABASE_ACCESS_TOKEN` and, when needed for direct DB work, `SUPABASE_DB_URL` or `SUPABASE_DB_PASSWORD`.
+  `.env` is gitignored and the actual secret values should never be copied into tracked docs or source files.
 
 **Data persistence:**
 
 - Supabase is the source of truth for profiles, vehicles, reports, and photo URLs.
 - localStorage is cache-only and scoped per user for faster initial loads.
+- website session memory also stores map/origin/search preferences per website user key.
+- shop and insurer onboarding now persist provider-agnostic business directory profiles keyed by website user identity.
+- saved shops, competitor watchlists, insurer shortlists, and connected carriers now also mirror into durable cloud relationship rows.
 - Report drafts are stored locally and do not sync across devices.
 
 ---
@@ -507,20 +533,6 @@ npm run dev
 
 - **Demo Mode**: Use the demo switcher for all account types
 
-### Browser Console Tools
-
-```javascript
-// Check current session
-window.checkBidondentSession();
-
-// Clear session data
-window.clearBidondentSession();
-
-// Use demo mode to test multiple account types
-```
-
----
-
 ## 🚀 Deployment
 
 ### Prerequisites
@@ -533,6 +545,14 @@ window.clearBidondentSession();
 
 - `utils/clerk/info.tsx` → `clerkPublishableKey`
 - `utils/supabase/info.tsx` → `projectId`, `publicAnonKey`
+- local-only `.env` → `SUPABASE_ACCESS_TOKEN` for CLI deploys, plus `SUPABASE_DB_URL` or `SUPABASE_DB_PASSWORD` for direct database work when needed
+
+### Supabase Deployment Notes
+
+- Deploy `supabase/functions/server` as function `server`
+- Also deploy `supabase/functions/make-server-9f243523` as the legacy alias until all callers are off the old slug
+- As of March 21, 2026, the live project `wmdcnjgtsppftrofaqqa` is verified on edge version `2026-03-21-v10`
+- Live canonical buckets are `bidondent-account-media`, `bidondent-vehicle-media`, and `bidondent-report-media`
 
 ### Build
 

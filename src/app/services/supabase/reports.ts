@@ -1,9 +1,56 @@
 import { supabase } from "./client";
-import { edgeFunctionJson } from "./edgeFunctions";
 import type { DamageReport } from "./types";
-import { publicAnonKey } from "../../../../utils/supabase/info";
+import {
+  buildWebsiteIdentityQuery,
+  requestSupabaseEdge,
+  SUPABASE_EDGE_ROUTES,
+} from "./runtime";
+import type { WebsiteProfileIdentity } from "./profiles";
 
-export async function getDamageReports(): Promise<DamageReport[]> {
+function normalizeReportIdentity(
+  identityOrClerkUserId?: string | WebsiteProfileIdentity | null
+): WebsiteProfileIdentity | null {
+  if (!identityOrClerkUserId) {
+    return null;
+  }
+
+  if (typeof identityOrClerkUserId !== "string") {
+    return identityOrClerkUserId;
+  }
+
+  if (identityOrClerkUserId.includes("@")) {
+    return { email: identityOrClerkUserId };
+  }
+
+  if (identityOrClerkUserId.startsWith("website-user-")) {
+    return { websiteUserKey: identityOrClerkUserId };
+  }
+
+  return { clerkUserId: identityOrClerkUserId };
+}
+
+export async function getDamageReports(
+  identityOrClerkUserId?: string | WebsiteProfileIdentity | null
+): Promise<DamageReport[]> {
+  const identity = normalizeReportIdentity(identityOrClerkUserId);
+
+  if (identity?.clerkUserId || identity?.email || identity?.websiteUserKey) {
+    try {
+      const searchParams = buildWebsiteIdentityQuery(identity);
+      const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
+        `${SUPABASE_EDGE_ROUTES.reports}?${searchParams.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+
+      return payload.reports || [];
+    } catch (error) {
+      console.error("Error in getDamageReports edge path:", error);
+      return [];
+    }
+  }
+
   try {
     const {
       data: { user }
@@ -39,15 +86,6 @@ export async function getDamageReports(): Promise<DamageReport[]> {
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {
   try {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      console.log("ℹ️ No authenticated user");
-      return [];
-    }
-
     const { data, error } = await supabase
       .from("damage_reports")
       .select("*")
@@ -80,78 +118,43 @@ export async function saveDamageReport(
       return null;
     }
 
-    if (report.id) {
-      console.log("📝 Updating damage report:", report.id);
-
-      const result = await edgeFunctionJson<{ report: DamageReport }>(`/reports/${report.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${publicAnonKey}`,
-          apikey: publicAnonKey,
-        },
-        body: JSON.stringify({
-          clerkUserId,
-          report: {
-            vehicle_id: report.vehicle_id,
-            vehicle_make: report.vehicle_make,
-            vehicle_model: report.vehicle_model,
-            vehicle_year: report.vehicle_year,
-            damage_type: report.damage_type,
-            damage_severity: report.damage_severity,
-            damage_description: report.damage_description,
-            damage_location: report.damage_location,
-            address: report.address,
-            city: report.city,
-            state: report.state,
-            zip_code: report.zip_code,
-            photo_urls: report.photo_urls || [],
-            insurance_claim: report.insurance_claim,
-            insurance_company: report.insurance_company,
-            preferred_contact: report.preferred_contact,
-            additional_notes: report.additional_notes,
-            status: report.status || "pending",
-          },
-        }),
-      });
-      console.log("✅ Damage report updated successfully");
-      return result.report as DamageReport;
-    }
-
-    console.log("📝 Creating new damage report for user:", clerkUserId);
-
-    const result = await edgeFunctionJson<{ report: DamageReport }>("/reports", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${publicAnonKey}`,
-        apikey: publicAnonKey,
+    const payload = {
+      clerkUserId,
+      report: {
+        address: report.address,
+        additional_notes: report.additional_notes,
+        city: report.city,
+        damage_description: report.damage_description,
+        damage_location: report.damage_location,
+        damage_severity: report.damage_severity,
+        damage_type: report.damage_type,
+        insurance_claim: report.insurance_claim,
+        insurance_company: report.insurance_company,
+        photo_urls: report.photo_urls || [],
+        preferred_contact: report.preferred_contact,
+        state: report.state,
+        status: report.status || "pending",
+        vehicle_id: report.vehicle_id,
+        vehicle_make: report.vehicle_make,
+        vehicle_model: report.vehicle_model,
+        vehicle_year: report.vehicle_year,
+        zip_code: report.zip_code,
       },
-      body: JSON.stringify({
-        clerkUserId,
-        report: {
-          vehicle_id: report.vehicle_id,
-          vehicle_make: report.vehicle_make,
-          vehicle_model: report.vehicle_model,
-          vehicle_year: report.vehicle_year,
-          damage_type: report.damage_type,
-          damage_severity: report.damage_severity,
-          damage_description: report.damage_description,
-          damage_location: report.damage_location,
-          address: report.address,
-          city: report.city,
-          state: report.state,
-          zip_code: report.zip_code,
-          photo_urls: report.photo_urls || [],
-          insurance_claim: report.insurance_claim,
-          insurance_company: report.insurance_company,
-          preferred_contact: report.preferred_contact,
-          additional_notes: report.additional_notes,
-          status: report.status || "pending",
-        },
-      }),
-    });
-    console.log("✅ Damage report created successfully");
+    };
+
+    const result = await requestSupabaseEdge<{ report: DamageReport }>(
+      report.id ? `${SUPABASE_EDGE_ROUTES.reports}/${report.id}` : SUPABASE_EDGE_ROUTES.reports,
+      {
+        body: JSON.stringify(payload),
+        method: report.id ? "PUT" : "POST",
+      }
+    );
+
+    console.log(
+      report.id
+        ? "✅ Damage report updated successfully"
+        : "✅ Damage report created successfully"
+    );
     return result.report as DamageReport;
   } catch (error) {
     console.error("Error in saveDamageReport:", error);
@@ -159,7 +162,26 @@ export async function saveDamageReport(
   }
 }
 
-export async function deleteDamageReport(reportId: string): Promise<boolean> {
+export async function deleteDamageReport(
+  reportId: string,
+  clerkUserId?: string
+): Promise<boolean> {
+  if (clerkUserId) {
+    try {
+      const searchParams = new URLSearchParams({ clerkUserId });
+      await requestSupabaseEdge<{ success: boolean }>(
+        `${SUPABASE_EDGE_ROUTES.reports}/${reportId}?${searchParams.toString()}`,
+        {
+          method: "DELETE",
+        }
+      );
+      return true;
+    } catch (error) {
+      console.error("Error in deleteDamageReport edge path:", error);
+      return false;
+    }
+  }
+
   try {
     const {
       data: { user }

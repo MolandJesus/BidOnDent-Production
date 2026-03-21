@@ -1,4 +1,9 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import {
+  bucketMimeTypes,
+  canonicalStorageBuckets,
+  legacyStorageBuckets,
+} from './config/storage.ts';
 
 /**
  * Initialize Supabase Storage Buckets
@@ -16,12 +21,6 @@ export async function initializeStorageBuckets() {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-  const buckets = [
-    { name: 'bidondent-profiles', public: true },
-    { name: 'bidondent-vehicles', public: true },
-    { name: 'bidondent-damage-photos', public: true }
-  ];
-
   try {
     console.log('🔧 Initializing Supabase Storage buckets...');
 
@@ -34,6 +33,14 @@ export async function initializeStorageBuckets() {
     }
 
     const existingBucketNames = existingBuckets?.map(b => b.name) || [];
+    const buckets = [
+      { name: canonicalStorageBuckets.accountMedia, public: true },
+      { name: canonicalStorageBuckets.vehicleMedia, public: true },
+      { name: canonicalStorageBuckets.reportMedia, public: true },
+      ...[legacyStorageBuckets.profiles, legacyStorageBuckets.vehicles, legacyStorageBuckets.damagePhotos]
+        .filter((bucketName) => existingBucketNames.includes(bucketName))
+        .map((bucketName) => ({ name: bucketName, public: true })),
+    ];
 
     // Create each bucket if it doesn't exist
     for (const bucket of buckets) {
@@ -45,7 +52,7 @@ export async function initializeStorageBuckets() {
           await supabase.storage.updateBucket(bucket.name, {
             public: true,
             fileSizeLimit: 10485760, // 10MB limit (increased from 5MB)
-            allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+            allowedMimeTypes: bucketMimeTypes
           });
           console.log(`✅ Updated bucket '${bucket.name}' to be public`);
         } catch (updateError) {
@@ -57,7 +64,7 @@ export async function initializeStorageBuckets() {
       const { error: createError } = await supabase.storage.createBucket(bucket.name, {
         public: true,
         fileSizeLimit: 10485760, // 10MB limit
-        allowedMimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif']
+        allowedMimeTypes: bucketMimeTypes
       });
 
       if (createError) {
@@ -67,8 +74,8 @@ export async function initializeStorageBuckets() {
       }
     }
 
-    console.log('✅ Storage buckets initialized successfully (all buckets are PUBLIC)');
-    console.log('ℹ️ No RLS policies needed - buckets are configured as public');
+    console.log('✅ Storage buckets initialized successfully');
+    console.log('ℹ️ Canonical website media buckets are ready and legacy media buckets are maintained when present');
     return true;
   } catch (error) {
     console.error('❌ Error initializing storage buckets:', error);

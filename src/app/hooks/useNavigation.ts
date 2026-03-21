@@ -13,11 +13,7 @@ const loadSavedState = () => {
       return {
         currentTab: parsed.currentTab || "home",
         viewMode: (parsed.viewMode || "dashboard") as ViewMode,
-        selectedReportId:
-          parsed.selectedReportId === undefined || parsed.selectedReportId === null
-            ? null
-            : String(parsed.selectedReportId),
-        showLandingPage: Boolean(parsed.showLandingPage),
+        selectedReportId: parsed.selectedReportId || null
       };
     }
   } catch (error) {
@@ -26,8 +22,7 @@ const loadSavedState = () => {
   return {
     currentTab: "home",
     viewMode: "dashboard" as ViewMode,
-    selectedReportId: null,
-    showLandingPage: false,
+    selectedReportId: null
   };
 };
 
@@ -35,20 +30,16 @@ export function useNavigation() {
   // Use lazy initialization to only load once on mount
   const [currentTab, setCurrentTab] = useState(() => loadSavedState().currentTab);
   const [viewMode, setViewMode] = useState<ViewMode>(() => loadSavedState().viewMode);
-  const [selectedReportId, setSelectedReportId] = useState<string | null>(
-    () => loadSavedState().selectedReportId
-  );
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(() => loadSavedState().selectedReportId);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showLandingPage, setShowLandingPage] = useState(() => loadSavedState().showLandingPage);
+  const [showLandingPage, setShowLandingPage] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-
+  
   // Demo mode state - MUST be at the end to preserve hook order
   const [demoMode, setDemoMode] = useState(false);
-  const [demoAccountType, setDemoAccountType] = useState<"customer" | "shop" | "insurer" | null>(
-    null
-  );
+  const [demoAccountType, setDemoAccountType] = useState<"customer" | "shop" | "insurer" | null>(null);
 
   // Refs for scrolling
   const whoWeServeRef = useRef<HTMLElement>(null);
@@ -60,16 +51,15 @@ export function useNavigation() {
     const navigationState = {
       currentTab,
       viewMode,
-      selectedReportId,
-      showLandingPage,
+      selectedReportId
     };
-
+    
     try {
       localStorage.setItem(NAVIGATION_STORAGE_KEY, JSON.stringify(navigationState));
     } catch (error) {
       console.error("Error saving navigation state:", error);
     }
-  }, [currentTab, viewMode, selectedReportId, showLandingPage]);
+  }, [currentTab, viewMode, selectedReportId]);
 
   // Navigate to a specific tab
   const navigateToTab = (tabId: string) => {
@@ -93,7 +83,7 @@ export function useNavigation() {
 
   // Toggle profile dropdown
   const toggleProfileDropdown = () => {
-    setShowProfileDropdown((prev) => !prev);
+    setShowProfileDropdown(prev => !prev);
   };
 
   // Enable demo mode with a specific account type
@@ -111,7 +101,7 @@ export function useNavigation() {
     setDemoAccountType(null);
     setCurrentTab("home");
     setViewMode("dashboard");
-    console.log("✅ Demo mode exited: Returned to original account");
+    console.log('✅ Demo mode exited: Returned to original account');
   };
 
   return {
@@ -129,7 +119,7 @@ export function useNavigation() {
     whoWeServeRef,
     howItWorksRef,
     profileDropdownRef,
-
+    
     // Setters
     setCurrentTab,
     setViewMode,
@@ -139,13 +129,13 @@ export function useNavigation() {
     setShowProfileDropdown,
     setShowLandingPage,
     setIsUploadingImage,
-
+    
     // Actions
     navigateToTab,
     navigateToView,
     returnToDashboard,
     toggleProfileDropdown,
     enableDemoMode,
-    exitDemoMode,
+    exitDemoMode
   };
 }

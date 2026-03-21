@@ -3,164 +3,245 @@
  * Photo uploads, storage statistics, and cleanup operations
  */
 
-/**
- * Upload photo to storage bucket
- */
+import {
+  activeStorageBuckets,
+  canonicalStorageBuckets,
+  isSupportedStorageBucket,
+  supportedStorageBuckets,
+} from "../config/storage.ts";
+
+const PRO_STORAGE_LIMIT_BYTES = 100 * 1024 * 1024 * 1024;
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+}
+
+function normalizeUploadPath(fileName: string | null, originalFileName: string) {
+  if (fileName && fileName.trim()) {
+    return fileName.trim().replace(/^\/+/, "");
+  }
+
+  const fileExt = originalFileName.split('.').pop() || 'jpg';
+  return `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
+}
+
+function extractStorageTarget(photoUrl: string) {
+  const marker = "/storage/v1/object/public/";
+  const markerIndex = photoUrl.indexOf(marker);
+
+  if (markerIndex < 0) {
+    return null;
+  }
+
+  const remainder = photoUrl.slice(markerIndex + marker.length).split("?")[0];
+  const slashIndex = remainder.indexOf("/");
+
+  if (slashIndex < 0) {
+    return null;
+  }
+
+  const bucket = decodeURIComponent(remainder.slice(0, slashIndex));
+  const path = decodeURIComponent(remainder.slice(slashIndex + 1));
+
+  if (!bucket || !path || !isSupportedStorageBucket(bucket)) {
+    return null;
+  }
+
+  return { bucket, path };
+}
+
+async function listBucketFiles(
+  supabase: any,
+  bucket: string,
+  path = "",
+  depth = 0
+): Promise<Array<{ metadata?: { size?: number } | null; name: string; path: string }>> {
+  if (depth > 5) {
+    return [];
+  }
+
+  const { data, error } = await supabase.storage.from(bucket).list(path, {
+    limit: 100,
+    offset: 0,
+    sortBy: { column: "name", order: "asc" },
+  });
+
+  if (error || !data) {
+    return [];
+  }
+
+  const files: Array<{ metadata?: { size?: number } | null; name: string; path: string }> = [];
+
+  for (const entry of data) {
+    const entryPath = path ? `${path}/${entry.name}` : entry.name;
+    if (entry.id) {
+      files.push({
+        metadata: entry.metadata,
+        name: entry.name,
+        path: entryPath,
+      });
+      continue;
+    }
+
+    const nestedEntries = await listBucketFiles(supabase, bucket, entryPath, depth + 1);
+    files.push(...nestedEntries);
+  }
+
+  return files;
+}
+
 export async function handleUploadPhoto(
   req: Request,
   supabase: any,
   respond: Function
 ): Promise<Response> {
   try {
-    const formData = await req.formData()
-    const file = formData.get('file') as File
-    const bucket = formData.get('bucket') as string
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+    const bucket = formData.get('bucket') as string;
+    const fileName = formData.get('fileName') as string | null;
 
     if (!file || !bucket) {
-      return respond({ error: 'Missing file or bucket parameter' }, 400)
+      return respond({ error: 'Missing file or bucket parameter' }, 400);
     }
 
-    const validBuckets = ['bidondent-profiles', 'bidondent-vehicles', 'bidondent-damage-photos']
-    if (!validBuckets.includes(bucket)) {
-      return respond({ error: 'Invalid bucket name' }, 400)
+    if (!isSupportedStorageBucket(bucket)) {
+      return respond({ error: 'Invalid bucket name' }, 400);
     }
 
-    const fileExt = file.name.split('.').pop() || 'jpg'
-    const fileName = `uploads/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+    const uploadPath = normalizeUploadPath(fileName, file.name || "upload.jpg");
 
     const { data, error } = await supabase.storage
       .from(bucket)
-      .upload(fileName, file, {
+      .upload(uploadPath, file, {
         cacheControl: '3600',
         upsert: true
-      })
+      });
 
     if (error) {
-      return respond({ error: error.message }, 500)
+      return respond({ error: error.message }, 500);
     }
 
     const { data: { publicUrl } } = supabase.storage
       .from(bucket)
-      .getPublicUrl(data.path)
+      .getPublicUrl(data.path);
 
-    return respond({ publicUrl })
+    return respond({
+      bucket,
+      path: data.path,
+      publicUrl,
+      success: true,
+    });
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: error.message }, 500);
   }
 }
 
-/**
- * Get storage statistics
- */
 export async function handleStorageStats(
   supabase: any,
   respond: Function
 ): Promise<Response> {
   try {
-    const buckets = ['bidondent-profiles', 'bidondent-vehicles', 'bidondent-damage-photos']
-    const stats: any = {}
+    const buckets = activeStorageBuckets;
+    const bucketStats: Record<string, { fileCount: number; formattedSize: string; totalSize: number }> = {};
+    let totalPhotos = 0;
+    let totalSize = 0;
 
     for (const bucket of buckets) {
-      try {
-        const { data, error } = await supabase.storage.from(bucket).list()
+      const files = await listBucketFiles(supabase, bucket);
+      const bucketSize = files.reduce((sum, file) => sum + (file.metadata?.size || 0), 0);
 
-        if (!error && data) {
-          const totalSize = data.reduce((sum: number, file: any) => sum + (file.metadata?.size || 0), 0)
-          stats[bucket] = {
-            fileCount: data.length,
-            totalSize,
-            formattedSize: formatBytes(totalSize)
-          }
-        }
-      } catch (err) {
-        stats[bucket] = { error: 'Unable to access bucket' }
-      }
+      bucketStats[bucket] = {
+        fileCount: files.length,
+        formattedSize: formatBytes(bucketSize),
+        totalSize: bucketSize,
+      };
+
+      totalPhotos += files.length;
+      totalSize += bucketSize;
     }
 
-    return respond({ stats })
+    return respond({
+      buckets: bucketStats,
+      estimatedStorageUsed: formatBytes(totalSize),
+      estimatedStorageUsedBytes: totalSize,
+      needsCleanup: bucketStats[canonicalStorageBuckets.reportMedia]?.fileCount > 1000,
+      storageLimit: '100GB',
+      storagePercentage: Math.round((totalSize / PRO_STORAGE_LIMIT_BYTES) * 10000) / 100,
+      success: true,
+      totalPhotos,
+      totalReports: bucketStats[canonicalStorageBuckets.reportMedia]?.fileCount || 0,
+      bandwidthWarning: false,
+    });
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: error.message }, 500);
   }
 }
 
-/**
- * Clean up old repair reports (admin utility)
- */
 export async function handleCleanupOldReports(
   req: Request,
   supabase: any,
   respond: Function
 ): Promise<Response> {
   try {
-    const body = await req.json()
-    const { daysOld = 30 } = body
+    const body = await req.json();
+    const { daysOld = 30 } = body;
 
-    const cutoffDate = new Date()
-    cutoffDate.setDate(cutoffDate.getDate() - daysOld)
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
     const { data: oldReports, error: fetchError } = await supabase
       .from('damage_reports')
-      .select('id, photos')
-      .lt('created_at', cutoffDate.toISOString())
+      .select('id, photo_urls')
+      .lt('created_at', cutoffDate.toISOString());
 
     if (fetchError) {
-      return respond({ error: fetchError.message }, 500)
+      return respond({ error: fetchError.message }, 500);
     }
 
-    let deletedCount = 0
-    const errors = []
+    let deletedCount = 0;
+    const errors = [];
 
     for (const report of oldReports || []) {
       try {
-        // Delete photos from storage if they exist
-        if (report.photos && Array.isArray(report.photos)) {
-          for (const photoUrl of report.photos) {
-            // Extract file path from URL and delete
+        if (Array.isArray(report.photo_urls)) {
+          for (const photoUrl of report.photo_urls) {
             try {
-              const filePath = photoUrl.split('/').pop()
-              if (filePath) {
-                await supabase.storage
-                  .from('bidondent-damage-photos')
-                  .remove([filePath])
+              const target = typeof photoUrl === "string" ? extractStorageTarget(photoUrl) : null;
+              if (target) {
+                await supabase.storage.from(target.bucket).remove([target.path]);
               }
-            } catch (photoErr) {
+            } catch {
               // Continue even if photo deletion fails
             }
           }
         }
 
-        // Delete the report
         const { error: deleteError } = await supabase
           .from('damage_reports')
           .delete()
-          .eq('id', report.id)
+          .eq('id', report.id);
 
         if (!deleteError) {
-          deletedCount++
+          deletedCount++;
         }
       } catch (err: any) {
-        errors.push({ reportId: report.id, error: err.message })
+        errors.push({ reportId: report.id, error: err.message });
       }
     }
 
     return respond({
-      success: true,
       deletedReports: deletedCount,
       daysOld,
-      errors: errors.length > 0 ? errors : undefined
-    })
+      errors: errors.length > 0 ? errors : undefined,
+      success: true,
+      supportedBuckets: supportedStorageBuckets,
+    });
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: error.message }, 500);
   }
-}
-
-/**
- * Format bytes to human-readable size
- */
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 Bytes'
-  const k = 1024
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
 }

@@ -20,6 +20,9 @@ Update the key files in the repo:
 
 - `utils/clerk/info.tsx` -> set `clerkPublishableKey`
 - `utils/supabase/info.tsx` -> set `projectId` and `publicAnonKey`
+- optional local operator secrets go in `.env` only:
+  - `SUPABASE_ACCESS_TOKEN`
+  - `SUPABASE_DB_URL` or `SUPABASE_DB_PASSWORD`
 
 Key locations:
 - Clerk: Dashboard -> Your App -> API Keys
@@ -33,8 +36,9 @@ Follow the order in `supabase/migrations/README.md` and run each migration in Su
 
 This creates:
 - Core tables (profiles, vehicles, damage reports, bids)
+- Website identity/session tables (`website_preferences`, `website_relationships`)
 - RLS policies and indexes
-- Storage buckets (if using the storage migration)
+- Canonical website storage buckets (`bidondent-account-media`, `bidondent-vehicle-media`, `bidondent-report-media`)
 
 ## 4) Start the app
 
@@ -54,6 +58,7 @@ Regular user:
 ## Data persistence notes
 
 - Supabase stores profiles, vehicles, reports, and photo URLs.
+- Website memory for the new map and account-aware search experience syncs through Supabase edge routes and `website_preferences` / `website_relationships`.
 - localStorage is used as a per-user cache for speed.
 - Report drafts are local-only and do not sync across devices.
 
@@ -62,7 +67,7 @@ Regular user:
 - Missing keys: re-check `utils/clerk/info.tsx` and `utils/supabase/info.tsx`.
 - Auth UI not loading: verify Clerk key starts with `pk_`.
 - Database errors: confirm migrations ran in order.
-- Photos not uploading: confirm storage buckets exist.
+- Photos not uploading: confirm the canonical media buckets exist and the `server` edge function is deployed.
 
 ## Next docs
 

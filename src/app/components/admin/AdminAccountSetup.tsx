@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Shield, Check, AlertCircle } from "lucide-react";
 import { supabase } from "../../services/supabaseService";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import { ADMIN_EMAIL } from "../../config/adminConfig";
+import {
+  checkAdminAccountExists,
+  setupAdminAccount,
+} from "../../services/supabase/admin";
 
 /**
  * Admin Account Setup Component
@@ -38,48 +41,10 @@ export default function AdminAccountSetup() {
           return;
         }
         
-        // Check via the Edge Function admin endpoint
         try {
-          const url = `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/check-admin-exists`;
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${publicAnonKey}`
-            }
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log('📊 Admin check result from server:', data);
-            
-            if (data.exists) {
-              console.log('✅ Admin account exists - hiding setup button');
-              setAdminExists(true);
-            } else {
-              console.log('⚠️ Admin account not found - showing setup button');
-              setAdminExists(false);
-            }
-          } else {
-            console.log(`⚠️ Server check failed with status ${response.status} - falling back to local check`);
-            // Fallback: Try to check using profiles table
-            const { data: profileData, error: profileError } = await supabase
-              .from('profiles')
-              .select('email')
-              .eq('email', adminEmail)
-              .limit(1);
-            
-            if (profileError) {
-              console.log('⚠️ Profile check also failed:', profileError.message);
-              console.log('ℹ️ Showing setup button (will fail gracefully if admin exists)');
-              setAdminExists(false);
-            } else if (profileData && profileData.length > 0) {
-              console.log('✅ Admin found in profiles table - hiding setup button');
-              setAdminExists(true);
-            } else {
-              console.log('⚠️ No admin found - showing setup button');
-              setAdminExists(false);
-            }
-          }
+          const data = await checkAdminAccountExists();
+          console.log('📊 Admin check result from server:', data);
+          setAdminExists(!!data.exists);
         } catch (fetchError) {
           console.log('⚠️ Network error checking admin:', fetchError);
           // On any error, assume admin doesn't exist and show setup button
@@ -117,8 +82,6 @@ export default function AdminAccountSetup() {
 
     try {
       const adminEmail = ADMIN_EMAIL;
-      const adminName = 'Admin User';
-
       // FIRST: Try to just sign in (admin might already exist)
       console.log('🔍 Attempting to sign in first (admin may already exist)...');
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
@@ -142,46 +105,7 @@ export default function AdminAccountSetup() {
 
       // If sign in failed, try to create the account
       console.log('📝 Sign in failed - attempting to create admin account via Edge Function...');
-      
-      // Add timestamp to prevent caching
-      const timestamp = Date.now();
-      const url = `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/setup-admin?t=${timestamp}`;
-      console.log('🌐 Endpoint URL:', url);
-      console.log('🔑 Auth token preview:', publicAnonKey.substring(0, 20) + '...');
-      console.log('📧 Admin email:', adminEmail);
-      console.log('🔑 Password length:', password.length);
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
-        },
-        body: JSON.stringify({
-          email: adminEmail,
-          password: password
-        })
-      });
-
-      console.log('📡 Response status:', response.status);
-      console.log('📡 Response ok:', response.ok);
-      console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
-
-      // Try to parse JSON, but handle non-JSON responses gracefully
-      let data;
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
-        console.log('📡 Response data:', data);
-      } else {
-        const text = await response.text();
-        console.log('📡 Response text (not JSON):', text);
-        throw new Error(`Edge Function returned non-JSON response (status ${response.status}). The function may still have JWT verification enabled. Please deploy with --no-verify-jwt flag.`);
-      }
-
-      if (!response.ok) {
-        throw new Error(data.error || `Server error: ${response.status}`);
-      }
+      const data = await setupAdminAccount(adminEmail, password);
 
       console.log('✅ Admin account created:', data);
 

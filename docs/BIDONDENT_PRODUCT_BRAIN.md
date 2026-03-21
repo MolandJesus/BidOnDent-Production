@@ -1,6 +1,6 @@
 # BidOnDent Product Brain
 
-Last updated: March 20, 2026
+Last updated: March 21, 2026
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
 
@@ -55,6 +55,51 @@ The screenshots also show elements that are not clearly present in the current c
 - some additional landing/about sections
 
 Treat screenshots as product direction, not as guaranteed source-of-truth for the current checked-out code.
+
+## Current Supabase Reality
+
+The repo has now crossed into a cleaner "website-era" Supabase contract:
+
+- frontend Supabase URLs, route slugs, and bucket names are centralized in `src/app/services/supabase/runtime.ts`
+- admin/dashboard edge calls are centralized in `src/app/services/supabase/admin.ts`
+- canonical live edge function is `server`
+- `make-server-9f243523` is still deployed only as a compatibility alias
+- canonical buckets for new uploads are:
+  - `bidondent-account-media`
+  - `bidondent-vehicle-media`
+  - `bidondent-report-media`
+- old buckets still exist only to preserve previously uploaded assets
+- the empty `bidondent-landing-page-images` bucket has already been removed from the live project
+
+Implication:
+
+- do not add new hardcoded Supabase URLs in components
+- do not point new uploads at the legacy buckets
+- when touching map/account/profile code, prefer website-identity-aware edge services over raw browser table access
+
+## Current Map/Search Reality
+
+The repo now has a real first-pass map foundation. Important facts:
+
+- `src/app/services/auth/websiteIdentity.ts` is the provider-agnostic identity/session layer.
+- `websiteIdentity` owns `websiteUserKey`, `sessionId`, and local website memory.
+- `src/app/services/intelligence/marketIntelligence.ts` is still the recommendation/scoring brain.
+- `src/app/services/intelligence/shopMapExperience.ts` now adds seeded geo metadata, suggested origins, and role-aware map framing.
+- provider-agnostic shop and insurer business profiles now persist through edge routes keyed by `website_user_key`.
+- `src/app/components/shop/ShopDirectoryScreen.tsx` is now a dedicated map-first shell, not just the old list screen stretched wider.
+- `src/app/components/shop/ShopDirectoryMapPane.tsx` uses Leaflet/React Leaflet for the actual interactive map.
+- `src/app/types/mapDomain.ts` is the shared domain type layer for map/search/origin/place/session state.
+- customer saved shops, shop competitor watchlists, and insurer shortlists now persist inside shared map session memory and feed their related screens.
+- that website memory now also has a cloud-backed provider-agnostic sync path through `website_preferences`, not only browser storage.
+- onboarding for shop and insurer accounts now has a real persistence target instead of stopping at form UI.
+- live directory inventory can now feed the map and insurer connection flows, with seeded fallback still preserved.
+- those saved/watchlist/shortlist/carrier collections now also mirror into durable provider-agnostic relationship rows.
+
+Implication:
+
+- future map work should extend this dedicated shell and shared map domain
+- do not regress the newer identity/session/intelligence abstraction just to wire a UI shortcut
+- screenshots are still design direction, but the real checked-in source-of-truth for map work is now these files
 
 ## Architecture In One Pass
 

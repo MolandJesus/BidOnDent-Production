@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { getEdgeFunctionHealth } from "../../services/supabase/admin";
+import { SUPABASE_PROJECT_ID } from "../../services/supabase/runtime";
 
 export default function EdgeFunctionStatus() {
   const [status, setStatus] = useState<'checking' | 'healthy' | 'unhealthy'>('checking');
@@ -13,25 +14,15 @@ export default function EdgeFunctionStatus() {
 
   const checkEdgeFunction = async () => {
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/health`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${publicAnonKey}`
-          }
-        }
+      const data = await getEdgeFunctionHealth();
+      setStatus(data.status === "ok" ? 'healthy' : 'unhealthy');
+      setMessage(
+        data.status === "ok"
+          ? `✅ Edge Function is running! Version: ${data.version || 'unknown'}`
+          : '⚠️ Edge Function returned an unexpected status'
       );
-
-      if (response.ok) {
-        const data = await response.json();
-        setStatus('healthy');
-        setMessage(`✅ Edge Function is running! Version: ${data.version || 'unknown'}`);
-        // Auto-hide after 3 seconds if healthy
+      if (data.status === "ok") {
         setTimeout(() => setShow(false), 3000);
-      } else {
-        setStatus('unhealthy');
-        setMessage('⚠️ Edge Function returned an error');
       }
     } catch (error) {
       setStatus('unhealthy');
@@ -66,8 +57,8 @@ export default function EdgeFunctionStatus() {
             <p className="font-semibold text-yellow-800 mb-2">📋 Manual Deployment Required:</p>
             <div className="bg-white rounded p-2 mb-2 text-xs">
               <p className="font-mono text-gray-700 mb-1">Run these commands in your terminal:</p>
-              <div className="bg-gray-900 text-green-400 p-2 rounded font-mono text-xs overflow-x-auto">
-                <div>supabase link --project-ref xotmekuyjpolhsxlhjlf</div>
+            <div className="bg-gray-900 text-green-400 p-2 rounded font-mono text-xs overflow-x-auto">
+                <div>supabase link --project-ref {SUPABASE_PROJECT_ID}</div>
                 <div className="mt-1">supabase functions deploy server</div>
               </div>
             </div>

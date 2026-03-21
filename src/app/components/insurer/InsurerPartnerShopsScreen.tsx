@@ -1,39 +1,98 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Search,
-  MapPin,
-  Phone,
-  Mail,
-  MessageSquare,
-  Plus,
-  Star,
-  CheckCircle,
-  TrendingUp,
   Award,
+  CheckCircle,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Phone,
+  Plus,
+  Search,
+  Shield,
+  TrendingUp,
 } from "lucide-react";
+import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import {
-  buildDerivedPartnerShops,
-  certificationOptions,
-  specialtyOptions,
-  type PartnerShop,
-} from "./partnerShopsData";
+  loadWebsiteSessionMemory,
+  updateWebsiteSessionMemory,
+} from "../../services/auth/websiteIdentity";
+import { buildShopMapListings, toggleRoleCollectionShopId } from "../../services/intelligence/shopMapExperience";
+import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 
 type InsurerPartnerShopsScreenProps = {
   primaryColor?: string;
-  reports?: any[];
+  identity?: WebsiteIdentity | null;
   onAddShop?: (shopData: any) => void;
+  onOpenMap?: () => void;
 };
+
+type FilterStatus = "all" | "active" | "pending" | "inactive";
+
+type CustomProspect = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  specialties: string[];
+  certifications: string[];
+  status: "pending";
+};
+
+function slugify(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+function buildProspectPhone(seed: number) {
+  return `(555) 010-${String(1300 + seed).slice(-4)}`;
+}
+
+function buildPartnerStatus(isShortlisted: boolean, compatibilityScore: number): FilterStatus {
+  if (isShortlisted) {
+    return "active";
+  }
+
+  if (compatibilityScore >= 72) {
+    return "pending";
+  }
+
+  return "inactive";
+}
+
+function getStatusColor(status: FilterStatus) {
+  switch (status) {
+    case "active":
+      return "bg-green-100 text-green-700 border-green-200";
+    case "pending":
+      return "bg-amber-100 text-amber-700 border-amber-200";
+    case "inactive":
+      return "bg-slate-100 text-slate-700 border-slate-200";
+    default:
+      return "bg-slate-100 text-slate-700 border-slate-200";
+  }
+}
 
 export default function InsurerPartnerShopsScreen({
   primaryColor = "#003d82",
-  reports = [],
+  identity,
   onAddShop,
+  onOpenMap,
 }: InsurerPartnerShopsScreenProps) {
+  const { inventory } = useNetworkDirectory();
+  const memory = loadWebsiteSessionMemory(identity);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "pending" | "inactive">(
-    "all"
-  );
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [showAddShopModal, setShowAddShopModal] = useState(false);
+  const [connectedInsurerIds, setConnectedInsurerIds] = useState<number[]>(
+    memory.insuranceConnection.connectedInsurerIds
+  );
+  const [shortlistIds, setShortlistIds] = useState<number[]>(
+    memory.mapSession?.insurerShortlistIds || []
+  );
+  const [customProspects, setCustomProspects] = useState<CustomProspect[]>([]);
   const [newShopData, setNewShopData] = useState({
     name: "",
     email: "",
@@ -42,114 +101,182 @@ export default function InsurerPartnerShopsScreen({
     city: "",
     state: "",
     zip: "",
-    specialties: [] as string[],
-    certifications: [] as string[],
+    specialties: "",
+    certifications: "",
   });
 
-  const derivedShops = useMemo<PartnerShop[]>(() => buildDerivedPartnerShops(reports), [reports]);
+  useEffect(() => {
+    const nextMemory = loadWebsiteSessionMemory(identity);
+    setConnectedInsurerIds(nextMemory.insuranceConnection.connectedInsurerIds);
+    setShortlistIds(nextMemory.mapSession?.insurerShortlistIds || []);
+  }, [identity?.websiteUserKey]);
 
-  const filteredShops = derivedShops.filter((shop) => {
+  useEffect(() => {
+    updateWebsiteSessionMemory(identity, {
+      mapSession: {
+        insurerShortlistIds: shortlistIds,
+      },
+    }, { accountType: "insurer" });
+  }, [identity, shortlistIds]);
+
+  const mappedShops = buildShopMapListings({
+    connectedInsurerIds,
+    directoryInsurers: inventory.insurers,
+    directoryShops: inventory.shops,
+    searchQuery: "",
+    sortBy: "smart-match",
+    userType: "insurer",
+  }).map((shop) => {
+    const shortlisted = shortlistIds.includes(shop.id);
+    const status = buildPartnerStatus(shortlisted, shop.insuranceCompatibilityScore);
+
+    return {
+      ...shop,
+      activeJobs: shop.capacityBand === "high-capacity" ? 12 : shop.capacityBand === "balanced" ? 8 : 5,
+      avgCompletionDays:
+        shop.capacityBand === "high-capacity"
+          ? 2.9
+          : shop.capacityBand === "balanced"
+            ? 3.6
+            : 4.4,
+      certified: shop.certifications.length >= 2,
+      completedJobs: Math.max(18, Math.round(shop.reviews * 0.72)),
+      email: `partners@${slugify(shop.name)}.com`,
+      phone: buildProspectPhone(shop.id),
+      shortlisted,
+      status,
+    };
+  });
+
+  const manualProspects = customProspects.filter((prospect) => {
+    const normalizedQuery = searchQuery.toLowerCase().trim();
     const matchesSearch =
-      shop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      shop.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      shop.specialties.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesFilter = filterStatus === "all" || shop.status === filterStatus;
+      !normalizedQuery ||
+      prospect.name.toLowerCase().includes(normalizedQuery) ||
+      `${prospect.city} ${prospect.state}`.toLowerCase().includes(normalizedQuery) ||
+      prospect.specialties.some((specialty) => specialty.toLowerCase().includes(normalizedQuery));
+    const matchesFilter = filterStatus === "all" || prospect.status === filterStatus;
+
     return matchesSearch && matchesFilter;
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-700 border-green-200";
-      case "pending":
-        return "bg-yellow-100 text-yellow-700 border-yellow-200";
-      case "inactive":
-        return "bg-gray-100 text-gray-700 border-gray-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
-    }
-  };
+  const filteredShops = mappedShops.filter((shop) => {
+    const normalizedQuery = searchQuery.toLowerCase().trim();
+    const matchesSearch =
+      !normalizedQuery ||
+      shop.name.toLowerCase().includes(normalizedQuery) ||
+      `${shop.mapResult.city} ${shop.mapResult.state}`.toLowerCase().includes(normalizedQuery) ||
+      shop.specialties.some((specialty) => specialty.toLowerCase().includes(normalizedQuery));
+    const matchesFilter = filterStatus === "all" || shop.status === filterStatus;
 
-  const toggleSpecialty = (specialty: string) => {
-    setNewShopData((prev) => ({
-      ...prev,
-      specialties: prev.specialties.includes(specialty)
-        ? prev.specialties.filter((s) => s !== specialty)
-        : [...prev.specialties, specialty],
-    }));
-  };
+    return matchesSearch && matchesFilter;
+  });
 
-  const toggleCertification = (certification: string) => {
-    setNewShopData((prev) => ({
-      ...prev,
-      certifications: prev.certifications.includes(certification)
-        ? prev.certifications.filter((c) => c !== certification)
-        : [...prev.certifications, certification],
-    }));
-  };
+  const allVisibleEntries = [...filteredShops, ...manualProspects];
+  const shortlistCount = mappedShops.filter((shop) => shop.shortlisted).length;
 
   const handleAddShop = () => {
-    if (newShopData.name && newShopData.email && newShopData.phone) {
-      onAddShop?.(newShopData);
-      setShowAddShopModal(false);
-      setNewShopData({
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        city: "",
-        state: "",
-        zip: "",
-        specialties: [],
-        certifications: [],
-      });
+    if (!newShopData.name || !newShopData.email || !newShopData.phone) {
+      return;
     }
+
+    const newProspect: CustomProspect = {
+      id: `manual-${Date.now()}`,
+      name: newShopData.name,
+      email: newShopData.email,
+      phone: newShopData.phone,
+      address: newShopData.address,
+      city: newShopData.city,
+      state: newShopData.state,
+      zip: newShopData.zip,
+      specialties: newShopData.specialties
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean),
+      certifications: newShopData.certifications
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean),
+      status: "pending",
+    };
+
+    setCustomProspects((currentProspects) => [newProspect, ...currentProspects]);
+    onAddShop?.(newProspect);
+    setShowAddShopModal(false);
+    setNewShopData({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
+      specialties: "",
+      certifications: "",
+    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div className="min-h-screen bg-slate-50">
+      <div className="sticky top-0 z-10 border-b border-slate-200 bg-white">
         <div className="px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold" style={{ color: primaryColor }}>
-              Partner Shops
-            </h1>
-            <button
-              onClick={() => setShowAddShopModal(true)}
-              className="px-4 py-2 rounded-lg text-white font-medium flex items-center gap-2 hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: primaryColor }}
-            >
-              <Plus className="w-5 h-5" />
-              Add Shop
-            </button>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h1 className="text-2xl font-bold" style={{ color: primaryColor }}>
+                Partner Shops
+              </h1>
+              <p className="text-sm text-slate-500">
+                {shortlistCount} shortlisted from the Smart Shop Map and {customProspects.length} manual lead
+                {customProspects.length === 1 ? "" : "s"}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {onOpenMap && (
+                <button
+                  onClick={onOpenMap}
+                  className="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200"
+                >
+                  Open Recruitment Map
+                </button>
+              )}
+              <button
+                onClick={() => setShowAddShopModal(true)}
+                className="flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                style={{ backgroundColor: primaryColor }}
+              >
+                <Plus className="h-5 w-5" />
+                Add Manual Prospect
+              </button>
+            </div>
           </div>
 
           <div className="space-y-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search shops by name, region, or specialty..."
+                placeholder="Search shops by name, location, or specialty..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg"
+                onChange={(event) => setSearchQuery(event.target.value)}
+                className="w-full rounded-2xl border border-slate-300 py-2.5 pl-10 pr-4"
               />
             </div>
 
             <div className="flex gap-2 overflow-x-auto pb-1">
               {[
                 { id: "all", label: "All Shops" },
-                { id: "active", label: "Active" },
-                { id: "pending", label: "Pending" },
-                { id: "inactive", label: "Inactive" },
+                { id: "active", label: "Shortlisted" },
+                { id: "pending", label: "Promising" },
+                { id: "inactive", label: "Lower Fit" },
               ].map((filter) => (
                 <button
                   key={filter.id}
-                  onClick={() => setFilterStatus(filter.id as any)}
-                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+                  onClick={() => setFilterStatus(filter.id as FilterStatus)}
+                  className={`whitespace-nowrap rounded-2xl px-4 py-2 font-medium transition-colors ${
                     filterStatus === filter.id
                       ? "text-white"
-                      : "bg-white border border-gray-300 text-gray-700"
+                      : "border border-slate-300 bg-white text-slate-700"
                   }`}
                   style={filterStatus === filter.id ? { backgroundColor: primaryColor } : {}}
                 >
@@ -161,284 +288,350 @@ export default function InsurerPartnerShopsScreen({
         </div>
       </div>
 
-      <div className="px-4 py-4 space-y-4">
-        {filteredShops.map((shop) => (
-          <div key={shop.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-lg">{shop.name}</h3>
-                    {shop.certified && (
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded flex items-center gap-1">
-                        <CheckCircle className="w-3 h-3" />
-                        Certified
-                      </span>
-                    )}
-                    <span className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(shop.status)}`}>
-                      {shop.status.toUpperCase()}
+      <div className="space-y-4 px-4 py-4">
+        {allVisibleEntries.map((entry) => {
+          const isManualProspect = "address" in entry && !("mapResult" in entry);
+
+          if (isManualProspect) {
+            return (
+              <article
+                key={entry.id}
+                className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm"
+              >
+                <div className="border-b border-slate-100 p-4">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-slate-950">{entry.name}</h3>
+                    <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700">
+                      Manual lead
                     </span>
                   </div>
-                  <div className="flex items-center text-sm text-gray-600 mb-1">
-                    <Star className="w-4 h-4 mr-1 text-amber-500" />
-                    <span className="font-medium">{shop.rating}</span>
-                    <span className="mx-1">•</span>
-                    <span>{shop.reviewCount} reviews</span>
+                  <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
+                    <MapPin className="h-4 w-4 text-slate-400" />
+                    {entry.address}, {entry.city}, {entry.state} {entry.zip}
                   </div>
                 </div>
+
+                <div className="space-y-3 p-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <a
+                      href={`tel:${entry.phone}`}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                    >
+                      <Phone className="h-4 w-4" />
+                      {entry.phone}
+                    </a>
+                    <a
+                      href={`mailto:${entry.email}`}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                    >
+                      <Mail className="h-4 w-4" />
+                      {entry.email}
+                    </a>
+                  </div>
+
+                  {entry.specialties.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {entry.specialties.map((specialty) => (
+                        <span
+                          key={specialty}
+                          className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
+                        >
+                          {specialty}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          }
+
+          return (
+            <article
+              key={entry.id}
+              className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm"
+            >
+              <div className="border-b border-slate-100 p-4">
+                <div className="mb-2 flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="mb-1 flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg font-bold text-slate-950">{entry.name}</h3>
+                      {entry.certified && (
+                        <span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                          <CheckCircle className="h-3 w-3" />
+                          Certified
+                        </span>
+                      )}
+                      <span className={`rounded-full border px-2 py-1 text-xs font-medium ${getStatusColor(entry.status)}`}>
+                        {entry.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex items-center text-sm text-slate-600">
+                      <span className="mr-1 text-yellow-500">★</span>
+                      <span className="font-medium">{entry.rating}</span>
+                      <span className="mx-1">•</span>
+                      <span>{entry.reviews} reviews</span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl bg-slate-950 px-3 py-2 text-center text-white">
+                    <p className="text-[11px] uppercase tracking-[0.16em] text-white/65">Carrier Fit</p>
+                    <p className="text-lg font-semibold">{entry.insuranceCompatibilityScore}%</p>
+                  </div>
+                </div>
+
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center text-slate-700">
+                    <MapPin className="mr-2 h-4 w-4 text-slate-400" />
+                    <span>
+                      {entry.mapResult.address}, {entry.mapResult.city}, {entry.mapResult.state}{" "}
+                      {entry.mapResult.zipCode}
+                    </span>
+                  </div>
+                  <div className="ml-6 flex items-center text-slate-600">{entry.mapDistanceLabel} away</div>
+                </div>
               </div>
 
-              <div className="space-y-1 text-sm">
-                <div className="flex items-center text-gray-700">
-                  <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                  <span>
-                    {shop.address}, {shop.city}, {shop.state} {shop.zip}
-                  </span>
-                </div>
-                <div className="flex items-center text-gray-600 ml-6">{shop.distance}</div>
-              </div>
-            </div>
-
-            <div className="p-4 bg-gray-50">
-              <div className="grid grid-cols-2 gap-3 mb-3">
-                <div>
-                  <p className="text-xs text-gray-500">Partner Since</p>
-                  <p className="text-sm font-medium text-gray-900">{shop.partnerSince}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Completed Jobs</p>
-                  <p className="text-sm font-medium text-gray-900">{shop.completedJobs}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Active Jobs</p>
-                  <p className="text-sm font-medium" style={{ color: primaryColor }}>
-                    {shop.activeJobs}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Avg Completion</p>
-                  <p className="text-sm font-medium text-gray-900">{shop.avgCompletionDays} days</p>
-                </div>
-              </div>
-
-              <div className="mb-3 p-3 bg-white rounded-lg border border-gray-200">
-                <div className="flex items-center justify-between">
+              <div className="bg-slate-50 p-4">
+                <div className="mb-3 grid grid-cols-2 gap-3">
                   <div>
-                    <p className="text-xs text-gray-500">Average Cost</p>
-                    <p className="text-lg font-bold" style={{ color: primaryColor }}>
-                      ${shop.avgCost.toLocaleString()}
+                    <p className="text-xs text-slate-500">Pipeline State</p>
+                    <p className="text-sm font-medium text-slate-900">
+                      {entry.shortlisted ? "Shortlisted partner" : "Evaluation candidate"}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500">Performance Trend</p>
-                    <div className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="w-4 h-4" />
-                      <span className="text-sm font-medium">Stable</span>
+                  <div>
+                    <p className="text-xs text-slate-500">Completed Jobs</p>
+                    <p className="text-sm font-medium text-slate-900">{entry.completedJobs}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Active Jobs</p>
+                    <p className="text-sm font-medium" style={{ color: primaryColor }}>
+                      {entry.activeJobs}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Avg Completion</p>
+                    <p className="text-sm font-medium text-slate-900">{entry.avgCompletionDays} days</p>
+                  </div>
+                </div>
+
+                <div className="mb-3 rounded-2xl border border-slate-200 bg-white p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-slate-500">Average Cost</p>
+                      <p className="text-lg font-bold" style={{ color: primaryColor }}>
+                        ${entry.averagePriceValue.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-slate-500">Network Trend</p>
+                      <div className="flex items-center gap-1 text-green-600">
+                        <TrendingUp className="h-4 w-4" />
+                        <span className="text-sm font-medium">+{Math.max(1, Math.round(entry.rating - 3.9))}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {shop.specialties.length > 0 && (
-                <div className="mb-3">
-                  <p className="text-xs text-gray-500 mb-1">Specialties:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {shop.specialties.map((specialty, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded">
-                        {specialty}
-                      </span>
-                    ))}
-                  </div>
+                <div className="mb-3 flex flex-wrap gap-1">
+                  {entry.specialties.map((specialty) => (
+                    <span key={specialty} className="rounded bg-blue-50 px-2 py-1 text-xs text-blue-700">
+                      {specialty}
+                    </span>
+                  ))}
                 </div>
-              )}
 
-              {shop.certifications.length > 0 && (
-                <div className="mb-3">
-                  <p className="text-xs text-gray-500 mb-1">Certifications:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {shop.certifications.map((cert, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded flex items-center gap-1"
-                      >
-                        <Award className="w-3 h-3" />
-                        {cert}
-                      </span>
-                    ))}
-                  </div>
+                <div className="mb-3 flex flex-wrap gap-1">
+                  {entry.certifications.map((certification) => (
+                    <span
+                      key={certification}
+                      className="flex items-center gap-1 rounded bg-green-50 px-2 py-1 text-xs text-green-700"
+                    >
+                      <Award className="h-3 w-3" />
+                      {certification}
+                    </span>
+                  ))}
                 </div>
-              )}
-            </div>
 
-            <div className="p-4 bg-white border-t border-gray-100">
-              <div className="grid grid-cols-3 gap-2">
-                <a
-                  href={`tel:${shop.phone}`}
-                  className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span className="text-xs">Call</span>
-                </a>
-                <a
-                  href={`mailto:${shop.email}`}
-                  className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
-                >
-                  <Mail className="w-4 h-4" />
-                  <span className="text-xs">Email</span>
-                </a>
-                <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
-                  <MessageSquare className="w-4 h-4" />
-                  <span className="text-xs">Message</span>
-                </button>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <a
+                    href={`tel:${entry.phone}`}
+                    className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-white"
+                  >
+                    <Phone className="h-4 w-4" />
+                    <span className="text-xs">Call</span>
+                  </a>
+                  <a
+                    href={`mailto:${entry.email}`}
+                    className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-white"
+                  >
+                    <Mail className="h-4 w-4" />
+                    <span className="text-xs">Email</span>
+                  </a>
+                  <button className="flex flex-col items-center justify-center gap-1 rounded-2xl border border-slate-300 px-3 py-2 text-sm font-medium hover:bg-white">
+                    <MessageSquare className="h-4 w-4" />
+                    <span className="text-xs">Message</span>
+                  </button>
+                  <button
+                    onClick={() =>
+                      setShortlistIds((currentIds) => toggleRoleCollectionShopId(currentIds, entry.id))
+                    }
+                    className={`flex flex-col items-center justify-center gap-1 rounded-2xl border px-3 py-2 text-sm font-medium ${
+                      entry.shortlisted
+                        ? "border-green-200 bg-green-50 text-green-700"
+                        : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span className="text-xs">
+                      {entry.shortlisted ? "Shortlisted" : "Shortlist"}
+                    </span>
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            </article>
+          );
+        })}
       </div>
 
       {showAddShopModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white sm:rounded-2xl">
             <div className="p-6">
-              <h2 className="text-2xl font-bold mb-4">Add Partner Shop</h2>
+              <h2 className="mb-4 text-2xl font-bold text-slate-950">Add Manual Prospect</h2>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Shop Name <span className="text-red-500">*</span>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">
+                    Shop Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={newShopData.name}
-                    onChange={(e) => setNewShopData({ ...newShopData, name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="New partner shop"
+                    onChange={(event) => setNewShopData({ ...newShopData, name: event.target.value })}
+                    className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                    placeholder="Metro Collision Group"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email <span className="text-red-500">*</span>
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Email <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="email"
                       value={newShopData.email}
-                      onChange={(e) => setNewShopData({ ...newShopData, email: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                      placeholder="shop@example.com"
+                      onChange={(event) => setNewShopData({ ...newShopData, email: event.target.value })}
+                      className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                      placeholder="partners@shop.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone <span className="text-red-500">*</span>
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Phone <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="tel"
                       value={newShopData.phone}
-                      onChange={(e) => setNewShopData({ ...newShopData, phone: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                      placeholder="Phone number"
+                      onChange={(event) => setNewShopData({ ...newShopData, phone: event.target.value })}
+                      className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                      placeholder="(555) 123-4567"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Street Address</label>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">Street Address</label>
                   <input
                     type="text"
                     value={newShopData.address}
-                    onChange={(e) => setNewShopData({ ...newShopData, address: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="123 Main St"
+                    onChange={(event) => setNewShopData({ ...newShopData, address: event.target.value })}
+                    className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                    placeholder="1234 Main St"
                   />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                  <input
-                    type="text"
-                    value={newShopData.city}
-                    onChange={(e) => setNewShopData({ ...newShopData, city: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="City"
-                  />
-                  <input
-                    type="text"
-                    value={newShopData.state}
-                    onChange={(e) => setNewShopData({ ...newShopData, state: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="NY"
-                    maxLength={2}
-                  />
-                  <input
-                    type="text"
-                    value={newShopData.zip}
-                    onChange={(e) => setNewShopData({ ...newShopData, zip: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                    placeholder="ZIP"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Specialties</label>
-                  <div className="flex flex-wrap gap-2">
-                    {specialtyOptions.map((specialty) => (
-                      <button
-                        key={specialty}
-                        type="button"
-                        onClick={() => toggleSpecialty(specialty)}
-                        className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
-                          newShopData.specialties.includes(specialty)
-                            ? "text-white border-transparent"
-                            : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                        }`}
-                        style={
-                          newShopData.specialties.includes(specialty)
-                            ? { backgroundColor: primaryColor }
-                            : {}
-                        }
-                      >
-                        {specialty}
-                      </button>
-                    ))}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-700">City</label>
+                    <input
+                      type="text"
+                      value={newShopData.city}
+                      onChange={(event) => setNewShopData({ ...newShopData, city: event.target.value })}
+                      className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                      placeholder="Dallas"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-700">State</label>
+                    <input
+                      type="text"
+                      value={newShopData.state}
+                      onChange={(event) => setNewShopData({ ...newShopData, state: event.target.value })}
+                      className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                      placeholder="TX"
+                      maxLength={2}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-700">ZIP</label>
+                    <input
+                      type="text"
+                      value={newShopData.zip}
+                      onChange={(event) => setNewShopData({ ...newShopData, zip: event.target.value })}
+                      className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                      placeholder="75201"
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Certifications</label>
-                  <div className="flex flex-wrap gap-2">
-                    {certificationOptions.map((cert) => (
-                      <button
-                        key={cert}
-                        type="button"
-                        onClick={() => toggleCertification(cert)}
-                        className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
-                          newShopData.certifications.includes(cert)
-                            ? "bg-green-600 text-white border-transparent"
-                            : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                        }`}
-                      >
-                        {cert}
-                      </button>
-                    ))}
-                  </div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">
+                    Specialties
+                  </label>
+                  <input
+                    type="text"
+                    value={newShopData.specialties}
+                    onChange={(event) =>
+                      setNewShopData({ ...newShopData, specialties: event.target.value })
+                    }
+                    className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                    placeholder="Collision Repair, ADAS, EV"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">
+                    Certifications
+                  </label>
+                  <input
+                    type="text"
+                    value={newShopData.certifications}
+                    onChange={(event) =>
+                      setNewShopData({ ...newShopData, certifications: event.target.value })
+                    }
+                    className="w-full rounded-2xl border border-slate-300 px-4 py-2"
+                    placeholder="I-CAR Gold Class, ASE Certified"
+                  />
                 </div>
               </div>
 
-              <div className="flex gap-3 mt-6">
+              <div className="mt-6 flex gap-3">
                 <button
                   onClick={() => setShowAddShopModal(false)}
-                  className="flex-1 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                  className="flex-1 rounded-2xl border border-slate-300 py-3 font-medium hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleAddShop}
                   disabled={!newShopData.name || !newShopData.email || !newShopData.phone}
-                  className="flex-1 py-3 rounded-lg text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 rounded-2xl py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                   style={{ backgroundColor: primaryColor }}
                 >
-                  Add Partner Shop
+                  Add Prospect
                 </button>
               </div>
             </div>

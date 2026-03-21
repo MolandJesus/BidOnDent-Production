@@ -4,8 +4,25 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { findExistingProfile } from "./profiles.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
+
+async function resolveVehicleClerkUserId(
+  supabase: SupabaseClient,
+  identity: {
+    clerkUserId?: string | null;
+    email?: string | null;
+    websiteUserKey?: string | null;
+  }
+) {
+  if (identity.clerkUserId) {
+    return identity.clerkUserId;
+  }
+
+  const profile = await findExistingProfile(supabase, identity);
+  return profile?.clerk_user_id || null;
+}
 
 /**
  * POST /vehicles - Save or update a vehicle
@@ -97,10 +114,14 @@ export async function getVehicles(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const clerkUserId = url.searchParams.get('clerkUserId');
+    const clerkUserId = await resolveVehicleClerkUserId(supabase, {
+      clerkUserId: url.searchParams.get('clerkUserId'),
+      email: url.searchParams.get('email'),
+      websiteUserKey: url.searchParams.get('websiteUserKey'),
+    });
 
     if (!clerkUserId) {
-      return respond({ error: 'Missing clerkUserId' }, 400);
+      return respond({ error: 'Missing clerkUserId or equivalent website identity' }, 400);
     }
 
     // Use service role to bypass RLS
