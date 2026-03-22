@@ -4,42 +4,67 @@ import type { ViewMode } from "../types";
 
 const NAVIGATION_STORAGE_KEY = "bidondent_navigation_state";
 
-// Load saved navigation state from localStorage
+const VALID_VIEW_MODES = new Set<string>([
+  "dashboard",
+  "reports-list",
+  "report-detail",
+  "insurer-connect",
+  "liked-shops",
+  "shop-directory",
+  "insurance-companies",
+  "competitor-analysis",
+  "vehicles",
+  "new-claim",
+  "smoke-test",
+  "demo-switcher",
+]);
+
+// Load saved navigation state from localStorage with shape validation
 const loadSavedState = () => {
-  try {
-    const saved = localStorage.getItem(NAVIGATION_STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return {
-        currentTab: parsed.currentTab || "home",
-        viewMode: (parsed.viewMode || "dashboard") as ViewMode,
-        selectedReportId: parsed.selectedReportId || null
-      };
-    }
-  } catch (error) {
-    console.error("Error loading navigation state:", error);
-  }
-  return {
+  const fallback = {
     currentTab: "home",
     viewMode: "dashboard" as ViewMode,
-    selectedReportId: null
+    selectedReportId: null as string | null,
   };
+
+  try {
+    const saved = localStorage.getItem(NAVIGATION_STORAGE_KEY);
+    if (!saved) return fallback;
+
+    const parsed = JSON.parse(saved);
+    if (typeof parsed !== "object" || parsed === null) return fallback;
+
+    const currentTab = typeof parsed.currentTab === "string" ? parsed.currentTab : "home";
+    const viewMode = VALID_VIEW_MODES.has(parsed.viewMode)
+      ? (parsed.viewMode as ViewMode)
+      : "dashboard";
+    const selectedReportId =
+      typeof parsed.selectedReportId === "string" ? parsed.selectedReportId : null;
+
+    return { currentTab, viewMode, selectedReportId };
+  } catch {
+    return fallback;
+  }
 };
 
 export function useNavigation() {
   // Use lazy initialization to only load once on mount
   const [currentTab, setCurrentTab] = useState(() => loadSavedState().currentTab);
   const [viewMode, setViewMode] = useState<ViewMode>(() => loadSavedState().viewMode);
-  const [selectedReportId, setSelectedReportId] = useState<string | null>(() => loadSavedState().selectedReportId);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(
+    () => loadSavedState().selectedReportId
+  );
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showLandingPage, setShowLandingPage] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  
+
   // Demo mode state - MUST be at the end to preserve hook order
   const [demoMode, setDemoMode] = useState(false);
-  const [demoAccountType, setDemoAccountType] = useState<"customer" | "shop" | "insurer" | null>(null);
+  const [demoAccountType, setDemoAccountType] = useState<"customer" | "shop" | "insurer" | null>(
+    null
+  );
 
   // Refs for scrolling
   const whoWeServeRef = useRef<HTMLElement>(null);
@@ -51,9 +76,9 @@ export function useNavigation() {
     const navigationState = {
       currentTab,
       viewMode,
-      selectedReportId
+      selectedReportId,
     };
-    
+
     try {
       localStorage.setItem(NAVIGATION_STORAGE_KEY, JSON.stringify(navigationState));
     } catch (error) {
@@ -83,7 +108,7 @@ export function useNavigation() {
 
   // Toggle profile dropdown
   const toggleProfileDropdown = () => {
-    setShowProfileDropdown(prev => !prev);
+    setShowProfileDropdown((prev) => !prev);
   };
 
   // Enable demo mode with a specific account type
@@ -101,7 +126,7 @@ export function useNavigation() {
     setDemoAccountType(null);
     setCurrentTab("home");
     setViewMode("dashboard");
-    console.log('✅ Demo mode exited: Returned to original account');
+    console.log("✅ Demo mode exited: Returned to original account");
   };
 
   return {
@@ -119,7 +144,7 @@ export function useNavigation() {
     whoWeServeRef,
     howItWorksRef,
     profileDropdownRef,
-    
+
     // Setters
     setCurrentTab,
     setViewMode,
@@ -129,13 +154,13 @@ export function useNavigation() {
     setShowProfileDropdown,
     setShowLandingPage,
     setIsUploadingImage,
-    
+
     // Actions
     navigateToTab,
     navigateToView,
     returnToDashboard,
     toggleProfileDropdown,
     enableDemoMode,
-    exitDemoMode
+    exitDemoMode,
   };
 }

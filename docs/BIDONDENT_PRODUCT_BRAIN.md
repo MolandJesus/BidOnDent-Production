@@ -5,6 +5,98 @@ Status: Active strategic reference
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
 
+---
+
+## How To Read This Document
+
+This Product Brain has **three reading levels**. Choose the level that matches your task:
+
+| Level                | Section                                                       | When To Use                                                    | Time    |
+| -------------------- | ------------------------------------------------------------- | -------------------------------------------------------------- | ------- |
+| **1 — Quick Cards**  | "Quick Reference — System Upgrade Cards" (below)              | Starting any upgrade or change. Read ONE card.                 | 10 sec  |
+| **2 — Execution**    | "Upgrade Checklists", "Change Impact Index", "Change Recipes" | Ready to implement. Follow the steps.                          | 2-5 min |
+| **3 — Full Context** | Everything else (architecture, screen maps, 6-part plans)     | Need deep understanding. Onboarding or architecture decisions. | 30+ min |
+
+**Rule:** A future AI or human should be able to read one Quick Card and one Upgrade Checklist and begin correct work. You should NOT need to read 1,600+ lines before making a change.
+
+---
+
+## Quick Reference — System Upgrade Cards
+
+These cards are the **primary entry point** for future work. Read one card, understand the system, start correctly.
+
+### CARD: Navigation Productization
+
+- **STATE:** Tier 2 (Productizing). GPS, routing, voice, speed all work. GPS degradation detection delivered. Speed-limit unavailable state delivered. NavigationErrorBoundary delivered (wraps sidebar navigation content, glass-card fallback UI). Remaining: deviation detection, cross-browser voice.
+- **NEXT MOVE:** Deviation detection groundwork, then cross-browser voice audit.
+- **TOUCHES:** `services/navigation/` (routeEngine, speedLimit, voiceGuidance), map components, `theme.css` for error states.
+- **DO NOT:** Add multi-stop routing, CarPlay, or premium TTS before single-route reliability is solid.
+- **VERIFY:** GPS loss shows warning within 3s. OSRM failure shows error, no crash. Stale speed data shows "unavailable."
+- **UNLOCKS:** Navigation settings UI, cloud sync, automatic rerouting, marketplace-aware routing.
+- **FULL DETAIL:** Search this doc for "Navigation Productization Roadmap"
+
+### CARD: Design System Expansion
+
+- **STATE:** Tier 2. Royal-blue glass tokens exist on map surfaces only. 7 of 9 app surfaces use no map tokens.
+- **NEXT MOVE:** Extract palette to CSS custom properties (`--bd-royal-blue`, etc.) and create non-map-scoped glass classes.
+- **TOUCHES:** `src/styles/theme.css` (add `:root` properties + `.bd-glass-*` classes). Then adopt in `DashboardCoveragePanel.tsx`, `MobileBottomNav.tsx`, `ProfileDropdown.tsx`.
+- **DO NOT:** Force glass on forms/tables/data-entry. Skip Stage 2 prerequisites when doing Stage 3.
+- **VERIFY:** CSS custom properties visible in DevTools on any page. `.bd-glass-panel` applies outside `.coverage-map-surface`.
+- **UNLOCKS:** Role dashboard glass adoption, landing unification, full site-wide identity.
+- **FULL DETAIL:** Search this doc for "Design System Direction"
+
+### CARD: Customer Map Intelligence
+
+- **STATE:** Tier 2 (Productizing). DashboardCoveragePanel wired into HomeScreen for all user types. Coverage command center visible on dashboard with glass tokens. No customer-specific nearest-shops compact widget yet.
+- **NEXT MOVE:** Build nearest-shops compact widget for customer dashboard (data already available via `useCoveragePartnerShops()`).
+- **TOUCHES:** New component in `components/maps/` or `components/codelayer/`. Consumes `useCoveragePartnerShops()`. Widget on `HomeScreen.tsx`.
+- **DO NOT:** Build smart routing or insurance-preferred routing before the basic widget exists. Don't show fabricated data.
+- **VERIFY:** Widget shows 3-5 nearest shops with distance/rating. Tappable to expand. Works in demo mode.
+- **UNLOCKS:** Repair status pin, smart shop recommendation routing, insurance-preferred shop highlighting.
+- **FULL DETAIL:** Search this doc for "Customer Map Intelligence"
+
+### CARD: Shop Map Intelligence
+
+- **STATE:** Tier 3. No shop-specific map features exist. Service radius not stored anywhere.
+- **NEXT MOVE:** Build service area visualization on shop dashboard (requires `shop_service_areas` Supabase table first).
+- **TOUCHES:** New Supabase migration. New component in `components/maps/`. Widget on shop `HomeScreen.tsx`.
+- **DO NOT:** Build request heatmaps or proximity alerts before the service area table and visualization exist.
+- **VERIFY:** Shop sees boundary overlay on map showing their operating radius. Works with demo data.
+- **UNLOCKS:** Incoming request heatmap, customer proximity alerts, competitor overlay.
+- **FULL DETAIL:** Search this doc for "Shop Map Intelligence"
+
+### CARD: Insurer Map Intelligence
+
+- **STATE:** Tier 3. No insurer-specific map analytics. Claims not geo-coded.
+- **NEXT MOVE:** Build network coverage map — partner shops by region with capacity/rating overlays.
+- **TOUCHES:** New component in `components/maps/`. Consumes shop profiles + relationship data. Widget on insurer `HomeScreen.tsx`.
+- **DO NOT:** Build claims heatmaps or gap analysis before shop location data is queryable by region.
+- **VERIFY:** Insurer sees regional overview of partner network with shop count/rating per area. Works in demo mode.
+- **UNLOCKS:** Claims density analysis, coverage gap detection, route optimization.
+- **FULL DETAIL:** Search this doc for "Insurer Map Intelligence"
+
+### CARD: Provider Evolution
+
+- **STATE:** Stable. Leaflet + OSRM + Nominatim + Overpass all free-tier, functional. No rate limit issues.
+- **NEXT MOVE:** No provider changes needed. Focus on reliability within the current stack.
+- **TOUCHES:** Nothing — this card exists to prevent unnecessary work.
+- **DO NOT:** Migrate providers for aesthetic reasons. Build a provider abstraction layer before it's needed.
+- **VERIFY:** N/A — no change required until a specific trigger (rate limits, feature gap, business justification).
+- **UNLOCKS:** Globe rendering (Mapbox GL), traffic-aware routing (Google/TomTom), offline maps (PMTiles).
+- **FULL DETAIL:** Search this doc for "Provider Evolution Decision Framework"
+
+### CARD: Cloud Navigation Persistence
+
+- **STATE:** Tier 2. All navigation persistence is localStorage-only. Sessions lost on device change.
+- **NEXT MOVE:** Create `navigation_sessions` Supabase table. Build sync service. Migrate to Supabase-primary with localStorage as cache.
+- **TOUCHES:** New Supabase migration. New service in `services/navigation/`. Update `navigationSession.ts`. Update `persistedState.ts`.
+- **DO NOT:** Change navigation UI to accommodate sync. Add sync indicators that distract from driving.
+- **VERIFY:** Route session persists after closing browser. Same session loads on different device. localStorage remains as cache/fallback.
+- **UNLOCKS:** Navigation history, cross-device continuity, preferences sync.
+- **FULL DETAIL:** Phase 2 doc "Pillar 3: Cloud persistence for navigation"
+
+---
+
 ## What BidOnDent Is
 
 BidOnDent is a three-sided auto body repair marketplace:
@@ -1229,6 +1321,708 @@ If reloading context quickly, start here:
 - `supabase/functions/server/index.ts`
 - `supabase/functions/server/database_init.tsx`
 
+## Map & Navigation Program — Implementation Reality (audited 2026-03-21)
+
+This section exists so that any agent, human, or cross-reference doc can quickly determine what the map program actually delivers versus what is planned.
+
+### Confirmed Real (production code, real APIs)
+
+| Capability                     | Implementation                                                                           | API / Provider                           |
+| ------------------------------ | ---------------------------------------------------------------------------------------- | ---------------------------------------- |
+| GPS live tracking              | `navigator.geolocation.watchPosition()` with high accuracy                               | Browser Geolocation API                  |
+| Turn-by-turn routing           | OSRM fetch → 15+ maneuver templates → step-by-step UI                                    | `router.project-osrm.org` (public, free) |
+| Live speed + speed-limit HUD   | GPS-derived speed + Overpass API speed-limit query with confidence scoring               | Overpass API (OSM)                       |
+| Voice navigation (TTS)         | `SpeechSynthesisUtterance`, voice personas, volume presets                               | Web Speech API                           |
+| Address search + suggestions   | Nominatim geocoder with caching, predictive dropdown                                     | Nominatim (OSM)                          |
+| Navigation session persistence | localStorage v2 with route/origin/destination/provider                                   | Browser localStorage                     |
+| Dashboard map widget           | `DashboardCoveragePanel.tsx` renders `CoverageMapDialog` with full navigation experience | Leaflet + React-Leaflet                  |
+| Map tile rendering             | OSM raster tiles, midnight variant, satellite (Esri)                                     | OpenStreetMap / Esri                     |
+
+### Known Gaps
+
+| Gap                                | Detail                                                                                                              |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Cloud sync for navigation sessions | All persistence is localStorage-only — no Supabase sync. Risk of data loss on device change.                        |
+| Route provider label               | Code uses `"osrm-public"` but historically was mislabeled as `"osrm-demo"` — the engine calls real production OSRM. |
+| Globe rendering                    | No 3D globe — Leaflet is 2D only. Would require provider migration (Mapbox GL / MapLibre GL).                       |
+| Premium TTS voices                 | Current voices are browser-default. No paid TTS (e.g., Google Cloud TTS, ElevenLabs).                               |
+
+### Cross-Document Awareness
+
+This Product Brain should be read alongside:
+
+- `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — strategic themes, non-negotiables, and future direction
+- `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — granular delivery history, active risks, and staged roadmap
+- `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` — architecture truth table and Phase 3 direction
+
+Any decision about map features, providers, or design language should cross-check all four docs to avoid contradictions.
+
+## Feature Maturity Classification
+
+Every major BidOnDent capability falls into one of three tiers. This classification prevents confusion between "it works in code" and "it is ready for users" and "we want it someday."
+
+### Tier 1 — Implemented (works in code, real APIs, ships today)
+
+These features are in the production bundle with real provider backing. They work but may still have rough edges, missing error handling, or incomplete UX polish.
+
+| Feature                                 | Notes                                            |
+| --------------------------------------- | ------------------------------------------------ |
+| GPS live tracking                       | Browser Geolocation API, high accuracy mode      |
+| Turn-by-turn routing                    | OSRM public, 15+ maneuver templates              |
+| Speed + speed-limit HUD                 | Overpass API + GPS-derived, confidence scoring   |
+| Voice navigation (browser TTS)          | Web Speech API, personas, volume presets         |
+| Address search + predictive suggestions | Nominatim with caching                           |
+| Navigation session persistence          | localStorage v2, versioned envelopes             |
+| Dashboard embedded map                  | CoverageMapDialog inline on dashboard            |
+| Coverage map (embedded + fullscreen)    | Leaflet + React-Leaflet, three tile layers       |
+| Royal-blue glass map controls           | theme.css + mapSurfaceTheme.ts                   |
+| In-map command pod + overlays           | CoverageBrowseExperience.tsx                     |
+| Provider health telemetry               | Diagnostics checks, trust state UI               |
+| External directions launch              | Apple Maps / Google Maps / Waze handoff          |
+| Customer report flow                    | Clerk auth → Supabase persistence → photo upload |
+| Customer vehicle management             | Real CRUD with Supabase                          |
+| Demo mode                               | First-class role preview, clearly gated          |
+
+### Tier 2 — Productizing (works but needs maturity before relying on it at scale)
+
+These features exist in code but have known gaps in reliability, UX completeness, edge-case handling, or operational readiness.
+
+| Feature                        | Gap                                                                              | Next Step                                       |
+| ------------------------------ | -------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Turn-by-turn UX                | No offline fallback, no rerouting on deviation, no ETA updates during navigation | Add deviation detection + reroute trigger       |
+| Speed-limit HUD                | Overpass API can return stale/missing data in rural areas; no fallback display   | Add "no data available" graceful state          |
+| Voice navigation               | Browser TTS quality varies wildly across devices/OS; no voice selection UI       | Add voice picker, test cross-browser            |
+| Navigation session persistence | localStorage-only — no cloud sync, lost on device change                         | Migrate to Supabase `navigation_sessions` table |
+| Shop bid submission            | UI exists, cross-role data path not fully coherent                               | Wire real Supabase bid rows to shop view        |
+| Insurer claims view            | Polished UI, mostly mock data                                                    | Connect to real claim persistence               |
+| Shop/insurer dashboards        | Strong UI shells, partial real data                                              | Progressive real-data wiring                    |
+| Profile dropdown               | Real user data, no glass design treatment                                        | Adopt map theme tokens                          |
+| Landing page design            | Hybrid — coverage sections use map tokens, rest uses plain Tailwind              | Unify under map design system                   |
+
+### Tier 3 — Aspirational (not in code, documented as future direction only)
+
+These features do not exist in the codebase today. They represent product direction that should be built gradually over multiple future passes.
+
+| Feature                              | Why It Matters                                                    | Technical Prerequisites                                      |
+| ------------------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------ |
+| Cloud-synced navigation sessions     | Cross-device session continuity                                   | Supabase table + sync service + conflict resolution          |
+| Role-specific dashboard map widgets  | CarPlay-style glanceable map intelligence per role                | Role-aware map data queries + compact map component variants |
+| Customer repair routing intelligence | Smart route-to-shop with wait time, rating, distance weighting    | Shop availability API + scoring algorithm                    |
+| Shop service-area operations view    | Geographic incoming request visualization + technician logistics  | Geofenced request queries + service area persistence         |
+| Insurer claims density heatmap       | Regional claim clustering + network coverage analysis             | Aggregated claim geo data + heatmap layer                    |
+| 3D globe rendering                   | Premium zoom-out experience                                       | Mapbox GL or MapLibre GL migration                           |
+| Premium TTS voices                   | Higher-quality voice navigation                                   | Google Cloud TTS or ElevenLabs integration                   |
+| Offline navigation                   | Works without network after route is loaded                       | Route geometry caching + offline tile pack                   |
+| Real-time rerouting                  | Automatic deviation detection + new route calculation             | Continuous GPS → route comparison + OSRM re-query            |
+| Multi-stop routing                   | Route optimization for multiple shop visits / pickup-delivery     | OSRM trip service or custom optimization                     |
+| Site-wide glass design system        | Unified Apple-inspired visual identity across all surfaces        | Design token extraction + global theme provider              |
+| Marketplace-aware map discovery      | Show real-time bid activity, shop ratings, repair capacity on map | Live Supabase subscriptions + map marker enrichment          |
+
+## Design System Direction — Apple-Inspired Expansion
+
+### 1. Current State
+
+The map surface implements a royal-blue glass design language (Theme 5 in the Map Master Plan):
+
+- Rounded controls with blue gradient fills and inner glow
+- Glass-effect overlays with `backdrop-blur` layering
+- Floating animation (`map-glass-float`) for ambient movement
+- Tone-aware light/dark palette via `mapSurfaceTheme.ts`
+- Compact mobile controls maintaining tap-target comfort
+- All glass/blur CSS is currently scoped to `.coverage-map-surface` and `.map-*` classes in `theme.css`
+
+The rest of the site uses completely separate styling. Integration status:
+
+| Surface                   | Uses Map Tokens | Uses Glass/Blur               | Integration Barrier |
+| ------------------------- | --------------- | ----------------------------- | ------------------- |
+| Map surfaces              | Yes             | Yes                           | N/A — source        |
+| Coverage landing sections | Yes             | Yes                           | Low                 |
+| DashboardCoveragePanel    | Yes             | Yes (bd-glass-panel/card)     | Wired               |
+| DashboardLayout (shell)   | No              | MobileBottomNav only          | High                |
+| HomeScreen (customer)     | No              | No                            | High                |
+| ShopActiveJobsScreen      | No              | No                            | High                |
+| InsurerClaimsScreen       | No              | No                            | High                |
+| ProfileDropdown           | No              | No                            | High                |
+| Landing hero/benefits/CTA | No              | Scroll-aware header blur only | Medium              |
+
+### 2. Productizing Stage
+
+Make the design system usable outside maps so adoption can begin.
+
+| Step                        | What                                                                                                              | Files Touched     | Acceptance                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------ |
+| 2a. Token extraction        | Add `--bd-royal-blue`, `--bd-royal-blue-strong`, `--bd-royal-blue-soft` CSS custom properties to `:root`          | `theme.css`       | Properties available in DevTools on any page                                   |
+| 2b. Global glass classes    | Create `.bd-glass-panel`, `.bd-glass-card`, `.bd-glass-badge` (non-map-scoped) alongside existing `.map-liquid-*` | `theme.css`       | Classes can be applied to any element, not just inside `.coverage-map-surface` |
+| 2c. Low-barrier adoption    | Adopt glass tokens in `DashboardCoveragePanel.tsx` outer shell, `MobileBottomNav.tsx`, `ProfileDropdown.tsx`      | 3 component files | Visual glass treatment visible on dashboard                                    |
+| 2d. Landing header adoption | Use consistent royal-blue palette tokens in `LandingPageHeader.tsx`                                               | 1 component file  | Header visually matches map control palette                                    |
+
+**Role implications:** Affects all roles equally — these are shared shell surfaces.
+
+### 3. Aspirational Stage
+
+Full site-wide Apple-inspired identity unification.
+
+| Step                              | What                                                                                                                        | Files Touched                 | Acceptance                                  |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------- |
+| 3a. Role dashboard cards          | `HomeScreen.tsx` stat cards, `ShopActiveJobsScreen.tsx` job cards, `InsurerClaimsScreen.tsx` claim cards adopt glass tokens | 3 screen files                | Role dashboards visually match map quality  |
+| 3b. Dashboard shell               | `DashboardLayout.tsx` sidebar + top bar get glass shell treatment                                                           | 1 layout file                 | Entire dashboard feels like a native app    |
+| 3c. Landing unification           | All landing sections adopt royal-blue depth/palette                                                                         | ~8 landing component files    | Landing and dashboard feel like one product |
+| 3d. Theme function generalization | Extract `mapSurfaceTheme.ts` → `globalSurfaceTheme.ts` serving both map and non-map surfaces                                | 1 new file + consumer updates | Single theme function for entire app        |
+
+**Role implications:**
+
+- **Customer:** Stat cards (active requests, bids, repairs, savings) get royal-blue glass treatment
+- **Shop:** Job cards with status badges adopt tone-aware glass + list card tokens
+- **Insurer:** Claim cards with priority badges adopt strong-panel glass treatment
+
+### 4. Technical Prerequisites
+
+| Prerequisite                                 | Needed For  | Exists Today                            |
+| -------------------------------------------- | ----------- | --------------------------------------- |
+| CSS custom properties for royal-blue palette | Stage 2a    | No                                      |
+| Non-map-scoped glass utility classes         | Stage 2b    | No                                      |
+| Dark mode support in all non-map surfaces    | Stage 3a-3c | Partial — map has it, dashboards do not |
+| `getGlobalSurfaceTheme(tone)` function       | Stage 3d    | No                                      |
+
+### 5. UI/UX Evolution Path
+
+1. **Now:** Map surfaces are glass-forward; rest of site is flat Tailwind with slate palette
+2. **After Stage 2:** Shared surfaces (nav, profile, coverage panel) feel cohesive with maps
+3. **After Stage 3a:** Each role's dashboard cards match map visual quality
+4. **After Stage 3b-3c:** Entire product feels like one Apple-inspired native app
+5. **Final state:** User cannot tell where "map design" ends and "app design" begins
+
+### 6. What Should NOT Be Built Yet
+
+- Do not force glass effects on forms, dense tables, or data-entry surfaces — flat treatment is better there
+- Do not create a component library abstraction — keep it as Tailwind classes + theme function
+- Do not change the map design language to accommodate other surfaces — other surfaces adopt map's language
+- Do not skip Stage 2 prerequisites when working on Stage 3 adoption
+- Do not attempt dark mode for non-map surfaces until the royal-blue palette tokens exist globally
+
+## Role-Specific Future Map Intelligence
+
+None of these features are implemented today — all are Tier 3. Each role follows the same 6-part structured plan.
+
+---
+
+### Customer Map Intelligence
+
+**Purpose:** Help customers make faster, better-informed repair decisions through geographic context.
+
+#### 1. Current State
+
+- Customers can view the coverage map and browse partner shops
+- No customer-specific map features exist beyond the shared coverage surface
+- No geographic context is used in the customer repair flow
+
+#### 2. Productizing Stage
+
+| Feature               | Description                                               | Data Needed                                     |
+| --------------------- | --------------------------------------------------------- | ----------------------------------------------- |
+| Nearest partner shops | Compact map widget showing shops within coverage radius   | Partner shops from Supabase (already available) |
+| Repair status pin     | Pin showing where the vehicle is currently being repaired | Report status + shop location                   |
+
+#### 3. Aspirational Stage
+
+| Feature                   | Description                                                    | Data Needed                               |
+| ------------------------- | -------------------------------------------------------------- | ----------------------------------------- |
+| Smart shop recommendation | Route-to-shop weighting distance, rating, wait time, and price | Shop ratings + availability + bid history |
+| Insurance-preferred route | Highlight insurer-preferred shops on map during shop selection | Insurer-shop relationship data            |
+
+#### 4. Technical Prerequisites
+
+- `report_locations` table — latitude/longitude captured at report submission
+- Shop availability API or column for wait-time estimates
+- Insurer-shop preference data in Supabase
+
+#### 5. UI/UX Evolution Path
+
+1. **Now:** Coverage map is the only map surface customers see
+2. **After Productizing:** Compact CarPlay-style widget on customer dashboard showing nearest 3-5 shops with distance/rating, tappable to expand
+3. **After Aspirational:** Shop selection flow becomes map-first with smart routing recommendations
+
+#### 6. What Should NOT Be Built Yet
+
+- Do not add customer-to-customer social features on the map
+- Do not build real-time tracking of repair technician location
+- Do not replace the existing bid-comparison UI with a map-only flow
+
+---
+
+### Shop Map Intelligence
+
+**Purpose:** Give shops geographic awareness of their service area, incoming opportunities, and competitive landscape.
+
+#### 1. Current State
+
+- Shops can view the coverage map and their own profile
+- No shop-specific map features exist (no service area visualization, no request awareness)
+- Service radius is not stored in Supabase
+
+#### 2. Productizing Stage
+
+| Feature                    | Description                                          | Data Needed                         |
+| -------------------------- | ---------------------------------------------------- | ----------------------------------- |
+| Service area visualization | Boundary overlay showing the shop's operating radius | Shop profile + service radius value |
+
+#### 3. Aspirational Stage
+
+| Feature                  | Description                                            | Data Needed                                  |
+| ------------------------ | ------------------------------------------------------ | -------------------------------------------- |
+| Incoming request heatmap | Geographic distribution of active repair requests      | Geo-coded report locations                   |
+| Customer proximity alert | Notification when nearby customer submits a report     | Real-time Supabase subscription + geofencing |
+| Competitor overlay       | Nearby competing shops with rating/capacity comparison | Network directory data                       |
+
+#### 4. Technical Prerequisites
+
+- `shop_service_areas` table — geofenced polygons or radius values per shop
+- `report_locations` table — shared prerequisite with customer intelligence
+- Supabase real-time subscriptions for proximity alerting
+- Network directory must include competitor shops, not just partners
+
+#### 5. UI/UX Evolution Path
+
+1. **Now:** Shops see only the coverage map like any other user
+2. **After Productizing:** Service-area command widget on shop dashboard showing defined boundary
+3. **After Aspirational:** Incoming requests visible as map pins by proximity, tappable for quick bid action
+
+#### 6. What Should NOT Be Built Yet
+
+- Do not build shop-to-shop messaging through the map
+- Do not add technician dispatch routing until the repair-status workflow is production-grade
+- Do not show competitor pricing data on the map — competitive info should be limited to rating/capacity
+
+---
+
+### Insurer Map Intelligence
+
+**Purpose:** Give insurers geographic insight into claims, network coverage, and repair capacity.
+
+#### 1. Current State
+
+- Insurers can view the coverage map and network directory
+- No insurer-specific map analytics exist (no claim clustering, no gap analysis)
+- Claims are not geo-coded in Supabase
+
+#### 2. Productizing Stage
+
+| Feature              | Description                                           | Data Needed                       |
+| -------------------- | ----------------------------------------------------- | --------------------------------- |
+| Network coverage map | Partner shops by region with capacity/rating overlays | Shop profiles + relationship data |
+
+#### 3. Aspirational Stage
+
+| Feature               | Description                                                    | Data Needed                                 |
+| --------------------- | -------------------------------------------------------------- | ------------------------------------------- |
+| Claims density map    | Regional claim clustering with trend analysis                  | Aggregated claim geo data over time         |
+| Coverage gap analysis | Regions with demand but insufficient shop coverage             | Report locations vs shop locations          |
+| Route optimization    | Optimal claim-to-shop assignment based on geography + capacity | Optimization algorithm + real-time capacity |
+
+#### 4. Technical Prerequisites
+
+- `claim_assignments` table — insurer → shop assignment with geographic context
+- `report_locations` table — shared prerequisite (enables gap analysis)
+- `shop_availability` table — real-time capacity/wait-time per shop
+- Aggregation queries for claim density over time periods
+
+#### 5. UI/UX Evolution Path
+
+1. **Now:** Insurers see only the shared coverage map
+2. **After Productizing:** Regional overview widget on insurer dashboard showing network health by area
+3. **After Aspirational:** Interactive drill-down map with claim density, gap warnings, and assignment optimization
+
+#### 6. What Should NOT Be Built Yet
+
+- Do not build fraud-detection overlays on the map
+- Do not add real-time claim tracking pins until claim status workflow is production-grade
+- Do not attempt route optimization without the `shop_availability` prerequisite
+
+## Navigation Productization Roadmap
+
+### 1. Current State
+
+The navigation system works end-to-end. GPS tracks, routes calculate, voice speaks, speed limits display. But reliability and UX gaps prevent it from being production-grade:
+
+| Capability          | Status                 | Gap                                        |
+| ------------------- | ---------------------- | ------------------------------------------ |
+| GPS tracking        | Real (`watchPosition`) | No graceful handling of GPS loss           |
+| Route calculation   | Real (OSRM public)     | No error handling for network failures     |
+| Voice navigation    | Real (Web Speech API)  | Varies across browsers, no settings UI     |
+| Speed limits        | Real (Overpass API)    | No "data unavailable" fallback state       |
+| Rerouting           | Not implemented        | No deviation detection                     |
+| Cloud persistence   | Not implemented        | Sessions lost on device change             |
+| Settings UI         | Not implemented        | No user controls for voice/speed/providers |
+| Integration testing | Not implemented        | No test coverage for navigation flows      |
+
+### 2. Productizing Stage
+
+Make navigation reliable enough that users trust it during real drives.
+
+| Step                       | What                                                         | Acceptance                                        |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| 2a. GPS degradation        | Show last known position + prominent warning on GPS loss     | Warning visible within 3 seconds of signal loss   |
+| 2b. Network error handling | Graceful fallback when OSRM or Overpass requests fail        | Error message shown, app does not crash or freeze |
+| 2c. Speed data fallback    | Display "speed limit unavailable" state clearly              | No blank/stale speed display                      |
+| 2d. Deviation detection    | Detect when user is >200m off route, prompt reroute          | Prompt appears within 5 seconds of deviation      |
+| 2e. Cross-browser testing  | Verify voice across Chrome, Safari, Firefox, mobile browsers | Known issues documented, workarounds applied      |
+| 2f. Error telemetry        | Log navigation failures for debugging                        | Failures visible in console/monitoring            |
+
+### 3. Aspirational Stage
+
+Navigation becomes a differentiated product feature, not just a utility.
+
+| Step                     | What                                                    | Acceptance                                 |
+| ------------------------ | ------------------------------------------------------- | ------------------------------------------ |
+| 3a. Settings panel       | Voice persona picker, speed unit toggle, volume control | User can configure navigation preferences  |
+| 3b. Cloud sync           | Navigation sessions persisted via Supabase              | Sessions survive device changes            |
+| 3c. Automatic rerouting  | Re-query OSRM with current position on deviation        | New route displayed within 3 seconds       |
+| 3d. ETA updates          | Live ETA recalculation during navigation                | ETA updates every 30 seconds               |
+| 3e. Navigation history   | Last 10 routes with cloud persistence                   | History viewable in settings/profile       |
+| 3f. Marketplace routing  | Route-to-shop includes shop info card at destination    | Shop rating/wait-time visible at route end |
+| 3g. Offline caching      | Cached routes for poor connectivity areas               | Route loads from cache within 1 second     |
+| 3h. Provider abstraction | Support OSRM / Mapbox / Google interchangeably          | Provider swappable via config              |
+
+### 4. Technical Prerequisites
+
+| Prerequisite                                                  | Needed For  | Exists Today |
+| ------------------------------------------------------------- | ----------- | ------------ |
+| Error boundary around navigation components                   | Stage 2a-2c | Yes          |
+| Deviation calculation utility (current pos vs route polyline) | Stage 2d    | No           |
+| Web Speech API browser compatibility matrix                   | Stage 2e    | No           |
+| `navigation_sessions` Supabase table                          | Stage 3b    | No           |
+| `navigation_preferences` Supabase table                       | Stage 3a    | No           |
+| Shop availability data for route-end cards                    | Stage 3f    | No           |
+| Route tile/data caching mechanism                             | Stage 3g    | No           |
+
+### 5. UI/UX Evolution Path
+
+1. **Now:** Navigation panel with GPS dot, route line, voice, speed — functional but no error states
+2. **After Stage 2:** Same UI but with visible degradation states — user sees warnings instead of broken/stale data
+3. **After Stage 3a:** Settings drawer accessible from navigation panel for voice/speed/unit preferences
+4. **After Stage 3c-3d:** Active navigation feels responsive — auto-reroutes and updates ETA live
+5. **After Stage 3f:** Arriving at a shop triggers a rich card with rating, wait time, and bid info
+6. **Final state:** Navigation is a competitive feature, not just directions
+
+### 6. What Should NOT Be Built Yet
+
+- Do not add multi-stop routing before single-route reliability is production-grade
+- Do not add real-time traffic awareness without a traffic data provider budgeted and selected
+- Do not build CarPlay / Android Auto surfaces before the web navigation is polished
+- Do not migrate away from OSRM unless a specific feature requires it (see Provider Evolution below)
+- Do not add premium TTS before the Web Speech API works reliably across browsers
+
+### Provider Evolution Decision Framework
+
+The current stack (Leaflet + OSRM + Nominatim + Overpass) is free, real, and functional. Migration criteria:
+
+| Trigger                | Example                                     | Action                                         |
+| ---------------------- | ------------------------------------------- | ---------------------------------------------- |
+| Feature gap            | Globe rendering needed → requires Mapbox GL | Evaluate Mapbox for map tiles only             |
+| Rate limit hit         | Nominatim throttling during peak usage      | Evaluate commercial geocoding provider         |
+| Reliability gap        | OSRM public downtime affecting users        | Evaluate self-hosted OSRM or Mapbox Directions |
+| Business justification | Revenue supports per-request costs          | Full commercial stack evaluation               |
+
+**Rule:** Do not migrate preemptively. Document the decision criteria and revisit when usage data justifies it.
+
+---
+
+## Upgrade Checklists
+
+These checklists turn the 6-part plans into mechanical step-by-step execution guides. Follow them in order.
+
+### Checklist: Navigation Reliability (Productizing Stage)
+
+**READ:** "Navigation Productization Roadmap" → sections 1 and 2 in this doc.
+
+**CHANGE (in this order):**
+
+1. ~~**Error boundary** — Create `NavigationErrorBoundary.tsx` in `components/maps/`. Wrap all navigation panel content. Catches render errors, shows recovery UI.~~ ✅ Delivered 2026-03-22. Class component boundary wraps planner + discovery/saved panels in `CoverageBrowseExperience`. Fallback: `bd-glass-card` with amber warning icon, calm message, retry button.
+2. ~~**GPS degradation** — In `useCoverageNavigationExperience.ts`, add a `gpsStatus` state (`active | lost | stale`). When `watchPosition` errors or goes >10s without update, set `lost`. Show warning banner in the navigation panel.~~ ✅ Delivered 2026-03-22. `gpsStatus` state + 3s staleness interval + inline rose/amber warning banner in planner.
+3. **Network error handling** — In `services/navigation/routeEngine.ts`, wrap OSRM fetch in try/catch. Return a typed error result instead of throwing. Surface in UI as "Route unavailable — check connection."
+4. ~~**Speed fallback** — In `services/navigation/speedLimit.ts`, when Overpass returns empty or errors, return `{ available: false }`. UI shows "Speed limit unavailable" instead of blank/stale.~~ ✅ Delivered 2026-03-22. `speedLimitStatus` state (`off | waiting | loading | available | unavailable`) in hook + inline slate banner in planner when unavailable.
+5. **Deviation detection** — Create `services/navigation/deviationDetector.ts`. Compare current GPS position to route polyline. If >200m off-route for >5s, emit deviation event. Hook shows reroute prompt.
+6. **Cross-browser voice** — Test `voiceGuidance.ts` across Chrome, Safari, Firefox, mobile. Document known issues in a code comment at the top of the file.
+
+**IMPLEMENTATION SHAPE:** Six focused changes across 4-5 files. Do NOT add all of this into one component. Each numbered item is a separate mini-pass. A single PR can contain multiple items but each should be its own commit with a clear scope.
+
+**TEST:** GPS loss → warning in 3s. OSRM failure → error message, no crash. Overpass empty → "unavailable" label. Deviation → prompt.
+
+**UPDATE DOCS:** Update tier classification from Tier 2 to Tier 1 for completed items. Update Map Tracker "Staged Future Roadmap" status from "Planned" to "Delivered."
+
+---
+
+### Checklist: Design Token Extraction (Stage 2a-2b)
+
+**READ:** "Design System Direction" → sections 1 and 2 in this doc.
+
+**CHANGE (in this order):**
+
+1. **CSS custom properties** — In `src/styles/theme.css`, add to `:root`:
+   - `--bd-royal-blue: #2563eb`
+   - `--bd-royal-blue-strong: #1d4ed8`
+   - `--bd-royal-blue-soft: #93c5fd`
+   - `--bd-glass-blur: 12px`
+   - `--bd-glass-bg: rgba(37, 99, 235, 0.08)`
+2. **Global glass classes** — In `theme.css`, add `.bd-glass-panel`, `.bd-glass-card`, `.bd-glass-badge` NOT scoped inside `.coverage-map-surface`. Use the new custom properties.
+3. **Verify independence** — Confirm the new classes render correctly on any element outside the map surface.
+
+**IMPLEMENTATION SHAPE:** This is a CSS-only change. One file, ~30-50 new lines. Do NOT touch any component files in this step. The classes must exist and work BEFORE any component adopts them.
+
+**TEST:** Open DevTools → Elements → any page element → apply `.bd-glass-panel` → glass effect appears. Custom properties visible on `:root`.
+
+**UPDATE DOCS:** Update Design System Direction Stage 2a-2b status. Tracker "Design token extraction" → "Delivered."
+
+---
+
+### Checklist: Design Token Adoption (Stage 2c-2d)
+
+**READ:** "Design System Direction" → section 2 table (Steps 2c-2d) in this doc.
+
+**CHANGE (in this order):**
+
+1. **DashboardCoveragePanel.tsx** — Replace outer container's Tailwind background/border with `bd-glass-panel` class + `--bd-royal-blue` accent.
+2. **MobileBottomNav.tsx** — Adopt glass panel treatment on the nav bar background.
+3. **ProfileDropdown.tsx** — Adopt glass panel + list card tokens on the dropdown container.
+4. **LandingPageHeader.tsx** — Use `--bd-royal-blue` palette tokens in place of existing color values.
+
+**IMPLEMENTATION SHAPE:** Four small component edits. Each is 5-15 lines changed. Do them in separate commits. Do NOT change layout, spacing, or functionality — only visual treatment.
+
+**TEST:** Dashboard, mobile nav, profile dropdown, and landing header visually match map control palette. Dark mode still works where supported.
+
+**UPDATE DOCS:** Update Design System Direction Stage 2c-2d status. Tracker → "Delivered."
+
+---
+
+### Checklist: Customer Nearest-Shops Widget
+
+**READ:** "Customer Map Intelligence" → sections 1 and 2 in this doc.
+
+**CHANGE (in this order):**
+
+1. **Widget component** — Create `components/maps/CustomerNearestShopsWidget.tsx`. Compact card list (3-5 shops) with distance and rating. Consumes `useCoveragePartnerShops()`.
+2. ~~**Dashboard integration** — Import widget into `components/codelayer/HomeScreen.tsx`. Place below stat cards or in a visible dashboard slot.~~ ✅ Delivered 2026-03-22. `DashboardCoveragePanel` wired into HomeScreen between stats grid and content grid. Full coverage command center with map dialog, not just a compact widget.
+3. **Expand action** — Tapping a shop opens `CoverageMapDialog` centered on that shop.
+4. **Demo support** — Widget must render with demo shop data when in demo mode.
+
+**IMPLEMENTATION SHAPE:** One new component file (~100-150 lines). One small edit to HomeScreen (~10-15 lines added). Do NOT embed the widget logic inside HomeScreen — keep it as a standalone component.
+
+**TEST:** Customer dashboard shows nearest shops with real/demo data. Tap opens map. Works on mobile.
+
+**UPDATE DOCS:** Update Customer Map Intelligence status from Tier 3 to Tier 2 for "Nearest partner shops." Tracker near-term row → "Delivered."
+
+---
+
+## Change Impact Index
+
+Before modifying any system, check this index to understand what gets affected.
+
+| IF YOU CHANGE                  | CHECK DOCS                                                                 | TOUCH FILES                                                                              | RISKS                                                                                        | DO NOT FORGET                                                                       |
+| ------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **Navigation services**        | Product Brain "Nav Roadmap", Map Master Plan "Theme A", Phase 2 "Pillar 1" | `services/navigation/*`, `useCoverageNavigationExperience.ts`, navigation map components | Browser API differences can break silently. localStorage shape changes break saved sessions. | Update Map Tracker status. Test on Chrome + Safari + Firefox.                       |
+| **Map visual design**          | Product Brain "Design System Direction", Map Master Plan "Theme 5-6"       | `theme.css`, `mapSurfaceTheme.ts`, map components in `components/maps/`                  | Map-scoped CSS can bleed if selectors are wrong. Dark mode regressions.                      | Test both light and dark tones. Mobile and desktop.                                 |
+| **Design tokens (non-map)**    | Product Brain "Design System Direction" Stage 2+                           | `theme.css` (`:root` properties), consuming component files                              | Glass effects on forms/tables are a bad idea. Performance on low-end devices.                | Do NOT adopt tokens in data-entry surfaces. Verify Stage 2a-2b prerequisites exist. |
+| **Supabase schema**            | Product Brain "Supabase Reality", Phase 2 "Section 3"                      | `supabase/migrations/`, `services/supabase/*`, edge function handlers                    | Migration ordering matters. `clerk_user_id` vs `user_id` mismatch still exists.              | Do NOT break existing migration chain. Test with real Supabase project.             |
+| **Customer dashboard**         | Product Brain "Customer Experience Map"                                    | `components/codelayer/HomeScreen.tsx`, `DashboardRouter.tsx`                             | HomeScreen is in `codelayer/` — do not casually relocate. State-driven routing.              | Demo mode must still work. Check `useNavigation` tab/view state.                    |
+| **Shop dashboard**             | Product Brain "Shop Experience Map"                                        | `components/shop/*`, `components/codelayer/HomeScreen.tsx` (shop variant)                | Data is mostly sample/mock. Extending requires checking Supabase integration.                | Demo mode must still work. Mock → real data transitions must be explicit.           |
+| **Insurer dashboard**          | Product Brain "Insurer Experience Map"                                     | `components/insurer/*`, `components/codelayer/HomeScreen.tsx` (insurer variant)          | Data is mostly sample/mock. Claims workflow not fully wired.                                 | Demo mode must still work.                                                          |
+| **Map tile/provider**          | Map Master Plan "Theme C", Product Brain "Provider Evolution"              | `ServiceCoverageMap.tsx`, tile layer config, `mapSurfaceTheme.ts`                        | Provider migration affects the entire map surface. Attribution requirements differ.          | Only migrate when a specific trigger justifies it. See decision framework.          |
+| **Routing/hooks architecture** | Product Brain "Architecture In One Pass"                                   | `useNavigation.ts`, `DashboardRouter.tsx`, `App.tsx`                                     | App is state-driven, NOT React Router. Changing view names affects localStorage.             | Test full app flow — landing → dashboard → detail → back. All roles.                |
+| **Edge functions**             | Product Brain "Backend Shape"                                              | `supabase/functions/server/*`                                                            | `clerk_user_id` vs `user_id` mismatch. Service-role access.                                  | Verify both frontend direct reads and handler paths work after changes.             |
+
+---
+
+## Implementation Shape Guardrails
+
+**These are not suggestions. These are standing rules for all future work on BidOnDent — by humans and AI agents alike.**
+
+### File Size Rules
+
+- A large file is not automatically bad, but **adding major new responsibilities to already-large files is not allowed.**
+- If a file is already 500+ lines, future changes should **extract focused modules** rather than deepening the file.
+- **ShopDirectoryScreen.tsx** (~2,000 lines) and **DashboardRouter.tsx** (~800 lines) are known large files. New features MUST NOT add to their line count. Extract instead.
+- **Threshold rule:** If a single change would add 100+ lines to a file, stop and evaluate whether the new code belongs in a separate module.
+
+### Responsibility Separation
+
+Do NOT pack multiple concerns into a single file. If a change touches 3+ of these, it must be split:
+
+| Concern                            | Where It Belongs                 |
+| ---------------------------------- | -------------------------------- |
+| Data fetching / API calls          | `services/` layer                |
+| State orchestration / side effects | `hooks/` layer                   |
+| Business logic / calculations      | `utils/` or `services/`          |
+| Data transformation / formatting   | dedicated helper or `utils/`     |
+| Visual rendering / UI              | `components/` layer              |
+| Diagnostics / telemetry            | `services/navigation/*.check.ts` |
+
+**Anti-pattern to avoid:**
+
+```
+// BAD: One component doing fetch + transform + state + render + diagnostics
+export function BigFeatureScreen() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch('/api/...')           // ← data fetching
+      .then(r => r.json())
+      .then(d => {
+        const transformed = d.map(/*...*/); // ← transformation
+        setData(transformed);               // ← state
+        logDiagnostic(transformed);         // ← diagnostics
+      });
+  }, []);
+  return <div>/* 200 lines of JSX */</div>; // ← rendering
+}
+```
+
+**Correct pattern:**
+
+```
+// Service: services/myFeature/myFeatureService.ts  (fetch + transform)
+// Hook:    hooks/useMyFeature.ts                    (state + orchestration)
+// Component: components/myFeature/MyFeaturePanel.tsx (render only)
+```
+
+### Staged Expansion Rules
+
+1. **Do not build the full vision in one pass.** Follow the tier system: Productizing items first, then Aspirational.
+2. **One PR = one responsibility.** A PR can have multiple commits but they should share a single theme.
+3. **New features integrate in layers**, not by pasting into the nearest existing screen.
+4. **Prefer adding one new focused file** over inflating an existing large file.
+5. **Keep naming boring, clear, and scalable.** `CustomerShopWidget.tsx` not `EnhancedMapSurfaceV2.tsx`.
+
+### Code Organization Expectations
+
+- Preserve the existing folder structure: `components/[role]/`, `services/[domain]/`, `hooks/`.
+- Do not create parallel mini-architectures. One state management pattern. One service layer pattern.
+- Do not scatter top-level routing logic across random screen files — keep it in `useNavigation.ts` and `DashboardRouter.tsx`.
+- Do not delete `codelayer/` screens without migrating all consumers.
+- Do not create one-off fetch logic inside components — extend the service modules.
+
+---
+
+## Change Recipes
+
+Reusable step-by-step instructions for the most common future changes.
+
+### Recipe: Add Glass Design Treatment to a New Surface
+
+**PURPOSE:** Apply the royal-blue glass visual language to a non-map component.
+
+**START HERE:** Read Quick Card "Design System Expansion." Confirm Stage 2a-2b prerequisites exist (CSS custom properties + global glass classes in `theme.css`).
+
+**TOUCH:** The target component file only.
+
+**IMPLEMENT IN THIS ORDER:**
+
+1. Identify the container element that should receive glass treatment.
+2. Add `bd-glass-panel` (or `bd-glass-card` / `bd-glass-badge`) class to the container.
+3. Replace hardcoded color values with `var(--bd-royal-blue)` variants where appropriate.
+4. Test light and dark tones if the surface supports dark mode.
+5. Test on mobile — verify touch targets are not obscured by blur effects.
+6. Do NOT apply glass to forms, dense tables, or data-entry surfaces.
+
+**VERIFY:** Glass effect renders. Dark mode works. Mobile layout intact. No regressions in adjacent components.
+
+**DOC UPDATES:** Update Design System Direction integration status table. Update Map Tracker if relevant.
+
+---
+
+### Recipe: Add Graceful Degradation to a Navigation Feature
+
+**PURPOSE:** Make an existing navigation capability handle failure without crashing or showing stale data.
+
+**START HERE:** Read Quick Card "Navigation Productization." Identify which capability needs degradation handling.
+
+**TOUCH:** The relevant service file in `services/navigation/` + the consuming hook or component.
+
+**IMPLEMENT IN THIS ORDER:**
+
+1. In the service file, wrap the external API call in try/catch.
+2. Return a typed result: `{ success: true, data } | { success: false, error }`.
+3. In the consuming hook, add a state for the degraded condition (e.g., `gpsStatus: 'lost'`).
+4. In the component, render a visible warning/fallback when degraded.
+5. Add the degraded state to any existing diagnostics check if one exists.
+
+**VERIFY:** Simulate failure (disable network, mock GPS loss). UI shows clear warning. App does not crash. Recovery works when the condition resolves.
+
+**DOC UPDATES:** Update Navigation Roadmap tier status. Update Map Tracker.
+
+---
+
+### Recipe: Add a New Supabase-Backed Map Intelligence Feature
+
+**PURPOSE:** Add a new role-specific map feature that requires a new Supabase table.
+
+**START HERE:** Read the relevant role Quick Card (Customer/Shop/Insurer). Read the relevant 6-part plan.
+
+**TOUCH:** New Supabase migration, new service file, new hook (optional), new component.
+
+**IMPLEMENT IN THIS ORDER:**
+
+1. **Migration first** — Create `supabase/migrations/XXX_create_[table_name].sql`. Define schema. Include RLS policies.
+2. **Service layer** — Create `services/supabase/[tableName].ts` or add to an existing service. Typed CRUD operations.
+3. **Hook (if needed)** — Create `hooks/use[FeatureName].ts` for state orchestration. Consume the service.
+4. **Component** — Create `components/maps/[FeatureName]Widget.tsx` (or role-appropriate folder). Consume the hook.
+5. **Dashboard integration** — Import widget into the relevant `HomeScreen.tsx` variant.
+6. **Demo mode** — Ensure the component renders with sensible demo data when in demo mode.
+
+**VERIFY:** Data persists in Supabase. Component renders with real and demo data. Works on mobile. RLS policies enforced.
+
+**DOC UPDATES:** Update the relevant role's Map Intelligence section. Move Tier 3 → Tier 2 for the completed feature. Update Map Tracker.
+
+---
+
+## Instructions for Future Agents
+
+When working on BidOnDent, follow these principles. **Also read the Implementation Shape Guardrails section above — those are standing rules, not suggestions.**
+
+### Before Any Map or Design Change
+
+1. Read the implementation reality table above — know what is Tier 1/2/3
+2. Check the Map Master Plan for relevant themes and non-negotiables
+3. Check the Map Tracker for active risks and recent delivery context
+4. Check the Phase 2 doc for architecture truth and Phase 3 direction
+5. Do not build Tier 3 features without explicit user request — document them, do not implement them
+
+### For Design System Work
+
+1. Do not add glass effects to surfaces that should stay flat (forms, dense tables, data entry)
+2. New glass/blur/animation CSS should go in `theme.css` using `bd-*` or `map-*` prefixes
+3. Prefer extending `mapSurfaceTheme.ts` tokens over inventing parallel design systems
+4. Test both light and dark tones for any glass-treated surface
+5. Follow the staged adoption plan above — do not skip stages
+
+### For Navigation Work
+
+1. Current navigation features are Tier 2 (Productizing) — they work but have reliability gaps
+2. Prioritize reliability (Level 2) over new features (Level 3+)
+3. Do not add new navigation capabilities without addressing existing graceful-degradation gaps first
+4. All navigation persistence changes must respect the non-negotiable: Supabase is source of truth, localStorage is cache only
+
+### For Role-Specific Features
+
+1. Customer flows are most real — they are the safest to extend
+2. Shop and insurer flows have strong UI but partial data wiring — extending them requires checking the actual Supabase integration
+3. Demo mode is first-class — any new role-specific feature should work in demo mode too
+4. Map intelligence features for each role should follow the staged plan above — do not build long-term features before near-term ones
+
+### For Code Organization and File Size
+
+1. **Read the Implementation Shape Guardrails section before writing any code** — it defines file-size limits, responsibility separation rules, and anti-patterns
+2. If the file you are editing is already 500+ lines, extract a new focused module rather than deepening the file
+3. If your change touches data fetching + transformation + rendering, split into service → hook → component
+4. Do not create parallel architectures or new state management patterns — follow the existing conventions
+5. Future code should be organized so another AI can extend it without reverse-engineering a monster component
+6. Name files clearly and boringly — `CustomerShopWidget.tsx` not `EnhancedMapSurfaceV2.tsx`
+
+### For Documentation
+
+1. Every map change updates both map docs (Master Plan + Tracker) per the non-negotiable
+2. Every feature maturity change updates the tier classification in this Product Brain
+3. Keep the three-tier system honest — do not promote features to Tier 1 until reliability gaps are addressed
+4. Update the Phase 2 truth table when implementation status changes
+
 ## Bottom Line
 
 BidOnDent is already shaped like a serious marketplace product, not a toy demo. The main job going forward is not inventing what it is from scratch. The main job is tightening the seams between:
@@ -1237,5 +2031,12 @@ BidOnDent is already shaped like a serious marketplace product, not a toy demo. 
 - real data models
 - role-to-role workflows
 - auth and persistence consistency
+
+The future direction is clear:
+
+1. **Productize** existing navigation capabilities (reliability → polish → marketplace awareness)
+2. **Expand** the royal-blue glass design language from maps to the entire site, gradually
+3. **Build** role-specific map intelligence surfaces for customers, shops, and insurers
+4. **Strengthen** the documentation system so it operates as a coherent planning layer, not isolated notes
 
 That is the path from "looks like the platform" to "is the platform."

@@ -140,8 +140,8 @@ export default function ProfileDropdown({
 
   const containerClasses =
     variant === "embedded"
-      ? "w-full bg-white rounded-xl border border-slate-200 shadow-sm"
-      : "absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50";
+      ? "w-full bd-glass-card"
+      : "absolute right-0 mt-2 w-80 bd-glass-panel z-50";
 
   return (
     <div ref={forwardedRef} className={containerClasses}>
@@ -230,8 +230,7 @@ export default function ProfileDropdown({
             <div className="flex items-center gap-1 text-gray-600">
               <TrendingUp className="w-3 h-3 text-green-600" />
               <span>
-                Tracked bids:{" "}
-                <span className="font-semibold text-gray-900">{shopBidCount}</span>
+                Tracked bids: <span className="font-semibold text-gray-900">{shopBidCount}</span>
               </span>
             </div>
           </div>
@@ -267,8 +266,7 @@ export default function ProfileDropdown({
             <div className="flex items-center gap-1 text-gray-600">
               <Clock className="w-3 h-3 text-blue-600" />
               <span>
-                Tracked bids:{" "}
-                <span className="font-semibold text-gray-900">{insurerBidCount}</span>
+                Tracked bids: <span className="font-semibold text-gray-900">{insurerBidCount}</span>
               </span>
             </div>
           </div>

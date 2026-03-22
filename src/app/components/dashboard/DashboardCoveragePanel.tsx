@@ -127,10 +127,10 @@ export default function DashboardCoveragePanel({
 
   return (
     <>
-      <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+      <section className="bd-glass-panel p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-blue-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[var(--bd-royal-blue-faint)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--bd-royal-blue)]">
               <Radar className="w-3.5 h-3.5" />
               Coverage
             </div>
@@ -152,19 +152,19 @@ export default function DashboardCoveragePanel({
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="bd-glass-card p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Live Regions</div>
             <div className="mt-2 text-2xl font-semibold text-slate-900">
               {operatingRegions.length}
             </div>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="bd-glass-card p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-500">
               Partner Markers
             </div>
             <div className="mt-2 text-2xl font-semibold text-slate-900">{partnerShops.length}</div>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="bd-glass-card p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-500">View Mode</div>
             <div className="mt-2 text-2xl font-semibold text-slate-900">
               {mapTileLayers[tileMode].label}
@@ -243,10 +243,7 @@ export default function DashboardCoveragePanel({
             return;
           }
 
-          updateMapView(
-            [navigation.activeOriginTarget.lat, navigation.activeOriginTarget.lng],
-            11
-          );
+          updateMapView([navigation.activeOriginTarget.lat, navigation.activeOriginTarget.lng], 11);
         }}
         onResetView={() => updateMapView(defaultCoverageCenter, 9)}
         onSelectShop={(shop) => handleSelectShop(shop, { centerMap: true })}

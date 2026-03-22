@@ -97,7 +97,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             setUserPhone(userData.userPhone || "");
             setRedirectInfo(userData.redirectInfo);
             setNotifications(
-              userData.notifications || getNotificationsByUserType(userData.redirectInfo.type)
+              userData.notifications ?? getNotificationsByUserType(userData.redirectInfo.type)
             );
             setHasSeenPhotoGuide(userData.hasSeenPhotoGuide || false);
             const cachedPhotoStorage =
@@ -235,19 +235,28 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             }, {}),
           };
 
-          localStorage.setItem(userCacheKey, JSON.stringify(freshUserData));
-          localStorage.setItem(
-            STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-            websiteUserKey || normalizeEmail(email)
-          );
-          console.log("💾 Cache updated with fresh Supabase data");
+          try {
+            localStorage.setItem(userCacheKey, JSON.stringify(freshUserData));
+            localStorage.setItem(
+              STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
+              websiteUserKey || normalizeEmail(email)
+            );
+            console.log("💾 Cache updated with fresh Supabase data");
+          } catch {
+            // Graceful: quota exceeded or private mode — Supabase is source of truth
+          }
         } else {
           console.log("ℹ️ No profile found in Supabase - new user or needs migration");
 
           // Check if we have cached data for this user (migration case)
           if (cachedData) {
-            const userData: UserData = JSON.parse(cachedData);
-            if (userData.userInfo?.email === email && userData.redirectInfo) {
+            let userData: UserData;
+            try {
+              userData = JSON.parse(cachedData);
+            } catch {
+              userData = {} as UserData;
+            }
+            if (userData?.userInfo?.email === email && userData.redirectInfo) {
               console.log("🔄 Migrating cached data to Supabase...");
 
               // Create profile in Supabase from cached data
@@ -308,12 +317,16 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           photoStorage,
         };
         const cacheKey = getUserCacheKey(userInfo.email, websiteUserKey);
-        localStorage.setItem(cacheKey, JSON.stringify(userData));
-        localStorage.setItem(
-          STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-          websiteUserKey || normalizeEmail(userInfo.email)
-        );
-        console.log("💾 Cache updated (localStorage)");
+        try {
+          localStorage.setItem(cacheKey, JSON.stringify(userData));
+          localStorage.setItem(
+            STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
+            websiteUserKey || normalizeEmail(userInfo.email)
+          );
+          console.log("💾 Cache updated (localStorage)");
+        } catch {
+          // Graceful: quota exceeded or private mode — Supabase is source of truth
+        }
       }, 500);
 
       return () => clearTimeout(timeoutId);

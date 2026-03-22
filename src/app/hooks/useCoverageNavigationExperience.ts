@@ -6,6 +6,7 @@ import type {
 import { haversineMiles } from "../services/supabase/map";
 import type {
   NavigationAddressResult,
+  NavigationAddressSuggestion,
   NavigationCoordinate,
   NavigationGuidanceSettings,
   NavigationRouteOptions,
@@ -18,6 +19,7 @@ import type {
 import {
   addressResultToSearchTarget,
   searchNavigationAddresses,
+  suggestNavigationAddresses,
 } from "../services/navigation/addressSearch";
 import {
   getDefaultNavigationGuidanceSettings,
@@ -34,6 +36,11 @@ import {
   supportsVoiceGuidance,
 } from "../services/navigation/voiceGuidance";
 
+export type GpsStatus = "active" | "lost" | "stale";
+export type SpeedLimitStatus = "off" | "waiting" | "loading" | "available" | "unavailable";
+
+const GPS_STALE_THRESHOLD_MS = 10_000;
+
 type UseCoverageNavigationExperienceArgs = {
   selectedShop: CoveragePartnerShop | null;
   fallbackOriginTarget: CoverageSearchTarget | null;
@@ -48,6 +55,7 @@ export type CoverageNavigationExperience = {
   addressQuery: string;
   setAddressQuery: (value: string) => void;
   addressResults: NavigationAddressResult[];
+  addressSuggestions: NavigationAddressSuggestion[];
   selectedAddressResult: NavigationAddressResult | null;
   isSearchingAddresses: boolean;
   addressError: string;
@@ -68,7 +76,9 @@ export type CoverageNavigationExperience = {
   currentSpeedMph: number | null;
   gpsAccuracyMeters: number | null;
   gpsError: string;
+  gpsStatus: GpsStatus;
   speedLimitSnapshot: NavigationSpeedLimitSnapshot | null;
+  speedLimitStatus: SpeedLimitStatus;
   activeOriginTarget: CoverageSearchTarget | null;
   activeOriginLabel: string;
   preferredVoiceLabel: string | null;
@@ -206,6 +216,7 @@ export function useCoverageNavigationExperience({
   );
   const [addressQuery, setAddressQueryState] = useState("");
   const [addressResults, setAddressResults] = useState<NavigationAddressResult[]>([]);
+  const [addressSuggestions, setAddressSuggestions] = useState<NavigationAddressSuggestion[]>([]);
   const [selectedAddressResult, setSelectedAddressResult] =
     useState<NavigationAddressResult | null>(null);
   const [selectedManualOriginTarget, setSelectedManualOriginTarget] =
@@ -222,16 +233,21 @@ export function useCoverageNavigationExperience({
   const [currentSpeedMph, setCurrentSpeedMph] = useState<number | null>(null);
   const [gpsAccuracyMeters, setGpsAccuracyMeters] = useState<number | null>(null);
   const [gpsError, setGpsError] = useState("");
+  const [gpsStatus, setGpsStatus] = useState<GpsStatus>("active");
   const [speedLimitSnapshot, setSpeedLimitSnapshot] = useState<NavigationSpeedLimitSnapshot | null>(
     null
   );
+  const [speedLimitStatus, setSpeedLimitStatus] = useState<SpeedLimitStatus>("off");
   const [preferredVoiceLabel, setPreferredVoiceLabel] = useState<string | null>(() =>
     getPreferredVoiceLabel(loadNavigationGuidanceSettings().voicePersona)
   );
 
   const previousPositionRef = useRef<NavigationCoordinate | null>(null);
   const previousPositionTimestampRef = useRef<number | null>(null);
+  const lastGpsUpdateRef = useRef<number>(Date.now());
   const addressSearchAbortRef = useRef<AbortController | null>(null);
+  const addressSuggestAbortRef = useRef<AbortController | null>(null);
+  const suggestionDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastRouteOriginKeyRef = useRef<string | null>(null);
   const lastRouteDestinationKeyRef = useRef<string | null>(null);
   const lastRouteOriginCoordinateRef = useRef<NavigationCoordinate | null>(null);
@@ -244,6 +260,10 @@ export function useCoverageNavigationExperience({
   useEffect(() => {
     return () => {
       addressSearchAbortRef.current?.abort();
+      addressSuggestAbortRef.current?.abort();
+      if (suggestionDebounceRef.current) {
+        clearTimeout(suggestionDebounceRef.current);
+      }
       cancelVoiceGuidance();
     };
   }, []);
@@ -279,6 +299,7 @@ export function useCoverageNavigationExperience({
   useEffect(() => {
     if (!settings.gpsTrackingEnabled) {
       setGpsError("");
+      setGpsStatus("active");
       setCurrentPosition(null);
       setCurrentSpeedMph(null);
       setGpsAccuracyMeters(null);
@@ -290,8 +311,11 @@ export function useCoverageNavigationExperience({
 
     if (!navigator.geolocation) {
       setGpsError("This browser does not expose on-device GPS.");
+      setGpsStatus("lost");
       return;
     }
+
+    lastGpsUpdateRef.current = Date.now();
 
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
@@ -313,15 +337,18 @@ export function useCoverageNavigationExperience({
 
         previousPositionRef.current = nextPosition;
         previousPositionTimestampRef.current = nextTimestamp;
+        lastGpsUpdateRef.current = Date.now();
         setCurrentPosition(nextPosition);
         setCurrentSpeedMph(
           speedFromDevice !== null && speedFromDevice >= 0 ? speedFromDevice : fallbackSpeed
         );
         setGpsAccuracyMeters(position.coords.accuracy || null);
         setGpsError("");
+        setGpsStatus("active");
       },
       (error) => {
         setGpsError(error.message || "Unable to access device location.");
+        setGpsStatus("lost");
       },
       {
         enableHighAccuracy: true,
@@ -330,7 +357,16 @@ export function useCoverageNavigationExperience({
       }
     );
 
-    return () => navigator.geolocation.clearWatch(watchId);
+    const stalenessInterval = setInterval(() => {
+      if (Date.now() - lastGpsUpdateRef.current > GPS_STALE_THRESHOLD_MS) {
+        setGpsStatus("stale");
+      }
+    }, 3_000);
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+      clearInterval(stalenessInterval);
+    };
   }, [settings.gpsTrackingEnabled]);
 
   const activeOriginTarget = useMemo<CoverageSearchTarget | null>(() => {
@@ -527,10 +563,12 @@ export function useCoverageNavigationExperience({
   useEffect(() => {
     if (!settings.gpsTrackingEnabled || !settings.speedLimitMonitorEnabled) {
       setSpeedLimitSnapshot(null);
+      setSpeedLimitStatus("off");
       return;
     }
 
     if (!currentPosition) {
+      setSpeedLimitStatus("waiting");
       return;
     }
 
@@ -544,12 +582,14 @@ export function useCoverageNavigationExperience({
       return;
     }
 
+    setSpeedLimitStatus("loading");
     const speedRequest = createTimeoutAbortController(10000);
 
     fetchNearestSpeedLimit(currentPosition, speedRequest.controller.signal)
       .then((snapshot) => {
         if (!speedRequest.controller.signal.aborted) {
           setSpeedLimitSnapshot(snapshot);
+          setSpeedLimitStatus(snapshot ? "available" : "unavailable");
           lastSpeedLimitLookupRef.current = {
             coordinate: currentPosition,
             fetchedAt: Date.now(),
@@ -559,6 +599,8 @@ export function useCoverageNavigationExperience({
       .catch((error) => {
         if (!speedRequest.controller.signal.aborted && !speedRequest.didTimeout()) {
           console.error("Speed limit lookup failed:", error);
+          setSpeedLimitSnapshot(null);
+          setSpeedLimitStatus("unavailable");
         }
       });
 
@@ -619,6 +661,7 @@ export function useCoverageNavigationExperience({
     setSelectedManualOriginTarget(addressResultToSearchTarget(result));
     setAddressQueryState(result.primaryLabel);
     setAddressResults([]);
+    setAddressSuggestions([]);
     setAddressError("");
   }
 
@@ -627,6 +670,7 @@ export function useCoverageNavigationExperience({
     setSelectedManualOriginTarget(null);
     setAddressError("");
     setAddressResults([]);
+    setAddressSuggestions([]);
   }
 
   return {
@@ -644,8 +688,35 @@ export function useCoverageNavigationExperience({
       setAddressQueryState(value);
       setAddressError("");
       setAddressResults([]);
+
+      // Debounced predictive suggestions
+      if (suggestionDebounceRef.current) {
+        clearTimeout(suggestionDebounceRef.current);
+      }
+      addressSuggestAbortRef.current?.abort();
+
+      const trimmed = value.trim();
+      if (trimmed.length < 2) {
+        setAddressSuggestions([]);
+        return;
+      }
+
+      suggestionDebounceRef.current = setTimeout(() => {
+        const controller = new AbortController();
+        addressSuggestAbortRef.current = controller;
+        suggestNavigationAddresses(trimmed, controller.signal)
+          .then((suggestions) => {
+            if (!controller.signal.aborted) {
+              setAddressSuggestions(suggestions);
+            }
+          })
+          .catch(() => {
+            // suggestion errors are silent
+          });
+      }, 250);
     },
     addressResults,
+    addressSuggestions,
     selectedAddressResult,
     isSearchingAddresses,
     addressError,
@@ -680,7 +751,9 @@ export function useCoverageNavigationExperience({
     currentSpeedMph,
     gpsAccuracyMeters,
     gpsError,
+    gpsStatus,
     speedLimitSnapshot,
+    speedLimitStatus,
     activeOriginTarget,
     activeOriginLabel,
     preferredVoiceLabel,

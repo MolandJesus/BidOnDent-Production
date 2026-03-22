@@ -18,33 +18,32 @@ export default function CoverageCommandCenterHeader({
   const launchTime = formatLaunchTime(navigationSession?.launchedAt);
 
   return (
-    <div className="map-ui-enter relative overflow-hidden border-b border-white/10 px-4 py-4 text-left sm:px-6 sm:py-5">
-      <div className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -left-20 -top-24 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
-        <div className="absolute -right-16 top-1/3 h-44 w-44 rounded-full bg-cyan-300/16 blur-3xl" />
+    <div className="map-ui-enter relative overflow-hidden border-b border-white/10 px-4 py-2 text-left sm:px-5">
+      <div className="pointer-events-none absolute inset-0 opacity-50">
+        <div className="absolute -left-24 -top-24 h-40 w-40 rounded-full bg-sky-300/16 blur-3xl" />
+        <div className="absolute right-12 top-0 h-28 w-28 rounded-full bg-cyan-300/14 blur-3xl" />
       </div>
 
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <div className={theme.eyebrowClassName}>BidOnDent Maps</div>
-          <h2
-            className={cn(
-              "mt-3 text-[1.7rem] font-semibold sm:mt-4 sm:text-2xl",
-              theme.titleClassName
-            )}
-          >
-            Coverage command center
-          </h2>
-          <p className={cn("mt-2 max-w-3xl text-sm", theme.bodyClassName)}>
-            Browse live partner coverage, preview nearby real places, and keep your map context
-            intact while routing through the BidOnDent workflow.
-          </p>
+      <div className="relative flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57] shadow-[0_0_0_1px_rgba(0,0,0,0.08)_inset]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e] shadow-[0_0_0_1px_rgba(0,0,0,0.08)_inset]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#28c840] shadow-[0_0_0_1px_rgba(0,0,0,0.08)_inset]" />
+          </div>
+
+          <div>
+            <div className={theme.eyebrowClassName}>BidOnDent Maps</div>
+            <h2 className={cn("text-sm font-semibold sm:text-base", theme.titleClassName)}>
+              Search-first command center
+            </h2>
+          </div>
         </div>
 
         {navigationSession ? (
           <div
             className={cn(
-              "map-liquid-card map-ui-enter map-ui-enter-delay-1 px-4 py-3 text-sm",
+              "map-liquid-card map-ui-enter map-ui-enter-delay-1 px-4 py-2.5 text-sm",
               theme.panelClassName
             )}
           >

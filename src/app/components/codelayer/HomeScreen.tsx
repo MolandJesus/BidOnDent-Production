@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 import { formatDate, formatStatus, getReportTitle, getReportDescription } from "./home-helpers";
+import DashboardCoveragePanel from "../dashboard/DashboardCoveragePanel";
 
 type HomeScreenProps = {
   userType: string;
@@ -375,6 +376,13 @@ export default function HomeScreen({
           );
         })}
       </section>
+
+      <DashboardCoveragePanel
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+        userType={userType}
+        onOpenCoveragePage={onViewShops}
+      />
 
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-5">
         <div className="xl:col-span-8 space-y-5">

@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   LocateFixed,
+  MapPin,
   Mic2,
   Navigation,
   RefreshCcw,
@@ -15,12 +16,14 @@ import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type {
   NavigationAddressResult,
+  NavigationAddressSuggestion,
   NavigationGuidanceSettings,
   NavigationRoutePreview,
   NavigationVoiceMode,
   NavigationVoiceVolumePreset,
 } from "../../../types/navigation";
 import type { CoveragePartnerShop } from "../serviceCoverageMapTypes";
+import type { GpsStatus, SpeedLimitStatus } from "../../../hooks/useCoverageNavigationExperience";
 import { getProviderHealthSummary } from "../../../services/navigation/providerHealth";
 import { getMapPerformanceSummary } from "../../../services/navigation/mapPerformance";
 import { getLatestDiscoveryQualitySnapshot } from "../../../services/navigation/placeDiscovery";
@@ -48,12 +51,17 @@ function providerLabel(provider: string) {
 
 type CoverageNavigationPlannerProps = {
   tone: MapSurfaceTone;
+  focusMode?: "search" | "route";
+  showDiagnostics?: boolean;
+  showSavedAndDiscoveryHints?: boolean;
+  showAdvancedControls?: boolean;
   selectedShop: CoveragePartnerShop | null;
   activeOriginLabel: string;
   addressQuery: string;
   onAddressQueryChange: (value: string) => void;
   onSearchAddresses: () => void;
   addressResults: NavigationAddressResult[];
+  addressSuggestions?: NavigationAddressSuggestion[];
   selectedAddressResult: NavigationAddressResult | null;
   isSearchingAddresses: boolean;
   addressError: string;
@@ -78,6 +86,8 @@ type CoverageNavigationPlannerProps = {
   currentStepIndex: number;
   gpsAccuracyMeters: number | null;
   gpsError: string;
+  gpsStatus: GpsStatus;
+  speedLimitStatus: SpeedLimitStatus;
 };
 
 function voiceModeDisplayLabel(voiceMode: NavigationVoiceMode) {
@@ -174,12 +184,17 @@ function formatDiscoveryCategoryMix(snapshot: {
 
 export default function CoverageNavigationPlanner({
   tone,
+  focusMode = "route",
+  showDiagnostics = true,
+  showSavedAndDiscoveryHints = false,
+  showAdvancedControls = true,
   selectedShop,
   activeOriginLabel,
   addressQuery,
   onAddressQueryChange,
   onSearchAddresses,
   addressResults,
+  addressSuggestions = [],
   selectedAddressResult,
   isSearchingAddresses,
   addressError,
@@ -204,6 +219,8 @@ export default function CoverageNavigationPlanner({
   currentStepIndex,
   gpsAccuracyMeters,
   gpsError,
+  gpsStatus,
+  speedLimitStatus,
 }: CoverageNavigationPlannerProps) {
   const showDevDiagnosticsActions =
     typeof import.meta !== "undefined" && Boolean(import.meta.env?.DEV);
@@ -240,6 +257,7 @@ export default function CoverageNavigationPlanner({
             ? "border-emerald-300 bg-emerald-50 text-emerald-900"
             : "border-emerald-300/30 bg-emerald-500/10 text-emerald-100"
           : theme.panelClassName;
+  const isSearchFocus = focusMode === "search";
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -285,58 +303,50 @@ export default function CoverageNavigationPlanner({
   return (
     <div
       className={cn(
-        "map-liquid-panel map-ui-enter space-y-4 rounded-[1.75rem] p-4",
+        "map-liquid-panel map-ui-enter space-y-3 rounded-[1.75rem] p-3",
         theme.panelStrongClassName
       )}
     >
-      <div>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className={theme.eyebrowClassName}>Route Planner</span>
-          <span className={theme.softBadgeClassName}>
-            Browser GPS + routing preview + voice shell
-          </span>
-        </div>
-        <p className={cn("mt-3 text-sm leading-6", theme.bodyClassName)}>
-          Search a store or house address, keep live GPS on-device, and drive a turn-by-turn preview
-          that prefers a British English voice when your device makes one available.
-        </p>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={theme.eyebrowClassName}>Route Planner</span>
+        <span className={theme.softBadgeClassName}>GPS + routing + voice</span>
       </div>
 
       <div
         className={cn(
-          "map-liquid-card map-ui-enter map-ui-enter-delay-1 p-4",
+          "map-liquid-card map-ui-enter map-ui-enter-delay-1 flex items-center justify-between gap-2 p-3",
           theme.panelClassName
         )}
       >
-        <div className={theme.metricLabelClassName}>Active origin</div>
-        <div className={cn("mt-2 text-base font-semibold", theme.titleClassName)}>
-          {selectedAddressResult?.primaryLabel || activeOriginLabel}
+        <div className="min-w-0 flex-1">
+          <div className={theme.metricLabelClassName}>Active origin</div>
+          <div className={cn("mt-0.5 truncate text-sm font-semibold", theme.titleClassName)}>
+            {selectedAddressResult?.primaryLabel || activeOriginLabel}
+          </div>
         </div>
-        <div className={cn("mt-1 text-sm", theme.secondaryTextClassName)}>
-          {settings.gpsTrackingEnabled
-            ? "GPS will lead when a live fix is available."
-            : "Manual address or map focus is currently driving the route origin."}
+        <div className={cn("shrink-0 text-xs", theme.secondaryTextClassName)}>
+          {settings.gpsTrackingEnabled ? "GPS" : "Manual"}
         </div>
       </div>
 
       <form
         onSubmit={handleSubmit}
         className={cn(
-          "map-liquid-card map-ui-enter map-ui-enter-delay-1 space-y-3 p-4",
+          "map-liquid-card map-ui-enter map-ui-enter-delay-1 space-y-2 p-3",
           theme.panelClassName
         )}
       >
         <div>
-          <label className={cn("mb-2 block text-sm font-semibold", theme.titleClassName)}>
+          <label className={cn("mb-1.5 block text-xs font-semibold", theme.titleClassName)}>
             Search house or store address
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <input
               value={addressQuery}
               onChange={(event) => onAddressQueryChange(event.target.value)}
-              placeholder="Example: 42 Broadway, New York"
+              placeholder="42 Broadway, New York..."
               className={cn(
-                "h-11 flex-1 rounded-[1rem] border px-4 outline-none transition",
+                "h-9 flex-1 rounded-[0.875rem] border px-3 text-sm outline-none transition",
                 tone === "light"
                   ? "border-white/80 bg-white/80 text-slate-900 placeholder:text-slate-400 focus:border-sky-300"
                   : "border-white/12 bg-slate-900/78 text-white placeholder:text-slate-400 focus:border-cyan-400/40"
@@ -345,12 +355,55 @@ export default function CoverageNavigationPlanner({
             <button
               type="submit"
               disabled={isSearchingAddresses}
-              className={cn(theme.primaryButtonClassName, "px-4 disabled:opacity-60")}
+              className={cn(
+                theme.primaryButtonClassName,
+                "!py-1.5 !px-3 !text-xs shrink-0 disabled:opacity-60"
+              )}
             >
-              <Search className="h-4 w-4" />
-              {isSearchingAddresses ? "Searching..." : "Search"}
+              <Search className="h-3.5 w-3.5" />
+              {isSearchingAddresses ? "…" : "Search"}
             </button>
           </div>
+
+          {addressSuggestions.length > 0 && !selectedAddressResult && !addressResults.length ? (
+            <div className="map-ui-enter mt-1.5 space-y-0.5">
+              {addressSuggestions.slice(0, 5).map((suggestion) => (
+                <button
+                  key={suggestion.id}
+                  type="button"
+                  onClick={() => {
+                    onChooseAddressResult({
+                      id: suggestion.id,
+                      label: suggestion.subtitle || suggestion.title,
+                      primaryLabel: suggestion.title,
+                      secondaryLabel: suggestion.subtitle,
+                      lat: suggestion.coordinate.lat,
+                      lng: suggestion.coordinate.lng,
+                      provider: suggestion.provider,
+                    });
+                  }}
+                  className={cn(
+                    "flex w-full items-center gap-2 rounded-[0.75rem] px-2.5 py-1.5 text-left transition-colors",
+                    tone === "light"
+                      ? "hover:bg-sky-50 text-slate-800"
+                      : "hover:bg-white/6 text-slate-200"
+                  )}
+                >
+                  <MapPin className={cn("h-3.5 w-3.5 shrink-0", theme.secondaryTextClassName)} />
+                  <div className="min-w-0 flex-1">
+                    <div className={cn("truncate text-xs font-semibold", theme.titleClassName)}>
+                      {suggestion.title}
+                    </div>
+                    {suggestion.subtitle ? (
+                      <div className={cn("truncate text-[10px]", theme.secondaryTextClassName)}>
+                        {suggestion.subtitle}
+                      </div>
+                    ) : null}
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         {selectedAddressResult ? (
@@ -371,7 +424,7 @@ export default function CoverageNavigationPlanner({
             <button
               type="button"
               onClick={onClearAddressResult}
-              className={theme.secondaryButtonClassName}
+              className={cn(theme.secondaryButtonClassName, "!py-1 !px-2.5 !text-xs")}
             >
               Clear
             </button>
@@ -392,19 +445,27 @@ export default function CoverageNavigationPlanner({
         ) : null}
 
         {addressResults.length > 0 ? (
-          <div className="space-y-2">
+          <div className="space-y-1">
             {addressResults.map((result) => (
               <button
                 key={result.id}
                 type="button"
                 onClick={() => onChooseAddressResult(result)}
-                className={cn("w-full text-left", theme.listCardClassName)}
+                className={cn(
+                  "flex w-full items-center gap-2 rounded-[0.75rem] px-2.5 py-2 text-left transition-colors",
+                  tone === "light"
+                    ? "hover:bg-sky-50 text-slate-800"
+                    : "hover:bg-white/6 text-slate-200"
+                )}
               >
-                <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-                  {result.primaryLabel}
-                </div>
-                <div className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
-                  {result.secondaryLabel || result.label}
+                <MapPin className={cn("h-3.5 w-3.5 shrink-0", theme.secondaryTextClassName)} />
+                <div className="min-w-0 flex-1">
+                  <div className={cn("truncate text-xs font-semibold", theme.titleClassName)}>
+                    {result.primaryLabel}
+                  </div>
+                  <div className={cn("truncate text-[10px]", theme.secondaryTextClassName)}>
+                    {result.secondaryLabel || result.label}
+                  </div>
                 </div>
               </button>
             ))}
@@ -412,267 +473,369 @@ export default function CoverageNavigationPlanner({
         ) : null}
       </form>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div
-          className={cn(
-            "map-liquid-card map-ui-enter map-ui-enter-delay-2 p-4",
-            theme.panelClassName
-          )}
-        >
-          <div className="flex items-center gap-2">
-            <Mic2 className="h-4 w-4" />
-            <span className={theme.metricLabelClassName}>Voice guidance</span>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {(["full", "alerts-only", "muted"] as NavigationVoiceMode[]).map((voiceMode) => (
-              <button
-                key={voiceMode}
-                type="button"
-                onClick={() => onVoiceModeChange(voiceMode)}
-                className={
-                  settings.voiceMode === voiceMode
-                    ? theme.primaryButtonClassName
-                    : theme.secondaryButtonClassName
-                }
-              >
-                {voiceMode === "muted" ? (
-                  <VolumeX className="h-4 w-4" />
-                ) : (
-                  <Volume2 className="h-4 w-4" />
-                )}
-                {voiceModeDisplayLabel(voiceMode)}
-              </button>
-            ))}
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {(["louder", "normal", "softer"] as NavigationVoiceVolumePreset[]).map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => onVoiceVolumePresetChange(preset)}
-                className={
-                  settings.voiceVolumePreset === preset
-                    ? theme.primaryButtonClassName
-                    : theme.secondaryButtonClassName
-                }
-              >
-                <Mic2 className="h-4 w-4" />
-                {preset === "louder" ? "Louder" : preset === "softer" ? "Softer" : "Normal"}
-              </button>
-            ))}
-          </div>
-          <div className={cn("mt-3 text-xs leading-5", theme.secondaryTextClassName)}>
-            {voiceGuidanceSupported
-              ? `Preferred voice: ${preferredVoiceLabel || "System default"}`
-              : "Voice synthesis is not available in this browser."}
-          </div>
-        </div>
-
-        <div
-          className={cn(
-            "map-liquid-card map-ui-enter map-ui-enter-delay-2 p-4",
-            theme.panelClassName
-          )}
-        >
-          <div className="flex items-center gap-2">
-            <LocateFixed className="h-4 w-4" />
-            <span className={theme.metricLabelClassName}>GPS and speed</span>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => onGpsTrackingEnabledChange(!settings.gpsTrackingEnabled)}
-              className={
-                settings.gpsTrackingEnabled
-                  ? theme.primaryButtonClassName
-                  : theme.secondaryButtonClassName
-              }
-            >
-              <Navigation className="h-4 w-4" />
-              {settings.gpsTrackingEnabled ? "GPS on" : "GPS off"}
-            </button>
-            <button
-              type="button"
-              onClick={() => onSpeedLimitMonitorEnabledChange(!settings.speedLimitMonitorEnabled)}
-              className={
-                settings.speedLimitMonitorEnabled
-                  ? theme.primaryButtonClassName
-                  : theme.secondaryButtonClassName
-              }
-            >
-              <ShieldAlert className="h-4 w-4" />
-              {settings.speedLimitMonitorEnabled ? "Speed alerts on" : "Speed alerts off"}
-            </button>
-          </div>
-          <div className={cn("mt-3 text-xs leading-5", theme.secondaryTextClassName)}>
-            {gpsError
-              ? gpsError
-              : gpsAccuracyMeters
-                ? `Current accuracy is about ±${Math.round(gpsAccuracyMeters)} meters.`
-                : "Waiting for a live GPS fix from the device."}
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={cn(
-          "map-liquid-panel map-ui-enter map-ui-enter-delay-3 p-4",
-          theme.accentPanelClassName
-        )}
-      >
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className={theme.metricLabelClassName}>Route preview</div>
-            <div className={cn("mt-1 text-lg font-semibold", theme.titleClassName)}>
-              {selectedShop ? selectedShop.name : "Select a partner shop"}
-            </div>
-            <div className={cn("mt-2 text-sm", theme.secondaryTextClassName)}>
-              Speed-limit and current-speed badges appear only after the route is actively running.
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onResetNavigationSettings}
-            className={theme.secondaryButtonClassName}
-          >
-            <RefreshCcw className="h-4 w-4" />
-            Reset settings
-          </button>
-        </div>
-
-        {isLoadingRoute ? (
-          <div className="mt-3 space-y-3">
-            <div className={cn("text-sm", theme.bodyClassName)}>Building route preview...</div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className={cn("rounded-[1rem] px-3 py-3", theme.panelClassName)}>
-                <div className="h-3 w-20 animate-pulse rounded bg-slate-300/40" />
-                <div className="mt-2 h-6 w-16 animate-pulse rounded bg-slate-300/40" />
-              </div>
-              <div className={cn("rounded-[1rem] px-3 py-3", theme.panelClassName)}>
-                <div className="h-3 w-24 animate-pulse rounded bg-slate-300/40" />
-                <div className="mt-2 h-6 w-20 animate-pulse rounded bg-slate-300/40" />
-              </div>
-              <div className={cn("rounded-[1rem] px-3 py-3", theme.panelClassName)}>
-                <div className="h-3 w-16 animate-pulse rounded bg-slate-300/40" />
-                <div className="mt-2 h-6 w-14 animate-pulse rounded bg-slate-300/40" />
-              </div>
-            </div>
-          </div>
-        ) : routeError ? (
+      {showAdvancedControls ? (
+        <div className="grid gap-2 sm:grid-cols-2">
           <div
             className={cn(
-              "mt-3 rounded-[1rem] border px-3 py-3",
-              tone === "light"
-                ? "border-rose-200 bg-rose-50 text-rose-900"
-                : "border-rose-300/20 bg-rose-500/10 text-rose-200"
+              "map-liquid-card map-ui-enter map-ui-enter-delay-2 p-3",
+              theme.panelClassName
             )}
           >
-            <div className="text-sm">{routeError}</div>
+            <div className="flex items-center gap-1.5">
+              <Mic2 className="h-3.5 w-3.5" />
+              <span className={theme.metricLabelClassName}>Voice</span>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {(["full", "alerts-only", "muted"] as NavigationVoiceMode[]).map((voiceMode) => (
+                <button
+                  key={voiceMode}
+                  type="button"
+                  onClick={() => onVoiceModeChange(voiceMode)}
+                  className={cn(
+                    settings.voiceMode === voiceMode
+                      ? theme.primaryButtonClassName
+                      : theme.secondaryButtonClassName,
+                    "!py-1 !px-2.5 !text-xs !gap-1"
+                  )}
+                >
+                  {voiceMode === "muted" ? (
+                    <VolumeX className="h-3 w-3" />
+                  ) : (
+                    <Volume2 className="h-3 w-3" />
+                  )}
+                  {voiceMode === "full" ? "Full" : voiceMode === "alerts-only" ? "Alerts" : "Off"}
+                </button>
+              ))}
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {(["louder", "normal", "softer"] as NavigationVoiceVolumePreset[]).map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => onVoiceVolumePresetChange(preset)}
+                  className={cn(
+                    settings.voiceVolumePreset === preset
+                      ? theme.primaryButtonClassName
+                      : theme.secondaryButtonClassName,
+                    "!py-1 !px-2.5 !text-xs !gap-1"
+                  )}
+                >
+                  {preset === "louder" ? "Louder" : preset === "softer" ? "Softer" : "Normal"}
+                </button>
+              ))}
+            </div>
+            <div className={cn("mt-2 text-[10px] leading-4", theme.secondaryTextClassName)}>
+              {voiceGuidanceSupported
+                ? `Voice: ${preferredVoiceLabel || "System default"}`
+                : "Voice not available in this browser."}
+            </div>
+          </div>
+
+          <div
+            className={cn(
+              "map-liquid-card map-ui-enter map-ui-enter-delay-2 p-3",
+              theme.panelClassName
+            )}
+          >
+            <div className="flex items-center gap-1.5">
+              <LocateFixed className="h-3.5 w-3.5" />
+              <span className={theme.metricLabelClassName}>GPS + speed</span>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              <button
+                type="button"
+                onClick={() => onGpsTrackingEnabledChange(!settings.gpsTrackingEnabled)}
+                className={cn(
+                  settings.gpsTrackingEnabled
+                    ? theme.primaryButtonClassName
+                    : theme.secondaryButtonClassName,
+                  "!py-1 !px-2.5 !text-xs !gap-1"
+                )}
+              >
+                <Navigation className="h-3 w-3" />
+                {settings.gpsTrackingEnabled ? "GPS on" : "GPS off"}
+              </button>
+              <button
+                type="button"
+                onClick={() => onSpeedLimitMonitorEnabledChange(!settings.speedLimitMonitorEnabled)}
+                className={cn(
+                  settings.speedLimitMonitorEnabled
+                    ? theme.primaryButtonClassName
+                    : theme.secondaryButtonClassName,
+                  "!py-1 !px-2.5 !text-xs !gap-1"
+                )}
+              >
+                <ShieldAlert className="h-3 w-3" />
+                {settings.speedLimitMonitorEnabled ? "Speed alerts on" : "Speed alerts off"}
+              </button>
+            </div>
+            <div className={cn("mt-2 text-[10px] leading-4", theme.secondaryTextClassName)}>
+              {gpsError
+                ? gpsError
+                : gpsAccuracyMeters
+                  ? `±${Math.round(gpsAccuracyMeters)}m accuracy`
+                  : "Waiting for GPS fix..."}
+            </div>
+            {gpsStatus !== "active" && (
+              <div
+                className={cn(
+                  "mt-1.5 flex items-center gap-1.5 rounded px-2 py-1 text-[10px] font-medium leading-4",
+                  gpsStatus === "lost"
+                    ? "bg-rose-500/20 text-rose-300"
+                    : "bg-amber-500/20 text-amber-300"
+                )}
+              >
+                <LocateFixed className="h-3 w-3 shrink-0" />
+                {gpsStatus === "lost"
+                  ? "GPS signal lost — position may be outdated"
+                  : "GPS signal stale — no update in 10 s"}
+              </div>
+            )}
+            {settings.speedLimitMonitorEnabled && speedLimitStatus === "unavailable" && (
+              <div
+                className={cn(
+                  "mt-1.5 flex items-center gap-1.5 rounded px-2 py-1 text-[10px] font-medium leading-4",
+                  "bg-slate-500/20 text-slate-300"
+                )}
+              >
+                <ShieldAlert className="h-3 w-3 shrink-0" />
+                Speed limit unavailable
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "map-liquid-card map-ui-enter map-ui-enter-delay-2 p-3",
+            theme.panelClassName
+          )}
+        >
+          <div className={theme.metricLabelClassName}>Navigation shell</div>
+          <div className={cn("mt-1 text-xs", theme.bodyClassName)}>
+            Voice, speed, and route controls appear when you switch tabs.
+          </div>
+        </div>
+      )}
+
+      {showSavedAndDiscoveryHints ? (
+        <div className={cn("rounded-[0.875rem] border px-2.5 py-2 text-xs", theme.panelClassName)}>
+          Tip: use tabs above to browse Explore, Saved, and Shops without losing search context.
+        </div>
+      ) : null}
+
+      {showAdvancedControls ? (
+        <div
+          className={cn(
+            "map-liquid-panel map-ui-enter map-ui-enter-delay-3 p-3",
+            theme.accentPanelClassName
+          )}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div className={theme.metricLabelClassName}>Route preview</div>
+              <div className={cn("mt-0.5 text-sm font-semibold", theme.titleClassName)}>
+                {selectedShop ? selectedShop.name : "Select a partner shop"}
+              </div>
+            </div>
             <button
               type="button"
-              onClick={onRetryRoutePreview}
-              className={cn("mt-2", theme.secondaryButtonClassName)}
+              onClick={onResetNavigationSettings}
+              className={cn(theme.secondaryButtonClassName, "!py-1 !px-2.5 !text-xs !gap-1")}
             >
-              <RefreshCcw className="h-4 w-4" />
-              Retry route preview
+              <RefreshCcw className="h-3 w-3" />
+              Reset
             </button>
           </div>
-        ) : routePreview ? (
-          <>
-            {routeAlternatives.length > 1 ? (
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                {routeAlternatives.map((route, index) => {
-                  const isSelected = index === selectedRouteIndex;
-                  const distanceMiles = route.distanceMeters / 1609.34;
-                  const durationMinutes = Math.round(route.durationSeconds / 60);
-                  const comparedToFastestSeconds =
-                    route.durationSeconds - routeAlternatives[0].durationSeconds;
 
-                  return (
-                    <button
-                      key={`${route.fetchedAt}-${index}`}
-                      type="button"
-                      onClick={() => onSelectRouteIndex(index)}
-                      className={
-                        isSelected ? theme.selectedListCardClassName : theme.listCardClassName
-                      }
-                    >
-                      <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-                        {index === 0 ? "Fastest route" : `Alternate ${index}`}
-                      </div>
-                      <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                        {formatDistanceMiles(distanceMiles)} • {durationMinutes} min
-                      </div>
-                      {index > 0 ? (
-                        <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                          {formatRouteAlternativeDeltaLabel(comparedToFastestSeconds)}
-                        </div>
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </div>
-            ) : null}
-
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <div className={cn("rounded-[1rem] px-3 py-3", theme.panelClassName)}>
-                <div className={theme.metricLabelClassName}>Distance</div>
-                <div className={cn("mt-1 text-lg font-semibold", theme.titleClassName)}>
-                  {formatDistanceMiles(routeDistanceMiles)}
+          {isLoadingRoute ? (
+            <div className="mt-2 space-y-2">
+              <div className={cn("text-xs", theme.bodyClassName)}>Building route preview…</div>
+              <div className="grid gap-2 sm:grid-cols-3">
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div className="h-2.5 w-16 animate-pulse rounded bg-slate-300/40" />
+                  <div className="mt-1.5 h-5 w-12 animate-pulse rounded bg-slate-300/40" />
                 </div>
-              </div>
-              <div className={cn("rounded-[1rem] px-3 py-3", theme.panelClassName)}>
-                <div className={theme.metricLabelClassName}>Drive window</div>
-                <div className={cn("mt-1 text-lg font-semibold", theme.titleClassName)}>
-                  {formatApproximateDriveWindow(routeDistanceMiles) ||
-                    (routeDurationMinutes ? `${Math.round(routeDurationMinutes)} min` : "--")}
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div className="h-2.5 w-20 animate-pulse rounded bg-slate-300/40" />
+                  <div className="mt-1.5 h-5 w-14 animate-pulse rounded bg-slate-300/40" />
                 </div>
-              </div>
-              <div className={cn("rounded-[1rem] px-3 py-3", theme.panelClassName)}>
-                <div className={theme.metricLabelClassName}>Turn steps</div>
-                <div className={cn("mt-1 text-lg font-semibold", theme.titleClassName)}>
-                  {routePreview.steps.length}
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div className="h-2.5 w-12 animate-pulse rounded bg-slate-300/40" />
+                  <div className="mt-1.5 h-5 w-10 animate-pulse rounded bg-slate-300/40" />
                 </div>
               </div>
             </div>
-          </>
-        ) : (
-          <div className={cn("mt-3 text-sm", theme.secondaryTextClassName)}>
-            Pick a shop and provide either GPS or a searched address to build a route.
+          ) : routeError ? (
+            <div
+              className={cn(
+                "mt-2 rounded-[0.875rem] border px-2.5 py-2",
+                tone === "light"
+                  ? "border-rose-200 bg-rose-50 text-rose-900"
+                  : "border-rose-300/20 bg-rose-500/10 text-rose-200"
+              )}
+            >
+              <div className="text-xs">{routeError}</div>
+              <button
+                type="button"
+                onClick={onRetryRoutePreview}
+                className={cn(
+                  "mt-1.5",
+                  theme.secondaryButtonClassName,
+                  "!py-1 !px-2.5 !text-xs !gap-1"
+                )}
+              >
+                <RefreshCcw className="h-3 w-3" />
+                Retry
+              </button>
+            </div>
+          ) : routePreview ? (
+            <>
+              {routeAlternatives.length > 1 ? (
+                <div className="mt-2 grid gap-1.5 sm:grid-cols-3">
+                  {routeAlternatives.map((route, index) => {
+                    const isSelected = index === selectedRouteIndex;
+                    const distanceMiles = route.distanceMeters / 1609.34;
+                    const durationMinutes = Math.round(route.durationSeconds / 60);
+                    const comparedToFastestSeconds =
+                      route.durationSeconds - routeAlternatives[0].durationSeconds;
+
+                    return (
+                      <button
+                        key={`${route.fetchedAt}-${index}`}
+                        type="button"
+                        onClick={() => onSelectRouteIndex(index)}
+                        className={cn(
+                          "rounded-[0.875rem] border px-2.5 py-2 text-left backdrop-blur-2xl transition-all duration-200",
+                          isSelected
+                            ? tone === "light"
+                              ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
+                              : "border-cyan-400/30 bg-[linear-gradient(180deg,rgba(6,182,212,0.18),rgba(15,23,42,0.78))]"
+                            : tone === "light"
+                              ? "border-white/80 bg-white/72 hover:bg-white/90"
+                              : "border-white/10 bg-slate-900/76 hover:bg-slate-900/88"
+                        )}
+                      >
+                        <div className={cn("text-xs font-semibold", theme.titleClassName)}>
+                          {index === 0 ? "Fastest" : `Alt ${index}`}
+                        </div>
+                        <div className={cn("text-[10px]", theme.secondaryTextClassName)}>
+                          {formatDistanceMiles(distanceMiles)} • {durationMinutes} min
+                        </div>
+                        {index > 0 ? (
+                          <div className={cn("text-[10px]", theme.secondaryTextClassName)}>
+                            {formatRouteAlternativeDeltaLabel(comparedToFastestSeconds)}
+                          </div>
+                        ) : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div className={theme.metricLabelClassName}>Distance</div>
+                  <div className={cn("mt-0.5 text-base font-semibold", theme.titleClassName)}>
+                    {formatDistanceMiles(routeDistanceMiles)}
+                  </div>
+                </div>
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div className={theme.metricLabelClassName}>Drive window</div>
+                  <div className={cn("mt-0.5 text-base font-semibold", theme.titleClassName)}>
+                    {formatApproximateDriveWindow(routeDistanceMiles) ||
+                      (routeDurationMinutes ? `${Math.round(routeDurationMinutes)} min` : "--")}
+                  </div>
+                </div>
+                <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
+                  <div className={theme.metricLabelClassName}>Turn steps</div>
+                  <div className={cn("mt-0.5 text-base font-semibold", theme.titleClassName)}>
+                    {routePreview.steps.length}
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className={cn("mt-2 text-xs", theme.secondaryTextClassName)}>
+              Pick a shop and provide GPS or a searched address to build a route.
+            </div>
+          )}
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={onStartNavigation}
+              disabled={!routePreview || !selectedShop || isLoadingRoute}
+              className={cn(
+                theme.primaryButtonClassName,
+                "!py-1.5 !px-3 !text-xs disabled:opacity-50"
+              )}
+            >
+              <Navigation className="h-3.5 w-3.5" />
+              Start Route
+            </button>
           </div>
-        )}
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={onStartNavigation}
-            disabled={!routePreview || !selectedShop || isLoadingRoute}
-            className={cn(theme.primaryButtonClassName, "disabled:opacity-50")}
-          >
-            <Navigation className="h-4 w-4" />
-            Start Route
-          </button>
         </div>
-      </div>
-
-      {routePreview?.steps.length ? (
+      ) : (
         <div
           className={cn(
-            "map-liquid-card map-ui-enter map-ui-enter-delay-3 p-4",
+            "map-liquid-panel map-ui-enter map-ui-enter-delay-3 p-3",
+            theme.accentPanelClassName
+          )}
+        >
+          <div className={theme.metricLabelClassName}>Route status</div>
+          <div className={cn("mt-0.5 text-sm font-semibold", theme.titleClassName)}>
+            {selectedShop ? selectedShop.name : "Choose a destination"}
+          </div>
+          <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+            {routePreview
+              ? "Preview is ready. Start route when you are set."
+              : "Address + destination will auto-build a route preview."}
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={onStartNavigation}
+              disabled={!routePreview || !selectedShop || isLoadingRoute}
+              className={cn(
+                theme.primaryButtonClassName,
+                "!py-1.5 !px-3 !text-xs disabled:opacity-50"
+              )}
+            >
+              <Navigation className="h-3.5 w-3.5" />
+              Start Route
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!isSearchFocus && routePreview?.steps.length ? (
+        <div
+          className={cn(
+            "map-liquid-card map-ui-enter map-ui-enter-delay-3 p-3",
             theme.panelClassName
           )}
         >
           <div className={theme.metricLabelClassName}>Upcoming turns</div>
-          <div className="mt-3 space-y-2">
+          <div className="mt-2 space-y-1">
             {routePreview.steps.slice(currentStepIndex, currentStepIndex + 5).map((step, index) => (
               <div
                 key={step.id}
-                className={index === 0 ? theme.selectedListCardClassName : theme.listCardClassName}
+                className={cn(
+                  "rounded-[0.875rem] border px-2.5 py-2 transition-all duration-200 backdrop-blur-2xl",
+                  index === 0
+                    ? tone === "light"
+                      ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
+                      : "border-cyan-400/30 bg-[linear-gradient(180deg,rgba(6,182,212,0.18),rgba(15,23,42,0.78))]"
+                    : tone === "light"
+                      ? "border-white/80 bg-white/72"
+                      : "border-white/10 bg-slate-900/76"
+                )}
               >
-                <div className={cn("text-sm font-semibold leading-6", theme.titleClassName)}>
+                <div className={cn("text-xs font-semibold leading-5", theme.titleClassName)}>
                   {step.instruction}
                 </div>
-                <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                <div className={cn("text-[10px]", theme.secondaryTextClassName)}>
                   {(step.distanceMeters / 1609.34).toFixed(1)} mi •{" "}
                   {Math.max(1, Math.round(step.durationSeconds / 60))} min
                 </div>
@@ -682,182 +845,189 @@ export default function CoverageNavigationPlanner({
         </div>
       ) : null}
 
-      <div
-        className={cn("rounded-[1rem] border px-3 py-3 text-xs leading-5", theme.panelClassName)}
-      >
-        This planner uses submit-based OpenStreetMap address search, an OSRM route preview, device
-        GPS speed when available, and nearby-road maxspeed tags. It is much stronger than a mock UI,
-        but it is still not the same thing as a native automotive navigation SDK.
-      </div>
-
-      <div
-        className={cn(
-          "map-liquid-card map-ui-enter map-ui-enter-delay-3 rounded-[1rem] border px-3 py-3",
-          theme.panelClassName
-        )}
-      >
-        <div className={cn("rounded-[0.85rem] border px-3 py-2 text-xs", diagnosticsToneClassName)}>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span className="font-semibold uppercase tracking-[0.12em]">Diagnostics signal</span>
-            <span className="inline-flex flex-wrap items-center gap-2 font-semibold capitalize">
-              <span>{diagnosticsSignal.level}</span>
-              <span className="rounded-full border border-current/35 px-2 py-0.5 text-[10px] uppercase tracking-[0.08em]">
-                {diagnosticsSignal.confidenceScore} confidence
-              </span>
-              <span
-                className={cn(
-                  "rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.08em]",
-                  confidenceTrend.tone === "critical"
-                    ? "border-rose-400/70 text-rose-100"
-                    : confidenceTrend.tone === "warning"
-                      ? "border-amber-300/70 text-amber-100"
-                      : confidenceTrend.tone === "positive"
-                        ? "border-emerald-300/70 text-emerald-100"
-                        : "border-current/25 opacity-85"
-                )}
-              >
-                {confidenceTrend.label}
-              </span>
-            </span>
-          </div>
-          <div className="mt-1 opacity-90">{diagnosticsSignal.detail}</div>
-          {staleTelemetryProviderSummary ? (
-            <div
-              className={cn(
-                "mt-2 rounded-[0.75rem] border px-2.5 py-2 text-[11px] leading-5",
-                tone === "light"
-                  ? "border-amber-300 bg-amber-50 text-amber-950"
-                  : "border-amber-300/40 bg-amber-500/15 text-amber-100"
-              )}
-            >
-              Provider telemetry for {providerLabel(staleTelemetryProviderSummary.provider)} is{" "}
-              {formatAgeLabel(staleTelemetryProviderSummary.lastCheckedAgeMs)} old. Refresh live map
-              activity or rerun diagnostics checks to restore current trust status.
-            </div>
-          ) : null}
-          <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span className="opacity-80 sm:pr-2">
-              Driver: {diagnosticsDriverLabel(diagnosticsSignal.primaryDriver)}
-            </span>
-            <button
-              type="button"
-              onClick={() => setShowDiagnosticsDetails((current) => !current)}
-              className="w-full rounded-full border border-current/40 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] transition hover:bg-black/5 sm:w-auto"
-            >
-              {showDiagnosticsDetails ? "Hide details" : "Details"}
-            </button>
-          </div>
-          {showDiagnosticsDetails ? (
-            <div className="mt-2 space-y-2 border-t border-current/20 pt-2 opacity-90">
-              {showDevDiagnosticsActions ? (
-                <div className="flex flex-col gap-2 pb-1 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="button"
-                    onClick={handleRunDiagnosticsChecks}
-                    className="w-full rounded-full border border-current/40 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] transition hover:bg-black/5 sm:w-auto"
-                  >
-                    Run Checks
-                  </button>
-                  <span>
-                    Last run:{" "}
-                    {lastDiagnosticsRefreshAt
-                      ? formatAgeLabel(Date.now() - Date.parse(lastDiagnosticsRefreshAt))
-                      : "--"}
-                  </span>
-                </div>
-              ) : null}
-              <div>
-                Map pressure: {mapPerformance.recentOverBudgetCount}/
-                {mapPerformance.recentSampleCount} recent over-budget samples
-              </div>
-              <div>
-                At-risk provider:{" "}
-                {diagnosticsSignal.providerAtRisk
-                  ? providerLabel(diagnosticsSignal.providerAtRisk)
-                  : "--"}
-              </div>
-              <div>
-                Latest provider issue:{" "}
-                {diagnosticsSignal.providerAtRiskLastError || "No recent provider errors"}
-              </div>
-              {discoveryQualitySnapshot ? (
-                <div>
-                  Discovery quality: {discoveryQualitySnapshot.acceptedLimitedCount}/
-                  {discoveryQualitySnapshot.acceptedCount} limited accepted,{" "}
-                  {discoveryQualitySnapshot.rejectedBelowQualityThresholdCount} below-threshold
-                  filtered
-                </div>
-              ) : null}
-              {discoveryQualitySnapshot ? (
-                <div>
-                  Discovery limited rate: {discoveryQualitySnapshot.limitedAcceptanceRatePct}%
-                </div>
-              ) : null}
-              {discoveryQualitySnapshot ? (
-                <div>Discovery mix: {formatDiscoveryCategoryMix(discoveryQualitySnapshot)}</div>
-              ) : null}
-              {diagnosticsRefreshError ? (
-                <div className="text-rose-600 dark:text-rose-300">{diagnosticsRefreshError}</div>
-              ) : null}
-            </div>
-          ) : null}
+      {!isSearchFocus ? (
+        <div
+          className={cn("rounded-[1rem] border px-3 py-3 text-xs leading-5", theme.panelClassName)}
+        >
+          This planner uses submit-based OpenStreetMap address search, an OSRM route preview, device
+          GPS speed when available, and nearby-road maxspeed tags.
         </div>
-        <div className={theme.metricLabelClassName}>Provider health snapshot</div>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {providerHealth.map((status) =>
-            (() => {
-              const isAtRiskProvider =
-                diagnosticsSignal.providerAtRisk === status.provider &&
-                (diagnosticsSignal.level === "watch" || diagnosticsSignal.level === "degraded");
-              const providerReasonLabel = diagnosticsReasonLabel(
-                diagnosticsSignal.providerRiskReason
-              );
+      ) : null}
 
-              return (
-                <div
-                  key={status.provider}
+      {showDiagnostics ? (
+        <div
+          className={cn(
+            "map-liquid-card map-ui-enter map-ui-enter-delay-3 rounded-[1rem] border px-3 py-3",
+            theme.panelClassName
+          )}
+        >
+          <div
+            className={cn("rounded-[0.85rem] border px-3 py-2 text-xs", diagnosticsToneClassName)}
+          >
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <span className="font-semibold uppercase tracking-[0.12em]">Diagnostics signal</span>
+              <span className="inline-flex flex-wrap items-center gap-2 font-semibold capitalize">
+                <span>{diagnosticsSignal.level}</span>
+                <span className="rounded-full border border-current/35 px-2 py-0.5 text-[10px] uppercase tracking-[0.08em]">
+                  {diagnosticsSignal.confidenceScore} confidence
+                </span>
+                <span
                   className={cn(
-                    theme.listCardClassName,
-                    "p-3",
-                    isAtRiskProvider
-                      ? tone === "light"
-                        ? "ring-2 ring-amber-300"
-                        : "ring-2 ring-amber-300/60"
-                      : null
+                    "rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-[0.08em]",
+                    confidenceTrend.tone === "critical"
+                      ? "border-rose-400/70 text-rose-100"
+                      : confidenceTrend.tone === "warning"
+                        ? "border-amber-300/70 text-amber-100"
+                        : confidenceTrend.tone === "positive"
+                          ? "border-emerald-300/70 text-emerald-100"
+                          : "border-current/25 opacity-85"
                   )}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <div
-                      className={cn(
-                        "text-xs font-semibold uppercase tracking-[0.14em]",
-                        theme.titleClassName
-                      )}
+                  {confidenceTrend.label}
+                </span>
+              </span>
+            </div>
+            <div className="mt-1 opacity-90">{diagnosticsSignal.detail}</div>
+            {staleTelemetryProviderSummary ? (
+              <div
+                className={cn(
+                  "mt-2 rounded-[0.75rem] border px-2.5 py-2 text-[11px] leading-5",
+                  tone === "light"
+                    ? "border-amber-300 bg-amber-50 text-amber-950"
+                    : "border-amber-300/40 bg-amber-500/15 text-amber-100"
+                )}
+              >
+                Provider telemetry for {providerLabel(staleTelemetryProviderSummary.provider)} is{" "}
+                {formatAgeLabel(staleTelemetryProviderSummary.lastCheckedAgeMs)} old. Refresh live
+                map activity or rerun diagnostics checks to restore current trust status.
+              </div>
+            ) : null}
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <span className="opacity-80 sm:pr-2">
+                Driver: {diagnosticsDriverLabel(diagnosticsSignal.primaryDriver)}
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowDiagnosticsDetails((current) => !current)}
+                className="w-full rounded-full border border-current/40 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] transition hover:bg-black/5 sm:w-auto"
+              >
+                {showDiagnosticsDetails ? "Hide details" : "Details"}
+              </button>
+            </div>
+            {showDiagnosticsDetails ? (
+              <div className="mt-2 space-y-2 border-t border-current/20 pt-2 opacity-90">
+                {showDevDiagnosticsActions ? (
+                  <div className="flex flex-col gap-2 pb-1 sm:flex-row sm:items-center sm:justify-between">
+                    <button
+                      type="button"
+                      onClick={handleRunDiagnosticsChecks}
+                      className="w-full rounded-full border border-current/40 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] transition hover:bg-black/5 sm:w-auto"
                     >
-                      {providerLabel(status.provider)}
-                    </div>
-                    {isAtRiskProvider && providerReasonLabel ? (
-                      <span className="rounded-full border border-current/35 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em]">
-                        {providerReasonLabel}
-                      </span>
-                    ) : null}
+                      Run Checks
+                    </button>
+                    <span>
+                      Last run:{" "}
+                      {lastDiagnosticsRefreshAt
+                        ? formatAgeLabel(Date.now() - Date.parse(lastDiagnosticsRefreshAt))
+                        : "--"}
+                    </span>
                   </div>
-                  <div className={cn("mt-1 text-sm font-semibold leading-5", theme.titleClassName)}>
-                    {status.totalChecks > 0
-                      ? `${status.successRate}% success • ${status.averageLatencyMs} ms avg`
-                      : "No checks yet"}
-                  </div>
-                  <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                    Last check: {formatAgeLabel(status.lastCheckedAgeMs)}
-                  </div>
-                  <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                    {status.lastErrorMessage || "No recent provider errors"}
-                  </div>
+                ) : null}
+                <div>
+                  Map pressure: {mapPerformance.recentOverBudgetCount}/
+                  {mapPerformance.recentSampleCount} recent over-budget samples
                 </div>
-              );
-            })()
-          )}
+                <div>
+                  At-risk provider:{" "}
+                  {diagnosticsSignal.providerAtRisk
+                    ? providerLabel(diagnosticsSignal.providerAtRisk)
+                    : "--"}
+                </div>
+                <div>
+                  Latest provider issue:{" "}
+                  {diagnosticsSignal.providerAtRiskLastError || "No recent provider errors"}
+                </div>
+                {discoveryQualitySnapshot ? (
+                  <div>
+                    Discovery quality: {discoveryQualitySnapshot.acceptedLimitedCount}/
+                    {discoveryQualitySnapshot.acceptedCount} limited accepted,{" "}
+                    {discoveryQualitySnapshot.rejectedBelowQualityThresholdCount} below-threshold
+                    filtered
+                  </div>
+                ) : null}
+                {discoveryQualitySnapshot ? (
+                  <div>
+                    Discovery limited rate: {discoveryQualitySnapshot.limitedAcceptanceRatePct}%
+                  </div>
+                ) : null}
+                {discoveryQualitySnapshot ? (
+                  <div>Discovery mix: {formatDiscoveryCategoryMix(discoveryQualitySnapshot)}</div>
+                ) : null}
+                {diagnosticsRefreshError ? (
+                  <div className="text-rose-600 dark:text-rose-300">{diagnosticsRefreshError}</div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+          <div className={theme.metricLabelClassName}>Provider health snapshot</div>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {providerHealth.map((status) =>
+              (() => {
+                const isAtRiskProvider =
+                  diagnosticsSignal.providerAtRisk === status.provider &&
+                  (diagnosticsSignal.level === "watch" || diagnosticsSignal.level === "degraded");
+                const providerReasonLabel = diagnosticsReasonLabel(
+                  diagnosticsSignal.providerRiskReason
+                );
+
+                return (
+                  <div
+                    key={status.provider}
+                    className={cn(
+                      theme.listCardClassName,
+                      "p-3",
+                      isAtRiskProvider
+                        ? tone === "light"
+                          ? "ring-2 ring-amber-300"
+                          : "ring-2 ring-amber-300/60"
+                        : null
+                    )}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div
+                        className={cn(
+                          "text-xs font-semibold uppercase tracking-[0.14em]",
+                          theme.titleClassName
+                        )}
+                      >
+                        {providerLabel(status.provider)}
+                      </div>
+                      {isAtRiskProvider && providerReasonLabel ? (
+                        <span className="rounded-full border border-current/35 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em]">
+                          {providerReasonLabel}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div
+                      className={cn("mt-1 text-sm font-semibold leading-5", theme.titleClassName)}
+                    >
+                      {status.totalChecks > 0
+                        ? `${status.successRate}% success • ${status.averageLatencyMs} ms avg`
+                        : "No checks yet"}
+                    </div>
+                    <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                      Last check: {formatAgeLabel(status.lastCheckedAgeMs)}
+                    </div>
+                    <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                      {status.lastErrorMessage || "No recent provider errors"}
+                    </div>
+                  </div>
+                );
+              })()
+            )}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

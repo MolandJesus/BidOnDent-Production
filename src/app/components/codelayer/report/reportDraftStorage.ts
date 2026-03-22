@@ -23,16 +23,46 @@ export const DEFAULT_VEHICLE_DRAFT: VehicleDraft = {
   vin: "",
 };
 
+function isValidDraft(value: unknown): value is ReportDraft {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  if (
+    typeof v.step !== "number" ||
+    typeof v.damageArea !== "string" ||
+    typeof v.description !== "string" ||
+    typeof v.incident !== "string" ||
+    typeof v.savedAt !== "string" ||
+    typeof v.vehicle !== "object" ||
+    v.vehicle === null
+  )
+    return false;
+  const veh = v.vehicle as Record<string, unknown>;
+  return (
+    typeof veh.make === "string" &&
+    typeof veh.model === "string" &&
+    typeof veh.year === "string" &&
+    typeof veh.vin === "string"
+  );
+}
+
 export function loadReportDraft(): ReportDraft | null {
   try {
     const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
-    if (!savedDraft) {
+    if (!savedDraft) return null;
+
+    const parsed: unknown = JSON.parse(savedDraft);
+    if (!isValidDraft(parsed)) {
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
       return null;
     }
 
-    return JSON.parse(savedDraft) as ReportDraft;
-  } catch (error) {
-    console.error("Error loading draft from localStorage:", error);
+    return parsed;
+  } catch {
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+    } catch {
+      /* noop */
+    }
     return null;
   }
 }

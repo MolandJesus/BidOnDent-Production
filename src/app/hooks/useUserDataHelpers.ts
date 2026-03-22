@@ -72,11 +72,18 @@ export function loadCachedUserData(): CachedUserDataResult | null {
 }
 
 export function saveUserDataCache(userData: UserData, email?: string): void {
-  localStorage.setItem(getUserCacheKey(email || userData.userInfo.email), JSON.stringify(userData));
-  localStorage.setItem(
-    STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-    normalizeEmail(email || userData.userInfo.email)
-  );
+  try {
+    localStorage.setItem(
+      getUserCacheKey(email || userData.userInfo.email),
+      JSON.stringify(userData)
+    );
+    localStorage.setItem(
+      STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
+      normalizeEmail(email || userData.userInfo.email)
+    );
+  } catch {
+    // Graceful: quota exceeded or private mode — Supabase is source of truth
+  }
 }
 
 export function buildPhotoStorageFromReports(

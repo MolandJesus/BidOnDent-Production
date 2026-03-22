@@ -12,7 +12,7 @@ export function getDefaultNavigationGuidanceSettings(): NavigationGuidanceSettin
     gpsTrackingEnabled: true,
     speedLimitMonitorEnabled: true,
     addressSearchProvider: "nominatim",
-    routeProvider: "osrm-demo",
+    routeProvider: "osrm-public",
     speedLimitProvider: "overpass",
   };
 }

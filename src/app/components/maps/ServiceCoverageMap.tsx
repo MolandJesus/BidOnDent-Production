@@ -1,4 +1,5 @@
 import {
+  AttributionControl,
   Circle,
   CircleMarker,
   MapContainer,
@@ -248,11 +249,25 @@ export default function ServiceCoverageMap({
         />
       ) : null}
 
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[620] map-ui-enter map-ui-enter-delay-2">
+        <div
+          className={cn(
+            "coverage-map-brand-badge rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]",
+            tone === "light"
+              ? "border-blue-200/85 bg-white/88 text-blue-900"
+              : "border-blue-200/25 bg-slate-950/78 text-blue-100"
+          )}
+        >
+          BidOnDent Maps
+        </div>
+      </div>
+
       <MapContainer
         center={center}
         zoom={zoom}
         minZoom={immersiveFullscreen ? 2 : 8}
         zoomControl={false}
+        attributionControl={false}
         className={cn(
           "coverage-map-canvas h-[420px] w-full",
           theme.mapCanvasClassName,
@@ -266,6 +281,7 @@ export default function ServiceCoverageMap({
         zoomDelta={0.5}
         worldCopyJump={false}
       >
+        <AttributionControl position="bottomright" prefix={false} />
         <ZoomControl position="bottomright" />
         <MapViewportController center={center} zoom={zoom} revision={revision} />
         <MapZoomTracker

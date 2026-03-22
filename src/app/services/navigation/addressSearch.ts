@@ -1,5 +1,5 @@
 import type { CoverageSearchTarget } from "../../components/maps/serviceCoverageMapTypes";
-import type { NavigationAddressResult } from "../../types/navigation";
+import type { NavigationAddressResult, NavigationAddressSuggestion } from "../../types/navigation";
 import { runWithProviderHealth } from "./providerHealth";
 
 const addressSearchCache = new Map<string, NavigationAddressResult[]>();
@@ -101,4 +101,87 @@ export function addressResultToSearchTarget(
     label: addressResult.primaryLabel,
     source: "address",
   };
+}
+
+// ── Predictive address suggestions ──────────────────────────────────────────
+
+const addressSuggestionCache = new Map<string, NavigationAddressSuggestion[]>();
+
+function toSuggestionConfidence(result: NominatimSearchResult, query: string): number {
+  const normalizedQuery = query.trim().toLowerCase();
+  const normalizedName = result.display_name.toLowerCase();
+  if (!normalizedQuery || normalizedName === normalizedQuery) return 100;
+  if (normalizedName.startsWith(normalizedQuery)) return 92;
+  if (normalizedName.includes(normalizedQuery)) return 80;
+  return 68;
+}
+
+function resultToSuggestion(
+  result: NominatimSearchResult,
+  query: string
+): NavigationAddressSuggestion | null {
+  const lat = Number(result.lat);
+  const lng = Number(result.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  return {
+    id: String(result.place_id),
+    title: buildPrimaryLabel(result) || result.display_name.split(",")[0] || "Address suggestion",
+    subtitle: buildSecondaryLabel(result) || result.display_name,
+    coordinate: { lat, lng },
+    intent: "address",
+    confidenceScore: toSuggestionConfidence(result, query),
+    provider: "nominatim" as const,
+  };
+}
+
+/**
+ * Autocomplete-style address guessing: runs on ≥ 2 chars, returns up to 8
+ * results sorted by confidence score. Results are cached per query.
+ */
+export async function suggestNavigationAddresses(
+  query: string,
+  signal?: AbortSignal
+): Promise<NavigationAddressSuggestion[]> {
+  const normalizedQuery = query.trim();
+  if (normalizedQuery.length < 2) {
+    return [];
+  }
+
+  const cacheKey = `suggest:${normalizedQuery.toLowerCase()}`;
+  const cached = addressSuggestionCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const url = new URL("https://nominatim.openstreetmap.org/search");
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("limit", "8");
+  url.searchParams.set("countrycodes", "us");
+  url.searchParams.set("addressdetails", "1");
+  url.searchParams.set("q", normalizedQuery);
+
+  let response: Response;
+  try {
+    response = await runWithProviderHealth("nominatim-search", () =>
+      fetch(url.toString(), {
+        headers: { Accept: "application/json" },
+        signal,
+      })
+    );
+  } catch {
+    return [];
+  }
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = (await response.json()) as NominatimSearchResult[];
+  const suggestions = data
+    .map((result) => resultToSuggestion(result, normalizedQuery))
+    .filter((s): s is NavigationAddressSuggestion => s !== null)
+    .sort((a, b) => b.confidenceScore - a.confidenceScore);
+
+  addressSuggestionCache.set(cacheKey, suggestions);
+  return suggestions;
 }

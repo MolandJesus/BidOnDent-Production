@@ -5,7 +5,7 @@ export type NavigationVoicePersona = "british-smooth";
 export type NavigationVoiceVolumePreset = "louder" | "normal" | "softer";
 export type NavigationSavedLocationCategory = "home" | "work" | "saved" | "recent" | "parked-car";
 export type NavigationSearchProvider = "nominatim";
-export type NavigationRouteProvider = "osrm-demo";
+export type NavigationRouteProvider = "osrm-public";
 export type NavigationSpeedLimitProvider = "overpass";
 export type NavigationSpeedLimitConfidence = "high" | "medium" | "low";
 
@@ -21,6 +21,18 @@ export type NavigationAddressResult = {
   secondaryLabel?: string;
   lat: number;
   lng: number;
+  provider: NavigationSearchProvider;
+};
+
+export type NavigationAddressSuggestionIntent = "address" | "poi" | "recent" | "saved" | "fallback";
+
+export type NavigationAddressSuggestion = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  coordinate: NavigationCoordinate;
+  intent: NavigationAddressSuggestionIntent;
+  confidenceScore: number;
   provider: NavigationSearchProvider;
 };
 
