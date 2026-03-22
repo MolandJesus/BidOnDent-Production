@@ -18,7 +18,9 @@ import {
 } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 import { formatDate, formatStatus, getReportTitle, getReportDescription } from "./home-helpers";
-import DashboardCoveragePanel from "../dashboard/DashboardCoveragePanel";
+import CustomerMapWidget from "../dashboard/CustomerMapWidget";
+import ShopMapWidget from "../dashboard/ShopMapWidget";
+import InsurerMapWidget from "../dashboard/InsurerMapWidget";
 
 type HomeScreenProps = {
   userType: string;
@@ -372,12 +374,13 @@ export default function HomeScreen({
         })}
       </section>
 
-      <DashboardCoveragePanel
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
-        userType={userType}
-        onOpenCoveragePage={onViewShops}
-      />
+      {userType === "shop" ? (
+        <ShopMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
+      ) : userType === "insurer" ? (
+        <InsurerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
+      ) : (
+        <CustomerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
+      )}
 
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-5">
         <div className="xl:col-span-8 space-y-5">

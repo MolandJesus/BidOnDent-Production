@@ -47,31 +47,31 @@ These cards are the **primary entry point** for future work. Read one card, unde
 
 ### CARD: Customer Map Intelligence
 
-- **STATE:** Tier 2 (Productizing). DashboardCoveragePanel wired into HomeScreen for all user types. Coverage command center visible on dashboard with glass tokens. No customer-specific nearest-shops compact widget yet.
-- **NEXT MOVE:** Build nearest-shops compact widget for customer dashboard (data already available via `useCoveragePartnerShops()`).
-- **TOUCHES:** New component in `components/maps/` or `components/codelayer/`. Consumes `useCoveragePartnerShops()`. Widget on `HomeScreen.tsx`.
-- **DO NOT:** Build smart routing or insurance-preferred routing before the basic widget exists. Don't show fabricated data.
-- **VERIFY:** Widget shows 3-5 nearest shops with distance/rating. Tappable to expand. Works in demo mode.
+- **STATE:** Tier 3 (Delivered). CustomerMapWidget live on HomeScreen. Compact CarPlay-style card showing 5 nearest shops with distance + rating. Tapping any row or "Open Map" button triggers CoverageMapDialog. Works in demo mode with fallback hubs.
+- **NEXT MOVE:** Repair status pin on map. Smart shop recommendation routing (insurance-preferred). Distance-based sort refinement.
+- **TOUCHES:** `components/dashboard/CustomerMapWidget.tsx`. Consumes `useCoveragePartnerShops()` + `useCoverageNavigationExperience()`. Triggers `CoverageMapDialog`.
+- **DO NOT:** Build smart routing before shop-level metadata (turnaround, capacity) exists in Supabase.
+- **VERIFY:** Widget shows up to 5 nearest shops with distance/rating. Tapping expands to full map. Demo fallback works.
 - **UNLOCKS:** Repair status pin, smart shop recommendation routing, insurance-preferred shop highlighting.
 - **FULL DETAIL:** Search this doc for "Customer Map Intelligence"
 
 ### CARD: Shop Map Intelligence
 
-- **STATE:** Tier 3. No shop-specific map features exist. Service radius not stored anywhere.
-- **NEXT MOVE:** Build service area visualization on shop dashboard (requires `shop_service_areas` Supabase table first).
-- **TOUCHES:** New Supabase migration. New component in `components/maps/`. Widget on shop `HomeScreen.tsx`.
+- **STATE:** Tier 3 (Placeholder delivered). ShopMapWidget on shop HomeScreen showing region count, partner density, and operating region pills. Structure-only — real service-area data requires Supabase table.
+- **NEXT MOVE:** Create `shop_service_areas` Supabase table. Replace placeholder with live service-area visualization.
+- **TOUCHES:** `components/dashboard/ShopMapWidget.tsx`. New Supabase migration when ready.
 - **DO NOT:** Build request heatmaps or proximity alerts before the service area table and visualization exist.
-- **VERIFY:** Shop sees boundary overlay on map showing their operating radius. Works with demo data.
+- **VERIFY:** Shop sees compact widget with region/partner counts. "Coming soon" message for service-area management.
 - **UNLOCKS:** Incoming request heatmap, customer proximity alerts, competitor overlay.
 - **FULL DETAIL:** Search this doc for "Shop Map Intelligence"
 
 ### CARD: Insurer Map Intelligence
 
-- **STATE:** Tier 3. No insurer-specific map analytics. Claims not geo-coded.
-- **NEXT MOVE:** Build network coverage map — partner shops by region with capacity/rating overlays.
-- **TOUCHES:** New component in `components/maps/`. Consumes shop profiles + relationship data. Widget on insurer `HomeScreen.tsx`.
+- **STATE:** Tier 3 (Placeholder delivered). InsurerMapWidget on insurer HomeScreen showing shop count, region count, and average rating. Structure-only — real network analytics require queryable shop data.
+- **NEXT MOVE:** Wire real network analytics when shop location data is queryable by region.
+- **TOUCHES:** `components/dashboard/InsurerMapWidget.tsx`. Consumes `useCoveragePartnerShops()` for basic stats.
 - **DO NOT:** Build claims heatmaps or gap analysis before shop location data is queryable by region.
-- **VERIFY:** Insurer sees regional overview of partner network with shop count/rating per area. Works in demo mode.
+- **VERIFY:** Insurer sees compact widget with 3-column stats (shops/regions/avg rating). "Coming soon" message for analytics.
 - **UNLOCKS:** Claims density analysis, coverage gap detection, route optimization.
 - **FULL DETAIL:** Search this doc for "Insurer Map Intelligence"
 
