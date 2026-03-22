@@ -37,15 +37,23 @@ function mapPartnerShopRecords(publicShops: PartnerShopMapRecord[]): CoveragePar
 export function useCoveragePartnerShops() {
   const [publicShops, setPublicShops] = useState<PartnerShopMapRecord[]>([]);
   const [isLoadingShops, setIsLoadingShops] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
     setIsLoadingShops(true);
+    setFetchError(null);
 
     void getPublicPartnerShops()
       .then((rows) => {
         if (!mounted) return;
         setPublicShops(rows);
+      })
+      .catch((error: unknown) => {
+        if (!mounted) return;
+        const message = error instanceof Error ? error.message : "Failed to load partner shops";
+        console.error("useCoveragePartnerShops fetch error:", message);
+        setFetchError(message);
       })
       .finally(() => {
         if (!mounted) return;
@@ -58,7 +66,7 @@ export function useCoveragePartnerShops() {
   }, []);
 
   const mappedPartnerShops = useMemo(() => mapPartnerShopRecords(publicShops), [publicShops]);
-  const allowDemoFallback = DEMO_MODE || !import.meta.env.PROD;
+  const allowDemoFallback = DEMO_MODE;
   const usingDemoFallback = mappedPartnerShops.length === 0 && allowDemoFallback;
 
   return {
@@ -70,5 +78,6 @@ export function useCoveragePartnerShops() {
           ? fallbackPartnerHubs
           : [],
     usingDemoFallback,
+    fetchError,
   };
 }

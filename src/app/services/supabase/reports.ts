@@ -87,7 +87,7 @@ export async function getDamageReports(
     }
 
     console.log(`✅ Loaded ${data.length} damage reports from Supabase`);
-    return data as DamageReport[];
+    return Array.isArray(data) ? (data as DamageReport[]) : [];
   } catch (error) {
     console.error("Error in getDamageReports:", error);
     return [];
@@ -111,7 +111,7 @@ export async function getAllDamageReports(): Promise<DamageReport[]> {
     }
 
     console.log(`✅ Loaded ${data.length} total damage reports from Supabase`);
-    return data as DamageReport[];
+    return Array.isArray(data) ? (data as DamageReport[]) : [];
   } catch (error) {
     console.error("Error in getAllDamageReports:", error);
     return [];

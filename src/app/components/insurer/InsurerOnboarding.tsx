@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Check, ArrowRight, Shield, DollarSign, FileText } from "lucide-react";
 import { motion } from "motion/react";
+import type { InsurerOnboardingFormData } from "../../types";
 
 type InsurerOnboardingProps = {
   primaryColor?: string;
   secondaryColor?: string;
-  onComplete: (data: any) => Promise<void> | void;
+  onComplete: (data: InsurerOnboardingFormData) => Promise<void> | void;
 };
 
 export default function InsurerOnboarding({
   primaryColor = "#003d82",
   secondaryColor = "#00a0e9",
-  onComplete
+  onComplete,
 }: InsurerOnboardingProps) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,7 +28,7 @@ export default function InsurerOnboarding({
     claimTypes: [] as string[],
     preferredShops: false,
     autoApproval: false,
-    maxClaimAmount: ""
+    maxClaimAmount: "",
   });
 
   const claimTypeOptions = [
@@ -36,12 +37,12 @@ export default function InsurerOnboarding({
     "Liability",
     "Uninsured Motorist",
     "Medical Payments",
-    "Personal Injury Protection"
+    "Personal Injury Protection",
   ];
 
   const toggleArrayItem = (array: string[], item: string) => {
     if (array.includes(item)) {
-      return array.filter(i => i !== item);
+      return array.filter((i) => i !== item);
     } else {
       return [...array, item];
     }
@@ -98,7 +99,9 @@ export default function InsurerOnboarding({
             <div className="mb-6">
               <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                }}
               >
                 <Shield className="w-8 h-8 text-white" />
               </div>
@@ -114,7 +117,7 @@ export default function InsurerOnboarding({
                 <input
                   type="text"
                   value={formData.companyName}
-                  onChange={(e) => setFormData({...formData, companyName: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="SafeDrive Insurance"
                 />
@@ -127,7 +130,7 @@ export default function InsurerOnboarding({
                 <input
                   type="text"
                   value={formData.licenseNumber}
-                  onChange={(e) => setFormData({...formData, licenseNumber: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="INS-123456"
                 />
@@ -140,7 +143,7 @@ export default function InsurerOnboarding({
                 <input
                   type="text"
                   value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="456 Insurance Blvd"
                 />
@@ -148,25 +151,21 @@ export default function InsurerOnboarding({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    City *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
                   <input
                     type="text"
                     value={formData.city}
-                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     placeholder="City"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    State *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
                   <input
                     type="text"
                     value={formData.state}
-                    onChange={(e) => setFormData({...formData, state: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     placeholder="State"
                   />
@@ -174,13 +173,11 @@ export default function InsurerOnboarding({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  ZIP Code *
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
                 <input
                   type="text"
                   value={formData.zip}
-                  onChange={(e) => setFormData({...formData, zip: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="12345"
                 />
@@ -193,7 +190,7 @@ export default function InsurerOnboarding({
                 <input
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="Phone number (10+ digits)"
                 />
@@ -206,7 +203,7 @@ export default function InsurerOnboarding({
                 <input
                   type="url"
                   value={formData.website}
-                  onChange={(e) => setFormData({...formData, website: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="https://yourinsurance.com"
                 />
@@ -215,7 +212,15 @@ export default function InsurerOnboarding({
 
             <motion.button
               onClick={handleNext}
-              disabled={!formData.companyName || !formData.licenseNumber || !formData.address || !formData.city || !formData.state || !formData.zip || !formData.phone}
+              disabled={
+                !formData.companyName ||
+                !formData.licenseNumber ||
+                !formData.address ||
+                !formData.city ||
+                !formData.state ||
+                !formData.zip ||
+                !formData.phone
+              }
               className="w-full mt-6 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ backgroundColor: primaryColor }}
               whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
@@ -235,7 +240,9 @@ export default function InsurerOnboarding({
             <div className="mb-6">
               <div
                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                }}
               >
                 <FileText className="w-8 h-8 text-white" />
               </div>
@@ -248,10 +255,12 @@ export default function InsurerOnboarding({
                 {claimTypeOptions.map((type) => (
                   <button
                     key={type}
-                    onClick={() => setFormData({
-                      ...formData,
-                      claimTypes: toggleArrayItem(formData.claimTypes, type)
-                    })}
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        claimTypes: toggleArrayItem(formData.claimTypes, type),
+                      })
+                    }
                     className={`px-4 py-3 rounded-lg text-sm border transition-colors ${
                       formData.claimTypes.includes(type)
                         ? "bg-blue-100 border-blue-500 text-blue-700"
@@ -311,12 +320,14 @@ export default function InsurerOnboarding({
               <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
                 <div>
                   <p className="font-medium">Use preferred shop network</p>
-                  <p className="text-sm text-gray-600">Direct customers to pre-approved auto body repair shops</p>
+                  <p className="text-sm text-gray-600">
+                    Direct customers to pre-approved auto body repair shops
+                  </p>
                 </div>
                 <input
                   type="checkbox"
                   checked={formData.preferredShops}
-                  onChange={(e) => setFormData({...formData, preferredShops: e.target.checked})}
+                  onChange={(e) => setFormData({ ...formData, preferredShops: e.target.checked })}
                   className="w-5 h-5"
                   style={{ accentColor: primaryColor }}
                 />
@@ -325,12 +336,14 @@ export default function InsurerOnboarding({
               <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
                 <div>
                   <p className="font-medium">Enable auto-approval</p>
-                  <p className="text-sm text-gray-600">Automatically approve claims under a threshold</p>
+                  <p className="text-sm text-gray-600">
+                    Automatically approve claims under a threshold
+                  </p>
                 </div>
                 <input
                   type="checkbox"
                   checked={formData.autoApproval}
-                  onChange={(e) => setFormData({...formData, autoApproval: e.target.checked})}
+                  onChange={(e) => setFormData({ ...formData, autoApproval: e.target.checked })}
                   className="w-5 h-5"
                   style={{ accentColor: primaryColor }}
                 />
@@ -346,12 +359,14 @@ export default function InsurerOnboarding({
                     <input
                       type="number"
                       value={formData.maxClaimAmount}
-                      onChange={(e) => setFormData({...formData, maxClaimAmount: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, maxClaimAmount: e.target.value })}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
                       placeholder="5000"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Claims under this amount will be auto-approved</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Claims under this amount will be auto-approved
+                  </p>
                 </div>
               )}
             </div>

@@ -27,7 +27,7 @@ export interface DamageReport {
   damageAreas: string[];
   photos: string[];
   description: string;
-  status: 'pending' | 'in-review' | 'completed';
+  status: "pending" | "in-review" | "completed";
   createdAt: string;
   bids?: Bid[];
 }
@@ -41,7 +41,7 @@ export interface Bid {
   amount: number;
   estimatedDays: number;
   description: string;
-  status: 'pending' | 'accepted' | 'rejected';
+  status: "pending" | "accepted" | "rejected";
   createdAt: string;
   shopRating?: number;
   shopReviews?: number;
@@ -50,7 +50,7 @@ export interface Bid {
 
 export interface Notification {
   id: number;
-  type: 'bid' | 'update' | 'message';
+  type: "bid" | "update" | "message";
   message: string;
   time: string;
   read: boolean;
@@ -58,7 +58,7 @@ export interface Notification {
 
 export interface Activity {
   id: string;
-  type: 'bid_submitted' | 'request_viewed' | 'job_accepted' | 'claim_created' | 'shop_added';
+  type: "bid_submitted" | "request_viewed" | "job_accepted" | "claim_created" | "shop_added";
   message: string;
   timestamp: string;
   metadata?: {
@@ -70,31 +70,26 @@ export interface Activity {
 }
 
 export interface RedirectInfo {
-  type: 'customer' | 'shop' | 'insurer';
+  type: "customer" | "shop" | "insurer";
   email?: string;
   isReturning?: boolean;
 }
 
-export type ViewMode = 
-  | 'dashboard' 
-  | 'reports-list' 
-  | 'report-detail' 
-  | 'insurer-connect' 
-  | 'liked-shops' 
-  | 'shop-directory'
-  | 'insurance-companies'
-  | 'competitor-analysis'
-  | 'vehicles' 
-  | 'new-claim'
-  | 'smoke-test'
-  | 'demo-switcher';
+export type ViewMode =
+  | "dashboard"
+  | "reports-list"
+  | "report-detail"
+  | "insurer-connect"
+  | "liked-shops"
+  | "shop-directory"
+  | "insurance-companies"
+  | "competitor-analysis"
+  | "vehicles"
+  | "new-claim"
+  | "smoke-test"
+  | "demo-switcher";
 
-export type LoginView = 
-  | 'main' 
-  | 'signup' 
-  | 'customer' 
-  | 'shop' 
-  | 'insurer';
+export type LoginView = "main" | "signup" | "customer" | "shop" | "insurer";
 
 export interface NavTab {
   id: string;
@@ -113,4 +108,34 @@ export interface UserData {
   hasSeenPhotoGuide: boolean;
   photoStorage?: Record<string, string[]>;
   activities?: Activity[];
+}
+
+export interface ShopOnboardingFormData {
+  shopName: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  website: string;
+  hours: string;
+  certifications: string[];
+  specialties: string[];
+  insurance: boolean;
+  estimates: boolean;
+}
+
+export interface InsurerOnboardingFormData {
+  companyName: string;
+  licenseNumber: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  website: string;
+  claimTypes: string[];
+  preferredShops: boolean;
+  autoApproval: boolean;
+  maxClaimAmount: string;
 }

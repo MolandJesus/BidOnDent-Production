@@ -25,6 +25,7 @@ import {
 
 // Import helpers
 import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
+import type { ShopOnboardingFormData, InsurerOnboardingFormData } from "./types";
 
 // Import components
 import AppLoading from "./components/app/AppLoading";
@@ -192,7 +193,7 @@ function AppContent() {
     !businessProfileError &&
     !businessProfile;
 
-  const handleShopOnboardingComplete = async (data: any) => {
+  const handleShopOnboardingComplete = async (data: ShopOnboardingFormData) => {
     if (!websiteIdentity || !userProfile) {
       return;
     }
@@ -224,7 +225,7 @@ function AppContent() {
     });
   };
 
-  const handleInsurerOnboardingComplete = async (data: any) => {
+  const handleInsurerOnboardingComplete = async (data: InsurerOnboardingFormData) => {
     if (!websiteIdentity || !userProfile) {
       return;
     }
