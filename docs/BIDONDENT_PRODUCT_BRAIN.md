@@ -37,9 +37,9 @@ These cards are the **primary entry point** for future work. Read one card, unde
 
 ### CARD: Design System Expansion
 
-- **STATE:** Tier 2. Royal-blue glass tokens exist on map surfaces only. 7 of 9 app surfaces use no map tokens.
-- **NEXT MOVE:** Extract palette to CSS custom properties (`--bd-royal-blue`, etc.) and create non-map-scoped glass classes.
-- **TOUCHES:** `src/styles/theme.css` (add `:root` properties + `.bd-glass-*` classes). Then adopt in `DashboardCoveragePanel.tsx`, `MobileBottomNav.tsx`, `ProfileDropdown.tsx`.
+- **STATE:** Tier 2 entering Tier 3. Royal-blue glass tokens exist on map surfaces, shell surfaces (MobileBottomNav, ProfileDropdown), DashboardCoveragePanel, and now HomeScreen (stat cards, reports list, quick actions, activity panel). Stage 3a delivered for HomeScreen.
+- **NEXT MOVE:** Stage 3a for ShopActiveJobsScreen and InsurerClaimsScreen, then Stage 3b (dashboard shell glass treatment).
+- **TOUCHES:** `src/styles/theme.css` (`:root` properties + `.bd-glass-*` classes). HomeScreen, shop/insurer screen files.
 - **DO NOT:** Force glass on forms/tables/data-entry. Skip Stage 2 prerequisites when doing Stage 3.
 - **VERIFY:** CSS custom properties visible in DevTools on any page. `.bd-glass-panel` applies outside `.coverage-map-surface`.
 - **UNLOCKS:** Role dashboard glass adoption, landing unification, full site-wide identity.

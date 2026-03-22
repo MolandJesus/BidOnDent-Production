@@ -354,19 +354,14 @@ export default function HomeScreen({
           const delta = index + 1;
 
           return (
-            <article
-              key={item.label}
-              className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm min-h-[158px]"
-            >
+            <article key={item.label} className="bd-glass-card p-5 min-h-[158px]">
               <div className="flex items-start justify-between mb-5">
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center ${toneClasses[item.tone]}`}
                 >
                   <Icon className="w-6 h-6" />
                 </div>
-                <span className="text-sm font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-                  +{delta}
-                </span>
+                <span className="bd-glass-badge">+{delta}</span>
               </div>
               <p className="text-4xl font-semibold text-slate-900 leading-none mb-2">
                 {item.value}
@@ -386,7 +381,7 @@ export default function HomeScreen({
 
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-5">
         <div className="xl:col-span-8 space-y-5">
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div className="bd-glass-card p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-semibold text-slate-900">{listHeader}</h2>
               <button
@@ -491,7 +486,7 @@ export default function HomeScreen({
         </div>
 
         <aside className="xl:col-span-4 space-y-5">
-          <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <section className="bd-glass-card p-5">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-3">
               {quickActions.map((action, index) => {
@@ -523,7 +518,7 @@ export default function HomeScreen({
             </div>
           </section>
 
-          <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <section className="bd-glass-card p-5">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
             {activityItems.length === 0 && (
               <p className="text-slate-600 text-sm">No recent activity to show yet.</p>
