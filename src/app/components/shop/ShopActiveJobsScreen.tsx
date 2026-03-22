@@ -1,5 +1,20 @@
 import { useState } from "react";
-import { Search, Calendar, Phone, Mail, MessageSquare, CheckCircle, Clock, Wrench, Package, ChevronRight, Star, AlertCircle, User, X } from "lucide-react";
+import {
+  Search,
+  Calendar,
+  Phone,
+  Mail,
+  MessageSquare,
+  CheckCircle,
+  Clock,
+  Wrench,
+  Package,
+  ChevronRight,
+  Star,
+  AlertCircle,
+  User,
+  X,
+} from "lucide-react";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { shopLifecycle } from "../workflow/lifecycle-presets";
 
@@ -12,10 +27,12 @@ type ShopActiveJobsScreenProps = {
 export default function ShopActiveJobsScreen({
   primaryColor = "#003d82",
   reports = [],
-  onUpdateJobStatus
+  onUpdateJobStatus,
 }: ShopActiveJobsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "in-progress" | "awaiting-parts" | "completed">("all");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "pending" | "in-progress" | "awaiting-parts" | "completed"
+  >("all");
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
 
   const buildTasks = (status: string) => {
@@ -75,44 +92,60 @@ export default function ShopActiveJobsScreen({
     };
   });
 
-  const filteredJobs = liveJobs.filter(job => {
-    const matchesSearch = job.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         job.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         job.damageType.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredJobs = liveJobs.filter((job) => {
+    const matchesSearch =
+      job.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.damageType.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterStatus === "all" || job.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "pending": return "bg-yellow-100 text-yellow-700 border-yellow-200";
-      case "in-progress": return "bg-blue-100 text-blue-700 border-blue-200";
-      case "awaiting-parts": return "bg-orange-100 text-orange-700 border-orange-200";
-      case "completed": return "bg-green-100 text-green-700 border-green-200";
-      default: return "bg-gray-100 text-gray-700 border-gray-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "in-progress":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "awaiting-parts":
+        return "bg-orange-100 text-orange-700 border-orange-200";
+      case "completed":
+        return "bg-green-100 text-green-700 border-green-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "pending": return <Clock className="w-4 h-4" />;
-      case "in-progress": return <Wrench className="w-4 h-4" />;
-      case "awaiting-parts": return <Package className="w-4 h-4" />;
-      case "completed": return <CheckCircle className="w-4 h-4" />;
-      default: return <Clock className="w-4 h-4" />;
+      case "pending":
+        return <Clock className="w-4 h-4" />;
+      case "in-progress":
+        return <Wrench className="w-4 h-4" />;
+      case "awaiting-parts":
+        return <Package className="w-4 h-4" />;
+      case "completed":
+        return <CheckCircle className="w-4 h-4" />;
+      default:
+        return <Clock className="w-4 h-4" />;
     }
   };
 
   const formatStatus = (status: string) => {
-    return status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return status
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bd-glass-panel sticky top-0 z-10 border-b border-slate-200/60">
         <div className="px-4 py-4">
-          <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>Active Jobs</h1>
+          <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>
+            Active Jobs
+          </h1>
 
           {/* Search */}
           <div className="mb-3">
@@ -135,7 +168,7 @@ export default function ShopActiveJobsScreen({
               { id: "pending", label: "Pending" },
               { id: "in-progress", label: "In Progress" },
               { id: "awaiting-parts", label: "Awaiting Parts" },
-              { id: "completed", label: "Completed" }
+              { id: "completed", label: "Completed" },
             ].map((filter) => (
               <button
                 key={filter.id}
@@ -157,21 +190,23 @@ export default function ShopActiveJobsScreen({
       {/* Jobs List */}
       <div className="px-4 py-4 space-y-4">
         {filteredJobs.length === 0 ? (
-          <div className="bg-white rounded-lg p-8 text-center">
+          <div className="bd-glass-card p-8 text-center">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600">No active jobs found</p>
             <p className="text-sm text-gray-500 mt-1">Try adjusting your filters or search</p>
           </div>
         ) : (
           filteredJobs.map((job) => (
-            <div key={job.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div key={job.id} className="bd-glass-card overflow-hidden">
               {/* Job Header */}
               <div className="p-4 border-b border-gray-100">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-medium text-gray-500">Job #{job.id}</span>
-                      <span className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(job.status)} flex items-center gap-1`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(job.status)} flex items-center gap-1`}
+                      >
                         {getStatusIcon(job.status)}
                         {formatStatus(job.status)}
                       </span>
@@ -180,7 +215,9 @@ export default function ShopActiveJobsScreen({
                     <p className="text-sm text-gray-600">{job.vehicle}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-lg" style={{ color: primaryColor }}>${job.bidAmount.toLocaleString()}</p>
+                    <p className="font-bold text-lg" style={{ color: primaryColor }}>
+                      ${job.bidAmount.toLocaleString()}
+                    </p>
                   </div>
                 </div>
 
@@ -200,7 +237,9 @@ export default function ShopActiveJobsScreen({
               <div className="px-4 py-3 bg-gray-50">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Progress</span>
-                  <span className="text-sm font-bold" style={{ color: primaryColor }}>{job.progress}%</span>
+                  <span className="text-sm font-bold" style={{ color: primaryColor }}>
+                    {job.progress}%
+                  </span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
@@ -225,7 +264,9 @@ export default function ShopActiveJobsScreen({
                       >
                         {task.completed && <CheckCircle className="w-4 h-4 text-white" />}
                       </div>
-                      <span className={`text-sm ${task.completed ? "text-gray-500 line-through" : "text-gray-700"}`}>
+                      <span
+                        className={`text-sm ${task.completed ? "text-gray-500 line-through" : "text-gray-700"}`}
+                      >
                         {task.name}
                       </span>
                     </div>
@@ -271,9 +312,7 @@ export default function ShopActiveJobsScreen({
                     <Mail className="w-4 h-4" />
                     <span className="text-xs">Email</span>
                   </a>
-                  <button
-                    className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
-                  >
+                  <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
                     <MessageSquare className="w-4 h-4" />
                     <span className="text-xs">Message</span>
                   </button>
@@ -313,27 +352,47 @@ export default function ShopActiveJobsScreen({
               </div>
 
               <div className="space-y-4">
-                <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="bd-glass-card p-4">
                   <h3 className="font-semibold mb-2">Customer Information</h3>
-                  <p className="text-sm"><strong>Name:</strong> {selectedJob.customerName}</p>
-                  <p className="text-sm"><strong>Email:</strong> {selectedJob.customerEmail}</p>
-                  <p className="text-sm"><strong>Phone:</strong> {selectedJob.customerPhone}</p>
-                  <p className="text-sm"><strong>Vehicle:</strong> {selectedJob.vehicle}</p>
+                  <p className="text-sm">
+                    <strong>Name:</strong> {selectedJob.customerName}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Email:</strong> {selectedJob.customerEmail}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Phone:</strong> {selectedJob.customerPhone}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Vehicle:</strong> {selectedJob.vehicle}
+                  </p>
                 </div>
 
-                <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="bd-glass-card p-4">
                   <h3 className="font-semibold mb-2">Job Details</h3>
-                  <p className="text-sm"><strong>Bid Amount:</strong> ${selectedJob.bidAmount.toLocaleString()}</p>
-                  <p className="text-sm"><strong>Start Date:</strong> {selectedJob.startDate}</p>
-                  <p className="text-sm"><strong>Estimated Completion:</strong> {selectedJob.estimatedCompletion}</p>
-                  <p className="text-sm"><strong>Status:</strong> {formatStatus(selectedJob.status)}</p>
+                  <p className="text-sm">
+                    <strong>Bid Amount:</strong> ${selectedJob.bidAmount.toLocaleString()}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Start Date:</strong> {selectedJob.startDate}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Estimated Completion:</strong> {selectedJob.estimatedCompletion}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Status:</strong> {formatStatus(selectedJob.status)}
+                  </p>
                 </div>
 
                 {selectedJob.insuranceClaim && (
                   <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                     <h3 className="font-semibold mb-2 text-blue-900">Insurance Information</h3>
-                    <p className="text-sm text-blue-800"><strong>Company:</strong> {selectedJob.insuranceCompany}</p>
-                    <p className="text-sm text-blue-800"><strong>Claim #:</strong> {selectedJob.claimNumber}</p>
+                    <p className="text-sm text-blue-800">
+                      <strong>Company:</strong> {selectedJob.insuranceCompany}
+                    </p>
+                    <p className="text-sm text-blue-800">
+                      <strong>Claim #:</strong> {selectedJob.claimNumber}
+                    </p>
                   </div>
                 )}
 

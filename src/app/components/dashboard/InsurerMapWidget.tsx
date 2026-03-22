@@ -14,7 +14,7 @@ type InsurerMapWidgetProps = {
  * Max height 300px. Glanceable network stats with region breakdown.
  */
 export default function InsurerMapWidget({ primaryColor, secondaryColor }: InsurerMapWidgetProps) {
-  const { partnerShops, isLoadingShops } = useCoveragePartnerShops();
+  const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
 
   const avgRating =
     partnerShops.length > 0
@@ -60,6 +60,14 @@ export default function InsurerMapWidget({ primaryColor, secondaryColor }: Insur
           </div>
         </div>
       </div>
+
+      {fetchError && (
+        <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2.5">
+          <p className="text-xs text-red-600">
+            Could not load network data. Check your connection and try again.
+          </p>
+        </div>
+      )}
 
       <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5">
         <MapPinned className="h-4 w-4 text-slate-400" />

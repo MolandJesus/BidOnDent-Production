@@ -14,7 +14,7 @@ type ShopMapWidgetProps = {
  * Max height 300px. One glanceable summary with region count and partner density.
  */
 export default function ShopMapWidget({ primaryColor, secondaryColor }: ShopMapWidgetProps) {
-  const { partnerShops, isLoadingShops } = useCoveragePartnerShops();
+  const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
 
   return (
     <section className="bd-glass-card p-5" style={{ maxHeight: 300 }}>
@@ -65,6 +65,14 @@ export default function ShopMapWidget({ primaryColor, secondaryColor }: ShopMapW
           </span>
         )}
       </div>
+
+      {fetchError && (
+        <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2.5">
+          <p className="text-xs text-red-600">
+            Could not load network data. Check your connection and try again.
+          </p>
+        </div>
+      )}
 
       <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5">
         <MapPinned className="h-4 w-4 text-slate-400" />

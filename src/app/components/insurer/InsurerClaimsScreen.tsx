@@ -1,5 +1,20 @@
 import { useState } from "react";
-import { Search, MapPin, Calendar, Phone, Mail, FileText, ChevronRight, AlertCircle, CheckCircle, Clock, Building2, Image as ImageIcon, TrendingUp, XCircle } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  Calendar,
+  Phone,
+  Mail,
+  FileText,
+  ChevronRight,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Building2,
+  Image as ImageIcon,
+  TrendingUp,
+  XCircle,
+} from "lucide-react";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { insurerLifecycle } from "../workflow/lifecycle-presets";
 
@@ -12,10 +27,12 @@ type InsurerClaimsScreenProps = {
 export default function InsurerClaimsScreen({
   primaryColor = "#003d82",
   reports = [],
-  onApproveClaim
+  onApproveClaim,
 }: InsurerClaimsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "reviewing" | "approved" | "denied">("all");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "pending" | "reviewing" | "approved" | "denied"
+  >("all");
   const [selectedClaim, setSelectedClaim] = useState<any | null>(null);
   const [approvalAmount, setApprovalAmount] = useState("");
   const [showApprovalModal, setShowApprovalModal] = useState(false);
@@ -28,11 +45,7 @@ export default function InsurerClaimsScreen({
     const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
     const rawStatus = String(report?.status ?? "pending").toLowerCase();
     const status =
-      rawStatus === "completed"
-        ? "approved"
-        : rawStatus === "in-review"
-          ? "reviewing"
-          : "pending";
+      rawStatus === "completed" ? "approved" : rawStatus === "in-review" ? "reviewing" : "pending";
     const estimatedDamage = (Number(report?.bidsCount) || 1) * 600;
 
     return {
@@ -60,41 +73,56 @@ export default function InsurerClaimsScreen({
 
   const claimsSource = liveClaims.length > 0 ? liveClaims : [];
 
-  const filteredClaims = claimsSource.filter(claim => {
-    const matchesSearch = claim.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         claim.claimNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         claim.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         claim.policyNumber.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredClaims = claimsSource.filter((claim) => {
+    const matchesSearch =
+      claim.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.claimNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.policyNumber.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterStatus === "all" || claim.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "pending": return "bg-yellow-100 text-yellow-700 border-yellow-200";
-      case "reviewing": return "bg-blue-100 text-blue-700 border-blue-200";
-      case "approved": return "bg-green-100 text-green-700 border-green-200";
-      case "denied": return "bg-red-100 text-red-700 border-red-200";
-      default: return "bg-gray-100 text-gray-700 border-gray-200";
+      case "pending":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "reviewing":
+        return "bg-blue-100 text-blue-700 border-blue-200";
+      case "approved":
+        return "bg-green-100 text-green-700 border-green-200";
+      case "denied":
+        return "bg-red-100 text-red-700 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "pending": return <Clock className="w-4 h-4" />;
-      case "reviewing": return <FileText className="w-4 h-4" />;
-      case "approved": return <CheckCircle className="w-4 h-4" />;
-      case "denied": return <XCircle className="w-4 h-4" />;
-      default: return <Clock className="w-4 h-4" />;
+      case "pending":
+        return <Clock className="w-4 h-4" />;
+      case "reviewing":
+        return <FileText className="w-4 h-4" />;
+      case "approved":
+        return <CheckCircle className="w-4 h-4" />;
+      case "denied":
+        return <XCircle className="w-4 h-4" />;
+      default:
+        return <Clock className="w-4 h-4" />;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high": return "text-red-600 bg-red-50 border-red-200";
-      case "medium": return "text-orange-600 bg-orange-50 border-orange-200";
-      case "low": return "text-green-600 bg-green-50 border-green-200";
-      default: return "text-gray-600 bg-gray-50 border-gray-200";
+      case "high":
+        return "text-red-600 bg-red-50 border-red-200";
+      case "medium":
+        return "text-orange-600 bg-orange-50 border-orange-200";
+      case "low":
+        return "text-green-600 bg-green-50 border-green-200";
+      default:
+        return "text-gray-600 bg-gray-50 border-gray-200";
     }
   };
 
@@ -110,9 +138,11 @@ export default function InsurerClaimsScreen({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bd-glass-panel sticky top-0 z-10 border-b border-slate-200/60">
         <div className="px-4 py-4">
-          <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>Claims Management</h1>
+          <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>
+            Claims Management
+          </h1>
 
           {/* Search & Filter */}
           <div className="space-y-3">
@@ -134,7 +164,7 @@ export default function InsurerClaimsScreen({
                 { id: "pending", label: "Pending" },
                 { id: "reviewing", label: "Reviewing" },
                 { id: "approved", label: "Approved" },
-                { id: "denied", label: "Denied" }
+                { id: "denied", label: "Denied" },
               ].map((filter) => (
                 <button
                   key={filter.id}
@@ -157,25 +187,29 @@ export default function InsurerClaimsScreen({
       {/* Claims List */}
       <div className="px-4 py-4 space-y-4">
         {filteredClaims.length === 0 ? (
-          <div className="bg-white rounded-lg p-8 text-center">
+          <div className="bd-glass-card p-8 text-center">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600">No claims found</p>
             <p className="text-sm text-gray-500 mt-1">Try adjusting your filters or search</p>
           </div>
         ) : (
           filteredClaims.map((claim) => (
-            <div key={claim.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div key={claim.id} className="bd-glass-card overflow-hidden">
               {/* Claim Header */}
               <div className="p-4 border-b border-gray-100">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-bold text-gray-700">{claim.claimNumber}</span>
-                      <span className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(claim.status)} flex items-center gap-1`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(claim.status)} flex items-center gap-1`}
+                      >
                         {getStatusIcon(claim.status)}
                         {claim.status.toUpperCase()}
                       </span>
-                      <span className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(claim.priority)}`}>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(claim.priority)}`}
+                      >
                         {claim.priority.toUpperCase()}
                       </span>
                     </div>
@@ -184,9 +218,13 @@ export default function InsurerClaimsScreen({
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-500 mb-1">Est. Damage</p>
-                    <p className="font-bold text-lg" style={{ color: primaryColor }}>${claim.estimatedDamage.toLocaleString()}</p>
+                    <p className="font-bold text-lg" style={{ color: primaryColor }}>
+                      ${claim.estimatedDamage.toLocaleString()}
+                    </p>
                     {claim.approvedAmount && (
-                      <p className="text-xs text-green-600 font-medium">Approved: ${claim.approvedAmount.toLocaleString()}</p>
+                      <p className="text-xs text-green-600 font-medium">
+                        Approved: ${claim.approvedAmount.toLocaleString()}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -217,7 +255,9 @@ export default function InsurerClaimsScreen({
                 </div>
 
                 <div className="mb-3">
-                  <h4 className="font-semibold text-sm mb-1" style={{ color: primaryColor }}>{claim.damageType}</h4>
+                  <h4 className="font-semibold text-sm mb-1" style={{ color: primaryColor }}>
+                    {claim.damageType}
+                  </h4>
                   <p className="text-sm text-gray-700">{claim.description}</p>
                 </div>
 
@@ -240,13 +280,18 @@ export default function InsurerClaimsScreen({
                   </div>
                   <p className="text-sm font-medium text-blue-800">{claim.shopAssigned}</p>
                   {claim.shopContact && (
-                    <a href={`tel:${claim.shopContact}`} className="text-sm text-blue-600 flex items-center gap-1 mt-1">
+                    <a
+                      href={`tel:${claim.shopContact}`}
+                      className="text-sm text-blue-600 flex items-center gap-1 mt-1"
+                    >
                       <Phone className="w-3 h-3" />
                       {claim.shopContact}
                     </a>
                   )}
                   {!claim.shopContact && (
-                    <p className="text-xs text-blue-600 mt-1">Contact info will be provided once shop confirms assignment</p>
+                    <p className="text-xs text-blue-600 mt-1">
+                      Contact info will be provided once shop confirms assignment
+                    </p>
                   )}
                   {claim.approvalDate && (
                     <p className="text-xs text-blue-600 mt-1">Approved: {claim.approvalDate}</p>
@@ -257,17 +302,26 @@ export default function InsurerClaimsScreen({
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-amber-600" />
-                      <span className="text-sm font-semibold text-amber-900">Shop Bids ({claim.shopBids.length})</span>
+                      <span className="text-sm font-semibold text-amber-900">
+                        Shop Bids ({claim.shopBids.length})
+                      </span>
                     </div>
                   </div>
                   <div className="space-y-2">
                     {claim.shopBids.slice(0, 2).map((bid, index) => (
-                      <div key={index} className="flex items-center justify-between bg-white p-2 rounded border border-amber-200">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between bg-white p-2 rounded border border-amber-200"
+                      >
                         <div>
                           <p className="text-sm font-medium text-gray-900">{bid.shopName}</p>
-                          <p className="text-xs text-gray-600">{bid.distance} • ⭐ {bid.rating}</p>
+                          <p className="text-xs text-gray-600">
+                            {bid.distance} • ⭐ {bid.rating}
+                          </p>
                         </div>
-                        <p className="font-bold text-sm" style={{ color: primaryColor }}>${bid.amount.toLocaleString()}</p>
+                        <p className="font-bold text-sm" style={{ color: primaryColor }}>
+                          ${bid.amount.toLocaleString()}
+                        </p>
                       </div>
                     ))}
                     {claim.shopBids.length > 2 && (
@@ -315,9 +369,7 @@ export default function InsurerClaimsScreen({
                     <Mail className="w-4 h-4" />
                     <span className="text-xs">Email</span>
                   </a>
-                  <button
-                    className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
-                  >
+                  <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
                     <FileText className="w-4 h-4" />
                     <span className="text-xs">Details</span>
                   </button>
@@ -394,7 +446,9 @@ export default function InsurerClaimsScreen({
                   Approved Amount
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">$</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">
+                    $
+                  </span>
                   <input
                     type="number"
                     value={approvalAmount}
@@ -417,7 +471,9 @@ export default function InsurerClaimsScreen({
                     {selectedClaim.shopBids.slice(0, 3).map((bid: any, index: number) => (
                       <div key={index} className="flex justify-between text-sm">
                         <span className="text-blue-700">{bid.shopName}</span>
-                        <span className="font-medium text-blue-900">${bid.amount.toLocaleString()}</span>
+                        <span className="font-medium text-blue-900">
+                          ${bid.amount.toLocaleString()}
+                        </span>
                       </div>
                     ))}
                   </div>

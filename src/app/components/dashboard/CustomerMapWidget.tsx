@@ -33,7 +33,7 @@ export default function CustomerMapWidget({
   primaryColor,
   secondaryColor,
 }: CustomerMapWidgetProps) {
-  const { partnerShops: rawShops, isLoadingShops } = useCoveragePartnerShops();
+  const { partnerShops: rawShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
   const partnerShops = rawShops as CoveragePartnerShop[];
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [tileMode, setTileMode] = useState<MapTileMode>("roadmap");
@@ -187,7 +187,15 @@ export default function CustomerMapWidget({
           </ul>
         )}
 
-        {!isLoadingShops && displayShops.length === 0 && (
+        {!isLoadingShops && fetchError && (
+          <div className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-3">
+            <p className="text-xs text-red-600">
+              Could not load shops. Check your connection and try again.
+            </p>
+          </div>
+        )}
+
+        {!isLoadingShops && !fetchError && displayShops.length === 0 && (
           <p className="py-4 text-center text-sm text-slate-500">
             No shops found nearby. Open the map to search.
           </p>
