@@ -60,6 +60,11 @@ BidOnDent creates a streamlined digital marketplace where:
 
 ### Latest UI Updates (March 2026)
 
+- **Landing page glass unification (Pass 1)** — All primary marketing surfaces (HeroSection, header nav, BenefitsSection, CTASection, TrustStatsSection, HowItWorksSection, WhoWeServeSection, FooterSection) now use the BidOnDent glass design system; landing and dashboard feel like one product
+- **Unified glass design system** — Royal-blue glass tokens (`bd-glass-panel`, `bd-glass-card`, `bd-glass-badge`, `bd-glass-control`, `bd-glass-floating`) now govern all interactive surfaces across map, dashboard, and landing
+- **Navy dark mode** — Deep navy base (`#0c1929`) with blue-tinted glass, replacing generic gray-900
+- **Standardized hover language** — All interactive elements use `hover:bg-white/40` soft glow instead of ad-hoc `hover:bg-slate-50/100` patterns
+- **Apple Maps-quality map controls** — Zoom pill, segmented tile modes, glass-blur floating controls with hover lift
 - Modernized dashboard layout with tighter spacing and improved visual hierarchy
 - Redesigned bids experience with richer comparison cards and smoother animations
 - Refined 5-step report flow styling and progress behavior

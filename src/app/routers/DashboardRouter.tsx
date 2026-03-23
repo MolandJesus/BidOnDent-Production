@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
-import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 
 // Import all screens
 import HomeScreen from "../components/codelayer/HomeScreen";
@@ -23,75 +22,14 @@ import CompetitorAnalysisScreen from "../components/reports/CompetitorAnalysisSc
 import DemoAccountSwitcher from "../components/demo/DemoAccountSwitcher";
 import SmokeTestScreen from "../components/demo/SmokeTestScreen";
 import { SEED_DAMAGE_REPORTS } from "../constants";
+import type { DashboardRouterProps } from "./dashboard-router-types";
 
-interface DashboardRouterProps {
-  // Navigation state
-  viewMode: string;
-  currentTab: string;
-
-  // User data
-  userType: "customer" | "shop" | "insurer";
-  userInfo: {
-    name: string;
-    email: string;
-    profileImage?: string;
-  };
-  userPhone: string;
-  reports: any[];
-  vehicles: any[];
-  bids: any[];
-  photoStorage: { [key: string]: string[] };
-  selectedReportId: string | null;
-  websiteIdentity?: WebsiteIdentity | null;
-  demoMode?: boolean;
-  originalAccountType?: "customer" | "shop" | "insurer" | null;
-
-  // Styling
-  primaryColor: string;
-  secondaryColor: string;
-
-  // Handlers
-  onStartReport: () => void;
-  onSubmitBid: (
-    reportId: string,
-    bidAmount: number,
-    estimatedDays: number,
-    description: string
-  ) => void;
-  onViewAllReports: () => void;
-  onConnectInsurance: () => void;
-  onViewLikedShops: () => void;
-  onViewBids: () => void;
-  onViewRequests: () => void;
-  onViewJobs: () => void;
-  onViewClaims: () => void;
-  onViewShops: () => void;
-  onCreateNewClaim: () => void;
-  onViewCompetitors?: () => void;
-  onViewInsurers?: () => void;
-  onSelectReport: (reportId: string) => void;
-  onViewModeChange: (mode: string) => void;
-  onTabChange: (tab: string) => void;
-  onLogout: () => void;
-  onEnterDemoMode?: () => void;
-  onEnableDemoMode?: (accountType: "customer" | "shop" | "insurer") => void;
-  onExitDemoMode?: () => void;
-
-  // Account-specific handlers
-  onProfileUpdate: (info: {
-    name: string;
-    email: string;
-    phone?: string;
-    profileImage?: string;
-  }) => void;
-  onPasswordChange: (passwords: { current: string; new: string }) => void;
-  onDeleteAccount: () => void;
-  onSaveVehicles: (vehicles: any[]) => void;
-  onSaveVehicle: (vehicle: any) => void;
-  hasSeenPhotoGuide: boolean;
-  onPhotoGuideComplete: () => void;
-  onReportSubmit: (report: any) => void;
-}
+const screenTransition = {
+  initial: { opacity: 0, x: -20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 20 },
+  transition: { duration: 0.2 },
+};
 
 export default function DashboardRouter({
   viewMode,
@@ -128,6 +66,7 @@ export default function DashboardRouter({
   onEnableDemoMode,
   onExitDemoMode,
   onProfileUpdate,
+  onDeleteAccount,
   onSaveVehicles,
   onSaveVehicle,
   hasSeenPhotoGuide,
@@ -146,13 +85,7 @@ export default function DashboardRouter({
       <AnimatePresence mode="wait">
         {/* Dashboard Home Screen */}
         {viewMode === "dashboard" && currentTab === "home" && (
-          <motion.div
-            key="home"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="home" {...screenTransition}>
             <HomeScreen
               userType={userType}
               userInfo={userInfo}
@@ -206,13 +139,7 @@ export default function DashboardRouter({
 
         {/* Customer: Report Screen */}
         {viewMode === "dashboard" && currentTab === "report" && userType === "customer" && (
-          <motion.div
-            key="report"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="report" {...screenTransition}>
             <ReportScreen
               primaryColor={primaryColor}
               vehicles={vehicles}
@@ -235,13 +162,7 @@ export default function DashboardRouter({
 
         {/* Customer: Bids Screen */}
         {viewMode === "dashboard" && currentTab === "bids" && userType === "customer" && (
-          <motion.div
-            key="bids"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="bids" {...screenTransition}>
             <BidsScreen
               primaryColor={primaryColor}
               userType={userType}
@@ -255,13 +176,7 @@ export default function DashboardRouter({
 
         {/* Shop: Requests Screen */}
         {viewMode === "dashboard" && currentTab === "requests" && userType === "shop" && (
-          <motion.div
-            key="requests"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="requests" {...screenTransition}>
             <ShopRequestsScreen
               primaryColor={primaryColor}
               onSubmitBid={(requestId, bidAmount) => {
@@ -284,39 +199,21 @@ export default function DashboardRouter({
 
         {/* Shop: Active Jobs Screen */}
         {viewMode === "dashboard" && currentTab === "jobs" && userType === "shop" && (
-          <motion.div
-            key="jobs"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="jobs" {...screenTransition}>
             <ShopActiveJobsScreen primaryColor={primaryColor} />
           </motion.div>
         )}
 
         {/* Insurer: Claims Screen */}
         {viewMode === "dashboard" && currentTab === "claims" && userType === "insurer" && (
-          <motion.div
-            key="claims"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="claims" {...screenTransition}>
             <InsurerClaimsScreen primaryColor={primaryColor} />
           </motion.div>
         )}
 
         {/* Insurer: Partner Shops Screen */}
         {viewMode === "dashboard" && currentTab === "shops" && userType === "insurer" && (
-          <motion.div
-            key="shops"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="shops" {...screenTransition}>
             <InsurerPartnerShopsScreen
               primaryColor={primaryColor}
               identity={websiteIdentity}
@@ -327,13 +224,7 @@ export default function DashboardRouter({
 
         {/* Account Screen (All Users) */}
         {viewMode === "dashboard" && currentTab === "account" && (
-          <motion.div
-            key="account"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="account" {...screenTransition}>
             <AccountScreen
               userType={userType}
               primaryColor={primaryColor}
@@ -372,13 +263,7 @@ export default function DashboardRouter({
 
         {/* Reports List Screen */}
         {viewMode === "reports-list" && (
-          <motion.div
-            key="reports-list"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="reports-list" {...screenTransition}>
             <ReportsListScreen
               reports={reports.map((report) => ({
                 ...report,
@@ -396,13 +281,7 @@ export default function DashboardRouter({
 
         {/* Report Detail Screen */}
         {viewMode === "report-detail" && selectedReportId && (
-          <motion.div
-            key="report-detail"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="report-detail" {...screenTransition}>
             <ReportDetailScreen
               report={{
                 ...reports.find((r) => r.id === selectedReportId)!,
@@ -418,26 +297,14 @@ export default function DashboardRouter({
         )}
 
         {viewMode === "smoke-test" && (
-          <motion.div
-            key="smoke-test"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="smoke-test" {...screenTransition}>
             <SmokeTestScreen primaryColor={primaryColor} />
           </motion.div>
         )}
 
         {/* Insurer Connect Screen */}
         {viewMode === "insurer-connect" && (
-          <motion.div
-            key="insurer-connect"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="insurer-connect" {...screenTransition}>
             <InsurerConnectionScreen
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
@@ -451,13 +318,7 @@ export default function DashboardRouter({
 
         {/* Liked Shops Screen */}
         {viewMode === "liked-shops" && (
-          <motion.div
-            key="liked-shops"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="liked-shops" {...screenTransition}>
             <LikedShopsScreen
               onBack={() => onViewModeChange("dashboard")}
               onOpenMap={() => onViewModeChange("shop-directory")}
@@ -470,13 +331,7 @@ export default function DashboardRouter({
 
         {/* Vehicles Screen */}
         {viewMode === "vehicles" && (
-          <motion.div
-            key="vehicles"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="vehicles" {...screenTransition}>
             <VehicleProfileScreen
               vehicles={vehicles}
               onBack={() => onViewModeChange("dashboard")}
@@ -488,13 +343,7 @@ export default function DashboardRouter({
 
         {/* Shop Directory Screen */}
         {viewMode === "shop-directory" && (
-          <motion.div
-            key="shop-directory"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="shop-directory" {...screenTransition}>
             <ShopDirectoryScreen
               onBack={() => onViewModeChange("dashboard")}
               onOpenRelatedScreen={() => {
@@ -524,13 +373,7 @@ export default function DashboardRouter({
 
         {/* Insurer New Claim Screen */}
         {viewMode === "new-claim" && userType === "insurer" && (
-          <motion.div
-            key="new-claim"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="new-claim" {...screenTransition}>
             <InsurerNewClaimScreen
               primaryColor={primaryColor}
               onBack={() => onViewModeChange("dashboard")}
@@ -540,13 +383,7 @@ export default function DashboardRouter({
 
         {/* Insurance Companies Screen */}
         {viewMode === "insurance-companies" && (
-          <motion.div
-            key="insurance-companies"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="insurance-companies" {...screenTransition}>
             <InsuranceCompaniesScreen
               onBack={() => onViewModeChange("dashboard")}
               primaryColor={primaryColor}
@@ -558,13 +395,7 @@ export default function DashboardRouter({
 
         {/* Competitor Analysis Screen */}
         {viewMode === "competitor-analysis" && (
-          <motion.div
-            key="competitor-analysis"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="competitor-analysis" {...screenTransition}>
             <CompetitorAnalysisScreen
               onBack={() => onViewModeChange("dashboard")}
               onOpenMap={() => onViewModeChange("shop-directory")}
@@ -577,13 +408,7 @@ export default function DashboardRouter({
 
         {/* Demo Account Switcher */}
         {viewMode === "demo-switcher" && (
-          <motion.div
-            key="demo-switcher"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="demo-switcher" {...screenTransition}>
             <DemoAccountSwitcher
               currentAccountType={userType}
               onSelectAccountType={(type) => {

@@ -18,7 +18,10 @@ import {
   loadWebsiteSessionMemory,
   updateWebsiteSessionMemory,
 } from "../../services/auth/websiteIdentity";
-import { buildShopMapListings, toggleRoleCollectionShopId } from "../../services/intelligence/shopMapExperience";
+import {
+  buildShopMapListings,
+  toggleRoleCollectionShopId,
+} from "../../services/intelligence/shopMapExperience";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 
 interface CompetitorAnalysisScreenProps {
@@ -38,8 +41,13 @@ function deriveMonthlyJobs(reviewCount: number, completionRate: number, capacity
   return Math.max(24, Math.round(reviewCount * 0.42 + completionRate * 0.38 + capacityBoost));
 }
 
-function deriveAverageRepairDays(completionRate: number, responseTimeHours: number, capacityBand: string) {
-  const capacityDelta = capacityBand === "boutique" ? 0.8 : capacityBand === "high-capacity" ? -0.5 : 0;
+function deriveAverageRepairDays(
+  completionRate: number,
+  responseTimeHours: number,
+  capacityBand: string
+) {
+  const capacityDelta =
+    capacityBand === "boutique" ? 0.8 : capacityBand === "high-capacity" ? -0.5 : 0;
   const days = 4.2 - (completionRate - 90) * 0.05 + responseTimeHours * 0.08 + capacityDelta;
   return `${Math.max(2.2, Math.round(days * 10) / 10).toFixed(1)} days`;
 }
@@ -81,11 +89,15 @@ export default function CompetitorAnalysisScreen({
   }, [identity?.websiteUserKey]);
 
   useEffect(() => {
-    updateWebsiteSessionMemory(identity, {
-      mapSession: {
-        shopWatchlistIds: watchlistIds,
+    updateWebsiteSessionMemory(
+      identity,
+      {
+        mapSession: {
+          shopWatchlistIds: watchlistIds,
+        },
       },
-    }, { accountType: "shop" });
+      { accountType: "shop" }
+    );
   }, [identity, watchlistIds]);
 
   const marketListings = buildShopMapListings({
@@ -149,7 +161,9 @@ export default function CompetitorAnalysisScreen({
     <div className="min-h-screen bg-slate-50 pb-20">
       <div
         className="sticky top-0 z-10 px-4 py-4 text-white shadow-md"
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+        style={{
+          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+        }}
       >
         <div className="mb-4 flex items-center gap-3">
           <button onClick={onBack} className="rounded-full p-2 transition-colors hover:bg-white/10">
@@ -229,9 +243,7 @@ export default function CompetitorAnalysisScreen({
           <button
             onClick={() => setSortBy("rating")}
             className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
-              sortBy === "rating"
-                ? "text-white shadow-md"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              sortBy === "rating" ? "text-white shadow-md" : "bd-glass-control--utility"
             }`}
             style={sortBy === "rating" ? { backgroundColor: primaryColor } : {}}
           >
@@ -240,9 +252,7 @@ export default function CompetitorAnalysisScreen({
           <button
             onClick={() => setSortBy("jobs")}
             className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
-              sortBy === "jobs"
-                ? "text-white shadow-md"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              sortBy === "jobs" ? "text-white shadow-md" : "bd-glass-control--utility"
             }`}
             style={sortBy === "jobs" ? { backgroundColor: primaryColor } : {}}
           >
@@ -251,9 +261,7 @@ export default function CompetitorAnalysisScreen({
           <button
             onClick={() => setSortBy("distance")}
             className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
-              sortBy === "distance"
-                ? "text-white shadow-md"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              sortBy === "distance" ? "text-white shadow-md" : "bd-glass-control--utility"
             }`}
             style={sortBy === "distance" ? { backgroundColor: primaryColor } : {}}
           >
@@ -382,7 +390,7 @@ export default function CompetitorAnalysisScreen({
                   className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
                     shop.watched
                       ? "border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
-                      : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                      : "border border-slate-200/60 bg-white text-slate-700 hover:bg-white/40"
                   }`}
                 >
                   <Bookmark className="h-4 w-4" />

@@ -174,9 +174,7 @@ export default function ShopActiveJobsScreen({
                 key={filter.id}
                 onClick={() => setFilterStatus(filter.id as any)}
                 className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
-                  filterStatus === filter.id
-                    ? "text-white"
-                    : "bg-white border border-gray-300 text-gray-700"
+                  filterStatus === filter.id ? "text-white" : "bd-glass-control--utility"
                 }`}
                 style={filterStatus === filter.id ? { backgroundColor: primaryColor } : {}}
               >
@@ -300,19 +298,19 @@ export default function ShopActiveJobsScreen({
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   <a
                     href={`tel:${job.customerPhone}`}
-                    className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
+                    className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
                   >
                     <Phone className="w-4 h-4" />
                     <span className="text-xs">Call</span>
                   </a>
                   <a
                     href={`mailto:${job.customerEmail}`}
-                    className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
+                    className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
                   >
                     <Mail className="w-4 h-4" />
                     <span className="text-xs">Email</span>
                   </a>
-                  <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
+                  <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility">
                     <MessageSquare className="w-4 h-4" />
                     <span className="text-xs">Message</span>
                   </button>
@@ -405,7 +403,7 @@ export default function ShopActiveJobsScreen({
 
                 <button
                   onClick={() => setSelectedJob(null)}
-                  className="w-full py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                  className="w-full py-3 rounded-lg font-medium bd-glass-control--secondary"
                 >
                   Close
                 </button>

@@ -26,7 +26,7 @@ export default function BenefitsSection({
       image: mechanicImage,
       alt: "Close-up of car damage showing dents and scratches needing professional repair",
       badge: "Guided Intake",
-      badgeColor: "bg-gray-200 text-gray-700",
+      badgeColor: "bg-white/85 text-[#003d82] backdrop-blur-sm border border-blue-100/40",
       title: "Get Your Car Fixed Right",
       description:
         "From minor dents to major collision damage, connect with shops that specialize in your repair needs.",
@@ -35,7 +35,7 @@ export default function BenefitsSection({
       image: repairToolImage,
       alt: "Professional auto body painter in spray booth ensuring quality repairs",
       badge: "Certified Network",
-      badgeColor: "bg-gray-200 text-gray-700",
+      badgeColor: "bg-white/85 text-[#003d82] backdrop-blur-sm border border-blue-100/40",
       title: "Certified Professionals",
       description:
         "Work with vetted, experienced auto repair specialists who deliver quality results.",
@@ -44,7 +44,7 @@ export default function BenefitsSection({
       image: dentRepairImage,
       alt: "Professional dent repair and paintless dent removal service",
       badge: "Transparent Bids",
-      badgeColor: "bg-gray-200 text-gray-700",
+      badgeColor: "bg-white/85 text-[#003d82] backdrop-blur-sm border border-blue-100/40",
       title: "Transparent Estimates",
       description: "Review side-by-side estimates and timelines before selecting a repair plan.",
     },
@@ -60,7 +60,7 @@ export default function BenefitsSection({
         <div
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-sm font-medium">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             Why Choose Us
           </span>
@@ -91,7 +91,7 @@ export default function BenefitsSection({
           {benefits.map((benefit, index) => (
             <div
               key={benefit.title}
-              className={`bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card p-6 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: `${0.3 + index * 0.15}s` }}
             >
               <div className="mb-4 overflow-hidden rounded-lg relative h-48 flex items-center justify-center">
@@ -110,7 +110,7 @@ export default function BenefitsSection({
                 </span>
               </div>
               <h4 className="font-bold text-xl mb-3">{benefit.title}</h4>
-              <p className="text-gray-600">{benefit.description}</p>
+              <p className="text-slate-600">{benefit.description}</p>
             </div>
           ))}
         </div>
@@ -120,19 +120,19 @@ export default function BenefitsSection({
           className={`flex flex-wrap justify-center gap-8 mt-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.8s" }}
         >
-          <div className="flex items-center gap-2 bg-white px-5 py-3 rounded-full shadow-sm border border-gray-100">
+          <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
               24/7
             </span>
             <span className="text-sm text-gray-600">Support Available</span>
           </div>
-          <div className="flex items-center gap-2 bg-white px-5 py-3 rounded-full shadow-sm border border-gray-100">
+          <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
               100%
             </span>
             <span className="text-sm text-gray-600">Satisfaction Guarantee</span>
           </div>
-          <div className="flex items-center gap-2 bg-white px-5 py-3 rounded-full shadow-sm border border-gray-100">
+          <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
               $0
             </span>

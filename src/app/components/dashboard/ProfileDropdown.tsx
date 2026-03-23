@@ -9,20 +9,15 @@ import {
   FileText,
   Building2,
   LogOut,
-  DollarSign,
   Radio,
-  AlertCircle,
   Bell,
   Package,
-  TrendingUp,
-  Clock,
-  CheckCircle,
-  Award,
 } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import type { Notification } from "../../types";
 import { getNotificationDestination, getNotificationVisual } from "./notification-utils";
+import ProfileRoleStats from "./ProfileRoleStats";
 
 interface ProfileDropdownProps {
   userInfo: {
@@ -141,12 +136,12 @@ export default function ProfileDropdown({
   const containerClasses =
     variant === "embedded"
       ? "w-full bd-glass-card"
-      : "absolute right-0 mt-2 w-80 bd-glass-panel z-50";
+      : "absolute right-0 mt-2 w-80 bd-glass-floating z-50";
 
   return (
     <div ref={forwardedRef} className={containerClasses}>
       {/* Profile Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-slate-200/40">
         <div className="flex items-center space-x-3">
           {/* Profile Picture */}
           {userInfo.profileImage ? (
@@ -173,109 +168,22 @@ export default function ProfileDropdown({
       </div>
 
       {/* Account-Specific Stats Section */}
-      {userType === "customer" && (
-        <div className="px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <FileText className="w-4 h-4 text-blue-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{reports?.length || 0}</div>
-              <div className="text-xs text-gray-600">Reports</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <Car className="w-4 h-4 text-blue-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{vehicles?.length || 0}</div>
-              <div className="text-xs text-gray-600">Vehicles</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <DollarSign className="w-4 h-4 text-green-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{bids?.length || 0}</div>
-              <div className="text-xs text-gray-600">Bids</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {userType === "shop" && (
-        <div className="px-4 py-3 bg-gradient-to-r from-orange-50 to-amber-50 border-b border-gray-200">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <ClipboardList className="w-4 h-4 text-orange-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{shopRequestsCount}</div>
-              <div className="text-xs text-gray-600">Requests</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <Wrench className="w-4 h-4 text-orange-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{shopBidCount}</div>
-              <div className="text-xs text-gray-600">Submitted Bids</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <Award className="w-4 h-4 text-yellow-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{shopAverageRating}</div>
-              <div className="text-xs text-gray-600">Rating</div>
-            </div>
-          </div>
-          <div className="mt-3 pt-3 border-t border-orange-100 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1 text-gray-600">
-              <TrendingUp className="w-3 h-3 text-green-600" />
-              <span>
-                Tracked bids: <span className="font-semibold text-gray-900">{shopBidCount}</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {userType === "insurer" && (
-        <div className="px-4 py-3 bg-gradient-to-r from-purple-50 to-violet-50 border-b border-gray-200">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <FileText className="w-4 h-4 text-purple-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{reportList.length}</div>
-              <div className="text-xs text-gray-600">Active Claims</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <Building2 className="w-4 h-4 text-purple-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{insurerPartnerShops}</div>
-              <div className="text-xs text-gray-600">Partner Shops</div>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-1">
-                <CheckCircle className="w-4 h-4 text-green-600" />
-              </div>
-              <div className="font-bold text-lg text-gray-900">{insurerResolvedClaims}</div>
-              <div className="text-xs text-gray-600">Resolved</div>
-            </div>
-          </div>
-          <div className="mt-3 pt-3 border-t border-purple-100 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1 text-gray-600">
-              <Clock className="w-3 h-3 text-blue-600" />
-              <span>
-                Tracked bids: <span className="font-semibold text-gray-900">{insurerBidCount}</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+      <ProfileRoleStats
+        userType={userType}
+        reportCount={reportList.length}
+        vehicleCount={vehicles?.length || 0}
+        bidCount={bidList.length}
+        shopRequestsCount={shopRequestsCount}
+        shopBidCount={shopBidCount}
+        shopAverageRating={shopAverageRating}
+        insurerPartnerShops={insurerPartnerShops}
+        insurerResolvedClaims={insurerResolvedClaims}
+        insurerBidCount={insurerBidCount}
+      />
 
       {/* Notifications Section */}
-      <div className="border-b border-gray-200">
-        <div className="px-4 py-2 bg-gray-50 font-semibold text-sm flex items-center justify-between">
+      <div className="border-b border-slate-200/40">
+        <div className="px-4 py-2 bg-white/30 font-semibold text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span>Notifications</span>
             <div className="flex items-center gap-1">
@@ -302,8 +210,8 @@ export default function ProfileDropdown({
             notifications.slice(0, 5).map((notification) => (
               <div
                 key={notification.id}
-                className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors ${
-                  !notification.read ? "bg-blue-50" : ""
+                className={`px-4 py-3 hover:bg-white/40 cursor-pointer border-b border-slate-100/40 transition-colors ${
+                  !notification.read ? "bg-blue-50/50" : ""
                 }`}
                 onClick={() => handleNotificationClick(notification)}
               >
@@ -333,7 +241,7 @@ export default function ProfileDropdown({
       <div className="py-2">
         <button
           onClick={() => onNavigate("dashboard", "account")}
-          className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+          className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
         >
           <Settings className="w-4 h-4 text-gray-500" />
           <span className="text-sm">Account Settings</span>
@@ -344,21 +252,21 @@ export default function ProfileDropdown({
           <>
             <button
               onClick={() => onNavigate("vehicles")}
-              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+              className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
               <Car className="w-4 h-4 text-gray-500" />
               <span className="text-sm">My Vehicles</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "report")}
-              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+              className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
             >
               <Camera className="w-4 h-4 text-gray-500" />
               <span className="text-sm">Submit Report</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "bids")}
-              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+              className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
               <FileCheck className="w-4 h-4 text-gray-500" />
               <span className="text-sm">My Bids</span>
@@ -371,14 +279,14 @@ export default function ProfileDropdown({
           <>
             <button
               onClick={() => onNavigate("dashboard", "requests")}
-              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+              className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
             >
               <ClipboardList className="w-4 h-4 text-gray-500" />
               <span className="text-sm">Repair Requests</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "jobs")}
-              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+              className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
               <Wrench className="w-4 h-4 text-gray-500" />
               <span className="text-sm">Active Jobs</span>
@@ -391,14 +299,14 @@ export default function ProfileDropdown({
           <>
             <button
               onClick={() => onNavigate("dashboard", "claims")}
-              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+              className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
             >
               <FileText className="w-4 h-4 text-gray-500" />
               <span className="text-sm">Manage Claims</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "shops")}
-              className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2"
+              className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
               <Building2 className="w-4 h-4 text-gray-500" />
               <span className="text-sm">Partner Shops</span>
@@ -408,7 +316,7 @@ export default function ProfileDropdown({
 
         <button
           onClick={onLogout}
-          className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center space-x-2 text-red-600"
+          className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2 text-red-600 hover:bg-rose-50/60"
         >
           <LogOut className="w-4 h-4" />
           <span className="text-sm">Log Out</span>

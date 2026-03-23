@@ -89,7 +89,7 @@ export type ViewMode =
   | "smoke-test"
   | "demo-switcher";
 
-export type LoginView = "main" | "signup" | "customer" | "shop" | "insurer";
+export type LoginView = "main" | "login" | "signup" | "customer" | "shop" | "insurer";
 
 export interface NavTab {
   id: string;

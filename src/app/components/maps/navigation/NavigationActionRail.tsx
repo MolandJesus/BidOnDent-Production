@@ -37,10 +37,10 @@ export default function NavigationActionRail({
       : "border-white/15 bg-[linear-gradient(180deg,rgba(15,23,42,0.78),rgba(30,41,59,0.64))]";
 
   return (
-    <div className="pointer-events-none absolute inset-x-4 bottom-[calc(8.25rem+env(safe-area-inset-bottom))] z-[560] flex justify-center map-ui-enter md:inset-x-auto md:bottom-auto md:right-4 md:top-1/2 md:block md:-translate-y-1/2">
+    <div className="pointer-events-none absolute right-3 top-1/2 z-[560] -translate-y-1/2 map-ui-enter sm:right-4">
       <div
         className={cn(
-          "map-liquid-rail pointer-events-auto relative flex flex-row gap-3 overflow-hidden rounded-[2rem] border p-2.5 backdrop-blur-2xl md:flex-col",
+          "map-liquid-rail pointer-events-auto relative flex flex-col gap-2.5 overflow-hidden rounded-[2rem] border p-2 backdrop-blur-2xl sm:gap-3 sm:p-2.5",
           railShellClassName
         )}
       >

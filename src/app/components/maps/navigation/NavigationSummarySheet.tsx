@@ -44,39 +44,43 @@ export default function NavigationSummarySheet({
       >
         <div className="map-liquid-sheen pointer-events-none absolute inset-0 opacity-70" />
 
-        <div className="grid grid-cols-3 gap-2 border-b border-white/10 pb-3 text-center sm:gap-3 sm:pb-4">
+        <div className="grid grid-cols-3 gap-2 border-b border-white/10 pb-2 text-center sm:gap-3 sm:pb-4">
           <div>
             <div
               className={cn(
-                "text-[2rem] font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
+                "text-2xl font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
                 theme.titleClassName
               )}
             >
               {arrivalLabel || "--"}
             </div>
-            <div className={cn("text-sm font-medium", theme.secondaryTextClassName)}>arrival</div>
+            <div className={cn("text-xs font-medium sm:text-sm", theme.secondaryTextClassName)}>
+              arrival
+            </div>
           </div>
           <div>
             <div
               className={cn(
-                "text-[2rem] font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
+                "text-2xl font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
                 theme.titleClassName
               )}
             >
               {durationLabel ? durationLabel.replace(" min", "") : "--"}
             </div>
-            <div className={cn("text-sm font-medium", theme.secondaryTextClassName)}>min</div>
+            <div className={cn("text-xs font-medium sm:text-sm", theme.secondaryTextClassName)}>
+              min
+            </div>
           </div>
           <div>
             <div
               className={cn(
-                "text-[2rem] font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
+                "text-2xl font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
                 theme.titleClassName
               )}
             >
               {distanceLabel ? distanceLabel.replace(" mi", "") : "--"}
             </div>
-            <div className={cn("text-sm font-medium", theme.secondaryTextClassName)}>
+            <div className={cn("text-xs font-medium sm:text-sm", theme.secondaryTextClassName)}>
               {distanceLabel?.includes("ft") ? "ft" : "mi"}
             </div>
           </div>
@@ -84,7 +88,7 @@ export default function NavigationSummarySheet({
 
         <div
           className={cn(
-            "mt-4 flex items-center justify-between gap-3 rounded-[1.8rem] border border-white/16 px-4 py-4",
+            "mt-2 hidden items-center justify-between gap-3 rounded-[1.8rem] border border-white/16 px-4 py-4 sm:mt-4 sm:flex",
             tone === "light"
               ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.74),rgba(241,245,249,0.56))]"
               : "bg-[linear-gradient(180deg,rgba(15,23,42,0.66),rgba(30,41,59,0.5))]"
@@ -110,7 +114,7 @@ export default function NavigationSummarySheet({
           ) : null}
         </div>
 
-        <div className="mt-4 grid gap-2 sm:grid-cols-2 sm:gap-3">
+        <div className="mt-2 flex gap-2 sm:mt-4 sm:grid sm:grid-cols-2 sm:gap-3">
           <button type="button" onClick={onShareEta} className={theme.secondaryButtonClassName}>
             <Share2 className="h-4 w-4" />
             Share ETA
@@ -134,7 +138,10 @@ export default function NavigationSummarySheet({
         <button
           type="button"
           onClick={onEndRoute}
-          className="mt-4 inline-flex w-full items-center justify-center rounded-[1.45rem] border border-rose-200/35 bg-[linear-gradient(180deg,#fb7185,#e11d48)] px-4 py-3.5 text-base font-semibold text-white shadow-[0_22px_44px_rgba(244,63,94,0.35)] transition hover:-translate-y-0.5 hover:brightness-105 sm:py-4"
+          className={cn(
+            theme.destructiveButtonClassName,
+            "mt-2 w-full py-2.5 text-sm sm:mt-4 sm:py-4 sm:text-base"
+          )}
         >
           End Route
         </button>

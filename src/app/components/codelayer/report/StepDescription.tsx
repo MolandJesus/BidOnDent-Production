@@ -65,7 +65,7 @@ export default function StepDescription({
       <div className="flex space-x-3">
         <button
           onClick={onBack}
-          className="flex-1 py-2.5 px-4 border border-slate-300 rounded-xl font-medium hover:bg-slate-50 transition-colors"
+          className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors"
         >
           Back
         </button>

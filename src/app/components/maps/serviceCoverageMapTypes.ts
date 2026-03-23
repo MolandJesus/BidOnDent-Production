@@ -13,6 +13,8 @@ export type MapSurfaceTheme = {
   inactiveSegmentClassName: string;
   primaryButtonClassName: string;
   secondaryButtonClassName: string;
+  destructiveButtonClassName: string;
+  tertiaryButtonClassName: string;
   iconButtonClassName: string;
   eyebrowClassName: string;
   metricLabelClassName: string;

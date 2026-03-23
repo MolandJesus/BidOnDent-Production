@@ -1,15 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BidOnDent — Compare Auto Body Repair Bids</title>
+    <meta
+      name="description"
+      content="Submit vehicle damage photos, receive competitive bids from local auto body shops, and navigate to the best repair option. BidOnDent makes collision repair simple."
+    />
+    <meta property="og:title" content="BidOnDent — Compare Auto Body Repair Bids" />
+    <meta
+      property="og:description"
+      content="Submit vehicle damage photos, receive competitive bids from local auto body shops, and navigate to the best repair option."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0056b3" />
+  </head>
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>BidOnDent Full_DEMO</title>
-    </head>
-
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+  <body>
+    <div id="root">
+      <!-- Pre-React loading indicator — visible until React mounts -->
+      <div
+        id="pre-mount-loader"
+        style="
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #f8fafc;
+        "
+      >
+        <div style="text-align: center">
+          <div
+            style="
+              width: 40px;
+              height: 40px;
+              border: 3px solid #e2e8f0;
+              border-top-color: #2563eb;
+              border-radius: 50%;
+              animation: bd-spin 0.8s linear infinite;
+              margin: 0 auto 12px;
+            "
+          ></div>
+          <p style="color: #64748b; font-family: system-ui, sans-serif; font-size: 14px">
+            Loading BidOnDent...
+          </p>
+          <div id="pre-mount-recovery" style="display: none; margin-top: 24px">
+            <p style="color: #94a3b8; font-family: system-ui, sans-serif; font-size: 13px">
+              Taking longer than expected.
+            </p>
+            <a
+              href="javascript:void(location.reload())"
+              style="
+                color: #2563eb;
+                font-family: system-ui, sans-serif;
+                font-size: 13px;
+                text-decoration: underline;
+              "
+              >Tap to reload</a
+            >
+          </div>
+        </div>
+      </div>
+      <style>
+        @keyframes bd-spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      </style>
+      <script>
+        setTimeout(function () {
+          var r = document.getElementById("pre-mount-recovery");
+          if (r) r.style.display = "block";
+        }, 10000);
+      </script>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

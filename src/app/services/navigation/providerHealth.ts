@@ -133,6 +133,27 @@ export function recordProviderHealthEvent(event: ProviderHealthEvent) {
   writeProviderHealthEvents(current);
 }
 
+const CIRCUIT_MIN_FAILURES = 3;
+const CIRCUIT_COOLDOWN_MS = 90_000; // 90 seconds — allows one tentative retry per window
+
+/**
+ * Returns true when a provider has failed CIRCUIT_MIN_FAILURES consecutive times
+ * and the most recent failure is still within the cooldown window.
+ * Callers should short-circuit and surface a user-friendly message instead of
+ * hitting the external endpoint again until the window expires.
+ */
+export function isProviderCircuitOpen(
+  provider: NavigationProviderHealthId,
+  now = Date.now()
+): boolean {
+  const events = readProviderHealthEvents().filter((e) => e.provider === provider);
+  if (events.length < CIRCUIT_MIN_FAILURES) return false;
+  const tail = events.slice(-CIRCUIT_MIN_FAILURES);
+  if (tail.some((e) => e.ok)) return false;
+  const lastFailureMs = Date.parse(tail[tail.length - 1].timestamp);
+  return !Number.isNaN(lastFailureMs) && now - lastFailureMs < CIRCUIT_COOLDOWN_MS;
+}
+
 export async function runWithProviderHealth<T>(
   provider: NavigationProviderHealthId,
   operation: () => Promise<T>

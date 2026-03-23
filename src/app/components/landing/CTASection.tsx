@@ -18,7 +18,7 @@ export default function CTASection({ primaryColor, onNavigateToDashboard }: CTAS
     >
       <div className="container mx-auto px-4 max-w-6xl text-center relative">
         <div
-          className={`relative mx-auto max-w-4xl rounded-[28px] bg-white border border-gray-100 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.55)] px-6 md:px-16 py-12 md:py-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`relative mx-auto max-w-4xl bd-glass-card px-6 md:px-16 py-12 md:py-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <div className="absolute -top-6 -left-4 md:-left-6 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br from-amber-300 to-orange-400 rotate-12 shadow-lg" />
           <div
@@ -29,7 +29,7 @@ export default function CTASection({ primaryColor, onNavigateToDashboard }: CTAS
           <div
             className={`mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            <span className="inline-flex items-center px-4 py-2 rounded-full bg-[#dff3ff] text-[#1776c4] text-sm md:text-base font-semibold">
+            <span className="inline-flex items-center px-4 py-2 rounded-full bd-glass-badge text-sm md:text-base font-semibold">
               <Sparkles className="w-4 h-4 mr-2" />
               Start Your Repair Journey
             </span>

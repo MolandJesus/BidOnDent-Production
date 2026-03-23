@@ -1,3 +1,5 @@
+import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
+
 export type DashboardUserType = "customer" | "shop" | "insurer";
 
 export interface DashboardRouterProps {
@@ -18,6 +20,7 @@ export interface DashboardRouterProps {
   bids: any[];
   photoStorage: { [key: string]: string[] };
   selectedReportId: string | null;
+  websiteIdentity?: WebsiteIdentity | null;
   demoMode?: boolean;
   originalAccountType?: DashboardUserType | null;
 
@@ -61,6 +64,8 @@ export interface DashboardRouterProps {
     phone?: string;
     profileImage?: string;
   }) => void | Promise<void>;
+  onPasswordChange: (passwords: { current: string; new: string }) => void;
+  onDeleteAccount: () => void;
   onSaveVehicles: (vehicles: any[]) => void;
   onSaveVehicle: (vehicle: any) => void;
   hasSeenPhotoGuide: boolean;

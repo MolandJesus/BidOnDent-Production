@@ -14,6 +14,8 @@ import { cn } from "../ui/utils";
 import { ensureLeafletDefaultIcon } from "./leafletSetup";
 import MapDiscoveryPlaceMarkers from "./MapDiscoveryPlaceMarkers";
 import MapNavigationHud from "./MapNavigationHud";
+import MapPartnerShopMarkers from "./MapPartnerShopMarkers";
+import MapSearchTargetMarkers from "./MapSearchTargetMarkers";
 import MapFollowLocationController from "./MapFollowLocationController";
 import MapRouteFitController from "./MapRouteFitController";
 import MapViewportController from "./MapViewportController";
@@ -347,56 +349,12 @@ export default function ServiceCoverageMap({
             </CircleMarker>
           ))}
 
-        {partnerShops
-          .filter((shop) =>
-            isNavigationPresentation ? `${shop.id || shop.name}` === selectedShopId : true
-          )
-          .map((shop) => {
-            const shopKey = `${shop.id || shop.name}`;
-            const isSelected = selectedShopId === shopKey;
-
-            return (
-              <CircleMarker
-                key={shopKey}
-                center={[shop.lat, shop.lng]}
-                radius={isNavigationPresentation ? 16 : isSelected ? 11 : 8}
-                eventHandlers={
-                  onSelectShop
-                    ? {
-                        click: () => onSelectShop(shopKey),
-                      }
-                    : undefined
-                }
-                pathOptions={{
-                  color: isNavigationPresentation ? "#fef3c7" : isSelected ? "#dbeafe" : "#0f172a",
-                  fillColor: isNavigationPresentation
-                    ? "#fbbf24"
-                    : isSelected
-                      ? "#38bdf8"
-                      : "#1d4ed8",
-                  fillOpacity: isSelected ? 1 : 0.9,
-                  weight: isNavigationPresentation ? 5 : isSelected ? 3 : 2,
-                }}
-              >
-                <Popup>
-                  <div className="text-sm">
-                    <div className="font-semibold">{shop.name}</div>
-                    {shop.dataMode === "demo" ? <div>Demo map entry</div> : null}
-                    <div>{shop.countyLabel}</div>
-                    <div>{shop.label}</div>
-                    <div>Rating: {shop.rating.toFixed(1)}</div>
-                    {shop.addressLine ? <div>{shop.addressLine}</div> : null}
-                    {shop.specialties.length > 0 ? (
-                      <div>Focus: {shop.specialties.slice(0, 3).join(" • ")}</div>
-                    ) : null}
-                  </div>
-                </Popup>
-                <Tooltip direction="top" offset={[0, -18]}>
-                  {shop.name}
-                </Tooltip>
-              </CircleMarker>
-            );
-          })}
+        <MapPartnerShopMarkers
+          partnerShops={partnerShops}
+          selectedShopId={selectedShopId}
+          isNavigationPresentation={isNavigationPresentation}
+          onSelectShop={onSelectShop}
+        />
 
         {!isNavigationPresentation && discoveryPlaces.length > 0 ? (
           <MapDiscoveryPlaceMarkers
@@ -439,46 +397,11 @@ export default function ServiceCoverageMap({
         ) : null}
 
         {activeSearchTarget && !isNavigationPresentation ? (
-          <>
-            <Circle
-              center={[activeSearchTarget.lat, activeSearchTarget.lng]}
-              radius={radiusMeters}
-              pathOptions={{
-                color: "#22d3ee",
-                fillColor: "#22d3ee",
-                fillOpacity: 0.12,
-                weight: 2,
-              }}
-            />
-            <CircleMarker
-              center={[activeSearchTarget.lat, activeSearchTarget.lng]}
-              radius={14}
-              pathOptions={{
-                color: "#67e8f9",
-                fillColor: "#06b6d4",
-                fillOpacity: 0.75,
-                weight: 3,
-              }}
-            >
-              <Popup>
-                <div className="text-sm">
-                  <div className="font-semibold">{activeSearchTarget.label}</div>
-                  <div>{activeSearchTarget.county || "Coverage focus"}</div>
-                  <div>Search radius: {radiusMiles} miles</div>
-                </div>
-              </Popup>
-            </CircleMarker>
-            <CircleMarker
-              center={[activeSearchTarget.lat, activeSearchTarget.lng]}
-              radius={5}
-              pathOptions={{
-                color: "#f8fafc",
-                fillColor: "#f8fafc",
-                fillOpacity: 1,
-                weight: 1,
-              }}
-            />
-          </>
+          <MapSearchTargetMarkers
+            activeSearchTarget={activeSearchTarget}
+            radiusMeters={radiusMeters}
+            radiusMiles={radiusMiles}
+          />
         ) : null}
       </MapContainer>
 

@@ -15,7 +15,7 @@ export default function DeleteAccountModal({
   deleteConfirmText,
   onDeleteConfirmTextChange,
   onClose,
-  onDelete
+  onDelete,
 }: DeleteAccountModalProps) {
   if (!isOpen) return null;
 
@@ -41,16 +41,24 @@ export default function DeleteAccountModal({
         <div className="space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-sm text-red-800 font-medium mb-2">This action cannot be undone.</p>
-            <p className="text-sm text-red-700">Deleting your account will permanently remove your BidOnDent sign-in access.</p>
+            <p className="text-sm text-red-700">
+              Deleting your account will permanently remove your BidOnDent sign-in access.
+            </p>
             <ul className="list-disc list-inside text-sm text-red-700 mt-2 space-y-1">
               <li>Your ability to sign back into this account</li>
               <li>Your saved local website session on this browser</li>
-              <li>Any connected website data queued to this account may take additional backend cleanup time</li>
+              <li>
+                Any connected website data queued to this account may take additional backend
+                cleanup time
+              </li>
             </ul>
           </div>
 
           <div>
-            <label htmlFor="delete-confirm" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="delete-confirm"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Type <span className="font-bold text-red-600">DELETE</span> to confirm:
             </label>
             <input
@@ -67,14 +75,14 @@ export default function DeleteAccountModal({
 
         <div className="mt-6 flex gap-3">
           <button
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
+            className="bd-glass-control--secondary flex-1 px-4 py-2"
             onClick={onClose}
             disabled={isDeleting}
           >
             Cancel
           </button>
           <button
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bd-glass-control--destructive flex-1 px-4 py-2 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={onDelete}
             disabled={isDeleting || deleteConfirmText.toLowerCase() !== "delete"}
           >
@@ -86,7 +94,14 @@ export default function DeleteAccountModal({
                   fill="none"
                   viewBox="0 0 24 24"
                 >
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
                   <path
                     className="opacity-75"
                     fill="currentColor"

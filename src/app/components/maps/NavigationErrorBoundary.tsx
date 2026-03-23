@@ -50,7 +50,7 @@ export default class NavigationErrorBoundary extends Component<Props, State> {
         <button
           type="button"
           onClick={this.handleReset}
-          className="mt-1 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+          className="bd-glass-control mt-1 inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-semibold"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           Retry

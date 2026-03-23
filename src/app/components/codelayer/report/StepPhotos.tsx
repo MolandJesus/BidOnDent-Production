@@ -106,14 +106,14 @@ export default function StepPhotos({
         <div className="grid grid-cols-2 gap-3 mb-8">
           <button
             onClick={onOpenCamera}
-            className="py-4 bg-white rounded-xl border border-slate-200 flex flex-col items-center justify-center hover:border-slate-300 hover:bg-slate-50 transition-colors"
+            className="py-4 bg-white rounded-xl border border-slate-200/60 flex flex-col items-center justify-center hover:border-slate-300/60 hover:bg-white/40 transition-colors"
           >
             <Camera className="w-6 h-6 text-slate-500 mb-1" />
             <span className="text-sm text-slate-700 font-medium">Take Photo</span>
           </button>
           <button
             onClick={onOpenFilePicker}
-            className="py-4 bg-white rounded-xl border border-slate-200 flex flex-col items-center justify-center hover:border-slate-300 hover:bg-slate-50 transition-colors"
+            className="py-4 bg-white rounded-xl border border-slate-200/60 flex flex-col items-center justify-center hover:border-slate-300/60 hover:bg-white/40 transition-colors"
           >
             <Upload className="w-6 h-6 text-slate-500 mb-1" />
             <span className="text-sm text-slate-700 font-medium">Upload Photo</span>
@@ -141,7 +141,7 @@ export default function StepPhotos({
       <div className="flex space-x-3">
         <button
           onClick={onBack}
-          className="flex-1 py-2.5 px-4 border border-slate-300 rounded-xl font-medium hover:bg-slate-50 transition-colors"
+          className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors"
         >
           Back
         </button>

@@ -5,7 +5,7 @@ import type {
   NavigationRoutePreview,
   NavigationRouteStep,
 } from "../../types/navigation";
-import { runWithProviderHealth } from "./providerHealth";
+import { isProviderCircuitOpen, runWithProviderHealth } from "./providerHealth";
 import {
   arrivalActionPhrases,
   arrivalApproachPhrases,
@@ -386,6 +386,10 @@ export async function fetchNavigationRouteOptions({
   destination,
   signal,
 }: RouteEngineArgs): Promise<NavigationRouteOptions> {
+  if (isProviderCircuitOpen("osrm-route")) {
+    throw new Error("Route preview is temporarily unavailable — please try again in a moment.");
+  }
+
   const response = await runWithProviderHealth("osrm-route", () =>
     fetch(
       `https://router.project-osrm.org/route/v1/driving/${origin.lng},${origin.lat};${destination.lng},${destination.lat}?overview=full&geometries=geojson&steps=true&alternatives=true`,

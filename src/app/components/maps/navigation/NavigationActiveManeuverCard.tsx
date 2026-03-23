@@ -62,24 +62,24 @@ export default function NavigationActiveManeuverCard({
           )}
         />
 
-        <div className="flex items-start gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
-          <div className="mt-0.5 inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.36)] map-nav-icon-ring-pulse sm:h-16 sm:w-16">
-            <ManeuverIcon className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.4} />
+        <div className="flex items-start gap-3 px-3 py-3 sm:gap-4 sm:px-6 sm:py-5">
+          <div className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 shadow-[inset_0_1.5px_0_rgba(255,255,255,0.36)] map-nav-icon-ring-pulse sm:h-16 sm:w-16">
+            <ManeuverIcon className="h-5 w-5 sm:h-8 sm:w-8" strokeWidth={2.4} />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/66">
+            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/66 sm:text-[11px]">
               Next maneuver
             </div>
-            <div className="mt-2 text-[1.75rem] font-semibold leading-[1.08] tracking-[-0.02em] sm:text-[2.55rem] sm:tracking-[-0.03em]">
+            <div className="mt-1 text-lg font-semibold leading-[1.08] tracking-[-0.02em] sm:mt-2 sm:text-[2.55rem] sm:tracking-[-0.03em]">
               {nextStep?.instruction || "Route ready"}
             </div>
-            <div className="mt-2 text-sm text-white/82">
+            <div className="mt-1 text-xs text-white/82 sm:mt-2 sm:text-sm">
               {nextDistance || "Waiting for the next precise road cue"}
             </div>
           </div>
         </div>
 
-        <div className="map-ui-enter-delay-1 border-t border-white/10 bg-black/14 px-4 py-4 sm:px-6">
+        <div className="map-ui-enter-delay-1 hidden border-t border-white/10 bg-slate-950/14 px-4 py-4 sm:block sm:px-6">
           <div className="flex items-center gap-3">
             <div className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/8">
               <FollowingIcon className="h-5 w-5" strokeWidth={2.2} />

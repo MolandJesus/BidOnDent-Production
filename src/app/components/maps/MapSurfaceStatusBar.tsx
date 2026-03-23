@@ -136,7 +136,7 @@ export default function MapSurfaceStatusBar({
                 <button
                   type="button"
                   onClick={onResetPerformance}
-                  className="pointer-events-auto rounded-full border border-white/25 px-2.5 py-1 font-medium text-current transition hover:bg-white/10"
+                  className={theme.tertiaryButtonClassName}
                 >
                   Reset
                 </button>

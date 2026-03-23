@@ -1,3 +1,5 @@
+import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
+
 export type CoverageLookup = {
   lat: number;
   lng: number;
@@ -22,7 +24,7 @@ export const countyCenters = [
   { name: "Putnam County", lat: 41.4299, lng: -73.7604 },
 ];
 
-export const fallbackPartnerHubs = [
+export const fallbackPartnerHubs: CoveragePartnerShop[] = [
   {
     name: "BidOnDent North Hub",
     dataMode: "demo" as const,

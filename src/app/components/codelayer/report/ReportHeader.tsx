@@ -8,7 +8,7 @@ type ReportHeaderProps = {
 
 export default function ReportHeader({ step, onCancel, showCancel }: ReportHeaderProps) {
   return (
-    <div className="bg-white/95 backdrop-blur border-b border-slate-200 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3.5 flex items-start sm:items-center gap-2.5">
+    <div className="bd-glass-panel !rounded-none border-b border-slate-200 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3.5 flex items-start sm:items-center gap-2.5">
       <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
           <FileText className="w-4 h-4 sm:w-5 sm:h-5" />

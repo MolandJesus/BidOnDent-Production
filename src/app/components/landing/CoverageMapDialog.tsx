@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { cn } from "../ui/utils";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import { shareNavigationEta } from "../../services/navigation/shareEta";
+import { X } from "lucide-react";
 import ServiceCoverageMap from "../maps/ServiceCoverageMap";
 import NavigationActionRail from "../maps/navigation/NavigationActionRail";
 import NavigationActiveManeuverCard from "../maps/navigation/NavigationActiveManeuverCard";
@@ -197,14 +199,46 @@ export default function CoverageMapDialog({
     setFollowCurrentPositionRevision((current) => current + 1);
   }
 
+  const handleExitNavigation = useCallback(() => {
+    setPresentationMode("browse");
+    setTurnListOpen(false);
+    setVoiceControlsOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isNavigationActive) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        handleExitNavigation();
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isNavigationActive, handleExitNavigation]);
+
   function renderActiveNavigationLayout() {
     if (!selectedShop || !navigation.routePreview) {
       return null;
     }
 
     return (
-      <div className="p-3 sm:p-4">
+      <div className="p-0 xl:p-4">
         <div className="relative">
+          {/* Exit navigation — always-reachable back button */}
+          <button
+            type="button"
+            onClick={handleExitNavigation}
+            className={cn(
+              "absolute left-3 top-[6.5rem] z-[570] inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95 sm:left-4 sm:top-[7rem] sm:h-11 sm:w-11",
+              tone === "light"
+                ? "border-white/80 bg-white/90 text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.16)]"
+                : "border-white/15 bg-slate-950/85 text-white shadow-[0_8px_24px_rgba(2,6,23,0.38)]"
+            )}
+            aria-label="Exit navigation"
+          >
+            <X className="h-5 w-5" strokeWidth={2.4} />
+          </button>
           <ServiceCoverageMap
             center={currentPosition || center}
             zoom={currentPosition ? Math.max(zoom, 15.5) : zoom}
@@ -216,7 +250,7 @@ export default function CoverageMapDialog({
             radiusMeters={radiusMeters}
             radiusMiles={radiusMiles}
             regionCount={regionCount}
-            mapHeightClassName="h-[82vh] min-h-[680px]"
+            mapHeightClassName="h-[100dvh] xl:h-[82vh] min-h-[400px] xl:min-h-[680px]"
             immersiveFullscreen
             presentationMode="navigation"
             showSurfaceChrome={false}
@@ -306,11 +340,7 @@ export default function CoverageMapDialog({
               void handleShareEta();
             }}
             onOpenDirections={() => onOpenDirections(selectedShop)}
-            onEndRoute={() => {
-              setPresentationMode("browse");
-              setTurnListOpen(false);
-              setVoiceControlsOpen(false);
-            }}
+            onEndRoute={handleExitNavigation}
           />
         </div>
       </div>
@@ -321,13 +351,28 @@ export default function CoverageMapDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          "max-w-[min(1380px,calc(100vw-2rem))] overflow-hidden p-0 sm:max-w-[min(1380px,calc(100vw-2rem))]",
+          "max-w-[100vw] overflow-hidden p-0 sm:max-w-[calc(100vw-2rem)] lg:max-w-[min(1380px,calc(100vw-2rem))] [&>button:last-child]:hidden",
           theme.shellClassName,
-          tone === "light"
-            ? "text-slate-950 [&>button]:text-slate-500"
-            : "text-white [&>button]:text-white"
+          tone === "light" ? "text-slate-950" : "text-white"
         )}
       >
+        {/* Portal-based close button — escapes dialog z-50 stacking context */}
+        {createPortal(
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className={cn(
+              "fixed top-3 right-3 z-[700] inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95 sm:top-4 sm:right-4 sm:h-11 sm:w-11",
+              tone === "light"
+                ? "border-white/80 bg-white/90 text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.18)]"
+                : "border-white/15 bg-slate-950/85 text-white shadow-[0_8px_24px_rgba(2,6,23,0.38)]"
+            )}
+            aria-label="Close map"
+          >
+            <X className="h-5 w-5" strokeWidth={2.4} />
+          </button>,
+          document.body
+        )}
         <DialogHeader className="sr-only">
           <DialogTitle>Coverage command center</DialogTitle>
           <DialogDescription>

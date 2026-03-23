@@ -41,11 +41,15 @@ export default function LikedShopsScreen({
   }, [identity?.websiteUserKey]);
 
   useEffect(() => {
-    updateWebsiteSessionMemory(identity, {
-      mapSession: {
-        customerSavedShopIds: savedShopIds,
+    updateWebsiteSessionMemory(
+      identity,
+      {
+        mapSession: {
+          customerSavedShopIds: savedShopIds,
+        },
       },
-    }, { accountType: "customer" });
+      { accountType: "customer" }
+    );
   }, [identity, savedShopIds]);
 
   const savedListings = buildShopMapListings({
@@ -78,7 +82,9 @@ export default function LikedShopsScreen({
     <div className="min-h-screen bg-slate-50 pb-20">
       <div
         className="sticky top-0 z-10 border-b border-white/10 text-white shadow-md"
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+        style={{
+          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+        }}
       >
         <div className="px-4 py-5">
           <div className="flex items-center gap-3">
@@ -91,7 +97,8 @@ export default function LikedShopsScreen({
             <div>
               <h1 className="text-2xl font-bold">Saved Shops</h1>
               <p className="text-sm text-white/80">
-                {savedListings.length} customer shortlist{savedListings.length === 1 ? "" : "s"} synced from the map
+                {savedListings.length} customer shortlist{savedListings.length === 1 ? "" : "s"}{" "}
+                synced from the map
               </p>
             </div>
           </div>
@@ -186,15 +193,25 @@ export default function LikedShopsScreen({
                     <div className="mt-3 grid gap-2 sm:grid-cols-3">
                       <div className="rounded-2xl bg-slate-50 px-3 py-2">
                         <p className="text-xs uppercase tracking-[0.16em] text-slate-500">AI Fit</p>
-                        <p className="text-lg font-semibold text-slate-950">{shop.recommendationScore}%</p>
+                        <p className="text-lg font-semibold text-slate-950">
+                          {shop.recommendationScore}%
+                        </p>
                       </div>
                       <div className="rounded-2xl bg-slate-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Avg ticket</p>
-                        <p className="text-lg font-semibold text-slate-950">{shop.averagePriceLabel}</p>
+                        <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                          Avg ticket
+                        </p>
+                        <p className="text-lg font-semibold text-slate-950">
+                          {shop.averagePriceLabel}
+                        </p>
                       </div>
                       <div className="rounded-2xl bg-slate-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Response</p>
-                        <p className="text-lg font-semibold text-slate-950">{shop.responseTimeLabel}</p>
+                        <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                          Response
+                        </p>
+                        <p className="text-lg font-semibold text-slate-950">
+                          {shop.responseTimeLabel}
+                        </p>
                       </div>
                     </div>
 
@@ -228,7 +245,7 @@ export default function LikedShopsScreen({
                       >
                         Review In Map
                       </button>
-                      <button className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50">
+                      <button className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors bd-glass-control--utility">
                         <Phone className="h-4 w-4" />
                         Contact Shop
                       </button>

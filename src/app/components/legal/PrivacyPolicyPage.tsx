@@ -19,12 +19,16 @@ export default function PrivacyPolicyPage({ onBackToHome }: PrivacyPolicyPagePro
         </div>
 
         <p className="text-slate-700 leading-relaxed mb-5">
-          BidOnDent is committed to protecting customer, shop, and insurer data. Our detailed privacy policy is being finalized by our legal team. Please contact us at <span className="font-semibold">bidondent@gmail.com</span> with any privacy inquiries.
+          BidOnDent is committed to protecting customer, shop, and insurer data. Our detailed
+          privacy policy is being finalized by our legal team. Please contact us at{" "}
+          <span className="font-semibold">bidondent@gmail.com</span> with any privacy inquiries.
         </p>
 
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 mb-6">
           <p className="text-blue-900 text-sm leading-relaxed">
-            <span className="font-semibold">Privacy Notice:</span> We are committed to your privacy and data security. Our comprehensive privacy policy will be available upon request. For questions about how we handle your data, please contact our privacy team.
+            <span className="font-semibold">Privacy Notice:</span> We are committed to your privacy
+            and data security. Our comprehensive privacy policy will be available upon request. For
+            questions about how we handle your data, please contact our privacy team.
           </p>
         </div>
 
@@ -32,7 +36,9 @@ export default function PrivacyPolicyPage({ onBackToHome }: PrivacyPolicyPagePro
         <ul className="list-disc pl-5 space-y-2 text-slate-700 leading-relaxed">
           <li>Account profile information is used to deliver role-based platform functionality.</li>
           <li>Damage reports, bids, and workflow events are stored for operational processing.</li>
-          <li>Uploaded images and related metadata are retained to support claim and repair flows.</li>
+          <li>
+            Uploaded images and related metadata are retained to support claim and repair flows.
+          </li>
           <li>Access is restricted based on user role and authorized business operations.</li>
         </ul>
 
@@ -45,7 +51,7 @@ export default function PrivacyPolicyPage({ onBackToHome }: PrivacyPolicyPagePro
           </a>
           <button
             onClick={onBackToHome}
-            className="inline-flex items-center justify-center rounded-lg bg-slate-900 text-white px-4 py-2.5 font-medium hover:bg-slate-800 transition-colors"
+            className="bd-glass-control inline-flex items-center justify-center px-4 py-2.5"
           >
             Back to BidOnDent
           </button>

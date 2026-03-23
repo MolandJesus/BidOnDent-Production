@@ -20,7 +20,17 @@ import {
   saveVehicle,
   saveDamageReport,
 } from "../services/supabaseService";
+import { saveProfileToCloud, saveVehiclesToCloud, saveReportsToCloud } from "./userDataActions";
 import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
+import {
+  isUuidLike,
+  normalizeEmail,
+  getUserCacheKey,
+  getLastActiveCacheKey,
+  buildPhotoStorageFromReports,
+  transformSupabaseReport,
+  buildSupabaseReportPayload,
+} from "./userDataUtils";
 
 export function useUserData(clerkUserId?: string, websiteUserKey?: string, signedInEmail?: string) {
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: "", email: "", profileImage: "" });
@@ -35,42 +45,6 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
   const [photoStorage, setPhotoStorage] = useState<Record<string, string[]>>({});
   const isSavingRef = useRef(false);
   const isLoadingFromCloudRef = useRef(false);
-  const isUuidLike = (value?: string | null) =>
-    Boolean(
-      value &&
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
-    );
-
-  const normalizeEmail = (email?: string) => (email ? email.toLowerCase() : "");
-  const getUserCacheKey = (email?: string, explicitWebsiteUserKey?: string) => {
-    if (explicitWebsiteUserKey) {
-      return `${STORAGE_KEYS.USER_DATA}:${explicitWebsiteUserKey}`;
-    }
-
-    const normalized = normalizeEmail(email);
-    return normalized ? `${STORAGE_KEYS.USER_DATA}:${normalized}` : STORAGE_KEYS.USER_DATA;
-  };
-  const getLastActiveCacheKey = () => {
-    const lastActiveIdentifier = localStorage.getItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
-    if (!lastActiveIdentifier) {
-      return STORAGE_KEYS.USER_DATA;
-    }
-
-    if (lastActiveIdentifier.startsWith("website-user-")) {
-      return `${STORAGE_KEYS.USER_DATA}:${lastActiveIdentifier}`;
-    }
-
-    return getUserCacheKey(lastActiveIdentifier);
-  };
-  const buildPhotoStorageFromReports = (reportsData: any[]) => {
-    const photoStorageData: Record<string, string[]> = {};
-    reportsData.forEach((report: any) => {
-      if (report?.id && Array.isArray(report.photos) && report.photos.length > 0) {
-        photoStorageData[report.id] = report.photos;
-      }
-    });
-    return photoStorageData;
-  };
 
   // ============================================================================
   // CLOUD-FIRST DATA LOADING
@@ -165,22 +139,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           const reportsData = await getDamageReports(clerkUserId);
           if (reportsData.length > 0) {
             // Transform Supabase reports to app format
-            const transformedReports = reportsData.map((report: any) => ({
-              id: report.id || "",
-              vehicle: {
-                make: report.vehicle_make || "",
-                model: report.vehicle_model || "",
-                year: report.vehicle_year?.toString() || "",
-                vin: "",
-              },
-              damageArea: report.damage_location || report.damage_type || "unknown",
-              photos: report.photo_urls || [],
-              description: report.damage_description || "",
-              incident: report.additional_notes || "",
-              status: report.status || "pending",
-              submittedAt: report.created_at || new Date().toISOString(),
-              bidsCount: 0,
-            }));
+            const transformedReports = reportsData.map(transformSupabaseReport);
 
             setReports(transformedReports);
 
@@ -203,22 +162,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               profileImage: profileData.profile_image_url || "",
             },
             vehicles: vehiclesData,
-            reports: reportsData.map((report: any) => ({
-              id: report.id || "",
-              vehicle: {
-                make: report.vehicle_make || "",
-                model: report.vehicle_model || "",
-                year: report.vehicle_year?.toString() || "",
-                vin: "",
-              },
-              damageArea: report.damage_location || report.damage_type || "unknown",
-              photos: report.photo_urls || [],
-              description: report.damage_description || "",
-              incident: report.additional_notes || "",
-              status: report.status || "pending",
-              submittedAt: report.created_at || new Date().toISOString(),
-              bidsCount: 0,
-            })),
+            reports: reportsData.map(transformSupabaseReport),
             bids: [],
             userPhone: profileData.phone || "",
             redirectInfo: {
@@ -390,22 +334,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
 
         if (reports.length > 0) {
           for (const report of reports) {
-            const supabaseReport = {
-              ...(isUuidLike(report.id) ? { id: report.id } : {}),
-              vehicle_make: report.vehicle?.make || "",
-              vehicle_model: report.vehicle?.model || "",
-              vehicle_year: parseInt(report.vehicle?.year || "0"),
-              damage_type: report.damageArea || "unknown",
-              damage_severity: "moderate",
-              damage_description: report.description || "",
-              damage_location: report.damageArea || "",
-              photo_urls: report.photos || [],
-              insurance_claim: false,
-              preferred_contact: "email",
-              additional_notes: report.incident || "",
-              status: report.status || "pending",
-            };
-            await saveDamageReport(supabaseReport, clerkUserId);
+            await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
           }
           console.log("☁️ Auto-saved reports to Supabase");
         }
@@ -424,93 +353,36 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
   // ============================================================================
 
   const saveUserProfile = async (profileData: any) => {
-    if (userInfo.email && redirectInfo) {
-      const isCloudUrl =
-        profileData.profileImage &&
-        (profileData.profileImage.startsWith("http://") ||
-          profileData.profileImage.startsWith("https://"));
-
-      const success = await saveProfile(
-        {
-          email: userInfo.email,
-          name: profileData.name || userInfo.name,
-          phone: profileData.phone || userPhone,
-          profile_image_url: isCloudUrl ? profileData.profileImage : undefined,
-          account_type: redirectInfo.type,
-        },
-        {
-          clerkUserId,
-          email: userInfo.email,
-          websiteUserKey,
-        }
-      );
-
-      if (success) {
-        console.log("✅ Profile saved to Supabase");
-      }
-      return success;
-    }
-    return false;
+    if (!userInfo.email || !redirectInfo) return false;
+    return saveProfileToCloud({
+      email: userInfo.email,
+      name: profileData.name || userInfo.name,
+      phone: profileData.phone || userPhone,
+      profileImage: profileData.profileImage || userInfo.profileImage,
+      accountType: redirectInfo.type,
+      clerkUserId,
+      websiteUserKey,
+    });
   };
 
   const saveUserVehicles = async (vehiclesData: Vehicle[]) => {
-    if (userInfo.email && clerkUserId) {
-      try {
-        isSavingRef.current = true;
-
-        for (const vehicle of vehiclesData) {
-          await saveVehicle(vehicle, clerkUserId);
-        }
-
-        // Reload vehicles from Supabase to get fresh UUIDs
-        const updatedVehicles = await getVehicles(clerkUserId);
-        setVehicles(updatedVehicles);
-
-        console.log("✅ Vehicles saved to Supabase");
-
-        setTimeout(() => {
-          isSavingRef.current = false;
-        }, 1000);
-
-        return true;
-      } catch (error) {
-        console.error("❌ Error saving vehicles:", error);
+    if (!userInfo.email || !clerkUserId) return false;
+    isSavingRef.current = true;
+    const result = await saveVehiclesToCloud(vehiclesData, clerkUserId);
+    if (result) {
+      setVehicles(result);
+      setTimeout(() => {
         isSavingRef.current = false;
-        return false;
-      }
+      }, 1000);
+      return true;
     }
+    isSavingRef.current = false;
     return false;
   };
 
   const saveUserReports = async (reportsData: DamageReport[]) => {
-    if (userInfo.email && clerkUserId) {
-      try {
-        for (const report of reportsData) {
-          const supabaseReport = {
-            ...(isUuidLike(report.id) ? { id: report.id } : {}),
-            vehicle_make: report.vehicle?.make || "",
-            vehicle_model: report.vehicle?.model || "",
-            vehicle_year: parseInt(report.vehicle?.year || "0"),
-            damage_type: report.damageArea || "unknown",
-            damage_severity: "moderate",
-            damage_description: report.description || "",
-            damage_location: report.damageArea || "",
-            photo_urls: report.photos || [],
-            insurance_claim: false,
-            preferred_contact: "email",
-            additional_notes: report.incident || "",
-            status: report.status || "pending",
-          };
-          await saveDamageReport(supabaseReport, clerkUserId);
-        }
-        console.log("✅ Reports saved to Supabase");
-        return true;
-      } catch (error) {
-        console.error("❌ Error saving reports:", error);
-        return false;
-      }
-    }
-    return false;
+    if (!userInfo.email || !clerkUserId) return false;
+    return saveReportsToCloud(reportsData, clerkUserId);
   };
 
   const clearSession = () => {

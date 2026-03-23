@@ -69,14 +69,18 @@ export default function InsurerConnectionScreen({
   }, [identity?.websiteUserKey]);
 
   useEffect(() => {
-    updateWebsiteSessionMemory(identity, {
-      insuranceConnection: {
-        connectedInsurerIds: connectedInsurers,
-        draftPolicyNumber: policyNumber,
-        draftClaimNumber: claimNumber,
-        lastSelectedInsurerId: selectedInsurer,
+    updateWebsiteSessionMemory(
+      identity,
+      {
+        insuranceConnection: {
+          connectedInsurerIds: connectedInsurers,
+          draftPolicyNumber: policyNumber,
+          draftClaimNumber: claimNumber,
+          lastSelectedInsurerId: selectedInsurer,
+        },
       },
-    }, { accountType: userType });
+      { accountType: userType }
+    );
   }, [claimNumber, connectedInsurers, identity?.websiteUserKey, policyNumber, selectedInsurer]);
 
   const insurerRecommendations = buildInsuranceRecommendations({
@@ -124,7 +128,9 @@ export default function InsurerConnectionScreen({
     <div className="min-h-screen bg-gray-50 pb-20">
       <div
         className="text-white sticky top-0 z-10"
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)` }}
+        style={{
+          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+        }}
       >
         <div className="px-4 py-6">
           <div className="flex items-center mb-4">
@@ -220,7 +226,7 @@ export default function InsurerConnectionScreen({
                     </div>
                     <button
                       onClick={() => handleDisconnectInsurer(insurer.id)}
-                      className="mt-3 inline-flex rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 transition-colors hover:bg-rose-100"
+                      className="mt-3 inline-flex rounded-xl px-3 py-2 text-xs font-semibold bd-glass-control--destructive"
                     >
                       Disconnect carrier
                     </button>
@@ -305,7 +311,9 @@ export default function InsurerConnectionScreen({
             <div className="p-6">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Connect {selectedCarrier.name}</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Connect {selectedCarrier.name}
+                  </h2>
                   <p className="text-sm text-gray-600 mt-1">{selectedCarrier.description}</p>
                 </div>
                 <div className="rounded-xl bg-slate-900 text-white px-3 py-2 text-center">

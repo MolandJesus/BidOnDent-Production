@@ -110,7 +110,7 @@ export default function AccountMenu({
         )}
 
         <button
-          className={`${rowBaseClass} hover:bg-rose-50 text-rose-600`}
+          className={`${rowBaseClass} bd-glass-control--destructive`}
           onClick={onOpenDeleteAccount}
         >
           <div className="flex items-center">
@@ -121,7 +121,7 @@ export default function AccountMenu({
           </div>
         </button>
 
-        <button className={`${rowBaseClass} hover:bg-slate-50 text-rose-600`} onClick={onLogout}>
+        <button className={`${rowBaseClass} bd-glass-control--destructive`} onClick={onLogout}>
           <div className="flex items-center">
             <span className="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center mr-3">
               <LogOut className="w-5 h-5" />

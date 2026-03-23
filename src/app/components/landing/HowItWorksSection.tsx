@@ -37,13 +37,17 @@ export default function HowItWorksSection({
   ];
 
   return (
-    <section id="how-it-works" className="pt-20 pb-8 md:pb-12 bg-gray-50" ref={sectionRef}>
+    <section
+      id="how-it-works"
+      className="pt-20 pb-8 md:pb-12 bg-gradient-to-b from-white to-blue-50/50"
+      ref={sectionRef}
+    >
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Section badge */}
         <div
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-sm font-medium">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             Simple Process
           </span>
@@ -71,7 +75,7 @@ export default function HowItWorksSection({
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`bg-white p-8 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card p-8 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: `${0.3 + index * 0.15}s` }}
             >
               {/* Icon */}
@@ -79,14 +83,14 @@ export default function HowItWorksSection({
                 className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
                 style={{ backgroundColor: `${primaryColor}12` }}
               >
-                <step.icon className="w-8 h-8 text-gray-400" />
+                <step.icon className="w-8 h-8 text-blue-400" />
               </div>
 
               {/* Step number badge - below icon */}
               <div className="mb-4">
                 <span
                   className="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold"
-                  style={{ backgroundColor: "#22c55e" }}
+                  style={{ background: `linear-gradient(135deg, ${primaryColor}, #147dd6)` }}
                 >
                   {step.number}
                 </span>

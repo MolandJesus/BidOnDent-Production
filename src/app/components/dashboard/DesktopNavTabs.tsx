@@ -17,22 +17,20 @@ export default function DesktopNavTabs({
   currentTab,
   viewMode,
   primaryColor,
-  onTabClick
+  onTabClick,
 }: DesktopNavTabsProps) {
   return (
     <nav className="hidden md:flex items-center space-x-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = currentTab === tab.id && viewMode === "dashboard";
-        
+
         return (
           <button
             key={tab.id}
             onClick={() => onTabClick(tab.id)}
             className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              isActive
-                ? "text-white"
-                : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              isActive ? "text-white" : "text-gray-600 hover:text-gray-900 hover:bg-white/40"
             }`}
             style={isActive ? { backgroundColor: primaryColor } : {}}
           >

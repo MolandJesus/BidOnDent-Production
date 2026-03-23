@@ -1,8 +1,24 @@
 import type {
   NavigationVoiceMode,
   NavigationVoicePersona,
+  NavigationVoiceSettings,
   NavigationVoiceVolumePreset,
 } from "../../types/navigation";
+
+/**
+ * Voice Guidance — Speech Synthesis Service
+ *
+ * Wraps the Web Speech API with BidOnDent navigation-specific
+ * voice selection, volume presets, and cross-browser guardrails.
+ *
+ * Cross-browser notes:
+ *   Chrome/Edge: getVoices() is async — first call returns [].
+ *                Listen for 'voiceschanged' to get real list.
+ *   Safari:      First speak() must originate from user gesture.
+ *                Use primeVoiceEngine() from voiceSupport.ts.
+ *   Firefox:     Limited voice selection; en-GB may be unavailable.
+ *   All:         cancel() before speak() prevents queue buildup.
+ */
 
 const britishVoiceNameHints = [
   /google uk english female/i,
@@ -13,6 +29,9 @@ const britishVoiceNameHints = [
   /hazel/i,
   /en-gb/i,
 ];
+
+/** Track recent speech errors for diagnostics (not persisted). */
+let lastSpeechError: string | null = null;
 
 function getSpeechSynthesisController() {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) {
@@ -26,6 +45,16 @@ export function supportsVoiceGuidance() {
   return Boolean(getSpeechSynthesisController());
 }
 
+/**
+ * Get the last speech error message, if any.
+ * Resets after being read. Useful for diagnostics.
+ */
+export function consumeLastSpeechError(): string | null {
+  const error = lastSpeechError;
+  lastSpeechError = null;
+  return error;
+}
+
 export function getPreferredVoice(voicePersona: NavigationVoicePersona) {
   const speechSynthesis = getSpeechSynthesisController();
 
@@ -35,6 +64,9 @@ export function getPreferredVoice(voicePersona: NavigationVoicePersona) {
 
   const voices = speechSynthesis.getVoices();
 
+  // Chrome/Edge: voices load asynchronously. First call may return [].
+  // The 'voiceschanged' event handler in useCoverageNavigationExperience
+  // refreshes the voice label once voices are available.
   if (voices.length === 0) {
     return null;
   }
@@ -64,20 +96,32 @@ export function cancelVoiceGuidance() {
   speechSynthesis?.cancel();
 }
 
-export function speakNavigationInstruction(args: {
-  text: string;
-  voiceMode: NavigationVoiceMode;
-  voicePersona: NavigationVoicePersona;
-  voiceVolumePreset: NavigationVoiceVolumePreset;
-}) {
-  if (args.voiceMode === "muted" || !args.text.trim()) {
-    return false;
+/**
+ * Result of a speak attempt — more honest than a plain boolean.
+ *
+ * "spoken"    → utterance was dispatched to the speech engine
+ * "muted"     → voice mode is muted, nothing to do
+ * "no-api"    → speechSynthesis API is not available
+ * "no-text"   → text was empty after trimming
+ */
+export type SpeakResult = "spoken" | "muted" | "no-api" | "no-text";
+
+/** Arguments for a single speak dispatch. */
+export type SpeakInstructionArgs = NavigationVoiceSettings & { text: string };
+
+export function speakNavigationInstruction(args: SpeakInstructionArgs): SpeakResult {
+  if (args.voiceMode === "muted") {
+    return "muted";
+  }
+
+  if (!args.text.trim()) {
+    return "no-text";
   }
 
   const speechSynthesis = getSpeechSynthesisController();
 
   if (!speechSynthesis) {
-    return false;
+    return "no-api";
   }
 
   const utterance = new SpeechSynthesisUtterance(args.text);
@@ -93,13 +137,18 @@ export function speakNavigationInstruction(args: {
   utterance.rate = 0.94;
   utterance.pitch = 1.02;
   utterance.volume =
-    args.voiceVolumePreset === "louder"
-      ? 1
-      : args.voiceVolumePreset === "softer"
-        ? 0.62
-        : 0.82;
+    args.voiceVolumePreset === "louder" ? 1 : args.voiceVolumePreset === "softer" ? 0.62 : 0.82;
+
+  // Track errors so consumers can surface truthful status.
+  // Safari gesture-blocked calls fail silently without firing onerror,
+  // so this only catches real engine errors (audio device issues, etc.).
+  utterance.onerror = (event) => {
+    // "interrupted" and "canceled" are normal — we cancel() before each speak()
+    if (event.error === "interrupted" || event.error === "canceled") return;
+    lastSpeechError = `Speech error: ${event.error}`;
+  };
 
   speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
-  return true;
+  return "spoken";
 }

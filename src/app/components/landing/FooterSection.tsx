@@ -10,7 +10,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
   const { ref: footerRef, isVisible } = useScrollAnimation(0.1);
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12" ref={footerRef}>
+    <footer className="bg-[#0c1929] text-gray-300 py-12" ref={footerRef}>
       <div className="container mx-auto px-4 max-w-7xl">
         <div
           className={`grid md:grid-cols-4 gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
@@ -150,7 +150,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
           </div>
         </div>
         <div
-          className={`border-t border-gray-700 pt-8 flex flex-col md:flex-row items-center justify-between transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`border-t border-[#1c2e47] pt-8 flex flex-col md:flex-row items-center justify-between transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.3s" }}
         >
           <p className="text-gray-500">&copy; 2026 BidOnDent. All rights reserved.</p>
@@ -161,7 +161,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               <a
                 key={social}
                 href="#"
-                className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-gray-700 hover:text-white transition-all duration-300 hover:scale-110"
+                className="w-10 h-10 rounded-full bg-[#132237] flex items-center justify-center text-gray-400 hover:bg-[#1c2e47] hover:text-white transition-all duration-300 hover:scale-110"
                 aria-label={social}
               >
                 {social === "facebook" && <span className="text-sm font-bold">f</span>}

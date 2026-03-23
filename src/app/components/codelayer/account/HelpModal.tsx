@@ -57,7 +57,7 @@ export default function HelpModal({ isOpen, primaryColor, onClose }: HelpModalPr
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-2">
-          <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50" onClick={onClose}>
+          <button className="bd-glass-control--secondary px-4 py-2" onClick={onClose}>
             Close
           </button>
           <button

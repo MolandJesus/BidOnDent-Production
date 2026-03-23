@@ -10,6 +10,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    host: true, // Bind to 0.0.0.0 — allows LAN access from iPhone Safari
+  },
   resolve: {
     alias: {
       // Alias @ to the src directory

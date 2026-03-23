@@ -1,18 +1,70 @@
+## Pass 18 — Future Map Identity + Atmosphere Governance Alignment (2026-03-22)
+
+### Future Design Articulation: Atmosphere, Depth, Glass, and Control Feel
+
+- The future BidOnDent map and platform should feel like a **living, product-owned world** — not a macOS clone, not generic SaaS, not pasted Apple UI.
+- Blue is a system: deep royal blue for identity/controls, sky/baby blue for atmosphere/guidance, ocean/navy blue for depth/night, gray-blue for subdued/low-noise. Blue should behave like **light through glass**.
+- The design target is more depth, atmosphere, layered transparency, liquid glass overlays, and “surface floating above geography.”
+- Glass/material direction: breathable, warm, softly illuminated, transparent/translucent — not over-solidified, painted, cold, or aggressively glossy.
+- Controls should be tactile, soft, layered, calm, and premium — not loud, harsh, over-glossed, or like desktop window chrome. Controls should float above the world, not feel like toolbar buttons.
+- The emotional target: calm, guided, breathable, confident, premium, friendly, trustworthy — not cold, flat, generic, or overly technical.
+- **Day/night guidance mode switching** is a future direction, not implemented. Any implementation must respect provider stack, real capability boundaries, and user override/settings.
+- 3D/world rendering is **aspirational only** and depends on future provider/platform decisions.
+
+All of the above is **future planning** and not yet implemented unless otherwise stated in the tracker.
+
 # MolandJesus — Design Decisions & Vision
 
 **Collaborative design document for Mola and Jesus**
-Last updated: March 21, 2026
+Last updated: March 22, 2026
 Status: Active design reference
 
-This document belongs to the MolandJesus project collaboration — NOT the Jeffrey document.
-It covers current BidOnDent design decisions, the design system principles we are building toward,
-and the long-range vision for reusing the BidOnDent map platform across future MolandJesus ventures.
+## Living Design Alignment (2026-03-22)
+
+This document has been updated to reflect the current **glass-system expansion, navigation productization, and dashboard unification work**.
+
+The BidOnDent design is no longer “map vs rest of app.”
+
+It is now:
+
+- **One system**
+- **One visual language**
+- **One philosophy of clarity and calm**
+
+The goal is not just to look modern —  
+The goal is to feel **trustworthy, breathable, and guided**.
+
+Every future design decision must pass this test:
+
+> “Does this reduce confusion and increase trust?”
+
+If not — we do not ship it.
+
+### Future End-State Vision (Maps Product) — Pass 17 Alignment
+
+The long-term goal is for the BidOnDent map product to feel like a **royal-blue-native, product-owned navigation world** — not a generic map with blue accents or a desktop window clone.
+
+The final visual identity is **royal-blue-first**: royal blue is the primary identity, route, and action color; baby/light blue for air/sky/calm; deep ocean blue for depth/premium/spatial confidence; gray-blue/navy for night/dark mode.
+
+Map surfaces, overlays, and controls must use these blue tones intentionally for meaning, not just as decoration. The map should feel like a branded geographic world, not a generic tile with overlays. The sky, water, route, and overlays all belong to BidOnDent.
+
+**Day/night guidance mode:** The future map experience will support automatic day/night visual switching based on local time or route context, similar to premium navigation products. This is a planned feature, not yet implemented. Day mode is lighter, breathable, and sky-driven; night mode is calm, navy, low-glare, and guidance-first.
+
+All map and design decisions must reinforce this blue system and day/night awareness, and avoid desktop window clones or generic map UI patterns.
 
 ---
 
 ## 1. The Core Design Philosophy
 
 ### One Rule: Breathing Room First
+
+This rule now applies **especially to the dashboard and map overlays**, not just landing pages.
+
+The current risk in the product is not lack of features —  
+It is **too much visible at once**.
+
+The fix is not removing capability —  
+It is **layering it correctly**.
 
 Every page should have negative space as a design element, not an afterthought.
 Text should earn its place. If content needs to explain itself with more content, that extra
@@ -97,22 +149,45 @@ density is expected and appropriate here. The dark background helps the map brea
 
 ### Dashboard — What's Cramped and Why
 
-#### DashboardCoveragePanel ✓ Clean
+The dashboard has undergone glass-system adoption, but still has issues:
 
-The 3 stat cards (Live Regions, Partner Markers, View Mode) + region pills + 2 buttons is
-actually clean and purposeful. Keep as-is.
+#### What Improved
 
-#### ShopDirectoryScreen — Smart Shop Map ⚠️ Dense but functional
+- Glass panels (`bd-glass-panel`, `bd-glass-card`) are now applied across:
+  - HomeScreen
+  - DashboardLayout
+  - ProfileDropdown
+- Visual cohesion with the map system has begun
 
-The intelligence summary band (Connected Carriers, Damage Signals, Session ID, Top Match) +
-3 chips + vehicle context tags + search controls + map = a LOT of information in one viewport.
+#### What Is Still Wrong
 
-**Decision for a future pass**: Break this into two states:
+1. **Dark mode is too dark**
+   - Feels closer to “developer dark mode” than Apple Maps
+   - Needs softer navy/blue tones, not near-black
 
-1. **Ready state** — just shows the search bar + map + compact "Intelligence" badge chip
-2. **Active state** — clicking the badge chip reveals the full intelligence summary in a slide-down panel
+2. **Interactive controls feel inconsistent**
+   - Some use proper glass tokens
+   - Others still use ad-hoc `bg-white/XX backdrop-blur` styles
 
-This is a Phase 2 design improvement, not an immediate fix. Do it after the landing page work lands.
+3. **Map controls are not premium**
+   - Zoom buttons feel default/Leaflet
+   - Not circular, not floating, not tactile
+
+4. **Too many surfaces still feel “flat Tailwind”**
+   - Especially hover states and small controls
+
+#### Design Decision (CRITICAL)
+
+We are not “adding glass.”
+
+We are **standardizing interaction language**:
+
+- Panels = `bd-glass-panel`
+- Cards = `bd-glass-card`
+- Controls = `bd-glass-control` (NEW PRIMARY CLASS)
+- Badges = `bd-glass-badge`
+
+There should be **zero ad-hoc blur implementations** going forward.
 
 ---
 
@@ -158,6 +233,40 @@ For hero sections and marketing landing pages:
 - Each statement enters from bottom and exits to top with a 3-4 second dwell
 - Should respect `prefers-reduced-motion` (static display if motion is off)
 - Good for hero checklist items in `HeroSection`
+
+### The Glass Control Pattern (NEW — 2026-03-22)
+
+This is now the **most important pattern for dashboard + map UI.**
+
+Applies to:
+
+- Buttons
+- Zoom controls
+- Floating map controls
+- Icon buttons
+
+Rules:
+
+- Shape: circular or pill (never square)
+- Background: semi-transparent (light or dark tone-aware)
+- Blur: consistent via token (NOT per-component)
+- Border: subtle, never harsh
+- Shadow: soft elevation, not heavy drop-shadow
+- Hover: gentle brightness increase, not color swap
+
+Example feel:
+
+- Apple Maps controls
+- iOS Control Center toggles
+
+Anti-patterns:
+
+- Flat `bg-white`
+- Hard `border-slate-200`
+- Sharp corners
+- Sudden hover color jumps
+
+This pattern replaces all one-off control styling.
 
 ---
 
@@ -216,6 +325,18 @@ All glass and motion classes live in `src/styles/theme.css`:
 
 All animations are suppressed at `prefers-reduced-motion: reduce`.
 
+### New Global Classes (2026-03-22)
+
+| Class               | Purpose                                   |
+| ------------------- | ----------------------------------------- |
+| `.bd-glass-panel`   | Main container surfaces                   |
+| `.bd-glass-card`    | Secondary content cards                   |
+| `.bd-glass-badge`   | Small highlight chips                     |
+| `.bd-glass-control` | Interactive buttons (NEW PRIMARY CONTROL) |
+
+RULE:
+Do not recreate glass styles inline. Always use these classes.
+
 ---
 
 ## 6. Font & Type Scale Decisions
@@ -241,32 +362,64 @@ to create visual hierarchy without adding more whitespace.
 
 ### Brand palette
 
-- Primary: `#003d82` (deep navy)
-- Secondary / accent: `#00a0e9` (clear sky blue)
-- Surface light: `bg-slate-50` / `bg-white`
-- Surface dark: `bg-slate-900` / map glass: `rgba(15,23,42,0.82)`
-- Positive: emerald-600 / green-500
-- Destructive: rose-500 / `#e11d48`
+- **Primary royal blue:** `#003d82` — core brand identity, active route emphasis, key controls
+- **Bright sky blue:** `#00a0e9` — accent, guidance energy, bright daytime lift
+- **Baby blue / soft atmospheric blue:** use for airy daylight surfaces, soft hero gradients, calm glass tinting
+- **Deep ocean blue:** use for depth, premium contrast, route framing, stronger focus surfaces
+- **Surface light:** `bg-slate-50` / `bg-white` with blue atmospheric influence where appropriate
+- **Surface dark:** blue-led dark surfaces, not neutral gray-led dark surfaces
+- **Positive:** emerald-600 / green-500
+- **Destructive:** rose-500 / `#e11d48`
 
-### Map glass palette (light tone)
+**Color rule:** BidOnDent should read as a **royal-blue-first product**, with multiple intentional blue families doing different jobs instead of one flat “brand blue.”
 
-- Panel bg: `linear-gradient(180deg,rgba(255,255,255,0.84),rgba(241,245,249,0.72))`
-- Panel border: `rgba(255,255,255,0.80)`
+### Dark Mode Direction (UPDATED)
 
-### Map glass palette (dark / night tone)
+Dark mode should NOT be “black UI.”
 
-- Panel bg: `linear-gradient(180deg,rgba(15,23,42,0.82),rgba(30,41,59,0.76))`
-- Panel border: `rgba(255,255,255,0.12)`
+It should feel like:
+
+- Apple Maps night mode
+- deep navy water + gray-blue road atmosphere
+- calm, premium, low-glare guidance
+- dark blue world, not gray world
+
+Replace harsh tones with:
+
+- Base: shift `#0f172a` toward **gray-blue navy** and **deep ocean blue**
+- Mid surfaces: use subtle blue-tinted gradients instead of neutral charcoal
+- Overlays: preserve glass softness while keeping contrast readable during guidance
+- Avoid pure black backgrounds unless there is a specific contrast reason
+
+Goal:
+Dark mode should feel like **night sky over ocean**, not darkness.
+
+Future aspiration:
+The maps product should eventually support **automatic day/night mode switching** for active navigation when time-of-day calls for it, similar to iOS Maps. This is a future-direction design target and should be documented as part of the intended end-state experience.
 
 ---
 
 ## 8. Roadmap for Design Improvement Passes
 
+### Pass 0 — Visual Correction (Delivered 2026-03-22)
+
+- [x] Fix dark mode to Apple Maps style (soft navy `#0c1929`, not gray-900)
+- [x] Blue-tint glass tokens (alice-blue light, blue-glow dark)
+- [x] Add hover/active interaction to `.bd-glass-control` in CSS
+- [x] Remove ad-hoc `hover:bg-white/70` from glass-control elements
+- [x] Normalize hover states across dashboard and all screens (`hover:bg-white/40`)
+- [x] Soften borders site-wide (`border-slate-200/60`, `border-gray-200/60`)
+- [x] Map zoom controls premium (pill group, blue gradient, glass blur, navy dark variant)
+- [x] Remove remaining flat-white hover surfaces in primary UI
+- [x] Build passes clean (0 errors, 0 spellcheck issues)
+
+Backdrop-blur exceptions (intentional, not violations): colored-surface inputs, image-overlay badges, modal overlays, photo guide cards, landing header scroll states.
+
 ### Pass 1 — Landing page text cramming (current pass)
 
 - [x] `AboutOpportunitySection` — expandable card detail with chevron toggle
 - [x] `BusinessInquirySection` — role-split gateway before form reveal
-- [ ] `HeroSection` — animated value carousel for bullet points
+- [x] `HeroSection` — animated value carousel for bullet points
 
 ### Pass 2 — Dashboard breathing room
 
@@ -289,6 +442,9 @@ to create visual hierarchy without adding more whitespace.
 - [ ] Document the extraction checklist: which files to copy, which configs to replace
 - [ ] Write a minimal "blank map app" scaffold with just the glass theme + ServiceCoverageMap
 - [ ] Identify the 3 most likely non-BidOnDent use-cases for a standalone pitch
+- [ ] Define the full royal-blue map tone system for sky / water / route / overlay / night guidance states
+- [ ] Document the future automatic day/night navigation visual switching behavior
+- [ ] Create a visual reference spec for BidOnDent’s blue-first maps identity so future passes stay consistent
 
 ---
 
@@ -311,3 +467,29 @@ These temptations arise in every design project. Record them here to avoid rehas
 
 _This document lives in `/docs/MOLANDJEUS_DESIGN_DECISIONS.md` and should be updated whenever
 a significant design decision is made — agreed upon by both Mola and Jesus._
+
+## Final Principle
+
+The final end-state for the maps product is not just “good UI.”
+It is a **distinct BidOnDent navigation identity** built around royal blue, calm guidance, breathable overlays, and a map world that feels owned by the product in both day and night conditions.
+
+This is not just UI work.
+
+This is stewardship.
+
+> “Whatever you do, do it with excellence, as unto the Lord.” — Colossians 3:23
+
+The goal is not perfection for pride —
+but excellence for clarity, usefulness, and truth.
+
+Every screen should help the user feel:
+
+- Calm
+- Clear
+- Guided
+- Confident
+
+If it creates confusion, noise, or stress —
+we refine it until it does not.
+
+— MolandJesus

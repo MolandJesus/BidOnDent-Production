@@ -30,9 +30,9 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
       icon: Wrench,
       iconBg: secondaryColor,
       title: "For Auto Body Repair Shops",
-      borderHover: "hover:border-orange-300",
-      gradientFrom: "from-orange-50",
-      hoverBg: "#f97316",
+      borderHover: "hover:border-sky-300",
+      gradientFrom: "from-sky-50",
+      hoverBg: secondaryColor,
       borderColor: `${secondaryColor}30`,
       checkColor: secondaryColor,
       items: [
@@ -61,13 +61,17 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
   ];
 
   return (
-    <section id="who-we-serve" className="py-20 bg-white" ref={sectionRef}>
+    <section
+      id="who-we-serve"
+      className="py-20 bg-gradient-to-b from-blue-50/30 to-white"
+      ref={sectionRef}
+    >
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Section badge */}
         <div
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-sm font-medium">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             Our Solutions
           </span>
@@ -92,30 +96,30 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
                 borderColor: card.borderColor,
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 ["--hover-bg" as never]: card.hoverBg,
-                ["--check-color" as never]: card.checkColor
+                ["--check-color" as never]: card.checkColor,
               }}
             >
               <div className="pointer-events-none absolute inset-0 bg-[var(--hover-bg)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
               <div className="relative z-10">
-              <div className="mb-6">
-                <div
-                  className="inline-flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-white/15"
-                  style={{ backgroundColor: card.iconBg }}
-                >
-                  <card.icon className="w-7 h-7 text-white" />
+                <div className="mb-6">
+                  <div
+                    className="inline-flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-white/15"
+                    style={{ backgroundColor: card.iconBg }}
+                  >
+                    <card.icon className="w-7 h-7 text-white" />
+                  </div>
                 </div>
-              </div>
-              <h4 className="font-bold text-2xl mb-4 text-gray-900 group-hover:text-white">{card.title}</h4>
-              <ul className="space-y-3 mb-8">
-                {card.items.map((item, i) => (
-                  <li key={i} className="flex items-start">
-                    <CheckCircle2
-                      className="w-5 h-5 mr-2 mt-1 flex-shrink-0 text-[color:var(--check-color)] group-hover:text-white"
-                    />
-                    <span className="text-gray-700 group-hover:text-white/90">{item}</span>
-                  </li>
-                ))}
-              </ul>
+                <h4 className="font-bold text-2xl mb-4 text-gray-900 group-hover:text-white">
+                  {card.title}
+                </h4>
+                <ul className="space-y-3 mb-8">
+                  {card.items.map((item, i) => (
+                    <li key={i} className="flex items-start">
+                      <CheckCircle2 className="w-5 h-5 mr-2 mt-1 flex-shrink-0 text-[color:var(--check-color)] group-hover:text-white" />
+                      <span className="text-gray-700 group-hover:text-white/90">{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           ))}
@@ -133,11 +137,9 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           ].map((badge) => (
             <div
               key={badge.text}
-              className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full shadow-sm"
+              className="flex items-center gap-2 bd-glass-card px-4 py-2 rounded-full"
             >
-              <span className="text-green-600 text-sm font-bold">
-                {badge.icon}
-              </span>
+              <span className="text-green-600 text-sm font-bold">{badge.icon}</span>
               <span className="text-sm font-semibold text-gray-700">{badge.text}</span>
             </div>
           ))}

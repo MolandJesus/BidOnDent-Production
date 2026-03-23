@@ -12,6 +12,10 @@ import { useAppHandlers } from "./hooks/useAppHandlers";
 import { useWebsiteSessionSync } from "./hooks/useWebsiteSessionSync";
 import { useBusinessProfile } from "./hooks/useBusinessProfile";
 
+// Notification system
+import { useNotificationEvents, NotificationProvider } from "./features/notifications";
+import NotificationToast from "./components/ui/NotificationToast";
+
 // Import constants
 import {
   PRIMARY_COLOR,
@@ -410,7 +414,21 @@ export default function App() {
 
   return (
     <ClerkProvider publishableKey={clerkPublishableKey}>
-      <AppContent />
+      <AppWithToast />
     </ClerkProvider>
+  );
+}
+
+/** Renders AppContent + global toast overlay. */
+function AppWithToast() {
+  const notificationActions = useNotificationEvents();
+  return (
+    <NotificationProvider value={notificationActions}>
+      <AppContent />
+      <NotificationToast
+        toast={notificationActions.activeToast}
+        onDismiss={notificationActions.dismissToast}
+      />
+    </NotificationProvider>
   );
 }

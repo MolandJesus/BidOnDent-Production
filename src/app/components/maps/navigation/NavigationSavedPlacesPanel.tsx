@@ -227,7 +227,9 @@ export default function NavigationSavedPlacesPanel({
                         <div
                           className={cn(
                             "inline-flex h-10 w-10 items-center justify-center rounded-full",
-                            tone === "light" ? "bg-sky-100 text-sky-700" : "bg-cyan-400/12 text-cyan-200"
+                            tone === "light"
+                              ? "bg-sky-100 text-sky-700"
+                              : "bg-cyan-400/12 text-cyan-200"
                           )}
                         >
                           <Icon className="h-4 w-4" />
@@ -247,7 +249,9 @@ export default function NavigationSavedPlacesPanel({
                         onClick={() => onDeleteSavedLocation(location.id)}
                         className={cn(
                           "inline-flex h-8 w-8 items-center justify-center rounded-full",
-                          tone === "light" ? "text-slate-400 hover:bg-slate-100" : "text-slate-400 hover:bg-white/10"
+                          tone === "light"
+                            ? "text-slate-400 hover:bg-white/40"
+                            : "text-slate-400 hover:bg-white/10"
                         )}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -293,7 +297,9 @@ export default function NavigationSavedPlacesPanel({
                       <div
                         className={cn(
                           "inline-flex h-10 w-10 items-center justify-center rounded-full",
-                          tone === "light" ? "bg-slate-100 text-slate-700" : "bg-white/8 text-slate-100"
+                          tone === "light"
+                            ? "bg-slate-100 text-slate-700"
+                            : "bg-white/8 text-slate-100"
                         )}
                       >
                         <Icon className="h-4 w-4" />

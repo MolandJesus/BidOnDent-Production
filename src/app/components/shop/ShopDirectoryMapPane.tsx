@@ -1,18 +1,7 @@
 import "leaflet/dist/leaflet.css";
 
 import { MapPin, Shield, Sparkles } from "lucide-react";
-import { useEffect, useRef } from "react";
-import {
-  CircleMarker,
-  MapContainer,
-  Polyline,
-  Popup,
-  TileLayer,
-  Tooltip,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
-import { latLngBounds } from "leaflet";
+import { CircleMarker, MapContainer, Polyline, Popup, TileLayer, Tooltip } from "react-leaflet";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type {
@@ -23,6 +12,11 @@ import type {
   RouteOption,
   SavedPlace,
 } from "../../types/mapDomain";
+import MapViewportManager, {
+  DARK_TILE_LAYER,
+  getRoleLabel,
+  LIGHT_TILE_LAYER,
+} from "./ShopDirectoryMapViewportManager";
 
 type ShopDirectoryMapPaneProps = {
   shops: ShopMapListing[];
@@ -38,164 +32,11 @@ type ShopDirectoryMapPaneProps = {
   preserveViewport?: boolean;
   userType: MarketUserType;
   onViewportChange: (center: Coordinates, zoom: number, bounds: MapViewportBounds) => void;
+  /** Floating overlay children rendered above the map surface */
+  children?: React.ReactNode;
+  /** When true, suppress the built-in top gradient header badges (used in immersive mode) */
+  suppressHeader?: boolean;
 };
-
-function getViewportBounds(map: ReturnType<typeof useMap>) {
-  const bounds = map.getBounds();
-
-  return {
-    east: bounds.getEast(),
-    north: bounds.getNorth(),
-    south: bounds.getSouth(),
-    west: bounds.getWest(),
-  } satisfies MapViewportBounds;
-}
-
-const LIGHT_TILE_LAYER = {
-  attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-};
-
-const DARK_TILE_LAYER = {
-  attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO',
-  url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-};
-
-function MapViewportManager({
-  fitSignature,
-  shops,
-  selectedShopId,
-  selectedOrigin,
-  initialCenter,
-  initialZoom,
-  preserveViewport,
-  onViewportChange,
-}: {
-  fitSignature: string;
-  shops: ShopMapListing[];
-  selectedShopId: number | null;
-  selectedOrigin?: Place | null;
-  initialCenter?: Coordinates;
-  initialZoom?: number;
-  preserveViewport?: boolean;
-  onViewportChange: (center: Coordinates, zoom: number, bounds: MapViewportBounds) => void;
-}) {
-  const map = useMap();
-  const restoredInitialViewportRef = useRef(false);
-  const initialViewportRef = useRef({
-    center: initialCenter,
-    zoom: initialZoom,
-  });
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      map.invalidateSize();
-    }, 120);
-
-    return () => window.clearTimeout(timer);
-  }, [fitSignature, map]);
-
-  useEffect(() => {
-    if (
-      !restoredInitialViewportRef.current &&
-      initialViewportRef.current.center &&
-      typeof initialViewportRef.current.zoom === "number"
-    ) {
-      restoredInitialViewportRef.current = true;
-      map.setView(
-        [
-          initialViewportRef.current.center.latitude,
-          initialViewportRef.current.center.longitude,
-        ],
-        initialViewportRef.current.zoom,
-        { animate: false }
-      );
-      return;
-    }
-
-    if (preserveViewport && restoredInitialViewportRef.current) {
-      return;
-    }
-
-    const points = [
-      ...(selectedOrigin ? [[selectedOrigin.latitude, selectedOrigin.longitude] as [number, number]] : []),
-      ...shops.map((shop) => [shop.mapResult.coordinates.latitude, shop.mapResult.coordinates.longitude] as [number, number]),
-    ];
-
-    if (points.length === 0) {
-      return;
-    }
-
-    if (points.length === 1) {
-      map.setView(points[0], 12, { animate: false });
-      return;
-    }
-
-    map.fitBounds(latLngBounds(points), {
-      animate: false,
-      maxZoom: 12,
-      padding: [44, 44],
-    });
-  }, [fitSignature, map, preserveViewport]);
-
-  useEffect(() => {
-    if (!selectedShopId) {
-      return;
-    }
-
-    const selectedShop = shops.find((shop) => shop.id === selectedShopId);
-    if (!selectedShop) {
-      return;
-    }
-
-    map.flyTo(
-      [selectedShop.mapResult.coordinates.latitude, selectedShop.mapResult.coordinates.longitude],
-      Math.max(map.getZoom(), 12),
-      { duration: 0.45 }
-    );
-  }, [fitSignature, map, selectedShopId]);
-
-  useMapEvents({
-    moveend() {
-      const center = map.getCenter();
-      onViewportChange(
-        {
-          latitude: center.lat,
-          longitude: center.lng,
-        },
-        map.getZoom(),
-        getViewportBounds(map)
-      );
-    },
-    zoomend() {
-      const center = map.getCenter();
-      onViewportChange(
-        {
-          latitude: center.lat,
-          longitude: center.lng,
-        },
-        map.getZoom(),
-        getViewportBounds(map)
-      );
-    },
-  });
-
-  return null;
-}
-
-function getRoleLabel(userType: MarketUserType) {
-  if (userType === "shop") {
-    return "Competitive intelligence";
-  }
-
-  if (userType === "insurer") {
-    return "Network recruitment";
-  }
-
-  return "Repair routing";
-}
 
 export default function ShopDirectoryMapPane({
   shops,
@@ -211,6 +52,8 @@ export default function ShopDirectoryMapPane({
   preserveViewport,
   userType,
   onViewportChange,
+  children,
+  suppressHeader,
 }: ShopDirectoryMapPaneProps) {
   const selectedShop = shops.find((shop) => shop.id === selectedShopId) || shops[0] || null;
   const selectedRoute =
@@ -223,30 +66,31 @@ export default function ShopDirectoryMapPane({
 
   return (
     <div className="relative h-full min-h-[420px] w-full overflow-hidden bg-slate-200">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] bg-gradient-to-b from-slate-950/45 via-slate-950/10 to-transparent px-5 py-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div className="rounded-2xl border border-white/15 bg-slate-950/65 px-4 py-3 text-white shadow-xl backdrop-blur">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/65">
-              <Sparkles className="h-4 w-4" />
-              {getRoleLabel(userType)}
+      {!suppressHeader && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] bg-gradient-to-b from-slate-950/45 via-slate-950/10 to-transparent px-5 py-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="rounded-2xl border border-white/15 bg-slate-950/65 px-4 py-3 text-white shadow-xl backdrop-blur">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/65">
+                <Sparkles className="h-4 w-4" />
+                {getRoleLabel(userType)}
+              </div>
+              <p className="mt-1 text-sm font-medium text-white/95">
+                {selectedOrigin
+                  ? `Centered on ${selectedOrigin.name}`
+                  : "Exploring the Dallas repair market"}
+              </p>
             </div>
-            <p className="mt-1 text-sm font-medium text-white/95">
-              {selectedOrigin ? `Centered on ${selectedOrigin.name}` : "Exploring the Dallas repair market"}
-            </p>
-          </div>
 
-          <div className="rounded-2xl border border-white/15 bg-slate-950/65 px-4 py-3 text-sm text-white shadow-xl backdrop-blur">
-            <p className="text-white/65">Visible shops</p>
-            <p className="text-xl font-semibold">{shops.length}</p>
+            <div className="rounded-2xl border border-white/15 bg-slate-950/65 px-4 py-3 text-sm text-white shadow-xl backdrop-blur">
+              <p className="text-white/65">Visible shops</p>
+              <p className="text-xl font-semibold">{shops.length}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <MapContainer
-        center={[
-          initialCenter?.latitude || 32.7767,
-          initialCenter?.longitude || -96.797,
-        ]}
+        center={[initialCenter?.latitude || 32.7767, initialCenter?.longitude || -96.797]}
         className="h-full w-full"
         scrollWheelZoom
         zoom={initialZoom || 11}
@@ -389,9 +233,7 @@ export default function ShopDirectoryMapPane({
             <div className="max-w-md rounded-[24px] border border-white/15 bg-white/96 p-4 shadow-2xl backdrop-blur">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                    Selected shop
-                  </p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Selected shop</p>
                   <h3 className="mt-1 text-lg font-semibold text-slate-950">{selectedShop.name}</h3>
                 </div>
                 <div className="rounded-2xl bg-slate-950 px-3 py-2 text-center text-white">
@@ -423,10 +265,15 @@ export default function ShopDirectoryMapPane({
 
           <div className="rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-xs text-white/80 shadow-xl backdrop-blur">
             <p className="font-semibold text-white">Marker legend</p>
-            <p className="mt-1">Orange = origin, blue = selected, dark = top match, lines = route options</p>
+            <p className="mt-1">
+              Orange = origin, blue = selected, dark = top match, lines = route options
+            </p>
           </div>
         </div>
       </div>
+
+      {/* Floating overlay children (route preview, intelligence, deviation prompt) */}
+      {children}
     </div>
   );
 }

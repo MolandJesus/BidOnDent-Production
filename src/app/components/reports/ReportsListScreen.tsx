@@ -30,7 +30,7 @@ export default function ReportsListScreen({
   reports,
   onBack,
   onSelectReport,
-  primaryColor = "#003d82"
+  primaryColor = "#003d82",
 }: ReportsListScreenProps) {
   const [filter, setFilter] = useState("all"); // all, pending, active, completed
   const [selectedPhotos, setSelectedPhotos] = useState<string[] | null>(null);
@@ -39,7 +39,7 @@ export default function ReportsListScreen({
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  const filteredReports = reports.filter(report => {
+  const filteredReports = reports.filter((report) => {
     if (filter === "all") return true;
     return report.status === filter;
   });
@@ -58,7 +58,7 @@ export default function ReportsListScreen({
           <div className="flex items-center mb-3">
             <button
               onClick={onBack}
-              className="mr-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="mr-3 p-2 hover:bg-white/40 rounded-lg transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -74,15 +74,13 @@ export default function ReportsListScreen({
               { id: "all", label: "All" },
               { id: "pending", label: "Pending" },
               { id: "active", label: "Active" },
-              { id: "completed", label: "Completed" }
-            ].map(tab => (
+              { id: "completed", label: "Completed" },
+            ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setFilter(tab.id)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  filter === tab.id
-                    ? "text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  filter === tab.id ? "text-white" : "bd-glass-control--utility"
                 }`}
                 style={filter === tab.id ? { backgroundColor: primaryColor } : {}}
               >
@@ -102,7 +100,7 @@ export default function ReportsListScreen({
         ) : (
           filteredReports.map((report) => {
             const interestedShops = getInterestedShops(report.id);
-            
+
             return (
               <div
                 key={report.id}
@@ -111,7 +109,7 @@ export default function ReportsListScreen({
                 <div className="flex gap-3 p-4">
                   {/* Small Photo Thumbnail - Left Side */}
                   {report.photos && report.photos.length > 0 && (
-                    <div 
+                    <div
                       className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-80 transition-opacity relative group"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -137,7 +135,7 @@ export default function ReportsListScreen({
                   )}
 
                   {/* Report Information - Right Side (Prominent) */}
-                  <div 
+                  <div
                     className="flex-1 min-w-0 cursor-pointer"
                     onClick={() => onSelectReport(report.id)}
                   >
@@ -146,17 +144,17 @@ export default function ReportsListScreen({
                         <h3 className="font-bold text-lg truncate">
                           {report.vehicle.year} {report.vehicle.make} {report.vehicle.model}
                         </h3>
-                        <p className="text-sm text-gray-600">
-                          Damage to {report.damageArea}
-                        </p>
+                        <p className="text-sm text-gray-600">Damage to {report.damageArea}</p>
                       </div>
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2 flex-shrink-0 ${
-                        report.status === "pending" 
-                          ? "bg-yellow-100 text-yellow-700"
-                          : report.status === "active"
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-green-100 text-green-700"
-                      }`}>
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2 flex-shrink-0 ${
+                          report.status === "pending"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : report.status === "active"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-green-100 text-green-700"
+                        }`}
+                      >
                         {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
                       </span>
                     </div>
@@ -189,14 +187,14 @@ export default function ReportsListScreen({
                             <div
                               key={idx}
                               className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium"
-                              style={{ backgroundColor: primaryColor, color: 'white' }}
+                              style={{ backgroundColor: primaryColor, color: "white" }}
                             >
                               {String.fromCharCode(65 + idx)}
                             </div>
                           ))}
                         </div>
                         <span className="text-sm text-gray-700 font-semibold">
-                          {interestedShops} {interestedShops === 1 ? 'shop' : 'shops'} interested
+                          {interestedShops} {interestedShops === 1 ? "shop" : "shops"} interested
                         </span>
                         <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
                       </div>
@@ -220,7 +218,7 @@ export default function ReportsListScreen({
 
       {/* Photo Gallery Lightbox - Clean Mobile-Friendly Design */}
       {selectedPhotos && selectedPhotos.length > 0 && (
-        <div 
+        <div
           className="fixed inset-0 bg-black z-50 flex flex-col"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
@@ -233,7 +231,9 @@ export default function ReportsListScreen({
           {/* Header Bar */}
           <div className="flex items-center justify-between p-4 bg-black/50 backdrop-blur">
             <div className="text-white">
-              <span className="font-medium">{currentPhotoIndex + 1} / {selectedPhotos.length}</span>
+              <span className="font-medium">
+                {currentPhotoIndex + 1} / {selectedPhotos.length}
+              </span>
             </div>
             <button
               className="text-white hover:bg-white/10 rounded-full p-2 transition-colors"
@@ -248,7 +248,7 @@ export default function ReportsListScreen({
           </div>
 
           {/* Main Photo Area with Touch Support */}
-          <div 
+          <div
             className="flex-1 flex items-center justify-center relative overflow-hidden"
             onTouchStart={(e) => {
               setTouchStart(e.targetTouches[0].clientX);
@@ -260,26 +260,26 @@ export default function ReportsListScreen({
               if (touchStart - touchEnd > 75) {
                 // Swiped left - next photo
                 if (currentPhotoIndex < selectedPhotos.length - 1) {
-                  setCurrentPhotoIndex(prev => prev + 1);
+                  setCurrentPhotoIndex((prev) => prev + 1);
                   setZoomLevel(1);
                 }
               }
               if (touchStart - touchEnd < -75) {
                 // Swiped right - previous photo
                 if (currentPhotoIndex > 0) {
-                  setCurrentPhotoIndex(prev => prev - 1);
+                  setCurrentPhotoIndex((prev) => prev - 1);
                   setZoomLevel(1);
                 }
               }
             }}
             onDoubleClick={() => {
               // Double-click to toggle zoom
-              setZoomLevel(prev => prev === 1 ? 2 : 1);
+              setZoomLevel((prev) => (prev === 1 ? 2 : 1));
             }}
             onClick={(e) => {
               if (e.detail === 2) {
                 // Double-tap for mobile
-                setZoomLevel(prev => prev === 1 ? 2 : 1);
+                setZoomLevel((prev) => (prev === 1 ? 2 : 1));
               }
             }}
           >
@@ -287,9 +287,9 @@ export default function ReportsListScreen({
               src={selectedPhotos[currentPhotoIndex]}
               alt={`Photo ${currentPhotoIndex + 1}`}
               className="max-w-full max-h-full object-contain transition-transform duration-300"
-              style={{ 
+              style={{
                 transform: `scale(${zoomLevel})`,
-                cursor: zoomLevel === 1 ? 'zoom-in' : 'zoom-out'
+                cursor: zoomLevel === 1 ? "zoom-in" : "zoom-out",
               }}
             />
 
@@ -301,7 +301,7 @@ export default function ReportsListScreen({
                     className="hidden md:flex absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur text-white rounded-full p-3 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setCurrentPhotoIndex(prev => prev - 1);
+                      setCurrentPhotoIndex((prev) => prev - 1);
                       setZoomLevel(1);
                     }}
                   >
@@ -313,7 +313,7 @@ export default function ReportsListScreen({
                     className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur text-white rounded-full p-3 transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setCurrentPhotoIndex(prev => prev + 1);
+                      setCurrentPhotoIndex((prev) => prev + 1);
                       setZoomLevel(1);
                     }}
                   >
@@ -333,9 +333,9 @@ export default function ReportsListScreen({
                   <button
                     key={idx}
                     className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      idx === currentPhotoIndex 
-                        ? 'border-white scale-105' 
-                        : 'border-white/30 opacity-60 hover:opacity-100'
+                      idx === currentPhotoIndex
+                        ? "border-white scale-105"
+                        : "border-white/30 opacity-60 hover:opacity-100"
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();

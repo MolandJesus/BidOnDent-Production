@@ -1,0 +1,250 @@
+import type {
+  Coordinates,
+  RouteInstruction,
+  RouteOption,
+  SearchOrigin,
+} from "../../types/mapDomain";
+import type { MarketUserType } from "./marketIntelligence";
+import type { ShopMapListing } from "./shopMapExperience";
+
+const ROUTE_VARIANTS = [
+  {
+    id: "fastest",
+    label: "Fastest",
+    trafficLabel: "Light traffic",
+    speedMph: 34,
+    accentColor: "#2563eb",
+    corridorLabel: "North Central corridor",
+    latitudeOffset: 0.012,
+    longitudeOffset: -0.01,
+    bufferMinutes: 2,
+  },
+  {
+    id: "balanced",
+    label: "Balanced",
+    trafficLabel: "Steady cross-town flow",
+    speedMph: 29,
+    accentColor: "#0f766e",
+    corridorLabel: "Uptown connector",
+    latitudeOffset: -0.008,
+    longitudeOffset: 0.013,
+    bufferMinutes: 4,
+  },
+  {
+    id: "local",
+    label: "Local roads",
+    trafficLabel: "Signals + surface streets",
+    speedMph: 24,
+    accentColor: "#c2410c",
+    corridorLabel: "Neighborhood streets",
+    latitudeOffset: 0.016,
+    longitudeOffset: 0.016,
+    bufferMinutes: 6,
+  },
+] as const;
+
+function roundDuration(durationMinutes: number) {
+  return Math.max(4, Math.round(durationMinutes / 2) * 2);
+}
+
+function formatDurationLabel(durationMinutes: number) {
+  if (durationMinutes >= 60) {
+    const hours = Math.floor(durationMinutes / 60);
+    const minutes = durationMinutes % 60;
+    return `${hours} hr ${minutes} min`;
+  }
+
+  return `${durationMinutes} min`;
+}
+
+function toRadians(value: number) {
+  return (value * Math.PI) / 180;
+}
+
+export function calculateDistanceMiles(origin: Coordinates, destination: Coordinates) {
+  const earthRadiusMiles = 3958.8;
+  const latitudeDelta = toRadians(destination.latitude - origin.latitude);
+  const longitudeDelta = toRadians(destination.longitude - origin.longitude);
+  const originLatitude = toRadians(origin.latitude);
+  const destinationLatitude = toRadians(destination.latitude);
+
+  const haversine =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(originLatitude) * Math.cos(destinationLatitude) * Math.sin(longitudeDelta / 2) ** 2;
+
+  return earthRadiusMiles * (2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine)));
+}
+
+export function formatDistanceLabel(distanceMiles: number) {
+  if (distanceMiles < 1) {
+    return `${Math.round(distanceMiles * 10) / 10} mi`;
+  }
+
+  return `${distanceMiles.toFixed(1)} mi`;
+}
+
+function interpolatePoint(
+  origin: Coordinates,
+  destination: Coordinates,
+  weight: number,
+  latitudeOffset = 0,
+  longitudeOffset = 0
+): Coordinates {
+  return {
+    latitude: origin.latitude + (destination.latitude - origin.latitude) * weight + latitudeOffset,
+    longitude:
+      origin.longitude + (destination.longitude - origin.longitude) * weight + longitudeOffset,
+  };
+}
+
+function buildRoutePolyline(
+  origin: Coordinates,
+  destination: Coordinates,
+  latitudeOffset: number,
+  longitudeOffset: number
+) {
+  return [
+    origin,
+    interpolatePoint(origin, destination, 0.28, latitudeOffset * 0.55, longitudeOffset * 0.45),
+    interpolatePoint(origin, destination, 0.62, latitudeOffset, longitudeOffset),
+    interpolatePoint(origin, destination, 0.84, latitudeOffset * 0.35, longitudeOffset * 0.25),
+    destination,
+  ];
+}
+
+function buildRouteInstructions({
+  corridorLabel,
+  destinationAddress,
+  destinationName,
+  destinationCity,
+  durationMinutes,
+  totalDistanceLabel,
+}: {
+  corridorLabel: string;
+  destinationAddress: string;
+  destinationCity: string;
+  destinationName: string;
+  durationMinutes: number;
+  totalDistanceLabel: string;
+}) {
+  const firstLegMinutes = Math.max(3, Math.round(durationMinutes * 0.3));
+  const secondLegMinutes = Math.max(4, Math.round(durationMinutes * 0.42));
+  const finalLegMinutes = Math.max(2, durationMinutes - firstLegMinutes - secondLegMinutes);
+
+  return [
+    {
+      id: "depart",
+      title: "Depart",
+      detail: "Head out from your selected origin and follow the first outbound streets.",
+      distanceLabel: totalDistanceLabel,
+      durationMinutes: firstLegMinutes,
+    },
+    {
+      id: "corridor",
+      title: `Follow ${corridorLabel}`,
+      detail: `Stay on the main flow toward ${destinationCity} with BidOnDent's route preview pinned to the selected shop.`,
+      distanceLabel: `${Math.max(0.8, Number((firstLegMinutes / 6).toFixed(1)))} mi`,
+      durationMinutes: secondLegMinutes,
+    },
+    {
+      id: "arrival-approach",
+      title: "Approach destination",
+      detail: `Use the final approach around ${destinationAddress} and prepare for shop intake or claim handoff.`,
+      distanceLabel: `${Math.max(0.4, Number((finalLegMinutes / 8).toFixed(1)))} mi`,
+      durationMinutes: finalLegMinutes,
+    },
+    {
+      id: "arrive",
+      title: `Arrive at ${destinationName}`,
+      detail:
+        "Selected shop details stay synced with the map card while you compare alternate routes.",
+      distanceLabel: "Arrival",
+      durationMinutes: 0,
+    },
+  ] satisfies RouteInstruction[];
+}
+
+export function buildShopRouteOptions({
+  origin,
+  shop,
+}: {
+  origin: SearchOrigin;
+  shop: ShopMapListing | null;
+}) {
+  if (!origin || !shop) {
+    return [] as RouteOption[];
+  }
+
+  const destination = shop.mapResult.coordinates;
+  const baseDistance = calculateDistanceMiles(origin, destination);
+
+  return ROUTE_VARIANTS.map((variant, index) => {
+    const routeDistanceMiles = Number((baseDistance * (1 + index * 0.045)).toFixed(1));
+    const estimatedDurationMinutes = roundDuration(
+      (routeDistanceMiles / variant.speedMph) * 60 + variant.bufferMinutes
+    );
+
+    return {
+      id: variant.id,
+      label: variant.label,
+      trafficLabel: variant.trafficLabel,
+      totalDistanceMiles: routeDistanceMiles,
+      totalDistanceLabel: formatDistanceLabel(routeDistanceMiles),
+      estimatedDurationMinutes,
+      accentColor: variant.accentColor,
+      polyline: buildRoutePolyline(
+        origin,
+        destination,
+        variant.latitudeOffset,
+        variant.longitudeOffset
+      ),
+      instructions: buildRouteInstructions({
+        corridorLabel: variant.corridorLabel,
+        destinationAddress: shop.mapResult.address,
+        destinationCity: shop.mapResult.city,
+        destinationName: shop.name,
+        durationMinutes: estimatedDurationMinutes,
+        totalDistanceLabel: formatDistanceLabel(routeDistanceMiles),
+      }),
+    } satisfies RouteOption;
+  });
+}
+
+export function buildRoleAwareRouteSummary({
+  selectedRoute,
+  shop,
+  userType,
+}: {
+  selectedRoute: RouteOption | null;
+  shop: ShopMapListing | null;
+  userType: MarketUserType;
+}) {
+  if (!selectedRoute || !shop) {
+    return {
+      description: "Pick an origin to unlock route preview, ETA, and turn guidance.",
+      title: "Route preview ready when you are",
+    };
+  }
+
+  if (userType === "shop") {
+    return {
+      title: `Scout ${shop.name} in ${formatDurationLabel(selectedRoute.estimatedDurationMinutes)}`,
+      description:
+        "Use the route panel to benchmark how quickly your team could physically inspect or compare this competitor territory.",
+    };
+  }
+
+  if (userType === "insurer") {
+    return {
+      title: `Plan a partner visit to ${shop.name}`,
+      description:
+        "The route preview helps claims and network teams estimate field-review timing before outreach or partner onboarding.",
+    };
+  }
+
+  return {
+    title: `Directions to ${shop.name}`,
+    description:
+      "Compare route timing before you commit to a repair conversation, drop-off, or tow coordination path.",
+  };
+}

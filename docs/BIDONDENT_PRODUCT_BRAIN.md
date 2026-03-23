@@ -1,3 +1,26 @@
+## Pass 18 — Future Map Identity + Atmosphere Governance Alignment (2026-03-22)
+
+### Identity Differentiation Rule (Added Pass 67, 2026-03-23)
+
+- BidOnDent map UX should feel **inspired by but NOT a clone of** Apple Maps or Google Maps.
+- The map is productized navigation — but the identity must remain BidOnDent: **blue system, dent-repair context, insurance workflow integration.**
+- Visual language should be warm, trustworthy, slightly playful (the BidOnDent brand) — not cold/minimal Apple or busy/functional Google.
+- Glass effects serve atmosphere, not decoration. If something looks "too Apple," check if it serves the BidOnDent user or just looks nice.
+- The map is one surface in a larger product — dashboard, reports, bids, claims, shop matching — and should harmonize with those surfaces, not outshine them into irrelevance.
+
+### Map/Design/Navigation Future Planning
+
+- The BidOnDent map identity target is a **product-owned, premium, blue-system-driven world** — not a desktop clone or generic SaaS UI.
+- Blue is a system: deep royal blue (primary/route/action), sky/baby blue (atmosphere/guidance), ocean/navy blue (depth/night), gray-blue (subdued/inactive/low-noise). Blue should act like **light through glass**.
+- The future map should feel like a living world: more depth, atmosphere, layered transparency, and “surface floating above geography.”
+- Aspirational direction: richer world feel, environmental depth, spatial layering, and better blending between map and UI. 3D/world rendering is **not implemented** and depends on future provider/platform decisions.
+- **Day/night guidance mode switching** is a future direction, not shipped. Any implementation must respect provider stack, real capability boundaries, and user override/settings.
+- Controls should be tactile, soft, layered, calm, and premium — not loud, harsh, over-glossed, or like desktop window chrome.
+- Glass/material direction: breathable, warm, softly illuminated, transparent/translucent — not over-solidified, painted, cold, or aggressively glossy.
+- The future map experience should be more emotional and trustworthy: calm, guided, breathable, confident, premium, friendly, and trustworthy — not cold, flat, generic, or overly technical.
+
+All of the above is **future planning** and not yet implemented unless otherwise stated in the tracker.
+
 # BidOnDent Product Brain
 
 Last updated: March 21, 2026
@@ -27,23 +50,26 @@ These cards are the **primary entry point** for future work. Read one card, unde
 
 ### CARD: Navigation Productization
 
-- **STATE:** Tier 2 (Productizing). GPS, routing, voice, speed all work. GPS degradation detection delivered. Speed-limit unavailable state delivered. NavigationErrorBoundary delivered (wraps sidebar navigation content, glass-card fallback UI). Remaining: deviation detection, cross-browser voice.
-- **NEXT MOVE:** Deviation detection groundwork, then cross-browser voice audit.
-- **TOUCHES:** `services/navigation/` (routeEngine, speedLimit, voiceGuidance), map components, `theme.css` for error states.
-- **DO NOT:** Add multi-stop routing, CarPlay, or premium TTS before single-route reliability is solid.
-- **VERIFY:** GPS loss shows warning within 3s. OSRM failure shows error, no crash. Stale speed data shows "unavailable."
-- **UNLOCKS:** Navigation settings UI, cloud sync, automatic rerouting, marketplace-aware routing.
-- **FULL DETAIL:** Search this doc for "Navigation Productization Roadmap"
+### CARD: Navigation Session Cloud Sync (Pass 19)
 
-### CARD: Design System Expansion
+- **STATE:** Tier 3 (Delivered). Navigation session state is now persisted in Supabase (`navigation_sessions` table) with localStorage as cache. Session state is hydrated from Supabase on boot and saved to Supabase on update. Cross-device continuity is now real. No UI or unrelated code changed. All changes are minimal and scoped.
+- **DELIVERED (2026-03-23):** Navigation session cloud sync, persistent session memory, and cross-device continuity. Build, diagnostics, and spellcheck all clean. Session persistence verified after reload and across devices.
+- **TOUCHES:** supabase/migrations/009_create_navigation_sessions.sql, src/app/services/navigation/navigationSessionCloudService.ts, src/app/features/navigation/useNavigationSession.ts, src/app/features/navigation/sessionTypes.ts
+- **DO NOT:** Change navigation UI to accommodate sync. Add sync indicators that distract from driving.
+- **VERIFY:** Route session persists after closing browser. Same session loads on different device. localStorage remains as cache/fallback. Session state is always hydrated from Supabase first.
+- **UNLOCKS:** Navigation history, cross-device continuity, preferences sync.
+- **FULL DETAIL:** Phase 2 doc "Pillar 3: Cloud persistence for navigation"
 
-- **STATE:** Tier 2 entering Tier 3. Royal-blue glass tokens exist on map surfaces, shell surfaces (MobileBottomNav, ProfileDropdown), DashboardCoveragePanel, and now HomeScreen (stat cards, reports list, quick actions, activity panel). Stage 3a delivered for HomeScreen.
-- **NEXT MOVE:** Stage 3a for ShopActiveJobsScreen and InsurerClaimsScreen, then Stage 3b (dashboard shell glass treatment).
-- **TOUCHES:** `src/styles/theme.css` (`:root` properties + `.bd-glass-*` classes). HomeScreen, shop/insurer screen files.
-- **DO NOT:** Force glass on forms/tables/data-entry. Skip Stage 2 prerequisites when doing Stage 3.
-- **VERIFY:** CSS custom properties visible in DevTools on any page. `.bd-glass-panel` applies outside `.coverage-map-surface`.
-- **UNLOCKS:** Role dashboard glass adoption, landing unification, full site-wide identity.
-- **FULL DETAIL:** Search this doc for "Design System Direction"
+### CARD: Design System Expansion & Map Vision Alignment (Pass 17)
+
+- **STATE:** Tier 3 active. Royal-blue glass tokens and classes fully deployed: `bd-glass-panel`, `bd-glass-card`, `bd-glass-badge`, `bd-glass-control` (with CSS hover/active), `bd-glass-floating`. Navy dark mode (`#0c1929` base, `#132237` card, `#1c2e47` accent), blue-tinted glass (alice-blue light, blue-glow dark). Unified hover standard `hover:bg-white/40` across all screens. Map surfaces, shell surfaces, HomeScreen, dashboard, reports, shop directory, bids, account screens all on-system. Landing identity convergence delivered (Pass 12) — all 7 primary landing surfaces now visually unified with the map system: navy brand identity `#003d82`/`#0c2340`, `bd-glass-card` adopted in `AboutOpportunitySection` and `BenefitsSection`, green/orange mismatch colors fixed (step numbers → navy gradient, shops card → sky blue), animated value carousel in `HeroSection` with reduced-motion safety, blue-atmospheric wrapper gradient, blue-tinted header scroll state.
+- **MAP VISION:** The final intended map product is **BidOnDent-owned, royal-blue-first, and meaningfully color-coded**. Royal blue is the primary identity, route, and action color; baby/light blue for air/sky/calm; deep ocean blue for depth/premium/spatial confidence; gray-blue/navy for night/dark mode. The map should feel like a branded geographic world, not a generic tile with overlays. **Day/night guidance mode** (automatic switching based on local time/route context) is a planned feature, not yet implemented. Day mode = lighter/sky/atmospheric; night mode = navy/gray-blue/low-glare. All map and design decisions must reinforce this blue system and day/night awareness, and avoid desktop window clones or generic map UI.
+- **NEXT MOVE:** Stage 3b for ShopActiveJobsScreen forms and InsurerClaimsScreen data tables (glass-safe, not forced).
+- **TOUCHES:** `src/styles/theme.css` (`:root` + `.dark` properties + `.bd-glass-*` classes), `src/app/theme/globalSurfaceTheme.ts`, `src/app/components/maps/mapSurfaceTheme.ts`.
+- **DO NOT:** Force glass on forms/tables/data-entry. Change map glass system without design reason. Use `hover:bg-white/40` (not `hover:bg-slate-50/100` or `hover:bg-gray-50/100`).
+- **VERIFY:** CSS custom properties visible in DevTools. `.bd-glass-panel` applies outside `.coverage-map-surface`. Dark mode shows navy (not gray). All hovers are soft glow. Landing hero cycles value statements every 3.8s.
+- **UNLOCKS:** Stage 3b form/table glass treatment, remaining role screen glass adoption, full site-wide dark mode identity.
+- **FULL DETAIL:** Search this doc for "Design System Direction" and "Map Vision Alignment".
 
 ### CARD: Customer Map Intelligence
 
@@ -1196,11 +1222,9 @@ Effect:
 
 Edge handlers and `database_init.tsx` expect `clerk_user_id` columns on vehicles and damage reports.
 
-But static migration files and some frontend modules still center `user_id`.
+Static migration files originally omitted `clerk_user_id` from `damage_reports`. **Pass 84 fix:** Migration `010_add_clerk_user_id_to_damage_reports.sql` now adds the column, makes `user_id` nullable, and adds the `user_id_or_clerk_user_id` constraint. Reports now persist correctly through sign-out/in cycles.
 
-Effect:
-
-- backend and frontend persistence assumptions are not fully unified
+**Remaining risk:** Some frontend modules still center `user_id`. Full unification of identity columns is a medium-term goal.
 
 ### 3. Mixed report shapes
 
@@ -1397,7 +1421,7 @@ These features exist in code but have known gaps in reliability, UX completeness
 | Insurer claims view            | Polished UI, mostly mock data                                                    | Connect to real claim persistence               |
 | Shop/insurer dashboards        | Strong UI shells, partial real data                                              | Progressive real-data wiring                    |
 | Profile dropdown               | Real user data, no glass design treatment                                        | Adopt map theme tokens                          |
-| Landing page design            | Hybrid — coverage sections use map tokens, rest uses plain Tailwind              | Unify under map design system                   |
+| Landing page design            | Unified — all 7 landing surfaces now use bd-glass tokens and brand navy identity | Stage 3b: forms + data tables                   |
 
 ### Tier 3 — Aspirational (not in code, documented as future direction only)
 
@@ -1433,17 +1457,17 @@ The map surface implements a royal-blue glass design language (Theme 5 in the Ma
 
 The rest of the site uses completely separate styling. Integration status:
 
-| Surface                   | Uses Map Tokens | Uses Glass/Blur               | Integration Barrier |
-| ------------------------- | --------------- | ----------------------------- | ------------------- |
-| Map surfaces              | Yes             | Yes                           | N/A — source        |
-| Coverage landing sections | Yes             | Yes                           | Low                 |
-| DashboardCoveragePanel    | Yes             | Yes (bd-glass-panel/card)     | Wired               |
-| DashboardLayout (shell)   | No              | MobileBottomNav only          | High                |
-| HomeScreen (customer)     | No              | No                            | High                |
-| ShopActiveJobsScreen      | No              | No                            | High                |
-| InsurerClaimsScreen       | No              | No                            | High                |
-| ProfileDropdown           | No              | No                            | High                |
-| Landing hero/benefits/CTA | No              | Scroll-aware header blur only | Medium              |
+| Surface                   | Uses Map Tokens | Uses Glass/Blur                                 | Integration Barrier |
+| ------------------------- | --------------- | ----------------------------------------------- | ------------------- |
+| Map surfaces              | Yes             | Yes                                             | N/A — source        |
+| Coverage landing sections | Yes             | Yes                                             | Low                 |
+| DashboardCoveragePanel    | Yes             | Yes (bd-glass-panel/card)                       | Wired               |
+| DashboardLayout (shell)   | No              | MobileBottomNav only                            | High                |
+| HomeScreen (customer)     | No              | No                                              | High                |
+| ShopActiveJobsScreen      | No              | No                                              | High                |
+| InsurerClaimsScreen       | No              | No                                              | High                |
+| ProfileDropdown           | No              | No                                              | High                |
+| Landing hero/benefits/CTA | Yes             | Yes — bd-glass-card/badge/floating, navy footer | Delivered (Pass 1)  |
 
 ### 2. Productizing Stage
 
@@ -1462,12 +1486,12 @@ Make the design system usable outside maps so adoption can begin.
 
 Full site-wide Apple-inspired identity unification.
 
-| Step                              | What                                                                                                                        | Files Touched                 | Acceptance                                  |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------- |
-| 3a. Role dashboard cards          | `HomeScreen.tsx` stat cards, `ShopActiveJobsScreen.tsx` job cards, `InsurerClaimsScreen.tsx` claim cards adopt glass tokens | 3 screen files                | Role dashboards visually match map quality  |
-| 3b. Dashboard shell               | `DashboardLayout.tsx` sidebar + top bar get glass shell treatment                                                           | 1 layout file                 | Entire dashboard feels like a native app    |
-| 3c. Landing unification           | All landing sections adopt royal-blue depth/palette                                                                         | ~8 landing component files    | Landing and dashboard feel like one product |
-| 3d. Theme function generalization | Extract `mapSurfaceTheme.ts` → `globalSurfaceTheme.ts` serving both map and non-map surfaces                                | 1 new file + consumer updates | Single theme function for entire app        |
+| Step                              | What                                                                                                                        | Files Touched                 | Acceptance                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------ |
+| 3a. Role dashboard cards          | `HomeScreen.tsx` stat cards, `ShopActiveJobsScreen.tsx` job cards, `InsurerClaimsScreen.tsx` claim cards adopt glass tokens | 3 screen files                | Role dashboards visually match map quality |
+| 3b. Dashboard shell               | `DashboardLayout.tsx` sidebar + top bar get glass shell treatment                                                           | 1 layout file                 | Entire dashboard feels like a native app   |
+| 3c. Landing unification           | All landing sections adopt royal-blue depth/palette                                                                         | ~8 landing component files    | **Delivered (Pass 1, 2026-03-22)**         |
+| 3d. Theme function generalization | Extract `mapSurfaceTheme.ts` → `globalSurfaceTheme.ts` serving both map and non-map surfaces                                | 1 new file + consumer updates | Single theme function for entire app       |
 
 **Role implications:**
 
@@ -1685,15 +1709,15 @@ Navigation becomes a differentiated product feature, not just a utility.
 
 ### 4. Technical Prerequisites
 
-| Prerequisite                                                  | Needed For  | Exists Today |
-| ------------------------------------------------------------- | ----------- | ------------ |
-| Error boundary around navigation components                   | Stage 2a-2c | Yes          |
-| Deviation calculation utility (current pos vs route polyline) | Stage 2d    | No           |
-| Web Speech API browser compatibility matrix                   | Stage 2e    | No           |
-| `navigation_sessions` Supabase table                          | Stage 3b    | No           |
-| `navigation_preferences` Supabase table                       | Stage 3a    | No           |
-| Shop availability data for route-end cards                    | Stage 3f    | No           |
-| Route tile/data caching mechanism                             | Stage 3g    | No           |
+| Prerequisite                                                  | Needed For  | Exists Today                                               |
+| ------------------------------------------------------------- | ----------- | ---------------------------------------------------------- |
+| Error boundary around navigation components                   | Stage 2a-2c | Yes                                                        |
+| Deviation calculation utility (current pos vs route polyline) | Stage 2d    | **Yes** — `src/app/features/navigation/detectDeviation.ts` |
+| Web Speech API browser compatibility matrix                   | Stage 2e    | No                                                         |
+| `navigation_sessions` Supabase table                          | Stage 3b    | No                                                         |
+| `navigation_preferences` Supabase table                       | Stage 3a    | No                                                         |
+| Shop availability data for route-end cards                    | Stage 3f    | No                                                         |
+| Route tile/data caching mechanism                             | Stage 3g    | No                                                         |
 
 ### 5. UI/UX Evolution Path
 

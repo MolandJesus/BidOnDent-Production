@@ -30,7 +30,7 @@ export default function MissingReportState({
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200/60 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-white/40"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -64,7 +64,7 @@ export default function MissingReportState({
             <button
               type="button"
               onClick={onBack}
-              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/60 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-white/40"
             >
               Return to dashboard
             </button>

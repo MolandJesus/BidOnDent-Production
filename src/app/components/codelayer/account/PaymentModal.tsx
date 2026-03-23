@@ -45,14 +45,14 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
           </div>
 
           <button
-            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-gray-400 hover:text-gray-800 font-medium"
+            className="bd-glass-control--utility w-full py-3 border-2 border-dashed border-slate-200/60 rounded-lg"
             onClick={() => alert("Add new payment method clicked!")}
           >
             + Add New Payment Method
           </button>
         </div>
         <div className="mt-6 flex justify-end">
-          <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50" onClick={onClose}>
+          <button className="bd-glass-control--secondary px-4 py-2" onClick={onClose}>
             Close
           </button>
         </div>

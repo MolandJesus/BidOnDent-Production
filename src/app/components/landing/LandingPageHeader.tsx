@@ -32,14 +32,14 @@ export default function LandingPageHeader({
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/90 backdrop-blur-2xl border-b border-gray-200/50 shadow-lg"
+          ? "bg-[rgba(240,248,255,0.92)] backdrop-blur-2xl border-b border-blue-200/40 shadow-[0_4px_24px_rgba(0,61,130,0.06)]"
           : "bg-white/30 backdrop-blur-md border-b border-transparent"
       }`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between max-w-7xl">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="flex items-center gap-2.5 py-1 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+          className="flex items-center gap-2.5 py-2 px-2 rounded-xl cursor-pointer hover:bg-white/20 active:bg-white/30 transition-colors duration-200"
         >
           <span
             className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md"
@@ -71,7 +71,8 @@ export default function LandingPageHeader({
             onClick={() =>
               document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })
             }
-            className="px-5 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-all duration-300 rounded-lg hover:bg-gray-100/60 active:scale-95"
+            className="bd-glass-control--utility font-medium"
+            type="button"
           >
             How It Works
           </button>
@@ -79,7 +80,8 @@ export default function LandingPageHeader({
             onClick={() =>
               document.getElementById("who-we-serve")?.scrollIntoView({ behavior: "smooth" })
             }
-            className="px-5 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-all duration-300 rounded-lg hover:bg-gray-100/60 active:scale-95"
+            className="bd-glass-control--utility font-medium"
+            type="button"
           >
             Who We Serve
           </button>
@@ -88,7 +90,8 @@ export default function LandingPageHeader({
               window.location.hash = "#/about";
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="px-5 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-all duration-300 rounded-lg hover:bg-gray-100/60 active:scale-95"
+            className="bd-glass-control--utility font-medium"
+            type="button"
           >
             About
           </button>
@@ -97,22 +100,12 @@ export default function LandingPageHeader({
         <div className="flex items-center space-x-3">
           {isLoggedIn ? (
             <>
-              {/* Dashboard Button - Mobile */}
+              {/* Dashboard Button */}
               {showLandingPage && (
                 <button
                   onClick={onViewDashboard}
-                  className="md:hidden inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  <Home className="w-4 h-4" style={{ color: primaryColor }} />
-                  <span style={{ color: primaryColor }}>Dashboard</span>
-                </button>
-              )}
-
-              {/* Dashboard Button - Desktop */}
-              {showLandingPage && (
-                <button
-                  onClick={onViewDashboard}
-                  className="hidden md:inline-flex items-center space-x-2 px-5 py-2.5 rounded-lg hover:bg-gray-100/60 transition-colors font-medium"
+                  className="bd-glass-control--secondary inline-flex items-center gap-2 font-medium"
+                  type="button"
                 >
                   <Home className="w-4 h-4" style={{ color: primaryColor }} />
                   <span style={{ color: primaryColor }}>Dashboard</span>
@@ -133,19 +126,17 @@ export default function LandingPageHeader({
             <>
               {/* Sign In Button */}
               <SignInButton mode="modal">
-                <button className="hidden md:block px-5 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-colors">
+                <button
+                  className="bd-glass-control--secondary hidden md:block font-medium"
+                  type="button"
+                >
                   Login
                 </button>
               </SignInButton>
 
-              {/* Get Started Button */}
+              {/* Get Started CTA */}
               <SignUpButton mode="modal">
-                <button
-                  className="px-6 py-2.5 text-white font-semibold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                  }}
-                >
+                <button className="bd-glass-control font-semibold" type="button">
                   Get Started
                 </button>
               </SignUpButton>

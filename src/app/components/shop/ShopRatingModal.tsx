@@ -4,7 +4,11 @@ import { X, Star } from "lucide-react";
 type ShopRatingModalProps = {
   shopName: string;
   onClose: () => void;
-  onSubmit: (rating: number, review: string, categoryRatings: { quality: number; service: number; timeliness: number; value: number }) => void;
+  onSubmit: (
+    rating: number,
+    review: string,
+    categoryRatings: { quality: number; service: number; timeliness: number; value: number }
+  ) => void;
   primaryColor?: string;
 };
 
@@ -12,7 +16,7 @@ export default function ShopRatingModal({
   shopName,
   onClose,
   onSubmit,
-  primaryColor = "#003d82"
+  primaryColor = "#003d82",
 }: ShopRatingModalProps) {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
@@ -20,7 +24,7 @@ export default function ShopRatingModal({
     quality: 0,
     service: 0,
     timeliness: 0,
-    value: 0
+    value: 0,
   });
 
   const handleSubmit = () => {
@@ -32,14 +36,14 @@ export default function ShopRatingModal({
   };
 
   // Independent StarRating component with its own hover state
-  const StarRating = ({ 
-    value, 
-    onChange, 
-    size = "w-8 h-8" 
-  }: { 
-    value: number; 
-    onChange: (val: number) => void; 
-    size?: string 
+  const StarRating = ({
+    value,
+    onChange,
+    size = "w-8 h-8",
+  }: {
+    value: number;
+    onChange: (val: number) => void;
+    size?: string;
   }) => {
     // Each instance has its own hover state
     const [localHover, setLocalHover] = useState(0);
@@ -57,9 +61,7 @@ export default function ShopRatingModal({
           >
             <Star
               className={`${size} ${
-                star <= (localHover || value)
-                  ? "text-yellow-400"
-                  : "text-gray-300"
+                star <= (localHover || value) ? "text-yellow-400" : "text-gray-300"
               }`}
               fill={star <= (localHover || value) ? "#FBBF24" : "none"}
             />
@@ -74,7 +76,7 @@ export default function ShopRatingModal({
       <div className="bg-white rounded-lg shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
           <h2 className="text-xl font-bold">Rate {shopName}</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onClose} className="bd-glass-control--secondary p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -82,23 +84,21 @@ export default function ShopRatingModal({
         <div className="p-6 space-y-6">
           {/* Overall Rating */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Overall Rating *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Overall Rating *</label>
             <StarRating value={rating} onChange={setRating} />
           </div>
 
           {/* Category Ratings */}
           <div className="space-y-4">
             <p className="text-sm text-gray-600">Rate specific aspects (optional):</p>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Quality of Work
               </label>
-              <StarRating 
-                value={category.quality} 
-                onChange={(val) => setCategory({...category, quality: val})}
+              <StarRating
+                value={category.quality}
+                onChange={(val) => setCategory({ ...category, quality: val })}
                 size="w-6 h-6"
               />
             </div>
@@ -107,20 +107,18 @@ export default function ShopRatingModal({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Customer Service
               </label>
-              <StarRating 
-                value={category.service} 
-                onChange={(val) => setCategory({...category, service: val})}
+              <StarRating
+                value={category.service}
+                onChange={(val) => setCategory({ ...category, service: val })}
                 size="w-6 h-6"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Timeliness
-              </label>
-              <StarRating 
-                value={category.timeliness} 
-                onChange={(val) => setCategory({...category, timeliness: val})}
+              <label className="block text-sm font-medium text-gray-700 mb-2">Timeliness</label>
+              <StarRating
+                value={category.timeliness}
+                onChange={(val) => setCategory({ ...category, timeliness: val })}
                 size="w-6 h-6"
               />
             </div>
@@ -129,9 +127,9 @@ export default function ShopRatingModal({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Value for Money
               </label>
-              <StarRating 
-                value={category.value} 
-                onChange={(val) => setCategory({...category, value: val})}
+              <StarRating
+                value={category.value}
+                onChange={(val) => setCategory({ ...category, value: val })}
                 size="w-6 h-6"
               />
             </div>
@@ -155,7 +153,7 @@ export default function ShopRatingModal({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-md font-medium hover:bg-gray-50"
+              className="flex-1 px-4 py-2 rounded-md font-medium bd-glass-control--secondary"
             >
               Cancel
             </button>

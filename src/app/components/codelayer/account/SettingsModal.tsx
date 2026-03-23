@@ -23,11 +23,21 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
             <h3 className="font-semibold mb-2">Notifications</h3>
             <label className="flex items-center justify-between">
               <span className="text-sm">Email notifications</span>
-              <input type="checkbox" defaultChecked className="w-5 h-5" style={{ accentColor: primaryColor }} />
+              <input
+                type="checkbox"
+                defaultChecked
+                className="w-5 h-5"
+                style={{ accentColor: primaryColor }}
+              />
             </label>
             <label className="flex items-center justify-between mt-2">
               <span className="text-sm">SMS notifications</span>
-              <input type="checkbox" defaultChecked className="w-5 h-5" style={{ accentColor: primaryColor }} />
+              <input
+                type="checkbox"
+                defaultChecked
+                className="w-5 h-5"
+                style={{ accentColor: primaryColor }}
+              />
             </label>
           </div>
 
@@ -35,7 +45,12 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
             <h3 className="font-semibold mb-2">Privacy</h3>
             <label className="flex items-center justify-between">
               <span className="text-sm">Share data with shops</span>
-              <input type="checkbox" defaultChecked className="w-5 h-5" style={{ accentColor: primaryColor }} />
+              <input
+                type="checkbox"
+                defaultChecked
+                className="w-5 h-5"
+                style={{ accentColor: primaryColor }}
+              />
             </label>
             <label className="flex items-center justify-between mt-2">
               <span className="text-sm">Show profile to insurers</span>
@@ -53,7 +68,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-2">
-          <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50" onClick={onClose}>
+          <button className="bd-glass-control--secondary px-4 py-2" onClick={onClose}>
             Cancel
           </button>
           <button

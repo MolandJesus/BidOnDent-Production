@@ -43,7 +43,7 @@ export default function NavigationActiveSpeedPanel({
   const hasDistance = Number.isFinite(speedLimitMatchDistanceMeters);
 
   return (
-    <div className="pointer-events-none absolute bottom-[18rem] right-4 z-[560] flex max-w-[calc(100%-2rem)] flex-col items-end gap-3 md:bottom-8 md:right-24">
+    <div className="pointer-events-none absolute bottom-[12rem] right-3 z-[560] flex max-w-[calc(100%-1.5rem)] flex-col items-end gap-3 sm:right-4 md:bottom-8 md:right-24 md:max-w-[calc(100%-2rem)]">
       <div className="pointer-events-auto flex items-end gap-3">
         <CurrentSpeedBadge
           tone={tone}
@@ -58,7 +58,7 @@ export default function NavigationActiveSpeedPanel({
 
       <div
         className={cn(
-          "map-liquid-card map-ui-enter map-ui-enter-delay-1 pointer-events-auto max-w-[280px] px-4 py-3",
+          "map-liquid-card map-ui-enter map-ui-enter-delay-1 pointer-events-auto hidden max-w-[280px] px-4 py-3 md:block",
           theme.panelClassName
         )}
       >

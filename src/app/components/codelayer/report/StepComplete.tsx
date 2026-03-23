@@ -47,7 +47,7 @@ export default function StepComplete({
 
       <button
         onClick={onBackToDashboard}
-        className="w-full py-2.5 px-4 rounded-xl border border-slate-300 font-medium hover:bg-slate-50 transition-colors"
+        className="w-full py-2.5 px-4 rounded-xl border border-slate-200/60 font-medium hover:bg-white/40 transition-colors"
       >
         Back to Dashboard
       </button>

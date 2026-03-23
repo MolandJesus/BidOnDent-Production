@@ -31,12 +31,16 @@ export default function AboutOpportunitySection() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
-    <section id="about-opportunity" className="py-20 bg-white" ref={sectionRef}>
+    <section
+      id="about-opportunity"
+      className="py-20 bg-gradient-to-b from-white to-blue-50/30"
+      ref={sectionRef}
+    >
       <div className="container mx-auto px-4 max-w-6xl">
         <div
           className={`text-center mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-sm font-medium">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             About BidOnDent
           </span>
@@ -53,13 +57,13 @@ export default function AboutOpportunitySection() {
             return (
               <div
                 key={item.title}
-                className={`rounded-2xl border bg-slate-50 p-6 transition-all duration-700 ${
-                  isExpanded ? "border-blue-200 shadow-md" : "border-slate-200"
+                className={`rounded-2xl bd-glass-card p-6 transition-all duration-700 ${
+                  isExpanded ? "border-blue-200 shadow-md" : ""
                 } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{ transitionDelay: `${0.2 + index * 0.1}s` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-4">
-                  <item.icon className="w-6 h-6 text-slate-700" />
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100/60 flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-[#003d82]" />
                 </div>
                 <h4 className="text-xl font-bold mb-2">{item.title}</h4>
                 <p className="text-slate-600 leading-relaxed">{item.text}</p>
@@ -70,7 +74,7 @@ export default function AboutOpportunitySection() {
                     isExpanded ? "max-h-48 opacity-100 mt-4" : "max-h-0 opacity-0"
                   }`}
                 >
-                  <p className="text-sm text-slate-500 leading-relaxed border-t border-slate-200 pt-4">
+                  <p className="text-sm text-slate-500 leading-relaxed border-t border-blue-100/60 pt-4">
                     {item.expandedText}
                   </p>
                 </div>
@@ -93,7 +97,7 @@ export default function AboutOpportunitySection() {
         <div className="mt-8 text-center">
           <a
             href="#/about"
-            className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 font-medium text-slate-800 hover:bg-slate-50 transition-colors"
+            className="bd-glass-control inline-flex items-center justify-center font-medium"
           >
             Read Full About Overview
           </a>

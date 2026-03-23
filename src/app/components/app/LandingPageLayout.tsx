@@ -68,7 +68,7 @@ export default function LandingPageLayout({
   profileDropdownData,
 }: LandingPageLayoutProps) {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#f0f6ff] via-white to-[#f0f6ff]">
       <LandingPageHeader
         isLoggedIn={isLoggedIn}
         primaryColor={primaryColor}

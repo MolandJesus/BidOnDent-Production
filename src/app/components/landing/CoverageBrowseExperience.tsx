@@ -1,15 +1,4 @@
 import { useEffect, useState } from "react";
-import {
-  AlertTriangle,
-  Compass,
-  Crosshair,
-  MapPinned,
-  MessageCircle,
-  RotateCcw,
-  Search,
-  Star,
-  Volume2,
-} from "lucide-react";
 import { useNavigationDiscoveryPlaces } from "../../hooks/useNavigationDiscoveryPlaces";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import { useSavedNavigationLocations } from "../../hooks/useSavedNavigationLocations";
@@ -27,10 +16,6 @@ import type { NavigationDiscoveryRole } from "../../services/navigation/placeDis
 import ServiceCoverageMap from "../maps/ServiceCoverageMap";
 import CoverageCommandCenterHeader from "../maps/command-center/CoverageCommandCenterHeader";
 import CoverageCommandCenterSidebar from "../maps/command-center/CoverageCommandCenterSidebar";
-import CoverageNavigationPlanner from "../maps/command-center/CoverageNavigationPlanner";
-import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
-import NavigationBrowseDiscoveryPanel from "../maps/navigation/NavigationBrowseDiscoveryPanel";
-import NavigationSavedPlacesPanel from "../maps/navigation/NavigationSavedPlacesPanel";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import type {
   CoverageCountyMarker,
@@ -40,9 +25,12 @@ import type {
   MapSurfaceTone,
   MapTileMode,
 } from "../maps/serviceCoverageMapTypes";
-import CoverageNearestShops from "./CoverageNearestShops";
+import CoverageBrowseMapOverlays from "./CoverageBrowseMapOverlays";
+import CoverageBrowseSidebarContent from "./CoverageBrowseSidebarContent";
 import { cn } from "../ui/utils";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
+import MobileMapBottomSheet from "./MobileMapBottomSheet";
 
 type CoverageBrowseExperienceProps = {
   tone: MapSurfaceTone;
@@ -238,17 +226,84 @@ export default function CoverageBrowseExperience({
     });
   }
 
-  const sidebarViews: Array<{
-    id: "search" | "explore" | "saved" | "shops";
-    label: string;
-    Icon: typeof Search;
-  }> = [
-    { id: "search", label: "Search", Icon: Search },
-    { id: "explore", label: "Explore", Icon: Compass },
-    { id: "saved", label: "Saved", Icon: Star },
-    { id: "shops", label: "Shops", Icon: MapPinned },
-  ];
-  const tileModes: MapTileMode[] = ["map", "satellite", "night"];
+  function handleSelectShopUnified(shop: CoverageNearbyShop) {
+    setSelectedDiscoveryPlaceId(null);
+    onSelectShop(shop);
+  }
+
+  function handleOpenShopDirections(shop: CoverageNearbyShop) {
+    handleOpenDirectionsWithHistory(shop);
+  }
+
+  function handleSelectDiscoveryPlaceWithCenter(place: NavigationDiscoveryPlace) {
+    handleSelectDiscoveryPlace(place, { centerMap: true });
+  }
+
+  function handleUseSavedLocation(target: CoverageSearchTarget, id?: string) {
+    navigation.selectManualOrigin(target);
+    if (id) {
+      savedNavigation.markLocationUsed(id);
+    }
+  }
+
+  function handleSaveParkedCar() {
+    if (!navigation.currentPosition) {
+      return;
+    }
+
+    savedNavigation.saveParkedCar({
+      coordinate: navigation.currentPosition,
+      accuracyMeters: navigation.gpsAccuracyMeters,
+      roadName: navigation.speedLimitSnapshot?.roadName,
+    });
+  }
+
+  const sidebarContent = (
+    <CoverageBrowseSidebarContent
+      tone={tone}
+      theme={theme}
+      sidebarView={sidebarView}
+      onSidebarViewChange={setSidebarView}
+      tileMode={tileMode}
+      onTileModeChange={onTileModeChange}
+      onCenterActive={onCenterActive}
+      onResetView={onResetView}
+      navigation={navigation}
+      selectedShop={selectedShop}
+      onStartNavigation={onStartNavigation}
+      listSearchTarget={listSearchTarget}
+      nearbyShops={nearbyShops}
+      selectedShopId={selectedShopId}
+      discoveryRole={discoveryRole}
+      initialDiscoveryRole={initialDiscoveryRole}
+      onDiscoveryRoleChange={setDiscoveryRole}
+      selectedDiscoveryPlaceId={selectedDiscoveryPlaceId || undefined}
+      selectedDiscoveryPlace={selectedDiscoveryPlace}
+      discoveryPlaces={discovery.places}
+      isLoadingDiscoveryPlaces={discovery.isLoading}
+      discoveryError={discovery.error}
+      onSelectShop={handleSelectShopUnified}
+      onOpenShopDirections={handleOpenShopDirections}
+      onSelectDiscoveryPlace={handleSelectDiscoveryPlaceWithCenter}
+      onOpenDiscoveryPlaceDirections={handleOpenDiscoveryPlaceDirections}
+      savedNavigation={{
+        pinnedLocations: savedNavigation.pinnedLocations,
+        recentLocations: savedNavigation.recentLocations,
+        parkedCar: savedNavigation.parkedCar,
+      }}
+      onSaveCurrentOrigin={handleSaveCurrentOrigin}
+      onUseSavedLocation={handleUseSavedLocation}
+      onDeleteSavedLocation={savedNavigation.removeLocation}
+      onSaveParkedCar={handleSaveParkedCar}
+      onClearParkedCar={savedNavigation.clearParkedCar}
+      isLoadingShops={isLoadingShops}
+      radiusMiles={radiusMiles}
+      preferredNavigationProvider={preferredNavigationProvider}
+      onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
+      onOpenDirections={handleOpenDirectionsWithHistory}
+    />
+  );
+
   const routeMinutes = navigation.routePreview
     ? Math.max(1, Math.round(navigation.routePreview.durationSeconds / 60))
     : null;
@@ -261,229 +316,33 @@ export default function CoverageBrowseExperience({
         minute: "2-digit",
       })
     : "--:--";
+  const isDesktop = useMediaQuery("(min-width: 1280px)");
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-white/30 bg-[linear-gradient(180deg,rgba(245,250,255,0.7),rgba(226,236,247,0.62))] shadow-[0_34px_100px_rgba(15,23,42,0.24)] backdrop-blur-3xl">
-      <CoverageCommandCenterHeader tone={tone} navigationSession={navigationSession} />
+    <div className="relative overflow-hidden rounded-none border-0 shadow-none xl:rounded-[2rem] xl:border xl:border-white/30 bg-transparent xl:bg-[linear-gradient(180deg,rgba(245,250,255,0.7),rgba(226,236,247,0.62))] xl:shadow-[0_34px_100px_rgba(15,23,42,0.24)] xl:backdrop-blur-3xl">
+      <div className="hidden xl:block">
+        <CoverageCommandCenterHeader tone={tone} navigationSession={navigationSession} />
+      </div>
 
       <div className="grid gap-0 xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[410px_minmax(0,1fr)]">
-        <CoverageCommandCenterSidebar
-          tone={tone}
-          dock="left"
-          showOverviewCards={false}
-          tileMode={tileMode}
-          regionCount={regionCount}
-          partnerShops={partnerShops}
-          selectedShop={selectedShop}
-          preferredNavigationProvider={preferredNavigationProvider}
-          navigationSession={navigationSession}
-          onOpenDirections={onOpenDirections}
-        >
-          <div
-            className={cn(
-              "sticky top-0 z-20 rounded-[1.25rem] p-2 backdrop-blur-2xl",
-              theme.panelStrongClassName
-            )}
+        {isDesktop ? (
+          <CoverageCommandCenterSidebar
+            tone={tone}
+            dock="left"
+            showOverviewCards={false}
+            tileMode={tileMode}
+            regionCount={regionCount}
+            partnerShops={partnerShops}
+            selectedShop={selectedShop}
+            preferredNavigationProvider={preferredNavigationProvider}
+            navigationSession={navigationSession}
+            onOpenDirections={onOpenDirections}
           >
-            <div className="grid grid-cols-2 gap-1.5">
-              {sidebarViews.map(({ id, label, Icon }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setSidebarView(id)}
-                  className={
-                    sidebarView === id
-                      ? cn(
-                          theme.primaryButtonClassName,
-                          "!py-1.5 !px-3 !text-xs !gap-1 motion-safe:hover:-translate-y-0.5"
-                        )
-                      : cn(
-                          theme.secondaryButtonClassName,
-                          "!py-1.5 !px-3 !text-xs !gap-1 motion-safe:hover:-translate-y-0.5"
-                        )
-                  }
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {label}
-                </button>
-              ))}
-            </div>
+            {sidebarContent}
+          </CoverageCommandCenterSidebar>
+        ) : null}
 
-            <div
-              className={cn(
-                "mt-1.5 flex overflow-hidden rounded-[0.75rem] border",
-                tone === "light"
-                  ? "border-white/60 bg-slate-100/50"
-                  : "border-white/12 bg-slate-900/50"
-              )}
-            >
-              {tileModes.map((mode, i) => (
-                <button
-                  key={mode}
-                  type="button"
-                  onClick={() => onTileModeChange(mode)}
-                  className={cn(
-                    "flex flex-1 items-center justify-center py-1.5 text-xs font-semibold transition-colors",
-                    i > 0 &&
-                      (tone === "light" ? "border-l border-white/50" : "border-l border-white/10"),
-                    tileMode === mode
-                      ? "bg-sky-500 text-white"
-                      : tone === "light"
-                        ? "text-slate-600 hover:bg-white/60"
-                        : "text-slate-300 hover:bg-white/10"
-                  )}
-                >
-                  {mode === "map" ? "Map" : mode === "satellite" ? "Sat" : "Night"}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-              <button
-                type="button"
-                onClick={onCenterActive}
-                className={cn(theme.secondaryButtonClassName, "!py-1.5 !px-3 !text-xs")}
-              >
-                <Crosshair className="h-3.5 w-3.5" />
-                Center
-              </button>
-              <button
-                type="button"
-                onClick={onResetView}
-                className={cn(theme.secondaryButtonClassName, "!py-1.5 !px-3 !text-xs")}
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset
-              </button>
-            </div>
-          </div>
-
-          <NavigationErrorBoundary>
-            <CoverageNavigationPlanner
-              tone={tone}
-              selectedShop={selectedShop}
-              activeOriginLabel={navigation.activeOriginLabel}
-              addressQuery={navigation.addressQuery}
-              onAddressQueryChange={navigation.setAddressQuery}
-              onSearchAddresses={() => {
-                void navigation.searchAddresses();
-              }}
-              addressResults={navigation.addressResults}
-              selectedAddressResult={navigation.selectedAddressResult}
-              isSearchingAddresses={navigation.isSearchingAddresses}
-              addressError={navigation.addressError}
-              onChooseAddressResult={navigation.chooseAddressResult}
-              onClearAddressResult={navigation.clearAddressResult}
-              addressSuggestions={navigation.addressSuggestions}
-              settings={navigation.settings}
-              onVoiceModeChange={navigation.setVoiceMode}
-              onVoiceVolumePresetChange={navigation.setVoiceVolumePreset}
-              onGpsTrackingEnabledChange={navigation.setGpsTrackingEnabled}
-              onSpeedLimitMonitorEnabledChange={navigation.setSpeedLimitMonitorEnabled}
-              onResetNavigationSettings={navigation.resetNavigationSettings}
-              onRetryRoutePreview={navigation.refreshRoutePreview}
-              onStartNavigation={onStartNavigation}
-              preferredVoiceLabel={navigation.preferredVoiceLabel}
-              voiceGuidanceSupported={navigation.voiceGuidanceSupported}
-              routePreview={navigation.routePreview}
-              routeAlternatives={navigation.routeAlternatives}
-              selectedRouteIndex={navigation.selectedRouteIndex}
-              onSelectRouteIndex={navigation.setSelectedRouteIndex}
-              isLoadingRoute={navigation.isLoadingRoute}
-              routeError={navigation.routeError}
-              currentStepIndex={navigation.currentStepIndex}
-              gpsAccuracyMeters={navigation.gpsAccuracyMeters}
-              gpsError={navigation.gpsError}
-              gpsStatus={navigation.gpsStatus}
-              speedLimitStatus={navigation.speedLimitStatus}
-              focusMode={sidebarView === "search" ? "search" : "route"}
-              showDiagnostics={sidebarView === "search" ? false : true}
-              showSavedAndDiscoveryHints={sidebarView === "search"}
-              showAdvancedControls={sidebarView !== "search"}
-            />
-
-            {sidebarView === "explore" ? (
-              <NavigationBrowseDiscoveryPanel
-                tone={tone}
-                activeSearchTarget={listSearchTarget}
-                nearbyShops={nearbyShops}
-                selectedShopId={selectedShopId}
-                discoveryRole={discoveryRole}
-                defaultDiscoveryRole={initialDiscoveryRole}
-                selectedDiscoveryPlaceId={selectedDiscoveryPlaceId || undefined}
-                selectedDiscoveryPlace={selectedDiscoveryPlace}
-                discoveryPlaces={discovery.places}
-                isLoadingDiscoveryPlaces={discovery.isLoading}
-                discoveryError={discovery.error}
-                onDiscoveryRoleChange={setDiscoveryRole}
-                onSelectShop={(shop) => {
-                  setSelectedDiscoveryPlaceId(null);
-                  onSelectShop(shop);
-                }}
-                onOpenShopDirections={(shop) => {
-                  handleOpenDirectionsWithHistory(shop);
-                }}
-                onSelectDiscoveryPlace={(place) => {
-                  handleSelectDiscoveryPlace(place, { centerMap: true });
-                }}
-                onOpenDiscoveryPlaceDirections={handleOpenDiscoveryPlaceDirections}
-              />
-            ) : null}
-
-            {sidebarView === "saved" ? (
-              <NavigationSavedPlacesPanel
-                tone={tone}
-                activeOriginLabel={navigation.activeOriginLabel}
-                activeOriginTarget={navigation.activeOriginTarget}
-                currentPositionAvailable={Boolean(navigation.currentPosition)}
-                pinnedLocations={savedNavigation.pinnedLocations}
-                recentLocations={savedNavigation.recentLocations}
-                parkedCar={savedNavigation.parkedCar}
-                onSaveCurrentOrigin={handleSaveCurrentOrigin}
-                onUseSavedLocation={(target, id) => {
-                  navigation.selectManualOrigin(target);
-                  if (id) {
-                    savedNavigation.markLocationUsed(id);
-                  }
-                }}
-                onDeleteSavedLocation={savedNavigation.removeLocation}
-                onSaveParkedCar={() => {
-                  if (!navigation.currentPosition) {
-                    return;
-                  }
-
-                  savedNavigation.saveParkedCar({
-                    coordinate: navigation.currentPosition,
-                    accuracyMeters: navigation.gpsAccuracyMeters,
-                    roadName: navigation.speedLimitSnapshot?.roadName,
-                  });
-                }}
-                onClearParkedCar={savedNavigation.clearParkedCar}
-              />
-            ) : null}
-
-            {sidebarView === "shops" ? (
-              <CoverageNearestShops
-                tone={tone}
-                className={cn("p-4", theme.panelStrongClassName)}
-                isLoadingShops={isLoadingShops}
-                activeSearchTarget={listSearchTarget}
-                nearbyShops={nearbyShops}
-                radiusMiles={radiusMiles}
-                selectedShopId={selectedShopId}
-                preferredNavigationProvider={preferredNavigationProvider}
-                onSelectShop={(shop) => {
-                  setSelectedDiscoveryPlaceId(null);
-                  onSelectShop(shop);
-                }}
-                onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
-                onOpenDirections={handleOpenDirectionsWithHistory}
-              />
-            ) : null}
-          </NavigationErrorBoundary>
-        </CoverageCommandCenterSidebar>
-
-        <div className="relative p-4 sm:p-6">
+        <div className="relative p-0 xl:p-4 2xl:p-6">
           <div className="pointer-events-none absolute inset-x-6 top-6 z-10 hidden h-28 rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(15,23,42,0.22),transparent)] xl:block" />
           <ServiceCoverageMap
             center={effectiveCenter}
@@ -496,7 +355,7 @@ export default function CoverageBrowseExperience({
             radiusMeters={radiusMeters}
             radiusMiles={radiusMiles}
             regionCount={regionCount}
-            mapHeightClassName="h-[74vh] min-h-[600px]"
+            mapHeightClassName="h-[100dvh] xl:h-[74vh] min-h-[360px] xl:min-h-[600px]"
             immersiveFullscreen
             showSurfaceChrome={false}
             selectedShopId={selectedShopId}
@@ -537,245 +396,38 @@ export default function CoverageBrowseExperience({
             }}
           />
 
-          <div className="pointer-events-none absolute inset-x-6 top-8 z-[620] hidden items-start justify-between gap-4 lg:flex">
-            <div className="pointer-events-auto flex max-w-[320px] flex-col gap-2">
-              <div
-                className={cn(
-                  "map-liquid-card map-glass-float map-ui-enter map-ui-enter-delay-1 rounded-[1.25rem] border px-3 py-2.5 backdrop-blur-2xl",
-                  theme.panelStrongClassName
-                )}
-              >
-                <div className={theme.metricLabelClassName}>Next maneuver</div>
-                <div
-                  className={cn("mt-1 text-base font-semibold leading-tight", theme.titleClassName)}
-                >
-                  {navigation.nextStep?.instruction || "Start route from selected origin"}
-                </div>
-                <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                  {selectedShop
-                    ? `Destination: ${selectedShop.name}`
-                    : "Pick a partner shop to begin."}
-                </div>
-              </div>
-
-              <div
-                className={cn(
-                  "map-liquid-card map-ui-enter map-ui-enter-delay-2 rounded-[1.1rem] border px-2.5 py-2.5 backdrop-blur-3xl",
-                  theme.panelClassName
-                )}
-              >
-                <div className="grid grid-cols-4 gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setSidebarView("search")}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px] !gap-1"
-                    )}
-                    aria-label="Search panel"
-                  >
-                    <Search className="h-3 w-3" />
-                    Search
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSidebarView("explore")}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px] !gap-1"
-                    )}
-                    aria-label="Explore panel"
-                  >
-                    <Compass className="h-3 w-3" />
-                    Explore
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSidebarView("saved")}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px] !gap-1"
-                    )}
-                    aria-label="Saved panel"
-                  >
-                    <Star className="h-3 w-3" />
-                    Saved
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSidebarView("shops")}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px] !gap-1"
-                    )}
-                    aria-label="Shops panel"
-                  >
-                    <MapPinned className="h-3 w-3" />
-                    Shops
-                  </button>
-                </div>
-
-                <div className="mt-2 flex flex-wrap items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => onTileModeChange("roadmap")}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px]",
-                      tileMode === "roadmap" ? "!bg-blue-500 !text-white" : null
-                    )}
-                    aria-label="Roadmap tile"
-                  >
-                    Map
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onTileModeChange("satellite")}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px]",
-                      tileMode === "satellite" ? "!bg-blue-500 !text-white" : null
-                    )}
-                    aria-label="Satellite tile"
-                  >
-                    Sat
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onTileModeChange("night")}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px]",
-                      tileMode === "night" ? "!bg-blue-500 !text-white" : null
-                    )}
-                    aria-label="Night tile"
-                  >
-                    Night
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMapOverride(null);
-                      onCenterActive();
-                    }}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px] !gap-1"
-                    )}
-                    aria-label="Center map"
-                  >
-                    <Crosshair className="h-3 w-3" />
-                    Center
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMapOverride(null);
-                      onResetView();
-                    }}
-                    className={cn(
-                      theme.secondaryButtonClassName,
-                      "!py-1 !px-2 !text-[10px] !gap-1"
-                    )}
-                    aria-label="Reset map"
-                  >
-                    <RotateCcw className="h-3 w-3" />
-                    Reset
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="pointer-events-auto map-ui-enter map-ui-enter-delay-3 flex flex-col gap-1.5">
-              <button
-                type="button"
-                onClick={() => setSidebarView("search")}
-                className={cn(theme.iconButtonClassName, "h-9 w-9")}
-                aria-label="Navigation controls"
-              >
-                <Compass className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSidebarView("search")}
-                className={cn(theme.iconButtonClassName, "h-9 w-9")}
-                aria-label="Voice controls"
-              >
-                <Volume2 className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSidebarView("explore")}
-                className={cn(theme.iconButtonClassName, "h-9 w-9")}
-                aria-label="Share ETA and incidents"
-              >
-                <MessageCircle className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSidebarView("shops")}
-                className={cn(theme.iconButtonClassName, "h-9 w-9")}
-                aria-label="Report issue"
-              >
-                <AlertTriangle className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          <div className="pointer-events-none absolute inset-x-6 bottom-8 z-[620] hidden justify-center lg:flex">
-            <div
-              className={cn(
-                "map-liquid-card map-ui-enter pointer-events-auto w-full max-w-[680px] rounded-[1.5rem] border px-4 py-3 backdrop-blur-2xl",
-                theme.panelStrongClassName
-              )}
-            >
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div>
-                  <div className={cn("text-xl font-semibold tabular-nums", theme.titleClassName)}>
-                    {arrivalLabel}
-                  </div>
-                  <div className={cn("text-xs", theme.secondaryTextClassName)}>arrival</div>
-                </div>
-                <div>
-                  <div className={cn("text-xl font-semibold tabular-nums", theme.titleClassName)}>
-                    {routeMinutes ? `${routeMinutes}` : "--"}
-                  </div>
-                  <div className={cn("text-xs", theme.secondaryTextClassName)}>min</div>
-                </div>
-                <div>
-                  <div className={cn("text-xl font-semibold tabular-nums", theme.titleClassName)}>
-                    {routeMiles ? `${routeMiles}` : "--"}
-                  </div>
-                  <div className={cn("text-xs", theme.secondaryTextClassName)}>mi</div>
-                </div>
-              </div>
-
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSidebarView("explore")}
-                  className={cn(theme.secondaryButtonClassName, "!py-1.5 !px-3 !text-xs")}
-                >
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  Share ETA
-                </button>
-                <button
-                  type="button"
-                  onClick={onStartNavigation}
-                  disabled={!navigation.routePreview || !selectedShop || navigation.isLoadingRoute}
-                  className={cn(
-                    theme.primaryButtonClassName,
-                    "!py-1.5 !px-4 !text-xs disabled:opacity-50"
-                  )}
-                >
-                  <Compass className="h-3.5 w-3.5" />
-                  Start Route
-                </button>
-              </div>
-            </div>
-          </div>
+          <CoverageBrowseMapOverlays
+            className="hidden xl:contents"
+            theme={theme}
+            tileMode={tileMode}
+            nextInstruction={navigation.nextStep?.instruction ?? null}
+            selectedShop={selectedShop}
+            arrivalLabel={arrivalLabel}
+            routeMinutes={routeMinutes}
+            routeMiles={routeMiles}
+            canStartNavigation={
+              Boolean(navigation.routePreview) &&
+              Boolean(selectedShop) &&
+              !navigation.isLoadingRoute
+            }
+            onSidebarViewChange={setSidebarView}
+            onTileModeChange={onTileModeChange}
+            onCenterMap={() => {
+              setMapOverride(null);
+              onCenterActive();
+            }}
+            onResetMap={() => {
+              setMapOverride(null);
+              onResetView();
+            }}
+            onStartNavigation={onStartNavigation}
+          />
         </div>
       </div>
+
+      {!isDesktop ? (
+        <MobileMapBottomSheet tone={tone}>{sidebarContent}</MobileMapBottomSheet>
+      ) : null}
     </div>
   );
 }

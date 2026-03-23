@@ -101,6 +101,12 @@ export type NavigationGuidanceSettings = {
   speedLimitProvider: NavigationSpeedLimitProvider;
 };
 
+/** Voice-only subset of guidance settings — shared by speech services and alert hooks. */
+export type NavigationVoiceSettings = Pick<
+  NavigationGuidanceSettings,
+  "voiceMode" | "voicePersona" | "voiceVolumePreset"
+>;
+
 export type ExternalNavigationSession = {
   provider: NavigationProvider;
   destinationId?: string;

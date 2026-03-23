@@ -8,6 +8,8 @@ import { readPersistedState, writePersistedState } from "./persistedState";
 export const NAVIGATION_SAVED_LOCATIONS_STORAGE_KEY = "bidondent_navigation_saved_locations";
 const navigationSavedLocationsStorageVersion = 2;
 const MAX_RECENT_LOCATIONS = 6;
+const RECENT_STALENESS_DAYS = 30;
+const RECENT_STALENESS_MS = RECENT_STALENESS_DAYS * 24 * 60 * 60 * 1000;
 
 type CreateSavedLocationArgs = {
   label: string;
@@ -35,6 +37,11 @@ function normalizeSavedLocations(locations: NavigationSavedLocation[]): Navigati
 
   const recentLocations = normalized
     .filter((location) => location.category === "recent")
+    .filter((location) => {
+      const lastActivity = location.lastUsedAt || location.createdAt;
+      const ageMs = Date.now() - new Date(lastActivity).getTime();
+      return ageMs < RECENT_STALENESS_MS;
+    })
     .slice(0, MAX_RECENT_LOCATIONS);
   const pinnedLocations = normalized.filter((location) => location.category !== "recent");
 

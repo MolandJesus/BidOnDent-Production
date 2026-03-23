@@ -48,6 +48,7 @@
     "geospatial",
     "Rockland",
     "touchpoints",
+    "viewports",
     "rollups",
     "watchlist",
     "watchlists",
@@ -121,6 +122,13 @@
     "Tappable",
     "geofenced",
     "Geofenced",
-    "geofencing"
+    "geofencing",
+    "TECHDEBT",
+    "swipeable",
+    "unhid",
+    "Unhid",
+    "nums",
+    "dedup",
+    "destructures"
   ]
 }

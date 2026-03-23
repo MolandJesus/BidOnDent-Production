@@ -25,22 +25,18 @@ export default function TrustStatsSection() {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-r from-blue-900 to-blue-700 text-white relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-r from-[#0c1929] to-[#1e3a5f] text-white relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:26px_26px] opacity-25" />
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-600 rounded-full opacity-20 blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-500 rounded-full opacity-15 blur-3xl" />
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-400/20 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 max-w-7xl relative">
         <div className="grid md:grid-cols-4 gap-8 text-center">
           {commitments.map((item, index) => (
-            <div
-              key={item.label}
-              className="group"
-              style={{ animationDelay: `${index * 0.15}s` }}
-            >
+            <div key={item.label} className="group" style={{ animationDelay: `${index * 0.15}s` }}>
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-4 group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110">
-                <item.icon className="w-8 h-8 text-gray-300" />
+                <item.icon className="w-8 h-8 text-blue-300" />
               </div>
               <div className="text-2xl font-bold mb-2 tabular-nums flex items-center justify-center gap-2">
                 {item.value}

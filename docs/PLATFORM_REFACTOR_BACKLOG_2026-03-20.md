@@ -51,27 +51,26 @@ These are **not** fully production-finished yet:
 2. Normalize report/bid/claim view models instead of repeating per-screen adapters.
 3. Reduce duplicate notification ownership between bell and profile dropdown.
 4. Replace seeded default notifications with honest empty/live states.
-5. Add dedicated local-memory contracts for:
-   - last visited app location
-   - map search state
-   - future directions session state
 
 ### Map / coverage
 
-1. Extract landing/dashboard coverage search state into a shared hook.
-2. Split immersive fullscreen map chrome into dedicated modules:
-   - command-center header
-   - command-center sidebar
-   - map overlay controls
-   - map status rail
+1. ~~Extract landing/dashboard coverage search state into a shared hook.~~ (Complete — `useCoveragePartnerShops()` is shared.)
+2. ~~Split immersive fullscreen map chrome into dedicated modules.~~ (Complete — command-center header, sidebar, and map overlay controls extracted.)
 3. Split the current map into:
    - operational embedded map
    - immersive fullscreen map
 4. Keep low-zoom immersive behavior honest: world overview is acceptable, fake globe is not.
-5. Redesign midnight mode so it feels branded and premium rather than generic dark tiles.
-6. Add selected-shop highlighting and route-launch affordances across landing and fullscreen map surfaces. (Complete)
+5. ~~Redesign midnight mode so it feels branded and premium rather than generic dark tiles.~~ (Complete — navy-tinted dark mode with blue-glow glass.)
+6. ~~Add selected-shop highlighting and route-launch affordances across landing and fullscreen map surfaces.~~ (Complete.)
 7. Keep route-launch behavior honest: external navigation is live now, embedded navigation remains planned.
 8. Keep browse-mode content BidOnDent-specific with nearby stores, guide cards, and saved-place shortcuts instead of generic filler. (In progress)
+
+### Glass design system (Delivered 2026-03-22)
+
+1. ~~Glass tokens and classes fully deployed~~ (`bd-glass-panel`, `bd-glass-card`, `bd-glass-badge`, `bd-glass-control`, `bd-glass-floating`).
+2. ~~Unified hover standard `hover:bg-white/40` site-wide.~~
+3. ~~Navy dark mode `#0c1929` with blue-tinted glass.~~
+4. ~~Map zoom controls premium (pill, gradient, blur).~~
 
 ### Role truthfulness
 

@@ -200,7 +200,7 @@ export default function DemoAccountSwitcher({
       >
         <button
           onClick={onExitDemo}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200/60 bg-white text-slate-700 hover:bg-white/40 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Exit Demo Mode

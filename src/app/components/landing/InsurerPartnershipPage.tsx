@@ -39,7 +39,10 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
 
         <section className="grid md:grid-cols-3 gap-5 mb-6">
           {focusAreas.map((item) => (
-            <article key={item.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <article
+              key={item.title}
+              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
               <div className="w-11 h-11 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center mb-4">
                 <item.icon className="w-5 h-5 text-slate-700" />
               </div>
@@ -50,17 +53,22 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
         </section>
 
         <section className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">Start a Partnership Conversation</h2>
+          <h2 className="text-xl font-semibold text-slate-900 mb-2">
+            Start a Partnership Conversation
+          </h2>
           <p className="text-slate-600 mb-3">
             Contact us and our team will coordinate next steps for operational fit and onboarding.
           </p>
-          <a href="mailto:bidondent@gmail.com" className="text-blue-700 font-semibold hover:text-blue-800">
+          <a
+            href="mailto:bidondent@gmail.com"
+            className="text-blue-700 font-semibold hover:text-blue-800"
+          >
             bidondent@gmail.com
           </a>
           <div className="mt-5">
             <button
               onClick={onBackToHome}
-              className="inline-flex items-center justify-center rounded-lg bg-slate-900 text-white px-4 py-2.5 font-medium hover:bg-slate-800 transition-colors"
+              className="bd-glass-control inline-flex items-center justify-center px-4 py-2.5"
             >
               Back to Home
             </button>
