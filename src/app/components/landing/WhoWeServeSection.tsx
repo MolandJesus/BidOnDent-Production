@@ -63,7 +63,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
   return (
     <section
       id="who-we-serve"
-      className="py-12 md:py-20 bg-gradient-to-b from-blue-50/30 to-white"
+      className="py-16 md:py-24 bg-gradient-to-b from-blue-50/40 via-white to-white"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -91,7 +91,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`relative overflow-hidden bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-8 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.03] group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`relative overflow-hidden bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-8 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-xl hover:-translate-y-2 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 borderColor: card.borderColor,
                 transitionDelay: `${0.3 + index * 0.15}s`,

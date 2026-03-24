@@ -28,10 +28,10 @@ export type StatItem = {
 };
 
 export const toneClasses: Record<StatItem["tone"], string> = {
-  blue: "bg-blue-50 text-blue-600",
-  green: "bg-emerald-50 text-emerald-600",
-  purple: "bg-violet-50 text-violet-600",
-  amber: "bg-amber-50 text-amber-600",
+  blue: "bg-blue-100/70 text-blue-700",
+  green: "bg-emerald-100/70 text-emerald-700",
+  purple: "bg-violet-100/70 text-violet-700",
+  amber: "bg-amber-100/70 text-amber-700",
 };
 
 export const statusClasses: Record<string, string> = {
@@ -43,10 +43,10 @@ export const statusClasses: Record<string, string> = {
 };
 
 export const actionIconTones = [
-  "bg-blue-50 text-blue-600",
-  "bg-emerald-50 text-emerald-600",
-  "bg-amber-50 text-amber-600",
-  "bg-violet-50 text-violet-600",
+  "bg-blue-100/80 text-blue-700 shadow-sm",
+  "bg-emerald-100/80 text-emerald-700 shadow-sm",
+  "bg-amber-100/80 text-amber-700 shadow-sm",
+  "bg-violet-100/80 text-violet-700 shadow-sm",
 ];
 
 export function buildStats(

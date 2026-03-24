@@ -42,24 +42,28 @@ export function HomeOnboardingCard({
 
   return (
     <section
-      className="rounded-2xl p-4 sm:p-6 text-white shadow-sm"
+      className="rounded-2xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden"
       style={{
         background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
       }}
     >
-      <h2 className="text-xl font-semibold mb-2">How BidOnDent Works</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-        {steps.map((step, i) => (
-          <div key={step.label} className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 text-sm font-bold">
-              {i + 1}
+      {/* Subtle atmospheric depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_-10%,rgba(255,255,255,0.12),transparent_50%)]" />
+      <div className="relative">
+        <h2 className="text-xl font-semibold mb-2">How BidOnDent Works</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+          {steps.map((step, i) => (
+            <div key={step.label} className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 text-sm font-bold shadow-sm">
+                {i + 1}
+              </div>
+              <div>
+                <p className="font-medium">{step.label}</p>
+                <p className="text-white/80 text-sm">{step.detail}</p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium">{step.label}</p>
-              <p className="text-white/80 text-sm">{step.detail}</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -91,7 +95,7 @@ export function HomeReportsList({
   return (
     <div className="bd-glass-card p-5">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold text-slate-900">{listHeader}</h2>
+        <h2 className="text-xl font-semibold text-slate-900">{listHeader}</h2>
         <button
           onClick={onViewAll}
           className="bd-glass-control text-sm font-medium text-blue-700 hover:text-blue-800 inline-flex items-center gap-1 px-3 py-2 rounded-xl"
@@ -229,7 +233,7 @@ export function HomeSidebar({
   return (
     <aside className="xl:col-span-4 space-y-5">
       <section className="bd-glass-card p-5">
-        <h2 className="text-2xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
+        <h2 className="text-xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-3">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
@@ -240,10 +244,10 @@ export function HomeSidebar({
                 key={action.title}
                 onClick={action.onClick}
                 disabled={isDisabled}
-                className={`text-left p-4 transition-all rounded-xl font-medium ${
+                className={`text-left p-4 transition-all duration-200 rounded-xl font-medium ${
                   isDisabled
                     ? "border border-slate-200/60 bg-slate-100/60 text-slate-400 cursor-not-allowed"
-                    : "bd-glass-card hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
+                    : "bd-glass-card hover:shadow-lg hover:-translate-y-1 active:scale-[0.97] hover:border-blue-200/60"
                 }`}
               >
                 <div
@@ -251,8 +255,8 @@ export function HomeSidebar({
                 >
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="font-semibold text-slate-900">{action.title}</h3>
-                <p className="text-sm text-slate-600 mt-1">{action.description}</p>
+                <h3 className="font-semibold text-slate-900 text-sm">{action.title}</h3>
+                <p className="text-xs text-slate-500 mt-1 leading-snug">{action.description}</p>
               </button>
             );
           })}
@@ -260,7 +264,7 @@ export function HomeSidebar({
       </section>
 
       <section className="bd-glass-card p-5">
-        <h2 className="text-2xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
+        <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
         {activityItems.length === 0 && (
           <p className="text-slate-600 text-sm">No recent activity to show yet.</p>
         )}
