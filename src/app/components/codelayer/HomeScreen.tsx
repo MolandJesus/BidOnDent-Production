@@ -198,7 +198,7 @@ export default function HomeScreen({
             return (
               <article
                 key={item.label}
-                className="bd-glass-card p-3.5 md:p-5 min-h-[120px] md:min-h-[158px]"
+                className="bd-glass-card p-3.5 md:p-5 min-h-[120px] md:min-h-[158px] hover:-translate-y-0.5 cursor-default"
               >
                 <div className="flex items-start justify-between mb-3 md:mb-5">
                   <div

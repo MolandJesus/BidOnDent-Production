@@ -729,13 +729,26 @@
 
 .bd-glass-card {
   border: 1px solid var(--bd-glass-border-light);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.14));
   backdrop-filter: blur(var(--bd-glass-blur));
   -webkit-backdrop-filter: blur(var(--bd-glass-blur));
   border-radius: var(--bd-radius-card);
   box-shadow:
-    0 10px 24px rgba(15, 23, 42, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+    0 10px 24px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+  transition:
+    transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bd-glass-card:hover {
+  box-shadow:
+    0 16px 32px rgba(15, 23, 42, 0.12),
+    0 4px 8px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.56);
+  border-color: rgba(219, 234, 254, 0.7);
 }
 
 .bd-glass-badge {
@@ -820,11 +833,14 @@
 
 .bd-glass-floating {
   border: 1px solid var(--bd-glass-border-light);
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-radius: var(--bd-radius-panel);
   box-shadow: var(--bd-glass-shadow-floating);
+  transition:
+    transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dark-tone variants */
