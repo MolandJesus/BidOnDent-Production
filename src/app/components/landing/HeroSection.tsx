@@ -61,14 +61,19 @@ export default function HeroSection({
   };
 
   return (
-    <section className="pt-32 pb-20 overflow-hidden relative bg-gradient-to-br from-[#e8f0fe] via-[#f0f6ff] to-[#e8f4fd]">
-      {/* Structural blue atmosphere layer */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(0,61,130,0.08),transparent)]" />
-      {/* Decorative background blobs */}
-      <div className="absolute top-20 right-0 w-72 h-72 bg-blue-200 rounded-full opacity-25 blur-3xl animate-blob" />
+    <section className="pt-32 pb-20 overflow-hidden relative bg-gradient-to-br from-[#e8f0fe] via-[#f0f4ff] to-[#eef2f9]">
+      {/* Atmospheric depth layers — warm radial + cool ambient */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_30%_-10%,rgba(0,61,130,0.10),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_90%,rgba(99,102,241,0.05),transparent_60%)]" />
+      {/* Decorative background blobs — warmer tones for depth */}
+      <div className="absolute top-20 right-0 w-72 h-72 bg-blue-200 rounded-full opacity-20 blur-3xl animate-blob" />
       <div
-        className="absolute bottom-10 left-0 w-96 h-96 bg-blue-300 rounded-full opacity-15 blur-3xl animate-blob"
+        className="absolute bottom-10 left-0 w-96 h-96 bg-indigo-200 rounded-full opacity-15 blur-3xl animate-blob"
         style={{ animationDelay: "4s" }}
+      />
+      <div
+        className="absolute top-1/2 left-1/3 w-64 h-64 bg-sky-100 rounded-full opacity-20 blur-3xl animate-blob"
+        style={{ animationDelay: "2s" }}
       />
 
       <div className="container mx-auto px-4 max-w-7xl relative">
@@ -208,15 +213,19 @@ export default function HeroSection({
             style={{ transitionDelay: "0.3s" }}
           >
             <ImageErrorBoundary>
-              <ImageWithFallback
-                src={heroImage}
-                alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
-                className="rounded-2xl shadow-2xl w-full h-auto object-cover"
-                style={{
-                  aspectRatio: "16/10",
-                  maxHeight: "600px",
-                }}
-              />
+              <div className="relative">
+                <ImageWithFallback
+                  src={heroImage}
+                  alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
+                  className="rounded-2xl shadow-2xl w-full h-auto object-cover"
+                  style={{
+                    aspectRatio: "16/10",
+                    maxHeight: "600px",
+                  }}
+                />
+                {/* Subtle depth overlay on hero image */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-slate-900/10 via-transparent to-white/5 pointer-events-none" />
+              </div>
             </ImageErrorBoundary>
 
             {/* Floating "NY" region badge */}

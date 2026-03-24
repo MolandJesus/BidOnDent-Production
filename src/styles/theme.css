@@ -689,7 +689,31 @@
 }
 
 /* ============================================================
-   BidOnDent global glass utility classes (Stage 1)
+   BidOnDent Glass Design System — Custom Properties
+   Source of truth for all bd-glass-* utility classes.
+   ============================================================ */
+
+:root {
+  /* Glass surface */
+  --bd-glass-blur: 12px;
+  --bd-glass-bg-light: rgba(255, 255, 255, 0.72);
+  --bd-glass-border-light: rgba(219, 234, 254, 0.5);
+  --bd-glass-border-dark: rgba(96, 165, 250, 0.24);
+  --bd-glass-shadow: 0 8px 32px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  --bd-glass-shadow-floating: 0 20px 48px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(15, 23, 42, 0.06);
+
+  /* Radii */
+  --bd-radius-panel: 1rem;
+  --bd-radius-card: 0.875rem;
+  --bd-radius-badge: 999px;
+
+  /* Brand colors */
+  --bd-royal-blue-strong: #1e40af;
+  --bd-royal-blue-soft: #93c5fd;
+}
+
+/* ============================================================
+   BidOnDent global glass utility classes
    These are NOT scoped to .coverage-map-surface and can be
    used on any element across the app.
    ============================================================ */
