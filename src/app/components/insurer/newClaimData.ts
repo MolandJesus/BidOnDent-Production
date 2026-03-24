@@ -32,16 +32,16 @@ export function buildPolicyholders(reports: any[]): Policyholder[] {
   if (!reports.length) {
     return [
       {
-        id: "customer-1",
-        name: "BidOnDent Customer",
-        email: "bidondent@gmail.com",
+        id: "customer-placeholder",
+        name: "No policyholders on file",
+        email: "N/A",
         phone: "N/A",
-        policyNumber: "POL-BIDONDENT",
-        vehicles: [{ year: "2022", make: "Vehicle", model: "On File" }],
-        location: "New York Service Region",
-        memberSince: "2026",
-        activeClaims: 1,
-        status: "active",
+        policyNumber: "N/A",
+        vehicles: [{ year: "", make: "No vehicle", model: "on file" }],
+        location: "N/A",
+        memberSince: "",
+        activeClaims: 0,
+        status: "inactive",
       },
     ];
   }
@@ -53,10 +53,10 @@ export function buildPolicyholders(reports: any[]): Policyholder[] {
 
     return {
       id: `customer-${report?.id ?? index}`,
-      name: `Customer ${index + 1}`,
-      email: "bidondent@gmail.com",
-      phone: "N/A",
-      policyNumber: `POL-${String(index + 1).padStart(4, "0")}`,
+      name: report?.customerName || "Policyholder on file",
+      email: report?.customerEmail || "On file",
+      phone: report?.customerPhone || "On file",
+      policyNumber: report?.policyNumber || "Pending verification",
       vehicles: [
         {
           year: vehicleData.year || "",
@@ -73,40 +73,23 @@ export function buildPolicyholders(reports: any[]): Policyholder[] {
   });
 }
 
-export function buildClaimShops(reports: any[]): ClaimShop[] {
-  const total = reports.length || 1;
+export function buildClaimShops(_reports: any[]): ClaimShop[] {
   return [
     {
       id: "claim-shop-1",
       name: "BidOnDent Partner Network",
-      email: "bidondent@gmail.com",
-      phone: "N/A",
+      email: "partners@bidondent.com",
+      phone: "On file",
       address: "Region-assigned dispatch",
-      location: "Rockland / Dutchess / Westchester",
+      location: "New York service region",
       distance: "Service-radius based",
-      rating: 4.8,
-      reviewCount: Math.max(total * 4, 24),
-      specialties: ["Collision Repair", "Claim Handling", "Paint & Body"],
-      certified: true,
-      partnerSince: "2026",
-      completedJobs: Math.max(total - 1, 1),
-      avgCompletionDays: 3.8,
-    },
-    {
-      id: "claim-shop-2",
-      name: "Regional Overflow Team",
-      email: "bidondent@gmail.com",
-      phone: "N/A",
-      address: "Operational queue routing",
-      location: "Expanded NY coverage",
-      distance: "Assignment based",
-      rating: 4.5,
-      reviewCount: Math.max(total * 2, 12),
-      specialties: ["High-volume Intake", "Fast Turnaround"],
+      rating: 0,
+      reviewCount: 0,
+      specialties: ["Collision Repair", "Paint & Body"],
       certified: false,
       partnerSince: "2026",
-      completedJobs: Math.max(Math.floor(total * 0.6), 1),
-      avgCompletionDays: 4.2,
+      completedJobs: 0,
+      avgCompletionDays: 0,
     },
   ];
 }

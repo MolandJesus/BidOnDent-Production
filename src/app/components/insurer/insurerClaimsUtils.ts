@@ -31,28 +31,28 @@ export function transformReportsToClaims(reports: any[]): ClaimData[] {
     const rawStatus = String(report?.status ?? "pending").toLowerCase();
     const status =
       rawStatus === "completed" ? "approved" : rawStatus === "in-review" ? "reviewing" : "pending";
-    const estimatedDamage = (Number(report?.bidsCount) || 1) * 600;
+    const bidAmount = Number(report?.bidAmount) || 0;
 
     return {
       id: Number(index + 1),
       claimNumber: `CLM-${String(index + 1).padStart(4, "0")}`,
-      customerName: "Customer",
-      customerEmail: "bidondent@gmail.com",
-      customerPhone: "N/A",
-      policyNumber: "Policy on file",
+      customerName: report?.customerName || "Policyholder on file",
+      customerEmail: report?.customerEmail || "On file",
+      customerPhone: report?.customerPhone || "On file",
+      policyNumber: report?.policyNumber || "Pending verification",
       vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
-      vin: "Not provided",
+      vin: vehicleData?.vin || "Not provided",
       damageType: report?.damageArea || report?.damageType || "Damage report",
       incidentDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
       reportedDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
-      estimatedDamage,
+      estimatedDamage: bidAmount,
       location: report?.location || "Service region",
       status,
-      priority: estimatedDamage >= 1800 ? "high" : estimatedDamage >= 1000 ? "medium" : "low",
+      priority: bidAmount >= 1800 ? "high" : bidAmount >= 1000 ? "medium" : "low",
       photoCount: Array.isArray(report?.photos) ? report.photos.length : 0,
       description: report?.description || "Claim details pending review.",
       shopAssigned: null,
-      approvedAmount: status === "approved" ? estimatedDamage : undefined,
+      approvedAmount: status === "approved" ? bidAmount : undefined,
     };
   });
 }

@@ -197,7 +197,7 @@ export default function DashboardRouter({
         {/* Insurer: Claims Screen */}
         {viewMode === "dashboard" && currentTab === "claims" && userType === "insurer" && (
           <motion.div key="claims" {...screenTransition}>
-            <InsurerClaimsScreen primaryColor={primaryColor} />
+            <InsurerClaimsScreen primaryColor={primaryColor} reports={SEED_DAMAGE_REPORTS} />
           </motion.div>
         )}
 

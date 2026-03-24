@@ -40,6 +40,24 @@ Issues identified from live 375px mobile screenshots against the design vision a
 
 ---
 
+### Pass 116 — P0-TRUST/RUNTIME: Insurer Flow Reality Check (2026-03-23)
+
+1. **Pass chosen and why**: Insurer workflow had the same wiring bug as shop screens (Pass 114) — `InsurerClaimsScreen` rendered with no `reports` prop, always showing empty. Additionally, `insurerClaimsUtils.ts` fabricated claim estimates using `bidsCount * 600` and showed fake customer data. `InsuranceCompaniesScreen.tsx` displayed 5 entirely fake companies with fabricated stats (2,847–3,421 reviews, 5,600–18,200 claims processed) — false claims visible to every insurer user.
+2. **What changed**:
+   - `DashboardRouter.tsx`: Wired `reports={SEED_DAMAGE_REPORTS}` to `InsurerClaimsScreen` — same fix pattern as shop screens in Pass 114. Claims list no longer always-empty.
+   - `insurerClaimsUtils.ts`: Removed fabricated `estimatedDamage: (bidsCount || 1) * 600` formula. Now reads real `bidAmount` from report. Removed fake customer data (`"Customer"`, `"bidondent@gmail.com"`, `"N/A"`) — replaced with honest passthrough from report fields or `"Policyholder on file"` / `"On file"` / `"Pending verification"`.
+   - `InsuranceCompaniesScreen.tsx`: Removed all 5 fake companies with fabricated ratings/review counts/claims-processed stats. Replaced with honest "Insurance Directory Coming Soon" empty state. Removed unused imports (Star, MapPin, Phone, Mail, CheckCircle, TrendingUp, Users). File reduced from 344 → 74 lines.
+   - `newClaimData.ts`: Fixed `buildPolicyholders()` — removed `Customer 1` / `POL-0001` fake names/numbers. Now reads `report.customerName`, `report.policyNumber`, or shows `"Policyholder on file"` / `"Pending verification"`. Fixed empty-reports fallback: removed fake `"BidOnDent Customer"` / `"POL-BIDONDENT"`. Fixed `buildClaimShops()` — removed `"Regional Overflow Team"` fake shop with fabricated `reviewCount: Math.max(total * 2, 12)` and `completedJobs` math. Removed unused `total` variable.
+3. **Files touched**: `DashboardRouter.tsx`, `insurerClaimsUtils.ts`, `InsuranceCompaniesScreen.tsx`, `newClaimData.ts`
+4. **Validation**: Build: 1.88s, 0 errors. Bundle: 971.42 KB / 248.88 KB gzip. Diagnostics: 0. Spellcheck: 0 (4 files checked). Mobile/Desktop: not visually tested this pass (data/logic fix, no layout change except InsuranceCompaniesScreen).
+5. **Problem taxonomy**: P0:3 fixed (no reports wired + `bidsCount * 600` formula + 5 fake companies with false stats) P1:0 P2:2 fixed (fake customer email/names + fake policyholders) P3:1 fixed (unused `total` var) P4:0 P5:0 P6:0 P7:0
+6. **Architecture decisions**: `InsuranceCompaniesScreen` simplified to honest empty state — no fake data preferred over fabricated directory. Claims data still uses `SEED_DAMAGE_REPORTS` as honest fallback pending real Supabase claim queries. Customer name/email passthrough is forward-compatible when real customer data arrives on report objects.
+7. **Doc updates**: BIDONDENT_BUILD_PROGRESS_DASHBOARD.md updated (this entry). Bundle size corrected to 971.42 KB.
+8. **What this unlocks**: Insurer claims screen now shows real seed data. All 3 major dashboard views (customer, shop, insurer) are wired to honest data. No fabricated stats remain on any user-visible screen.
+9. **Best next pass**: P4-UX — Dashboard Quick Actions visual hierarchy on mobile, or P7 landing scroll fatigue. Alternatively, insurer new claim flow (claim persistence to Supabase — larger arch pass).
+
+---
+
 ### Pass 115 — P0-TRUST: Remove Remaining False Landing Claims (2026-03-23)
 
 1. **Pass chosen and why**: Desktop screenshot audit revealed 2 more false claims surviving from pre-Pass 112 — "certified shops" in How It Works and "thousands of satisfied customers" in CTA. Every landing visitor sees both.
@@ -1052,19 +1070,20 @@ Pass 106: ~976 KB  ████████████████████�
 Pass 107: ~976 KB  ███████████████████████████████████████████████░
 Pass 108: ~976 KB  ███████████████████████████████████████████████░
 Pass 113: ~978 KB  ████████████████████████████████████████████████
-Pass 115: ~978 KB  ████████████████████████████████████████████████  ← current
-                   (978.47 KB / gzip: 250.26 KB)
+Pass 115: ~978 KB  ████████████████████████████████████████████████
+Pass 116: ~971 KB  ███████████████████████████████████████████████░  ← current
+                   (971.42 KB / gzip: 248.88 KB)
 ```
 
 ### Key Metrics
 
 | Metric                 | Value                                                                     |
 | ---------------------- | ------------------------------------------------------------------------- |
-| Total passes executed  | 115                                                                       |
+| Total passes executed  | 116                                                                       |
 | Files in src/          | ~162 (+2 new services: errorReporting, sentryInit)                        |
 | Largest file           | 453 lines (integration.test.ts)                                           |
 | Files over 400 lines   | 12 (all under 500 hard limit)                                             |
-| Production bundle (JS) | 978.47 KB (gzip: 250.26 KB)                                               |
+| Production bundle (JS) | 971.42 KB (gzip: 248.88 KB)                                               |
 | Build time             | 1.6–1.82s consistently                                                    |
 | Spellcheck issues      | 0 across 136 consumer components                                          |
 | VS Code diagnostics    | 3 CSS contrast warnings (glass edges, not blocking)                       |
