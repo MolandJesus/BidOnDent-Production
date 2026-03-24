@@ -92,7 +92,7 @@ export function useAppHandlers({
     userData.setActivities([newActivity, ...userData.activities] as any);
   };
 
-  const submitBid = (
+  const submitBid = async (
     reportId: string,
     bidAmount: number,
     estimatedDays?: number,
@@ -108,47 +108,42 @@ export function useAppHandlers({
 
     const vehicleInfo = `${report.year} ${report.make} ${report.model}`;
 
-    const newBid = {
-      id: Date.now().toString(),
-      reportId,
-      shopId: userData.userInfo.email,
-      shopName: userData.userInfo.name || "Shop Name",
+    // Build bid object for Supabase
+    const bid = {
+      report_id: reportId,
+      shop_name: userData.userInfo.name || "Shop Name",
+      shop_email: userData.userInfo.email,
       amount: bidAmount,
-      estimatedDays: estimatedDays ?? 0,
+      estimated_days: estimatedDays ?? 0,
       description: description || "",
+      notes: undefined,
+      status: "pending",
+      shop_rating: undefined,
+      shop_reviews: undefined,
+      shop_distance: undefined,
     };
 
-    const newBids = [...userData.bids, newBid];
-    userData.setBids(newBids as any);
-
-    const updatedReports = userData.reports.map((entry: any) => {
-      if (entry.id === reportId) {
-        return {
-          ...entry,
-          bidsCount: (entry.bidsCount || 0) + 1,
-          bids: [...(entry.bids || []), newBid],
-        };
+    try {
+      // Import submitBid from supabase/bids
+      const { submitBid } = await import("../services/supabase/bids");
+      const savedBid = await submitBid(bid as any);
+      if (savedBid) {
+        addActivity(
+          "bid_submitted",
+          `Submitted bid of $${bidAmount.toLocaleString()} for ${vehicleInfo}`,
+          {
+            reportId,
+            bidAmount,
+            vehicleInfo,
+          }
+        );
+        console.log("✅ Bid submitted and persisted to Supabase");
+      } else {
+        console.error("Bid submission failed (Supabase error)");
       }
-      return entry;
-    });
-    userData.setReports(updatedReports);
-
-    addActivity(
-      "bid_submitted",
-      `Submitted bid of $${bidAmount.toLocaleString()} for ${vehicleInfo}`,
-      {
-        reportId,
-        bidAmount,
-        vehicleInfo,
-      }
-    );
-
-    console.log("Bid submitted successfully");
-    console.log(
-      "Report bids count:",
-      updatedReports.find((entry) => entry.id === reportId)?.bidsCount
-    );
-    console.log("Total bids:", newBids.length);
+    } catch (error) {
+      console.error("Error submitting bid to Supabase:", error);
+    }
   };
 
   const handleReportSubmit = async (report: any) => {
