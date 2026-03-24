@@ -44,12 +44,6 @@ export default function ReportsListScreen({
     return report.status === filter;
   });
 
-  // Mock interested shops data
-  const getInterestedShops = (reportId: number) => {
-    const shopCount = Math.floor(Math.random() * 5) + 1;
-    return shopCount;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 pb-20">
       {/* Header */}
@@ -99,8 +93,6 @@ export default function ReportsListScreen({
           </div>
         ) : (
           filteredReports.map((report) => {
-            const interestedShops = getInterestedShops(report.id);
-
             return (
               <div
                 key={report.id}
@@ -179,11 +171,11 @@ export default function ReportsListScreen({
                       )}
                     </div>
 
-                    {/* Interested Shops - Most Prominent */}
-                    {interestedShops > 0 && (
+                    {/* Bids Info */}
+                    {report.bidsCount > 0 && (
                       <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                         <div className="flex -space-x-1.5">
-                          {[...Array(Math.min(interestedShops, 3))].map((_, idx) => (
+                          {[...Array(Math.min(report.bidsCount, 3))].map((_, idx) => (
                             <div
                               key={idx}
                               className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium"
@@ -194,14 +186,14 @@ export default function ReportsListScreen({
                           ))}
                         </div>
                         <span className="text-sm text-gray-700 font-semibold">
-                          {interestedShops} {interestedShops === 1 ? "shop" : "shops"} interested
+                          {report.bidsCount} {report.bidsCount === 1 ? "bid" : "bids"} received
                         </span>
                         <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
                       </div>
                     )}
 
                     {/* No bids yet */}
-                    {interestedShops === 0 && report.bidsCount === 0 && (
+                    {report.bidsCount === 0 && (
                       <div className="pt-2 border-t border-gray-100">
                         <p className="text-xs text-gray-500 italic">
                           Waiting for body shops to review...
