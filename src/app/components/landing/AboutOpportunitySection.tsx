@@ -33,7 +33,7 @@ export default function AboutOpportunitySection() {
   return (
     <section
       id="about-opportunity"
-      className="py-20 bg-gradient-to-b from-white via-blue-50/20 to-blue-50/40"
+      className="py-20 bg-gradient-to-b from-white via-blue-50/25 to-blue-50/50"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-6xl">
@@ -59,7 +59,7 @@ export default function AboutOpportunitySection() {
             return (
               <div
                 key={item.title}
-                className={`rounded-2xl bd-glass-card p-6 transition-all duration-700 ${
+                className={`rounded-2xl bd-glass-card p-6 transition-all duration-700 hover:shadow-lg hover:-translate-y-1 ${
                   isExpanded ? "border-blue-200 shadow-md" : ""
                 } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{ transitionDelay: `${0.2 + index * 0.1}s` }}

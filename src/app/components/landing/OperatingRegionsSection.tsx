@@ -19,8 +19,14 @@ export default function OperatingRegionsSection({
   const coverage = useOperatingRegionsCoverage();
 
   return (
-    <section id="coverage" className="py-14 bg-slate-900 text-white" ref={sectionRef}>
-      <div className="container mx-auto px-4 max-w-6xl">
+    <section
+      id="coverage"
+      className="py-14 bg-gradient-to-b from-[#1e3a5f] via-[#162d4a] to-[#0f1e33] text-white relative overflow-hidden"
+      ref={sectionRef}
+    >
+      {/* Atmospheric depth */}
+      <div className="absolute top-0 right-1/3 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+      <div className="container mx-auto px-4 max-w-6xl relative">
         <div
           className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
@@ -41,7 +47,7 @@ export default function OperatingRegionsSection({
             {operatingRegions.map((region) => (
               <div
                 key={region}
-                className="rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 flex items-center gap-2"
+                className="rounded-xl border border-slate-700/80 bg-slate-800/50 backdrop-blur-sm px-4 py-3 flex items-center gap-2 hover:border-blue-500/40 hover:bg-slate-800/70 transition-all duration-300"
               >
                 <MapPin className="w-4 h-4 text-cyan-300" />
                 <span>{region}</span>

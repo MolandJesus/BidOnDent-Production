@@ -98,12 +98,16 @@ export default function BusinessInquirySection() {
   };
 
   return (
-    <section id="business-inquiry" className="py-20 bg-slate-50" ref={sectionRef}>
+    <section
+      id="business-inquiry"
+      className="py-20 bg-gradient-to-b from-[#f5f8fc] to-[#edf3fa]"
+      ref={sectionRef}
+    >
       <div className="container mx-auto px-4 max-w-6xl">
         <div
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-sm font-medium">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             Growth & Partnerships
           </span>
