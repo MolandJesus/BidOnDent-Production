@@ -1014,22 +1014,22 @@ Issues identified from live 375px mobile screenshots against the design vision a
 
 # BidOnDent Build Progress Dashboard
 
-> **Last updated:** 2026-03-23 · **Pass count:** 115 · **Branch:** feature/platform-bugfix-sweep-by-MolandJesus
+> **Last updated:** 2026-03-23 · **Pass count:** 119 · **Branch:** feature/platform-bugfix-sweep-by-MolandJesus
 
 ---
 
-## Visual Progress Model (Pass 115)
+## Visual Progress Model (Pass 119)
 
 ### Overall Platform Health
 
 ```
-OVERALL PLATFORM        █████████████████████░░░  88%
+OVERALL PLATFORM        ██████████████████████░░  90%  (+2 from Pass 115)
 ├─ Map & Navigation     ██████████████████████░░  94%
-├─ Design System        ██████████████████████░░  93%
-├─ Mobile UX            █████████████████████░░░  93%
+├─ Design System        ██████████████████████░░  94%  (+1 — unified Quick Actions)
+├─ Mobile UX            ██████████████████████░░  95%  (+2 — scroll fatigue fixed)
 ├─ Data & Persistence   █████████████████░░░░░░░  72%
 ├─ Production Hardening ███████████████████░░░░░  78%
-├─ Product Honesty      █████████████████████░░░  90%
+├─ Product Honesty      ████████████████████████  98%  (+8 — all fake data purged)
 └─ Architecture Health  ██████████████████████░░  94%
 ```
 
@@ -1052,6 +1052,10 @@ Bottom Sheet (browse)      █████████████████�
 Active Nav Mobile          ████████████████████ 100%  No overlaps, no traps, destination visible
 Error Boundaries           ████████████████████ 100%  NavigationErrorBoundary, image fallbacks
 Product Honesty Cleanup    ████████████████████ 100%  False claims removed, honest copy deployed
+Insurer Data Honesty       ████████████████████ 100%  Fake companies, estimates, customers purged (Pass 116)
+Dashboard Stats Honesty    ████████████████████ 100%  All fabricated formulas/floors removed (Pass 119)
+Mobile Landing Spacing     ████████████████████ 100%  Responsive py/mb/gap across 5 sections (Pass 118)
+Quick Actions Hierarchy    ████████████████████ 100%  Uniform bd-glass-card, no dominance (Pass 117)
 Circuit Breaker (OSRM)     ████████████████████ 100%  3-fail open, 90s cooldown
 Session Retry Resilience   ████████████████████ 100%  Exponential backoff, online listener
 Dashboard/Router Arch      ████████████████████ 100%  Tab routing, role dispatch, extraction
@@ -1063,7 +1067,7 @@ Data Integrity Layer       █████████████████�
 
 Mobile Map Edge Cases      ██████████████████░░  95%  Speed panel, z-index, overlay stacking fixed
 Shop Directory UX          ██████████████░░░░░░  70%  Functional, needs glass treatment
-Insurer Workflow           ███████████░░░░░░░░░  55%  Claims list/forms done, logic incomplete
+Insurer Workflow           █████████████░░░░░░░  60%  Claims wired w/ real data, companies placeholder, logic incomplete
 Customer End-to-End        ███████████████░░░░░  75%  Report+shop done, payment/tracking missing
 Shop End-to-End            ██████████████░░░░░░  70%  Jobs+directory done, bid submit partial
 Voice UX Polish            █████████████░░░░░░░  65%  Engine done, picker/volume UI pending
@@ -1090,18 +1094,19 @@ Premium TTS Voices         ░░░░░░░░░░░░░░░░░�
 Analytics Dashboard        ░░░░░░░░░░░░░░░░░░░░   0%  No business analytics yet
 ```
 
-### Pass Distribution by Category (115 passes)
+### Pass Distribution by Category (119 passes)
 
 ```
 Infrastructure/Features  ████████████████████████████████████  35+ passes
 P3-ARCH extractions      ██████████████  14 passes   (file boundaries, separation)
-P4-UX mobile/layout      ████████████████████████  24 passes (mobile, layout, typography)
+P4-UX mobile/layout      ██████████████████████████  26 passes (mobile, layout, typography, spacing)
 P5-DOC governance        ████████  8 passes           (doc alignment, stage tracking)
 P1-RUNTIME fixes         ████████  8 passes           (crashes, traps, z-index bugs)
 P2-DATA persistence      ██████  6 passes             (sync, schema, console guards)
 P0-BUILD type errors     ████  4 passes               (compile failures)
 P6-SPELL wording         ████  4 passes               (terminology, consumer copy)
 Production Hardening     █████████  9 passes               (Passes 109–115: error boundary, Sentry, a11y, trust, data, shop)
+Platform Honesty Sweep   ████████  8 passes               (Passes 112–119: fake data, fabricated stats, false claims)
 ```
 
 ### Bundle Size Trend
