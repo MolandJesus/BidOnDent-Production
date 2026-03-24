@@ -1,4 +1,4 @@
-import { ChevronRight, FileText, MessageSquareQuote } from "lucide-react";
+import { AlertTriangle, ChevronRight, FileText, Loader2, MessageSquareQuote } from "lucide-react";
 
 type StepDescriptionProps = {
   primaryColor: string;
@@ -8,6 +8,8 @@ type StepDescriptionProps = {
   onIncidentChange: (value: string) => void;
   onBack: () => void;
   onContinue: () => void;
+  isSubmitting?: boolean;
+  submitError?: string | null;
 };
 
 export default function StepDescription({
@@ -18,6 +20,8 @@ export default function StepDescription({
   onIncidentChange,
   onBack,
   onContinue,
+  isSubmitting = false,
+  submitError = null,
 }: StepDescriptionProps) {
   const isDescriptionValid = description.trim().length >= 10;
 
@@ -71,10 +75,18 @@ export default function StepDescription({
         ></textarea>
       </div>
 
+      {submitError && (
+        <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 flex items-start gap-2.5">
+          <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+          <p className="text-sm text-red-700">{submitError}</p>
+        </div>
+      )}
+
       <div className="flex space-x-3">
         <button
           onClick={onBack}
-          className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors"
+          disabled={isSubmitting}
+          className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Back
         </button>
@@ -82,10 +94,19 @@ export default function StepDescription({
           onClick={onContinue}
           className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
-          disabled={!isDescriptionValid}
+          disabled={!isDescriptionValid || isSubmitting}
         >
-          Submit Report
-          <ChevronRight className="w-4 h-4" />
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Submitting…
+            </>
+          ) : (
+            <>
+              Submit Report
+              <ChevronRight className="w-4 h-4" />
+            </>
+          )}
         </button>
       </div>
     </div>

@@ -50,6 +50,8 @@ export default function ReportScreen({
   const [showPhotoGuide, setShowPhotoGuide] = useState(false);
   const [showSaveIndicator, setShowSaveIndicator] = useState(false);
   const [hasSeenGuideThisSession, setHasSeenGuideThisSession] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const saveIndicatorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -206,22 +208,31 @@ export default function ReportScreen({
   };
 
   const handleSubmitReport = async () => {
-    if (onReportSubmit) {
-      const report = {
-        id: Date.now().toString(),
-        vehicle,
-        damageArea,
-        photos,
-        description,
-        incident,
-        status: "pending" as const,
-        submittedAt: new Date().toISOString(),
-        bidsCount: 0,
-      };
-      await onReportSubmit(report);
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      if (onReportSubmit) {
+        const report = {
+          id: Date.now().toString(),
+          vehicle,
+          damageArea,
+          photos,
+          description,
+          incident,
+          status: "pending" as const,
+          submittedAt: new Date().toISOString(),
+          bidsCount: 0,
+        };
+        await onReportSubmit(report);
+      }
+      clearDraft();
+      nextStep();
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      setSubmitError("Something went wrong. Your report was saved locally. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-    clearDraft();
-    nextStep();
   };
 
   const handleViewReports = () => {
@@ -295,6 +306,8 @@ export default function ReportScreen({
               onIncidentChange={setIncident}
               onBack={prevStep}
               onContinue={handleSubmitReport}
+              isSubmitting={isSubmitting}
+              submitError={submitError}
             />
           );
 
