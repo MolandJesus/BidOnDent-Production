@@ -343,7 +343,10 @@ export default function DashboardRouter({
           <motion.div key="vehicles" {...screenTransition}>
             <VehicleProfileScreen
               vehicles={vehicles}
-              onBack={() => onViewModeChange("dashboard")}
+              onBack={() => {
+                onTabChange("account");
+                onViewModeChange("dashboard");
+              }}
               primaryColor={primaryColor}
               onSaveVehicles={onSaveVehicles}
             />
