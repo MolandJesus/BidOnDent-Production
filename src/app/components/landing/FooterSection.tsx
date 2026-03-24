@@ -151,6 +151,14 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
                   Privacy Policy
                 </a>
               </li>
+              <li>
+                <a
+                  href="#/terms-of-service"
+                  className="hover:text-white transition-colors hover:translate-x-1 inline-block duration-200"
+                >
+                  Terms of Service
+                </a>
+              </li>
             </ul>
           </div>
         </div>

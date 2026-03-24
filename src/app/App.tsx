@@ -1,4 +1,5 @@
 import { ClerkProvider, useUser, useClerk } from "@clerk/clerk-react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
@@ -39,6 +40,12 @@ import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 
+// Standalone pages (lazy-loaded — only fetched when hash route is visited)
+const AboutPage = lazy(() => import("./components/landing/AboutPage"));
+const PrivacyPolicyPage = lazy(() => import("./components/legal/PrivacyPolicyPage"));
+const TermsOfServicePage = lazy(() => import("./components/legal/TermsOfServicePage"));
+const InsurerPartnershipPage = lazy(() => import("./components/landing/InsurerPartnershipPage"));
+
 import { clerkPublishableKey } from "../../utils/clerk/info";
 
 const hasValidClerkPublishableKey =
@@ -70,8 +77,41 @@ function AuthConfigFallback() {
   );
 }
 
+// ============================================================================
+// HASH PAGE ROUTING — standalone pages (legal, about, partnership)
+// ============================================================================
+const HASH_PAGES = ["about", "privacy-policy", "terms-of-service", "insurer-partnership"] as const;
+type HashPage = (typeof HASH_PAGES)[number];
+
+function parseHashPage(hash: string): HashPage | null {
+  const path = hash.replace(/^#\/?/, "");
+  return HASH_PAGES.includes(path as HashPage) ? (path as HashPage) : null;
+}
+
+function useHashPage() {
+  const [page, setPage] = useState<HashPage | null>(() => parseHashPage(window.location.hash));
+
+  useEffect(() => {
+    const onHashChange = () => setPage(parseHashPage(window.location.hash));
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const clearPage = useCallback(() => {
+    setPage(null);
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+  }, []);
+
+  return { hashPage: page, clearHashPage: clearPage };
+}
+
 // Main App content (wrapped by ClerkProvider)
 function AppContent() {
+  // ============================================================================
+  // HASH PAGE ROUTING
+  // ============================================================================
+  const { hashPage, clearHashPage } = useHashPage();
+
   // ============================================================================
   // CLERK AUTH - Replaces useAuth hook
   // ============================================================================
@@ -289,6 +329,19 @@ function AppContent() {
   // ============================================================================
   // RENDER LOGIC
   // ============================================================================
+
+  // Standalone hash pages (legal, about, partnership) — render before anything else
+  if (hashPage) {
+    const backToHome = clearHashPage;
+    return (
+      <Suspense fallback={<AppLoading />}>
+        {hashPage === "about" && <AboutPage onBackToHome={backToHome} />}
+        {hashPage === "privacy-policy" && <PrivacyPolicyPage onBackToHome={backToHome} />}
+        {hashPage === "terms-of-service" && <TermsOfServicePage onBackToHome={backToHome} />}
+        {hashPage === "insurer-partnership" && <InsurerPartnershipPage onBackToHome={backToHome} />}
+      </Suspense>
+    );
+  }
 
   // Wait for Clerk to load
   if (
