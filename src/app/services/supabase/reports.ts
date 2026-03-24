@@ -174,6 +174,29 @@ export async function saveDamageReport(
   }
 }
 
+export async function updateReportStatus(
+  reportId: string,
+  status: string,
+  clerkUserId: string
+): Promise<boolean> {
+  try {
+    await requestSupabaseEdge(
+      `${SUPABASE_EDGE_ROUTES.reports}/${reportId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          clerkUserId,
+          report: { status },
+        }),
+      }
+    );
+    return true;
+  } catch (error) {
+    console.error("Error updating report status:", error);
+    return false;
+  }
+}
+
 export async function deleteDamageReport(
   reportId: string,
   clerkUserId?: string

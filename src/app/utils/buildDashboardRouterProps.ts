@@ -151,6 +151,16 @@ export function buildDashboardRouterProps({
       try {
         const { updateBidStatus } = await import("../services/supabase/bids");
         await updateBidStatus(details.bidId, "accepted");
+
+        // Update the report status to "active" when a bid is accepted
+        const reportId = navigation.selectedReportId || userData.reports[0]?.id;
+        if (reportId && userProfile?.id) {
+          const { updateReportStatus } = await import("../services/supabase/reports");
+          await updateReportStatus(reportId.toString(), "active", userProfile.id);
+          userData.setReports(
+            userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
+          );
+        }
       } catch (err) {
         console.error("Failed to accept bid:", err);
       }
