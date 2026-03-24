@@ -149,10 +149,10 @@ export default function HomeScreen({
       <section className="px-1 md:px-0">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl md:text-4xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900">
               {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}!`}
             </h1>
-            <p className="text-slate-500 mt-1 text-base md:text-xl leading-tight md:max-w-3xl">
+            <p className="text-slate-500 mt-1.5 text-base md:text-lg leading-relaxed md:max-w-3xl">
               {userType === "customer" &&
                 (isNewUser
                   ? "Get started by submitting a damage report to receive competitive bids from local shops"
@@ -207,7 +207,7 @@ export default function HomeScreen({
                   </div>
                   <span className="bd-glass-badge hidden md:inline">+{delta}</span>
                 </div>
-                <p className="text-2xl md:text-4xl font-semibold text-slate-900 leading-none mb-1 md:mb-2">
+                <p className="text-2xl md:text-4xl font-bold text-slate-900 leading-none mb-1 md:mb-2 tabular-nums">
                   {item.value}
                 </p>
                 <p className="text-slate-500 text-sm md:text-lg">{item.label}</p>

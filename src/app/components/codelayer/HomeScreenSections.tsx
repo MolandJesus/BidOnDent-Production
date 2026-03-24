@@ -98,8 +98,7 @@ export function HomeReportsList({
         <h2 className="text-xl font-semibold text-slate-900">{listHeader}</h2>
         <button
           onClick={onViewAll}
-          className="bd-glass-control text-sm font-medium text-blue-700 hover:text-blue-800 inline-flex items-center gap-1 px-3 py-2 rounded-xl"
-          style={{ color: "#1e40af" }}
+          className="text-sm font-medium text-blue-700 hover:text-blue-800 inline-flex items-center gap-1 px-3 py-2 rounded-xl transition-colors hover:bg-blue-50/60"
         >
           View All
           <ArrowRight className="w-4 h-4" />
@@ -273,9 +272,12 @@ export function HomeSidebar({
             {activityItems.map((item) => {
               const Icon = item.icon;
               return (
-                <div key={item.id} className="flex items-start gap-3">
+                <div
+                  key={item.id}
+                  className="flex items-start gap-3 p-2 rounded-xl hover:bg-slate-50/60 transition-colors"
+                >
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${item.tone}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${item.tone}`}
                   >
                     <Icon className="w-5 h-5" />
                   </div>
@@ -291,16 +293,17 @@ export function HomeSidebar({
       </section>
 
       <section
-        className="rounded-2xl p-5 text-white shadow-sm"
+        className="rounded-2xl p-5 text-white shadow-lg relative overflow-hidden"
         style={{
           background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
         }}
       >
-        <div className="flex items-center gap-2 mb-2">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_100%_0%,rgba(255,255,255,0.1),transparent_50%)]" />
+        <div className="flex items-center gap-2 mb-2 relative">
           <Eye className="w-5 h-5" />
           <h3 className="text-xl font-semibold">Pro Tip</h3>
         </div>
-        <p className="text-white/90 text-sm">
+        <p className="text-white/90 text-sm relative">
           Compare at least 3 bids before selecting a shop. Review warranty terms and timeline to
           avoid surprises.
         </p>
