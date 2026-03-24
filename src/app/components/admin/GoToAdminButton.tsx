@@ -1,9 +1,9 @@
 /**
  * Go to Admin Account Button Component
- * 
+ *
  * Shows a button that allows test accounts to switch back to the main admin account.
  * Only visible to test accounts (molalign5+shop@gmail.com, etc.), not to regular users.
- * 
+ *
  * 🚨 PRODUCTION REMOVAL: Delete this file when removing admin features
  * See /src/app/config/adminConfig.ts for complete removal instructions
  */
@@ -54,73 +54,75 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
     setError("");
 
     try {
-      console.log('🔄 Switching to admin account...');
-      console.log('👤 Current user:', userEmail);
-      console.log('🎯 Target admin:', ADMIN_EMAIL);
-      
+      console.log("🔄 Switching to admin account...");
+      console.log("👤 Current user:", userEmail);
+      console.log("🎯 Target admin:", ADMIN_EMAIL);
+
       // Set a flag in sessionStorage to prevent showing onboarding during switch
-      sessionStorage.setItem('bidondent_switching_to_admin', 'true');
-      
+      sessionStorage.setItem("bidondent_switching_to_admin", "true");
+
       // Sign out current user
-      console.log('📤 Signing out current user...');
+      console.log("📤 Signing out current user...");
       await supabase.auth.signOut();
-      
-      console.log('📥 Attempting to sign in as admin with email:', ADMIN_EMAIL);
-      
+
+      console.log("📥 Attempting to sign in as admin with email:", ADMIN_EMAIL);
+
       // Sign in as admin with the provided password
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: ADMIN_EMAIL,
-        password: password
+        password: password,
       });
 
-      console.log('📡 Sign in response:', { data: signInData, error: signInError });
+      console.log("📡 Sign in response:", { data: signInData, error: signInError });
 
       if (signInError) {
-        console.error('❌ Switch error:', signInError);
-        
+        console.error("❌ Switch error:", signInError);
+
         // Check if it's an invalid credentials error
-        if (signInError.message.includes('Invalid') || signInError.message.includes('credentials')) {
-          setError('Invalid password. Please check your password and try again.');
+        if (
+          signInError.message.includes("Invalid") ||
+          signInError.message.includes("credentials")
+        ) {
+          setError("Invalid password. Please check your password and try again.");
           setIsLoading(false);
           return;
         } else {
-          setError(signInError.message || 'An error occurred. Please try again.');
+          setError(signInError.message || "An error occurred. Please try again.");
           setIsLoading(false);
           return;
         }
       }
 
       if (!signInData.session) {
-        console.error('❌ No session returned');
-        setError('Login failed. Please try again.');
+        console.error("❌ No session returned");
+        setError("Login failed. Please try again.");
         setIsLoading(false);
         return;
       }
 
-      console.log('✅ Successfully switched to admin account! Session:', signInData.session);
-      console.log('🔄 Auth state listener will handle the rest...');
-      
+      console.log("✅ Successfully switched to admin account! Session:", signInData.session);
+      console.log("🔄 Auth state listener will handle the rest...");
+
       // Close the modal - the auth listener will automatically handle the sign-in
       setShowModal(false);
       setPassword("");
       setError("");
       setIsLoading(false);
-      
+
       // Note: No page reload needed! The auth state listener in App.tsx will:
       // 1. Detect the SIGNED_IN event for admin account
       // 2. Override account type to "customer" for admin
       // 3. Skip onboarding
       // 4. Show admin dashboard
-      
     } catch (error) {
-      console.error('❌ Exception switching to admin:', error);
-      setError(error instanceof Error ? error.message : 'An error occurred. Please try again.');
+      console.error("❌ Exception switching to admin:", error);
+      setError(error instanceof Error ? error.message : "An error occurred. Please try again.");
       setIsLoading(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isLoading) {
+    if (e.key === "Enter" && !isLoading) {
       handleSwitchToAdmin();
     }
   };
@@ -134,22 +136,21 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
       >
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0">
-            <div 
+            <div
               className="w-12 h-12 rounded-full flex items-center justify-center"
               style={{ backgroundColor: `${primaryColor}20` }}
             >
               <Shield className="w-6 h-6" style={{ color: primaryColor }} />
             </div>
           </div>
-          
+
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-1">
-              🔐 Test Account Feature
-            </h3>
+            <h3 className="font-semibold text-gray-900 mb-1">🔐 Test Account Feature</h3>
             <p className="text-sm text-gray-600 mb-4">
-              You are using a test account. Switch back to the main admin account to access the admin dashboard and manage all test accounts.
+              You are using a test account. Switch back to the main admin account to access the
+              admin dashboard and manage all test accounts.
             </p>
-            
+
             <button
               onClick={handleOpenModal}
               className="inline-flex items-center gap-2 px-4 py-2 text-white rounded-lg font-medium hover:opacity-90 transition-all transform hover:scale-105 shadow-md"
@@ -159,7 +160,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
               Go to Admin Account
               <ArrowRight className="w-4 h-4" />
             </button>
-            
+
             <p className="text-xs text-gray-500 mt-3">
               Current account: <span className="font-mono">{userEmail}</span>
             </p>
@@ -182,11 +183,11 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+              className="bd-glass-floating rounded-2xl max-w-md w-full overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div 
+              <div
                 className="px-6 py-5 text-white relative overflow-hidden"
                 style={{ backgroundColor: primaryColor }}
               >
@@ -277,7 +278,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
                 <button
                   onClick={handleCloseModal}
                   disabled={isLoading}
-                  className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  className="px-4 py-2 text-gray-700 bd-glass-control rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
                   Cancel
                 </button>

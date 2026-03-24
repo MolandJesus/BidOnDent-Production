@@ -162,7 +162,7 @@ export default function InsurerConnectionScreen({
       </div>
 
       <div className="px-4 py-4 space-y-4">
-        <div className="bg-white rounded-2xl border border-blue-100 shadow-sm p-4">
+        <div className="bd-glass-card rounded-2xl border border-blue-100 p-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold mb-3">
             <Sparkles className="w-4 h-4" />
             Insurance intelligence active
@@ -201,7 +201,7 @@ export default function InsurerConnectionScreen({
               .map((insurer) => (
                 <div
                   key={insurer.id}
-                  className="bg-white rounded-2xl p-4 border-2 border-green-200 flex items-start gap-3"
+                  className="bd-glass-card rounded-2xl p-4 border-2 border-green-200 flex items-start gap-3"
                 >
                   <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
                     <Check className="w-6 h-6 text-green-600" />
@@ -245,7 +245,7 @@ export default function InsurerConnectionScreen({
             <button
               key={insurer.id}
               onClick={() => handleSelectInsurer(insurer.id)}
-              className="w-full bg-white rounded-2xl p-4 border border-gray-200 hover:border-blue-300 transition-colors text-left"
+              className="w-full bd-glass-card rounded-2xl p-4 hover:border-blue-300 transition-colors text-left"
             >
               <div className="flex items-start gap-3">
                 <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
@@ -307,7 +307,7 @@ export default function InsurerConnectionScreen({
 
       {showConnectForm && selectedCarrier && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl">
+          <div className="bd-glass-floating rounded-2xl max-w-lg w-full">
             <div className="p-4 sm:p-6">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>

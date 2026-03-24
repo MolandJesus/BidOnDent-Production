@@ -45,7 +45,7 @@ export default function ShopDirectoryIntelligencePanel({
             <p className="text-[11px] uppercase tracking-[0.16em] text-white/65">Session</p>
             <p className="mt-1 text-lg font-semibold">{identity?.sessionId.slice(-6) || "guest"}</p>
           </div>
-          <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm">
+          <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bd-glass-control text-slate-700">
             <ChevronDown
               className={`h-5 w-5 transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"}`}
             />
@@ -65,7 +65,7 @@ export default function ShopDirectoryIntelligencePanel({
                 {identity?.sessionId.slice(-6) || "guest"}
               </p>
             </div>
-            <div className="rounded-[22px] border border-slate-200 bg-white px-4 py-3.5">
+            <div className="rounded-[22px] bd-glass-card px-4 py-3.5">
               <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Top match</p>
               <p className="mt-2 text-base font-semibold text-slate-950">{summary.title}</p>
             </div>

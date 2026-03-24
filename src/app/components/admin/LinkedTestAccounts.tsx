@@ -29,14 +29,14 @@ export default function LinkedTestAccounts({
   onSwitchToAccount,
   onDeleteAccount,
   onCreateAccount,
-  onCheckAccount
+  onCheckAccount,
 }: LinkedTestAccountsProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
+      className="bd-glass-card rounded-lg p-6 mb-6"
     >
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
         <Users className="w-5 h-5" style={{ color: primaryColor }} />
@@ -84,8 +84,8 @@ export default function LinkedTestAccounts({
                         account.type === "customer"
                           ? "bg-blue-100 text-blue-700"
                           : account.type === "shop"
-                          ? "bg-purple-100 text-purple-700"
-                          : "bg-orange-100 text-orange-700"
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-orange-100 text-orange-700"
                       }`}
                     >
                       {account.type.charAt(0).toUpperCase() + account.type.slice(1)}
@@ -95,7 +95,9 @@ export default function LinkedTestAccounts({
                   <p className="text-sm text-gray-600 mb-2">{account.description}</p>
                   <p className="text-sm text-gray-500 font-mono">{account.email}</p>
 
-                  {status?.userId && <p className="text-xs text-gray-400 mt-1">User ID: {status.userId}</p>}
+                  {status?.userId && (
+                    <p className="text-xs text-gray-400 mt-1">User ID: {status.userId}</p>
+                  )}
                 </div>
 
                 {/* Action Buttons */}

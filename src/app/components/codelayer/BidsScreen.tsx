@@ -208,15 +208,15 @@ export default function BidsScreen({
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div className="rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5">
+          <div className="bd-glass-card rounded-xl px-3 py-2.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Lowest Bid</p>
             <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">${lowestPrice}</p>
           </div>
-          <div className="rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5">
+          <div className="bd-glass-card rounded-xl px-3 py-2.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Average Quote</p>
             <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">${averagePrice}</p>
           </div>
-          <div className="rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5">
+          <div className="bd-glass-card rounded-xl px-3 py-2.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Fastest Timeline</p>
             <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">
               {fastestBidDays}-{fastestBidDays + 1} days
@@ -236,9 +236,7 @@ export default function BidsScreen({
             <button
               key={item.id}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
-                filter === item.id
-                  ? "text-white shadow-sm"
-                  : "bg-white text-slate-700 border border-slate-300 hover:border-slate-400"
+                filter === item.id ? "text-white shadow-sm" : "bd-glass-control text-slate-700"
               }`}
               style={
                 filter === item.id

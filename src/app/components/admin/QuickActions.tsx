@@ -20,14 +20,14 @@ export default function QuickActions({
   onCheckAllAccounts,
   onToggleNewAccountForm,
   onCheckEdgeFunctionHealth,
-  onVerifyDatabase
+  onVerifyDatabase,
 }: QuickActionsProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
+      className="bd-glass-card rounded-lg p-6 mb-6"
     >
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
         <Database className="w-5 h-5" style={{ color: primaryColor }} />

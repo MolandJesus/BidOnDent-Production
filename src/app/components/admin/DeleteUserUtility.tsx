@@ -19,7 +19,11 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
   const [loading, setLoading] = useState(false);
 
   const handleDeleteUser = async () => {
-    if (!confirm(`Are you sure you want to delete the account for ${email}? This action cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete the account for ${email}? This action cannot be undone.`
+      )
+    ) {
       return;
     }
 
@@ -32,22 +36,24 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
       });
 
       if (data.success) {
-        setStatus(`✅ Success! ${data.message}\n\nDeleted:\n- Auth user: ${data.deleted?.auth ? 'Yes' : 'No'}\n- Profile: ${data.deleted?.profile ? 'Yes' : 'Yes (or didn\'t exist)'}\n- KV data: ${data.deleted?.kv_data ? 'Yes' : 'Yes (or didn\'t exist)'}\n\nYou can now create a new insurer account with this email.`);
+        setStatus(
+          `✅ Success! ${data.message}\n\nDeleted:\n- Auth user: ${data.deleted?.auth ? "Yes" : "No"}\n- Profile: ${data.deleted?.profile ? "Yes" : "Yes (or didn't exist)"}\n- KV data: ${data.deleted?.kv_data ? "Yes" : "Yes (or didn't exist)"}\n\nYou can now create a new insurer account with this email.`
+        );
       } else {
-        setStatus(`❌ Error: ${data.error || 'Failed to delete user'}`);
+        setStatus(`❌ Error: ${data.error || "Failed to delete user"}`);
       }
     } catch (error) {
       console.error("Delete user error:", error);
-      setStatus(`❌ Network error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setStatus(`❌ Network error: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white border-2 border-[#003d82] rounded-lg shadow-lg p-6 max-w-md z-50">
+    <div className="fixed bottom-4 right-4 bd-glass-floating border-2 border-[#003d82] rounded-lg p-6 max-w-md z-50">
       <h3 className="font-bold mb-4 text-[#003d82]">🛠️ Admin: Delete User Account</h3>
-      
+
       <div className="mb-4">
         <label className="block text-sm mb-2">Email to delete:</label>
         <input
@@ -68,9 +74,11 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
       </button>
 
       {status && (
-        <div className={`p-4 rounded-lg whitespace-pre-wrap text-sm ${
-          status.startsWith("✅") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-        }`}>
+        <div
+          className={`p-4 rounded-lg whitespace-pre-wrap text-sm ${
+            status.startsWith("✅") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+          }`}
+        >
           {status}
         </div>
       )}

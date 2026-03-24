@@ -73,7 +73,7 @@ export default function ShopRatingModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bd-glass-floating rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
           <h2 className="text-xl font-bold">Rate {shopName}</h2>
           <button onClick={onClose} className="bd-glass-control--secondary p-1">

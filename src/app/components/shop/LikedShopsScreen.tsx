@@ -118,7 +118,7 @@ export default function LikedShopsScreen({
 
       <div className="px-4 py-4">
         {savedListings.length === 0 ? (
-          <div className="rounded-[28px] border border-slate-200 bg-white p-5 sm:p-8 text-center shadow-sm">
+          <div className="rounded-[28px] bd-glass-card p-5 sm:p-8 text-center">
             <Heart className="mx-auto mb-4 h-16 w-16 text-slate-300" />
             <h3 className="text-xl font-semibold text-slate-900">No saved shops yet</h3>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">
@@ -138,10 +138,7 @@ export default function LikedShopsScreen({
         ) : (
           <div className="space-y-4">
             {filteredListings.map((shop) => (
-              <article
-                key={shop.id}
-                className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm"
-              >
+              <article key={shop.id} className="overflow-hidden rounded-[28px] bd-glass-card">
                 <div className="flex flex-col gap-4 p-4 md:flex-row md:p-5">
                   <div className="h-36 w-full overflow-hidden rounded-[22px] bg-slate-100 md:h-auto md:w-44 md:flex-shrink-0">
                     <ImageWithFallback

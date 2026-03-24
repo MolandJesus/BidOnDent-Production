@@ -18,24 +18,26 @@ export default function AdminManagementPanel({
   adminManagementStatus,
   onTargetAdminEmailChange,
   onPromote,
-  onRevoke
+  onRevoke,
 }: AdminManagementPanelProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.15 }}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
+      className="bd-glass-card rounded-lg p-6 mb-6"
     >
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
         <Shield className="w-5 h-5" style={{ color: primaryColor }} />
         Admin Management
-        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-2">Super Admin Only</span>
+        <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-2">
+          Super Admin Only
+        </span>
       </h2>
 
       <p className="text-sm text-gray-600 mb-4">
-        Promote or demote users to grant/revoke admin dashboard access. Admin accounts can access the Admin Dashboard but
-        cannot promote others (only you can).
+        Promote or demote users to grant/revoke admin dashboard access. Admin accounts can access
+        the Admin Dashboard but cannot promote others (only you can).
       </p>
 
       <div className="space-y-3">

@@ -254,7 +254,7 @@ export default function VehicleProfileScreen({
         {/* Vehicles List */}
         <div className="space-y-3">
           {vehicles.length === 0 ? (
-            <div className="bg-white rounded-lg p-5 sm:p-8 text-center">
+            <div className="bd-glass-card rounded-lg p-5 sm:p-8 text-center">
               <Car className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-bold mb-2">No vehicles added yet</h3>
               <p className="text-gray-600 mb-4">

@@ -28,14 +28,14 @@ export default function NewAccountForm({
   onPasswordChange,
   onTypeChange,
   onCreate,
-  onCancel
+  onCancel,
 }: NewAccountFormProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="bg-white rounded-lg shadow-sm border-2 border-green-300 p-6 mb-6"
+      className="bd-glass-card rounded-lg border-2 border-green-300 p-6 mb-6"
     >
       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
         <UserPlus className="w-5 h-5" style={{ color: primaryColor }} />
@@ -43,8 +43,8 @@ export default function NewAccountForm({
       </h2>
 
       <p className="text-sm text-gray-600 mb-4">
-        Create a test account for other people or additional testing purposes. This account will be fully functional and
-        can be used to test all features.
+        Create a test account for other people or additional testing purposes. This account will be
+        fully functional and can be used to test all features.
       </p>
 
       <div className="space-y-4">
@@ -64,7 +64,9 @@ export default function NewAccountForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name (optional)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Full Name (optional)
+          </label>
           <div className="flex items-center gap-3">
             <User className="w-5 h-5 text-gray-400" />
             <input
@@ -91,7 +93,9 @@ export default function NewAccountForm({
               disabled={isLoading}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-1 ml-8">Tip: Use simple passwords like "test123" for testing accounts</p>
+          <p className="text-xs text-gray-500 mt-1 ml-8">
+            Tip: Use simple passwords like "test123" for testing accounts
+          </p>
         </div>
 
         <div>

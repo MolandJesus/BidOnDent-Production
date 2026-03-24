@@ -52,7 +52,7 @@ export default function InsurerPartnerShopCard({
   const statusColor = statusColorMap[entry.status] || statusColorMap.inactive;
 
   return (
-    <article className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
+    <article className="overflow-hidden rounded-[26px] bd-glass-card">
       <div className="relative h-44 w-full overflow-hidden bg-slate-100">
         <img
           src={entry.image}
@@ -131,7 +131,7 @@ export default function InsurerPartnerShopCard({
           </div>
         </div>
 
-        <div className="mb-3 rounded-2xl border border-slate-200 bg-white p-3">
+        <div className="mb-3 rounded-2xl bd-glass-card p-3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-slate-500">Average Cost</p>

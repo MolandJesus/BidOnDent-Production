@@ -41,7 +41,7 @@ export default function AccountInfoCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.05 }}
-      className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-5"
+      className="bd-glass-card rounded-2xl p-5 mb-5"
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-semibold text-slate-900 text-xl">Account Information</h2>
@@ -67,32 +67,32 @@ export default function AccountInfoCard({
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+        <div className="bd-glass-card rounded-xl p-3.5">
           <p className="text-xs uppercase tracking-wide text-slate-500">Name</p>
           <p className="text-slate-900 font-medium mt-1">{userInfo.name || "-"}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+        <div className="bd-glass-card rounded-xl p-3.5">
           <p className="text-xs uppercase tracking-wide text-slate-500">Email</p>
           <p className="text-slate-900 font-medium mt-1 break-words">{userInfo.email || "-"}</p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+        <div className="bd-glass-card rounded-xl p-3.5">
           <p className="text-xs uppercase tracking-wide text-slate-500">Phone</p>
           <p className="text-slate-900 font-medium mt-1">{userInfo.phone || "-"}</p>
         </div>
         {userType === "shop" && (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <div className="bd-glass-card rounded-xl p-3.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Shop Profile</p>
             <p className="text-slate-900 font-medium mt-1">{userInfo.shopName || "-"}</p>
           </div>
         )}
         {userType === "insurer" && (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <div className="bd-glass-card rounded-xl p-3.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Insurer Profile</p>
             <p className="text-slate-900 font-medium mt-1">{userInfo.companyName || "-"}</p>
           </div>
         )}
         {userType === "customer" && userInfo.vehicles.length > 0 && (
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+          <div className="bd-glass-card rounded-xl p-3.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Vehicles</p>
             {userInfo.vehicles.map((vehicle, index) => (
               <p key={index} className="text-slate-900 font-medium mt-1">

@@ -41,7 +41,7 @@ export default function AccountMenu({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.1 }}
-      className="bg-white rounded-2xl border border-slate-200 shadow-sm p-3"
+      className="bd-glass-card rounded-2xl p-3"
     >
       <div className="space-y-1.5">
         <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenSettings}>

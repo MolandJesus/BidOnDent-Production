@@ -107,7 +107,9 @@ export function buildPhotoGuideSteps({
                     <span className="text-white font-bold text-sm">1</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 mb-1">Take Photos on Your Phone First</p>
+                    <p className="font-medium text-gray-900 mb-1">
+                      Take Photos on Your Phone First
+                    </p>
                     <p className="text-sm text-gray-600">
                       Use your phone camera for best results, then upload those photos here
                     </p>
@@ -249,7 +251,10 @@ export function buildPhotoGuideSteps({
 
           <div className="grid grid-cols-2 gap-3">
             {photoGuideTips.angleShots.map((shot) => (
-              <div key={shot.number} className="bg-white border-2 border-blue-300 rounded-xl p-4 shadow-sm">
+              <div
+                key={shot.number}
+                className="bd-glass-card border-2 border-blue-300 rounded-xl p-4"
+              >
                 <div
                   className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-3"
                   style={{ backgroundColor: primaryColor }}
@@ -307,7 +312,7 @@ export function buildPhotoGuideSteps({
               {photoGuideTips.readyChecklist.map((item) => (
                 <label
                   key={item.text}
-                  className="flex items-center space-x-3 cursor-pointer group p-3 bg-white rounded-lg hover:shadow-md transition-all"
+                  className="flex items-center space-x-3 cursor-pointer group p-3 bd-glass-card rounded-lg hover:shadow-md transition-all"
                 >
                   <input
                     type="checkbox"
@@ -315,7 +320,9 @@ export function buildPhotoGuideSteps({
                     style={{ accentColor: primaryColor }}
                   />
                   <span className="text-2xl">{item.emoji}</span>
-                  <span className="text-gray-700 group-hover:text-gray-900 font-medium">{item.text}</span>
+                  <span className="text-gray-700 group-hover:text-gray-900 font-medium">
+                    {item.text}
+                  </span>
                 </label>
               ))}
             </div>

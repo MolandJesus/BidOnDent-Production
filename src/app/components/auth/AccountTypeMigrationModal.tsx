@@ -30,7 +30,7 @@ export default function AccountTypeMigrationModal({
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-lg shadow-2xl max-w-lg w-full p-6"
+        className="bd-glass-floating rounded-lg max-w-lg w-full p-6"
       >
         {/* Header */}
         <div className="flex items-start gap-3 mb-6">

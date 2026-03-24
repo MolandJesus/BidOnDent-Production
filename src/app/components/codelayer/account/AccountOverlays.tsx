@@ -9,14 +9,14 @@ type AccountOverlaysProps = {
 export default function AccountOverlays({
   isSaving,
   saveSuccess,
-  primaryColor
+  primaryColor,
 }: AccountOverlaysProps): ReactNode {
   return (
     <>
       {/* Loading Overlay for Image Upload */}
       {isSaving && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 flex flex-col items-center">
+          <div className="bd-glass-floating rounded-lg p-6 flex flex-col items-center">
             <svg
               className="animate-spin h-12 w-12 mb-3"
               xmlns="http://www.w3.org/2000/svg"

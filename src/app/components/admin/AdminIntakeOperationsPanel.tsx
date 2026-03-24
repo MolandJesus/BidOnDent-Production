@@ -66,9 +66,7 @@ export default function AdminIntakeOperationsPanel({
     } catch (error) {
       console.error("Failed to update submission status", error);
       setStatusMessage(
-        `❌ Status update failed: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
+        `❌ Status update failed: ${error instanceof Error ? error.message : "Unknown error"}`
       );
     }
   };
@@ -97,7 +95,7 @@ export default function AdminIntakeOperationsPanel({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6"
+      className="bd-glass-card rounded-lg p-6 mb-6"
     >
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -159,7 +157,9 @@ export default function AdminIntakeOperationsPanel({
 
       <div className="rounded-lg border border-gray-200 p-3">
         <p className="text-sm font-semibold text-gray-900 mb-2">Recent Workflow Events</p>
-        {activityEvents.length === 0 && <p className="text-sm text-gray-500">No events recorded yet.</p>}
+        {activityEvents.length === 0 && (
+          <p className="text-sm text-gray-500">No events recorded yet.</p>
+        )}
         <div className="space-y-1.5 max-h-52 overflow-auto">
           {activityEvents.map((event) => (
             <div
@@ -222,7 +222,9 @@ function SubmissionTable({
                 onChange={(status) => onUpdateStatus(row.id, status)}
               />
             </div>
-            <p className="text-xs text-gray-600">{row.contact} • {row.email}</p>
+            <p className="text-xs text-gray-600">
+              {row.contact} • {row.email}
+            </p>
             <p className="text-xs text-gray-500">{row.extra}</p>
             <p className="text-xs text-gray-400 mt-1">{new Date(row.createdAt).toLocaleString()}</p>
           </div>

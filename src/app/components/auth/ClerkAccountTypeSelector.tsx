@@ -34,7 +34,7 @@ export default function ClerkAccountTypeSelector() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-xl p-5 sm:p-8 max-w-2xl w-full">
+      <div className="bd-glass-card rounded-xl shadow-xl p-5 sm:p-8 max-w-2xl w-full">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Bidondent!</h2>
         <p className="text-gray-600 mb-8">
           Let's set up your account. What type of account do you need?

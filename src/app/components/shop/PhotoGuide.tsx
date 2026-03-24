@@ -35,7 +35,7 @@ export default function PhotoGuide({
   return (
     <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 sm:p-2 md:p-4">
       <motion.div
-        className="bg-white rounded-t-2xl sm:rounded-2xl md:rounded-3xl max-w-2xl w-full h-[88dvh] sm:h-auto sm:max-h-[92vh] md:max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
+        className="bd-glass-floating rounded-t-2xl sm:rounded-2xl md:rounded-3xl max-w-2xl w-full h-[88dvh] sm:h-auto sm:max-h-[92vh] md:max-h-[90vh] overflow-hidden flex flex-col"
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}

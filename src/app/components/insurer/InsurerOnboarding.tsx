@@ -109,7 +109,7 @@ export default function InsurerOnboarding({
               <p className="text-gray-600 text-center">Tell us about your insurance company</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-4">
+            <div className="bd-glass-card rounded-lg p-4 sm:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Company Name *
@@ -316,7 +316,7 @@ export default function InsurerOnboarding({
               <p className="text-gray-600 text-center">Configure your claim handling preferences</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-4">
+            <div className="bd-glass-card rounded-lg p-4 sm:p-6 space-y-4">
               <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
                 <div>
                   <p className="font-medium">Use preferred shop network</p>

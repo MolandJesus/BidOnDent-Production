@@ -152,7 +152,7 @@ export default function InsurerNewClaimScreen({
         {activeTab === "customers" ? (
           <div className="space-y-3">
             {filteredCustomers.map((customer) => (
-              <div key={customer.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div key={customer.id} className="bd-glass-card rounded-lg overflow-hidden">
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
@@ -229,7 +229,7 @@ export default function InsurerNewClaimScreen({
         ) : (
           <div className="space-y-3">
             {filteredShops.map((shop) => (
-              <div key={shop.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+              <div key={shop.id} className="bd-glass-card rounded-lg overflow-hidden">
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
