@@ -235,9 +235,6 @@ export function HomeSidebar({
             const Icon = action.icon;
             const isDisabled = !action.onClick;
             const iconTone = actionIconTones[index % actionIconTones.length];
-            let buttonClass = "bd-glass-control--utility";
-            if (index === 0) buttonClass = "bd-glass-control bd-glass-control--primary";
-            else if (index === 1 || index === 2) buttonClass = "bd-glass-control--secondary";
             return (
               <button
                 key={action.title}
@@ -246,7 +243,7 @@ export function HomeSidebar({
                 className={`text-left p-4 transition-all rounded-xl font-medium ${
                   isDisabled
                     ? "border border-slate-200/60 bg-slate-100/60 text-slate-400 cursor-not-allowed"
-                    : buttonClass
+                    : "bd-glass-card hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
                 }`}
               >
                 <div
