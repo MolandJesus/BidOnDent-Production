@@ -113,31 +113,37 @@ export default function ReportDetailScreen({
         </div>
       </div>
 
-      <div className="px-4 py-4 space-y-4">
+      <div className="px-2 py-2 space-y-3 sm:px-4 sm:py-4 sm:space-y-4">
         {/* Photo Gallery */}
         <div className="bd-glass-card overflow-hidden">
-          <div className="p-4">
-            <h2 className="font-bold text-lg mb-3">Damage Photos</h2>
-            <div className="grid grid-cols-3 gap-2">
-              {photos.map((photo, idx) => (
-                <div
-                  key={idx}
-                  className="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
-                  onClick={() => setSelectedPhoto(photo)}
-                >
-                  <ImageWithFallback
-                    src={photo}
-                    alt={`Damage photo ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+          <div className="p-3 sm:p-4">
+            <h2 className="font-bold text-lg mb-2 sm:mb-3">Damage Photos</h2>
+            {photos.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-slate-300/60 p-4 text-sm text-gray-500">
+                No photos were submitted with this report.
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                {photos.map((photo, idx) => (
+                  <div
+                    key={idx}
+                    className="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity min-w-[44px] min-h-[44px]"
+                    onClick={() => setSelectedPhoto(photo)}
+                  >
+                    <ImageWithFallback
+                      src={photo}
+                      alt={`Damage photo ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Vehicle Information */}
-        <div className="bd-glass-card p-4">
+        <div className="bd-glass-card p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Vehicle Information</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
@@ -166,7 +172,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Damage Description */}
-        <div className="bd-glass-card p-4">
+        <div className="bd-glass-card p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Damage Description</h2>
           <p className="text-gray-700">{description}</p>
           {report.incident && (
@@ -178,7 +184,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Submission Details */}
-        <div className="bd-glass-card p-4">
+        <div className="bd-glass-card p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Submission Details</h2>
           <div className="flex items-center text-sm text-gray-600">
             <Clock className="w-4 h-4 mr-2" />
@@ -201,7 +207,7 @@ export default function ReportDetailScreen({
         />
 
         {/* Interested Shops */}
-        <div className="bd-glass-card p-4">
+        <div className="bd-glass-card p-3 sm:p-4">
           <div className="flex justify-between items-center mb-3">
             <h2 className="font-bold text-lg">Interested Shops</h2>
             <span className="text-sm text-gray-600">{interestedShops.length} bids received</span>
@@ -216,10 +222,10 @@ export default function ReportDetailScreen({
               {interestedShops.map((shop) => (
                 <div
                   key={shop.id}
-                  className="border border-slate-200/60 rounded-xl p-3 hover:border-blue-300/60 hover:bg-slate-50/50 transition-all duration-200"
+                  className="bd-glass-card p-3 hover:shadow-md transition-all duration-200"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
                       <ImageWithFallback
                         src={shop.image}
                         alt={shop.name}
@@ -229,25 +235,28 @@ export default function ReportDetailScreen({
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1">
-                        <h3 className="font-medium">{shop.name}</h3>
-                        <span
-                          className="px-2 py-1 rounded-md text-xs font-bold text-white"
-                          style={{ backgroundColor: primaryColor }}
-                        >
-                          BID
-                        </span>
+                        <h3 className="font-semibold text-slate-900">{shop.name}</h3>
+                        <span className="bd-glass-badge ml-2 flex-shrink-0">BID</span>
                       </div>
 
-                      <div className="flex items-center text-sm mb-2">
-                        <Star className="w-3 h-3 text-yellow-400 mr-1" fill="#FBBF24" />
-                        <span className="font-medium mr-1">{shop.rating}</span>
-                        <span className="text-gray-500">({shop.reviews})</span>
-                        <span className="mx-2 text-gray-300">•</span>
-                        <MapPin className="w-3 h-3 mr-1 text-gray-400" />
-                        <span className="text-gray-600">{shop.distance}</span>
+                      <div className="flex items-center text-sm mb-2 flex-wrap gap-x-2 gap-y-1">
+                        {shop.rating > 0 ? (
+                          <>
+                            <Star className="w-3 h-3 text-yellow-400 flex-shrink-0" fill="#FBBF24" />
+                            <span className="font-medium">{shop.rating}</span>
+                            {shop.reviews > 0 && (
+                              <span className="text-gray-500">({shop.reviews})</span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-gray-400 text-xs">No rating yet</span>
+                        )}
+                        <span className="text-gray-300">•</span>
+                        <MapPin className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                        <span className="text-gray-600 truncate">{shop.distance}</span>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <div>
                           <div
                             className="text-lg font-bold tabular-nums"
@@ -258,7 +267,7 @@ export default function ReportDetailScreen({
                           <div className="text-xs text-gray-500">{shop.estimatedTime}</div>
                         </div>
                         <button
-                          className="px-3 py-1.5 rounded-md text-white text-sm font-medium"
+                          className="px-4 py-2.5 min-h-[44px] rounded-xl text-white text-sm font-semibold flex-shrink-0"
                           style={{ backgroundColor: primaryColor }}
                           onClick={onViewAllBids}
                         >
@@ -273,13 +282,24 @@ export default function ReportDetailScreen({
           )}
 
           {interestedShops.length > 0 && (
-            <button
-              className="w-full mt-4 py-3 px-4 rounded-lg text-white font-medium"
-              style={{ backgroundColor: primaryColor }}
-              onClick={onViewAllBids}
-            >
-              Compare All Bids
-            </button>
+            <>
+              {/* Mobile: sticky footer */}
+              <button
+                className="sm:hidden fixed left-2 right-2 bottom-2 z-40 py-3 px-4 rounded-xl text-white font-semibold shadow-lg min-h-[52px]"
+                style={{ backgroundColor: primaryColor }}
+                onClick={onViewAllBids}
+              >
+                Compare All Bids
+              </button>
+              {/* Desktop: inline */}
+              <button
+                className="hidden sm:block w-full mt-4 py-3 px-4 rounded-xl text-white font-semibold"
+                style={{ backgroundColor: primaryColor }}
+                onClick={onViewAllBids}
+              >
+                Compare All Bids
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -287,12 +307,13 @@ export default function ReportDetailScreen({
       {/* Photo Lightbox */}
       {selectedPhoto && (
         <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-2 sm:p-4 overflow-hidden"
           onClick={() => setSelectedPhoto(null)}
         >
           <button
-            className="absolute top-4 right-4 text-white text-3xl"
+            className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white text-3xl min-w-[44px] min-h-[44px] flex items-center justify-center"
             onClick={() => setSelectedPhoto(null)}
+            aria-label="Close"
           >
             ×
           </button>
@@ -300,6 +321,7 @@ export default function ReportDetailScreen({
             src={selectedPhoto}
             alt="Full size"
             className="max-w-full max-h-full object-contain"
+            style={{ maxWidth: "100vw", maxHeight: "100vh" }}
           />
         </div>
       )}

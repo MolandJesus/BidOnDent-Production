@@ -71,7 +71,12 @@ export function useNavigation() {
   const howItWorksRef = useRef<HTMLElement>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Save navigation state to localStorage whenever it changes
+  // Track whether a state change originated from the browser popstate event
+  // to avoid pushing a duplicate history entry in the effect below.
+  const isRestoringFromHistory = useRef(false);
+
+  // Save navigation state to localStorage and push a browser history entry
+  // so the hardware/gesture back button works on mobile (Safari included).
   useEffect(() => {
     const navigationState = {
       currentTab,
@@ -84,7 +89,37 @@ export function useNavigation() {
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error saving navigation state:", error);
     }
+
+    // Skip pushing when this update came from popstate (we're going backward)
+    if (isRestoringFromHistory.current) {
+      isRestoringFromHistory.current = false;
+      return;
+    }
+
+    // Push a history entry so the browser back button can return to this state
+    history.pushState({ currentTab, viewMode, selectedReportId }, "");
   }, [currentTab, viewMode, selectedReportId]);
+
+  // Handle browser back/forward (popstate) — restore app state without pushing
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state as { currentTab?: string; viewMode?: string; selectedReportId?: string | null } | null;
+      isRestoringFromHistory.current = true;
+      if (state?.viewMode && VALID_VIEW_MODES.has(state.viewMode)) {
+        setViewMode(state.viewMode as ViewMode);
+        setCurrentTab(state.currentTab || "home");
+        setSelectedReportId(state.selectedReportId ?? null);
+      } else {
+        // Bottom of history stack — return to dashboard home
+        setViewMode("dashboard");
+        setCurrentTab("home");
+        setSelectedReportId(null);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   // Navigate to a specific tab
   const navigateToTab = (tabId: string) => {

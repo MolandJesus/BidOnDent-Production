@@ -16,6 +16,8 @@ export interface DashboardRouterProps {
   };
   userPhone: string;
   reports: any[];
+  reportsLoading?: boolean;
+  reportsError?: string | null;
   vehicles: any[];
   bids: any[];
   photoStorage: { [key: string]: string[] };

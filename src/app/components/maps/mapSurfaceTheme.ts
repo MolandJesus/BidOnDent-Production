@@ -13,7 +13,7 @@ const baseTheme = {
   segmentedClassName:
     "inline-flex items-center gap-1 rounded-full border p-1 backdrop-blur-2xl shadow-[0_16px_36px_rgba(15,23,42,0.14)] transition-[background,border-color,box-shadow] duration-300",
   buttonBaseClassName:
-    "inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
+    "inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2.5 min-h-[44px] text-sm font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
   iconButtonBaseClassName:
     "inline-flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-200 active:scale-[0.94]",
   eyebrowClassName:

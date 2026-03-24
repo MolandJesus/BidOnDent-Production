@@ -45,52 +45,96 @@ export async function getDamageReports(
   const identity = normalizeReportIdentity(identityOrClerkUserId);
 
   if (identity?.clerkUserId || identity?.email || identity?.websiteUserKey) {
-    try {
-      const searchParams = buildWebsiteIdentityQuery(identity);
-      const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
-        `${SUPABASE_EDGE_ROUTES.reports}?${searchParams.toString()}`,
-        {
-          method: "GET",
+    let edgeError = null;
+    let edgePayload = null;
+    // Try edge function, retry once if fails
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const searchParams = buildWebsiteIdentityQuery(identity);
+        const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
+          `${SUPABASE_EDGE_ROUTES.reports}?${searchParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
+        if (payload && Array.isArray(payload.reports)) {
+          if (import.meta.env.DEV && attempt > 0) {
+            console.log("[DEV] Edge function succeeded on retry");
+          }
+          return payload.reports;
         }
-      );
-
-      return payload.reports || [];
-    } catch (error) {
-      console.error("Error in getDamageReports edge path:", error);
-      return [];
+        edgePayload = payload;
+      } catch (error) {
+        edgeError = error;
+        if (import.meta.env.DEV) {
+          console.error(`[DEV] Edge function attempt ${attempt + 1} failed:`, error);
+        }
+      }
+    }
+    // Fallback to direct query if edge fails
+    if (import.meta.env.DEV) {
+      console.warn("[DEV] Edge function failed, falling back to direct Supabase query");
+    }
+    try {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      if (!user) {
+        if (import.meta.env.DEV) console.warn("[DEV] No authenticated user in fallback");
+        return { error: "identity-missing" };
+      }
+      const { data, error } = await supabase
+        .from("damage_reports")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) {
+        if (import.meta.env.DEV) {
+          console.error("[DEV] Fallback Supabase query error:", error);
+        }
+        return { error: "fallback-error" };
+      }
+      if (Array.isArray(data)) {
+        return data;
+      }
+      return { error: "fallback-malformed" };
+    } catch (fallbackError) {
+      if (import.meta.env.DEV) {
+        console.error("[DEV] Fallback Supabase query threw:", fallbackError);
+      }
+      return { error: "fallback-exception" };
     }
   }
 
+  // Legacy fallback (should rarely hit)
   try {
     const {
       data: { user }
     } = await supabase.auth.getUser();
-
     if (!user) {
-      console.log("ℹ️ No authenticated user");
-      return [];
+      if (import.meta.env.DEV) console.warn("[DEV] No authenticated user in legacy fallback");
+      return { error: "identity-missing" };
     }
-
     const { data, error } = await supabase
       .from("damage_reports")
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
-
     if (error) {
-      if (error.code === "PGRST205" || error.code === "42P01") {
-        console.log("ℹ️ Damage reports table not set up yet - using local storage");
-        return [];
+      if (import.meta.env.DEV) {
+        console.error("[DEV] Legacy fallback Supabase query error:", error);
       }
-      console.error("Error fetching damage reports:", error);
-      return [];
+      return { error: "legacy-fallback-error" };
     }
-
-    console.log(`✅ Loaded ${data.length} damage reports from Supabase`);
-    return Array.isArray(data) ? (data as DamageReport[]) : [];
-  } catch (error) {
-    console.error("Error in getDamageReports:", error);
-    return [];
+    if (Array.isArray(data)) {
+      return data;
+    }
+    return { error: "legacy-fallback-malformed" };
+  } catch (legacyError) {
+    if (import.meta.env.DEV) {
+      console.error("[DEV] Legacy fallback Supabase query threw:", legacyError);
+    }
+    return { error: "legacy-fallback-exception" };
   }
 }
 
@@ -103,14 +147,14 @@ export async function getAllDamageReports(): Promise<DamageReport[]> {
 
     if (error) {
       if (error.code === "PGRST205" || error.code === "42P01") {
-        console.log("ℹ️ Damage reports table not set up yet - using local storage");
+        if (import.meta.env.DEV) console.log("[DEV] Damage reports table not set up yet");
         return [];
       }
-      console.error("Error fetching all damage reports:", error);
+      if (import.meta.env.DEV) console.error("[DEV] Error fetching all damage reports:", error);
       return [];
     }
 
-    console.log(`✅ Loaded ${data.length} total damage reports from Supabase`);
+    if (import.meta.env.DEV) console.log(`[DEV] Loaded ${data.length} total damage reports`);
     return Array.isArray(data) ? (data as DamageReport[]) : [];
   } catch (error) {
     console.error("Error in getAllDamageReports:", error);
@@ -162,14 +206,11 @@ export async function saveDamageReport(
       }
     );
 
-    console.log(
-      shouldUpdate
-        ? "✅ Damage report updated successfully"
-        : "✅ Damage report created successfully"
-    );
+    if (import.meta.env.DEV)
+      console.log("[DEV]", shouldUpdate ? "Damage report updated" : "Damage report created");
     return result.report as DamageReport;
   } catch (error) {
-    console.error("Error in saveDamageReport:", error);
+    if (import.meta.env.DEV) console.error("[DEV] Error in saveDamageReport:", error);
     throw error;
   }
 }
@@ -192,7 +233,7 @@ export async function updateReportStatus(
     );
     return true;
   } catch (error) {
-    console.error("Error updating report status:", error);
+    if (import.meta.env.DEV) console.error("[DEV] Error updating report status:", error);
     return false;
   }
 }
@@ -212,7 +253,7 @@ export async function deleteDamageReport(
       );
       return true;
     } catch (error) {
-      console.error("Error in deleteDamageReport edge path:", error);
+      if (import.meta.env.DEV) console.error("[DEV] Error in deleteDamageReport edge path:", error);
       return false;
     }
   }
@@ -233,14 +274,13 @@ export async function deleteDamageReport(
       .eq("user_id", user.id);
 
     if (error) {
-      console.error("Error deleting damage report:", error);
+      if (import.meta.env.DEV) console.error("[DEV] Error deleting damage report:", error);
       return false;
     }
 
-    console.log("✅ Damage report deleted from Supabase");
     return true;
   } catch (error) {
-    console.error("Error in deleteDamageReport:", error);
+    if (import.meta.env.DEV) console.error("[DEV] Error in deleteDamageReport:", error);
     return false;
   }
 }

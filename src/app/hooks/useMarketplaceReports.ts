@@ -8,12 +8,14 @@ import { transformSupabaseReport } from "./userDataUtils";
 export function useMarketplaceReports(userType: string) {
   const [marketplaceReports, setMarketplaceReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (userType !== "shop" && userType !== "insurer") return;
 
     let cancelled = false;
     setLoading(true);
+    setError(null);
 
     (async () => {
       try {
@@ -23,7 +25,9 @@ export function useMarketplaceReports(userType: string) {
           setMarketplaceReports(raw.map(transformSupabaseReport));
         }
       } catch {
-        // Silently fall back to empty — seed data will be used as fallback
+        if (!cancelled) {
+          setError("Unable to load live data — showing demo requests");
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -34,5 +38,5 @@ export function useMarketplaceReports(userType: string) {
     };
   }, [userType]);
 
-  return { marketplaceReports, loading };
+  return { marketplaceReports, loading, error };
 }

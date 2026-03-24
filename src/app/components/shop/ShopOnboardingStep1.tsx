@@ -1,4 +1,4 @@
-import { ArrowRight, Building } from "lucide-react";
+import { ArrowRight, Building, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import type { ShopOnboardingFormData } from "../../types";
 
@@ -101,6 +101,14 @@ export default function ShopOnboardingStep1({
           />
         </div>
 
+        {/* Map integration note */}
+        <div className="flex items-start gap-2.5 rounded-xl bg-blue-50/60 border border-blue-100/60 px-3.5 py-3">
+          <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Your shop location will appear on the BidOnDent coverage map, making it discoverable by customers in your area.
+          </p>
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
           <input
@@ -135,7 +143,7 @@ export default function ShopOnboardingStep1({
           !formData.zip ||
           !formData.phone
         }
-        className="w-full mt-6 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full mt-6 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ backgroundColor: primaryColor }}
         whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
         whileTap={{ scale: 0.98 }}

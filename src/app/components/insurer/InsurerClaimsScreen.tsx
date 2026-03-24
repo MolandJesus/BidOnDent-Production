@@ -7,12 +7,14 @@ import InsurerClaimApprovalModal from "./InsurerClaimApprovalModal";
 type InsurerClaimsScreenProps = {
   primaryColor?: string;
   reports?: any[];
+  reportsLoading?: boolean;
   onApproveClaim?: (claimId: number, amount: number) => void;
 };
 
 export default function InsurerClaimsScreen({
   primaryColor = "#003d82",
   reports = [],
+  reportsLoading = false,
   onApproveClaim,
 }: InsurerClaimsScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,7 +58,7 @@ export default function InsurerClaimsScreen({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bd-glass-panel">
       {/* Header */}
       <div className="bd-glass-panel sticky top-0 z-10 border-b border-slate-200/60">
         <div className="px-4 py-4">
@@ -106,7 +108,11 @@ export default function InsurerClaimsScreen({
 
       {/* Claims List */}
       <div className="px-4 py-4 space-y-4">
-        {filteredClaims.length === 0 ? (
+        {reportsLoading ? (
+          <div className="bd-glass-card p-5 sm:p-8 text-center">
+            <p className="text-slate-500">Loading claims…</p>
+          </div>
+        ) : filteredClaims.length === 0 ? (
           <div className="bd-glass-card p-5 sm:p-8 text-center">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600">No claims found</p>

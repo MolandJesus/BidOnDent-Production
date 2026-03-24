@@ -25,13 +25,13 @@ export default function TrustStatsSection() {
   ];
 
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-r from-[#0c1929] to-[#1e3a5f] text-white relative overflow-hidden">
+    <section className="py-12 md:py-20 bg-gradient-to-r from-[#0f0d1a] to-[#1a1535] text-white relative overflow-hidden">
       {/* Soft top-edge transition from light sections above */}
-      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-blue-100/10 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-violet-100/10 to-transparent" />
       {/* Decorative background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:26px_26px] opacity-25" />
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/30 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-400/20 rounded-full blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.14)_1px,transparent_1px)] [background-size:26px_26px] opacity-20" />
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-violet-400/15 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 max-w-7xl relative">
         <div className="grid md:grid-cols-4 gap-8 text-center">

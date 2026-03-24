@@ -46,7 +46,7 @@ export function transformReportsToClaims(reports: any[]): ClaimData[] {
       incidentDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
       reportedDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
       estimatedDamage: bidAmount,
-      location: report?.location || "Service region",
+      location: report?.address || (report?.zip_code ? `ZIP ${report.zip_code}` : "Service region"),
       status,
       priority: bidAmount >= 1800 ? "high" : bidAmount >= 1000 ? "medium" : "low",
       photoCount: Array.isArray(report?.photos) ? report.photos.length : 0,

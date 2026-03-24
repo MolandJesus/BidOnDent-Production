@@ -56,6 +56,8 @@ export function buildDashboardRouterProps({
     userPhone: userProfile.phone,
     vehicles: userData.vehicles,
     reports: userData.reports,
+    reportsLoading: userData.reportsLoading,
+    reportsError: userData.reportsError,
     bids: userData.bids,
     photoStorage: userData.photoStorage,
     selectedReportId: navigation.selectedReportId,

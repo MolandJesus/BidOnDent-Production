@@ -66,7 +66,7 @@ export default function ShopOnboardingStep4({
         <motion.button
           onClick={onBack}
           disabled={isSubmitting}
-          className="flex-1 py-3 px-4 rounded-md font-medium bd-glass-control--secondary disabled:opacity-60"
+          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold bd-glass-control--secondary disabled:opacity-60"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -75,7 +75,7 @@ export default function ShopOnboardingStep4({
         <motion.button
           onClick={onComplete}
           disabled={isSubmitting}
-          className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-70"
+          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-70"
           style={{ backgroundColor: primaryColor }}
           whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
           whileTap={{ scale: 0.98 }}

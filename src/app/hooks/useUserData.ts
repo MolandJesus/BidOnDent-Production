@@ -36,6 +36,8 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: "", email: "", profileImage: "" });
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [reports, setReports] = useState<DamageReport[]>([]);
+  const [reportsError, setReportsError] = useState<string | null>(null);
+  const [reportsLoading, setReportsLoading] = useState<boolean>(true);
   const [bids, setBids] = useState<Bid[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [userPhone, setUserPhone] = useState("");
@@ -87,6 +89,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
       if (!signedInEmail || !clerkUserId) {
         if (import.meta.env.DEV)
           console.log("No Clerk identity available yet - skipping cloud load");
+        setReportsLoading(false);
         return;
       }
 
@@ -138,13 +141,14 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             console.log(`Loaded ${vehiclesData.length} vehicles from Supabase`);
 
           // Load reports from Supabase
+          setReportsLoading(true);
+          setReportsError(null);
           const reportsData = await getDamageReports(clerkUserId);
-          if (reportsData.length > 0) {
-            // Transform Supabase reports to app format
+          if (Array.isArray(reportsData)) {
+            // Success
             const transformedReports = reportsData.map(transformSupabaseReport);
-
             setReports(transformedReports);
-
+            setReportsError(null);
             // Populate photoStorage from reports
             const photoStorageData: Record<string, string[]> = {};
             reportsData.forEach((report: any) => {
@@ -154,8 +158,21 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             });
             setPhotoStorage(photoStorageData);
             if (import.meta.env.DEV)
-              console.log(`Loaded ${transformedReports.length} reports from Supabase`);
+              console.log(`[DEV] Loaded ${transformedReports.length} reports from Supabase`);
+          } else if (reportsData && reportsData.error) {
+            setReports([]);
+            setReportsError(reportsData.error);
+            if (import.meta.env.DEV) {
+              console.error(`[DEV] Reports error:`, reportsData.error);
+            }
+          } else {
+            setReports([]);
+            setReportsError("unknown-error");
+            if (import.meta.env.DEV) {
+              console.error(`[DEV] Unknown reports error:`, reportsData);
+            }
           }
+          setReportsLoading(false);
 
           // Step 4: Update localStorage CACHE with fresh data
           const freshUserData: UserData = {
@@ -265,9 +282,11 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           hasSeenPhotoGuide,
           photoStorage,
         };
-        const cacheKey = getUserCacheKey(userInfo.email, websiteUserKey);
         try {
-          localStorage.setItem(cacheKey, JSON.stringify(userData));
+          localStorage.setItem(
+            getUserCacheKey(userInfo.email, websiteUserKey),
+            JSON.stringify(userData)
+          );
           localStorage.setItem(
             STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
             websiteUserKey || normalizeEmail(userInfo.email)
@@ -328,23 +347,23 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             websiteUserKey,
           }
         );
-        console.log("☁️ Auto-saved profile to Supabase");
+        if (import.meta.env.DEV) console.log("Auto-saved profile to Supabase");
 
         if (vehicles.length > 0) {
           for (const vehicle of vehicles) {
             await saveVehicle(vehicle, clerkUserId);
           }
-          console.log("☁️ Auto-saved vehicles to Supabase");
+          if (import.meta.env.DEV) console.log("Auto-saved vehicles to Supabase");
         }
 
         if (reports.length > 0) {
           for (const report of reports) {
             await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
           }
-          console.log("☁️ Auto-saved reports to Supabase");
+          if (import.meta.env.DEV) console.log("Auto-saved reports to Supabase");
         }
       } catch (error) {
-        console.error("❌ Error auto-saving to Supabase:", error);
+        if (import.meta.env.DEV) console.error("Error auto-saving to Supabase:", error);
       } finally {
         isSavingRef.current = false;
       }
@@ -412,7 +431,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
     setNotifications([]);
     setHasSeenPhotoGuide(false);
     setPhotoStorage({});
-    console.log("🚪 Session cleared (cache only - cloud data preserved)");
+    if (import.meta.env.DEV) console.log("Session cleared (cache only - cloud data preserved)");
   };
 
   return {
@@ -420,6 +439,8 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
     userInfo,
     vehicles,
     reports,
+    reportsLoading,
+    reportsError,
     bids,
     activities,
     userPhone,

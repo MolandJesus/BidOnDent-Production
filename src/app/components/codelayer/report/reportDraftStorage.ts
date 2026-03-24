@@ -9,6 +9,8 @@ type ReportDraft = {
   step: number;
   vehicle: VehicleDraft;
   damageArea: string;
+  zipCode?: string;
+  address?: string;
   description: string;
   incident: string;
   savedAt: string;
@@ -71,12 +73,14 @@ export function saveReportDraft(params: {
   step: number;
   vehicle: VehicleDraft;
   damageArea: string;
+  zipCode?: string;
+  address?: string;
   description: string;
   incident: string;
 }): void {
-  const { step, vehicle, damageArea, description, incident } = params;
+  const { step, vehicle, damageArea, zipCode, address, description, incident } = params;
 
-  if (step === 5) {
+  if (step === 6) {
     return;
   }
 
@@ -84,6 +88,8 @@ export function saveReportDraft(params: {
     step,
     vehicle,
     damageArea,
+    zipCode,
+    address,
     description,
     incident,
     savedAt: new Date().toISOString(),

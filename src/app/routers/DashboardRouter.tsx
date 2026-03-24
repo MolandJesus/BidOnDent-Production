@@ -88,7 +88,7 @@ export default function DashboardRouter({
   const { bids: liveBids } = useBidsForReport(bidsReportId);
 
   // Fetch all reports from Supabase for shop/insurer marketplace views
-  const { marketplaceReports } = useMarketplaceReports(userType);
+  const { marketplaceReports, loading: marketplaceLoading } = useMarketplaceReports(userType);
   const shopInsurerReports =
     marketplaceReports.length > 0 ? marketplaceReports : SEED_DAMAGE_REPORTS;
 
@@ -201,6 +201,7 @@ export default function DashboardRouter({
             <ShopRequestsScreen
               primaryColor={primaryColor}
               reports={shopInsurerReports}
+              reportsLoading={marketplaceLoading}
               onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
                 onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
               }}
@@ -218,7 +219,7 @@ export default function DashboardRouter({
         {/* Insurer: Claims Screen */}
         {viewMode === "dashboard" && currentTab === "claims" && userType === "insurer" && (
           <motion.div key="claims" {...screenTransition}>
-            <InsurerClaimsScreen primaryColor={primaryColor} reports={shopInsurerReports} />
+            <InsurerClaimsScreen primaryColor={primaryColor} reports={shopInsurerReports} reportsLoading={marketplaceLoading} />
           </motion.div>
         )}
 
@@ -280,6 +281,8 @@ export default function DashboardRouter({
                 ...report,
                 photos: photoStorage[report.id] || report.photos || [],
               }))}
+              reportsLoading={props.reportsLoading}
+              reportsError={props.reportsError}
               onBack={() => onViewModeChange("dashboard")}
               onSelectReport={(reportId) => {
                 onSelectReport(reportId);

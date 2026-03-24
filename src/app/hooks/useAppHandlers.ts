@@ -159,6 +159,8 @@ export function useAppHandlers({
           damage_severity: "moderate",
           damage_description: report.description || "",
           damage_location: report.damageArea || "",
+          address: report.address || "",
+          zip_code: report.zipCode || "",
           photo_urls: report.photos || [],
           insurance_claim: false,
           preferred_contact: "email",

@@ -23,12 +23,12 @@ export default function DashboardHeader({
   onProfileClick
 }: DashboardHeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <header className="bd-glass-panel border-b border-white/20 sticky top-0 z-40">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between max-w-7xl">
         {/* Logo */}
-        <button 
+        <button
           onClick={onLogoClick}
-          className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2 min-h-[44px] cursor-pointer hover:opacity-80 transition-opacity"
         >
           <Car className="w-6 h-6" style={{ color: primaryColor }} />
           <h1 className="text-2xl font-bold">
@@ -50,7 +50,7 @@ export default function DashboardHeader({
         <div className="relative">
           <button
             onClick={onProfileClick}
-            className="flex items-center space-x-3 focus:outline-none"
+            className="flex items-center space-x-3 min-h-[44px] focus:outline-none rounded-xl px-2 hover:bg-white/10 transition-colors"
           >
             <div className="relative">
               {/* Profile Picture */}

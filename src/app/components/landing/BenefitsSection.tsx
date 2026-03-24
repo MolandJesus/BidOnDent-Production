@@ -52,7 +52,7 @@ export default function BenefitsSection({
 
   return (
     <section
-      className="pt-10 pb-16 md:pt-16 md:pb-24 bg-gradient-to-br from-[#f2f6fb] via-[#edf3fa] to-[#e8f0fe]"
+      className="pt-10 pb-16 md:pt-16 md:pb-24 bg-gradient-to-br from-[#fafbff] via-[#f4f3ff] to-[#eeeeff]"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -62,7 +62,7 @@ export default function BenefitsSection({
         >
           <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-            Why Choose Us
+            Built for Real Repairs
           </span>
         </div>
 
@@ -124,19 +124,19 @@ export default function BenefitsSection({
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
               $0
             </span>
-            <span className="text-sm text-gray-600">Free to Use</span>
+            <span className="text-sm text-gray-600">Free for Customers</span>
           </div>
           <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
               3+
             </span>
-            <span className="text-sm text-gray-600">Compare Quotes</span>
+            <span className="text-sm text-gray-600">Bids Per Request</span>
           </div>
           <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
-            <span className="text-2xl font-bold" style={{ color: primaryColor }}>
-              $0
+            <span className="text-sm font-bold" style={{ color: primaryColor }}>
+              NY
             </span>
-            <span className="text-sm text-gray-600">No Hidden Fees</span>
+            <span className="text-sm text-gray-600">Service Area</span>
           </div>
         </div>
       </div>

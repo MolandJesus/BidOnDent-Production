@@ -1,4 +1,4 @@
-import { Building2, MapPinned } from "lucide-react";
+import { Building2, MapPinned, Navigation } from "lucide-react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
 import { operatingRegions } from "../landing/coverageData";
@@ -6,6 +6,7 @@ import { operatingRegions } from "../landing/coverageData";
 type InsurerMapWidgetProps = {
   primaryColor: string;
   secondaryColor: string;
+  onViewShops?: () => void;
 };
 
 /**
@@ -13,7 +14,7 @@ type InsurerMapWidgetProps = {
  * Structure-only placeholder — real network analytics require queryable shop data.
  * Max height 300px. Glanceable network stats with region breakdown.
  */
-export default function InsurerMapWidget({ primaryColor, secondaryColor }: InsurerMapWidgetProps) {
+export default function InsurerMapWidget({ primaryColor, secondaryColor, onViewShops }: InsurerMapWidgetProps) {
   const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
 
   const avgRating =
@@ -22,7 +23,7 @@ export default function InsurerMapWidget({ primaryColor, secondaryColor }: Insur
       : 0;
 
   return (
-    <section className="bd-glass-card p-5" style={{ maxHeight: 300 }}>
+    <section className="bd-glass-card p-5" style={{ maxHeight: 380 }}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div
@@ -40,6 +41,19 @@ export default function InsurerMapWidget({ primaryColor, secondaryColor }: Insur
             </p>
           </div>
         </div>
+        {onViewShops && (
+          <button
+            type="button"
+            onClick={onViewShops}
+            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 min-h-[44px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+            }}
+          >
+            <Navigation className="h-3.5 w-3.5" />
+            View Network
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">

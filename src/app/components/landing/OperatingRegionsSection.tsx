@@ -21,11 +21,11 @@ export default function OperatingRegionsSection({
   return (
     <section
       id="coverage"
-      className="py-14 bg-gradient-to-b from-[#1e3a5f] via-[#162d4a] to-[#0f1e33] text-white relative overflow-hidden"
+      className="py-14 bg-gradient-to-b from-[#131122] via-[#1a1535] to-[#0f1020] text-white relative overflow-hidden"
       ref={sectionRef}
     >
       {/* Atmospheric depth */}
-      <div className="absolute top-0 right-1/3 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+      <div className="absolute top-0 right-1/3 w-72 h-72 bg-indigo-500/12 rounded-full blur-3xl" />
       <div className="container mx-auto px-4 max-w-6xl relative">
         <div
           className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}

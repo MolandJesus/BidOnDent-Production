@@ -36,7 +36,8 @@ const SNAP_POINTS = [COLLAPSED, PEEK, HALF, FULL] as const;
 
 export default function MobileMapBottomSheet({ tone, children }: MobileMapBottomSheetProps) {
   const theme = getMapSurfaceTheme(tone, true);
-  const [snap, setSnap] = useState<number | string | null>(PEEK);
+  // Start at HALF so the search input is immediately visible (search-first on mobile)
+  const [snap, setSnap] = useState<number | string | null>(HALF);
   const isCollapsed = snap === COLLAPSED;
   const isScrollable = snap === HALF || snap === FULL;
 
@@ -75,7 +76,7 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
                 type="button"
                 onClick={collapseToMap}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium",
+                  "flex items-center gap-1.5 rounded-full px-4 py-2 min-h-[44px] text-xs font-medium",
                   "bg-sky-500/15 text-sky-300 active:bg-sky-500/25",
                   "transition-colors duration-150"
                 )}

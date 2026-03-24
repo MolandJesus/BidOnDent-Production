@@ -1,4 +1,4 @@
-import { Car, Mail, Phone, MapPin } from "lucide-react";
+import { Car, Mail, MapPin } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 
 interface FooterSectionProps {
@@ -11,7 +11,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
 
   return (
     <footer
-      className="bg-gradient-to-b from-[#0f1e33] to-[#0c1929] text-gray-300 pt-16 pb-12 relative"
+      className="bg-gradient-to-b from-[#131122] to-[#0d0b18] text-gray-300 pt-16 pb-12 relative"
       ref={footerRef}
     >
       {/* Top edge fade for smooth CTA transition */}
@@ -55,10 +55,6 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" style={{ color: primaryColor }} />
                 <span>bidondent@gmail.com</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4" style={{ color: primaryColor }} />
-                <span>1-800-BIDONDENT</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" style={{ color: primaryColor }} />

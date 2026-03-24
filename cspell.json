@@ -134,6 +134,8 @@
     "glanceability",
     "pagehide",
     "untappable",
-    "recents"
+    "recents",
+    "popstate",
+    "pushstate"
   ]
 }

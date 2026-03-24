@@ -165,7 +165,7 @@ export default function HomeScreen({
           <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={primaryAction.onClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white"
+              className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               }}
@@ -177,7 +177,7 @@ export default function HomeScreen({
             {demoMode && onExitDemoMode && userType !== originalAccountType && (
               <button
                 onClick={onExitDemoMode}
-                className="bd-glass-control px-4 py-2.5 text-blue-700 font-medium"
+                className="bd-glass-control px-4 py-2.5 min-h-[44px] text-blue-700 font-medium"
               >
                 Exit Demo View
               </button>
@@ -185,6 +185,15 @@ export default function HomeScreen({
           </div>
         </div>
       </section>
+
+      {/* Map widget — hero position: first thing users see on the dashboard */}
+      {userType === "shop" ? (
+        <ShopMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} onViewShops={onViewShops} />
+      ) : userType === "insurer" ? (
+        <InsurerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} onViewShops={onViewShops} />
+      ) : (
+        <CustomerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
+      )}
 
       {isNewUser && userType === "customer" ? (
         <HomeOnboardingCard primaryColor={primaryColor} secondaryColor={secondaryColor} />
@@ -215,14 +224,6 @@ export default function HomeScreen({
             );
           })}
         </section>
-      )}
-
-      {userType === "shop" ? (
-        <ShopMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
-      ) : userType === "insurer" ? (
-        <InsurerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
-      ) : (
-        <CustomerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
       )}
 
       <section className="grid grid-cols-1 xl:grid-cols-12 gap-5">

@@ -319,7 +319,7 @@ export default function CoverageBrowseExperience({
   const isDesktop = useMediaQuery("(min-width: 1280px)");
 
   return (
-    <div className="relative overflow-hidden rounded-2xl sm:rounded-[1.5rem] xl:rounded-[2rem] border-0 sm:border sm:border-white/30 shadow-none sm:shadow-[0_34px_100px_rgba(15,23,42,0.24)] bg-transparent sm:bg-[linear-gradient(180deg,rgba(245,250,255,0.7),rgba(226,236,247,0.62))] sm:backdrop-blur-3xl">
+    <div className="relative overflow-hidden rounded-2xl sm:rounded-[1.5rem] xl:rounded-[2rem] border-0 sm:border sm:border-white/30 shadow-none sm:shadow-[0_34px_100px_rgba(15,23,42,0.2)] bg-transparent sm:bg-[linear-gradient(180deg,rgba(248,247,255,0.72),rgba(232,234,248,0.6))] sm:backdrop-blur-3xl">
       <div className="hidden xl:block">
         <CoverageCommandCenterHeader tone={tone} navigationSession={navigationSession} />
       </div>

@@ -1,4 +1,4 @@
-import { ChevronRight, CheckCircle, Play, Star, Shield } from "lucide-react";
+import { ChevronRight, CheckCircle, MapPin, Play, Shield } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
 import { useEffect, useState, useRef, useCallback } from "react";
@@ -61,7 +61,7 @@ export default function HeroSection({
   };
 
   return (
-    <section className="pt-28 sm:pt-32 pb-20 sm:pb-28 overflow-hidden relative bg-gradient-to-br from-[#f8f9fc] via-[#f0f4fa] to-[#e8eef6]">
+    <section className="pt-28 sm:pt-32 pb-20 sm:pb-28 overflow-hidden relative bg-gradient-to-br from-[#f9f8fc] via-[#f2f0f8] to-[#eae8f4]">
       {/* Warm atmospheric depth layers — soft, natural lighting feel */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-15%,rgba(99,147,205,0.12),transparent_65%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_85%_80%,rgba(147,130,205,0.07),transparent_55%)]" />
@@ -263,17 +263,13 @@ export default function HeroSection({
               </div>
             </div>
 
-            {/* Floating rating badge — social proof */}
+            {/* Floating map-preview badge — product story */}
             <div
               className={`absolute top-1/2 -left-2 sm:-left-4 lg:-left-8 bd-glass-floating px-3 py-2 flex items-center gap-2 animate-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
               style={{ transitionDelay: "2s", animationDelay: "0.5s" }}
             >
-              <div className="flex items-center gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3 h-3 text-amber-400 fill-amber-400" />
-                ))}
-              </div>
-              <span className="text-xs font-semibold text-slate-700">4.9</span>
+              <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <span className="text-xs font-semibold text-slate-700">Shops Near You</span>
             </div>
 
             {/* Shield trust badge — top-left area */}

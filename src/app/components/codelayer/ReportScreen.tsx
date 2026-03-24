@@ -9,6 +9,7 @@ import StepDamageArea from "./report/StepDamageArea";
 import StepDescription from "./report/StepDescription";
 import StepPhotos from "./report/StepPhotos";
 import StepVehicleInfo from "./report/StepVehicleInfo";
+import StepServiceLocation from "./report/StepServiceLocation";
 import { DAMAGE_AREAS } from "./report/damageAreas";
 import {
   clearReportDraft,
@@ -45,6 +46,8 @@ export default function ReportScreen({
   const [uploadProgress, setUploadProgress] = useState<string>("");
   const [vehicle, setVehicle] = useState({ ...DEFAULT_VEHICLE_DRAFT });
   const [damageArea, setDamageArea] = useState("front");
+  const [zipCode, setZipCode] = useState("");
+  const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [incident, setIncident] = useState("");
   const [showPhotoGuide, setShowPhotoGuide] = useState(false);
@@ -66,6 +69,8 @@ export default function ReportScreen({
       // Don't restore photos - they're too large for localStorage
       setVehicle(draft.vehicle || { ...DEFAULT_VEHICLE_DRAFT });
       setDamageArea(draft.damageArea || "front");
+      setZipCode(draft.zipCode || "");
+      setAddress(draft.address || "");
       setDescription(draft.description || "");
       setIncident(draft.incident || "");
     }
@@ -74,7 +79,7 @@ export default function ReportScreen({
   // Save draft to localStorage whenever any field changes (except on completion)
   useEffect(() => {
     // Don't save if we're on the completion step
-    if (step === 5) {
+    if (step === 6) {
       return;
     }
 
@@ -83,10 +88,12 @@ export default function ReportScreen({
       step,
       vehicle,
       damageArea,
+      zipCode,
+      address,
       description,
       incident,
     });
-  }, [step, vehicle, damageArea, description, incident]); // Removed photos from dependencies
+  }, [step, vehicle, damageArea, zipCode, address, description, incident]);
 
   useEffect(() => {
     return () => {
@@ -150,7 +157,7 @@ export default function ReportScreen({
 
   const nextStep = () => {
     setStep((previousStep) => {
-      const next = Math.min(previousStep + 1, 5);
+      const next = Math.min(previousStep + 1, 6);
 
       if (next <= 5) {
         setShowSaveIndicator(true);
@@ -175,9 +182,11 @@ export default function ReportScreen({
     setPhotos([]);
     setVehicle({ ...DEFAULT_VEHICLE_DRAFT });
     setDamageArea("front");
+    setZipCode("");
+    setAddress("");
     setDescription("");
     setIncident("");
-    setHasSeenGuideThisSession(false); // Reset guide state for new report
+    setHasSeenGuideThisSession(false);
     clearDraft();
   };
 
@@ -200,6 +209,10 @@ export default function ReportScreen({
   };
 
   const handleDamageContinue = () => {
+    nextStep(); // proceeds to location step
+  };
+
+  const handleLocationContinue = () => {
     if (!hasSeenPhotoGuide && !hasSeenGuideThisSession) {
       setShowPhotoGuide(true);
     } else {
@@ -216,6 +229,8 @@ export default function ReportScreen({
           id: Date.now().toString(),
           vehicle,
           damageArea,
+          zipCode,
+          address,
           photos,
           description,
           incident,
@@ -280,6 +295,19 @@ export default function ReportScreen({
 
         case 3:
           return (
+            <StepServiceLocation
+              primaryColor={primaryColor}
+              zipCode={zipCode}
+              address={address}
+              onZipChange={setZipCode}
+              onAddressChange={setAddress}
+              onBack={prevStep}
+              onContinue={handleLocationContinue}
+            />
+          );
+
+        case 4:
+          return (
             <StepPhotos
               primaryColor={primaryColor}
               photos={photos}
@@ -296,7 +324,7 @@ export default function ReportScreen({
             />
           );
 
-        case 4:
+        case 5:
           return (
             <StepDescription
               primaryColor={primaryColor}
@@ -311,7 +339,7 @@ export default function ReportScreen({
             />
           );
 
-        case 5:
+        case 6:
           return (
             <StepComplete
               primaryColor={primaryColor}
@@ -342,12 +370,12 @@ export default function ReportScreen({
     }
   };
 
-  // Progress bar
-  const progress = Math.min(Math.round((step / 5) * 100), 100);
+  // Progress bar (6 total steps)
+  const progress = Math.min(Math.round((step / 6) * 100), 100);
 
   return (
     <div className="min-h-[calc(100vh-10rem)]">
-      <ReportHeader step={step} onCancel={resetForm} showCancel={step < 5} />
+      <ReportHeader step={step} onCancel={resetForm} showCancel={step < 6} />
 
       <ReportProgress progress={progress} primaryColor={primaryColor} />
 

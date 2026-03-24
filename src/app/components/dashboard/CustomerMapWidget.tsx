@@ -120,7 +120,7 @@ export default function CustomerMapWidget({
   return (
     <>
       {/* ── Compact widget card ── */}
-      <section className="bd-glass-card p-5" style={{ maxHeight: 300 }}>
+      <section className="bd-glass-card p-5" style={{ maxHeight: 380 }}>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2.5">
             <div
@@ -141,7 +141,7 @@ export default function CustomerMapWidget({
           <button
             type="button"
             onClick={() => setIsMapExpanded(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-white transition-colors hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 min-h-[44px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
@@ -152,7 +152,7 @@ export default function CustomerMapWidget({
         </div>
 
         {!isLoadingShops && displayShops.length > 0 && (
-          <ul className="space-y-1 overflow-y-auto" style={{ maxHeight: 210 }}>
+          <ul className="space-y-1 overflow-y-auto" style={{ maxHeight: 290 }}>
             {displayShops.map((shop) => (
               <li key={shop.id || shop.name}>
                 <button

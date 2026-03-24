@@ -2,32 +2,71 @@
 
 ## ⚡ AT-A-GLANCE STATUS (updated 2026-03-24)
 
-| Item             | Value                                                       |
-| ---------------- | ----------------------------------------------------------- |
-| **Last pass**    | Pass 138 — Glass sweep: shop directory, onboarding, vehicle |
-| **Current pass** | 138 ✅ complete                                             |
-| **Build**        | ✓ 0 errors · 976.44 KB · 1.88s                              |
-| **Spellcheck**   | 0 issues                                                    |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`              |
-| **Last pushed**  | 2026-03-24                                                  |
+### Build Progress
 
-### Recent passes (126–138)
+| 0% |████████████████████████████████████████████████████████████████████████████| 109% 🚀 |
 
-| Pass | Title                                        | Category   | Status |
-| ---- | -------------------------------------------- | ---------- | ------ |
-| 126  | Load live bids from Supabase (Customer)      | P2-DATA    | ✅     |
-| 127  | Fix bids navigation flow                     | P1-RUNTIME | ✅     |
-| 128  | Wire customer bid reject (Decline)           | P2-DATA    | ✅     |
-| 129  | Navigation context-loss traps                | P1-RUNTIME | ✅     |
-| 130  | Visual Critical Sweep (P0 CTA fix)           | P4-UX      | ✅     |
-| 131  | Dashboard Visual Cohesion                    | P4-UX      | ✅     |
-| 132  | Landing section flow + dark transitions      | P4-UX      | ✅     |
-| 133  | Glass depth refinement + dashboard polish    | P4-UX      | ✅     |
-| 134  | Header transparency + mobile nav safe area   | P4-UX      | ✅     |
-| 135  | BidsScreen glass upgrade                     | P4-UX      | ✅     |
-| 136  | Reports screens glass sweep                  | P4-UX      | ✅     |
-| 137  | Glass sweep: timeline, about, insurer, legal | P4-UX      | ✅     |
-| 138  | Glass sweep: shop, onboarding, vehicle, demo | P4-UX      | ✅     |
+**Passes completed:** 169 / 160+ — ⚡ PRODUCTIZATION PHASE ACTIVE
+
+| Item             | Value                                                                   |
+| ---------------- | ----------------------------------------------------------------------- |
+| **Last pass**    | Pass 174 — Real data: location fields in transformSupabaseReport        |
+| **Current pass** | 174 ✅ complete                                                         |
+| **Build**        | ✓ 0 errors · 990.38 KB · 1.84s                                          |
+| **Spellcheck**   | 0 issues                                                                |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                          |
+| **Last pushed**  | 2026-03-24                                                              |
+
+### Recent passes (144–154)
+
+| Pass | Title                                                   | Category   | Status |
+| ---- | ------------------------------------------------------- | ---------- | ------ |
+| 144  | Insurer claim persistence to Supabase                   | P3-ARCH    | ✅     |
+| 145  | BidsScreen empty state premium design                   | P4-UX      | ✅     |
+| 146  | ReportsListScreen empty state premium design            | P4-UX      | ✅     |
+| 147  | Dashboard quick actions mobile audit                    | P4-UX      | ✅     |
+| 148  | Landing page mobile polish                              | P4-UX      | ✅     |
+| 149  | Map overlay cards mobile separation                     | P4-UX      | ✅     |
+| 150  | Map z-index above MobileBottomNav                       | P1-RUNTIME | ✅     |
+| 151  | Shop directory immersive map bottom sheet               | P4-UX      | ✅     |
+| 152  | Report creation/photo-guide mobile flow compression     | P4-UX      | ✅     |
+| 153  | Mobile map overlays audit, photo-guide, bugfixes        | P4-UX      | ✅     |
+| 154  | reportsLoading bug + crash fix + console log sweep      | P1-RUNTIME | ✅     |
+| 155  | ReportDetailScreen glass + mobile + touch target audit  | P4-UX      | ✅     |
+| 156  | HomeScreen 375px touch targets — CTA, View All, buttons | P4-UX      | ✅     |
+| 157  | Map mobile UX: HALF default snap + tab/Back touch targets | P4-UX    | ✅     |
+| 158  | Map button touch targets + warm design direction        | P4-UX      | ✅     |
+| 159  | useMarketplaceReports error state + loading wiring      | P3-ARCH    | ✅     |
+| 160  | Final cohesion: DashboardHeader glass + touch targets   | P4-UX      | ✅     |
+| 161  | Map widget CTAs: Shop/Insurer View Map + Customer fix   | P4-UX      | ✅     |
+| 162  | Landing section flow — warm palette, de-SaaS copy       | P4-UX      | ✅     |
+
+### 🎯 160-PASS MILESTONE REACHED + POST-MILESTONE MAP PHASE
+
+All original passes (154–160) complete. Continuing map-native phase (161+).
+
+### Post-milestone focus: Map-native product phase (162+)
+
+| Pass | Title (planned)                                         | Category   | Status |
+| ---- | ------------------------------------------------------- | ---------- | ------ |
+| 162  | Landing section flow — warm palette, de-SaaS copy       | P4-UX      | ✅     |
+| 163  | HeroSection: warm bg + map badge, remove fake 4.9 stars | P4-UX      | ✅     |
+| 164  | Shop onboarding: glass system + map note + button polish| P4-UX      | ✅     |
+| 165  | Insurer onboarding: glass system + button polish        | P4-UX      | ✅     |
+| 166  | HowItWorksSection: warm bg + softer connectors + map copy | P4-UX    | ✅     |
+| 167  | OperatingRegionsSection: warm midnight bg + glow        | P4-UX      | ✅     |
+| 168  | FooterSection + CTASection: warm bg + remove fake phone | P4-UX      | ✅     |
+
+### ⚡ PRODUCTIZATION PHASE (169+) — Map as product backbone
+
+| Pass | Title (planned)                                         | Category   | Status |
+| ---- | ------------------------------------------------------- | ---------- | ------ |
+| 169  | Map → Report: StepServiceLocation + zip/address persisted | P3-ARCH  | ✅     |
+| 170  | Map ↔ Report loop: real location on shop request cards  | P3-ARCH    | ✅     |
+| 171  | Shop requests: urgency sort + "Located" badge           | P3-ARCH    | ✅     |
+| 172  | Map-centered dashboard: map widget to hero position     | P4-UX      | ✅     |
+| 173  | Browser back button: pushState + popstate in useNavigation | P1-RUNTIME | ✅    |
+| 174  | Real data: location fields threaded through transform   | P3-ARCH    | ✅     |
 
 ### Bid lifecycle persistence — current state
 
@@ -40,10 +79,26 @@
 
 ### Best next pass options (ranked)
 
-1. **P4-UX** — Pass 139: Remaining bg-white sweep (admin panels, photo-guide, footer badge)
-2. **P3-ARCH** — Insurer new claim persistence to Supabase (large arch pass)
-3. **P4-UX** — BidsScreen empty state design (premium empty state)
-4. **P4-UX** — Mobile viewport audit (375px breakpoint validation)
+1. **P4-UX** — Pass 155: ReportDetailScreen glass + mobile audit
+2. **P4-UX** — Pass 156: HomeScreen 375px mobile hierarchy audit
+3. **P4-UX** — Pass 157: Map mobile UX — search-first + progressive disclosure
+4. **P4-UX** — Pass 158: Landing map/coverage midnight shell consistency
+
+---
+
+### Pass 154 — P1-RUNTIME: reportsLoading stuck bug + crash fix + console log sweep (2026-03-24)
+
+1. **Why this pass was chosen**: Three compounding issues found during codebase audit: (1) `HomeScreen.tsx` was crashing with `"Can't find variable: isLoading"` — loading/error guards were added but the variables were never defined. (2) `useUserData.ts` initialized `reportsLoading: true` but never set it to `false` on the early return when no Clerk identity exists — causing perpetual "Loading reports…" for all non-Clerk users. (3) `reportsLoading` and `reportsError` were state variables that were set internally but never returned from the hook, so consumers always received `undefined`. (4) Unguarded `console.log`/`console.error` in `useUserData.ts` (4 auto-save logs, 1 session-clear log) and `reports.ts` (6 production logs) were leaking to browser console.
+2. **What changed**:
+   - `HomeScreen.tsx`: Removed orphaned `isLoading`/`error` guards (lines 230–237) that referenced undefined variables. `HomeReportsList` now renders directly. Home screen already handles empty state via `isNewUser` path.
+   - `useUserData.ts`: Added `setReportsLoading(false)` before the `!signedInEmail || !clerkUserId` early return. Added `reportsLoading` and `reportsError` to the hook's return object. Gated 5 unguarded production `console.log`/`console.error` calls behind `import.meta.env.DEV`.
+   - `dashboard-router-types.ts`: Added `reportsLoading?: boolean` and `reportsError?: string | null` to `DashboardRouterProps`.
+   - `buildDashboardRouterProps.ts`: Passes `reportsLoading: userData.reportsLoading` and `reportsError: userData.reportsError` through to router.
+   - `reports.ts`: Gated 6 unguarded production console statements behind `import.meta.env.DEV`.
+3. **Files touched**: `HomeScreen.tsx`, `useUserData.ts`, `dashboard-router-types.ts`, `buildDashboardRouterProps.ts`, `reports.ts`
+4. **Validation**: Build: ✓ 0 errors · 985.03 KB · 1.95s. Spellcheck: 0 issues. Dev server crash resolved. `reportsLoading`/`reportsError` now flow through the full prop chain.
+5. **What this unlocks**: `ReportsListScreen` now correctly shows loading/error/empty states for all user types. Dev console is clean in production. HomeScreen renders without crashing.
+6. **Best next pass**: Pass 155 — ReportDetailScreen glass + mobile audit.
 
 ---
 

@@ -25,7 +25,7 @@ export default function HowItWorksSection({
       number: 2,
       title: "Receive Bids",
       description:
-        "Local shops review your request and submit competitive repair quotes with scope, timeline, and cost details.",
+        "Shops near you on the BidOnDent network review your request and submit competitive quotes with scope, timeline, and pricing.",
     },
     {
       icon: Wrench,
@@ -39,7 +39,7 @@ export default function HowItWorksSection({
   return (
     <section
       id="how-it-works"
-      className="pt-16 md:pt-24 pb-10 md:pb-16 bg-gradient-to-b from-white via-blue-50/30 to-blue-50/60"
+      className="pt-16 md:pt-24 pb-10 md:pb-16 bg-gradient-to-b from-white via-slate-50/20 to-slate-50/40"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -49,7 +49,7 @@ export default function HowItWorksSection({
         >
           <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-            Simple Process
+            Three Steps
           </span>
         </div>
 
@@ -64,11 +64,11 @@ export default function HowItWorksSection({
         <div className="grid md:grid-cols-3 gap-5 md:gap-8 relative">
           {/* Dashed connectors between cards (desktop only) */}
           <div
-            className="hidden md:block absolute top-24 left-[33%] w-[12%] border-t-2 border-dashed border-blue-300"
+            className="hidden md:block absolute top-24 left-[33%] w-[12%] border-t-2 border-dashed border-slate-300/50"
             style={{ transform: "translateX(-50%)" }}
           />
           <div
-            className="hidden md:block absolute top-24 left-[67%] w-[12%] border-t-2 border-dashed border-blue-300"
+            className="hidden md:block absolute top-24 left-[67%] w-[12%] border-t-2 border-dashed border-slate-300/50"
             style={{ transform: "translateX(-50%)" }}
           />
 

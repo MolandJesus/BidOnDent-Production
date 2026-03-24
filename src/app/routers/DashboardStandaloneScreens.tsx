@@ -64,6 +64,8 @@ export default function DashboardStandaloneScreens(props: DashboardRouterProps) 
         <AnimatedScreen screenKey="reports-list">
           <ReportsListScreen
             reports={reports.map((report) => withStoredPhotos(report, photoStorage))}
+            reportsLoading={props.reportsLoading}
+            reportsError={props.reportsError}
             onBack={() => onViewModeChange("dashboard")}
             onSelectReport={(reportId) => {
               onSelectReport(reportId);

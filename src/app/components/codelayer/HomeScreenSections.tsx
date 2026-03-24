@@ -98,7 +98,7 @@ export function HomeReportsList({
         <h2 className="text-xl font-semibold text-slate-900">{listHeader}</h2>
         <button
           onClick={onViewAll}
-          className="text-sm font-medium text-blue-700 hover:text-blue-800 inline-flex items-center gap-1 px-3 py-2 rounded-xl transition-colors hover:bg-blue-50/60"
+          className="text-sm font-medium text-blue-700 hover:text-blue-800 inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors hover:bg-blue-50/60"
         >
           View All
           <ArrowRight className="w-4 h-4" />
@@ -122,7 +122,7 @@ export function HomeReportsList({
           {userType === "customer" && (
             <button
               onClick={onStartReport}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white shadow-sm hover:shadow-md transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium text-white shadow-sm hover:shadow-md transition-all"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               }}

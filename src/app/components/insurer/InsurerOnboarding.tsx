@@ -76,18 +76,18 @@ export default function InsurerOnboarding({
   const progress = Math.round((step / 3) * 100);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#f9f8fc] to-[#f2f0f8]">
       {/* Progress Bar */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bd-glass-panel border-b border-white/20">
         <div className="px-4 py-3">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="font-bold">Insurer Setup</h1>
-            <span className="text-sm text-gray-500">Step {step} of 3</span>
+            <h1 className="font-bold text-slate-900">Insurer Setup</h1>
+            <span className="text-sm text-slate-500">Step {step} of 3</span>
           </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-2 bg-slate-200/60 rounded-full overflow-hidden">
             <div
-              className="h-full transition-all duration-300"
-              style={{ width: `${progress}%`, backgroundColor: primaryColor }}
+              className="h-full transition-all duration-300 rounded-full"
+              style={{ width: `${progress}%`, background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})` }}
             />
           </div>
         </div>
@@ -221,7 +221,7 @@ export default function InsurerOnboarding({
                 !formData.zip ||
                 !formData.phone
               }
-              className="w-full mt-6 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full mt-6 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ backgroundColor: primaryColor }}
               whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
               whileTap={{ scale: 0.98 }}
@@ -250,7 +250,7 @@ export default function InsurerOnboarding({
               <p className="text-gray-600 text-center">Select the types of claims you handle</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bd-glass-card p-4 sm:p-6">
               <div className="flex flex-wrap gap-2">
                 {claimTypeOptions.map((type) => (
                   <button
@@ -279,7 +279,7 @@ export default function InsurerOnboarding({
             <div className="flex gap-3 mt-6">
               <motion.button
                 onClick={handleBack}
-                className="flex-1 py-3 px-4 border border-gray-300 rounded-md font-medium"
+                className="flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold bd-glass-control--secondary"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -288,7 +288,7 @@ export default function InsurerOnboarding({
               <motion.button
                 onClick={handleNext}
                 disabled={formData.claimTypes.length === 0}
-                className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ backgroundColor: primaryColor }}
                 whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
                 whileTap={{ scale: 0.98 }}
@@ -375,7 +375,7 @@ export default function InsurerOnboarding({
               <motion.button
                 onClick={handleBack}
                 disabled={isSubmitting}
-                className="flex-1 py-3 px-4 border border-gray-300 rounded-md font-medium disabled:opacity-60"
+                className="flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold bd-glass-control--secondary disabled:opacity-60"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -384,7 +384,7 @@ export default function InsurerOnboarding({
               <motion.button
                 onClick={handleComplete}
                 disabled={isSubmitting}
-                className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center disabled:opacity-70"
+                className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-70"
                 style={{ backgroundColor: primaryColor }}
                 whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
                 whileTap={{ scale: 0.98 }}

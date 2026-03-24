@@ -150,7 +150,7 @@ export default function CoverageBrowseSidebarContent({
               type="button"
               onClick={() => onSidebarViewChange(id)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1 rounded-full px-2 py-1.5 text-[11px] font-semibold transition-all duration-200",
+                "flex flex-1 items-center justify-center gap-1 rounded-full px-2 py-2 min-h-[44px] text-[11px] font-semibold transition-all duration-200",
                 sidebarView === id ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
               )}
             >

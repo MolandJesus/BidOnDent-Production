@@ -52,18 +52,18 @@ export default function ShopOnboarding({
   const progress = Math.round((step / 4) * 100);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#f9f8fc] to-[#f2f0f8]">
       {/* Progress Bar */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bd-glass-panel border-b border-white/20">
         <div className="px-4 py-3">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="font-bold">Shop Setup</h1>
-            <span className="text-sm text-gray-500">Step {step} of 4</span>
+            <h1 className="font-bold text-slate-900">Shop Setup</h1>
+            <span className="text-sm text-slate-500">Step {step} of 4</span>
           </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-2 bg-slate-200/60 rounded-full overflow-hidden">
             <div
-              className="h-full transition-all duration-300"
-              style={{ width: `${progress}%`, backgroundColor: primaryColor }}
+              className="h-full transition-all duration-300 rounded-full"
+              style={{ width: `${progress}%`, background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})` }}
             />
           </div>
         </div>

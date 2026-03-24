@@ -63,7 +63,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
   return (
     <section
       id="who-we-serve"
-      className="py-16 md:py-24 bg-gradient-to-b from-blue-50/40 via-white to-white"
+      className="py-16 md:py-24 bg-gradient-to-b from-slate-50/30 via-white to-white"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -73,7 +73,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
         >
           <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-            Our Solutions
+            Everyone Wins
           </span>
         </div>
 
@@ -91,36 +91,32 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`relative overflow-hidden bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-8 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-xl hover:-translate-y-2 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-8 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-xl hover:-translate-y-2 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 borderColor: card.borderColor,
                 transitionDelay: `${0.3 + index * 0.15}s`,
-                ["--hover-bg" as never]: card.hoverBg,
                 ["--check-color" as never]: card.checkColor,
               }}
             >
-              <div className="pointer-events-none absolute inset-0 bg-[var(--hover-bg)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              <div className="relative z-10">
-                <div className="mb-6">
-                  <div
-                    className="inline-flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:bg-white/15"
-                    style={{ backgroundColor: card.iconBg }}
-                  >
-                    <card.icon className="w-7 h-7 text-white" />
-                  </div>
+              <div className="mb-6">
+                <div
+                  className="inline-flex items-center justify-center w-14 h-14 rounded-2xl"
+                  style={{ backgroundColor: card.iconBg }}
+                >
+                  <card.icon className="w-7 h-7 text-white" />
                 </div>
-                <h4 className="font-bold text-2xl mb-4 text-gray-900 group-hover:text-white">
-                  {card.title}
-                </h4>
-                <ul className="space-y-3 mb-8">
-                  {card.items.map((item, i) => (
-                    <li key={i} className="flex items-start">
-                      <CheckCircle2 className="w-5 h-5 mr-2 mt-1 flex-shrink-0 text-[color:var(--check-color)] group-hover:text-white" />
-                      <span className="text-gray-700 group-hover:text-white/90">{item}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
+              <h4 className="font-bold text-2xl mb-4 text-gray-900">
+                {card.title}
+              </h4>
+              <ul className="space-y-3 mb-8">
+                {card.items.map((item, i) => (
+                  <li key={i} className="flex items-start">
+                    <CheckCircle2 className="w-5 h-5 mr-2 mt-1 flex-shrink-0 text-[color:var(--check-color)]" />
+                    <span className="text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>

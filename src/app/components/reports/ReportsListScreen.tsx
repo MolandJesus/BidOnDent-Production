@@ -21,6 +21,8 @@ type Report = {
 
 type ReportsListScreenProps = {
   reports: Report[];
+  reportsLoading: boolean;
+  reportsError: string | null;
   onBack: () => void;
   onSelectReport: (reportId: number) => void;
   primaryColor?: string;
@@ -28,6 +30,8 @@ type ReportsListScreenProps = {
 
 export default function ReportsListScreen({
   reports,
+  reportsLoading,
+  reportsError,
   onBack,
   onSelectReport,
   primaryColor = "#003d82",
@@ -39,10 +43,13 @@ export default function ReportsListScreen({
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  const filteredReports = reports.filter((report) => {
-    if (filter === "all") return true;
-    return report.status === filter;
-  });
+  // Support for error/empty/loading states
+  const filteredReports = Array.isArray(reports)
+    ? reports.filter((report) => {
+        if (filter === "all") return true;
+        return report.status === filter;
+      })
+    : [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 pb-20">
@@ -58,7 +65,9 @@ export default function ReportsListScreen({
             </button>
             <div>
               <h1 className="text-xl font-bold">My Reports</h1>
-              <p className="text-sm text-gray-600">{reports.length} total reports</p>
+              <p className="text-sm text-gray-600">
+                {Array.isArray(reports) ? reports.length : 0} total reports
+              </p>
             </div>
           </div>
 
@@ -87,9 +96,17 @@ export default function ReportsListScreen({
 
       {/* Reports List */}
       <div className="px-4 py-4 space-y-4">
-        {filteredReports.length === 0 ? (
+        {reportsLoading ? (
           <div className="bd-glass-card p-5 sm:p-8 text-center">
-            <p className="text-gray-500">No reports found</p>
+            <p className="text-gray-500">Loading reports…</p>
+          </div>
+        ) : reportsError ? (
+          <div className="bd-glass-card p-5 sm:p-8 text-center">
+            <p className="text-red-600 font-semibold">Unable to load reports</p>
+          </div>
+        ) : filteredReports.length === 0 ? (
+          <div className="bd-glass-card p-5 sm:p-8 text-center">
+            <p className="text-gray-500">No reports yet</p>
           </div>
         ) : (
           filteredReports.map((report) => {

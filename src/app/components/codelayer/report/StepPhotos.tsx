@@ -31,42 +31,44 @@ export default function StepPhotos({
   onContinue,
 }: StepPhotosProps) {
   return (
-    <div className="px-4 md:px-6 py-4 md:py-4">
-      <h2 className="text-2xl font-bold text-slate-900 mb-1">Add damage photos</h2>
-      <p className="text-slate-600 mb-6">
+    <div className="px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh]">
+      {/* Title and instructions - compressed for mobile */}
+      <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 mt-1">Add damage photos</h2>
+      <p className="text-slate-600 mb-3 sm:mb-6 text-sm sm:text-base">
         Add at least one clear photo. Three photos from different angles works best.
       </p>
 
-      <div className="bd-glass-card p-4 mb-6 flex items-start">
-        <div className="mr-3 mt-0.5">
-          <Info className="w-5 h-5 text-blue-500" />
+      {/* Info block - collapsed on mobile */}
+      <div className="bd-glass-card p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm">
+        <div className="mr-2 sm:mr-3 mt-0.5">
+          <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
         </div>
-        <div className="text-sm text-blue-900">
-          Good lighting and close-up shots around dents or scratches help shops estimate faster.
+        <div className="text-blue-900">
+          Good lighting and close-up shots help shops estimate faster.
         </div>
       </div>
 
       {uploadingPhoto && (
-        <div className="bg-blue-50/80 border border-blue-200/60 backdrop-blur-sm rounded-xl p-4 mb-6 flex items-center gap-3">
+        <div className="bg-blue-50/80 border border-blue-200/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
           <div className="animate-spin">
             <Cloud className="w-5 h-5 text-blue-600" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-blue-800">{uploadProgress}</p>
+            <p className="text-xs sm:text-sm font-medium text-blue-800">{uploadProgress}</p>
             <p className="text-xs text-blue-700">Photos are being saved securely...</p>
           </div>
         </div>
       )}
 
       {photos.length === 0 && (
-        <div className="mb-6 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 px-4 py-10 text-center">
-          <ImagePlus className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-          <p className="text-slate-700 font-medium">No photos added yet</p>
-          <p className="text-slate-500 text-sm mt-1">Tap camera or upload to continue</p>
+        <div className="mb-4 sm:mb-6 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 px-3 py-6 sm:px-4 sm:py-10 text-center">
+          <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-slate-400 mx-auto mb-2" />
+          <p className="text-slate-700 font-medium text-sm sm:text-base">No photos added yet</p>
+          <p className="text-slate-500 text-xs sm:text-sm mt-1">Tap camera or upload to continue</p>
         </div>
       )}
 
-      <div className="grid sm:grid-cols-2 gap-3 mb-6">
+      <div className="grid sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
         {photos.map((photo, index) => {
           const isBase64 = photo.startsWith("data:");
           return (
@@ -100,20 +102,20 @@ export default function StepPhotos({
       </div>
 
       {photos.length < 6 && (
-        <div className="grid grid-cols-2 gap-3 mb-8">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6">
           <button
             onClick={onOpenCamera}
-            className="py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
+            className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
             <Camera className="w-6 h-6 text-blue-600 mb-1" />
-            <span className="text-sm text-slate-700 font-medium">Take Photo</span>
+            <span className="text-xs sm:text-sm text-slate-700 font-medium">Take Photo</span>
           </button>
           <button
             onClick={onOpenFilePicker}
-            className="py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
+            className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
             <Upload className="w-6 h-6 text-blue-600 mb-1" />
-            <span className="text-sm text-slate-700 font-medium">Upload Photo</span>
+            <span className="text-xs sm:text-sm text-slate-700 font-medium">Upload Photo</span>
           </button>
         </div>
       )}
@@ -135,21 +137,24 @@ export default function StepPhotos({
         className="hidden"
       />
 
-      <div className="flex space-x-3">
-        <button
-          onClick={onBack}
-          className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors"
-        >
-          Back
-        </button>
-        <button
-          onClick={onContinue}
-          className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
-          disabled={photos.length < 1}
-        >
-          Continue
-        </button>
+      {/* Sticky footer for progression controls on mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-white/95 via-white/80 to-transparent px-2 pt-2 pb-[env(safe-area-inset-bottom,0.75rem)] sm:static sm:bg-none sm:p-0 border-t border-slate-200/60">
+        <div className="flex space-x-2 sm:space-x-3 max-w-md mx-auto">
+          <button
+            onClick={onBack}
+            className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors"
+          >
+            Back
+          </button>
+          <button
+            onClick={onContinue}
+            className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+            disabled={photos.length < 1}
+          >
+            Continue
+          </button>
+        </div>
       </div>
     </div>
   );

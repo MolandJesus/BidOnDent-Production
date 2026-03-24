@@ -51,7 +51,7 @@ export default function ShopOnboardingStep2({
       <div className="flex gap-3 mt-6">
         <motion.button
           onClick={onBack}
-          className="flex-1 py-3 px-4 rounded-md font-medium bd-glass-control--secondary"
+          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold bd-glass-control--secondary"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -59,7 +59,7 @@ export default function ShopOnboardingStep2({
         </motion.button>
         <motion.button
           onClick={onNext}
-          className="flex-1 py-3 px-4 rounded-md text-white font-medium flex items-center justify-center"
+          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center"
           style={{ backgroundColor: primaryColor }}
           whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
           whileTap={{ scale: 0.98 }}
