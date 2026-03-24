@@ -22,7 +22,7 @@ export default function RepairLifecycleTimeline({
   compact = false,
 }: RepairLifecycleTimelineProps) {
   return (
-    <section className="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm">
+    <section className="bd-glass-card p-4 md:p-5">
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
         {subtitle && <p className="text-slate-600 text-sm mt-1">{subtitle}</p>}
@@ -45,7 +45,11 @@ export default function RepairLifecycleTimeline({
                         : "bg-slate-100 border-slate-300 text-slate-500"
                   }`}
                 >
-                  {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : <Clock3 className="w-4 h-4" />}
+                  {isCompleted ? (
+                    <CheckCircle2 className="w-4 h-4" />
+                  ) : (
+                    <Clock3 className="w-4 h-4" />
+                  )}
                 </div>
                 {index < steps.length - 1 && <div className="w-px h-8 bg-slate-200 mt-1" />}
               </div>

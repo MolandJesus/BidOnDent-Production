@@ -24,9 +24,9 @@ const focusAreas = [
 
 export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartnershipPageProps) {
   return (
-    <main className="min-h-screen bg-slate-50 py-14 px-4">
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 py-14 px-4">
       <div className="max-w-5xl mx-auto">
-        <section className="rounded-2xl border border-slate-200 bg-white p-8 md:p-10 shadow-sm mb-6">
+        <section className="bd-glass-card p-8 md:p-10 mb-6">
           <p className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-sm text-blue-700 font-medium">
             Insurer Partnership
           </p>
@@ -41,10 +41,7 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
 
         <section className="grid md:grid-cols-3 gap-5 mb-6">
           {focusAreas.map((item) => (
-            <article
-              key={item.title}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-            >
+            <article key={item.title} className="bd-glass-card p-6">
               <div className="w-11 h-11 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center mb-4">
                 <item.icon className="w-5 h-5 text-slate-700" />
               </div>
@@ -54,7 +51,7 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
           ))}
         </section>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm">
+        <section className="bd-glass-card p-6 md:p-8">
           <h2 className="text-xl font-semibold text-slate-900 mb-2">
             Start a Partnership Conversation
           </h2>

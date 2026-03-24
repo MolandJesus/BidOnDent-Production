@@ -120,7 +120,7 @@ export default function BusinessInquirySection() {
           </p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm">
+        <div className="bd-glass-card p-6 md:p-8">
           {!formOpen ? (
             /* ── Gateway: choose your role before the form appears ── */
             <div className="py-4">
@@ -136,7 +136,7 @@ export default function BusinessInquirySection() {
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className="group relative flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-5 text-left shadow-sm hover:border-slate-950 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
+                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-slate-950 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center">
                     <Building2 className="w-6 h-6 text-white" />
@@ -157,7 +157,7 @@ export default function BusinessInquirySection() {
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className="group relative flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-6 py-5 text-left shadow-sm hover:border-emerald-600 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
+                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-emerald-600 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center">
                     <Shield className="w-6 h-6 text-white" />

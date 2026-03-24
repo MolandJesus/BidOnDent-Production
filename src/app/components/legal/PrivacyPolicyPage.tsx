@@ -6,8 +6,8 @@ type PrivacyPolicyPageProps = {
 
 export default function PrivacyPolicyPage({ onBackToHome }: PrivacyPolicyPageProps) {
   return (
-    <main className="min-h-screen bg-slate-50 py-16 px-4">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-sm p-8 md:p-10">
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 py-16 px-4">
+      <div className="max-w-3xl mx-auto bd-glass-card p-8 md:p-10">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">
             <ShieldCheck className="w-6 h-6 text-blue-600" />

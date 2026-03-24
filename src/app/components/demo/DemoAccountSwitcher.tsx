@@ -95,7 +95,7 @@ export default function DemoAccountSwitcher({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-sm"
+        className="bd-glass-card p-5 md:p-6"
       >
         <button
           onClick={onExitDemo}
@@ -143,8 +143,8 @@ export default function DemoAccountSwitcher({
               key={account.id}
               variants={cardItem}
               whileHover={{ y: -4 }}
-              className={`rounded-2xl border overflow-hidden bg-white shadow-sm transition-all ${
-                isActive ? "border-blue-500 shadow-md" : "border-slate-200"
+              className={`bd-glass-card overflow-hidden transition-all ${
+                isActive ? "border-blue-500 shadow-md" : ""
               }`}
             >
               <div className="p-5 text-white relative" style={{ background: account.gradient }}>
