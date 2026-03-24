@@ -78,9 +78,12 @@ export default function DashboardRouter({
   originalAccountType,
 }: DashboardRouterProps) {
   // Fetch live bids from Supabase for the selected report
-  const { bids: liveBids } = useBidsForReport(
-    currentTab === "bids" && userType === "customer" ? selectedReportId : null
-  );
+  // Falls back to the customer's most recent report if no specific report is selected
+  const bidsReportId =
+    currentTab === "bids" && userType === "customer"
+      ? selectedReportId || reports[0]?.id || null
+      : null;
+  const { bids: liveBids } = useBidsForReport(bidsReportId);
 
   // Scroll to top whenever view changes
   useEffect(() => {
@@ -291,6 +294,10 @@ export default function DashboardRouter({
                   [],
               }}
               onBack={() => onViewModeChange("reports-list")}
+              onViewAllBids={() => {
+                onTabChange("bids");
+                onViewModeChange("dashboard");
+              }}
               primaryColor={primaryColor}
             />
           </motion.div>
