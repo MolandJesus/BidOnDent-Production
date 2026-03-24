@@ -42,7 +42,7 @@ export default function ShopDirectoryListBody({
             {session.roleCollectionListings.map((shop) => (
               <button
                 key={`collection-${shop.id}`}
-                className="w-full rounded-[22px] border border-slate-200 bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-slate-300"
+                className="w-full bd-glass-card px-4 py-3 text-left transition-colors hover:border-slate-300"
                 onClick={() => session.setSelectedShopId(shop.id)}
                 type="button"
               >

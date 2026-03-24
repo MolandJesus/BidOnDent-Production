@@ -8,8 +8,8 @@ const CHECKLISTS = [
       "Landing page renders (hero, CTA, footer)",
       "Get Started opens Clerk sign-up modal",
       "Learn More scrolls to How It Works",
-      "Header nav scrolls to sections"
-    ]
+      "Header nav scrolls to sections",
+    ],
   },
   {
     title: "Customer",
@@ -18,8 +18,8 @@ const CHECKLISTS = [
       "Dashboard home loads",
       "Start report flow opens",
       "Reports list and detail open",
-      "Account page opens and menus work"
-    ]
+      "Account page opens and menus work",
+    ],
   },
   {
     title: "Shop",
@@ -27,8 +27,8 @@ const CHECKLISTS = [
       "Dashboard home loads",
       "Requests screen opens",
       "Submit bid UI works",
-      "Account page opens and menus work"
-    ]
+      "Account page opens and menus work",
+    ],
   },
   {
     title: "Insurer",
@@ -36,9 +36,9 @@ const CHECKLISTS = [
       "Dashboard home loads",
       "Claims list opens",
       "New claim screen opens",
-      "Account page opens and menus work"
-    ]
-  }
+      "Account page opens and menus work",
+    ],
+  },
 ];
 
 type SmokeTestScreenProps = {
@@ -51,12 +51,12 @@ export default function SmokeTestScreen({ primaryColor }: SmokeTestScreenProps) 
   const toggleItem = (key: string) => {
     setCheckedItems((prev) => ({
       ...prev,
-      [key]: !prev[key]
+      [key]: !prev[key],
     }));
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+    <div className="bd-glass-card p-6 md:p-8">
       <div className="flex items-center gap-3 mb-6">
         <CheckCircle2 className="w-6 h-6" style={{ color: primaryColor }} />
         <div>

@@ -16,7 +16,7 @@ export default function ShopDirectoryContextCards({
 }: ShopDirectoryContextCardsProps) {
   return (
     <section className="grid gap-4 xl:grid-cols-3">
-      <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="bd-glass-card p-5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
           <Building2 className="h-4 w-4" />
           Signed-in context
@@ -30,7 +30,7 @@ export default function ShopDirectoryContextCards({
         </p>
       </div>
 
-      <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="bd-glass-card p-5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
           <Shield className="h-4 w-4" />
           Carrier influence
@@ -47,7 +47,7 @@ export default function ShopDirectoryContextCards({
         </p>
       </div>
 
-      <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="bd-glass-card p-5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
           <FileText className="h-4 w-4" />
           Repair signals

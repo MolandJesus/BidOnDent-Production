@@ -20,7 +20,7 @@ export default function ShopDirectoryRoutePanel({
   onSelectRoute,
 }: ShopDirectoryRoutePanelProps) {
   return (
-    <div className="mb-5 rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="mb-5 bd-glass-card p-4">
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
         <MapPin className="h-4 w-4" />
         Route preview

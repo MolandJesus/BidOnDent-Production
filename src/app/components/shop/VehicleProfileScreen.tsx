@@ -149,7 +149,7 @@ export default function VehicleProfileScreen({
       <div className="px-4 py-4 max-w-2xl mx-auto">
         {/* Add/Edit Form */}
         {showAddForm && (
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 border border-gray-200">
+          <div className="bd-glass-card p-4 sm:p-6 mb-4">
             <h3 className="text-lg font-bold mb-4">
               {editingId ? "Edit Vehicle" : "Add New Vehicle"}
             </h3>
@@ -282,7 +282,7 @@ export default function VehicleProfileScreen({
                     vehicle.id ||
                     `vehicle-${index}-${vehicle.make}-${vehicle.model}-${vehicle.year}`
                   }
-                  className="bg-white rounded-lg shadow-sm p-4 border border-gray-100"
+                  className="bd-glass-card p-4"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
