@@ -8,7 +8,7 @@ export default function ReportProgress({ progress, primaryColor }: ReportProgres
   const activeStep = Math.max(1, Math.min(5, Math.ceil(progress / 20)));
 
   return (
-    <div className="bg-white border-b border-slate-200 px-2.5 sm:px-4 md:px-6 py-2.5 sm:py-3">
+    <div className="bd-glass-panel !rounded-none border-b border-white/30 px-2.5 sm:px-4 md:px-6 py-2.5 sm:py-3">
       <div className="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex items-center gap-2 md:gap-3 min-w-[320px] sm:min-w-0">
           {steps.map((step) => (

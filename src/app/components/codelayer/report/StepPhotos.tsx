@@ -32,12 +32,12 @@ export default function StepPhotos({
 }: StepPhotosProps) {
   return (
     <div className="px-4 md:px-6 py-4 md:py-4">
-      <h2 className="text-2xl font-semibold text-slate-900 mb-1">Add damage photos</h2>
+      <h2 className="text-2xl font-bold text-slate-900 mb-1">Add damage photos</h2>
       <p className="text-slate-600 mb-6">
         Add at least one clear photo. Three photos from different angles works best.
       </p>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-start">
+      <div className="bd-glass-card p-4 mb-6 flex items-start">
         <div className="mr-3 mt-0.5">
           <Info className="w-5 h-5 text-blue-500" />
         </div>
@@ -47,7 +47,7 @@ export default function StepPhotos({
       </div>
 
       {uploadingPhoto && (
-        <div className="bg-blue-100 border border-blue-300 rounded-xl p-4 mb-6 flex items-center gap-3">
+        <div className="bg-blue-50/80 border border-blue-200/60 backdrop-blur-sm rounded-xl p-4 mb-6 flex items-center gap-3">
           <div className="animate-spin">
             <Cloud className="w-5 h-5 text-blue-600" />
           </div>
@@ -59,7 +59,7 @@ export default function StepPhotos({
       )}
 
       {photos.length === 0 && (
-        <div className="mb-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center">
+        <div className="mb-6 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 px-4 py-10 text-center">
           <ImagePlus className="w-8 h-8 text-slate-400 mx-auto mb-2" />
           <p className="text-slate-700 font-medium">No photos added yet</p>
           <p className="text-slate-500 text-sm mt-1">Tap camera or upload to continue</p>
@@ -70,10 +70,7 @@ export default function StepPhotos({
         {photos.map((photo, index) => {
           const isBase64 = photo.startsWith("data:");
           return (
-            <div
-              key={`photo-${index}`}
-              className="relative bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm"
-            >
+            <div key={`photo-${index}`} className="relative bd-glass-card p-2.5">
               <div className="w-full aspect-video bg-slate-100 rounded-lg overflow-hidden mb-2">
                 <img
                   src={photo}
@@ -106,16 +103,16 @@ export default function StepPhotos({
         <div className="grid grid-cols-2 gap-3 mb-8">
           <button
             onClick={onOpenCamera}
-            className="py-4 bg-white rounded-xl border border-slate-200/60 flex flex-col items-center justify-center hover:border-slate-300/60 hover:bg-white/40 transition-colors"
+            className="py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
-            <Camera className="w-6 h-6 text-slate-500 mb-1" />
+            <Camera className="w-6 h-6 text-blue-600 mb-1" />
             <span className="text-sm text-slate-700 font-medium">Take Photo</span>
           </button>
           <button
             onClick={onOpenFilePicker}
-            className="py-4 bg-white rounded-xl border border-slate-200/60 flex flex-col items-center justify-center hover:border-slate-300/60 hover:bg-white/40 transition-colors"
+            className="py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
-            <Upload className="w-6 h-6 text-slate-500 mb-1" />
+            <Upload className="w-6 h-6 text-blue-600 mb-1" />
             <span className="text-sm text-slate-700 font-medium">Upload Photo</span>
           </button>
         </div>

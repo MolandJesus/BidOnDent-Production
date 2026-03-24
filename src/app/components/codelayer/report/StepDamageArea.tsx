@@ -25,10 +25,10 @@ export default function StepDamageArea({
 }: StepDamageAreaProps) {
   return (
     <div className="px-4 md:px-6 py-4 md:py-4">
-      <h2 className="text-2xl font-semibold text-slate-900 mb-1">Where is the damage?</h2>
+      <h2 className="text-2xl font-bold text-slate-900 mb-1">Where is the damage?</h2>
       <p className="text-slate-600 mb-6">Choose the area that best matches what you see.</p>
 
-      <div className="relative mb-6 bg-slate-100 rounded-xl overflow-hidden max-w-md mx-auto md:max-w-sm border border-slate-200">
+      <div className="relative mb-6 bd-glass-card overflow-hidden max-w-md mx-auto md:max-w-sm">
         <ImageWithFallback
           src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
           alt="Car diagram"
@@ -44,10 +44,10 @@ export default function StepDamageArea({
         {damageAreas.map((area) => (
           <button
             key={area.id}
-            className={`py-2.5 px-3 text-sm border rounded-lg font-medium transition-all ${
+            className={`py-2.5 px-3 text-sm border rounded-xl font-medium transition-all duration-200 ${
               damageArea === area.id
-                ? "bg-blue-50 border-blue-400 text-blue-700 shadow-sm"
-                : "bg-white border-slate-300 text-slate-700 hover:border-slate-400"
+                ? "bg-blue-50 border-blue-400 text-blue-700 shadow-md ring-1 ring-blue-200"
+                : "bg-white/80 border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-blue-50/30"
             }`}
             onClick={() => onSelectDamageArea(area.id)}
           >

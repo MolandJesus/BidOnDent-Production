@@ -25,12 +25,12 @@ export default function StepVehicleInfo({
   return (
     <div className="px-4 md:px-6 py-4 md:py-4">
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-slate-900 mb-1">Tell us about your vehicle</h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-1">Tell us about your vehicle</h2>
         <p className="text-slate-600">This helps local shops prepare accurate bids quickly.</p>
       </div>
 
       {vehicles && vehicles.length > 0 && (
-        <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className="mb-6 bd-glass-card p-4">
           <h3 className="text-sm font-medium text-slate-700 mb-3">Pick a saved vehicle</h3>
           <div className="space-y-2.5">
             {vehicles.map((savedVehicle: any) => (
@@ -76,7 +76,7 @@ export default function StepVehicleInfo({
       <div className="space-y-4">
         <div>
           <label htmlFor="make" className="block text-sm font-medium text-slate-700 mb-1.5">
-            Make
+            Make <span className="text-rose-500">*</span>
           </label>
           <input
             id="make"
@@ -91,7 +91,7 @@ export default function StepVehicleInfo({
 
         <div>
           <label htmlFor="model" className="block text-sm font-medium text-slate-700 mb-1.5">
-            Model
+            Model <span className="text-rose-500">*</span>
           </label>
           <input
             id="model"
@@ -106,7 +106,7 @@ export default function StepVehicleInfo({
 
         <div>
           <label htmlFor="year" className="block text-sm font-medium text-slate-700 mb-1.5">
-            Year
+            Year <span className="text-rose-500">*</span>
           </label>
           <input
             id="year"

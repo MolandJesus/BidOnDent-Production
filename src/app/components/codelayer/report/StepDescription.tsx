@@ -19,9 +19,11 @@ export default function StepDescription({
   onBack,
   onContinue,
 }: StepDescriptionProps) {
+  const isDescriptionValid = description.trim().length >= 10;
+
   return (
     <div className="px-4 md:px-6 py-4 md:py-4">
-      <h2 className="text-2xl font-semibold text-slate-900 mb-1">Describe the damage</h2>
+      <h2 className="text-2xl font-bold text-slate-900 mb-1">Describe the damage</h2>
       <p className="text-slate-600 mb-6">The better your details, the better your bids will be.</p>
 
       <div className="mb-6">
@@ -30,17 +32,24 @@ export default function StepDescription({
           className="text-sm font-medium text-slate-700 mb-1.5 inline-flex items-center gap-1.5"
         >
           <FileText className="w-4 h-4" />
-          Damage details
+          Damage details <span className="text-rose-500">*</span>
         </label>
         <textarea
           id="description"
           name="description"
           rows={4}
-          className="w-full px-3.5 py-2.5 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
+          className={`w-full px-3.5 py-2.5 border rounded-xl outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all ${
+            description.length > 0 && !isDescriptionValid ? "border-amber-300" : "border-slate-300"
+          }`}
           placeholder="Front bumper has a dent on the passenger side and paint scratches near the corner..."
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
         ></textarea>
+        {description.length > 0 && !isDescriptionValid && (
+          <p className="text-xs text-amber-600 mt-1">
+            Please add at least 10 characters to help shops understand the damage.
+          </p>
+        )}
       </div>
 
       <div className="mb-8">
@@ -71,10 +80,11 @@ export default function StepDescription({
         </button>
         <button
           onClick={onContinue}
-          className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+          disabled={!isDescriptionValid}
         >
-          Continue
+          Submit Report
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>

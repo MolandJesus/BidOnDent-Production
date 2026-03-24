@@ -338,9 +338,9 @@ export default function ReportScreen({
 
       <ReportProgress progress={progress} primaryColor={primaryColor} />
 
-      <div className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 bg-gradient-to-b from-slate-50 to-slate-100 min-h-[calc(100vh-8rem)]">
+      <div className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 bg-gradient-to-b from-slate-50 to-slate-100/80 min-h-[calc(100vh-8rem)]">
         <div className="max-w-4xl mx-auto">
-          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+          <div className="bd-glass-card overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={step}
