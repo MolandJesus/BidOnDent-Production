@@ -45,7 +45,7 @@ export default function CTASection({ primaryColor, onNavigateToDashboard }: CTAS
             className={`mx-auto max-w-2xl text-lg md:text-[2rem] leading-tight text-slate-600 mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.3s" }}
           >
-            Join thousands of satisfied customers and experience hassle-free auto repair today.
+            Compare competitive bids from local shops and get your auto body repair scheduled today.
           </p>
 
           <div

@@ -9,6 +9,10 @@ Issues identified from live 375px mobile screenshots against the design vision a
 - ~~**BenefitsSection.tsx**: "24/7 Support Available" and "100% Satisfaction Guarantee"~~ → Replaced with "3+ Compare Quotes" and "$0 No Hidden Fees". "$0 Free to Use" kept (accurate). "Certified Network/Professionals" → "Repair Network" / "Experienced Professionals".
 - **Status**: All false claims removed. All replacements are honest and verifiable.
 
+### P0-TRUST — Remaining False Claims (Found in Desktop Screenshot Audit 2026-03-23)
+- ~~**HowItWorksSection.tsx** (line 28): "Local **certified** shops review your request"~~ ✅ RESOLVED (Pass 115)
+- ~~**CTASection.tsx** (line 48): "Join **thousands of satisfied customers**"~~ ✅ RESOLVED (Pass 115)
+
 ### ~~P2-DATA — "Coverage focus" Fallback Not Updated (Pass 88 Incomplete)~~ ✅ RESOLVED (Pass 113)
 - ~~**MapSearchTargetMarkers.tsx**: Falls back to "Coverage focus"~~ → Now "Service area"
 - ~~**useCoverageNavigationExperience.ts**: Ultimate fallback label is "Coverage focus"~~ → Now "Service area"
@@ -33,6 +37,39 @@ Issues identified from live 375px mobile screenshots against the design vision a
 - Multiple sections use `py-20` (80px vertical padding), `mb-16` heading margins, and `gap-8` card gaps. On desktop these breathe well; on mobile they accumulate into significant scroll length.
 - Not a single-section bug — it's an accumulation pattern.
 - **Fix**: Mobile-specific spacing reduction across section wrapper padding and heading margins.
+
+---
+
+### Pass 115 — P0-TRUST: Remove Remaining False Landing Claims (2026-03-23)
+
+1. **Pass chosen and why**: Desktop screenshot audit revealed 2 more false claims surviving from pre-Pass 112 — "certified shops" in How It Works and "thousands of satisfied customers" in CTA. Every landing visitor sees both.
+2. **What changed**:
+   - `HowItWorksSection.tsx`: "Local certified shops review your request" → "Local shops review your request"
+   - `CTASection.tsx`: "Join thousands of satisfied customers and experience hassle-free auto repair today." → "Compare competitive bids from local shops and get your auto body repair scheduled today."
+3. **Files touched**: `HowItWorksSection.tsx`, `CTASection.tsx`
+4. **Validation**: Build: 1.77s, 0 errors. Bundle: 978.47 KB / 250.26 KB gzip. Diagnostics: 0. Spellcheck: 0.
+5. **Problem taxonomy**: P0:2 fixed P1:0 P2:0 P3:0 P4:0 P5:0 P6:0 P7:0
+6. **Architecture decisions**: Text-only fix. No structural change.
+7. **Doc updates**: Product Brain Screenshot Reality Check updated with full desktop screenshot analysis. BIDONDENT_BUILD_PROGRESS_DASHBOARD.md updated. False claims backlog item marked resolved.
+8. **What this unlocks**: Landing page is now fully honest across all sections (Hero, How It Works, Why Choose Us, Who We Serve, CTA). No remaining false claims on landing.
+9. **Best next pass**: Landing scroll fatigue (P7-TECHDEBT mobile spacing) or Dashboard Quick Actions visual hierarchy (P4-UX).
+
+---
+
+### Pass 114 — Shop Workflow Reality Check (2026-03-23)
+
+1. **Pass chosen and why**: Shop bid submission was the top P0 real workflow gap — shops could see requests but had no usable bid form. Two shop screens were rendered with no data. The router contained a hardcoded false claim as bid description.
+2. **What changed**:
+   - `ShopRequestsScreen.tsx`: Added `estimatedDays` and `bidDescription` form fields to the bid modal. Both are required (estimatedDays > 0, amount > 0). Updated `onSubmitBid` prop signature to pass all 4 fields. Cancel handler resets all new fields. Validation gate updated.
+   - `DashboardRouter.tsx`: Wired `reports={SEED_DAMAGE_REPORTS}` to `ShopRequestsScreen` — shops now see real (seed) damage requests instead of empty list. Wired `reports={SEED_DAMAGE_REPORTS}` to `ShopActiveJobsScreen`. Removed hardcoded `"Professional repair service with quality guarantee"` and `3` defaults — bid description and days now come directly from the shop's form inputs.
+   - `ShopActiveJobsScreen.tsx`: Removed fake bid amount formula `(bidsCount || 1) * 400`. Now reads `report.bidAmount` (real data). Display shows "Bid pending" when no amount exists instead of fabricated dollar amount.
+3. **Files touched**: `ShopRequestsScreen.tsx`, `ShopActiveJobsScreen.tsx`, `DashboardRouter.tsx`
+4. **Validation**: Build: 1.84s, 0 errors. Bundle: 978.47 KB / 250.28 KB gzip. Diagnostics: 0. Spellcheck: 0 (5 files checked).
+5. **Problem taxonomy**: P0:2 fixed (no reports wired + hardcoded description) P1:0 P2:1 fixed (fake bid amount) P3:0 P4:0 P5:0 P6:0 P7:0
+6. **Architecture decisions**: Shops still see SEED_DAMAGE_REPORTS (not live Supabase data) — this is an honest fallback until real shop auth and report assignment is implemented. Fake bid amount formula removed entirely.
+7. **Doc updates**: BIDONDENT_BUILD_PROGRESS_DASHBOARD.md updated.
+8. **What this unlocks**: Shop bid form now collects real data (amount, days, description) and passes it through the full chain to `onSubmitBid`. Active jobs screen shows honest "Bid pending" instead of fabricated amounts.
+9. **Best next pass**: Pass 115 — remaining landing page false claims.
 
 ---
 
@@ -912,11 +949,11 @@ Issues identified from live 375px mobile screenshots against the design vision a
 
 # BidOnDent Build Progress Dashboard
 
-> **Last updated:** 2026-03-23 · **Pass count:** 113 · **Branch:** feature/platform-bugfix-sweep-by-MolandJesus
+> **Last updated:** 2026-03-23 · **Pass count:** 115 · **Branch:** feature/platform-bugfix-sweep-by-MolandJesus
 
 ---
 
-## Visual Progress Model (Pass 113)
+## Visual Progress Model (Pass 115)
 
 ### Overall Platform Health
 
@@ -927,7 +964,7 @@ OVERALL PLATFORM        ██████████████████�
 ├─ Mobile UX            █████████████████████░░░  93%
 ├─ Data & Persistence   █████████████████░░░░░░░  72%
 ├─ Production Hardening ███████████████████░░░░░  78%
-├─ Product Honesty      ████████████████████░░░░  85%
+├─ Product Honesty      █████████████████████░░░  90%
 └─ Architecture Health  ██████████████████████░░  94%
 ```
 
@@ -988,7 +1025,7 @@ Premium TTS Voices         ░░░░░░░░░░░░░░░░░�
 Analytics Dashboard        ░░░░░░░░░░░░░░░░░░░░   0%  No business analytics yet
 ```
 
-### Pass Distribution by Category (113 passes)
+### Pass Distribution by Category (115 passes)
 
 ```
 Infrastructure/Features  ████████████████████████████████████  35+ passes
@@ -999,7 +1036,7 @@ P1-RUNTIME fixes         ████████  8 passes           (crashes, 
 P2-DATA persistence      ██████  6 passes             (sync, schema, console guards)
 P0-BUILD type errors     ████  4 passes               (compile failures)
 P6-SPELL wording         ████  4 passes               (terminology, consumer copy)
-Production Hardening     █████  5 passes               (Passes 109–113: error boundary, Sentry, a11y, trust, data)
+Production Hardening     █████████  9 passes               (Passes 109–115: error boundary, Sentry, a11y, trust, data, shop)
 ```
 
 ### Bundle Size Trend
@@ -1014,20 +1051,20 @@ Pass 105: ~976 KB  ████████████████████�
 Pass 106: ~976 KB  ███████████████████████████████████████████████░
 Pass 107: ~976 KB  ███████████████████████████████████████████████░
 Pass 108: ~976 KB  ███████████████████████████████████████████████░
-Pass 111: ~978 KB  ████████████████████████████████████████████████
-Pass 113: ~978 KB  ████████████████████████████████████████████████  ← current
-                   (977.66 KB / gzip: 250.15 KB)
+Pass 113: ~978 KB  ████████████████████████████████████████████████
+Pass 115: ~978 KB  ████████████████████████████████████████████████  ← current
+                   (978.47 KB / gzip: 250.26 KB)
 ```
 
 ### Key Metrics
 
 | Metric                 | Value                                                                     |
 | ---------------------- | ------------------------------------------------------------------------- |
-| Total passes executed  | 113                                                                       |
+| Total passes executed  | 115                                                                       |
 | Files in src/          | ~162 (+2 new services: errorReporting, sentryInit)                        |
 | Largest file           | 453 lines (integration.test.ts)                                           |
 | Files over 400 lines   | 12 (all under 500 hard limit)                                             |
-| Production bundle (JS) | 977.66 KB (gzip: 250.15 KB)                                               |
+| Production bundle (JS) | 978.47 KB (gzip: 250.26 KB)                                               |
 | Build time             | 1.6–1.82s consistently                                                    |
 | Spellcheck issues      | 0 across 136 consumer components                                          |
 | VS Code diagnostics    | 3 CSS contrast warnings (glass edges, not blocking)                       |

@@ -179,19 +179,9 @@ export default function DashboardRouter({
           <motion.div key="requests" {...screenTransition}>
             <ShopRequestsScreen
               primaryColor={primaryColor}
-              onSubmitBid={(requestId, bidAmount) => {
-                // Find the report to get more details
-                const report = reports.find((r) => r.id === requestId.toString());
-                if (report) {
-                  // Call the bid submission handler with all required parameters
-                  // For now, using default values for estimated days and description
-                  onSubmitBid(
-                    requestId.toString(),
-                    bidAmount,
-                    3, // Default 3 days
-                    "Professional repair service with quality guarantee" // Default description
-                  );
-                }
+              reports={SEED_DAMAGE_REPORTS}
+              onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
+                onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
               }}
             />
           </motion.div>
@@ -200,7 +190,7 @@ export default function DashboardRouter({
         {/* Shop: Active Jobs Screen */}
         {viewMode === "dashboard" && currentTab === "jobs" && userType === "shop" && (
           <motion.div key="jobs" {...screenTransition}>
-            <ShopActiveJobsScreen primaryColor={primaryColor} />
+            <ShopActiveJobsScreen primaryColor={primaryColor} reports={SEED_DAMAGE_REPORTS} />
           </motion.div>
         )}
 

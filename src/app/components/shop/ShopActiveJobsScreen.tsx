@@ -69,7 +69,7 @@ export default function ShopActiveJobsScreen({
           : "pending";
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
     const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
-    const bidAmount = (Number(report?.bidsCount) || 1) * 400;
+    const bidAmount = Number(report?.bidAmount) || 0;
     const progress = status === "completed" ? 100 : status === "in-progress" ? 60 : 20;
 
     return {
@@ -214,7 +214,7 @@ export default function ShopActiveJobsScreen({
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-lg" style={{ color: primaryColor }}>
-                      ${job.bidAmount.toLocaleString()}
+                      {job.bidAmount > 0 ? `$${job.bidAmount.toLocaleString()}` : "Bid pending"}
                     </p>
                   </div>
                 </div>

@@ -25,7 +25,7 @@ export default function HowItWorksSection({
       number: 2,
       title: "Receive Bids",
       description:
-        "Local certified shops review your request and submit competitive repair quotes with scope, timeline, and cost details.",
+        "Local shops review your request and submit competitive repair quotes with scope, timeline, and cost details.",
     },
     {
       icon: Wrench,
