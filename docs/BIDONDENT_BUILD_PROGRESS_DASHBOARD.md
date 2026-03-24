@@ -2,28 +2,26 @@
 
 ## ⚡ AT-A-GLANCE STATUS (updated 2026-03-24)
 
-| Item             | Value                                                    |
-| ---------------- | -------------------------------------------------------- |
-| **Last pass**    | Pass 128 — Wire customer bid reject (Decline) end-to-end |
-| **Current pass** | 128 ✅ complete                                          |
-| **Build**        | ✓ 0 errors · 975.45 KB · 1.83s                           |
-| **Spellcheck**   | 0 issues                                                 |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`           |
-| **Last pushed**  | 2026-03-24                                               |
+| Item             | Value                                                         |
+| ---------------- | ------------------------------------------------------------- |
+| **Last pass**    | Pass 132 — Landing section flow, dark transitions, hover auth |
+| **Current pass** | 132 ✅ complete                                               |
+| **Build**        | ✓ 0 errors · 976.79 KB · 1.88s                                |
+| **Spellcheck**   | 0 issues                                                      |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                |
+| **Last pushed**  | 2026-03-24                                                    |
 
-### Recent passes (120–128)
+### Recent passes (126–132)
 
-| Pass | Title                                       | Category   | Status |
-| ---- | ------------------------------------------- | ---------- | ------ |
-| 120  | Glass foundation + Hero atmosphere          | P4-UX      | ✅     |
-| 121  | Dashboard card depth                        | P4-UX      | ✅     |
-| 122  | Shop bid form params fix                    | P0-RUNTIME | ✅     |
-| 123  | Remove fabricated 4.6 ratings from bids     | P0-TRUST   | ✅     |
-| 124  | Persist shop bid submissions to Supabase    | P2-DATA    | ✅     |
-| 125  | Persist customer bid acceptance to Supabase | P2-DATA    | ✅     |
-| 126  | Load live bids from Supabase (Customer)     | P2-DATA    | ✅     |
-| 127  | Fix bids navigation flow                    | P1-RUNTIME | ✅     |
-| 128  | Wire customer bid reject (Decline)          | P2-DATA    | ✅     |
+| Pass | Title                                   | Category   | Status |
+| ---- | --------------------------------------- | ---------- | ------ |
+| 126  | Load live bids from Supabase (Customer) | P2-DATA    | ✅     |
+| 127  | Fix bids navigation flow                | P1-RUNTIME | ✅     |
+| 128  | Wire customer bid reject (Decline)      | P2-DATA    | ✅     |
+| 129  | Navigation context-loss traps           | P1-RUNTIME | ✅     |
+| 130  | Visual Critical Sweep (P0 CTA fix)      | P4-UX      | ✅     |
+| 131  | Dashboard Visual Cohesion               | P4-UX      | ✅     |
+| 132  | Landing section flow + dark transitions | P4-UX      | ✅     |
 
 ### Bid lifecycle persistence — current state
 
@@ -36,10 +34,46 @@
 
 ### Best next pass options (ranked)
 
-1. **P1-RUNTIME** — Mobile navigation traps audit (back button failures, stuck flows)
-2. **P3-ARCH** — Insurer new claim persistence to Supabase (large arch pass)
-3. **P4-UX** — Hero section + dashboard map widget visual depth (Apple Maps atmosphere)
+1. **P4-UX** — Pass 133: Glass card depth refinement + premium hover polish
+2. **P4-UX** — Dashboard welcome header + map widget visual polish
+3. **P3-ARCH** — Insurer new claim persistence to Supabase (large arch pass)
 4. **P4-UX** — BidsScreen empty state design (when no bids exist yet)
+
+---
+
+### Pass 132 — Landing section flow, dark transitions, hover authority (2026-03-24)
+
+- **What changed**: OperatingRegionsSection background changed from flat `bg-slate-900` to gradient `from-[#1e3a5f] via-[#162d4a] to-[#0f1e33]` that flows from TrustStats palette; added atmospheric blur blob; region cards got `backdrop-blur-sm` + hover border/bg transitions. TrustStats got soft top-edge gradient bridge + icon hover `shadow-lg shadow-blue-500/20`. AboutOpportunity cards got `hover:shadow-lg hover:-translate-y-1` + slightly stronger via gradient. BusinessInquirySection background changed from flat `bg-slate-50` to `bg-gradient-to-b from-[#f5f8fc] to-[#edf3fa]`, badge unified to `bd-glass-badge`.
+- **Files touched**: `OperatingRegionsSection.tsx`, `TrustStatsSection.tsx`, `AboutOpportunitySection.tsx`, `BusinessInquirySection.tsx`
+- **Build**: ✓ 0 errors, 976.79 KB, 1.88s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — section flow cohesion. Dark sections now share connected palette instead of hard cuts.
+
+---
+
+### Pass 131 — Dashboard Visual Cohesion (2026-03-24)
+
+- **What changed**: Quick Actions: stronger icon tones with `shadow-sm` and 100/80 opacity, enhanced hover states (`hover:shadow-lg hover:-translate-y-1 hover:border-blue-200/60`), refined typography (`text-sm` titles, `text-xs` descriptions). Stat cards: toneClasses enhanced with `shadow-sm`. Onboarding card: atmospheric radial gradient overlay + backdrop-blur step circles. WhoWeServe: removed cartoonish `hover:scale-[1.03]`, replaced with `hover:shadow-xl hover:-translate-y-2`; background changed to `from-blue-50/40 via-white to-white`.
+- **Files touched**: `homeScreenData.ts`, `HomeScreenSections.tsx`, `WhoWeServeSection.tsx`
+- **Build**: ✓ 0 errors, 976.29 KB, 1.83s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — dashboard + landing card depth. Premium restraint over cartoonish motion.
+
+---
+
+### Pass 130 — Visual Critical Sweep (2026-03-24)
+
+- **What changed**: P0 FIX: Dashboard CTA button text changed from invisible `color: "#1e40af"` (dark blue on dark blue gradient) to `text-white`. Hero: deepened atmosphere (`#e8f0fe` → `#dbe8f8`), added third radial gradient layer, upgraded blobs. HowItWorks: increased padding, richer via gradient, icon `shadow-sm` + border. Benefits: richer gradient start. About: stronger via gradient, icon border/shadow. CTA: stronger padding, larger decorative blobs. Footer: gradient background, blue edge line.
+- **Files touched**: `HomeScreen.tsx`, `HeroSection.tsx`, `HowItWorksSection.tsx`, `BenefitsSection.tsx`, `AboutOpportunitySection.tsx`, `CTASection.tsx`, `FooterSection.tsx`
+- **Build**: ✓ 0 errors, 975.90 KB. Spellcheck: 0 issues.
+- **Taxonomy**: P0 UX (CTA visibility), P4 UX (atmosphere depth across 7 sections).
+
+---
+
+### Pass 129 — Navigation context-loss traps (2026-03-24)
+
+- **What changed**: VehicleProfileScreen `onBack` now navigates to account tab instead of dashboard home. ReportsListScreen back sets home tab explicitly.
+- **Files touched**: `DashboardRouter.tsx`
+- **Build**: ✓ 0 errors, 975.45 KB. Spellcheck: 0 issues.
+- **Taxonomy**: P1 RUNTIME — back navigation no longer loses dashboard context.
 
 ---
 
