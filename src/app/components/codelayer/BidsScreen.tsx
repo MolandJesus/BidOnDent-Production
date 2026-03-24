@@ -10,7 +10,12 @@ type BidsScreenProps = {
   userType?: "customer" | "shop" | "insurer";
   bids?: any[];
   reports?: any[];
-  onAcceptBid?: (details: { shopName: string; price: number; timeframe: string }) => void;
+  onAcceptBid?: (details: {
+    bidId: string;
+    shopName: string;
+    price: number;
+    timeframe: string;
+  }) => void;
 };
 
 type FilterType = "all" | "lowest" | "fastest" | "rating";
@@ -273,6 +278,7 @@ export default function BidsScreen({
               onAccept={() => {
                 setAcceptedBidId(bid.id);
                 onAcceptBid?.({
+                  bidId: String(bid.id),
                   shopName: bid.shopName,
                   price: bid.price,
                   timeframe: bid.timeframe,

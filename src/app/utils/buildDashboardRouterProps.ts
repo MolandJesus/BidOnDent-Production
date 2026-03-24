@@ -142,6 +142,19 @@ export function buildDashboardRouterProps({
         userData.setUserPhone(info.phone);
       }
     },
+    onAcceptBid: async (details: {
+      bidId: string;
+      shopName: string;
+      price: number;
+      timeframe: string;
+    }) => {
+      try {
+        const { updateBidStatus } = await import("../services/supabase/bids");
+        await updateBidStatus(details.bidId, "accepted");
+      } catch (err) {
+        console.error("Failed to accept bid:", err);
+      }
+    },
     onPasswordChange: () => {
       console.log("Password change not implemented");
     },

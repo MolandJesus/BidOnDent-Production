@@ -52,7 +52,12 @@ export interface DashboardRouterProps {
   onViewModeChange: (mode: string) => void;
   onTabChange: (tab: string) => void;
   onLogout: () => void | Promise<void>;
-  onAcceptBid?: (details: { shopName: string; price: number; timeframe: string }) => void;
+  onAcceptBid?: (details: {
+    bidId: string;
+    shopName: string;
+    price: number;
+    timeframe: string;
+  }) => void;
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: DashboardUserType) => void;
   onExitDemoMode?: () => void;
