@@ -165,10 +165,9 @@ export default function HomeScreen({
           <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={primaryAction.onClick}
-              className="bd-glass-control inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium shadow-sm hover:shadow-md transition-all text-blue-700"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                color: "#1e40af", // text-blue-700
               }}
             >
               {primaryAction.label}

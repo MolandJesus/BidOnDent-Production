@@ -61,18 +61,19 @@ export default function HeroSection({
   };
 
   return (
-    <section className="pt-32 pb-20 overflow-hidden relative bg-gradient-to-br from-[#e8f0fe] via-[#f0f4ff] to-[#eef2f9]">
-      {/* Atmospheric depth layers — warm radial + cool ambient */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_30%_-10%,rgba(0,61,130,0.10),transparent_70%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_90%,rgba(99,102,241,0.05),transparent_60%)]" />
-      {/* Decorative background blobs — warmer tones for depth */}
-      <div className="absolute top-20 right-0 w-72 h-72 bg-blue-200 rounded-full opacity-20 blur-3xl animate-blob" />
+    <section className="pt-32 pb-24 overflow-hidden relative bg-gradient-to-br from-[#dbe8f8] via-[#e8f0fe] to-[#eef2f9]">
+      {/* Atmospheric depth layers — deeper radials for premium feel */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_30%_-10%,rgba(0,61,130,0.14),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_90%,rgba(99,102,241,0.08),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_40%_at_50%_100%,rgba(0,61,130,0.06),transparent_50%)]" />
+      {/* Decorative background blobs — deeper tones for atmosphere */}
+      <div className="absolute top-20 right-0 w-80 h-80 bg-blue-300 rounded-full opacity-20 blur-3xl animate-blob" />
       <div
-        className="absolute bottom-10 left-0 w-96 h-96 bg-indigo-200 rounded-full opacity-15 blur-3xl animate-blob"
+        className="absolute bottom-10 left-0 w-96 h-96 bg-indigo-300 rounded-full opacity-15 blur-3xl animate-blob"
         style={{ animationDelay: "4s" }}
       />
       <div
-        className="absolute top-1/2 left-1/3 w-64 h-64 bg-sky-100 rounded-full opacity-20 blur-3xl animate-blob"
+        className="absolute top-1/2 left-1/3 w-72 h-72 bg-sky-200 rounded-full opacity-20 blur-3xl animate-blob"
         style={{ animationDelay: "2s" }}
       />
 

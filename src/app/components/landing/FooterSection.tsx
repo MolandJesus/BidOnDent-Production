@@ -10,7 +10,12 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
   const { ref: footerRef, isVisible } = useScrollAnimation(0.1);
 
   return (
-    <footer className="bg-[#0c1929] text-gray-300 py-12" ref={footerRef}>
+    <footer
+      className="bg-gradient-to-b from-[#0f1e33] to-[#0c1929] text-gray-300 pt-16 pb-12 relative"
+      ref={footerRef}
+    >
+      {/* Top edge fade for smooth CTA transition */}
+      <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/20 to-transparent" />
       <div className="container mx-auto px-4 max-w-7xl">
         <div
           className={`grid md:grid-cols-4 gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}

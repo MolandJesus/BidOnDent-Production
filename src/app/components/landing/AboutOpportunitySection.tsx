@@ -33,7 +33,7 @@ export default function AboutOpportunitySection() {
   return (
     <section
       id="about-opportunity"
-      className="py-20 bg-gradient-to-b from-white to-blue-50/30"
+      className="py-20 bg-gradient-to-b from-white via-blue-50/20 to-blue-50/40"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-6xl">
@@ -64,7 +64,7 @@ export default function AboutOpportunitySection() {
                 } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{ transitionDelay: `${0.2 + index * 0.1}s` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100/60 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100/80 flex items-center justify-center mb-4 shadow-sm">
                   <item.icon className="w-6 h-6 text-[#003d82]" />
                 </div>
                 <h4 className="text-xl font-bold mb-2">{item.title}</h4>

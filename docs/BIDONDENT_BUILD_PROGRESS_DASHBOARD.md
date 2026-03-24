@@ -1,3 +1,82 @@
+# BidOnDent — Build Progress Dashboard
+
+## ⚡ AT-A-GLANCE STATUS (updated 2026-03-24)
+
+| Item             | Value                                                    |
+| ---------------- | -------------------------------------------------------- |
+| **Last pass**    | Pass 128 — Wire customer bid reject (Decline) end-to-end |
+| **Current pass** | 128 ✅ complete                                          |
+| **Build**        | ✓ 0 errors · 975.45 KB · 1.83s                           |
+| **Spellcheck**   | 0 issues                                                 |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`           |
+| **Last pushed**  | 2026-03-24                                               |
+
+### Recent passes (120–128)
+
+| Pass | Title                                       | Category   | Status |
+| ---- | ------------------------------------------- | ---------- | ------ |
+| 120  | Glass foundation + Hero atmosphere          | P4-UX      | ✅     |
+| 121  | Dashboard card depth                        | P4-UX      | ✅     |
+| 122  | Shop bid form params fix                    | P0-RUNTIME | ✅     |
+| 123  | Remove fabricated 4.6 ratings from bids     | P0-TRUST   | ✅     |
+| 124  | Persist shop bid submissions to Supabase    | P2-DATA    | ✅     |
+| 125  | Persist customer bid acceptance to Supabase | P2-DATA    | ✅     |
+| 126  | Load live bids from Supabase (Customer)     | P2-DATA    | ✅     |
+| 127  | Fix bids navigation flow                    | P1-RUNTIME | ✅     |
+| 128  | Wire customer bid reject (Decline)          | P2-DATA    | ✅     |
+
+### Bid lifecycle persistence — current state
+
+| Action                                   | Persists to Supabase?                          |
+| ---------------------------------------- | ---------------------------------------------- |
+| Shop submits bid                         | ✅ Pass 124                                    |
+| Customer accepts bid                     | ✅ Pass 125                                    |
+| Customer rejects bid                     | ✅ Pass 128 (Decline button + updateBidStatus) |
+| BidsScreen loads live bids from Supabase | ✅ Pass 126 (via useBidsForReport hook)        |
+
+### Best next pass options (ranked)
+
+1. **P1-RUNTIME** — Mobile navigation traps audit (back button failures, stuck flows)
+2. **P3-ARCH** — Insurer new claim persistence to Supabase (large arch pass)
+3. **P4-UX** — Hero section + dashboard map widget visual depth (Apple Maps atmosphere)
+4. **P4-UX** — BidsScreen empty state design (when no bids exist yet)
+
+---
+
+### Pass 128 — Wire customer bid reject (Decline) end-to-end (2026-03-24)
+
+- **What changed**: Added subtle "Decline" button to `BidCardArticle` (hidden when bid is accepted). Style: neutral slate border with hover transition to red-50/red-600. Added `onRejectBid` type to `dashboard-router-types.ts`, prop to `BidsScreen`, handler in `buildDashboardRouterProps.ts` calling `updateBidStatus(bidId, "rejected")`. Wired through `DashboardRouter`.
+- **Files touched**: `BidCardArticle.tsx`, `BidsScreen.tsx`, `dashboard-router-types.ts`, `buildDashboardRouterProps.ts`, `DashboardRouter.tsx`
+- **Build**: ✓ 0 errors, 975.45 KB. Spellcheck: 0 issues.
+- **Taxonomy**: P2 DATA — bid lifecycle now complete: submit ✅ accept ✅ reject ✅ read ✅
+
+---
+
+### Pass 127 — Fix bids navigation: selectedReportId fallback + onViewAllBids (2026-03-24)
+
+- **What changed**: `useBidsForReport` now falls back to `reports[0]?.id` when `selectedReportId` is null (customer clicks "View Bids" from home). Wired `onViewAllBids` in `ReportDetailScreen` so the "View Bid" button navigates to bids tab with `selectedReportId` already set. Two navigation paths now work: Home → View Bids (most recent report), Report Detail → View Bid (specific report).
+- **Files touched**: `DashboardRouter.tsx`
+- **Build**: ✓ 0 errors, 974.86 KB. Spellcheck: 0 issues.
+- **Taxonomy**: P1 RUNTIME — navigation flow gap fixed. Previously `useBidsForReport(null)` always returned empty bids.
+
+---
+
+### Pass 126 — Load live bids from Supabase for customer BidsScreen (2026-03-24)
+
+- **What changed**: Created `useBidsForReport` hook that fetches bids from Supabase via `getBidsForReport`, maps snake_case to camelCase for BidsScreen consumption. Wired hook in `DashboardRouter.tsx` — fetches when customer navigates to bids tab using `selectedReportId`. Falls back to local `bids` prop if no Supabase data. Passed `bids`, `reports`, and `onAcceptBid` to BidsScreen (all three were previously missing).
+- **Files touched**: `useBidsForReport.ts` (new), `DashboardRouter.tsx`
+- **Build**: ✓ 0 errors, 974.77 KB. Spellcheck: 0 issues.
+- **Taxonomy**: P2 DATA — customer BidsScreen now reads live from Supabase. Bid lifecycle read gap closed.
+
+---
+
+### Pass 125 — Persist customer bid acceptance to Supabase (2026-03-23)
+
+- **What changed**: `onAcceptBid` callback now includes `bidId: string`. `BidsScreen.tsx` passes `String(bid.id)` to the callback. `buildDashboardRouterProps.ts` wires a real async `onAcceptBid` handler that calls `updateBidStatus(bidId, "accepted")` via dynamic import.
+- **Files touched**: `dashboard-router-types.ts`, `BidsScreen.tsx`, `buildDashboardRouterProps.ts`
+- **Build**: ✓ 0 errors, 973.77 KB. Spellcheck: 0 issues.
+- **Taxonomy**: P2 DATA — bid acceptance now persists to Supabase `bids` table (`status: "accepted"`). Previously UI-only.
+
 ---
 
 ## Mobile Screenshot Audit — Issue Backlog (2026-03-23)
@@ -5,31 +84,38 @@
 Issues identified from live 375px mobile screenshots against the design vision and product honesty rules. Ordered by impact.
 
 ### ~~P0-TRUST — False Trust Claims on Landing Page~~ ✅ RESOLVED (Pass 112)
+
 - ~~**WhoWeServeSection.tsx**: "Insurance Approved", "BBB Accredited", "Licensed & Bonded"~~ → Replaced with "$0 for Customers", "NY Service Area", "Transparent Bidding"
 - ~~**BenefitsSection.tsx**: "24/7 Support Available" and "100% Satisfaction Guarantee"~~ → Replaced with "3+ Compare Quotes" and "$0 No Hidden Fees". "$0 Free to Use" kept (accurate). "Certified Network/Professionals" → "Repair Network" / "Experienced Professionals".
 - **Status**: All false claims removed. All replacements are honest and verifiable.
 
 ### P0-TRUST — Remaining False Claims (Found in Desktop Screenshot Audit 2026-03-23)
+
 - ~~**HowItWorksSection.tsx** (line 28): "Local **certified** shops review your request"~~ ✅ RESOLVED (Pass 115)
 - ~~**CTASection.tsx** (line 48): "Join **thousands of satisfied customers**"~~ ✅ RESOLVED (Pass 115)
 
 ### ~~P2-DATA — "Coverage focus" Fallback Not Updated (Pass 88 Incomplete)~~ ✅ RESOLVED (Pass 113)
+
 - ~~**MapSearchTargetMarkers.tsx**: Falls back to "Coverage focus"~~ → Now "Service area"
 - ~~**useCoverageNavigationExperience.ts**: Ultimate fallback label is "Coverage focus"~~ → Now "Service area"
 - All 4 files now consistent: Pass 88 fixed 2, Pass 113 fixed remaining 2.
 
 ### ~~P4-UX — Landing Page Scroll Fatigue (Mobile)~~ ✅ RESOLVED (Pass 118)
+
 - ~~Full landing page on 375px requires 15+ viewport scrolls.~~
 - Fixed: `py-20` → `py-12 md:py-20`, `mb-16` → `mb-8 md:mb-16`, `gap-8` → `gap-5 md:gap-8` across HowItWorks, WhoWeServe, Benefits, TrustStats, CTA sections.
 
 ### ~~P4-UX — "For Auto Body Repair Shops" Title Too Long~~ ✅ RESOLVED (Pass 112)
+
 - ~~**WhoWeServeSection.tsx**: Wraps to 3 lines on 375px mobile.~~ → Shortened to "For Repair Shops".
 
 ### ~~P4-UX — Dashboard Quick Actions Visual Hierarchy~~ ✅ RESOLVED (Pass 117)
+
 - ~~**HomeScreenSections.tsx**: First quick action gets `bd-glass-control--primary` = dominant blue gradient card.~~
 - Fixed: All 4 action cards now use `bd-glass-card` at equal weight. Icon tone colors (blue/emerald/amber/violet) provide subtle differentiation.
 
 ### ~~P7-TECHDEBT — Landing Page Section Spacing Accumulation~~ ✅ RESOLVED (Pass 118)
+
 - ~~Multiple sections use `py-20`, `mb-16`, `gap-8` — accumulate into excessive scroll on mobile.~~
 - Fixed: Responsive spacing applied across 5 sections.
 
@@ -1167,7 +1253,7 @@ Progress: ████████████████████░░░�
 - Admin toolkit (dev-only, flagged for removal)
 - Real-time bid notification system via Supabase WebSocket
 - Royal-blue glass design system deployed across all screens
-- **Pass 15:** Dashboard/map controls now use product-owned, tactile, blue-aligned glass system; identity convergence complete for dashboard, profile dropdown, HomeScreen quick actions
+- **Pass 15**: Dashboard/map controls now use product-owned, tactile, blue-aligned glass system; identity convergence complete for dashboard, profile dropdown, HomeScreen quick actions
 
 **Missing:**
 
@@ -1179,7 +1265,7 @@ Progress: ████████████████████░░░�
 - Push notification support
 - End-to-end test coverage
 
-**Next Move:** Navigation session lifecycle → workflow automation
+**Next Move**: Navigation session lifecycle → workflow automation
 
 ---
 
@@ -1214,7 +1300,7 @@ Progress: █████████████████░░░ 84%
 - Email verification flow (Clerk handles, but no custom UI)
 - Settings/preferences screen
 
-**Next Move:** Analytics widgets
+**Next Move**: Analytics widgets
 
 ---
 
@@ -1237,7 +1323,7 @@ Progress: █████████████████████░░�
 - Shop service-area operations view
 - Insurer claims density heatmap
 
-**Next Move:** Richer overlay content parity → predictive search → role-specific map views
+**Next Move**: Richer overlay content parity → predictive search → role-specific map views
 
 ---
 
@@ -1273,7 +1359,7 @@ Progress: ████████████████████░░░�
 - No gesture-driven overlay controls (swipe to dismiss, drag to expand)
 - Hybrid mode still uses grid layout (not immersive)
 
-**Next Move:** Overlay content enrichment → predictive search → mode transition animations
+**Next Move**: Overlay content enrichment → predictive search → mode transition animations
 
 ---
 
@@ -1308,7 +1394,7 @@ Progress: ████████████████████ 100%
 - Real-time rerouting on deviation
 - Multi-stop routing
 
-**Next Move:** Cloud-synced sessions → ETA updates
+**Next Move**: Cloud-synced sessions → ETA updates
 
 ---
 
@@ -1335,7 +1421,7 @@ Progress: ████████████████████ 100%
 - Multiple alternate route comparison
 - Reroute history/analytics
 
-**Next Move:** Automatic reroute option → reroute confidence → alternate route ranking
+**Next Move**: Automatic reroute option → reroute confidence → alternate route ranking
 
 ---
 
@@ -1368,7 +1454,7 @@ Progress: ████████████████████ 100%
 - Offline voice fallback
 - Custom pronunciation dictionary
 
-**Next Move:** Voice picker UI → volume controls integration
+**Next Move**: Voice picker UI → volume controls integration
 
 ---
 
@@ -1395,7 +1481,7 @@ Progress: ████████████████████ 100%
 - Multi-device session continuity
 - ETA updates during active navigation
 
-**Next Move:** Cloud-synced sessions (Supabase `navigation_sessions` table)
+**Next Move**: Cloud-synced sessions (Supabase `navigation_sessions` table)
 
 ---
 
@@ -1417,8 +1503,8 @@ Progress: ██████████████████████░�
 - Map liquid animations (float, sheen, entry)
 - `mapSurfaceTheme.ts` + `globalSurfaceTheme.ts` tone-aware themes
 - Deployed across: map surfaces, shell surfaces, HomeScreen, dashboard, reports, shop directory, bids, account screens
-- **UI Glass System Refinement (Pass 13):** ShopDirectoryHero and ShopRequestsScreen refactored to enforce bd-glass-panel, bd-glass-card, and bd-glass-control for all surfaces and controls. All white/gray backgrounds and window-like layouts removed. Blue-tinted, premium navigation product feel established. All controls and overlays now use the glass system, with depth, lighting, and blue environment unified. Build, spellcheck, and diagnostics clean. Mobile and desktop UI validated.
-- **Dashboard/Map Control Identity Convergence (Pass 15):** DashboardLayout, ProfileDropdown, and HomeScreen quick actions/CTAs now use bd-glass-control or premium blue system for all true interactive controls. Hierarchy and product-owned feel preserved. No over-application. Build, diagnostics, and spellcheck clean. Mobile/desktop UI validated.
+- **UI Glass System Refinement (Pass 13)**: ShopDirectoryHero and ShopRequestsScreen refactored to enforce bd-glass-panel, bd-glass-card, and bd-glass-control for all surfaces and controls. All white/gray backgrounds and window-like layouts removed. Blue-tinted, premium navigation product feel established. All controls and overlays now use the glass system, with depth, lighting, and blue environment unified. Build, spellcheck, and diagnostics clean. Mobile and desktop UI validated.
+- **Dashboard/Map Control Identity Convergence (Pass 15)**: DashboardLayout, ProfileDropdown, and HomeScreen quick actions/CTAs now use bd-glass-control or premium blue system for all true interactive controls. Hierarchy and product-owned feel preserved. No over-application. Build, diagnostics, and spellcheck clean. Mobile/desktop UI validated.
 
 **Missing:**
 
@@ -1426,7 +1512,7 @@ Progress: ██████████████████████░�
 - Glass-safe data tables for InsurerClaimsScreen
 - Component library documentation / Storybook
 
-**Next Move:** Stage 3b form/table glass treatment (ShopActiveJobsScreen, InsurerClaimsScreen)
+**Next Move**: Stage 3b form/table glass treatment (ShopActiveJobsScreen, InsurerClaimsScreen)
 
 ---
 
@@ -1453,7 +1539,7 @@ Progress: █████████████████░░░ 86%
 - Browser back/forward integration
 - Code splitting / lazy loading for large screens
 
-**Next Move:** URL-based routing (React Router or similar) → code splitting
+**Next Move**: URL-based routing (React Router or similar) → code splitting
 
 ---
 
@@ -1480,7 +1566,7 @@ Progress: ██████████████████░░ 92%
 - Stale cache invalidation strategy
 - Data versioning / schema migration automation
 
-**Next Move:** Production build demo-data tree-shaking → cache TTL strategy
+**Next Move**: Production build demo-data tree-shaking → cache TTL strategy
 
 ---
 
@@ -1509,7 +1595,7 @@ Progress: █████████████████░░░ 82%
 - Notification grouping / batching
 - Sound/vibration settings
 
-**Next Move:** Web Push API integration → preferences UI
+**Next Move**: Web Push API integration → preferences UI
 
 ---
 
@@ -1614,7 +1700,7 @@ Progress: ████████████████░░░░░░░�
 - Security headers / CSP configuration
 - SEO / meta tags / Open Graph
 
-**Next Move:** Remove false trust claims (P0-TRUST) → remainder of accessibility audit → CI/CD pipeline
+**Next Move**: Remove false trust claims (P0-TRUST) → remainder of accessibility audit → CI/CD pipeline
 
 ---
 

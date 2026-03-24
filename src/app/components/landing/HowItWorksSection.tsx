@@ -39,7 +39,7 @@ export default function HowItWorksSection({
   return (
     <section
       id="how-it-works"
-      className="pt-12 md:pt-20 pb-6 md:pb-12 bg-gradient-to-b from-white to-blue-50/50"
+      className="pt-16 md:pt-24 pb-10 md:pb-16 bg-gradient-to-b from-white via-blue-50/30 to-blue-50/60"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -80,10 +80,13 @@ export default function HowItWorksSection({
             >
               {/* Icon */}
               <div
-                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
-                style={{ backgroundColor: `${primaryColor}12` }}
+                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-sm"
+                style={{
+                  backgroundColor: `${primaryColor}18`,
+                  border: `1px solid ${primaryColor}15`,
+                }}
               >
-                <step.icon className="w-8 h-8 text-blue-400" />
+                <step.icon className="w-8 h-8 text-blue-500" />
               </div>
 
               {/* Step number badge - below icon */}
