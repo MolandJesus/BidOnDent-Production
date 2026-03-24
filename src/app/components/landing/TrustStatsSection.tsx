@@ -25,7 +25,7 @@ export default function TrustStatsSection() {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-r from-[#0c1929] to-[#1e3a5f] text-white relative overflow-hidden">
+    <section className="py-12 md:py-20 bg-gradient-to-r from-[#0c1929] to-[#1e3a5f] text-white relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:26px_26px] opacity-25" />
       <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/30 rounded-full blur-3xl" />

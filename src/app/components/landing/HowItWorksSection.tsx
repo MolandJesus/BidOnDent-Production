@@ -39,7 +39,7 @@ export default function HowItWorksSection({
   return (
     <section
       id="how-it-works"
-      className="pt-20 pb-8 md:pb-12 bg-gradient-to-b from-white to-blue-50/50"
+      className="pt-12 md:pt-20 pb-6 md:pb-12 bg-gradient-to-b from-white to-blue-50/50"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -54,14 +54,14 @@ export default function HowItWorksSection({
         </div>
 
         <div
-          className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-8 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
           <h3 className="text-3xl sm:text-4xl font-bold mb-4">How It Works</h3>
           <p className="text-xl text-gray-600">Get your car repaired in three simple steps</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 relative">
+        <div className="grid md:grid-cols-3 gap-5 md:gap-8 relative">
           {/* Dashed connectors between cards (desktop only) */}
           <div
             className="hidden md:block absolute top-24 left-[33%] w-[12%] border-t-2 border-dashed border-blue-300"

@@ -52,7 +52,7 @@ export default function BenefitsSection({
 
   return (
     <section
-      className="pt-8 pb-20 md:pt-12 bg-gradient-to-br from-gray-50 to-blue-50"
+      className="pt-8 pb-12 md:pt-12 md:pb-20 bg-gradient-to-br from-gray-50 to-blue-50"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -67,7 +67,7 @@ export default function BenefitsSection({
         </div>
 
         <div
-          className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-8 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
           <h3 className="text-2xl sm:text-4xl font-bold mb-4">
@@ -117,7 +117,7 @@ export default function BenefitsSection({
 
         {/* Trust badges row */}
         <div
-          className={`flex flex-wrap justify-center gap-8 mt-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`flex flex-wrap justify-center gap-5 md:gap-8 mt-10 md:mt-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.8s" }}
         >
           <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">

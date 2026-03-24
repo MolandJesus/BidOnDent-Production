@@ -63,7 +63,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
   return (
     <section
       id="who-we-serve"
-      className="py-20 bg-gradient-to-b from-blue-50/30 to-white"
+      className="py-12 md:py-20 bg-gradient-to-b from-blue-50/30 to-white"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -78,7 +78,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
         </div>
 
         <div
-          className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-8 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
           <h3 className="text-3xl sm:text-4xl font-bold mb-4">Who We Serve</h3>
@@ -87,7 +87,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-5 md:gap-8">
           {cards.map((card, index) => (
             <div
               key={card.title}
