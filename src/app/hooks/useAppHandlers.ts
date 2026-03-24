@@ -92,7 +92,12 @@ export function useAppHandlers({
     userData.setActivities([newActivity, ...userData.activities] as any);
   };
 
-  const submitBid = (reportId: string, bidAmount: number) => {
+  const submitBid = (
+    reportId: string,
+    bidAmount: number,
+    estimatedDays?: number,
+    description?: string
+  ) => {
     console.log(`Submitting bid of $${bidAmount} for report ${reportId}`);
 
     const report = userData.reports.find((entry) => entry.id === reportId) as any;
@@ -109,10 +114,8 @@ export function useAppHandlers({
       shopId: userData.userInfo.email,
       shopName: userData.userInfo.name || "Shop Name",
       amount: bidAmount,
-      estimatedDays: Math.floor(Math.random() * 7) + 1,
-      rating: (Math.random() * 1.5 + 3.5).toFixed(1),
-      reviewCount: Math.floor(Math.random() * 100) + 10,
-      shopDistance: `${(Math.random() * 5 + 0.5).toFixed(1)} miles`,
+      estimatedDays: estimatedDays ?? 0,
+      description: description || "",
     };
 
     const newBids = [...userData.bids, newBid];

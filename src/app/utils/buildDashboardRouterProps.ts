@@ -11,7 +11,12 @@ type BuildDashboardRouterPropsArgs = {
   navigation: NavigationState;
   userProfile: UserProfile;
   userData: UserDataState;
-  submitBid: (reportId: string, bidAmount: number) => void;
+  submitBid: (
+    reportId: string,
+    bidAmount: number,
+    estimatedDays: number,
+    description: string
+  ) => void;
   handleDeleteAccount: () => Promise<void>;
   handleLogout: () => Promise<void>;
   onReportSubmit: (report: any) => Promise<void>;

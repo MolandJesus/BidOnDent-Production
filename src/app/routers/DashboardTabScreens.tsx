@@ -84,7 +84,7 @@ export default function DashboardTabScreens(props: DashboardRouterProps) {
       return;
     }
 
-    void onSubmitBid(requestId, bidAmount, 3, "Professional repair service with quality guarantee");
+    void onSubmitBid(requestId, bidAmount, 0, "");
   };
 
   switch (currentTab) {
