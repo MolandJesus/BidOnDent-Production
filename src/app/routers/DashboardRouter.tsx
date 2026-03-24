@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
 import { useBidsForReport } from "../hooks/useBidsForReport";
+import { useMarketplaceReports } from "../hooks/useMarketplaceReports";
 
 // Import all screens
 import HomeScreen from "../components/codelayer/HomeScreen";
@@ -86,6 +87,11 @@ export default function DashboardRouter({
       : null;
   const { bids: liveBids } = useBidsForReport(bidsReportId);
 
+  // Fetch all reports from Supabase for shop/insurer marketplace views
+  const { marketplaceReports } = useMarketplaceReports(userType);
+  const shopInsurerReports =
+    marketplaceReports.length > 0 ? marketplaceReports : SEED_DAMAGE_REPORTS;
+
   // Scroll to top whenever view changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -135,10 +141,10 @@ export default function DashboardRouter({
               originalAccountType={originalAccountType || undefined}
               onExitDemoMode={onExitDemoMode}
               reports={
-                // For shops and insurers, show seed reports (available requests/claims)
+                // For shops and insurers, show marketplace reports (real Supabase data with seed fallback)
                 // For customers, show only their own reports
                 userType === "shop" || userType === "insurer"
-                  ? SEED_DAMAGE_REPORTS
+                  ? shopInsurerReports
                   : reports.map((report) => ({
                       ...report,
                       photos: photoStorage[report.id] || [],
@@ -194,7 +200,7 @@ export default function DashboardRouter({
           <motion.div key="requests" {...screenTransition}>
             <ShopRequestsScreen
               primaryColor={primaryColor}
-              reports={SEED_DAMAGE_REPORTS}
+              reports={shopInsurerReports}
               onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
                 onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
               }}
@@ -205,14 +211,14 @@ export default function DashboardRouter({
         {/* Shop: Active Jobs Screen */}
         {viewMode === "dashboard" && currentTab === "jobs" && userType === "shop" && (
           <motion.div key="jobs" {...screenTransition}>
-            <ShopActiveJobsScreen primaryColor={primaryColor} reports={SEED_DAMAGE_REPORTS} />
+            <ShopActiveJobsScreen primaryColor={primaryColor} reports={shopInsurerReports} />
           </motion.div>
         )}
 
         {/* Insurer: Claims Screen */}
         {viewMode === "dashboard" && currentTab === "claims" && userType === "insurer" && (
           <motion.div key="claims" {...screenTransition}>
-            <InsurerClaimsScreen primaryColor={primaryColor} reports={SEED_DAMAGE_REPORTS} />
+            <InsurerClaimsScreen primaryColor={primaryColor} reports={shopInsurerReports} />
           </motion.div>
         )}
 
