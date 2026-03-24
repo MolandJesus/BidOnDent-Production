@@ -67,6 +67,7 @@ export default function DashboardRouter({
   onEnableDemoMode,
   onExitDemoMode,
   onAcceptBid,
+  onRejectBid,
   onProfileUpdate,
   onDeleteAccount,
   onSaveVehicles,
@@ -179,6 +180,7 @@ export default function DashboardRouter({
               bids={liveBids.length > 0 ? liveBids : bids}
               reports={reports}
               onAcceptBid={onAcceptBid}
+              onRejectBid={onRejectBid}
               onBack={() => {
                 onTabChange("home");
                 onViewModeChange("dashboard");

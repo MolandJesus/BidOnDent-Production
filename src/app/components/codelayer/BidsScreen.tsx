@@ -16,6 +16,7 @@ type BidsScreenProps = {
     price: number;
     timeframe: string;
   }) => void;
+  onRejectBid?: (details: { bidId: string; shopName: string }) => void;
 };
 
 type FilterType = "all" | "lowest" | "fastest" | "rating";
@@ -27,6 +28,7 @@ export default function BidsScreen({
   bids: incomingBids = [],
   reports = [],
   onAcceptBid,
+  onRejectBid,
 }: BidsScreenProps) {
   const [activeBid, setActiveBid] = useState<string | number | null>(null);
   const [acceptedBidId, setAcceptedBidId] = useState<string | number | null>(null);
@@ -282,6 +284,12 @@ export default function BidsScreen({
                   shopName: bid.shopName,
                   price: bid.price,
                   timeframe: bid.timeframe,
+                });
+              }}
+              onReject={() => {
+                onRejectBid?.({
+                  bidId: String(bid.id),
+                  shopName: bid.shopName,
                 });
               }}
               onRate={() => {

@@ -155,6 +155,14 @@ export function buildDashboardRouterProps({
         console.error("Failed to accept bid:", err);
       }
     },
+    onRejectBid: async (details: { bidId: string; shopName: string }) => {
+      try {
+        const { updateBidStatus } = await import("../services/supabase/bids");
+        await updateBidStatus(details.bidId, "rejected");
+      } catch (err) {
+        console.error("Failed to reject bid:", err);
+      }
+    },
     onPasswordChange: () => {
       console.log("Password change not implemented");
     },

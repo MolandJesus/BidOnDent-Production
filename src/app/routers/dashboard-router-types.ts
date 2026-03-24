@@ -58,6 +58,7 @@ export interface DashboardRouterProps {
     price: number;
     timeframe: string;
   }) => void;
+  onRejectBid?: (details: { bidId: string; shopName: string }) => void;
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: DashboardUserType) => void;
   onExitDemoMode?: () => void;

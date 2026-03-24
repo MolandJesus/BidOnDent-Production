@@ -40,6 +40,7 @@ type BidCardArticleProps = {
   userRating?: { rating: number; review: string };
   onToggle: () => void;
   onAccept: () => void;
+  onReject?: () => void;
   onRate: () => void;
 };
 
@@ -54,6 +55,7 @@ export default function BidCardArticle({
   userRating,
   onToggle,
   onAccept,
+  onReject,
   onRate,
 }: BidCardArticleProps) {
   const savings = bid.price - lowestPrice;
@@ -172,6 +174,14 @@ export default function BidCardArticle({
                 >
                   {isAccepted ? "Accepted" : "Accept Bid"}
                 </button>
+                {!isAccepted && onReject && (
+                  <button
+                    onClick={onReject}
+                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-medium hover:text-red-600 hover:border-red-200 hover:bg-red-50/50 transition-all"
+                  >
+                    Decline
+                  </button>
+                )}
                 <button className="px-3 py-2.5 rounded-xl border border-slate-200/60 font-medium hover:bg-white/40 transition-colors">
                   <Phone className="w-4 h-4" />
                 </button>
