@@ -18,25 +18,72 @@ Issues identified from live 375px mobile screenshots against the design vision a
 - ~~**useCoverageNavigationExperience.ts**: Ultimate fallback label is "Coverage focus"~~ → Now "Service area"
 - All 4 files now consistent: Pass 88 fixed 2, Pass 113 fixed remaining 2.
 
-### P4-UX — Landing Page Scroll Fatigue (Mobile)
-- Full landing page on 375px requires 15+ viewport scrolls: Hero (2) → How It Works (3) → Why Choose Us (3) → Who We Serve (3) → About (2) → Benefits dark section (2) → Coverage (2) → Map Search (1).
-- **How It Works**: `mb-16` (64px) heading margin + `gap-8` (32px) card gaps + large icon+badge+title+description per card = ~3 viewport heights for 3 steps.
-- **Who We Serve**: Each role card (icon + title + 4 list items + padding) ≈ 1 viewport, × 3 cards.
-- **Fix candidates**: Reduce heading margins on mobile (`mb-16` → `mb-8 sm:mb-16`), reduce card gaps (`gap-8` → `gap-5 sm:gap-8`), reduce icon sizes on mobile, or collapse sections into accordions.
+### ~~P4-UX — Landing Page Scroll Fatigue (Mobile)~~ ✅ RESOLVED (Pass 118)
+- ~~Full landing page on 375px requires 15+ viewport scrolls.~~
+- Fixed: `py-20` → `py-12 md:py-20`, `mb-16` → `mb-8 md:mb-16`, `gap-8` → `gap-5 md:gap-8` across HowItWorks, WhoWeServe, Benefits, TrustStats, CTA sections.
 
 ### ~~P4-UX — "For Auto Body Repair Shops" Title Too Long~~ ✅ RESOLVED (Pass 112)
 - ~~**WhoWeServeSection.tsx**: Wraps to 3 lines on 375px mobile.~~ → Shortened to "For Repair Shops".
 
-### P4-UX — Dashboard Quick Actions Visual Hierarchy
-- **HomeScreenSections.tsx**: First quick action ("New Repair Request") gets `bd-glass-control--primary` = large blue gradient card that dominates ~40% of the sidebar viewport. Other actions are `bd-glass-control--secondary` / `--utility` = visually minimal.
-- Creates aggressive hierarchy where primary action "shouts" and secondary actions get lost.
-- On mobile (single-column stack), this imbalance is amplified — one giant card followed by several quiet rows.
-- **Fix candidate**: Reduce first-card visual weight or give secondary actions more presence on mobile.
+### ~~P4-UX — Dashboard Quick Actions Visual Hierarchy~~ ✅ RESOLVED (Pass 117)
+- ~~**HomeScreenSections.tsx**: First quick action gets `bd-glass-control--primary` = dominant blue gradient card.~~
+- Fixed: All 4 action cards now use `bd-glass-card` at equal weight. Icon tone colors (blue/emerald/amber/violet) provide subtle differentiation.
 
-### P7-TECHDEBT — Landing Page Section Spacing Accumulation
-- Multiple sections use `py-20` (80px vertical padding), `mb-16` heading margins, and `gap-8` card gaps. On desktop these breathe well; on mobile they accumulate into significant scroll length.
-- Not a single-section bug — it's an accumulation pattern.
-- **Fix**: Mobile-specific spacing reduction across section wrapper padding and heading margins.
+### ~~P7-TECHDEBT — Landing Page Section Spacing Accumulation~~ ✅ RESOLVED (Pass 118)
+- ~~Multiple sections use `py-20`, `mb-16`, `gap-8` — accumulate into excessive scroll on mobile.~~
+- Fixed: Responsive spacing applied across 5 sections.
+
+---
+
+### Pass 119 — P0-TRUST: Remove Fabricated Dashboard Stats (2026-03-23)
+
+1. **Pass chosen and why**: `buildStats()` in `homeScreenData.ts` contained fabricated metrics visible on every user's home screen — `"Potential Revenue": $(bidsCount * 400)` for shops, `"Money Saved": $(totalBids * 150)` for customers, `"Partner Shops": "24"` and `"Avg Cycle Time": "2.8d"` for insurers (all hardcoded). These are false data points shown on the dashboard.
+2. **What changed**:
+   - Shop: `"Open Requests"` → real `activeCount` or `"—"`. Removed fake `Math.max(3, ...)` and `Math.max(completedCount, 6)` floor values. Replaced `"Potential Revenue"` formula with `"Bids Submitted"` (real count).
+   - Insurer: `"Partner Shops": "24"` → `"—"`. `"Avg Cycle Time": "2.8d"` → `"—"`. `activeCount || 18` fallback removed.
+   - Customer: `"Total Bids Received"` → `"Bids Received"` (cleaner label). `"Money Saved"` formula removed → `"Shops Bookmarked"` with `"—"` until real data arrives.
+   - All stats show `"—"` when count is 0 instead of fabricated floor values.
+3. **Files touched**: `homeScreenData.ts`
+4. **Validation**: Build: 1.79s, 0 errors. Bundle: 971.45 KB / 248.83 KB gzip. Diagnostics: 0. Spellcheck: 0.
+5. **Problem taxonomy**: P0:4 fixed (2 fabricated formulas + 2 hardcoded insurer stats) P1:0 P2:0 P3:0 P4:0 P5:0 P6:0 P7:0
+6. **Architecture decisions**: Stats now show honest `"—"` for unavailable data. No fabricated floors. Forward-compatible when Supabase queries return real counts.
+7. **Doc updates**: BIDONDENT_BUILD_PROGRESS_DASHBOARD.md (this entry).
+8. **What this unlocks**: Dashboard is now fully honest. No screen shows fabricated numbers.
+9. **Best next pass**: P4-UX warm-up / atmosphere pass — Hero section and dashboard map widget visual depth (move toward Apple Maps feel). Or: About/Opportunity section cleanup (still has `py-20`). Or: insurer new claim persistence (large arch pass).
+
+---
+
+### Pass 118 — P7/P4-UX: Mobile Landing Scroll Fatigue (2026-03-23)
+
+1. **Pass chosen and why**: Landing page accumulated 15+ viewport scrolls on 375px from `py-20` + `mb-16` + `gap-8` repeating across 5 consecutive sections. Highest-surface-area mobile UX fix available.
+2. **What changed**:
+   - `HowItWorksSection.tsx`: `pt-20` → `pt-12 md:pt-20`. `mb-16` → `mb-8 md:mb-16`. `gap-8` → `gap-5 md:gap-8`.
+   - `WhoWeServeSection.tsx`: `py-20` → `py-12 md:py-20`. `mb-16` → `mb-8 md:mb-16`. `gap-8` → `gap-5 md:gap-8`.
+   - `BenefitsSection.tsx`: `pb-20` → `pb-12 md:pb-20`. `mb-16` → `mb-8 md:mb-16`. Trust badges: `gap-8 mt-16` → `gap-5 md:gap-8 mt-10 md:mt-16`.
+   - `TrustStatsSection.tsx`: `py-20` → `py-12 md:py-20`.
+   - `CTASection.tsx`: `py-20 md:py-24` → `py-12 md:py-20 lg:py-24`.
+3. **Files touched**: 5 landing section files
+4. **Validation**: Build: 1.76s, 0 errors. Bundle: 971.46 KB. Diagnostics: 0. Spellcheck: 0.
+5. **Problem taxonomy**: P0:0 P1:0 P2:0 P3:0 P4:1 fixed (scroll fatigue) P5:0 P6:0 P7:1 fixed (spacing accumulation)
+6. **Architecture decisions**: Desktop untouched. Mobile gets ~40% vertical reduction per section. Responsive modifiers only.
+7. **Doc updates**: BIDONDENT_BUILD_PROGRESS_DASHBOARD.md updated.
+8. **What this unlocks**: Landing scroll depth ~9–10 viewports on 375px vs ~15 before.
+9. **Best next pass**: Pass 119 — fabricated dashboard stats.
+
+---
+
+### Pass 117 — P4-UX: Dashboard Quick Actions Hierarchy Fix (2026-03-23)
+
+1. **Pass chosen and why**: First Quick Action card used `bd-glass-control--primary` (large blue gradient) while cards 2-3 used `bd-glass-control--secondary` (quiet pill) and card 4+ used `bd-glass-control--utility` (transparent). Created extreme visual dominance of one action over others — especially bad on mobile single-column stack.
+2. **What changed**:
+   - `HomeScreenSections.tsx`: Removed `buttonClass` assignment logic entirely. All 4 action buttons now use `bd-glass-card hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]` — equal glass card styling. Icon tones (blue/emerald/amber/violet) still vary per index for visual identity.
+3. **Files touched**: `HomeScreenSections.tsx`
+4. **Validation**: Build: 1.83s, 0 errors. Bundle: 971.36 KB. Diagnostics: 0. Spellcheck: 0. Mobile: 4 equal cards in 2×2 grid (375px) or 1×4 column — all same weight.
+5. **Problem taxonomy**: P0:0 P1:0 P2:0 P3:0 P4:1 fixed P5:0 P6:0 P7:0
+6. **Architecture decisions**: No CSS changes — reused `bd-glass-card` which already has hover/active states. Clean, minimal.
+7. **Doc updates**: BIDONDENT_BUILD_PROGRESS_DASHBOARD.md updated.
+8. **What this unlocks**: Dashboard sidebar now feels balanced and scannable. All 4 roles' actions have equal visual presence.
+9. **Best next pass**: Pass 118 — mobile landing scroll fatigue.
 
 ---
 
@@ -1071,19 +1118,22 @@ Pass 107: ~976 KB  ████████████████████�
 Pass 108: ~976 KB  ███████████████████████████████████████████████░
 Pass 113: ~978 KB  ████████████████████████████████████████████████
 Pass 115: ~978 KB  ████████████████████████████████████████████████
-Pass 116: ~971 KB  ███████████████████████████████████████████████░  ← current
-                   (971.42 KB / gzip: 248.88 KB)
+Pass 116: ~971 KB  ███████████████████████████████████████████████░
+Pass 117: ~971 KB  ███████████████████████████████████████████████░
+Pass 118: ~971 KB  ███████████████████████████████████████████████░
+Pass 119: ~971 KB  ███████████████████████████████████████████████░  ← current
+                   (971.45 KB / gzip: 248.83 KB)
 ```
 
 ### Key Metrics
 
 | Metric                 | Value                                                                     |
 | ---------------------- | ------------------------------------------------------------------------- |
-| Total passes executed  | 116                                                                       |
+| Total passes executed  | 119                                                                       |
 | Files in src/          | ~162 (+2 new services: errorReporting, sentryInit)                        |
 | Largest file           | 453 lines (integration.test.ts)                                           |
 | Files over 400 lines   | 12 (all under 500 hard limit)                                             |
-| Production bundle (JS) | 971.42 KB (gzip: 248.88 KB)                                               |
+| Production bundle (JS) | 971.45 KB (gzip: 248.83 KB)                                               |
 | Build time             | 1.6–1.82s consistently                                                    |
 | Spellcheck issues      | 0 across 136 consumer components                                          |
 | VS Code diagnostics    | 3 CSS contrast warnings (glass edges, not blocking)                       |
