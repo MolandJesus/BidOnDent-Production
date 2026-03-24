@@ -98,11 +98,17 @@ export default function BidCardArticle({
               )}
             </div>
             <div className="flex items-center text-sm text-slate-600 gap-2">
-              <span className="inline-flex items-center gap-1">
-                <Star className="w-4 h-4 text-amber-400" fill="#FBBF24" />
-                {bid.rating}
-              </span>
-              <span>({bid.reviews} reviews)</span>
+              {bid.rating > 0 ? (
+                <>
+                  <span className="inline-flex items-center gap-1">
+                    <Star className="w-4 h-4 text-amber-400" fill="#FBBF24" />
+                    {bid.rating}
+                  </span>
+                  <span>({bid.reviews} reviews)</span>
+                </>
+              ) : (
+                <span className="text-slate-400">New shop</span>
+              )}
               {userRating && (
                 <span className="text-emerald-700 font-medium">
                   • You rated {userRating.rating}/5

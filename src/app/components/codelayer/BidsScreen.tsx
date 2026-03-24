@@ -37,7 +37,7 @@ export default function BidsScreen({
       id: bid.id || `bid-${index}`,
       reportId: bid.reportId,
       shopName: bid.shopName || "Auto Shop",
-      rating: Number(bid.shopRating || 4.6),
+      rating: Number(bid.shopRating || 0),
       reviews: Number(bid.shopReviews || 0),
       price: Number(bid.amount || 0),
       estimatedDays: Number(bid.estimatedDays || 0),

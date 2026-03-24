@@ -1,0 +1,25 @@
+feat: Platform Bug Sweep - Account, Reports, Mobile UX + Full Doc Update
+
+Pass 84 - Critical Bug Sweep + Migration Fix (2026-03-23)
+
+Fixes:
+- P1-RUNTIME: Account page crash - onDeleteAccount prop missing from
+  DashboardRouter and DashboardTabScreens. Now properly plumbed.
+- P2-DATA: Damage reports lost on sign-out/in - edge function used
+  clerk_user_id column that never existed in migration schema. Added
+  migration 010_add_clerk_user_id_to_damage_reports.sql to align.
+- P4-UX: Mobile bottom sheet swipe broken - MobileMapBottomSheet
+  missing pointer-events-auto, touch events fell through to map.
+
+Documentation:
+- Build Progress Dashboard updated (Pass 84)
+- Map Tracker updated (Pass 84 delivery slice)
+- Product Brain risk section updated (schema drift addressed)
+- Code Organization Audit updated (router fixes, extraction status)
+
+Build: 1.71s, 2457 modules, 0 errors.
+Includes all work from Passes 56-84 (map navigation productization,
+architecture extractions, design system, mobile UX, navigation
+intelligence, session cloud sync, and more).
+
+By MolandJesus - God Bless in Jesus Name, my Lord and Savior.

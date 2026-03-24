@@ -69,7 +69,7 @@ export default function ReportDetailScreen({
   const interestedShops = (report.bids || []).map((bid) => ({
     id: bid.id,
     name: bid.shopName || "Auto Shop",
-    rating: Number(bid.shopRating || 4.6),
+    rating: Number(bid.shopRating || 0),
     reviews: Number(bid.shopReviews || 0),
     distance: bid.shopDistance || "Within service area",
     bidAmount: Number(bid.amount || 0),
