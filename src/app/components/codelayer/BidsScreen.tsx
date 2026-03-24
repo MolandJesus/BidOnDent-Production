@@ -92,7 +92,7 @@ export default function BidsScreen({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          className="relative overflow-hidden bd-glass-card p-5"
         >
           <div className="flex items-center gap-3">
             {onBack && (
@@ -117,7 +117,7 @@ export default function BidsScreen({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, delay: 0.05 }}
-          className="rounded-2xl border border-dashed border-slate-300 bg-white p-5 sm:p-6 text-center shadow-sm"
+          className="rounded-2xl border border-dashed border-slate-300/60 bg-slate-50/50 p-5 sm:p-6 text-center"
         >
           <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
             <Clock className="h-6 w-6 text-slate-500" />
@@ -181,7 +181,7 @@ export default function BidsScreen({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 md:p-5 shadow-sm"
+        className="relative overflow-hidden bd-glass-card p-4 md:p-5"
       >
         <div className="pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full bg-cyan-200/35 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-blue-200/35 blur-2xl" />
@@ -208,17 +208,17 @@ export default function BidsScreen({
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div className="rounded-xl border border-slate-200 bg-slate-50/75 px-3 py-2.5">
+          <div className="rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Lowest Bid</p>
-            <p className="mt-1 text-xl font-semibold text-slate-900">${lowestPrice}</p>
+            <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">${lowestPrice}</p>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50/75 px-3 py-2.5">
+          <div className="rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Average Quote</p>
-            <p className="mt-1 text-xl font-semibold text-slate-900">${averagePrice}</p>
+            <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">${averagePrice}</p>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50/75 px-3 py-2.5">
+          <div className="rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/80 px-3 py-2.5">
             <p className="text-xs uppercase tracking-wide text-slate-500">Fastest Timeline</p>
-            <p className="mt-1 text-xl font-semibold text-slate-900">
+            <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">
               {fastestBidDays}-{fastestBidDays + 1} days
             </p>
           </div>
@@ -229,7 +229,7 @@ export default function BidsScreen({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, delay: 0.05 }}
-        className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm"
+        className="bd-glass-card p-3"
       >
         <div className="flex flex-wrap gap-2">
           {filters.map((item) => (

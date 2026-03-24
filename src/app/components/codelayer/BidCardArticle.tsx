@@ -65,8 +65,8 @@ export default function BidCardArticle({
       variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
       whileHover={{ y: -3, scale: 1.003 }}
       transition={{ duration: 0.2 }}
-      className={`group relative rounded-2xl border bg-white shadow-sm overflow-hidden transition-all ${
-        isActive ? "border-blue-300 shadow-md" : "border-slate-200 hover:border-slate-300"
+      className={`group relative bd-glass-card overflow-hidden transition-all ${
+        isActive ? "border-blue-300 shadow-md" : "hover:border-slate-300"
       }`}
     >
       {isRecommended && (
@@ -120,7 +120,9 @@ export default function BidCardArticle({
           </div>
 
           <div className="text-right">
-            <div className="font-bold text-3xl text-slate-900 leading-none">${bid.price}</div>
+            <div className="font-bold text-3xl text-slate-900 leading-none tabular-nums">
+              ${bid.price}
+            </div>
             <div className="text-sm text-slate-600 mt-1">{bid.timeframe}</div>
             {savings === 0 ? (
               <div className="text-xs text-emerald-700 mt-1 font-medium">Lowest bid</div>
