@@ -20,7 +20,10 @@ export default function MobileBottomNav({
   onTabClick,
 }: MobileBottomNavProps) {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bd-glass-panel !rounded-none border-t z-50">
+    <nav
+      className="md:hidden fixed bottom-0 left-0 right-0 bd-glass-panel !rounded-none border-t z-50"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+    >
       <div className="flex items-center justify-around py-2 px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -30,8 +33,8 @@ export default function MobileBottomNav({
             <button
               key={tab.id}
               onClick={() => onTabClick(tab.id)}
-              className={`flex flex-col items-center space-y-1 px-3 py-2 min-w-[4rem] rounded-xl transition-all ${
-                isActive ? "text-white shadow-sm" : "text-slate-500"
+              className={`flex flex-col items-center space-y-1 px-3 py-2 min-w-[4rem] rounded-xl transition-all duration-200 ${
+                isActive ? "text-white shadow-md" : "text-slate-400 hover:text-slate-600"
               }`}
               style={
                 isActive

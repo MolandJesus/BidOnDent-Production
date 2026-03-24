@@ -32,8 +32,8 @@ export default function LandingPageHeader({
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-[rgba(240,248,255,0.92)] backdrop-blur-2xl border-b border-blue-200/40 shadow-[0_4px_24px_rgba(0,61,130,0.06)]"
-          : "bg-white/30 backdrop-blur-md border-b border-transparent"
+          ? "bg-[rgba(240,248,255,0.94)] backdrop-blur-2xl border-b border-blue-200/40 shadow-[0_4px_24px_rgba(0,61,130,0.08)]"
+          : "bg-white/20 backdrop-blur-md border-b border-transparent"
       }`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between max-w-7xl">
