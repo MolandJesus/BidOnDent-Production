@@ -51,14 +51,14 @@ export default function ReportsListScreen({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bd-glass-panel border-b border-white/30 sticky top-0 z-10">
         <div className="px-4 py-4">
           <div className="flex items-center mb-3">
             <button
               onClick={onBack}
-              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/40"
+              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/60"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -94,7 +94,7 @@ export default function ReportsListScreen({
       {/* Reports List */}
       <div className="px-4 py-4 space-y-4">
         {filteredReports.length === 0 ? (
-          <div className="bg-white rounded-lg p-5 sm:p-8 text-center">
+          <div className="bd-glass-card p-5 sm:p-8 text-center">
             <p className="text-gray-500">No reports found</p>
           </div>
         ) : (
@@ -104,7 +104,7 @@ export default function ReportsListScreen({
             return (
               <div
                 key={report.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+                className="bd-glass-card overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="flex gap-3 p-4">
                   {/* Small Photo Thumbnail - Left Side */}

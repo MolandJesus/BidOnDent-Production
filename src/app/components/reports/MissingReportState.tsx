@@ -24,7 +24,7 @@ export default function MissingReportState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+        className="bd-glass-card overflow-hidden rounded-3xl"
       >
         <div className="border-b border-slate-100 px-5 py-4">
           <button

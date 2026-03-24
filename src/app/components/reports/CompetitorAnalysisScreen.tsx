@@ -192,7 +192,7 @@ export default function CompetitorAnalysisScreen({
         </div>
       </div>
 
-      <div className="border-b border-slate-200 bg-white px-4 py-4">
+      <div className="border-b border-white/30 bd-glass-panel px-4 py-4">
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div className="text-center">
             <p className="text-2xl font-bold" style={{ color: primaryColor }}>
@@ -241,7 +241,7 @@ export default function CompetitorAnalysisScreen({
         </div>
       </div>
 
-      <div className="border-b border-slate-200 bg-white px-4 py-3">
+      <div className="border-b border-white/30 bd-glass-panel px-4 py-3">
         <div className="flex gap-2 overflow-x-auto">
           <button
             onClick={() => setSortBy("rating")}
@@ -277,7 +277,7 @@ export default function CompetitorAnalysisScreen({
         {marketListings.map((shop, index) => (
           <article
             key={shop.id}
-            className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+            className="bd-glass-card overflow-hidden rounded-[26px] transition-shadow hover:shadow-md"
           >
             <div className="border-b border-slate-100 p-4">
               <div className="flex items-start justify-between gap-3">

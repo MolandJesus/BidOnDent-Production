@@ -81,14 +81,14 @@ export default function ReportDetailScreen({
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bd-glass-panel border-b border-white/30 sticky top-0 z-10">
         <div className="px-4 py-4">
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/40"
+              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/60"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -115,7 +115,7 @@ export default function ReportDetailScreen({
 
       <div className="px-4 py-4 space-y-4">
         {/* Photo Gallery */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bd-glass-card overflow-hidden">
           <div className="p-4">
             <h2 className="font-bold text-lg mb-3">Damage Photos</h2>
             <div className="grid grid-cols-3 gap-2">
@@ -137,7 +137,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Vehicle Information */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="bd-glass-card p-4">
           <h2 className="font-bold text-lg mb-3">Vehicle Information</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
@@ -166,7 +166,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Damage Description */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="bd-glass-card p-4">
           <h2 className="font-bold text-lg mb-3">Damage Description</h2>
           <p className="text-gray-700">{description}</p>
           {report.incident && (
@@ -178,7 +178,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Submission Details */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="bd-glass-card p-4">
           <h2 className="font-bold text-lg mb-3">Submission Details</h2>
           <div className="flex items-center text-sm text-gray-600">
             <Clock className="w-4 h-4 mr-2" />
@@ -201,14 +201,14 @@ export default function ReportDetailScreen({
         />
 
         {/* Interested Shops */}
-        <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="bd-glass-card p-4">
           <div className="flex justify-between items-center mb-3">
             <h2 className="font-bold text-lg">Interested Shops</h2>
             <span className="text-sm text-gray-600">{interestedShops.length} bids received</span>
           </div>
 
           {interestedShops.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-gray-300 p-4 text-sm text-gray-600">
+            <div className="rounded-xl border border-dashed border-slate-300/60 p-4 text-sm text-gray-600">
               No bids have arrived yet. Shops will appear here as soon as they respond.
             </div>
           ) : (
@@ -216,7 +216,7 @@ export default function ReportDetailScreen({
               {interestedShops.map((shop) => (
                 <div
                   key={shop.id}
-                  className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors"
+                  className="border border-slate-200/60 rounded-xl p-3 hover:border-blue-300/60 hover:bg-slate-50/50 transition-all duration-200"
                 >
                   <div className="flex items-start gap-3">
                     <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
@@ -249,7 +249,10 @@ export default function ReportDetailScreen({
 
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-lg font-bold" style={{ color: primaryColor }}>
+                          <div
+                            className="text-lg font-bold tabular-nums"
+                            style={{ color: primaryColor }}
+                          >
                             ${shop.bidAmount?.toLocaleString()}
                           </div>
                           <div className="text-xs text-gray-500">{shop.estimatedTime}</div>
