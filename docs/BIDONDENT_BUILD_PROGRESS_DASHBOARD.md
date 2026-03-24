@@ -2,26 +2,32 @@
 
 ## ⚡ AT-A-GLANCE STATUS (updated 2026-03-24)
 
-| Item             | Value                                                         |
-| ---------------- | ------------------------------------------------------------- |
-| **Last pass**    | Pass 132 — Landing section flow, dark transitions, hover auth |
-| **Current pass** | 132 ✅ complete                                               |
-| **Build**        | ✓ 0 errors · 976.79 KB · 1.88s                                |
-| **Spellcheck**   | 0 issues                                                      |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                |
-| **Last pushed**  | 2026-03-24                                                    |
+| Item             | Value                                                       |
+| ---------------- | ----------------------------------------------------------- |
+| **Last pass**    | Pass 138 — Glass sweep: shop directory, onboarding, vehicle |
+| **Current pass** | 138 ✅ complete                                             |
+| **Build**        | ✓ 0 errors · 976.44 KB · 1.88s                              |
+| **Spellcheck**   | 0 issues                                                    |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`              |
+| **Last pushed**  | 2026-03-24                                                  |
 
-### Recent passes (126–132)
+### Recent passes (126–138)
 
-| Pass | Title                                   | Category   | Status |
-| ---- | --------------------------------------- | ---------- | ------ |
-| 126  | Load live bids from Supabase (Customer) | P2-DATA    | ✅     |
-| 127  | Fix bids navigation flow                | P1-RUNTIME | ✅     |
-| 128  | Wire customer bid reject (Decline)      | P2-DATA    | ✅     |
-| 129  | Navigation context-loss traps           | P1-RUNTIME | ✅     |
-| 130  | Visual Critical Sweep (P0 CTA fix)      | P4-UX      | ✅     |
-| 131  | Dashboard Visual Cohesion               | P4-UX      | ✅     |
-| 132  | Landing section flow + dark transitions | P4-UX      | ✅     |
+| Pass | Title                                        | Category   | Status |
+| ---- | -------------------------------------------- | ---------- | ------ |
+| 126  | Load live bids from Supabase (Customer)      | P2-DATA    | ✅     |
+| 127  | Fix bids navigation flow                     | P1-RUNTIME | ✅     |
+| 128  | Wire customer bid reject (Decline)           | P2-DATA    | ✅     |
+| 129  | Navigation context-loss traps                | P1-RUNTIME | ✅     |
+| 130  | Visual Critical Sweep (P0 CTA fix)           | P4-UX      | ✅     |
+| 131  | Dashboard Visual Cohesion                    | P4-UX      | ✅     |
+| 132  | Landing section flow + dark transitions      | P4-UX      | ✅     |
+| 133  | Glass depth refinement + dashboard polish    | P4-UX      | ✅     |
+| 134  | Header transparency + mobile nav safe area   | P4-UX      | ✅     |
+| 135  | BidsScreen glass upgrade                     | P4-UX      | ✅     |
+| 136  | Reports screens glass sweep                  | P4-UX      | ✅     |
+| 137  | Glass sweep: timeline, about, insurer, legal | P4-UX      | ✅     |
+| 138  | Glass sweep: shop, onboarding, vehicle, demo | P4-UX      | ✅     |
 
 ### Bid lifecycle persistence — current state
 
@@ -34,14 +40,66 @@
 
 ### Best next pass options (ranked)
 
-1. **P4-UX** — Pass 133: Glass card depth refinement + premium hover polish
-2. **P4-UX** — Dashboard welcome header + map widget visual polish
-3. **P3-ARCH** — Insurer new claim persistence to Supabase (large arch pass)
-4. **P4-UX** — BidsScreen empty state design (when no bids exist yet)
+1. **P4-UX** — Pass 139: Remaining bg-white sweep (admin panels, photo-guide, footer badge)
+2. **P3-ARCH** — Insurer new claim persistence to Supabase (large arch pass)
+3. **P4-UX** — BidsScreen empty state design (premium empty state)
+4. **P4-UX** — Mobile viewport audit (375px breakpoint validation)
 
 ---
 
-### Pass 132 — Landing section flow, dark transitions, hover authority (2026-03-24)
+### Pass 138 — Glass sweep: shop directory, onboarding, vehicle, demo (2026-03-24)
+
+- **What changed**: ShopDirectoryContextCards (3 cards), ShopDirectoryRoutePanel, ShopDirectoryListBody, ShopOnboardingStep1-4, VehicleProfileScreen (form + cards), SmokeTestScreen — all upgraded from `bg-white border-slate-200 shadow-sm` to `bd-glass-card`.
+- **Files touched**: `ShopDirectoryContextCards.tsx`, `ShopDirectoryRoutePanel.tsx`, `ShopDirectoryListBody.tsx`, `ShopOnboardingStep1.tsx`, `ShopOnboardingStep2.tsx`, `ShopOnboardingStep3.tsx`, `ShopOnboardingStep4.tsx`, `VehicleProfileScreen.tsx`, `SmokeTestScreen.tsx`
+- **Build**: ✓ 0 errors, 976.44 KB, 1.88s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — glass system now covers shop workflow screens.
+
+---
+
+### Pass 137 — Glass sweep: timeline, about, insurer, business, demo, legal (2026-03-24)
+
+- **What changed**: RepairLifecycleTimeline upgraded to `bd-glass-card`. AboutPage: 3 pillar cards + hero card + contact card all to `bd-glass-card`, page bg to gradient. InsurerPartnershipPage: hero card + 3 focus area cards + partnership card to `bd-glass-card`, page bg to gradient. BusinessInquirySection: form container + shop/insurer gateway cards to `bd-glass-card`. DemoAccountSwitcher: header card + account cards to `bd-glass-card`. PrivacyPolicyPage: container to `bd-glass-card`, bg to gradient.
+- **Files touched**: `RepairLifecycleTimeline.tsx`, `AboutPage.tsx`, `InsurerPartnershipPage.tsx`, `BusinessInquirySection.tsx`, `DemoAccountSwitcher.tsx`, `PrivacyPolicyPage.tsx`
+- **Build**: ✓ 0 errors, 976.84 KB, 1.93s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — glass system extended to legal, about, insurer, and workflow timeline screens.
+
+---
+
+### Pass 136 — Reports screens glass sweep (2026-03-24)
+
+- **What changed**: ReportDetailScreen: page bg from `bg-gray-50` to gradient, sticky header to `bd-glass-panel`, all 5 content cards to `bd-glass-card`, shop listing cards got refined borders/hover/rounded-xl, empty state border softened, price text got `tabular-nums`. ReportsListScreen: same header/bg treatment, empty state + report cards to `bd-glass-card`. CompetitorAnalysisScreen: stats panel + filter bar to `bd-glass-panel`, competitor cards to `bd-glass-card`. MissingReportState: card to `bd-glass-card`.
+- **Files touched**: `ReportDetailScreen.tsx`, `ReportsListScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `MissingReportState.tsx`
+- **Build**: ✓ 0 errors, 977.09 KB, 1.93s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — all report screens now use glass design system.
+
+---
+
+### Pass 135 — BidsScreen glass upgrade (2026-03-24)
+
+- **What changed**: BidsScreen: header card, filter bar, summary stat cards, all container elements upgraded from `bg-white border-slate-200 shadow-sm` to `bd-glass-card`. Summary stat cards got gradient backgrounds (`from-white to-slate-50/80`), border `border-slate-200/60`, values `font-bold tabular-nums`. BidCardArticle: card to `bd-glass-card`, price `tabular-nums`.
+- **Files touched**: `BidsScreen.tsx`, `BidCardArticle.tsx`
+- **Build**: ✓ 0 errors, 977.09 KB, 1.93s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — bids comparison screen now matches glass design language.
+
+---
+
+### Pass 134 — Header transparency + mobile nav safe area (2026-03-24)
+
+- **What changed**: LandingPageHeader: non-scrolled bg `bg-white/30` to `bg-white/20` (more transparent glass), scrolled shadow `0.06` to `0.08`, scrolled bg `0.92` to `0.94`. MobileBottomNav: added `paddingBottom: env(safe-area-inset-bottom)` for iPhone notch, active tab `shadow-sm` to `shadow-md`, inactive `text-slate-500` to `text-slate-400 hover:text-slate-600`, added `duration-200` transition.
+- **Files touched**: `LandingPageHeader.tsx`, `MobileBottomNav.tsx`
+- **Build**: ✓ 0 errors, 977.12 KB, 1.88s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — header glass refinement + mobile-first safe area support.
+
+---
+
+### Pass 133 — Glass depth refinement + dashboard polish (2026-03-24)
+
+- **What changed**: `bd-glass-card`: bg opacity 0.32 to 0.36 / 0.14 to 0.16, inset highlight 0.48 to 0.52, hover shadow 16 to 18px / 32 to 36px, hover border 0.7 to 0.75. `bd-glass-badge`: border 0.6 to 0.65, bg 0.7 to 0.72, added `backdrop-blur: 8px`. Floating shadow increased. FIXED: "View All" button in HomeReportsList was using `bd-glass-control` (dark gradient) with inline `color` override — replaced with plain text link. Activity feed items got hover state. Pro Tip card: `shadow-lg` + atmospheric radial overlay. Dashboard heading `font-bold`, stat values `font-bold tabular-nums`.
+- **Files touched**: `theme.css`, `HomeScreen.tsx`, `HomeScreenSections.tsx`
+- **Build**: ✓ 0 errors, 977.03 KB, 1.88s. Spellcheck: 0 issues.
+- **Taxonomy**: P4 UX — glass system depth + P0 FIX (View All button same class of bug as Pass 130 CTA).
+
+---
 
 - **What changed**: OperatingRegionsSection background changed from flat `bg-slate-900` to gradient `from-[#1e3a5f] via-[#162d4a] to-[#0f1e33]` that flows from TrustStats palette; added atmospheric blur blob; region cards got `backdrop-blur-sm` + hover border/bg transitions. TrustStats got soft top-edge gradient bridge + icon hover `shadow-lg shadow-blue-500/20`. AboutOpportunity cards got `hover:shadow-lg hover:-translate-y-1` + slightly stronger via gradient. BusinessInquirySection background changed from flat `bg-slate-50` to `bg-gradient-to-b from-[#f5f8fc] to-[#edf3fa]`, badge unified to `bd-glass-badge`.
 - **Files touched**: `OperatingRegionsSection.tsx`, `TrustStatsSection.tsx`, `AboutOpportunitySection.tsx`, `BusinessInquirySection.tsx`
