@@ -4,16 +4,15 @@
 
 Issues identified from live 375px mobile screenshots against the design vision and product honesty rules. Ordered by impact.
 
-### P0-TRUST — False Trust Claims on Landing Page
-- **WhoWeServeSection.tsx**: "Insurance Approved", "BBB Accredited", "Licensed & Bonded" badges displayed as verified facts. None of these are real certifications. Violates the PLANNED-VS-SHIPPED HONESTY RULE. Every visitor sees these.
-- **BenefitsSection.tsx**: "24/7 Support Available" and "100% Satisfaction Guarantee" displayed as real commitments. No support infrastructure or guarantee mechanism exists.
-- **Risk**: If a user, partner, or regulator discovers these claims are fabricated, trust is irreparably damaged. "$0 Free to Use" is the only accurate badge.
-- **Fix**: Remove false claims. Replace with honest, verifiable statements ("Free for customers", "NY service area", "Structured bidding process").
+### ~~P0-TRUST — False Trust Claims on Landing Page~~ ✅ RESOLVED (Pass 112)
+- ~~**WhoWeServeSection.tsx**: "Insurance Approved", "BBB Accredited", "Licensed & Bonded"~~ → Replaced with "$0 for Customers", "NY Service Area", "Transparent Bidding"
+- ~~**BenefitsSection.tsx**: "24/7 Support Available" and "100% Satisfaction Guarantee"~~ → Replaced with "3+ Compare Quotes" and "$0 No Hidden Fees". "$0 Free to Use" kept (accurate). "Certified Network/Professionals" → "Repair Network" / "Experienced Professionals".
+- **Status**: All false claims removed. All replacements are honest and verifiable.
 
-### P2-DATA — "Coverage focus" Fallback Not Updated (Pass 88 Incomplete)
-- **MapSearchTargetMarkers.tsx**: Falls back to "Coverage focus" when county is missing. Should be "Service area".
-- **useCoverageNavigationExperience.ts**: Ultimate fallback label is "Coverage focus". Should be "Service area".
-- Pass 88 fixed `PlannerAddressSearch.tsx` and `MapSurfaceHeaderBadges.tsx` but missed these two files.
+### ~~P2-DATA — "Coverage focus" Fallback Not Updated (Pass 88 Incomplete)~~ ✅ RESOLVED (Pass 113)
+- ~~**MapSearchTargetMarkers.tsx**: Falls back to "Coverage focus"~~ → Now "Service area"
+- ~~**useCoverageNavigationExperience.ts**: Ultimate fallback label is "Coverage focus"~~ → Now "Service area"
+- All 4 files now consistent: Pass 88 fixed 2, Pass 113 fixed remaining 2.
 
 ### P4-UX — Landing Page Scroll Fatigue (Mobile)
 - Full landing page on 375px requires 15+ viewport scrolls: Hero (2) → How It Works (3) → Why Choose Us (3) → Who We Serve (3) → About (2) → Benefits dark section (2) → Coverage (2) → Map Search (1).
@@ -21,9 +20,8 @@ Issues identified from live 375px mobile screenshots against the design vision a
 - **Who We Serve**: Each role card (icon + title + 4 list items + padding) ≈ 1 viewport, × 3 cards.
 - **Fix candidates**: Reduce heading margins on mobile (`mb-16` → `mb-8 sm:mb-16`), reduce card gaps (`gap-8` → `gap-5 sm:gap-8`), reduce icon sizes on mobile, or collapse sections into accordions.
 
-### P4-UX — "For Auto Body Repair Shops" Title Too Long
-- **WhoWeServeSection.tsx**: Wraps to 3 lines on 375px mobile. Other cards use concise titles: "For Customers" (2 words), "For Insurers" (2 words).
-- **Fix**: Shorten to "For Repair Shops" or "For Body Shops" (matches product domain language).
+### ~~P4-UX — "For Auto Body Repair Shops" Title Too Long~~ ✅ RESOLVED (Pass 112)
+- ~~**WhoWeServeSection.tsx**: Wraps to 3 lines on 375px mobile.~~ → Shortened to "For Repair Shops".
 
 ### P4-UX — Dashboard Quick Actions Visual Hierarchy
 - **HomeScreenSections.tsx**: First quick action ("New Repair Request") gets `bd-glass-control--primary` = large blue gradient card that dominates ~40% of the sidebar viewport. Other actions are `bd-glass-control--secondary` / `--utility` = visually minimal.
@@ -35,6 +33,38 @@ Issues identified from live 375px mobile screenshots against the design vision a
 - Multiple sections use `py-20` (80px vertical padding), `mb-16` heading margins, and `gap-8` card gaps. On desktop these breathe well; on mobile they accumulate into significant scroll length.
 - Not a single-section bug — it's an accumulation pattern.
 - **Fix**: Mobile-specific spacing reduction across section wrapper padding and heading margins.
+
+---
+
+### Pass 113 — P2-DATA: Coverage Focus Label Cleanup (2026-03-23)
+
+1. **Pass chosen and why**: Pass 88 fixed "Coverage focus" → "Service area" in 2 of 4 files but missed MapSearchTargetMarkers.tsx and useCoverageNavigationExperience.ts. Completes the data consistency sweep.
+2. **What changed**:
+   - `MapSearchTargetMarkers.tsx`: `activeSearchTarget.county || "Coverage focus"` → `|| "Service area"`
+   - `useCoverageNavigationExperience.ts`: ultimate `activeOriginLabel` fallback → `"Service area"`
+3. **Files touched**: `MapSearchTargetMarkers.tsx`, `useCoverageNavigationExperience.ts`
+4. **Validation**: Build: 1.81s, 0 errors. Bundle: 977.66 KB / 250.15 KB gzip. Diagnostics: 0. Spellcheck: 0.
+5. **Problem taxonomy**: P0:0 P1:0 P2:2 fixed P3:0 P4:0 P5:0 P6:0 P7:0
+6. **Architecture decisions**: Label-only fix, no structural change.
+7. **Doc updates**: BIDONDENT_BUILD_PROGRESS_DASHBOARD.md updated. Map Tracker "Coverage focus" incomplete fix marked resolved.
+8. **What this unlocks**: All 4 files now use consistent "Service area" fallback. Pass 88 is fully complete.
+9. **Best next pass**: Accessibility audit expansion (WCAG AA) or real workflow hardening (shop/insurer flows).
+
+---
+
+### Pass 112 — P0-TRUST: Remove False Trust Claims (2026-03-23)
+
+1. **Pass chosen and why**: Five trust claims on the landing page are fabricated ("Insurance Approved", "BBB Accredited", "Licensed & Bonded", "24/7 Support Available", "100% Satisfaction Guarantee"). This is the highest-priority production honesty issue — every visitor sees them.
+2. **What changed**:
+   - `WhoWeServeSection.tsx`: Replaced 3 false badges ("Insurance Approved", "BBB Accredited", "Licensed & Bonded") with honest product statements ("$0 for Customers", "NY Service Area", "Transparent Bidding"). Comment changed from "Trust badges" → "Product truth badges". Title shortened "For Auto Body Repair Shops" → "For Repair Shops" (P4-UX mobile fix bundled).
+   - `BenefitsSection.tsx`: Replaced "Certified Network" badge → "Repair Network", "Certified Professionals" title → "Experienced Professionals". Rewrote description to remove "vetted" claim. Replaced trust badges row: "24/7 Support Available" → "$0 Free to Use", "100% Satisfaction Guarantee" → "3+ Compare Quotes", "$0 Free to Use" → "$0 No Hidden Fees".
+3. **Files touched**: `WhoWeServeSection.tsx`, `BenefitsSection.tsx`
+4. **Validation**: Build: 1.81s, 0 errors. Bundle: 977.66 KB / 250.15 KB gzip. Diagnostics: 0. Spellcheck: 0.
+5. **Problem taxonomy**: P0:5 fixed P1:0 P2:0 P3:0 P4:1 fixed P5:0 P6:0 P7:0
+6. **Architecture decisions**: Text-only replacements. Visual structure (bd-glass-card, rounded-full, green checkmark icons) preserved. No component refactor.
+7. **Doc updates**: BIDONDENT_BUILD_PROGRESS_DASHBOARD.md updated. Product Honesty track added to progress model.
+8. **What this unlocks**: Landing page is now honest and defensible. No false certification, guarantee, or support claims. Foundation for real trust signals (reviews, partnerships) when earned.
+9. **Best next pass**: Pass 113 — Coverage focus label cleanup (P2-DATA).
 
 ---
 
@@ -882,21 +912,22 @@ Issues identified from live 375px mobile screenshots against the design vision a
 
 # BidOnDent Build Progress Dashboard
 
-> **Last updated:** 2026-03-23 · **Pass count:** 111 · **Branch:** feature/platform-bugfix-sweep-by-MolandJesus
+> **Last updated:** 2026-03-23 · **Pass count:** 113 · **Branch:** feature/platform-bugfix-sweep-by-MolandJesus
 
 ---
 
-## Visual Progress Model (Pass 111)
+## Visual Progress Model (Pass 113)
 
 ### Overall Platform Health
 
 ```
-OVERALL PLATFORM        █████████████████████░░░  87%
+OVERALL PLATFORM        █████████████████████░░░  88%
 ├─ Map & Navigation     ██████████████████████░░  94%
 ├─ Design System        ██████████████████████░░  93%
 ├─ Mobile UX            █████████████████████░░░  93%
 ├─ Data & Persistence   █████████████████░░░░░░░  72%
-├─ Production Hardening ██████████████████░░░░░░  76%
+├─ Production Hardening ███████████████████░░░░░  78%
+├─ Product Honesty      ████████████████████░░░░  85%
 └─ Architecture Health  ██████████████████████░░  94%
 ```
 
@@ -918,6 +949,7 @@ Architecture Extraction    █████████████████�
 Bottom Sheet (browse)      ████████████████████ 100%  4-snap, never-trapped, back-to-map
 Active Nav Mobile          ████████████████████ 100%  No overlaps, no traps, destination visible
 Error Boundaries           ████████████████████ 100%  NavigationErrorBoundary, image fallbacks
+Product Honesty Cleanup    ████████████████████ 100%  False claims removed, honest copy deployed
 Circuit Breaker (OSRM)     ████████████████████ 100%  3-fail open, 90s cooldown
 Session Retry Resilience   ████████████████████ 100%  Exponential backoff, online listener
 Dashboard/Router Arch      ████████████████████ 100%  Tab routing, role dispatch, extraction
@@ -956,7 +988,7 @@ Premium TTS Voices         ░░░░░░░░░░░░░░░░░�
 Analytics Dashboard        ░░░░░░░░░░░░░░░░░░░░   0%  No business analytics yet
 ```
 
-### Pass Distribution by Category (111 passes)
+### Pass Distribution by Category (113 passes)
 
 ```
 Infrastructure/Features  ████████████████████████████████████  35+ passes
@@ -967,7 +999,7 @@ P1-RUNTIME fixes         ████████  8 passes           (crashes, 
 P2-DATA persistence      ██████  6 passes             (sync, schema, console guards)
 P0-BUILD type errors     ████  4 passes               (compile failures)
 P6-SPELL wording         ████  4 passes               (terminology, consumer copy)
-Production Hardening     ███   3 passes               (Passes 109–111: error boundary, Sentry, a11y)
+Production Hardening     █████  5 passes               (Passes 109–113: error boundary, Sentry, a11y, trust, data)
 ```
 
 ### Bundle Size Trend
@@ -982,19 +1014,20 @@ Pass 105: ~976 KB  ████████████████████�
 Pass 106: ~976 KB  ███████████████████████████████████████████████░
 Pass 107: ~976 KB  ███████████████████████████████████████████████░
 Pass 108: ~976 KB  ███████████████████████████████████████████████░
-Pass 111: ~978 KB  ████████████████████████████████████████████████  ← current
-                   (977.68 KB / gzip: 250.17 KB — includes @sentry/react)
+Pass 111: ~978 KB  ████████████████████████████████████████████████
+Pass 113: ~978 KB  ████████████████████████████████████████████████  ← current
+                   (977.66 KB / gzip: 250.15 KB)
 ```
 
 ### Key Metrics
 
 | Metric                 | Value                                                                     |
 | ---------------------- | ------------------------------------------------------------------------- |
-| Total passes executed  | 111                                                                       |
+| Total passes executed  | 113                                                                       |
 | Files in src/          | ~162 (+2 new services: errorReporting, sentryInit)                        |
 | Largest file           | 453 lines (integration.test.ts)                                           |
 | Files over 400 lines   | 12 (all under 500 hard limit)                                             |
-| Production bundle (JS) | 977.68 KB (gzip: 250.17 KB — includes @sentry/react)                      |
+| Production bundle (JS) | 977.66 KB (gzip: 250.15 KB)                                               |
 | Build time             | 1.6–1.82s consistently                                                    |
 | Spellcheck issues      | 0 across 136 consumer components                                          |
 | VS Code diagnostics    | 3 CSS contrast warnings (glass edges, not blocking)                       |

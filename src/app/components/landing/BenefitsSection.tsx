@@ -34,11 +34,11 @@ export default function BenefitsSection({
     {
       image: repairToolImage,
       alt: "Professional auto body painter in spray booth ensuring quality repairs",
-      badge: "Certified Network",
+      badge: "Repair Network",
       badgeColor: "bg-white/85 text-[#003d82] backdrop-blur-sm border border-blue-100/40",
-      title: "Certified Professionals",
+      title: "Experienced Professionals",
       description:
-        "Work with vetted, experienced auto repair specialists who deliver quality results.",
+        "Connect with auto repair specialists who compete for your business with transparent quotes.",
     },
     {
       image: dentRepairImage,
@@ -122,21 +122,21 @@ export default function BenefitsSection({
         >
           <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
-              24/7
+              $0
             </span>
-            <span className="text-sm text-gray-600">Support Available</span>
+            <span className="text-sm text-gray-600">Free to Use</span>
           </div>
           <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
-              100%
+              3+
             </span>
-            <span className="text-sm text-gray-600">Satisfaction Guarantee</span>
+            <span className="text-sm text-gray-600">Compare Quotes</span>
           </div>
           <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
             <span className="text-2xl font-bold" style={{ color: primaryColor }}>
               $0
             </span>
-            <span className="text-sm text-gray-600">Free to Use</span>
+            <span className="text-sm text-gray-600">No Hidden Fees</span>
           </div>
         </div>
       </div>

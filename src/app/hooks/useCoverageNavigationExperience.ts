@@ -167,7 +167,7 @@ export function useCoverageNavigationExperience({
     (settings.gpsTrackingEnabled && currentPosition
       ? "Live GPS position"
       : fallbackOriginTarget?.label) ||
-    "Coverage focus";
+    "Service area";
 
   const {
     routePreview,

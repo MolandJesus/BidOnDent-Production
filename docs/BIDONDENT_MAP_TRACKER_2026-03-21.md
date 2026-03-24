@@ -2,11 +2,27 @@
 
 ## Known Incomplete Fixes — Mobile Screenshot Audit (2026-03-23)
 
-### "Coverage focus" Fallback Label (Pass 88 Incomplete)
-- **MapSearchTargetMarkers.tsx**: `activeSearchTarget.county || "Coverage focus"` — fallback still uses developer-facing label.
-- **useCoverageNavigationExperience.ts**: Ultimate fallback label is still `"Coverage focus"`.
-- Pass 88 correctly fixed `PlannerAddressSearch.tsx` ("Active origin" → "Your location") and `MapSurfaceHeaderBadges.tsx` ("Coverage focus" → "Service Area"), but these two files were missed.
-- **Status**: Queued for next map-related pass.
+### ~~"Coverage focus" Fallback Label (Pass 88 Incomplete)~~ ✅ RESOLVED (Pass 113)
+- ~~**MapSearchTargetMarkers.tsx**: `activeSearchTarget.county || "Coverage focus"`~~ → Now `"Service area"`
+- ~~**useCoverageNavigationExperience.ts**: Ultimate fallback label is still `"Coverage focus"`~~ → Now `"Service area"`
+- Pass 88 fixed 2 files; Pass 113 fixed remaining 2. All 4 files now consistent.
+- **Status**: ✅ Fully resolved.
+
+---
+
+### Pass 113 — P2-DATA: Coverage Focus Label Cleanup (2026-03-23)
+
+**Category:** Data consistency — fallback label alignment
+
+**Delivered:**
+
+- `MapSearchTargetMarkers.tsx`: Fallback `"Coverage focus"` → `"Service area"`
+- `useCoverageNavigationExperience.ts`: Ultimate fallback `"Coverage focus"` → `"Service area"`
+- Completes Pass 88's incomplete fix across all 4 files.
+
+**Files touched:** `MapSearchTargetMarkers.tsx`, `useCoverageNavigationExperience.ts`
+
+**Validation:** Build 1.81s, 0 errors. Bundle: 977.66 KB. Diagnostics: 0. Spellcheck: 0.
 
 ---
 

@@ -29,7 +29,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
     {
       icon: Wrench,
       iconBg: secondaryColor,
-      title: "For Auto Body Repair Shops",
+      title: "For Repair Shops",
       borderHover: "hover:border-sky-300",
       gradientFrom: "from-sky-50",
       hoverBg: secondaryColor,
@@ -125,15 +125,15 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           ))}
         </div>
 
-        {/* Trust badges at bottom */}
+        {/* Product truth badges */}
         <div
           className={`flex flex-wrap justify-center gap-6 mt-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.8s" }}
         >
           {[
-            { icon: "✓", text: "Insurance Approved" },
-            { icon: "✓", text: "BBB Accredited" },
-            { icon: "✓", text: "Licensed & Bonded" },
+            { icon: "✓", text: "$0 for Customers" },
+            { icon: "✓", text: "NY Service Area" },
+            { icon: "✓", text: "Transparent Bidding" },
           ].map((badge) => (
             <div
               key={badge.text}

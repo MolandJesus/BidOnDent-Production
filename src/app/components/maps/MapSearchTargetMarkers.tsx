@@ -37,7 +37,7 @@ export default function MapSearchTargetMarkers({
         <Popup>
           <div className="text-sm">
             <div className="font-semibold">{activeSearchTarget.label}</div>
-            <div>{activeSearchTarget.county || "Coverage focus"}</div>
+            <div>{activeSearchTarget.county || "Service area"}</div>
             <div>Search radius: {radiusMiles} miles</div>
           </div>
         </Popup>
