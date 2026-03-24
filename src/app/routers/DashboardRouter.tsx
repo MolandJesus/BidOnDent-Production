@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect } from "react";
+import { useBidsForReport } from "../hooks/useBidsForReport";
 
 // Import all screens
 import HomeScreen from "../components/codelayer/HomeScreen";
@@ -65,6 +66,7 @@ export default function DashboardRouter({
   onEnterDemoMode,
   onEnableDemoMode,
   onExitDemoMode,
+  onAcceptBid,
   onProfileUpdate,
   onDeleteAccount,
   onSaveVehicles,
@@ -75,6 +77,11 @@ export default function DashboardRouter({
   demoMode,
   originalAccountType,
 }: DashboardRouterProps) {
+  // Fetch live bids from Supabase for the selected report
+  const { bids: liveBids } = useBidsForReport(
+    currentTab === "bids" && userType === "customer" ? selectedReportId : null
+  );
+
   // Scroll to top whenever view changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -166,6 +173,9 @@ export default function DashboardRouter({
             <BidsScreen
               primaryColor={primaryColor}
               userType={userType}
+              bids={liveBids.length > 0 ? liveBids : bids}
+              reports={reports}
+              onAcceptBid={onAcceptBid}
               onBack={() => {
                 onTabChange("home");
                 onViewModeChange("dashboard");
