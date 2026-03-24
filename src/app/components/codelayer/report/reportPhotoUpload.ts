@@ -39,13 +39,15 @@ export async function compressImageToBase64(file: File): Promise<string> {
           compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
         }
 
-        console.log("🗜️ Compressed:", {
-          originalSize: `${(file.size / 1024).toFixed(0)}KB`,
-          compressedSize: `${(compressedDataUrl.length / 1024).toFixed(0)}KB`,
-          quality: `${Math.round(quality * 100)}%`,
-          dimensions: `${Math.round(width)}x${Math.round(height)}`,
-          reduction: `${Math.round((1 - compressedDataUrl.length / file.size) * 100)}%`,
-        });
+        if (import.meta.env.DEV) {
+          console.log("Compressed:", {
+            originalSize: `${(file.size / 1024).toFixed(0)}KB`,
+            compressedSize: `${(compressedDataUrl.length / 1024).toFixed(0)}KB`,
+            quality: `${Math.round(quality * 100)}%`,
+            dimensions: `${Math.round(width)}x${Math.round(height)}`,
+            reduction: `${Math.round((1 - compressedDataUrl.length / file.size) * 100)}%`,
+          });
+        }
 
         resolve(compressedDataUrl);
       };
@@ -65,14 +67,14 @@ export async function uploadReportPhoto(file: File): Promise<string> {
   const random = Math.random().toString(36).substring(7);
   const imagePath = `damage-reports/${timestamp}-${random}.jpg`;
 
-  console.log("☁️ Attempting Supabase upload...");
+  if (import.meta.env.DEV) console.log("Attempting Supabase upload...");
   const uploadedUrl = await uploadImageToSupabase(compressedBase64, imagePath);
 
   if (uploadedUrl) {
-    console.log("✅ Photo uploaded to Supabase:", uploadedUrl);
+    if (import.meta.env.DEV) console.log("Photo uploaded to Supabase:", uploadedUrl);
     return uploadedUrl;
   }
 
-  console.warn("⚠️ Supabase upload failed, using base64 fallback");
+  if (import.meta.env.DEV) console.warn("Supabase upload failed, using base64 fallback");
   return compressedBase64;
 }

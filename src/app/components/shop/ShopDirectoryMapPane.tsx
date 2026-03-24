@@ -263,7 +263,7 @@ export default function ShopDirectoryMapPane({
             </div>
           )}
 
-          <div className="rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-xs text-white/80 shadow-xl backdrop-blur">
+          <div className="hidden rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-xs text-white/80 shadow-xl backdrop-blur sm:block">
             <p className="font-semibold text-white">Marker legend</p>
             <p className="mt-1">
               Orange = origin, blue = selected, dark = top match, lines = route options

@@ -11,6 +11,67 @@
 - Keep communication concise and focused.
 - Follow development best practices.
 
+---
+
+## Autopilot Execution Discipline
+
+### Impact-First Decision Engine
+
+Before choosing a pass, evaluate candidates by:
+
+1. **User impact** — Does this fix something a real user sees, touches, or is blocked by?
+2. **Severity** — P0/P1 always before P4/P5. Build-breaking before cosmetic.
+3. **Surface area** — Prefer fixes that improve multiple screens over single-screen polish.
+4. **Risk** — Prefer safe, isolated changes. Avoid cascading refactors unless required.
+5. **Leverage** — Prefer changes that unlock further work over dead-end polish.
+
+Pick the highest-impact, lowest-risk pass available. If two passes tie, pick the one closer to production readiness.
+
+### Single-Pass Discipline
+
+- **One pass = one coherent change.** Do not chain unrelated fixes into a single pass.
+- Each pass must be buildable, testable, and documentable on its own.
+- If a pass reveals a new issue, log it for the next pass — do not scope-creep.
+- Name passes clearly: `Pass N — [Category] [What Changed]`.
+
+### Mobile-First Enforcement
+
+- Every UI change must be validated for mobile viewport (375px minimum).
+- Touch targets: minimum 44x44px.
+- No horizontal scroll on any screen at any breakpoint.
+- Bottom sheet / drawer patterns preferred over modals on mobile.
+- Test mobile before desktop — mobile is the primary form factor.
+
+### Hard Stop Rules
+
+Stop and ask the human if:
+
+- A pass would delete more than 3 files.
+- A change touches auth, payment, or identity systems.
+- A refactor would move logic across more than 2 architectural layers.
+- Build fails after 2 fix attempts on the same error.
+- You are unsure whether a change is user-visible in production.
+
+### Strict Output Format
+
+Every pass report MUST follow this exact structure (no omissions):
+
+```
+### Pass N — [Title] (YYYY-MM-DD)
+
+1. **Pass chosen and why**: [1-2 sentences]
+2. **What changed**: [bullet list of changes]
+3. **Files touched**: [file list]
+4. **Validation**: Build: [time, errors]. Diagnostics: [count]. Spellcheck: [count]. Mobile/Desktop: [status].
+5. **Problem taxonomy**: P0:[n] P1:[n] P2:[n] P3:[n] P4:[n] P5:[n] P6:[n] P7:[n] — found/fixed/remaining
+6. **Architecture decisions**: [what and why]
+7. **Doc updates**: [which docs changed]
+8. **What this unlocks**: [next capabilities]
+9. **Best next pass**: [specific recommendation]
+```
+
+---
+
 ## Map And Navigation Non-Negotiables (Humans + AI)
 
 - Supabase is source of truth for report, vehicle, and user persistence.

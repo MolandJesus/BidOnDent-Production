@@ -26,16 +26,10 @@ export default function CoverageCommandCenterHeader({
 
       <div className="relative flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57] shadow-[0_0_0_1px_rgba(0,0,0,0.08)_inset]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e] shadow-[0_0_0_1px_rgba(0,0,0,0.08)_inset]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[#28c840] shadow-[0_0_0_1px_rgba(0,0,0,0.08)_inset]" />
-          </div>
-
           <div>
             <div className={theme.eyebrowClassName}>BidOnDent Maps</div>
             <h2 className={cn("text-sm font-semibold sm:text-base", theme.titleClassName)}>
-              Search-first command center
+              Find Nearby Shops
             </h2>
           </div>
         </div>

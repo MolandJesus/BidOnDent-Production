@@ -81,7 +81,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3 className="text-4xl font-bold mb-4">Who We Serve</h3>
+          <h3 className="text-3xl sm:text-4xl font-bold mb-4">Who We Serve</h3>
           <p className="text-xl text-gray-600">
             Solutions for everyone in the auto repair ecosystem
           </p>
@@ -91,7 +91,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`relative overflow-hidden bg-gradient-to-br ${card.gradientFrom} to-white p-8 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.03] group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`relative overflow-hidden bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-8 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.03] group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 borderColor: card.borderColor,
                 transitionDelay: `${0.3 + index * 0.15}s`,

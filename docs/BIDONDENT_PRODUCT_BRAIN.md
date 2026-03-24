@@ -113,9 +113,8 @@ These cards are the **primary entry point** for future work. Read one card, unde
 
 ### CARD: Cloud Navigation Persistence
 
-- **STATE:** Tier 2. All navigation persistence is localStorage-only. Sessions lost on device change.
-- **NEXT MOVE:** Create `navigation_sessions` Supabase table. Build sync service. Migrate to Supabase-primary with localStorage as cache.
-- **TOUCHES:** New Supabase migration. New service in `services/navigation/`. Update `navigationSession.ts`. Update `persistedState.ts`.
+- **STATE:** Tier 3 (Delivered, Pass 19). Navigation session state persisted in Supabase (`navigation_sessions` table) with localStorage as cache. Cross-device continuity is real. See updated card "Navigation Session Cloud Sync (Pass 19)" above.
+- **DELIVERED:** Supabase migration `009_create_navigation_sessions.sql`, `navigationSessionCloudService.ts`, session hydration from Supabase on boot, save on update.
 - **DO NOT:** Change navigation UI to accommodate sync. Add sync indicators that distract from driving.
 - **VERIFY:** Route session persists after closing browser. Same session loads on different device. localStorage remains as cache/fallback.
 - **UNLOCKS:** Navigation history, cross-device continuity, preferences sync.

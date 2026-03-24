@@ -1,45 +1,116 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app/App.tsx";
+import { initSentry } from "./app/services/sentryInit.ts";
+import { captureException } from "./app/services/errorReporting.ts";
 import "./styles/index.css";
 
-type RootErrorBoundaryState = {
+// Initialize Sentry before React renders (no-op without VITE_SENTRY_DSN)
+initSentry();
+
+type GlobalErrorBoundaryState = {
   hasError: boolean;
   errorMessage: string;
 };
 
-class RootErrorBoundary extends Component<{ children: ReactNode }, RootErrorBoundaryState> {
-  state: RootErrorBoundaryState = {
+class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalErrorBoundaryState> {
+  state: GlobalErrorBoundaryState = {
     hasError: false,
     errorMessage: "",
   };
 
-  static getDerivedStateFromError(error: Error): RootErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): GlobalErrorBoundaryState {
     return {
       hasError: true,
-      errorMessage: error?.message || "An unexpected startup error occurred.",
+      errorMessage: error?.message || "An unexpected error occurred.",
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Root render failure", { error, errorInfo });
+    captureException(error, {
+      boundary: "GlobalErrorBoundary",
+      componentStack: errorInfo.componentStack ?? undefined,
+    });
   }
+
+  private handleReload = () => {
+    window.location.reload();
+  };
+
+  private handleRetry = () => {
+    this.setState({ hasError: false, errorMessage: "" });
+  };
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-white px-6 py-16 text-slate-900">
-          <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Something failed during startup
+        <div className="min-h-screen bg-[#eef2f7] flex items-center justify-center px-5 py-12">
+          <div
+            className="mx-auto w-full max-w-md rounded-2xl border border-white/30 p-8 text-center"
+            style={{
+              background: "linear-gradient(180deg, rgba(255,255,255,0.82), rgba(241,245,249,0.64))",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 16px 44px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,0.42)",
+            }}
+          >
+            {/* Logo mark */}
+            <div
+              className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl text-white"
+              style={{
+                background: "linear-gradient(135deg, #0056b3 0%, #00a0e9 100%)",
+              }}
+            >
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900">
+              Something went wrong
             </h1>
-            <p className="mt-3 text-sm leading-6 text-slate-700">
-              The application hit a runtime error while loading. Open browser developer tools to
-              inspect the stack trace and error details.
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">
+              BidOnDent ran into an unexpected problem. Your data is safe — try reloading or come
+              back in a moment.
             </p>
-            <p className="mt-4 rounded-md bg-slate-100 p-3 font-mono text-xs text-slate-700">
-              {this.state.errorMessage}
-            </p>
+
+            {import.meta.env.DEV && this.state.errorMessage && (
+              <p className="mt-4 rounded-lg bg-slate-100 p-3 text-left font-mono text-xs text-slate-600 break-words">
+                {this.state.errorMessage}
+              </p>
+            )}
+
+            <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
+              <button
+                type="button"
+                onClick={this.handleRetry}
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90"
+                style={{
+                  background: "linear-gradient(135deg, #0056b3 0%, #00a0e9 100%)",
+                }}
+              >
+                Try Again
+              </button>
+              <button
+                type="button"
+                onClick={this.handleReload}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+              >
+                Reload Page
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -50,7 +121,24 @@ class RootErrorBoundary extends Component<{ children: ReactNode }, RootErrorBoun
 }
 
 createRoot(document.getElementById("root")!).render(
-  <RootErrorBoundary>
+  <GlobalErrorBoundary>
     <App />
-  </RootErrorBoundary>
+  </GlobalErrorBoundary>
 );
+
+// ── Global unhandled error capture ──
+// Catches errors outside React's tree (async, event handlers, third-party scripts).
+// Funnels through the same reporting service for future Sentry integration.
+
+window.addEventListener("error", (event) => {
+  if (event.error instanceof Error) {
+    captureException(event.error, { boundary: "window.onerror" });
+  }
+});
+
+window.addEventListener("unhandledrejection", (event) => {
+  const reason = event.reason;
+  const error =
+    reason instanceof Error ? reason : new Error(String(reason ?? "Unhandled promise rejection"));
+  captureException(error, { boundary: "unhandledrejection" });
+});

@@ -166,7 +166,10 @@ export default function CompetitorAnalysisScreen({
         }}
       >
         <div className="mb-4 flex items-center gap-3">
-          <button onClick={onBack} className="rounded-full p-2 transition-colors hover:bg-white/10">
+          <button
+            onClick={onBack}
+            className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-white/10"
+          >
             <ArrowLeft className="h-6 w-6" />
           </button>
           <div>
@@ -190,7 +193,7 @@ export default function CompetitorAnalysisScreen({
       </div>
 
       <div className="border-b border-slate-200 bg-white px-4 py-4">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div className="text-center">
             <p className="text-2xl font-bold" style={{ color: primaryColor }}>
               {marketListings.length}

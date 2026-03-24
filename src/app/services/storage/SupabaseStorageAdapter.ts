@@ -6,7 +6,7 @@
  * ============================================================================
  */
 
-import { supabase } from '../supabaseService';
+import { supabase } from "../supabaseService";
 import type {
   IStorageProvider,
   UploadOptions,
@@ -17,11 +17,11 @@ import type {
   ListResult,
   SignedUrlOptions,
   SignedUrlResult,
-  StorageFile
-} from './types';
+  StorageFile,
+} from "./types";
 
 export class SupabaseStorageAdapter implements IStorageProvider {
-  name = 'Supabase Storage';
+  name = "Supabase Storage";
 
   /**
    * Upload file to Supabase Storage
@@ -33,19 +33,17 @@ export class SupabaseStorageAdapter implements IStorageProvider {
       // Ensure bucket exists
       await this.ensureBucket(bucket);
 
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(path, file, {
-          contentType: contentType || file.type,
-          cacheControl: cacheControl || '3600',
-          upsert: upsert
-        });
+      const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
+        contentType: contentType || file.type,
+        cacheControl: cacheControl || "3600",
+        upsert: upsert,
+      });
 
       if (error) {
-        console.error(`❌ Supabase upload error:`, error);
+        if (import.meta.env.DEV) console.error("Supabase upload error:", error);
         return {
           success: false,
-          error: error.message
+          error: error.message,
         };
       }
 
@@ -56,13 +54,13 @@ export class SupabaseStorageAdapter implements IStorageProvider {
         success: true,
         url: publicUrl,
         publicUrl: publicUrl,
-        path: data.path
+        path: data.path,
       };
     } catch (error: any) {
-      console.error(`❌ Supabase upload exception:`, error);
+      if (import.meta.env.DEV) console.error("Supabase upload exception:", error);
       return {
         success: false,
-        error: error.message || 'Upload failed'
+        error: error.message || "Upload failed",
       };
     }
   }
@@ -74,14 +72,12 @@ export class SupabaseStorageAdapter implements IStorageProvider {
     try {
       const { bucket, path } = options;
 
-      const { error } = await supabase.storage
-        .from(bucket)
-        .remove([path]);
+      const { error } = await supabase.storage.from(bucket).remove([path]);
 
       if (error) {
         return {
           success: false,
-          error: error.message
+          error: error.message,
         };
       }
 
@@ -89,7 +85,7 @@ export class SupabaseStorageAdapter implements IStorageProvider {
     } catch (error: any) {
       return {
         success: false,
-        error: error.message || 'Delete failed'
+        error: error.message || "Delete failed",
       };
     }
   }
@@ -99,40 +95,38 @@ export class SupabaseStorageAdapter implements IStorageProvider {
    */
   async list(options: ListOptions): Promise<ListResult> {
     try {
-      const { bucket, path = '', limit = 100, offset = 0 } = options;
+      const { bucket, path = "", limit = 100, offset = 0 } = options;
 
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .list(path, {
-          limit,
-          offset,
-          sortBy: { column: 'created_at', order: 'desc' }
-        });
+      const { data, error } = await supabase.storage.from(bucket).list(path, {
+        limit,
+        offset,
+        sortBy: { column: "created_at", order: "desc" },
+      });
 
       if (error) {
         return {
           success: false,
-          error: error.message
+          error: error.message,
         };
       }
 
-      const files: StorageFile[] = (data || []).map(file => ({
+      const files: StorageFile[] = (data || []).map((file) => ({
         name: file.name,
         path: path ? `${path}/${file.name}` : file.name,
         size: file.metadata?.size || 0,
         createdAt: file.created_at || new Date().toISOString(),
         updatedAt: file.updated_at || new Date().toISOString(),
-        contentType: file.metadata?.mimetype
+        contentType: file.metadata?.mimetype,
       }));
 
       return {
         success: true,
-        files
+        files,
       };
     } catch (error: any) {
       return {
         success: false,
-        error: error.message || 'List failed'
+        error: error.message || "List failed",
       };
     }
   }
@@ -144,25 +138,23 @@ export class SupabaseStorageAdapter implements IStorageProvider {
     try {
       const { bucket, path, expiresIn = 3600 } = options;
 
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .createSignedUrl(path, expiresIn);
+      const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresIn);
 
       if (error) {
         return {
           success: false,
-          error: error.message
+          error: error.message,
         };
       }
 
       return {
         success: true,
-        signedUrl: data.signedUrl
+        signedUrl: data.signedUrl,
       };
     } catch (error: any) {
       return {
         success: false,
-        error: error.message || 'Signed URL generation failed'
+        error: error.message || "Signed URL generation failed",
       };
     }
   }
@@ -171,9 +163,7 @@ export class SupabaseStorageAdapter implements IStorageProvider {
    * Get public URL for a file
    */
   getPublicUrl(bucket: string, path: string): string {
-    const { data } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(path);
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
 
     return data.publicUrl;
   }
@@ -198,31 +188,32 @@ export class SupabaseStorageAdapter implements IStorageProvider {
       const { data: buckets, error } = await supabase.storage.listBuckets();
 
       if (error) {
-        console.warn(`⚠️ Could not list buckets:`, error.message);
+        if (import.meta.env.DEV) console.warn("Could not list buckets:", error.message);
         return false;
       }
 
       // Check if bucket exists
-      const bucketExists = buckets?.some(b => b.name === bucket);
+      const bucketExists = buckets?.some((b) => b.name === bucket);
 
       if (!bucketExists) {
-        console.log(`📦 Creating bucket: ${bucket}`);
+        if (import.meta.env.DEV) console.log(`Creating bucket: ${bucket}`);
         const { error: createError } = await supabase.storage.createBucket(bucket, {
           public: true, // Make buckets public by default for Bidondent
-          fileSizeLimit: 52428800 // 50MB limit
+          fileSizeLimit: 52428800, // 50MB limit
         });
 
         if (createError) {
-          console.error(`❌ Failed to create bucket ${bucket}:`, createError.message);
+          if (import.meta.env.DEV)
+            console.error(`Failed to create bucket ${bucket}:`, createError.message);
           return false;
         }
 
-        console.log(`✅ Bucket created: ${bucket}`);
+        if (import.meta.env.DEV) console.log(`Bucket created: ${bucket}`);
       }
 
       return true;
     } catch (error: any) {
-      console.error(`❌ Error ensuring bucket ${bucket}:`, error.message);
+      if (import.meta.env.DEV) console.error(`Error ensuring bucket ${bucket}:`, error.message);
       return false;
     }
   }

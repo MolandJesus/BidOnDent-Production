@@ -53,7 +53,7 @@ export default function BusinessInquirySection() {
         "✓ Shop application submitted successfully. Our team will contact you to confirm onboarding."
       );
     } catch (error) {
-      console.error("Shop submission failed", error);
+      if (import.meta.env.DEV) console.error("Shop submission failed", error);
       setSubmitMessage(
         "⚠ Submission could not be completed right now. Please email bidondent@gmail.com."
       );
@@ -88,7 +88,7 @@ export default function BusinessInquirySection() {
         "✓ Partnership request submitted successfully. Our insurer team will follow up shortly."
       );
     } catch (error) {
-      console.error("Insurer submission failed", error);
+      if (import.meta.env.DEV) console.error("Insurer submission failed", error);
       setSubmitMessage(
         "⚠ Request could not be submitted right now. Please email bidondent@gmail.com."
       );
@@ -107,7 +107,9 @@ export default function BusinessInquirySection() {
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             Growth & Partnerships
           </span>
-          <h3 className="text-4xl font-bold mt-5 mb-3">Shop Signup and Insurer Partnerships</h3>
+          <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-3">
+            Shop Signup and Insurer Partnerships
+          </h3>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             Submit your information to join the BidOnDent network. Every request is reviewed and
             confirmed by our team.

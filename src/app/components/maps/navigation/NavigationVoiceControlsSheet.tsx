@@ -47,7 +47,7 @@ export default function NavigationVoiceControlsSheet({
   }
 
   return (
-    <div className="pointer-events-none absolute inset-x-3 bottom-3 z-[565] flex justify-center sm:inset-x-4 sm:bottom-6 sm:justify-end">
+    <div className="pointer-events-none absolute inset-x-3 bottom-[13rem] z-[565] flex justify-center sm:inset-x-4 sm:bottom-6 sm:justify-end">
       <div
         className={cn(
           "map-liquid-panel map-ui-enter pointer-events-auto relative w-full max-w-[440px] overflow-hidden p-4 sm:p-5",

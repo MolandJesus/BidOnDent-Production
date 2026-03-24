@@ -52,7 +52,7 @@ export function useCoveragePartnerShops() {
       .catch((error: unknown) => {
         if (!mounted) return;
         const message = error instanceof Error ? error.message : "Failed to load partner shops";
-        console.error("useCoveragePartnerShops fetch error:", message);
+        if (import.meta.env.DEV) console.error("useCoveragePartnerShops fetch error:", message);
         setFetchError(message);
       })
       .finally(() => {

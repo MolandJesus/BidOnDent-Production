@@ -31,7 +31,7 @@ export function buildPhotoGuideSteps({
       icon: <Camera className="w-16 h-16" />,
       content: (
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 sm:p-6 border border-blue-200">
             <div className="flex items-start space-x-4">
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
@@ -96,7 +96,7 @@ export function buildPhotoGuideSteps({
       content: (
         <div className="space-y-5">
           {isDesktop ? (
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-200">
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 sm:p-6 border border-purple-200">
               <h3 className="font-bold text-lg mb-3 flex items-center">
                 <ImageIcon className="w-5 h-5 mr-2" />
                 Desktop Users: Two Options
@@ -128,7 +128,7 @@ export function buildPhotoGuideSteps({
               </div>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 text-white">
+            <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-4 sm:p-6 text-white">
               <div className="flex items-center space-x-3 mb-4">
                 <Camera className="w-8 h-8" />
                 <h3 className="font-bold text-xl">Using Your Phone Camera</h3>
@@ -298,7 +298,7 @@ export function buildPhotoGuideSteps({
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-500 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-500 rounded-2xl p-4 sm:p-6">
             <h3 className="font-bold text-xl mb-4 text-green-900 flex items-center">
               <span className="text-2xl mr-3">✅</span>
               Quick Checklist Before You Start

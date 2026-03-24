@@ -181,7 +181,7 @@ export default function InsurerNewClaimScreen({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
                     <a
                       href={`tel:${customer.phone}`}
                       className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
@@ -285,7 +285,7 @@ export default function InsurerNewClaimScreen({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
                     <a
                       href={`tel:${shop.phone}`}
                       className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"

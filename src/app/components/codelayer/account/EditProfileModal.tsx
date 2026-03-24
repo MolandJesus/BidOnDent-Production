@@ -58,7 +58,7 @@ export default function EditProfileModal({
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6 space-y-6">
+        <div className="px-4 sm:px-6 py-5 sm:py-6 space-y-6">
           {/* Profile Image Section */}
           <div className="flex flex-col items-center">
             <div className="relative">

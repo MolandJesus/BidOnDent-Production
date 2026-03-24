@@ -129,6 +129,11 @@
     "Unhid",
     "nums",
     "dedup",
-    "destructures"
+    "destructures",
+    "unhandledrejection",
+    "glanceability",
+    "pagehide",
+    "untappable",
+    "recents"
   ]
 }

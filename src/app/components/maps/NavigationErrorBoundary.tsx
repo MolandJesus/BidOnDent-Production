@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
+import { captureException } from "../../services/errorReporting";
 
 interface Props {
   children: ReactNode;
@@ -22,8 +23,10 @@ export default class NavigationErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // Log for diagnostics — no silent swallow
-    console.error("[NavigationErrorBoundary]", error, info.componentStack);
+    captureException(error, {
+      boundary: "NavigationErrorBoundary",
+      componentStack: info.componentStack ?? undefined,
+    });
   }
 
   private handleReset = () => {

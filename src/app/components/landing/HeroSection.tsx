@@ -140,19 +140,23 @@ export default function HeroSection({
                   </p>
                 ))}
                 {/* Carousel dots */}
-                <div className="absolute bottom-0 left-9 flex gap-1.5">
+                <div className="absolute bottom-0 left-9 flex gap-0.5">
                   {VALUE_STATEMENTS.map((_, i) => (
                     <button
                       key={i}
                       type="button"
                       aria-label={`Value ${i + 1}`}
-                      className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                      style={{
-                        backgroundColor: activeValue === i ? primaryColor : "rgba(0,61,130,0.2)",
-                        transform: activeValue === i ? "scale(1.3)" : "scale(1)",
-                      }}
+                      className="flex h-11 w-7 items-center justify-center"
                       onClick={() => setActiveValue(i)}
-                    />
+                    >
+                      <span
+                        className="h-1.5 w-1.5 rounded-full transition-all duration-300"
+                        style={{
+                          backgroundColor: activeValue === i ? primaryColor : "rgba(0,61,130,0.2)",
+                          transform: activeValue === i ? "scale(1.3)" : "scale(1)",
+                        }}
+                      />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -186,7 +190,7 @@ export default function HeroSection({
               className={`flex flex-wrap items-center gap-3 pt-2 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: "0.9s" }}
             >
-              {["Active NY rollout", "Transparent bids", "Free for customers"].map((item) => (
+              {["Now available in NY", "Transparent bids", "Free for customers"].map((item) => (
                 <span
                   key={item}
                   className="inline-flex items-center gap-2 rounded-full bd-glass-badge px-3 py-1.5 text-sm font-medium shadow-sm"

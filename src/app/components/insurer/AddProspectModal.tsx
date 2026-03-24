@@ -57,7 +57,7 @@ export default function AddProspectModal({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
       <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white sm:rounded-2xl">
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <h2 className="mb-4 text-2xl font-bold text-slate-950">Add Manual Prospect</h2>
 
           <div className="space-y-4">

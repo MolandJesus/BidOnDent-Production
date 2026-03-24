@@ -140,7 +140,7 @@ export default function ShopDirectoryMapOverlays({
 
       {/* Route preview — bottom-left floating card */}
       {showRoute && (
-        <div className="pointer-events-auto absolute bottom-24 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)]">
+        <div className="pointer-events-auto absolute bottom-64 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-24">
           <div className="rounded-2xl border border-white/15 bg-white/95 p-3 shadow-2xl backdrop-blur-md dark:bg-slate-900/90">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">

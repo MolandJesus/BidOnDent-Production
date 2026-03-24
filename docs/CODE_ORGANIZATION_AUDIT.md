@@ -102,6 +102,7 @@ The repository is mostly under the active 500-line hard cap:
 - The coverage map is no longer trapped in one landing-page file.
 - Backend schema bootstrapping is split across focused SQL modules instead of one oversized file.
 - The notification bell now has a dedicated component instead of being a dead icon.
+- **Pass 109–110 (2026-03-23):** Error observability is now a clean three-tier architecture. `src/app/services/errorReporting.ts` is the single adapter for all capture calls. `src/app/services/sentryInit.ts` owns Sentry lifecycle. All error boundaries (GlobalErrorBoundary, NavigationErrorBoundary, ImageErrorBoundary) route through `errorReporting.ts` — Sentry is decoupled and swappable. Activate by setting `VITE_SENTRY_DSN` in `.env`.
 
 ## What Is Still Structurally Weak
 
@@ -136,16 +137,16 @@ The repository is mostly under the active 500-line hard cap:
 - `ProfileDropdown` still contains overlapping notification logic and an older realtime presentation path.
 - Default seeded notifications still exist in `src/app/constants/index.ts`.
 
-### 5. Map code is reusable, but not yet a real map platform
+### 5. Map code is now a cleanly separated map platform
 
-- The current map domain is clean enough for coverage search.
-- It is not yet separated into:
-  - operational coverage map
-  - immersive fullscreen map
-  - navigation session state
-  - routing provider abstraction
-  - voice guidance abstraction
-- The current faux orbital mode should be treated as transitional experimentation, not finished architecture.
+- Navigation session state: **Delivered** (Pass 11/19) — `sessionTypes.ts`, `useNavigationSession.ts`, `navigationSessionCloudService.ts` (Supabase-backed)
+- Voice guidance: **Delivered** — `useNavigationVoiceAlerts.ts`, `deviationVoicePhrases.ts`, Web Speech API wrapper
+- Deviation detection: **Delivered** — `detectDeviation.ts`, `useNavigationIntelligence.ts`, discriminated union types
+- Reroute lifecycle: **Delivered** — `useNavigationReroute.ts`, `shouldTriggerReroute.ts`, cooldown/severity logic
+- Immersive fullscreen map: **Delivered** (Pass 10) — `ShopDirectoryImmersiveMap.tsx`
+- Remaining future work:
+  - Routing provider abstraction (OSRM only today — abstract when multi-provider justified)
+  - Operational coverage map with real geocoding (Nominatim demo today)
 
 ## Current Domain-Level Risks
 
@@ -243,7 +244,7 @@ Use `docs/README.md` as the current documentation entry point instead.
 - Replace stale generic documentation with repo-specific source-of-truth docs.
 - Tighten the navigation and dashboard router typing surface.
 - Consolidate notification ownership so bell and dropdown do not compete.
-- ~~Extract `ShopDirectoryScreen.tsx` (1383 lines) into composable sub-modules.~~ — Done. Screen is 979 lines. Extracted 4 sub-components.
+- ~~Extract `ShopDirectoryScreen.tsx` (1383 lines) into composable sub-modules.~~ — Delivered (Pass 11/77). Screen reduced to 339 lines. Extracted: `useShopDirectorySession`, `ShopDirectorySearchPanel`, `ShopDirectoryHero`, `ShopDirectoryImmersiveMap`, `ShopDirectoryMapPane`, `ShopDirectoryMapOverlays`, `ShopDirectoryListBody`.
 
 ### Next
 
@@ -332,10 +333,7 @@ If a future pass introduces a reusable pattern from these exceptions, extract it
 
 1. **Dark mode refinement ongoing**: Navy base is delivered but continued tuning toward Apple Maps-style soft night mode is expected in future passes.
 2. **Map control consistency**: Premium styling is in place now but must be preserved across future feature passes. Any new map control must use the `mapSurfaceTheme.ts` tone system.
-3. **ShopDirectoryScreen** (~1163 lines, was 1383 → 979 → 1060 → 1163): Pass 2 extracted four sub-modules. Pass 9 added mode-aware conditional rendering. Pass 10 added immersive early-return branch that delegates map-mode to `ShopDirectoryImmersiveMap` with `navigationMode` derivation. Still over soft 500-line cap — the list/hybrid layout path is the next extraction candidate.
-   4a. **ShopDirectoryImmersiveMap** (253 lines, new Pass 10): Full-viewport `fixed inset-0` immersive map experience. Floating glass top bar, map-owned search, collapsible results drawer, mode switches. Renders MapPane + MapOverlays at full viewport.
-   4b. **ShopDirectoryMapOverlays** (187 lines, Pass 9/10): Floating overlay layer for the in-map surface. Three slots: intelligence chip, route preview card, deviation prompt. `navigationMode` prop gates visibility (browse/route-preview/guidance).
-   4c. **ShopDirectoryMapPane** (447 lines, Pass 9/10): Leaflet map container with `children` prop for overlay injection and `suppressHeader` for immersive mode.
+3. **ShopDirectoryScreen** (339 lines after Pass 77 extraction): Extracted `useShopDirectorySession` hook, `ShopDirectorySearchPanel`, `ShopDirectoryHero`, `ShopDirectoryImmersiveMap`, `ShopDirectoryMapPane`, `ShopDirectoryMapOverlays`, `ShopDirectoryListBody`. Well under 500-line hard cap.
 4. **Landing page**: Not yet fully unified with the glass design system. Pass 1 (HeroSection carousel) is next.
 5. **Some role screens** still use raw Tailwind gray palette instead of theme tokens. These are acceptable as-is but should migrate during future glass adoption passes.
 

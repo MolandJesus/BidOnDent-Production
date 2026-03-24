@@ -61,7 +61,7 @@ export default function PlannerAddressSearch({
         )}
       >
         <div className="min-w-0 flex-1">
-          <div className={theme.metricLabelClassName}>Active origin</div>
+          <div className={theme.metricLabelClassName}>Your location</div>
           <div className={cn("mt-0.5 truncate text-sm font-semibold", theme.titleClassName)}>
             {selectedAddressResult?.primaryLabel || activeOriginLabel}
           </div>
@@ -79,11 +79,15 @@ export default function PlannerAddressSearch({
         )}
       >
         <div>
-          <label className={cn("mb-1.5 block text-xs font-semibold", theme.titleClassName)}>
+          <label
+            htmlFor="planner-address-search"
+            className={cn("mb-1.5 block text-xs font-semibold", theme.titleClassName)}
+          >
             Search house or store address
           </label>
           <div className="flex gap-1.5">
             <input
+              id="planner-address-search"
               value={addressQuery}
               onChange={(event) => onAddressQueryChange(event.target.value)}
               placeholder="42 Broadway, New York..."

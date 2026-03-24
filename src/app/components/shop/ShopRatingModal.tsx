@@ -81,7 +81,7 @@ export default function ShopRatingModal({
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-6">
           {/* Overall Rating */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Overall Rating *</label>
@@ -143,7 +143,7 @@ export default function ShopRatingModal({
             <textarea
               value={review}
               onChange={(e) => setReview(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-3 border border-gray-300 rounded-md"
               rows={4}
               placeholder="Share your experience with this shop..."
             />

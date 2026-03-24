@@ -95,7 +95,7 @@ export function useWebsiteSessionSync(
     };
 
     sync().catch((error) => {
-      console.error("Error hydrating website session memory:", error);
+      if (import.meta.env.DEV) console.error("Error hydrating website session memory:", error);
       setIsHydrated(true);
     });
 

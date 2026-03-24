@@ -255,7 +255,7 @@ export default function CoverageBrowseSidebarContent({
           retryGps={navigation.retryGps}
           speedLimitStatus={navigation.speedLimitStatus}
           focusMode={sidebarView === "search" ? "search" : "route"}
-          showDiagnostics={sidebarView !== "search"}
+          showDiagnostics={import.meta.env.DEV && sidebarView !== "search"}
           showSavedAndDiscoveryHints={sidebarView === "search"}
           showAdvancedControls={sidebarView !== "search"}
         />

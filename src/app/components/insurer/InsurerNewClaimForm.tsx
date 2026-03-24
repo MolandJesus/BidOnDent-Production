@@ -30,7 +30,7 @@ export default function InsurerNewClaimForm({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-4">
       <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <h2 className="text-2xl font-bold mb-4">New Claim Details</h2>
 
           <div className="mb-4 p-4 bg-blue-50 rounded-lg">

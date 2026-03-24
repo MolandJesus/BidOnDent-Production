@@ -89,7 +89,7 @@ export default function InsurerClaimsScreen({
                 <button
                   key={filter.id}
                   onClick={() => setFilterStatus(filter.id as any)}
-                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+                  className={`px-4 py-2 min-h-[44px] rounded-lg font-medium whitespace-nowrap transition-colors ${
                     filterStatus === filter.id
                       ? "text-white"
                       : "bg-white border border-gray-300 text-gray-700"
@@ -107,7 +107,7 @@ export default function InsurerClaimsScreen({
       {/* Claims List */}
       <div className="px-4 py-4 space-y-4">
         {filteredClaims.length === 0 ? (
-          <div className="bd-glass-card p-8 text-center">
+          <div className="bd-glass-card p-5 sm:p-8 text-center">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600">No claims found</p>
             <p className="text-sm text-gray-500 mt-1">Try adjusting your filters or search</p>

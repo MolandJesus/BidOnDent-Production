@@ -39,7 +39,7 @@ export default function ProfileRoleStats({
   if (userType === "customer") {
     return (
       <div className="px-4 py-3 bg-gradient-to-r from-blue-50/70 to-indigo-50/70 border-b border-slate-200/40">
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
               <FileText className="w-4 h-4 text-blue-600" />
@@ -69,7 +69,7 @@ export default function ProfileRoleStats({
   if (userType === "shop") {
     return (
       <div className="px-4 py-3 bg-gradient-to-r from-orange-50/70 to-amber-50/70 border-b border-slate-200/40">
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
               <ClipboardList className="w-4 h-4 text-orange-600" />
@@ -106,7 +106,7 @@ export default function ProfileRoleStats({
 
   return (
     <div className="px-4 py-3 bg-gradient-to-r from-purple-50/70 to-violet-50/70 border-b border-slate-200/40">
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <div className="text-center">
           <div className="flex items-center justify-center mb-1">
             <FileText className="w-4 h-4 text-purple-600" />

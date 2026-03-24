@@ -119,7 +119,7 @@ All of the above is **future direction** and not yet implemented unless otherwis
 
 # BidOnDent Map Master Plan (2026-03-21)
 
-Last updated: March 21, 2026  
+Last updated: March 23, 2026  
 Owner: Product + Engineering  
 Status: Active strategic source of truth
 
@@ -257,13 +257,13 @@ The themes above (1–6) describe the current program. The themes below describe
 
 ### Future Theme A: Navigation productization
 
-**1. Current State:** GPS, turn-by-turn, speed HUD, and voice all work (Tier 1–2). No graceful degradation for GPS loss, network errors, or stale data. No rerouting, cloud sync, or user-facing settings. UX varies across browsers.
+**1. Current State (Pass 92):** GPS, turn-by-turn, speed HUD, and voice all work and are production-quality. Graceful degradation for GPS loss delivered (Pass 68). Deviation detection with reroute prompt delivered. Cloud sync via Supabase delivered (Pass 19). Error boundary around navigation components delivered (`NavigationErrorBoundary`). Circuit breaker for OSRM delivered (3-fail open, 90s cooldown). Session retry resilience delivered (exponential backoff). Voice alerts with mode-aware dispatch delivered. Consumer copy cleaned across all map surfaces (Passes 87–92). Dev diagnostics gated behind `import.meta.env.DEV` (Pass 91).
 
-**2. Productizing Stage:** Graceful degradation for GPS loss, network errors, stale speed data. Deviation detection with reroute prompt. Error telemetry. Cross-browser voice testing.
+**2. Productizing Stage (mostly delivered):** ~~Graceful degradation for GPS loss~~ Done. ~~Deviation detection with reroute prompt~~ Done. ~~Error telemetry~~ Done. Remaining: network error recovery UI, cross-browser voice edge cases.
 
-**3. Aspirational Stage:** User-facing settings UI (voice picker, speed unit, volume). Cloud sync via Supabase. Automatic rerouting. ETA updates. Marketplace-aware routing to partner shops. Offline caching. Provider abstraction.
+**3. Aspirational Stage:** User-facing settings UI (voice picker, speed unit, volume). ~~Cloud sync via Supabase~~ Done. Automatic rerouting (currently user-confirmed). ETA updates during active navigation. Marketplace-aware routing to partner shops. Offline caching. Provider abstraction.
 
-**4. Technical Prerequisites:** Supabase `navigation_sessions` and `navigation_preferences` tables. Error boundary around navigation components. Deviation calculation utility. Browser compatibility matrix for Web Speech API.
+**4. Technical Prerequisites (mostly delivered):** ~~Supabase `navigation_sessions` table~~ Done. `navigation_preferences` table not yet created. ~~Error boundary around navigation components~~ Done. ~~Deviation calculation utility~~ Done. Browser compatibility matrix for Web Speech API (informal, not formalized).
 
 **5. UI/UX Evolution Path:** (1) Now → functional panel with no error states. (2) After productizing → same panel with visible warnings for degraded conditions. (3) After aspirational → settings drawer, live ETA, auto-reroute, shop info cards at route end.
 

@@ -22,7 +22,7 @@ export default function MapSurfaceHeaderBadges({
           <span className={theme.eyebrowClassName}>BidOnDent Maps</span>
           {overviewBadge ? <span className={theme.softBadgeClassName}>{overviewBadge}</span> : null}
         </div>
-        <div className={cn("mt-3 text-lg font-semibold", theme.titleClassName)}>Coverage focus</div>
+        <div className={cn("mt-3 text-lg font-semibold", theme.titleClassName)}>Service Area</div>
         <div className={cn("mt-1 text-sm", theme.bodyClassName)}>{activeFocusLabel}</div>
       </div>
     </div>

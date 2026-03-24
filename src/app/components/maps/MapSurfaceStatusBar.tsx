@@ -112,7 +112,7 @@ export default function MapSurfaceStatusBar({
             {overviewLabel || modeLabel}
           </div>
         </div>
-        {typeof performanceOverBudgetCount === "number" ? (
+        {import.meta.env.DEV && typeof performanceOverBudgetCount === "number" ? (
           <div className="space-y-1.5">
             <div className={theme.metricLabelClassName}>Performance</div>
             <div className={cn("text-sm font-semibold", theme.titleClassName)}>

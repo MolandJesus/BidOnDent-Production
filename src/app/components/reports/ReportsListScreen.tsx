@@ -58,7 +58,7 @@ export default function ReportsListScreen({
           <div className="flex items-center mb-3">
             <button
               onClick={onBack}
-              className="mr-3 p-2 hover:bg-white/40 rounded-lg transition-colors"
+              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/40"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -79,7 +79,7 @@ export default function ReportsListScreen({
               <button
                 key={tab.id}
                 onClick={() => setFilter(tab.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                   filter === tab.id ? "text-white" : "bd-glass-control--utility"
                 }`}
                 style={filter === tab.id ? { backgroundColor: primaryColor } : {}}
@@ -94,7 +94,7 @@ export default function ReportsListScreen({
       {/* Reports List */}
       <div className="px-4 py-4 space-y-4">
         {filteredReports.length === 0 ? (
-          <div className="bg-white rounded-lg p-8 text-center">
+          <div className="bg-white rounded-lg p-5 sm:p-8 text-center">
             <p className="text-gray-500">No reports found</p>
           </div>
         ) : (

@@ -173,7 +173,7 @@ export default function ShopActiveJobsScreen({
               <button
                 key={filter.id}
                 onClick={() => setFilterStatus(filter.id as any)}
-                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
+                className={`px-4 py-2 min-h-[44px] rounded-lg font-medium whitespace-nowrap transition-colors ${
                   filterStatus === filter.id ? "text-white" : "bd-glass-control--utility"
                 }`}
                 style={filterStatus === filter.id ? { backgroundColor: primaryColor } : {}}
@@ -188,7 +188,7 @@ export default function ShopActiveJobsScreen({
       {/* Jobs List */}
       <div className="px-4 py-4 space-y-4">
         {filteredJobs.length === 0 ? (
-          <div className="bd-glass-card p-8 text-center">
+          <div className="bd-glass-card p-5 sm:p-8 text-center">
             <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-600">No active jobs found</p>
             <p className="text-sm text-gray-500 mt-1">Try adjusting your filters or search</p>
@@ -295,7 +295,7 @@ export default function ShopActiveJobsScreen({
 
               {/* Actions */}
               <div className="p-4 bg-white border-t border-gray-100">
-                <div className="grid grid-cols-3 gap-2 mb-3">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
                   <a
                     href={`tel:${job.customerPhone}`}
                     className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"

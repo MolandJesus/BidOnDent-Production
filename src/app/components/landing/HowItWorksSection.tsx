@@ -57,7 +57,7 @@ export default function HowItWorksSection({
           className={`text-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3 className="text-4xl font-bold mb-4">How It Works</h3>
+          <h3 className="text-3xl sm:text-4xl font-bold mb-4">How It Works</h3>
           <p className="text-xl text-gray-600">Get your car repaired in three simple steps</p>
         </div>
 
@@ -75,7 +75,7 @@ export default function HowItWorksSection({
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`bd-glass-card p-8 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card p-5 sm:p-8 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: `${0.3 + index * 0.15}s` }}
             >
               {/* Icon */}

@@ -55,26 +55,25 @@ export default function CoverageSearchPanel({
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
         <div className="max-w-2xl">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={theme.eyebrowClassName}>Coverage Direction Surface</span>
-            <span className={theme.softBadgeClassName}>Search and route context stays local</span>
+            <span className={theme.eyebrowClassName}>Find Nearby Shops</span>
+            <span className={theme.softBadgeClassName}>Search stays on your device</span>
           </div>
           <h4 className={cn("mt-4 text-2xl font-semibold", theme.titleClassName)}>
-            Build a cleaner route handoff before the user ever leaves BidOnDent
+            Find the best body shop near you
           </h4>
           <p className={cn("mt-2 text-sm leading-6", theme.bodyClassName)}>
-            Search by ZIP, pivot to live location, then hand off to your preferred navigation app
-            through a map surface styled more like a polished desktop and mobile directions tool.
+            Search by ZIP or use your live location to discover trusted repair shops nearby, then
+            get directions through your preferred navigation app.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <span className={summaryPillClassName}>
             {activeOriginMode === "geolocation"
-              ? currentLocationLabel || "Live location active"
-              : "ZIP focus ready"}
+              ? currentLocationLabel || "Using your location"
+              : "Search by ZIP"}
           </span>
-          <span className={summaryPillClassName}>{radiusMiles}-mile search window</span>
-          <span className={summaryPillClassName}>Apple-style glass chrome</span>
+          <span className={summaryPillClassName}>{radiusMiles}-mile radius</span>
         </div>
       </div>
 
@@ -107,7 +106,12 @@ export default function CoverageSearchPanel({
           </select>
         </label>
 
-        <div className={cn("flex flex-col justify-end rounded-[1.1rem] px-4 py-3", theme.panelClassName)}>
+        <div
+          className={cn(
+            "flex flex-col justify-end rounded-[1.1rem] px-4 py-3",
+            theme.panelClassName
+          )}
+        >
           <div className={theme.metricLabelClassName}>Focus radius</div>
           <div className={cn("mt-1 text-lg font-semibold", theme.titleClassName)}>
             {radiusMiles} miles
@@ -125,7 +129,11 @@ export default function CoverageSearchPanel({
           <LocateFixed className="h-4 w-4" />
           Center Map
         </button>
-        <button type="button" onClick={onUseCurrentLocation} className={theme.secondaryButtonClassName}>
+        <button
+          type="button"
+          onClick={onUseCurrentLocation}
+          className={theme.secondaryButtonClassName}
+        >
           <Radar className="h-4 w-4" />
           {isFindingLocation ? "Finding Your Location..." : "Use My Current Location"}
         </button>
@@ -155,20 +163,32 @@ export default function CoverageSearchPanel({
       ) : null}
 
       {geoMessage ? (
-        <div className={cn("mt-3 rounded-[1.2rem] border px-4 py-3 text-sm", theme.accentPanelClassName)}>
+        <div
+          className={cn(
+            "mt-3 rounded-[1.2rem] border px-4 py-3 text-sm",
+            theme.accentPanelClassName
+          )}
+        >
           {geoMessage}
         </div>
       ) : null}
 
-      <div className={cn("mt-4 flex items-start gap-3 rounded-[1.3rem] px-4 py-3", theme.panelClassName)}>
-        <Navigation className={cn("mt-0.5 h-4 w-4", tone === "light" ? "text-sky-600" : "text-cyan-300")} />
+      <div
+        className={cn(
+          "mt-4 flex items-start gap-3 rounded-[1.3rem] px-4 py-3",
+          theme.panelClassName
+        )}
+      >
+        <Navigation
+          className={cn("mt-0.5 h-4 w-4", tone === "light" ? "text-sky-600" : "text-cyan-300")}
+        />
         <div>
           <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-            Smooth route preview, honest navigation handoff
+            Route preview with easy navigation handoff
           </div>
           <p className={cn("mt-1 text-sm leading-6", theme.secondaryTextClassName)}>
-            Roadmap and satellite now lean into a lighter macOS and iOS-style glass treatment,
-            while midnight mode keeps the darker command-center aesthetic for focused review.
+            Preview your route to a shop, then open directions in your preferred maps app. Light and
+            dark themes adapt to your preference.
           </p>
         </div>
       </div>

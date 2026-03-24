@@ -30,7 +30,9 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
           <p className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-sm text-blue-700 font-medium">
             Insurer Partnership
           </p>
-          <h1 className="text-4xl font-bold text-slate-900 mt-4 mb-4">Partner With BidOnDent</h1>
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 mt-4 mb-4">
+            Partner With BidOnDent
+          </h1>
           <p className="text-slate-700 text-lg leading-relaxed">
             We help insurers collaborate with repair shops and customers through a standardized,
             trackable process that improves coordination and decision quality.

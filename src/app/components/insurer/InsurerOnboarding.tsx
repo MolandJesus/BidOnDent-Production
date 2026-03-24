@@ -109,7 +109,7 @@ export default function InsurerOnboarding({
               <p className="text-gray-600 text-center">Tell us about your insurance company</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Company Name *
@@ -118,7 +118,7 @@ export default function InsurerOnboarding({
                   type="text"
                   value={formData.companyName}
                   onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="SafeDrive Insurance"
                 />
               </div>
@@ -131,7 +131,7 @@ export default function InsurerOnboarding({
                   type="text"
                   value={formData.licenseNumber}
                   onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="INS-123456"
                 />
               </div>
@@ -144,7 +144,7 @@ export default function InsurerOnboarding({
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="456 Insurance Blvd"
                 />
               </div>
@@ -156,7 +156,7 @@ export default function InsurerOnboarding({
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
                     placeholder="City"
                   />
                 </div>
@@ -166,7 +166,7 @@ export default function InsurerOnboarding({
                     type="text"
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
                     placeholder="State"
                   />
                 </div>
@@ -178,7 +178,7 @@ export default function InsurerOnboarding({
                   type="text"
                   value={formData.zip}
                   onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="12345"
                 />
               </div>
@@ -191,7 +191,7 @@ export default function InsurerOnboarding({
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="Phone number (10+ digits)"
                 />
               </div>
@@ -204,7 +204,7 @@ export default function InsurerOnboarding({
                   type="url"
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="https://yourinsurance.com"
                 />
               </div>
@@ -316,7 +316,7 @@ export default function InsurerOnboarding({
               <p className="text-gray-600 text-center">Configure your claim handling preferences</p>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+            <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-4">
               <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
                 <div>
                   <p className="font-medium">Use preferred shop network</p>

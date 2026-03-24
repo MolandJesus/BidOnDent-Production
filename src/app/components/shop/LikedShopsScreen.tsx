@@ -118,7 +118,7 @@ export default function LikedShopsScreen({
 
       <div className="px-4 py-4">
         {savedListings.length === 0 ? (
-          <div className="rounded-[28px] border border-slate-200 bg-white p-8 text-center shadow-sm">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-5 sm:p-8 text-center shadow-sm">
             <Heart className="mx-auto mb-4 h-16 w-16 text-slate-300" />
             <h3 className="text-xl font-semibold text-slate-900">No saved shops yet</h3>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">

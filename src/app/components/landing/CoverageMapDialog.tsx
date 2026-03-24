@@ -190,7 +190,7 @@ export default function CoverageMapDialog({
             : "Share is not available on this device."
       );
     } catch (error) {
-      console.error("Unable to share ETA:", error);
+      if (import.meta.env.DEV) console.error("Unable to share ETA:", error);
       setShareFeedback("ETA share failed.");
     }
   }

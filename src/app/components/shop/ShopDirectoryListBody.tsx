@@ -131,7 +131,7 @@ export default function ShopDirectoryListBody({
       </div>
 
       {session.mapListings.length === 0 && (
-        <div className="mt-4 rounded-[26px] border border-dashed border-slate-300 bg-slate-50 p-6">
+        <div className="mt-4 rounded-[26px] border border-dashed border-slate-300 bg-slate-50 p-4 sm:p-6">
           <p className="text-lg font-semibold text-slate-900">No shops matched that filter</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             Try broadening the search, switching back to Smart Match, or removing the 4.5+ filter to

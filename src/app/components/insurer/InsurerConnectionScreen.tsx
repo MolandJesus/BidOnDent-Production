@@ -308,7 +308,7 @@ export default function InsurerConnectionScreen({
       {showConnectForm && selectedCarrier && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl">
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
                   <h2 className="text-xl font-bold text-gray-900">
@@ -331,7 +331,7 @@ export default function InsurerConnectionScreen({
                     type="text"
                     value={policyNumber}
                     onChange={(event) => setPolicyNumber(event.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
                     placeholder="POL-123456789"
                   />
                 </div>
@@ -344,7 +344,7 @@ export default function InsurerConnectionScreen({
                     type="text"
                     value={claimNumber}
                     onChange={(event) => setClaimNumber(event.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
                     placeholder="CLM-987654321"
                   />
                   <p className="text-xs text-gray-500 mt-1">Add this if a claim already exists.</p>
@@ -374,7 +374,7 @@ export default function InsurerConnectionScreen({
                     setShowConnectForm(false);
                     setSelectedInsurer(null);
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-md font-medium hover:bg-gray-50"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-md font-medium hover:bg-gray-50"
                 >
                   Cancel
                 </button>

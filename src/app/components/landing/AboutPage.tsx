@@ -30,7 +30,7 @@ export default function AboutPage({ onBackToHome }: AboutPageProps) {
           <p className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-sm text-blue-700 font-medium">
             About BidOnDent
           </p>
-          <h1 className="text-4xl font-bold text-slate-900 mt-4 mb-4">
+          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 mt-4 mb-4">
             Opportunity Through Transparency
           </h1>
           <p className="text-slate-700 text-lg leading-relaxed">

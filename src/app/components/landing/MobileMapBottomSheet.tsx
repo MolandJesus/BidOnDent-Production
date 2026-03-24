@@ -6,13 +6,19 @@
  * explore places, or manage saved locations.
  *
  * Snap points:
+ *   24 px  — collapsed (handle-only, map fully visible)
  *   90 px  — peek (handle + tab bar visible)
  *   40 %   — half  (shop list / panel content)
  *   88 %   — full  (all sidebar content scrollable)
+ *
+ * "Never trapped" principle: user can always collapse the sheet to see
+ * the full map, and always swipe back up. The sheet is never dismissed
+ * or unmounted — only collapsed to its smallest snap point.
  */
 
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useCallback, useState } from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
+import { Map } from "lucide-react";
 import type { MapSurfaceTone } from "../maps/serviceCoverageMapTypes";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import { cn } from "../ui/utils";
@@ -22,12 +28,19 @@ type MobileMapBottomSheetProps = {
   children: ReactNode;
 };
 
-const SNAP_POINTS = [90, 0.4, 0.88] as const;
+const COLLAPSED = 24;
+const PEEK = 90;
+const HALF = 0.4;
+const FULL = 0.88;
+const SNAP_POINTS = [COLLAPSED, PEEK, HALF, FULL] as const;
 
 export default function MobileMapBottomSheet({ tone, children }: MobileMapBottomSheetProps) {
   const theme = getMapSurfaceTheme(tone, true);
-  const [snap, setSnap] = useState<number | string | null>(SNAP_POINTS[0]);
-  const isScrollable = snap !== SNAP_POINTS[0];
+  const [snap, setSnap] = useState<number | string | null>(PEEK);
+  const isCollapsed = snap === COLLAPSED;
+  const isScrollable = snap === HALF || snap === FULL;
+
+  const collapseToMap = useCallback(() => setSnap(COLLAPSED), []);
 
   return (
     <DrawerPrimitive.Root
@@ -50,10 +63,28 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
             paddingBottom: "env(safe-area-inset-bottom, 0px)",
           }}
         >
-          {/* Drag handle */}
-          <div className="flex shrink-0 cursor-grab items-center justify-center py-3 active:cursor-grabbing">
-            <div className="h-1.5 w-12 rounded-full bg-sky-400/60" />
+          {/* Drag handle — enlarged hit area for reliable gesture capture */}
+          <div className="flex shrink-0 cursor-grab items-center justify-center py-4 active:cursor-grabbing">
+            <div className="h-1.5 w-14 rounded-full bg-sky-400/70" />
           </div>
+
+          {/* Header strip — "Back to Map" affordance when sheet is expanded */}
+          {!isCollapsed && (
+            <div className="flex shrink-0 items-center justify-between px-4 pb-2">
+              <button
+                type="button"
+                onClick={collapseToMap}
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium",
+                  "bg-sky-500/15 text-sky-300 active:bg-sky-500/25",
+                  "transition-colors duration-150"
+                )}
+              >
+                <Map className="h-3.5 w-3.5" />
+                Back to Map
+              </button>
+            </div>
+          )}
 
           {/* Scrollable content area */}
           <div

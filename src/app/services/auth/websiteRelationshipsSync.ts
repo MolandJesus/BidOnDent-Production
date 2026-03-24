@@ -118,10 +118,14 @@ export async function fetchWebsiteRelationshipCollectionsFromCloud(identity: Web
       updatedAt: payload?.updatedAt || null,
     } satisfies WebsiteRelationshipCollections;
 
-    savedCollectionSignatures.set(identity.websiteUserKey, buildCollectionSignature(nextCollections));
+    savedCollectionSignatures.set(
+      identity.websiteUserKey,
+      buildCollectionSignature(nextCollections)
+    );
     return nextCollections;
   } catch (error) {
-    console.error("Error fetching website relationships from cloud:", error);
+    if (import.meta.env.DEV)
+      console.error("Error fetching website relationships from cloud:", error);
     return null;
   }
 }
@@ -146,7 +150,8 @@ export function mergeRelationshipCollectionsIntoSessionMemory(
       customerSavedShopIds: collections.customerSavedShopIds,
       insurerShortlistIds: collections.insurerShortlistIds,
       shopWatchlistIds: collections.shopWatchlistIds,
-      updatedAt: collections.updatedAt || sessionMemory.mapSession?.updatedAt || sessionMemory.updatedAt,
+      updatedAt:
+        collections.updatedAt || sessionMemory.mapSession?.updatedAt || sessionMemory.updatedAt,
     },
   };
 }
@@ -182,7 +187,7 @@ export async function saveWebsiteRelationshipCollectionsToCloud({
     savedCollectionSignatures.set(identity.websiteUserKey, buildCollectionSignature(collections));
     return true;
   } catch (error) {
-    console.error("Error saving website relationships to cloud:", error);
+    if (import.meta.env.DEV) console.error("Error saving website relationships to cloud:", error);
     return false;
   }
 }

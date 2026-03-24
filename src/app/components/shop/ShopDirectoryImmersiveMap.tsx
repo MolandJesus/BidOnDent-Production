@@ -95,7 +95,7 @@ export default function ShopDirectoryImmersiveMap({
   const getDefaultCenter = (): Coordinates => ({ latitude: 32.7767, longitude: -96.797 });
 
   return (
-    <div className="fixed inset-0 z-40 bg-slate-950">
+    <div className="fixed inset-0 z-[60] bg-slate-950">
       {/* Map — absolute full viewport */}
       <div className="absolute inset-0">
         <ShopDirectoryMapPane
@@ -192,9 +192,9 @@ export default function ShopDirectoryImmersiveMap({
         </div>
       </div>
 
-      {/* Collapsible results drawer */}
+      {/* Collapsible results drawer — bottom sheet on mobile, side drawer on sm+ */}
       {drawerOpen && (
-        <aside className="absolute bottom-0 left-0 top-16 z-[530] flex w-[360px] max-w-[85vw] flex-col overflow-hidden rounded-r-2xl border-r border-white/10 bg-white/95 shadow-2xl backdrop-blur-xl">
+        <aside className="absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t border-white/10 bg-white/95 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r">
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">

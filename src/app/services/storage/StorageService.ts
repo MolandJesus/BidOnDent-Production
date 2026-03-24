@@ -2,20 +2,20 @@
  * ============================================================================
  * UNIVERSAL STORAGE SERVICE
  * ============================================================================
- * 
+ *
  * Single interface for all cloud storage operations.
  * Switch providers by changing environment variable.
- * 
+ *
  * Usage:
  *   import { storageService } from './services/storage/StorageService';
- *   
+ *
  *   // Upload
  *   const result = await storageService.uploadFile({
  *     bucket: 'bidondent-profiles',
  *     file: photoFile,
  *     path: `users/${userId}/profile.jpg`
  *   });
- * 
+ *
  * Environment Variables:
  *   STORAGE_PROVIDER=supabase (default)
  *   STORAGE_PROVIDER=aws-s3
@@ -33,9 +33,9 @@ import type {
   ListResult,
   SignedUrlOptions,
   SignedUrlResult,
-  StorageProviderType
-} from './types';
-import { SupabaseStorageAdapter } from './SupabaseStorageAdapter';
+  StorageProviderType,
+} from "./types";
+import { SupabaseStorageAdapter } from "./SupabaseStorageAdapter";
 
 /**
  * Storage Service - Provider-agnostic storage operations
@@ -49,7 +49,8 @@ class StorageService {
     this.providerType = this.getProviderType();
     this.provider = this.initializeProvider();
 
-    console.log(`📦 Storage Service initialized with provider: ${this.provider.name}`);
+    if (import.meta.env.DEV)
+      console.log(`Storage Service initialized with provider: ${this.provider.name}`);
   }
 
   /**
@@ -57,7 +58,7 @@ class StorageService {
    */
   private getProviderType(): StorageProviderType {
     // Check environment variable (would be set in deployment)
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const envProvider = (window as any).__STORAGE_PROVIDER__;
       if (envProvider) {
         return envProvider as StorageProviderType;
@@ -65,7 +66,7 @@ class StorageService {
     }
 
     // Default to Supabase
-    return 'supabase';
+    return "supabase";
   }
 
   /**
@@ -73,29 +74,33 @@ class StorageService {
    */
   private initializeProvider(): IStorageProvider {
     switch (this.providerType) {
-      case 'supabase':
+      case "supabase":
         return new SupabaseStorageAdapter();
-      
-      case 'aws-s3':
+
+      case "aws-s3":
         // Future: AWS S3 adapter
-        console.warn('AWS S3 adapter not yet implemented, falling back to Supabase');
+        if (import.meta.env.DEV)
+          console.warn("AWS S3 adapter not yet implemented, falling back to Supabase");
         return new SupabaseStorageAdapter();
-      
-      case 'cloudflare-r2':
+
+      case "cloudflare-r2":
         // Future: Cloudflare R2 adapter
-        console.warn('Cloudflare R2 adapter not yet implemented, falling back to Supabase');
+        if (import.meta.env.DEV)
+          console.warn("Cloudflare R2 adapter not yet implemented, falling back to Supabase");
         return new SupabaseStorageAdapter();
-      
-      case 'gcp-storage':
+
+      case "gcp-storage":
         // Future: Google Cloud Storage adapter
-        console.warn('GCP Storage adapter not yet implemented, falling back to Supabase');
+        if (import.meta.env.DEV)
+          console.warn("GCP Storage adapter not yet implemented, falling back to Supabase");
         return new SupabaseStorageAdapter();
-      
-      case 'azure-blob':
+
+      case "azure-blob":
         // Future: Azure Blob Storage adapter
-        console.warn('Azure Blob adapter not yet implemented, falling back to Supabase');
+        if (import.meta.env.DEV)
+          console.warn("Azure Blob adapter not yet implemented, falling back to Supabase");
         return new SupabaseStorageAdapter();
-      
+
       default:
         return new SupabaseStorageAdapter();
     }
@@ -105,7 +110,8 @@ class StorageService {
    * Upload a file
    */
   async uploadFile(options: UploadOptions): Promise<UploadResult> {
-    console.log(`📤 Uploading to ${this.provider.name}: ${options.bucket}/${options.path}`);
+    if (import.meta.env.DEV)
+      console.log(`Uploading to ${this.provider.name}: ${options.bucket}/${options.path}`);
     return await this.provider.upload(options);
   }
 
@@ -113,7 +119,8 @@ class StorageService {
    * Delete a file
    */
   async deleteFile(options: DeleteOptions): Promise<DeleteResult> {
-    console.log(`🗑️ Deleting from ${this.provider.name}: ${options.bucket}/${options.path}`);
+    if (import.meta.env.DEV)
+      console.log(`Deleting from ${this.provider.name}: ${options.bucket}/${options.path}`);
     return await this.provider.delete(options);
   }
 
@@ -159,7 +166,7 @@ class StorageService {
     return {
       type: this.providerType,
       name: this.provider.name,
-      configured: this.provider.isConfigured()
+      configured: this.provider.isConfigured(),
     };
   }
 
@@ -167,7 +174,7 @@ class StorageService {
    * Switch provider at runtime (advanced use case)
    */
   switchProvider(type: StorageProviderType) {
-    console.log(`🔄 Switching storage provider to: ${type}`);
+    if (import.meta.env.DEV) console.log(`Switching storage provider to: ${type}`);
     this.providerType = type;
     this.provider = this.initializeProvider();
   }

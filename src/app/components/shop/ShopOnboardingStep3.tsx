@@ -58,7 +58,7 @@ export default function ShopOnboardingStep3({
         <p className="text-gray-600 text-center">Select your certifications and specialties</p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-3">Certifications</label>
           <div className="flex flex-wrap gap-2">

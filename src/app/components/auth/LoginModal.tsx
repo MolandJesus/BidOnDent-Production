@@ -70,7 +70,7 @@ export default function LoginModal({
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+        className="bg-white rounded-lg shadow-xl max-w-md w-full p-5 sm:p-6"
       >
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-2xl font-bold">

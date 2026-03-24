@@ -59,7 +59,7 @@ export default function ReportScreen({
     const draft = loadReportDraft();
 
     if (draft) {
-      console.log("📋 Loaded draft report from local storage");
+      if (import.meta.env.DEV) console.log("Loaded draft report from local storage");
       setStep(draft.step || 1);
       // Don't restore photos - they're too large for localStorage
       setVehicle(draft.vehicle || { ...DEFAULT_VEHICLE_DRAFT });
@@ -240,7 +240,7 @@ export default function ReportScreen({
   };
 
   const renderStep = () => {
-    console.log("Rendering step:", step, "Photos:", photos.length);
+    if (import.meta.env.DEV) console.log("Rendering step:", step, "Photos:", photos.length);
 
     try {
       switch (step) {

@@ -88,7 +88,7 @@ export default function NavigationSummarySheet({
 
         <div
           className={cn(
-            "mt-2 hidden items-center justify-between gap-3 rounded-[1.8rem] border border-white/16 px-4 py-4 sm:mt-4 sm:flex",
+            "mt-2 flex items-center justify-between gap-2 rounded-2xl border border-white/16 px-3 py-2.5 sm:gap-3 sm:rounded-[1.8rem] sm:px-4 sm:py-4",
             tone === "light"
               ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.74),rgba(241,245,249,0.56))]"
               : "bg-[linear-gradient(180deg,rgba(15,23,42,0.66),rgba(30,41,59,0.5))]"
@@ -97,13 +97,18 @@ export default function NavigationSummarySheet({
           <div className="min-w-0">
             <div
               className={cn(
-                "truncate text-2xl font-semibold tracking-[-0.03em]",
+                "line-clamp-2 text-base font-semibold leading-snug sm:text-2xl sm:tracking-[-0.03em]",
                 theme.titleClassName
               )}
             >
               {selectedShop.name}
             </div>
-            <div className={cn("mt-1 truncate text-sm", theme.secondaryTextClassName)}>
+            <div
+              className={cn(
+                "mt-0.5 truncate text-xs sm:mt-1 sm:text-sm",
+                theme.secondaryTextClassName
+              )}
+            >
               {selectedShop.addressLine || selectedShop.countyLabel}
             </div>
           </div>

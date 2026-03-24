@@ -325,6 +325,9 @@ export default function DashboardLayout({
                       setShowTopProfileMenu((current) => !current);
                       setShowNotifications(false);
                     }}
+                    aria-expanded={showTopProfileMenu}
+                    aria-haspopup="menu"
+                    aria-label="User profile menu"
                     className="flex items-center gap-2 px-1.5 py-1.5 rounded-xl bd-glass-control--utility hover:bg-white/40 transition-colors"
                   >
                     {userImageUrl ? (
@@ -354,7 +357,11 @@ export default function DashboardLayout({
                   </button>
 
                   {showTopProfileMenu && profileDropdownData && (
-                    <div className="absolute right-0 mt-2 w-56 bd-glass-floating z-50 overflow-hidden">
+                    <div
+                      role="menu"
+                      aria-label="User profile menu"
+                      className="absolute right-0 mt-2 w-56 bd-glass-floating z-50 overflow-hidden"
+                    >
                       <div className="px-3 py-2.5 border-b border-slate-200/40">
                         <p className="text-sm font-semibold text-slate-900 truncate">
                           {userProfile.name}
@@ -362,6 +369,7 @@ export default function DashboardLayout({
                         <p className="text-xs text-slate-500 truncate">{userProfile.email}</p>
                       </div>
                       <button
+                        role="menuitem"
                         onClick={() => {
                           profileDropdownData.onNavigate("dashboard", "home");
                           setShowTopProfileMenu(false);
@@ -371,6 +379,7 @@ export default function DashboardLayout({
                         Dashboard
                       </button>
                       <button
+                        role="menuitem"
                         onClick={() => {
                           profileDropdownData.onNavigate("dashboard", "account");
                           setShowTopProfileMenu(false);
@@ -380,6 +389,7 @@ export default function DashboardLayout({
                         Account Settings
                       </button>
                       <button
+                        role="menuitem"
                         onClick={() => {
                           profileDropdownData.onLogout();
                           setShowTopProfileMenu(false);

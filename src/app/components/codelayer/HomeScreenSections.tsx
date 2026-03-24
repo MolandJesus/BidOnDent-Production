@@ -42,7 +42,7 @@ export function HomeOnboardingCard({
 
   return (
     <section
-      className="rounded-2xl p-6 text-white shadow-sm"
+      className="rounded-2xl p-4 sm:p-6 text-white shadow-sm"
       style={{
         background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
       }}
@@ -103,7 +103,7 @@ export function HomeReportsList({
       </div>
 
       {sortedReports.length === 0 && (
-        <div className="rounded-xl border border-dashed border-slate-300/60 p-8 bg-slate-50/50 text-center">
+        <div className="rounded-xl border border-dashed border-slate-300/60 p-5 sm:p-8 bg-slate-50/50 text-center">
           <Camera className="w-10 h-10 text-slate-300 mx-auto mb-3" />
           <p className="font-medium text-slate-900 mb-1">
             {userType === "customer" && "No repair requests yet"}

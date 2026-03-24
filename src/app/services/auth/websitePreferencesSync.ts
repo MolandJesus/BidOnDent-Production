@@ -62,7 +62,7 @@ export async function fetchWebsiteSessionMemoryFromCloud(identity: WebsiteIdenti
     const payload = await response.json();
     return payload?.preferences?.session_memory || null;
   } catch (error) {
-    console.error("Error fetching website preferences from cloud:", error);
+    if (import.meta.env.DEV) console.error("Error fetching website preferences from cloud:", error);
     return null;
   }
 }
@@ -95,7 +95,7 @@ export async function saveWebsiteSessionMemoryToCloud({
 
     return true;
   } catch (error) {
-    console.error("Error saving website preferences to cloud:", error);
+    if (import.meta.env.DEV) console.error("Error saving website preferences to cloud:", error);
     return false;
   }
 }

@@ -44,14 +44,14 @@ export default function ShopOnboardingStep1({
         <p className="text-gray-600 text-center">Let's start with the basics</p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Shop Name *</label>
           <input
             type="text"
             value={formData.shopName}
             onChange={(e) => onUpdate({ ...formData, shopName: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            className="w-full px-3 py-3 border border-gray-300 rounded-md"
             placeholder="Express Auto Body"
           />
         </div>
@@ -62,7 +62,7 @@ export default function ShopOnboardingStep1({
             type="text"
             value={formData.address}
             onChange={(e) => onUpdate({ ...formData, address: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            className="w-full px-3 py-3 border border-gray-300 rounded-md"
             placeholder="123 Main St"
           />
         </div>
@@ -74,7 +74,7 @@ export default function ShopOnboardingStep1({
               type="text"
               value={formData.city}
               onChange={(e) => onUpdate({ ...formData, city: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-3 border border-gray-300 rounded-md"
               placeholder="City"
             />
           </div>
@@ -84,7 +84,7 @@ export default function ShopOnboardingStep1({
               type="text"
               value={formData.state}
               onChange={(e) => onUpdate({ ...formData, state: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-3 border border-gray-300 rounded-md"
               placeholder="State"
             />
           </div>
@@ -96,7 +96,7 @@ export default function ShopOnboardingStep1({
             type="text"
             value={formData.zip}
             onChange={(e) => onUpdate({ ...formData, zip: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            className="w-full px-3 py-3 border border-gray-300 rounded-md"
             placeholder="12345"
           />
         </div>
@@ -107,7 +107,7 @@ export default function ShopOnboardingStep1({
             type="tel"
             value={formData.phone}
             onChange={(e) => handlePhoneChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            className="w-full px-3 py-3 border border-gray-300 rounded-md"
             placeholder="Phone number"
             inputMode="numeric"
           />
@@ -119,7 +119,7 @@ export default function ShopOnboardingStep1({
             type="url"
             value={formData.website}
             onChange={(e) => onUpdate({ ...formData, website: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+            className="w-full px-3 py-3 border border-gray-300 rounded-md"
             placeholder="https://yourshop.com"
           />
         </div>

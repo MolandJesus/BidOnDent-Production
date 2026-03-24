@@ -42,7 +42,7 @@ export default function InsurerMapWidget({ primaryColor, secondaryColor }: Insur
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <div className="bd-glass-card p-3">
           <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Shops</div>
           <div className="mt-1 text-xl font-semibold text-slate-900">

@@ -69,7 +69,7 @@ type CoverageNavigationPlannerProps = {
 export default function CoverageNavigationPlanner({
   tone,
   focusMode = "route",
-  showDiagnostics = true,
+  showDiagnostics = Boolean(import.meta.env?.DEV),
   showSavedAndDiscoveryHints = false,
   showAdvancedControls = true,
   selectedShop,

@@ -64,7 +64,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
         try {
           const userData: UserData = JSON.parse(cachedData);
           if (userData.redirectInfo && userData.userInfo?.email) {
-            console.log("📦 Loading cached data for instant display...");
+            if (import.meta.env.DEV) console.log("Loading cached data for instant display...");
             setUserInfo(userData.userInfo || { name: "", email: "", profileImage: "" });
             setVehicles(userData.vehicles || []);
             setReports(userData.reports || []);
@@ -79,24 +79,25 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             setPhotoStorage(cachedPhotoStorage);
           }
         } catch (error) {
-          console.error("Error loading cached data:", error);
+          if (import.meta.env.DEV) console.error("Error loading cached data:", error);
         }
       }
 
       // Step 2: Check if we have a Clerk-backed website identity
       if (!signedInEmail || !clerkUserId) {
-        console.log("ℹ️ No Clerk identity available yet - skipping cloud load");
+        if (import.meta.env.DEV)
+          console.log("No Clerk identity available yet - skipping cloud load");
         return;
       }
 
       // Step 3: Load from SUPABASE (PRIMARY source of truth)
       isLoadingFromCloudRef.current = true;
-      console.log("☁️ Loading data from Supabase (PRIMARY source)...");
+      if (import.meta.env.DEV) console.log("Loading data from Supabase (PRIMARY source)...");
 
       try {
         const email = signedInEmail;
         if (!email) {
-          console.error("❌ No email in identity");
+          if (import.meta.env.DEV) console.error("No email in identity");
           return;
         }
 
@@ -115,7 +116,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
         });
 
         if (profileData) {
-          console.log("✅ Profile loaded from Supabase:", profileData);
+          if (import.meta.env.DEV) console.log("Profile loaded from Supabase:", profileData);
 
           // Set state from Supabase data
           setUserInfo({
@@ -133,7 +134,8 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           // Load vehicles from Supabase
           const vehiclesData = await getVehicles(clerkUserId);
           setVehicles(vehiclesData);
-          console.log(`✅ Loaded ${vehiclesData.length} vehicles from Supabase`);
+          if (import.meta.env.DEV)
+            console.log(`Loaded ${vehiclesData.length} vehicles from Supabase`);
 
           // Load reports from Supabase
           const reportsData = await getDamageReports(clerkUserId);
@@ -151,7 +153,8 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               }
             });
             setPhotoStorage(photoStorageData);
-            console.log(`✅ Loaded ${transformedReports.length} reports from Supabase`);
+            if (import.meta.env.DEV)
+              console.log(`Loaded ${transformedReports.length} reports from Supabase`);
           }
 
           // Step 4: Update localStorage CACHE with fresh data
@@ -185,12 +188,13 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
               websiteUserKey || normalizeEmail(email)
             );
-            console.log("💾 Cache updated with fresh Supabase data");
+            if (import.meta.env.DEV) console.log("Cache updated with fresh Supabase data");
           } catch {
             // Graceful: quota exceeded or private mode — Supabase is source of truth
           }
         } else {
-          console.log("ℹ️ No profile found in Supabase - new user or needs migration");
+          if (import.meta.env.DEV)
+            console.log("No profile found in Supabase - new user or needs migration");
 
           // Check if we have cached data for this user (migration case)
           if (cachedData) {
@@ -201,7 +205,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               userData = {} as UserData;
             }
             if (userData?.userInfo?.email === email && userData.redirectInfo) {
-              console.log("🔄 Migrating cached data to Supabase...");
+              if (import.meta.env.DEV) console.log("Migrating cached data to Supabase...");
 
               // Create profile in Supabase from cached data
               await saveProfile(
@@ -224,17 +228,18 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
                 for (const vehicle of userData.vehicles) {
                   await saveVehicle(vehicle, clerkUserId);
                 }
-                console.log("✅ Migrated vehicles to Supabase");
+                if (import.meta.env.DEV) console.log("Migrated vehicles to Supabase");
               }
 
-              console.log("✅ Migration complete - reloading from Supabase...");
+              if (import.meta.env.DEV)
+                console.log("Migration complete - reloading from Supabase...");
               // Reload to get fresh data with UUIDs
               window.location.reload();
             }
           }
         }
       } catch (error) {
-        console.error("❌ Error loading from Supabase:", error);
+        if (import.meta.env.DEV) console.error("Error loading from Supabase:", error);
       } finally {
         isLoadingFromCloudRef.current = false;
       }
@@ -267,7 +272,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
             websiteUserKey || normalizeEmail(userInfo.email)
           );
-          console.log("💾 Cache updated (localStorage)");
+          if (import.meta.env.DEV) console.log("Cache updated (localStorage)");
         } catch {
           // Graceful: quota exceeded or private mode — Supabase is source of truth
         }

@@ -20,7 +20,7 @@ export default function InsurerClaimApprovalModal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-4">
       <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden">
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <h2 className="text-xl font-bold mb-2">Review & Approve Claim</h2>
           <p className="text-sm text-gray-600 mb-4">
             {selectedClaim.claimNumber} - {selectedClaim.customerName}

@@ -82,7 +82,7 @@ export function useNavigation() {
     try {
       localStorage.setItem(NAVIGATION_STORAGE_KEY, JSON.stringify(navigationState));
     } catch (error) {
-      console.error("Error saving navigation state:", error);
+      if (import.meta.env.DEV) console.error("Error saving navigation state:", error);
     }
   }, [currentTab, viewMode, selectedReportId]);
 
@@ -117,7 +117,7 @@ export function useNavigation() {
     setDemoAccountType(accountType);
     setCurrentTab("home");
     setViewMode("dashboard");
-    console.log(`🎭 Demo mode enabled: Viewing as ${accountType}`);
+    if (import.meta.env.DEV) console.log(`Demo mode enabled: Viewing as ${accountType}`);
   };
 
   // Exit demo mode and return to original account
@@ -126,7 +126,7 @@ export function useNavigation() {
     setDemoAccountType(null);
     setCurrentTab("home");
     setViewMode("dashboard");
-    console.log("✅ Demo mode exited: Returned to original account");
+    if (import.meta.env.DEV) console.log("Demo mode exited: Returned to original account");
   };
 
   return {

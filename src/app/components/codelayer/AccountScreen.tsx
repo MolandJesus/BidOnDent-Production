@@ -102,8 +102,13 @@ export default function AccountScreen({
     try {
       setIsSaving(true);
 
-      console.log("Preparing profile image for website identity:", websiteIdentity?.websiteUserKey);
-      console.log(`📸 Original image: ${formatBytes(file.size)}`);
+      if (import.meta.env.DEV) {
+        console.log(
+          "Preparing profile image for website identity:",
+          websiteIdentity?.websiteUserKey
+        );
+        console.log(`Original image: ${formatBytes(file.size)}`);
+      }
 
       const compressedBlob = await compressImage(file, {
         maxWidth: 400,
@@ -111,12 +116,12 @@ export default function AccountScreen({
         quality: 0.6,
         outputFormat: "image/jpeg",
       });
-      console.log(`✅ Compressed to: ${formatBytes(compressedBlob.size)}`);
+      if (import.meta.env.DEV) console.log(`Compressed to: ${formatBytes(compressedBlob.size)}`);
 
       const uploadPromise = uploadPhoto(compressedBlob, SUPABASE_STORAGE_BUCKETS.accountMedia);
       const uploadTimeoutPromise = new Promise<null>((resolve) =>
         setTimeout(() => {
-          console.warn("⏱️ Upload timeout - falling back to base64");
+          if (import.meta.env.DEV) console.warn("Upload timeout - falling back to base64");
           resolve(null);
         }, 30000)
       );
@@ -138,7 +143,7 @@ export default function AccountScreen({
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
     } catch (error) {
-      console.error("❌ Error processing image:", error);
+      if (import.meta.env.DEV) console.error("Error processing image:", error);
       alert(
         `Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`
       );

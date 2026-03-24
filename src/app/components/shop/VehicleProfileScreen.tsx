@@ -149,7 +149,7 @@ export default function VehicleProfileScreen({
       <div className="px-4 py-4 max-w-2xl mx-auto">
         {/* Add/Edit Form */}
         {showAddForm && (
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-4 border border-gray-200">
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4 border border-gray-200">
             <h3 className="text-lg font-bold mb-4">
               {editingId ? "Edit Vehicle" : "Add New Vehicle"}
             </h3>
@@ -162,7 +162,7 @@ export default function VehicleProfileScreen({
                     type="text"
                     value={formData.year}
                     onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
                     placeholder="2021"
                   />
                 </div>
@@ -172,7 +172,7 @@ export default function VehicleProfileScreen({
                     type="text"
                     value={formData.make}
                     onChange={(e) => setFormData({ ...formData, make: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
                     placeholder="Toyota"
                   />
                 </div>
@@ -184,7 +184,7 @@ export default function VehicleProfileScreen({
                   type="text"
                   value={formData.model}
                   onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="Camry"
                 />
               </div>
@@ -197,7 +197,7 @@ export default function VehicleProfileScreen({
                   type="text"
                   value={formData.vin}
                   onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
                   placeholder="1HGBH41JXMN109186"
                 />
               </div>
@@ -211,7 +211,7 @@ export default function VehicleProfileScreen({
                     type="text"
                     value={formData.color}
                     onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
                     placeholder="Silver"
                   />
                 </div>
@@ -254,7 +254,7 @@ export default function VehicleProfileScreen({
         {/* Vehicles List */}
         <div className="space-y-3">
           {vehicles.length === 0 ? (
-            <div className="bg-white rounded-lg p-8 text-center">
+            <div className="bg-white rounded-lg p-5 sm:p-8 text-center">
               <Car className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-bold mb-2">No vehicles added yet</h3>
               <p className="text-gray-600 mb-4">

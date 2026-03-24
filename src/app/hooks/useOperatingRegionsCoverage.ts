@@ -176,7 +176,7 @@ export function useOperatingRegionsCoverage() {
     try {
       localStorage.setItem(COVERAGE_STATE_STORAGE_KEY, JSON.stringify(nextState));
     } catch (error) {
-      console.error("Error saving coverage map state:", error);
+      if (import.meta.env.DEV) console.error("Error saving coverage map state:", error);
     }
   }, [
     zipCode,

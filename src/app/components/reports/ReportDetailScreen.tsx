@@ -88,7 +88,7 @@ export default function ReportDetailScreen({
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="mr-3 p-2 hover:bg-white/40 rounded-lg transition-colors"
+              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/40"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>

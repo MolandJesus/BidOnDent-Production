@@ -20,7 +20,7 @@ const cards = [
   {
     icon: ShieldCheck,
     title: "Accountability",
-    text: "Submission and status events are captured to support operations, reporting, and quality control.",
+    text: "Every submission and status update is recorded to support operations, reporting, and quality control.",
     expandedText:
       "Every intake form, accepted bid, and status change is timestamped and tied to a unique request ID. This creates a complete audit trail that supports insurance reconciliation, shop performance tracking, and customer follow-up programs.",
   },
@@ -44,7 +44,9 @@ export default function AboutOpportunitySection() {
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             About BidOnDent
           </span>
-          <h3 className="text-4xl font-bold mt-5 mb-4">Opportunity Through Transparency</h3>
+          <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-4">
+            Opportunity Through Transparency
+          </h3>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             We remove friction from the repair process by giving customers, shops, and insurers one
             structured workflow from intake to completed repair.

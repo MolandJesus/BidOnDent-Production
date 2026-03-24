@@ -63,9 +63,9 @@ export default function PlannerRoutePreview({
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <div className={theme.metricLabelClassName}>Route preview</div>
+              <div className={theme.metricLabelClassName}>Route to shop</div>
               <div className={cn("mt-0.5 text-sm font-semibold", theme.titleClassName)}>
-                {selectedShop ? selectedShop.name : "Select a partner shop"}
+                {selectedShop ? selectedShop.name : "Select a shop"}
               </div>
             </div>
             <button
@@ -213,7 +213,7 @@ export default function PlannerRoutePreview({
             theme.accentPanelClassName
           )}
         >
-          <div className={theme.metricLabelClassName}>Route status</div>
+          <div className={theme.metricLabelClassName}>Your route</div>
           <div className={cn("mt-0.5 text-sm font-semibold", theme.titleClassName)}>
             {selectedShop ? selectedShop.name : "Choose a destination"}
           </div>

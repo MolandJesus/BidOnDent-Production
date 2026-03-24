@@ -32,7 +32,7 @@ export default function ShopOnboardingStep4({
         <p className="text-gray-600 text-center">Just a few more preferences</p>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 space-y-4">
         <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
           <div>
             <p className="font-medium">Accept insurance claims</p>

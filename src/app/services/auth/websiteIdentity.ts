@@ -131,7 +131,7 @@ function persistWebsiteSessionMemory(
     );
     dispatchWebsiteMemoryEvent(identity.websiteUserKey);
   } catch (error) {
-    console.error("Error saving website session memory:", error);
+    if (import.meta.env.DEV) console.error("Error saving website session memory:", error);
   }
 
   return nextMemory;
@@ -241,7 +241,7 @@ export function loadWebsiteSessionMemory(identity?: WebsiteIdentity | null): Web
 
     return sanitizeMemory(JSON.parse(rawMemory));
   } catch (error) {
-    console.error("Error loading website session memory:", error);
+    if (import.meta.env.DEV) console.error("Error loading website session memory:", error);
     return DEFAULT_MEMORY;
   }
 }
