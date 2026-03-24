@@ -9,7 +9,32 @@
 2. `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` — All 141 passes documented, per-system completion bars, drift risks
 3. `CODE_ORGANIZATION_AUDIT.md` — Architecture weak seams, file responsibilities, safe boundaries
 4. `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — Map/navigation strategic law
+
 5. `BIDONDENT_MAP_TRACKER_2026-03-21.md` — Map delivery reality/status
+
+## Meta-Instructions for ChatGPT
+
+Before answering the questions, apply these rules:
+
+1. **Prioritize MVP reality over completeness.** Distinguish clearly between:
+   - launch-blocking work,
+   - near-term post-launch work,
+   - and aspirational/future work.
+
+2. **Do not recommend broad rewrites unless absolutely necessary.** Prefer incremental, low-risk changes that preserve the current architecture and momentum.
+
+3. **Bias toward production truth, not polish theater.** If a feature looks polished but is still backed by seed data, local-only state, or incomplete backend logic, treat it as incomplete.
+
+4. **Treat the map as a differentiator, not a side feature.** Recommendations should protect and strengthen the map-first product identity, but not expand map scope until real data and core workflows are grounded.
+
+5. **Answer like a startup operator, not a textbook architect.** Optimize for the fastest realistic path to a credible MVP, then a production-ready v1.
+
+6. **For every roadmap or sequencing recommendation, explicitly label:**
+   - `Now (launch-blocking)`
+   - `Next (important but can follow launch)`
+   - `Later (defer safely)`
+
+7. **For execution questions, prefer concrete passes over abstract advice.** Reference real files, data flows, tables, and boundaries when possible.
 
 ---
 
@@ -232,4 +257,5 @@ Looking at the architecture (Clerk auth, Supabase backend, Vite frontend, localS
 
 ---
 
-**Instructions for ChatGPT:** Please answer ALL 36 questions with specific, actionable recommendations. For execution-related questions (Q31-Q36), provide exact file names, table schemas, and pass-by-pass sequences where possible. Prioritize recommendations by impact and feasibility. Assume the AI agent doing the work has full codebase access and can make any change autonomously.
+
+**Instructions for ChatGPT:** Please answer all 36 questions with specific, actionable recommendations. However, do **not** treat all questions as equally urgent. First identify the launch-blocking questions, then the important-but-deferrable ones, then the future-facing ones. For execution-related questions (Q31-Q36), provide exact file names, likely table additions, safe sequencing, and pass-by-pass plans where possible. Prioritize recommendations by **impact, feasibility, and launch relevance**. Assume the AI agent doing the work has full codebase access and can make autonomous changes, but should avoid unnecessary rewrites and should preserve current architecture unless there is a compelling production reason to change it.

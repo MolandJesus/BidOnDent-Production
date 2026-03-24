@@ -351,7 +351,7 @@ export default function CoverageMapDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          "max-w-[100vw] overflow-hidden p-0 sm:max-w-[calc(100vw-2rem)] lg:max-w-[min(1380px,calc(100vw-2rem))] [&>button:last-child]:hidden",
+          "max-w-[100vw] overflow-hidden rounded-2xl p-0 sm:max-w-[calc(100vw-2rem)] lg:max-w-[min(1380px,calc(100vw-2rem))] [&>button:last-child]:hidden",
           theme.shellClassName,
           tone === "light" ? "text-slate-950" : "text-white"
         )}
