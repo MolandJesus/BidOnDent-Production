@@ -59,25 +59,25 @@ export function buildStats(
     return [
       {
         label: "Open Requests",
-        value: String(activeCount || 12),
+        value: activeCount > 0 ? String(activeCount) : "—",
         icon: ClipboardList,
         tone: "blue",
       },
       {
         label: "Active Jobs",
-        value: String(Math.max(3, completedCount)),
+        value: completedCount > 0 ? String(completedCount) : "—",
         icon: Wrench,
         tone: "green",
       },
       {
         label: "Completed Jobs",
-        value: String(Math.max(completedCount, 6)),
+        value: completedCount > 0 ? String(completedCount) : "—",
         icon: CircleCheck,
         tone: "purple",
       },
       {
-        label: "Potential Revenue",
-        value: `$${(Math.max(totalBids, 8) * 400).toLocaleString()}`,
+        label: "Bids Submitted",
+        value: totalBids > 0 ? String(totalBids) : "—",
         icon: DollarSign,
         tone: "amber",
       },
@@ -85,29 +85,54 @@ export function buildStats(
   }
   if (userType === "insurer") {
     return [
-      { label: "Active Claims", value: String(activeCount || 18), icon: FileCheck, tone: "blue" },
+      {
+        label: "Active Claims",
+        value: activeCount > 0 ? String(activeCount) : "—",
+        icon: FileCheck,
+        tone: "blue",
+      },
       {
         label: "Claims Resolved",
-        value: String(Math.max(completedCount, 9)),
+        value: completedCount > 0 ? String(completedCount) : "—",
         icon: CircleCheck,
         tone: "green",
       },
-      { label: "Partner Shops", value: "24", icon: Store, tone: "purple" },
-      { label: "Avg Cycle Time", value: "2.8d", icon: Clock, tone: "amber" },
+      {
+        label: "Partner Shops",
+        value: "—",
+        icon: Store,
+        tone: "purple",
+      },
+      {
+        label: "Avg Cycle Time",
+        value: "—",
+        icon: Clock,
+        tone: "amber",
+      },
     ];
   }
   return [
-    { label: "Active Requests", value: String(activeCount), icon: ClipboardList, tone: "blue" },
-    { label: "Total Bids Received", value: String(totalBids), icon: DollarSign, tone: "green" },
+    {
+      label: "Active Requests",
+      value: activeCount > 0 ? String(activeCount) : "—",
+      icon: ClipboardList,
+      tone: "blue",
+    },
+    {
+      label: "Bids Received",
+      value: totalBids > 0 ? String(totalBids) : "—",
+      icon: DollarSign,
+      tone: "green",
+    },
     {
       label: "Completed Repairs",
-      value: String(completedCount),
+      value: completedCount > 0 ? String(completedCount) : "—",
       icon: CircleCheck,
       tone: "purple",
     },
     {
-      label: "Money Saved",
-      value: `$${(totalBids * 150).toLocaleString()}`,
+      label: "Shops Bookmarked",
+      value: "—",
       icon: TrendingUp,
       tone: "amber",
     },
