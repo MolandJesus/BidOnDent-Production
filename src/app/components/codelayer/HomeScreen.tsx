@@ -43,7 +43,7 @@ type HomeScreenProps = {
 export default function HomeScreen({
   userType = "customer",
   userInfo,
-  primaryColor = "#0056b3",
+  primaryColor = "#003d82",
   secondaryColor = "#00a0e9",
   onStartReport,
   onViewAllReports,

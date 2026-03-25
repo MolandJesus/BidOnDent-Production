@@ -75,8 +75,8 @@ export default function ShopActiveJobsScreen({
     return {
       id: String(report?.id ?? `job-${index}`),
       customerName: "Customer",
-      customerEmail: "bidondent@gmail.com",
-      customerPhone: "N/A",
+      customerEmail: report?.customer_email || "Contact via BidOnDent",
+      customerPhone: report?.customer_phone || "Via platform",
       vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
       damageType: report?.damageArea || report?.damageType || "Repair request",
       bidAmount,
@@ -141,9 +141,12 @@ export default function ShopActiveJobsScreen({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bd-glass-panel">
       {/* Header */}
-      <div className="bd-glass-panel sticky top-0 z-10 border-b border-blue-200/30" style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}>
+      <div
+        className="bd-glass-panel sticky top-0 z-10 border-b border-blue-200/30"
+        style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}
+      >
         <div className="px-4 py-4">
           <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>
             Active Jobs

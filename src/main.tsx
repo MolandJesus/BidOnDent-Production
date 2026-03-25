@@ -58,7 +58,7 @@ class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalError
             <div
               className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl text-white"
               style={{
-                background: "linear-gradient(135deg, #0056b3 0%, #00a0e9 100%)",
+                background: "linear-gradient(135deg, #003d82 0%, #00a0e9 100%)",
               }}
             >
               <svg
@@ -98,7 +98,7 @@ class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalError
                 onClick={this.handleRetry}
                 className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90"
                 style={{
-                  background: "linear-gradient(135deg, #0056b3 0%, #00a0e9 100%)",
+                  background: "linear-gradient(135deg, #003d82 0%, #00a0e9 100%)",
                 }}
               >
                 Try Again

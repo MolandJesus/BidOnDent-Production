@@ -31,7 +31,7 @@ type ReportScreenProps = {
 };
 
 export default function ReportScreen({
-  primaryColor = "#0056b3",
+  primaryColor = "#003d82",
   onReportSubmit,
   onViewReports,
   onBackToDashboard,

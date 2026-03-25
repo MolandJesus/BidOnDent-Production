@@ -22,7 +22,7 @@ type BidsScreenProps = {
 type FilterType = "all" | "lowest" | "fastest" | "rating";
 
 export default function BidsScreen({
-  primaryColor = "#0056b3",
+  primaryColor = "#003d82",
   onBack,
   userType = "customer",
   bids: incomingBids = [],

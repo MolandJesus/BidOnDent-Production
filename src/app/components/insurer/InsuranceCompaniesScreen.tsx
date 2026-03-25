@@ -17,7 +17,7 @@ export default function InsuranceCompaniesScreen({
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bd-glass-panel pb-20">
       {/* Header */}
       <div
         className="sticky top-0 z-10 px-4 py-4 text-white shadow-md"

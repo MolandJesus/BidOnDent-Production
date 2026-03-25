@@ -42,7 +42,7 @@ type AccountScreenProps = {
 
 export default function AccountScreen({
   userType = "customer",
-  primaryColor = "#0056b3",
+  primaryColor = "#003d82",
   userName = "User",
   userEmail = "user@example.com",
   userPhone = "(555) 123-4567",

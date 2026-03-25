@@ -76,7 +76,7 @@ export default function InsurerOnboarding({
   const progress = Math.round((step / 3) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f9f8fc] to-[#f2f0f8]">
+    <div className="min-h-screen bg-gradient-to-b from-[#f0f7ff] to-[#e8f0fa]">
       {/* Progress Bar */}
       <div className="bd-glass-panel border-b border-white/20">
         <div className="px-4 py-3">
@@ -87,7 +87,10 @@ export default function InsurerOnboarding({
           <div className="h-2 bg-slate-200/60 rounded-full overflow-hidden">
             <div
               className="h-full transition-all duration-300 rounded-full"
-              style={{ width: `${progress}%`, background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})` }}
+              style={{
+                width: `${progress}%`,
+                background: `linear-gradient(90deg, ${primaryColor}, ${secondaryColor})`,
+              }}
             />
           </div>
         </div>
