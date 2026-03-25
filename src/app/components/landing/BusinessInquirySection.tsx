@@ -100,7 +100,7 @@ export default function BusinessInquirySection() {
   return (
     <section
       id="business-inquiry"
-      className="py-14 md:py-20 bg-gradient-to-b from-[#f5f8fc] to-[#edf3fa]"
+      className="py-10 md:py-16 bg-gradient-to-b from-[#f5f8fc] to-[#edf3fa]"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-6xl">

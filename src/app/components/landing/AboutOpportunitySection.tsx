@@ -33,7 +33,7 @@ export default function AboutOpportunitySection() {
   return (
     <section
       id="about-opportunity"
-      className="py-14 md:py-20 bg-gradient-to-b from-white via-blue-50/25 to-blue-50/50"
+      className="py-10 md:py-16 bg-gradient-to-b from-white via-blue-50/25 to-blue-50/50"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-6xl">

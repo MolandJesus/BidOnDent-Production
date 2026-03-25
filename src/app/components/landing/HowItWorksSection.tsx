@@ -39,7 +39,7 @@ export default function HowItWorksSection({
   return (
     <section
       id="how-it-works"
-      className="pt-16 md:pt-24 pb-10 md:pb-16"
+      className="pt-12 md:pt-16 pb-10 md:pb-14"
       style={{ background: "linear-gradient(180deg, #ffffff 0%, #f4f8fc 30%, #edf3fa 100%)" }}
       ref={sectionRef}
     >
@@ -95,7 +95,10 @@ export default function HowItWorksSection({
               <div className="mb-4">
                 <span
                   className="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold"
-                  style={{ background: `linear-gradient(135deg, ${primaryColor}, #147dd6)`, boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)" }}
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor}, #147dd6)`,
+                    boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)",
+                  }}
                 >
                   {step.number}
                 </span>

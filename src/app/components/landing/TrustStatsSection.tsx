@@ -26,7 +26,7 @@ export default function TrustStatsSection() {
 
   return (
     <section
-      className="py-12 md:py-20 text-white relative overflow-hidden"
+      className="py-10 md:py-16 text-white relative overflow-hidden"
       style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0c1a30 100%)" }}
     >
       {/* Soft top-edge transition from light sections above */}

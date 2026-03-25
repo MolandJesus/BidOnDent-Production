@@ -61,7 +61,7 @@ export default function HeroSection({
   };
 
   return (
-    <section className="pt-28 sm:pt-32 pb-20 sm:pb-28 overflow-hidden relative bg-gradient-to-br from-[#f8faff] via-[#f0f5fb] to-[#e8f0f8]">
+    <section className="pt-28 sm:pt-32 pb-14 sm:pb-20 overflow-hidden relative bg-gradient-to-br from-[#f8faff] via-[#f0f5fb] to-[#e8f0f8]">
       {/* Subtle blue atmospheric depth */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-15%,rgba(59,130,246,0.08),transparent_65%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_85%_80%,rgba(59,130,246,0.05),transparent_55%)]" />
