@@ -39,7 +39,7 @@ export default function RepairLifecycleTimeline({
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center border ${
                     isCompleted
-                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      ? "bg-blue-500 border-blue-500 text-white"
                       : isCurrent
                         ? "bg-blue-50 border-blue-300 text-blue-700"
                         : "bg-slate-100 border-slate-300 text-slate-500"

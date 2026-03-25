@@ -287,7 +287,7 @@ export default function CompetitorAnalysisScreen({
                     <h3 className="font-bold text-slate-900">{shop.name}</h3>
                     {shop.topPick && <CheckCircle className="h-4 w-4 text-blue-500" />}
                     {shop.watched && (
-                      <span className="rounded-full bg-amber-50 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700">
+                      <span className="rounded-full bg-blue-50 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-700">
                         Watched
                       </span>
                     )}
@@ -307,8 +307,8 @@ export default function CompetitorAnalysisScreen({
                 <div className="flex items-center gap-1">
                   {shop.trending === "up" && (
                     <>
-                      <TrendingUp className="h-5 w-5 text-green-500" />
-                      <span className="text-xs font-medium text-green-600">Rising</span>
+                      <TrendingUp className="h-5 w-5 text-blue-500" />
+                      <span className="text-xs font-medium text-blue-600">Rising</span>
                     </>
                   )}
                   {shop.trending === "down" && (
@@ -376,7 +376,7 @@ export default function CompetitorAnalysisScreen({
                   {shop.certifications.map((certification) => (
                     <span
                       key={certification}
-                      className="flex items-center gap-1 rounded bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700"
+                      className="flex items-center gap-1 rounded bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700"
                     >
                       <Award className="h-3 w-3" />
                       {certification}
@@ -392,7 +392,7 @@ export default function CompetitorAnalysisScreen({
                   }
                   className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
                     shop.watched
-                      ? "border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100"
+                      ? "border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
                       : "border border-slate-200/60 bg-white text-slate-700 hover:bg-white/40"
                   }`}
                 >

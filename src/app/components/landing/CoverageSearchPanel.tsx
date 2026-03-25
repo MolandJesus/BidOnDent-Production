@@ -149,11 +149,11 @@ export default function CoverageSearchPanel({
             "mt-4 rounded-[1.35rem] border px-4 py-3 text-sm",
             hasCoverageSignal
               ? tone === "light"
-                ? "border-emerald-200/80 bg-emerald-50/90 text-emerald-900"
-                : "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
+                ? "border-blue-200/80 bg-blue-50/90 text-blue-900"
+                : "border-blue-400/20 bg-blue-500/10 text-blue-200"
               : tone === "light"
-                ? "border-amber-200/80 bg-amber-50/90 text-amber-900"
-                : "border-amber-300/20 bg-amber-500/10 text-amber-200"
+                ? "border-slate-200/80 bg-slate-50/90 text-slate-700"
+                : "border-slate-400/20 bg-slate-500/10 text-slate-300"
           )}
         >
           {hasCoverageSignal
