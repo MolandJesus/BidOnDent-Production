@@ -28,7 +28,7 @@ export default function MapPartnerShopMarkers({
             <CircleMarker
               key={shopKey}
               center={[shop.lat, shop.lng]}
-              radius={isNavigationPresentation ? 16 : isSelected ? 11 : 8}
+              radius={isNavigationPresentation ? 18 : isSelected ? 16 : 14}
               eventHandlers={
                 onSelectShop
                   ? {
@@ -53,7 +53,7 @@ export default function MapPartnerShopMarkers({
                   {shop.dataMode === "demo" ? <div>Demo map entry</div> : null}
                   <div>{shop.countyLabel}</div>
                   <div>{shop.label}</div>
-                  <div>Rating: {shop.rating.toFixed(1)}</div>
+                  <div>Rating: {(shop.rating ?? 0).toFixed(1)}</div>
                   {shop.addressLine ? <div>{shop.addressLine}</div> : null}
                   {shop.specialties.length > 0 ? (
                     <div>Focus: {shop.specialties.slice(0, 3).join(" • ")}</div>

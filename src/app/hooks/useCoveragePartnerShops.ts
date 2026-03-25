@@ -28,7 +28,7 @@ function mapPartnerShopRecords(publicShops: PartnerShopMapRecord[]): CoveragePar
         phoneNumber: shop.phone_number || undefined,
         email: shop.email || undefined,
         specialties: shop.specialties || [],
-        rating: shop.rating || 4.6,
+        rating: shop.rating ?? 4.6,
       };
     })
     .filter(Boolean) as CoveragePartnerShop[];
