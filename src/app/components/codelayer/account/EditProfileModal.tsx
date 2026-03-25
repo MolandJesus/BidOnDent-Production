@@ -44,7 +44,7 @@ export default function EditProfileModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bd-glass-floating rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl z-10">
+        <div className="sticky top-0 bg-white/80 backdrop-blur-sm border-b border-blue-100/50 px-6 py-4 rounded-t-2xl z-10">
           <div className="flex justify-between items-center">
             <h2 className="font-bold text-gray-900">Edit Profile</h2>
             <button

@@ -272,7 +272,7 @@ export default function InsurerNewClaimScreen({
                     </div>
                   </div>
 
-                  <div className="mb-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="mb-3 p-3 bg-slate-50/80 rounded-lg">
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div>
                         <p className="text-gray-600 text-xs">Partner Since</p>

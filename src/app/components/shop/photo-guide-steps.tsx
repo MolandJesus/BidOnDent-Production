@@ -96,7 +96,7 @@ export function buildPhotoGuideSteps({
       content: (
         <div className="space-y-5">
           {isDesktop ? (
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 sm:p-6 border border-purple-200">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 border border-blue-200">
               <h3 className="font-bold text-lg mb-3 flex items-center">
                 <ImageIcon className="w-5 h-5 mr-2" />
                 Desktop Users: Two Options

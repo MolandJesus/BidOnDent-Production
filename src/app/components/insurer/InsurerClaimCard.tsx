@@ -91,7 +91,7 @@ export default function InsurerClaimCard({
       </div>
 
       {/* Policy & Vehicle Info */}
-      <div className="px-4 py-3 bg-gray-50">
+      <div className="px-4 py-3 bg-slate-50/80">
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
             <p className="text-xs text-gray-500">Policy Number</p>
