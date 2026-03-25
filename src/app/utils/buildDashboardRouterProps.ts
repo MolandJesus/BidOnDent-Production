@@ -152,8 +152,9 @@ export function buildDashboardRouterProps({
       reportId?: string;
     }) => {
       try {
+        const clerkId = userProfile?.id;
         const { updateBidStatus } = await import("../services/supabase/bids");
-        await updateBidStatus(details.bidId, "accepted");
+        await updateBidStatus(details.bidId, "accepted", clerkId);
 
         // Use the reportId passed from BidsScreen (sourced from live Supabase data)
         const reportId = details.reportId || navigation.selectedReportId || userData.reports[0]?.id;
@@ -175,7 +176,7 @@ export function buildDashboardRouterProps({
             );
             for (const competing of competingBids) {
               try {
-                await updateBidStatus(competing.id!, "rejected");
+                await updateBidStatus(competing.id!, "rejected", clerkId);
               } catch (rejectErr) {
                 console.error("Failed to reject competing bid:", competing.id, rejectErr);
               }
@@ -196,7 +197,7 @@ export function buildDashboardRouterProps({
     onRejectBid: async (details: { bidId: string; shopName: string }) => {
       try {
         const { updateBidStatus } = await import("../services/supabase/bids");
-        await updateBidStatus(details.bidId, "rejected");
+        await updateBidStatus(details.bidId, "rejected", userProfile?.id);
         // Update local bids state so UI reflects the change immediately
         userData.setBids(
           userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))

@@ -128,7 +128,7 @@ export function useAppHandlers({
     try {
       // Import submitBid from supabase/bids
       const { submitBid } = await import("../services/supabase/bids");
-      const savedBid = await submitBid(bid as any);
+      const savedBid = await submitBid(bid as any, userId);
       if (savedBid) {
         addActivity(
           "bid_submitted",

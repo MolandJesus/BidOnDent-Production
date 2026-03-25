@@ -57,6 +57,7 @@ import {
   saveShopProfile,
 } from './handlers/network_profiles.ts'
 import { getUserProfile, saveUserProfile } from './handlers/profiles.ts'
+import { createBid, getBids, updateBidStatus, deleteBid } from './handlers/bids.ts'
 
 console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
 ;(async () => {
@@ -226,6 +227,24 @@ Deno.serve(async (req) => {
       const reportId = path.split('/').pop()
       const clerkUserId = url.searchParams.get('clerkUserId')
       return await deleteReport(reportId, clerkUserId, supabase, respond)
+    }
+
+    if (path === '/bids' && req.method === 'POST') {
+      return await createBid(req, supabase, respond)
+    }
+
+    if (path === '/bids' && req.method === 'GET') {
+      return await getBids(req, supabase, respond)
+    }
+
+    if (path.startsWith('/bids/') && req.method === 'PUT') {
+      const bidId = path.split('/').pop()
+      return await updateBidStatus(req, bidId, supabase, respond)
+    }
+
+    if (path.startsWith('/bids/') && req.method === 'DELETE') {
+      const bidId = path.split('/').pop()
+      return await deleteBid(req, bidId, supabase, respond)
     }
 
     return respond({ error: 'Not found', path }, 404)

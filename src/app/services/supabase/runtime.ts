@@ -40,6 +40,7 @@ export const SUPABASE_EDGE_ROUTES = {
     deleteAccount: "/delete-account",
     trackLogin: "/track-login",
   },
+  bids: "/bids",
   cleanupOldReports: "/cleanup-old-reports",
   deleteVehicle: "/delete-vehicle",
   directoryInventory: "/directory-inventory",

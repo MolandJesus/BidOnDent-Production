@@ -81,3 +81,80 @@ export async function getBids(
     return respond({ error: error.message }, 500);
   }
 }
+
+export async function updateBidStatus(
+  req: Request,
+  bidId: string | undefined,
+  supabase: SupabaseClient,
+  respond: RespondFunction
+): Promise<Response> {
+  try {
+    if (!bidId) {
+      return respond({ error: "Missing bid ID" }, 400);
+    }
+
+    const body = await req.json();
+    const { status, clerkUserId } = body;
+
+    if (!status || !["accepted", "rejected"].includes(status)) {
+      return respond({ error: "Invalid status. Must be 'accepted' or 'rejected'" }, 400);
+    }
+
+    if (!clerkUserId) {
+      return respond({ error: "Missing clerkUserId" }, 400);
+    }
+
+    const { data, error } = await supabase
+      .from("bids")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", bidId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error updating bid status:", error);
+      return respond({ error: error.message }, 500);
+    }
+
+    return respond({ success: true, bid: data });
+  } catch (error: any) {
+    console.error("Error in update bid status endpoint:", error);
+    return respond({ error: error.message }, 500);
+  }
+}
+
+export async function deleteBid(
+  req: Request,
+  bidId: string | undefined,
+  supabase: SupabaseClient,
+  respond: RespondFunction
+): Promise<Response> {
+  try {
+    if (!bidId) {
+      return respond({ error: "Missing bid ID" }, 400);
+    }
+
+    const url = new URL(req.url);
+    const clerkUserId = url.searchParams.get("clerkUserId");
+
+    if (!clerkUserId) {
+      return respond({ error: "Missing clerkUserId" }, 400);
+    }
+
+    const { error } = await supabase
+      .from("bids")
+      .delete()
+      .eq("id", bidId)
+      .eq("clerk_shop_user_id", clerkUserId);
+
+    if (error) {
+      console.error("Error deleting bid:", error);
+      return respond({ error: error.message }, 500);
+    }
+
+    return respond({ success: true });
+  } catch (error: any) {
+    console.error("Error in delete bid endpoint:", error);
+    return respond({ error: error.message }, 500);
+  }
+}
