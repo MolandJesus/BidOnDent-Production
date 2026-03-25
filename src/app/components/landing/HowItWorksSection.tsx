@@ -55,7 +55,7 @@ export default function HowItWorksSection({
         </div>
 
         <div
-          className={`text-center mb-8 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
           <h3 className="text-3xl sm:text-4xl font-bold mb-4">How It Works</h3>
@@ -76,19 +76,19 @@ export default function HowItWorksSection({
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`bd-glass-card p-5 sm:p-8 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card p-4 sm:p-8 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: `${0.3 + index * 0.15}s` }}
             >
               {/* Icon */}
               <div
-                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-sm"
+                className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-sm"
                 style={{
                   backgroundColor: `${primaryColor}18`,
                   border: `1px solid ${primaryColor}15`,
                   boxShadow: "0 0 16px rgba(59, 130, 246, 0.08)",
                 }}
               >
-                <step.icon className="w-8 h-8 text-blue-500" />
+                <step.icon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-500" />
               </div>
 
               {/* Step number badge - below icon */}
