@@ -141,7 +141,7 @@ export default function ShopActiveJobsScreen({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bd-glass-panel sticky top-0 z-10 border-b border-slate-200/60">
+      <div className="bd-glass-panel sticky top-0 z-10 border-b border-blue-200/30" style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}>
         <div className="px-4 py-4">
           <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>
             Active Jobs
@@ -156,7 +156,7 @@ export default function ShopActiveJobsScreen({
                 placeholder="Search by customer, vehicle, or job type..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full pl-10 pr-4 py-2 border border-blue-200/50 rounded-xl bg-white/60 backdrop-blur-sm focus:border-blue-300 focus:ring-1 focus:ring-blue-200/50 outline-none transition-colors"
               />
             </div>
           </div>
@@ -189,9 +189,9 @@ export default function ShopActiveJobsScreen({
       <div className="px-4 py-4 space-y-4">
         {filteredJobs.length === 0 ? (
           <div className="bd-glass-card p-5 sm:p-8 text-center">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-            <p className="text-gray-600">No active jobs found</p>
-            <p className="text-sm text-gray-500 mt-1">Try adjusting your filters or search</p>
+            <AlertCircle className="w-12 h-12 text-blue-400/70 mx-auto mb-3" />
+            <p className="text-slate-700">No active jobs found</p>
+            <p className="text-sm text-slate-500 mt-1">Try adjusting your filters or search</p>
           </div>
         ) : (
           filteredJobs.map((job) => (

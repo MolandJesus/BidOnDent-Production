@@ -117,10 +117,10 @@ export default function BidsScreen({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, delay: 0.05 }}
-          className="rounded-2xl border border-dashed border-slate-300/60 bg-slate-50/50 p-5 sm:p-6 text-center"
+          className="bd-glass-card p-5 sm:p-6 text-center"
         >
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <Clock className="h-6 w-6 text-slate-500" />
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
+            <Clock className="h-6 w-6 text-blue-500" />
           </div>
           <h2 className="text-lg font-semibold text-slate-900">Waiting for shop responses</h2>
           <p className="mt-2 text-sm text-slate-600">

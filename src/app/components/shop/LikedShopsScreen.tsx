@@ -119,7 +119,7 @@ export default function LikedShopsScreen({
       <div className="px-4 py-4">
         {savedListings.length === 0 ? (
           <div className="rounded-[28px] bd-glass-card p-5 sm:p-8 text-center">
-            <Heart className="mx-auto mb-4 h-16 w-16 text-slate-300" />
+            <Heart className="mx-auto mb-4 h-16 w-16 text-blue-400/70" />
             <h3 className="text-xl font-semibold text-slate-900">No saved shops yet</h3>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">
               Save shops from the Smart Shop Map to keep a customer shortlist for bids, follow-up,

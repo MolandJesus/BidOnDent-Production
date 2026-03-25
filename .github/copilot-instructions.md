@@ -155,4 +155,63 @@ A future AI or human should be able to read one Quick Card and one Upgrade Check
 6. Architecture decisions made
 7. Doc updates made
 8. What this unlocks next
+
 9. Best next immediate pass
+
+## Map-First Product Directive (Critical Override)
+
+- The map is the primary product surface, not a supporting component.
+- Every pass must move the system closer to:
+  - report -> map -> shop -> action loop
+
+### Core Loop Requirement
+
+Every major pass must strengthen at least one part of:
+
+- Report creation -> location attached
+- Report visibility on map
+- Shop awareness (map-based)
+- Shop action (bid / accept)
+- User decision (selection)
+
+If a pass does NOT improve this loop -> do not execute it.
+
+## Controlled Design Rules (Apple Maps Direction)
+
+Design work is allowed ONLY when tied to product function.
+
+- Target aesthetic:
+  - dark mode
+  - royal blue accents
+  - liquid glass overlays
+  - Apple Maps-style hierarchy
+
+- Map UI rules:
+  - Map must feel immersive (not boxed in cards)
+  - Overlays must sit ON the map, not around it
+  - Clear visual distinction:
+    - shops != reports
+
+- Allowed design changes:
+  - spacing fixes
+  - touch target improvements
+  - visual hierarchy improvements
+  - map clarity improvements
+
+- NOT allowed:
+  - random UI polish
+  - typography tweaks unrelated to usability
+  - redesigning sections not tied to map experience
+
+## Anti-Drift Enforcement
+
+If the system begins:
+
+- adding widgets
+- improving cards unrelated to map
+- running polish sweeps
+
+It must STOP and return to:
+
+- map interaction
+- product loop completion

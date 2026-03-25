@@ -61,8 +61,8 @@ export default function StepPhotos({
       )}
 
       {photos.length === 0 && (
-        <div className="mb-4 sm:mb-6 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/50 px-3 py-6 sm:px-4 sm:py-10 text-center">
-          <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-slate-400 mx-auto mb-2" />
+        <div className="mb-4 sm:mb-6 bd-glass-card px-3 py-6 sm:px-4 sm:py-10 text-center">
+          <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-blue-400/70 mx-auto mb-2" />
           <p className="text-slate-700 font-medium text-sm sm:text-base">No photos added yet</p>
           <p className="text-slate-500 text-xs sm:text-sm mt-1">Tap camera or upload to continue</p>
         </div>
@@ -104,6 +104,7 @@ export default function StepPhotos({
       {photos.length < 6 && (
         <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-6">
           <button
+            type="button"
             onClick={onOpenCamera}
             className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
@@ -111,6 +112,7 @@ export default function StepPhotos({
             <span className="text-xs sm:text-sm text-slate-700 font-medium">Take Photo</span>
           </button>
           <button
+            type="button"
             onClick={onOpenFilePicker}
             className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
@@ -141,15 +143,17 @@ export default function StepPhotos({
       <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-white/95 via-white/80 to-transparent px-2 pt-2 pb-[env(safe-area-inset-bottom,0.75rem)] sm:static sm:bg-none sm:p-0 border-t border-slate-200/60">
         <div className="flex space-x-2 sm:space-x-3 max-w-md mx-auto">
           <button
+            type="button"
             onClick={onBack}
-            className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors"
+            className="flex-1 py-3 px-4 min-h-[44px] border border-blue-200/40 rounded-xl font-medium hover:bg-blue-50/40 transition-colors"
           >
             Back
           </button>
           <button
+            type="button"
             onClick={onContinue}
-            className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+            className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`, boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)" }}
             disabled={photos.length < 1}
           >
             Continue

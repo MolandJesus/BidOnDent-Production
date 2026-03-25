@@ -14,7 +14,7 @@ export default function StepComplete({
   return (
     <div className="px-4 md:px-6 py-6 md:py-8">
       <div className="text-center mb-8">
-        <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-500 shadow-lg shadow-emerald-500/30">
+        <div className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-500" style={{ boxShadow: "0 8px 24px rgba(16, 185, 129, 0.30), 0 0 40px rgba(16, 185, 129, 0.12)" }}>
           <Check className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Report submitted</h2>
@@ -30,7 +30,7 @@ export default function StepComplete({
         </h3>
         <div className="space-y-3">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5" style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.08)" }}>
               <Wrench className="w-4 h-4 text-blue-600" />
             </div>
             <div>
@@ -41,7 +41,7 @@ export default function StepComplete({
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5" style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.08)" }}>
               <MessageSquare className="w-4 h-4 text-blue-600" />
             </div>
             <div>
@@ -52,7 +52,7 @@ export default function StepComplete({
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0 mt-0.5" style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.08)" }}>
               <Clock className="w-4 h-4 text-blue-600" />
             </div>
             <div>
@@ -66,17 +66,19 @@ export default function StepComplete({
       </div>
 
       <button
+        type="button"
         onClick={onViewReports}
-        className="w-full py-3 px-4 rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-md"
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+        className="w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`, boxShadow: "0 4px 20px rgba(37, 99, 235, 0.28), 0 0 32px rgba(59, 130, 246, 0.10)" }}
       >
         View My Reports
         <ArrowRight className="w-4 h-4" />
       </button>
 
       <button
+        type="button"
         onClick={onBackToDashboard}
-        className="w-full py-2.5 px-4 rounded-xl border border-slate-200/60 font-medium hover:bg-slate-50/60 transition-colors"
+        className="w-full py-3 px-4 min-h-[44px] rounded-xl border border-blue-200/40 font-medium hover:bg-blue-50/40 transition-colors"
       >
         Back to Dashboard
       </button>

@@ -68,13 +68,13 @@ export default function ShopMapWidget({ primaryColor, secondaryColor, onViewShop
         {operatingRegions.slice(0, 3).map((region) => (
           <span
             key={region}
-            className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs text-slate-600"
+            className="rounded-full border border-blue-200/50 bg-blue-50/40 px-2.5 py-0.5 text-xs text-slate-600"
           >
             {region}
           </span>
         ))}
         {operatingRegions.length > 3 && (
-          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs text-slate-500">
+          <span className="rounded-full border border-blue-200/50 bg-blue-50/40 px-2.5 py-0.5 text-xs text-slate-500">
             +{operatingRegions.length - 3} more
           </span>
         )}
@@ -88,8 +88,8 @@ export default function ShopMapWidget({ primaryColor, secondaryColor, onViewShop
         </div>
       )}
 
-      <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5">
-        <MapPinned className="h-4 w-4 text-slate-400" />
+      <div className="mt-4 flex items-center gap-2 rounded-xl bg-blue-50/30 border border-blue-200/30 px-3 py-2.5">
+        <MapPinned className="h-4 w-4 text-blue-400" />
         <p className="text-xs text-slate-500">
           Service-area management coming soon. Your shop will appear on customer maps automatically.
         </p>

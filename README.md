@@ -1,20 +1,33 @@
-# 🚗 BidOnDent - Auto Repair Bidding Platform
+# 🚗 BidOnDent — Auto Repair Bidding Platform
 
-**An intelligent platform connecting customers needing car repairs with local auto body shops and insurance companies.**
+> **The map-first marketplace connecting customers, body shops, and insurers.**
 
-Documentation governance and active source-of-truth references are maintained in `docs/README.md`.
+**Active branch:** `horizon/bidondent-map-final` — the final product branch. All future work continues here.
 
-Map platform source-of-truth planning is maintained in:
+---
 
-- `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
-- `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+## Quick Links
 
-Map end-state quality goals include:
+| Resource | Path |
+|----------|------|
+| Build Progress | `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` |
+| Map Master Plan | `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` |
+| Map Tracker | `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` |
+| Product Brain | `docs/BIDONDENT_PRODUCT_BRAIN.md` |
+| Doc Governance | `docs/README.md` |
 
-- premium liquid-glass design and smooth responsive interaction
-- real routing/search/place data in production flows
-- high-variety natural turn-by-turn guidance (1,000+ scenario responses target)
-- route-launch continuity from any searchable shop card, including deterministic placeholder coords for demo/manual entries until full geocoding and in-app turn-by-turn are complete
+## Design Identity
+
+- **Map is the product** — everything floats above geography
+- **Blue system**: royal blue (identity/action), soft blue (atmosphere), navy (depth)
+- **Liquid glass**: warm, translucent, breathable overlays (`bd-glass-panel`, `bd-glass-card`)
+- **Premium + calm**: no harsh borders, no flat white cards, no cramped layouts
+
+## Build Status
+
+- **189 passes** completed (118% of original 160-pass plan)
+- **0 build errors**, **0 warnings**, **1.9s** build time
+- Vite + React + TypeScript + Supabase + Apple MapKit JS
 
 ---
 
@@ -658,3 +671,17 @@ See [docs/ATTRIBUTIONS.md](docs/ATTRIBUTIONS.md) for full credits and licenses.
 ---
 
 **Built with ❤️ for seamless auto repair bidding**
+
+---
+
+## 🚀 Latest Productization Passes (March 2026)
+
+- **Pass 178 — Map-first overlays, dashboard bugfixes, mobile fix:**
+  - HomeScreen refactored for map-first overlays, floating panels
+  - DashboardHeader/logo micro-fix, removed blocky blue background
+  - Mobile loading bug and report marker tap-to-open fixed
+  - Strict verification and doc update
+- **Pass 179 — Shop loop completion (spatial shop actions, map-driven shop bid/accept):**
+  - In progress: Begin spatial shop action loop, map-driven shop bid/accept, shop overlays, and action flows
+
+See `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, and `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` for full pass logs and details.

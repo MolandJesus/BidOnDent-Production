@@ -52,7 +52,8 @@ export default function BenefitsSection({
 
   return (
     <section
-      className="pt-10 pb-16 md:pt-16 md:pb-24 bg-gradient-to-br from-[#fafbff] via-[#f4f3ff] to-[#eeeeff]"
+      className="pt-10 pb-16 md:pt-16 md:pb-24"
+      style={{ background: "linear-gradient(180deg, #ffffff 0%, #f5f8fd 40%, #eef4fb 100%)" }}
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">

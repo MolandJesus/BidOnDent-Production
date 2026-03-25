@@ -62,11 +62,17 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
         localStorage.getItem(signedInEmailCacheKey) ||
         localStorage.getItem(lastActiveCacheKey) ||
         localStorage.getItem(STORAGE_KEYS.USER_DATA);
+      console.log("[DEBUG] useUserData: Checking localStorage cache", {
+        identityCacheKey,
+        signedInEmailCacheKey,
+        lastActiveCacheKey,
+        cachedData,
+      });
       if (cachedData) {
         try {
           const userData: UserData = JSON.parse(cachedData);
           if (userData.redirectInfo && userData.userInfo?.email) {
-            if (import.meta.env.DEV) console.log("Loading cached data for instant display...");
+            console.log("[DEBUG] useUserData: Loaded cached data", userData);
             setUserInfo(userData.userInfo || { name: "", email: "", profileImage: "" });
             setVehicles(userData.vehicles || []);
             setReports(userData.reports || []);
@@ -81,26 +87,29 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             setPhotoStorage(cachedPhotoStorage);
           }
         } catch (error) {
-          if (import.meta.env.DEV) console.error("Error loading cached data:", error);
+          console.error("[DEBUG] useUserData: Error loading cached data:", error);
         }
       }
 
       // Step 2: Check if we have a Clerk-backed website identity
       if (!signedInEmail || !clerkUserId) {
-        if (import.meta.env.DEV)
-          console.log("No Clerk identity available yet - skipping cloud load");
+        console.log("[DEBUG] useUserData: No Clerk identity available yet - skipping cloud load");
         setReportsLoading(false);
         return;
       }
 
       // Step 3: Load from SUPABASE (PRIMARY source of truth)
       isLoadingFromCloudRef.current = true;
-      if (import.meta.env.DEV) console.log("Loading data from Supabase (PRIMARY source)...");
+      console.log("[DEBUG] useUserData: Loading data from Supabase (PRIMARY source)...", {
+        clerkUserId,
+        websiteUserKey,
+        signedInEmail,
+      });
 
       try {
         const email = signedInEmail;
         if (!email) {
-          if (import.meta.env.DEV) console.error("No email in identity");
+          console.error("[DEBUG] useUserData: No email in identity");
           return;
         }
 
@@ -112,11 +121,17 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
         }
 
         // Load profile
+        console.log("[DEBUG] useUserData: Calling getProfile", {
+          clerkUserId,
+          email,
+          websiteUserKey,
+        });
         const profileData = await getProfile({
           clerkUserId,
           email,
           websiteUserKey,
         });
+        console.log("[DEBUG] useUserData: getProfile result", profileData);
 
         if (profileData) {
           if (import.meta.env.DEV) console.log("Profile loaded from Supabase:", profileData);

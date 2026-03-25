@@ -78,6 +78,8 @@ export default function DashboardRouter({
   onReportSubmit,
   demoMode,
   originalAccountType,
+  reportsLoading,
+  reportsError,
 }: DashboardRouterProps) {
   // Fetch live bids from Supabase for the selected report
   // Falls back to the customer's most recent report if no specific report is selected
@@ -281,8 +283,8 @@ export default function DashboardRouter({
                 ...report,
                 photos: photoStorage[report.id] || report.photos || [],
               }))}
-              reportsLoading={props.reportsLoading}
-              reportsError={props.reportsError}
+              reportsLoading={reportsLoading}
+              reportsError={reportsError}
               onBack={() => onViewModeChange("dashboard")}
               onSelectReport={(reportId) => {
                 onSelectReport(reportId);

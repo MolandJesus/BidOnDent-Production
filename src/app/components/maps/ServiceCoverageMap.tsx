@@ -25,6 +25,7 @@ import MapSurfaceHeaderBadges from "./MapSurfaceHeaderBadges";
 import MapSurfaceStatusBar from "./MapSurfaceStatusBar";
 import { getMapSurfaceTheme, resolveMapSurfaceTone } from "./mapSurfaceTheme";
 import { mapTileLayers } from "./mapTileLayers";
+import MapReportMarkers from "./MapReportMarkers";
 import { runMapPerformanceDiagnosticsChecks } from "../../services/navigation/mapPerformanceDiagnostics.check";
 import { runNavigationDiagnosticsChecks } from "../../services/navigation/navigationDiagnostics.check";
 import { runProviderHealthDiagnosticsChecks } from "../../services/navigation/providerHealthDiagnostics.check";
@@ -355,6 +356,9 @@ export default function ServiceCoverageMap({
           isNavigationPresentation={isNavigationPresentation}
           onSelectShop={onSelectShop}
         />
+
+        {/* PASS 176: Render report markers on the map (not in navigation mode) */}
+        {!isNavigationPresentation && <MapReportMarkers />}
 
         {!isNavigationPresentation && discoveryPlaces.length > 0 ? (
           <MapDiscoveryPlaceMarkers

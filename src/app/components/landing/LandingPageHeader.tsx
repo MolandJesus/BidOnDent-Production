@@ -42,9 +42,10 @@ export default function LandingPageHeader({
           className="flex items-center gap-2.5 py-2 px-2 rounded-xl cursor-pointer hover:bg-white/20 active:bg-white/30 transition-colors duration-200"
         >
           <span
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-white"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+              boxShadow: "0 2px 12px rgba(37, 99, 235, 0.25), 0 0 20px rgba(59, 130, 246, 0.08)",
             }}
           >
             <Car className="w-5 h-5" />

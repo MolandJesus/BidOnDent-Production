@@ -102,24 +102,30 @@ export default function DashboardLayout({
   const surfaceTheme = getGlobalSurfaceTheme("light");
 
   return (
-    <div className="min-h-screen" style={{ background: surfaceTheme.background }}>
-      <div className="md:flex md:min-h-screen">
-        <aside className="hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r md:border-slate-200/40">
-          <div className="px-6 py-6 border-b border-slate-200/40">
+    <div className="min-h-screen relative" style={{ background: surfaceTheme.background }}>
+      {/* Map background layer (full-bleed, fixed, z-0) — deep ocean atmosphere */}
+      <div className="fixed inset-0 z-0" id="dashboard-map-bg" style={{ background: "radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)" }} />
+      {/* Floating panel container (z-10) */}
+      <div className="relative z-10 md:flex md:min-h-screen">
+        <aside className="hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r md:border-blue-200/30" style={{ background: "linear-gradient(180deg, rgba(240, 248, 255, 0.82) 0%, rgba(235, 245, 255, 0.72) 100%)" }}>
+          <div className="px-6 py-6 border-b border-blue-200/30">
             <button
               onClick={onLogoClick}
-              className="bd-glass-control--utility flex items-center gap-2.5 cursor-pointer"
+              className="bd-glass-control--utility flex items-center gap-2.5 cursor-pointer bg-transparent backdrop-blur-xl shadow-none"
               type="button"
+              style={{ boxShadow: "none", background: "transparent" }}
             >
               <span
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-sm"
+                className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={{
-                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                  background: "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(14, 165, 233, 0.10) 100%)",
+                  border: "1px solid rgba(37, 99, 235, 0.22)",
+                  boxShadow: "0 0 12px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                 }}
               >
-                <Car className="w-5 h-5" />
+                <Car className="w-5 h-5" style={{ color: "#2563eb" }} />
               </span>
-              <h1 className="text-2xl font-bold tracking-tight">
+              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-1">
                 <span
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
@@ -130,8 +136,8 @@ export default function DashboardLayout({
                 >
                   Bid
                 </span>
-                <span style={{ color: "#70c0ee" }}>On</span>
-                <span className="text-slate-800">Dent</span>
+                <span style={{ color: "#2563eb", fontWeight: 700 }}>On</span>
+                <span className="text-slate-900">Dent</span>
               </h1>
             </button>
           </div>
@@ -155,6 +161,7 @@ export default function DashboardLayout({
                     isActive
                       ? {
                           background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                          boxShadow: "0 2px 16px rgba(37, 99, 235, 0.28), 0 0 24px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
                         }
                       : {}
                   }
@@ -201,7 +208,7 @@ export default function DashboardLayout({
             )}
           </nav>
 
-          <div className="p-3 border-t border-slate-200/40">
+          <div className="p-3 border-t border-blue-200/30">
             <button
               onClick={() => {
                 setShowTopProfileMenu(false);
@@ -237,7 +244,7 @@ export default function DashboardLayout({
         </aside>
 
         <div className="flex-1 min-w-0">
-          <header className="sticky top-0 z-40 bd-glass-panel rounded-none border-0 border-b border-slate-200/40">
+          <header className="sticky top-0 z-40 bd-glass-panel rounded-none border-0 border-b border-blue-200/30" style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.05), inset 0 -1px 0 rgba(147, 197, 253, 0.12)" }}>
             <div className="px-4 md:px-8 py-3.5 flex items-center justify-between gap-3">
               <button
                 onClick={onLogoClick}
@@ -256,8 +263,8 @@ export default function DashboardLayout({
               </button>
 
               <div className="hidden md:block">
-                <p className="text-sm text-slate-500">Dashboard</p>
-                <h2 className="text-xl font-semibold text-slate-900">{activeTabLabel}</h2>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">BidOnDent</p>
+                <h2 className="text-xl font-semibold text-slate-900 leading-tight">{activeTabLabel}</h2>
               </div>
 
               <div className="flex items-center gap-2.5 ml-auto">

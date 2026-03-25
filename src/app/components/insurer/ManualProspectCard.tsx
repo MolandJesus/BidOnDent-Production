@@ -8,8 +8,8 @@ type ManualProspectCardProps = {
 
 export default function ManualProspectCard({ prospect, onDirections }: ManualProspectCardProps) {
   return (
-    <article className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-100 p-4">
+    <article className="overflow-hidden bd-glass-card">
+      <div className="border-b border-blue-200/30 p-4">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold text-slate-950">{prospect.name}</h3>
           <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700">
@@ -54,6 +54,7 @@ export default function ManualProspectCard({ prospect, onDirections }: ManualPro
               <span
                 key={specialty}
                 className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
+                style={{ boxShadow: "0 0 8px rgba(59, 130, 246, 0.06)" }}
               >
                 {specialty}
               </span>

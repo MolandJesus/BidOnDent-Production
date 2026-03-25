@@ -1,8 +1,77 @@
+## Passes 181–185 — Design Consolidation + Infrastructure (2026-03-24)
+
+**Summary:** 8-pass design consolidation sweep covering glass system unification, blue token upgrade, CTA hierarchy, empty state visibility, report flow touch targets, landing page consistency, Sentry project creation, and MCP plugin integration planning.
+
+- **Pass 181**: Sign Out/Delete Account button hierarchy, Bids empty state glass
+- **Pass 182A-E**: Glass system unification, map overlay sidebar offset, header/logo refinement, blue token upgrade, card remnant removal (ChatGPT-validated)
+- **Pass 183**: Critical empty state fixes (ShopDirectoryListBody → `bd-glass-card`, dim icon colors → `text-blue-400/70`)
+- **Pass 184**: Landing CTA button → pill shape, vertical gradient, proportional sizing (matches hero)
+- **Pass 185**: Report creation flow — all buttons `min-h-[44px]`, `py-3` consistent padding, StepPhotos empty state → glass
+- **Infrastructure**: Sentry project created (`bidondent-production`), DSN wired to `.env`, MCP plugin integration plan written
+
+**Files touched (across all passes):** 16 files — `AccountMenu.tsx`, `BidsScreen.tsx`, `HomeScreenSections.tsx`, `HomeScreen.tsx`, `DashboardLayout.tsx`, `MobileBottomNav.tsx`, `CustomerMapWidget.tsx`, `theme.css`, `ShopDirectoryListBody.tsx`, `LikedShopsScreen.tsx`, `InsurerClaimsScreen.tsx`, `ShopActiveJobsScreen.tsx`, `CTASection.tsx`, `StepDamageArea.tsx`, `StepPhotos.tsx`, `StepDescription.tsx`, `StepComplete.tsx`, `StepVehicleInfo.tsx`
+
+**Build:** ✓ 0 errors · 1.88s
+
+### Current Map State (2026-03-25 — Screenshot Verified)
+
+The Operating Regions / coverage map section is the **strongest visual identity anchor** on the entire site. Confirmed working:
+- Interactive Leaflet map with day/night/satellite/focus/overview/expand modes
+- ZIP search with radius selector (20-mile default)
+- County grid: Rockland, Dutchess, Westchester, Nassau, Orange, Putnam
+- Partner shop list with distance + navigation handoff (Apple Maps / Google Maps / Waze)
+- Performance metrics overlay (zoom/pan budget, provider health)
+- "BIDONDENT MAPS" branded overlay badges
+- Dark navy background anchors the product identity
+
+**Map-first gap remaining:** Dashboard map widget exists but dashboard still feels like "UI with a map" rather than "map with floating panels." Next priority: map dominance finalization — reduce visual weight of non-map dashboard elements.
+
+**Runtime issue:** "Can't find variable: props" crash affects navigation transitions, possibly in `ReportDetailDrawer.tsx` or `MapReportMarkers.tsx`. Must fix before map interaction loop passes.
+
+**Best next pass:** Fix props crash → Map dominance finalization → Interaction flow smoothing
+
+---
+
+## Pass 179 — Shop loop completion (spatial shop actions, map-driven overlays) (2026-03-24)
+
+- **Why this pass was chosen:** Map-driven shop actions (bid/accept) were not surfaced as primary overlays, limiting mobile and map-first flows. Needed to complete the spatial shop loop and ensure all actions are accessible from the map.
+- **What changed:**
+  - Added a floating shop action overlay to `ShopDirectoryMapOverlays.tsx`.
+  - Overlay provides large, mobile-first "Place Bid" and "Accept" buttons, always accessible when a shop and route are selected.
+  - Buttons are glass/royal blue, 44x44px+ touch targets, and follow the design system.
+  - Actions dispatch custom events for integration with the rest of the shop flow.
+- **Files touched:** `ShopDirectoryMapOverlays.tsx`
+- **Validation:** Build: ✓ 0 errors · 990.81 KB · 2.08s. Diagnostics: 0. Spellcheck: 0. Overlay appears and works on mobile and desktop.
+- **What this unlocks:** Shop actions are now map-native, mobile-first, and always accessible. Enables customer decision loop and navigation flow hardening.
+- **Best next pass:** Pass 180 — Customer decision loop (map-driven bid/action).
+
+## Pass 178 — Map-first overlays, dashboard bugfixes, mobile fix (2026-03-24)
+
+**Status:** Complete
+
+**Summary:**
+
+- Refactored HomeScreen and overlays for map-first, floating panel structure
+- Fixed dashboard header/logo, removed blocky blue background
+- Fixed mobile loading bug and report marker tap-to-open
+- Strict verification and doc update
+
+**Files touched:** src/app/components/codelayer/HomeScreen.tsx, src/app/components/maps/MapReportMarkers.tsx, src/app/components/dashboard/DashboardHeader.tsx
+
+**Validation:** Build 1.81s, 0 errors. Diagnostics: 0. Spellcheck: 0.
+
+---
+
+## Pass 179 — Shop loop completion (spatial shop actions, map-driven shop bid/accept) (2026-03-24)
+
+**Status:** ✅ Complete (see above)
+
 ---
 
 ## Known Incomplete Fixes — Mobile Screenshot Audit (2026-03-23)
 
 ### ~~"Coverage focus" Fallback Label (Pass 88 Incomplete)~~ ✅ RESOLVED (Pass 113)
+
 - ~~**MapSearchTargetMarkers.tsx**: `activeSearchTarget.county || "Coverage focus"`~~ → Now `"Service area"`
 - ~~**useCoverageNavigationExperience.ts**: Ultimate fallback label is still `"Coverage focus"`~~ → Now `"Service area"`
 - Pass 88 fixed 2 files; Pass 113 fixed remaining 2. All 4 files now consistent.

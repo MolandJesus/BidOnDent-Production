@@ -20,7 +20,7 @@ export type GlobalSurfaceTokens = {
 
 const toneTokens: Record<SurfaceTone, GlobalSurfaceTokens> = {
   light: {
-    background: "#eef2f7",
+    background: "linear-gradient(180deg, #eaf1fa 0%, #e4ecf6 40%, #dfe8f4 100%)",
     glassBg: "rgba(240, 248, 255, 0.74)",
     glassBorder: "rgba(219, 234, 254, 0.25)",
     text: "#0f172a",

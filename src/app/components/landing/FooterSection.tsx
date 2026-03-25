@@ -11,7 +11,8 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
 
   return (
     <footer
-      className="bg-gradient-to-b from-[#131122] to-[#0d0b18] text-gray-300 pt-16 pb-12 relative"
+      className="text-gray-300 pt-16 pb-12 relative"
+      style={{ background: "linear-gradient(180deg, #0a1628 0%, #071120 100%)" }}
       ref={footerRef}
     >
       {/* Top edge fade for smooth CTA transition */}

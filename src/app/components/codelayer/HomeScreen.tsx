@@ -62,92 +62,59 @@ export default function HomeScreen({
   originalAccountType,
   onExitDemoMode,
   reports = [],
-}: HomeScreenProps) {
-  const firstName = userInfo?.name?.trim()?.split(" ")[0] || "there";
-  const safeReports = Array.isArray(reports) ? reports : [];
-  const isNewUser = safeReports.length === 0;
-  const sortedReports = [...safeReports].sort((a, b) => {
-    const aTime = new Date(a?.submittedAt ?? 0).getTime();
-    const bTime = new Date(b?.submittedAt ?? 0).getTime();
-    return bTime - aTime;
-  });
-
-  const activeCount = sortedReports.filter((report) => {
-    const status = String(report?.status ?? "").toLowerCase();
-    return status !== "completed" && status !== "resolved";
-  }).length;
-  const completedCount = sortedReports.filter((report) => {
-    const status = String(report?.status ?? "").toLowerCase();
-    return status === "completed" || status === "resolved";
-  }).length;
-  const totalBids = sortedReports.reduce(
-    (count, report) => count + (Number(report?.bidsCount) || 0),
-    0
-  );
-
-  const stats = buildStats(userType, activeCount, completedCount, totalBids);
-
+}) {
+  // Derived variables for overlays and panels
+  const firstName = userInfo?.name?.split(" ")[0] || "User";
+  const isNewUser = Array.isArray(reports) && reports.length === 0;
+  const listHeader =
+    userType === "customer" ? "Your Reports" : userType === "shop" ? "Incoming Requests" : "Claims";
+  const sortedReports = Array.isArray(reports) ? reports : [];
+  const listViewAllAction = onViewAllReports;
+  const primaryAction = buildPrimaryAction(userType, { onStartReport, onCreateNewClaim });
+  const stats = buildStats(userType, reports);
   const quickActions = buildQuickActions(userType, {
-    onStartReport,
-    onViewBids,
     onConnectInsurance,
     onViewLikedShops,
-    onViewShops,
+    onViewBids,
     onViewRequests,
     onViewJobs,
+    onViewClaims,
+    onViewShops,
+    onCreateNewClaim,
     onViewCompetitors,
     onViewInsurers,
-    onViewClaims,
-    onCreateNewClaim,
   });
+  const activityItems = [];
 
-  const primaryAction = buildPrimaryAction(
-    userType,
-    onViewRequests,
-    onCreateNewClaim,
-    onStartReport
-  );
-
-  const listHeader = userType === "insurer" ? "Recent Claims" : "Recent Repair Requests";
-  const listViewAllAction = userType === "insurer" ? onViewClaims : onViewAllReports;
-
-  const activityItems = sortedReports.slice(0, 4).map((report) => {
-    const status = String(report?.status ?? "pending").toLowerCase();
-    const title = getReportTitle(report, userType);
-
-    if (status === "completed" || status === "resolved") {
-      return {
-        id: report.id,
-        label: `${title} marked as completed`,
-        time: formatDate(report?.submittedAt),
-        icon: CircleCheck,
-        tone: "text-emerald-600 bg-emerald-50",
-      };
-    }
-
-    if ((Number(report?.bidsCount) || 0) > 0) {
-      return {
-        id: report.id,
-        label: `New bid activity on ${title}`,
-        time: formatDate(report?.submittedAt),
-        icon: DollarSign,
-        tone: "text-blue-600 bg-blue-50",
-      };
-    }
-
-    return {
-      id: report.id,
-      label: `${title} is waiting for review`,
-      time: formatDate(report?.submittedAt),
-      icon: Clock,
-      tone: "text-amber-600 bg-amber-50",
-    };
-  });
-
+  // Map-first, floating overlays layout
   return (
-    <div className="space-y-4 md:space-y-5 pb-20 md:pb-10">
-      <section className="px-1 md:px-0">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="relative w-full h-full min-h-[80vh] flex flex-col items-center justify-start pb-20 md:pb-10">
+      {/* Map widget as hero floating panel — offset for sidebar on desktop */}
+      <div
+        className="fixed top-0 left-0 md:left-72 w-full md:w-[calc(100%-18rem)] z-20 flex flex-col items-center pointer-events-none"
+        style={{ paddingTop: "max(env(safe-area-inset-top), 1.5rem)" }}
+      >
+        <div className="w-full max-w-4xl px-2 md:px-6">
+          {userType === "shop" ? (
+            <ShopMapWidget
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+              onViewShops={onViewShops}
+            />
+          ) : userType === "insurer" ? (
+            <InsurerMapWidget
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+              onViewShops={onViewShops}
+            />
+          ) : (
+            <CustomerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
+          )}
+        </div>
+      </div>
+      {/* Floating overlays for onboarding and report list */}
+      <div className="relative z-30 w-full max-w-4xl mt-[320px] px-2 md:px-0 flex flex-col gap-6 pointer-events-auto">
+        <section className="bd-glass-floating p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900">
               {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}!`}
@@ -161,19 +128,18 @@ export default function HomeScreen({
               {userType === "insurer" && "Monitor claims and partner shop performance"}
             </p>
           </div>
-
           <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={primaryAction.onClick}
-              className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white"
+              className="inline-flex items-center gap-2 px-5 py-2.5 min-h-[44px] rounded-xl font-semibold hover:shadow-xl transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                boxShadow: "0 4px 20px rgba(37, 99, 235, 0.28), 0 0 32px rgba(59, 130, 246, 0.10)",
               }}
             >
               {primaryAction.label}
               <ArrowRight className="w-4 h-4" />
             </button>
-
             {demoMode && onExitDemoMode && userType !== originalAccountType && (
               <button
                 onClick={onExitDemoMode}
@@ -183,70 +149,22 @@ export default function HomeScreen({
               </button>
             )}
           </div>
-        </div>
-      </section>
-
-      {/* Map widget — hero position: first thing users see on the dashboard */}
-      {userType === "shop" ? (
-        <ShopMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} onViewShops={onViewShops} />
-      ) : userType === "insurer" ? (
-        <InsurerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} onViewShops={onViewShops} />
-      ) : (
-        <CustomerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
-      )}
-
-      {isNewUser && userType === "customer" ? (
-        <HomeOnboardingCard primaryColor={primaryColor} secondaryColor={secondaryColor} />
-      ) : (
-        <section className="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4">
-          {stats.map((item, index) => {
-            const Icon = item.icon;
-            const delta = index + 1;
-
-            return (
-              <article
-                key={item.label}
-                className="bd-glass-card p-3.5 md:p-5 min-h-[110px] md:min-h-[140px] hover:-translate-y-1 hover:shadow-lg cursor-default transition-all duration-200"
-              >
-                <div className="flex items-start justify-between mb-3 md:mb-5">
-                  <div
-                    className={`w-9 h-9 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${toneClasses[item.tone]}`}
-                  >
-                    <Icon className="w-4.5 h-4.5 md:w-6 md:h-6" />
-                  </div>
-                  <span className="bd-glass-badge hidden md:inline">+{delta}</span>
-                </div>
-                <p className="text-2xl md:text-4xl font-bold text-slate-900 leading-none mb-1 md:mb-2 tabular-nums">
-                  {item.value}
-                </p>
-                <p className="text-slate-500 text-sm md:text-lg">{item.label}</p>
-              </article>
-            );
-          })}
         </section>
-      )}
-
-      <section className="grid grid-cols-1 xl:grid-cols-12 gap-5">
-        <div className="xl:col-span-8 space-y-5">
-          <HomeReportsList
-            userType={userType}
-            listHeader={listHeader}
-            sortedReports={sortedReports}
-            primaryColor={primaryColor}
-            secondaryColor={secondaryColor}
-            onViewAll={listViewAllAction}
-            onOpenReport={onOpenReport}
-            onStartReport={onStartReport}
-          />
-        </div>
-
-        <HomeSidebar
-          quickActions={quickActions}
-          activityItems={activityItems}
+        {isNewUser && userType === "customer" ? (
+          <HomeOnboardingCard primaryColor={primaryColor} secondaryColor={secondaryColor} />
+        ) : null}
+        {/* Report list always accessible as floating panel */}
+        <HomeReportsList
+          userType={userType}
+          listHeader={listHeader}
+          sortedReports={sortedReports}
           primaryColor={primaryColor}
           secondaryColor={secondaryColor}
+          onViewAll={listViewAllAction}
+          onOpenReport={onOpenReport}
+          onStartReport={onStartReport}
         />
-      </section>
+      </div>
     </div>
   );
 }

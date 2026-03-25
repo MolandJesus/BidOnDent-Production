@@ -87,7 +87,7 @@ export default function MapSurfaceStatusBar({
   const performanceLatestAgeLabel = formatSampleAgeLabel(performanceLatestSampleAgeMs);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-3 p-4">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-3 p-4" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 1rem, 1rem)" }}>
       <div
         className={cn(
           "pointer-events-auto flex flex-wrap items-center gap-4 px-4 py-3",

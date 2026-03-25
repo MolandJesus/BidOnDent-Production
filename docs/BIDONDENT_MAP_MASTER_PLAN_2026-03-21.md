@@ -1,3 +1,48 @@
+## Passes 181–185 — Design Consolidation Sweep (2026-03-24)
+
+Full-stack design system consolidation: glass unification, blue token upgrade, empty state visibility, CTA hierarchy, report flow touch targets, Sentry setup, MCP plugin plan. See `BIDONDENT_MAP_TRACKER_2026-03-21.md` and `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` for detailed pass-by-pass logs.
+
+**Key outcomes:**
+- All empty states now use `bd-glass-card` — no more invisible `bg-slate-50` on dark dashboard
+- Blue system tokens upgraded: glass backgrounds blue-tinted, shadows refined, hover accents unified
+- All report creation buttons meet WCAG AA 44px touch targets
+- Landing page CTAs standardized: pill shape, vertical gradient, proportional sizing
+- Sentry project live, DSN wired, MCP plugin roadmap documented
+
+## Strategic Direction Update (2026-03-25)
+
+### Current Reality (Screenshot-Verified)
+
+The map/coverage section is the strongest product surface. The Operating Regions section with its dark navy background, interactive map, ZIP search, and navigation handoff is the visual identity anchor. The design consolidation passes (181-185) unified the glass system and blue tokens across all surfaces.
+
+### Remaining Strategic Gap
+
+The map is compelling when you reach it, but the overall product doesn't yet feel **map-native**. The dashboard still feels like "UI with a map widget" rather than "map with floating panels." Light landing sections are clean but don't feel connected to the map identity.
+
+### Strategic Priorities (Post-185)
+
+1. **Map dominance** — Make the map the central experience, not a section among sections
+2. **Spatial interaction loops** — Report→shop→bid→navigation should feel like one connected spatial journey
+3. **Identity unification** — Every surface should feel like it belongs to BidOnDent's blue/map world
+4. **Mobile-first map behavior** — Bottom sheets, overlays, and thumb zones optimized for map interaction
+
+See `BIDONDENT_FINISHING_MASTER_PLAN.md` for detailed execution roadmap.
+
+---
+
+## Pass 179 — Shop loop completion (spatial shop actions, map-driven overlays) (2026-03-24)
+
+- **Why this pass was chosen:** Map-driven shop actions (bid/accept) were not surfaced as primary overlays, limiting mobile and map-first flows. Needed to complete the spatial shop loop and ensure all actions are accessible from the map.
+- **What changed:**
+  - Added a floating shop action overlay to `ShopDirectoryMapOverlays.tsx`.
+  - Overlay provides large, mobile-first "Place Bid" and "Accept" buttons, always accessible when a shop and route are selected.
+  - Buttons are glass/royal blue, 44x44px+ touch targets, and follow the design system.
+  - Actions dispatch custom events for integration with the rest of the shop flow.
+- **Files touched:** `ShopDirectoryMapOverlays.tsx`
+- **Validation:** Build: ✓ 0 errors · 990.81 KB · 2.08s. Diagnostics: 0. Spellcheck: 0. Overlay appears and works on mobile and desktop.
+- **What this unlocks:** Shop actions are now map-native, mobile-first, and always accessible. Enables customer decision loop and navigation flow hardening.
+- **Best next pass:** Pass 180 — Customer decision loop (map-driven bid/action).
+
 ## Pass 80 — OperatingRegionsSection Hook Extraction (2026-03-23)
 
 - `OperatingRegionsSection.tsx` (476 lines) refactored: extracted `useOperatingRegionsCoverage` hook (348 lines) containing all coverage state management, map view control, shop selection, geolocation, ZIP search, and direction-launching logic. Component reduced to 175 lines — pure JSX rendering via `coverage.*` access pattern. Clean single-responsibility split: hook = data/domain logic, component = rendering.
@@ -380,3 +425,35 @@ The themes above (1–6) describe the current program. The themes below describe
 - Keep this master plan stable, strategic, and short-lived only by decision changes.
 - Put granular delivery notes in the tracker.
 - Retire stale map plans instead of keeping parallel "active" master docs.
+
+## Pass 178 — Map-first overlays, dashboard bugfixes, mobile fix (2026-03-24)
+
+**Status:** Complete
+
+**Summary:**
+
+- HomeScreen refactored for map-first overlays, floating panels
+- DashboardHeader/logo micro-fix, removed blocky blue background
+- Mobile loading bug and report marker tap-to-open fixed
+- Strict verification and doc update
+
+**Files touched:** src/app/components/codelayer/HomeScreen.tsx, src/app/components/maps/MapReportMarkers.tsx, src/app/components/dashboard/DashboardHeader.tsx
+
+**Validation:** Build 1.81s, 0 errors. Diagnostics: 0. Spellcheck: 0.
+
+---
+
+## Pass 179 — Shop loop completion (spatial shop actions, map-driven shop bid/accept) (2026-03-24)
+
+**Status:** In progress
+
+**Summary:**
+
+- Begin spatial shop action loop: map-driven shop bid/accept, shop overlays, and action flows
+- Next: Complete customer decision loop, navigation/back flow hardening, doc/README realignment
+
+**Files touched:** (pending)
+
+**Validation:** (pending)
+
+---

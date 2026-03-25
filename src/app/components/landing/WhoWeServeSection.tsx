@@ -63,7 +63,8 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
   return (
     <section
       id="who-we-serve"
-      className="py-16 md:py-24 bg-gradient-to-b from-slate-50/30 via-white to-white"
+      className="py-16 md:py-24"
+      style={{ background: "linear-gradient(180deg, #edf3fa 0%, #f5f8fc 40%, #ffffff 100%)" }}
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -101,7 +102,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
               <div className="mb-6">
                 <div
                   className="inline-flex items-center justify-center w-14 h-14 rounded-2xl"
-                  style={{ backgroundColor: card.iconBg }}
+                  style={{ backgroundColor: card.iconBg, boxShadow: `0 4px 16px ${card.iconBg}40` }}
                 >
                   <card.icon className="w-7 h-7 text-white" />
                 </div>

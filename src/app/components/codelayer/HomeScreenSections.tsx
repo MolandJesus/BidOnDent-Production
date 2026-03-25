@@ -42,12 +42,12 @@ export function HomeOnboardingCard({
 
   return (
     <section
-      className="rounded-2xl p-5 sm:p-6 text-white shadow-lg relative overflow-hidden"
+      className="rounded-2xl p-5 sm:p-6 text-white relative overflow-hidden"
       style={{
         background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+        boxShadow: "0 8px 32px rgba(37, 99, 235, 0.22), 0 0 48px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
       }}
     >
-      {/* Subtle atmospheric depth */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_-10%,rgba(255,255,255,0.12),transparent_50%)]" />
       <div className="relative">
         <h2 className="text-xl font-semibold mb-2">How BidOnDent Works</h2>
@@ -106,8 +106,8 @@ export function HomeReportsList({
       </div>
 
       {sortedReports.length === 0 && (
-        <div className="rounded-xl border border-dashed border-slate-300/60 p-5 sm:p-8 bg-slate-50/50 text-center">
-          <Camera className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+        <div className="bd-glass-card p-5 sm:p-8 text-center">
+          <Camera className="w-10 h-10 text-blue-400/70 mx-auto mb-3" />
           <p className="font-medium text-slate-900 mb-1">
             {userType === "customer" && "No repair requests yet"}
             {userType === "shop" && "No customer requests yet"}
@@ -165,7 +165,7 @@ export function HomeReportsList({
                 }
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100/60 flex-shrink-0 border border-slate-200/40">
                     {hasPhoto ? (
                       <ImageWithFallback
                         src={report.photos[0]}
@@ -173,7 +173,7 @@ export function HomeReportsList({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                      <div className="w-full h-full flex items-center justify-center text-blue-400/50">
                         <Camera className="w-7 h-7" />
                       </div>
                     )}
@@ -293,17 +293,20 @@ export function HomeSidebar({
       </section>
 
       <section
-        className="rounded-2xl p-5 text-white shadow-lg relative overflow-hidden"
-        style={{
-          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        }}
+        className="bd-glass-card rounded-2xl p-5 relative overflow-hidden"
+        style={{ borderColor: "rgba(219, 234, 254, 0.7)" }}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_100%_0%,rgba(255,255,255,0.1),transparent_50%)]" />
+        <div
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor}14 0%, ${secondaryColor}0a 100%)`,
+          }}
+        />
         <div className="flex items-center gap-2 mb-2 relative">
-          <Eye className="w-5 h-5" />
-          <h3 className="text-xl font-semibold">Pro Tip</h3>
+          <Eye className="w-5 h-5 text-blue-600" />
+          <h3 className="text-base font-semibold text-slate-900">Pro Tip</h3>
         </div>
-        <p className="text-white/90 text-sm relative">
+        <p className="text-slate-600 text-sm relative">
           Compare at least 3 bids before selecting a shop. Review warranty terms and timeline to
           avoid surprises.
         </p>

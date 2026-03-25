@@ -152,60 +152,40 @@ When working on the app, do not assume every visible screen is fully wired end t
 
 ## Screenshot Reality Check
 
-**Latest Desktop Screenshots (2026-03-23)** — Post Pass 113, the live app at localhost:5173 was captured across all major surfaces. These screenshots are now the ground truth for current UI state.
+**Latest Screenshots (2026-03-25)** — Post Pass 185, visual audit from live app at localhost:5173. These screenshots are the ground truth for current UI state.
 
-### What's Confirmed Working (Desktop)
+### What's Confirmed Working
 
-- **Landing Hero**: Clean layout, "NY / Active Service Region" badge on hero image, "Repair Completed!" overlay. Honest description copy. "Now available in NY", "Transparent bids", "Free for customers" badges all accurate.
-- **How It Works**: 3-step cards (Report Damage → Receive Bids → Choose and Repair) with icons, numbering, and descriptions. Clean horizontal layout on desktop.
-- **Why Choose BidOnDent**: 3 benefit cards with real photos (Guided Intake, Repair Network, Transparent Bids badges). Well-composed desktop layout.
-- **Who We Serve**: 3 role cards (For Customers / For Repair Shops / For Insurers) with honest feature lists. Bottom badges: "$0 for Customers", "NY Service Area", "Transparent Bidding" — all verified true.
-- **Opportunity Through Transparency**: 3 cards (Clear Decision-Making, Shared Process, Accountability) with honest descriptions and "Learn more" links.
-- **Coverage Section**: County grid (Rockland, Dutchess, Westchester, Nassau, Orange, Putnam), ZIP search, partner shop list, interactive map with performance metrics. All functional.
-- **Shop Signup & Insurer Partnerships**: "Join as a Shop" / "Partner as Insurer" CTAs. Honest disclaimer: "Every request is reviewed and confirmed by our team."
-- **CTA Section**: "Ready to Get Started?" with "Go to Dashboard" button. Sub-text: "Free to use • No obligation • Get quotes in minutes" — all accurate.
-- **Footer**: Contact info (bidondent@gmail.com, 1-800-BIDONDENT, New York Service Region), For Customers / For Businesses / Company column links.
+**Landing page (all sections verified):**
+- Hero: "Get the Best Price on Your Auto Body Repair" with map image, "NY Active Service Region" badge, animated value carousel, pill-shape CTAs
+- How It Works: 3-step numbered cards, clean layout
+- Why Choose BidOnDent: 3 photo cards with badge overlays (Guided Intake, Repair Network, Transparent Bids)
+- Who We Serve: 3 role cards with feature lists, bottom badges ("$0 for Customers", "NY Service Area", "Transparent Bidding")
+- Opportunity Through Transparency: 3 expandable cards with "Learn more" disclosure buttons — working
+- Trust Stats: 4-column band (Structured Intake, Transparent Bids, Operational Tracking, Review Controls)
+- Operating Regions: Dark navy map section with ZIP search, radius selector, map modes, county grid, partner shop list with navigation handoff — **strongest section on the site**
+- Business Inquiry: Progressive disclosure gateway (Join as Shop / Partner as Insurer) — no wall-of-inputs
+- CTA: Glass card with gradient orbs, "Go to Dashboard" pill button
+- Footer: 3-column layout, contact info, social links
 
-### Customer Dashboard (Desktop)
+**Customer Dashboard:**
+- Sidebar: Dashboard, Report (with arrow), Bids, Account, Demo Mode
+- Report wizard: 5-step flow with saved vehicles, damage area selection, photo upload (camera + cloud), damage description, success screen with "What happens next" timeline
+- Map widget: Nearby shops with distance/rating, "Open Map" CTA
+- Glass system unified across all surfaces
+- All buttons meet WCAG AA 44px touch targets
+- Empty states visible on dark dashboard (bd-glass-card)
 
-- Sidebar nav: Dashboard, Report, Bids, Account, Demo Mode
-- How BidOnDent Works stepper (3 steps, honest copy)
-- Nearby Shops widget: 4 BidOnDent Hubs (North/West/Metro/East) with ratings and "Open Map" CTA
-- Recent Repair Requests: empty state with "Start Your First Report" CTA
-- Quick Actions: New Repair Request (primary), View Bids, Connect Insurance, Find Shops
-- Pro Tip card, Recent Activity section
-- Clean responsive layout works at both large and medium desktop widths
+**Insurer/Shop dashboards:** Functional with map widgets, role-specific views
 
-### Insurer Dashboard (Desktop)
+### Known Issues (2026-03-25)
 
-- Smart Shop Map with "Network Recruitment View" toggle
-- Origin filters: Downtown Dallas, Uptown, Love Field Corridor, White Rock
-- View & Sort: Hybrid/Map/List, Smart Match sort, 4.5+ filter, Dark tiles toggle
-- Shop cards: Elite Auto Works with "BEST FIT" badge, AI FIT 100%, Carrier 49%
-- Detailed shop info: Completion 99%, Avg ticket $1,250, Mercedes Certified, Porsche Approved, Jaguar Land Rover Authorized
-- Action buttons: Shortlist partner, Review fit, Directions (Apple Maps)
-- Map popup: selected shop details with marker legend
-- Full map experience is polished and information-dense
-
-### Shop Directory / Route Planning (Desktop)
-
-- Full immersive map with route planning between hubs
-- BidOnDent North Hub → West Hub route preview
-- Navigation shell: GPS + routing + voice, live GPS position
-- Route distance/time display (e.g., 873.4 mi, 1004 min, 2:23 PM arrival)
-- Recent Route Memory, Last Route Handoff (Apple Maps remembered locally)
-- Next Maneuver text overlay on map
-- Search/Explore/Saved/Shops tabs with Map/Sat/Night/Center/Reset controls
-
-### Remaining Issues Visible in Screenshots
-
-- **P0-TRUST**: HowItWorksSection.tsx Step 2 says "Local **certified** shops" — BidOnDent does not certify shops. Must change to "Local shops".
-- **P0-TRUST**: CTASection.tsx says "Join **thousands of satisfied customers**" — no thousands of customers exist. Must change to honest copy.
-- **P4-UX**: Quick Actions "New Repair Request" card dominates visual hierarchy (large blue gradient circle vs small flat icons for other actions).
-
-### Previous Notes (Pre-Pass 112)
-
-Earlier screenshots were design direction references, not source-of-truth. With Passes 112-113, all false trust claims from WhoWeServeSection and BenefitsSection are now removed. The remaining false claims (HowItWorks "certified", CTA "thousands") are queued for Pass 115.
+| Issue | Severity | Status |
+| ----- | -------- | ------ |
+| "Can't find variable: props" runtime crash | P1 | Open — likely ReportDetailDrawer.tsx or MapReportMarkers.tsx |
+| Light landing sections feel disconnected from map identity | P3-UX | Design gap — not a bug |
+| Dashboard feels "UI with map" not "map with UI" | P3-UX | Map dominance pass needed |
+| ~~False trust claims (certified, thousands)~~ | ~~P0~~ | ✅ Fixed in Passes 112-115 |
 
 ## Current Supabase Reality
 

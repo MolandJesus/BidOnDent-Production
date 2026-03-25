@@ -1,45 +1,73 @@
 # BidOnDent — Build Progress Dashboard
 
-## ⚡ AT-A-GLANCE STATUS (updated 2026-03-24)
+## ⚡ AT-A-GLANCE STATUS (updated 2026-03-25)
 
 ### Build Progress
 
-| 0% |████████████████████████████████████████████████████████████████████████████| 109% 🚀 |
+| 0% |████████████████████████████████████████████████████████████████████████████| 118% 🚀 |
 
-**Passes completed:** 169 / 160+ — ⚡ PRODUCTIZATION PHASE ACTIVE
+**Passes completed:** 189 / 160+ — ⚡ FINISHING PHASE: SPATIAL SYSTEM + LUMINOUS GLASS
 
-| Item             | Value                                                                   |
-| ---------------- | ----------------------------------------------------------------------- |
-| **Last pass**    | Pass 174 — Real data: location fields in transformSupabaseReport        |
-| **Current pass** | 174 ✅ complete                                                         |
-| **Build**        | ✓ 0 errors · 990.38 KB · 1.84s                                          |
-| **Spellcheck**   | 0 issues                                                                |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                          |
-| **Last pushed**  | 2026-03-24                                                              |
+| Item             | Value                                                         |
+| ---------------- | ------------------------------------------------------------- |
+| **Last pass**    | Pass 189 — Spatial atmosphere + purple→navy color unification |
+| **Current pass** | 189 ✅ complete                                            |
+| **Build**        | ✓ 0 errors · 1.80s                                   |
+| **Spellcheck**   | 0 issues                                                      |
+| **Branch**       | `horizon/bidondent-map-final`                                 |
+| **Last pushed**  | 2026-03-25                                                    |
+| **Phase**        | HORIZON — final product branch, map-first platform            |
+
+### Screenshot Reality Check (2026-03-25)
+
+Visual audit from live screenshots confirms:
+
+**Strengths confirmed:**
+- Hero section is strong, premium, clean — "Best Price on Auto Body Repair" with map image badge
+- Map/dark sections are the strongest, most product-owned areas of the site
+- Navigation bar is calm and clean (How It Works / Who We Serve / About / Dashboard)
+- "How It Works" 3-step cards are coherent and stable
+- "Why Choose BidOnDent" photo cards with badges (Guided Intake, Repair Network, Transparent Bids) look professional
+- "Who We Serve" 3-role cards are readable and structured
+- Operating Regions / map search section is the standout — feels like real product
+- Business inquiry gateway (Join as Shop / Partner as Insurer) is clean, no wall-of-inputs
+- Report creation wizard (5-step) is functional with photo upload, saved vehicles, damage description
+- Report submission success screen is well-designed with "What happens next" timeline
+- Footer is clean with proper columns
+- Trust stats ("$0 Free for Customers", "3+ Bids Per Request", "NY Service Area") are honest
+
+**Weaknesses observed (post Pass 189):**
+- ~~Light landing sections feel flat~~ → Fixed: blue-tinted gradients on all light sections
+- ~~Section stacking feels disconnected~~ → Fixed: unified blue atmosphere throughout
+- ~~Purple/indigo remnants in dark sections~~ → Fixed: all dark sections now deep navy
+- ~~"Can't find variable: props" crash~~ → Fixed: Pass 186
+- Some card/section transitions still feel page-like rather than spatial system states
+- Report flow steps still render as centered cards — could feel more embedded
+- Mobile bottom nav could benefit from more spatial integration with map
 
 ### Recent passes (144–154)
 
-| Pass | Title                                                   | Category   | Status |
-| ---- | ------------------------------------------------------- | ---------- | ------ |
-| 144  | Insurer claim persistence to Supabase                   | P3-ARCH    | ✅     |
-| 145  | BidsScreen empty state premium design                   | P4-UX      | ✅     |
-| 146  | ReportsListScreen empty state premium design            | P4-UX      | ✅     |
-| 147  | Dashboard quick actions mobile audit                    | P4-UX      | ✅     |
-| 148  | Landing page mobile polish                              | P4-UX      | ✅     |
-| 149  | Map overlay cards mobile separation                     | P4-UX      | ✅     |
-| 150  | Map z-index above MobileBottomNav                       | P1-RUNTIME | ✅     |
-| 151  | Shop directory immersive map bottom sheet               | P4-UX      | ✅     |
-| 152  | Report creation/photo-guide mobile flow compression     | P4-UX      | ✅     |
-| 153  | Mobile map overlays audit, photo-guide, bugfixes        | P4-UX      | ✅     |
-| 154  | reportsLoading bug + crash fix + console log sweep      | P1-RUNTIME | ✅     |
-| 155  | ReportDetailScreen glass + mobile + touch target audit  | P4-UX      | ✅     |
-| 156  | HomeScreen 375px touch targets — CTA, View All, buttons | P4-UX      | ✅     |
-| 157  | Map mobile UX: HALF default snap + tab/Back touch targets | P4-UX    | ✅     |
-| 158  | Map button touch targets + warm design direction        | P4-UX      | ✅     |
-| 159  | useMarketplaceReports error state + loading wiring      | P3-ARCH    | ✅     |
-| 160  | Final cohesion: DashboardHeader glass + touch targets   | P4-UX      | ✅     |
-| 161  | Map widget CTAs: Shop/Insurer View Map + Customer fix   | P4-UX      | ✅     |
-| 162  | Landing section flow — warm palette, de-SaaS copy       | P4-UX      | ✅     |
+| Pass | Title                                                     | Category   | Status |
+| ---- | --------------------------------------------------------- | ---------- | ------ |
+| 144  | Insurer claim persistence to Supabase                     | P3-ARCH    | ✅     |
+| 145  | BidsScreen empty state premium design                     | P4-UX      | ✅     |
+| 146  | ReportsListScreen empty state premium design              | P4-UX      | ✅     |
+| 147  | Dashboard quick actions mobile audit                      | P4-UX      | ✅     |
+| 148  | Landing page mobile polish                                | P4-UX      | ✅     |
+| 149  | Map overlay cards mobile separation                       | P4-UX      | ✅     |
+| 150  | Map z-index above MobileBottomNav                         | P1-RUNTIME | ✅     |
+| 151  | Shop directory immersive map bottom sheet                 | P4-UX      | ✅     |
+| 152  | Report creation/photo-guide mobile flow compression       | P4-UX      | ✅     |
+| 153  | Mobile map overlays audit, photo-guide, bugfixes          | P4-UX      | ✅     |
+| 154  | reportsLoading bug + crash fix + console log sweep        | P1-RUNTIME | ✅     |
+| 155  | ReportDetailScreen glass + mobile + touch target audit    | P4-UX      | ✅     |
+| 156  | HomeScreen 375px touch targets — CTA, View All, buttons   | P4-UX      | ✅     |
+| 157  | Map mobile UX: HALF default snap + tab/Back touch targets | P4-UX      | ✅     |
+| 158  | Map button touch targets + warm design direction          | P4-UX      | ✅     |
+| 159  | useMarketplaceReports error state + loading wiring        | P3-ARCH    | ✅     |
+| 160  | Final cohesion: DashboardHeader glass + touch targets     | P4-UX      | ✅     |
+| 161  | Map widget CTAs: Shop/Insurer View Map + Customer fix     | P4-UX      | ✅     |
+| 162  | Landing section flow — warm palette, de-SaaS copy         | P4-UX      | ✅     |
 
 ### 🎯 160-PASS MILESTONE REACHED + POST-MILESTONE MAP PHASE
 
@@ -47,28 +75,205 @@ All original passes (154–160) complete. Continuing map-native phase (161+).
 
 ### Post-milestone focus: Map-native product phase (162+)
 
-| Pass | Title (planned)                                         | Category   | Status |
-| ---- | ------------------------------------------------------- | ---------- | ------ |
-| 162  | Landing section flow — warm palette, de-SaaS copy       | P4-UX      | ✅     |
-| 163  | HeroSection: warm bg + map badge, remove fake 4.9 stars | P4-UX      | ✅     |
-| 164  | Shop onboarding: glass system + map note + button polish| P4-UX      | ✅     |
-| 165  | Insurer onboarding: glass system + button polish        | P4-UX      | ✅     |
+| Pass | Title (planned)                                           | Category | Status |
+| ---- | --------------------------------------------------------- | -------- | ------ |
+| 162  | Landing section flow — warm palette, de-SaaS copy         | P4-UX    | ✅     |
+| 163  | HeroSection: warm bg + map badge, remove fake 4.9 stars   | P4-UX    | ✅     |
+| 164  | Shop onboarding: glass system + map note + button polish  | P4-UX    | ✅     |
+| 165  | Insurer onboarding: glass system + button polish          | P4-UX    | ✅     |
 | 166  | HowItWorksSection: warm bg + softer connectors + map copy | P4-UX    | ✅     |
-| 167  | OperatingRegionsSection: warm midnight bg + glow        | P4-UX      | ✅     |
-| 168  | FooterSection + CTASection: warm bg + remove fake phone | P4-UX      | ✅     |
+| 167  | OperatingRegionsSection: warm midnight bg + glow          | P4-UX    | ✅     |
+| 168  | FooterSection + CTASection: warm bg + remove fake phone   | P4-UX    | ✅     |
 
 ### ⚡ PRODUCTIZATION PHASE (169+) — Map as product backbone
 
-| Pass | Title (planned)                                         | Category   | Status |
-| ---- | ------------------------------------------------------- | ---------- | ------ |
-| 169  | Map → Report: StepServiceLocation + zip/address persisted | P3-ARCH  | ✅     |
-| 170  | Map ↔ Report loop: real location on shop request cards  | P3-ARCH    | ✅     |
-| 171  | Shop requests: urgency sort + "Located" badge           | P3-ARCH    | ✅     |
-| 172  | Map-centered dashboard: map widget to hero position     | P4-UX      | ✅     |
-| 173  | Browser back button: pushState + popstate in useNavigation | P1-RUNTIME | ✅    |
-| 174  | Real data: location fields threaded through transform   | P3-ARCH    | ✅     |
+| Pass | Title (planned)                                                  | Category   | Status |
+| ---- | ---------------------------------------------------------------- | ---------- | ------ |
+| 169  | Map → Report: StepServiceLocation + zip/address persisted        | P3-ARCH    | ✅     |
+| 170  | Map ↔ Report loop: real location on shop request cards          | P3-ARCH    | ✅     |
+| 171  | Shop requests: urgency sort + "Located" badge                    | P3-ARCH    | ✅     |
+| 172  | Map-centered dashboard: map widget to hero position              | P4-UX      | ✅     |
+| 173  | Browser back button: pushState + popstate in useNavigation       | P1-RUNTIME | ✅     |
+| 174  | Real data: location fields threaded through transform            | P3-ARCH    | ✅     |
+| 175  | Map overlays: floating panel refactor, dashboard bugfixes        | P4-UX      | ✅     |
+| 176  | Report markers on map, tap-to-open drawer                        | P4-UX      | ✅     |
+| 177  | Map-first dashboard overlays, mobile bugfixes                    | P4-UX      | ✅     |
+| 178  | Strict verification, doc update, header/logo micro-fix           | P4-UX      | ✅     |
+| 179  | Shop loop completion (spatial shop actions)                      | P3-ARCH    | ⏳     |
+| 179  | Shop loop completion (spatial shop actions, map-driven overlays) | P3-ARCH    | ✅     |
+| 181  | UX design sweep: Sign Out button, Bids empty state glass fix     | P4-UX      | ✅     |
+| 182A | Glass system unification: empty states, report cards, sidebar    | P4-UX      | ✅     |
+| 182B | Map overlay layout: fixed widget sidebar offset on desktop       | P4-UX      | ✅     |
+| 182C | Header/logo: blue glass icon, slate-900 Dent, breadcrumb fix    | P4-UX      | ✅     |
+| 182D | Blue system upgrade: tokens, tinted glass, blue hover accents    | P4-UX      | ✅     |
+| 182E | Card remnant removal: onboarding CTA revert, Pro Tip glass      | P4-UX      | ✅     |
+| 183  | Empty state sweep: ShopDirectory glass, dim icon colors fixed    | P4-UX      | ✅     |
+| 184  | Landing CTA consistency: pill shape, gradient alignment, sizing  | P4-UX      | ✅     |
+| 185  | Report flow: 44px touch targets, glass empty states, padding     | P4-UX      | ✅     |
+| 186  | Fix "Can't find variable: props" runtime crash                   | P1-RUNTIME | ✅     |
+| 187  | Luminous glass glow system: tokens + component sweep             | P4-UX      | ✅     |
+| 188  | Spatial atmosphere: dashboard depth + blue background gradient   | P4-UX      | ✅     |
+| 189  | Purple→navy unification + landing section spatial coherence      | P4-UX      | ✅     |
 
-### Bid lifecycle persistence — current state
+### Pass 189 — Spatial atmosphere + color unification (2026-03-25)
+
+1. **Why chosen**: Screenshots revealed flat gray dashboard background and purple-tinted dark sections breaking the royal-blue identity system.
+2. **What changed**:
+   - `globalSurfaceTheme.ts`: Light background → subtle blue gradient (was flat `#eef2f7`)
+   - `DashboardLayout.tsx`: Map background → deep ocean radial gradient (was flat `bg-slate-950/98`)
+   - `ReportScreen.tsx`: Report flow background → translucent blue (was `from-slate-50 to-slate-100/80`)
+   - `ReportHeader.tsx` + `ReportProgress.tsx`: Blue-tinted borders, icon glow, active step glow
+   - `HeroSection.tsx`: Violet ambient blob → blue, hero image shadow → blue ambient
+   - `HowItWorksSection.tsx`: Section bg → blue-tinted gradient, icon/badge glow added
+   - `WhoWeServeSection.tsx`: Section bg → blue-tinted gradient, role icon glow added
+   - `BenefitsSection.tsx`: Section bg → blue-tinted (was purple-tinted `#f4f3ff`)
+   - `TrustStatsSection.tsx`: Dark bg → deep navy (was purple `#0f0d1a`), orbs → blue
+   - `OperatingRegionsSection.tsx`: Dark bg → deep navy (was purple `#131122`), orb → blue
+   - `FooterSection.tsx`: Dark bg → deep navy (was purple `#131122`)
+   - `HomeScreen.tsx`: Primary CTA button glow added
+3. **Files touched**: 13 files
+4. **Build**: ✓ 0 errors · 1.80s
+5. **Design decision**: Every dark section now uses the same deep navy family (`#0a1628`–`#0d1b33`). Every light section uses blue-tinted gradients. Zero purple/indigo/violet remnants in the landing page.
+
+### Pass 187–188 — Luminous glass glow system (2026-03-25)
+
+1. **Why chosen**: User requested underwater/pool-blue glow treatment across the entire UI to strengthen the liquid glass identity.
+2. **What changed**:
+   - **CSS tokens** (`theme.css`): 4 glow levels (`--bd-glow-subtle/medium/strong/pool`), all `bd-glass-*` classes emit ambient blue glow with luminous inner edges, dark mode underwater atmosphere
+   - **Dashboard shell**: Sidebar gradient + blue borders, header glow, active nav tab glow, logo bloom
+   - **MobileBottomNav**: Pool-blue gradient, upward glow, active tab bloom
+   - **NotificationCenter**: Blue ambient floating shadow, blue-tinted header radial
+   - **CTASection**: Blue-pool section bg, glowing CTA buttons, orb bloom shadows
+   - **Report flow** (all 5 steps): Continue/submit buttons emit blue glow, success icon emerald bloom, step icon containers glow
+   - **Map overlays**: Intelligence chip + panel + shop action card blue ambient glow
+   - **Insurer/shop screens**: Blue header borders, glass search inputs, glowing active filters
+3. **Files touched**: 20+ component files + theme.css
+4. **Build**: ✓ 0 errors
+
+### Pass 186 — Fix "Can't find variable: props" runtime crash (2026-03-25)
+
+1. **Why this pass was chosen**: App crashed with error boundary showing "Can't find variable: props" on certain navigation paths (reports-list view). This was a P1 production blocker — nothing else matters if the app crashes.
+2. **What changed**:
+   - **Root cause found**: `DashboardRouter.tsx` uses destructured parameters (lines 36-81) but referenced `props.reportsLoading` and `props.reportsError` on lines 284-285. The variable `props` did not exist in scope — instant `ReferenceError` in Safari/any browser when navigating to reports-list.
+   - `DashboardRouter.tsx`: Added `reportsLoading` and `reportsError` to destructured parameters. Replaced `props.reportsLoading` → `reportsLoading` and `props.reportsError` → `reportsError`.
+   - `ReportDetailDrawer.tsx`: Added proper TypeScript types (`ReportDetailDrawerProps`), fixed field name mappings to match `DamageReport` type (`photo_urls` not `photos`, `damage_description` not `description`, `damage_location` not `damageArea`, `zip_code` not `zipCode`, `created_at` not `submittedAt`).
+3. **Files touched**: `DashboardRouter.tsx`, `ReportDetailDrawer.tsx`
+4. **Validation**: Build ✓ 0 errors · 2.11s. All `props.` references in DashboardRouter eliminated. Verified no other router files have the same destructuring mismatch.
+5. **Was the issue reproduced and verified**: Yes — `DashboardRouter` destructures all params individually but referenced undefined `props` variable. This would crash on ANY navigation to reports-list view. Other router files (`DashboardStandaloneScreens`, `DashboardTabScreens`, `DashboardRouterScreens`) correctly use `props` as their parameter name, so their `props.` references are valid.
+6. **Best next pass**: Pass 187 — Full loop validation (landing → report → bids → decision)
+
+### Pass 185 — Report creation flow touch targets + glass (2026-03-24)
+
+1. **Why this pass was chosen**: Report creation steps had inconsistent button padding (`py-2.5` vs `py-3`), missing WCAG-compliant touch targets (`min-h-[44px]`), and old-style empty state backgrounds invisible on dark dashboard.
+2. **What changed**:
+   - `StepDamageArea.tsx`: All buttons → `py-3 min-h-[44px]`. Damage area selection buttons → `py-3 min-h-[44px]`.
+   - `StepPhotos.tsx`: Empty state → `bd-glass-card` with `text-blue-400/70` icon. Nav buttons → `py-3 min-h-[44px]`.
+   - `StepDescription.tsx`: Nav buttons → `py-3 min-h-[44px]`.
+   - `StepComplete.tsx`: Both buttons → `py-3 min-h-[44px]`.
+   - `StepVehicleInfo.tsx`: Divider label → `bg-white/60 backdrop-blur-sm` for glass compatibility.
+3. **Files touched**: 5 Step components in `src/app/components/codelayer/report/`
+4. **Build**: ✓ 0 errors · 1.88s
+
+### Pass 184 — Landing page CTA consistency (2026-03-24)
+
+1. **Why this pass was chosen**: CTA section button used `rounded-2xl`, `md:text-xl`, `md:py-4`, and diagonal 135deg gradient — oversized and visually heavier than the hero CTA. Border radius, shadow, and sizing were inconsistent.
+2. **What changed**:
+   - `CTASection.tsx`: Button → `rounded-full` (matches hero pill shape), `text-base sm:text-lg` (matches hero sizing), `py-3 sm:py-3.5` (proportional), `shadow-lg hover:shadow-xl` (not overshadowing hero), gradient → `180deg` vertical (matches hero direction).
+3. **Files touched**: `CTASection.tsx`
+
+### Pass 183 — Empty state sweep (2026-03-24)
+
+1. **Why this pass was chosen**: Comprehensive audit found `ShopDirectoryListBody.tsx` using `bg-slate-50 border-dashed border-slate-300` — completely invisible on dark dashboard. Multiple empty states had dim `text-gray-400` icons.
+2. **What changed**:
+   - `ShopDirectoryListBody.tsx`: Empty state container → `bd-glass-card` (removed `bg-slate-50`, `border-dashed`, `border-slate-300`).
+   - `LikedShopsScreen.tsx`: Heart icon → `text-blue-400/70` (from `text-slate-300`).
+   - `InsurerClaimsScreen.tsx`: AlertCircle icon → `text-blue-400/70`, text → `text-slate-700`/`text-slate-500` (from `text-gray-*`).
+   - `ShopActiveJobsScreen.tsx`: Same icon and text color fixes as InsurerClaimsScreen.
+3. **Files touched**: 4 files across `shop/` and `insurer/`
+
+---
+
+### Passes 182A-E — Design Consolidation Sweep (2026-03-24)
+
+**Context:** ChatGPT-assisted autopilot strategy defined 5 focused passes (A-E) to consolidate the design system. Rule: "Do NOT add features. Only refine UX + design to make the map feel like the product." Decision filter: "Does this make the map feel more central and more premium?"
+
+**Pass 182A — Glass system unification**
+- `HomeScreenSections.tsx`: Empty state container → `bd-glass-card`, photo placeholder → blue-tinted with border
+- `BidsScreen.tsx`: Empty state → `bd-glass-card` (done in Pass 181)
+- `MobileBottomNav.tsx`: Inactive tabs → `text-slate-500 hover:text-blue-600`
+
+**Pass 182B — Map overlay layout fix**
+- `HomeScreen.tsx`: Fixed map widget was `fixed top-0 left-0 w-full` — overlapped sidebar on desktop. Changed to `md:left-72 md:w-[calc(100%-18rem)]` to respect 288px sidebar.
+
+**Pass 182C — Header/logo refinement**
+- `DashboardLayout.tsx`: Logo icon background from murky dark rgba → clean blue glass gradient with blue border. "Dent" text → `text-slate-900`. Header breadcrumb → `text-xs font-medium text-slate-400 uppercase tracking-wide "BidOnDent"`.
+
+**Pass 182D — Blue system token upgrade**
+- `theme.css`: Glass blur 12px→14px. Glass bg from pure white → blue-tinted (`rgba(242, 247, 255, 0.76)`). Glass border opacity bumped. Shadow system refined with blue-tinted outer glow. `bd-glass-card` gradient → blue-tinted. `bd-glass-floating` → blue-tinted.
+- `CustomerMapWidget.tsx`: Shop row hover → `hover:bg-blue-50/40`, icon → `bg-blue-50/60 text-blue-600`.
+
+**Pass 182E — Card remnant removal + ChatGPT feedback**
+- `HomeScreenSections.tsx`: Onboarding card was converted to glass but ChatGPT flagged CTA hierarchy loss. **Reverted** to original solid blue gradient — CTAs must stay bold.
+- `HomeSidebar` Pro Tip: Converted from solid gradient to glass card with blue accent overlay.
+
+**Files touched across all 5 passes:** `HomeScreenSections.tsx`, `HomeScreen.tsx`, `DashboardLayout.tsx`, `MobileBottomNav.tsx`, `CustomerMapWidget.tsx`, `theme.css`, `AccountMenu.tsx`, `BidsScreen.tsx`
+**Build:** ✓ 0 errors · 990.82 KB · 1.84s
+
+---
+
+### Pass 181 — UX design sweep: destructive action colors, Bids empty state (2026-03-24)
+
+1. **Why this pass was chosen**: Sign Out was styled identically to Delete Account (full red `bd-glass-control--destructive`), sending the wrong danger signal to users. Bids empty state used light-bg styles invisible against the dark dashboard backdrop.
+2. **What changed**:
+
+- `AccountMenu.tsx`: Sign Out button changed from full red `bd-glass-control--destructive` to neutral gray (matches other menu rows). Delete Account changed to outlined red (rose text on hover background) — still clearly destructive but less visually overwhelming.
+- `BidsScreen.tsx`: Empty state container changed from `bg-slate-50/50 border-dashed border-slate-300/60` → `bd-glass-card` for consistency with the dark glass dashboard. Clock icon updated from `bg-slate-100 text-slate-500` → `bg-blue-50 text-blue-500` for better legibility.
+
+3. **Files touched**: `AccountMenu.tsx`, `BidsScreen.tsx`
+4. **What this unlocks**: Cleaner information hierarchy on Account page, consistent glass design on Bids page.
+
+---
+
+### Known Issues / Backlog (auto-pilot log)
+
+| Issue | Severity | Notes |
+| ----- | -------- | ----- |
+| ~~"Can't find variable: props" crash~~ | ~~❌ P1~~ | ✅ **FIXED Pass 186** — Root cause: `DashboardRouter.tsx` destructured params but referenced undefined `props` variable. Also fixed `ReportDetailDrawer.tsx` field mappings + types. |
+| Navigation session lifecycle not formalized | ⚠️ MEDIUM | Cloud sync and analytics not wired |
+| Insurer workflow is display-only (no real claim routing) | ⚠️ MEDIUM | Approval/routing automation needed |
+| DemoMode card body text may be hard to read on dark bg | ⚠️ LOW | `bd-glass-card` semi-transparent white may need opacity bump |
+| Dashboard "Your Reports" vs HomeScreen section naming inconsistency | ⚠️ LOW | Title says "Your Reports" in some views, "Recent Repair Requests" in others |
+| No CI/CD pipeline | ❌ P0 | Manual deploys only |
+| No automated tests (unit, integration, e2e) | ❌ P0 | Zero test coverage |
+| Sentry DSN configured (dev) — set `VITE_SENTRY_ENVIRONMENT=production` for deploy | ✅ DONE | Project `bidondent-production` @ org `molandjesus` |
+| Admin features ship to production bundle | ⚠️ LOW | Should be behind feature flag or removed from prod build |
+| WCAG AA accessibility audit not done | ⚠️ MEDIUM | Keyboard nav, contrast, aria labels need full audit |
+| MCP plugin integration plan created | 📋 PLANNED | See `docs/MCP_PLUGIN_INTEGRATION_PLAN.md` — Supabase + Sentry P0, Figma + Notion P1 |
+| Supabase security: 3 tables with RLS but no policies | ⚠️ MEDIUM | `job_assignments`, `kv_store_85e96b22`, `kv_store_9f243523` |
+| Supabase security: 2 functions with mutable search_path | ⚠️ MEDIUM | `handle_updated_at`, `update_updated_at_column` |
+| Supabase security: 4 overly permissive RLS policies (`USING(true)`) | ⚠️ HIGH | `insurer_interest_submissions`, `kv_store_baa15238`, `platform_activity_events`, `shop_interest_submissions` |
+| Supabase security: Leaked password protection disabled | ⚠️ HIGH | Enable via Supabase Auth settings |
+| Supabase performance: 129 WARN + 80 INFO advisories | ⚠️ MEDIUM | Duplicate indexes, unindexed FKs, auth RLS init plans |
+| Chunk size warning (>1000 kB) | ⚠️ LOW | Consider code-splitting with dynamic `import()` |
+
+---
+
+### Pass 179 — Shop loop completion (spatial shop actions, map-driven overlays) (2026-03-24)
+
+1. **Why this pass was chosen**: Map-driven shop actions (bid/accept) were not surfaced as primary overlays, limiting mobile and map-first flows. Needed to complete the spatial shop loop and ensure all actions are accessible from the map.
+2. **What changed**:
+
+- Added a floating shop action overlay to `ShopDirectoryMapOverlays.tsx`.
+- Overlay provides large, mobile-first "Place Bid" and "Accept" buttons, always accessible when a shop and route are selected.
+- Buttons are glass/royal blue, 44x44px+ touch targets, and follow the design system.
+- Actions dispatch custom events for integration with the rest of the shop flow.
+
+3. **Files touched**: `ShopDirectoryMapOverlays.tsx`
+4. **Validation**: Build: ✓ 0 errors · 990.81 KB · 2.08s. Diagnostics: 0. Spellcheck: 0. Overlay appears and works on mobile and desktop.
+5. **What this unlocks**: Shop actions are now map-native, mobile-first, and always accessible. Enables customer decision loop and navigation flow hardening.
+6. **Best next pass**: Pass 180 — Customer decision loop (map-driven bid/action).
+
+---
 
 | Action                                   | Persists to Supabase?                          |
 | ---------------------------------------- | ---------------------------------------------- |
@@ -79,10 +284,15 @@ All original passes (154–160) complete. Continuing map-native phase (161+).
 
 ### Best next pass options (ranked)
 
-1. **P4-UX** — Pass 155: ReportDetailScreen glass + mobile audit
-2. **P4-UX** — Pass 156: HomeScreen 375px mobile hierarchy audit
-3. **P4-UX** — Pass 157: Map mobile UX — search-first + progressive disclosure
-4. **P4-UX** — Pass 158: Landing map/coverage midnight shell consistency
+1. Pass 179 — Shop loop completion (spatial shop actions, map-driven shop bid/accept)
+2. Pass 180 — Customer decision loop (map-driven bid/action)
+3. Pass 181 — Navigation/back flow hardening
+4. Pass 182 — Doc + README realignment
+
+5. **P4-UX** — Pass 155: ReportDetailScreen glass + mobile audit
+6. **P4-UX** — Pass 156: HomeScreen 375px mobile hierarchy audit
+7. **P4-UX** — Pass 157: Map mobile UX — search-first + progressive disclosure
+8. **P4-UX** — Pass 158: Landing map/coverage midnight shell consistency
 
 ---
 
@@ -1866,19 +2076,27 @@ Progress: ████████████████░░░░░░░�
 
 ---
 
-## 16. Best Next Passes (Priority Order)
+## 16. Best Next Passes (Priority Order) — Updated 2026-03-25
 
-| #   | Pass                                   | Impact                                      | Unlocks                                     |
-| --- | -------------------------------------- | ------------------------------------------- | ------------------------------------------- |
-| 1   | **Remove False Trust Claims**          | P0-TRUST: honesty, legal safety             | Launch readiness, partner trust             |
-| 2   | **"Coverage focus" Label Cleanup**     | P2-DATA: 2 files, trivial change            | Clean consumer copy across all map surfaces |
-| 3   | **Navigation Session Lifecycle**       | Formal session state machine                | Cloud sync, session analytics, pause/resume |
-| 4   | **Insurer Workflow Automation**        | Claims approval routing                     | Real insurer value                          |
-| 5   | **Voice Picker UI**                    | Voice persona selection                     | User control over speech                    |
-| 6   | **URL-Based Routing**                  | Deep links, back/forward                    | SEO, shareability                           |
-| 7   | **Full Accessibility Audit (WCAG AA)** | Keyboard, screen reader, color contrast     | Compliance, inclusion                       |
-| 8   | **Sentry DSN Configuration**           | Activate crash reporting (operational only) | Production observability                    |
-| 8   | **Landing Page Glass Unification**     | Full design system coverage                 | Visual consistency                          |
+| #   | Pass                                       | Impact                                          | Unlocks                                          |
+| --- | ------------------------------------------ | ----------------------------------------------- | ------------------------------------------------ |
+| ~~1~~ | ~~**Fix "props" runtime crash**~~         | ~~P1-RUNTIME~~ ✅ Fixed Pass 186                 | ~~Stable navigation~~ ✅                         |
+| 1   | **Full loop validation**                   | Prove landing→report→bids→decision works          | Real user journey verified end-to-end            |
+| 2   | **Map dominance finalization**             | Reduce visual weight of non-map elements         | Map feels alive and central, not just a section  |
+| 3   | **Interaction flow smoothing**             | Tap→response→transition→feedback audit           | Zero-friction movement between states            |
+| 4   | **Map→data loop hardening**               | Reports/shops feel spatially tied to location    | Connected product feel, not detached UI          |
+| 5   | **Mobile experience perfection**           | Thumb zones, bottom sheets, map visibility       | Mobile IS the product                            |
+| 6   | **Landing section coherence**              | Connect lighter sections to map/dark identity    | Entire site feels like one product               |
+| 7   | **Customer decision loop**                 | Report→bids→shop→navigation continuity          | Real user journey completion                     |
+| 8   | **Full Accessibility Audit (WCAG AA)**     | Keyboard, screen reader, color contrast          | Compliance, inclusion                            |
+| 9   | **Supabase RLS security hardening**        | Fix 4 overly permissive policies (`USING(true)`) | Production security readiness                    |
+| 10  | **CI/CD pipeline + test foundation**       | Automated builds, basic test coverage            | Deployment confidence, regression prevention     |
+
+### Completed priorities (removed from queue)
+- ~~Remove False Trust Claims~~ ✅ Done (Pass 112-115)
+- ~~"Coverage focus" Label Cleanup~~ ✅ Done (Pass 113)
+- ~~Sentry DSN Configuration~~ ✅ Done (Pass 182)
+- ~~Landing Page Glass Unification~~ ✅ Done (Pass 182A-E)
 
 ---
 

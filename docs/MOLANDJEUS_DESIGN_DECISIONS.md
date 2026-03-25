@@ -92,102 +92,89 @@ Every animation serves a purpose:
 
 ---
 
-## 2. Current BidOnDent Page Audit
+## 2. Current BidOnDent Page Audit (Updated 2026-03-25)
 
-### Landing Page — What's Cramped and Why
+### Landing Page — Screenshot-Verified State
 
-#### HeroSection ✓ Mostly Good
+#### HeroSection ✅ Strong
 
-The hero is clean. The 3 bullet points under the headline work but feel a bit stacked and
-inventory-list-like. **Improvement decision**: Convert to an animated 3-step value carousel
-that cycles through the three points with a smooth fade — one at a time — so the hero breathes.
+Premium hero with “Get the **Best Price** on Your **Auto Body Repair**” headline. Map image with “NY Active Service Region” badge and “Shops Near You” / “Repair Completed!” overlays. Animated value carousel cycles through trust points. “Start New Report” primary CTA (pill shape, blue gradient) + “Learn More” secondary. Bottom badges: “Now available in NY”, “Transparent bids”, “Free for customers”. **This is the strongest non-map section.**
 
-#### HowItWorksSection ✓ Clean
+#### HowItWorksSection ✅ Clean
 
-Three step cards with dashed connectors. Already good. No cramming. Keep as-is.
+Three numbered step cards (Report Damage → Receive Bids → Choose and Repair) with icons and descriptions. Clean layout, good breathing room. No issues.
 
-#### WhoWeServeSection ✓ Clean but list-heavy
+#### BenefitsSection (“Why Choose BidOnDent”) ✅ Strong
 
-The 3 cards with 4 bullet points each work well for structured comparison. The hover color-fill
-effect is great. **Improvement decision**: The cards are fine as-is. Do not over-engineer these.
+Three photo cards with badge overlays (Guided Intake, Repair Network, Transparent Bids). Real photos, professional composition. This section breathes well and feels premium.
 
-#### BenefitsSection ✓ Clean
+#### WhoWeServeSection ✅ Clean
 
-Image cards with badge overlays. These breathe. Keep as-is.
+Three role cards (For Customers / For Repair Shops / For Insurers) with icon headers and 4-bullet feature lists. Green checkmark icons. Bottom badges: “$0 for Customers”, “NY Service Area”, “Transparent Bidding”. Structured and honest.
 
-#### TrustStatsSection ✓ Clean
+#### AboutOpportunitySection ✅ Delivered
 
-4-column dark gradient band. Each item is just an icon + value + label. Already minimal.
-Keep as-is.
+Three expandable cards (Clear Decision-Making, Shared Process, Accountability) with “Learn more” chevron buttons. Expanding disclosure pattern is working. “Read Full About Overview” CTA button below. **Previously marked for improvement — now done.**
 
-#### AboutOpportunitySection ⚠️ Improve
+#### TrustStatsSection ✅ Clean
 
-Three cards with short 1-2 sentence descriptions. They look fine but the information is too
-terse — not enough to understand what BidOnDent actually delivers. **Decision**: make each card
-expand with a "Learn more" click, revealing a deeper explanation in a smooth slide-down.
+4-column dark gradient band with icons: Structured Intake, Transparent Bids, Operational Tracking, Review Controls. Minimal and effective.
 
-#### BusinessInquirySection ⚠️ Improve
+#### OperatingRegionsSection ✅ Standout
 
-This is the most cramped section on the entire landing page. The shop form has **10 fields** all
-rendered in a 2-column grid at once. This reads like a government form thrown onto a webpage.
+The strongest section on the entire site. Dark navy background with interactive map, ZIP search, radius selector, map mode buttons (Map/Night/Satellite/Focus/Overview/Expand), county grid (Rockland, Dutchess, Westchester, Nassau, Orange, Putnam), partner shop list with navigation handoff (Apple Maps/Google Maps/Waze), performance metrics overlay. **This is the product's visual identity anchor.**
 
-**Decision**: Progressive disclosure gateway:
+#### BusinessInquirySection ✅ Delivered
 
-- Initially show: a clean card with short description + two large action buttons ("Join as a Shop"
-  and "Partner as Insurer"), each with the role icon and a one-sentence value prop.
-- When user clicks their role, the form slides open with a close/back button.
-- The field count stays the same but the user arrives with intent and context — not a wall of inputs.
+Progressive disclosure gateway working: clean card with “Join as a Shop” / “Partner as Insurer” action rows. No wall-of-inputs. “Every request is reviewed and confirmed by our team” disclaimer. **Previously marked for improvement — now done.**
 
-#### CTASection ✓ Good
+#### CTASection ✅ Good
 
-Clean card with gradient background shapes. The button is large and well-proportioned.
+Glass card with gradient orbs (amber/blue). “Ready to Get Started?” with “Go to Dashboard” CTA (pill shape, blue gradient). Sub-text: “Free to use • No obligation • Get quotes in minutes”. Proportional sizing matches hero.
 
-#### OperatingRegionsSection ✓ Mostly Good
+#### FooterSection ✅ Clean
 
-The map + shops list + search panel together are dense, but they are functional map surfaces —
-density is expected and appropriate here. The dark background helps the map breathe.
+Three-column layout (For Customers / For Businesses / Company). Contact info, social links, copyright. Clean and honest.
 
-### Dashboard — What's Cramped and Why
+### Landing Page — Remaining Opportunities
 
-The dashboard has undergone glass-system adoption, but still has issues:
+1. **Light sections feel disconnected from map identity** — The lighter sections (Hero, How It Works, Who We Serve) are clean but don't feel like they belong to the same product as the dark map sections. The identity lives in the map/dark areas; lighter areas need subtle connection.
+2. **Section stacking** — Some transitions between light sections feel like generic marketing site rather than a spatial product experience.
+3. **Not every section needs to be dark** — but every section should feel like it belongs to BidOnDent's blue identity.
 
-#### What Improved
+### Dashboard — Screenshot-Verified State (Pass 185)
 
-- Glass panels (`bd-glass-panel`, `bd-glass-card`) are now applied across:
-  - HomeScreen
-  - DashboardLayout
-  - ProfileDropdown
-- Visual cohesion with the map system has begun
+#### What Is Working
 
-#### What Is Still Wrong
+- Glass system (`bd-glass-panel`, `bd-glass-card`, `bd-glass-control`, `bd-glass-badge`) deployed across all surfaces
+- Sidebar nav: Dashboard, Report (active with arrow), Bids, Account, Demo Mode
+- Report creation wizard: 5-step flow (Vehicle Info → Damage Area → [Location] → Photos → Description → Complete)
+- Saved vehicles picker with quick-select
+- Photo upload with camera/upload options, cloud storage indicator
+- Report success screen with “What happens next” timeline
+- Blue system tokens unified (glass backgrounds blue-tinted, shadows refined)
+- All buttons meet WCAG AA 44px touch targets
+- Empty states use `bd-glass-card` — visible on dark dashboard
+- Header: BidOnDent logo (blue glass icon), search, notifications (badge), profile dropdown
 
-1. **Dark mode is too dark**
-   - Feels closer to “developer dark mode” than Apple Maps
-   - Needs softer navy/blue tones, not near-black
+#### What Still Needs Work
 
-2. **Interactive controls feel inconsistent**
-   - Some use proper glass tokens
-   - Others still use ad-hoc `bg-white/XX backdrop-blur` styles
+1. **”Can't find variable: props” crash** on certain navigation paths (P1 bug)
+2. **Map dominance** — dashboard still feels like “UI with a map widget” rather than “map with floating panels”
+3. **Interaction flow continuity** — transitions between report/bids/shop could be smoother
+4. **Mobile bottom sheet behavior** — could be more map-native (less blocking, more overlay)
 
-3. **Map controls are not premium**
-   - Zoom buttons feel default/Leaflet
-   - Not circular, not floating, not tactile
+### Design System — Current State (Locked)
 
-4. **Too many surfaces still feel “flat Tailwind”**
-   - Especially hover states and small controls
-
-#### Design Decision (CRITICAL)
-
-We are not “adding glass.”
-
-We are **standardizing interaction language**:
+The glass system is standardized. Zero ad-hoc blur implementations going forward:
 
 - Panels = `bd-glass-panel`
 - Cards = `bd-glass-card`
-- Controls = `bd-glass-control` (NEW PRIMARY CLASS)
+- Controls = `bd-glass-control`
 - Badges = `bd-glass-badge`
+- Floating = `bd-glass-floating`
 
-There should be **zero ad-hoc blur implementations** going forward.
+Blue tokens are unified in `theme.css`: glass blur 14px, blue-tinted backgrounds, blue shadow system, hover accents.
 
 ---
 

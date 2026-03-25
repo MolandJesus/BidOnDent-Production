@@ -161,9 +161,9 @@ export default function CustomerMapWidget({
                     handleSelectShop(shop, { centerMap: true });
                     setIsMapExpanded(true);
                   }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors hover:bg-slate-50"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors hover:bg-blue-50/40"
                 >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50/60 text-blue-600">
                     <Store className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1">

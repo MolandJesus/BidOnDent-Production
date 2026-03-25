@@ -44,7 +44,7 @@ export default function AccountMenu({
       className="bd-glass-card rounded-2xl p-3"
     >
       <div className="space-y-1.5">
-        <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenSettings}>
+        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenSettings}>
           <div className="flex items-center">
             <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
               <Settings className="w-5 h-5" />
@@ -53,7 +53,7 @@ export default function AccountMenu({
           </div>
           <ChevronRight className="w-5 h-5 text-slate-400" />
         </button>
-        <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenPayment}>
+        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenPayment}>
           <div className="flex items-center">
             <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
               <CreditCard className="w-5 h-5" />
@@ -64,7 +64,7 @@ export default function AccountMenu({
         </button>
 
         {userType === "customer" && (
-          <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onViewVehicles}>
+          <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onViewVehicles}>
             <div className="flex items-center">
               <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
                 <CarIcon className="w-5 h-5" />
@@ -76,7 +76,7 @@ export default function AccountMenu({
         )}
 
         {userType === "shop" && (
-          <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenShopProfile}>
+          <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenShopProfile}>
             <div className="flex items-center">
               <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
                 <Settings className="w-5 h-5" />
@@ -87,7 +87,7 @@ export default function AccountMenu({
           </button>
         )}
 
-        <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenHelp}>
+        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenHelp}>
           <div className="flex items-center">
             <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
               <HelpCircle className="w-5 h-5" />
@@ -98,7 +98,7 @@ export default function AccountMenu({
         </button>
 
         {onOpenSmokeTest && (
-          <button className={`${rowBaseClass} hover:bg-slate-50`} onClick={onOpenSmokeTest}>
+          <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenSmokeTest}>
             <div className="flex items-center">
               <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
                 <CheckSquare className="w-5 h-5" />
@@ -110,23 +110,23 @@ export default function AccountMenu({
         )}
 
         <button
-          className={`${rowBaseClass} bd-glass-control--destructive`}
+          className={`${rowBaseClass} hover:bg-rose-50/50 text-rose-600`}
           onClick={onOpenDeleteAccount}
         >
           <div className="flex items-center">
             <span className="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center mr-3">
               <Trash2 className="w-5 h-5" />
             </span>
-            <span className="font-medium">Delete Account</span>
+            <span className="font-medium text-rose-600">Delete Account</span>
           </div>
         </button>
 
-        <button className={`${rowBaseClass} bd-glass-control--destructive`} onClick={onLogout}>
+        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onLogout}>
           <div className="flex items-center">
-            <span className="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center mr-3">
+            <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center mr-3">
               <LogOut className="w-5 h-5" />
             </span>
-            <span className="font-medium">Sign Out</span>
+            <span className="font-medium text-slate-700">Sign Out</span>
           </div>
         </button>
       </div>

@@ -83,8 +83,8 @@ export default function InsurerMapWidget({ primaryColor, secondaryColor, onViewS
         </div>
       )}
 
-      <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5">
-        <MapPinned className="h-4 w-4 text-slate-400" />
+      <div className="mt-4 flex items-center gap-2 rounded-xl bg-blue-50/30 border border-blue-200/30 px-3 py-2.5">
+        <MapPinned className="h-4 w-4 text-blue-400" />
         <p className="text-xs text-slate-500">
           Network analytics dashboard coming soon. Region-level claims and shop performance data
           will appear here.

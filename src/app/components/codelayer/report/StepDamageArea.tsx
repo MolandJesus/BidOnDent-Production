@@ -43,12 +43,14 @@ export default function StepDamageArea({
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
         {damageAreas.map((area) => (
           <button
+            type="button"
             key={area.id}
-            className={`py-2.5 px-3 text-sm border rounded-xl font-medium transition-all duration-200 ${
+            className={`py-3 px-3 min-h-[44px] text-sm border rounded-xl font-medium transition-all duration-200 ${
               damageArea === area.id
-                ? "bg-blue-50 border-blue-400 text-blue-700 shadow-md ring-1 ring-blue-200"
-                : "bg-white/80 border-slate-200 text-slate-700 hover:border-blue-300 hover:bg-blue-50/30"
+                ? "bg-blue-50 border-blue-400 text-blue-700 ring-1 ring-blue-200"
+                : "bg-white/80 border-blue-200/40 text-slate-700 hover:border-blue-300 hover:bg-blue-50/30"
             }`}
+            style={damageArea === area.id ? { boxShadow: "0 2px 12px rgba(59, 130, 246, 0.15)" } : {}}
             onClick={() => onSelectDamageArea(area.id)}
           >
             {area.label}
@@ -58,15 +60,17 @@ export default function StepDamageArea({
 
       <div className="flex space-x-3">
         <button
+          type="button"
           onClick={onBack}
-          className="flex-1 py-2.5 px-4 border border-slate-200/60 rounded-xl font-medium hover:bg-white/40 transition-colors"
+          className="flex-1 py-3 px-4 min-h-[44px] border border-blue-200/40 rounded-xl font-medium hover:bg-blue-50/40 transition-colors"
         >
           Back
         </button>
         <button
+          type="button"
           onClick={onContinue}
-          className="flex-1 py-2.5 px-4 rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
-          style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`, boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)" }}
         >
           Continue
           <ChevronRight className="w-4 h-4" />

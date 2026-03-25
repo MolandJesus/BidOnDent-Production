@@ -1,4 +1,4 @@
-/**
+                                                                                                                                    /**
  * Sentry initialization — centralized, environment-safe.
  *
  * Call `initSentry()` once at app startup (before React renders).

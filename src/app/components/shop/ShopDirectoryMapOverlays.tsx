@@ -89,7 +89,8 @@ export default function ShopDirectoryMapOverlays({
       {showIntelligence && (
         <div className="pointer-events-auto absolute left-4 top-20 z-[510] max-w-xs">
           <button
-            className="flex items-center gap-2 rounded-2xl border border-white/20 bg-slate-950/70 px-3 py-2 text-xs font-semibold text-white shadow-xl backdrop-blur-md transition-colors hover:bg-slate-950/80"
+            className="flex items-center gap-2 rounded-2xl border border-blue-400/20 bg-slate-950/70 px-3 py-2 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:bg-slate-950/80"
+            style={{ boxShadow: "0 4px 24px rgba(15, 23, 42, 0.30), 0 0 20px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(96, 165, 250, 0.15)" }}
             onClick={() => setIntelligenceExpanded((v) => !v)}
             type="button"
           >
@@ -103,7 +104,7 @@ export default function ShopDirectoryMapOverlays({
           </button>
 
           {intelligenceExpanded && (
-            <div className="mt-2 rounded-2xl border border-white/15 bg-slate-950/75 p-3 shadow-2xl backdrop-blur-md">
+            <div className="mt-2 rounded-2xl border border-blue-400/15 bg-slate-950/75 p-3 backdrop-blur-md" style={{ boxShadow: "0 8px 40px rgba(15, 23, 42, 0.35), 0 0 32px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(96, 165, 250, 0.12)" }}>
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
                   Intelligence
@@ -135,6 +136,42 @@ export default function ShopDirectoryMapOverlays({
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Shop action overlay — bottom center, mobile-first, glass/royal blue style */}
+      {hasRoute && selectedShop && (
+        <div className="pointer-events-auto fixed z-[530] flex -translate-x-1/2 flex-col items-center gap-3 px-4 sm:absolute sm:bottom-10 sm:left-1/2 left-1/2" style={{ bottom: "max(env(safe-area-inset-bottom, 0px) + 1.5rem, 1.5rem)" }}>
+          <div className="rounded-2xl bg-white/90 backdrop-blur-md dark:bg-slate-900/90 border border-blue-200/60 flex flex-col gap-2 p-4 min-w-[260px] max-w-[95vw]" style={{ boxShadow: "0 8px 40px rgba(15, 23, 42, 0.18), 0 0 32px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.5)" }}>
+            <div className="mb-2 text-center text-base font-semibold text-slate-900 dark:text-white">
+              {selectedShop.name}
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+              <button
+                className="bd-glass-panel flex-1 rounded-xl px-6 py-3 text-base font-bold text-white bg-blue-700 hover:bg-blue-800 transition-colors min-h-[44px] min-w-[120px]"
+                style={{ boxShadow: "0 4px 20px rgba(30, 64, 175, 0.28), 0 0 32px rgba(59, 130, 246, 0.12)" }}
+                type="button"
+                onClick={() =>
+                  window.dispatchEvent(
+                    new CustomEvent("shop-bid-action", { detail: { shop: selectedShop } })
+                  )
+                }
+              >
+                Place Bid
+              </button>
+              <button
+                className="bd-glass-panel flex-1 rounded-xl px-6 py-3 text-base font-bold text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors min-h-[44px] min-w-[120px] border border-blue-300"
+                type="button"
+                onClick={() =>
+                  window.dispatchEvent(
+                    new CustomEvent("shop-accept-action", { detail: { shop: selectedShop } })
+                  )
+                }
+              >
+                Accept
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

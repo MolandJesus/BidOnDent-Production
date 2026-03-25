@@ -25,13 +25,13 @@ export default function TrustStatsSection() {
   ];
 
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-r from-[#0f0d1a] to-[#1a1535] text-white relative overflow-hidden">
+    <section className="py-12 md:py-20 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0c1a30 100%)" }}>
       {/* Soft top-edge transition from light sections above */}
-      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-violet-100/10 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-blue-200/5 to-transparent" />
       {/* Decorative background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.14)_1px,transparent_1px)] [background-size:26px_26px] opacity-20" />
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-violet-400/15 rounded-full blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:26px_26px] opacity-20" />
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/12 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-400/8 rounded-full blur-3xl" />
 
       <div className="container mx-auto px-4 max-w-7xl relative">
         <div className="grid md:grid-cols-4 gap-8 text-center">
@@ -41,7 +41,7 @@ export default function TrustStatsSection() {
               className="group transition-all duration-300"
               style={{ animationDelay: `${index * 0.15}s` }}
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 mb-4 group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-blue-500/20">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/8 mb-4 group-hover:bg-white/15 transition-all duration-300 group-hover:scale-110" style={{ boxShadow: "0 0 20px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(96, 165, 250, 0.1)" }}>
                 <item.icon className="w-8 h-8 text-blue-300" />
               </div>
               <div className="text-2xl font-bold mb-2 tabular-nums flex items-center justify-center gap-2">

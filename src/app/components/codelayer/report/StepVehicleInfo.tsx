@@ -67,7 +67,7 @@ export default function StepVehicleInfo({
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-slate-50 text-slate-500">Or enter details manually</span>
+              <span className="px-2 bg-white/60 text-slate-500 backdrop-blur-sm rounded">Or enter details manually</span>
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function StepVehicleInfo({
       <button
         onClick={onContinue}
         className="w-full py-3 px-4 rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 transition-all"
-        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+        style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`, boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)" }}
         disabled={!vehicle.make || !vehicle.model || !vehicle.year}
       >
         Continue
