@@ -24,7 +24,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.shopName}
           onChange={(e) => onUpdate({ ...shopForm, shopName: e.target.value })}
           placeholder="e.g., Smith's Auto Repair"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -34,7 +34,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.dmvRegistrationNumber}
           onChange={(e) => onUpdate({ ...shopForm, dmvRegistrationNumber: e.target.value })}
           placeholder="e.g., NY-405821"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -44,7 +44,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.contactPerson}
           onChange={(e) => onUpdate({ ...shopForm, contactPerson: e.target.value })}
           placeholder="e.g., John Smith"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -55,7 +55,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.email}
           onChange={(e) => onUpdate({ ...shopForm, email: e.target.value })}
           placeholder="owner@shop.com"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -67,7 +67,7 @@ export default function BusinessInquiryShopForm({
             onUpdate({ ...shopForm, phoneNumber: formatPhoneNumber(e.target.value) })
           }
           placeholder="Phone number (10+ digits)"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -76,7 +76,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.website}
           onChange={(e) => onUpdate({ ...shopForm, website: e.target.value })}
           placeholder="www.example-shop.com"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div className="md:col-span-2">
@@ -86,7 +86,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.address}
           onChange={(e) => onUpdate({ ...shopForm, address: e.target.value })}
           placeholder="123 Main Street"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -96,7 +96,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.city}
           onChange={(e) => onUpdate({ ...shopForm, city: e.target.value })}
           placeholder="e.g., New Rochelle"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -107,7 +107,7 @@ export default function BusinessInquiryShopForm({
           onChange={(e) => onUpdate({ ...shopForm, state: e.target.value.toUpperCase() })}
           placeholder="NY"
           maxLength={2}
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -117,7 +117,7 @@ export default function BusinessInquiryShopForm({
           value={shopForm.zipCode}
           onChange={(e) => onUpdate({ ...shopForm, zipCode: formatZipCode(e.target.value) })}
           placeholder="10601"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
 

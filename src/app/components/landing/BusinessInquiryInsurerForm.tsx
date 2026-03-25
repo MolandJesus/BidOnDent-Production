@@ -24,7 +24,7 @@ export default function BusinessInquiryInsurerForm({
           value={insurerForm.companyName}
           onChange={(e) => onUpdate({ ...insurerForm, companyName: e.target.value })}
           placeholder="e.g., Acme Insurance"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -34,7 +34,7 @@ export default function BusinessInquiryInsurerForm({
           value={insurerForm.contactPerson}
           onChange={(e) => onUpdate({ ...insurerForm, contactPerson: e.target.value })}
           placeholder="e.g., Jane Doe"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -45,7 +45,7 @@ export default function BusinessInquiryInsurerForm({
           value={insurerForm.email}
           onChange={(e) => onUpdate({ ...insurerForm, email: e.target.value })}
           placeholder="partner@insurance.com"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div>
@@ -57,7 +57,7 @@ export default function BusinessInquiryInsurerForm({
             onUpdate({ ...insurerForm, phoneNumber: formatPhoneNumber(e.target.value) })
           }
           placeholder="Phone number (10+ digits)"
-          className="w-full h-11 px-3 border border-slate-300 rounded-lg"
+          className="w-full h-11 px-3 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
       <div className="md:col-span-2">
@@ -68,7 +68,7 @@ export default function BusinessInquiryInsurerForm({
           value={insurerForm.notes}
           onChange={(e) => onUpdate({ ...insurerForm, notes: e.target.value })}
           placeholder="Tell us about your partnership interests and expectations..."
-          className="w-full min-h-28 px-3 py-2 border border-slate-300 rounded-lg"
+          className="w-full min-h-28 px-3 py-2 border border-slate-200/80 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-colors"
         />
       </div>
 

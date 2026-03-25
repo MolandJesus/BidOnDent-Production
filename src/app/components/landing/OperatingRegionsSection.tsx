@@ -50,7 +50,7 @@ export default function OperatingRegionsSection({
                 key={region}
                 className="rounded-xl border border-slate-700/80 bg-slate-800/50 backdrop-blur-sm px-4 py-3 flex items-center gap-2 hover:border-blue-500/40 hover:bg-slate-800/70 transition-all duration-300"
               >
-                <MapPin className="w-4 h-4 text-cyan-300" />
+                <MapPin className="w-4 h-4 text-blue-300" />
                 <span>{region}</span>
               </div>
             ))}
