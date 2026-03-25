@@ -136,9 +136,9 @@ export default function BusinessInquirySection() {
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-slate-950 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
+                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-blue-400 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#003d82] flex items-center justify-center">
                     <Building2 className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -147,7 +147,7 @@ export default function BusinessInquirySection() {
                       Get listed and start receiving bids
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-slate-900 group-hover:translate-x-0.5 transition-all duration-200" />
+                  <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all duration-200" />
                 </button>
 
                 <button
@@ -157,9 +157,9 @@ export default function BusinessInquirySection() {
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-emerald-600 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
+                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-blue-400 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#1e3a5f] flex items-center justify-center">
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -168,7 +168,7 @@ export default function BusinessInquirySection() {
                       Reduce claims costs via our network
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all duration-200" />
+                  <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all duration-200" />
                 </button>
               </div>
             </div>
