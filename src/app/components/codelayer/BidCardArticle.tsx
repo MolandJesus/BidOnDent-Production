@@ -169,7 +169,8 @@ export default function BidCardArticle({
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={onAccept}
-                  className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
+                  disabled={isAccepted}
+                  className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-sm"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
                   }}

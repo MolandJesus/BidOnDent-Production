@@ -149,18 +149,14 @@ export function buildDashboardRouterProps({
       shopName: string;
       price: number;
       timeframe: string;
+      reportId?: string;
     }) => {
       try {
         const { updateBidStatus } = await import("../services/supabase/bids");
         await updateBidStatus(details.bidId, "accepted");
 
-        // Find the report associated with the accepted bid
-        const acceptedBid = userData.bids.find((b: any) => b.id === details.bidId);
-        const reportId =
-          acceptedBid?.damage_report_id ||
-          acceptedBid?.reportId ||
-          navigation.selectedReportId ||
-          userData.reports[0]?.id;
+        // Use the reportId passed from BidsScreen (sourced from live Supabase data)
+        const reportId = details.reportId || navigation.selectedReportId || userData.reports[0]?.id;
         if (reportId && userProfile?.id) {
           const { updateReportStatus } = await import("../services/supabase/reports");
           await updateReportStatus(reportId.toString(), "active", userProfile.id);
@@ -169,28 +165,29 @@ export function buildDashboardRouterProps({
           );
         }
 
-        // Reject competing bids for the same report
-        const competingBids = userData.bids.filter(
-          (b: any) =>
-            b.id !== details.bidId &&
-            (b.damage_report_id === reportId || b.reportId === reportId) &&
-            b.status !== "rejected"
-        );
-        for (const competing of competingBids) {
+        // Reject competing bids for the same report via Supabase query
+        if (reportId) {
           try {
-            await updateBidStatus(competing.id, "rejected");
-          } catch (rejectErr) {
-            console.error("Failed to reject competing bid:", competing.id, rejectErr);
+            const { getBidsForReport } = await import("../services/supabase/bids");
+            const allBidsForReport = await getBidsForReport(reportId.toString());
+            const competingBids = allBidsForReport.filter(
+              (b) => b.id !== details.bidId && b.status !== "rejected"
+            );
+            for (const competing of competingBids) {
+              try {
+                await updateBidStatus(competing.id!, "rejected");
+              } catch (rejectErr) {
+                console.error("Failed to reject competing bid:", competing.id, rejectErr);
+              }
+            }
+          } catch (fetchErr) {
+            console.error("Failed to fetch competing bids:", fetchErr);
           }
         }
 
-        // Update local bids state — accepted bid + rejected competitors
+        // Update local bids state
         userData.setBids(
-          userData.bids.map((b: any) => {
-            if (b.id === details.bidId) return { ...b, status: "accepted" };
-            if (competingBids.some((c: any) => c.id === b.id)) return { ...b, status: "rejected" };
-            return b;
-          })
+          userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "accepted" } : b))
         );
       } catch (err) {
         console.error("Failed to accept bid:", err);

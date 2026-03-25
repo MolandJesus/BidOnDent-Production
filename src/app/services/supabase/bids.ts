@@ -112,7 +112,7 @@ export async function getMyBids(): Promise<Bid[]> {
     const { data, error } = await supabase
       .from("bids")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("shop_user_id", user.id)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -141,7 +141,7 @@ export async function deleteBid(bidId: string): Promise<boolean> {
       .from("bids")
       .delete()
       .eq("id", bidId)
-      .eq("user_id", user.id);
+      .eq("shop_user_id", user.id);
 
     if (error) {
       console.error("Error deleting bid:", error);

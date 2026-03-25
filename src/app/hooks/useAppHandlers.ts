@@ -106,11 +106,13 @@ export function useAppHandlers({
       return;
     }
 
-    const vehicleInfo = `${report.year} ${report.make} ${report.model}`;
+    const vehicleInfo =
+      `${report.vehicle?.year || report.vehicle_year || ""} ${report.vehicle?.make || report.vehicle_make || ""} ${report.vehicle?.model || report.vehicle_model || ""}`.trim() ||
+      "Vehicle";
 
     // Build bid object for Supabase
     const bid = {
-      report_id: reportId,
+      damage_report_id: reportId,
       shop_name: userData.userInfo.name || "Shop Name",
       shop_email: userData.userInfo.email,
       amount: bidAmount,

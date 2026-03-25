@@ -15,6 +15,7 @@ type BidsScreenProps = {
     shopName: string;
     price: number;
     timeframe: string;
+    reportId?: string;
   }) => void;
   onRejectBid?: (details: { bidId: string; shopName: string }) => void;
 };
@@ -292,6 +293,7 @@ export default function BidsScreen({
                   shopName: bid.shopName,
                   price: bid.price,
                   timeframe: bid.timeframe,
+                  reportId: bid.reportId,
                 });
               }}
               onReject={() => {
