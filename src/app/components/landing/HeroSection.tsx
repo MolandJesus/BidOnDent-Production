@@ -1,4 +1,4 @@
-import { ChevronRight, CheckCircle, MapPin, Play, Shield } from "lucide-react";
+import { ChevronRight, CheckCircle, Play } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
 import { useEffect, useState, useRef, useCallback } from "react";
@@ -61,20 +61,15 @@ export default function HeroSection({
   };
 
   return (
-    <section className="pt-28 sm:pt-32 pb-20 sm:pb-28 overflow-hidden relative bg-gradient-to-br from-[#f9f8fc] via-[#f2f0f8] to-[#eae8f4]">
-      {/* Warm atmospheric depth layers — soft, natural lighting feel */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-15%,rgba(99,147,205,0.12),transparent_65%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_85%_80%,rgba(147,130,205,0.07),transparent_55%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_110%,rgba(180,200,220,0.1),transparent_50%)]" />
-      {/* Soft ambient blobs — warm and diffused */}
-      <div className="absolute top-16 right-10 w-72 h-72 bg-blue-200/30 rounded-full blur-[80px] animate-blob" />
+    <section className="pt-28 sm:pt-32 pb-20 sm:pb-28 overflow-hidden relative bg-gradient-to-br from-[#f8faff] via-[#f0f5fb] to-[#e8f0f8]">
+      {/* Subtle blue atmospheric depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-15%,rgba(59,130,246,0.08),transparent_65%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_85%_80%,rgba(59,130,246,0.05),transparent_55%)]" />
+      {/* Soft ambient blob — single, subtle */}
+      <div className="absolute top-16 right-10 w-72 h-72 bg-blue-200/20 rounded-full blur-[100px] animate-blob" />
       <div
-        className="absolute bottom-20 -left-10 w-80 h-80 bg-blue-100/20 rounded-full blur-[90px] animate-blob"
+        className="absolute bottom-20 -left-10 w-80 h-80 bg-blue-100/15 rounded-full blur-[100px] animate-blob"
         style={{ animationDelay: "4s" }}
-      />
-      <div
-        className="absolute top-1/3 left-1/4 w-64 h-64 bg-sky-100/25 rounded-full blur-[70px] animate-blob"
-        style={{ animationDelay: "2s" }}
       />
 
       <div className="container mx-auto px-5 sm:px-6 max-w-7xl relative">
@@ -122,7 +117,7 @@ export default function HeroSection({
 
               {/* Value carousel */}
               <div
-                className={`relative h-14 overflow-hidden pt-1 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                className={`relative h-16 overflow-hidden pt-1 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 style={{ transitionDelay: "0.5s" }}
               >
                 {VALUE_STATEMENTS.map((statement, i) => (
@@ -223,7 +218,8 @@ export default function HeroSection({
                   alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
                   className="relative rounded-2xl w-full h-auto object-cover"
                   style={{
-                    boxShadow: "0 20px 60px rgba(15, 23, 42, 0.12), 0 0 40px rgba(59, 130, 246, 0.06)",
+                    boxShadow:
+                      "0 20px 60px rgba(15, 23, 42, 0.12), 0 0 40px rgba(59, 130, 246, 0.06)",
                     aspectRatio: "16/10",
                     maxHeight: "520px",
                   }}
@@ -262,23 +258,6 @@ export default function HeroSection({
                   Bid selected and scheduled through platform
                 </div>
               </div>
-            </div>
-
-            {/* Floating map-preview badge — product story */}
-            <div
-              className={`absolute top-1/2 -left-2 sm:-left-4 lg:-left-8 bd-glass-floating px-3 py-2 flex items-center gap-2 animate-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
-              style={{ transitionDelay: "2s", animationDelay: "0.5s" }}
-            >
-              <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
-              <span className="text-xs font-semibold text-slate-700">Shops Near You</span>
-            </div>
-
-            {/* Shield trust badge — top-left area */}
-            <div
-              className={`absolute top-8 -left-1 sm:top-12 sm:-left-3 lg:top-16 lg:-left-5 bd-glass-floating p-2 sm:p-2.5 animate-float-slow transition-all duration-700 hidden sm:flex ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
-              style={{ transitionDelay: "1.8s", animationDelay: "2s" }}
-            >
-              <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
             </div>
           </div>
         </div>

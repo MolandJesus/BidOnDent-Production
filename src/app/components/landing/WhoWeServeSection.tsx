@@ -44,13 +44,13 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
     },
     {
       icon: Shield,
-      iconBg: "#16a34a",
+      iconBg: "#1e3a5f",
       title: "For Insurers",
-      borderHover: "hover:border-green-300",
-      gradientFrom: "from-green-50",
-      hoverBg: "#16a34a",
-      borderColor: "#bbf7d0",
-      checkColor: "#16a34a",
+      borderHover: "hover:border-blue-300",
+      gradientFrom: "from-blue-50",
+      hoverBg: "#1e3a5f",
+      borderColor: "#bfdbfe",
+      checkColor: "#1e3a5f",
       items: [
         "Streamline claims processing",
         "Access network of shops",
@@ -107,9 +107,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
                   <card.icon className="w-7 h-7 text-white" />
                 </div>
               </div>
-              <h4 className="font-bold text-2xl mb-4 text-gray-900">
-                {card.title}
-              </h4>
+              <h4 className="font-bold text-2xl mb-4 text-gray-900">{card.title}</h4>
               <ul className="space-y-3 mb-8">
                 {card.items.map((item, i) => (
                   <li key={i} className="flex items-start">
