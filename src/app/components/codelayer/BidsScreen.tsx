@@ -133,9 +133,9 @@ export default function BidsScreen({
             <Clock className="h-6 w-6 text-blue-500" />
           </div>
           <h2 className="text-lg font-semibold text-slate-900">Waiting for shop responses</h2>
-          <p className="mt-2 text-sm text-slate-600 max-w-md mx-auto">
+          <p className="mt-2 text-sm leading-relaxed text-slate-600 max-w-sm mx-auto">
             Once you submit a damage report, nearby shops will review it and send competitive bids.
-            You’ll be able to compare pricing, timelines, and ratings right here.
+            Compare pricing, timelines, and ratings right here.
           </p>
         </motion.section>
       </div>

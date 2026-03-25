@@ -97,7 +97,7 @@ export default function AccountMenu({
           <ChevronRight className="w-5 h-5 text-slate-400" />
         </button>
 
-        {onOpenSmokeTest && (
+        {import.meta.env.DEV && onOpenSmokeTest && (
           <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenSmokeTest}>
             <div className="flex items-center">
               <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
