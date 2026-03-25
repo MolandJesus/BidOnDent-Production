@@ -63,7 +63,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
   return (
     <section
       id="who-we-serve"
-      className="py-16 md:py-24"
+      className="py-12 md:py-20"
       style={{ background: "linear-gradient(180deg, #edf3fa 0%, #f5f8fc 40%, #ffffff 100%)" }}
       ref={sectionRef}
     >

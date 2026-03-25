@@ -25,7 +25,10 @@ export default function TrustStatsSection() {
   ];
 
   return (
-    <section className="py-12 md:py-20 text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0c1a30 100%)" }}>
+    <section
+      className="py-12 md:py-20 text-white relative overflow-hidden"
+      style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0c1a30 100%)" }}
+    >
       {/* Soft top-edge transition from light sections above */}
       <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-blue-200/5 to-transparent" />
       {/* Decorative background elements */}
@@ -41,7 +44,13 @@ export default function TrustStatsSection() {
               className="group transition-all duration-300"
               style={{ animationDelay: `${index * 0.15}s` }}
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/8 mb-4 group-hover:bg-white/15 transition-all duration-300 group-hover:scale-110" style={{ boxShadow: "0 0 20px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(96, 165, 250, 0.1)" }}>
+              <div
+                className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm mb-4 group-hover:bg-white/15 transition-all duration-300 group-hover:scale-110 border border-white/5"
+                style={{
+                  boxShadow:
+                    "0 0 20px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(96, 165, 250, 0.1)",
+                }}
+              >
                 <item.icon className="w-8 h-8 text-blue-300" />
               </div>
               <div className="text-2xl font-bold mb-2 tabular-nums flex items-center justify-center gap-2">

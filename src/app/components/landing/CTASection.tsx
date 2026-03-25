@@ -13,7 +13,7 @@ export default function CTASection({ primaryColor, onNavigateToDashboard }: CTAS
 
   return (
     <section
-      className="py-16 md:py-24 lg:py-32 bg-gradient-to-b from-[#eef4ff] via-[#f0f6ff] to-[#fafbff] relative overflow-hidden"
+      className="py-14 md:py-20 lg:py-28 bg-gradient-to-b from-[#eef4ff] via-[#f0f6ff] to-[#fafbff] relative overflow-hidden"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-6xl text-center relative">
