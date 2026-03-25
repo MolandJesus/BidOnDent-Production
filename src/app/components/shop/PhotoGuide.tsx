@@ -12,7 +12,7 @@ type PhotoGuideProps = {
 export default function PhotoGuide({
   onClose,
   onComplete,
-  primaryColor = "#0056b3",
+  primaryColor = "#003d82",
 }: PhotoGuideProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);

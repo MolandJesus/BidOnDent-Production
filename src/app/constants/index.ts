@@ -1,4 +1,4 @@
-// Application constants for Bidondent
+// Application constants for BidOnDent
 import {
   Home,
   Camera,

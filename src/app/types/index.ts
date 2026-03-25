@@ -1,4 +1,4 @@
-// Type definitions for Bidondent application
+// Type definitions for BidOnDent application
 
 export interface UserInfo {
   name: string;
