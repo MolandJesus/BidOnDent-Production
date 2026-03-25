@@ -59,6 +59,7 @@ The codebase has gone through **180+ structured passes** covering:
 ### D. Documentation Updates
 
 All major docs are maintained and current:
+
 - `docs/BIDONDENT_PRODUCT_BRAIN.md` — primary execution framework
 - `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — strategic map law
 - `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — delivery reality tracker
@@ -118,6 +119,7 @@ supabase/
 ## 4. Design System
 
 Target aesthetic: **Apple Maps-inspired**
+
 - Dark mode
 - Royal blue accents (`#1d4ed8` family)
 - Liquid glass overlays (`bd-glass-card` pattern)
@@ -130,12 +132,12 @@ Target aesthetic: **Apple Maps-inspired**
 
 ## 5. Key Commands
 
-| Command | Purpose |
-|---------|---------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Production build (~1.9s) |
-| `npx cspell lint "src/**/*.{ts,tsx}" "docs/**/*.md" --no-progress` | Spellcheck |
-| Do NOT use `npx tsc --noEmit` | Resolves wrong package |
+| Command                                                            | Purpose                  |
+| ------------------------------------------------------------------ | ------------------------ |
+| `npm run dev`                                                      | Start Vite dev server    |
+| `npm run build`                                                    | Production build (~1.9s) |
+| `npx cspell lint "src/**/*.{ts,tsx}" "docs/**/*.md" --no-progress` | Spellcheck               |
+| Do NOT use `npx tsc --noEmit`                                      | Resolves wrong package   |
 
 ---
 
@@ -144,12 +146,14 @@ Target aesthetic: **Apple Maps-inspired**
 The branch reorg and cleanup phase is **complete**. The next phase is **building the site and integrating design**. Priority areas per the product directives:
 
 ### Immediate Priorities
+
 1. **Map-first product loop completion** — Ensure the report → map → shop → bid → action loop is fully functional end-to-end with real Supabase data.
 2. **Landing page polish** — Hero, HowItWorks, WhoWeServe sections need final mobile/desktop validation and design alignment.
 3. **Code-splitting** — The main JS bundle is >1MB. Needs dynamic imports for route-level splitting.
 4. **Dependabot vulnerabilities** — GitHub reports 7 vulnerabilities (4 high, 1 moderate, 2 low) on the default branch.
 
 ### Secondary Priorities
+
 5. **Shop onboarding flow** — Complete the shop registration and profile setup.
 6. **Insurer partnership page** — Finalize integration with insurer workflow.
 7. **Real-time bid notifications** — Supabase realtime subscriptions for bid updates.
@@ -172,21 +176,21 @@ The branch reorg and cleanup phase is **complete**. The next phase is **building
 
 ## 8. File Quick Reference
 
-| File | Purpose |
-|------|---------|
-| `.github/copilot-instructions.md` | AI execution rules, architecture, design, quality loop |
-| `docs/BIDONDENT_PRODUCT_BRAIN.md` | Product strategy and execution framework |
-| `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` | Map system strategic plan |
-| `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` | Map delivery progress tracker |
-| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` | Pass-by-pass build log |
-| `docs/BIDONDENT_FINISHING_MASTER_PLAN.md` | Finishing roadmap |
-| `src/app/App.tsx` | Root React component |
-| `src/app/routers/DashboardRouter.tsx` | Main routing |
-| `src/app/components/maps/` | Map components |
-| `src/app/services/supabase/` | All Supabase service modules |
-| `src/app/hooks/` | Custom React hooks |
-| `vite.config.ts` | Build config with manual chunks |
+| File                                           | Purpose                                                |
+| ---------------------------------------------- | ------------------------------------------------------ |
+| `.github/copilot-instructions.md`              | AI execution rules, architecture, design, quality loop |
+| `docs/BIDONDENT_PRODUCT_BRAIN.md`              | Product strategy and execution framework               |
+| `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` | Map system strategic plan                              |
+| `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`     | Map delivery progress tracker                          |
+| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`   | Pass-by-pass build log                                 |
+| `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`      | Finishing roadmap                                      |
+| `src/app/App.tsx`                              | Root React component                                   |
+| `src/app/routers/DashboardRouter.tsx`          | Main routing                                           |
+| `src/app/components/maps/`                     | Map components                                         |
+| `src/app/services/supabase/`                   | All Supabase service modules                           |
+| `src/app/hooks/`                               | Custom React hooks                                     |
+| `vite.config.ts`                               | Build config with manual chunks                        |
 
 ---
 
-*This prompt was generated on March 25, 2026. The repo is clean, builds successfully, and is ready for the next phase of development.*
+_This prompt was generated on March 25, 2026. The repo is clean, builds successfully, and is ready for the next phase of development._

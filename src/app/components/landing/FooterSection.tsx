@@ -22,7 +22,7 @@ export default function FooterSection({ primaryColor, secondaryColor }: FooterSe
           className={`grid md:grid-cols-4 gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <div>
-            <div className="flex items-center gap-2.5 px-3 py-2 rounded-full bg-white mb-4 inline-flex shadow-sm">
+            <div className="flex items-center gap-2.5 px-3 py-2 rounded-full bd-glass-badge mb-4 inline-flex">
               <span
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
                 style={{

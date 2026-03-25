@@ -42,6 +42,7 @@ type BidCardArticleProps = {
   onAccept: () => void;
   onReject?: () => void;
   onRate: () => void;
+  onViewShopOnMap?: () => void;
 };
 
 export default function BidCardArticle({
@@ -57,6 +58,7 @@ export default function BidCardArticle({
   onAccept,
   onReject,
   onRate,
+  onViewShopOnMap,
 }: BidCardArticleProps) {
   const savings = bid.price - lowestPrice;
 
@@ -167,22 +169,45 @@ export default function BidCardArticle({
               <p className="text-slate-600 mb-4">{bid.description}</p>
 
               <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={onAccept}
-                  className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-                  }}
-                >
-                  {isAccepted ? "Accepted" : "Accept Bid"}
-                </button>
-                {!isAccepted && onReject && (
-                  <button
-                    onClick={onReject}
-                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-medium hover:text-red-600 hover:border-red-200 hover:bg-red-50/50 transition-all"
-                  >
-                    Decline
-                  </button>
+                {isAccepted ? (
+                  <>
+                    <div className="px-4 py-2.5 rounded-xl bg-emerald-500 text-white font-medium shadow-sm inline-flex items-center gap-2">
+                      <BadgeCheck className="w-4 h-4" />
+                      Accepted
+                    </div>
+                    {onViewShopOnMap && (
+                      <button
+                        onClick={onViewShopOnMap}
+                        className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 inline-flex items-center gap-2"
+                        style={{
+                          background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+                        }}
+                      >
+                        <MapPin className="w-4 h-4" />
+                        Find on Map
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={onAccept}
+                      className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5"
+                      style={{
+                        background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+                      }}
+                    >
+                      Accept Bid
+                    </button>
+                    {onReject && (
+                      <button
+                        onClick={onReject}
+                        className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-medium hover:text-red-600 hover:border-red-200 hover:bg-red-50/50 transition-all"
+                      >
+                        Decline
+                      </button>
+                    )}
+                  </>
                 )}
                 <button className="px-3 py-2.5 rounded-xl border border-slate-200/60 font-medium hover:bg-white/40 transition-colors">
                   <Phone className="w-4 h-4" />

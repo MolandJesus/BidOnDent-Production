@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "motion/react";
-import { ArrowLeft, Clock, Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, BadgeCheck, Clock, MapPin, Sparkles } from "lucide-react";
 import ShopRatingModal from "../shop/ShopRatingModal";
 import BidCardArticle from "./BidCardArticle";
 
@@ -17,6 +17,7 @@ type BidsScreenProps = {
     timeframe: string;
   }) => void;
   onRejectBid?: (details: { bidId: string; shopName: string }) => void;
+  onViewShopOnMap?: (shopName: string) => void;
 };
 
 type FilterType = "all" | "lowest" | "fastest" | "rating";
@@ -29,6 +30,7 @@ export default function BidsScreen({
   reports = [],
   onAcceptBid,
   onRejectBid,
+  onViewShopOnMap,
 }: BidsScreenProps) {
   const [activeBid, setActiveBid] = useState<string | number | null>(null);
   const [acceptedBidId, setAcceptedBidId] = useState<string | number | null>(null);
@@ -251,6 +253,41 @@ export default function BidsScreen({
         </div>
       </motion.section>
 
+      <AnimatePresence>
+        {acceptedBidId && (
+          <motion.section
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="bd-glass-card p-4 flex items-center gap-3 border border-emerald-200/50"
+            style={{ boxShadow: "0 4px 20px rgba(16, 185, 129, 0.12)" }}
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center shrink-0">
+              <BadgeCheck className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-slate-900">Bid accepted</p>
+              <p className="text-sm text-slate-600 truncate">
+                {liveBids.find((b) => b.id === acceptedBidId)?.shopName} will be in touch about your repair.
+              </p>
+            </div>
+            {onViewShopOnMap && (
+              <button
+                onClick={() => {
+                  const shop = liveBids.find((b) => b.id === acceptedBidId);
+                  if (shop) onViewShopOnMap(shop.shopName);
+                }}
+                className="shrink-0 px-3 py-2 rounded-xl text-white text-sm font-medium inline-flex items-center gap-1.5 hover:brightness-110 transition-all"
+                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                Map
+              </button>
+            )}
+          </motion.section>
+        )}
+      </AnimatePresence>
+
       <motion.section
         variants={{
           hidden: { opacity: 0 },
@@ -290,6 +327,9 @@ export default function BidsScreen({
                   shopName: bid.shopName,
                 });
               }}
+              onViewShopOnMap={
+                onViewShopOnMap ? () => onViewShopOnMap(bid.shopName) : undefined
+              }
               onRate={() => {
                 setSelectedShop(bid.shopName);
                 setShowRatingModal(true);

@@ -189,6 +189,9 @@ export default function DashboardRouter({
               reports={reports}
               onAcceptBid={onAcceptBid}
               onRejectBid={onRejectBid}
+              onViewShopOnMap={() => {
+                onViewModeChange("shop-directory");
+              }}
               onBack={() => {
                 onTabChange("home");
                 onViewModeChange("dashboard");
@@ -221,7 +224,21 @@ export default function DashboardRouter({
         {/* Insurer: Claims Screen */}
         {viewMode === "dashboard" && currentTab === "claims" && userType === "insurer" && (
           <motion.div key="claims" {...screenTransition}>
-            <InsurerClaimsScreen primaryColor={primaryColor} reports={shopInsurerReports} reportsLoading={marketplaceLoading} />
+            <InsurerClaimsScreen
+              primaryColor={primaryColor}
+              reports={shopInsurerReports}
+              reportsLoading={marketplaceLoading}
+              onApproveClaim={async (claimId, amount) => {
+                try {
+                  const { updateReportStatus } = await import("../services/supabase/reports");
+                  await updateReportStatus(claimId.toString(), "completed", "");
+                  const { logWorkflowEvent } = await import("../services/supabase/workflow");
+                  await logWorkflowEvent({ event_type: "claim_approved", payload: { claimId, amount } });
+                } catch (err) {
+                  console.error("Failed to approve claim:", err);
+                }
+              }}
+            />
           </motion.div>
         )}
 

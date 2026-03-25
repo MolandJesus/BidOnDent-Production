@@ -281,7 +281,7 @@ export default function ShopActiveJobsScreen({
                       <span className="text-sm font-semibold text-blue-900">Insurance Claim</span>
                     </div>
                     <p className="text-sm text-blue-700 ml-6">
-                      {job.insuranceCompany} - Claim #{job.claimNumber}
+                      Claim linked to this repair
                     </p>
                   </div>
                 )}
@@ -294,7 +294,7 @@ export default function ShopActiveJobsScreen({
               </div>
 
               {/* Actions */}
-              <div className="p-4 bg-white border-t border-gray-100">
+              <div className="p-4 bd-glass-panel border-t border-blue-200/30">
                 <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
                   <a
                     href={`tel:${job.customerPhone}`}

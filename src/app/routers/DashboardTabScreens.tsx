@@ -153,6 +153,9 @@ export default function DashboardTabScreens(props: DashboardRouterProps) {
             bids={bids}
             reports={reports}
             onAcceptBid={onAcceptBid}
+            onViewShopOnMap={() => {
+              onViewModeChange("shop-directory");
+            }}
             onBack={() => {
               onTabChange("home");
               onViewModeChange("dashboard");

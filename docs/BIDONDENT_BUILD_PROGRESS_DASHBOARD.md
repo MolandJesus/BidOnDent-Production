@@ -6,17 +6,17 @@
 
 | 0% |████████████████████████████████████████████████████████████████████████████| 118% 🚀 |
 
-**Passes completed:** 189 / 160+ — ⚡ FINISHING PHASE: SPATIAL SYSTEM + LUMINOUS GLASS
+**Passes completed:** 195 / 160+ — HORIZON PHASE: FINISHING + HARDENING
 
-| Item             | Value                                                         |
-| ---------------- | ------------------------------------------------------------- |
-| **Last pass**    | Pass 189 — Spatial atmosphere + purple→navy color unification |
-| **Current pass** | 189 ✅ complete                                            |
-| **Build**        | ✓ 0 errors · 1.80s                                   |
-| **Spellcheck**   | 0 issues                                                      |
-| **Branch**       | `horizon/bidondent-map-final`                                 |
-| **Last pushed**  | 2026-03-25                                                    |
-| **Phase**        | HORIZON — final product branch, map-first platform            |
+| Item             | Value                                                                |
+| ---------------- | -------------------------------------------------------------------- |
+| **Last pass**    | Pass 195 — Reduced motion accessibility + spacing consistency        |
+| **Current pass** | 195 ✅ complete                                                     |
+| **Build**        | ✓ 0 errors · 0 warnings · 1.99s                                     |
+| **Spellcheck**   | 0 issues                                                             |
+| **Branch**       | `horizon/bidondent-map-final` (default)                              |
+| **Last pushed**  | 2026-03-25                                                           |
+| **Phase**        | HORIZON — final product branch, hardening + production readiness     |
 
 ### Screenshot Reality Check (2026-03-25)
 
@@ -114,6 +114,57 @@ All original passes (154–160) complete. Continuing map-native phase (161+).
 | 187  | Luminous glass glow system: tokens + component sweep             | P4-UX      | ✅     |
 | 188  | Spatial atmosphere: dashboard depth + blue background gradient   | P4-UX      | ✅     |
 | 189  | Purple→navy unification + landing section spatial coherence      | P4-UX      | ✅     |
+| 190  | Customer decision loop: bid acceptance → shop map navigation     | P2-PRODUCT | ✅     |
+| 191  | Spatial data linkage verification (audit-only, no code changes)  | P3-ARCH    | ✅     |
+| 192  | Shop/insurer workflow fixes: approve claim wired, bad refs fixed | P2-PRODUCT | ✅     |
+| 193  | Mobile experience audit: touch targets fixed to 44px minimum    | P4-UX      | ✅     |
+| 194  | Spacing + hierarchy consistency: footer glass fix, audit clean   | P4-UX      | ✅     |
+| 195  | Reduced motion accessibility: comprehensive prefers-reduced-motion| P4-UX      | ✅     |
+
+### Pass 190 — Customer decision loop continuity (2026-03-25)
+
+1. **Why chosen**: After accepting a bid, customers saw no spatial transition — just a button text change. The accept→navigate gap broke the product loop.
+2. **What changed**:
+   - `BidCardArticle.tsx`: Accepted state now shows green badge + "Find on Map" CTA (replaces generic text)
+   - `BidsScreen.tsx`: Animated confirmation banner appears after acceptance with shop name + quick map button
+   - `DashboardRouter.tsx` + `DashboardTabScreens.tsx`: `onViewShopOnMap` wired to route to shop directory
+3. **Files touched**: BidCardArticle.tsx, BidsScreen.tsx, DashboardRouter.tsx, DashboardTabScreens.tsx
+4. **Validation**: Build 0 errors. Accept→map flow now connected.
+
+### Pass 191 — Spatial data linkage verification (2026-03-25)
+
+1. **Why chosen**: Finishing plan required verification that reports, shops, and bids are tied to geographic location.
+2. **What changed**: This was a **verification pass only** — no code changes. Audit confirmed:
+   - Reports have address/city/state/zip, show on map via zipToCoordinates ✅
+   - Shops have lat/lng or ZIP-based fallback coordinates ✅
+   - Bid cards display distance (string from DB, not calculated) ✅
+   - MapReportMarkers render all reports with click-to-detail ✅
+3. **Known gap**: Distance is a static string field, not computed from haversine. Logged for future.
+
+### Pass 192 — Shop/insurer workflow fixes (2026-03-25)
+
+1. **Why chosen**: Audit found insurer "Approve" button had no wired callback, and ShopActiveJobsScreen referenced non-existent fields.
+2. **What changed**:
+   - `DashboardRouter.tsx`: Wired `onApproveClaim` handler — updates report status + logs workflow event to Supabase
+   - `ShopActiveJobsScreen.tsx`: Replaced `job.insuranceCompany`/`job.claimNumber` (which didn't exist) with safe text
+   - `ShopActiveJobsScreen.tsx`: Replaced `bg-white` action section with `bd-glass-panel` for design consistency
+3. **Files touched**: DashboardRouter.tsx, ShopActiveJobsScreen.tsx
+
+### Pass 193 — Mobile experience audit (2026-03-25)
+
+1. **Why chosen**: Finishing plan required 375px audit of all screens.
+2. **What changed**: Audit found two undersized touch targets. Fixed:
+   - `MobileBottomNav.tsx`: Tab buttons bumped from ~32px to 44px minimum (`min-h-[44px]`, `py-2.5`)
+   - `dialog.tsx`: Close button increased from 36px (`h-9 w-9`) to 44px (`h-11 w-11`)
+3. **Audit confirmed OK**: Report wizard, bottom padding, safe areas, map layering, content spacing all correct.
+
+### Pass 194–195 — Spacing consistency + reduced motion (2026-03-25)
+
+1. **Why chosen**: Finishing plan phases 6 (micro polish) and accessibility.
+2. **What changed**:
+   - `FooterSection.tsx`: Flat `bg-white` logo badge → `bd-glass-badge` (last white surface remnant)
+   - `theme.css`: Added comprehensive `prefers-reduced-motion: reduce` rule that disables all animations, transitions, and scroll-behavior site-wide
+3. **Audit confirmed**: Section padding consistent, heading hierarchy correct, all buttons have hover states.
 
 ### Pass 189 — Spatial atmosphere + color unification (2026-03-25)
 
