@@ -20,6 +20,7 @@ import {
 import {
   createReport,
   deleteReport,
+  getMarketplaceReports,
   getReports,
   updateReport,
 } from './handlers/reports.ts'
@@ -206,6 +207,10 @@ Deno.serve(async (req) => {
 
     if (path === '/reports' && req.method === 'POST') {
       return await createReport(req, supabase, respond)
+    }
+
+    if (path === '/reports/marketplace' && req.method === 'GET') {
+      return await getMarketplaceReports(req, supabase, respond)
     }
 
     if (path === '/reports' && req.method === 'GET') {

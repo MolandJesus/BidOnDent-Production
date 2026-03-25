@@ -71,11 +71,27 @@ export async function getDamageReports(
         }
       }
     }
-    // Fallback to direct query if edge fails
+    // Fallback to direct query if edge fails — try clerk_user_id first, then user_id
     if (import.meta.env.DEV) {
       console.warn("[DEV] Edge function failed, falling back to direct Supabase query");
     }
     try {
+      // Try querying by clerk_user_id directly (most reports are saved this way)
+      const clerkId = identity?.clerkUserId;
+      if (clerkId) {
+        const { data, error } = await supabase
+          .from("damage_reports")
+          .select("*")
+          .eq("clerk_user_id", clerkId)
+          .order("created_at", { ascending: false });
+        if (!error && Array.isArray(data) && data.length > 0) {
+          return data;
+        }
+        if (import.meta.env.DEV && error) {
+          console.error("[DEV] Fallback clerk_user_id query error:", error);
+        }
+      }
+      // Also try user_id for legacy reports
       const {
         data: { user }
       } = await supabase.auth.getUser();
@@ -139,6 +155,21 @@ export async function getDamageReports(
 }
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {
+  // Use the edge function (service-role) to bypass RLS and get all reports
+  try {
+    const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
+      `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
+      { method: "GET" }
+    );
+    if (payload && Array.isArray(payload.reports)) {
+      if (import.meta.env.DEV) console.log(`[DEV] Loaded ${payload.reports.length} marketplace reports via edge`);
+      return payload.reports;
+    }
+  } catch (edgeError) {
+    if (import.meta.env.DEV) console.warn("[DEV] Marketplace edge failed, trying direct:", edgeError);
+  }
+
+  // Fallback: direct query (will only work if RLS allows it)
   try {
     const { data, error } = await supabase
       .from("damage_reports")

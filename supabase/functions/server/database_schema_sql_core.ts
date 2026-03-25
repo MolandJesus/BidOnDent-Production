@@ -226,28 +226,56 @@ export const coreDatabaseSchemaSql = `
   DROP POLICY IF EXISTS "Users can delete their own damage reports" ON public.damage_reports;
 
   CREATE POLICY "Users can read their own damage reports"
-    ON public.damage_reports FOR SELECT USING (auth.uid() = user_id);
+    ON public.damage_reports FOR SELECT
+    USING (
+      auth.uid() = user_id
+      OR clerk_user_id IN (
+        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
+      )
+    );
 
   CREATE POLICY "Shops and insurers can read all damage reports"
     ON public.damage_reports FOR SELECT
     USING (
       EXISTS (
         SELECT 1 FROM public.profiles
-        WHERE user_id = auth.uid()
-        AND account_type IN ('shop', 'insurer')
+        WHERE profiles.user_id = auth.uid()
+        AND profiles.account_type IN ('shop', 'insurer')
       )
     );
 
   CREATE POLICY "Users can insert their own damage reports"
-    ON public.damage_reports FOR INSERT WITH CHECK (auth.uid() = user_id);
+    ON public.damage_reports FOR INSERT
+    WITH CHECK (
+      auth.uid() = user_id
+      OR clerk_user_id IN (
+        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
+      )
+    );
 
   CREATE POLICY "Users can update their own damage reports"
     ON public.damage_reports FOR UPDATE
-    USING (auth.uid() = user_id)
-    WITH CHECK (auth.uid() = user_id);
+    USING (
+      auth.uid() = user_id
+      OR clerk_user_id IN (
+        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
+      )
+    )
+    WITH CHECK (
+      auth.uid() = user_id
+      OR clerk_user_id IN (
+        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
+      )
+    );
 
   CREATE POLICY "Users can delete their own damage reports"
-    ON public.damage_reports FOR DELETE USING (auth.uid() = user_id);
+    ON public.damage_reports FOR DELETE
+    USING (
+      auth.uid() = user_id
+      OR clerk_user_id IN (
+        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
+      )
+    );
 
   DROP TRIGGER IF EXISTS set_updated_at ON public.damage_reports;
   CREATE TRIGGER set_updated_at

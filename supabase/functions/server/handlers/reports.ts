@@ -153,6 +153,29 @@ export async function updateReport(
   }
 }
 
+export async function getMarketplaceReports(
+  _req: Request,
+  supabase: SupabaseClient,
+  respond: RespondFunction
+): Promise<Response> {
+  try {
+    const { data, error } = await supabase
+      .from('damage_reports')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching marketplace reports:', error);
+      return respond({ error: error.message }, 500);
+    }
+
+    return respond({ reports: data });
+  } catch (error: any) {
+    console.error('Error in marketplace reports endpoint:', error);
+    return respond({ error: error.message }, 500);
+  }
+}
+
 export async function deleteReport(
   reportId: string | undefined,
   clerkUserId: string | null,
