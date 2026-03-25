@@ -62,7 +62,7 @@ export function useAppEffects({ navigation, userProfile, userData }: UseAppEffec
 
       if (userData.redirectInfo?.type !== userProfile.user_type) {
         userData.setRedirectInfo({
-          type: userProfile.user_type as any,
+          type: userProfile.user_type,
           isReturning: true,
         });
         console.log("Updated user type from Clerk:", userProfile.user_type);

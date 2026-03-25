@@ -6,7 +6,7 @@ export async function getBidsForReport(reportId: string): Promise<Bid[]> {
     const { data, error } = await supabase
       .from("bids")
       .select("*")
-      .eq("report_id", reportId)
+      .eq("damage_report_id", reportId)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -35,9 +35,9 @@ export async function submitBid(bid: Bid): Promise<Bid | null> {
     const { data, error } = await supabase
       .from("bids")
       .insert({
-        user_id: user.id,
-        shop_id: user.id,
-        report_id: bid.report_id,
+        shop_user_id: user.id,
+        clerk_shop_user_id: user.id,
+        damage_report_id: bid.damage_report_id || bid.report_id,
         shop_name: bid.shop_name,
         shop_email: bid.shop_email,
         amount: bid.amount,

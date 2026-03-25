@@ -34,7 +34,12 @@ export async function handleTrackLogin(
   respond: Function
 ): Promise<Response> {
   try {
-    const body = await req.json()
+    let body: Record<string, unknown> = {}
+    try {
+      body = await req.json()
+    } catch {
+      return respond({ error: 'Invalid JSON in request body' }, 400)
+    }
     const { email, user_id } = body
 
     if (!email && !user_id) {

@@ -41,7 +41,7 @@ function normalizeReportIdentity(
 
 export async function getDamageReports(
   identityOrClerkUserId?: string | WebsiteProfileIdentity | null
-): Promise<DamageReport[]> {
+): Promise<DamageReport[] | { error: string }> {
   const identity = normalizeReportIdentity(identityOrClerkUserId);
 
   if (identity?.clerkUserId || identity?.email || identity?.websiteUserKey) {

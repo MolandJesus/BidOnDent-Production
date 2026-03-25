@@ -190,6 +190,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           setReportsLoading(false);
 
           // Step 4: Update localStorage CACHE with fresh data
+          const validReports = Array.isArray(reportsData) ? reportsData : [];
           const freshUserData: UserData = {
             userInfo: {
               name: profileData.name,
@@ -197,7 +198,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               profileImage: profileData.profile_image_url || "",
             },
             vehicles: vehiclesData,
-            reports: reportsData.map(transformSupabaseReport),
+            reports: validReports.map(transformSupabaseReport),
             bids: [],
             userPhone: profileData.phone || "",
             redirectInfo: {
@@ -206,7 +207,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             },
             notifications: getNotificationsByUserType(profileData.account_type),
             hasSeenPhotoGuide: false,
-            photoStorage: reportsData.reduce((acc: Record<string, string[]>, report: any) => {
+            photoStorage: validReports.reduce((acc: Record<string, string[]>, report: any) => {
               if (report?.id && Array.isArray(report.photo_urls)) {
                 acc[report.id] = report.photo_urls;
               }

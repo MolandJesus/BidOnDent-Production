@@ -37,10 +37,15 @@ export default function MapReportMarkers() {
   useEffect(() => {
     let isMounted = true;
 
-    getAllDamageReports().then((data) => {
-      if (!isMounted) return;
-      setReports(Array.isArray(data) ? data : []);
-    });
+    getAllDamageReports()
+      .then((data) => {
+        if (!isMounted) return;
+        setReports(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setReports([]);
+      });
 
     return () => {
       isMounted = false;

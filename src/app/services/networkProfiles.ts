@@ -50,12 +50,24 @@ function toShopBusinessProfile(record: any): ShopBusinessProfile {
     certifications: toStringArray(record?.certifications),
     clerkUserId: record?.clerk_user_id || null,
     completionRate:
-      typeof record?.completion_rate === "number" ? record.completion_rate : Number(record?.completion_rate || 0) || null,
+      typeof record?.completion_rate === "number"
+        ? record.completion_rate
+        : record?.completion_rate != null
+          ? Number(record.completion_rate)
+          : null,
     createdAt: record?.created_at,
     geoLatitude:
-      typeof record?.geo_latitude === "number" ? record.geo_latitude : Number(record?.geo_latitude || 0) || null,
+      typeof record?.geo_latitude === "number"
+        ? record.geo_latitude
+        : record?.geo_latitude != null
+          ? Number(record.geo_latitude)
+          : null,
     geoLongitude:
-      typeof record?.geo_longitude === "number" ? record.geo_longitude : Number(record?.geo_longitude || 0) || null,
+      typeof record?.geo_longitude === "number"
+        ? record.geo_longitude
+        : record?.geo_longitude != null
+          ? Number(record.geo_longitude)
+          : null,
     id: record?.id,
     insurerPrograms: toStringArray(record?.insurer_programs),
     isAcceptingBids: record?.is_accepting_bids !== false,
@@ -65,11 +77,17 @@ function toShopBusinessProfile(record: any): ShopBusinessProfile {
     responseTimeHours:
       typeof record?.response_time_hours === "number"
         ? record.response_time_hours
-        : Number(record?.response_time_hours || 0) || null,
+        : record?.response_time_hours != null
+          ? Number(record.response_time_hours)
+          : null,
     specialties: toStringArray(record?.specialties),
     supportedMakes: toStringArray(record?.supported_makes),
     totalReviews:
-      typeof record?.total_reviews === "number" ? record.total_reviews : Number(record?.total_reviews || 0) || null,
+      typeof record?.total_reviews === "number"
+        ? record.total_reviews
+        : record?.total_reviews != null
+          ? Number(record.total_reviews)
+          : null,
     updatedAt: record?.updated_at,
     website: record?.website || null,
     websiteUserKey: record?.website_user_key || "",
@@ -99,7 +117,9 @@ function toInsurerBusinessProfile(record: any): InsurerBusinessProfile {
     maxClaimAmount:
       typeof record?.max_claim_amount === "number"
         ? record.max_claim_amount
-        : Number(record?.max_claim_amount || 0) || null,
+        : record?.max_claim_amount != null
+          ? Number(record.max_claim_amount)
+          : null,
     popular: !!record?.popular,
     preferredShops: !!record?.preferred_shops,
     profileImageUrl: record?.profile_image_url || null,

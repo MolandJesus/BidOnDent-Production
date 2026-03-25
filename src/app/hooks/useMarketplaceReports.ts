@@ -22,7 +22,8 @@ export function useMarketplaceReports(userType: string) {
         const { getAllDamageReports } = await import("../services/supabase/reports");
         const raw = await getAllDamageReports();
         if (!cancelled) {
-          setMarketplaceReports(raw.map(transformSupabaseReport));
+          const reports = Array.isArray(raw) ? raw : [];
+          setMarketplaceReports(reports.map(transformSupabaseReport));
         }
       } catch {
         if (!cancelled) {
