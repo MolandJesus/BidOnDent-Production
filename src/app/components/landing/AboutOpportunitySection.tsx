@@ -44,7 +44,7 @@ export default function AboutOpportunitySection() {
             <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
             About BidOnDent
           </span>
-          <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-4">
+          <h3 className="text-3xl sm:text-4xl font-bold mt-5 mb-4">
             Opportunity Through Transparency
           </h3>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">

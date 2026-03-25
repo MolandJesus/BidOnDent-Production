@@ -27,8 +27,13 @@ export interface DamageReport {
   damageAreas: string[];
   photos: string[];
   description: string;
-  status: "pending" | "in-review" | "completed";
+  status: "pending" | "in-review" | "active" | "completed";
   createdAt: string;
+  submittedAt?: string;
+  damageArea?: string;
+  damageType?: string;
+  bidAmount?: number;
+  vehicle?: { year?: string; make?: string; model?: string };
   bids?: Bid[];
 }
 
@@ -49,11 +54,13 @@ export interface Bid {
 }
 
 export interface Notification {
-  id: number;
-  type: "bid" | "update" | "message";
+  id: number | string;
+  type: "bid" | "update" | "message" | "repair_request" | "claim";
   message: string;
   time: string;
   read: boolean;
+  createdAt?: string;
+  reportData?: any;
 }
 
 export interface Activity {

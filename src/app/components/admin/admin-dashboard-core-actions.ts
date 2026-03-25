@@ -1,5 +1,5 @@
 import { TEST_ACCOUNTS } from "../../config/adminConfig";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { SUPABASE_PROJECT_ID as projectId, SUPABASE_ANON_KEY as publicAnonKey } from "../../services/supabase/runtime";
 import { supabase } from "../../services/supabaseService";
 
 export interface AccountStatus {

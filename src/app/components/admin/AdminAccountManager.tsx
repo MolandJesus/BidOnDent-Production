@@ -40,7 +40,16 @@ export default function AdminAccountManager() {
     setError("");
 
     try {
-      setUsers(await listAdminUsers());
+      const adminUsers = await listAdminUsers();
+      setUsers(adminUsers.map((u) => ({
+        id: u.id,
+        email: u.email || "",
+        created_at: u.created_at || "",
+        confirmed_at: u.confirmed_at || undefined,
+        email_confirmed_at: u.email_confirmed_at || undefined,
+        last_sign_in_at: u.last_sign_in_at || undefined,
+        user_metadata: u.user_metadata,
+      })));
     } catch (err) {
       console.error("Error loading users:", err);
       setError(`Failed to load users: ${err instanceof Error ? err.message : "Unknown error"}`);

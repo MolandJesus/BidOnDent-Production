@@ -201,7 +201,7 @@ export default function DashboardTabScreens(props: DashboardRouterProps) {
 
       return (
         <AnimatedScreen screenKey="shops">
-          <InsurerPartnerShopsScreen primaryColor={primaryColor} reports={reports} />
+          <InsurerPartnerShopsScreen primaryColor={primaryColor} />
         </AnimatedScreen>
       );
     case "account":

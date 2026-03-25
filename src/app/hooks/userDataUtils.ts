@@ -1,4 +1,32 @@
 import { STORAGE_KEYS } from "../constants";
+import type { Vehicle as FrontendVehicle } from "../types";
+import type { Vehicle as SupabaseVehicle } from "../services/supabase/types";
+
+/** Convert a Supabase Vehicle to a frontend Vehicle. */
+export function toFrontendVehicle(v: SupabaseVehicle): FrontendVehicle {
+  return {
+    id: v.id || "",
+    year: String(v.year),
+    make: v.make,
+    model: v.model,
+    vin: v.vin,
+    licensePlate: v.license_plate,
+    color: v.color,
+  };
+}
+
+/** Convert a frontend Vehicle to a Supabase Vehicle for saving. */
+export function toSupabaseVehicle(v: FrontendVehicle): SupabaseVehicle {
+  return {
+    id: v.id || undefined,
+    make: v.make,
+    model: v.model,
+    year: parseInt(v.year, 10) || 0,
+    vin: v.vin,
+    license_plate: v.licensePlate,
+    color: v.color,
+  };
+}
 
 export const isUuidLike = (value?: string | null) =>
   Boolean(
@@ -39,12 +67,19 @@ export const buildPhotoStorageFromReports = (reportsData: any[]) => {
 
 export const transformSupabaseReport = (report: any) => ({
   id: report.id || "",
+  vehicleId: report.vehicle_id || "",
+  vehicleInfo: {
+    year: report.vehicle_year?.toString() || "",
+    make: report.vehicle_make || "",
+    model: report.vehicle_model || "",
+  },
   vehicle: {
     make: report.vehicle_make || "",
     model: report.vehicle_model || "",
     year: report.vehicle_year?.toString() || "",
     vin: "",
   },
+  damageAreas: [report.damage_location || report.damage_type || "unknown"],
   damageArea: report.damage_location || report.damage_type || "unknown",
   photos: report.photo_urls || [],
   description: report.damage_description || "",
@@ -54,6 +89,7 @@ export const transformSupabaseReport = (report: any) => ({
   state: report.state || "",
   zip_code: report.zip_code || "",
   status: report.status || "pending",
+  createdAt: report.created_at || new Date().toISOString(),
   submittedAt: report.created_at || new Date().toISOString(),
   bidsCount: 0,
 });

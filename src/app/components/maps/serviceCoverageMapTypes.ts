@@ -27,6 +27,31 @@ export type MapSurfaceTheme = {
   selectedListCardClassName: string;
 };
 
+export type MapSurfaceToneVariant = {
+  ambientOverlayClassName: string;
+  shellToneClassName: string;
+  immersiveShellToneClassName: string;
+  mapCanvasClassName: string;
+  panelToneClassName: string;
+  panelStrongToneClassName: string;
+  accentPanelToneClassName: string;
+  segmentedToneClassName: string;
+  activeSegmentClassName: string;
+  inactiveSegmentClassName: string;
+  primaryButtonToneClassName: string;
+  secondaryButtonToneClassName: string;
+  destructiveButtonToneClassName: string;
+  tertiaryButtonToneClassName: string;
+  iconButtonToneClassName: string;
+  titleClassName: string;
+  bodyClassName: string;
+  secondaryTextClassName: string;
+  badgeClassName: string;
+  softBadgeClassName: string;
+  listCardToneClassName: string;
+  selectedListCardToneClassName: string;
+};
+
 export type CoverageCountyMarker = {
   name: string;
   lat: number;

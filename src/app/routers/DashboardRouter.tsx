@@ -283,11 +283,11 @@ export default function DashboardRouter({
                 ...report,
                 photos: photoStorage[report.id] || report.photos || [],
               }))}
-              reportsLoading={reportsLoading}
-              reportsError={reportsError}
+              reportsLoading={reportsLoading ?? false}
+              reportsError={reportsError ?? null}
               onBack={() => onViewModeChange("dashboard")}
               onSelectReport={(reportId) => {
-                onSelectReport(reportId);
+                onSelectReport(String(reportId));
                 onViewModeChange("report-detail");
               }}
               primaryColor={primaryColor}

@@ -43,8 +43,8 @@ export async function testRealtimeService() {
       console.log('✅ Bid received:', bid);
       bidReceived = true;
     },
-    null,
-    null,
+    undefined,
+    undefined,
     (status) => {
       console.log('✅ Connection status:', status);
     }
@@ -264,7 +264,7 @@ export async function testErrorHandling() {
     );
     console.log('❌ Should have thrown error');
   } catch (error) {
-    console.log('✅ Error caught correctly:', error.message);
+    console.log('✅ Error caught correctly:', (error as Error).message);
   }
   console.log('✅ Rollback test passed\n');
 
@@ -335,7 +335,7 @@ export const manualTests = {
       reportId,
       (bid) => {
         console.log('✅ NEW BID:', bid);
-        alert(`New bid received: $${bid.amount} from ${bid.shop_name}`);
+        alert(`New bid received: $${bid.amount} from ${bid.shopName}`);
       },
       (bid) => {
         console.log('✅ UPDATED BID:', bid);
@@ -408,7 +408,7 @@ export const manualTests = {
         width: 800,
         height: 600,
         quality: 80,
-        format: 'webp'
+        format: 'origin'
       }
     );
 

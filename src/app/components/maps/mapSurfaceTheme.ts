@@ -1,5 +1,5 @@
 import { cn } from "../ui/utils";
-import type { MapSurfaceTheme, MapSurfaceTone, MapTileMode } from "./serviceCoverageMapTypes";
+import type { MapSurfaceTheme, MapSurfaceTone, MapSurfaceToneVariant, MapTileMode } from "./serviceCoverageMapTypes";
 
 const baseTheme = {
   shellClassName:
@@ -21,7 +21,7 @@ const baseTheme = {
   metricLabelClassName: "text-[11px] font-semibold uppercase tracking-[0.22em]",
 };
 
-const toneThemes: Record<MapSurfaceTone, Omit<MapSurfaceTheme, keyof typeof baseTheme>> = {
+const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
   light: {
     ambientOverlayClassName:
       "bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),transparent_36%),radial-gradient(circle_at_18%_20%,rgba(37,99,235,0.2),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(59,130,246,0.16),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(191,219,254,0.16))]",

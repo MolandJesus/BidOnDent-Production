@@ -17,11 +17,11 @@ import { useState, useEffect } from 'react';
 import { DollarSign, Clock, Star, MapPin, TrendingUp, Wifi, WifiOff } from 'lucide-react';
 import { realtimeBidService } from '../../services/realtime/RealtimeBidService';
 import { performanceOptimizer } from '../../services/performance/PerformanceOptimizer';
-import { 
-  getBidsForReport, 
+import {
+  getBidsForReport,
   updateBidStatus,
-  type Bid 
 } from '../../services/supabaseService';
+import type { Bid } from '../../types';
 
 interface RealtimeBidExampleProps {
   reportId: string;
@@ -59,7 +59,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
         // Show notification
         showNotification(
           `New bid: $${newBid.amount}`,
-          `${newBid.shop_name} - ${newBid.estimated_days} days`
+          `${newBid.shopName || "Shop"} - ${newBid.estimatedDays} days`
         );
         
         // Play sound
@@ -80,7 +80,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
         if (updatedBid.status === 'accepted') {
           showNotification(
             'Bid Accepted!',
-            `You accepted ${updatedBid.shop_name}'s bid`
+            `You accepted ${updatedBid.shopName}'s bid`
           );
         }
       },
@@ -127,7 +127,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
         30000 // Cache for 30 seconds
       );
       
-      setBids(cachedBids);
+      setBids(cachedBids as unknown as Bid[]);
       console.log(`✅ Loaded ${cachedBids.length} bids`);
     } catch (error) {
       console.error('❌ Error loading bids:', error);
@@ -141,7 +141,7 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
    * Accept a bid with optimistic UI update
    */
   async function handleAcceptBid(bid: Bid) {
-    if (!confirm(`Accept bid from ${bid.shop_name} for $${bid.amount}?`)) {
+    if (!confirm(`Accept bid from ${bid.shopName} for $${bid.amount}?`)) {
       return;
     }
 
@@ -155,21 +155,21 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
         async () => {
           // Actual server update happens in background
           const result = await updateBidStatus(bid.id!, 'accepted');
-          
+
           if (!result) {
             throw new Error('Failed to update bid status');
           }
-          
-          return result;
+
+          return bids.map(b => b.id === bid.id ? optimisticBid : b);
         }
       );
-      
+
       // Update local state
-      setBids(prev => prev.map(b => 
+      setBids(prev => prev.map(b =>
         b.id === bid.id ? optimisticBid : b
       ));
-      
-      showNotification('Success!', `Accepted bid from ${bid.shop_name}`);
+
+      showNotification('Success!', `Accepted bid from ${bid.shopName}`);
       onBidAccepted?.(optimisticBid);
       
     } catch (error) {
@@ -194,15 +194,15 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
         async () => {
           const result = await updateBidStatus(bid.id!, 'rejected');
           if (!result) throw new Error('Failed to update');
-          return result;
+          return bids.map(b => b.id === bid.id ? optimisticBid : b);
         }
       );
-      
-      setBids(prev => prev.map(b => 
+
+      setBids(prev => prev.map(b =>
         b.id === bid.id ? optimisticBid : b
       ));
-      
-      showNotification('Bid Rejected', `Rejected bid from ${bid.shop_name}`);
+
+      showNotification('Bid Rejected', `Rejected bid from ${bid.shopName}`);
       
     } catch (error) {
       console.error('❌ Error rejecting bid:', error);
@@ -343,8 +343,8 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
             >
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="font-bold text-lg">{bid.shop_name}</h3>
-                  <p className="text-sm text-gray-600">{bid.shop_email}</p>
+                  <h3 className="font-bold text-lg">{bid.shopName}</h3>
+                  <p className="text-sm text-gray-600">{bid.shopEmail}</p>
                 </div>
                 
                 <div className="text-right">
@@ -369,20 +369,20 @@ export default function RealtimeBidExample({ reportId, onBidAccepted }: Realtime
               <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
                 <div className="flex items-center gap-1">
                   <Clock className="w-4 h-4" />
-                  <span>{bid.estimated_days} days</span>
+                  <span>{bid.estimatedDays} days</span>
                 </div>
-                
-                {bid.shop_rating && (
+
+                {bid.shopRating && (
                   <div className="flex items-center gap-1">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span>{bid.shop_rating} ({bid.shop_reviews} reviews)</span>
+                    <span>{bid.shopRating} ({bid.shopReviews} reviews)</span>
                   </div>
                 )}
-                
-                {bid.shop_distance && (
+
+                {bid.shopDistance && (
                   <div className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
-                    <span>{bid.shop_distance}</span>
+                    <span>{bid.shopDistance}</span>
                   </div>
                 )}
               </div>

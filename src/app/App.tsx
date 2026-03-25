@@ -123,7 +123,7 @@ function AppContent() {
         provider: "clerk",
         providerUserId: user?.id,
         email: userProfile.email,
-        displayName: userProfile.name || user.fullName,
+        displayName: userProfile.name || user?.fullName || "",
         sessionHint: String((user as any)?.lastSignInAt || ""),
       })
     : null;
@@ -441,6 +441,15 @@ function AppContent() {
         userProfile={userProfile}
         userImageUrl={user?.imageUrl || ""}
         notifications={userData.notifications}
+        notificationSyncActive={false}
+        onMarkNotificationRead={(id) => {
+          userData.setNotifications((prev) =>
+            prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+          );
+        }}
+        onMarkAllNotificationsRead={() => {
+          userData.setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+        }}
         reports={userData.reports}
         vehicles={userData.vehicles}
         bids={userData.bids}

@@ -46,10 +46,11 @@ export {
   type Bid,
 } from "./supabaseService";
 
-// Intake and workflow operations
+// Intake operations
+export { submitShopInterest, submitInsurerInterest } from "./supabase/intake";
+
+// Workflow operations
 export {
-  submitShopInterest,
-  submitInsurerInterest,
   logWorkflowEvent,
   createJobAssignment,
   updateJobAssignmentStatus,
@@ -104,25 +105,29 @@ export type {
 // CONVENIENCE BUNDLES
 // ============================================================================
 
+import { realtimeBidService as _realtimeBidService } from "./realtime/RealtimeBidService";
+import { performanceOptimizer as _performanceOptimizer } from "./performance/PerformanceOptimizer";
+import { storageService as _storageService } from "./storage/StorageService";
+
 /**
  * All real-time services
  */
 export const realtime = {
-  bidService: realtimeBidService,
+  bidService: _realtimeBidService,
 };
 
 /**
  * All performance services
  */
 export const performance = {
-  optimizer: performanceOptimizer,
+  optimizer: _performanceOptimizer,
 };
 
 /**
  * All storage services
  */
 export const storage = {
-  service: storageService,
+  service: _storageService,
 };
 
 // ============================================================================

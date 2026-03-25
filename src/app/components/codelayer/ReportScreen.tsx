@@ -285,7 +285,7 @@ export default function ReportScreen({
           return (
             <StepDamageArea
               primaryColor={primaryColor}
-              damageAreas={DAMAGE_AREAS}
+              damageAreas={[...DAMAGE_AREAS]}
               damageArea={damageArea}
               onSelectDamageArea={setDamageArea}
               onBack={prevStep}

@@ -33,7 +33,7 @@ export interface NavigationDeviationPromptProps {
 
 /** Return a human-friendly supporting line from event metadata. */
 function supportingLine(event: DeviationEvent): string {
-  const miles = event.metadata?.distanceMiles;
+  const miles = (event.metadata as Record<string, unknown>)?.distanceMiles;
   if (typeof miles === "number") {
     const rounded = Math.round(miles * 10) / 10;
     return `You're about ${rounded} mi from the planned route.`;

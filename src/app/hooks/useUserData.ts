@@ -30,6 +30,8 @@ import {
   buildPhotoStorageFromReports,
   transformSupabaseReport,
   buildSupabaseReportPayload,
+  toFrontendVehicle,
+  toSupabaseVehicle,
 } from "./userDataUtils";
 
 export function useUserData(clerkUserId?: string, websiteUserKey?: string, signedInEmail?: string) {
@@ -151,7 +153,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
 
           // Load vehicles from Supabase
           const vehiclesData = await getVehicles(clerkUserId);
-          setVehicles(vehiclesData);
+          setVehicles(vehiclesData.map(toFrontendVehicle));
           if (import.meta.env.DEV)
             console.log(`Loaded ${vehiclesData.length} vehicles from Supabase`);
 
@@ -161,7 +163,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           const reportsData = await getDamageReports(clerkUserId);
           if (Array.isArray(reportsData)) {
             // Success
-            const transformedReports = reportsData.map(transformSupabaseReport);
+            const transformedReports = reportsData.map(transformSupabaseReport) as unknown as DamageReport[];
             setReports(transformedReports);
             setReportsError(null);
             // Populate photoStorage from reports
@@ -197,8 +199,8 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               email: profileData.email,
               profileImage: profileData.profile_image_url || "",
             },
-            vehicles: vehiclesData,
-            reports: validReports.map(transformSupabaseReport),
+            vehicles: vehiclesData.map(toFrontendVehicle),
+            reports: validReports.map(transformSupabaseReport) as unknown as DamageReport[],
             bids: [],
             userPhone: profileData.phone || "",
             redirectInfo: {
@@ -259,7 +261,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               // Migrate vehicles
               if (userData.vehicles && userData.vehicles.length > 0) {
                 for (const vehicle of userData.vehicles) {
-                  await saveVehicle(vehicle, clerkUserId);
+                  await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
                 }
                 if (import.meta.env.DEV) console.log("Migrated vehicles to Supabase");
               }
@@ -367,7 +369,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
 
         if (vehicles.length > 0) {
           for (const vehicle of vehicles) {
-            await saveVehicle(vehicle, clerkUserId);
+            await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
           }
           if (import.meta.env.DEV) console.log("Auto-saved vehicles to Supabase");
         }

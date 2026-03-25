@@ -97,7 +97,7 @@ export async function getDamageReports(
       } = await supabase.auth.getUser();
       if (!user) {
         if (import.meta.env.DEV) console.warn("[DEV] No authenticated user in fallback");
-        return { error: "identity-missing" };
+        return [];
       }
       const { data, error } = await supabase
         .from("damage_reports")
@@ -108,17 +108,17 @@ export async function getDamageReports(
         if (import.meta.env.DEV) {
           console.error("[DEV] Fallback Supabase query error:", error);
         }
-        return { error: "fallback-error" };
+        return [];
       }
       if (Array.isArray(data)) {
         return data;
       }
-      return { error: "fallback-malformed" };
+      return [];
     } catch (fallbackError) {
       if (import.meta.env.DEV) {
         console.error("[DEV] Fallback Supabase query threw:", fallbackError);
       }
-      return { error: "fallback-exception" };
+      return [];
     }
   }
 
@@ -129,7 +129,7 @@ export async function getDamageReports(
     } = await supabase.auth.getUser();
     if (!user) {
       if (import.meta.env.DEV) console.warn("[DEV] No authenticated user in legacy fallback");
-      return { error: "identity-missing" };
+      return [];
     }
     const { data, error } = await supabase
       .from("damage_reports")
@@ -140,17 +140,17 @@ export async function getDamageReports(
       if (import.meta.env.DEV) {
         console.error("[DEV] Legacy fallback Supabase query error:", error);
       }
-      return { error: "legacy-fallback-error" };
+      return [];
     }
     if (Array.isArray(data)) {
       return data;
     }
-    return { error: "legacy-fallback-malformed" };
+    return [];
   } catch (legacyError) {
     if (import.meta.env.DEV) {
       console.error("[DEV] Legacy fallback Supabase query threw:", legacyError);
     }
-    return { error: "legacy-fallback-exception" };
+    return [];
   }
 }
 

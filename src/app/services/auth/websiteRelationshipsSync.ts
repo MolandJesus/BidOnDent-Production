@@ -133,7 +133,7 @@ export async function fetchWebsiteRelationshipCollectionsFromCloud(identity: Web
 export function mergeRelationshipCollectionsIntoSessionMemory(
   sessionMemory: WebsiteSessionMemory,
   collections?: WebsiteRelationshipCollections | null
-) {
+): WebsiteSessionMemory {
   if (!collections) {
     return sessionMemory;
   }
@@ -145,14 +145,16 @@ export function mergeRelationshipCollectionsIntoSessionMemory(
       ...sessionMemory.insuranceConnection,
       connectedInsurerIds: collections.connectedInsurerIds,
     },
-    mapSession: {
-      ...sessionMemory.mapSession,
-      customerSavedShopIds: collections.customerSavedShopIds,
-      insurerShortlistIds: collections.insurerShortlistIds,
-      shopWatchlistIds: collections.shopWatchlistIds,
-      updatedAt:
-        collections.updatedAt || sessionMemory.mapSession?.updatedAt || sessionMemory.updatedAt,
-    },
+    mapSession: sessionMemory.mapSession
+      ? {
+          ...sessionMemory.mapSession,
+          customerSavedShopIds: collections.customerSavedShopIds,
+          insurerShortlistIds: collections.insurerShortlistIds,
+          shopWatchlistIds: collections.shopWatchlistIds,
+          updatedAt:
+            collections.updatedAt || sessionMemory.mapSession.updatedAt || sessionMemory.updatedAt,
+        }
+      : undefined,
   };
 }
 

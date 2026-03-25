@@ -173,7 +173,7 @@ async function writeToCloud(
         session_data: session,
         updated_at: new Date().toISOString(),
       },
-      { onConflict: ["user_id", "session_id"] }
+      { onConflict: "user_id,session_id" }
     );
     return !error;
   } catch {

@@ -64,11 +64,11 @@ export default function DashboardStandaloneScreens(props: DashboardRouterProps) 
         <AnimatedScreen screenKey="reports-list">
           <ReportsListScreen
             reports={reports.map((report) => withStoredPhotos(report, photoStorage))}
-            reportsLoading={props.reportsLoading}
-            reportsError={props.reportsError}
+            reportsLoading={props.reportsLoading ?? false}
+            reportsError={props.reportsError ?? null}
             onBack={() => onViewModeChange("dashboard")}
             onSelectReport={(reportId) => {
-              onSelectReport(reportId);
+              onSelectReport(String(reportId));
               onViewModeChange("report-detail");
             }}
             primaryColor={primaryColor}

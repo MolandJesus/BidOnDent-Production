@@ -109,18 +109,21 @@ export function transformSupabaseReport(report: SupabaseDamageReport) {
     vin: "",
   };
   const bids = Array.isArray((report as ReportWithBids).bids)
-    ? (report as ReportWithBids).bids.map(transformSupabaseBid)
+    ? ((report as ReportWithBids).bids ?? []).map(transformSupabaseBid)
     : [];
 
   return {
     id: report.id || "",
+    vehicleId: report.vehicle_id || "",
     vehicle: vehicleInfo,
     vehicleInfo,
+    damageAreas: [report.damage_location || report.damage_type || "unknown"],
     damageArea: report.damage_location || report.damage_type || "unknown",
     photos: report.photo_urls || [],
     description: report.damage_description || "",
     incident: report.additional_notes || "",
     status: report.status || "pending",
+    createdAt: report.created_at || new Date().toISOString(),
     submittedAt: report.created_at || new Date().toISOString(),
     bids,
     bidsCount: bids.length,
@@ -193,7 +196,7 @@ export function createFreshUserData(args: {
       profileImage: profileData.profile_image_url || "",
     },
     vehicles: vehiclesData,
-    reports: transformSupabaseReports(reportsData) as UserData["reports"],
+    reports: transformSupabaseReports(reportsData) as unknown as UserData["reports"],
     bids: [],
     userPhone: profileData.phone || "",
     redirectInfo: {
@@ -202,7 +205,7 @@ export function createFreshUserData(args: {
     } as UserData["redirectInfo"],
     notifications: buildNotificationsSnapshot({
       userType: profileData.account_type,
-      reports: transformSupabaseReports(reportsData) as UserData["reports"],
+      reports: transformSupabaseReports(reportsData) as unknown as UserData["reports"],
       bids: [],
       existingNotifications: [],
     }),

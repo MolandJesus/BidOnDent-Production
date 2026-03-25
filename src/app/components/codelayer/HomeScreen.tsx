@@ -32,6 +32,7 @@ type HomeScreenProps = {
   onCreateNewClaim?: () => void;
   onViewCompetitors?: () => void;
   onViewInsurers?: () => void;
+  onViewCoverage?: () => void;
   onEnterDemoMode?: () => void;
   demoMode?: boolean;
   originalAccountType?: string;
@@ -62,7 +63,7 @@ export default function HomeScreen({
   originalAccountType,
   onExitDemoMode,
   reports = [],
-}) {
+}: HomeScreenProps) {
   // Derived variables for overlays and panels
   const firstName = userInfo?.name?.split(" ")[0] || "User";
   const isNewUser = Array.isArray(reports) && reports.length === 0;
@@ -70,9 +71,13 @@ export default function HomeScreen({
     userType === "customer" ? "Your Reports" : userType === "shop" ? "Incoming Requests" : "Claims";
   const sortedReports = Array.isArray(reports) ? reports : [];
   const listViewAllAction = onViewAllReports;
-  const primaryAction = buildPrimaryAction(userType, { onStartReport, onCreateNewClaim });
-  const stats = buildStats(userType, reports);
+  const activeCount = Array.isArray(reports) ? reports.filter((r: any) => r.status === "pending" || r.status === "active" || r.status === "in-review").length : 0;
+  const completedCount = Array.isArray(reports) ? reports.filter((r: any) => r.status === "completed").length : 0;
+  const totalBids = Array.isArray(reports) ? reports.reduce((sum: number, r: any) => sum + (r.bidsCount || 0), 0) : 0;
+  const primaryAction = buildPrimaryAction(userType, onViewRequests, onCreateNewClaim, onStartReport);
+  const stats = buildStats(userType, activeCount, completedCount, totalBids);
   const quickActions = buildQuickActions(userType, {
+    onStartReport,
     onConnectInsurance,
     onViewLikedShops,
     onViewBids,

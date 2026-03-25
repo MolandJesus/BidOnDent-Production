@@ -88,6 +88,8 @@ export default function ShopActiveJobsScreen({
       progress,
       tasks: buildTasks(status),
       insuranceClaim: false,
+      insuranceCompany: "N/A",
+      claimNumber: "N/A",
       notes: report?.description || "Repair request received and queued.",
     };
   });

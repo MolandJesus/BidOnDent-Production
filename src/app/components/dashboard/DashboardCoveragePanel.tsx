@@ -66,7 +66,7 @@ export default function DashboardCoveragePanel({
     return partnerShops
       .map((shop) => ({
         ...shop,
-        distanceMiles: haversineMiles(navigation.activeOriginTarget, shop),
+        distanceMiles: haversineMiles(navigation.activeOriginTarget!, shop),
       }))
       .filter((shop) => shop.distanceMiles <= 20)
       .sort((a, b) => a.distanceMiles - b.distanceMiles)

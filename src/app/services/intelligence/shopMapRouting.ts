@@ -223,6 +223,7 @@ export function buildRoleAwareRouteSummary({
     return {
       description: "Pick an origin to unlock route preview, ETA, and turn guidance.",
       title: "Route preview ready when you are",
+      callouts: [],
     };
   }
 
@@ -231,6 +232,7 @@ export function buildRoleAwareRouteSummary({
       title: `Scout ${shop.name} in ${formatDurationLabel(selectedRoute.estimatedDurationMinutes)}`,
       description:
         "Use the route panel to benchmark how quickly your team could physically inspect or compare this competitor territory.",
+      callouts: [],
     };
   }
 
@@ -239,6 +241,7 @@ export function buildRoleAwareRouteSummary({
       title: `Plan a partner visit to ${shop.name}`,
       description:
         "The route preview helps claims and network teams estimate field-review timing before outreach or partner onboarding.",
+      callouts: [],
     };
   }
 
@@ -246,5 +249,6 @@ export function buildRoleAwareRouteSummary({
     title: `Directions to ${shop.name}`,
     description:
       "Compare route timing before you commit to a repair conversation, drop-off, or tow coordination path.",
+    callouts: [],
   };
 }

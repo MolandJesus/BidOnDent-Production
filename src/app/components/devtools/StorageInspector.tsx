@@ -50,7 +50,7 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
 
       const validReports = Array.isArray(reports) ? reports : [];
       setSupabaseData({
-        user_id: profile?.user_id || profile?.clerk_user_id || null,
+        user_id: profile?.user_id || (profile as any)?.clerk_user_id || null,
         email: profile?.email || userEmail,
         profile: profile || null,
         vehicles: vehicles || [],

@@ -77,7 +77,13 @@ function computeDiagnosticsConfidenceScore(params: {
   return clampScore(score);
 }
 
-function summarizeProviderLevel(providerHealth: ProviderHealthSummary[]) {
+function summarizeProviderLevel(providerHealth: ProviderHealthSummary[]): {
+  level: "healthy" | "watch" | "degraded";
+  detail: string;
+  providerAtRisk: NavigationProviderHealthId | null;
+  providerRiskReason: "none" | "failure-rate" | "recent-error" | "stale-telemetry";
+  providerAtRiskLastError: string | null;
+} {
   const checksWithTraffic = providerHealth.filter((summary) => summary.totalChecks > 0);
   const providerAtRisk =
     checksWithTraffic.slice().sort((a, b) => {

@@ -123,7 +123,7 @@ export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promi
           model: vehicle.model,
           year: yearNum,
           color: vehicle.color,
-          license_plate: vehicle.licensePlate || vehicle.license_plate,
+          license_plate: vehicle.license_plate,
           vin: vehicle.vin,
           image_url: vehicle.image_url
         })
@@ -141,7 +141,7 @@ export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promi
         model: vehicle.model,
         year: yearNum,
         color: vehicle.color,
-        license_plate: vehicle.licensePlate || vehicle.license_plate,
+        license_plate: vehicle.license_plate,
         vin: vehicle.vin,
         image_url: vehicle.image_url
       });

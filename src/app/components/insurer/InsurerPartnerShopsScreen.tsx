@@ -131,7 +131,7 @@ export default function InsurerPartnerShopsScreen({
     setShowAddShopModal(false);
   };
 
-  const openMappedShopDirections = (entry: (typeof mappedShops)[number]) => {
+  const openMappedShopDirections = (entry: { id: number; name: string; mapResult: { coordinates: { latitude: number; longitude: number }; address: string; city: string; state: string; zipCode: string } }) => {
     openDirections({
       provider: directionsProvider,
       destination: {

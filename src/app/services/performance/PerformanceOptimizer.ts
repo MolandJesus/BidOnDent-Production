@@ -212,7 +212,7 @@ class PerformanceOptimizer {
       width?: number;
       height?: number;
       quality?: number;
-      format?: "webp" | "avif" | "origin";
+      format?: "origin";
     }
   ): string {
     const { data } = supabase.storage.from(bucket).getPublicUrl(path, {

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type FormEvent } from "react";
 import { Briefcase, Car, Shield } from "lucide-react";
 import ShopDirectoryMapPane from "./ShopDirectoryMapPane";
 import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
@@ -134,17 +134,17 @@ export default function ShopDirectoryScreen({
       navSession.startPlanning(
         selectedOrigin
           ? {
-              id: selectedOrigin.id ?? "origin",
+              id: selectedOrigin.placeId ?? "origin",
               label: selectedOrigin.name,
               address: selectedOrigin.address,
-              coordinate: selectedOrigin.coordinates,
+              coordinate: { lat: selectedOrigin.latitude, lng: selectedOrigin.longitude },
             }
           : null,
         {
-          id: selectedShop.id,
+          id: String(selectedShop.id),
           label: selectedShop.name,
-          address: selectedShop.address,
-          coordinate: { lat: selectedShop.lat, lng: selectedShop.lng },
+          address: selectedShop.mapResult.address,
+          coordinate: { lat: selectedShop.mapResult.coordinates.latitude, lng: selectedShop.mapResult.coordinates.longitude },
         }
       );
     }
@@ -158,7 +158,7 @@ export default function ShopDirectoryScreen({
     if (!selectedRoute && (status === "active" || status === "paused")) {
       navSession.end();
     }
-  }, [session.selectedShop?.id, session.selectedOrigin?.id, session.selectedRoute?.id]);
+  }, [session.selectedShop?.id, session.selectedOrigin?.placeId, session.selectedRoute?.id]);
 
   const deviationPromptNode = intelligence.latestEvent ? (
     <NavigationDeviationPrompt
@@ -188,15 +188,15 @@ export default function ShopDirectoryScreen({
       <ShopDirectoryImmersiveMap
         deviationPrompt={deviationPromptNode}
         directionsActionLabel={session.directionsActionLabel}
-        mapCenter={session.mapCenter}
+        mapCenter={session.mapCenter ?? null}
         mapListings={session.mapListings}
         mapTheme={session.mapTheme}
-        mapZoom={session.mapZoom}
+        mapZoom={session.mapZoom ?? 9}
         navigationMode={navigationMode}
         onBack={onBack}
         onOpenShopDirections={session.handleOpenShopDirections}
         onSearchQueryChange={session.setSearchQuery}
-        onSearchSubmit={session.handleSearchSubmit}
+        onSearchSubmit={session.handleSearchSubmit as (event: FormEvent) => void}
         onSelectRoute={session.setSelectedRouteId}
         onSelectShop={session.setSelectedShopId}
         onSetMapCenter={session.setMapCenter}

@@ -294,5 +294,5 @@ export interface AppConfig {
   };
 }
 
-// Re-export all types for convenience
-export * from "../services/supabase/types";
+// Supabase types are imported separately via src/app/services/supabase/types
+// Do NOT re-export them here to avoid naming conflicts (Bid, Vehicle, DamageReport, etc.)

@@ -16,7 +16,7 @@ type EditProfileModalProps = {
   onCancel: () => void;
   onSave: () => void;
   onImageClick: () => void;
-  fileInputRef: RefObject<HTMLInputElement>;
+  fileInputRef: RefObject<HTMLInputElement | null>;
   onImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 

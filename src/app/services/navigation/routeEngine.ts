@@ -65,7 +65,7 @@ type OsrmRouteResponse = {
 };
 
 function titleizeModifier(modifier?: string) {
-  return modifier ? modifier.replaceAll("-", " ") : "forward";
+  return modifier ? modifier.replace(/-/g, " ") : "forward";
 }
 
 function hashString(value: string) {
@@ -116,9 +116,9 @@ function fillTemplate(
   }
 ) {
   return template
-    .replaceAll("{modifier}", values.modifier)
-    .replaceAll("{road}", values.roadName)
-    .replaceAll("{exit}", values.exit ? String(values.exit) : "");
+    .replace(/\{modifier\}/g, values.modifier)
+    .replace(/\{road\}/g, values.roadName)
+    .replace(/\{exit\}/g, values.exit ? String(values.exit) : "");
 }
 
 function normalizeInstructionText(text: string) {

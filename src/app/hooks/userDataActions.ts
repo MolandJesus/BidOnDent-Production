@@ -5,7 +5,7 @@ import {
   saveVehicle,
   saveDamageReport,
 } from "../services/supabaseService";
-import { buildSupabaseReportPayload } from "./userDataUtils";
+import { buildSupabaseReportPayload, toFrontendVehicle, toSupabaseVehicle } from "./userDataUtils";
 
 /** Save user profile to Supabase. Returns true on success. */
 export async function saveProfileToCloud(params: {
@@ -52,11 +52,11 @@ export async function saveVehiclesToCloud(
 ): Promise<Vehicle[] | null> {
   try {
     for (const vehicle of vehiclesData) {
-      await saveVehicle(vehicle, clerkUserId);
+      await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
     }
     const updatedVehicles = await getVehicles(clerkUserId);
     console.log("✅ Vehicles saved to Supabase");
-    return updatedVehicles;
+    return updatedVehicles.map(toFrontendVehicle);
   } catch (error) {
     console.error("❌ Error saving vehicles:", error);
     return null;
