@@ -23,9 +23,10 @@ export async function compressImage(
   const {
     maxWidth = 800,
     maxHeight = 800,
-    quality = 0.8,
+    quality: rawQuality = 0.8,
     outputFormat = 'image/jpeg'
   } = options;
+  const quality = Math.max(0, Math.min(1, rawQuality));
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader();

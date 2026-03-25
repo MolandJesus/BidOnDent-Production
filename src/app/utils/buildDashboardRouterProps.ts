@@ -163,6 +163,13 @@ export function buildDashboardRouterProps({
             userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
           );
         }
+
+        // Update local bids state so UI reflects the change immediately
+        userData.setBids(
+          userData.bids.map((b: any) =>
+            b.id === details.bidId ? { ...b, status: "accepted" } : b
+          )
+        );
       } catch (err) {
         console.error("Failed to accept bid:", err);
       }
@@ -171,6 +178,12 @@ export function buildDashboardRouterProps({
       try {
         const { updateBidStatus } = await import("../services/supabase/bids");
         await updateBidStatus(details.bidId, "rejected");
+        // Update local bids state so UI reflects the change immediately
+        userData.setBids(
+          userData.bids.map((b: any) =>
+            b.id === details.bidId ? { ...b, status: "rejected" } : b
+          )
+        );
       } catch (err) {
         console.error("Failed to reject bid:", err);
       }

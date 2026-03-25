@@ -22,11 +22,17 @@ function formatBytes(bytes: number): string {
 
 function normalizeUploadPath(fileName: string | null, originalFileName: string) {
   if (fileName && fileName.trim()) {
-    return fileName.trim().replace(/^\/+/, "");
+    const normalized = fileName.trim()
+      .replace(/\.\./g, "")
+      .replace(/\\/g, "/")
+      .replace(/^\/*/, "");
+    if (normalized) {
+      return normalized;
+    }
   }
 
   const fileExt = originalFileName.split('.').pop() || 'jpg';
-  return `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
+  return `uploads/${Date.now()}-${crypto.randomUUID().split('-')[0]}.${fileExt}`;
 }
 
 function extractStorageTarget(photoUrl: string) {
@@ -94,6 +100,13 @@ async function listBucketFiles(
   return files;
 }
 
+const ALLOWED_IMAGE_TYPES = new Set([
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+]);
+
 export async function handleUploadPhoto(
   req: Request,
   supabase: any,
@@ -111,6 +124,10 @@ export async function handleUploadPhoto(
 
     if (!isSupportedStorageBucket(bucket)) {
       return respond({ error: 'Invalid bucket name' }, 400);
+    }
+
+    if (file.type && !ALLOWED_IMAGE_TYPES.has(file.type)) {
+      return respond({ error: 'Invalid file type. Only images (JPEG, PNG, WebP, GIF) are allowed.' }, 400);
     }
 
     const uploadPath = normalizeUploadPath(fileName, file.name || "upload.jpg");
