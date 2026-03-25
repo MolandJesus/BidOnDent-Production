@@ -154,8 +154,13 @@ export function buildDashboardRouterProps({
         const { updateBidStatus } = await import("../services/supabase/bids");
         await updateBidStatus(details.bidId, "accepted");
 
-        // Update the report status to "active" when a bid is accepted
-        const reportId = navigation.selectedReportId || userData.reports[0]?.id;
+        // Find the report associated with the accepted bid
+        const acceptedBid = userData.bids.find((b: any) => b.id === details.bidId);
+        const reportId =
+          acceptedBid?.damage_report_id ||
+          acceptedBid?.reportId ||
+          navigation.selectedReportId ||
+          userData.reports[0]?.id;
         if (reportId && userProfile?.id) {
           const { updateReportStatus } = await import("../services/supabase/reports");
           await updateReportStatus(reportId.toString(), "active", userProfile.id);
@@ -164,11 +169,28 @@ export function buildDashboardRouterProps({
           );
         }
 
-        // Update local bids state so UI reflects the change immediately
+        // Reject competing bids for the same report
+        const competingBids = userData.bids.filter(
+          (b: any) =>
+            b.id !== details.bidId &&
+            (b.damage_report_id === reportId || b.reportId === reportId) &&
+            b.status !== "rejected"
+        );
+        for (const competing of competingBids) {
+          try {
+            await updateBidStatus(competing.id, "rejected");
+          } catch (rejectErr) {
+            console.error("Failed to reject competing bid:", competing.id, rejectErr);
+          }
+        }
+
+        // Update local bids state — accepted bid + rejected competitors
         userData.setBids(
-          userData.bids.map((b: any) =>
-            b.id === details.bidId ? { ...b, status: "accepted" } : b
-          )
+          userData.bids.map((b: any) => {
+            if (b.id === details.bidId) return { ...b, status: "accepted" };
+            if (competingBids.some((c: any) => c.id === b.id)) return { ...b, status: "rejected" };
+            return b;
+          })
         );
       } catch (err) {
         console.error("Failed to accept bid:", err);
@@ -180,9 +202,7 @@ export function buildDashboardRouterProps({
         await updateBidStatus(details.bidId, "rejected");
         // Update local bids state so UI reflects the change immediately
         userData.setBids(
-          userData.bids.map((b: any) =>
-            b.id === details.bidId ? { ...b, status: "rejected" } : b
-          )
+          userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
         );
       } catch (err) {
         console.error("Failed to reject bid:", err);

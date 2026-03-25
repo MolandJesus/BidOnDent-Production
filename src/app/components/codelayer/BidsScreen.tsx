@@ -56,8 +56,17 @@ export default function BidsScreen({
       description:
         bid.description || "Bid details will be confirmed with the shop after selection.",
       image: "",
+      status: bid.status || "pending",
     }));
   }, [incomingBids]);
+
+  // Restore acceptedBidId from bid data on mount/update
+  useEffect(() => {
+    const alreadyAccepted = liveBids.find((b) => b.status === "accepted");
+    if (alreadyAccepted && acceptedBidId !== alreadyAccepted.id) {
+      setAcceptedBidId(alreadyAccepted.id);
+    }
+  }, [liveBids]);
 
   const selectedReport = useMemo(() => {
     if (liveBids.length === 0) {

@@ -179,7 +179,7 @@ export function useAppHandlers({
             [report.id]: report.photos,
           }));
         }
-        return;
+        throw new Error("Failed to save report to server");
       }
 
       console.log("Damage report saved to database:", savedApiReport.id);
@@ -204,6 +204,7 @@ export function useAppHandlers({
           [report.id]: report.photos,
         }));
       }
+      throw error;
     }
   };
 
