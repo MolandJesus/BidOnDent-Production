@@ -495,7 +495,7 @@
     box-shadow:
       0 8px 28px rgba(2, 6, 23, 0.48),
       inset 0 1px 0 rgba(191, 219, 254, 0.14),
-      0 0 20px rgba(59, 130, 246, 0.10);
+      0 0 20px rgba(59, 130, 246, 0.1);
   }
 
   .coverage-map-surface[data-map-tone="dark"] .leaflet-control-zoom a {
@@ -708,13 +708,17 @@
   --bd-glass-bg-light: rgba(240, 247, 255, 0.72);
   --bd-glass-border-light: rgba(191, 219, 254, 0.55);
   --bd-glass-border-dark: rgba(96, 165, 250, 0.32);
-  --bd-glass-shadow: 0 8px 32px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(30, 58, 138, 0.05), 0 0 0 1px rgba(191, 219, 254, 0.18), 0 0 20px rgba(59, 130, 246, 0.04);
-  --bd-glass-shadow-floating: 0 20px 48px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(30, 58, 138, 0.08), 0 0 0 1px rgba(191, 219, 254, 0.22), 0 0 40px rgba(59, 130, 246, 0.06);
+  --bd-glass-shadow:
+    0 8px 32px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(30, 58, 138, 0.05),
+    0 0 0 1px rgba(191, 219, 254, 0.18), 0 0 20px rgba(59, 130, 246, 0.04);
+  --bd-glass-shadow-floating:
+    0 20px 48px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(30, 58, 138, 0.08),
+    0 0 0 1px rgba(191, 219, 254, 0.22), 0 0 40px rgba(59, 130, 246, 0.06);
 
   /* Glow system — ambient blue radiance */
   --bd-glow-subtle: 0 0 16px rgba(59, 130, 246, 0.06);
-  --bd-glow-medium: 0 0 24px rgba(59, 130, 246, 0.10), 0 0 8px rgba(96, 165, 250, 0.06);
-  --bd-glow-strong: 0 0 32px rgba(59, 130, 246, 0.16), 0 0 12px rgba(96, 165, 250, 0.10);
+  --bd-glow-medium: 0 0 24px rgba(59, 130, 246, 0.1), 0 0 8px rgba(96, 165, 250, 0.06);
+  --bd-glow-strong: 0 0 32px rgba(59, 130, 246, 0.16), 0 0 12px rgba(96, 165, 250, 0.1);
   --bd-glow-pool: 0 0 48px rgba(59, 130, 246, 0.12), 0 0 16px rgba(147, 197, 253, 0.08);
 
   /* Radii */
@@ -744,7 +748,7 @@
 
 .bd-glass-card {
   border: 1px solid var(--bd-glass-border-light);
-  background: linear-gradient(180deg, rgba(248, 251, 255, 0.48) 0%, rgba(235, 245, 255, 0.24) 100%);
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.72) 0%, rgba(235, 245, 255, 0.52) 100%);
   backdrop-filter: blur(var(--bd-glass-blur));
   -webkit-backdrop-filter: blur(var(--bd-glass-blur));
   border-radius: var(--bd-radius-card);
@@ -763,7 +767,7 @@
 
 .bd-glass-card:hover {
   box-shadow:
-    0 18px 36px rgba(15, 23, 42, 0.10),
+    0 18px 36px rgba(15, 23, 42, 0.1),
     0 4px 10px rgba(30, 58, 138, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.72),
     inset 0 -1px 0 rgba(191, 219, 254, 0.12),
@@ -782,7 +786,9 @@
   font-weight: 500;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 8px rgba(59, 130, 246, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 0 8px rgba(59, 130, 246, 0.04);
 }
 
 .bd-glass-control {
@@ -956,7 +962,9 @@
   border-color: rgba(96, 165, 250, 0.28);
   background: linear-gradient(180deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.14) 100%);
   color: var(--bd-royal-blue-soft);
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(147, 197, 253, 0.08);
+  box-shadow:
+    0 0 8px rgba(59, 130, 246, 0.08),
+    inset 0 1px 0 rgba(147, 197, 253, 0.08);
 }
 
 /* Luminous glow utility — use on surfaces that float over the map or need extra radiance */
@@ -975,17 +983,25 @@
 /* Dark mode glow intensifiers — underwater pool effect */
 .dark .bd-glow,
 [data-theme="dark"] .bd-glow {
-  box-shadow: 0 0 28px rgba(59, 130, 246, 0.14), 0 0 10px rgba(96, 165, 250, 0.08);
+  box-shadow:
+    0 0 28px rgba(59, 130, 246, 0.14),
+    0 0 10px rgba(96, 165, 250, 0.08);
 }
 
 .dark .bd-glow-strong,
 [data-theme="dark"] .bd-glow-strong {
-  box-shadow: 0 0 40px rgba(59, 130, 246, 0.20), 0 0 16px rgba(96, 165, 250, 0.12), 0 0 4px rgba(147, 197, 253, 0.08);
+  box-shadow:
+    0 0 40px rgba(59, 130, 246, 0.2),
+    0 0 16px rgba(96, 165, 250, 0.12),
+    0 0 4px rgba(147, 197, 253, 0.08);
 }
 
 .dark .bd-glow-pool,
 [data-theme="dark"] .bd-glow-pool {
-  box-shadow: 0 0 56px rgba(59, 130, 246, 0.18), 0 0 24px rgba(96, 165, 250, 0.12), 0 0 8px rgba(147, 197, 253, 0.10);
+  box-shadow:
+    0 0 56px rgba(59, 130, 246, 0.18),
+    0 0 24px rgba(96, 165, 250, 0.12),
+    0 0 8px rgba(147, 197, 253, 0.1);
 }
 
 @media (prefers-reduced-motion: reduce) {
