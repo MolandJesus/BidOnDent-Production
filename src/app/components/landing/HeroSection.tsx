@@ -69,7 +69,7 @@ export default function HeroSection({
       {/* Soft ambient blobs — warm and diffused */}
       <div className="absolute top-16 right-10 w-72 h-72 bg-blue-200/30 rounded-full blur-[80px] animate-blob" />
       <div
-        className="absolute bottom-20 -left-10 w-80 h-80 bg-violet-200/20 rounded-full blur-[90px] animate-blob"
+        className="absolute bottom-20 -left-10 w-80 h-80 bg-blue-100/20 rounded-full blur-[90px] animate-blob"
         style={{ animationDelay: "4s" }}
       />
       <div
@@ -217,12 +217,13 @@ export default function HeroSection({
             <ImageErrorBoundary>
               <div className="relative">
                 {/* Soft glow behind image */}
-                <div className="absolute -inset-4 bg-gradient-to-br from-blue-200/20 via-transparent to-violet-200/15 rounded-[2rem] blur-xl" />
+                <div className="absolute -inset-4 bg-gradient-to-br from-blue-200/25 via-transparent to-blue-100/15 rounded-[2rem] blur-xl" />
                 <ImageWithFallback
                   src={heroImage}
                   alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
-                  className="relative rounded-2xl shadow-[0_20px_60px_rgba(15,23,42,0.12)] w-full h-auto object-cover"
+                  className="relative rounded-2xl w-full h-auto object-cover"
                   style={{
+                    boxShadow: "0 20px 60px rgba(15, 23, 42, 0.12), 0 0 40px rgba(59, 130, 246, 0.06)",
                     aspectRatio: "16/10",
                     maxHeight: "520px",
                   }}
