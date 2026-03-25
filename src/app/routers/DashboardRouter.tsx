@@ -1,28 +1,29 @@
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useBidsForReport } from "../hooks/useBidsForReport";
 import { useMarketplaceReports } from "../hooks/useMarketplaceReports";
 
-// Import all screens
-import HomeScreen from "../components/codelayer/HomeScreen";
-import ReportScreen from "../components/codelayer/ReportScreen";
-import BidsScreen from "../components/codelayer/BidsScreen";
-import AccountScreen from "../components/codelayer/AccountScreen";
-import ShopRequestsScreen from "../components/shop/ShopRequestsScreen";
-import ShopActiveJobsScreen from "../components/shop/ShopActiveJobsScreen";
-import LikedShopsScreen from "../components/shop/LikedShopsScreen";
-import VehicleProfileScreen from "../components/shop/VehicleProfileScreen";
-import ShopDirectoryScreen from "../components/shop/ShopDirectoryScreen";
-import InsurerClaimsScreen from "../components/insurer/InsurerClaimsScreen";
-import InsurerPartnerShopsScreen from "../components/insurer/InsurerPartnerShopsScreen";
-import InsurerConnectionScreen from "../components/insurer/InsurerConnectionScreen";
-import InsurerNewClaimScreen from "../components/insurer/InsurerNewClaimScreen";
-import InsuranceCompaniesScreen from "../components/insurer/InsuranceCompaniesScreen";
-import ReportsListScreen from "../components/reports/ReportsListScreen";
-import ReportDetailScreen from "../components/reports/ReportDetailScreen";
-import CompetitorAnalysisScreen from "../components/reports/CompetitorAnalysisScreen";
-import DemoAccountSwitcher from "../components/demo/DemoAccountSwitcher";
-import SmokeTestScreen from "../components/demo/SmokeTestScreen";
+// Lazy-loaded screens for route-level code splitting
+const HomeScreen = lazy(() => import("../components/codelayer/HomeScreen"));
+const ReportScreen = lazy(() => import("../components/codelayer/ReportScreen"));
+const BidsScreen = lazy(() => import("../components/codelayer/BidsScreen"));
+const AccountScreen = lazy(() => import("../components/codelayer/AccountScreen"));
+const ShopRequestsScreen = lazy(() => import("../components/shop/ShopRequestsScreen"));
+const ShopActiveJobsScreen = lazy(() => import("../components/shop/ShopActiveJobsScreen"));
+const LikedShopsScreen = lazy(() => import("../components/shop/LikedShopsScreen"));
+const VehicleProfileScreen = lazy(() => import("../components/shop/VehicleProfileScreen"));
+const ShopDirectoryScreen = lazy(() => import("../components/shop/ShopDirectoryScreen"));
+const InsurerClaimsScreen = lazy(() => import("../components/insurer/InsurerClaimsScreen"));
+const InsurerPartnerShopsScreen = lazy(() => import("../components/insurer/InsurerPartnerShopsScreen"));
+const InsurerConnectionScreen = lazy(() => import("../components/insurer/InsurerConnectionScreen"));
+const InsurerNewClaimScreen = lazy(() => import("../components/insurer/InsurerNewClaimScreen"));
+const InsuranceCompaniesScreen = lazy(() => import("../components/insurer/InsuranceCompaniesScreen"));
+const ReportsListScreen = lazy(() => import("../components/reports/ReportsListScreen"));
+const ReportDetailScreen = lazy(() => import("../components/reports/ReportDetailScreen"));
+const CompetitorAnalysisScreen = lazy(() => import("../components/reports/CompetitorAnalysisScreen"));
+const DemoAccountSwitcher = lazy(() => import("../components/demo/DemoAccountSwitcher"));
+const SmokeTestScreen = lazy(() => import("../components/demo/SmokeTestScreen"));
+
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 
@@ -101,6 +102,7 @@ export default function DashboardRouter({
 
   return (
     <div className="w-full">
+      <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" /></div>}>
       <AnimatePresence mode="wait">
         {/* Dashboard Home Screen */}
         {viewMode === "dashboard" && currentTab === "home" && (
@@ -451,6 +453,7 @@ export default function DashboardRouter({
           </motion.div>
         )}
       </AnimatePresence>
+      </Suspense>
     </div>
   );
 }
