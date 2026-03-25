@@ -8,13 +8,13 @@
 
 ## Quick Links
 
-| Resource | Path |
-|----------|------|
-| Build Progress | `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` |
+| Resource        | Path                                           |
+| --------------- | ---------------------------------------------- |
+| Build Progress  | `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`   |
 | Map Master Plan | `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` |
-| Map Tracker | `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` |
-| Product Brain | `docs/BIDONDENT_PRODUCT_BRAIN.md` |
-| Doc Governance | `docs/README.md` |
+| Map Tracker     | `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`     |
+| Product Brain   | `docs/BIDONDENT_PRODUCT_BRAIN.md`              |
+| Doc Governance  | `docs/README.md`                               |
 
 ## Design Identity
 
