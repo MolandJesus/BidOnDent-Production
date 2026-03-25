@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from "../constants";
-import type { Vehicle as FrontendVehicle } from "../types";
-import type { Vehicle as SupabaseVehicle } from "../services/supabase/types";
+import type { Vehicle as FrontendVehicle, Bid as FrontendBid } from "../types";
+import type { Vehicle as SupabaseVehicle, Bid as SupabaseBid } from "../services/supabase/types";
 
 /** Convert a Supabase Vehicle to a frontend Vehicle. */
 export function toFrontendVehicle(v: SupabaseVehicle): FrontendVehicle {
@@ -25,6 +25,25 @@ export function toSupabaseVehicle(v: FrontendVehicle): SupabaseVehicle {
     vin: v.vin,
     license_plate: v.licensePlate,
     color: v.color,
+  };
+}
+
+/** Convert a Supabase Bid to a frontend Bid. */
+export function toFrontendBid(b: SupabaseBid): FrontendBid {
+  return {
+    id: b.id || "",
+    shopId: b.shop_id || b.shop_user_id || b.clerk_shop_user_id || "",
+    shopName: b.shop_name || "",
+    shopEmail: b.shop_email || "",
+    reportId: b.damage_report_id || b.report_id || "",
+    amount: b.amount,
+    estimatedDays: b.estimated_days,
+    description: b.description || "",
+    status: b.status,
+    createdAt: b.created_at || new Date().toISOString(),
+    shopRating: b.shop_rating ?? undefined,
+    shopReviews: b.shop_reviews ?? undefined,
+    shopDistance: b.shop_distance ?? undefined,
   };
 }
 

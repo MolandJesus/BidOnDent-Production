@@ -1,6 +1,7 @@
 import type { useNavigation } from "./useNavigation";
 import type { useUserData } from "./useUserData";
 import { saveDamageReport } from "../services/supabaseService";
+import { toFrontendBid } from "./userDataUtils";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData> & Record<string, any>;
@@ -130,6 +131,7 @@ export function useAppHandlers({
       const { submitBid } = await import("../services/supabase/bids");
       const savedBid = await submitBid(bid as any, userId);
       if (savedBid) {
+        userData.setBids((prev: any[]) => [...prev, toFrontendBid(savedBid as any)]);
         addActivity(
           "bid_submitted",
           `Submitted bid of $${bidAmount.toLocaleString()} for ${vehicleInfo}`,

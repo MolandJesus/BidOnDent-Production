@@ -6,23 +6,45 @@
 
 | 0% |████████████████████████████████████████████████████████████████████████████| 118% 🚀 |
 
-**Passes completed:** 189 / 160+ — ⚡ FINISHING PHASE: SPATIAL SYSTEM + LUMINOUS GLASS
+**Passes completed:** 193 / 160+ — ⚡ PLATFORM BUGFIX SWEEP + UI QUALITY PUSH
 
-| Item             | Value                                                         |
-| ---------------- | ------------------------------------------------------------- |
-| **Last pass**    | Pass 189 — Spatial atmosphere + purple→navy color unification |
-| **Current pass** | 189 ✅ complete                                            |
-| **Build**        | ✓ 0 errors · 1.80s                                   |
-| **Spellcheck**   | 0 issues                                                      |
-| **Branch**       | `horizon/bidondent-map-final`                                 |
-| **Last pushed**  | 2026-03-25                                                    |
-| **Phase**        | HORIZON — final product branch, map-first platform            |
+| Item             | Value                                                       |
+| ---------------- | ----------------------------------------------------------- |
+| **Last pass**    | Pass 193 — Glass card opacity for dashboard readability     |
+| **Current pass** | 193 ✅ complete                                             |
+| **Build**        | ✓ 0 errors · 1.97s · 735KB main bundle                      |
+| **Spellcheck**   | 0 issues                                                    |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`              |
+| **Last pushed**  | 2026-03-25                                                  |
+| **Phase**        | BUGFIX SWEEP — auth fixes, UI quality, production readiness |
 
-### Screenshot Reality Check (2026-03-25)
+### Platform Bugfix Sweep (Passes 190–193, 2026-03-25)
+
+| Pass | Title                                                      | Category   | Status |
+| ---- | ---------------------------------------------------------- | ---------- | ------ |
+| 190  | Gate Smoke Test behind DEV mode + Bids text readability    | P4-UX      | ✅     |
+| 191  | Migrate bids.ts from Supabase auth to Clerk edge functions | P1-RUNTIME | ✅     |
+| 192  | Tighten landing page section spacing (8 sections)          | P4-UX      | ✅     |
+| 193  | Glass card opacity for dashboard readability               | P4-UX      | ✅     |
+
+**Key fixes in this sweep:**
+
+- **P1 CORE LOOP FIX**: All bid operations (submit, accept, reject, delete) migrated from broken `supabase.auth.getUser()` to Clerk-authenticated edge functions. The report → bid → accept loop now has a real auth path.
+- **Bundle size restored**: 1,080KB → 735KB (code splitting fixed)
+- **Smoke Test**: Hidden from production users (DEV-only)
+- **Landing page**: Tighter vertical rhythm across all 8 sections
+- **Dashboard**: Glass cards more opaque for text readability on dark bg
+
+### Known remaining issues
+
+- **P2**: userData.bids never populated from Supabase (only useBidsForReport hook fetches)
+- **P2**: Cloud auto-save write amplification (writes ALL data on any state change)
+- **P7**: ShopDirectoryScreen is 76KB chunk — could be further split
 
 Visual audit from live screenshots confirms:
 
 **Strengths confirmed:**
+
 - Hero section is strong, premium, clean — "Best Price on Auto Body Repair" with map image badge
 - Map/dark sections are the strongest, most product-owned areas of the site
 - Navigation bar is calm and clean (How It Works / Who We Serve / About / Dashboard)
@@ -37,6 +59,7 @@ Visual audit from live screenshots confirms:
 - Trust stats ("$0 Free for Customers", "3+ Bids Per Request", "NY Service Area") are honest
 
 **Weaknesses observed (post Pass 189):**
+
 - ~~Light landing sections feel flat~~ → Fixed: blue-tinted gradients on all light sections
 - ~~Section stacking feels disconnected~~ → Fixed: unified blue atmosphere throughout
 - ~~Purple/indigo remnants in dark sections~~ → Fixed: all dark sections now deep navy
@@ -104,9 +127,9 @@ All original passes (154–160) complete. Continuing map-native phase (161+).
 | 181  | UX design sweep: Sign Out button, Bids empty state glass fix     | P4-UX      | ✅     |
 | 182A | Glass system unification: empty states, report cards, sidebar    | P4-UX      | ✅     |
 | 182B | Map overlay layout: fixed widget sidebar offset on desktop       | P4-UX      | ✅     |
-| 182C | Header/logo: blue glass icon, slate-900 Dent, breadcrumb fix    | P4-UX      | ✅     |
+| 182C | Header/logo: blue glass icon, slate-900 Dent, breadcrumb fix     | P4-UX      | ✅     |
 | 182D | Blue system upgrade: tokens, tinted glass, blue hover accents    | P4-UX      | ✅     |
-| 182E | Card remnant removal: onboarding CTA revert, Pro Tip glass      | P4-UX      | ✅     |
+| 182E | Card remnant removal: onboarding CTA revert, Pro Tip glass       | P4-UX      | ✅     |
 | 183  | Empty state sweep: ShopDirectory glass, dim icon colors fixed    | P4-UX      | ✅     |
 | 184  | Landing CTA consistency: pill shape, gradient alignment, sizing  | P4-UX      | ✅     |
 | 185  | Report flow: 44px touch targets, glass empty states, padding     | P4-UX      | ✅     |
@@ -198,21 +221,26 @@ All original passes (154–160) complete. Continuing map-native phase (161+).
 **Context:** ChatGPT-assisted autopilot strategy defined 5 focused passes (A-E) to consolidate the design system. Rule: "Do NOT add features. Only refine UX + design to make the map feel like the product." Decision filter: "Does this make the map feel more central and more premium?"
 
 **Pass 182A — Glass system unification**
+
 - `HomeScreenSections.tsx`: Empty state container → `bd-glass-card`, photo placeholder → blue-tinted with border
 - `BidsScreen.tsx`: Empty state → `bd-glass-card` (done in Pass 181)
 - `MobileBottomNav.tsx`: Inactive tabs → `text-slate-500 hover:text-blue-600`
 
 **Pass 182B — Map overlay layout fix**
+
 - `HomeScreen.tsx`: Fixed map widget was `fixed top-0 left-0 w-full` — overlapped sidebar on desktop. Changed to `md:left-72 md:w-[calc(100%-18rem)]` to respect 288px sidebar.
 
 **Pass 182C — Header/logo refinement**
+
 - `DashboardLayout.tsx`: Logo icon background from murky dark rgba → clean blue glass gradient with blue border. "Dent" text → `text-slate-900`. Header breadcrumb → `text-xs font-medium text-slate-400 uppercase tracking-wide "BidOnDent"`.
 
 **Pass 182D — Blue system token upgrade**
+
 - `theme.css`: Glass blur 12px→14px. Glass bg from pure white → blue-tinted (`rgba(242, 247, 255, 0.76)`). Glass border opacity bumped. Shadow system refined with blue-tinted outer glow. `bd-glass-card` gradient → blue-tinted. `bd-glass-floating` → blue-tinted.
 - `CustomerMapWidget.tsx`: Shop row hover → `hover:bg-blue-50/40`, icon → `bg-blue-50/60 text-blue-600`.
 
 **Pass 182E — Card remnant removal + ChatGPT feedback**
+
 - `HomeScreenSections.tsx`: Onboarding card was converted to glass but ChatGPT flagged CTA hierarchy loss. **Reverted** to original solid blue gradient — CTAs must stay bold.
 - `HomeSidebar` Pro Tip: Converted from solid gradient to glass card with blue accent overlay.
 
@@ -236,25 +264,25 @@ All original passes (154–160) complete. Continuing map-native phase (161+).
 
 ### Known Issues / Backlog (auto-pilot log)
 
-| Issue | Severity | Notes |
-| ----- | -------- | ----- |
-| ~~"Can't find variable: props" crash~~ | ~~❌ P1~~ | ✅ **FIXED Pass 186** — Root cause: `DashboardRouter.tsx` destructured params but referenced undefined `props` variable. Also fixed `ReportDetailDrawer.tsx` field mappings + types. |
-| Navigation session lifecycle not formalized | ⚠️ MEDIUM | Cloud sync and analytics not wired |
-| Insurer workflow is display-only (no real claim routing) | ⚠️ MEDIUM | Approval/routing automation needed |
-| DemoMode card body text may be hard to read on dark bg | ⚠️ LOW | `bd-glass-card` semi-transparent white may need opacity bump |
-| Dashboard "Your Reports" vs HomeScreen section naming inconsistency | ⚠️ LOW | Title says "Your Reports" in some views, "Recent Repair Requests" in others |
-| No CI/CD pipeline | ❌ P0 | Manual deploys only |
-| No automated tests (unit, integration, e2e) | ❌ P0 | Zero test coverage |
-| Sentry DSN configured (dev) — set `VITE_SENTRY_ENVIRONMENT=production` for deploy | ✅ DONE | Project `bidondent-production` @ org `molandjesus` |
-| Admin features ship to production bundle | ⚠️ LOW | Should be behind feature flag or removed from prod build |
-| WCAG AA accessibility audit not done | ⚠️ MEDIUM | Keyboard nav, contrast, aria labels need full audit |
-| MCP plugin integration plan created | 📋 PLANNED | See `docs/MCP_PLUGIN_INTEGRATION_PLAN.md` — Supabase + Sentry P0, Figma + Notion P1 |
-| Supabase security: 3 tables with RLS but no policies | ⚠️ MEDIUM | `job_assignments`, `kv_store_85e96b22`, `kv_store_9f243523` |
-| Supabase security: 2 functions with mutable search_path | ⚠️ MEDIUM | `handle_updated_at`, `update_updated_at_column` |
-| Supabase security: 4 overly permissive RLS policies (`USING(true)`) | ⚠️ HIGH | `insurer_interest_submissions`, `kv_store_baa15238`, `platform_activity_events`, `shop_interest_submissions` |
-| Supabase security: Leaked password protection disabled | ⚠️ HIGH | Enable via Supabase Auth settings |
-| Supabase performance: 129 WARN + 80 INFO advisories | ⚠️ MEDIUM | Duplicate indexes, unindexed FKs, auth RLS init plans |
-| Chunk size warning (>1000 kB) | ⚠️ LOW | Consider code-splitting with dynamic `import()` |
+| Issue                                                                             | Severity   | Notes                                                                                                                                                                                |
+| --------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ~~"Can't find variable: props" crash~~                                            | ~~❌ P1~~  | ✅ **FIXED Pass 186** — Root cause: `DashboardRouter.tsx` destructured params but referenced undefined `props` variable. Also fixed `ReportDetailDrawer.tsx` field mappings + types. |
+| Navigation session lifecycle not formalized                                       | ⚠️ MEDIUM  | Cloud sync and analytics not wired                                                                                                                                                   |
+| Insurer workflow is display-only (no real claim routing)                          | ⚠️ MEDIUM  | Approval/routing automation needed                                                                                                                                                   |
+| DemoMode card body text may be hard to read on dark bg                            | ⚠️ LOW     | `bd-glass-card` semi-transparent white may need opacity bump                                                                                                                         |
+| Dashboard "Your Reports" vs HomeScreen section naming inconsistency               | ⚠️ LOW     | Title says "Your Reports" in some views, "Recent Repair Requests" in others                                                                                                          |
+| No CI/CD pipeline                                                                 | ❌ P0      | Manual deploys only                                                                                                                                                                  |
+| No automated tests (unit, integration, e2e)                                       | ❌ P0      | Zero test coverage                                                                                                                                                                   |
+| Sentry DSN configured (dev) — set `VITE_SENTRY_ENVIRONMENT=production` for deploy | ✅ DONE    | Project `bidondent-production` @ org `molandjesus`                                                                                                                                   |
+| Admin features ship to production bundle                                          | ⚠️ LOW     | Should be behind feature flag or removed from prod build                                                                                                                             |
+| WCAG AA accessibility audit not done                                              | ⚠️ MEDIUM  | Keyboard nav, contrast, aria labels need full audit                                                                                                                                  |
+| MCP plugin integration plan created                                               | 📋 PLANNED | See `docs/MCP_PLUGIN_INTEGRATION_PLAN.md` — Supabase + Sentry P0, Figma + Notion P1                                                                                                  |
+| Supabase security: 3 tables with RLS but no policies                              | ⚠️ MEDIUM  | `job_assignments`, `kv_store_85e96b22`, `kv_store_9f243523`                                                                                                                          |
+| Supabase security: 2 functions with mutable search_path                           | ⚠️ MEDIUM  | `handle_updated_at`, `update_updated_at_column`                                                                                                                                      |
+| Supabase security: 4 overly permissive RLS policies (`USING(true)`)               | ⚠️ HIGH    | `insurer_interest_submissions`, `kv_store_baa15238`, `platform_activity_events`, `shop_interest_submissions`                                                                         |
+| Supabase security: Leaked password protection disabled                            | ⚠️ HIGH    | Enable via Supabase Auth settings                                                                                                                                                    |
+| Supabase performance: 129 WARN + 80 INFO advisories                               | ⚠️ MEDIUM  | Duplicate indexes, unindexed FKs, auth RLS init plans                                                                                                                                |
+| Chunk size warning (>1000 kB)                                                     | ⚠️ LOW     | Consider code-splitting with dynamic `import()`                                                                                                                                      |
 
 ---
 
@@ -2078,21 +2106,22 @@ Progress: ████████████████░░░░░░░�
 
 ## 16. Best Next Passes (Priority Order) — Updated 2026-03-25
 
-| #   | Pass                                       | Impact                                          | Unlocks                                          |
-| --- | ------------------------------------------ | ----------------------------------------------- | ------------------------------------------------ |
-| ~~1~~ | ~~**Fix "props" runtime crash**~~         | ~~P1-RUNTIME~~ ✅ Fixed Pass 186                 | ~~Stable navigation~~ ✅                         |
-| 1   | **Full loop validation**                   | Prove landing→report→bids→decision works          | Real user journey verified end-to-end            |
-| 2   | **Map dominance finalization**             | Reduce visual weight of non-map elements         | Map feels alive and central, not just a section  |
-| 3   | **Interaction flow smoothing**             | Tap→response→transition→feedback audit           | Zero-friction movement between states            |
-| 4   | **Map→data loop hardening**               | Reports/shops feel spatially tied to location    | Connected product feel, not detached UI          |
-| 5   | **Mobile experience perfection**           | Thumb zones, bottom sheets, map visibility       | Mobile IS the product                            |
-| 6   | **Landing section coherence**              | Connect lighter sections to map/dark identity    | Entire site feels like one product               |
-| 7   | **Customer decision loop**                 | Report→bids→shop→navigation continuity          | Real user journey completion                     |
-| 8   | **Full Accessibility Audit (WCAG AA)**     | Keyboard, screen reader, color contrast          | Compliance, inclusion                            |
-| 9   | **Supabase RLS security hardening**        | Fix 4 overly permissive policies (`USING(true)`) | Production security readiness                    |
-| 10  | **CI/CD pipeline + test foundation**       | Automated builds, basic test coverage            | Deployment confidence, regression prevention     |
+| #     | Pass                                   | Impact                                           | Unlocks                                         |
+| ----- | -------------------------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| ~~1~~ | ~~**Fix "props" runtime crash**~~      | ~~P1-RUNTIME~~ ✅ Fixed Pass 186                 | ~~Stable navigation~~ ✅                        |
+| 1     | **Full loop validation**               | Prove landing→report→bids→decision works         | Real user journey verified end-to-end           |
+| 2     | **Map dominance finalization**         | Reduce visual weight of non-map elements         | Map feels alive and central, not just a section |
+| 3     | **Interaction flow smoothing**         | Tap→response→transition→feedback audit           | Zero-friction movement between states           |
+| 4     | **Map→data loop hardening**            | Reports/shops feel spatially tied to location    | Connected product feel, not detached UI         |
+| 5     | **Mobile experience perfection**       | Thumb zones, bottom sheets, map visibility       | Mobile IS the product                           |
+| 6     | **Landing section coherence**          | Connect lighter sections to map/dark identity    | Entire site feels like one product              |
+| 7     | **Customer decision loop**             | Report→bids→shop→navigation continuity           | Real user journey completion                    |
+| 8     | **Full Accessibility Audit (WCAG AA)** | Keyboard, screen reader, color contrast          | Compliance, inclusion                           |
+| 9     | **Supabase RLS security hardening**    | Fix 4 overly permissive policies (`USING(true)`) | Production security readiness                   |
+| 10    | **CI/CD pipeline + test foundation**   | Automated builds, basic test coverage            | Deployment confidence, regression prevention    |
 
 ### Completed priorities (removed from queue)
+
 - ~~Remove False Trust Claims~~ ✅ Done (Pass 112-115)
 - ~~"Coverage focus" Label Cleanup~~ ✅ Done (Pass 113)
 - ~~Sentry DSN Configuration~~ ✅ Done (Pass 182)

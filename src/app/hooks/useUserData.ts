@@ -20,6 +20,7 @@ import {
   saveVehicle,
   saveDamageReport,
 } from "../services/supabaseService";
+import { getMyBids } from "../services/supabase/bids";
 import { saveProfileToCloud, saveVehiclesToCloud, saveReportsToCloud } from "./userDataActions";
 import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
 import {
@@ -32,6 +33,7 @@ import {
   buildSupabaseReportPayload,
   toFrontendVehicle,
   toSupabaseVehicle,
+  toFrontendBid,
 } from "./userDataUtils";
 
 export function useUserData(clerkUserId?: string, websiteUserKey?: string, signedInEmail?: string) {
@@ -163,7 +165,9 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           const reportsData = await getDamageReports(clerkUserId);
           if (Array.isArray(reportsData)) {
             // Success
-            const transformedReports = reportsData.map(transformSupabaseReport) as unknown as DamageReport[];
+            const transformedReports = reportsData.map(
+              transformSupabaseReport
+            ) as unknown as DamageReport[];
             setReports(transformedReports);
             setReportsError(null);
             // Populate photoStorage from reports
@@ -191,6 +195,13 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           }
           setReportsLoading(false);
 
+          // Load bids from Supabase
+          const bidsData = await getMyBids(clerkUserId);
+          const transformedBids = bidsData.map(toFrontendBid);
+          setBids(transformedBids);
+          if (import.meta.env.DEV)
+            console.log(`[DEV] Loaded ${transformedBids.length} bids from Supabase`);
+
           // Step 4: Update localStorage CACHE with fresh data
           const validReports = Array.isArray(reportsData) ? reportsData : [];
           const freshUserData: UserData = {
@@ -201,7 +212,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             },
             vehicles: vehiclesData.map(toFrontendVehicle),
             reports: validReports.map(transformSupabaseReport) as unknown as DamageReport[],
-            bids: [],
+            bids: transformedBids,
             userPhone: profileData.phone || "",
             redirectInfo: {
               type: profileData.account_type,
