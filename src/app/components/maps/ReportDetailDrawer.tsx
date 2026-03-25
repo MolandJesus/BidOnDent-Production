@@ -19,12 +19,16 @@ type ReportDetailDrawerProps = {
 export function ReportDetailDrawer({ open, onOpenChange, report }: ReportDetailDrawerProps) {
   if (!report) return null;
 
-  const vehicleLabel = report.vehicle_make ? `${report.vehicle_make} ${report.vehicle_model || ""}`.trim() : "Damage Report";
+  const vehicleLabel = report.vehicle_make
+    ? `${report.vehicle_make} ${report.vehicle_model || ""}`.trim()
+    : "Damage Report";
   const zipCode = report.zip_code || "";
   const damageArea = report.damage_location || "";
   const description = report.damage_description || "";
   const photos: string[] = Array.isArray(report.photo_urls) ? report.photo_urls : [];
-  const submittedAt = report.created_at ? new Date(report.created_at).toLocaleDateString() : "Unknown";
+  const submittedAt = report.created_at
+    ? new Date(report.created_at).toLocaleDateString()
+    : "Unknown";
   const status = report.status || "submitted";
 
   return (
@@ -36,7 +40,7 @@ export function ReportDetailDrawer({ open, onOpenChange, report }: ReportDetailD
         )}
       >
         <DrawerHeader className="p-6 pb-2">
-          <DrawerTitle className="text-2xl font-bold text-amber-400 flex items-center gap-2">
+          <DrawerTitle className="text-2xl font-bold text-blue-300 flex items-center gap-2">
             {vehicleLabel}
           </DrawerTitle>
           <DrawerDescription className="text-slate-300 text-base mt-1">
@@ -58,9 +62,7 @@ export function ReportDetailDrawer({ open, onOpenChange, report }: ReportDetailD
             </div>
           )}
           <div className="flex items-center gap-4 mt-2">
-            <span className="text-xs text-slate-400">
-              Submitted: {submittedAt}
-            </span>
+            <span className="text-xs text-slate-400">Submitted: {submittedAt}</span>
             <span className="text-xs text-slate-400">Status: {status}</span>
           </div>
         </div>

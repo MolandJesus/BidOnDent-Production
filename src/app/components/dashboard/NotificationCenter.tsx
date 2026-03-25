@@ -49,7 +49,13 @@ export default function NotificationCenter({
   };
 
   return (
-    <div className="absolute right-0 mt-2 w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-3xl bd-glass-floating z-50" style={{ boxShadow: "0 24px 90px rgba(15, 23, 42, 0.18), 0 0 40px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4)" }}>
+    <div
+      className="absolute right-0 mt-2 w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-3xl bd-glass-floating z-50"
+      style={{
+        boxShadow:
+          "0 24px 90px rgba(15, 23, 42, 0.18), 0 0 40px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
+      }}
+    >
       <div className="border-b border-blue-200/30 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.16),_transparent_60%)] px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -72,7 +78,7 @@ export default function NotificationCenter({
         <div className="mt-4 flex items-center justify-between gap-3">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/50 bg-white/60 backdrop-blur-sm px-3 py-1.5 text-xs text-slate-600">
             <Radio
-              className={`h-3.5 w-3.5 ${notificationSyncActive ? "animate-pulse text-emerald-500" : "text-slate-400"}`}
+              className={`h-3.5 w-3.5 ${notificationSyncActive ? "animate-pulse text-blue-500" : "text-slate-400"}`}
             />
             {notificationSyncActive ? "Background refresh on" : "Saved snapshot only"}
           </div>

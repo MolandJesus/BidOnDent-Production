@@ -158,10 +158,10 @@ export default function ReportsListScreen({
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2 flex-shrink-0 ${
                           report.status === "pending"
-                            ? "bg-yellow-100 text-yellow-700"
+                            ? "bg-sky-100 text-sky-700"
                             : report.status === "active"
                               ? "bg-blue-100 text-blue-700"
-                              : "bg-green-100 text-green-700"
+                              : "bg-indigo-100 text-indigo-700"
                         }`}
                       >
                         {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
