@@ -79,7 +79,7 @@ export default function DashboardHeader({
             
             {/* Desktop: User name and email */}
             <div className="hidden md:flex flex-col items-start">
-              <span className="text-sm font-semibold text-gray-900">{userInfo.name}</span>
+              <span className="text-sm font-semibold text-slate-100">{userInfo.name}</span>
               <span className="text-xs text-gray-500">{userInfo.email}</span>
             </div>
           </button>

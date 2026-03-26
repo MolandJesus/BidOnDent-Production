@@ -205,7 +205,7 @@ export default function ShopDirectoryImmersiveMap({
               </p>
             </div>
             <button
-              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-white/[0.10] hover:text-slate-200"
               onClick={() => setDrawerOpen(false)}
               type="button"
             >
@@ -215,7 +215,7 @@ export default function ShopDirectoryImmersiveMap({
 
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {mapListings.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
+              <div className="rounded-2xl border border-dashed border-blue-300/20 bg-blue-500/[0.04] p-4">
                 <p className="text-sm font-semibold text-slate-900">No shops matched</p>
                 <p className="mt-1 text-xs leading-5 text-slate-600">
                   Try broadening the search or changing the sort.

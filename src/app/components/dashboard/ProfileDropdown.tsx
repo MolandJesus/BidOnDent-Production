@@ -328,7 +328,7 @@ export default function ProfileDropdown({
 
         <button
           onClick={onLogout}
-          className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2 text-red-600 hover:bg-rose-50/60"
+          className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2 text-red-600 hover:bg-rose-500/10"
         >
           <LogOut className="w-4 h-4" />
           <span className="text-sm">Log Out</span>
