@@ -90,7 +90,10 @@ export default function ShopDirectoryMapOverlays({
         <div className="pointer-events-auto absolute left-4 top-20 z-[510] max-w-xs">
           <button
             className="flex items-center gap-2 rounded-2xl border border-blue-400/20 bg-slate-950/70 px-3 py-2 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:bg-slate-950/80"
-            style={{ boxShadow: "0 4px 24px rgba(15, 23, 42, 0.30), 0 0 20px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(96, 165, 250, 0.15)" }}
+            style={{
+              boxShadow:
+                "0 4px 24px rgba(15, 23, 42, 0.30), 0 0 20px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(96, 165, 250, 0.15)",
+            }}
             onClick={() => setIntelligenceExpanded((v) => !v)}
             type="button"
           >
@@ -104,7 +107,13 @@ export default function ShopDirectoryMapOverlays({
           </button>
 
           {intelligenceExpanded && (
-            <div className="mt-2 rounded-2xl border border-blue-400/15 bg-slate-950/75 p-3 backdrop-blur-md" style={{ boxShadow: "0 8px 40px rgba(15, 23, 42, 0.35), 0 0 32px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(96, 165, 250, 0.12)" }}>
+            <div
+              className="mt-2 rounded-2xl border border-blue-400/15 bg-slate-950/75 p-3 backdrop-blur-md"
+              style={{
+                boxShadow:
+                  "0 8px 40px rgba(15, 23, 42, 0.35), 0 0 32px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(96, 165, 250, 0.12)",
+              }}
+            >
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
                   Intelligence
@@ -141,15 +150,27 @@ export default function ShopDirectoryMapOverlays({
 
       {/* Shop action overlay — bottom center, mobile-first, glass/royal blue style */}
       {hasRoute && selectedShop && (
-        <div className="pointer-events-auto fixed z-[530] flex -translate-x-1/2 flex-col items-center gap-3 px-4 sm:absolute sm:bottom-10 sm:left-1/2 left-1/2" style={{ bottom: "max(env(safe-area-inset-bottom, 0px) + 1.5rem, 1.5rem)" }}>
-          <div className="rounded-2xl bg-white/90 backdrop-blur-md dark:bg-slate-900/90 border border-blue-200/60 flex flex-col gap-2 p-4 min-w-[260px] max-w-[95vw]" style={{ boxShadow: "0 8px 40px rgba(15, 23, 42, 0.18), 0 0 32px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.5)" }}>
-            <div className="mb-2 text-center text-base font-semibold text-slate-900 dark:text-white">
+        <div
+          className="pointer-events-auto fixed z-[530] flex -translate-x-1/2 flex-col items-center gap-3 px-4 sm:absolute sm:bottom-10 sm:left-1/2 left-1/2"
+          style={{ bottom: "max(env(safe-area-inset-bottom, 0px) + 1.5rem, 1.5rem)" }}
+        >
+          <div
+            className="rounded-2xl bg-slate-950/85 backdrop-blur-xl border border-blue-400/20 flex flex-col gap-2 p-4 min-w-[260px] max-w-[95vw]"
+            style={{
+              boxShadow:
+                "0 8px 40px rgba(15, 23, 42, 0.35), 0 0 32px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(96, 165, 250, 0.12)",
+            }}
+          >
+            <div className="mb-2 text-center text-base font-semibold text-white">
               {selectedShop.name}
             </div>
             <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
               <button
                 className="bd-glass-panel flex-1 rounded-xl px-6 py-3 text-base font-bold text-white bg-blue-700 hover:bg-blue-800 transition-colors min-h-[44px] min-w-[120px]"
-                style={{ boxShadow: "0 4px 20px rgba(30, 64, 175, 0.28), 0 0 32px rgba(59, 130, 246, 0.12)" }}
+                style={{
+                  boxShadow:
+                    "0 4px 20px rgba(30, 64, 175, 0.28), 0 0 32px rgba(59, 130, 246, 0.12)",
+                }}
                 type="button"
                 onClick={() =>
                   window.dispatchEvent(
@@ -160,7 +181,7 @@ export default function ShopDirectoryMapOverlays({
                 Place Bid
               </button>
               <button
-                className="bd-glass-panel flex-1 rounded-xl px-6 py-3 text-base font-bold text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors min-h-[44px] min-w-[120px] border border-blue-300"
+                className="bd-glass-panel flex-1 rounded-xl px-6 py-3 text-base font-bold text-blue-200 bg-blue-500/15 hover:bg-blue-500/25 transition-colors min-h-[44px] min-w-[120px] border border-blue-400/25"
                 type="button"
                 onClick={() =>
                   window.dispatchEvent(
@@ -178,14 +199,14 @@ export default function ShopDirectoryMapOverlays({
       {/* Route preview — bottom-left floating card */}
       {showRoute && (
         <div className="pointer-events-auto absolute bottom-64 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-24">
-          <div className="rounded-2xl border border-white/15 bg-white/95 p-3 shadow-2xl backdrop-blur-md dark:bg-slate-900/90">
+          <div className="rounded-2xl border border-blue-400/15 bg-slate-950/85 p-3 shadow-2xl backdrop-blur-xl">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
                 <MapPin className="h-3.5 w-3.5" />
                 Route
               </div>
               <button
-                className="rounded-full p-1 text-slate-400 transition-colors hover:text-slate-600"
+                className="rounded-full p-1 text-white/50 transition-colors hover:text-white"
                 onClick={() => setRouteExpanded((v) => !v)}
                 type="button"
               >
@@ -207,7 +228,7 @@ export default function ShopDirectoryMapOverlays({
                     className={`flex-1 rounded-xl px-2 py-2 text-center text-xs transition-colors ${
                       isActive
                         ? "bg-slate-950 font-semibold text-white"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        : "bg-white/[0.06] text-white/70 hover:bg-white/[0.1]"
                     }`}
                     onClick={() => onSelectRoute(route.id)}
                     type="button"
@@ -224,18 +245,18 @@ export default function ShopDirectoryMapOverlays({
             </div>
 
             {/* ETA summary line with real metrics */}
-            <div className="mt-2 flex items-center justify-between text-xs text-slate-600">
+            <div className="mt-2 flex items-center justify-between text-xs text-white/70">
               <span className="truncate">
                 {selectedOrigin.name} → {selectedShop.name}
               </span>
-              <span className="ml-2 font-semibold text-slate-950 whitespace-nowrap">
+              <span className="ml-2 font-semibold text-white whitespace-nowrap">
                 {distanceLabel && etaLabel ? `${distanceLabel} • ${etaLabel}` : ""}
               </span>
             </div>
 
             {/* Expanded turn list */}
             {routeExpanded && (
-              <div className="mt-3 max-h-48 space-y-2 overflow-y-auto border-t border-slate-200 pt-3">
+              <div className="mt-3 max-h-48 space-y-2 overflow-y-auto border-t border-white/10 pt-3">
                 {selectedRoute.instructions.map((instruction, index) => (
                   <div key={instruction.id} className="flex gap-2 text-xs">
                     <div
@@ -245,8 +266,8 @@ export default function ShopDirectoryMapOverlays({
                       {index + 1}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-medium text-slate-900">{instruction.title}</p>
-                      <p className="text-slate-500">
+                      <p className="font-medium text-white">{instruction.title}</p>
+                      <p className="text-white/60">
                         {instruction.durationMinutes > 0
                           ? `${instruction.durationMinutes} min`
                           : instruction.distanceLabel}

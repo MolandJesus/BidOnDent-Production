@@ -363,16 +363,8 @@ export default function DashboardLayout({
                 </div>
               )}
               <div className="text-left min-w-0 flex-1">
-                <p
-                  className={`text-sm font-semibold truncate ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                >
-                  {userProfile.name}
-                </p>
-                <p
-                  className={`text-xs truncate ${isLightAppearance ? "text-slate-400" : "text-slate-400"}`}
-                >
-                  {userProfile.email}
-                </p>
+                <p className="text-sm font-semibold truncate text-slate-100">{userProfile.name}</p>
+                <p className="text-xs truncate text-slate-400">{userProfile.email}</p>
               </div>
             </button>
           </div>
@@ -406,22 +398,14 @@ export default function DashboardLayout({
                 >
                   <Car className="w-4 h-4" />
                 </span>
-                <span
-                  className={`text-lg font-semibold ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                >
-                  BidOnDent
-                </span>
+                <span className="text-lg font-semibold text-slate-100">BidOnDent</span>
               </button>
 
               <div className="hidden md:block">
-                <p
-                  className={`text-xs font-medium uppercase tracking-wide ${isLightAppearance ? "text-blue-200/80" : "text-blue-200/80"}`}
-                >
+                <p className="text-xs font-medium uppercase tracking-wide text-blue-200/80">
                   BidOnDent
                 </p>
-                <h2
-                  className={`text-xl font-semibold leading-tight ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                >
+                <h2 className="text-xl font-semibold leading-tight text-slate-100">
                   {activeTabLabel}
                 </h2>
               </div>
@@ -437,11 +421,9 @@ export default function DashboardLayout({
                   </button>
                 )}
                 <div className="hidden lg:flex items-center gap-2 bd-glass-control--utility px-3 py-2 min-w-[260px]">
-                  <Search
-                    className={`w-4 h-4 ${isLightAppearance ? "text-blue-200/70" : "text-blue-200/70"}`}
-                  />
+                  <Search className="w-4 h-4 text-blue-200/70" />
                   <input
-                    className={`bg-transparent text-sm w-full outline-none ${isLightAppearance ? "placeholder:text-blue-200/60 text-slate-100" : "placeholder:text-blue-200/60 text-slate-100"}`}
+                    className="bg-transparent text-sm w-full outline-none placeholder:text-blue-200/60 text-slate-100"
                     placeholder="Search..."
                     aria-label="Search"
                   />
@@ -458,9 +440,7 @@ export default function DashboardLayout({
                     aria-label="Open notifications"
                     aria-expanded={showNotifications}
                   >
-                    <Bell
-                      className={`w-5 h-5 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                    />
+                    <Bell className="w-5 h-5 text-slate-100" />
                     {unreadCount > 0 && (
                       <>
                         <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
@@ -498,17 +478,17 @@ export default function DashboardLayout({
                     aria-expanded={showTopProfileMenu}
                     aria-haspopup="menu"
                     aria-label="User profile menu"
-                    className="flex items-center gap-2 pl-1.5 pr-2 py-1.5 rounded-full bd-glass-control--utility hover:bg-blue-500/10 transition-colors"
+                    className="flex items-center gap-2 p-1 md:pl-1.5 md:pr-2 md:py-1.5 rounded-full hover:bg-blue-500/10 transition-colors"
                   >
                     {userImageUrl ? (
                       <img
                         src={userImageUrl}
                         alt="Profile"
-                        className="w-10 h-10 rounded-full object-cover border border-blue-400/25"
+                        className="w-10 h-10 rounded-full object-cover shrink-0 border border-blue-400/25"
                       />
                     ) : (
                       <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+                        className="w-10 h-10 rounded-full shrink-0 flex items-center justify-center text-white font-semibold"
                         style={{
                           background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                         }}
@@ -517,14 +497,10 @@ export default function DashboardLayout({
                       </div>
                     )}
                     <div className="hidden md:block text-left pr-1">
-                      <p
-                        className={`text-sm font-semibold leading-none ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                      >
+                      <p className="text-sm font-semibold leading-none text-slate-100">
                         {userProfile.name}
                       </p>
-                      <p
-                        className={`text-xs mt-1 leading-none ${isLightAppearance ? "text-slate-300" : "text-slate-300"}`}
-                      >
+                      <p className="text-xs mt-1 leading-none text-slate-300">
                         {userProfile.email}
                       </p>
                     </div>
@@ -536,25 +512,11 @@ export default function DashboardLayout({
                       aria-label="User profile menu"
                       className="absolute right-0 mt-2 w-60 bd-glass-floating z-50 overflow-hidden"
                     >
-                      <div
-                        className={`px-3 py-2.5 border-b ${
-                          isLightAppearance ? "border-blue-400/15" : "border-blue-400/15"
-                        }`}
-                      >
-                        <p
-                          className={`text-sm font-semibold truncate ${
-                            isLightAppearance ? "text-slate-100" : "text-slate-100"
-                          }`}
-                        >
+                      <div className="px-3 py-2.5 border-b border-blue-400/15">
+                        <p className="text-sm font-semibold truncate text-slate-100">
                           {userProfile.name}
                         </p>
-                        <p
-                          className={`text-xs truncate ${
-                            isLightAppearance ? "text-slate-400" : "text-slate-400"
-                          }`}
-                        >
-                          {userProfile.email}
-                        </p>
+                        <p className="text-xs truncate text-slate-400">{userProfile.email}</p>
                       </div>
                       <button
                         role="menuitem"
@@ -562,11 +524,7 @@ export default function DashboardLayout({
                           profileDropdownData.onNavigate("dashboard", "home");
                           setShowTopProfileMenu(false);
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
-                          isLightAppearance
-                            ? "text-slate-200 hover:bg-blue-500/10"
-                            : "text-slate-200 hover:bg-blue-500/10"
-                        }`}
+                        className="w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 text-slate-200 hover:bg-blue-500/10"
                       >
                         <Home className="w-4 h-4 opacity-70" />
                         Dashboard
@@ -577,11 +535,7 @@ export default function DashboardLayout({
                           setShowTopProfileMenu(false);
                           setShowSettingsModal(true);
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
-                          isLightAppearance
-                            ? "text-slate-200 hover:bg-blue-500/10"
-                            : "text-slate-200 hover:bg-blue-500/10"
-                        }`}
+                        className="w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 text-slate-200 hover:bg-blue-500/10"
                       >
                         <Settings className="w-4 h-4 opacity-60" />
                         Site Settings
@@ -592,11 +546,7 @@ export default function DashboardLayout({
                           profileDropdownData.onNavigate("dashboard", "account");
                           setShowTopProfileMenu(false);
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
-                          isLightAppearance
-                            ? "text-slate-200 hover:bg-blue-500/10"
-                            : "text-slate-200 hover:bg-blue-500/10"
-                        }`}
+                        className="w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 text-slate-200 hover:bg-blue-500/10"
                       >
                         <User className="w-4 h-4 opacity-70" />
                         Account Settings
@@ -607,11 +557,7 @@ export default function DashboardLayout({
                           profileDropdownData.onLogout();
                           setShowTopProfileMenu(false);
                         }}
-                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
-                          isLightAppearance
-                            ? "text-rose-400 hover:bg-rose-500/10 border-t border-blue-400/15"
-                            : "text-rose-400 hover:bg-rose-500/10 border-t border-blue-400/15"
-                        }`}
+                        className="w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 text-rose-400 hover:bg-rose-500/10 border-t border-blue-400/15"
                       >
                         <LogOut className="w-4 h-4 opacity-70" />
                         Log Out

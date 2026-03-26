@@ -1,22 +1,45 @@
 # BidOnDent — Build Progress Dashboard
 
-## ⚡ AT-A-GLANCE STATUS (updated 2026-03-25)
+## ⚡ AT-A-GLANCE STATUS (updated 2026-03-26)
 
 ### Build Progress
 
-| 0% |████████████████████████████████████████████████████████████████████████████| 124% 🚀 |
+| 0% |████████████████████████████████████████████████████████████████████████████| 126% 🚀 |
 
-**Passes completed:** 235 / 160+ — ⚡ DARK SHELL UNIFIED ACROSS ALL APP SCREENS
+**Passes completed:** 242 / 160+ — ⚡ LIQUID GLASS SYSTEM UNIFIED — ALL SURFACES, BOTH MODES
 
-| Item             | Value                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------- |
-| **Last pass**    | Pass 235 — DemoAccountSwitcher dark treatment                                      |
-| **Current pass** | 235 ✅ complete (Design refinement: bid card + demo switcher dark shell)           |
-| **Build**        | ✓ 0 errors · 1.98s · 742KB main bundle                                             |
-| **Spellcheck**   | 0 issues                                                                           |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                                     |
-| **Last pushed**  | 2026-03-25                                                                         |
-| **Phase**        | DESIGN REFINEMENT — all dashboard screens unified to dark shell, ready for content |
+| Item             | Value                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| **Last pass**    | Pass 242 — ShopDirectory map overlays dark glass                                             |
+| **Current pass** | 242 ✅ complete (Liquid glass: map overlays, home cards, report wizard, header, CSS tokens)  |
+| **Build**        | ✓ 0 errors · 2.16s · 783KB main bundle                                                       |
+| **Spellcheck**   | 0 issues                                                                                     |
+| **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date)                            |
+| **Last pushed**  | 2026-03-26                                                                                   |
+| **Phase**        | LIQUID GLASS PHASE — dark & light modes unified, white surfaces eliminated, ShopDir next     |
+
+### Liquid Glass System — All Surfaces (Passes 236–242, 2026-03-26)
+
+| Pass | Title                                                              | Category | Status |
+| ---- | ------------------------------------------------------------------ | -------- | ------ |
+| 236  | Mobile header bugs — avatar distortion, Dashboard button crowding  | P1-UX    | ✅     |
+| 237  | Report steps glass overhaul — inline white styles removed          | P2-UX    | ✅     |
+| 238  | Report form inputs — bg-white → translucent glass                  | P2-UX    | ✅     |
+| 239  | Theme.css control variants — secondary/utility dark base           | P3-ARCH  | ✅     |
+| 240  | QA audit — AppLoading white flash, App.tsx fallback, 32 ternaries  | P2-UX    | ✅     |
+| 241  | Dashboard home cards glass — HomeScreenSections/HomeScreen         | P3-UX    | ✅     |
+| 242  | Map overlays dark glass — ShopDirectoryMapOverlays                 | P3-UX    | ✅     |
+
+**Key changes in this sweep:**
+
+- **Pass 236 — Mobile header (P1)**: Removed `bd-glass-control--utility` double-padding from profile avatar button (was distorting circle on mobile). Added `shrink-0` to prevent flex compression. Landing "Dashboard" button: responsive padding, text hidden below `sm` breakpoint (icon-only on mobile). Cleaned 11 redundant ternaries in top bar.
+- **Pass 237 — Report steps glass (P2)**: Removed inline `rgba(255,255,255,0.96)` white styles from Steps 1-3. Added `bd-glass-card rounded-2xl` wrapper to Steps 4-6 (had no glass treatment). Fixed 3 redundant ternaries.
+- **Pass 238 — Report form inputs (P2)**: All 6 report step form inputs, labels, buttons converted from white/light to glass-compatible. `bg-white` → `bg-white/[0.06]`, `text-slate-900` → `text-slate-200`, `border-blue-200` → `border-white/[0.12]`.
+- **Pass 239 — Theme.css controls (P3)**: `bd-glass-control--secondary` base changed from white gradient to translucent blue `rgba(59,130,246,0.18)`. `bd-glass-control--utility` hover/active changed from `#f1f5fa`/`#e2e8f0` to dark-compatible. Added `[data-appearance-mode="light"]` overrides for both variants.
+- **Pass 240 — QA audit (P2)**: Fixed AppLoading.tsx white flash (`bg-white` → `bg-[#0b172f]`). Fixed App.tsx `AuthConfigFallback` white background. Cleaned 32 redundant ternaries across 11 files including all landing sections and DashboardLayout.
+- **Pass 241 — Home cards (P3)**: Removed inline `rgba(255,255,255,0.88)` from HomeReportsList. Fixed 5 invalid double-opacity Tailwind classes (`bg-white/[0.04]/60` etc). Fixed Pro Tip border opacity (0.7→0.18). Disabled quick action: `bg-slate-100/60` → `bg-slate-800/40`.
+- **Pass 242 — Map overlays (P3)**: ShopDirectoryMapOverlays shop action card + route preview: `bg-white/90`/`bg-white/95` → `bg-slate-950/85 backdrop-blur-xl`. All route text: `text-slate-900` → `text-white`. Route tabs: `bg-slate-100 text-slate-600` → `bg-white/[0.06] text-white/70`. **Note:** `dark:` classes in this app never activate — app uses `data-appearance-mode`, not Tailwind dark mode.
+- **Build**: ✓ 0 errors · 2.16s · 783KB
 
 ### Bid Card + Demo Switcher Dark Shell (Passes 234–235, 2026-03-25)
 

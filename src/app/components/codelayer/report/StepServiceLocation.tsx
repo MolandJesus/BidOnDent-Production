@@ -24,7 +24,7 @@ export default function StepServiceLocation({
 }: StepServiceLocationProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="p-4 sm:p-6 space-y-5">
+    <div className="p-4 sm:p-6 space-y-5 bd-glass-card rounded-2xl">
       <div className="text-center">
         <div
           className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
@@ -38,7 +38,7 @@ export default function StepServiceLocation({
           Service Location
         </h2>
         <p
-          className={`text-sm leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+          className={`text-sm leading-relaxed ${isLightAppearance ? "text-blue-100/60" : "text-blue-100/70"}`}
         >
           Shops near you will see this request first on the BidOnDent network
         </p>
@@ -47,7 +47,7 @@ export default function StepServiceLocation({
       <div className="space-y-3">
         <div>
           <label
-            className={`block text-sm font-medium mb-1.5 ${isLightAppearance ? "text-slate-700" : "text-blue-100/80"}`}
+            className={`block text-sm font-medium mb-1.5 ${isLightAppearance ? "text-slate-300" : "text-blue-100/80"}`}
           >
             ZIP Code
           </label>
@@ -56,14 +56,14 @@ export default function StepServiceLocation({
             inputMode="numeric"
             value={zipCode}
             onChange={(e) => onZipChange(e.target.value.replace(/\D/g, "").slice(0, 5))}
-            className={`w-full px-3 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-slate-200 text-slate-900 bg-white focus:ring-blue-100 focus:border-blue-400" : "border-white/15 text-white bg-white/8 focus:ring-blue-500/30 focus:border-blue-400/50 placeholder:text-blue-200/40"}`}
+            className={`w-full px-3 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-white/[0.12] text-slate-200 bg-white/[0.06] focus:ring-blue-400/20 focus:border-blue-400/40" : "border-white/15 text-white bg-white/8 focus:ring-blue-500/30 focus:border-blue-400/50 placeholder:text-blue-200/40"}`}
             placeholder="e.g. 11201"
             maxLength={5}
           />
         </div>
         <div>
           <label
-            className={`block text-sm font-medium mb-1.5 ${isLightAppearance ? "text-slate-700" : "text-blue-100/80"}`}
+            className={`block text-sm font-medium mb-1.5 ${isLightAppearance ? "text-slate-300" : "text-blue-100/80"}`}
           >
             City or Address{" "}
             <span
@@ -78,20 +78,20 @@ export default function StepServiceLocation({
             type="text"
             value={address}
             onChange={(e) => onAddressChange(e.target.value)}
-            className={`w-full px-3 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-slate-200 text-slate-900 bg-white focus:ring-blue-100 focus:border-blue-400" : "border-white/15 text-white bg-white/8 focus:ring-blue-500/30 focus:border-blue-400/50 placeholder:text-blue-200/40"}`}
+            className={`w-full px-3 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-white/[0.12] text-slate-200 bg-white/[0.06] focus:ring-blue-400/20 focus:border-blue-400/40" : "border-white/15 text-white bg-white/8 focus:ring-blue-500/30 focus:border-blue-400/50 placeholder:text-blue-200/40"}`}
             placeholder="e.g. Brooklyn, NY"
           />
         </div>
       </div>
 
       <div
-        className={`flex items-start gap-2.5 rounded-xl border px-3.5 py-3 ${isLightAppearance ? "bg-blue-50/60 border-blue-100/60" : "bg-blue-900/20 border-blue-400/15"}`}
+        className={`flex items-start gap-2.5 rounded-xl border px-3.5 py-3 ${isLightAppearance ? "bg-blue-900/15 border-blue-400/12" : "bg-blue-900/20 border-blue-400/15"}`}
       >
         <MapPin
           className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isLightAppearance ? "text-blue-500" : "text-blue-400"}`}
         />
         <p
-          className={`text-xs leading-relaxed ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
+          className={`text-xs leading-relaxed ${isLightAppearance ? "text-blue-100/60" : "text-blue-100/70"}`}
         >
           Your location is only shared with shops you choose. It helps nearby shops on the map find
           and respond to your request faster.
@@ -120,7 +120,7 @@ export default function StepServiceLocation({
       <button
         type="button"
         onClick={onContinue}
-        className={`w-full text-center text-sm transition-colors py-1.5 ${isLightAppearance ? "text-slate-400 hover:text-slate-600" : "text-blue-200/50 hover:text-blue-100/70"}`}
+        className={`w-full text-center text-sm transition-colors py-1.5 ${isLightAppearance ? "text-blue-200/50 hover:text-blue-100/70" : "text-blue-200/50 hover:text-blue-100/70"}`}
       >
         Skip — I&apos;ll add location later
       </button>

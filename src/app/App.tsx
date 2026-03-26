@@ -61,14 +61,14 @@ if (!hasValidClerkPublishableKey && import.meta.env.DEV) {
 
 function AuthConfigFallback() {
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-16 text-slate-900">
-      <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">App setup required</h1>
-        <p className="mt-3 text-sm leading-6 text-slate-700">
+    <div className="min-h-screen bg-[#0b172f] px-6 py-16 text-slate-200">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-blue-300/15 bg-white/[0.04] p-8 shadow-sm">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-100">App setup required</h1>
+        <p className="mt-3 text-sm leading-6 text-blue-100/70">
           The app could not initialize authentication because the Clerk publishable key is missing
           or invalid.
         </p>
-        <ol className="mt-6 list-decimal space-y-2 pl-5 text-sm text-slate-700">
+        <ol className="mt-6 list-decimal space-y-2 pl-5 text-sm text-blue-100/70">
           <li>Open utils/clerk/info.tsx</li>
           <li>Set clerkPublishableKey to your Clerk pk_test or pk_live value</li>
           <li>Refresh the browser</li>

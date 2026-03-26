@@ -96,22 +96,7 @@ export function HomeReportsList({
 }) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div
-      className="bd-glass-card p-5"
-      style={
-        isLightAppearance
-          ? {
-              background:
-                "linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(248, 250, 252, 0.84) 100%)",
-              borderColor: "rgba(148, 163, 184, 0.25)",
-            }
-          : {
-              background:
-                "linear-gradient(180deg, rgba(10, 19, 38, 0.82) 0%, rgba(8, 15, 30, 0.78) 100%)",
-              borderColor: "rgba(96, 165, 250, 0.22)",
-            }
-      }
-    >
+    <div className="bd-glass-card p-5">
       <div className="flex items-center justify-between mb-4">
         <h2
           className={`font-medium mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
@@ -120,7 +105,7 @@ export function HomeReportsList({
         </h2>
         <button
           onClick={onViewAll}
-          className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-200 hover:text-white hover:bg-blue-400/12" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
+          className="text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors text-blue-200 hover:text-white hover:bg-blue-400/12"
         >
           View All
           <ArrowRight className="w-4 h-4" />
@@ -129,14 +114,12 @@ export function HomeReportsList({
 
       {sortedReports.length === 0 && (
         <div
-          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-white/[0.04]/60 border-white/[0.10]/40" : "bg-blue-950/30 border-blue-300/22"}`}
+          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-white/[0.04] border-white/10" : "bg-blue-950/30 border-blue-300/[0.22]"}`}
         >
           <Camera
             className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/70"}`}
           />
-          <p
-            className={`font-medium mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-          >
+          <p className="font-medium mb-1 text-slate-100">
             {userType === "customer" && "No repair requests yet"}
             {userType === "shop" && "No customer requests yet"}
             {userType === "insurer" && "No claims submitted yet"}
@@ -177,7 +160,7 @@ export function HomeReportsList({
             return (
               <article
                 key={report.id}
-                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/60 border-white/[0.10]/40" : "bg-slate-900/25 border-blue-400/20/18"} ${
+                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/[0.06] border-white/10" : "bg-slate-900/25 border-blue-400/[0.18]"} ${
                   canOpenReport ? "hover:shadow-md cursor-pointer" : ""
                 }`}
                 style={
@@ -200,7 +183,7 @@ export function HomeReportsList({
                 }
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100/60 flex-shrink-0 border border-white/[0.10]/40">
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-800/40 flex-shrink-0 border border-white/10">
                     {hasPhoto ? (
                       <ImageWithFallback
                         src={report.photos[0]}
@@ -216,9 +199,7 @@ export function HomeReportsList({
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <h3
-                        className={`text-lg md:text-xl font-semibold truncate ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                      >
+                      <h3 className="text-lg md:text-xl font-semibold truncate text-slate-100">
                         {title}
                       </h3>
                       <span
@@ -292,8 +273,8 @@ export function HomeSidebar({
                 disabled={isDisabled}
                 className={`text-left p-4 transition-all duration-200 rounded-xl font-medium ${
                   isDisabled
-                    ? "border border-white/[0.10]/60 bg-slate-100/60 text-slate-400 cursor-not-allowed"
-                    : "bd-glass-card hover:shadow-lg hover:-translate-y-1 active:scale-[0.97] hover:border-blue-400/20/60"
+                    ? "border border-white/10 bg-slate-800/40 text-slate-400 cursor-not-allowed"
+                    : "bd-glass-card hover:shadow-lg hover:-translate-y-1 active:scale-[0.97] hover:border-blue-400/[0.2]"
                 }`}
               >
                 <div
@@ -321,7 +302,7 @@ export function HomeSidebar({
               return (
                 <div
                   key={item.id}
-                  className="flex items-start gap-3 p-2 rounded-xl hover:bg-white/[0.04]/60 transition-colors"
+                  className="flex items-start gap-3 p-2 rounded-xl hover:bg-white/[0.04] transition-colors"
                 >
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${item.tone}`}
@@ -341,7 +322,7 @@ export function HomeSidebar({
 
       <section
         className="bd-glass-card rounded-2xl p-5 relative overflow-hidden"
-        style={{ borderColor: "rgba(219, 234, 254, 0.7)" }}
+        style={{ borderColor: "rgba(96, 165, 250, 0.18)" }}
       >
         <div
           className="absolute inset-0 rounded-2xl pointer-events-none"
@@ -350,7 +331,7 @@ export function HomeSidebar({
           }}
         />
         <div className="flex items-center gap-2 mb-2 relative">
-          <Eye className="w-5 h-5 text-blue-600" />
+          <Eye className="w-5 h-5 text-blue-400" />
           <h3 className="text-base font-semibold text-slate-100">Pro Tip</h3>
         </div>
         <p className="text-slate-400 text-sm relative">

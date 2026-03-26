@@ -161,11 +161,7 @@ export default function WhoWeServeSection({
           className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3
-            className={`text-3xl sm:text-4xl font-bold mb-3 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-          >
-            Who We Serve
-          </h3>
+          <h3 className="text-3xl sm:text-4xl font-bold mb-3 text-slate-100">Who We Serve</h3>
           <p
             className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-blue-100/75" : "text-blue-100/70"}`}
           >
@@ -203,22 +199,14 @@ export default function WhoWeServeSection({
                       : "0 0 12px rgba(59, 130, 246, 0.1)",
                   }}
                 >
-                  <card.icon
-                    className={`w-6 h-6 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-                  />
+                  <card.icon className="w-6 h-6 text-blue-400" />
                 </div>
               </div>
-              <h4
-                className={`font-bold text-xl mb-3 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-              >
-                {card.title}
-              </h4>
+              <h4 className="font-bold text-xl mb-3 text-slate-100">{card.title}</h4>
               <ul className="space-y-2.5">
                 {card.items.map((item, i) => (
                   <li key={i} className="flex items-start">
-                    <CheckCircle2
-                      className={`w-4 h-4 mr-2 mt-0.5 flex-shrink-0 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-                    />
+                    <CheckCircle2 className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-blue-400" />
                     <span
                       className={`text-sm ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/65"}`}
                     >

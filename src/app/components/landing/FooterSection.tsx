@@ -82,9 +82,7 @@ export default function FooterSection({
             </p>
 
             {/* Contact info */}
-            <div
-              className={`space-y-2 text-sm ${isLightAppearance ? "text-blue-200/60" : "text-blue-200/60"}`}
-            >
+            <div className="space-y-2 text-sm text-blue-200/60">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" style={{ color: primaryColor }} />
                 <span>bidondent@gmail.com</span>
@@ -99,13 +97,11 @@ export default function FooterSection({
             <h4 className={`font-bold mb-4 ${isLightAppearance ? "text-slate-100" : "text-white"}`}>
               For Customers
             </h4>
-            <ul
-              className={`space-y-2 ${isLightAppearance ? "text-blue-200/60" : "text-blue-200/60"}`}
-            >
+            <ul className="space-y-2 text-blue-200/60">
               <li>
                 <a
                   href="#how-it-works"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   How It Works
                 </a>
@@ -113,7 +109,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#business-inquiry"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Submit Report
                 </a>
@@ -121,7 +117,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#coverage"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Coverage
                 </a>
@@ -129,18 +125,12 @@ export default function FooterSection({
             </ul>
           </div>
           <div>
-            <h4
-              className={`font-bold mb-4 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-            >
-              For Businesses
-            </h4>
-            <ul
-              className={`space-y-2 ${isLightAppearance ? "text-blue-200/60" : "text-blue-200/60"}`}
-            >
+            <h4 className="font-bold mb-4 text-slate-100">For Businesses</h4>
+            <ul className="space-y-2 text-blue-200/60">
               <li>
                 <a
                   href="#business-inquiry"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Shop Signup
                 </a>
@@ -148,7 +138,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#/insurer-partnership"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Insurer Partnership
                 </a>
@@ -156,7 +146,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#who-we-serve"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Free for Customers
                 </a>
@@ -164,18 +154,12 @@ export default function FooterSection({
             </ul>
           </div>
           <div>
-            <h4
-              className={`font-bold mb-4 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-            >
-              Company
-            </h4>
-            <ul
-              className={`space-y-2 ${isLightAppearance ? "text-blue-200/60" : "text-blue-200/60"}`}
-            >
+            <h4 className="font-bold mb-4 text-slate-100">Company</h4>
+            <ul className="space-y-2 text-blue-200/60">
               <li>
                 <a
                   href="#/about"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   About Us
                 </a>
@@ -183,7 +167,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="mailto:bidondent@gmail.com"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Contact
                 </a>
@@ -191,7 +175,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#/privacy-policy"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Privacy Policy
                 </a>
@@ -199,7 +183,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#/terms-of-service"
-                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-100" : "hover:text-blue-100"}`}
+                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
                 >
                   Terms of Service
                 </a>
@@ -208,12 +192,10 @@ export default function FooterSection({
           </div>
         </div>
         <div
-          className={`border-t pt-8 flex flex-col md:flex-row items-center justify-between transition-all duration-700 ${isLightAppearance ? "border-[#1c2e47]" : "border-[#1c2e47]"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`border-t pt-8 flex flex-col md:flex-row items-center justify-between transition-all duration-700 border-[#1c2e47] ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.3s" }}
         >
-          <p className={isLightAppearance ? "text-blue-200/40" : "text-blue-200/40"}>
-            &copy; 2026 BidOnDent. All rights reserved.
-          </p>
+          <p className="text-blue-200/40">&copy; 2026 BidOnDent. All rights reserved.</p>
 
           {/* Social icons */}
           <div className="flex items-center gap-4 mt-4 md:mt-0">
@@ -221,7 +203,7 @@ export default function FooterSection({
               <a
                 key={social}
                 href="#"
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 ${isLightAppearance ? "bg-blue-900/30 border border-blue-400/15 text-blue-200/60 hover:bg-blue-800/40 hover:text-blue-100" : "bg-blue-900/30 border border-blue-400/15 text-blue-200/60 hover:bg-blue-800/40 hover:text-blue-100"}`}
+                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 bg-blue-900/30 border border-blue-400/15 text-blue-200/60 hover:bg-blue-800/40 hover:text-blue-100"
                 aria-label={social}
               >
                 {social === "facebook" && (

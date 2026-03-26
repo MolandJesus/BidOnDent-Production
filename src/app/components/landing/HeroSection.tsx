@@ -167,16 +167,9 @@ export default function HeroSection({
                 className={`text-[1.75rem] sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-bold leading-[1.15] tracking-tight transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 style={{ transitionDelay: "0.2s" }}
               >
-                <span className={isLightAppearance ? "text-slate-100" : "text-slate-100"}>
-                  Get the{" "}
-                </span>
-                <span className={isLightAppearance ? "text-blue-400" : "text-blue-400"}>
-                  Best Price
-                </span>
-                <span className={isLightAppearance ? "text-slate-100" : "text-slate-100"}>
-                  {" "}
-                  on Your{" "}
-                </span>
+                <span className="text-slate-100">Get the </span>
+                <span className="text-blue-400">Best Price</span>
+                <span className="text-slate-100"> on Your </span>
                 <br className="hidden sm:block" />
                 <span
                   style={{
@@ -372,9 +365,7 @@ export default function HeroSection({
                 <CheckCircle className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
-                <div
-                  className={`font-semibold text-xs sm:text-sm ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                >
+                <div className="font-semibold text-xs sm:text-sm text-slate-100">
                   Repair Completed!
                 </div>
                 <div

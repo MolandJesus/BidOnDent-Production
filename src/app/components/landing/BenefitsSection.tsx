@@ -131,9 +131,7 @@ export default function BenefitsSection({
           className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3
-            className={`text-3xl sm:text-4xl font-bold mb-3 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-          >
+          <h3 className="text-3xl sm:text-4xl font-bold mb-3 text-slate-100">
             Why Choose{" "}
             <span
               style={{
@@ -145,8 +143,8 @@ export default function BenefitsSection({
             >
               Bid
             </span>
-            <span className={isLightAppearance ? "text-blue-400" : "text-blue-400"}>On</span>
-            <span className={isLightAppearance ? "text-slate-100" : "text-slate-100"}>Dent</span>?
+            <span className="text-blue-400">On</span>
+            <span className="text-slate-100">Dent</span>?
           </h3>
         </div>
 
@@ -180,11 +178,7 @@ export default function BenefitsSection({
                   {benefit.badge}
                 </span>
               </div>
-              <h4
-                className={`font-bold text-xl mb-3 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-              >
-                {benefit.title}
-              </h4>
+              <h4 className="font-bold text-xl mb-3 text-slate-100">{benefit.title}</h4>
               <p className={isLightAppearance ? "text-blue-100/70" : "text-blue-100/65"}>
                 {benefit.description}
               </p>

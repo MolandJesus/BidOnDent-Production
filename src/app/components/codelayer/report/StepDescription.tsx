@@ -30,21 +30,9 @@ export default function StepDescription({
   const isDescriptionValid = description.trim().length >= 10;
 
   return (
-    <div
-      className="px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl"
-      style={{
-        background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(242, 248, 255, 0.94) 100%)"
-          : "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
-        borderColor: isLightAppearance ? "rgba(191, 219, 254, 0.8)" : "rgba(96, 165, 250, 0.22)",
-      }}
-    >
-      <h2
-        className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-      >
-        Describe the damage
-      </h2>
-      <p className={`mb-6 ${isLightAppearance ? "text-slate-600" : "text-blue-100/80"}`}>
+    <div className="px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl">
+      <h2 className="text-2xl font-bold mb-1 text-slate-100">Describe the damage</h2>
+      <p className={`mb-6 ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/80"}`}>
         The better your details, the better your bids will be.
       </p>
 
@@ -52,7 +40,7 @@ export default function StepDescription({
         <label
           htmlFor="description"
           className={`text-sm font-medium mb-1.5 inline-flex items-center gap-1.5 ${
-            isLightAppearance ? "text-slate-700" : "text-blue-100/85"
+            isLightAppearance ? "text-slate-300" : "text-blue-100/85"
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -64,13 +52,13 @@ export default function StepDescription({
           rows={4}
           className={`w-full px-3.5 py-2.5 border rounded-xl outline-none transition-all ${
             isLightAppearance
-              ? "bg-white text-slate-900 focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+              ? "bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
               : "bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
           } ${
             description.length > 0 && !isDescriptionValid
               ? "border-amber-300"
               : isLightAppearance
-                ? "border-blue-200"
+                ? "border-white/[0.12]"
                 : "border-blue-300/25"
           }`}
           placeholder="Front bumper has a dent on the passenger side and paint scratches near the corner..."
@@ -88,7 +76,7 @@ export default function StepDescription({
         <label
           htmlFor="incident"
           className={`text-sm font-medium mb-1.5 inline-flex items-center gap-1.5 ${
-            isLightAppearance ? "text-slate-700" : "text-blue-100/85"
+            isLightAppearance ? "text-slate-300" : "text-blue-100/85"
           }`}
         >
           <MessageSquareQuote className="w-4 h-4" />
@@ -100,7 +88,7 @@ export default function StepDescription({
           rows={3}
           className={`w-full px-3.5 py-2.5 border rounded-xl outline-none transition-all ${
             isLightAppearance
-              ? "border-blue-200 bg-white text-slate-900 focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+              ? "border-white/[0.12] bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
               : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
           }`}
           placeholder="I was backing out in a parking lot and clipped a pole..."
@@ -123,7 +111,7 @@ export default function StepDescription({
           disabled={isSubmitting}
           className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
             isLightAppearance
-              ? "border-blue-200/70 text-slate-700 hover:bg-blue-50/40"
+              ? "border-blue-300/15 text-slate-300 hover:bg-blue-500/10"
               : "border-blue-300/25 text-blue-100 hover:bg-blue-400/12"
           }`}
         >

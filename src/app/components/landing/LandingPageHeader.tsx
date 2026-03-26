@@ -100,7 +100,7 @@ export default function LandingPageHeader({
               Bid
             </span>
             <span style={{ color: isLightAppearance ? "#7db8e8" : "#70c0ee" }}>On</span>
-            <span className={isLightAppearance ? "text-slate-100" : "text-slate-100"}>Dent</span>
+            <span className="text-slate-100">Dent</span>
           </h1>
         </button>
 
@@ -153,15 +153,11 @@ export default function LandingPageHeader({
               {showLandingPage && (
                 <button
                   onClick={onViewDashboard}
-                  className={`inline-flex items-center gap-2 font-medium px-3 py-2 rounded-xl border transition-all ${isLightAppearance ? "border-blue-300/18 bg-white/[0.06] text-blue-200 hover:bg-white/10" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
+                  className={`inline-flex items-center gap-1.5 font-medium px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all ${isLightAppearance ? "border-blue-300/18 bg-white/[0.06] text-blue-200 hover:bg-white/10" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
                   type="button"
                 >
-                  <Home
-                    className={`w-4 h-4 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-                  />
-                  <span className={isLightAppearance ? "text-blue-200" : "text-blue-200"}>
-                    Dashboard
-                  </span>
+                  <Home className="w-4 h-4 text-blue-400" />
+                  <span className="hidden sm:inline text-blue-200">Dashboard</span>
                 </button>
               )}
 
@@ -202,14 +198,10 @@ export default function LandingPageHeader({
                     <div
                       className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-blue-300/12" : "border-blue-400/15"}`}
                     >
-                      <p
-                        className={`text-sm font-semibold truncate ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                      >
+                      <p className="text-sm font-semibold truncate text-slate-100">
                         {user?.fullName || "User"}
                       </p>
-                      <p
-                        className={`text-xs truncate ${isLightAppearance ? "text-slate-400" : "text-slate-400"}`}
-                      >
+                      <p className="text-xs truncate text-slate-400">
                         {user?.primaryEmailAddress?.emailAddress || ""}
                       </p>
                     </div>

@@ -135,11 +135,7 @@ export default function HowItWorksSection({
           className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3
-            className={`text-3xl sm:text-4xl font-bold mb-3 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-          >
-            How It Works
-          </h3>
+          <h3 className="text-3xl sm:text-4xl font-bold mb-3 text-slate-100">How It Works</h3>
           <p
             className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-blue-100/75" : "text-blue-100/70"}`}
           >
@@ -194,9 +190,7 @@ export default function HowItWorksSection({
                       : "0 0 16px rgba(59, 130, 246, 0.08)",
                   }}
                 >
-                  <step.icon
-                    className={`w-6 h-6 sm:w-7 sm:h-7 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-                  />
+                  <step.icon className="w-6 h-6 sm:w-7 sm:h-7 text-blue-400" />
                 </div>
                 <span
                   className="absolute -bottom-1.5 -left-1.5 inline-flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold"
@@ -209,11 +203,7 @@ export default function HowItWorksSection({
                 </span>
               </div>
 
-              <h4
-                className={`font-bold text-lg sm:text-xl mb-2 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-              >
-                {step.title}
-              </h4>
+              <h4 className="font-bold text-lg sm:text-xl mb-2 text-slate-100">{step.title}</h4>
               <p
                 className={`text-sm sm:text-base leading-relaxed ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/65"}`}
               >

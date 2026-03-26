@@ -16,7 +16,7 @@ export default function StepComplete({
 }: StepCompleteProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="px-4 md:px-6 py-6 md:py-8">
+    <div className="px-4 md:px-6 py-6 md:py-8 bd-glass-card rounded-2xl">
       <div className="text-center mb-8">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-500"
@@ -32,7 +32,7 @@ export default function StepComplete({
           Report submitted
         </h2>
         <p
-          className={`max-w-xl mx-auto ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
+          className={`max-w-xl mx-auto ${isLightAppearance ? "text-blue-100/60" : "text-blue-100/70"}`}
         >
           Nice work. Shops in your area can now review your details and send bids.
         </p>
@@ -43,18 +43,18 @@ export default function StepComplete({
           className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-100" : "text-white/90"}`}
         >
           <ListChecks
-            className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
           />
           What happens next
         </h3>
         <div className="space-y-3">
           <div className="flex items-start gap-3">
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-blue-50" : "bg-blue-500/15"}`}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-blue-500/15" : "bg-blue-500/15"}`}
               style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.08)" }}
             >
               <Wrench
-                className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+                className={`w-4 h-4 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
               />
             </div>
             <div>
@@ -63,18 +63,20 @@ export default function StepComplete({
               >
                 Shops review your report
               </p>
-              <p className={`text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}>
+              <p
+                className={`text-xs ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
+              >
                 Local body shops see your damage details and photos
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-blue-50" : "bg-blue-500/15"}`}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-blue-500/15" : "bg-blue-500/15"}`}
               style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.08)" }}
             >
               <MessageSquare
-                className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+                className={`w-4 h-4 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
               />
             </div>
             <div>
@@ -83,18 +85,20 @@ export default function StepComplete({
               >
                 Bids start arriving
               </p>
-              <p className={`text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}>
+              <p
+                className={`text-xs ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
+              >
                 You receive notifications as shops send their estimates
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-blue-50" : "bg-blue-500/15"}`}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-blue-500/15" : "bg-blue-500/15"}`}
               style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.08)" }}
             >
               <Clock
-                className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+                className={`w-4 h-4 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
               />
             </div>
             <div>
@@ -103,7 +107,9 @@ export default function StepComplete({
               >
                 Compare and choose
               </p>
-              <p className={`text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}>
+              <p
+                className={`text-xs ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
+              >
                 Pick the best price, timeline, and shop — then schedule your repair
               </p>
             </div>
@@ -127,7 +133,7 @@ export default function StepComplete({
       <button
         type="button"
         onClick={onBackToDashboard}
-        className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors ${isLightAppearance ? "border-blue-200/40 hover:bg-blue-50/40 text-slate-900" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+        className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors ${isLightAppearance ? "border-blue-300/15 hover:bg-blue-500/10 text-slate-300" : "border-white/15 hover:bg-white/5 text-white/90"}`}
       >
         Back to Dashboard
       </button>

@@ -35,7 +35,7 @@ export default function StepPhotos({
 }: StepPhotosProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh]">
+    <div className="px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh] bd-glass-card rounded-2xl">
       {/* Title and instructions - compressed for mobile */}
       <h2
         className={`text-xl sm:text-2xl font-bold mb-1 mt-1 ${isLightAppearance ? "text-slate-100" : "text-white/95"}`}
@@ -53,25 +53,25 @@ export default function StepPhotos({
         <div className="mr-2 sm:mr-3 mt-0.5">
           <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
         </div>
-        <div className={isLightAppearance ? "text-blue-900" : "text-blue-100/80"}>
+        <div className={isLightAppearance ? "text-blue-100/70" : "text-blue-100/80"}>
           Good lighting and close-up shots help shops estimate faster.
         </div>
       </div>
 
       {uploadingPhoto && (
         <div
-          className={`backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3 border ${isLightAppearance ? "bg-blue-50/80 border-blue-200/60" : "bg-blue-900/30 border-blue-400/20"}`}
+          className={`backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3 border ${isLightAppearance ? "bg-blue-900/20 border-blue-400/15" : "bg-blue-900/30 border-blue-400/20"}`}
         >
           <div className="animate-spin">
-            <Cloud className={`w-5 h-5 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`} />
+            <Cloud className={`w-5 h-5 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`} />
           </div>
           <div className="flex-1">
             <p
-              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-blue-800" : "text-blue-200"}`}
+              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-blue-200" : "text-blue-200"}`}
             >
               {uploadProgress}
             </p>
-            <p className={`text-xs ${isLightAppearance ? "text-blue-700" : "text-blue-300/70"}`}>
+            <p className={`text-xs ${isLightAppearance ? "text-blue-300/60" : "text-blue-300/70"}`}>
               Photos are being saved securely...
             </p>
           </div>
@@ -82,12 +82,12 @@ export default function StepPhotos({
         <div className="mb-4 sm:mb-6 bd-glass-card px-3 py-6 sm:px-4 sm:py-10 text-center">
           <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-blue-400/70 mx-auto mb-2" />
           <p
-            className={`font-medium text-sm sm:text-base ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+            className={`font-medium text-sm sm:text-base ${isLightAppearance ? "text-white/75" : "text-white/80"}`}
           >
             No photos added yet
           </p>
           <p
-            className={`text-xs sm:text-sm mt-1 ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+            className={`text-xs sm:text-sm mt-1 ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
           >
             Tap camera or upload to continue
           </p>
@@ -109,12 +109,12 @@ export default function StepPhotos({
               <div className="flex items-center justify-between px-1">
                 <div>
                   <p
-                    className={`text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+                    className={`text-sm font-medium ${isLightAppearance ? "text-white/75" : "text-white/80"}`}
                   >
                     Photo {index + 1}
                   </p>
                   <p
-                    className={`text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+                    className={`text-xs ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
                   >
                     {isBase64 ? "Local photo" : "Cloud photo"}
                   </p>
@@ -141,10 +141,10 @@ export default function StepPhotos({
             className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
             <Camera
-              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
             />
             <span
-              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-white/75" : "text-white/80"}`}
             >
               Take Photo
             </span>
@@ -155,10 +155,10 @@ export default function StepPhotos({
             className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
             <Upload
-              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
             />
             <span
-              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-white/75" : "text-white/80"}`}
             >
               Upload Photo
             </span>
@@ -185,13 +185,13 @@ export default function StepPhotos({
 
       {/* Sticky footer for progression controls on mobile */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-30 px-2 pt-2 pb-[env(safe-area-inset-bottom,0.75rem)] sm:static sm:bg-none sm:p-0 border-t ${isLightAppearance ? "bg-gradient-to-t from-white/95 via-white/80 to-transparent border-slate-200/60" : "bg-gradient-to-t from-[rgba(11,23,47,0.95)] via-[rgba(11,23,47,0.80)] to-transparent border-white/10"}`}
+        className={`fixed bottom-0 left-0 right-0 z-30 px-2 pt-2 pb-[env(safe-area-inset-bottom,0.75rem)] sm:static sm:bg-none sm:p-0 border-t ${isLightAppearance ? "bg-gradient-to-t from-[rgba(14,28,52,0.95)] via-[rgba(14,28,52,0.80)] to-transparent border-white/10" : "bg-gradient-to-t from-[rgba(11,23,47,0.95)] via-[rgba(11,23,47,0.80)] to-transparent border-white/10"}`}
       >
         <div className="flex space-x-2 sm:space-x-3 max-w-md mx-auto">
           <button
             type="button"
             onClick={onBack}
-            className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors ${isLightAppearance ? "border-blue-200/40 hover:bg-blue-50/40 text-slate-900" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+            className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors ${isLightAppearance ? "border-blue-300/15 hover:bg-blue-500/10 text-slate-300" : "border-white/15 hover:bg-white/5 text-white/90"}`}
           >
             Back
           </button>

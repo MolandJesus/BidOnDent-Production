@@ -186,14 +186,10 @@ export default function BusinessInquirySection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8 text-blue-200 backdrop-blur-sm" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
-            <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-400" : "bg-blue-400"}`}
-            />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Growth &amp; Partnerships
           </span>
-          <h3
-            className={`text-2xl sm:text-4xl font-bold mt-5 mb-3 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-          >
+          <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-3 text-slate-100">
             Shop Signup and Insurer Partnerships
           </h3>
           <p
@@ -225,9 +221,7 @@ export default function BusinessInquirySection({
           {!formOpen ? (
             /* ── Gateway: choose your role before the form appears ── */
             <div className="py-4">
-              <p
-                className={`text-center mb-8 max-w-lg mx-auto ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/70"}`}
-              >
+              <p className="text-center mb-8 max-w-lg mx-auto text-blue-100/70">
                 Tell us about your business and we will get you set up. Shops go through a quick
                 verification review. Insurers are onboarded through our partnership team.
               </p>
@@ -245,20 +239,12 @@ export default function BusinessInquirySection({
                     <Building2 className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div
-                      className={`font-bold text-lg ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                    >
-                      Join as a Shop
-                    </div>
-                    <div
-                      className={`text-sm mt-0.5 ${isLightAppearance ? "text-blue-100/65" : "text-blue-100/65"}`}
-                    >
+                    <div className="font-bold text-lg text-slate-100">Join as a Shop</div>
+                    <div className="text-sm mt-0.5 text-blue-100/65">
                       Get listed and start receiving bids
                     </div>
                   </div>
-                  <ArrowRight
-                    className={`w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 ${isLightAppearance ? "text-blue-300/60 group-hover:text-blue-300" : "text-blue-300/60 group-hover:text-blue-300"}`}
-                  />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 text-blue-300/60 group-hover:text-blue-300" />
                 </button>
 
                 <button
@@ -274,20 +260,12 @@ export default function BusinessInquirySection({
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div
-                      className={`font-bold text-lg ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
-                    >
-                      Partner as Insurer
-                    </div>
-                    <div
-                      className={`text-sm mt-0.5 ${isLightAppearance ? "text-blue-100/65" : "text-blue-100/65"}`}
-                    >
+                    <div className="font-bold text-lg text-slate-100">Partner as Insurer</div>
+                    <div className="text-sm mt-0.5 text-blue-100/65">
                       Reduce claims costs via our network
                     </div>
                   </div>
-                  <ArrowRight
-                    className={`w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 ${isLightAppearance ? "text-blue-300/60 group-hover:text-blue-300" : "text-blue-300/60 group-hover:text-blue-300"}`}
-                  />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 text-blue-300/60 group-hover:text-blue-300" />
                 </button>
               </div>
             </div>

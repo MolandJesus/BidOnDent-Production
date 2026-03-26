@@ -92,13 +92,13 @@ export default function CTASection({
           </div>
 
           <h3
-            className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-5 transition-all duration-700 ${isLightAppearance ? "text-slate-100" : "text-slate-100"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-5 transition-all duration-700 text-slate-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.15s" }}
           >
             Ready to Get Started?
           </h3>
           <p
-            className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-8 transition-all duration-700 ${isLightAppearance ? "text-blue-100/75" : "text-blue-100/75"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-8 transition-all duration-700 text-blue-100/75 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.3s" }}
           >
             Compare competitive bids from local shops and get your auto body repair scheduled today.
