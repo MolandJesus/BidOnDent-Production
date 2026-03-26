@@ -27,13 +27,13 @@ export default function OperatingRegionsSection({
     >
       {/* Smooth transition edges — top/bottom gradient fades */}
       <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#0a1628]/0 to-transparent pointer-events-none z-10" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/15 to-transparent" />
       {/* Atmospheric depth — topographic contour feel */}
-      <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_59px,rgba(20,184,166,0.02)_59px,rgba(20,184,166,0.02)_60px),repeating-linear-gradient(90deg,transparent,transparent_79px,rgba(20,184,166,0.015)_79px,rgba(20,184,166,0.015)_80px)] opacity-35" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(34,197,94,0.05),transparent_55%)]" />
-      <div className="absolute top-0 right-1/3 w-72 h-72 bg-teal-500/[0.06] rounded-full blur-3xl" />
-      <div className="absolute bottom-10 left-[10%] w-56 h-56 bg-emerald-400/[0.04] rounded-full blur-[100px]" />
+      <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_59px,rgba(59,130,246,0.02)_59px,rgba(59,130,246,0.02)_60px),repeating-linear-gradient(90deg,transparent,transparent_79px,rgba(59,130,246,0.015)_79px,rgba(59,130,246,0.015)_80px)] opacity-35" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(37,99,235,0.05),transparent_55%)]" />
+      <div className="absolute top-0 right-1/3 w-72 h-72 bg-blue-500/[0.06] rounded-full blur-3xl" />
+      <div className="absolute bottom-10 left-[10%] w-56 h-56 bg-blue-400/[0.04] rounded-full blur-[100px]" />
       <div className="container mx-auto px-4 max-w-6xl relative">
         <div
           className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}

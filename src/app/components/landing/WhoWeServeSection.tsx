@@ -77,7 +77,7 @@ export default function WhoWeServeSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-slate-400/20"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/15"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -88,10 +88,10 @@ export default function WhoWeServeSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(148,163,184,0.03)_1px,transparent_1px)] [background-size:36px_36px] opacity-25" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_50%_-5%,rgba(100,116,139,0.08),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.03)_1px,transparent_1px)] [background-size:36px_36px] opacity-25" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_50%_-5%,rgba(59,130,246,0.08),transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_75%,rgba(59,130,246,0.05),transparent_55%)]" />
-          <div className="absolute top-1/4 right-0 w-72 h-72 bg-slate-400/[0.04] rounded-full blur-[110px]" />
+          <div className="absolute top-1/4 right-0 w-72 h-72 bg-blue-400/[0.04] rounded-full blur-[110px]" />
           <div className="absolute -bottom-10 left-1/4 w-60 h-60 bg-blue-400/[0.03] rounded-full blur-[100px]" />
         </>
       )}
@@ -102,11 +102,11 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "0s" }}
       >
         <div
-          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-slate-400/40"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-blue-400/35"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 22px 6px rgba(59,130,246,0.13)"
-              : "0 0 26px 8px rgba(148,163,184,0.18)",
+              : "0 0 26px 8px rgba(59,130,246,0.18)",
           }}
         />
       </div>
@@ -115,15 +115,15 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-100/60 border border-blue-200/40" : "bg-slate-500/15 border border-slate-400/20"}`}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-100/60 border border-blue-200/40" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 16px rgba(59,130,246,0.1)"
-              : "0 0 20px rgba(148,163,184,0.12)",
+              : "0 0 20px rgba(59,130,246,0.12)",
           }}
         >
           <Shield
-            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-slate-400/50"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/50"}`}
           />
         </div>
       </div>
@@ -132,11 +132,11 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-slate-400/30"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-blue-400/30"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px 4px rgba(99,102,241,0.1)"
-              : "0 0 18px 5px rgba(148,163,184,0.14)",
+              : "0 0 18px 5px rgba(59,130,246,0.14)",
           }}
         />
       </div>
@@ -147,10 +147,10 @@ export default function WhoWeServeSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-blue-200/50 bg-white/70 text-blue-700" : "border border-slate-400/20 bg-slate-500/10 text-slate-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-blue-200/50 bg-white/70 text-blue-700" : "border border-blue-400/20 bg-blue-500/10 text-blue-200"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-slate-400"}`}
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
             />
             Everyone Wins
           </span>
@@ -176,15 +176,15 @@ export default function WhoWeServeSection({
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40 hover:border-blue-300/60" : "border border-slate-400/15 hover:border-slate-300/25"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40 hover:border-blue-300/60" : "border border-blue-400/15 hover:border-blue-300/25"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 255, 0.9) 100%)"
-                  : "linear-gradient(180deg, rgba(30, 40, 60, 0.35) 0%, rgba(14, 22, 38, 0.75) 100%)",
+                  : "linear-gradient(180deg, rgba(15, 30, 60, 0.35) 0%, rgba(14, 22, 38, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(0, 40, 100, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(148, 163, 184, 0.10)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(96, 165, 250, 0.10)",
               }}
             >
               <div className="mb-4">

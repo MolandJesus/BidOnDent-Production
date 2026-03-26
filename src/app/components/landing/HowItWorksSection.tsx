@@ -51,7 +51,7 @@ export default function HowItWorksSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-teal-400/20"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/20"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -62,11 +62,11 @@ export default function HowItWorksSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(20,184,166,0.03)_39px,rgba(20,184,166,0.03)_40px)] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_75%_-5%,rgba(20,184,166,0.08),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_85%,rgba(6,182,212,0.06),transparent_55%)]" />
-          <div className="absolute top-0 right-1/4 w-72 h-72 bg-teal-500/[0.06] rounded-full blur-[100px]" />
-          <div className="absolute -bottom-10 left-[15%] w-56 h-56 bg-cyan-400/[0.04] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(59,130,246,0.03)_39px,rgba(59,130,246,0.03)_40px)] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_75%_-5%,rgba(59,130,246,0.08),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_85%,rgba(37,99,235,0.06),transparent_55%)]" />
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-blue-500/[0.06] rounded-full blur-[100px]" />
+          <div className="absolute -bottom-10 left-[15%] w-56 h-56 bg-blue-400/[0.04] rounded-full blur-[100px]" />
         </>
       )}
 
@@ -76,11 +76,11 @@ export default function HowItWorksSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-teal-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-blue-400/40"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 18px 5px rgba(99,102,241,0.12)"
-              : "0 0 22px 7px rgba(20,184,166,0.2)",
+              : "0 0 22px 7px rgba(59,130,246,0.2)",
           }}
         />
       </div>
@@ -89,11 +89,11 @@ export default function HowItWorksSection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-cyan-400/45"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/45"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px 4px rgba(59,130,246,0.1)"
-              : "0 0 18px 5px rgba(6,182,212,0.18)",
+              : "0 0 18px 5px rgba(37,99,235,0.18)",
           }}
         />
       </div>
@@ -102,15 +102,15 @@ export default function HowItWorksSection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/60 border border-indigo-200/40" : "bg-teal-500/15 border border-teal-400/20"}`}
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/60 border border-indigo-200/40" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px rgba(99,102,241,0.1)"
-              : "0 0 18px rgba(20,184,166,0.15)",
+              : "0 0 18px rgba(59,130,246,0.15)",
           }}
         >
           <Wrench
-            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-teal-400/50"}`}
+            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-blue-400/50"}`}
           />
         </div>
       </div>
@@ -121,10 +121,10 @@ export default function HowItWorksSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full border backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border-blue-200/50 bg-white/70 text-blue-700" : "border-teal-400/25 bg-teal-500/10 text-teal-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full border backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border-blue-200/50 bg-white/70 text-blue-700" : "border-blue-400/25 bg-blue-500/10 text-blue-200"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-teal-400"}`}
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
             />
             Three Steps
           </span>
@@ -152,29 +152,29 @@ export default function HowItWorksSection({
             className="hidden md:block absolute top-16 left-[33%] w-[10%] border-t-2 border-dashed"
             style={{
               transform: "translateX(-50%)",
-              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(94,234,212,0.2)",
+              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(96,165,250,0.2)",
             }}
           />
           <div
             className="hidden md:block absolute top-16 left-[67%] w-[10%] border-t-2 border-dashed"
             style={{
               transform: "translateX(-50%)",
-              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(94,234,212,0.2)",
+              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(96,165,250,0.2)",
             }}
           />
 
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-teal-300/15 hover:border-teal-400/30"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-blue-300/15 hover:border-blue-400/30"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 251, 255, 0.98) 100%)"
-                  : "linear-gradient(180deg, rgba(15, 52, 60, 0.30) 0%, rgba(10, 30, 40, 0.75) 100%)",
+                  : "linear-gradient(180deg, rgba(15, 30, 60, 0.30) 0%, rgba(10, 18, 40, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(30, 58, 138, 0.06)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(94, 234, 212, 0.10)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(96, 165, 250, 0.10)",
               }}
             >
               {/* Icon with overlaid step number */}
@@ -184,24 +184,24 @@ export default function HowItWorksSection({
                   style={{
                     backgroundColor: isLightAppearance
                       ? "rgba(59, 130, 246, 0.08)"
-                      : "rgba(20, 184, 166, 0.15)",
+                      : "rgba(59, 130, 246, 0.15)",
                     border: isLightAppearance
                       ? "1px solid rgba(59, 130, 246, 0.15)"
-                      : "1px solid rgba(94, 234, 212, 0.22)",
+                      : "1px solid rgba(96, 165, 250, 0.22)",
                     boxShadow: isLightAppearance
                       ? "0 0 12px rgba(59, 130, 246, 0.04)"
-                      : "0 0 16px rgba(20, 184, 166, 0.08)",
+                      : "0 0 16px rgba(59, 130, 246, 0.08)",
                   }}
                 >
                   <step.icon
-                    className={`w-6 h-6 sm:w-7 sm:h-7 ${isLightAppearance ? "text-blue-600" : "text-teal-400"}`}
+                    className={`w-6 h-6 sm:w-7 sm:h-7 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
                   />
                 </div>
                 <span
                   className="absolute -bottom-1.5 -left-1.5 inline-flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold"
                   style={{
-                    background: `linear-gradient(135deg, ${primaryColor}, #14b8a6)`,
-                    boxShadow: "0 2px 8px rgba(20, 184, 166, 0.4)",
+                    background: `linear-gradient(135deg, ${primaryColor}, #3b82f6)`,
+                    boxShadow: "0 2px 8px rgba(59, 130, 246, 0.4)",
                   }}
                 >
                   {step.number}

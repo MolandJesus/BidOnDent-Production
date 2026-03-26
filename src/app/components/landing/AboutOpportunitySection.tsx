@@ -47,7 +47,7 @@ export default function AboutOpportunitySection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-amber-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/15"} to-transparent`}
       />
       {/* Decorative depth elements */}
       {isLightAppearance ? (
@@ -59,11 +59,11 @@ export default function AboutOpportunitySection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(251,191,36,0.02)_49px,rgba(251,191,36,0.02)_50px)] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_30%_-10%,rgba(251,191,36,0.06),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_75%_90%,rgba(245,158,11,0.07),transparent_55%)]" />
-          <div className="absolute top-0 left-1/3 w-72 h-72 bg-amber-500/[0.05] rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-56 h-56 bg-yellow-400/[0.03] rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(59,130,246,0.02)_49px,rgba(59,130,246,0.02)_50px)] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_30%_-10%,rgba(59,130,246,0.06),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_75%_90%,rgba(37,99,235,0.07),transparent_55%)]" />
+          <div className="absolute top-0 left-1/3 w-72 h-72 bg-blue-500/[0.05] rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-56 h-56 bg-blue-400/[0.03] rounded-full blur-3xl" />
         </>
       )}
 
@@ -73,11 +73,11 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-amber-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-blue-400/40"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 18px 5px rgba(59,130,246,0.12)"
-              : "0 0 22px 7px rgba(251,191,36,0.18)",
+              : "0 0 22px 7px rgba(59,130,246,0.18)",
           }}
         />
       </div>
@@ -86,15 +86,15 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/55 border border-indigo-200/40" : "bg-amber-500/15 border border-amber-400/20"}`}
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/55 border border-indigo-200/40" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px rgba(99,102,241,0.1)"
-              : "0 0 18px rgba(251,191,36,0.12)",
+              : "0 0 18px rgba(59,130,246,0.12)",
           }}
         >
           <Compass
-            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-amber-400/50"}`}
+            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-blue-400/50"}`}
           />
         </div>
       </div>
@@ -104,10 +104,10 @@ export default function AboutOpportunitySection({
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "border border-amber-400/20 bg-amber-500/10 text-amber-200 backdrop-blur-sm"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-amber-400"}`}
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
             />
             About BidOnDent
           </span>
@@ -133,23 +133,23 @@ export default function AboutOpportunitySection({
                 className={`rounded-2xl p-5 transition-all duration-700 hover:shadow-lg hover:-translate-y-1 ${
                   isLightAppearance
                     ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm"
-                    : "border border-amber-400/15 backdrop-blur-sm"
+                    : "border border-blue-400/15 backdrop-blur-sm"
                 } ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{
                   transitionDelay: `${0.2 + index * 0.1}s`,
                   ...(!isLightAppearance && {
                     background:
-                      "linear-gradient(180deg, rgba(50, 38, 20, 0.30) 0%, rgba(18, 14, 10, 0.75) 100%)",
+                      "linear-gradient(180deg, rgba(15, 25, 50, 0.30) 0%, rgba(10, 14, 30, 0.75) 100%)",
                     boxShadow:
-                      "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(251, 191, 36, 0.08)",
+                      "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(96, 165, 250, 0.08)",
                   }),
                 }}
               >
                 <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-50 border border-blue-100/60" : "bg-amber-500/[0.08] border border-amber-400/[0.15]"}`}
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-50 border border-blue-100/60" : "bg-blue-500/[0.08] border border-blue-400/[0.15]"}`}
                 >
                   <item.icon
-                    className={`w-6 h-6 ${isLightAppearance ? "text-blue-600" : "text-amber-300"}`}
+                    className={`w-6 h-6 ${isLightAppearance ? "text-blue-600" : "text-blue-300"}`}
                   />
                 </div>
                 <h4

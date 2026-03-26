@@ -114,7 +114,7 @@ export default function BusinessInquirySection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-emerald-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/15"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -125,11 +125,11 @@ export default function BusinessInquirySection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(16,185,129,0.025)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_60%_-5%,rgba(16,185,129,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(34,197,94,0.05),transparent_55%)]" />
-          <div className="absolute top-0 right-1/3 w-64 h-64 bg-emerald-500/[0.05] rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-teal-400/[0.03] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.025)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_60%_-5%,rgba(59,130,246,0.08),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(37,99,235,0.05),transparent_55%)]" />
+          <div className="absolute top-0 right-1/3 w-64 h-64 bg-blue-500/[0.05] rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-blue-400/[0.03] rounded-full blur-[100px]" />
         </>
       )}
 
@@ -139,11 +139,11 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-emerald-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-blue-400/40"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 18px 5px rgba(59,130,246,0.12)"
-              : "0 0 22px 7px rgba(16,185,129,0.2)",
+              : "0 0 22px 7px rgba(59,130,246,0.2)",
           }}
         />
       </div>
@@ -152,15 +152,15 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-100/55 border border-blue-200/40" : "bg-emerald-500/15 border border-emerald-400/20"}`}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-100/55 border border-blue-200/40" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 16px rgba(59,130,246,0.1)"
-              : "0 0 20px rgba(16,185,129,0.12)",
+              : "0 0 20px rgba(59,130,246,0.12)",
           }}
         >
           <Building2
-            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-emerald-400/50"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/50"}`}
           />
         </div>
       </div>
@@ -169,11 +169,11 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "6s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-teal-400/30"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-blue-400/30"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px 3px rgba(99,102,241,0.08)"
-              : "0 0 18px 5px rgba(20,184,166,0.12)",
+              : "0 0 18px 5px rgba(59,130,246,0.12)",
           }}
         />
       </div>
@@ -183,10 +183,10 @@ export default function BusinessInquirySection({
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "border border-emerald-400/20 bg-emerald-500/10 text-emerald-200 backdrop-blur-sm"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-emerald-400"}`}
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
             />
             Growth &amp; Partnerships
           </span>
@@ -204,15 +204,15 @@ export default function BusinessInquirySection({
         </div>
 
         <div
-          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm" : "border border-emerald-400/15 backdrop-blur-sm rounded-2xl"}`}
+          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm" : "border border-blue-400/15 backdrop-blur-sm rounded-2xl"}`}
           style={
             isLightAppearance
               ? {}
               : {
                   background:
-                    "linear-gradient(180deg, rgba(10, 30, 28, 0.86) 0%, rgba(8, 20, 24, 0.82) 100%)",
+                    "linear-gradient(180deg, rgba(10, 18, 35, 0.86) 0%, rgba(8, 14, 28, 0.82) 100%)",
                   boxShadow:
-                    "0 14px 36px rgba(3, 10, 24, 0.42), inset 0 1px 0 rgba(16, 185, 129, 0.10)",
+                    "0 14px 36px rgba(3, 10, 24, 0.42), inset 0 1px 0 rgba(59, 130, 246, 0.10)",
                 }
           }
         >

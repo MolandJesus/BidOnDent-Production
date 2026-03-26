@@ -83,10 +83,10 @@ export default function HeroSection({
       ) : (
         <>
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_15%_-10%,rgba(59,130,246,0.14),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_85%_90%,rgba(251,191,36,0.06),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_35%_at_50%_100%,rgba(245,158,11,0.04),transparent_45%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_85%_90%,rgba(37,99,235,0.06),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_35%_at_50%_100%,rgba(30,58,138,0.04),transparent_45%)]" />
           <div className="absolute top-16 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-20 -left-10 w-96 h-96 bg-amber-500/[0.04] rounded-full blur-[140px]" />
+          <div className="absolute bottom-20 -left-10 w-96 h-96 bg-blue-500/[0.04] rounded-full blur-[140px]" />
         </>
       )}
 
