@@ -34,7 +34,7 @@ export default function ReportHeader({
         <div
           className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
             isLightAppearance
-              ? "bg-blue-400/15 text-blue-200 border border-blue-400/30"
+              ? "bg-blue-500/15 text-blue-600 border border-blue-300/40"
               : "bg-blue-400/12 text-blue-200 border border-blue-300/25"
           }`}
           style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.10)" }}
@@ -44,14 +44,14 @@ export default function ReportHeader({
         <div className="min-w-0">
           <h1
             className={`font-semibold text-base sm:text-lg leading-tight ${
-              isLightAppearance ? "text-slate-100" : "text-slate-100"
+              isLightAppearance ? "text-slate-800" : "text-slate-100"
             }`}
           >
             Report Damage
           </h1>
           <p
             className={`text-xs mt-0.5 sm:mt-1 ${
-              isLightAppearance ? "text-blue-100/75" : "text-blue-100/75"
+              isLightAppearance ? "text-slate-500" : "text-blue-100/75"
             }`}
           >
             Tell us what happened and get bids faster
@@ -62,7 +62,7 @@ export default function ReportHeader({
         <div
           className={`text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
             isLightAppearance
-              ? "text-blue-200 bg-blue-400/15 border border-blue-400/30"
+              ? "text-blue-700 bg-blue-100/60 border border-blue-300/40"
               : "text-blue-100/85 bg-blue-400/10 border border-blue-300/20"
           }`}
         >
