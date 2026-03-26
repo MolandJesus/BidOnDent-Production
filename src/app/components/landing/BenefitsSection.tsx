@@ -64,7 +64,7 @@ export default function BenefitsSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/20" : "via-indigo-400/20"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/20" : "via-indigo-400/30"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -154,7 +154,7 @@ export default function BenefitsSection({
           {benefits.map((benefit, index) => (
             <div
               key={benefit.title}
-              className={`rounded-2xl p-4 sm:p-5 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40" : "border border-indigo-300/15"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl p-4 sm:p-5 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40" : "border border-indigo-300/22"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
@@ -162,7 +162,7 @@ export default function BenefitsSection({
                   : "linear-gradient(180deg, rgba(30, 27, 75, 0.30) 0%, rgba(15, 14, 40, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(0, 40, 100, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(129, 140, 248, 0.10)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(129, 140, 248, 0.14), 0 0 0 1px rgba(129, 140, 248, 0.06)",
               }}
             >
               <div className="mb-3 overflow-hidden rounded-lg relative h-44 flex items-center justify-center">
@@ -175,7 +175,7 @@ export default function BenefitsSection({
                 </ImageErrorBoundary>
                 {/* Floating badge on image */}
                 <span
-                  className={`absolute top-3 right-3 backdrop-blur-sm text-xs font-semibold px-3 py-1.5 rounded-full shadow-md animate-float-slow ${isLightAppearance ? "bg-white/85 text-blue-700 border border-blue-200/50" : "bg-indigo-500/20 text-indigo-200 border border-indigo-400/30"}`}
+                  className={`absolute top-3 right-3 backdrop-blur-sm text-xs font-semibold px-3 py-1.5 rounded-full shadow-md animate-float-slow ${isLightAppearance ? "bg-white/85 text-blue-700 border border-blue-200/50" : "bg-indigo-500/35 text-indigo-100 border border-indigo-400/45"}`}
                 >
                   {benefit.badge}
                 </span>

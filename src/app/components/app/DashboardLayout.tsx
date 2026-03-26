@@ -118,7 +118,7 @@ export default function DashboardLayout({
         style={{
           background: isLightAppearance
             ? "radial-gradient(ellipse 50% 40% at 75% 85%, rgba(139,92,246,0.04), transparent 55%), radial-gradient(ellipse 130% 95% at 24% 8%, rgba(203, 224, 255, 0.74) 0%, rgba(241, 247, 255, 0.96) 62%, #f3f8ff 100%)"
-            : "radial-gradient(ellipse 40% 35% at 70% 15%, rgba(59,130,246,0.07), transparent 50%), radial-gradient(ellipse 35% 30% at 20% 80%, rgba(99,102,241,0.04), transparent 50%), radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)",
+            : "radial-gradient(ellipse 40% 35% at 70% 15%, rgba(59,130,246,0.07), transparent 50%), radial-gradient(ellipse 35% 30% at 20% 80%, rgba(99,102,241,0.04), transparent 50%), radial-gradient(ellipse 50% 40% at 85% 80%, rgba(217,119,6,0.035), transparent 55%), radial-gradient(ellipse 40% 30% at 10% 20%, rgba(251,191,36,0.02), transparent 50%), radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)",
         }}
       />
       {/* Subtle texture overlay for dashboard depth */}
@@ -126,7 +126,7 @@ export default function DashboardLayout({
         <div
           className="fixed inset-0 z-0 pointer-events-none opacity-15"
           style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(255,250,240,0.03) 1px, transparent 1px)",
             backgroundSize: "32px 32px",
           }}
         />

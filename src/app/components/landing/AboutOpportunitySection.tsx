@@ -47,7 +47,7 @@ export default function AboutOpportunitySection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/25"} to-transparent`}
       />
       {/* Decorative depth elements */}
       {isLightAppearance ? (
@@ -133,7 +133,7 @@ export default function AboutOpportunitySection({
                 className={`rounded-2xl p-5 transition-all duration-700 hover:shadow-lg hover:-translate-y-1 ${
                   isLightAppearance
                     ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm"
-                    : "border border-blue-400/15 backdrop-blur-sm"
+                    : "border border-blue-400/22 backdrop-blur-sm"
                 } ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{
                   transitionDelay: `${0.2 + index * 0.1}s`,
@@ -141,7 +141,7 @@ export default function AboutOpportunitySection({
                     background:
                       "linear-gradient(180deg, rgba(15, 25, 50, 0.30) 0%, rgba(10, 14, 30, 0.75) 100%)",
                     boxShadow:
-                      "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(96, 165, 250, 0.08)",
+                      "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(96, 165, 250, 0.13), 0 0 0 1px rgba(96, 165, 250, 0.06)",
                   }),
                 }}
               >

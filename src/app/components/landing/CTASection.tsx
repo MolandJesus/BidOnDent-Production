@@ -41,7 +41,7 @@ export default function CTASection({
         <>
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(37,99,235,0.14),transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_30%_20%,rgba(99,102,241,0.08),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_80%,rgba(251,191,36,0.04),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_80%,rgba(37,99,235,0.06),transparent_50%)]" />
         </>
       )}
       <div className="container mx-auto px-4 max-w-6xl text-center relative">
@@ -72,7 +72,7 @@ export default function CTASection({
             }}
           />
           <div
-            className={`absolute -bottom-6 -right-4 md:-right-8 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${isLightAppearance ? "from-cyan-400 to-blue-600 opacity-40" : "from-cyan-300 to-blue-500 opacity-90"}`}
+            className={`absolute -bottom-6 -right-4 md:-right-8 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${isLightAppearance ? "from-blue-400 to-indigo-600 opacity-40" : "from-blue-300 to-indigo-500 opacity-90"}`}
             style={{
               boxShadow: "0 8px 24px rgba(59, 130, 246, 0.30), 0 0 48px rgba(14, 165, 233, 0.15)",
               animationDelay: "1.2s",

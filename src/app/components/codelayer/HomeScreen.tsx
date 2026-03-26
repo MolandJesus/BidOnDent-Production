@@ -124,7 +124,7 @@ export default function HomeScreen({
                     "linear-gradient(180deg, rgba(10, 22, 44, 0.84) 0%, rgba(9, 18, 36, 0.78) 100%)",
                   borderColor: "rgba(96, 165, 250, 0.24)",
                   boxShadow:
-                    "0 10px 28px rgba(3, 10, 24, 0.40), inset 0 1px 0 rgba(147, 197, 253, 0.12)",
+                    "0 10px 28px rgba(3, 10, 24, 0.40), inset 0 1px 0 rgba(147, 197, 253, 0.12), 0 0 30px rgba(251, 191, 36, 0.02)",
                 }
           }
         >

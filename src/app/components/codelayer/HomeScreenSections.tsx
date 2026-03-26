@@ -109,7 +109,7 @@ export function HomeReportsList({
             }
           : {
               background:
-                "linear-gradient(180deg, rgba(8, 18, 38, 0.82) 0%, rgba(7, 14, 30, 0.78) 100%)",
+                "linear-gradient(180deg, rgba(10, 19, 38, 0.82) 0%, rgba(8, 15, 30, 0.78) 100%)",
               borderColor: "rgba(96, 165, 250, 0.22)",
             }
       }

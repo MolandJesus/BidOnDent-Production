@@ -51,7 +51,7 @@ export default function HowItWorksSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/20"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/30"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -166,7 +166,7 @@ export default function HowItWorksSection({
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-blue-300/15 hover:border-blue-400/30"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-blue-300/22 hover:border-blue-400/38"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
@@ -174,7 +174,7 @@ export default function HowItWorksSection({
                   : "linear-gradient(180deg, rgba(15, 30, 60, 0.30) 0%, rgba(10, 18, 40, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(30, 58, 138, 0.06)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(96, 165, 250, 0.10)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(96, 165, 250, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.06)",
               }}
             >
               {/* Icon with overlaid step number */}

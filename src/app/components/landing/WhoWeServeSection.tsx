@@ -77,7 +77,7 @@ export default function WhoWeServeSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -176,7 +176,7 @@ export default function WhoWeServeSection({
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40 hover:border-blue-300/60" : "border border-blue-400/15 hover:border-blue-300/25"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40 hover:border-blue-300/60" : "border border-blue-400/22 hover:border-blue-300/32"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
@@ -184,7 +184,7 @@ export default function WhoWeServeSection({
                   : "linear-gradient(180deg, rgba(15, 30, 60, 0.35) 0%, rgba(14, 22, 38, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(0, 40, 100, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(96, 165, 250, 0.10)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(96, 165, 250, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.06)",
               }}
             >
               <div className="mb-4">

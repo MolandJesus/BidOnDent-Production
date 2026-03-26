@@ -114,7 +114,7 @@ export default function BusinessInquirySection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -204,7 +204,7 @@ export default function BusinessInquirySection({
         </div>
 
         <div
-          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm" : "border border-blue-400/15 backdrop-blur-sm rounded-2xl"}`}
+          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm" : "border border-blue-400/22 backdrop-blur-sm rounded-2xl"}`}
           style={
             isLightAppearance
               ? {}
@@ -212,7 +212,7 @@ export default function BusinessInquirySection({
                   background:
                     "linear-gradient(180deg, rgba(10, 18, 35, 0.86) 0%, rgba(8, 14, 28, 0.82) 100%)",
                   boxShadow:
-                    "0 14px 36px rgba(3, 10, 24, 0.42), inset 0 1px 0 rgba(59, 130, 246, 0.10)",
+                    "0 14px 36px rgba(3, 10, 24, 0.48), inset 0 1px 0 rgba(59, 130, 246, 0.14), 0 0 0 1px rgba(59, 130, 246, 0.06)",
                 }
           }
         >
