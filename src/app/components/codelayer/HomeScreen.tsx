@@ -147,7 +147,7 @@ export default function HomeScreen({
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={primaryAction.onClick}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 min-h-[40px] rounded-xl text-sm font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl text-sm font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white whitespace-nowrap"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                 boxShadow: "0 4px 16px rgba(37, 99, 235, 0.25)",

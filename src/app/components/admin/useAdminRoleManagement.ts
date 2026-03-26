@@ -16,10 +16,7 @@ export function useAdminRoleManagement(adminEmail: string) {
     setAdminManagementStatus(`Managing admin status for ${targetAdminEmail}...`);
 
     try {
-      const result = await manageAdminAccount(
-        { email: targetAdminEmail, promote },
-        { adminEmail }
-      );
+      const result = await manageAdminAccount({ email: targetAdminEmail, promote }, { adminEmail });
 
       if (!result.success) {
         setAdminManagementStatus(`❌ Error: ${result.error || "Unknown error"}`);

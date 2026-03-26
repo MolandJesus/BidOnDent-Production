@@ -109,7 +109,7 @@ export const uploadPhotoDemo = async (file: File): Promise<string> => {
 
     return base64;
   } catch (error) {
-    console.error("❌ [DEMO MODE] Photo upload failed:", error);
+    if (import.meta.env.DEV) console.error("❌ [DEMO MODE] Photo upload failed:", error);
     throw error;
   }
 };

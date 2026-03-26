@@ -9,14 +9,14 @@ export async function getBidsForReport(reportId: string): Promise<Bid[]> {
     );
     return data.bids ?? [];
   } catch (error) {
-    console.error("Error in getBidsForReport:", error);
+    if (import.meta.env.DEV) console.error("Error in getBidsForReport:", error);
     return [];
   }
 }
 
 export async function submitBid(bid: Bid, clerkUserId?: string): Promise<Bid | null> {
   if (!clerkUserId) {
-    console.error("submitBid: No clerkUserId provided");
+    if (import.meta.env.DEV) console.error("submitBid: No clerkUserId provided");
     return null;
   }
 
@@ -29,7 +29,7 @@ export async function submitBid(bid: Bid, clerkUserId?: string): Promise<Bid | n
     if (import.meta.env.DEV) console.log("✅ Bid submitted successfully");
     return data.bid ?? null;
   } catch (error) {
-    console.error("Error in submitBid:", error);
+    if (import.meta.env.DEV) console.error("Error in submitBid:", error);
     return null;
   }
 }
@@ -40,7 +40,7 @@ export async function updateBidStatus(
   clerkUserId?: string
 ): Promise<Bid | null> {
   if (!clerkUserId) {
-    console.error("updateBidStatus: No clerkUserId provided");
+    if (import.meta.env.DEV) console.error("updateBidStatus: No clerkUserId provided");
     return null;
   }
 
@@ -56,7 +56,7 @@ export async function updateBidStatus(
     if (import.meta.env.DEV) console.log(`✅ Bid status updated to ${status}`);
     return data.bid ?? null;
   } catch (error) {
-    console.error("Error in updateBidStatus:", error);
+    if (import.meta.env.DEV) console.error("Error in updateBidStatus:", error);
     return null;
   }
 }

@@ -67,7 +67,8 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
       if (import.meta.env.DEV) console.log("📤 Signing out current user...");
       await supabase.auth.signOut();
 
-      if (import.meta.env.DEV) console.log("📥 Attempting to sign in as admin with email:", ADMIN_EMAIL);
+      if (import.meta.env.DEV)
+        console.log("📥 Attempting to sign in as admin with email:", ADMIN_EMAIL);
 
       // Sign in as admin with the provided password
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
@@ -75,7 +76,8 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
         password: password,
       });
 
-      if (import.meta.env.DEV) console.log("📡 Sign in response:", { data: signInData, error: signInError });
+      if (import.meta.env.DEV)
+        console.log("📡 Sign in response:", { data: signInData, error: signInError });
 
       if (signInError) {
         if (import.meta.env.DEV) console.error("❌ Switch error:", signInError);

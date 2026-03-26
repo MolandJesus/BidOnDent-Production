@@ -21,11 +21,11 @@ export function useAdminAccountStatuses() {
     }));
 
     try {
-      console.log("🔍 Checking account for:", email);
+      if (import.meta.env.DEV) console.log("🔍 Checking account for:", email);
       const [profile] = await listAdminProfiles(email);
 
       if (profile) {
-        console.log("✅ Account exists:", profile);
+        if (import.meta.env.DEV) console.log("✅ Account exists:", profile);
         setAccountStatuses((prev) => ({
           ...prev,
           [email]: {
@@ -38,14 +38,14 @@ export function useAdminAccountStatuses() {
           },
         }));
       } else {
-        console.log("❌ Account does not exist");
+        if (import.meta.env.DEV) console.log("❌ Account does not exist");
         setAccountStatuses((prev) => ({
           ...prev,
           [email]: { email, exists: false, loading: false },
         }));
       }
     } catch (error) {
-      console.error("Error checking account:", error);
+      if (import.meta.env.DEV) console.error("Error checking account:", error);
       setAccountStatuses((prev) => ({
         ...prev,
         [email]: { email, exists: false, loading: false, error: String(error) },

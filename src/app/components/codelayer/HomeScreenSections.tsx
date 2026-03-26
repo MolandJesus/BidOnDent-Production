@@ -214,7 +214,7 @@ export function HomeReportsList({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <h3
-                        className={`text-xl font-semibold truncate ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                        className={`text-lg md:text-xl font-semibold truncate ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
                       >
                         {title}
                       </h3>

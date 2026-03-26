@@ -55,7 +55,7 @@ const hasValidClerkPublishableKey =
   clerkPublishableKey.startsWith("pk_") &&
   !clerkPublishableKey.includes("PASTE_YOUR");
 
-if (!hasValidClerkPublishableKey) {
+if (!hasValidClerkPublishableKey && import.meta.env.DEV) {
   console.error("Missing or invalid Clerk publishable key in utils/clerk/info.tsx");
 }
 

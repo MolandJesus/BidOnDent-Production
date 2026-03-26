@@ -164,7 +164,7 @@ export function buildDashboardRouterProps({
         const { updateBidStatus } = await import("../services/supabase/bids");
         const acceptedBid = await updateBidStatus(details.bidId, "accepted", clerkId);
         if (!acceptedBid) {
-          console.error("Failed to accept bid in Supabase:", details.bidId);
+          if (import.meta.env.DEV) console.error("Failed to accept bid in Supabase:", details.bidId);
           return;
         }
 
@@ -189,15 +189,15 @@ export function buildDashboardRouterProps({
             for (const competing of competingBids) {
               try {
                 const rejectedBid = await updateBidStatus(competing.id!, "rejected", clerkId);
-                if (!rejectedBid) {
+                if (!rejectedBid && import.meta.env.DEV) {
                   console.error("Competing bid reject was not persisted:", competing.id);
                 }
               } catch (rejectErr) {
-                console.error("Failed to reject competing bid:", competing.id, rejectErr);
+                if (import.meta.env.DEV) console.error("Failed to reject competing bid:", competing.id, rejectErr);
               }
             }
           } catch (fetchErr) {
-            console.error("Failed to fetch competing bids:", fetchErr);
+            if (import.meta.env.DEV) console.error("Failed to fetch competing bids:", fetchErr);
           }
         }
 
@@ -206,7 +206,7 @@ export function buildDashboardRouterProps({
           userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "accepted" } : b))
         );
       } catch (err) {
-        console.error("Failed to accept bid:", err);
+        if (import.meta.env.DEV) console.error("Failed to accept bid:", err);
       }
     },
     onRejectBid: async (details: { bidId: string; shopName: string }) => {
@@ -214,7 +214,7 @@ export function buildDashboardRouterProps({
         const { updateBidStatus } = await import("../services/supabase/bids");
         const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
         if (!rejectedBid) {
-          console.error("Failed to reject bid in Supabase:", details.bidId);
+          if (import.meta.env.DEV) console.error("Failed to reject bid in Supabase:", details.bidId);
           return;
         }
         // Update local bids state so UI reflects the change immediately
@@ -222,7 +222,7 @@ export function buildDashboardRouterProps({
           userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
         );
       } catch (err) {
-        console.error("Failed to reject bid:", err);
+        if (import.meta.env.DEV) console.error("Failed to reject bid:", err);
       }
     },
     onPasswordChange: () => {
@@ -239,7 +239,7 @@ export function buildDashboardRouterProps({
         for (const removed of removedVehicles) {
           if (removed.id) {
             deleteVehicle(removed.id, clerkUserId).catch((err) =>
-              console.error("Failed to delete vehicle from Supabase:", err)
+              { if (import.meta.env.DEV) console.error("Failed to delete vehicle from Supabase:", err); }
             );
           }
         }

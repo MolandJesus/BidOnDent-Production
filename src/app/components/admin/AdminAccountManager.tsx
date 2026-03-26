@@ -51,7 +51,7 @@ export default function AdminAccountManager() {
         user_metadata: u.user_metadata,
       })));
     } catch (err) {
-      console.error("Error loading users:", err);
+      if (import.meta.env.DEV) console.error("Error loading users:", err);
       setError(`Failed to load users: ${err instanceof Error ? err.message : "Unknown error"}`);
     } finally {
       setLoading(false);
@@ -102,7 +102,7 @@ export default function AdminAccountManager() {
       setSelectedUsers(new Set());
       await loadUsers();
     } catch (err) {
-      console.error("Error deleting users:", err);
+      if (import.meta.env.DEV) console.error("Error deleting users:", err);
       setError("Failed to delete users");
     } finally {
       setDeleting(false);
@@ -137,7 +137,7 @@ export default function AdminAccountManager() {
       setShowCreateTest(false);
       await loadUsers();
     } catch (err) {
-      console.error("Error creating test account:", err);
+      if (import.meta.env.DEV) console.error("Error creating test account:", err);
       setError("Failed to create test account");
     } finally {
       setCreating(false);

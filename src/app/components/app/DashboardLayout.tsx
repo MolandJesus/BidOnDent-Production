@@ -289,7 +289,7 @@ export default function DashboardLayout({
                 : "0 8px 28px rgba(3, 10, 24, 0.45), inset 0 -1px 0 rgba(59, 130, 246, 0.20)",
             }}
           >
-            <div className="px-4 md:px-8 py-3.5 flex items-center justify-between gap-3">
+            <div className="px-4 md:px-8 py-2.5 md:py-3.5 flex items-center justify-between gap-3">
               <button
                 onClick={onLogoClick}
                 className="bd-glass-control--utility md:hidden flex items-center gap-2 cursor-pointer"

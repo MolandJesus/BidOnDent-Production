@@ -66,7 +66,7 @@ export default function InsurerOnboarding({
     try {
       await onComplete(formData);
     } catch (error) {
-      console.error("Error completing insurer onboarding:", error);
+      if (import.meta.env.DEV) console.error("Error completing insurer onboarding:", error);
       window.alert("We couldn't save the insurer profile yet. Please try again.");
     } finally {
       setIsSubmitting(false);

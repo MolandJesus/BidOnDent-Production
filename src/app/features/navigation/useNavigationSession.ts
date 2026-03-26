@@ -90,7 +90,7 @@ export function useNavigationSession(authUserId?: string): NavigationSessionActi
         saveNavigationSessionToCloud(userId, next.id, navigationSessionToExternal(next)).then(
           () => setSyncError(null),
           (err) => {
-            console.warn("[NavigationSession] Sync error — service will retry", err);
+            if (import.meta.env.DEV) console.warn("[NavigationSession] Sync error — service will retry", err);
             setSyncError(err instanceof Error ? err.message : "Cloud sync failed");
           }
         );

@@ -26,7 +26,7 @@ export default function ClerkAccountTypeSelector() {
       // Reload to refresh the app with new user data
       window.location.reload();
     } catch (error) {
-      console.error("Error saving user profile:", error);
+      if (import.meta.env.DEV) console.error("Error saving user profile:", error);
       alert("Error saving profile. Please try again.");
       setIsLoading(false);
     }
