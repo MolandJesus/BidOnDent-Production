@@ -1004,6 +1004,44 @@
     0 0 8px rgba(147, 197, 253, 0.1);
 }
 
+/* ─── Dark Glass Surface: Text Color Auto-Adaptation ─────────────────────────
+   Glass surfaces get dark backgrounds via the .dark ancestor selector.
+   Automatically remap common light-theme text utilities to dark-safe equivalents.
+   Unlayered CSS overrides Tailwind's @layer utilities by cascade precedence.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.dark .bd-glass-card,
+.dark .bd-glass-panel,
+.dark .bd-glass-floating {
+  color: #cbd5e1; /* slate-300 — default inherited text for dark surfaces */
+}
+
+/* Primary text: headings, labels, values (high contrast) */
+.dark
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(
+    [class*="text-slate-9"],
+    [class*="text-gray-9"],
+    [class*="text-slate-8"],
+    [class*="text-gray-8"]
+  ) {
+  color: #e2e8f0; /* slate-200 */
+}
+
+/* Secondary text: body copy, descriptions */
+.dark
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is([class*="text-slate-7"], [class*="text-gray-7"]) {
+  color: #cbd5e1; /* slate-300 */
+}
+
+/* Tertiary text: captions, metadata */
+.dark
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is([class*="text-slate-6"], [class*="text-gray-6"]) {
+  color: #94a3b8; /* slate-400 */
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bd-glass-panel,
   .bd-glass-card {

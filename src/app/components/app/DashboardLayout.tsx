@@ -110,7 +110,11 @@ export default function DashboardLayout({
   const surfaceTheme = getGlobalSurfaceTheme(isLightAppearance ? "light" : "map-dark");
 
   return (
-    <div className="min-h-screen relative" style={{ background: surfaceTheme.background }}>
+    <div
+      className={`min-h-screen relative ${isLightAppearance ? "" : "dark"}`}
+      data-theme={isLightAppearance ? "light" : "dark"}
+      style={{ background: surfaceTheme.background }}
+    >
       {/* Map background layer (full-bleed, fixed, z-0) — deep ocean atmosphere */}
       <div
         className="fixed inset-0 z-0"
@@ -511,7 +515,6 @@ export default function DashboardLayout({
           </main>
         </div>
       </div>
-
       <MobileBottomNav
         appearanceMode={appearanceMode}
         tabs={currentNavTabs}
@@ -519,7 +522,6 @@ export default function DashboardLayout({
         viewMode={viewMode}
         onTabClick={(tabId) => onMobileMenuTabClick(tabId)}
       />
-
       {/* Site Settings Modal */}
       {onAppearanceModeChange && (
         <SettingsModal
