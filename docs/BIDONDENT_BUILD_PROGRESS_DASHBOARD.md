@@ -4,21 +4,29 @@
 
 ### Build Progress
 
-| 0% |████████████████████████████████████████████████████████████████████████████| 129% 🚀 |
+| 0% |████████████████████████████████████████████████████████████████████████████| 135% 🚀 |
 
-**Passes completed:** 260 / 160+ — ⚡ GLASS DESIGN SWEEP — FULL APP DARK-SURFACE UNIFICATION
+**Passes completed:** 263 / 160+ — ⚡ GLASS DESIGN SWEEP — COMPLETE. ZERO LIGHT-MODE TOKENS REMAINING.
 
 | Item             | Value                                                                                          |
 | ---------------- | ---------------------------------------------------------------------------------------------- |
-| **Last pass**    | Pass 260 — Glass sweep: header, profile dropdown, map pane, immersive map, error boundary      |
-| **Current pass** | 260 ✅ complete (full glass sweep — all light-mode artifacts removed from main app UI)         |
-| **Build**        | ✓ 0 errors · 1.94s · 783KB main bundle                                                         |
+| **Last pass**    | Pass 263 — Final glass sweep: status maps, form labels, admin, onboarding, auth modals        |
+| **Current pass** | 263 ✅ complete — grep scan returns 0 hits for light-mode tokens across all user-facing files  |
+| **Build**        | ✓ 0 errors · 1.98s · 783KB main bundle                                                         |
 | **Spellcheck**   | 0 issues                                                                                       |
-| **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date)                              |
+| **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date, Vercel auto-deploy triggered) |
 | **Last pushed**  | 2026-03-26                                                                                     |
-| **Phase**        | DESIGN PHASE — glass surface system fully unified across all non-landing screens               |
+| **Phase**        | GLASS SWEEP COMPLETE — all user-facing surfaces unified; devtools/demo/internal excluded by design |
 
-### Glass Design Sweep (Passes 249–260, 2026-03-26)
+### Glass Design Sweep — Final Wave (Passes 261–263, 2026-03-26)
+
+| Pass | Title                                                                                                        | Category  | Status |
+| ---- | ------------------------------------------------------------------------------------------------------------ | --------- | ------ |
+| 261  | home-data toneClasses/actionIconTones/activity tones, insurerClaimsUtils green, insurerPartnerShopsUtils    | P2-DESIGN | ✅     |
+| 262  | ShopDirectoryMapPane 8 hits, ImmersiveMap, ShopOnboarding, DashboardCoveragePanel, InsurerMapWidget, Timeline | P2-DESIGN | ✅     |
+| 263  | statusClasses in home-data+homeScreenData; auth modals; VehicleProfileScreen/ShopOnboarding 1-4/ShopRatingModal/PhotoGuide; admin red-50 error boxes; InsurerNewClaimForm labels | P2-DESIGN | ✅     |
+
+### Glass Design Sweep — Main Wave (Passes 249–260, 2026-03-26)
 
 | Pass | Title                                                                                          | Category  | Status |
 | ---- | ---------------------------------------------------------------------------------------------- | --------- | ------ |
@@ -35,12 +43,13 @@
 | 259  | ShopDirectoryScreen role badges + shell, insurer forms, shop onboarding hint               | P2-DESIGN | ✅     |
 | 260  | DashboardHeader final, ProfileDropdown, ShopDirectoryMapPane, ImmersiveMap, ErrorBoundary  | P2-DESIGN | ✅     |
 
-**Key changes in this sweep:**
+**Key changes in this sweep (Passes 249–263):**
 
-- **Scope**: Removed all `bg-slate-50`, `bg-white`, `text-slate-950`, `bg-blue-50`, `bg-green-50`, `bg-emerald-50`, `bg-amber-50`, `bg-rose-50`, `bg-slate-100`, `text-gray-900` light-mode tokens from ~30 component files across shops, insurers, dashboard, maps, admin, reports.
-- **Preserved intentional**: Tone-aware nav components (CurrentSpeedBadge, SpeedLimitBadge, NavigationBrowseDiscoveryPanel, CoverageNavigationPlanner) retain their dual-mode light/dark branches. Speed limit badge mimics road sign (white/red) intentionally.
-- **Pattern applied**: `bg-*-50` → `bg-*-400/15` or `bg-*-500/10`; `text-*-800/900` → `text-*-200/300`; stat boxes → `bg-white/[0.05] border border-white/[0.06]`; labels → `text-blue-200/50`.
-- **Build**: ✓ 0 errors · 1.94s · 783KB
+- **Scope**: Removed all `bg-slate-50`, `bg-white`, `text-slate-950`, `bg-blue-50`, `bg-green-50`, `bg-emerald-50`, `bg-amber-50`, `bg-rose-50`, `bg-slate-100`, `text-gray-900/600/700`, `bg-*-100 text-*-700` light-mode tokens from ~50+ component files across shops, insurers, dashboard, admin, reports, auth, onboarding.
+- **Preserved intentional**: Tone-aware nav components (CurrentSpeedBadge, SpeedLimitBadge, NavigationBrowseDiscoveryPanel, CoverageNavigationPlanner, PlannerAddressSearch, PlannerDiagnosticsPanel, NavigationDiscoveryPlacesList) retain their dual-mode light/dark branches by design.
+- **Excluded by design**: `devtools/`, `demo/`, `examples/` — internal-only tooling, not user-facing.
+- **Pattern applied**: `bg-*-50` → `bg-*-400/15` or `bg-*-500/10`; `text-*-700/800/900` → `text-*-200/300`; stat boxes → `bg-white/[0.05] border border-white/[0.06]`; form labels → `text-slate-300`; section labels → `text-blue-200/50`.
+- **Build**: ✓ 0 errors · 1.98s · 783KB
 
 ### Type Safety Sweep (Passes 243–248, 2026-03-26)
 
