@@ -1042,6 +1042,30 @@
   color: #94a3b8; /* slate-400 */
 }
 
+/* Border color adaptation: soften bright light-mode borders */
+.dark
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(
+    [class*="border-slate-2"],
+    [class*="border-slate-3"],
+    [class*="border-gray-2"],
+    [class*="border-gray-3"]
+  ) {
+  border-color: rgba(96, 165, 250, 0.18);
+}
+
+/* Inner container backgrounds: remap light-50/100 fills to dark equivalents */
+.dark
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(
+    [class*="bg-slate-50"],
+    [class*="bg-gray-50"],
+    [class*="bg-slate-100"],
+    [class*="bg-gray-100"]
+  ) {
+  background-color: rgba(15, 23, 42, 0.35);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bd-glass-panel,
   .bd-glass-card {
