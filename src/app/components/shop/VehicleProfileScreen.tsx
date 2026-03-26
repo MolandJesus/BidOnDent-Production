@@ -293,20 +293,20 @@ export default function VehicleProfileScreen({
                         </h3>
                       </div>
 
-                      <div className="space-y-1 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-slate-400/70">
                         {vehicle.color && (
                           <p>
-                            Color: <span className="text-gray-900">{vehicle.color}</span>
+                            Color: <span className="text-slate-100">{vehicle.color}</span>
                           </p>
                         )}
                         {vehicle.licensePlate && (
                           <p>
-                            Plate: <span className="text-gray-900">{vehicle.licensePlate}</span>
+                            Plate: <span className="text-slate-100">{vehicle.licensePlate}</span>
                           </p>
                         )}
                         {vehicle.vin && (
                           <p className="text-xs">
-                            VIN: <span className="text-gray-900">{vehicle.vin}</span>
+                            VIN: <span className="text-slate-100">{vehicle.vin}</span>
                           </p>
                         )}
                       </div>

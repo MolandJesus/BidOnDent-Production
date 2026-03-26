@@ -45,15 +45,15 @@ export default function InsurerPartnerShopCard({
   onToggleShortlist,
 }: InsurerPartnerShopCardProps) {
   const statusColorMap: Record<string, string> = {
-    active: "border-green-200 bg-green-50 text-green-700",
-    pending: "border-yellow-200 bg-yellow-50 text-yellow-700",
-    inactive: "border-slate-200 bg-slate-50 text-slate-600",
+    active: "border-green-400/30 bg-green-400/10 text-green-300",
+    pending: "border-yellow-400/30 bg-yellow-400/10 text-yellow-300",
+    inactive: "border-white/[0.12] bg-white/[0.05] text-slate-400",
   };
   const statusColor = statusColorMap[entry.status] || statusColorMap.inactive;
 
   return (
     <article className="overflow-hidden rounded-[26px] bd-glass-card">
-      <div className="relative h-44 w-full overflow-hidden bg-slate-100">
+      <div className="relative h-44 w-full overflow-hidden bg-white/[0.08]">
         <img
           src={entry.image}
           alt={entry.name}
@@ -61,18 +61,18 @@ export default function InsurerPartnerShopCard({
           loading="lazy"
         />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(15,23,42,0.35))]" />
-        <div className="absolute bottom-3 right-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-800 backdrop-blur-sm">
+        <div className="absolute bottom-3 right-3 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-xs font-semibold text-slate-100 backdrop-blur-sm">
           {entry.mapDistanceLabel} away
         </div>
       </div>
 
-      <div className="border-b border-slate-100 p-4">
+      <div className="border-b border-white/[0.08] p-4">
         <div className="mb-2 flex items-start justify-between gap-3">
           <div className="flex-1">
             <div className="mb-1 flex flex-wrap items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-950">{entry.name}</h3>
+              <h3 className="text-lg font-bold text-slate-100">{entry.name}</h3>
               {entry.certified && (
-                <span className="flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                <span className="flex items-center gap-1 rounded-full border border-green-400/30 bg-green-400/10 px-2 py-0.5 text-xs font-medium text-green-300">
                   <CheckCircle className="h-3 w-3" />
                   Certified
                 </span>
@@ -81,67 +81,67 @@ export default function InsurerPartnerShopCard({
                 {entry.status.toUpperCase()}
               </span>
             </div>
-            <div className="flex items-center text-sm text-slate-600">
-              <span className="mr-1 text-yellow-500">★</span>
-              <span className="font-medium">{entry.rating}</span>
+            <div className="flex items-center text-sm text-slate-300/70">
+              <span className="mr-1 text-amber-400">★</span>
+              <span className="font-medium text-slate-100">{entry.rating}</span>
               <span className="mx-1">•</span>
               <span>{entry.reviews} reviews</span>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-slate-950 px-3 py-2 text-center text-white">
-            <p className="text-[11px] uppercase tracking-[0.16em] text-white/65">Carrier Fit</p>
-            <p className="text-lg font-semibold">{entry.insuranceCompatibilityScore}%</p>
+          <div className="rounded-2xl border border-blue-400/30 bg-blue-500/20 px-3 py-2 text-center">
+            <p className="text-[11px] uppercase tracking-[0.16em] text-blue-200/60">Carrier Fit</p>
+            <p className="text-lg font-semibold text-slate-100">{entry.insuranceCompatibilityScore}%</p>
           </div>
         </div>
 
-        <div className="space-y-1 text-sm">
-          <div className="flex items-center text-slate-700">
-            <MapPin className="mr-2 h-4 w-4 text-slate-400" />
+        <div className="space-y-1 text-sm text-slate-300/70">
+          <div className="flex items-center">
+            <MapPin className="mr-2 h-4 w-4 text-blue-200/50" />
             <span>
               {entry.mapResult.address}, {entry.mapResult.city}, {entry.mapResult.state}{" "}
-              <div className="ml-6 flex items-center text-slate-600">Best route context ready</div>
+              <div className="ml-6 flex items-center text-slate-400/70">Best route context ready</div>
             </span>
           </div>
-          <div className="ml-6 flex items-center text-slate-600">{entry.mapDistanceLabel} away</div>
+          <div className="ml-6 flex items-center text-slate-400/70">{entry.mapDistanceLabel} away</div>
         </div>
       </div>
 
-      <div className="bg-slate-50 p-4">
+      <div className="bg-white/[0.03] p-4">
         <div className="mb-3 grid grid-cols-2 gap-3">
           <div>
-            <p className="text-xs text-slate-500">Pipeline State</p>
-            <p className="text-sm font-medium text-slate-900">
+            <p className="text-xs text-blue-200/50">Pipeline State</p>
+            <p className="text-sm font-medium text-slate-100">
               {entry.shortlisted ? "Shortlisted partner" : "Evaluation candidate"}
             </p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Completed Jobs</p>
-            <p className="text-sm font-medium text-slate-900">{entry.completedJobs}</p>
+            <p className="text-xs text-blue-200/50">Completed Jobs</p>
+            <p className="text-sm font-medium text-slate-100">{entry.completedJobs}</p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Active Jobs</p>
+            <p className="text-xs text-blue-200/50">Active Jobs</p>
             <p className="text-sm font-medium" style={{ color: primaryColor }}>
               {entry.activeJobs}
             </p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Avg Completion</p>
-            <p className="text-sm font-medium text-slate-900">{entry.avgCompletionDays} days</p>
+            <p className="text-xs text-blue-200/50">Avg Completion</p>
+            <p className="text-sm font-medium text-slate-100">{entry.avgCompletionDays} days</p>
           </div>
         </div>
 
         <div className="mb-3 rounded-2xl bd-glass-card p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-slate-500">Average Cost</p>
+              <p className="text-xs text-blue-200/50">Average Cost</p>
               <p className="text-lg font-bold" style={{ color: primaryColor }}>
                 ${entry.averagePriceValue.toLocaleString()}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-500">Network Trend</p>
-              <div className="flex items-center gap-1 text-green-600">
+              <p className="text-xs text-blue-200/50">Network Trend</p>
+              <div className="flex items-center gap-1 text-green-400">
                 <TrendingUp className="h-4 w-4" />
                 <span className="text-sm font-medium">
                   +{Math.max(1, Math.round(entry.rating - 3.9))}
@@ -153,7 +153,7 @@ export default function InsurerPartnerShopCard({
 
         <div className="mb-3 flex flex-wrap gap-1">
           {entry.specialties.map((specialty) => (
-            <span key={specialty} className="rounded bg-blue-50 px-2 py-1 text-xs text-blue-700">
+            <span key={specialty} className="rounded bg-blue-400/15 px-2 py-1 text-xs text-blue-200">
               {specialty}
             </span>
           ))}
@@ -163,7 +163,7 @@ export default function InsurerPartnerShopCard({
           {entry.certifications.map((certification) => (
             <span
               key={certification}
-              className="flex items-center gap-1 rounded bg-green-50 px-2 py-1 text-xs text-green-700"
+              className="flex items-center gap-1 rounded bg-green-400/15 px-2 py-1 text-xs text-green-300"
             >
               <Award className="h-3 w-3" />
               {certification}
@@ -200,7 +200,7 @@ export default function InsurerPartnerShopCard({
             }
             className={`flex flex-col items-center justify-center gap-1 rounded-2xl border px-3 py-2 text-sm font-medium ${
               entry.shortlisted
-                ? "border-green-200 bg-green-50 text-green-700"
+                ? "border-green-400/30 bg-green-400/10 text-green-300"
                 : "bd-glass-control--utility"
             }`}
           >

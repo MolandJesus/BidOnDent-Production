@@ -11,13 +11,13 @@ export default function ManualProspectCard({ prospect, onDirections }: ManualPro
     <article className="overflow-hidden bd-glass-card">
       <div className="border-b border-blue-200/30 p-4">
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold text-slate-950">{prospect.name}</h3>
-          <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-700">
+          <h3 className="text-lg font-semibold text-slate-100">{prospect.name}</h3>
+          <span className="rounded-full border border-amber-400/30 bg-amber-400/15 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-300">
             Manual lead
           </span>
         </div>
-        <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
-          <MapPin className="h-4 w-4 text-slate-400" />
+        <div className="mt-2 flex items-center gap-2 text-sm text-slate-300/70">
+          <MapPin className="h-4 w-4 text-blue-200/50" />
           {prospect.address}, {prospect.city}, {prospect.state} {prospect.zip}
         </div>
       </div>
@@ -53,7 +53,7 @@ export default function ManualProspectCard({ prospect, onDirections }: ManualPro
             {prospect.specialties.map((specialty) => (
               <span
                 key={specialty}
-                className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
+                className="rounded-full bg-blue-400/15 px-2.5 py-1 text-xs font-medium text-blue-200"
                 style={{ boxShadow: "0 0 8px rgba(59, 130, 246, 0.06)" }}
               >
                 {specialty}

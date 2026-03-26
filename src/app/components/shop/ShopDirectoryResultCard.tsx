@@ -31,8 +31,8 @@ export default function ShopDirectoryResultCard({
     <article
       className={`overflow-hidden bd-glass-card transition-all ${
         isSelected
-          ? "border-blue-300 ring-2 ring-blue-100"
-          : "border-slate-200 hover:border-slate-300"
+          ? "border-blue-400/60 ring-2 ring-blue-400/20"
+          : "border-white/[0.10] hover:border-white/[0.20]"
       }`}
     >
       <div className={`flex ${compact ? "gap-4 p-4" : "flex-col"}`}>
@@ -54,60 +54,60 @@ export default function ShopDirectoryResultCard({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-lg font-semibold text-slate-950">{shop.name}</h3>
+                <h3 className="text-lg font-semibold text-slate-100">{shop.name}</h3>
                 {shop.topPick && (
-                  <span className="rounded-full bg-slate-950 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+                  <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-200">
                     Best fit
                   </span>
                 )}
                 {isSelected && (
-                  <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-700">
+                  <span className="rounded-full bg-blue-400/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-200">
                     Selected
                   </span>
                 )}
               </div>
 
-              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-300/70">
                 <span className="inline-flex items-center gap-1.5">
                   <Star className="h-4 w-4 text-amber-400" fill="#fbbf24" />
-                  <span className="font-semibold text-slate-900">{shop.rating}</span>
+                  <span className="font-semibold text-slate-100">{shop.rating}</span>
                   <span>({shop.reviews})</span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-slate-400" />
+                  <MapPin className="h-4 w-4 text-blue-200/50" />
                   {shop.mapDistanceLabel}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock3 className="h-4 w-4 text-slate-400" />
+                  <Clock3 className="h-4 w-4 text-blue-200/50" />
                   {shop.responseTimeLabel}
                 </span>
               </div>
             </div>
 
             <div className="grid min-w-[150px] grid-cols-2 gap-2">
-              <div className="rounded-2xl bg-slate-950 px-3 py-2 text-white">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-white/65">AI Fit</p>
-                <p className="text-lg font-semibold">{shop.recommendationScore}%</p>
+              <div className="rounded-2xl border border-blue-400/30 bg-blue-500/20 px-3 py-2">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-blue-200/60">AI Fit</p>
+                <p className="text-lg font-semibold text-slate-100">{shop.recommendationScore}%</p>
               </div>
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-emerald-900">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-emerald-700/80">
+              <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2">
+                <p className="text-[11px] uppercase tracking-[0.16em] text-emerald-300/80">
                   Carrier
                 </p>
-                <p className="text-lg font-semibold">{shop.insuranceCompatibilityScore}%</p>
+                <p className="text-lg font-semibold text-emerald-200">{shop.insuranceCompatibilityScore}%</p>
               </div>
             </div>
           </div>
 
-          {!compact && <p className="text-sm leading-6 text-slate-600">{shop.aiSummary}</p>}
+          {!compact && <p className="text-sm leading-6 text-slate-300/80">{shop.aiSummary}</p>}
 
           <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="rounded-2xl bg-slate-50 px-3 py-2">
-              <p className="text-slate-500">Completion</p>
-              <p className="font-semibold text-slate-900">{shop.completionRate}%</p>
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
+              <p className="text-blue-200/50">Completion</p>
+              <p className="font-semibold text-slate-100">{shop.completionRate}%</p>
             </div>
-            <div className="rounded-2xl bg-slate-50 px-3 py-2">
-              <p className="text-slate-500">Avg ticket</p>
-              <p className="font-semibold text-slate-900">{shop.averagePriceLabel}</p>
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
+              <p className="text-blue-200/50">Avg ticket</p>
+              <p className="font-semibold text-slate-100">{shop.averagePriceLabel}</p>
             </div>
           </div>
 
@@ -115,7 +115,7 @@ export default function ShopDirectoryResultCard({
             {shop.matchReasons.map((reason) => (
               <span
                 key={reason}
-                className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
+                className="rounded-full bg-blue-400/15 px-2.5 py-1 text-xs font-medium text-blue-200"
               >
                 {reason}
               </span>
@@ -127,7 +127,7 @@ export default function ShopDirectoryResultCard({
               {shop.certifications.slice(0, 3).map((certification) => (
                 <span
                   key={certification}
-                  className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800"
+                  className="rounded-full bg-amber-400/15 px-2.5 py-1 text-xs font-medium text-amber-300"
                 >
                   {certification}
                 </span>
@@ -137,7 +137,7 @@ export default function ShopDirectoryResultCard({
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
-              className="flex-1 bd-glass-control text-slate-800 font-medium text-sm px-4 py-3"
+              className="flex-1 bd-glass-control text-slate-100 font-medium text-sm px-4 py-3"
               onClick={onPrimaryAction}
               type="button"
             >
@@ -155,7 +155,7 @@ export default function ShopDirectoryResultCard({
               </span>
             </button>
             <button
-              className="flex-1 bd-glass-control text-slate-800 font-medium text-sm px-4 py-3"
+              className="flex-1 bd-glass-control text-slate-100 font-medium text-sm px-4 py-3"
               onClick={onDirectionsAction}
               type="button"
             >
