@@ -108,7 +108,7 @@ export default function BusinessInquirySection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e6ecfa 0%, #eaedfc 35%, #e4ebfb 70%, #e2e9f8 100%)"
-          : "linear-gradient(180deg, #060f1e 0%, #080f20 100%)",
+          : "linear-gradient(180deg, #071428 0%, #0b1e3a 50%, #091832 100%)",
       }}
       ref={sectionRef}
     >
@@ -208,10 +208,10 @@ export default function BusinessInquirySection({
               ? {}
               : {
                   background:
-                    "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.22)",
+                    "linear-gradient(180deg, rgba(14, 30, 58, 0.86) 0%, rgba(10, 22, 44, 0.82) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.25)",
                   boxShadow:
-                    "0 14px 30px rgba(3, 10, 24, 0.38), inset 0 1px 0 rgba(147, 197, 253, 0.10)",
+                    "0 14px 36px rgba(3, 10, 24, 0.42), inset 0 1px 0 rgba(147, 197, 253, 0.12)",
                 }
           }
         >

@@ -45,7 +45,7 @@ export default function HowItWorksSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(176deg, #e6edfb 0%, #eeebfc 30%, #e9f0fb 65%, #edf2fa 100%)"
-          : "linear-gradient(175deg, #0b1628 0%, #101e3c 45%, #0a1628 100%)",
+          : "linear-gradient(175deg, #091833 0%, #0e2348 45%, #0b1a36 100%)",
       }}
       ref={sectionRef}
     >
@@ -164,15 +164,15 @@ export default function HowItWorksSection({
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-blue-300/15 hover:border-blue-400/30"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-blue-300/20 hover:border-blue-400/35"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 251, 255, 0.98) 100%)"
-                  : "linear-gradient(180deg, rgba(30, 58, 138, 0.18) 0%, rgba(12, 25, 41, 0.6) 100%)",
+                  : "linear-gradient(180deg, rgba(30, 58, 138, 0.30) 0%, rgba(14, 32, 56, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(30, 58, 138, 0.06)"
-                  : "0 8px 24px rgba(2, 6, 23, 0.3), inset 0 1px 0 rgba(147, 197, 253, 0.08)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(147, 197, 253, 0.14)",
               }}
             >
               {/* Icon with overlaid step number */}

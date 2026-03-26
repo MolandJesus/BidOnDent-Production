@@ -80,7 +80,7 @@ export default function LandingPageLayout({
       style={{
         background: isLightAppearance
           ? "linear-gradient(178deg, #eeeaf6 0%, #f8f8ff 30%, #ffffff 55%, #eef5ff 100%)"
-          : "radial-gradient(130% 90% at 30% 8%, rgba(17, 34, 64, 0.98) 0%, rgba(8, 15, 30, 0.99) 58%, #050b16 100%)",
+          : "radial-gradient(130% 90% at 30% 8%, rgba(12, 28, 58, 0.99) 0%, rgba(6, 14, 32, 0.99) 58%, #040a18 100%)",
       }}
     >
       <LandingPageHeader

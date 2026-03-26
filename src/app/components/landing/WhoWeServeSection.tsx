@@ -71,7 +71,7 @@ export default function WhoWeServeSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(178deg, #e5ecfc 0%, #eaf1fe 35%, #e6ecfb 70%, #e2e8fa 100%)"
-          : "linear-gradient(177deg, #091525 0%, #0c1a32 45%, #0b1628 100%)",
+          : "linear-gradient(177deg, #081838 0%, #0b2040 45%, #091a34 100%)",
       }}
       ref={sectionRef}
     >
@@ -174,15 +174,15 @@ export default function WhoWeServeSection({
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40 hover:border-blue-300/60" : "border border-blue-300/15 hover:border-blue-400/30"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-blue-200/40 hover:border-blue-300/60" : "border border-blue-300/20 hover:border-blue-400/35"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 255, 0.9) 100%)"
-                  : "linear-gradient(180deg, rgba(30, 58, 138, 0.18) 0%, rgba(12, 25, 41, 0.6) 100%)",
+                  : "linear-gradient(180deg, rgba(30, 58, 138, 0.30) 0%, rgba(14, 32, 56, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(0, 40, 100, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.7)"
-                  : "0 8px 24px rgba(2, 6, 23, 0.3), inset 0 1px 0 rgba(147, 197, 253, 0.08)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(147, 197, 253, 0.14)",
               }}
             >
               <div className="mb-4">

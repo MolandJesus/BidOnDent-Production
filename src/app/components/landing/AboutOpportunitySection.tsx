@@ -41,7 +41,7 @@ export default function AboutOpportunitySection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e8e5f6 0%, #e6ecfb 40%, #eae8f8 70%, #e4ebfa 100%)"
-          : "linear-gradient(180deg, #0c1929 0%, #0a1628 100%)",
+          : "linear-gradient(180deg, #0a1c3a 0%, #0d2244 50%, #081a35 100%)",
       }}
       ref={sectionRef}
     >

@@ -34,7 +34,7 @@ export default function TrustStatsSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(176deg, #e4eaf8 0%, #ece8fc 40%, #e6edfa 70%, #e2e8f6 100%)"
-          : "linear-gradient(176deg, #0a1628 0%, #0f1f3d 50%, #0c1a30 100%)",
+          : "linear-gradient(176deg, #091a36 0%, #0d2448 50%, #0a1d38 100%)",
       }}
     >
       {/* Edge blend */}

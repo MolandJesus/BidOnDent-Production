@@ -22,7 +22,7 @@ export default function OperatingRegionsSection({
     <section
       id="coverage"
       className="py-10 sm:py-14 text-white relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #0a1628 0%, #0d1b33 50%, #091422 100%)" }}
+      style={{ background: "linear-gradient(180deg, #091832 0%, #0c2040 50%, #081628 100%)" }}
       ref={sectionRef}
     >
       {/* Smooth transition edges — top/bottom gradient fades */}

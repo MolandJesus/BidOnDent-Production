@@ -68,7 +68,7 @@ export default function HeroSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(178deg, #e4e1f4 0%, #e8ecff 22%, #eaf2fd 50%, #dfe9fb 100%)"
-          : "linear-gradient(180deg, #0c1929 0%, #0f2035 40%, #0a1628 100%)",
+          : "linear-gradient(180deg, #0a1a38 0%, #0d2244 40%, #091832 100%)",
       }}
     >
       {/* Atmospheric radiance */}

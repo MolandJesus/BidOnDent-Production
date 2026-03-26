@@ -20,7 +20,7 @@ export default function FooterSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e2e8f6 0%, #dde4f2 50%, #d8e0ee 100%)"
-          : "linear-gradient(180deg, #0a1628 0%, #071120 100%)",
+          : "linear-gradient(180deg, #091832 0%, #061428 100%)",
       }}
       ref={footerRef}
     >

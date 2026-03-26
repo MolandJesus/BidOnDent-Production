@@ -22,7 +22,7 @@ export default function CTASection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e6e3f6 0%, #e4ecfc 40%, #e2eafa 70%, #e0e6f8 100%)"
-          : "linear-gradient(180deg, #080f20 0%, #060d1a 100%)",
+          : "linear-gradient(180deg, #071428 0%, #0c2040 45%, #061024 100%)",
       }}
       ref={sectionRef}
     >
@@ -54,10 +54,10 @@ export default function CTASection({
                 }
               : {
                   background:
-                    "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.22)",
+                    "linear-gradient(180deg, rgba(14, 32, 62, 0.90) 0%, rgba(10, 24, 48, 0.88) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.30)",
                   boxShadow:
-                    "0 24px 48px rgba(3, 10, 24, 0.44), inset 0 1px 0 rgba(147, 197, 253, 0.10)",
+                    "0 24px 56px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(147, 197, 253, 0.16)",
                 }
           }
         >
