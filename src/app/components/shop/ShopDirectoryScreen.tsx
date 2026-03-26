@@ -289,7 +289,7 @@ export default function ShopDirectoryScreen({
           </aside>
 
           {session.showMapPane && (
-            <div className="min-h-[460px] border-t border-slate-200 lg:min-h-[820px] lg:border-t-0">
+            <div className="min-h-[460px] border-t border-white/10 lg:min-h-[820px] lg:border-t-0">
               <ShopDirectoryMapPane
                 initialCenter={session.mapCenter || getDefaultMapCenter()}
                 initialZoom={session.mapZoom}
