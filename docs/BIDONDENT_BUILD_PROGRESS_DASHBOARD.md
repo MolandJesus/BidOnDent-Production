@@ -6,19 +6,43 @@
 
 | 0% |████████████████████████████████████████████████████████████████████████████| 129% 🚀 |
 
-**Passes completed:** 246 / 160+ — ⚡ TYPE SAFETY SWEEP — CORE TYPES, HOOKS, SERVICES HARDENED
+**Passes completed:** 260 / 160+ — ⚡ GLASS DESIGN SWEEP — FULL APP DARK-SURFACE UNIFICATION
 
-| Item             | Value                                                                                             |
-| ---------------- | ------------------------------------------------------------------------------------------------- |
-| **Last pass**    | Pass 246 — Type safety: services + error handler catch blocks                                     |
-| **Current pass** | 246 ✅ complete (Type safety: router types, hooks, services, error handlers — 30+ any→typed)      |
-| **Build**        | ✓ 0 errors · 2.06s · 783KB main bundle                                                            |
-| **Spellcheck**   | 0 issues                                                                                          |
-| **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date)                                 |
-| **Last pushed**  | 2026-03-26                                                                                        |
-| **Phase**        | TYPE SAFETY PHASE — core types hardened, remaining any in helper functions + component props next |
+| Item             | Value                                                                                          |
+| ---------------- | ---------------------------------------------------------------------------------------------- |
+| **Last pass**    | Pass 260 — Glass sweep: header, profile dropdown, map pane, immersive map, error boundary      |
+| **Current pass** | 260 ✅ complete (full glass sweep — all light-mode artifacts removed from main app UI)         |
+| **Build**        | ✓ 0 errors · 1.94s · 783KB main bundle                                                         |
+| **Spellcheck**   | 0 issues                                                                                       |
+| **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date)                              |
+| **Last pushed**  | 2026-03-26                                                                                     |
+| **Phase**        | DESIGN PHASE — glass surface system fully unified across all non-landing screens               |
 
-### Type Safety Sweep (Passes 243–246, 2026-03-26)
+### Glass Design Sweep (Passes 249–260, 2026-03-26)
+
+| Pass | Title                                                                                          | Category  | Status |
+| ---- | ---------------------------------------------------------------------------------------------- | --------- | ------ |
+| 249  | ShopDirectoryRoutePanel — route buttons, active state, instruction cards glass              | P2-DESIGN | ✅     |
+| 250  | LikedShopsScreen — remove button, stats boxes, badges, AI summary full glass                | P2-DESIGN | ✅     |
+| 251  | ShopDirectoryResultCard, InsurerPartnerShopCard, ManualProspectCard, VehicleScreen glass    | P2-DESIGN | ✅     |
+| 252  | ShopDirectoryContextCards, ShopDirectoryIntelligencePanel glass                             | P2-DESIGN | ✅     |
+| 253  | ShopDirectorySearchPanel, ShopDirectoryListBody — all controls and chips glass              | P2-DESIGN | ✅     |
+| 254  | MissingReportState, InsurerNewClaimScreen — gray tokens removed                             | P2-DESIGN | ✅     |
+| 255  | DashboardCoveragePanel, photo-guide-steps — semantic accent colors preserved, bg glass      | P2-DESIGN | ✅     |
+| 256  | DashboardHeader, DesktopNavTabs, InsurerConnectionScreen, RepairLifecycleTimeline          | P2-DESIGN | ✅     |
+| 257  | StepPhotos, HomeScreenSections fallback, InsurerMapWidget hint box                         | P2-DESIGN | ✅     |
+| 258  | Admin panel components (6 files) — green/blue confirmation boxes                           | P2-DESIGN | ✅     |
+| 259  | ShopDirectoryScreen role badges + shell, insurer forms, shop onboarding hint               | P2-DESIGN | ✅     |
+| 260  | DashboardHeader final, ProfileDropdown, ShopDirectoryMapPane, ImmersiveMap, ErrorBoundary  | P2-DESIGN | ✅     |
+
+**Key changes in this sweep:**
+
+- **Scope**: Removed all `bg-slate-50`, `bg-white`, `text-slate-950`, `bg-blue-50`, `bg-green-50`, `bg-emerald-50`, `bg-amber-50`, `bg-rose-50`, `bg-slate-100`, `text-gray-900` light-mode tokens from ~30 component files across shops, insurers, dashboard, maps, admin, reports.
+- **Preserved intentional**: Tone-aware nav components (CurrentSpeedBadge, SpeedLimitBadge, NavigationBrowseDiscoveryPanel, CoverageNavigationPlanner) retain their dual-mode light/dark branches. Speed limit badge mimics road sign (white/red) intentionally.
+- **Pattern applied**: `bg-*-50` → `bg-*-400/15` or `bg-*-500/10`; `text-*-800/900` → `text-*-200/300`; stat boxes → `bg-white/[0.05] border border-white/[0.06]`; labels → `text-blue-200/50`.
+- **Build**: ✓ 0 errors · 1.94s · 783KB
+
+### Type Safety Sweep (Passes 243–248, 2026-03-26)
 
 | Pass | Title                                                                     | Category  | Status |
 | ---- | ------------------------------------------------------------------------- | --------- | ------ |
