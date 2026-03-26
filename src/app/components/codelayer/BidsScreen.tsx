@@ -222,8 +222,18 @@ export default function BidsScreen({
           borderColor: "rgba(96, 165, 250, 0.24)",
         }}
       >
-        <div className="pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full bg-cyan-200/35 blur-2xl" />
-        <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-blue-200/35 blur-2xl" />
+        <div
+          className="pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)",
+          }}
+        />
         <div className="flex items-center gap-3">
           {onBack && (
             <button
@@ -247,15 +257,24 @@ export default function BidsScreen({
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div className="rounded-xl px-3 py-2.5 bg-white/8 border border-blue-300/15">
+          <div
+            className="rounded-xl px-3 py-2.5 bg-slate-900/25 border border-blue-300/18"
+            style={{ boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
+          >
             <p className="text-xs uppercase tracking-wide text-blue-200/70">Lowest Bid</p>
             <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">${lowestPrice}</p>
           </div>
-          <div className="rounded-xl px-3 py-2.5 bg-white/8 border border-blue-300/15">
+          <div
+            className="rounded-xl px-3 py-2.5 bg-slate-900/25 border border-blue-300/18"
+            style={{ boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
+          >
             <p className="text-xs uppercase tracking-wide text-blue-200/70">Average Quote</p>
             <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">${averagePrice}</p>
           </div>
-          <div className="rounded-xl px-3 py-2.5 bg-white/8 border border-blue-300/15">
+          <div
+            className="rounded-xl px-3 py-2.5 bg-slate-900/25 border border-blue-300/18"
+            style={{ boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
+          >
             <p className="text-xs uppercase tracking-wide text-blue-200/70">Fastest Timeline</p>
             <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">
               {fastestBidDays}-{fastestBidDays + 1} days
@@ -281,12 +300,16 @@ export default function BidsScreen({
               key={item.id}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
                 filter === item.id
-                  ? "text-white shadow-sm"
+                  ? "text-white border border-blue-400/40 shadow-sm"
                   : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
               }`}
               style={
                 filter === item.id
-                  ? { background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }
+                  ? {
+                      background:
+                        "linear-gradient(135deg, rgba(37,99,235,0.45) 0%, rgba(56,189,248,0.3) 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(148,163,184,0.1)",
+                    }
                   : {}
               }
               onClick={() => setFilter(item.id)}
