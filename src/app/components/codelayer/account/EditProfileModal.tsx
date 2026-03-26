@@ -46,9 +46,9 @@ export default function EditProfileModal({
         {/* Header */}
         <div className="sticky top-0 bg-white/80 backdrop-blur-sm border-b border-blue-100/50 px-6 py-4 rounded-t-2xl z-10">
           <div className="flex justify-between items-center">
-            <h2 className="font-bold text-gray-900">Edit Profile</h2>
+            <h2 className="font-bold text-slate-100">Edit Profile</h2>
             <button
-              className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+              className="text-gray-400 hover:text-slate-400 transition-colors p-1 rounded-full hover:bg-white/[0.06]"
               onClick={onCancel}
               disabled={isSaving}
             >
@@ -89,14 +89,14 @@ export default function EditProfileModal({
                 className="hidden"
               />
             </div>
-            <p className="text-xs text-gray-500 mt-2">Click camera to change photo</p>
+            <p className="text-xs text-slate-400 mt-2">Click camera to change photo</p>
           </div>
 
           {/* Form Fields */}
           <div className="space-y-4">
             {/* Name Field */}
             <div>
-              <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label htmlFor="edit-name" className="block text-sm font-medium text-slate-300 mb-1.5">
                 Full Name
               </label>
               <div className="relative">
@@ -106,7 +106,7 @@ export default function EditProfileModal({
                   type="text"
                   value={editableName}
                   onChange={(e) => onChangeName(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                  className="w-full pl-10 pr-3 py-2.5 border border-white/[0.12] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
                   placeholder="Enter your name"
                 />
               </div>
@@ -116,7 +116,7 @@ export default function EditProfileModal({
             <div>
               <label
                 htmlFor="edit-email"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-slate-300 mb-1.5"
               >
                 Email Address
               </label>
@@ -127,12 +127,12 @@ export default function EditProfileModal({
                   type="email"
                   value={editableEmail}
                   onChange={(e) => onChangeEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 transition-all text-sm cursor-not-allowed"
+                  className="w-full pl-10 pr-3 py-2.5 border border-white/[0.10] rounded-lg bg-white/[0.04] text-slate-400 transition-all text-sm cursor-not-allowed"
                   placeholder="your@email.com"
                   readOnly
                 />
               </div>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-slate-400">
                 Email changes are managed through your sign-in account settings.
               </p>
             </div>
@@ -141,7 +141,7 @@ export default function EditProfileModal({
             <div>
               <label
                 htmlFor="edit-phone"
-                className="block text-sm font-medium text-gray-700 mb-1.5"
+                className="block text-sm font-medium text-slate-300 mb-1.5"
               >
                 Phone Number
               </label>
@@ -154,7 +154,7 @@ export default function EditProfileModal({
                   onChange={(e) => onChangePhone(e.target.value)}
                   placeholder="Phone number"
                   maxLength={14}
-                  className="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
+                  className="w-full pl-10 pr-3 py-2.5 border border-white/[0.12] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
                 />
               </div>
             </div>
@@ -162,10 +162,10 @@ export default function EditProfileModal({
         </div>
 
         {/* Footer Actions */}
-        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 rounded-b-2xl flex gap-3 z-10">
+        <div className="sticky bottom-0 bg-white/[0.04] border-t border-white/[0.10] px-6 py-4 rounded-b-2xl flex gap-3 z-10">
           <button
             type="button"
-            className="flex-1 px-4 py-2.5 border-2 border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50 text-sm"
+            className="flex-1 px-4 py-2.5 border-2 border-white/[0.12] rounded-lg font-medium text-slate-300 hover:bg-white/[0.06] transition-colors disabled:opacity-50 text-sm"
             onClick={onCancel}
             disabled={isSaving}
           >

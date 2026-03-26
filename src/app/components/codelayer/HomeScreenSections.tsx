@@ -129,7 +129,7 @@ export function HomeReportsList({
 
       {sortedReports.length === 0 && (
         <div
-          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-slate-50/60 border-slate-200/40" : "bg-blue-950/30 border-blue-300/22"}`}
+          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-white/[0.04]/60 border-white/[0.10]/40" : "bg-blue-950/30 border-blue-300/22"}`}
         >
           <Camera
             className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/70"}`}
@@ -168,7 +168,7 @@ export function HomeReportsList({
         <div className="space-y-3">
           {sortedReports.slice(0, 4).map((report) => {
             const status = String(report?.status ?? "pending").toLowerCase();
-            const statusClass = statusClasses[status] ?? "bg-slate-100 text-slate-700";
+            const statusClass = statusClasses[status] ?? "bg-slate-100 text-slate-300";
             const title = getReportTitle(report, userType);
             const description = getReportDescription(report, userType);
             const hasPhoto = Array.isArray(report?.photos) && report.photos.length > 0;
@@ -177,7 +177,7 @@ export function HomeReportsList({
             return (
               <article
                 key={report.id}
-                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/60 border-slate-200/40" : "bg-slate-900/25 border-blue-200/18"} ${
+                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/60 border-white/[0.10]/40" : "bg-slate-900/25 border-blue-400/20/18"} ${
                   canOpenReport ? "hover:shadow-md cursor-pointer" : ""
                 }`}
                 style={
@@ -200,7 +200,7 @@ export function HomeReportsList({
                 }
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100/60 flex-shrink-0 border border-slate-200/40">
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100/60 flex-shrink-0 border border-white/[0.10]/40">
                     {hasPhoto ? (
                       <ImageWithFallback
                         src={report.photos[0]}
@@ -279,7 +279,7 @@ export function HomeSidebar({
   return (
     <aside className="xl:col-span-4 space-y-5">
       <section className="bd-glass-card p-5">
-        <h2 className="text-xl font-semibold text-slate-900 mb-4">Quick Actions</h2>
+        <h2 className="text-xl font-semibold text-slate-100 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-3">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
@@ -292,8 +292,8 @@ export function HomeSidebar({
                 disabled={isDisabled}
                 className={`text-left p-4 transition-all duration-200 rounded-xl font-medium ${
                   isDisabled
-                    ? "border border-slate-200/60 bg-slate-100/60 text-slate-400 cursor-not-allowed"
-                    : "bd-glass-card hover:shadow-lg hover:-translate-y-1 active:scale-[0.97] hover:border-blue-200/60"
+                    ? "border border-white/[0.10]/60 bg-slate-100/60 text-slate-400 cursor-not-allowed"
+                    : "bd-glass-card hover:shadow-lg hover:-translate-y-1 active:scale-[0.97] hover:border-blue-400/20/60"
                 }`}
               >
                 <div
@@ -301,7 +301,7 @@ export function HomeSidebar({
                 >
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="font-semibold text-slate-900 text-sm">{action.title}</h3>
+                <h3 className="font-semibold text-slate-100 text-sm">{action.title}</h3>
                 <p className="text-xs text-slate-500 mt-1 leading-snug">{action.description}</p>
               </button>
             );
@@ -310,9 +310,9 @@ export function HomeSidebar({
       </section>
 
       <section className="bd-glass-card p-5">
-        <h2 className="text-xl font-semibold text-slate-900 mb-4">Recent Activity</h2>
+        <h2 className="text-xl font-semibold text-slate-100 mb-4">Recent Activity</h2>
         {activityItems.length === 0 && (
-          <p className="text-slate-600 text-sm">No recent activity to show yet.</p>
+          <p className="text-slate-400 text-sm">No recent activity to show yet.</p>
         )}
         {activityItems.length > 0 && (
           <div className="space-y-3">
@@ -321,7 +321,7 @@ export function HomeSidebar({
               return (
                 <div
                   key={item.id}
-                  className="flex items-start gap-3 p-2 rounded-xl hover:bg-slate-50/60 transition-colors"
+                  className="flex items-start gap-3 p-2 rounded-xl hover:bg-white/[0.04]/60 transition-colors"
                 >
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${item.tone}`}
@@ -329,7 +329,7 @@ export function HomeSidebar({
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-slate-900 leading-snug">{item.label}</p>
+                    <p className="text-slate-100 leading-snug">{item.label}</p>
                     <p className="text-sm text-slate-500 mt-1">{item.time}</p>
                   </div>
                 </div>
@@ -351,9 +351,9 @@ export function HomeSidebar({
         />
         <div className="flex items-center gap-2 mb-2 relative">
           <Eye className="w-5 h-5 text-blue-600" />
-          <h3 className="text-base font-semibold text-slate-900">Pro Tip</h3>
+          <h3 className="text-base font-semibold text-slate-100">Pro Tip</h3>
         </div>
-        <p className="text-slate-600 text-sm relative">
+        <p className="text-slate-400 text-sm relative">
           Compare at least 3 bids before selecting a shop. Review warranty terms and timeline to
           avoid surprises.
         </p>

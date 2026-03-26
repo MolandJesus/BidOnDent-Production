@@ -149,11 +149,11 @@ export default function AdminAccountManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
             <Users className="w-6 h-6" />
             Account Management
           </h2>
-          <p className="text-gray-600 mt-1">Manage all user accounts and create test accounts</p>
+          <p className="text-slate-400 mt-1">Manage all user accounts and create test accounts</p>
         </div>
         <button
           onClick={loadUsers}
@@ -184,13 +184,13 @@ export default function AdminAccountManager() {
       <div className="flex items-center gap-3 p-4 bd-glass-card rounded-lg">
         <button
           onClick={selectAll}
-          className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded"
+          className="px-3 py-1.5 text-sm bg-white/[0.06] hover:bg-white/[0.10] rounded"
         >
           Select All
         </button>
         <button
           onClick={deselectAll}
-          className="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 rounded"
+          className="px-3 py-1.5 text-sm bg-white/[0.06] hover:bg-white/[0.10] rounded"
         >
           Deselect All
         </button>
@@ -217,36 +217,36 @@ export default function AdminAccountManager() {
       {/* Create Test Account Form */}
       {showCreateTest && (
         <div className="p-6 bg-green-50 border border-green-200 rounded-lg space-y-4">
-          <h3 className="font-semibold text-gray-900">Create Test Account</h3>
+          <h3 className="font-semibold text-slate-100">Create Test Account</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
               <input
                 type="email"
                 value={testEmail}
                 onChange={(e) => setTestEmail(e.target.value)}
                 placeholder="test@example.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2 border border-white/[0.12] rounded-lg"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
               <input
                 type="text"
                 value={testPassword}
                 onChange={(e) => setTestPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2 border border-white/[0.12] rounded-lg"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Account Type</label>
               <select
                 value={testUserType}
                 onChange={(e) => setTestUserType(e.target.value as any)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                className="w-full px-3 py-2 border border-white/[0.12] rounded-lg"
               >
                 <option value="customer">Customer</option>
                 <option value="shop">Shop</option>
@@ -265,7 +265,7 @@ export default function AdminAccountManager() {
             </button>
             <button
               onClick={() => setShowCreateTest(false)}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+              className="px-4 py-2 bg-gray-200 text-slate-300 rounded-lg hover:bg-gray-300"
             >
               Cancel
             </button>
@@ -277,24 +277,24 @@ export default function AdminAccountManager() {
       <div className="bd-glass-card rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-white/[0.04] border-b border-white/[0.10]">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
                   Select
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
                   Email
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
                   Type
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
                   Status
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
                   Created
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
                   Last Sign In
                 </th>
               </tr>
@@ -302,13 +302,13 @@ export default function AdminAccountManager() {
             <tbody className="divide-y divide-gray-200">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
                     Loading users...
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-4 py-8 text-center text-slate-400">
                     No users found
                   </td>
                 </tr>
@@ -317,7 +317,7 @@ export default function AdminAccountManager() {
                   const isAdminUser = user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
                   return (
-                    <tr key={user.id} className={isAdminUser ? "bg-blue-50" : ""}>
+                    <tr key={user.id} className={isAdminUser ? "bg-blue-500/10" : ""}>
                       <td className="px-4 py-3">
                         {!isAdminUser && (
                           <input
@@ -330,7 +330,7 @@ export default function AdminAccountManager() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-gray-900">{user.email}</span>
+                          <span className="font-medium text-slate-100">{user.email}</span>
                           {isAdminUser && (
                             <span className="px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded">
                               ADMIN
@@ -338,7 +338,7 @@ export default function AdminAccountManager() {
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-gray-600 capitalize">
+                      <td className="px-4 py-3 text-slate-400 capitalize">
                         {user.user_metadata?.user_type || "customer"}
                       </td>
                       <td className="px-4 py-3">
@@ -352,10 +352,10 @@ export default function AdminAccountManager() {
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
+                      <td className="px-4 py-3 text-sm text-slate-400">
                         {new Date(user.created_at).toLocaleDateString()}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
+                      <td className="px-4 py-3 text-sm text-slate-400">
                         {user.last_sign_in_at
                           ? new Date(user.last_sign_in_at).toLocaleDateString()
                           : "Never"}
@@ -370,7 +370,7 @@ export default function AdminAccountManager() {
       </div>
 
       {/* Summary */}
-      <div className="text-sm text-gray-600">
+      <div className="text-sm text-slate-400">
         Total: {users.length} user(s) • Selected: {selectedUsers.size}
       </div>
     </div>

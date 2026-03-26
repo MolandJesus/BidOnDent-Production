@@ -43,27 +43,27 @@ export function LoginSignupView({
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <label className="block text-sm font-medium text-slate-300 mb-1">Full Name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onSignup()}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+          className="w-full px-3 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
           placeholder="Enter your full name"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+        <label className="block text-sm font-medium text-slate-300 mb-1">Phone Number</label>
         <div className="relative">
-          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
             type="tel"
             value={formatPhoneNumber(phone)}
             onChange={(e) => onPhoneChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onSignup()}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            className="w-full pl-10 pr-3 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
             placeholder="Phone number"
             autoComplete="tel"
           />
@@ -71,15 +71,15 @@ export function LoginSignupView({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
         <div className="relative">
-          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
             type="email"
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onSignup()}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            className="w-full pl-10 pr-3 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
             placeholder="you@example.com"
             autoComplete="email"
           />
@@ -87,22 +87,22 @@ export function LoginSignupView({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => onPasswordChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onSignup()}
-            className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            className="w-full pl-10 pr-10 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
             placeholder="••••••••"
             autoComplete="new-password"
           />
           <button
             type="button"
             onClick={onShowPasswordToggle}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400"
           >
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
@@ -117,14 +117,14 @@ export function LoginSignupView({
           className="w-4 h-4 rounded"
           style={{ accentColor: primaryColor }}
         />
-        <span className="text-sm text-gray-700">Keep me signed in</span>
+        <span className="text-sm text-slate-300">Keep me signed in</span>
       </label>
 
       {signupError && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-2"
+          className="bg-red-500/10 border border-red-400/20 text-red-300 px-4 py-3 rounded-lg flex items-start gap-2"
         >
           <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
           <span className="text-sm">{signupError}</span>
@@ -146,10 +146,10 @@ export function LoginSignupView({
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
+          <div className="w-full border-t border-white/[0.12]"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-white text-gray-500">Or continue with</span>
+          <span className="px-2 bg-transparent text-slate-400">Or continue with</span>
         </div>
       </div>
 
@@ -202,7 +202,7 @@ export function LoginSignupView({
 
       <button
         onClick={() => onLoginViewChange("login")}
-        className="w-full text-center text-sm text-gray-600 hover:text-gray-900"
+        className="w-full text-center text-sm text-slate-400 hover:text-slate-200"
       >
         Already have an account? <span className="font-semibold">Log in</span>
       </button>

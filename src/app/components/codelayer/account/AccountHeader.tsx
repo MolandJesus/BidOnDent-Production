@@ -62,7 +62,7 @@ export default function AccountHeader({
         <div className="relative">
           {profileImage ? (
             <div
-              className="w-20 h-20 rounded-full overflow-hidden bg-white ring-2 ring-blue-300/40"
+              className="w-20 h-20 rounded-full overflow-hidden bg-white/[0.06] ring-2 ring-blue-300/40"
               style={{ boxShadow: "0 0 20px rgba(37,99,235,0.3), 0 4px 12px rgba(0,0,0,0.3)" }}
             >
               <ImageWithFallback
@@ -80,10 +80,10 @@ export default function AccountHeader({
             </div>
           )}
           <button
-            className="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-md hover:scale-105 transition-transform"
+            className="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1.5 shadow-md hover:scale-105 transition-transform"
             onClick={onProfileImageClick}
           >
-            <Camera className="w-4 h-4 text-blue-600" />
+            <Camera className="w-4 h-4 text-white" />
           </button>
         </div>
 

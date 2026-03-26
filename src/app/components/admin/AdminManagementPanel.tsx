@@ -35,7 +35,7 @@ export default function AdminManagementPanel({
         </span>
       </h2>
 
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="text-sm text-slate-400 mb-4">
         Promote or demote users to grant/revoke admin dashboard access. Admin accounts can access
         the Admin Dashboard but cannot promote others (only you can).
       </p>
@@ -47,7 +47,7 @@ export default function AdminManagementPanel({
             placeholder="Enter email address to promote/demote"
             value={targetAdminEmail}
             onChange={(e) => onTargetAdminEmailChange(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-3 py-2 border border-white/[0.12] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={isManagingAdmin}
           />
           <button

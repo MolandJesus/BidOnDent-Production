@@ -42,14 +42,14 @@ export default function NewAccountForm({
         Create Custom Test Account
       </h2>
 
-      <p className="text-sm text-gray-600 mb-4">
+      <p className="text-sm text-slate-400 mb-4">
         Create a test account for other people or additional testing purposes. This account will be
         fully functional and can be used to test all features.
       </p>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+          <label className="block text-sm font-medium text-slate-300 mb-1">Email Address *</label>
           <div className="flex items-center gap-3">
             <Mail className="w-5 h-5 text-gray-400" />
             <input
@@ -57,14 +57,14 @@ export default function NewAccountForm({
               value={newAccountEmail}
               onChange={(e) => onEmailChange(e.target.value)}
               placeholder="test@example.com"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="flex-1 px-3 py-2 border border-white/[0.12] rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               disabled={isLoading}
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-slate-300 mb-1">
             Full Name (optional)
           </label>
           <div className="flex items-center gap-3">
@@ -74,14 +74,14 @@ export default function NewAccountForm({
               value={newAccountName}
               onChange={(e) => onNameChange(e.target.value)}
               placeholder="John Doe"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="flex-1 px-3 py-2 border border-white/[0.12] rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               disabled={isLoading}
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+          <label className="block text-sm font-medium text-slate-300 mb-1">Password *</label>
           <div className="flex items-center gap-3">
             <Lock className="w-5 h-5 text-gray-400" />
             <input
@@ -89,23 +89,23 @@ export default function NewAccountForm({
               value={newAccountPassword}
               onChange={(e) => onPasswordChange(e.target.value)}
               placeholder="test123 (min. 6 characters)"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="flex-1 px-3 py-2 border border-white/[0.12] rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               disabled={isLoading}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-1 ml-8">
+          <p className="text-xs text-slate-400 mt-1 ml-8">
             Tip: Use simple passwords like "test123" for testing accounts
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Account Type *</label>
+          <label className="block text-sm font-medium text-slate-300 mb-1">Account Type *</label>
           <div className="flex items-center gap-3">
             <Shield className="w-5 h-5 text-gray-400" />
             <select
               value={newAccountType}
               onChange={(e) => onTypeChange(e.target.value as "customer" | "shop" | "insurer")}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className="flex-1 px-3 py-2 border border-white/[0.12] rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               disabled={isLoading}
             >
               <option value="customer">Customer (Car Owner)</option>
@@ -128,7 +128,7 @@ export default function NewAccountForm({
           <button
             onClick={onCancel}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-slate-300 rounded-lg hover:bg-gray-300 disabled:bg-white/[0.06] disabled:cursor-not-allowed transition-colors"
           >
             Cancel
           </button>

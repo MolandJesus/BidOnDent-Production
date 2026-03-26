@@ -81,7 +81,7 @@ export default function InsurerOnboarding({
       <div className="bd-glass-panel border-b border-white/20">
         <div className="px-4 py-3">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="font-bold text-slate-900">Insurer Setup</h1>
+            <h1 className="font-bold text-slate-100">Insurer Setup</h1>
             <span className="text-sm text-slate-500">Step {step} of 3</span>
           </div>
           <div className="h-2 bg-slate-200/60 rounded-full overflow-hidden">
@@ -109,105 +109,105 @@ export default function InsurerOnboarding({
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-center mb-2">Company Information</h2>
-              <p className="text-gray-600 text-center">Tell us about your insurance company</p>
+              <p className="text-slate-400 text-center">Tell us about your insurance company</p>
             </div>
 
             <div className="bd-glass-card rounded-lg p-4 sm:p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Company Name *
                 </label>
                 <input
                   type="text"
                   value={formData.companyName}
                   onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                   placeholder="SafeDrive Insurance"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Insurance License Number *
                 </label>
                 <input
                   type="text"
                   value={formData.licenseNumber}
                   onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                   placeholder="INS-123456"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Street Address *
                 </label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                   placeholder="456 Insurance Blvd"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">City *</label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                     placeholder="City"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">State *</label>
                   <input
                     type="text"
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                    className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                     placeholder="State"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
+                <label className="block text-sm font-medium text-slate-300 mb-1">ZIP Code *</label>
                 <input
                   type="text"
                   value={formData.zip}
                   onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                   placeholder="12345"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Phone Number *
                 </label>
                 <input
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                   placeholder="Phone number (10+ digits)"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   Website (Optional)
                 </label>
                 <input
                   type="url"
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-3 border border-white/[0.12] rounded-md"
                   placeholder="https://yourinsurance.com"
                 />
               </div>
@@ -250,7 +250,7 @@ export default function InsurerOnboarding({
                 <FileText className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-center mb-2">Claim Types</h2>
-              <p className="text-gray-600 text-center">Select the types of claims you handle</p>
+              <p className="text-slate-400 text-center">Select the types of claims you handle</p>
             </div>
 
             <div className="bd-glass-card p-4 sm:p-6">
@@ -266,8 +266,8 @@ export default function InsurerOnboarding({
                     }
                     className={`px-4 py-3 rounded-lg text-sm border transition-colors ${
                       formData.claimTypes.includes(type)
-                        ? "bg-blue-100 border-blue-500 text-blue-700"
-                        : "bg-white border-gray-300 text-gray-700"
+                        ? "bg-blue-100 border-blue-500 text-blue-400"
+                        : "bg-white/[0.06] border-white/[0.12] text-slate-300"
                     }`}
                   >
                     {formData.claimTypes.includes(type) && (
@@ -316,14 +316,16 @@ export default function InsurerOnboarding({
                 <Check className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-center mb-2">Preferences</h2>
-              <p className="text-gray-600 text-center">Configure your claim handling preferences</p>
+              <p className="text-slate-400 text-center">
+                Configure your claim handling preferences
+              </p>
             </div>
 
             <div className="bd-glass-card rounded-lg p-4 sm:p-6 space-y-4">
-              <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
+              <label className="flex items-center justify-between p-4 border border-white/[0.10] rounded-lg cursor-pointer">
                 <div>
                   <p className="font-medium">Use preferred shop network</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-slate-400">
                     Direct customers to pre-approved auto body repair shops
                   </p>
                 </div>
@@ -336,10 +338,10 @@ export default function InsurerOnboarding({
                 />
               </label>
 
-              <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
+              <label className="flex items-center justify-between p-4 border border-white/[0.10] rounded-lg cursor-pointer">
                 <div>
                   <p className="font-medium">Enable auto-approval</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-slate-400">
                     Automatically approve claims under a threshold
                   </p>
                 </div>
@@ -354,7 +356,7 @@ export default function InsurerOnboarding({
 
               {formData.autoApproval && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
                     Auto-approval threshold
                   </label>
                   <div className="relative">
@@ -363,11 +365,11 @@ export default function InsurerOnboarding({
                       type="number"
                       value={formData.maxClaimAmount}
                       onChange={(e) => setFormData({ ...formData, maxClaimAmount: e.target.value })}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md"
+                      className="w-full pl-10 pr-4 py-2 border border-white/[0.12] rounded-md"
                       placeholder="5000"
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-slate-400 mt-1">
                     Claims under this amount will be auto-approved
                   </p>
                 </div>

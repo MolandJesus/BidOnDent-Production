@@ -65,7 +65,7 @@ export default function ReportsListScreen({
             </button>
             <div>
               <h1 className="text-xl font-bold">My Reports</h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-400">
                 {Array.isArray(reports) ? reports.length : 0} total reports
               </p>
             </div>
@@ -98,7 +98,7 @@ export default function ReportsListScreen({
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
           <div className="bd-glass-card p-5 sm:p-8 text-center">
-            <p className="text-gray-500">Loading reports…</p>
+            <p className="text-slate-400">Loading reports…</p>
           </div>
         ) : reportsError ? (
           <div className="bd-glass-card p-5 sm:p-8 text-center">
@@ -106,7 +106,7 @@ export default function ReportsListScreen({
           </div>
         ) : filteredReports.length === 0 ? (
           <div className="bd-glass-card p-5 sm:p-8 text-center">
-            <p className="text-gray-500">No reports yet</p>
+            <p className="text-slate-400">No reports yet</p>
           </div>
         ) : (
           filteredReports.map((report) => {
@@ -119,7 +119,7 @@ export default function ReportsListScreen({
                   {/* Small Photo Thumbnail - Left Side */}
                   {report.photos && report.photos.length > 0 && (
                     <div
-                      className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-80 transition-opacity relative group"
+                      className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-white/[0.06] cursor-pointer hover:opacity-80 transition-opacity relative group"
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedPhotos(report.photos);
@@ -153,14 +153,14 @@ export default function ReportsListScreen({
                         <h3 className="font-bold text-lg truncate">
                           {report.vehicle.year} {report.vehicle.make} {report.vehicle.model}
                         </h3>
-                        <p className="text-sm text-gray-600">Damage to {report.damageArea}</p>
+                        <p className="text-sm text-slate-400">Damage to {report.damageArea}</p>
                       </div>
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2 flex-shrink-0 ${
                           report.status === "pending"
                             ? "bg-sky-100 text-sky-700"
                             : report.status === "active"
-                              ? "bg-blue-100 text-blue-700"
+                              ? "bg-blue-100 text-blue-400"
                               : "bg-indigo-100 text-indigo-700"
                         }`}
                       >
@@ -169,13 +169,13 @@ export default function ReportsListScreen({
                     </div>
 
                     {report.description && (
-                      <p className="text-sm text-gray-700 mb-2 line-clamp-1">
+                      <p className="text-sm text-slate-300 mb-2 line-clamp-1">
                         {report.description}
                       </p>
                     )}
 
                     {/* Stats Row */}
-                    <div className="flex items-center gap-3 text-xs text-gray-600 mb-2">
+                    <div className="flex items-center gap-3 text-xs text-slate-400 mb-2">
                       <div className="flex items-center">
                         <Clock className="w-3.5 h-3.5 mr-1" />
                         <span>{new Date(report.submittedAt).toLocaleDateString()}</span>
@@ -190,7 +190,7 @@ export default function ReportsListScreen({
 
                     {/* Bids Info */}
                     {report.bidsCount > 0 && (
-                      <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                      <div className="flex items-center gap-2 pt-2 border-t border-white/[0.08]">
                         <div className="flex -space-x-1.5">
                           {[...Array(Math.min(report.bidsCount, 3))].map((_, idx) => (
                             <div
@@ -202,7 +202,7 @@ export default function ReportsListScreen({
                             </div>
                           ))}
                         </div>
-                        <span className="text-sm text-gray-700 font-semibold">
+                        <span className="text-sm text-slate-300 font-semibold">
                           {report.bidsCount} {report.bidsCount === 1 ? "bid" : "bids"} received
                         </span>
                         <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
@@ -211,8 +211,8 @@ export default function ReportsListScreen({
 
                     {/* No bids yet */}
                     {report.bidsCount === 0 && (
-                      <div className="pt-2 border-t border-gray-100">
-                        <p className="text-xs text-gray-500 italic">
+                      <div className="pt-2 border-t border-white/[0.08]">
+                        <p className="text-xs text-slate-400 italic">
                           Waiting for body shops to review...
                         </p>
                       </div>

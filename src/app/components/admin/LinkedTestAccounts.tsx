@@ -53,7 +53,7 @@ export default function LinkedTestAccounts({
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 + index * 0.1 }}
-              className="border rounded-lg p-4 transition-all border-gray-200 hover:border-gray-300"
+              className="border rounded-lg p-4 transition-all border-white/[0.10] hover:border-white/[0.12]"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -62,7 +62,7 @@ export default function LinkedTestAccounts({
 
                     {/* Status Badge */}
                     {status?.loading ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-white/[0.06] text-slate-400 text-xs rounded-full">
                         <RefreshCw className="w-3 h-3 animate-spin" />
                         Checking...
                       </span>
@@ -82,7 +82,7 @@ export default function LinkedTestAccounts({
                     <span
                       className={`px-2 py-1 text-xs rounded-full font-medium ${
                         account.type === "customer"
-                          ? "bg-blue-100 text-blue-700"
+                          ? "bg-blue-100 text-blue-400"
                           : account.type === "shop"
                             ? "bg-purple-100 text-purple-700"
                             : "bg-orange-100 text-orange-700"
@@ -92,8 +92,8 @@ export default function LinkedTestAccounts({
                     </span>
                   </div>
 
-                  <p className="text-sm text-gray-600 mb-2">{account.description}</p>
-                  <p className="text-sm text-gray-500 font-mono">{account.email}</p>
+                  <p className="text-sm text-slate-400 mb-2">{account.description}</p>
+                  <p className="text-sm text-slate-400 font-mono">{account.email}</p>
 
                   {status?.userId && (
                     <p className="text-xs text-gray-400 mt-1">User ID: {status.userId}</p>

@@ -96,7 +96,7 @@ export default function ReportDetailScreen({
               <h1 className="text-lg font-bold">
                 {vehicleInfo.year} {vehicleInfo.make} {vehicleInfo.model}
               </h1>
-              <p className="text-sm text-gray-600">Report #{report.id}</p>
+              <p className="text-sm text-slate-400">Report #{report.id}</p>
             </div>
             <span
               className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -119,7 +119,7 @@ export default function ReportDetailScreen({
           <div className="p-3 sm:p-4">
             <h2 className="font-bold text-lg mb-2 sm:mb-3">Damage Photos</h2>
             {photos.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-slate-300/60 p-4 text-sm text-gray-500">
+              <div className="rounded-xl border border-dashed border-slate-300/60 p-4 text-sm text-slate-400">
                 No photos were submitted with this report.
               </div>
             ) : (
@@ -127,7 +127,7 @@ export default function ReportDetailScreen({
                 {photos.map((photo, idx) => (
                   <div
                     key={idx}
-                    className="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity min-w-[44px] min-h-[44px]"
+                    className="aspect-square bg-white/[0.06] rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity min-w-[44px] min-h-[44px]"
                     onClick={() => setSelectedPhoto(photo)}
                   >
                     <ImageWithFallback
@@ -147,25 +147,25 @@ export default function ReportDetailScreen({
           <h2 className="font-bold text-lg mb-3">Vehicle Information</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-gray-600">Year:</span>
+              <span className="text-slate-400">Year:</span>
               <span className="font-medium">{vehicleInfo.year}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Make:</span>
+              <span className="text-slate-400">Make:</span>
               <span className="font-medium">{vehicleInfo.make}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Model:</span>
+              <span className="text-slate-400">Model:</span>
               <span className="font-medium">{vehicleInfo.model}</span>
             </div>
             {report.vehicle?.vin && (
               <div className="flex justify-between">
-                <span className="text-gray-600">VIN:</span>
+                <span className="text-slate-400">VIN:</span>
                 <span className="font-medium text-sm">{report.vehicle.vin}</span>
               </div>
             )}
             <div className="flex justify-between">
-              <span className="text-gray-600">Damaged Area:</span>
+              <span className="text-slate-400">Damaged Area:</span>
               <span className="font-medium capitalize">{damageArea}</span>
             </div>
           </div>
@@ -174,11 +174,11 @@ export default function ReportDetailScreen({
         {/* Damage Description */}
         <div className="bd-glass-card p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Damage Description</h2>
-          <p className="text-gray-700">{description}</p>
+          <p className="text-slate-300">{description}</p>
           {report.incident && (
             <>
               <h3 className="font-medium mt-4 mb-2">What Happened</h3>
-              <p className="text-gray-700">{report.incident}</p>
+              <p className="text-slate-300">{report.incident}</p>
             </>
           )}
         </div>
@@ -186,7 +186,7 @@ export default function ReportDetailScreen({
         {/* Submission Details */}
         <div className="bd-glass-card p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Submission Details</h2>
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-sm text-slate-400">
             <Clock className="w-4 h-4 mr-2" />
             <span>
               Submitted on{" "}
@@ -210,11 +210,11 @@ export default function ReportDetailScreen({
         <div className="bd-glass-card p-3 sm:p-4">
           <div className="flex justify-between items-center mb-3">
             <h2 className="font-bold text-lg">Interested Shops</h2>
-            <span className="text-sm text-gray-600">{interestedShops.length} bids received</span>
+            <span className="text-sm text-slate-400">{interestedShops.length} bids received</span>
           </div>
 
           {interestedShops.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-slate-300/60 p-4 text-sm text-gray-600">
+            <div className="rounded-xl border border-dashed border-slate-300/60 p-4 text-sm text-slate-400">
               No bids have arrived yet. Shops will appear here as soon as they respond.
             </div>
           ) : (
@@ -225,7 +225,7 @@ export default function ReportDetailScreen({
                   className="bd-glass-card p-3 hover:shadow-md transition-all duration-200"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-white/[0.06]">
                       <ImageWithFallback
                         src={shop.image}
                         alt={shop.name}
@@ -235,7 +235,7 @@ export default function ReportDetailScreen({
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1">
-                        <h3 className="font-semibold text-slate-900">{shop.name}</h3>
+                        <h3 className="font-semibold text-slate-100">{shop.name}</h3>
                         <span className="bd-glass-badge ml-2 flex-shrink-0">BID</span>
                       </div>
 
@@ -248,15 +248,15 @@ export default function ReportDetailScreen({
                             />
                             <span className="font-medium">{shop.rating}</span>
                             {shop.reviews > 0 && (
-                              <span className="text-gray-500">({shop.reviews})</span>
+                              <span className="text-slate-400">({shop.reviews})</span>
                             )}
                           </>
                         ) : (
-                          <span className="text-gray-400 text-xs">No rating yet</span>
+                          <span className="text-slate-400 text-xs">No rating yet</span>
                         )}
-                        <span className="text-gray-300">•</span>
-                        <MapPin className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                        <span className="text-gray-600 truncate">{shop.distance}</span>
+                        <span className="text-slate-500">•</span>
+                        <MapPin className="w-3 h-3 text-slate-400 flex-shrink-0" />
+                        <span className="text-slate-400 truncate">{shop.distance}</span>
                       </div>
 
                       <div className="flex items-center justify-between gap-2">
@@ -267,7 +267,7 @@ export default function ReportDetailScreen({
                           >
                             ${shop.bidAmount?.toLocaleString()}
                           </div>
-                          <div className="text-xs text-gray-500">{shop.estimatedTime}</div>
+                          <div className="text-xs text-slate-400">{shop.estimatedTime}</div>
                         </div>
                         <button
                           className="px-4 py-2.5 min-h-[44px] rounded-xl text-white text-sm font-semibold flex-shrink-0"

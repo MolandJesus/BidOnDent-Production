@@ -27,10 +27,10 @@ export default function DeleteAccountModal({
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900">Delete Account?</h2>
+            <h2 className="text-xl font-bold text-slate-100">Delete Account?</h2>
           </div>
           <button
-            className="text-gray-500 hover:text-gray-700"
+            className="text-slate-400 hover:text-slate-300"
             onClick={onClose}
             disabled={isDeleting}
           >
@@ -57,7 +57,7 @@ export default function DeleteAccountModal({
           <div>
             <label
               htmlFor="delete-confirm"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-slate-300 mb-2"
             >
               Type <span className="font-bold text-red-600">DELETE</span> to confirm:
             </label>
@@ -67,7 +67,7 @@ export default function DeleteAccountModal({
               value={deleteConfirmText}
               onChange={(e) => onDeleteConfirmTextChange(e.target.value)}
               placeholder="Type DELETE here"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-white/[0.12] rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
               disabled={isDeleting}
             />
           </div>

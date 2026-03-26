@@ -38,8 +38,8 @@ export default function AccountOverlays({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <p className="font-medium text-gray-700">Uploading image...</p>
-            <p className="text-sm text-gray-500">Compressing and saving to cloud</p>
+            <p className="font-medium text-slate-300">Uploading image...</p>
+            <p className="text-sm text-slate-400">Compressing and saving to cloud</p>
           </div>
         </div>
       )}
@@ -47,7 +47,7 @@ export default function AccountOverlays({
       {/* Success Toast */}
       {saveSuccess && (
         <div
-          className="fixed top-20 right-4 bg-white border-l-4 px-4 py-3 rounded shadow-lg z-50 flex items-center gap-3 animate-slide-in-right"
+          className="fixed top-20 right-4 bd-glass-card border-l-4 px-4 py-3 rounded shadow-lg z-50 flex items-center gap-3 animate-slide-in-right"
           style={{ borderColor: primaryColor }}
         >
           <div
@@ -70,8 +70,8 @@ export default function AccountOverlays({
             </svg>
           </div>
           <div className="flex-1">
-            <p className="font-medium text-gray-900">Profile Saved</p>
-            <p className="text-sm text-gray-500">Changes synced to cloud</p>
+            <p className="font-medium text-slate-100">Profile Saved</p>
+            <p className="text-sm text-slate-400">Changes synced to cloud</p>
           </div>
         </div>
       )}

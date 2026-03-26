@@ -138,7 +138,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6 mt-6"
+        className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-400/20 rounded-lg p-6 mt-6"
       >
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0">
@@ -151,8 +151,8 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
           </div>
 
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-1">🔐 Test Account Feature</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <h3 className="font-semibold text-slate-100 mb-1">🔐 Test Account Feature</h3>
+            <p className="text-sm text-slate-400 mb-4">
               You are using a test account. Switch back to the main admin account to access the
               admin dashboard and manage all test accounts.
             </p>
@@ -167,7 +167,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            <p className="text-xs text-gray-500 mt-3">
+            <p className="text-xs text-slate-400 mt-3">
               Current account: <span className="font-mono">{userEmail}</span>
             </p>
           </div>
@@ -222,25 +222,25 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
 
               {/* Body */}
               <div className="px-6 py-6">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                  <p className="text-sm text-blue-900">
+                <div className="bg-blue-500/10 border border-blue-400/20 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-blue-200">
                     <strong>You are about to switch from:</strong>
                     <br />
-                    <span className="font-mono text-blue-700">{userEmail}</span>
+                    <span className="font-mono text-blue-400">{userEmail}</span>
                   </p>
                   <div className="my-2 flex items-center justify-center">
                     <ArrowRight className="w-5 h-5 text-blue-400" />
                   </div>
-                  <p className="text-sm text-blue-900">
+                  <p className="text-sm text-blue-200">
                     <strong>To admin account:</strong>
                     <br />
-                    <span className="font-mono text-blue-700">{ADMIN_EMAIL}</span>
+                    <span className="font-mono text-blue-400">{ADMIN_EMAIL}</span>
                   </p>
                 </div>
 
                 {/* Password Input */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
                     Admin Account Password
                   </label>
                   <div className="relative">
@@ -258,7 +258,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
                       placeholder="Enter your password"
                       disabled={isLoading}
                       autoFocus
-                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="w-full pl-10 pr-4 py-3 border-2 border-white/[0.12] rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all disabled:bg-white/[0.06] disabled:cursor-not-allowed"
                     />
                   </div>
                   {error && (
@@ -274,17 +274,17 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
                 </div>
 
                 {/* Info */}
-                <p className="text-xs text-gray-500 mt-4">
+                <p className="text-xs text-slate-400 mt-4">
                   💡 This is the same password you use to sign in to your admin account normally.
                 </p>
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-4 bg-gray-50 flex items-center justify-end gap-3">
+              <div className="px-6 py-4 bg-white/[0.04] flex items-center justify-end gap-3">
                 <button
                   onClick={handleCloseModal}
                   disabled={isLoading}
-                  className="px-4 py-2 text-gray-700 bd-glass-control rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  className="px-4 py-2 text-slate-300 bd-glass-control rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
                   Cancel
                 </button>

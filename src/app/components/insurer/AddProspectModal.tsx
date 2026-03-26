@@ -56,13 +56,13 @@ export default function AddProspectModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white sm:rounded-2xl">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bd-glass-card sm:rounded-2xl">
         <div className="p-4 sm:p-6">
-          <h2 className="mb-4 text-2xl font-bold text-slate-950">Add Manual Prospect</h2>
+          <h2 className="mb-4 text-2xl font-bold text-slate-100">Add Manual Prospect</h2>
 
           <div className="space-y-4">
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Shop Name <span className="text-rose-500">*</span>
               </label>
               <input
@@ -76,7 +76,7 @@ export default function AddProspectModal({
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">
+                <label className="mb-2 block text-sm font-medium text-slate-300">
                   Email <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -88,7 +88,7 @@ export default function AddProspectModal({
                 />
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">
+                <label className="mb-2 block text-sm font-medium text-slate-300">
                   Phone <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -102,7 +102,7 @@ export default function AddProspectModal({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Street Address
               </label>
               <input
@@ -116,7 +116,7 @@ export default function AddProspectModal({
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">City</label>
+                <label className="mb-2 block text-sm font-medium text-slate-300">City</label>
                 <input
                   type="text"
                   value={formData.city}
@@ -126,7 +126,7 @@ export default function AddProspectModal({
                 />
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">State</label>
+                <label className="mb-2 block text-sm font-medium text-slate-300">State</label>
                 <input
                   type="text"
                   value={formData.state}
@@ -137,7 +137,7 @@ export default function AddProspectModal({
                 />
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">ZIP</label>
+                <label className="mb-2 block text-sm font-medium text-slate-300">ZIP</label>
                 <input
                   type="text"
                   value={formData.zip}
@@ -149,7 +149,7 @@ export default function AddProspectModal({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Specialties</label>
+              <label className="mb-2 block text-sm font-medium text-slate-300">Specialties</label>
               <input
                 type="text"
                 value={formData.specialties}
@@ -160,7 +160,7 @@ export default function AddProspectModal({
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label className="mb-2 block text-sm font-medium text-slate-300">
                 Certifications
               </label>
               <input

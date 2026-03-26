@@ -62,13 +62,13 @@ export function getStatusColor(status: string): string {
     case "pending":
       return "bg-yellow-100 text-yellow-700 border-yellow-200";
     case "reviewing":
-      return "bg-blue-100 text-blue-700 border-blue-200";
+      return "bg-blue-100 text-blue-400 border-blue-400/20";
     case "approved":
       return "bg-green-100 text-green-700 border-green-200";
     case "denied":
       return "bg-red-100 text-red-700 border-red-200";
     default:
-      return "bg-gray-100 text-gray-700 border-gray-200";
+      return "bg-white/[0.06] text-slate-300 border-white/[0.10]";
   }
 }
 
@@ -81,6 +81,6 @@ export function getPriorityColor(priority: string): string {
     case "low":
       return "text-green-600 bg-green-50 border-green-200";
     default:
-      return "text-gray-600 bg-gray-50 border-gray-200";
+      return "text-slate-400 bg-white/[0.04] border-white/[0.10]";
   }
 }

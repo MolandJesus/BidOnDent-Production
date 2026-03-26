@@ -83,7 +83,7 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
         </div>
       )}
 
-      <div className="mt-4 text-xs text-gray-600">
+      <div className="mt-4 text-xs text-slate-400">
         <p className="mb-2">This will permanently delete:</p>
         <ul className="list-disc pl-5 space-y-1">
           <li>User from Supabase Auth</li>

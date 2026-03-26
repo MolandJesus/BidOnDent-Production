@@ -42,25 +42,25 @@ export default function AccountTypeMigrationModal({
           </div>
           <div className="flex-1">
             <h3 className="text-2xl font-bold mb-1">Account Type Required</h3>
-            <p className="text-gray-600 text-sm">
+            <p className="text-slate-400 text-sm">
               We need to know what type of account this is. This will be permanent.
             </p>
           </div>
         </div>
 
         {/* Email Display */}
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-6">
-          <p className="text-sm text-gray-600 mb-1">Logged in as:</p>
-          <p className="font-semibold text-gray-900">{email}</p>
+        <div className="bg-white/[0.04] border border-white/[0.10] rounded-lg p-3 mb-6">
+          <p className="text-sm text-slate-400 mb-1">Logged in as:</p>
+          <p className="font-semibold text-slate-100">{email}</p>
         </div>
 
         {/* Account Type Selection */}
         <div className="space-y-3 mb-6">
-          <p className="text-sm font-medium text-gray-700 mb-3">What type of account is this?</p>
+          <p className="text-sm font-medium text-slate-300 mb-3">What type of account is this?</p>
 
           <motion.button
             onClick={() => onSelectAccountType("customer")}
-            className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-200/40 transition-all text-left flex items-center gap-3"
+            className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-400/20/40 transition-all text-left flex items-center gap-3"
             style={{ borderColor: primaryColor }}
             whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
             whileTap={{ scale: 0.98 }}
@@ -73,13 +73,13 @@ export default function AccountTypeMigrationModal({
             </div>
             <div className="flex-1">
               <div className="font-semibold text-lg">Customer</div>
-              <div className="text-sm text-gray-600">I need auto body repairs for my vehicle</div>
+              <div className="text-sm text-slate-400">I need auto body repairs for my vehicle</div>
             </div>
           </motion.button>
 
           <motion.button
             onClick={() => onSelectAccountType("shop")}
-            className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-200/40 transition-all text-left flex items-center gap-3"
+            className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-400/20/40 transition-all text-left flex items-center gap-3"
             style={{ borderColor: primaryColor }}
             whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
             whileTap={{ scale: 0.98 }}
@@ -92,7 +92,7 @@ export default function AccountTypeMigrationModal({
             </div>
             <div className="flex-1">
               <div className="font-semibold text-lg">Auto Body Shop</div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-slate-400">
                 I run a repair shop and want to receive bids
               </div>
             </div>
@@ -100,7 +100,7 @@ export default function AccountTypeMigrationModal({
 
           <motion.button
             onClick={() => onSelectAccountType("insurer")}
-            className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-200/40 transition-all text-left flex items-center gap-3"
+            className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-400/20/40 transition-all text-left flex items-center gap-3"
             style={{ borderColor: primaryColor }}
             whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
             whileTap={{ scale: 0.98 }}
@@ -113,7 +113,7 @@ export default function AccountTypeMigrationModal({
             </div>
             <div className="flex-1">
               <div className="font-semibold text-lg">Insurance Company</div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-slate-400">
                 I work for an insurance company managing claims
               </div>
             </div>
