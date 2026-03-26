@@ -64,7 +64,7 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
     <section
       id="who-we-serve"
       className="py-10 md:py-16"
-      style={{ background: "linear-gradient(180deg, #edf3fa 0%, #f5f8fc 40%, #ffffff 100%)" }}
+      style={{ background: "linear-gradient(180deg, #edf3fa 0%, #f5f8fc 40%, #e8f1fa 100%)" }}
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -92,27 +92,33 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-6 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-xl hover:-translate-y-1 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card p-5 sm:p-6 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
-                borderColor: card.borderColor,
                 transitionDelay: `${0.3 + index * 0.15}s`,
-                boxShadow: "0 6px 18px rgba(37, 99, 235, 0.06)",
-                ["--check-color" as never]: card.checkColor,
+                background:
+                  "linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 251, 255, 0.98) 100%)",
               }}
             >
               <div className="mb-4">
                 <div
-                  className="inline-flex items-center justify-center w-12 h-12 rounded-xl"
-                  style={{ backgroundColor: card.iconBg, boxShadow: `0 3px 12px ${card.iconBg}30` }}
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg shadow-sm"
+                  style={{
+                    backgroundColor: `${card.iconBg}18`,
+                    border: `1px solid ${card.iconBg}20`,
+                    boxShadow: `0 0 12px ${card.iconBg}12`,
+                  }}
                 >
-                  <card.icon className="w-6 h-6 text-white" />
+                  <card.icon className="w-6 h-6" style={{ color: card.iconBg }} />
                 </div>
               </div>
-              <h4 className="font-bold text-xl mb-3 text-gray-900">{card.title}</h4>
+              <h4 className="font-bold text-xl mb-3 text-slate-900">{card.title}</h4>
               <ul className="space-y-2.5">
                 {card.items.map((item, i) => (
                   <li key={i} className="flex items-start">
-                    <CheckCircle2 className="w-4.5 h-4.5 mr-2 mt-0.5 flex-shrink-0 text-[color:var(--check-color)]" />
+                    <CheckCircle2
+                      className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0"
+                      style={{ color: card.checkColor }}
+                    />
                     <span className="text-sm text-slate-700">{item}</span>
                   </li>
                 ))}

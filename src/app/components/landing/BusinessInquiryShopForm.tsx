@@ -28,7 +28,9 @@ export default function BusinessInquiryShopForm({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-blue-100/85 mb-1">DMV Registration#*</label>
+        <label className="block text-sm font-medium text-blue-100/85 mb-1">
+          DMV Registration#*
+        </label>
         <input
           required
           value={shopForm.dmvRegistrationNumber}
@@ -71,7 +73,9 @@ export default function BusinessInquiryShopForm({
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-blue-100/85 mb-1">Website (optional)</label>
+        <label className="block text-sm font-medium text-blue-100/85 mb-1">
+          Website (optional)
+        </label>
         <input
           value={shopForm.website}
           onChange={(e) => onUpdate({ ...shopForm, website: e.target.value })}
