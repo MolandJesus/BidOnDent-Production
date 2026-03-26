@@ -14,7 +14,7 @@ export default function AdminHeader({ primaryColor, adminEmail }: AdminHeaderPro
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
       </div>
       <p className="text-gray-600">Manage test accounts and system administration</p>
-      <div className="mt-2 inline-flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
+      <div className="mt-2 inline-flex items-center gap-2 bg-blue-400/15 px-3 py-1 rounded-full">
         <Shield className="w-4 h-4 text-blue-600" />
         <span className="text-sm text-blue-600 font-medium">Logged in as: {adminEmail}</span>
       </div>

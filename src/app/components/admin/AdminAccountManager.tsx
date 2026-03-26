@@ -174,7 +174,7 @@ export default function AdminAccountManager() {
       )}
 
       {success && (
-        <div className="flex items-center gap-2 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
+        <div className="flex items-center gap-2 p-4 bg-green-400/10 border border-green-400/30 rounded-lg text-green-800">
           <CheckCircle className="w-5 h-5" />
           {success}
         </div>
@@ -216,7 +216,7 @@ export default function AdminAccountManager() {
 
       {/* Create Test Account Form */}
       {showCreateTest && (
-        <div className="p-6 bg-green-50 border border-green-200 rounded-lg space-y-4">
+        <div className="p-6 bg-green-400/10 border border-green-400/30 rounded-lg space-y-4">
           <h3 className="font-semibold text-slate-100">Create Test Account</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

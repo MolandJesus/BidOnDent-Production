@@ -10,7 +10,7 @@ export default function AdminInfoPanel({ adminEmail }: AdminInfoPanelProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.5 }}
-      className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6"
+      className="mt-6 bg-blue-400/10 border border-blue-400/30 rounded-lg p-4 mb-6"
     >
       <h3 className="font-semibold text-blue-900 mb-2">ℹ️ Admin System Info</h3>
       <ul className="text-sm text-blue-800 space-y-1 list-disc pl-5">

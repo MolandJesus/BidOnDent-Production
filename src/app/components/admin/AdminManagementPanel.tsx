@@ -74,7 +74,7 @@ export default function AdminManagementPanel({
             animate={{ opacity: 1, height: "auto" }}
             className={`p-4 rounded-lg whitespace-pre-wrap ${
               adminManagementStatus.startsWith("✅")
-                ? "bg-green-50 text-green-800 border border-green-200"
+                ? "bg-green-400/10 text-green-300 border border-green-400/30"
                 : "bg-red-50 text-red-800 border border-red-200"
             }`}
           >
