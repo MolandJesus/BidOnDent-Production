@@ -22,13 +22,13 @@ export default function CTASection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e6e3f6 0%, #e4ecfc 40%, #e2eafa 70%, #e0e6f8 100%)"
-          : "linear-gradient(180deg, #071428 0%, #0c2040 45%, #061024 100%)",
+          : "linear-gradient(180deg, #0c1e4a 0%, #142a5c 45%, #102450 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -38,7 +38,11 @@ export default function CTASection({
           <div className="absolute top-0 right-[25%] w-56 h-56 bg-indigo-300/[0.07] rounded-full blur-[100px]" />
         </>
       ) : (
-        <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.02)_1px,transparent_1px)] [background-size:20px_20px] opacity-20" />
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(37,99,235,0.14),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_30%_20%,rgba(99,102,241,0.08),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_80%,rgba(251,191,36,0.04),transparent_50%)]" />
+        </>
       )}
       <div className="container mx-auto px-4 max-w-6xl text-center relative">
         <div
@@ -54,10 +58,10 @@ export default function CTASection({
                 }
               : {
                   background:
-                    "linear-gradient(180deg, rgba(14, 32, 62, 0.90) 0%, rgba(10, 24, 48, 0.88) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.30)",
+                    "linear-gradient(180deg, rgba(20, 42, 92, 0.92) 0%, rgba(12, 30, 68, 0.90) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.35)",
                   boxShadow:
-                    "0 24px 56px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(147, 197, 253, 0.16)",
+                    "0 24px 56px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(147, 197, 253, 0.18), 0 0 80px rgba(37, 99, 235, 0.08)",
                 }
           }
         >

@@ -41,13 +41,13 @@ export default function AboutOpportunitySection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e8e5f6 0%, #e6ecfb 40%, #eae8f8 70%, #e4ebfa 100%)"
-          : "linear-gradient(180deg, #0a1c3a 0%, #0d2244 50%, #081a35 100%)",
+          : "linear-gradient(180deg, #081834 0%, #0c2040 50%, #071630 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-amber-400/15"} to-transparent`}
       />
       {/* Decorative depth elements */}
       {isLightAppearance ? (
@@ -59,9 +59,11 @@ export default function AboutOpportunitySection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
-          <div className="absolute top-0 left-1/3 w-72 h-72 bg-blue-500/8 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-56 h-56 bg-blue-400/6 rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(251,191,36,0.02)_49px,rgba(251,191,36,0.02)_50px)] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_30%_-10%,rgba(251,191,36,0.06),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_75%_90%,rgba(245,158,11,0.07),transparent_55%)]" />
+          <div className="absolute top-0 left-1/3 w-72 h-72 bg-amber-500/[0.05] rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-56 h-56 bg-yellow-400/[0.03] rounded-full blur-3xl" />
         </>
       )}
 
@@ -102,10 +104,10 @@ export default function AboutOpportunitySection({
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "bd-glass-badge"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "border border-amber-400/20 bg-amber-500/10 text-amber-200 backdrop-blur-sm"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-amber-400"}`}
             />
             About BidOnDent
           </span>
@@ -131,9 +133,17 @@ export default function AboutOpportunitySection({
                 className={`rounded-2xl p-5 transition-all duration-700 hover:shadow-lg hover:-translate-y-1 ${
                   isLightAppearance
                     ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm"
-                    : "bd-glass-card"
+                    : "border border-amber-400/15 backdrop-blur-sm"
                 } ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-                style={{ transitionDelay: `${0.2 + index * 0.1}s` }}
+                style={{
+                  transitionDelay: `${0.2 + index * 0.1}s`,
+                  ...(!isLightAppearance && {
+                    background:
+                      "linear-gradient(180deg, rgba(50, 38, 20, 0.30) 0%, rgba(18, 14, 10, 0.75) 100%)",
+                    boxShadow:
+                      "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(251, 191, 36, 0.08)",
+                  }),
+                }}
               >
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-50 border border-blue-100/60" : "bg-white/[0.08] border border-white/[0.1]"}`}

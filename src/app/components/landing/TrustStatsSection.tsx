@@ -34,12 +34,12 @@ export default function TrustStatsSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(176deg, #e4eaf8 0%, #ece8fc 40%, #e6edfa 70%, #e2e8f6 100%)"
-          : "linear-gradient(176deg, #091a36 0%, #0d2448 50%, #0a1d38 100%)",
+          : "linear-gradient(176deg, #0e2448 0%, #152e58 50%, #102850 100%)",
       }}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
       />
       {/* Decorative background elements */}
       {isLightAppearance ? (
@@ -51,9 +51,11 @@ export default function TrustStatsSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:26px_26px] opacity-20" />
-          <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/12 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-400/8 rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:20px_20px] opacity-30" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(59,130,246,0.14),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_20%_20%,rgba(99,102,241,0.10),transparent_50%)]" />
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/[0.10] rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-indigo-400/[0.08] rounded-full blur-3xl" />
         </>
       )}
 

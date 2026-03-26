@@ -20,13 +20,13 @@ export default function FooterSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e2e8f6 0%, #dde4f2 50%, #d8e0ee 100%)"
-          : "linear-gradient(180deg, #091832 0%, #061428 100%)",
+          : "linear-gradient(180deg, #061428 0%, #040e1e 100%)",
       }}
       ref={footerRef}
     >
       {/* Top edge fade */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/30" : "via-blue-400/20"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/30" : "via-blue-400/10"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -37,8 +37,8 @@ export default function FooterSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.02)_1px,transparent_1px)] [background-size:22px_22px] opacity-20" />
-          <div className="absolute bottom-0 right-1/3 w-48 h-48 bg-blue-500/[0.04] rounded-full blur-[80px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.015)_1px,transparent_1px)] [background-size:18px_18px] opacity-15" />
+          <div className="absolute bottom-0 right-1/3 w-48 h-48 bg-blue-500/[0.03] rounded-full blur-[80px]" />
         </>
       )}
       <div className="container mx-auto px-4 max-w-7xl relative">

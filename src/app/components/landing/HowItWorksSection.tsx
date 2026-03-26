@@ -45,13 +45,13 @@ export default function HowItWorksSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(176deg, #e6edfb 0%, #eeebfc 30%, #e9f0fb 65%, #edf2fa 100%)"
-          : "linear-gradient(175deg, #091833 0%, #0e2348 45%, #0b1a36 100%)",
+          : "linear-gradient(175deg, #071a34 0%, #0a2842 45%, #081e38 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-teal-400/20"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -62,9 +62,11 @@ export default function HowItWorksSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:30px_30px] opacity-25" />
-          <div className="absolute top-0 right-1/4 w-72 h-72 bg-indigo-500/[0.07] rounded-full blur-[100px]" />
-          <div className="absolute -bottom-10 left-[15%] w-56 h-56 bg-blue-400/[0.05] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(20,184,166,0.03)_39px,rgba(20,184,166,0.03)_40px)] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_75%_-5%,rgba(20,184,166,0.08),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_85%,rgba(6,182,212,0.06),transparent_55%)]" />
+          <div className="absolute top-0 right-1/4 w-72 h-72 bg-teal-500/[0.06] rounded-full blur-[100px]" />
+          <div className="absolute -bottom-10 left-[15%] w-56 h-56 bg-cyan-400/[0.04] rounded-full blur-[100px]" />
         </>
       )}
 
@@ -119,10 +121,10 @@ export default function HowItWorksSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full border backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border-blue-200/50 bg-white/70 text-blue-700" : "border-blue-400/25 bg-blue-500/10 text-blue-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full border backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border-blue-200/50 bg-white/70 text-blue-700" : "border-teal-400/25 bg-teal-500/10 text-teal-200"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-teal-400"}`}
             />
             Three Steps
           </span>
@@ -164,15 +166,15 @@ export default function HowItWorksSection({
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-blue-300/20 hover:border-blue-400/35"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl border p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group relative ${isLightAppearance ? "border-blue-100/50 hover:border-blue-200/60" : "border-teal-300/15 hover:border-teal-400/30"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 251, 255, 0.98) 100%)"
-                  : "linear-gradient(180deg, rgba(30, 58, 138, 0.30) 0%, rgba(14, 32, 56, 0.75) 100%)",
+                  : "linear-gradient(180deg, rgba(15, 52, 60, 0.30) 0%, rgba(10, 30, 40, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 16px rgba(30, 58, 138, 0.06)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(147, 197, 253, 0.14)",
+                  : "0 8px 32px rgba(2, 6, 23, 0.45), inset 0 1px 0 rgba(94, 234, 212, 0.10)",
               }}
             >
               {/* Icon with overlaid step number */}

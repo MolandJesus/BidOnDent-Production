@@ -108,13 +108,13 @@ export default function BusinessInquirySection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #e6ecfa 0%, #eaedfc 35%, #e4ebfb 70%, #e2e9f8 100%)"
-          : "linear-gradient(180deg, #071428 0%, #0b1e3a 50%, #091832 100%)",
+          : "linear-gradient(180deg, #071828 0%, #0a2036 50%, #081a30 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/15"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-emerald-400/15"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
@@ -125,9 +125,11 @@ export default function BusinessInquirySection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px] opacity-20" />
-          <div className="absolute top-0 right-1/3 w-64 h-64 bg-blue-500/[0.06] rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-indigo-400/[0.04] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(16,185,129,0.025)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_60%_-5%,rgba(16,185,129,0.08),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(34,197,94,0.05),transparent_55%)]" />
+          <div className="absolute top-0 right-1/3 w-64 h-64 bg-emerald-500/[0.05] rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-teal-400/[0.03] rounded-full blur-[100px]" />
         </>
       )}
 
@@ -181,10 +183,10 @@ export default function BusinessInquirySection({
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "bd-glass-badge"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "border border-emerald-400/20 bg-emerald-500/10 text-emerald-200 backdrop-blur-sm"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-emerald-400"}`}
             />
             Growth &amp; Partnerships
           </span>
@@ -202,16 +204,15 @@ export default function BusinessInquirySection({
         </div>
 
         <div
-          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm" : "bd-glass-card"}`}
+          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm" : "border border-emerald-400/15 backdrop-blur-sm rounded-2xl"}`}
           style={
             isLightAppearance
               ? {}
               : {
                   background:
-                    "linear-gradient(180deg, rgba(14, 30, 58, 0.86) 0%, rgba(10, 22, 44, 0.82) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.25)",
+                    "linear-gradient(180deg, rgba(10, 30, 28, 0.86) 0%, rgba(8, 20, 24, 0.82) 100%)",
                   boxShadow:
-                    "0 14px 36px rgba(3, 10, 24, 0.42), inset 0 1px 0 rgba(147, 197, 253, 0.12)",
+                    "0 14px 36px rgba(3, 10, 24, 0.42), inset 0 1px 0 rgba(16, 185, 129, 0.10)",
                 }
           }
         >
