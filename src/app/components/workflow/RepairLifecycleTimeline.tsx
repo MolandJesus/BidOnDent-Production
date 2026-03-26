@@ -41,8 +41,8 @@ export default function RepairLifecycleTimeline({
                     isCompleted
                       ? "bg-blue-500 border-blue-500 text-white"
                       : isCurrent
-                        ? "bg-blue-50 border-blue-300 text-blue-700"
-                        : "bg-slate-100 border-slate-300 text-slate-500"
+                        ? "bg-blue-400/15 border-blue-400/40 text-blue-200"
+                        : "bg-white/[0.06] border-white/[0.12] text-slate-400"
                   }`}
                 >
                   {isCompleted ? (
@@ -51,14 +51,14 @@ export default function RepairLifecycleTimeline({
                     <Clock3 className="w-4 h-4" />
                   )}
                 </div>
-                {index < steps.length - 1 && <div className="w-px h-8 bg-slate-200 mt-1" />}
+                {index < steps.length - 1 && <div className="w-px h-8 bg-white/[0.10] mt-1" />}
               </div>
 
               <div className="pb-4 flex-1">
                 <div className="flex items-center gap-2">
                   <p className="font-medium text-slate-900">{step.label}</p>
                   {isCurrent && (
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-blue-400/15 text-blue-200 font-medium">
                       In progress
                     </span>
                   )}

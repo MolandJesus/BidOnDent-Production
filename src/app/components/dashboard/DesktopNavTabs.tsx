@@ -30,7 +30,7 @@ export default function DesktopNavTabs({
             key={tab.id}
             onClick={() => onTabClick(tab.id)}
             className={`px-4 py-2 rounded-md font-medium transition-colors ${
-              isActive ? "text-white" : "text-gray-600 hover:text-gray-900 hover:bg-white/40"
+              isActive ? "text-white" : "text-slate-300 hover:text-white hover:bg-white/[0.08]"
             }`}
             style={isActive ? { backgroundColor: primaryColor } : {}}
           >

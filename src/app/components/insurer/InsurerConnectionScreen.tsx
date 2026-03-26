@@ -248,7 +248,7 @@ export default function InsurerConnectionScreen({
               className="w-full bd-glass-card rounded-2xl p-4 hover:border-blue-300 transition-colors text-left"
             >
               <div className="flex items-start gap-3">
-                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-white/[0.08] flex items-center justify-center flex-shrink-0">
                   <Shield className="w-6 h-6 text-slate-500" />
                 </div>
 
@@ -351,7 +351,7 @@ export default function InsurerConnectionScreen({
                 </div>
 
                 <div className="bg-white/[0.04] rounded-2xl p-4 border border-white/[0.10]">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 mb-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-100 mb-3">
                     <Shield className="w-4 h-4 text-slate-500" />
                     Connection notes
                   </div>
