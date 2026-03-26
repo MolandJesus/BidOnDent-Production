@@ -517,7 +517,6 @@ export default function DashboardLayout({
         tabs={currentNavTabs}
         currentTab={currentTab}
         viewMode={viewMode}
-        primaryColor={primaryColor}
         onTabClick={(tabId) => onMobileMenuTabClick(tabId)}
       />
 

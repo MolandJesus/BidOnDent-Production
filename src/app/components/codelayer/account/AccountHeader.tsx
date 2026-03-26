@@ -10,7 +10,7 @@ type AccountHeaderProps = {
     companyName: string;
   };
   userType: string;
-  primaryColor: string;
+  primaryColor?: string;
   onProfileImageClick: () => void;
 };
 
@@ -18,7 +18,6 @@ export default function AccountHeader({
   profileImage,
   userInfo,
   userType,
-  primaryColor,
   onProfileImageClick,
 }: AccountHeaderProps) {
   const subtitle =
@@ -33,16 +32,39 @@ export default function AccountHeader({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="rounded-2xl text-white p-5 md:p-6 shadow-sm border border-white/10 relative overflow-hidden"
-      style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)` }}
+      className="rounded-2xl text-white p-5 md:p-6 shadow-lg border border-blue-400/20 relative overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(0,42,90,0.92) 0%, rgba(8,50,120,0.88) 40%, rgba(0,80,160,0.82) 100%)",
+      }}
     >
-      <div className="absolute -right-10 -bottom-10 w-40 h-40 rounded-full bg-white/10" />
-      <div className="absolute right-24 top-5 w-16 h-16 rounded-full bg-white/10" />
+      {/* Atmospheric decorative orbs */}
+      <div
+        className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(56,189,248,0.18) 0%, transparent 70%)",
+        }}
+      />
+      <div
+        className="absolute right-20 top-3 w-20 h-20 rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)",
+        }}
+      />
+      <div
+        className="absolute -left-6 top-1/2 w-24 h-24 rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%)",
+        }}
+      />
 
       <div className="relative flex items-center">
         <div className="relative">
           {profileImage ? (
-            <div className="w-20 h-20 rounded-full overflow-hidden bg-white shadow-md ring-2 ring-white/40">
+            <div
+              className="w-20 h-20 rounded-full overflow-hidden bg-white ring-2 ring-blue-300/40"
+              style={{ boxShadow: "0 0 20px rgba(37,99,235,0.3), 0 4px 12px rgba(0,0,0,0.3)" }}
+            >
               <ImageWithFallback
                 src={profileImage}
                 alt="Profile"
@@ -50,8 +72,11 @@ export default function AccountHeader({
               />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center shadow-md ring-2 ring-white/20">
-              <UserIcon className="w-10 h-10" />
+            <div
+              className="w-20 h-20 rounded-full bg-blue-400/15 flex items-center justify-center ring-2 ring-blue-300/25"
+              style={{ boxShadow: "0 0 20px rgba(37,99,235,0.25), 0 4px 12px rgba(0,0,0,0.3)" }}
+            >
+              <UserIcon className="w-10 h-10 text-blue-200" />
             </div>
           )}
           <button

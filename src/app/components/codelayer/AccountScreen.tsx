@@ -269,15 +269,28 @@ export default function AccountScreen({
   };
 
   return (
-    <div className="pb-20">
+    <div className="pb-20 relative overflow-hidden">
+      {/* Page-level atmospheric orbs */}
+      <div
+        className="absolute top-40 -right-16 w-56 h-56 rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)",
+        }}
+      />
+      <div
+        className="absolute bottom-32 -left-20 w-48 h-48 rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)",
+        }}
+      />
+
       <AccountOverlays isSaving={isSaving} saveSuccess={saveSuccess} primaryColor={primaryColor} />
 
-      <div className="px-4 md:px-6 py-4 md:py-5 space-y-5 w-full">
+      <div className="px-4 md:px-6 py-4 md:py-5 space-y-5 w-full relative">
         <AccountHeader
           profileImage={profileImage}
           userInfo={userInfo}
           userType={userType}
-          primaryColor={primaryColor}
           onProfileImageClick={handleProfileImageClick}
         />
 

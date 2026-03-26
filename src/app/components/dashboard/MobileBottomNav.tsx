@@ -1,3 +1,5 @@
+import { motion } from "motion/react";
+
 interface NavTab {
   id: string;
   label: string;
@@ -18,7 +20,6 @@ export default function MobileBottomNav({
   tabs,
   currentTab,
   viewMode,
-  primaryColor,
   onTabClick,
 }: MobileBottomNavProps) {
   const isLightAppearance = appearanceMode === "light";
@@ -30,15 +31,15 @@ export default function MobileBottomNav({
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         background: isLightAppearance
           ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(245, 249, 255, 0.94) 100%)"
-          : "linear-gradient(180deg, rgba(8, 18, 38, 0.92) 0%, rgba(6, 13, 28, 0.88) 100%)",
-        backdropFilter: "blur(20px) saturate(1.2)",
-        WebkitBackdropFilter: "blur(20px) saturate(1.2)",
+          : "linear-gradient(180deg, rgba(8, 18, 38, 0.94) 0%, rgba(6, 13, 28, 0.92) 100%)",
+        backdropFilter: "blur(24px) saturate(1.3)",
+        WebkitBackdropFilter: "blur(24px) saturate(1.3)",
         borderTop: isLightAppearance
           ? "1px solid rgba(148, 163, 184, 0.20)"
-          : "1px solid rgba(96, 165, 250, 0.15)",
+          : "1px solid rgba(96, 165, 250, 0.18)",
         boxShadow: isLightAppearance
           ? "0 -6px 20px rgba(37, 99, 235, 0.08)"
-          : "0 -6px 24px rgba(3, 10, 24, 0.50), inset 0 1px 0 rgba(96, 165, 250, 0.12)",
+          : "0 -8px 28px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(96, 165, 250, 0.14)",
       }}
     >
       <div className="flex items-center justify-around py-1.5 px-1">
@@ -47,30 +48,46 @@ export default function MobileBottomNav({
           const isActive = currentTab === tab.id && viewMode === "dashboard";
 
           return (
-            <button
+            <motion.button
               type="button"
               key={tab.id}
               onClick={() => onTabClick(tab.id)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-2 min-w-[3.5rem] rounded-xl transition-all duration-200 ${
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              className={`flex flex-col items-center gap-0.5 px-3 py-2 min-w-[3.5rem] rounded-xl transition-colors duration-200 ${
                 isActive
-                  ? "text-white -translate-y-0.5"
+                  ? "text-white"
                   : isLightAppearance
-                    ? "text-slate-400 hover:text-blue-600"
-                    : "text-blue-200/50 hover:text-blue-100/80"
+                    ? "text-slate-500 hover:text-blue-600"
+                    : "text-blue-100/70 hover:text-blue-100/90"
               }`}
               style={
                 isActive
                   ? {
-                      background: `linear-gradient(135deg, ${primaryColor} 0%, #0c8ed8 100%)`,
-                      boxShadow:
-                        "0 4px 16px rgba(37, 99, 235, 0.35), 0 0 24px rgba(59, 130, 246, 0.12)",
+                      background: isLightAppearance
+                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)"
+                        : "linear-gradient(135deg, rgba(37, 99, 235, 0.28) 0%, rgba(59, 130, 246, 0.18) 100%)",
+                      boxShadow: isLightAppearance
+                        ? "0 2px 12px rgba(37, 99, 235, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)"
+                        : "0 2px 16px rgba(37, 99, 235, 0.25), inset 0 1px 0 rgba(148, 197, 255, 0.15)",
+                      border: isLightAppearance
+                        ? "1px solid rgba(37, 99, 235, 0.15)"
+                        : "1px solid rgba(96, 165, 250, 0.22)",
                     }
                   : {}
               }
             >
-              <Icon className="w-5 h-5" />
-              <span className={`text-[0.65rem] font-medium leading-none ${isActive ? "" : "opacity-80"}`}>{tab.label}</span>
-            </button>
+              <Icon
+                className={`w-5 h-5 ${isActive ? (isLightAppearance ? "text-blue-600" : "text-blue-100") : ""}`}
+              />
+              <span
+                className={`text-[0.7rem] font-medium leading-none ${
+                  isActive ? (isLightAppearance ? "text-blue-700" : "text-blue-50") : ""
+                }`}
+              >
+                {tab.label}
+              </span>
+            </motion.button>
           );
         })}
       </div>

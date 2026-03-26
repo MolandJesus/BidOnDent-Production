@@ -46,13 +46,20 @@ export default function AccountMenu({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.1 }}
-      className="bd-glass-card rounded-2xl p-3"
+      className="bd-glass-card rounded-2xl p-3 relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+          "linear-gradient(180deg, rgba(11, 23, 47, 0.88) 0%, rgba(8, 18, 38, 0.84) 100%)",
         borderColor: "rgba(96, 165, 250, 0.22)",
       }}
     >
+      {/* Subtle decorative orb */}
+      <div
+        className="absolute -left-10 bottom-8 w-28 h-28 rounded-full pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)",
+        }}
+      />
       <div className="space-y-1.5">
         <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onOpenSettings}>
           <div className="flex items-center">
