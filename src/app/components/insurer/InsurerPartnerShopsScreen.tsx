@@ -160,7 +160,7 @@ export default function InsurerPartnerShopsScreen({
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#e0f2fe_0%,#f8fafc_36%,#f1f5f9_100%)]">
+    <div className="min-h-screen">
       <div className="sticky top-0 z-10 border-b border-blue-200/30 bd-glass-panel !rounded-none" style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}>
         <div className="px-4 py-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -203,11 +203,11 @@ export default function InsurerPartnerShopsScreen({
                 placeholder="Search shops by name, location, or specialty..."
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                className="w-full rounded-2xl border border-slate-200/60 bg-white/80 backdrop-blur-sm py-2.5 pl-10 pr-4 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-2xl border border-blue-200/30 bg-white/10 backdrop-blur-sm py-2.5 pl-10 pr-4 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200/50 bg-white/60 backdrop-blur-sm p-2">
+            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-blue-200/30 bg-white/10 backdrop-blur-sm p-2">
               <span className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                 Directions Provider
               </span>

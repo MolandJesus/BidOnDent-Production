@@ -158,7 +158,7 @@ export default function CompetitorAnalysisScreen({
   const yourShopJobs = Math.max(96, Math.round(totalJobs * 0.18));
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <div className="min-h-screen pb-20">
       <div
         className="sticky top-0 z-10 px-4 py-4 text-white shadow-md"
         style={{

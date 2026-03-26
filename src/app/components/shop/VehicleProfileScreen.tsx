@@ -115,7 +115,7 @@ export default function VehicleProfileScreen({
   return (
     <div className="min-h-screen bd-glass-panel pb-20">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-blue-200/30 sticky top-0 z-10">
+      <div className="bd-glass-panel border-b border-blue-200/30 sticky top-0 z-10">
         <div className="px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">

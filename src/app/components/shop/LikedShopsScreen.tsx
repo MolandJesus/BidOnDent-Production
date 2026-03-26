@@ -79,7 +79,7 @@ export default function LikedShopsScreen({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
+    <div className="min-h-screen pb-20">
       <div
         className="sticky top-0 z-10 border-b border-white/10 text-white shadow-md"
         style={{

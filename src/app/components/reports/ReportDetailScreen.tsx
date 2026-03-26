@@ -81,14 +81,14 @@ export default function ReportDetailScreen({
   }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 pb-20">
+    <div className="min-h-screen pb-20">
       {/* Header */}
       <div className="bd-glass-panel border-b border-white/30 sticky top-0 z-10">
         <div className="px-4 py-4">
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/60"
+              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/10"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
