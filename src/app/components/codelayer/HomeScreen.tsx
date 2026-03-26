@@ -5,6 +5,7 @@ import InsurerMapWidget from "../dashboard/InsurerMapWidget";
 import { buildPrimaryAction } from "./homeScreenData";
 import { HomeOnboardingCard, HomeReportsList } from "./HomeScreenSections";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import type { DamageReport } from "../../types";
 
 type HomeScreenProps = {
   userType: string;
@@ -32,7 +33,7 @@ type HomeScreenProps = {
   demoMode?: boolean;
   originalAccountType?: string;
   onExitDemoMode?: () => void;
-  reports?: any[];
+  reports?: DamageReport[];
 };
 
 export default function HomeScreen({
