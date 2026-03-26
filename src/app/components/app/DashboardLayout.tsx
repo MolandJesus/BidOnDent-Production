@@ -1,4 +1,4 @@
-import { Bell, Car, Search, Settings, Sparkles } from "lucide-react";
+import { Bell, Car, Home, LogOut, Search, Settings, Sparkles, User } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Bid, NavTab, Notification, Vehicle } from "../../types";
@@ -111,8 +111,8 @@ export default function DashboardLayout({
 
   return (
     <div
-      className={`min-h-screen relative ${isLightAppearance ? "" : "dark"}`}
-      data-theme={isLightAppearance ? "light" : "dark"}
+      className="min-h-screen relative dark"
+      data-theme="dark"
       style={{ background: surfaceTheme.background }}
     >
       {/* Map background layer (full-bleed, fixed, z-0) — deep ocean atmosphere */}
@@ -121,31 +121,33 @@ export default function DashboardLayout({
         id="dashboard-map-bg"
         style={{
           background: isLightAppearance
-            ? "radial-gradient(ellipse 50% 40% at 75% 85%, rgba(139,92,246,0.04), transparent 55%), radial-gradient(ellipse 130% 95% at 24% 8%, rgba(203, 224, 255, 0.74) 0%, rgba(241, 247, 255, 0.96) 62%, #f3f8ff 100%)"
+            ? "radial-gradient(ellipse 40% 35% at 70% 15%, rgba(59,130,246,0.08), transparent 50%), radial-gradient(ellipse 35% 30% at 20% 80%, rgba(99,102,241,0.05), transparent 50%), radial-gradient(ellipse 50% 40% at 85% 80%, rgba(217,119,6,0.04), transparent 55%), radial-gradient(ellipse 40% 30% at 10% 20%, rgba(251,191,36,0.025), transparent 50%), radial-gradient(ellipse 120% 80% at 30% 20%, rgba(12, 24, 48, 0.97) 0%, rgba(8, 16, 32, 0.99) 60%, #070e1c 100%)"
             : "radial-gradient(ellipse 40% 35% at 70% 15%, rgba(59,130,246,0.07), transparent 50%), radial-gradient(ellipse 35% 30% at 20% 80%, rgba(99,102,241,0.04), transparent 50%), radial-gradient(ellipse 50% 40% at 85% 80%, rgba(217,119,6,0.035), transparent 55%), radial-gradient(ellipse 40% 30% at 10% 20%, rgba(251,191,36,0.02), transparent 50%), radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)",
         }}
       />
       {/* Subtle texture overlay for dashboard depth */}
-      {!isLightAppearance && (
-        <div
-          className="fixed inset-0 z-0 pointer-events-none opacity-15"
-          style={{
-            backgroundImage: "radial-gradient(circle, rgba(255,250,240,0.03) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-      )}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none opacity-15"
+        style={{
+          backgroundImage: "radial-gradient(circle, rgba(255,250,240,0.03) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
       {/* Floating panel container (z-10) */}
       <div className="relative z-10 md:flex md:min-h-screen">
         <aside
-          className="hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r md:border-blue-900/40"
+          className={`hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r ${
+            isLightAppearance ? "md:border-blue-900/30" : "md:border-blue-900/40"
+          }`}
           style={{
             background: isLightAppearance
-              ? "linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(241, 247, 255, 0.92) 100%)"
+              ? "linear-gradient(180deg, rgba(10, 20, 42, 0.88) 0%, rgba(8, 16, 34, 0.82) 100%)"
               : "linear-gradient(180deg, rgba(7, 16, 34, 0.84) 0%, rgba(6, 13, 28, 0.76) 100%)",
           }}
         >
-          <div className="px-6 py-6 border-b border-blue-900/35">
+          <div
+            className={`px-5 py-5 border-b ${isLightAppearance ? "border-blue-900/25" : "border-blue-900/35"}`}
+          >
             <button
               onClick={onLogoClick}
               className="bd-glass-control--utility flex items-center gap-2.5 cursor-pointer bg-transparent backdrop-blur-xl shadow-none"
@@ -176,14 +178,14 @@ export default function DashboardLayout({
                   Bid
                 </span>
                 <span style={{ color: "#2563eb", fontWeight: 700 }}>On</span>
-                <span className={isLightAppearance ? "text-slate-900" : "text-slate-100"}>
+                <span className={isLightAppearance ? "text-blue-100/80" : "text-slate-100"}>
                   Dent
                 </span>
               </h1>
             </button>
           </div>
 
-          <nav className="px-3 py-4 space-y-1.5 flex-1 overflow-y-auto">
+          <nav className="px-3 py-4 space-y-1 flex-1 overflow-y-auto">
             {currentNavTabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = currentTab === tab.id && viewMode === "dashboard";
@@ -192,39 +194,118 @@ export default function DashboardLayout({
                 <button
                   key={tab.id}
                   onClick={() => onTabClick(tab.id)}
-                  className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl text-left transition-all ${
-                    isActive
-                      ? "bd-glass-control bd-glass-control--primary"
-                      : "bd-glass-control--secondary"
+                  className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 relative ${
+                    isActive ? "" : "hover:bg-blue-500/[0.06]"
                   }`}
                   type="button"
                   style={
                     isActive
                       ? {
-                          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                          boxShadow:
-                            "0 2px 16px rgba(37, 99, 235, 0.28), 0 0 24px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+                          background: isLightAppearance
+                            ? "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%)"
+                            : "linear-gradient(135deg, rgba(37, 99, 235, 0.18) 0%, rgba(59, 130, 246, 0.10) 100%)",
+                          boxShadow: isLightAppearance
+                            ? "inset 0 1px 0 rgba(147, 197, 253, 0.10)"
+                            : "inset 0 1px 0 rgba(147, 197, 253, 0.08)",
                         }
                       : {}
                   }
                 >
-                  <span className="inline-flex items-center gap-3 text-base font-medium">
-                    <Icon className="w-5 h-5" />
+                  {/* Active indicator bar */}
+                  {isActive && (
+                    <span
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+                      style={{
+                        background: `linear-gradient(180deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                        boxShadow: "0 0 8px rgba(37, 99, 235, 0.35)",
+                      }}
+                    />
+                  )}
+                  <span
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 ${
+                      isActive
+                        ? ""
+                        : isLightAppearance
+                          ? "bg-blue-500/[0.06] group-hover:bg-blue-500/[0.12]"
+                          : "bg-blue-500/[0.08] group-hover:bg-blue-500/[0.14]"
+                    }`}
+                    style={
+                      isActive
+                        ? {
+                            background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                            boxShadow: "0 2px 8px rgba(37, 99, 235, 0.30)",
+                          }
+                        : {}
+                    }
+                  >
+                    <Icon
+                      className={`w-[18px] h-[18px] transition-colors duration-200 ${
+                        isActive
+                          ? "text-white"
+                          : isLightAppearance
+                            ? "text-blue-200/65 group-hover:text-blue-200"
+                            : "text-blue-200/70 group-hover:text-blue-200"
+                      }`}
+                    />
+                  </span>
+                  <span
+                    className={`text-[0.9rem] font-semibold transition-colors duration-200 ${
+                      isActive
+                        ? isLightAppearance
+                          ? "text-blue-100"
+                          : "text-blue-100"
+                        : isLightAppearance
+                          ? "text-slate-300 group-hover:text-slate-100"
+                          : "text-slate-300 group-hover:text-slate-100"
+                    }`}
+                  >
                     {tab.label}
                   </span>
-                  {isActive && <span className="text-white/90">›</span>}
+                  {isActive && (
+                    <span
+                      className={`ml-auto text-xs font-medium ${
+                        isLightAppearance ? "text-blue-300/50" : "text-blue-300/50"
+                      }`}
+                    >
+                      ›
+                    </span>
+                  )}
                 </button>
               );
             })}
             {onOpenDemoMode && (
-              <button
-                onClick={onOpenDemoMode}
-                className="bd-glass-control--secondary w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium"
-                type="button"
+              <div
+                className={`pt-2 mt-1 border-t ${isLightAppearance ? "border-blue-900/15" : "border-blue-900/20"}`}
               >
-                <Sparkles className="w-5 h-5 text-blue-600" />
-                <span className="text-base">Demo Mode</span>
-              </button>
+                <button
+                  onClick={onOpenDemoMode}
+                  className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 hover:bg-blue-500/[0.06]`}
+                  type="button"
+                >
+                  <span
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 ${
+                      isLightAppearance
+                        ? "bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]"
+                        : "bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]"
+                    }`}
+                  >
+                    <Sparkles
+                      className={`w-[18px] h-[18px] transition-colors ${
+                        isLightAppearance ? "text-purple-300/80" : "text-purple-300/80"
+                      }`}
+                    />
+                  </span>
+                  <span
+                    className={`text-[0.9rem] font-semibold transition-colors duration-200 ${
+                      isLightAppearance
+                        ? "text-slate-300 group-hover:text-slate-100"
+                        : "text-slate-300 group-hover:text-slate-100"
+                    }`}
+                  >
+                    Demo Mode
+                  </span>
+                </button>
+              </div>
             )}
             {showSidebarProfilePanel && profileDropdownData && (
               <div className="pt-2">
@@ -250,24 +331,30 @@ export default function DashboardLayout({
             )}
           </nav>
 
-          <div className="p-3 border-t border-blue-900/35">
+          <div
+            className={`p-3 border-t ${isLightAppearance ? "border-blue-900/25" : "border-blue-900/35"}`}
+          >
             <button
               onClick={() => {
                 setShowTopProfileMenu(false);
                 setShowSidebarProfilePanel((current) => !current);
               }}
-              className="bd-glass-control--utility w-full flex items-center gap-3 p-3 rounded-xl"
+              className={`group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 ${
+                isLightAppearance ? "hover:bg-blue-500/[0.06]" : "hover:bg-blue-500/[0.06]"
+              }`}
               type="button"
             >
               {userImageUrl ? (
                 <img
                   src={userImageUrl}
                   alt="Profile"
-                  className="w-11 h-11 rounded-full object-cover border border-slate-200"
+                  className={`w-10 h-10 rounded-full object-cover ring-2 ${
+                    isLightAppearance ? "ring-blue-500/20" : "ring-blue-500/20"
+                  }`}
                 />
               ) : (
                 <div
-                  className="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                   }}
@@ -275,14 +362,14 @@ export default function DashboardLayout({
                   {userProfile.name.charAt(0).toUpperCase()}
                 </div>
               )}
-              <div className="text-left min-w-0">
+              <div className="text-left min-w-0 flex-1">
                 <p
-                  className={`text-base font-semibold truncate ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                  className={`text-sm font-semibold truncate ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
                 >
                   {userProfile.name}
                 </p>
                 <p
-                  className={`text-sm truncate ${isLightAppearance ? "text-slate-600" : "text-slate-300"}`}
+                  className={`text-xs truncate ${isLightAppearance ? "text-slate-400" : "text-slate-400"}`}
                 >
                   {userProfile.email}
                 </p>
@@ -293,13 +380,15 @@ export default function DashboardLayout({
 
         <div className="flex-1 min-w-0">
           <header
-            className="sticky top-0 z-40 bd-glass-panel rounded-none border-0 border-b border-blue-900/40"
+            className={`sticky top-0 z-40 bd-glass-panel rounded-none border-0 border-b ${
+              isLightAppearance ? "border-blue-900/25" : "border-blue-900/40"
+            }`}
             style={{
               background: isLightAppearance
-                ? "linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(240, 247, 255, 0.92) 100%)"
+                ? "linear-gradient(180deg, rgba(10, 20, 42, 0.90) 0%, rgba(8, 18, 38, 0.84) 100%)"
                 : "linear-gradient(180deg, rgba(7, 16, 34, 0.86) 0%, rgba(8, 18, 38, 0.78) 100%)",
               boxShadow: isLightAppearance
-                ? "0 8px 24px rgba(37, 99, 235, 0.09), inset 0 -1px 0 rgba(37, 99, 235, 0.18)"
+                ? "0 8px 24px rgba(5, 10, 24, 0.36), inset 0 -1px 0 rgba(59, 130, 246, 0.16)"
                 : "0 8px 28px rgba(3, 10, 24, 0.45), inset 0 -1px 0 rgba(59, 130, 246, 0.20)",
             }}
           >
@@ -318,7 +407,7 @@ export default function DashboardLayout({
                   <Car className="w-4 h-4" />
                 </span>
                 <span
-                  className={`text-lg font-semibold ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                  className={`text-lg font-semibold ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
                 >
                   BidOnDent
                 </span>
@@ -326,12 +415,12 @@ export default function DashboardLayout({
 
               <div className="hidden md:block">
                 <p
-                  className={`text-xs font-medium uppercase tracking-wide ${isLightAppearance ? "text-blue-700/80" : "text-blue-200/80"}`}
+                  className={`text-xs font-medium uppercase tracking-wide ${isLightAppearance ? "text-blue-200/80" : "text-blue-200/80"}`}
                 >
                   BidOnDent
                 </p>
                 <h2
-                  className={`text-xl font-semibold leading-tight ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                  className={`text-xl font-semibold leading-tight ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
                 >
                   {activeTabLabel}
                 </h2>
@@ -349,10 +438,10 @@ export default function DashboardLayout({
                 )}
                 <div className="hidden lg:flex items-center gap-2 bd-glass-control--utility px-3 py-2 min-w-[260px]">
                   <Search
-                    className={`w-4 h-4 ${isLightAppearance ? "text-blue-700/65" : "text-blue-200/70"}`}
+                    className={`w-4 h-4 ${isLightAppearance ? "text-blue-200/70" : "text-blue-200/70"}`}
                   />
                   <input
-                    className={`bg-transparent text-sm w-full outline-none ${isLightAppearance ? "placeholder:text-blue-700/50 text-slate-900" : "placeholder:text-blue-200/60 text-slate-100"}`}
+                    className={`bg-transparent text-sm w-full outline-none ${isLightAppearance ? "placeholder:text-blue-200/60 text-slate-100" : "placeholder:text-blue-200/60 text-slate-100"}`}
                     placeholder="Search..."
                     aria-label="Search"
                   />
@@ -365,12 +454,12 @@ export default function DashboardLayout({
                       setShowNotifications((current) => !current);
                       setShowTopProfileMenu(false);
                     }}
-                    className="relative w-10 h-10 rounded-xl bd-glass-control--utility flex items-center justify-center"
+                    className="relative w-11 h-11 rounded-full bd-glass-control--utility flex items-center justify-center"
                     aria-label="Open notifications"
                     aria-expanded={showNotifications}
                   >
                     <Bell
-                      className={`w-5 h-5 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                      className={`w-5 h-5 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
                     />
                     {unreadCount > 0 && (
                       <>
@@ -409,17 +498,17 @@ export default function DashboardLayout({
                     aria-expanded={showTopProfileMenu}
                     aria-haspopup="menu"
                     aria-label="User profile menu"
-                    className="flex items-center gap-2 px-1.5 py-1.5 rounded-xl bd-glass-control--utility hover:bg-white/40 transition-colors"
+                    className="flex items-center gap-2 pl-1.5 pr-2 py-1.5 rounded-full bd-glass-control--utility hover:bg-blue-500/10 transition-colors"
                   >
                     {userImageUrl ? (
                       <img
                         src={userImageUrl}
                         alt="Profile"
-                        className="w-9 h-9 rounded-full object-cover border border-slate-200"
+                        className="w-10 h-10 rounded-full object-cover border border-blue-400/25"
                       />
                     ) : (
                       <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold"
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
                         style={{
                           background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                         }}
@@ -429,12 +518,12 @@ export default function DashboardLayout({
                     )}
                     <div className="hidden md:block text-left pr-1">
                       <p
-                        className={`text-sm font-semibold leading-none ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                        className={`text-sm font-semibold leading-none ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
                       >
                         {userProfile.name}
                       </p>
                       <p
-                        className={`text-xs mt-1 leading-none ${isLightAppearance ? "text-slate-600" : "text-slate-300"}`}
+                        className={`text-xs mt-1 leading-none ${isLightAppearance ? "text-slate-300" : "text-slate-300"}`}
                       >
                         {userProfile.email}
                       </p>
@@ -445,13 +534,27 @@ export default function DashboardLayout({
                     <div
                       role="menu"
                       aria-label="User profile menu"
-                      className="absolute right-0 mt-2 w-56 bd-glass-floating z-50 overflow-hidden"
+                      className="absolute right-0 mt-2 w-60 bd-glass-floating z-50 overflow-hidden"
                     >
-                      <div className="px-3 py-2.5 border-b border-slate-200/40">
-                        <p className="text-sm font-semibold text-slate-900 truncate">
+                      <div
+                        className={`px-3 py-2.5 border-b ${
+                          isLightAppearance ? "border-blue-400/15" : "border-blue-400/15"
+                        }`}
+                      >
+                        <p
+                          className={`text-sm font-semibold truncate ${
+                            isLightAppearance ? "text-slate-100" : "text-slate-100"
+                          }`}
+                        >
                           {userProfile.name}
                         </p>
-                        <p className="text-xs text-slate-500 truncate">{userProfile.email}</p>
+                        <p
+                          className={`text-xs truncate ${
+                            isLightAppearance ? "text-slate-400" : "text-slate-400"
+                          }`}
+                        >
+                          {userProfile.email}
+                        </p>
                       </div>
                       <button
                         role="menuitem"
@@ -459,8 +562,13 @@ export default function DashboardLayout({
                           profileDropdownData.onNavigate("dashboard", "home");
                           setShowTopProfileMenu(false);
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors flex items-center gap-2.5"
+                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
+                          isLightAppearance
+                            ? "text-slate-200 hover:bg-blue-500/10"
+                            : "text-slate-200 hover:bg-blue-500/10"
+                        }`}
                       >
+                        <Home className="w-4 h-4 opacity-70" />
                         Dashboard
                       </button>
                       <button
@@ -469,7 +577,11 @@ export default function DashboardLayout({
                           setShowTopProfileMenu(false);
                           setShowSettingsModal(true);
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors flex items-center gap-2.5"
+                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
+                          isLightAppearance
+                            ? "text-slate-200 hover:bg-blue-500/10"
+                            : "text-slate-200 hover:bg-blue-500/10"
+                        }`}
                       >
                         <Settings className="w-4 h-4 opacity-60" />
                         Site Settings
@@ -480,8 +592,13 @@ export default function DashboardLayout({
                           profileDropdownData.onNavigate("dashboard", "account");
                           setShowTopProfileMenu(false);
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors flex items-center gap-2.5"
+                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
+                          isLightAppearance
+                            ? "text-slate-200 hover:bg-blue-500/10"
+                            : "text-slate-200 hover:bg-blue-500/10"
+                        }`}
                       >
+                        <User className="w-4 h-4 opacity-70" />
                         Account Settings
                       </button>
                       <button
@@ -490,8 +607,13 @@ export default function DashboardLayout({
                           profileDropdownData.onLogout();
                           setShowTopProfileMenu(false);
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-rose-600 hover:bg-rose-50/60 transition-colors border-t border-slate-200/40"
+                        className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${
+                          isLightAppearance
+                            ? "text-rose-400 hover:bg-rose-500/10 border-t border-blue-400/15"
+                            : "text-rose-400 hover:bg-rose-500/10 border-t border-blue-400/15"
+                        }`}
                       >
+                        <LogOut className="w-4 h-4 opacity-70" />
                         Log Out
                       </button>
                     </div>
@@ -505,7 +627,7 @@ export default function DashboardLayout({
             className="px-3 md:px-8 py-4 md:py-6 pb-24 md:pb-8"
             style={{
               background: isLightAppearance
-                ? "linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%)"
+                ? "linear-gradient(180deg, rgba(2, 6, 23, 0.18) 0%, rgba(2, 6, 23, 0.08) 100%)"
                 : "linear-gradient(180deg, rgba(2, 6, 23, 0.20) 0%, rgba(2, 6, 23, 0.08) 100%)",
             }}
           >

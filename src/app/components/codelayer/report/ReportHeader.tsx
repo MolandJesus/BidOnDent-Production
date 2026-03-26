@@ -44,14 +44,14 @@ export default function ReportHeader({
         <div className="min-w-0">
           <h1
             className={`font-semibold text-base sm:text-lg leading-tight ${
-              isLightAppearance ? "text-slate-900" : "text-slate-100"
+              isLightAppearance ? "text-slate-100" : "text-slate-100"
             }`}
           >
             Report Damage
           </h1>
           <p
             className={`text-xs mt-0.5 sm:mt-1 ${
-              isLightAppearance ? "text-slate-600" : "text-blue-100/75"
+              isLightAppearance ? "text-blue-100/75" : "text-blue-100/75"
             }`}
           >
             Tell us what happened and get bids faster

@@ -56,7 +56,7 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
         <DrawerPrimitive.Content
           className={cn(
             "fixed inset-x-0 bottom-0 z-[610] flex h-full max-h-[88vh] flex-col",
-            "rounded-t-[1.5rem] border-t backdrop-blur-2xl",
+            "rounded-t-[1.25rem] border-t backdrop-blur-2xl",
             "map-liquid-card map-ui-enter pointer-events-auto",
             theme.panelStrongClassName
           )}
@@ -65,19 +65,20 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
           }}
         >
           {/* Drag handle — enlarged hit area for reliable gesture capture */}
-          <div className="flex shrink-0 cursor-grab items-center justify-center py-4 active:cursor-grabbing">
-            <div className="h-1.5 w-14 rounded-full bg-sky-400/70" />
+          <div className="flex shrink-0 cursor-grab items-center justify-center py-3.5 active:cursor-grabbing">
+            <div className="h-1 w-10 rounded-full bg-sky-400/50" />
           </div>
 
           {/* Header strip — "Back to Map" affordance when sheet is expanded */}
           {!isCollapsed && (
-            <div className="flex shrink-0 items-center justify-between px-4 pb-2">
+            <div className="flex shrink-0 items-center justify-between px-4 pb-2.5">
               <button
                 type="button"
                 onClick={collapseToMap}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-full px-4 py-2 min-h-[44px] text-xs font-medium",
-                  "bg-sky-500/15 text-sky-300 active:bg-sky-500/25",
+                  "flex items-center gap-1.5 rounded-full px-3.5 py-2 min-h-[44px] text-xs font-semibold",
+                  "bg-sky-500/12 text-sky-300 active:bg-sky-500/20",
+                  "border border-sky-400/15",
                   "transition-colors duration-150"
                 )}
               >

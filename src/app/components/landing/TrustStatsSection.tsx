@@ -30,24 +30,24 @@ export default function TrustStatsSection({
 
   return (
     <section
-      className={`py-10 md:py-16 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
+      className={`py-12 sm:py-16 md:py-20 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(176deg, #e4eaf8 0%, #ece8fc 40%, #e6edfa 70%, #e2e8f6 100%)"
+          ? "linear-gradient(176deg, #0c1e3e 0%, #10244a 40%, #0e2044 70%, #0c1a38 100%)"
           : "linear-gradient(176deg, #0e2448 0%, #152e58 50%, #102850 100%)",
       }}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-400/22" : "via-blue-400/25"} to-transparent`}
       />
       {/* Decorative background elements */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(99,102,241,0.09),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(59,130,246,0.07),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(37,99,235,0.04),transparent_50%)]" />
-          <div className="absolute top-0 right-[30%] w-56 h-56 bg-blue-300/[0.06] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(99,102,241,0.10),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(59,130,246,0.08),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(255,191,105,0.03),transparent_50%)]" />
+          <div className="absolute top-0 right-[30%] w-56 h-56 bg-blue-400/[0.05] rounded-full blur-[100px]" />
         </>
       ) : (
         <>
@@ -65,10 +65,10 @@ export default function TrustStatsSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-3.5 h-3.5 rounded-full ${isLightAppearance ? "bg-blue-400/20" : "bg-blue-400/35"}`}
+          className={`w-3.5 h-3.5 rounded-full ${isLightAppearance ? "bg-blue-400/28" : "bg-blue-400/35"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 16px 4px rgba(59,130,246,0.1)"
+              ? "0 0 18px 5px rgba(59,130,246,0.14)"
               : "0 0 20px 6px rgba(59,130,246,0.18)",
           }}
         />
@@ -78,10 +78,10 @@ export default function TrustStatsSection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-indigo-400/30"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-indigo-400/30"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 14px 3px rgba(99,102,241,0.08)"
+              ? "0 0 16px 4px rgba(99,102,241,0.11)"
               : "0 0 16px 4px rgba(99,102,241,0.15)",
           }}
         />
@@ -96,10 +96,13 @@ export default function TrustStatsSection({
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
-                className={`inline-flex items-center justify-center w-12 h-12 rounded-xl backdrop-blur-sm mb-3 group-hover:scale-105 transition-all duration-300 border ${isLightAppearance ? "bg-blue-50 border-blue-100/60 group-hover:bg-blue-100/60" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
+                className={`inline-flex items-center justify-center w-12 h-12 rounded-xl backdrop-blur-sm mb-3 group-hover:scale-105 transition-all duration-300 border ${isLightAppearance ? "bg-white/10 border-white/[0.08] group-hover:bg-white/15" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
                 style={
                   isLightAppearance
-                    ? {}
+                    ? {
+                        boxShadow:
+                          "0 0 14px rgba(59, 130, 246, 0.06), inset 0 1px 0 rgba(96, 165, 250, 0.07)",
+                      }
                     : {
                         boxShadow:
                           "0 0 16px rgba(59, 130, 246, 0.07), inset 0 1px 0 rgba(96, 165, 250, 0.08)",
@@ -107,16 +110,16 @@ export default function TrustStatsSection({
                 }
               >
                 <item.icon
-                  className={`w-6 h-6 ${isLightAppearance ? "text-blue-600" : "text-blue-300"}`}
+                  className={`w-6 h-6 ${isLightAppearance ? "text-blue-400" : "text-blue-300"}`}
                 />
               </div>
               <div
-                className={`text-lg sm:text-xl font-bold mb-1.5 leading-tight ${isLightAppearance ? "text-slate-900" : ""}`}
+                className={`text-lg sm:text-xl font-bold mb-1.5 leading-tight ${isLightAppearance ? "text-slate-100" : ""}`}
               >
                 {item.value}
               </div>
               <div
-                className={`text-sm leading-relaxed max-w-[180px] mx-auto ${isLightAppearance ? "text-slate-500" : "text-slate-300/80"}`}
+                className={`text-sm leading-relaxed max-w-[180px] mx-auto ${isLightAppearance ? "text-blue-100/70" : "text-slate-300/80"}`}
               >
                 {item.label}
               </div>

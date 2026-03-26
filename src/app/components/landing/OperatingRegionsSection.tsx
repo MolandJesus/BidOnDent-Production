@@ -21,7 +21,7 @@ export default function OperatingRegionsSection({
   return (
     <section
       id="coverage"
-      className="py-10 sm:py-14 text-white relative overflow-hidden"
+      className="py-12 sm:py-16 text-white relative overflow-hidden"
       style={{ background: "linear-gradient(180deg, #071830 0%, #0a2038 50%, #06142a 100%)" }}
       ref={sectionRef}
     >

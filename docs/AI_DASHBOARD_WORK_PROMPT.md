@@ -1,9 +1,10 @@
 # BidOnDent — Backend, Code Cleanup & Bug Fix Autopilot Prompt
 
-**Date:** March 26, 2026
+**Date:** March 26, 2026 (Updated)
 **Branch:** `feature/platform-bugfix-sweep-by-MolandJesus`
 **Repo:** `MolandJesus/BidOnDent-Production`
 **Mode:** AUTOPILOT — execute passes sequentially without stopping. Report after each pass.
+**Build Status:** ✅ Clean (1.97s, zero errors)
 
 ---
 
@@ -116,11 +117,21 @@ The highest-debt files:
 **DO NOT MODIFY any file in these paths:**
 
 ```
-src/app/components/landing/*          ← All landing sections
-src/app/components/app/LandingPageLayout.tsx
+src/app/components/landing/*          ← All landing sections (design in progress)
+src/app/components/app/LandingPageLayout.tsx  ← Layout composition
+src/styles/theme.css                  ← Glass design system being redesigned
 src/styles/animations.css             ← Orb keyframes being tuned
 src/app/theme/globalSurfaceTheme.ts   ← Surface tokens being adjusted
+src/app/components/maps/mapSurfaceTheme.ts  ← Map theme tokens
 ```
+
+**Also do NOT change:**
+
+- Any CSS custom property starting with `--bd-glass-*` or `--bd-glow-*`
+- Any class name starting with `bd-glass-*` in any file
+- Background gradients, colors, or opacity values on any component — those are design territory
+
+**Safe to change:** Logic, props, types, state management, error handling, data flow — anything that doesn't alter the visual appearance.
 
 If you need to change shared types or theme contracts that these files also consume, **document the change clearly** and add a comment so the landing agent can reconcile.
 
@@ -321,15 +332,24 @@ Read these docs for full context (do NOT modify them unless updating status of w
 
 ## What the Other Agent Is Doing Right Now
 
-The landing page agent (Copilot / "Mola's Coder") is:
+The design agent (Copilot / "Mola's Coder") is currently:
 
-- Deepening dark-mode section backgrounds toward richer royal blue tones
-- Strengthening card glass treatments (borders, shadows, glass depth)
-- Keeping the existing orb/glow atmospheric effects
-- Touching only `src/app/components/landing/*`, `LandingPageLayout.tsx`, `animations.css`, and `globalSurfaceTheme.ts`
-- May also begin dashboard visual polish after landing pass completes
+- **Building a new "Frosted Glass" light mode** — transforming the current flat light mode into a warm, glowing frosted-glass-on-dark-blue aesthetic (inspired by older BidOnDent designs). This will become the new `"light"` appearance mode.
+- **Redesigning the glass CSS token system** — new CSS custom properties, warm glow effects, amber/gold accents blended with royal blue. Touching `theme.css`, `globalSurfaceTheme.ts`, and all landing sections.
+- **Landing page header mobile menu** — recently added hamburger menu with slide-down nav
+- **Section spacing normalization** — all landing sections standardized to `py-12 sm:py-16 md:py-20`
+- **Footer mobile grid** — 2-column on mobile, 4-column on desktop
+- May also begin applying the new frosted glass system to dashboard surfaces after landing
 
-**Coordination rule:** If you modify `App.tsx`, `types/index.ts`, or any shared hook, verify it doesn't break the landing layout. Run `npm run build` after every shared-file change.
+**Files actively being designed (DO NOT TOUCH):**
+
+- `src/styles/theme.css` — glass token system
+- `src/app/theme/globalSurfaceTheme.ts` — JS runtime tokens
+- `src/app/components/landing/*` — all 11 landing section files
+- `src/app/components/app/LandingPageLayout.tsx`
+- `src/styles/animations.css`
+
+**Coordination rule:** If you modify `App.tsx`, `types/index.ts`, `dashboard-router-types.ts`, or any shared hook, verify it doesn't break the landing layout. Run `npm run build` after every shared-file change.
 
 ---
 

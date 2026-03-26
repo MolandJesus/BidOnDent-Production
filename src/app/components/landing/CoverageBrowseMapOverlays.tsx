@@ -64,35 +64,38 @@ export default function CoverageBrowseMapOverlays({
 
   return (
     <div className={className}>
-      <div className="pointer-events-none absolute inset-x-4 top-5 z-[620] flex items-start justify-between gap-4 xl:inset-x-6 xl:top-6 2xl:inset-x-8">
-        <div className="pointer-events-auto flex max-w-[380px] flex-col gap-3">
+      <div className="pointer-events-none absolute inset-x-3 top-4 z-[620] flex items-start justify-between gap-3 sm:inset-x-4 sm:top-5 xl:inset-x-6 xl:top-6 2xl:inset-x-8">
+        <div className="pointer-events-auto flex max-w-[320px] flex-col gap-2.5 sm:max-w-[380px] sm:gap-3">
           <div
             className={cn(
-              "map-liquid-card map-glass-float map-ui-enter map-ui-enter-delay-1 overflow-hidden rounded-[1.5rem] border px-4 py-3 backdrop-blur-3xl",
+              "map-liquid-card map-glass-float map-ui-enter map-ui-enter-delay-1 overflow-hidden rounded-[1.25rem] border px-3.5 py-2.5 backdrop-blur-3xl sm:rounded-[1.5rem] sm:px-4 sm:py-3",
               theme.panelStrongClassName
             )}
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-2.5">
               <div>
                 <div className={theme.metricLabelClassName}>Next maneuver</div>
                 <div
-                  className={cn("mt-1 text-base font-semibold leading-tight", theme.titleClassName)}
+                  className={cn(
+                    "mt-0.5 text-sm font-semibold leading-tight sm:mt-1 sm:text-base",
+                    theme.titleClassName
+                  )}
                 >
                   {nextInstruction || "Start route from the selected origin"}
                 </div>
               </div>
-              <span className={cn("shrink-0", theme.softBadgeClassName)}>
+              <span className={cn("shrink-0 text-[10px] sm:text-xs", theme.softBadgeClassName)}>
                 {selectedShop ? "Route ready" : "Select shop"}
               </span>
             </div>
 
-            <div className={cn("mt-2 text-sm", theme.secondaryTextClassName)}>
+            <div className={cn("mt-1.5 text-xs sm:mt-2 sm:text-sm", theme.secondaryTextClassName)}>
               {selectedShop
                 ? `Destination: ${selectedShop.name}`
                 : "Pick a partner shop to preview real-world travel time and launch directions."}
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5 sm:mt-3 sm:gap-2">
               <button
                 type="button"
                 onClick={() => onSidebarViewChange("shops")}
@@ -115,7 +118,7 @@ export default function CoverageBrowseMapOverlays({
                 disabled={!canStartNavigation}
                 className={cn(
                   theme.primaryButtonClassName,
-                  "min-h-[40px] px-4 py-2 text-xs disabled:opacity-50"
+                  "min-h-[36px] px-3.5 py-1.5 text-xs disabled:opacity-50 sm:min-h-[40px] sm:px-4 sm:py-2"
                 )}
               >
                 <Compass className="h-3.5 w-3.5" />
@@ -126,14 +129,19 @@ export default function CoverageBrowseMapOverlays({
 
           <div
             className={cn(
-              "map-liquid-card map-ui-enter map-ui-enter-delay-2 rounded-[1.5rem] border px-3 py-3 backdrop-blur-3xl",
+              "map-liquid-card map-ui-enter map-ui-enter-delay-2 rounded-[1.25rem] border px-3 py-2.5 backdrop-blur-3xl sm:rounded-[1.5rem] sm:py-3",
               theme.panelClassName
             )}
           >
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between gap-2.5">
               <div>
                 <div className={theme.metricLabelClassName}>Browse tools</div>
-                <div className={cn("mt-1 text-sm font-semibold", theme.titleClassName)}>
+                <div
+                  className={cn(
+                    "mt-0.5 text-xs font-semibold sm:mt-1 sm:text-sm",
+                    theme.titleClassName
+                  )}
+                >
                   Search, save, and change the map view without leaving the map.
                 </div>
               </div>
@@ -156,7 +164,7 @@ export default function CoverageBrowseMapOverlays({
               </div>
             </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-2">
+            <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:mt-3 sm:gap-2">
               <button
                 type="button"
                 onClick={() => onSidebarViewChange("search")}
@@ -197,7 +205,7 @@ export default function CoverageBrowseMapOverlays({
           </div>
         </div>
 
-        <div className="pointer-events-auto map-ui-enter map-ui-enter-delay-3 flex flex-col gap-2">
+        <div className="pointer-events-auto map-ui-enter map-ui-enter-delay-3 flex flex-col gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => onSidebarViewChange("search")}
@@ -233,35 +241,52 @@ export default function CoverageBrowseMapOverlays({
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-4 bottom-5 z-[620] flex justify-center xl:inset-x-6 xl:bottom-6 2xl:inset-x-8">
+      <div className="pointer-events-none absolute inset-x-3 bottom-4 z-[620] flex justify-center sm:inset-x-4 xl:inset-x-6 xl:bottom-6 2xl:inset-x-8">
         <div
           className={cn(
-            "map-liquid-card map-ui-enter pointer-events-auto w-full max-w-[760px] rounded-[1.5rem] border px-5 py-4 backdrop-blur-3xl",
+            "map-liquid-card map-ui-enter pointer-events-auto w-full max-w-[680px] rounded-[1.25rem] border px-4 py-3 sm:rounded-[1.5rem] sm:px-5 sm:py-3.5 backdrop-blur-3xl",
             theme.panelStrongClassName
           )}
         >
-          <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="grid grid-cols-3 gap-2 text-center">
             <div>
-              <div className={cn("text-xl font-semibold tabular-nums", theme.titleClassName)}>
+              <div
+                className={cn(
+                  "text-lg font-semibold tabular-nums sm:text-xl",
+                  theme.titleClassName
+                )}
+              >
                 {arrivalLabel}
               </div>
-              <div className={cn("text-xs", theme.secondaryTextClassName)}>arrival</div>
+              <div className={cn("text-[10px] sm:text-xs", theme.secondaryTextClassName)}>
+                arrival
+              </div>
             </div>
             <div>
-              <div className={cn("text-xl font-semibold tabular-nums", theme.titleClassName)}>
+              <div
+                className={cn(
+                  "text-lg font-semibold tabular-nums sm:text-xl",
+                  theme.titleClassName
+                )}
+              >
                 {routeMinutes ? `${routeMinutes}` : "--"}
               </div>
-              <div className={cn("text-xs", theme.secondaryTextClassName)}>min</div>
+              <div className={cn("text-[10px] sm:text-xs", theme.secondaryTextClassName)}>min</div>
             </div>
             <div>
-              <div className={cn("text-xl font-semibold tabular-nums", theme.titleClassName)}>
+              <div
+                className={cn(
+                  "text-lg font-semibold tabular-nums sm:text-xl",
+                  theme.titleClassName
+                )}
+              >
                 {routeMiles ? `${routeMiles}` : "--"}
               </div>
-              <div className={cn("text-xs", theme.secondaryTextClassName)}>mi</div>
+              <div className={cn("text-[10px] sm:text-xs", theme.secondaryTextClassName)}>mi</div>
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => onSidebarViewChange("explore")}

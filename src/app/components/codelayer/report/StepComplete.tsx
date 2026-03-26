@@ -27,7 +27,7 @@ export default function StepComplete({
           <Check className="w-8 h-8 text-white" />
         </div>
         <h2
-          className={`text-2xl font-bold mb-2 ${isLightAppearance ? "text-slate-900" : "text-white/95"}`}
+          className={`text-2xl font-bold mb-2 ${isLightAppearance ? "text-slate-100" : "text-white/95"}`}
         >
           Report submitted
         </h2>
@@ -40,7 +40,7 @@ export default function StepComplete({
 
       <div className="bd-glass-card p-5 mb-8">
         <h3
-          className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-900" : "text-white/90"}`}
+          className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-100" : "text-white/90"}`}
         >
           <ListChecks
             className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
@@ -59,7 +59,7 @@ export default function StepComplete({
             </div>
             <div>
               <p
-                className={`text-sm font-medium ${isLightAppearance ? "text-slate-900" : "text-white/85"}`}
+                className={`text-sm font-medium ${isLightAppearance ? "text-slate-100" : "text-white/85"}`}
               >
                 Shops review your report
               </p>
@@ -79,7 +79,7 @@ export default function StepComplete({
             </div>
             <div>
               <p
-                className={`text-sm font-medium ${isLightAppearance ? "text-slate-900" : "text-white/85"}`}
+                className={`text-sm font-medium ${isLightAppearance ? "text-slate-100" : "text-white/85"}`}
               >
                 Bids start arriving
               </p>
@@ -99,7 +99,7 @@ export default function StepComplete({
             </div>
             <div>
               <p
-                className={`text-sm font-medium ${isLightAppearance ? "text-slate-900" : "text-white/85"}`}
+                className={`text-sm font-medium ${isLightAppearance ? "text-slate-100" : "text-white/85"}`}
               >
                 Compare and choose
               </p>

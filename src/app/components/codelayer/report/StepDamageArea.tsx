@@ -39,7 +39,7 @@ export default function StepDamageArea({
       }}
     >
       <h2
-        className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+        className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
       >
         Where is the damage?
       </h2>

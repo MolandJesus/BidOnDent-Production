@@ -33,7 +33,7 @@ export default function StepServiceLocation({
           <MapPin className="w-7 h-7 text-white" />
         </div>
         <h2
-          className={`text-xl font-bold mb-1 ${isLightAppearance ? "text-slate-900" : "text-white/95"}`}
+          className={`text-xl font-bold mb-1 ${isLightAppearance ? "text-slate-100" : "text-white/95"}`}
         >
           Service Location
         </h2>

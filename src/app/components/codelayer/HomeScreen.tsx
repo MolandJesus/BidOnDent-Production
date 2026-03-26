@@ -130,7 +130,7 @@ export default function HomeScreen({
         >
           <div className="min-w-0">
             <h1
-              className={`text-lg md:text-2xl font-bold tracking-tight truncate ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+              className={`text-lg md:text-2xl font-bold tracking-tight truncate ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
             >
               {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}`}
             </h1>
@@ -160,7 +160,7 @@ export default function HomeScreen({
             {demoMode && onExitDemoMode && userType !== originalAccountType && (
               <button
                 onClick={onExitDemoMode}
-                className="bd-glass-control px-3 py-2 min-h-[40px] text-sm text-blue-700 font-medium"
+                className="bd-glass-control px-3 py-2 min-h-[40px] text-sm text-blue-100 font-medium"
               >
                 Exit Demo
               </button>

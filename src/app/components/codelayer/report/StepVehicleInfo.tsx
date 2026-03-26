@@ -47,11 +47,11 @@ export default function StepVehicleInfo({
     >
       <div className="mb-6">
         <h2
-          className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+          className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
         >
           Tell us about your vehicle
         </h2>
-        <p className={isLightAppearance ? "text-slate-600" : "text-blue-100/80"}>
+        <p className={isLightAppearance ? "text-blue-100/80" : "text-blue-100/80"}>
           This helps local shops prepare accurate bids quickly.
         </p>
       </div>
@@ -65,9 +65,7 @@ export default function StepVehicleInfo({
           }`}
         >
           <h3
-            className={`text-sm font-medium mb-3 ${
-              isLightAppearance ? "text-slate-700" : "text-blue-100/80"
-            }`}
+            className={`text-base font-semibold mb-3 ${isLightAppearance ? "text-blue-100/80" : "text-blue-100/80"}`}
           >
             Pick a saved vehicle
           </h3>
@@ -97,7 +95,7 @@ export default function StepVehicleInfo({
               >
                 <div
                   className={`font-medium inline-flex items-center gap-2 ${
-                    isLightAppearance ? "text-slate-900" : "text-slate-100"
+                    isLightAppearance ? "text-slate-100" : "text-slate-100"
                   }`}
                 >
                   <Car className="w-4 h-4 text-blue-600" />

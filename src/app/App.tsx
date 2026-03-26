@@ -118,6 +118,11 @@ function readSavedAppearanceMode(): DashboardAppearanceMode {
     return saved;
   }
 
+  // Respect OS preference when no explicit choice has been saved
+  if (window.matchMedia?.("(prefers-color-scheme: light)").matches) {
+    return "light";
+  }
+
   return "map-dark";
 }
 
@@ -156,8 +161,21 @@ function AppContent() {
   useEffect(() => {
     window.localStorage.setItem(APPEARANCE_STORAGE_KEY, appearanceMode);
     document.documentElement.setAttribute("data-appearance-mode", appearanceMode);
-    document.documentElement.style.colorScheme = appearanceMode === "light" ? "light" : "dark";
+    document.documentElement.style.colorScheme = "dark";
   }, [appearanceMode]);
+
+  // Sync appearance mode across browser tabs via storage events
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === APPEARANCE_STORAGE_KEY && e.newValue) {
+        if (e.newValue === "light" || e.newValue === "map-dark") {
+          setAppearanceMode(e.newValue);
+        }
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   // ============================================================================
   // CUSTOM HOOKS - Centralized State Management

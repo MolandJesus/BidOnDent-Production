@@ -11,7 +11,6 @@ interface MobileBottomNavProps {
   tabs: NavTab[];
   currentTab: string;
   viewMode: string;
-  primaryColor: string;
   onTabClick: (tabId: string) => void;
 }
 
@@ -42,7 +41,7 @@ export default function MobileBottomNav({
           : "0 -8px 28px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(96, 165, 250, 0.14)",
       }}
     >
-      <div className="flex items-center justify-around py-1.5 px-1">
+      <div className="flex items-center justify-around py-1.5 px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = currentTab === tab.id && viewMode === "dashboard";
@@ -54,35 +53,47 @@ export default function MobileBottomNav({
               onClick={() => onTabClick(tab.id)}
               whileTap={{ scale: 0.92 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
-              className={`flex flex-col items-center gap-0.5 px-3 py-2 min-w-[3.5rem] rounded-xl transition-colors duration-200 ${
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-2 min-w-[3.5rem] rounded-xl transition-colors duration-200 ${
                 isActive
-                  ? "text-white"
+                  ? ""
                   : isLightAppearance
-                    ? "text-slate-500 hover:text-blue-600"
-                    : "text-blue-100/70 hover:text-blue-100/90"
+                    ? "text-slate-400 hover:text-blue-600"
+                    : "text-blue-100/50 hover:text-blue-100/80"
               }`}
               style={
                 isActive
                   ? {
                       background: isLightAppearance
-                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)"
-                        : "linear-gradient(135deg, rgba(37, 99, 235, 0.28) 0%, rgba(59, 130, 246, 0.18) 100%)",
+                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.10) 0%, rgba(59, 130, 246, 0.06) 100%)"
+                        : "linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(59, 130, 246, 0.14) 100%)",
                       boxShadow: isLightAppearance
-                        ? "0 2px 12px rgba(37, 99, 235, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)"
-                        : "0 2px 16px rgba(37, 99, 235, 0.25), inset 0 1px 0 rgba(148, 197, 255, 0.15)",
+                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.5)"
+                        : "inset 0 1px 0 rgba(148, 197, 255, 0.10)",
                       border: isLightAppearance
-                        ? "1px solid rgba(37, 99, 235, 0.15)"
-                        : "1px solid rgba(96, 165, 250, 0.22)",
+                        ? "1px solid rgba(37, 99, 235, 0.12)"
+                        : "1px solid rgba(96, 165, 250, 0.18)",
                     }
                   : {}
               }
             >
+              {/* Active top bar indicator */}
+              {isActive && (
+                <span
+                  className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-5 h-[2.5px] rounded-b-full"
+                  style={{
+                    background: isLightAppearance
+                      ? "linear-gradient(90deg, #2563eb, #0ea5e9)"
+                      : "linear-gradient(90deg, #3b82f6, #60a5fa)",
+                    boxShadow: "0 2px 6px rgba(37, 99, 235, 0.3)",
+                  }}
+                />
+              )}
               <Icon
-                className={`w-5 h-5 ${isActive ? (isLightAppearance ? "text-blue-600" : "text-blue-100") : ""}`}
+                className={`w-5 h-5 ${isActive ? (isLightAppearance ? "text-blue-100" : "text-blue-100") : ""}`}
               />
               <span
                 className={`text-[0.7rem] font-medium leading-none ${
-                  isActive ? (isLightAppearance ? "text-blue-700" : "text-blue-50") : ""
+                  isActive ? (isLightAppearance ? "text-blue-50" : "text-blue-50") : ""
                 }`}
               >
                 {tab.label}

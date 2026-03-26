@@ -221,7 +221,7 @@ export default function ServiceCoverageMap({
       ) : null}
 
       {showSurfaceChrome ? (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex flex-wrap items-start justify-between gap-1.5 p-2 sm:gap-3 sm:p-4">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] flex flex-wrap items-start justify-between gap-1.5 p-2 sm:gap-2 sm:p-3">
           <MapSurfaceHeaderBadges
             tone={tone}
             activeFocusLabel={activeFocusLabel}
@@ -256,10 +256,10 @@ export default function ServiceCoverageMap({
       <div className="pointer-events-none absolute bottom-3 left-2 z-[620] sm:left-3 map-ui-enter map-ui-enter-delay-2">
         <div
           className={cn(
-            "coverage-map-brand-badge rounded-full border px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.12em] sm:px-2.5 sm:py-1 sm:text-[10px] sm:tracking-[0.14em]",
+            "coverage-map-brand-badge rounded-full border px-1.5 py-0.5 text-[7px] font-semibold uppercase tracking-[0.10em] sm:px-2.5 sm:py-1 sm:text-[9px] sm:tracking-[0.12em]",
             tone === "light"
-              ? "border-blue-200/85 bg-white/88 text-blue-900"
-              : "border-blue-200/25 bg-slate-950/78 text-blue-100"
+              ? "border-blue-200/60 bg-white/80 text-blue-800/80"
+              : "border-blue-200/18 bg-slate-950/70 text-blue-200/70"
           )}
         >
           BidOnDent Maps

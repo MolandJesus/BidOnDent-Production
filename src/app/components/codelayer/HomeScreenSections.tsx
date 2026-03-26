@@ -12,12 +12,10 @@ import { formatDate, formatStatus, getReportTitle, getReportDescription } from "
 import { type ActionItem, statusClasses, actionIconTones } from "./homeScreenData";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
-// ============================================================================
 // Types
 // ============================================================================
 
 type ActivityItem = {
-  id: string;
   label: string;
   time: string;
   icon: LucideIcon;
@@ -116,13 +114,13 @@ export function HomeReportsList({
     >
       <div className="flex items-center justify-between mb-4">
         <h2
-          className={`text-xl font-semibold ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+          className={`font-medium mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
         >
           {listHeader}
         </h2>
         <button
           onClick={onViewAll}
-          className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-800 hover:bg-blue-50/60" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
+          className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-200 hover:text-white hover:bg-blue-400/12" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
         >
           View All
           <ArrowRight className="w-4 h-4" />
@@ -137,7 +135,7 @@ export function HomeReportsList({
             className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/70"}`}
           />
           <p
-            className={`font-medium mb-1 ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+            className={`font-medium mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
           >
             {userType === "customer" && "No repair requests yet"}
             {userType === "shop" && "No customer requests yet"}
@@ -219,7 +217,7 @@ export function HomeReportsList({
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <h3
-                        className={`text-lg md:text-xl font-semibold truncate ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                        className={`text-lg md:text-xl font-semibold truncate ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
                       >
                         {title}
                       </h3>

@@ -79,7 +79,7 @@ export default function LandingPageLayout({
       className="min-h-screen"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(178deg, #eeeaf6 0%, #f8f8ff 30%, #ffffff 55%, #eef5ff 100%)"
+          ? "radial-gradient(130% 85% at 30% 10%, rgba(16, 32, 62, 0.99) 0%, rgba(10, 22, 44, 0.99) 55%, #060e20 100%)"
           : "radial-gradient(130% 90% at 30% 8%, rgba(12, 28, 58, 0.99) 0%, rgba(6, 14, 32, 0.99) 58%, #040a18 100%)",
       }}
     >

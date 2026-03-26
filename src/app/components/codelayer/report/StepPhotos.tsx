@@ -38,12 +38,12 @@ export default function StepPhotos({
     <div className="px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh]">
       {/* Title and instructions - compressed for mobile */}
       <h2
-        className={`text-xl sm:text-2xl font-bold mb-1 mt-1 ${isLightAppearance ? "text-slate-900" : "text-white/95"}`}
+        className={`text-xl sm:text-2xl font-bold mb-1 mt-1 ${isLightAppearance ? "text-slate-100" : "text-white/95"}`}
       >
         Add damage photos
       </h2>
       <p
-        className={`mb-3 sm:mb-6 text-sm sm:text-base ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
+        className={`mb-3 sm:mb-6 text-sm sm:text-base ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/70"}`}
       >
         Add at least one clear photo. Three photos from different angles works best.
       </p>

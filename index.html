@@ -15,6 +15,26 @@
     />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#0056b3" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      (function () {
+        try {
+          var key = "bidondent.appearance-mode";
+          var saved = localStorage.getItem(key);
+          var mode =
+            saved === "light" || saved === "map-dark"
+              ? saved
+              : window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
+                ? "light"
+                : "map-dark";
+          document.documentElement.setAttribute("data-appearance-mode", mode);
+          document.documentElement.style.colorScheme = "dark";
+        } catch (_err) {
+          document.documentElement.setAttribute("data-appearance-mode", "map-dark");
+          document.documentElement.style.colorScheme = "dark";
+        }
+      })();
+    </script>
   </head>
 
   <body>
@@ -27,7 +47,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #f8fafc;
+          background: #071224;
         "
       >
         <div style="text-align: center">
@@ -35,18 +55,30 @@
             style="
               width: 40px;
               height: 40px;
-              border: 3px solid #e2e8f0;
-              border-top-color: #2563eb;
+              border: 3px solid rgba(59, 130, 246, 0.24);
+              border-top-color: #60a5fa;
               border-radius: 50%;
               animation: bd-spin 0.8s linear infinite;
               margin: 0 auto 12px;
             "
           ></div>
-          <p style="color: #64748b; font-family: system-ui, sans-serif; font-size: 14px">
+          <p
+            style="
+              color: rgba(191, 219, 254, 0.84);
+              font-family: system-ui, sans-serif;
+              font-size: 14px;
+            "
+          >
             Loading BidOnDent...
           </p>
           <div id="pre-mount-recovery" style="display: none; margin-top: 24px">
-            <p style="color: #94a3b8; font-family: system-ui, sans-serif; font-size: 13px">
+            <p
+              style="
+                color: rgba(191, 219, 254, 0.55);
+                font-family: system-ui, sans-serif;
+                font-size: 13px;
+              "
+            >
               Taking longer than expected.
             </p>
             <a

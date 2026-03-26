@@ -40,7 +40,7 @@ export default function StepDescription({
       }}
     >
       <h2
-        className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+        className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
       >
         Describe the damage
       </h2>
