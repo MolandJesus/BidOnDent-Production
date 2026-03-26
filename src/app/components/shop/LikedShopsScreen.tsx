@@ -120,8 +120,8 @@ export default function LikedShopsScreen({
         {savedListings.length === 0 ? (
           <div className="rounded-[28px] bd-glass-card p-5 sm:p-8 text-center">
             <Heart className="mx-auto mb-4 h-16 w-16 text-blue-400/70" />
-            <h3 className="text-xl font-semibold text-slate-900">No saved shops yet</h3>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">
+            <h3 className="text-xl font-semibold text-slate-100">No saved shops yet</h3>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-300/80">
               Save shops from the Smart Shop Map to keep a customer shortlist for bids, follow-up,
               and future repair decisions.
             </p>
@@ -140,7 +140,7 @@ export default function LikedShopsScreen({
             {filteredListings.map((shop) => (
               <article key={shop.id} className="overflow-hidden rounded-[28px] bd-glass-card">
                 <div className="flex flex-col gap-4 p-4 md:flex-row md:p-5">
-                  <div className="h-36 w-full overflow-hidden rounded-[22px] bg-slate-100 md:h-auto md:w-44 md:flex-shrink-0">
+                  <div className="h-36 w-full overflow-hidden rounded-[22px] bg-white/[0.08] md:h-auto md:w-44 md:flex-shrink-0">
                     <ImageWithFallback
                       src={shop.image}
                       alt={shop.name}
@@ -152,25 +152,25 @@ export default function LikedShopsScreen({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-xl font-semibold text-slate-950">{shop.name}</h3>
+                          <h3 className="text-xl font-semibold text-slate-100">{shop.name}</h3>
                           {shop.topPick && (
-                            <span className="rounded-full bg-slate-950 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
+                            <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-200">
                               Top fit
                             </span>
                           )}
                         </div>
-                        <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+                        <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-300/70">
                           <span className="inline-flex items-center gap-1">
                             <Star className="h-4 w-4 text-amber-400" fill="#fbbf24" />
-                            <span className="font-semibold text-slate-900">{shop.rating}</span>
+                            <span className="font-semibold text-slate-100">{shop.rating}</span>
                             <span>({shop.reviews})</span>
                           </span>
                           <span className="inline-flex items-center gap-1">
-                            <MapPin className="h-4 w-4 text-slate-400" />
+                            <MapPin className="h-4 w-4 text-blue-200/50" />
                             {shop.mapDistanceLabel}
                           </span>
                           <span className="inline-flex items-center gap-1">
-                            <Shield className="h-4 w-4 text-slate-400" />
+                            <Shield className="h-4 w-4 text-blue-200/50" />
                             {shop.insuranceCompatibilityScore}% carrier fit
                           </span>
                         </div>
@@ -178,35 +178,35 @@ export default function LikedShopsScreen({
 
                       <button
                         onClick={() => handleUnlike(shop.id)}
-                        className="inline-flex items-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100"
+                        className="inline-flex items-center gap-2 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-sm font-medium text-rose-300 transition-colors hover:bg-rose-500/20"
                       >
                         <Heart className="h-4 w-4" fill="currentColor" />
                         Remove
                       </button>
                     </div>
 
-                    <p className="mt-3 text-sm leading-6 text-slate-600">{shop.aiSummary}</p>
+                    <p className="mt-3 text-sm leading-6 text-slate-300/80">{shop.aiSummary}</p>
 
                     <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                      <div className="rounded-2xl bg-slate-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-slate-500">AI Fit</p>
-                        <p className="text-lg font-semibold text-slate-950">
+                      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
+                        <p className="text-xs uppercase tracking-[0.16em] text-blue-200/50">AI Fit</p>
+                        <p className="text-lg font-semibold text-slate-100">
                           {shop.recommendationScore}%
                         </p>
                       </div>
-                      <div className="rounded-2xl bg-slate-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
+                        <p className="text-xs uppercase tracking-[0.16em] text-blue-200/50">
                           Avg ticket
                         </p>
-                        <p className="text-lg font-semibold text-slate-950">
+                        <p className="text-lg font-semibold text-slate-100">
                           {shop.averagePriceLabel}
                         </p>
                       </div>
-                      <div className="rounded-2xl bg-slate-50 px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
+                        <p className="text-xs uppercase tracking-[0.16em] text-blue-200/50">
                           Response
                         </p>
-                        <p className="text-lg font-semibold text-slate-950">
+                        <p className="text-lg font-semibold text-slate-100">
                           {shop.responseTimeLabel}
                         </p>
                       </div>
@@ -216,7 +216,7 @@ export default function LikedShopsScreen({
                       {shop.specialties.slice(0, 4).map((specialty) => (
                         <span
                           key={specialty}
-                          className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700"
+                          className="rounded-full bg-blue-400/15 px-2.5 py-1 text-xs font-medium text-blue-200"
                         >
                           {specialty}
                         </span>
@@ -227,7 +227,7 @@ export default function LikedShopsScreen({
                       {shop.insurerPrograms.slice(0, 3).map((program) => (
                         <span
                           key={program}
-                          className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700"
+                          className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-xs font-medium text-emerald-300"
                         >
                           {program}
                         </span>
