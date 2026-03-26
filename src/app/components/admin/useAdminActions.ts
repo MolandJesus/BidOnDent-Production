@@ -42,12 +42,12 @@ export function useAdminActions(adminEmail: string) {
     setOperationStatus("Checking Edge Function health...");
     try {
       const health = await getEdgeFunctionHealth();
-      console.log("Edge Function health:", health);
+      if (import.meta.env.DEV) console.log("Edge Function health:", health);
       setOperationStatus(
         `Edge Function Status: ${health.status}\nVersion: ${health.version || "unknown"}\nTimestamp: ${health.timestamp || "unknown"}`
       );
     } catch (error) {
-      console.error("Health check error:", error);
+      if (import.meta.env.DEV) console.error("Health check error:", error);
       setOperationStatus(
         `❌ Edge Function Error: ${error instanceof Error ? error.message : "Unknown error"}`
       );
@@ -113,7 +113,7 @@ export function useAdminActions(adminEmail: string) {
         }));
       setCustomAccounts(custom);
     } catch (error) {
-      console.error("Error loading custom accounts:", error);
+      if (import.meta.env.DEV) console.error("Error loading custom accounts:", error);
     }
   };
 
@@ -143,10 +143,10 @@ export function useAdminActions(adminEmail: string) {
       const result = await deleteAdminUser(email, { adminEmail });
 
       if (!result.success) {
-        console.error("Delete error:", result.error);
+        if (import.meta.env.DEV) console.error("Delete error:", result.error);
         setOperationStatus(`❌ Error: ${result.error || "Unknown error"}`);
       } else {
-        console.log("✅ Account deleted successfully");
+        if (import.meta.env.DEV) console.log("✅ Account deleted successfully");
         setOperationStatus(
           `✅ Successfully deleted ${email}\n\nBoth auth and profile have been removed.`
         );
@@ -154,7 +154,7 @@ export function useAdminActions(adminEmail: string) {
         await loadCustomAccounts();
       }
     } catch (error) {
-      console.error("Delete error:", error);
+      if (import.meta.env.DEV) console.error("Delete error:", error);
       setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsLoading(false);
@@ -191,18 +191,18 @@ export function useAdminActions(adminEmail: string) {
         },
         { adminEmail }
       );
-      console.log("📡 Response data:", result);
+      if (import.meta.env.DEV) console.log("📡 Response data:", result);
 
       if (!result.success && !result.created) {
         const errorMsg = `❌ Error: ${result.error || "Unknown error"}\n\nResponse: ${JSON.stringify(result, null, 2)}`;
-        console.error("Account creation failed:", result);
+        if (import.meta.env.DEV) console.error("Account creation failed:", result);
         setOperationStatus(errorMsg);
         alert(errorMsg);
         setIsLoading(false);
         return;
       }
 
-      console.log("✅ Account created successfully:", result);
+      if (import.meta.env.DEV) console.log("✅ Account created successfully:", result);
       setOperationStatus(
         `✅ Successfully created ${email}\n\nPassword: ${password}\nUser ID: ${result.userId}\nAccount Type: ${result.accountType}\n\n(Save this password for testing)`
       );
@@ -214,7 +214,7 @@ export function useAdminActions(adminEmail: string) {
         );
       }, 500);
     } catch (error) {
-      console.error("❌ Create error:", error);
+      if (import.meta.env.DEV) console.error("❌ Create error:", error);
       const errorMsg = `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`;
       setOperationStatus(errorMsg);
       alert(errorMsg);
@@ -261,7 +261,7 @@ export function useAdminActions(adminEmail: string) {
         return;
       }
 
-      console.log("✅ Custom account created successfully:", result);
+      if (import.meta.env.DEV) console.log("✅ Custom account created successfully:", result);
       setOperationStatus(
         `✅ Successfully created ${email}\n\nPassword: ${password}\n\n(Save this password for testing)`
       );
@@ -278,7 +278,7 @@ export function useAdminActions(adminEmail: string) {
         );
       }, 500);
     } catch (error) {
-      console.error("Create error:", error);
+      if (import.meta.env.DEV) console.error("Create error:", error);
       setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setIsLoading(false);
@@ -322,7 +322,7 @@ export function useAdminActions(adminEmail: string) {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      console.error("Switch account error:", error);
+      if (import.meta.env.DEV) console.error("Switch account error:", error);
       setOperationStatus(`❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`);
       setIsLoading(false);
     }

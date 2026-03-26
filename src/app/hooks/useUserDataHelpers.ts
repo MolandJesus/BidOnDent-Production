@@ -66,7 +66,7 @@ export function loadCachedUserData(): CachedUserDataResult | null {
       data: JSON.parse(cachedData) as UserData,
     };
   } catch (error) {
-    console.error("Error loading cached data:", error);
+    if (import.meta.env.DEV) console.error("Error loading cached data:", error);
     return null;
   }
 }

@@ -42,7 +42,7 @@ export default function ShopOnboarding({
     try {
       await onComplete(formData);
     } catch (error) {
-      console.error("Error completing shop onboarding:", error);
+      if (import.meta.env.DEV) console.error("Error completing shop onboarding:", error);
       window.alert("We couldn't save the shop profile yet. Please try again.");
     } finally {
       setIsSubmitting(false);

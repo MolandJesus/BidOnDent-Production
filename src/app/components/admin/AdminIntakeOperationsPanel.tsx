@@ -39,7 +39,7 @@ export default function AdminIntakeOperationsPanel({
       setStatusMessage("✅ Intake operations data refreshed");
       setTimeout(() => setStatusMessage(""), 3000);
     } catch (error) {
-      console.error("Failed to load intake operations data", error);
+      if (import.meta.env.DEV) console.error("Failed to load intake operations data", error);
       setStatusMessage(
         `❌ Unable to load intake operations data: ${
           error instanceof Error ? error.message : "Unknown error"
@@ -64,7 +64,7 @@ export default function AdminIntakeOperationsPanel({
 
       await loadData();
     } catch (error) {
-      console.error("Failed to update submission status", error);
+      if (import.meta.env.DEV) console.error("Failed to update submission status", error);
       setStatusMessage(
         `❌ Status update failed: ${error instanceof Error ? error.message : "Unknown error"}`
       );

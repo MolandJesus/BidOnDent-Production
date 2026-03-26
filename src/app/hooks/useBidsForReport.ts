@@ -50,7 +50,7 @@ export function useBidsForReport(reportId?: string | null) {
 
       setBids(mapped);
     } catch (err) {
-      console.error("Failed to fetch bids for report:", err);
+      if (import.meta.env.DEV) console.error("Failed to fetch bids for report:", err);
       setError("Failed to load bids");
     } finally {
       setLoading(false);

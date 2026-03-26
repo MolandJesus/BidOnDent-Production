@@ -45,7 +45,7 @@ export async function getProfile(
 
     return payload.profile || null;
   } catch (error) {
-    console.error("Error in getProfile:", error);
+    if (import.meta.env.DEV) console.error("Error in getProfile:", error);
     return null;
   }
 }
@@ -98,7 +98,7 @@ export async function markSetupCompleted(
       identity
     );
   } catch (error) {
-    console.error("Error in markSetupCompleted:", error);
+    if (import.meta.env.DEV) console.error("Error in markSetupCompleted:", error);
     return false;
   }
 }

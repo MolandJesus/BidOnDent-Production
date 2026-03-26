@@ -5,6 +5,7 @@ import {
   HelpCircle,
   LogOut,
   Settings,
+  Shield,
   Trash2,
   CheckSquare,
 } from "lucide-react";
@@ -12,11 +13,13 @@ import { motion } from "motion/react";
 
 type AccountMenuProps = {
   userType: string;
+  isAdmin?: boolean;
   onOpenSettings: () => void;
   onOpenPayment: () => void;
   onOpenShopProfile: () => void;
   onOpenHelp: () => void;
   onOpenSmokeTest?: () => void;
+  onOpenAdminPanel?: () => void;
   onOpenDeleteAccount: () => void;
   onLogout: () => void;
   onViewVehicles?: () => void;
@@ -24,11 +27,13 @@ type AccountMenuProps = {
 
 export default function AccountMenu({
   userType,
+  isAdmin,
   onOpenSettings,
   onOpenPayment,
   onOpenShopProfile,
   onOpenHelp,
   onOpenSmokeTest,
+  onOpenAdminPanel,
   onOpenDeleteAccount,
   onLogout,
   onViewVehicles,
@@ -101,6 +106,18 @@ export default function AccountMenu({
           </div>
           <ChevronRight className="w-5 h-5 text-blue-100/70" />
         </button>
+
+        {isAdmin && onOpenAdminPanel && (
+          <button className={`${rowBaseClass} hover:bg-indigo-400/12`} onClick={onOpenAdminPanel}>
+            <div className="flex items-center">
+              <span className="w-9 h-9 rounded-lg bg-indigo-400/15 text-indigo-200 flex items-center justify-center mr-3 border border-indigo-300/25">
+                <Shield className="w-5 h-5" />
+              </span>
+              <span className="font-medium text-indigo-100">Admin Panel</span>
+            </div>
+            <ChevronRight className="w-5 h-5 text-indigo-200/70" />
+          </button>
+        )}
 
         {import.meta.env.DEV && onOpenSmokeTest && (
           <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onOpenSmokeTest}>

@@ -1,11 +1,13 @@
-import { useState, useRef } from "react";
-import { motion } from "motion/react";
+import { useState, useRef, lazy, Suspense } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { ArrowLeft } from "lucide-react";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
 import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
 import { uploadPhoto } from "../../services/supabaseService";
 import { SUPABASE_STORAGE_BUCKETS } from "../../services/supabase/runtime";
 import { LANDING_PAGE_IMAGES } from "../../constants";
+import { hasAdminPrivileges } from "../../config/adminConfig";
 import AccountHeader from "./account/AccountHeader";
 import AccountInfoCard from "./account/AccountInfoCard";
 import AccountMenu from "./account/AccountMenu";
@@ -17,6 +19,8 @@ import PaymentModal from "./account/PaymentModal";
 import SettingsModal from "./account/SettingsModal";
 import ShopProfileModal from "./account/ShopProfileModal";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+
+const AdminDashboard = lazy(() => import("../admin/AdminDashboard"));
 
 type AccountScreenProps = {
   userType: string;
@@ -74,7 +78,10 @@ export default function AccountScreen({
   const [showDeleteAccount, setShowDeleteAccount] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isAdminUser = hasAdminPrivileges(userEmail);
 
   // REMOVED: Supabase session checking - we now use Clerk for authentication
   // The session check was causing automatic logout when switching to account tab
@@ -254,7 +261,7 @@ export default function AccountScreen({
       setDeleteConfirmText("");
       setShowDeleteAccount(false);
     } catch (error) {
-      console.error("❌ Error deleting account:", error);
+      if (import.meta.env.DEV) console.error("❌ Error deleting account:", error);
       alert(`Error: ${error instanceof Error ? error.message : "Failed to delete account"}`);
     } finally {
       setIsDeleting(false);
@@ -288,11 +295,13 @@ export default function AccountScreen({
 
           <AccountMenu
             userType={userType}
+            isAdmin={isAdminUser}
             onOpenSettings={() => setShowSettings(true)}
             onOpenPayment={() => setShowPayment(true)}
             onOpenShopProfile={() => setShowShopProfile(true)}
             onOpenHelp={() => setShowHelp(true)}
             onOpenSmokeTest={onOpenSmokeTest}
+            onOpenAdminPanel={() => setShowAdminPanel(true)}
             onOpenDeleteAccount={() => setShowDeleteAccount(true)}
             onLogout={handleLogout}
             onViewVehicles={onViewVehicles}
@@ -351,6 +360,44 @@ export default function AccountScreen({
         onClose={handleCloseDeleteAccount}
         onDelete={handleDeleteAccount}
       />
+
+      {/* Admin Panel Full-Screen Overlay */}
+      <AnimatePresence>
+        {showAdminPanel && isAdminUser && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 300 }}
+            className="fixed inset-0 z-50 overflow-y-auto"
+            style={{
+              background: "linear-gradient(180deg, #0b1220 0%, #0a1328 50%, #091020 100%)",
+            }}
+          >
+            <div
+              className="sticky top-0 z-10 flex items-center gap-3 px-4 py-3 border-b border-blue-400/15 backdrop-blur-xl"
+              style={{ background: "rgba(11, 18, 32, 0.92)" }}
+            >
+              <button
+                onClick={() => setShowAdminPanel(false)}
+                className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-400/10 hover:bg-blue-400/20 transition-colors border border-blue-300/15"
+              >
+                <ArrowLeft className="w-5 h-5 text-blue-100" />
+              </button>
+              <h2 className="text-lg font-semibold text-slate-100">Admin Panel</h2>
+            </div>
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center p-12">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-400" />
+                </div>
+              }
+            >
+              <AdminDashboard primaryColor={primaryColor} adminEmail={userEmail} />
+            </Suspense>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

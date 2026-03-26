@@ -172,9 +172,10 @@ export function recordMapInteractionSample(kind: MapInteractionKind, durationMs:
   writeSamples(samples);
 
   if (overBudget) {
-    console.warn(
-      `[map-performance] ${kind} interaction exceeded budget: ${normalizedDurationMs}ms > ${interactionBudgets[kind]}ms`
-    );
+    if (import.meta.env.DEV)
+      console.warn(
+        `[map-performance] ${kind} interaction exceeded budget: ${normalizedDurationMs}ms > ${interactionBudgets[kind]}ms`
+      );
   }
 
   return sample;

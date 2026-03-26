@@ -185,7 +185,7 @@ export function useNavigationGpsTracking({
       })
       .catch((error) => {
         if (!speedRequest.controller.signal.aborted && !speedRequest.didTimeout()) {
-          console.error("Speed limit lookup failed:", error);
+          if (import.meta.env.DEV) console.error("Speed limit lookup failed:", error);
           setSpeedLimitSnapshot(null);
           setSpeedLimitStatus("unavailable");
         }

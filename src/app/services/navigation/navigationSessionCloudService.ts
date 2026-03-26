@@ -48,10 +48,11 @@ function persistPendingQueue(): void {
     localStorage.setItem(PENDING_QUEUE_KEY, JSON.stringify(pendingWrites));
   } catch (err) {
     // localStorage full or unavailable — warn for debugging visibility
-    console.warn(
-      "[NavigationSession] Failed to persist pending writes to localStorage:",
-      err instanceof Error ? err.message : "storage unavailable"
-    );
+    if (import.meta.env.DEV)
+      console.warn(
+        "[NavigationSession] Failed to persist pending writes to localStorage:",
+        err instanceof Error ? err.message : "storage unavailable"
+      );
   }
 }
 
@@ -222,7 +223,8 @@ export async function saveNavigationSessionToCloud(
     // Queue for background retry instead of silently failing
     pendingWrites.push({ userId, sessionId, session, attempts: 1, queuedAt: now });
     scheduleRetry();
-    console.warn("[NavigationSession] Cloud save failed — queued for retry");
+    if (import.meta.env.DEV)
+      console.warn("[NavigationSession] Cloud save failed — queued for retry");
   }
   return ok;
 }

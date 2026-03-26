@@ -99,7 +99,8 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             setPhotoStorage(cachedPhotoStorage);
           }
         } catch (error) {
-          console.error("[DEBUG] useUserData: Error loading cached data:", error);
+          if (import.meta.env.DEV)
+            console.error("[DEBUG] useUserData: Error loading cached data:", error);
         }
       }
 
@@ -123,7 +124,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
       try {
         const email = signedInEmail;
         if (!email) {
-          console.error("[DEBUG] useUserData: No email in identity");
+          if (import.meta.env.DEV) console.error("[DEBUG] useUserData: No email in identity");
           return;
         }
 

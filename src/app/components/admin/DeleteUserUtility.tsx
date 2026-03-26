@@ -43,7 +43,7 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
         setStatus(`❌ Error: ${data.error || "Failed to delete user"}`);
       }
     } catch (error) {
-      console.error("Delete user error:", error);
+      if (import.meta.env.DEV) console.error("Delete user error:", error);
       setStatus(`❌ Network error: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setLoading(false);

@@ -86,7 +86,7 @@ export function loadSavedCoverageState(): SavedCoverageState {
           : undefined,
     };
   } catch (error) {
-    console.error("Error loading coverage map state:", error);
+    if (import.meta.env.DEV) console.error("Error loading coverage map state:", error);
     return {};
   }
 }

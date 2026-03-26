@@ -27,7 +27,7 @@ export async function getStorageStats(): Promise<StorageStats> {
     });
     return data;
   } catch (error) {
-    console.error("Error fetching storage stats:", error);
+    if (import.meta.env.DEV) console.error("Error fetching storage stats:", error);
     return getEstimatedStats();
   }
 }
@@ -85,7 +85,7 @@ export async function cleanupOldReports(daysOld: number = 30): Promise<number> {
     if (import.meta.env.DEV) console.log(`🗑️ Cleaned up ${deletedReports || 0} old reports`);
     return deletedReports || 0;
   } catch (error) {
-    console.error("Error cleaning up old reports:", error);
+    if (import.meta.env.DEV) console.error("Error cleaning up old reports:", error);
     return 0;
   }
 }
