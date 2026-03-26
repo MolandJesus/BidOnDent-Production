@@ -230,7 +230,7 @@ export default function ShopDirectoryMapPane({
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[500] bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent px-5 pb-5 pt-16">
         <div className="flex flex-wrap items-end justify-between gap-3">
           {selectedShop && (
-            <div className="max-w-md rounded-[24px] border border-white/15 bg-white/96 p-4 shadow-2xl backdrop-blur">
+            <div className="max-w-md rounded-[24px] border border-white/15 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-xl">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Selected shop</p>

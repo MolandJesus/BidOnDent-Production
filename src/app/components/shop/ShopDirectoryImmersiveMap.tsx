@@ -194,8 +194,8 @@ export default function ShopDirectoryImmersiveMap({
 
       {/* Collapsible results drawer — bottom sheet on mobile, side drawer on sm+ */}
       {drawerOpen && (
-        <aside className="absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t border-white/10 bg-white/95 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+        <aside className="absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t border-white/10 bg-slate-950/90 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r">
+          <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                 Results
