@@ -66,18 +66,15 @@ export default function ReportScreen({
   // Load draft from localStorage on mount
   useEffect(() => {
     const draft = loadReportDraft();
+    if (!draft) return;
 
-    if (draft) {
-      if (import.meta.env.DEV) console.log("Loaded draft report from local storage");
-      setStep(draft.step || 1);
-      // Don't restore photos - they're too large for localStorage
-      setVehicle(draft.vehicle || { ...DEFAULT_VEHICLE_DRAFT });
-      setDamageArea(draft.damageArea || "front");
-      setZipCode(draft.zipCode || "");
-      setAddress(draft.address || "");
-      setDescription(draft.description || "");
-      setIncident(draft.incident || "");
-    }
+    setStep(draft.step || 1);
+    setVehicle(draft.vehicle || { ...DEFAULT_VEHICLE_DRAFT });
+    setDamageArea(draft.damageArea || "front");
+    setZipCode(draft.zipCode || "");
+    setAddress(draft.address || "");
+    setDescription(draft.description || "");
+    setIncident(draft.incident || "");
   }, []);
 
   // Save draft to localStorage whenever any field changes (except on completion)
@@ -134,7 +131,7 @@ export default function ReportScreen({
         setUploadProgress("");
       }, 1500);
     } catch (error) {
-      console.error("Error uploading photos:", error);
+      if (import.meta.env.DEV) console.error("Error uploading photos:", error);
       setUploadProgress("Upload failed");
       setTimeout(() => {
         setUploadingPhoto(false);
@@ -247,7 +244,7 @@ export default function ReportScreen({
       clearDraft();
       nextStep();
     } catch (error) {
-      console.error("Error submitting report:", error);
+      if (import.meta.env.DEV) console.error("Error submitting report:", error);
       setSubmitError("Something went wrong. Your report was saved locally. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -362,7 +359,7 @@ export default function ReportScreen({
           return null;
       }
     } catch (error) {
-      console.error("Error rendering step:", error);
+      if (import.meta.env.DEV) console.error("Error rendering step:", error);
       return (
         <div className="px-4 py-5">
           <div className="text-center">

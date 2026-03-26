@@ -58,7 +58,7 @@ export async function saveVehiclesToCloud(
     if (import.meta.env.DEV) console.log("✅ Vehicles saved to Supabase");
     return updatedVehicles.map(toFrontendVehicle);
   } catch (error) {
-    console.error("❌ Error saving vehicles:", error);
+    if (import.meta.env.DEV) console.error("❌ Error saving vehicles:", error);
     return null;
   }
 }
@@ -75,7 +75,7 @@ export async function saveReportsToCloud(
     if (import.meta.env.DEV) console.log("✅ Reports saved to Supabase");
     return true;
   } catch (error) {
-    console.error("❌ Error saving reports:", error);
+    if (import.meta.env.DEV) console.error("❌ Error saving reports:", error);
     return false;
   }
 }

@@ -141,7 +141,7 @@ export async function getAllDamageReports(): Promise<DamageReport[]> {
     if (import.meta.env.DEV) console.log(`[DEV] Loaded ${data.length} total damage reports`);
     return Array.isArray(data) ? (data as DamageReport[]) : [];
   } catch (error) {
-    console.error("Error in getAllDamageReports:", error);
+    if (import.meta.env.DEV) console.error("Error in getAllDamageReports:", error);
     return [];
   }
 }

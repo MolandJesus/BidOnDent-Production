@@ -1,7 +1,7 @@
 import type { useNavigation } from "./useNavigation";
 import type { useUserData } from "./useUserData";
 import { saveDamageReport } from "../services/supabaseService";
-import { toFrontendBid } from "./userDataUtils";
+import { buildSupabaseReportPayload, toFrontendBid } from "./userDataUtils";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData> & Record<string, any>;
@@ -47,7 +47,7 @@ export function useAppHandlers({
       if (import.meta.env.DEV)
         console.log("Logged out successfully - Clerk session ended and local state cleared");
     } catch (error) {
-      console.error("Error during logout:", error);
+      if (import.meta.env.DEV) console.error("Error during logout:", error);
       userData.clearSession();
       userData.setBids([]);
       userData.setActivities([]);
@@ -104,7 +104,7 @@ export function useAppHandlers({
 
     const report = userData.reports.find((entry) => entry.id === reportId) as any;
     if (!report) {
-      console.error("Report not found:", reportId);
+      if (import.meta.env.DEV) console.error("Report not found:", reportId);
       return;
     }
 
@@ -143,11 +143,11 @@ export function useAppHandlers({
           }
         );
         if (import.meta.env.DEV) console.log("✅ Bid submitted and persisted to Supabase");
-      } else {
+      } else if (import.meta.env.DEV) {
         console.error("Bid submission failed (Supabase error)");
       }
     } catch (error) {
-      console.error("Error submitting bid to Supabase:", error);
+      if (import.meta.env.DEV) console.error("Error submitting bid to Supabase:", error);
     }
   };
 
@@ -156,27 +156,12 @@ export function useAppHandlers({
       if (import.meta.env.DEV) console.log("Submitting damage report to API...");
 
       const savedApiReport = await saveDamageReport(
-        {
-          vehicle_make: report.vehicle?.make || "",
-          vehicle_model: report.vehicle?.model || "",
-          vehicle_year: parseInt(report.vehicle?.year || "0", 10),
-          damage_type: report.damageArea || "unknown",
-          damage_severity: "moderate",
-          damage_description: report.description || "",
-          damage_location: report.damageArea || "",
-          address: report.address || "",
-          zip_code: report.zipCode || "",
-          photo_urls: report.photos || [],
-          insurance_claim: false,
-          preferred_contact: "email",
-          additional_notes: report.incident || "",
-          status: "pending",
-        },
+        buildSupabaseReportPayload(report),
         userId
       );
 
       if (!savedApiReport) {
-        console.error("Failed to save report");
+        if (import.meta.env.DEV) console.error("Failed to save report");
         userData.setReports((previous: any[]) => [...previous, report]);
         if (report?.id && Array.isArray(report.photos)) {
           userData.setPhotoStorage((previous: Record<string, string[]>) => ({
@@ -201,7 +186,7 @@ export function useAppHandlers({
         }));
       }
     } catch (error) {
-      console.error("Error submitting report:", error);
+      if (import.meta.env.DEV) console.error("Error submitting report:", error);
       userData.setReports((previous: any[]) => [...previous, report]);
       if (report?.id && Array.isArray(report.photos)) {
         userData.setPhotoStorage((previous: Record<string, string[]>) => ({

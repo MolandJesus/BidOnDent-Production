@@ -54,18 +54,20 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
     setError("");
 
     try {
-      console.log("🔄 Switching to admin account...");
-      console.log("👤 Current user:", userEmail);
-      console.log("🎯 Target admin:", ADMIN_EMAIL);
+      if (import.meta.env.DEV) {
+        console.log("🔄 Switching to admin account...");
+        console.log("👤 Current user:", userEmail);
+        console.log("🎯 Target admin:", ADMIN_EMAIL);
+      }
 
       // Set a flag in sessionStorage to prevent showing onboarding during switch
       sessionStorage.setItem("bidondent_switching_to_admin", "true");
 
       // Sign out current user
-      console.log("📤 Signing out current user...");
+      if (import.meta.env.DEV) console.log("📤 Signing out current user...");
       await supabase.auth.signOut();
 
-      console.log("📥 Attempting to sign in as admin with email:", ADMIN_EMAIL);
+      if (import.meta.env.DEV) console.log("📥 Attempting to sign in as admin with email:", ADMIN_EMAIL);
 
       // Sign in as admin with the provided password
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
@@ -73,10 +75,10 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
         password: password,
       });
 
-      console.log("📡 Sign in response:", { data: signInData, error: signInError });
+      if (import.meta.env.DEV) console.log("📡 Sign in response:", { data: signInData, error: signInError });
 
       if (signInError) {
-        console.error("❌ Switch error:", signInError);
+        if (import.meta.env.DEV) console.error("❌ Switch error:", signInError);
 
         // Check if it's an invalid credentials error
         if (
@@ -94,14 +96,16 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
       }
 
       if (!signInData.session) {
-        console.error("❌ No session returned");
+        if (import.meta.env.DEV) console.error("❌ No session returned");
         setError("Login failed. Please try again.");
         setIsLoading(false);
         return;
       }
 
-      console.log("✅ Successfully switched to admin account! Session:", signInData.session);
-      console.log("🔄 Auth state listener will handle the rest...");
+      if (import.meta.env.DEV) {
+        console.log("✅ Successfully switched to admin account! Session:", signInData.session);
+        console.log("🔄 Auth state listener will handle the rest...");
+      }
 
       // Close the modal - the auth listener will automatically handle the sign-in
       setShowModal(false);
@@ -115,7 +119,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
       // 3. Skip onboarding
       // 4. Show admin dashboard
     } catch (error) {
-      console.error("❌ Exception switching to admin:", error);
+      if (import.meta.env.DEV) console.error("❌ Exception switching to admin:", error);
       setError(error instanceof Error ? error.message : "An error occurred. Please try again.");
       setIsLoading(false);
     }

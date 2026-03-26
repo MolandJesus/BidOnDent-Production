@@ -27,7 +27,7 @@ export function useAdminRoleManagement(adminEmail: string) {
         return;
       }
 
-      console.log("✅ Admin status managed successfully:", result);
+      if (import.meta.env.DEV) console.log("✅ Admin status managed successfully:", result);
       setAdminManagementStatus(
         `✅ Successfully ${promote ? "promoted" : "revoked"} admin status for ${targetAdminEmail}`
       );
@@ -35,7 +35,7 @@ export function useAdminRoleManagement(adminEmail: string) {
       setTargetAdminEmail("");
       setIsManagingAdmin(false);
     } catch (error) {
-      console.error("Admin management error:", error);
+      if (import.meta.env.DEV) console.error("Admin management error:", error);
       setAdminManagementStatus(
         `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`
       );
