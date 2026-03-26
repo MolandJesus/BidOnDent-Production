@@ -100,7 +100,8 @@ export default function BusinessInquirySection() {
   return (
     <section
       id="business-inquiry"
-      className="py-10 md:py-16 bg-gradient-to-b from-[#f5f8fc] to-[#edf3fa]"
+      className="py-10 md:py-16"
+      style={{ background: "linear-gradient(180deg, #060f1e 0%, #080f20 100%)" }}
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-6xl">
@@ -108,23 +109,31 @@ export default function BusinessInquirySection() {
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
-            <span className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
-            Growth & Partnerships
+            <span className="w-2 h-2 bg-blue-400 rounded-full mr-2" />
+            Growth &amp; Partnerships
           </span>
-          <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-3">
+          <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-3 text-slate-100">
             Shop Signup and Insurer Partnerships
           </h3>
-          <p className="text-base sm:text-xl leading-relaxed text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl leading-relaxed text-blue-100/70 max-w-3xl mx-auto">
             Submit your information to join the BidOnDent network. Every request is reviewed and
             confirmed by our team.
           </p>
         </div>
 
-        <div className="bd-glass-card p-6 md:p-8">
+        <div
+          className="bd-glass-card p-6 md:p-8"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+            borderColor: "rgba(96, 165, 250, 0.22)",
+            boxShadow: "0 14px 30px rgba(3, 10, 24, 0.38), inset 0 1px 0 rgba(147, 197, 253, 0.10)",
+          }}
+        >
           {!formOpen ? (
             /* ── Gateway: choose your role before the form appears ── */
             <div className="py-4">
-              <p className="text-center text-slate-600 mb-8 max-w-lg mx-auto">
+              <p className="text-center text-blue-100/70 mb-8 max-w-lg mx-auto">
                 Tell us about your business and we will get you set up. Shops go through a quick
                 verification review. Insurers are onboarded through our partnership team.
               </p>
@@ -136,18 +145,18 @@ export default function BusinessInquirySection() {
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-blue-400 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
+                  className="group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40 transition-all duration-200 sm:min-w-[260px]"
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#003d82] flex items-center justify-center">
                     <Building2 className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-lg text-slate-900">Join as a Shop</div>
-                    <div className="text-sm text-slate-500 mt-0.5">
+                    <div className="font-bold text-lg text-slate-100">Join as a Shop</div>
+                    <div className="text-sm text-blue-100/65 mt-0.5">
                       Get listed and start receiving bids
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all duration-200" />
+                  <ArrowRight className="w-5 h-5 text-blue-300/60 group-hover:text-blue-300 group-hover:translate-x-0.5 transition-all duration-200" />
                 </button>
 
                 <button
@@ -157,18 +166,18 @@ export default function BusinessInquirySection() {
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className="group relative flex items-center gap-4 bd-glass-card px-6 py-5 text-left hover:border-blue-400 hover:shadow-md transition-all duration-200 sm:min-w-[260px]"
+                  className="group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40 transition-all duration-200 sm:min-w-[260px]"
                 >
                   <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#1e3a5f] flex items-center justify-center">
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-lg text-slate-900">Partner as Insurer</div>
-                    <div className="text-sm text-slate-500 mt-0.5">
+                    <div className="font-bold text-lg text-slate-100">Partner as Insurer</div>
+                    <div className="text-sm text-blue-100/65 mt-0.5">
                       Reduce claims costs via our network
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all duration-200" />
+                  <ArrowRight className="w-5 h-5 text-blue-300/60 group-hover:text-blue-300 group-hover:translate-x-0.5 transition-all duration-200" />
                 </button>
               </div>
             </div>
@@ -182,8 +191,8 @@ export default function BusinessInquirySection() {
                     onClick={() => setActiveForm("shop")}
                     className={`px-4 py-2 rounded-lg font-medium ${
                       activeForm === "shop"
-                        ? "bg-slate-900 text-white"
-                        : "bg-slate-100 text-slate-700"
+                        ? "bg-blue-600 text-white"
+                        : "bg-white/10 text-blue-100/80 hover:bg-white/15"
                     }`}
                   >
                     <span className="inline-flex items-center gap-2">
@@ -196,8 +205,8 @@ export default function BusinessInquirySection() {
                     onClick={() => setActiveForm("insurer")}
                     className={`px-4 py-2 rounded-lg font-medium ${
                       activeForm === "insurer"
-                        ? "bg-slate-900 text-white"
-                        : "bg-slate-100 text-slate-700"
+                        ? "bg-blue-600 text-white"
+                        : "bg-white/10 text-blue-100/80 hover:bg-white/15"
                     }`}
                   >
                     <span className="inline-flex items-center gap-2">
@@ -212,7 +221,7 @@ export default function BusinessInquirySection() {
                     setFormOpen(false);
                     setSubmitMessage("");
                   }}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-100/60 hover:text-blue-100 transition-colors"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Back

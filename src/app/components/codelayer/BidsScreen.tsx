@@ -7,6 +7,7 @@ import BidCardArticle from "./BidCardArticle";
 type BidsScreenProps = {
   primaryColor?: string;
   onBack?: () => void;
+  onStartReport?: () => void;
   userType?: "customer" | "shop" | "insurer";
   bids?: any[];
   reports?: any[];
@@ -25,6 +26,7 @@ type FilterType = "all" | "lowest" | "fastest" | "rating";
 export default function BidsScreen({
   primaryColor = "#003d82",
   onBack,
+  onStartReport,
   userType = "customer",
   bids: incomingBids = [],
   reports = [],
@@ -147,6 +149,17 @@ export default function BidsScreen({
             Once you submit a damage report, nearby shops will review it and send competitive bids.
             Compare pricing, timelines, and ratings right here.
           </p>
+          {onStartReport && (
+            <button
+              onClick={onStartReport}
+              className="mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
+              style={{
+                background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
+              }}
+            >
+              Submit a Report
+            </button>
+          )}
         </motion.section>
       </div>
     );
@@ -267,7 +280,9 @@ export default function BidsScreen({
             <button
               key={item.id}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
-                filter === item.id ? "text-white shadow-sm" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
+                filter === item.id
+                  ? "text-white shadow-sm"
+                  : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
               }`}
               style={
                 filter === item.id

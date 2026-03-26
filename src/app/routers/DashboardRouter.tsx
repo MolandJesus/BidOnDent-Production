@@ -228,6 +228,7 @@ export default function DashboardRouter({
                 reports={reports}
                 onAcceptBid={onAcceptBid}
                 onRejectBid={onRejectBid}
+                onStartReport={() => onTabChange("report")}
                 onBack={() => {
                   onTabChange("home");
                   onViewModeChange("dashboard");

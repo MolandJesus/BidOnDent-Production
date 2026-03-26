@@ -176,7 +176,14 @@ export default function CustomerMapWidget({
                     <Store className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-100">{shop.name}</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="truncate text-sm font-medium text-slate-100">{shop.name}</p>
+                      {shop.dataMode === "demo" && (
+                        <span className="shrink-0 rounded px-1 py-0.5 text-[10px] font-medium uppercase tracking-wide bg-amber-400/15 text-amber-300 border border-amber-400/25">
+                          Demo
+                        </span>
+                      )}
+                    </div>
                     <p className="truncate text-xs text-blue-100/70">{shop.countyLabel}</p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-0.5">
