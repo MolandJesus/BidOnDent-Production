@@ -100,7 +100,7 @@ export function HomeReportsList({
     <div className="bd-glass-card p-5">
       <div className="flex items-center justify-between mb-4">
         <h2
-          className={`font-medium mb-1 ${isLightAppearance ? "text-slate-100" : "text-slate-100"}`}
+          className={`font-medium mb-1 ${isLightAppearance ? "text-slate-700" : "text-slate-100"}`}
         >
           {listHeader}
         </h2>

@@ -150,7 +150,7 @@ export default function CustomerMapWidget({
           <button
             type="button"
             onClick={() => setIsMapExpanded(true)}
-            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 min-h-[44px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 min-h-[44px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.96] shadow-md"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
@@ -170,7 +170,7 @@ export default function CustomerMapWidget({
                     handleSelectShop(shop, { centerMap: true });
                     setIsMapExpanded(true);
                   }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-1.5 md:py-2 text-left transition-colors hover:bg-blue-400/12"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-1.5 md:py-2 text-left transition-colors hover:bg-blue-400/12 active:bg-blue-400/20 active:scale-[0.98]"
                 >
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-400/15 text-blue-200">
                     <Store className="h-4 w-4" />

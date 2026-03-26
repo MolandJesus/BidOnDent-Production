@@ -83,13 +83,13 @@ export default function OperatingRegionsSection({
 
             {/* Compact region pills — Apple Maps style */}
             <div className="mt-3 sm:mt-4 flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              <span className="shrink-0 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-200/60">
+              <span className="shrink-0 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-200/75">
                 Active:
               </span>
               {operatingRegions.map((region) => (
                 <span
                   key={region}
-                  className="shrink-0 inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/8 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium text-blue-200/80"
+                  className="shrink-0 inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/12 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium text-blue-100/90"
                 >
                   <MapPin className="w-3 h-3 text-blue-400/60" />
                   {region.replace(" County", "")}
