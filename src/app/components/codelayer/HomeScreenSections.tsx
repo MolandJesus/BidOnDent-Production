@@ -131,7 +131,7 @@ export function HomeReportsList({
 
       {sortedReports.length === 0 && (
         <div
-          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-slate-50/60 border-slate-200/40" : "bg-blue-950/25 border-blue-300/20"}`}
+          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-slate-50/60 border-slate-200/40" : "bg-blue-950/30 border-blue-300/22"}`}
         >
           <Camera
             className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/70"}`}
@@ -179,9 +179,14 @@ export function HomeReportsList({
             return (
               <article
                 key={report.id}
-                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/60 border-slate-200/40" : "bg-slate-900/20 border-blue-200/15"} ${
+                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/60 border-slate-200/40" : "bg-slate-900/25 border-blue-200/18"} ${
                   canOpenReport ? "hover:shadow-md cursor-pointer" : ""
                 }`}
+                style={
+                  isLightAppearance
+                    ? undefined
+                    : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }
+                }
                 onClick={canOpenReport ? () => onOpenReport?.(String(report.id)) : undefined}
                 role={canOpenReport ? "button" : undefined}
                 tabIndex={canOpenReport ? 0 : undefined}
