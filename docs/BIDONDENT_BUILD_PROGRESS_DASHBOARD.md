@@ -4,34 +4,34 @@
 
 ### Build Progress
 
-| 0% |████████████████████████████████████████████████████████████████████████████| 122% 🚀 |
+| 0% |████████████████████████████████████████████████████████████████████████████| 123% 🚀 |
 
-**Passes completed:** 230 / 160+ — ⚡ BACKEND HARDENING COMPLETE + UX TRUST FIXES
+**Passes completed:** 233 / 160+ — ⚡ LANDING PAGE DARK FLOW COMPLETE
 
-| Item             | Value                                                                  |
-| ---------------- | ---------------------------------------------------------------------- |
-| **Last pass**    | Pass 230 — Business Inquiry + CTA landing dark treatment               |
-| **Current pass** | 230 ✅ complete (Design: landing dark unity; Backend: 12-task sweep)   |
-| **Build**        | ✓ 0 errors · 2.09s · 740KB main bundle                                 |
-| **Spellcheck**   | 0 issues                                                               |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                         |
-| **Last pushed**  | 2026-03-25                                                             |
-| **Phase**        | BACKEND HARDENED + TRUST UX — demo labels, bids CTA, landing dark flow |
+| Item             | Value                                                                        |
+| ---------------- | ---------------------------------------------------------------------------- |
+| **Last pass**    | Pass 233 — TrustStats compact + FooterSection logo glass treatment           |
+| **Current pass** | 233 ✅ complete (Design refinement: landing dark seam elimination)           |
+| **Build**        | ✓ 0 errors · 2.11s · 742KB main bundle                                       |
+| **Spellcheck**   | 0 issues                                                                     |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                               |
+| **Last pushed**  | 2026-03-25                                                                   |
+| **Phase**        | DESIGN REFINEMENT — landing dark flow unified, card system cohesion complete |
 
-### UX Trust + Landing Dark Flow (Passes 228–230, 2026-03-25)
+### Landing Dark Flow + Card Polish (Passes 231–233, 2026-03-25)
 
-| Pass | Title                                                   | Category | Status |
-| ---- | ------------------------------------------------------- | -------- | ------ |
-| 228  | CustomerMapWidget demo shop labeling (trust)            | P2-DATA  | ✅     |
-| 229  | BidsScreen empty state directional CTA                  | P4-UX    | ✅     |
-| 230  | BusinessInquirySection + CTASection dark navy treatment | P4-UX    | ✅     |
+| Pass | Title                                                  | Category | Status |
+| ---- | ------------------------------------------------------ | -------- | ------ |
+| 231  | AboutOpportunitySection dark bridge conversion         | P4-UX    | ✅     |
+| 232  | WhoWeServeSection glass card lift + gradient smoothing | P4-UX    | ✅     |
+| 233  | TrustStats icon compact + FooterSection logo glass     | P4-UX    | ✅     |
 
 **Key changes in this sweep:**
 
-- **Demo shop labeling (P2)**: CustomerMapWidget now renders a "Demo" badge on shops with `dataMode === "demo"`. Users can see the Nearby Shops panel without being misled that demo hubs are real partner shops.
-- **Bids empty state CTA (P4)**: BidsScreen empty state now has a "Submit a Report" button that drives the user toward creating a report. Wired via new `onStartReport` prop propagated from the dashboard router.
-- **Landing dark unification (P4)**: BusinessInquirySection now uses a dark navy glass treatment matching the coverage map section above it. CTASection uses the same dark panel glass. The landing page flow now reads: light hero/content → dark map/coverage → dark business inquiry → dark footer. Removes the jarring light jump between the map and the footer.
-- **Build**: ✓ 0 errors · 2.09s · 740KB
+- **AboutOpportunity dark bridge (P4)**: Converted last remaining light section (`from-white via-blue-50/25 to-blue-50/50`) to dark navy (`#0c1929 → #0a1628`). Added `dark` class to enable `bd-glass-card/badge` dark variants. Decorative dot grid + ambient blobs added for depth. Landing page flow is now: 4 light sections (Hero → HowItWorks → Benefits → WhoWeServe) → 6 dark sections (About → Trust → Coverage Map → BusinessInquiry → CTA → Footer). **The main light/dark seam issue is resolved.**
+- **WhoWeServe card lift (P4)**: Replaced basic `bg-gradient-to-br + border-2` cards with the `bd-glass-card` system (matching HowItWorks and Benefits). Icon containers switched from solid color fill to translucent tinted backgrounds with matching colored icons. Section gradient end: `to-white` → `to-[#e8f1fa]` for softer exit before the dark About section.
+- **TrustStats + Footer (P4)**: Trust stat icon containers compacted from `w-16 h-16` to `w-12 h-12` with `w-6 h-6` icons (less visually dominating on 4-col grid). Commitment labels improved: `text-2xl` → `text-xl sm:text-2xl`, `text-blue-200` → `text-slate-300/80` for readability. Footer logo pill: `bg-white` (bright white box in dark footer) → `bg-white/0.07 border-white/0.1 backdrop-blur-sm` (dark glass). "Dent" text: `text-gray-800` → `text-gray-300`.
+- **Build**: ✓ 0 errors · 2.11s · 742KB
 
 ### Backend Hardening Sweep (Session 2026-03-25, Tasks 1–12)
 
