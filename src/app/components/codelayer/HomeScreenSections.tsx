@@ -11,6 +11,7 @@ import ImageWithFallback from "./ImageWithFallback";
 import { formatDate, formatStatus, getReportTitle, getReportDescription } from "./home-helpers";
 import { type ActionItem, statusClasses, actionIconTones } from "./homeScreenData";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import type { DamageReport } from "../../types";
 
 // Types
 // ============================================================================
@@ -87,7 +88,7 @@ export function HomeReportsList({
   userType: string;
   appearanceMode?: DashboardAppearanceMode;
   listHeader: string;
-  sortedReports: any[];
+  sortedReports: DamageReport[];
   primaryColor: string;
   secondaryColor: string;
   onViewAll?: () => void;

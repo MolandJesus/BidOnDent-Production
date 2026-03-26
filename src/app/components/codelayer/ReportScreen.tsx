@@ -19,17 +19,18 @@ import {
 } from "./report/reportDraftStorage";
 import { uploadReportPhoto } from "./report/reportPhotoUpload";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import type { Vehicle } from "../../types";
 
 type ReportScreenProps = {
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
-  onReportSubmit?: (report: any) => void | Promise<void>;
+  onReportSubmit?: (report: Record<string, unknown>) => void | Promise<void>;
   onViewReports?: () => void;
   onBackToDashboard?: () => void;
   hasSeenPhotoGuide?: boolean;
   onPhotoGuideComplete?: () => void;
-  vehicles?: any[];
-  onSaveVehicle?: (vehicle: any) => void;
+  vehicles?: Vehicle[];
+  onSaveVehicle?: (vehicle: Vehicle) => void;
 };
 
 export default function ReportScreen({
@@ -194,7 +195,7 @@ export default function ReportScreen({
   const handleVehicleContinue = () => {
     if (onSaveVehicle && vehicle.make && vehicle.model && vehicle.year) {
       const isNewVehicle = !vehicles.some(
-        (v: any) => v.make === vehicle.make && v.model === vehicle.model && v.year === vehicle.year
+        (v) => v.make === vehicle.make && v.model === vehicle.model && v.year === vehicle.year
       );
       if (isNewVehicle) {
         onSaveVehicle({

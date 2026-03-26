@@ -24,7 +24,7 @@ function toStringArray(value: unknown) {
   return Array.isArray(value) ? value.filter((entry) => typeof entry === "string") : [];
 }
 
-function toShopBusinessProfile(record: any): ShopBusinessProfile {
+function toShopBusinessProfile(record: Record<string, unknown>): ShopBusinessProfile {
   return {
     aboutSummary: record?.about_summary || null,
     acceptsInsuranceClaims: !!record?.accepts_insurance_claims,
@@ -94,7 +94,7 @@ function toShopBusinessProfile(record: any): ShopBusinessProfile {
   };
 }
 
-function toInsurerBusinessProfile(record: any): InsurerBusinessProfile {
+function toInsurerBusinessProfile(record: Record<string, unknown>): InsurerBusinessProfile {
   return {
     accountConnectionNotes: toStringArray(record?.account_connection_notes),
     autoApproval: !!record?.auto_approval,

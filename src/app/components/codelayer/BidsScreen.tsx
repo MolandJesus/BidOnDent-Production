@@ -3,14 +3,15 @@ import { motion } from "motion/react";
 import { ArrowLeft, Clock, Sparkles } from "lucide-react";
 import ShopRatingModal from "../shop/ShopRatingModal";
 import BidCardArticle from "./BidCardArticle";
+import type { Bid, DamageReport } from "../../types";
 
 type BidsScreenProps = {
   primaryColor?: string;
   onBack?: () => void;
   onStartReport?: () => void;
   userType?: "customer" | "shop" | "insurer";
-  bids?: any[];
-  reports?: any[];
+  bids?: Bid[];
+  reports?: DamageReport[];
   onAcceptBid?: (details: {
     bidId: string;
     shopName: string;
@@ -39,7 +40,7 @@ export default function BidsScreen({
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [selectedShop, setSelectedShop] = useState<string>("");
   const [shopRatings, setShopRatings] = useState<{
-    [key: string]: { rating: number; review: string; categoryRatings?: any };
+    [key: string]: { rating: number; review: string; categoryRatings?: Record<string, number> };
   }>({});
 
   const liveBids = useMemo(() => {

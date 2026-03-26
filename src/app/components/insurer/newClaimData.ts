@@ -28,7 +28,7 @@ export type ClaimShop = {
   avgCompletionDays: number;
 };
 
-export function buildPolicyholders(reports: any[]): Policyholder[] {
+export function buildPolicyholders(reports: Record<string, unknown>[]): Policyholder[] {
   if (!reports.length) {
     return [
       {
@@ -46,7 +46,7 @@ export function buildPolicyholders(reports: any[]): Policyholder[] {
     ];
   }
 
-  return reports.slice(0, 8).map((report: any, index: number) => {
+  return reports.slice(0, 8).map((report, index) => {
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
     const status = String(report?.status ?? "pending").toLowerCase();
     const activeClaims = status === "completed" || status === "resolved" ? 0 : 1;
@@ -73,7 +73,7 @@ export function buildPolicyholders(reports: any[]): Policyholder[] {
   });
 }
 
-export function buildClaimShops(_reports: any[]): ClaimShop[] {
+export function buildClaimShops(_reports: unknown[]): ClaimShop[] {
   return [
     {
       id: "claim-shop-1",
