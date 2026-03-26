@@ -42,7 +42,8 @@ export default function ReportProgress({
                   step <= activeStep
                     ? {
                         backgroundColor: primaryColor,
-                        boxShadow: "0 2px 12px rgba(37, 99, 235, 0.4), 0 0 6px rgba(56, 189, 248, 0.2)",
+                        boxShadow:
+                          "0 2px 12px rgba(37, 99, 235, 0.4), 0 0 6px rgba(56, 189, 248, 0.2)",
                       }
                     : {}
                 }

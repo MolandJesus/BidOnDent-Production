@@ -408,11 +408,15 @@ export default function ReportScreen({
           <>
             <div
               className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%)" }}
+              style={{
+                background: "radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%)",
+              }}
             />
             <div
               className="absolute bottom-24 -left-20 w-40 h-40 rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)" }}
+              style={{
+                background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)",
+              }}
             />
           </>
         )}

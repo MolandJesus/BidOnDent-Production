@@ -157,6 +157,15 @@ function AppContent() {
     window.localStorage.setItem(APPEARANCE_STORAGE_KEY, appearanceMode);
     document.documentElement.setAttribute("data-appearance-mode", appearanceMode);
     document.documentElement.style.colorScheme = appearanceMode === "light" ? "light" : "dark";
+
+    // Sync dark class and data-theme for CSS token selectors (.dark, [data-theme="dark"])
+    if (appearanceMode === "light") {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.setAttribute("data-theme", "light");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
   }, [appearanceMode]);
 
   // ============================================================================
