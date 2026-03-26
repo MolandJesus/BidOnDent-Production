@@ -56,7 +56,7 @@ export async function getPublicPartnerShops(): Promise<PartnerShopMapRecord[]> {
     .order("shop_name", { ascending: true });
 
   if (error) {
-    console.warn("Public partner shops query failed", error.message);
+    if (import.meta.env.DEV) console.warn("Public partner shops query failed", error.message);
     return [];
   }
 

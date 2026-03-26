@@ -91,6 +91,7 @@ export default function HomeScreen({
             <ShopMapWidget
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
+              appearanceMode={appearanceMode}
               onViewShops={onViewShops}
             />
           ) : userType === "insurer" ? (

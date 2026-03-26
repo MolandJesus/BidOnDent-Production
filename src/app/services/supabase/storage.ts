@@ -33,7 +33,7 @@ export async function uploadPhoto(
     if (import.meta.env.DEV) console.log("✅ Photo uploaded successfully:", publicUrl);
     return publicUrl || null;
   } catch (error) {
-    console.error("❌ Exception in uploadPhoto:", error);
+    if (import.meta.env.DEV) console.error("❌ Exception in uploadPhoto:", error);
     return null;
   }
 }
@@ -51,14 +51,14 @@ export async function deletePhoto(
     const { error } = await supabase.storage.from(bucket).remove([filePath]);
 
     if (error) {
-      console.error("Error deleting photo:", error);
+      if (import.meta.env.DEV) console.error("Error deleting photo:", error);
       return false;
     }
 
     if (import.meta.env.DEV) console.log("✅ Photo deleted from Supabase Storage");
     return true;
   } catch (error) {
-    console.error("Error in deletePhoto:", error);
+    if (import.meta.env.DEV) console.error("Error in deletePhoto:", error);
     return false;
   }
 }
@@ -78,10 +78,12 @@ export async function uploadImageToSupabase(base64: string, fileName: string): P
     if (import.meta.env.DEV) console.log(`📊 Image blob size: ${sizeInMB.toFixed(2)}MB (${blob.size} bytes)`);
 
     if (blob.size > 2 * 1024 * 1024) {
-      console.error(
-        `❌ Image too large for upload: ${sizeInMB.toFixed(2)}MB (max 2MB)`
-      );
-      console.error(`   File will be stored locally instead of cloud storage`);
+      if (import.meta.env.DEV) {
+        console.error(
+          `❌ Image too large for upload: ${sizeInMB.toFixed(2)}MB (max 2MB)`
+        );
+        console.error(`   File will be stored locally instead of cloud storage`);
+      }
       return null;
     }
 
@@ -89,7 +91,7 @@ export async function uploadImageToSupabase(base64: string, fileName: string): P
 
     return await uploadPhoto(blob, SUPABASE_STORAGE_BUCKETS.reportMedia, fileName);
   } catch (error) {
-    console.error("Error in uploadImageToSupabase:", error);
+    if (import.meta.env.DEV) console.error("Error in uploadImageToSupabase:", error);
     return null;
   }
 }

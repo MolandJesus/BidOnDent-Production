@@ -106,15 +106,15 @@ export default function ShopActiveJobsScreen({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+        return "bg-yellow-500/15 text-yellow-300 border-yellow-400/25";
       case "in-progress":
-        return "bg-blue-100 text-blue-700 border-blue-200";
+        return "bg-blue-500/15 text-blue-300 border-blue-400/25";
       case "awaiting-parts":
-        return "bg-orange-100 text-orange-700 border-orange-200";
+        return "bg-orange-500/15 text-orange-300 border-orange-400/25";
       case "completed":
-        return "bg-green-100 text-green-700 border-green-200";
+        return "bg-green-500/15 text-green-300 border-green-400/25";
       default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+        return "bg-slate-500/15 text-slate-300 border-slate-400/25";
     }
   };
 
@@ -146,15 +146,14 @@ export default function ShopActiveJobsScreen({
       <div
         className="sticky top-0 z-10 border-b border-blue-300/15"
         style={{
-          background: "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+          background:
+            "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
           boxShadow: "0 4px 24px rgba(3, 10, 24, 0.30)",
           backdropFilter: "blur(12px)",
         }}
       >
         <div className="px-4 py-4">
-          <h1 className="text-2xl font-bold mb-4 text-slate-100">
-            Active Jobs
-          </h1>
+          <h1 className="text-2xl font-bold mb-4 text-slate-100">Active Jobs</h1>
 
           {/* Search */}
           <div className="mb-3">
@@ -188,9 +187,15 @@ export default function ShopActiveJobsScreen({
                 key={filter.id}
                 onClick={() => setFilterStatus(filter.id)}
                 className={`px-4 py-2 min-h-[44px] rounded-lg font-medium whitespace-nowrap transition-colors ${
-                  filterStatus === filter.id ? "text-white shadow-sm" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
+                  filterStatus === filter.id
+                    ? "text-white shadow-sm"
+                    : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
                 }`}
-                style={filterStatus === filter.id ? { background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` } : {}}
+                style={
+                  filterStatus === filter.id
+                    ? { background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }
+                    : {}
+                }
               >
                 {filter.label}
               </button>
@@ -205,7 +210,8 @@ export default function ShopActiveJobsScreen({
           <div
             className="bd-glass-card p-5 sm:p-8 text-center"
             style={{
-              background: "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+              background:
+                "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
               borderColor: "rgba(96, 165, 250, 0.20)",
             }}
           >
@@ -219,7 +225,8 @@ export default function ShopActiveJobsScreen({
               key={job.id}
               className="bd-glass-card overflow-hidden"
               style={{
-                background: "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
+                background:
+                  "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
                 borderColor: "rgba(96, 165, 250, 0.22)",
               }}
             >
@@ -262,14 +269,15 @@ export default function ShopActiveJobsScreen({
               <div className="px-4 py-3 bg-white/5">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-blue-100/80">Progress</span>
-                  <span className="text-sm font-bold text-blue-200">
-                    {job.progress}%
-                  </span>
+                  <span className="text-sm font-bold text-blue-200">{job.progress}%</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div
                     className="h-full transition-all duration-300 rounded-full"
-                    style={{ width: `${job.progress}%`, background: `linear-gradient(90deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+                    style={{
+                      width: `${job.progress}%`,
+                      background: `linear-gradient(90deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+                    }}
                   />
                 </div>
               </div>
@@ -346,7 +354,9 @@ export default function ShopActiveJobsScreen({
                 <button
                   onClick={() => setSelectedJob(job)}
                   className="w-full py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-                  style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+                  style={{
+                    background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+                  }}
                 >
                   <User className="w-5 h-5" />
                   View Full Details
@@ -364,7 +374,8 @@ export default function ShopActiveJobsScreen({
           <div
             className="rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto border border-blue-300/20"
             style={{
-              background: "linear-gradient(180deg, rgba(11, 23, 47, 0.95) 0%, rgba(8, 18, 38, 0.92) 100%)",
+              background:
+                "linear-gradient(180deg, rgba(11, 23, 47, 0.95) 0%, rgba(8, 18, 38, 0.92) 100%)",
               boxShadow: "0 20px 60px rgba(3, 10, 24, 0.60)",
             }}
           >
@@ -402,16 +413,19 @@ export default function ShopActiveJobsScreen({
                 <div className="rounded-xl p-4 bg-white/8 border border-blue-300/15">
                   <h3 className="font-semibold mb-2 text-slate-100">Job Details</h3>
                   <p className="text-sm text-blue-100/80">
-                    <strong className="text-slate-200">Bid Amount:</strong> ${selectedJob.bidAmount.toLocaleString()}
+                    <strong className="text-slate-200">Bid Amount:</strong> $
+                    {selectedJob.bidAmount.toLocaleString()}
                   </p>
                   <p className="text-sm text-blue-100/80">
                     <strong className="text-slate-200">Start Date:</strong> {selectedJob.startDate}
                   </p>
                   <p className="text-sm text-blue-100/80">
-                    <strong className="text-slate-200">Estimated Completion:</strong> {selectedJob.estimatedCompletion}
+                    <strong className="text-slate-200">Estimated Completion:</strong>{" "}
+                    {selectedJob.estimatedCompletion}
                   </p>
                   <p className="text-sm text-blue-100/80">
-                    <strong className="text-slate-200">Status:</strong> {formatStatus(selectedJob.status)}
+                    <strong className="text-slate-200">Status:</strong>{" "}
+                    {formatStatus(selectedJob.status)}
                   </p>
                 </div>
 
@@ -419,7 +433,8 @@ export default function ShopActiveJobsScreen({
                   <div className="p-4 bg-blue-500/10 rounded-xl border border-blue-400/20">
                     <h3 className="font-semibold mb-2 text-blue-200">Insurance Information</h3>
                     <p className="text-sm text-blue-100/80">
-                      <strong className="text-slate-200">Company:</strong> {selectedJob.insuranceCompany}
+                      <strong className="text-slate-200">Company:</strong>{" "}
+                      {selectedJob.insuranceCompany}
                     </p>
                     <p className="text-sm text-blue-100/80">
                       <strong className="text-slate-200">Claim #:</strong> {selectedJob.claimNumber}

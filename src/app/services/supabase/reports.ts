@@ -152,7 +152,7 @@ export async function saveDamageReport(
 ): Promise<DamageReport | null> {
   try {
     if (!clerkUserId) {
-      console.warn("⚠️ No Clerk user ID provided to saveDamageReport");
+      if (import.meta.env.DEV) console.warn("⚠️ No Clerk user ID provided to saveDamageReport");
       return null;
     }
 

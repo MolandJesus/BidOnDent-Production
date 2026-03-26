@@ -46,7 +46,7 @@ export async function getVehicles(
 
       return payload.vehicles || [];
     } catch (error) {
-      console.error("Error in getVehicles edge path:", error);
+      if (import.meta.env.DEV) console.error("Error in getVehicles edge path:", error);
       return [];
     }
   }
@@ -72,14 +72,14 @@ export async function getVehicles(
         if (import.meta.env.DEV) console.log("ℹ️ Vehicles table not set up yet - using local storage");
         return [];
       }
-      console.error("Error fetching vehicles:", error);
+      if (import.meta.env.DEV) console.error("Error fetching vehicles:", error);
       return [];
     }
 
     if (import.meta.env.DEV) console.log(`✅ Loaded ${data.length} vehicles from Supabase`);
     return data as Vehicle[];
   } catch (error) {
-    console.error("Error in getVehicles:", error);
+    if (import.meta.env.DEV) console.error("Error in getVehicles:", error);
     return [];
   }
 }
@@ -96,7 +96,7 @@ export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promi
       });
       return true;
     } catch (error) {
-      console.error("Error in saveVehicle edge path:", error);
+      if (import.meta.env.DEV) console.error("Error in saveVehicle edge path:", error);
       return false;
     }
   }
@@ -131,7 +131,7 @@ export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promi
         .eq("user_id", user.id);
 
       if (error) {
-        console.error("Error updating vehicle:", error);
+        if (import.meta.env.DEV) console.error("Error updating vehicle:", error);
         return false;
       }
     } else {
@@ -147,7 +147,7 @@ export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promi
       });
 
       if (error) {
-        console.error("Error inserting vehicle:", error);
+        if (import.meta.env.DEV) console.error("Error inserting vehicle:", error);
         return false;
       }
     }
@@ -155,7 +155,7 @@ export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promi
     if (import.meta.env.DEV) console.log("✅ Vehicle saved to Supabase");
     return true;
   } catch (error) {
-    console.error("Error in saveVehicle:", error);
+    if (import.meta.env.DEV) console.error("Error in saveVehicle:", error);
     return false;
   }
 }
@@ -172,7 +172,7 @@ export async function deleteVehicle(vehicleId: string, clerkUserId?: string): Pr
       });
       return true;
     } catch (error) {
-      console.error("Error in deleteVehicle edge path:", error);
+      if (import.meta.env.DEV) console.error("Error in deleteVehicle edge path:", error);
       return false;
     }
   }
@@ -193,14 +193,14 @@ export async function deleteVehicle(vehicleId: string, clerkUserId?: string): Pr
       .eq("user_id", user.id);
 
     if (error) {
-      console.error("Error deleting vehicle:", error);
+      if (import.meta.env.DEV) console.error("Error deleting vehicle:", error);
       return false;
     }
 
     if (import.meta.env.DEV) console.log("✅ Vehicle deleted from Supabase");
     return true;
   } catch (error) {
-    console.error("Error in deleteVehicle:", error);
+    if (import.meta.env.DEV) console.error("Error in deleteVehicle:", error);
     return false;
   }
 }

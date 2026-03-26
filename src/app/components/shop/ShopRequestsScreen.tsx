@@ -121,26 +121,26 @@ export default function ShopRequestsScreen({
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
       case "high":
-        return "text-red-600 bg-red-50";
+        return "text-red-300 bg-red-500/15 border border-red-400/25";
       case "medium":
-        return "text-orange-600 bg-orange-50";
+        return "text-orange-300 bg-orange-500/15 border border-orange-400/25";
       case "low":
-        return "text-green-600 bg-green-50";
+        return "text-green-300 bg-green-500/15 border border-green-400/25";
       default:
-        return "text-gray-600 bg-gray-50";
+        return "text-slate-300 bg-slate-500/15 border border-slate-400/25";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "new":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-500/15 text-blue-300 border border-blue-400/25";
       case "bidding":
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-yellow-500/15 text-yellow-300 border border-yellow-400/25";
       case "closed":
-        return "bg-gray-100 text-gray-700";
+        return "bg-slate-500/15 text-slate-300 border border-slate-400/25";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-slate-500/15 text-slate-300 border border-slate-400/25";
     }
   };
 
@@ -261,7 +261,7 @@ export default function ShopRequestsScreen({
                     {request.distance}
                   </span>
                   {request.hasLocation && (
-                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-400/25">
                       <MapPin className="w-3 h-3" />
                       Located
                     </span>

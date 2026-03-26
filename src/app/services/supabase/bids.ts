@@ -73,7 +73,7 @@ export async function getMyBids(clerkUserId?: string): Promise<Bid[]> {
     );
     return data.bids ?? [];
   } catch (error) {
-    console.error("Error in getMyBids:", error);
+    if (import.meta.env.DEV) console.error("Error in getMyBids:", error);
     return [];
   }
 }
@@ -92,7 +92,7 @@ export async function deleteBid(bidId: string, clerkUserId?: string): Promise<bo
     if (import.meta.env.DEV) console.log("✅ Bid deleted successfully");
     return true;
   } catch (error) {
-    console.error("Error in deleteBid:", error);
+    if (import.meta.env.DEV) console.error("Error in deleteBid:", error);
     return false;
   }
 }
