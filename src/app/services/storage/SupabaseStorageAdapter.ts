@@ -7,6 +7,8 @@
  */
 
 import { supabase } from "../supabaseService";
+
+const toErrMsg = (e: unknown, fallback: string) => (e instanceof Error ? e.message : fallback);
 import type {
   IStorageProvider,
   UploadOptions,
@@ -56,11 +58,11 @@ export class SupabaseStorageAdapter implements IStorageProvider {
         publicUrl: publicUrl,
         path: data.path,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (import.meta.env.DEV) console.error("Supabase upload exception:", error);
       return {
         success: false,
-        error: error.message || "Upload failed",
+        error: toErrMsg(error, "Upload failed"),
       };
     }
   }
@@ -82,10 +84,10 @@ export class SupabaseStorageAdapter implements IStorageProvider {
       }
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         success: false,
-        error: error.message || "Delete failed",
+        error: toErrMsg(error, "Delete failed"),
       };
     }
   }
@@ -123,10 +125,10 @@ export class SupabaseStorageAdapter implements IStorageProvider {
         success: true,
         files,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         success: false,
-        error: error.message || "List failed",
+        error: toErrMsg(error, "List failed"),
       };
     }
   }
@@ -151,10 +153,10 @@ export class SupabaseStorageAdapter implements IStorageProvider {
         success: true,
         signedUrl: data.signedUrl,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       return {
         success: false,
-        error: error.message || "Signed URL generation failed",
+        error: toErrMsg(error, "Signed URL generation failed"),
       };
     }
   }
@@ -212,8 +214,8 @@ export class SupabaseStorageAdapter implements IStorageProvider {
       }
 
       return true;
-    } catch (error: any) {
-      if (import.meta.env.DEV) console.error(`Error ensuring bucket ${bucket}:`, error.message);
+    } catch (error: unknown) {
+      if (import.meta.env.DEV) console.error(`Error ensuring bucket ${bucket}:`, toErrMsg(error, "unknown error"));
       return false;
     }
   }

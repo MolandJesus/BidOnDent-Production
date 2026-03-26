@@ -1,6 +1,6 @@
 import { STORAGE_KEYS } from "../constants";
-import type { Vehicle as FrontendVehicle, Bid as FrontendBid } from "../types";
-import type { Vehicle as SupabaseVehicle, Bid as SupabaseBid } from "../services/supabase/types";
+import type { DamageReport as FrontendReport, Vehicle as FrontendVehicle, Bid as FrontendBid } from "../types";
+import type { DamageReport as SupabaseReport, Vehicle as SupabaseVehicle, Bid as SupabaseBid } from "../services/supabase/types";
 
 /** Convert a Supabase Vehicle to a frontend Vehicle. */
 export function toFrontendVehicle(v: SupabaseVehicle): FrontendVehicle {
@@ -74,9 +74,9 @@ export const getLastActiveCacheKey = () => {
   return getUserCacheKey(lastActiveIdentifier);
 };
 
-export const buildPhotoStorageFromReports = (reportsData: any[]) => {
+export const buildPhotoStorageFromReports = (reportsData: FrontendReport[]) => {
   const photoStorageData: Record<string, string[]> = {};
-  reportsData.forEach((report: any) => {
+  reportsData.forEach((report) => {
     if (report?.id && Array.isArray(report.photos) && report.photos.length > 0) {
       photoStorageData[report.id] = report.photos;
     }
@@ -84,7 +84,7 @@ export const buildPhotoStorageFromReports = (reportsData: any[]) => {
   return photoStorageData;
 };
 
-export const transformSupabaseReport = (report: any) => ({
+export const transformSupabaseReport = (report: SupabaseReport) => ({
   id: report.id || "",
   vehicleId: report.vehicle_id || "",
   vehicleInfo: {

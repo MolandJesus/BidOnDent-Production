@@ -38,7 +38,7 @@ You are a senior product-minded systems engineer running on **autopilot mode**. 
 
 ---
 
-## What You've Done So Far (235+ Passes Completed)
+## What You've Done So Far (246+ Passes Completed)
 
 Your prior work has been extensive and solid:
 
@@ -58,6 +58,8 @@ Your prior work has been extensive and solid:
 - **Landing page dark flow + card polish** (passes 231-235)
 - **Dashboard spacing, density, map dominance improvements** (passes 214-230)
 - **Supabase edge functions** — properly structured and active
+- **Liquid glass system** (passes 236-242) — white surfaces eliminated across all screens; report wizard, home cards, map overlays, control variants all dark-compatible
+- **Type safety phase** (passes 243-246) — DashboardRouterProps typed (`any[]` → proper interfaces), `useAppHandlers` `Record<string,any>` removed, `transformSupabaseReport`/`buildPhotoStorageFromReports` properly typed, `catch (error: any)` → `error: unknown` in storage adapter + business profile, `clerkUser: any` → `ClerkUserLike` interface
 
 ### Known Resolved ✅
 
@@ -67,35 +69,31 @@ Your prior work has been extensive and solid:
 
 ## Current Known Issues (Priority Order)
 
-### 🔴 P0 — Console.Log Security Leaks (11 unguarded, 4 critical)
+### ✅ RESOLVED — Console.Log Security Leaks
 
-These expose sensitive user data to production browser console/cloud logs:
+All 11 console.logs confirmed DEV-guarded (passes 4eb958ed, 2766b482, 0a52c6a2, audited in pass 243). Zero production leaks.
 
-| File                                                                  | Risk        | What's Leaked                                   |
-| --------------------------------------------------------------------- | ----------- | ----------------------------------------------- |
-| `src/app/components/admin/GoToAdminButton.tsx` (lines 57-76, 103-104) | 🔴 CRITICAL | User email, admin email, session tokens         |
-| `src/app/hooks/useUserData.ts` (lines 76, 87, 109)                    | 🔴 CRITICAL | `[DEBUG]` with user email, cache keys, Clerk ID |
-| `src/app/components/admin/useAdminRoleManagement.ts` (line 30)        | 🔴 HIGH     | Admin status change results                     |
-| `src/app/services/storage/StorageService.ts` (lines 53, 114, 123)     | 🟡 MEDIUM   | Upload/delete operations, bucket names          |
-| `src/app/components/codelayer/AccountScreen.tsx` (line 111)           | 🟡 LOW      | Profile image debug logs                        |
-| `src/app/components/examples/RealtimeBidExample.tsx` (7 occurrences)  | 🟡 LOW      | Bid/connection logs (example file)              |
+### 🟡 P2 — Type Safety Debt (remaining ~20 `any` annotations)
 
-**Fix:** Wrap every unguarded `console.log` in `if (import.meta.env.DEV)` guards. Do NOT delete them — they're useful for debugging.
+Completed (passes 244-246):
+- ✅ `dashboard-router-types.ts` — `reports/vehicles/bids: any[]` → typed
+- ✅ `buildDashboardRouterProps.ts` — inline `any` casts removed
+- ✅ `useAppHandlers.ts` — `Record<string,any>` extension removed, setters typed
+- ✅ `userDataUtils.ts` — `transformSupabaseReport` and `buildPhotoStorageFromReports` typed
+- ✅ `SupabaseStorageAdapter.ts` — 5 catch blocks `error: any` → `error: unknown`
+- ✅ `useBusinessProfile.ts` — 2 catch blocks typed
+- ✅ `clerkService.ts` — `clerkUser: any` → `ClerkUserLike` interface
 
-### 🟡 P2 — Type Safety Debt (48 `any` annotations)
-
-The highest-debt files:
+Remaining debt:
 
 | Category          | Files                                                                                 | Count   |
 | ----------------- | ------------------------------------------------------------------------------------- | ------- |
-| Route Props       | `dashboard-router-types.ts`, `buildDashboardRouterProps.ts`                           | 5 uses  |
-| Core Hooks        | `useUserData.ts`, `useAppHandlers.ts`, `userDataUtils.ts`                             | 7 uses  |
 | Component Props   | `ReportScreen.tsx`, `BidsScreen.tsx`, `HomeScreenSections.tsx`, `DashboardLayout.tsx` | 12 uses |
-| Service Functions | `clerkService.ts`, `networkProfiles.ts`, `RealtimeBidService.ts`                      | 5 uses  |
-| Error Handlers    | `SupabaseStorageAdapter.ts`, `StorageService.ts`, `useBusinessProfile.ts`             | 8 uses  |
+| Service Functions | `networkProfiles.ts`, `RealtimeBidService.ts`                                         | 3 uses  |
 | Helper Functions  | `home-helpers.ts`, `home-data.ts`, `newClaimData.ts`                                  | 11 uses |
+| buildSupabaseReportPayload | `userDataUtils.ts` — mixed-shape input, `any` acceptable boundary       | 1 use   |
 
-**Fix priority:** Start with `dashboard-router-types.ts` (core types flow to everything) → hooks → services → components.
+**Next priority:** Component prop `any` types in BidsScreen and ReportScreen (high traffic, user-facing).
 
 ### 🟢 P3 — Code Cleanup Opportunities
 

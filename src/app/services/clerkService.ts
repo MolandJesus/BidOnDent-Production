@@ -7,6 +7,13 @@
 
 export type UserType = "customer" | "shop" | "insurer";
 
+interface ClerkUserLike {
+  id: string;
+  emailAddresses?: Array<{ emailAddress: string }>;
+  unsafeMetadata?: Record<string, unknown>;
+  update: (params: { unsafeMetadata: Record<string, unknown> }) => Promise<void>;
+}
+
 export interface UserProfile {
   id: string;
   email: string;
@@ -23,7 +30,7 @@ export interface UserProfile {
  * Extract user profile from Clerk user object
  * This is the main way to get user data in the app
  */
-export function extractUserProfile(clerkUser: any): UserProfile | null {
+export function extractUserProfile(clerkUser: ClerkUserLike | null | undefined): UserProfile | null {
   if (!clerkUser) return null;
 
   const metadata = clerkUser.unsafeMetadata || {};
@@ -48,7 +55,7 @@ export function extractUserProfile(clerkUser: any): UserProfile | null {
  * Returns the user object with updated metadata
  */
 export async function updateUserMetadata(
-  clerkUser: any,
+  clerkUser: ClerkUserLike,
   updates: Partial<Omit<UserProfile, "id" | "email">>
 ) {
   if (!clerkUser) throw new Error("No user provided");

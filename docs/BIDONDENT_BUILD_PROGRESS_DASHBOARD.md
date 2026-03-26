@@ -4,19 +4,36 @@
 
 ### Build Progress
 
-| 0% |████████████████████████████████████████████████████████████████████████████| 126% 🚀 |
+| 0% |████████████████████████████████████████████████████████████████████████████| 129% 🚀 |
 
-**Passes completed:** 242 / 160+ — ⚡ LIQUID GLASS SYSTEM UNIFIED — ALL SURFACES, BOTH MODES
+**Passes completed:** 246 / 160+ — ⚡ TYPE SAFETY SWEEP — CORE TYPES, HOOKS, SERVICES HARDENED
 
-| Item             | Value                                                                                        |
-| ---------------- | -------------------------------------------------------------------------------------------- |
-| **Last pass**    | Pass 242 — ShopDirectory map overlays dark glass                                             |
-| **Current pass** | 242 ✅ complete (Liquid glass: map overlays, home cards, report wizard, header, CSS tokens)  |
-| **Build**        | ✓ 0 errors · 2.16s · 783KB main bundle                                                       |
-| **Spellcheck**   | 0 issues                                                                                     |
-| **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date)                            |
-| **Last pushed**  | 2026-03-26                                                                                   |
-| **Phase**        | LIQUID GLASS PHASE — dark & light modes unified, white surfaces eliminated, ShopDir next     |
+| Item             | Value                                                                                             |
+| ---------------- | ------------------------------------------------------------------------------------------------- |
+| **Last pass**    | Pass 246 — Type safety: services + error handler catch blocks                                     |
+| **Current pass** | 246 ✅ complete (Type safety: router types, hooks, services, error handlers — 30+ any→typed)      |
+| **Build**        | ✓ 0 errors · 2.06s · 783KB main bundle                                                            |
+| **Spellcheck**   | 0 issues                                                                                          |
+| **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date)                                 |
+| **Last pushed**  | 2026-03-26                                                                                        |
+| **Phase**        | TYPE SAFETY PHASE — core types hardened, remaining any in helper functions + component props next |
+
+### Type Safety Sweep (Passes 243–246, 2026-03-26)
+
+| Pass | Title                                                                     | Category  | Status |
+| ---- | ------------------------------------------------------------------------- | --------- | ------ |
+| 243  | P0 security audit — confirmed all 11 console.logs already DEV-guarded    | P0-AUDIT  | ✅     |
+| 244  | Core router types — `any[]` → proper types in DashboardRouterProps       | P2-TYPES  | ✅     |
+| 245  | Hook types — useAppHandlers `Record<string,any>` removed, userDataUtils  | P2-TYPES  | ✅     |
+| 246  | Service types — clerkService ClerkUserLike, storage catch blocks         | P2-TYPES  | ✅     |
+
+**Key changes in this sweep:**
+
+- **Pass 243 — Security audit**: Confirmed all 11 console.logs from the P0 issue list are already wrapped in `import.meta.env.DEV` guards (done in earlier passes 4eb958ed, 2766b482, 0a52c6a2). Zero changes needed.
+- **Pass 244 — Router types (P2)**: Added `DamageReport, Vehicle, Bid` imports to `dashboard-router-types.ts`. Replaced `reports/vehicles/bids: any[]` with proper interfaces. Fixed `onSaveVehicles/onSaveVehicle/onReportSubmit` parameter types. Removed 4 inline `any` casts in `buildDashboardRouterProps.ts`.
+- **Pass 245 — Hook types (P2)**: Removed `& Record<string, any>` from `UserDataState` in `useAppHandlers` (all needed props already in hook return). Fixed `addActivity` metadata type → `Record<string, unknown>`. Fixed `timestamp: Date.now()` → `new Date().toISOString()` (Activity.timestamp is string). Removed `as any` casts from setBids/setReports calls. `userDataUtils.ts`: typed `transformSupabaseReport` to `SupabaseReport`, `buildPhotoStorageFromReports` to `FrontendReport[]`.
+- **Pass 246 — Service types (P2)**: `SupabaseStorageAdapter.ts`: Added `toErrMsg` helper; 5 catch blocks `error: any` → `error: unknown`. `useBusinessProfile.ts`: 2 catch blocks → `instanceof Error` narrowing. `clerkService.ts`: Added `ClerkUserLike` interface; replaced both `clerkUser: any` parameters.
+- **Build**: ✓ 0 errors · 2.06s · 783KB
 
 ### Liquid Glass System — All Surfaces (Passes 236–242, 2026-03-26)
 

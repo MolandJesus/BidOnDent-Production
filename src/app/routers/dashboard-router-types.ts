@@ -1,4 +1,5 @@
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
+import type { DamageReport, Vehicle, Bid } from "../types";
 
 export type DashboardUserType = "customer" | "shop" | "insurer";
 export type DashboardAppearanceMode = "map-dark" | "light";
@@ -16,11 +17,11 @@ export interface DashboardRouterProps {
     profileImage?: string;
   };
   userPhone: string;
-  reports: any[];
+  reports: DamageReport[];
   reportsLoading?: boolean;
   reportsError?: string | null;
-  vehicles: any[];
-  bids: any[];
+  vehicles: Vehicle[];
+  bids: Bid[];
   photoStorage: { [key: string]: string[] };
   selectedReportId: string | null;
   websiteIdentity?: WebsiteIdentity | null;
@@ -77,9 +78,9 @@ export interface DashboardRouterProps {
   }) => void | Promise<void>;
   onPasswordChange: (passwords: { current: string; new: string }) => void;
   onDeleteAccount: () => void;
-  onSaveVehicles: (vehicles: any[]) => void;
-  onSaveVehicle: (vehicle: any) => void;
+  onSaveVehicles: (vehicles: Vehicle[]) => void;
+  onSaveVehicle: (vehicle: Vehicle) => void;
   hasSeenPhotoGuide: boolean;
   onPhotoGuideComplete: () => void;
-  onReportSubmit: (report: any) => void | Promise<void>;
+  onReportSubmit: (report: DamageReport) => void | Promise<void>;
 }

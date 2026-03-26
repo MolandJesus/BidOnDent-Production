@@ -52,8 +52,8 @@ export function useBusinessProfile(
           ? await fetchShopBusinessProfile(identity)
           : await fetchInsurerBusinessProfile(identity);
       setBusinessProfile(profile);
-    } catch (profileError: any) {
-      setError(profileError?.message || "Unable to load business profile");
+    } catch (profileError: unknown) {
+      setError(profileError instanceof Error ? profileError.message : "Unable to load business profile");
     } finally {
       setIsLoading(false);
     }
@@ -88,8 +88,8 @@ export function useBusinessProfile(
 
       setBusinessProfile(savedProfile);
       return savedProfile;
-    } catch (saveError: any) {
-      setError(saveError?.message || "Unable to save business profile");
+    } catch (saveError: unknown) {
+      setError(saveError instanceof Error ? saveError.message : "Unable to save business profile");
       throw saveError;
     }
   };

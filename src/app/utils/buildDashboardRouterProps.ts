@@ -3,7 +3,7 @@ import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
 import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
-import type { ViewMode } from "../types";
+import type { ViewMode, DamageReport, Vehicle, Bid } from "../types";
 import { deleteVehicle } from "../services/supabaseService";
 
 type NavigationState = ReturnType<typeof useNavigation>;
@@ -21,7 +21,7 @@ type BuildDashboardRouterPropsArgs = {
   ) => void;
   handleDeleteAccount: () => Promise<void>;
   handleLogout: () => Promise<void>;
-  onReportSubmit: (report: any) => Promise<void>;
+  onReportSubmit: (report: DamageReport) => Promise<void>;
   primaryColor: string;
   secondaryColor: string;
   userImageUrl: string;
@@ -203,7 +203,7 @@ export function buildDashboardRouterProps({
 
         // Update local bids state
         userData.setBids(
-          userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "accepted" } : b))
+          userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "accepted" } : b))
         );
       } catch (err) {
         if (import.meta.env.DEV) console.error("Failed to accept bid:", err);
@@ -219,7 +219,7 @@ export function buildDashboardRouterProps({
         }
         // Update local bids state so UI reflects the change immediately
         userData.setBids(
-          userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
+          userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
         );
       } catch (err) {
         if (import.meta.env.DEV) console.error("Failed to reject bid:", err);
@@ -229,7 +229,7 @@ export function buildDashboardRouterProps({
       if (import.meta.env.DEV) console.log("Password change not implemented");
     },
     onDeleteAccount: handleDeleteAccount,
-    onSaveVehicles: (vehicles: any[]) => {
+    onSaveVehicles: (vehicles: Vehicle[]) => {
       // Detect vehicles that were removed and delete them from Supabase
       const removedVehicles = userData.vehicles.filter(
         (existing) => existing.id && !vehicles.some((v) => v.id === existing.id)
@@ -246,7 +246,7 @@ export function buildDashboardRouterProps({
       }
       userData.setVehicles(vehicles);
     },
-    onSaveVehicle: (vehicle: any) => {
+    onSaveVehicle: (vehicle: Vehicle) => {
       const existingIndex = userData.vehicles.findIndex((entry) => entry.id === vehicle.id);
       if (existingIndex >= 0) {
         userData.setVehicles(

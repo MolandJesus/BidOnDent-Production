@@ -4,7 +4,7 @@ import { saveDamageReport } from "../services/supabaseService";
 import { buildSupabaseReportPayload, toFrontendBid } from "./userDataUtils";
 
 type NavigationState = ReturnType<typeof useNavigation>;
-type UserDataState = ReturnType<typeof useUserData> & Record<string, any>;
+type UserDataState = ReturnType<typeof useUserData>;
 
 type UseAppHandlersArgs = {
   deleteCurrentUser?: () => Promise<void>;
@@ -82,16 +82,16 @@ export function useAppHandlers({
       | "claim_denied"
       | "new_user",
     message: string,
-    metadata?: any
+    metadata?: Record<string, unknown>
   ) => {
     const newActivity = {
       id: Date.now().toString(),
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       type,
       message,
       metadata,
     };
-    userData.setActivities([newActivity, ...userData.activities] as any);
+    userData.setActivities([newActivity, ...userData.activities]);
   };
 
   const submitBid = async (
@@ -102,14 +102,14 @@ export function useAppHandlers({
   ) => {
     if (import.meta.env.DEV) console.log(`Submitting bid of $${bidAmount} for report ${reportId}`);
 
-    const report = userData.reports.find((entry) => entry.id === reportId) as any;
+    const report = userData.reports.find((entry) => entry.id === reportId);
     if (!report) {
       if (import.meta.env.DEV) console.error("Report not found:", reportId);
       return;
     }
 
     const vehicleInfo =
-      `${report.vehicle?.year || report.vehicle_year || ""} ${report.vehicle?.make || report.vehicle_make || ""} ${report.vehicle?.model || report.vehicle_model || ""}`.trim() ||
+      `${report.vehicle?.year || ""} ${report.vehicle?.make || ""} ${report.vehicle?.model || ""}`.trim() ||
       "Vehicle";
 
     // Build bid object for Supabase
@@ -132,7 +132,7 @@ export function useAppHandlers({
       const { submitBid } = await import("../services/supabase/bids");
       const savedBid = await submitBid(bid as any, userId);
       if (savedBid) {
-        userData.setBids((prev: any[]) => [...prev, toFrontendBid(savedBid as any)]);
+        userData.setBids((prev) => [...prev, toFrontendBid(savedBid)]);
         addActivity(
           "bid_submitted",
           `Submitted bid of $${bidAmount.toLocaleString()} for ${vehicleInfo}`,
@@ -151,7 +151,7 @@ export function useAppHandlers({
     }
   };
 
-  const handleReportSubmit = async (report: any) => {
+  const handleReportSubmit = async (report: Record<string, unknown>) => {
     try {
       if (import.meta.env.DEV) console.log("Submitting damage report to API...");
 
@@ -162,7 +162,7 @@ export function useAppHandlers({
 
       if (!savedApiReport) {
         if (import.meta.env.DEV) console.error("Failed to save report");
-        userData.setReports((previous: any[]) => [...previous, report]);
+        userData.setReports((previous) => [...previous, report as never]);
         if (report?.id && Array.isArray(report.photos)) {
           userData.setPhotoStorage((previous: Record<string, string[]>) => ({
             ...previous,
@@ -187,7 +187,7 @@ export function useAppHandlers({
       }
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error submitting report:", error);
-      userData.setReports((previous: any[]) => [...previous, report]);
+      userData.setReports((previous) => [...previous, report as never]);
       if (report?.id && Array.isArray(report.photos)) {
         userData.setPhotoStorage((previous: Record<string, string[]>) => ({
           ...previous,
