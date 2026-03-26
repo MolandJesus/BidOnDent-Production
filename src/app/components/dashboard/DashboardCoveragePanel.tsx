@@ -176,7 +176,7 @@ export default function DashboardCoveragePanel({
           {operatingRegions.slice(0, 4).map((region) => (
             <span
               key={region}
-              className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm text-slate-700"
+              className="rounded-full border border-white/[0.10] bg-white/[0.05] px-3 py-1 text-sm text-slate-300"
             >
               {region}
             </span>

@@ -31,7 +31,7 @@ export function buildPhotoGuideSteps({
       icon: <Camera className="w-16 h-16" />,
       content: (
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 sm:p-6 border border-blue-200">
+          <div className="border border-blue-400/30 bg-blue-500/10 rounded-2xl p-4 sm:p-6">
             <div className="flex items-start space-x-4">
               <div
                 className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
@@ -40,8 +40,8 @@ export function buildPhotoGuideSteps({
                 <Camera className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-lg mb-2">Why Good Photos Matter</h3>
-                <p className="text-gray-700 leading-relaxed">
+                <h3 className="font-bold text-lg mb-2 text-slate-100">Why Good Photos Matter</h3>
+                <p className="text-slate-300/80 leading-relaxed">
                   Clear, well-lit photos help auto body repair shops understand the damage and
                   provide you with the most accurate quotes. Better photos = better estimates!
                 </p>
@@ -50,14 +50,14 @@ export function buildPhotoGuideSteps({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-green-50 border border-green-200 rounded-xl p-5">
+            <div className="border border-green-400/30 bg-green-400/10 rounded-xl p-5">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
                   <Check className="w-5 h-5 text-white" />
                 </div>
-                <h4 className="font-bold text-green-900">You'll Need</h4>
+                <h4 className="font-bold text-green-200">You'll Need</h4>
               </div>
-              <ul className="space-y-2 text-sm text-green-800">
+              <ul className="space-y-2 text-sm text-green-300/80">
                 {photoGuideContent.welcomeNeeds.map((need) => (
                   <li key={need.item} className="flex items-start">
                     <span className="mr-2">{need.icon}</span>
@@ -67,14 +67,14 @@ export function buildPhotoGuideSteps({
               </ul>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+            <div className="border border-blue-400/30 bg-blue-400/10 rounded-xl p-5">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-white" />
                 </div>
-                <h4 className="font-bold text-blue-900">Quick Tips</h4>
+                <h4 className="font-bold text-blue-200">Quick Tips</h4>
               </div>
-              <ul className="space-y-2 text-sm text-blue-800">
+              <ul className="space-y-2 text-sm text-blue-300/80">
                 {photoGuideContent.welcomeTips.map((tip) => (
                   <li key={tip} className="flex items-start">
                     <span className="mr-2">✓</span>
@@ -96,8 +96,8 @@ export function buildPhotoGuideSteps({
       content: (
         <div className="space-y-5">
           {isDesktop ? (
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 border border-blue-200">
-              <h3 className="font-bold text-lg mb-3 flex items-center">
+            <div className="border border-blue-400/30 bg-blue-500/10 rounded-xl p-4 sm:p-6">
+              <h3 className="font-bold text-lg mb-3 flex items-center text-slate-100">
                 <ImageIcon className="w-5 h-5 mr-2" />
                 Desktop Users: Two Options
               </h3>
@@ -107,10 +107,10 @@ export function buildPhotoGuideSteps({
                     <span className="text-white font-bold text-sm">1</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 mb-1">
+                    <p className="font-medium text-slate-100 mb-1">
                       Take Photos on Your Phone First
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-slate-300/80">
                       Use your phone camera for best results, then upload those photos here
                     </p>
                   </div>
@@ -120,8 +120,8 @@ export function buildPhotoGuideSteps({
                     <span className="text-white font-bold text-sm">2</span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 mb-1">Upload Existing Photos</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium text-slate-100 mb-1">Upload Existing Photos</p>
+                    <p className="text-sm text-slate-300/80">
                       If you already have photos, click the upload button to select them from your
                       computer
                     </p>
@@ -150,18 +150,18 @@ export function buildPhotoGuideSteps({
           )}
 
           <div className="space-y-3">
-            <h4 className="font-medium text-gray-900 flex items-center">
-              <Check className="w-5 h-5 mr-2 text-green-500" />
+            <h4 className="font-medium text-slate-100 flex items-center">
+              <Check className="w-5 h-5 mr-2 text-green-400" />
               Camera Best Practices
             </h4>
             <div className="grid grid-cols-1 gap-3">
               {photoGuideTips.cameraBasics.map((tip) => (
-                <div key={tip.title} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <div key={tip.title} className="border border-white/[0.08] bg-white/[0.05] rounded-lg p-4">
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl">{tip.icon}</span>
                     <div>
-                      <p className="font-medium text-sm text-gray-900">{tip.title}</p>
-                      <p className="text-xs text-gray-600">{tip.desc}</p>
+                      <p className="font-medium text-sm text-slate-100">{tip.title}</p>
+                      <p className="text-xs text-slate-300/80">{tip.desc}</p>
                     </div>
                   </div>
                 </div>
@@ -190,40 +190,40 @@ export function buildPhotoGuideSteps({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-green-50 border-2 border-green-500 rounded-xl p-5">
+            <div className="border-2 border-green-400/50 bg-green-400/10 rounded-xl p-5">
               <div className="flex items-center space-x-2 mb-3">
                 <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
                   <Check className="w-5 h-5 text-white" />
                 </div>
-                <h4 className="font-bold text-green-900">DO THIS</h4>
+                <h4 className="font-bold text-green-200">DO THIS</h4>
               </div>
               <ul className="space-y-3 text-sm">
                 {photoGuideTips.lightingDo.map((tip) => (
                   <li key={tip.title} className="flex items-start">
-                    <span className="text-green-600 mr-2 text-lg">✓</span>
+                    <span className="text-green-400 mr-2 text-lg">✓</span>
                     <div>
-                      <p className="font-medium text-green-900">{tip.title}</p>
-                      <p className="text-green-700 text-xs">{tip.detail}</p>
+                      <p className="font-medium text-green-200">{tip.title}</p>
+                      <p className="text-green-300/70 text-xs">{tip.detail}</p>
                     </div>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-red-50 border-2 border-red-500 rounded-xl p-5">
+            <div className="border-2 border-red-400/50 bg-red-400/10 rounded-xl p-5">
               <div className="flex items-center space-x-2 mb-3">
                 <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center">
                   <X className="w-5 h-5 text-white" />
                 </div>
-                <h4 className="font-bold text-red-900">AVOID THIS</h4>
+                <h4 className="font-bold text-red-200">AVOID THIS</h4>
               </div>
               <ul className="space-y-3 text-sm">
                 {photoGuideTips.lightingAvoid.map((tip) => (
                   <li key={tip.title} className="flex items-start">
-                    <span className="text-red-600 mr-2 text-lg">✗</span>
+                    <span className="text-red-400 mr-2 text-lg">✗</span>
                     <div>
-                      <p className="font-medium text-red-900">{tip.title}</p>
-                      <p className="text-red-700 text-xs">{tip.detail}</p>
+                      <p className="font-medium text-red-200">{tip.title}</p>
+                      <p className="text-red-300/70 text-xs">{tip.detail}</p>
                     </div>
                   </li>
                 ))}
@@ -239,11 +239,11 @@ export function buildPhotoGuideSteps({
       icon: <Move className="w-16 h-16" />,
       content: (
         <div className="space-y-5">
-          <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-5 border border-orange-200">
-            <h3 className="font-bold text-lg mb-3 text-orange-900">
+          <div className="border border-amber-400/30 bg-amber-400/10 rounded-xl p-5">
+            <h3 className="font-bold text-lg mb-3 text-amber-200">
               📸 Take At Least 4 Different Photos
             </h3>
-            <p className="text-sm text-orange-800">
+            <p className="text-sm text-amber-300/80">
               More angles = more accurate quotes. Walk around your vehicle and capture the damage
               from different positions.
             </p>
@@ -253,7 +253,7 @@ export function buildPhotoGuideSteps({
             {photoGuideTips.angleShots.map((shot) => (
               <div
                 key={shot.number}
-                className="bd-glass-card border-2 border-blue-300 rounded-xl p-4"
+                className="bd-glass-card border-2 border-blue-400/40 rounded-xl p-4"
               >
                 <div
                   className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-3"
@@ -262,20 +262,20 @@ export function buildPhotoGuideSteps({
                   <span className="text-white font-bold text-xl">{shot.number}</span>
                 </div>
                 <div className="text-center">
-                  <p className="font-bold text-sm mb-1">{shot.title}</p>
-                  <p className="text-xs text-gray-600">{shot.desc}</p>
+                  <p className="font-bold text-sm mb-1 text-slate-100">{shot.title}</p>
+                  <p className="text-xs text-slate-300/80">{shot.desc}</p>
                   <div className="mt-2 text-2xl">{shot.emoji}</div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="border border-blue-400/30 bg-blue-400/10 rounded-xl p-4">
             <div className="flex items-start space-x-3">
-              <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-blue-900">
-                <p className="font-medium mb-1">Pro Tip: Move Around!</p>
-                <p className="text-blue-700">
+              <AlertCircle className="w-5 h-5 text-blue-300 mt-0.5 flex-shrink-0" />
+              <div className="text-sm">
+                <p className="font-medium mb-1 text-blue-200">Pro Tip: Move Around!</p>
+                <p className="text-blue-300/80">
                   Take steps to the left, right, up close, and further back. Each angle reveals
                   different details that help shops give you accurate quotes.
                 </p>
@@ -303,8 +303,8 @@ export function buildPhotoGuideSteps({
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-500 rounded-2xl p-4 sm:p-6">
-            <h3 className="font-bold text-xl mb-4 text-green-900 flex items-center">
+          <div className="border-2 border-green-400/50 bg-green-400/10 rounded-2xl p-4 sm:p-6">
+            <h3 className="font-bold text-xl mb-4 text-green-200 flex items-center">
               <span className="text-2xl mr-3">✅</span>
               Quick Checklist Before You Start
             </h3>
@@ -316,11 +316,11 @@ export function buildPhotoGuideSteps({
                 >
                   <input
                     type="checkbox"
-                    className="w-5 h-5 rounded border-gray-300"
+                    className="w-5 h-5 rounded border-white/20"
                     style={{ accentColor: primaryColor }}
                   />
                   <span className="text-2xl">{item.emoji}</span>
-                  <span className="text-gray-700 group-hover:text-gray-900 font-medium">
+                  <span className="text-slate-200 group-hover:text-white font-medium">
                     {item.text}
                   </span>
                 </label>
@@ -341,7 +341,7 @@ export function buildPhotoGuideSteps({
           </button>
 
           {isDesktop && (
-            <p className="text-center text-sm text-gray-500">
+            <p className="text-center text-sm text-slate-400/70">
               💡 Tip: For best results, take photos on your phone first, then upload them here
             </p>
           )}
