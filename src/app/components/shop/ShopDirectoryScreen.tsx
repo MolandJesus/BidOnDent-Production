@@ -59,14 +59,14 @@ function getRoleIcon(userType: MarketUserType) {
 
 function getRoleAccent(userType: MarketUserType) {
   if (userType === "shop") {
-    return "bg-amber-50 text-amber-800 border-amber-200";
+    return "bg-amber-400/15 text-amber-300 border-amber-400/30";
   }
 
   if (userType === "insurer") {
-    return "bg-emerald-50 text-emerald-800 border-emerald-200";
+    return "bg-emerald-400/15 text-emerald-300 border-emerald-400/30";
   }
 
-  return "bg-blue-50 text-blue-800 border-blue-200";
+  return "bg-blue-400/15 text-blue-200 border-blue-400/30";
 }
 
 export default function ShopDirectoryScreen({
@@ -243,10 +243,10 @@ export default function ShopDirectoryScreen({
       {/* Deviation prompt: only rendered outside map on list mode */}
       {!session.showMapPane && deviationPromptNode}
 
-      <section className="overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:border-slate-200 bg-white md:shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
+      <section className="overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:border-white/[0.08] bg-transparent md:shadow-none">
         <div className={`min-w-0 ${session.showMapPane ? `lg:grid ${mapShellLayoutClass}` : ""}`}>
           <aside
-            className={`${session.showMapPane ? "lg:border-r" : ""} min-h-0 border-slate-200 bg-[linear-gradient(180deg,_#ffffff,_#f8fafc)]`}
+            className={`${session.showMapPane ? "lg:border-r" : ""} min-h-0 border-white/[0.08] bg-transparent`}
           >
             <div className="flex h-full flex-col">
               <ShopDirectorySearchPanel

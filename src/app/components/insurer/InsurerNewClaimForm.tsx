@@ -33,7 +33,7 @@ export default function InsurerNewClaimForm({
         <div className="p-4 sm:p-6">
           <h2 className="text-2xl font-bold mb-4">New Claim Details</h2>
 
-          <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+          <div className="mb-4 p-4 bg-blue-400/10 border border-blue-400/20 rounded-lg">
             <p className="text-sm font-medium text-blue-900 mb-1">Policyholder</p>
             <p className="font-bold">{selectedCustomer.name}</p>
             <p className="text-sm text-blue-700">{selectedCustomer.email}</p>
@@ -41,7 +41,7 @@ export default function InsurerNewClaimForm({
           </div>
 
           {selectedShop && (
-            <div className="mb-4 p-4 bg-green-50 rounded-lg">
+            <div className="mb-4 p-4 bg-green-400/10 border border-green-400/20 rounded-lg">
               <p className="text-sm font-medium text-green-900 mb-1">Assigned Shop</p>
               <p className="font-bold">{selectedShop.name}</p>
               <p className="text-sm text-green-700">{selectedShop.location}</p>

@@ -203,7 +203,7 @@ export default function InsurerConnectionScreen({
                   key={insurer.id}
                   className="bd-glass-card rounded-2xl p-4 border-2 border-green-200 flex items-start gap-3"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-green-400/10 flex items-center justify-center">
                     <Check className="w-6 h-6 text-green-600" />
                   </div>
                   <div className="flex-1">
@@ -261,7 +261,7 @@ export default function InsurerConnectionScreen({
                       </span>
                     )}
                     {insurer.connected && (
-                      <span className="px-2 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium">
+                      <span className="px-2 py-1 rounded-full bg-green-400/10 text-green-300 text-xs font-medium">
                         Connected
                       </span>
                     )}
