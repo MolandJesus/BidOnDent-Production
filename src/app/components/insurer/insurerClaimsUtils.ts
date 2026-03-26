@@ -79,7 +79,7 @@ export function getPriorityColor(priority: string): string {
     case "medium":
       return "text-orange-600 bg-orange-50 border-orange-200";
     case "low":
-      return "text-green-600 bg-green-50 border-green-200";
+      return "text-green-300 bg-green-400/10 border-green-400/30";
     default:
       return "text-slate-400 bg-white/[0.04] border-white/[0.10]";
   }

@@ -44,10 +44,10 @@ type HomeActionHandlers = {
 };
 
 export const toneClasses: Record<StatItem["tone"], string> = {
-  blue: "bg-blue-50 text-blue-600",
-  green: "bg-emerald-50 text-emerald-600",
-  purple: "bg-violet-50 text-violet-600",
-  amber: "bg-amber-50 text-amber-600",
+  blue: "bg-blue-400/15 text-blue-300",
+  green: "bg-emerald-400/15 text-emerald-300",
+  purple: "bg-violet-400/15 text-violet-300",
+  amber: "bg-amber-400/15 text-amber-300",
 };
 
 export const statusClasses: Record<string, string> = {
@@ -59,10 +59,10 @@ export const statusClasses: Record<string, string> = {
 };
 
 export const actionIconTones = [
-  "bg-blue-50 text-blue-600",
-  "bg-emerald-50 text-emerald-600",
-  "bg-amber-50 text-amber-600",
-  "bg-violet-50 text-violet-600",
+  "bg-blue-400/15 text-blue-300",
+  "bg-emerald-400/15 text-emerald-300",
+  "bg-amber-400/15 text-amber-300",
+  "bg-violet-400/15 text-violet-300",
 ];
 
 export function sortReports(reports: any[]) {
@@ -257,7 +257,7 @@ export function buildActivityItems(userType: string, sortedReports: any[]) {
         label: `${title} marked as completed`,
         time: formatDate(report?.submittedAt),
         icon: CircleCheck,
-        tone: "text-emerald-600 bg-emerald-50",
+        tone: "text-emerald-300 bg-emerald-400/15",
       };
     }
 
@@ -267,7 +267,7 @@ export function buildActivityItems(userType: string, sortedReports: any[]) {
         label: `New bid activity on ${title}`,
         time: formatDate(report?.submittedAt),
         icon: DollarSign,
-        tone: "text-blue-600 bg-blue-50",
+        tone: "text-blue-300 bg-blue-400/15",
       };
     }
 
@@ -276,7 +276,7 @@ export function buildActivityItems(userType: string, sortedReports: any[]) {
       label: `${title} is waiting for review`,
       time: formatDate(report?.submittedAt),
       icon: Clock,
-      tone: "text-amber-600 bg-amber-50",
+      tone: "text-amber-300 bg-amber-400/15",
     };
   });
 }

@@ -47,9 +47,9 @@ export function getStatusColor(status: FilterStatus) {
     case "pending":
       return "bg-amber-100 text-amber-700 border-amber-200";
     case "inactive":
-      return "bg-slate-100 text-slate-700 border-slate-200";
+      return "bg-white/[0.06] text-slate-300 border-white/[0.10]";
     default:
-      return "bg-slate-100 text-slate-700 border-slate-200";
+      return "bg-white/[0.06] text-slate-300 border-white/[0.10]";
   }
 }
 

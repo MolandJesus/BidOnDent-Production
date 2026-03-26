@@ -200,7 +200,7 @@ export default function ShopDirectoryImmersiveMap({
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                 Results
               </p>
-              <p className="text-lg font-semibold text-slate-950">
+              <p className="text-lg font-semibold text-slate-100">
                 {mapListings.length} shop{mapListings.length === 1 ? "" : "s"}
               </p>
             </div>
