@@ -152,7 +152,7 @@ export function HomeReportsList({
         <div className="space-y-3">
           {sortedReports.slice(0, 4).map((report) => {
             const status = String(report?.status ?? "pending").toLowerCase();
-            const statusClass = statusClasses[status] ?? "bg-slate-100 text-slate-300";
+            const statusClass = statusClasses[status] ?? "bg-white/[0.08] text-slate-300";
             const title = getReportTitle(report, userType);
             const description = getReportDescription(report, userType);
             const hasPhoto = Array.isArray(report?.photos) && report.photos.length > 0;

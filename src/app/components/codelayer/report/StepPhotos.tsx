@@ -99,7 +99,7 @@ export default function StepPhotos({
           const isBase64 = photo.startsWith("data:");
           return (
             <div key={`photo-${index}`} className="relative bd-glass-card p-2.5">
-              <div className="w-full aspect-video bg-slate-100 rounded-lg overflow-hidden mb-2">
+              <div className="w-full aspect-video bg-white/[0.08] rounded-lg overflow-hidden mb-2">
                 <img
                   src={photo}
                   alt={`Damage photo ${index + 1}`}
@@ -123,7 +123,7 @@ export default function StepPhotos({
                   onClick={() => onRemovePhoto(index)}
                   aria-label="Remove photo"
                   type="button"
-                  className="p-2 rounded-lg hover:bg-rose-50 text-rose-500 transition-colors"
+                  className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-400 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
