@@ -96,10 +96,15 @@ export default function DemoAccountSwitcher({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="bd-glass-card p-5 md:p-6"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+          borderColor: "rgba(96, 165, 250, 0.24)",
+        }}
       >
         <button
           onClick={onExitDemo}
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
+          className="inline-flex items-center gap-2 text-blue-300/80 hover:text-blue-200 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="font-medium">Back to Dashboard</span>
@@ -113,16 +118,16 @@ export default function DemoAccountSwitcher({
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-white/90">
               Demo Mode
             </h1>
-            <p className="text-slate-600 mt-1">
+            <p className="text-slate-300/80 mt-1">
               Explore each dashboard perspective with animated preview cards.
             </p>
           </div>
         </div>
 
-        <div className="mt-4 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+        <div className="mt-4 rounded-xl border border-blue-400/30 bg-blue-400/10 px-4 py-3 text-sm text-blue-200">
           <span className="font-semibold">Demo Mode Active:</span> You are viewing sample data. Your
           real account data stays unchanged.
         </div>
@@ -146,6 +151,11 @@ export default function DemoAccountSwitcher({
               className={`bd-glass-card overflow-hidden transition-all ${
                 isActive ? "border-blue-500 shadow-md" : ""
               }`}
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
+                borderColor: isActive ? undefined : "rgba(96, 165, 250, 0.18)",
+              }}
             >
               <div className="p-5 text-white relative" style={{ background: account.gradient }}>
                 <Icon className="w-8 h-8 mb-3" />
@@ -162,12 +172,12 @@ export default function DemoAccountSwitcher({
               </div>
 
               <div className="p-5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-200/60">
                   Key Features
                 </p>
                 <ul className="mt-3 space-y-2">
                   {account.features.map((feature) => (
-                    <li key={feature} className="text-sm text-slate-700 flex items-start gap-2">
+                    <li key={feature} className="text-sm text-slate-300/80 flex items-start gap-2">
                       <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
                       <span>{feature}</span>
                     </li>
@@ -179,8 +189,8 @@ export default function DemoAccountSwitcher({
                   disabled={isActive}
                   className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-medium transition-all ${
                     isActive
-                      ? "bg-blue-100 text-blue-700 cursor-default"
-                      : "bg-slate-100 text-slate-800 hover:bg-slate-200"
+                      ? "bg-blue-400/20 text-blue-200 cursor-default"
+                      : "bg-white/[0.10] text-slate-100 hover:bg-white/[0.15]"
                   }`}
                 >
                   {isActive ? "Currently Viewing" : "Switch to This View"}
@@ -200,7 +210,7 @@ export default function DemoAccountSwitcher({
       >
         <button
           onClick={onExitDemo}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200/60 bg-white text-slate-700 hover:bg-white/40 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/[0.12] bg-transparent text-slate-300 hover:bg-white/[0.08] transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Exit Demo Mode

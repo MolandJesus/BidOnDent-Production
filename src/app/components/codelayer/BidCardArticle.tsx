@@ -66,8 +66,13 @@ export default function BidCardArticle({
       whileHover={{ y: -3, scale: 1.003 }}
       transition={{ duration: 0.2 }}
       className={`group relative bd-glass-card overflow-hidden transition-all ${
-        isActive ? "border-blue-300 shadow-md" : "hover:border-slate-300"
+        isActive ? "border-blue-400/50 shadow-md" : "hover:border-blue-400/30"
       }`}
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
+        borderColor: isActive ? undefined : "rgba(96, 165, 250, 0.18)",
+      }}
     >
       {isRecommended && (
         <div
@@ -79,7 +84,7 @@ export default function BidCardArticle({
       )}
       <button onClick={onToggle} className="w-full p-4 text-left">
         <div className="flex items-center gap-3">
-          <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+          <div className="w-14 h-14 rounded-xl overflow-hidden bg-white/[0.08] shrink-0">
             <ImageWithFallback
               src={bid.image}
               alt={bid.shopName}
@@ -89,17 +94,17 @@ export default function BidCardArticle({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <h3 className="font-semibold text-slate-900 text-[1.2rem] truncate">
+              <h3 className="font-semibold text-slate-100 text-[1.2rem] truncate">
                 {bid.shopName}
               </h3>
               {isRecommended && (
-                <span className="hidden sm:inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-semibold">
+                <span className="hidden sm:inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-400/15 text-blue-200 border border-blue-300/20 font-semibold">
                   <BadgeCheck className="w-3 h-3" />
                   Recommended
                 </span>
               )}
             </div>
-            <div className="flex items-center text-sm text-slate-600 gap-2">
+            <div className="flex items-center text-sm text-slate-300/80 gap-2">
               {bid.rating > 0 ? (
                 <>
                   <span className="inline-flex items-center gap-1">
@@ -109,10 +114,10 @@ export default function BidCardArticle({
                   <span>({bid.reviews} reviews)</span>
                 </>
               ) : (
-                <span className="text-slate-400">New shop</span>
+                <span className="text-slate-400/70">New shop</span>
               )}
               {userRating && (
-                <span className="text-emerald-700 font-medium">
+                <span className="text-emerald-400 font-medium">
                   • You rated {userRating.rating}/5
                 </span>
               )}
@@ -120,17 +125,17 @@ export default function BidCardArticle({
           </div>
 
           <div className="text-right">
-            <div className="font-bold text-3xl text-slate-900 leading-none tabular-nums">
+            <div className="font-bold text-3xl text-slate-100 leading-none tabular-nums">
               ${bid.price}
             </div>
-            <div className="text-sm text-slate-600 mt-1">{bid.timeframe}</div>
+            <div className="text-sm text-slate-300/80 mt-1">{bid.timeframe}</div>
             {savings === 0 ? (
-              <div className="text-xs text-emerald-700 mt-1 font-medium">Lowest bid</div>
+              <div className="text-xs text-emerald-400 mt-1 font-medium">Lowest bid</div>
             ) : (
-              <div className="text-xs text-slate-500 mt-1">+${savings} vs lowest</div>
+              <div className="text-xs text-slate-400/80 mt-1">+${savings} vs lowest</div>
             )}
           </div>
-          <div className="ml-2 text-slate-500 group-hover:text-slate-700 transition-colors">
+          <div className="ml-2 text-blue-200/70 group-hover:text-blue-100 transition-colors">
             {isActive ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </div>
         </div>
@@ -145,26 +150,26 @@ export default function BidCardArticle({
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 border-t border-slate-100">
+            <div className="px-4 pb-4 border-t border-white/[0.08]">
               <div className="flex flex-wrap gap-3 text-sm mt-3 mb-3">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.07] text-slate-200 border border-white/[0.1]">
                   <DollarSign className="w-4 h-4" />${bid.price}
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.07] text-slate-200 border border-white/[0.1]">
                   <Clock className="w-4 h-4" />
                   {bid.timeframe}
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.07] text-slate-200 border border-white/[0.1]">
                   <MapPin className="w-4 h-4" />
                   {bid.distance}
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-400/15 text-blue-300 border border-blue-300/20">
                   <BadgeCheck className="w-4 h-4" />
                   {bid.warranty}
                 </div>
               </div>
 
-              <p className="text-slate-600 mb-4">{bid.description}</p>
+              <p className="text-slate-300/80 mb-4">{bid.description}</p>
 
               <div className="flex flex-wrap gap-2">
                 <button
@@ -180,23 +185,23 @@ export default function BidCardArticle({
                 {!isAccepted && onReject && (
                   <button
                     onClick={onReject}
-                    className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-500 font-medium hover:text-red-600 hover:border-red-200 hover:bg-red-50/50 transition-all"
+                    className="px-4 py-2.5 rounded-xl border border-white/[0.12] text-slate-400 font-medium hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/10 transition-all"
                   >
                     Decline
                   </button>
                 )}
-                <button className="px-3 py-2.5 rounded-xl border border-slate-200/60 font-medium hover:bg-white/40 transition-colors">
+                <button className="px-3 py-2.5 rounded-xl border border-white/[0.12] text-slate-300 hover:bg-white/[0.1] transition-colors">
                   <Phone className="w-4 h-4" />
                 </button>
-                <button className="px-3 py-2.5 rounded-xl border border-slate-200/60 font-medium hover:bg-white/40 transition-colors">
+                <button className="px-3 py-2.5 rounded-xl border border-white/[0.12] text-slate-300 hover:bg-white/[0.1] transition-colors">
                   <MessageSquare className="w-4 h-4" />
                 </button>
-                <button className="px-3 py-2.5 rounded-xl border border-slate-200/60 font-medium hover:bg-white/40 transition-colors">
+                <button className="px-3 py-2.5 rounded-xl border border-white/[0.12] text-slate-300 hover:bg-white/[0.1] transition-colors">
                   <ExternalLink className="w-4 h-4" />
                 </button>
                 {userType === "customer" && (
                   <button
-                    className="px-3 py-2.5 rounded-xl border border-slate-200/60 font-medium hover:bg-white/40 transition-colors"
+                    className="px-3 py-2.5 rounded-xl border border-white/[0.12] text-slate-300 hover:bg-white/[0.1] transition-colors"
                     onClick={onRate}
                   >
                     <ThumbsUp className="w-4 h-4" />
