@@ -10,7 +10,7 @@ import { initializeStorageBuckets } from './storage_init.tsx'
 import { corsHeaders, config } from './config/constants.ts'
 import { supabase, supabaseAuth } from './config/clients.ts'
 import { stripFunctionPrefix, createResponse } from './utils/helpers.ts'
-import { healthCheck, migrateDatabase } from './handlers/health.ts'
+import { healthCheck, migrateDatabase, deepHealthCheck } from './handlers/health.ts'
 import {
   saveVehicle,
   getVehicles,
@@ -58,6 +58,7 @@ import {
 } from './handlers/network_profiles.ts'
 import { getUserProfile, saveUserProfile } from './handlers/profiles.ts'
 import { createBid, getBids, updateBidStatus, deleteBid } from './handlers/bids.ts'
+import { getRateLimitKey, checkRateLimit, maybePruneStore } from './utils/rateLimiter.ts'
 
 console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
 ;(async () => {
@@ -79,9 +80,31 @@ Deno.serve(async (req) => {
   const url = new URL(req.url)
   const path = stripFunctionPrefix(url.pathname)
 
+  // Rate limiting — applied before route dispatch
+  maybePruneStore()
+  const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)
+  const rateLimitType = isMutation ? 'write' : 'read'
+  // Skip rate limiting on OPTIONS, health checks, and migration (internal ops)
+  const isExempt = path === '/health' || path === '/health/deep' || path === '/migrate-database'
+  if (!isExempt) {
+    const identity = url.searchParams.get('clerkUserId') ?? url.searchParams.get('customerClerkUserId') ?? null
+    const key = getRateLimitKey(req, identity)
+    const { allowed, retryAfterMs } = checkRateLimit(key, rateLimitType)
+    if (!allowed) {
+      return respond(
+        { error: 'Too many requests. Please slow down.', code: 'RATE_LIMITED', retryAfterMs },
+        429
+      )
+    }
+  }
+
   try {
     if (path === '/health' && req.method === 'GET') {
       return healthCheck(respond)
+    }
+
+    if (path === '/health/deep' && req.method === 'GET') {
+      return await deepHealthCheck(supabase, respond)
     }
 
     if (path === '/migrate-database' && req.method === 'POST') {

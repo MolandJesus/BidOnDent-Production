@@ -5,6 +5,7 @@
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { findExistingProfile } from "./profiles.ts";
+import { softVerifyClerkMutation } from "../utils/clerk.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -61,6 +62,18 @@ export async function createReport(
       return respond({ error: 'Missing clerkUserId' }, 400);
     }
 
+    const requiredFields = ['vehicle_make', 'vehicle_model', 'vehicle_year', 'damage_type'] as const;
+    for (const field of requiredFields) {
+      if (!report?.[field]) {
+        return respond({ error: `Missing required field: ${field}` }, 400);
+      }
+    }
+
+    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
+    if (mismatch) {
+      return respond({ error: 'Unauthorized: clerkUserId does not match session' }, 401);
+    }
+
     const { data, error } = await supabase
       .from('damage_reports')
       .insert(buildReportPayload(clerkUserId, report))
@@ -96,11 +109,15 @@ export async function getReports(
       return respond({ error: 'Missing clerkUserId or equivalent website identity' }, 400);
     }
 
+    const limit = Math.min(Number(url.searchParams.get('limit') ?? 50), 200);
+    const offset = Math.max(Number(url.searchParams.get('offset') ?? 0), 0);
+
     const { data, error } = await supabase
       .from('damage_reports')
       .select('*')
       .eq('clerk_user_id', clerkUserId)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
 
     if (error) {
       console.error('Error fetching damage reports:', error);
@@ -126,6 +143,11 @@ export async function updateReport(
 
     if (!reportId || !clerkUserId) {
       return respond({ error: 'Missing reportId or clerkUserId' }, 400);
+    }
+
+    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
+    if (mismatch) {
+      return respond({ error: 'Unauthorized: clerkUserId does not match session' }, 401);
     }
 
     const payload = {

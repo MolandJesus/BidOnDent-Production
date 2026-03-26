@@ -2,6 +2,8 @@ import type { UserProfile } from "../services/clerkService";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
+import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
+import type { ViewMode } from "../types";
 import { deleteVehicle } from "../services/supabaseService";
 
 type NavigationState = ReturnType<typeof useNavigation>;
@@ -24,6 +26,8 @@ type BuildDashboardRouterPropsArgs = {
   secondaryColor: string;
   userImageUrl: string;
   websiteIdentity?: WebsiteIdentity | null;
+  appearanceMode: DashboardAppearanceMode;
+  onAppearanceModeChange: (mode: DashboardAppearanceMode) => void;
 };
 
 export function buildDashboardRouterProps({
@@ -38,6 +42,8 @@ export function buildDashboardRouterProps({
   secondaryColor,
   userImageUrl,
   websiteIdentity,
+  appearanceMode,
+  onAppearanceModeChange,
 }: BuildDashboardRouterPropsArgs) {
   return {
     currentTab: navigation.currentTab,
@@ -62,6 +68,7 @@ export function buildDashboardRouterProps({
     photoStorage: userData.photoStorage,
     selectedReportId: navigation.selectedReportId,
     websiteIdentity,
+    appearanceMode,
     primaryColor,
     secondaryColor,
     onStartReport: () => {
@@ -110,25 +117,26 @@ export function buildDashboardRouterProps({
       navigation.setSelectedReportId(reportId);
     },
     onViewModeChange: (mode: string) => {
-      navigation.setViewMode(mode as any);
+      navigation.setViewMode(mode as ViewMode);
     },
     onTabChange: (tab: string) => {
       navigation.setCurrentTab(tab);
     },
     onLogout: handleLogout,
     onEnterDemoMode: () => {
-      navigation.setViewMode("demo-switcher" as any);
+      navigation.setViewMode("demo-switcher");
     },
     onEnableDemoMode: (accountType: string) => {
       if (accountType === userProfile.user_type) {
         navigation.exitDemoMode();
       } else {
-        navigation.enableDemoMode(accountType as any);
+        navigation.enableDemoMode(accountType as "customer" | "shop" | "insurer");
       }
     },
     onExitDemoMode: () => {
       navigation.exitDemoMode();
     },
+    onAppearanceModeChange,
     onProfileUpdate: (info: {
       name: string;
       email: string;
@@ -154,7 +162,11 @@ export function buildDashboardRouterProps({
       try {
         const clerkId = userProfile?.id;
         const { updateBidStatus } = await import("../services/supabase/bids");
-        await updateBidStatus(details.bidId, "accepted", clerkId);
+        const acceptedBid = await updateBidStatus(details.bidId, "accepted", clerkId);
+        if (!acceptedBid) {
+          console.error("Failed to accept bid in Supabase:", details.bidId);
+          return;
+        }
 
         // Use the reportId passed from BidsScreen (sourced from live Supabase data)
         const reportId = details.reportId || navigation.selectedReportId || userData.reports[0]?.id;
@@ -176,7 +188,10 @@ export function buildDashboardRouterProps({
             );
             for (const competing of competingBids) {
               try {
-                await updateBidStatus(competing.id!, "rejected", clerkId);
+                const rejectedBid = await updateBidStatus(competing.id!, "rejected", clerkId);
+                if (!rejectedBid) {
+                  console.error("Competing bid reject was not persisted:", competing.id);
+                }
               } catch (rejectErr) {
                 console.error("Failed to reject competing bid:", competing.id, rejectErr);
               }
@@ -197,7 +212,11 @@ export function buildDashboardRouterProps({
     onRejectBid: async (details: { bidId: string; shopName: string }) => {
       try {
         const { updateBidStatus } = await import("../services/supabase/bids");
-        await updateBidStatus(details.bidId, "rejected", userProfile?.id);
+        const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
+        if (!rejectedBid) {
+          console.error("Failed to reject bid in Supabase:", details.bidId);
+          return;
+        }
         // Update local bids state so UI reflects the change immediately
         userData.setBids(
           userData.bids.map((b: any) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
@@ -207,7 +226,7 @@ export function buildDashboardRouterProps({
       }
     },
     onPasswordChange: () => {
-      console.log("Password change not implemented");
+      if (import.meta.env.DEV) console.log("Password change not implemented");
     },
     onDeleteAccount: handleDeleteAccount,
     onSaveVehicles: (vehicles: any[]) => {

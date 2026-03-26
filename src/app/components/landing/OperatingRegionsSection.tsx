@@ -44,16 +44,32 @@ export default function OperatingRegionsSection({
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-8">
-            {operatingRegions.map((region) => (
-              <div
-                key={region}
-                className="rounded-xl border border-slate-700/80 bg-slate-800/50 backdrop-blur-sm px-4 py-3 flex items-center gap-2 hover:border-blue-500/40 hover:bg-slate-800/70 transition-all duration-300"
-              >
-                <MapPin className="w-4 h-4 text-blue-300" />
-                <span>{region}</span>
-              </div>
-            ))}
+          <div className="mt-8">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/80">
+                Active Counties
+              </p>
+              <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-2.5 py-1 text-[11px] font-medium text-blue-200">
+                {operatingRegions.length} live regions
+              </span>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {operatingRegions.map((region) => (
+                <div
+                  key={region}
+                  className="rounded-xl border border-slate-700/80 bg-slate-800/50 backdrop-blur-sm px-4 py-3 flex items-center justify-between gap-3 hover:border-blue-500/40 hover:bg-slate-800/70 transition-all duration-300"
+                >
+                  <span className="inline-flex items-center gap-2 text-slate-100">
+                    <MapPin className="w-4 h-4 text-blue-300" />
+                    {region}
+                  </span>
+                  <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-300">
+                    Active
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="mt-8">

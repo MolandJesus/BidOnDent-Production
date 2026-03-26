@@ -1,5 +1,6 @@
 import { ImageWithFallback } from "../../figma/ImageWithFallback";
 import { ChevronRight, MapPin } from "lucide-react";
+import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type DamageArea = {
   id: string;
@@ -8,6 +9,7 @@ type DamageArea = {
 
 type StepDamageAreaProps = {
   primaryColor: string;
+  appearanceMode?: DashboardAppearanceMode;
   damageAreas: DamageArea[];
   damageArea: string;
   onSelectDamageArea: (id: string) => void;
@@ -17,16 +19,33 @@ type StepDamageAreaProps = {
 
 export default function StepDamageArea({
   primaryColor,
+  appearanceMode = "map-dark",
   damageAreas,
   damageArea,
   onSelectDamageArea,
   onBack,
   onContinue,
 }: StepDamageAreaProps) {
+  const isLightAppearance = appearanceMode === "light";
+
   return (
-    <div className="px-4 md:px-6 py-4 md:py-4">
-      <h2 className="text-2xl font-bold text-slate-900 mb-1">Where is the damage?</h2>
-      <p className="text-slate-600 mb-6">Choose the area that best matches what you see.</p>
+    <div
+      className="px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl"
+      style={{
+        background: isLightAppearance
+          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(242, 248, 255, 0.94) 100%)"
+          : "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
+        borderColor: isLightAppearance ? "rgba(191, 219, 254, 0.8)" : "rgba(96, 165, 250, 0.22)",
+      }}
+    >
+      <h2
+        className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+      >
+        Where is the damage?
+      </h2>
+      <p className={`mb-6 ${isLightAppearance ? "text-slate-600" : "text-blue-100/80"}`}>
+        Choose the area that best matches what you see.
+      </p>
 
       <div className="relative mb-6 bd-glass-card overflow-hidden max-w-md mx-auto md:max-w-sm">
         <ImageWithFallback
@@ -47,10 +66,16 @@ export default function StepDamageArea({
             key={area.id}
             className={`py-3 px-3 min-h-[44px] text-sm border rounded-xl font-medium transition-all duration-200 ${
               damageArea === area.id
-                ? "bg-blue-50 border-blue-400 text-blue-700 ring-1 ring-blue-200"
-                : "bg-white/80 border-blue-200/40 text-slate-700 hover:border-blue-300 hover:bg-blue-50/30"
+                ? isLightAppearance
+                  ? "bg-blue-50 border-blue-400 text-blue-700 ring-1 ring-blue-200"
+                  : "bg-blue-400/12 border-blue-400 text-blue-100 ring-1 ring-blue-300/30"
+                : isLightAppearance
+                  ? "bg-white/80 border-blue-200/40 text-slate-700 hover:border-blue-300 hover:bg-blue-50/30"
+                  : "bg-slate-900/20 border-blue-300/20 text-blue-100/85 hover:border-blue-300/40 hover:bg-blue-400/12"
             }`}
-            style={damageArea === area.id ? { boxShadow: "0 2px 12px rgba(59, 130, 246, 0.15)" } : {}}
+            style={
+              damageArea === area.id ? { boxShadow: "0 2px 12px rgba(59, 130, 246, 0.15)" } : {}
+            }
             onClick={() => onSelectDamageArea(area.id)}
           >
             {area.label}
@@ -62,7 +87,11 @@ export default function StepDamageArea({
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 py-3 px-4 min-h-[44px] border border-blue-200/40 rounded-xl font-medium hover:bg-blue-50/40 transition-colors"
+          className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors ${
+            isLightAppearance
+              ? "border-blue-200/40 text-slate-700 hover:bg-blue-50/40"
+              : "border-blue-300/25 text-blue-100 hover:bg-blue-400/12"
+          }`}
         >
           Back
         </button>
@@ -70,7 +99,10 @@ export default function StepDamageArea({
           type="button"
           onClick={onContinue}
           className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
-          style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`, boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)" }}
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+            boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)",
+          }}
         >
           Continue
           <ChevronRight className="w-4 h-4" />

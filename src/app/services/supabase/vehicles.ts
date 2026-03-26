@@ -57,7 +57,7 @@ export async function getVehicles(
     } = await supabase.auth.getUser();
 
     if (!user) {
-      console.log("ℹ️ No authenticated user");
+      if (import.meta.env.DEV) console.log("ℹ️ No authenticated user");
       return [];
     }
 
@@ -69,14 +69,14 @@ export async function getVehicles(
 
     if (error) {
       if (error.code === "PGRST205" || error.code === "42P01") {
-        console.log("ℹ️ Vehicles table not set up yet - using local storage");
+        if (import.meta.env.DEV) console.log("ℹ️ Vehicles table not set up yet - using local storage");
         return [];
       }
       console.error("Error fetching vehicles:", error);
       return [];
     }
 
-    console.log(`✅ Loaded ${data.length} vehicles from Supabase`);
+    if (import.meta.env.DEV) console.log(`✅ Loaded ${data.length} vehicles from Supabase`);
     return data as Vehicle[];
   } catch (error) {
     console.error("Error in getVehicles:", error);
@@ -152,7 +152,7 @@ export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promi
       }
     }
 
-    console.log("✅ Vehicle saved to Supabase");
+    if (import.meta.env.DEV) console.log("✅ Vehicle saved to Supabase");
     return true;
   } catch (error) {
     console.error("Error in saveVehicle:", error);
@@ -197,7 +197,7 @@ export async function deleteVehicle(vehicleId: string, clerkUserId?: string): Pr
       return false;
     }
 
-    console.log("✅ Vehicle deleted from Supabase");
+    if (import.meta.env.DEV) console.log("✅ Vehicle deleted from Supabase");
     return true;
   } catch (error) {
     console.error("Error in deleteVehicle:", error);

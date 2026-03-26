@@ -42,11 +42,16 @@ export default function AccountInfoCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.05 }}
       className="bd-glass-card rounded-2xl p-5 mb-5"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+        borderColor: "rgba(96, 165, 250, 0.22)",
+      }}
     >
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold text-slate-900 text-xl">Account Information</h2>
+        <h2 className="font-semibold text-slate-100 text-xl">Account Information</h2>
         <button
-          className="text-blue-600 hover:text-blue-700 transition-colors"
+          className="text-blue-300 hover:text-blue-200 transition-colors"
           onClick={onEditProfile}
         >
           <Edit className="w-5 h-5" />
@@ -55,10 +60,10 @@ export default function AccountInfoCard({
 
       <div className="mb-5">
         <div className="flex items-center justify-between text-sm mb-1.5">
-          <p className="text-slate-600 font-medium">Profile completion</p>
-          <p className="text-slate-700 font-semibold">{completionPercent}%</p>
+          <p className="text-blue-100/80 font-medium">Profile completion</p>
+          <p className="text-slate-100 font-semibold">{completionPercent}%</p>
         </div>
-        <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+        <div className="h-2 rounded-full bg-slate-900/45 overflow-hidden border border-blue-300/10">
           <div
             className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500"
             style={{ width: `${completionPercent}%` }}
@@ -67,35 +72,35 @@ export default function AccountInfoCard({
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
-        <div className="bd-glass-card rounded-xl p-3.5">
-          <p className="text-xs uppercase tracking-wide text-slate-500">Name</p>
-          <p className="text-slate-900 font-medium mt-1">{userInfo.name || "-"}</p>
+        <div className="bd-glass-card rounded-xl p-3.5 bg-slate-900/20 border-blue-200/15">
+          <p className="text-xs uppercase tracking-wide text-blue-100/70">Name</p>
+          <p className="text-slate-100 font-medium mt-1">{userInfo.name || "-"}</p>
         </div>
-        <div className="bd-glass-card rounded-xl p-3.5">
-          <p className="text-xs uppercase tracking-wide text-slate-500">Email</p>
-          <p className="text-slate-900 font-medium mt-1 break-words">{userInfo.email || "-"}</p>
+        <div className="bd-glass-card rounded-xl p-3.5 bg-slate-900/20 border-blue-200/15">
+          <p className="text-xs uppercase tracking-wide text-blue-100/70">Email</p>
+          <p className="text-slate-100 font-medium mt-1 break-words">{userInfo.email || "-"}</p>
         </div>
-        <div className="bd-glass-card rounded-xl p-3.5">
-          <p className="text-xs uppercase tracking-wide text-slate-500">Phone</p>
-          <p className="text-slate-900 font-medium mt-1">{userInfo.phone || "-"}</p>
+        <div className="bd-glass-card rounded-xl p-3.5 bg-slate-900/20 border-blue-200/15">
+          <p className="text-xs uppercase tracking-wide text-blue-100/70">Phone</p>
+          <p className="text-slate-100 font-medium mt-1">{userInfo.phone || "-"}</p>
         </div>
         {userType === "shop" && (
-          <div className="bd-glass-card rounded-xl p-3.5">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Shop Profile</p>
-            <p className="text-slate-900 font-medium mt-1">{userInfo.shopName || "-"}</p>
+          <div className="bd-glass-card rounded-xl p-3.5 bg-slate-900/20 border-blue-200/15">
+            <p className="text-xs uppercase tracking-wide text-blue-100/70">Shop Profile</p>
+            <p className="text-slate-100 font-medium mt-1">{userInfo.shopName || "-"}</p>
           </div>
         )}
         {userType === "insurer" && (
-          <div className="bd-glass-card rounded-xl p-3.5">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Insurer Profile</p>
-            <p className="text-slate-900 font-medium mt-1">{userInfo.companyName || "-"}</p>
+          <div className="bd-glass-card rounded-xl p-3.5 bg-slate-900/20 border-blue-200/15">
+            <p className="text-xs uppercase tracking-wide text-blue-100/70">Insurer Profile</p>
+            <p className="text-slate-100 font-medium mt-1">{userInfo.companyName || "-"}</p>
           </div>
         )}
         {userType === "customer" && userInfo.vehicles.length > 0 && (
-          <div className="bd-glass-card rounded-xl p-3.5">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Vehicles</p>
+          <div className="bd-glass-card rounded-xl p-3.5 bg-slate-900/20 border-blue-200/15">
+            <p className="text-xs uppercase tracking-wide text-blue-100/70">Vehicles</p>
             {userInfo.vehicles.map((vehicle, index) => (
-              <p key={index} className="text-slate-900 font-medium mt-1">
+              <p key={index} className="text-slate-100 font-medium mt-1">
                 {vehicle.year} {vehicle.make} {vehicle.model}
               </p>
             ))}

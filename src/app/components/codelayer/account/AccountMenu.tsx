@@ -42,91 +42,96 @@ export default function AccountMenu({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.1 }}
       className="bd-glass-card rounded-2xl p-3"
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+        borderColor: "rgba(96, 165, 250, 0.22)",
+      }}
     >
       <div className="space-y-1.5">
-        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenSettings}>
+        <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onOpenSettings}>
           <div className="flex items-center">
-            <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
+            <span className="w-9 h-9 rounded-lg bg-blue-400/12 text-blue-100 flex items-center justify-center mr-3 border border-blue-300/20">
               <Settings className="w-5 h-5" />
             </span>
-            <span className="font-medium text-slate-900">Settings</span>
+            <span className="font-medium text-slate-100">Settings</span>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-400" />
+          <ChevronRight className="w-5 h-5 text-blue-100/70" />
         </button>
-        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenPayment}>
+        <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onOpenPayment}>
           <div className="flex items-center">
-            <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
+            <span className="w-9 h-9 rounded-lg bg-blue-400/12 text-blue-100 flex items-center justify-center mr-3 border border-blue-300/20">
               <CreditCard className="w-5 h-5" />
             </span>
-            <span className="font-medium text-slate-900">Payment Methods</span>
+            <span className="font-medium text-slate-100">Payment Methods</span>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-400" />
+          <ChevronRight className="w-5 h-5 text-blue-100/70" />
         </button>
 
         {userType === "customer" && (
-          <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onViewVehicles}>
+          <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onViewVehicles}>
             <div className="flex items-center">
-              <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
+              <span className="w-9 h-9 rounded-lg bg-blue-400/12 text-blue-100 flex items-center justify-center mr-3 border border-blue-300/20">
                 <CarIcon className="w-5 h-5" />
               </span>
-              <span className="font-medium text-slate-900">My Vehicles</span>
+              <span className="font-medium text-slate-100">My Vehicles</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-slate-400" />
+            <ChevronRight className="w-5 h-5 text-blue-100/70" />
           </button>
         )}
 
         {userType === "shop" && (
-          <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenShopProfile}>
+          <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onOpenShopProfile}>
             <div className="flex items-center">
-              <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
+              <span className="w-9 h-9 rounded-lg bg-blue-400/12 text-blue-100 flex items-center justify-center mr-3 border border-blue-300/20">
                 <Settings className="w-5 h-5" />
               </span>
-              <span className="font-medium text-slate-900">Shop Profile</span>
+              <span className="font-medium text-slate-100">Shop Profile</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-slate-400" />
+            <ChevronRight className="w-5 h-5 text-blue-100/70" />
           </button>
         )}
 
-        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenHelp}>
+        <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onOpenHelp}>
           <div className="flex items-center">
-            <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
+            <span className="w-9 h-9 rounded-lg bg-blue-400/12 text-blue-100 flex items-center justify-center mr-3 border border-blue-300/20">
               <HelpCircle className="w-5 h-5" />
             </span>
-            <span className="font-medium text-slate-900">Help & Support</span>
+            <span className="font-medium text-slate-100">Help & Support</span>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-400" />
+          <ChevronRight className="w-5 h-5 text-blue-100/70" />
         </button>
 
         {import.meta.env.DEV && onOpenSmokeTest && (
-          <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onOpenSmokeTest}>
+          <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onOpenSmokeTest}>
             <div className="flex items-center">
-              <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center mr-3">
+              <span className="w-9 h-9 rounded-lg bg-blue-400/12 text-blue-100 flex items-center justify-center mr-3 border border-blue-300/20">
                 <CheckSquare className="w-5 h-5" />
               </span>
-              <span className="font-medium text-slate-900">Smoke Test Checklist</span>
+              <span className="font-medium text-slate-100">Smoke Test Checklist</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-slate-400" />
+            <ChevronRight className="w-5 h-5 text-blue-100/70" />
           </button>
         )}
 
         <button
-          className={`${rowBaseClass} hover:bg-rose-50/50 text-rose-600`}
+          className={`${rowBaseClass} hover:bg-rose-400/12 text-rose-300`}
           onClick={onOpenDeleteAccount}
         >
           <div className="flex items-center">
-            <span className="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center mr-3">
+            <span className="w-9 h-9 rounded-lg bg-rose-400/12 text-rose-300 flex items-center justify-center mr-3 border border-rose-300/25">
               <Trash2 className="w-5 h-5" />
             </span>
-            <span className="font-medium text-rose-600">Delete Account</span>
+            <span className="font-medium text-rose-300">Delete Account</span>
           </div>
         </button>
 
-        <button className={`${rowBaseClass} hover:bg-blue-50/40`} onClick={onLogout}>
+        <button className={`${rowBaseClass} hover:bg-blue-400/12`} onClick={onLogout}>
           <div className="flex items-center">
-            <span className="w-9 h-9 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center mr-3">
+            <span className="w-9 h-9 rounded-lg bg-blue-400/12 text-blue-100 flex items-center justify-center mr-3 border border-blue-300/20">
               <LogOut className="w-5 h-5" />
             </span>
-            <span className="font-medium text-slate-700">Sign Out</span>
+            <span className="font-medium text-blue-100">Sign Out</span>
           </div>
         </button>
       </div>

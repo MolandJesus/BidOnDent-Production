@@ -145,38 +145,47 @@ export default function ShopRequestsScreen({
   };
 
   return (
-    <div className="min-h-screen bd-glass-panel">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bd-glass-card border-b sticky top-0 z-10">
+      <div
+        className="sticky top-0 z-10 border-b border-blue-300/15"
+        style={{
+          background: "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+          boxShadow: "0 4px 24px rgba(3, 10, 24, 0.30)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
         <div className="px-4 py-4">
-          <h1 className="text-2xl font-bold mb-4 text-bd-blue-900">Repair Requests</h1>
+          <h1 className="text-2xl font-bold mb-4 text-slate-100">Repair Requests</h1>
 
           {/* Search & Filter */}
           <div className="space-y-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bd-blue-200 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-200/60 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search by customer, vehicle, or damage..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bd-glass-control"
+                className="w-full pl-10 pr-4 py-2 border border-blue-300/20 rounded-xl bg-white/8 text-slate-100 placeholder:text-blue-200/50 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20 outline-none transition-colors"
               />
             </div>
 
             {/* Filter Tabs */}
             <div className="flex gap-2 overflow-x-auto pb-1">
-              {[
-                { id: "all", label: "All Requests" },
-                { id: "new", label: "New" },
-                { id: "bidding", label: "Bidding" },
-                { id: "closed", label: "Closed" },
-              ].map((filter) => (
+              {(
+                [
+                  { id: "all", label: "All Requests" },
+                  { id: "new", label: "New" },
+                  { id: "bidding", label: "Bidding" },
+                  { id: "closed", label: "Closed" },
+                ] as { id: "all" | "new" | "bidding" | "closed"; label: string }[]
+              ).map((filter) => (
                 <button
                   key={filter.id}
-                  onClick={() => setFilterStatus(filter.id as any)}
-                  className={`bd-glass-control px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${filterStatus === filter.id ? "text-white bg-bd-blue-900" : ""}`}
-                  style={filterStatus === filter.id ? {} : {}}
+                  onClick={() => setFilterStatus(filter.id)}
+                  className={`px-4 py-2 min-h-[44px] rounded-lg font-medium whitespace-nowrap transition-colors ${filterStatus === filter.id ? "text-white shadow-sm" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
+                  style={filterStatus === filter.id ? { background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` } : {}}
                 >
                   {filter.label}
                 </button>
@@ -189,24 +198,43 @@ export default function ShopRequestsScreen({
       {/* Requests List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
-          <div className="bd-glass-card p-5 sm:p-8 text-center">
-            <p className="text-slate-500">Loading repair requests…</p>
+          <div
+            className="bd-glass-card p-5 sm:p-8 text-center"
+            style={{
+              background: "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+              borderColor: "rgba(96, 165, 250, 0.20)",
+            }}
+          >
+            <p className="text-blue-100/70">Loading repair requests…</p>
           </div>
         ) : filteredRequests.length === 0 ? (
-          <div className="bd-glass-card p-5 sm:p-8 text-center">
-            <AlertCircle className="w-12 h-12 text-bd-blue-200 mx-auto mb-3" />
-            <p className="text-bd-blue-300">No requests found</p>
-            <p className="text-sm text-bd-blue-200 mt-1">Try adjusting your filters or search</p>
+          <div
+            className="bd-glass-card p-5 sm:p-8 text-center"
+            style={{
+              background: "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+              borderColor: "rgba(96, 165, 250, 0.20)",
+            }}
+          >
+            <AlertCircle className="w-12 h-12 text-blue-400/70 mx-auto mb-3" />
+            <p className="text-slate-100">No requests found</p>
+            <p className="text-sm text-blue-100/70 mt-1">Try adjusting your filters or search</p>
           </div>
         ) : (
           filteredRequests.map((request) => (
-            <div key={request.id} className="bd-glass-card overflow-hidden">
+            <div
+              key={request.id}
+              className="bd-glass-card overflow-hidden"
+              style={{
+                background: "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
+                borderColor: "rgba(96, 165, 250, 0.22)",
+              }}
+            >
               {/* Request Header */}
-              <div className="p-4 border-b border-bd-blue-100/30">
+              <div className="p-4 border-b border-blue-300/15">
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <h3 className="font-bold text-lg text-bd-blue-900">{request.customerName}</h3>
-                    <p className="text-sm text-bd-blue-200">{request.vehicle}</p>
+                    <h3 className="font-bold text-lg text-slate-100">{request.customerName}</h3>
+                    <p className="text-sm text-blue-100/75">{request.vehicle}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     <span
@@ -222,12 +250,12 @@ export default function ShopRequestsScreen({
                   </div>
                 </div>
 
-                <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-sm text-bd-blue-200 mb-2">
+                <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-sm text-blue-100/70 mb-2">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     {request.submittedDate}
                   </span>
-                  <span className="text-bd-blue-100/40">·</span>
+                  <span className="text-blue-300/30">·</span>
                   <span className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
                     {request.distance}
@@ -242,23 +270,23 @@ export default function ShopRequestsScreen({
               </div>
 
               {/* Damage Details */}
-              <div className="p-4 bd-glass-panel">
-                <h4 className="font-semibold mb-2 text-bd-blue-900">{request.damageType}</h4>
-                <p className="text-sm text-bd-blue-200 mb-3">{request.description}</p>
+              <div className="p-4">
+                <h4 className="font-semibold mb-2 text-slate-100">{request.damageType}</h4>
+                <p className="text-sm text-blue-100/75 mb-3">{request.description}</p>
 
                 <div className="flex flex-wrap gap-2 mb-3">
-                  <div className="flex items-center text-sm bd-glass-card px-3 py-1 rounded-full">
-                    <ImageIcon className="w-4 h-4 mr-1 text-bd-blue-200" />
+                  <div className="flex items-center text-sm text-blue-100/80 bg-white/8 border border-blue-300/15 px-3 py-1 rounded-full">
+                    <ImageIcon className="w-4 h-4 mr-1 text-blue-200/60" />
                     <span>{request.photoCount} photos</span>
                   </div>
                   {request.insuranceClaim && (
-                    <div className="flex items-center text-sm bd-glass-card px-3 py-1 rounded-full text-bd-blue-400">
+                    <div className="flex items-center text-sm text-blue-200 bg-blue-500/10 border border-blue-400/20 px-3 py-1 rounded-full">
                       <Star className="w-4 h-4 mr-1" />
                       <span>Insurance: {request.insuranceCompany}</span>
                     </div>
                   )}
                   {request.bidCount && (
-                    <div className="flex items-center text-sm bd-glass-card px-3 py-1 rounded-full text-bd-blue-300">
+                    <div className="flex items-center text-sm text-blue-200/80 bg-white/8 border border-blue-300/15 px-3 py-1 rounded-full">
                       <DollarSign className="w-4 h-4 mr-1" />
                       <span>{request.bidCount} bids submitted</span>
                     </div>
@@ -267,18 +295,18 @@ export default function ShopRequestsScreen({
               </div>
 
               {/* Contact Info */}
-              <div className="p-4 bd-glass-panel border-t border-bd-blue-100/30">
+              <div className="p-4 border-t border-blue-300/15">
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <a
                     href={`tel:${request.customerPhone}`}
-                    className="bd-glass-control flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
+                    className="flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12 transition-colors"
                   >
                     <Phone className="w-4 h-4" />
                     Call
                   </a>
                   <a
                     href={`mailto:${request.customerEmail}`}
-                    className="bd-glass-control flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium"
+                    className="flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12 transition-colors"
                   >
                     <Mail className="w-4 h-4" />
                     Email
@@ -290,7 +318,8 @@ export default function ShopRequestsScreen({
                     setSelectedRequest(request);
                     setShowBidModal(true);
                   }}
-                  className="bd-glass-control w-full py-3 rounded-lg text-white font-semibold flex items-center justify-center gap-2"
+                  className="w-full py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+                  style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
                 >
                   <DollarSign className="w-5 h-5" />
                   Submit Bid
@@ -304,20 +333,26 @@ export default function ShopRequestsScreen({
 
       {/* Bid Modal */}
       {showBidModal && selectedRequest && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 p-4">
-          <div className="bd-glass-card rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
+          <div
+            className="rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden border border-blue-300/20"
+            style={{
+              background: "linear-gradient(180deg, rgba(11, 23, 47, 0.95) 0%, rgba(8, 18, 38, 0.92) 100%)",
+              boxShadow: "0 20px 60px rgba(3, 10, 24, 0.60)",
+            }}
+          >
             <div className="p-6">
-              <h2 className="text-xl font-bold mb-2 text-bd-blue-900">Submit Bid</h2>
-              <p className="text-sm text-bd-blue-200 mb-4">
+              <h2 className="text-xl font-bold mb-2 text-slate-100">Submit Bid</h2>
+              <p className="text-sm text-blue-100/75 mb-4">
                 {selectedRequest.vehicle} - {selectedRequest.damageType}
               </p>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-bd-blue-300 mb-2">
+                <label className="block text-sm font-medium text-blue-100/80 mb-2">
                   Bid Amount
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-bd-blue-200 font-medium">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-200/60 font-medium">
                     $
                   </span>
                   <input
@@ -325,18 +360,18 @@ export default function ShopRequestsScreen({
                     value={bidAmount}
                     onChange={(e) => setBidAmount(e.target.value)}
                     placeholder="0.00"
-                    className="w-full pl-8 pr-4 py-3 bd-glass-control text-lg"
+                    className="w-full pl-8 pr-4 py-3 border border-blue-300/20 rounded-xl bg-white/8 text-slate-100 text-lg placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20 outline-none transition-colors"
                     step="0.01"
                     min="0"
                   />
                 </div>
-                <p className="text-xs text-bd-blue-200 mt-2">
+                <p className="text-xs text-blue-200/60 mt-2">
                   Enter your competitive bid for this repair job
                 </p>
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-bd-blue-300 mb-2">
+                <label className="block text-sm font-medium text-blue-100/80 mb-2">
                   Estimated Days to Complete
                 </label>
                 <input
@@ -344,36 +379,36 @@ export default function ShopRequestsScreen({
                   value={estimatedDays}
                   onChange={(e) => setEstimatedDays(e.target.value)}
                   placeholder="e.g. 3"
-                  className="w-full px-4 py-3 bd-glass-control"
+                  className="w-full px-4 py-3 border border-blue-300/20 rounded-xl bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20 outline-none transition-colors"
                   min="1"
                   max="90"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-bd-blue-300 mb-2">
+                <label className="block text-sm font-medium text-blue-100/80 mb-2">
                   Description (optional)
                 </label>
                 <textarea
                   value={bidDescription}
                   onChange={(e) => setBidDescription(e.target.value)}
                   placeholder="Describe your repair approach, parts needed, etc."
-                  className="w-full px-4 py-3 bd-glass-control resize-none"
+                  className="w-full px-4 py-3 border border-blue-300/20 rounded-xl bg-white/8 text-slate-100 placeholder:text-blue-200/40 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20 outline-none transition-colors resize-none"
                   rows={3}
                   maxLength={500}
                 />
               </div>
 
-              <div className="mb-4 p-3 bd-glass-panel rounded-lg">
-                <p className="text-sm text-bd-blue-200">
-                  <strong>Customer:</strong> {selectedRequest.customerName}
+              <div className="mb-4 p-3 bg-white/5 rounded-xl border border-blue-300/15">
+                <p className="text-sm text-blue-100/80">
+                  <strong className="text-slate-200">Customer:</strong> {selectedRequest.customerName}
                 </p>
-                <p className="text-sm text-bd-blue-200">
-                  <strong>Location:</strong> {selectedRequest.location}
+                <p className="text-sm text-blue-100/80">
+                  <strong className="text-slate-200">Location:</strong> {selectedRequest.location}
                 </p>
                 {selectedRequest.insuranceClaim && (
-                  <p className="text-sm text-bd-blue-200">
-                    <strong>Insurance:</strong> {selectedRequest.insuranceCompany}
+                  <p className="text-sm text-blue-100/80">
+                    <strong className="text-slate-200">Insurance:</strong> {selectedRequest.insuranceCompany}
                   </p>
                 )}
               </div>
@@ -387,7 +422,7 @@ export default function ShopRequestsScreen({
                     setBidDescription("");
                     setSelectedRequest(null);
                   }}
-                  className="bd-glass-control flex-1 py-3 font-medium"
+                  className="flex-1 py-3 min-h-[44px] rounded-xl font-medium text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12 transition-colors"
                 >
                   Cancel
                 </button>
@@ -399,7 +434,8 @@ export default function ShopRequestsScreen({
                     !estimatedDays ||
                     parseInt(estimatedDays, 10) <= 0
                   }
-                  className="bd-glass-control flex-1 py-3 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 py-3 min-h-[44px] rounded-xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+                  style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
                 >
                   Submit Bid
                 </button>

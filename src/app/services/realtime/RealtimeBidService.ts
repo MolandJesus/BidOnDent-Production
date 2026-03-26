@@ -56,7 +56,7 @@ class RealtimeBidService {
   } = {};
 
   constructor() {
-    console.log("🔴 Real-time Bid Service initialized");
+    if (import.meta.env.DEV) console.log("🔴 Real-time Bid Service initialized");
   }
 
   /**
@@ -71,11 +71,12 @@ class RealtimeBidService {
   ): () => void {
     // Check if already subscribed
     if (this.subscriptions.has(reportId)) {
-      console.log(`⚠️ Already subscribed to bids for report ${reportId}`);
+      if (import.meta.env.DEV) console.log(`⚠️ Already subscribed to bids for report ${reportId}`);
       return () => this.unsubscribeFromReportBids(reportId);
     }
 
-    console.log(`🔴 Subscribing to real-time bids for report: ${reportId}`);
+    if (import.meta.env.DEV)
+      console.log(`🔴 Subscribing to real-time bids for report: ${reportId}`);
 
     // Create channel for this report
     const channel = supabase
@@ -89,7 +90,7 @@ class RealtimeBidService {
           filter: `damage_report_id=eq.${reportId}`,
         },
         (payload) => {
-          console.log("🔴 NEW BID received:", payload);
+          if (import.meta.env.DEV) console.log("🔴 NEW BID received:", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onNewBid) onNewBid(bid);
           if (this.globalCallbacks.onNew) this.globalCallbacks.onNew(bid);
@@ -104,7 +105,7 @@ class RealtimeBidService {
           filter: `damage_report_id=eq.${reportId}`,
         },
         (payload) => {
-          console.log("🔴 BID UPDATED:", payload);
+          if (import.meta.env.DEV) console.log("🔴 BID UPDATED:", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onUpdateBid) onUpdateBid(bid);
           if (this.globalCallbacks.onUpdate) this.globalCallbacks.onUpdate(bid);
@@ -119,13 +120,13 @@ class RealtimeBidService {
           filter: `damage_report_id=eq.${reportId}`,
         },
         (payload) => {
-          console.log("🔴 BID DELETED:", payload);
+          if (import.meta.env.DEV) console.log("🔴 BID DELETED:", payload);
           const bidId = payload.old.id;
           if (onDeleteBid) onDeleteBid(bidId);
         }
       )
       .subscribe((status) => {
-        console.log(`🔴 Subscription status for ${reportId}:`, status);
+        if (import.meta.env.DEV) console.log(`🔴 Subscription status for ${reportId}:`, status);
 
         if (status === "SUBSCRIBED") {
           if (onConnectionStatus) onConnectionStatus("connected");
@@ -166,11 +167,11 @@ class RealtimeBidService {
     const channelId = "all-bids";
 
     if (this.subscriptions.has(channelId)) {
-      console.log(`⚠️ Already subscribed to all bids`);
+      if (import.meta.env.DEV) console.log(`⚠️ Already subscribed to all bids`);
       return () => this.unsubscribeFromReportBids(channelId);
     }
 
-    console.log(`🔴 Subscribing to ALL bids`);
+    if (import.meta.env.DEV) console.log(`🔴 Subscribing to ALL bids`);
 
     const channel = supabase
       .channel("all-bids-global")
@@ -182,7 +183,7 @@ class RealtimeBidService {
           table: "bids",
         },
         (payload) => {
-          console.log("🔴 NEW BID (global):", payload);
+          if (import.meta.env.DEV) console.log("🔴 NEW BID (global):", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onNewBid) onNewBid(bid);
         }
@@ -195,13 +196,13 @@ class RealtimeBidService {
           table: "bids",
         },
         (payload) => {
-          console.log("🔴 BID UPDATED (global):", payload);
+          if (import.meta.env.DEV) console.log("🔴 BID UPDATED (global):", payload);
           const bid = this.transformBidFromDb(payload.new);
           if (onUpdateBid) onUpdateBid(bid);
         }
       )
       .subscribe((status) => {
-        console.log(`🔴 Global bid subscription status:`, status);
+        if (import.meta.env.DEV) console.log(`🔴 Global bid subscription status:`, status);
 
         if (status === "SUBSCRIBED") {
           if (onConnectionStatus) onConnectionStatus("connected");
@@ -230,7 +231,7 @@ class RealtimeBidService {
     const subscription = this.subscriptions.get(reportId);
 
     if (subscription) {
-      console.log(`🔴 Unsubscribing from bids for report: ${reportId}`);
+      if (import.meta.env.DEV) console.log(`🔴 Unsubscribing from bids for report: ${reportId}`);
       supabase.removeChannel(subscription.channel);
       this.subscriptions.delete(reportId);
     }
@@ -240,7 +241,8 @@ class RealtimeBidService {
    * Unsubscribe from all active subscriptions
    */
   unsubscribeAll(): void {
-    console.log(`🔴 Unsubscribing from all bid channels (${this.subscriptions.size} active)`);
+    if (import.meta.env.DEV)
+      console.log(`🔴 Unsubscribing from all bid channels (${this.subscriptions.size} active)`);
 
     this.subscriptions.forEach((subscription) => {
       supabase.removeChannel(subscription.channel);

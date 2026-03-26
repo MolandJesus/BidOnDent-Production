@@ -48,16 +48,17 @@ export function useAppEffects({ navigation, userProfile, userData }: UseAppEffec
           email: userProfile.email,
           profileImage: nextProfileImage,
         });
-        console.log("Updated user info from Clerk:", {
-          name: userProfile.name,
-          email: userProfile.email,
-          profileImage: nextProfileImage,
-        });
+        if (import.meta.env.DEV)
+          console.log("Updated user info from Clerk:", {
+            name: userProfile.name,
+            email: userProfile.email,
+            profileImage: nextProfileImage,
+          });
       }
 
       if (userData.userPhone !== userProfile.phone) {
         userData.setUserPhone(userProfile.phone);
-        console.log("Updated phone from Clerk:", userProfile.phone);
+        if (import.meta.env.DEV) console.log("Updated phone from Clerk:", userProfile.phone);
       }
 
       if (userData.redirectInfo?.type !== userProfile.user_type) {
@@ -65,7 +66,8 @@ export function useAppEffects({ navigation, userProfile, userData }: UseAppEffec
           type: userProfile.user_type,
           isReturning: true,
         });
-        console.log("Updated user type from Clerk:", userProfile.user_type);
+        if (import.meta.env.DEV)
+          console.log("Updated user type from Clerk:", userProfile.user_type);
       }
     }
   }, [

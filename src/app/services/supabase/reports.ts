@@ -91,28 +91,6 @@ export async function getDamageReports(
           console.error("[DEV] Fallback clerk_user_id query error:", error);
         }
       }
-      // Also try user_id for legacy reports
-      const {
-        data: { user }
-      } = await supabase.auth.getUser();
-      if (!user) {
-        if (import.meta.env.DEV) console.warn("[DEV] No authenticated user in fallback");
-        return [];
-      }
-      const { data, error } = await supabase
-        .from("damage_reports")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (error) {
-        if (import.meta.env.DEV) {
-          console.error("[DEV] Fallback Supabase query error:", error);
-        }
-        return [];
-      }
-      if (Array.isArray(data)) {
-        return data;
-      }
       return [];
     } catch (fallbackError) {
       if (import.meta.env.DEV) {
@@ -122,36 +100,11 @@ export async function getDamageReports(
     }
   }
 
-  // Legacy fallback (should rarely hit)
-  try {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-    if (!user) {
-      if (import.meta.env.DEV) console.warn("[DEV] No authenticated user in legacy fallback");
-      return [];
-    }
-    const { data, error } = await supabase
-      .from("damage_reports")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-    if (error) {
-      if (import.meta.env.DEV) {
-        console.error("[DEV] Legacy fallback Supabase query error:", error);
-      }
-      return [];
-    }
-    if (Array.isArray(data)) {
-      return data;
-    }
-    return [];
-  } catch (legacyError) {
-    if (import.meta.env.DEV) {
-      console.error("[DEV] Legacy fallback Supabase query threw:", legacyError);
-    }
-    return [];
+  // No clerkUserId or identity provided — cannot fetch reports for Clerk-authenticated users
+  if (import.meta.env.DEV) {
+    console.warn("[DEV] getDamageReports: no clerkUserId available");
   }
+  return { error: "no clerkUserId available" };
 }
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {

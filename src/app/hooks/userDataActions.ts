@@ -37,7 +37,7 @@ export async function saveProfileToCloud(params: {
   );
 
   if (success) {
-    console.log("✅ Profile saved to Supabase");
+    if (import.meta.env.DEV) console.log("✅ Profile saved to Supabase");
   }
   return Boolean(success);
 }
@@ -55,7 +55,7 @@ export async function saveVehiclesToCloud(
       await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
     }
     const updatedVehicles = await getVehicles(clerkUserId);
-    console.log("✅ Vehicles saved to Supabase");
+    if (import.meta.env.DEV) console.log("✅ Vehicles saved to Supabase");
     return updatedVehicles.map(toFrontendVehicle);
   } catch (error) {
     console.error("❌ Error saving vehicles:", error);
@@ -72,7 +72,7 @@ export async function saveReportsToCloud(
     for (const report of reportsData) {
       await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
     }
-    console.log("✅ Reports saved to Supabase");
+    if (import.meta.env.DEV) console.log("✅ Reports saved to Supabase");
     return true;
   } catch (error) {
     console.error("❌ Error saving reports:", error);

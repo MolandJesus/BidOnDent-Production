@@ -26,7 +26,7 @@ export async function submitBid(bid: Bid, clerkUserId?: string): Promise<Bid | n
       body: JSON.stringify({ clerkUserId, bid }),
     });
 
-    console.log("✅ Bid submitted successfully");
+    if (import.meta.env.DEV) console.log("✅ Bid submitted successfully");
     return data.bid ?? null;
   } catch (error) {
     console.error("Error in submitBid:", error);
@@ -53,7 +53,7 @@ export async function updateBidStatus(
       }
     );
 
-    console.log(`✅ Bid status updated to ${status}`);
+    if (import.meta.env.DEV) console.log(`✅ Bid status updated to ${status}`);
     return data.bid ?? null;
   } catch (error) {
     console.error("Error in updateBidStatus:", error);
@@ -68,7 +68,7 @@ export async function getMyBids(clerkUserId?: string): Promise<Bid[]> {
 
   try {
     const data = await requestSupabaseEdge<{ bids: Bid[] }>(
-      `${SUPABASE_EDGE_ROUTES.bids}?clerkUserId=${encodeURIComponent(clerkUserId)}`,
+      `${SUPABASE_EDGE_ROUTES.bids}?customerClerkUserId=${encodeURIComponent(clerkUserId)}`,
       { method: "GET" }
     );
     return data.bids ?? [];
@@ -89,7 +89,7 @@ export async function deleteBid(bidId: string, clerkUserId?: string): Promise<bo
       { method: "DELETE" }
     );
 
-    console.log("✅ Bid deleted successfully");
+    if (import.meta.env.DEV) console.log("✅ Bid deleted successfully");
     return true;
   } catch (error) {
     console.error("Error in deleteBid:", error);

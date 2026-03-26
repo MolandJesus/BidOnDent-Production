@@ -238,7 +238,7 @@ class PerformanceOptimizer {
     const observer = new IntersectionObserver(
       async (entries) => {
         if (entries[0].isIntersecting) {
-          console.log("⚡ Lazy loading triggered");
+          if (import.meta.env.DEV) console.log("⚡ Lazy loading triggered");
           const data = await loadFn();
           onLoad(data);
           observer.disconnect();
@@ -268,7 +268,7 @@ class PerformanceOptimizer {
         }
       });
 
-      if (cleaned > 0) {
+      if (cleaned > 0 && import.meta.env.DEV) {
         console.log(`⚡ Cache cleanup: removed ${cleaned} expired entries`);
       }
     }, 60000); // Every minute
@@ -290,7 +290,7 @@ class PerformanceOptimizer {
    * Preload critical app data
    */
   async preloadCriticalData(userId: string): Promise<void> {
-    console.log("⚡ Preloading critical data...");
+    if (import.meta.env.DEV) console.log("⚡ Preloading critical data...");
 
     const preloadTasks = [
       this.prefetch(`profile-${userId}`, async () => {
@@ -315,7 +315,7 @@ class PerformanceOptimizer {
     ];
 
     await Promise.all(preloadTasks);
-    console.log("⚡ Critical data preloaded");
+    if (import.meta.env.DEV) console.log("⚡ Critical data preloaded");
   }
 }
 

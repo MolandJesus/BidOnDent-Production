@@ -1,16 +1,9 @@
-import { ArrowRight, CircleCheck, Clock, DollarSign, type LucideIcon } from "lucide-react";
-import { formatDate, getReportTitle } from "./home-helpers";
+import { ArrowRight } from "lucide-react";
 import CustomerMapWidget from "../dashboard/CustomerMapWidget";
 import ShopMapWidget from "../dashboard/ShopMapWidget";
 import InsurerMapWidget from "../dashboard/InsurerMapWidget";
-import {
-  type StatItem,
-  toneClasses,
-  buildStats,
-  buildQuickActions,
-  buildPrimaryAction,
-} from "./homeScreenData";
-import { HomeOnboardingCard, HomeReportsList, HomeSidebar } from "./HomeScreenSections";
+import { buildPrimaryAction } from "./homeScreenData";
+import { HomeOnboardingCard, HomeReportsList } from "./HomeScreenSections";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type HomeScreenProps = {
@@ -75,38 +68,12 @@ export default function HomeScreen({
     userType === "customer" ? "Your Reports" : userType === "shop" ? "Incoming Requests" : "Claims";
   const sortedReports = Array.isArray(reports) ? reports : [];
   const listViewAllAction = onViewAllReports;
-  const activeCount = Array.isArray(reports)
-    ? reports.filter(
-        (r: any) => r.status === "pending" || r.status === "active" || r.status === "in-review"
-      ).length
-    : 0;
-  const completedCount = Array.isArray(reports)
-    ? reports.filter((r: any) => r.status === "completed").length
-    : 0;
-  const totalBids = Array.isArray(reports)
-    ? reports.reduce((sum: number, r: any) => sum + (r.bidsCount || 0), 0)
-    : 0;
   const primaryAction = buildPrimaryAction(
     userType,
     onViewRequests,
     onCreateNewClaim,
     onStartReport
   );
-  const stats = buildStats(userType, activeCount, completedCount, totalBids);
-  const quickActions = buildQuickActions(userType, {
-    onStartReport,
-    onConnectInsurance,
-    onViewLikedShops,
-    onViewBids,
-    onViewRequests,
-    onViewJobs,
-    onViewClaims,
-    onViewShops,
-    onCreateNewClaim,
-    onViewCompetitors,
-    onViewInsurers,
-  });
-  const activityItems = [];
 
   // Map-first, floating overlays layout
   return (

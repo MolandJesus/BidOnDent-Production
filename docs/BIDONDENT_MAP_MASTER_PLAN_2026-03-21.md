@@ -3,6 +3,7 @@
 Full-stack design system consolidation: glass unification, blue token upgrade, empty state visibility, CTA hierarchy, report flow touch targets, Sentry setup, MCP plugin plan. See `BIDONDENT_MAP_TRACKER_2026-03-21.md` and `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` for detailed pass-by-pass logs.
 
 **Key outcomes:**
+
 - All empty states now use `bd-glass-card` — no more invisible `bg-slate-50` on dark dashboard
 - Blue system tokens upgraded: glass backgrounds blue-tinted, shadows refined, hover accents unified
 - All report creation buttons meet WCAG AA 44px touch targets
@@ -25,6 +26,71 @@ The map is compelling when you reach it, but the overall product doesn't yet fee
 2. **Spatial interaction loops** — Report→shop→bid→navigation should feel like one connected spatial journey
 3. **Identity unification** — Every surface should feel like it belongs to BidOnDent's blue/map world
 4. **Mobile-first map behavior** — Bottom sheets, overlays, and thumb zones optimized for map interaction
+
+### Implementation Note — Pass 200 (2026-03-25)
+
+- Dashboard shell now applies a map-night visual system across sticky header, desktop sidebar, and mobile bottom nav.
+- Fixed map hero layer in `HomeScreen.tsx` is offset below sticky header to prevent map/header collision.
+- This is a directional step toward map-dominant shell behavior while preserving current information architecture.
+
+### Implementation Note — Pass 203 (2026-03-25)
+
+- Coverage county list in `OperatingRegionsSection.tsx` now uses map-native hierarchy with active-region labeling and status badges.
+- This maintains existing behavior while improving quick-scan comprehension of current service footprint.
+
+### Implementation Note — Pass 205 (2026-03-25)
+
+- Introduced a persisted appearance preference (`map-dark` or `light`) through Account settings to support controlled shell variation.
+- Wiring spans app orchestration, dashboard routing contracts, and both core shell surfaces (`DashboardLayout.tsx`, `LandingPageLayout.tsx`).
+- Strategic intent: preserve map-first default while enabling broader system theme scalability in future passes.
+
+### Implementation Note — Pass 206 (2026-03-25)
+
+- Hardened appearance system with document-level mode attributes (`data-appearance-mode`, `color-scheme`) in app orchestration.
+- Extended mode-aware shell consistency to mobile bottom navigation so light mode no longer inherits dark-only nav treatment.
+- Adds a safer foundation for future map-overlay and card-level theme tokenization while preserving map-dark as product default.
+
+### Implementation Note — Pass 207 (2026-03-25)
+
+- Executed a mobile-first contrast sweep across major landing sections to remove washed headings/body copy on small screens.
+- Shifted customer dashboard map widget and bids summary/empty surfaces toward map-dark glass treatment for shell consistency.
+- Strategic effect: strengthens map-first visual continuity from landing to dashboard without changing underlying data flows.
+
+### Implementation Note — Pass 208 (2026-03-25)
+
+- Refined dashboard mobile top-stack rhythm by increasing map-to-content separation and tightening hero action-card spacing.
+- Added compact density controls to customer map widget for mobile while preserving full detail in expanded map dialog.
+- Strategic effect: improves first-screen clarity in authenticated map-first experience without changing navigation architecture.
+
+### Implementation Note — Pass 209 (2026-03-25)
+
+- Refined Account tab surfaces to dark map-shell card language (`AccountInfoCard`, `AccountMenu`) for authenticated-shell coherence.
+- Elevated icon chip and row contrast to maintain tap clarity on mobile dark backgrounds.
+- Strategic effect: reduces visual context switching between dashboard tabs and supports a unified map-first product identity.
+
+### Implementation Note — Pass 210 (2026-03-25)
+
+- Extended dark-shell cohesion into report intake shell (`ReportHeader`, `ReportProgress`, `StepVehicleInfo`).
+- Tuned inactive step indicators and form fields for legibility on dark surfaces while preserving current flow behavior.
+- Strategic effect: improves continuity from dashboard home to report creation in the core report -> map -> shop loop.
+
+### Implementation Note — Pass 211 (2026-03-25)
+
+- Completed dark-shell parity for remaining report steps (`StepDamageArea`, `StepDescription`) so intake styling stays consistent through submission.
+- Updated selector/button/field/error surfaces for stronger legibility on map-night backgrounds without changing flow logic.
+- Strategic effect: closes report-flow visual continuity gaps and strengthens the report -> map -> shop action loop.
+
+### Implementation Note — Pass 212 (2026-03-25)
+
+- Wired appearance-mode conditionals through DashboardRouter → ReportScreen → ReportHeader/Progress/VehicleInfo/DamageArea/Description.
+- Each component derives `isLightAppearance` from the prop and applies conditional class names for both map-dark and light modes.
+- Strategic effect: establishes the pattern for system-wide dark/light mode support; report flow is the first multi-screen surface fully wired.
+
+### Implementation Note — Pass 213 (2026-03-25)
+
+- Completed appearance-mode parity for the remaining 3 report steps: StepPhotos, StepServiceLocation, StepComplete.
+- All 6 report steps + header + progress bar now respond to the `appearanceMode` prop.
+- Strategic effect: report intake is the first complete multi-step flow with full dark/light mode parity — validates the approach for system-wide rollout.
 
 See `BIDONDENT_FINISHING_MASTER_PLAN.md` for detailed execution roadmap.
 

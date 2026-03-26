@@ -67,7 +67,7 @@ export async function saveProfile(
       method: "POST",
     });
 
-    console.log("✅ Profile saved to database");
+    if (import.meta.env.DEV) console.log("✅ Profile saved to database");
     return true;
   } catch (error) {
     console.error("Error in saveProfile:", error);

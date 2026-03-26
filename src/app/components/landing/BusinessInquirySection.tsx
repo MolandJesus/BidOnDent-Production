@@ -114,7 +114,7 @@ export default function BusinessInquirySection() {
           <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-3">
             Shop Signup and Insurer Partnerships
           </h3>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl leading-relaxed text-gray-600 max-w-3xl mx-auto">
             Submit your information to join the BidOnDent network. Every request is reviewed and
             confirmed by our team.
           </p>

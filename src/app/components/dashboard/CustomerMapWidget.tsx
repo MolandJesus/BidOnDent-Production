@@ -116,11 +116,20 @@ export default function CustomerMapWidget({
     nearbyShops.length > 0
       ? nearbyShops
       : partnerShops.slice(0, 5).map((s) => ({ ...s, distanceMiles: 0 }));
+  const compactShops = displayShops.slice(0, 4);
 
   return (
     <>
       {/* ── Compact widget card ── */}
-      <section className="bd-glass-card p-5" style={{ maxHeight: 380 }}>
+      <section
+        className="bd-glass-card p-4 md:p-5 max-h-[340px] md:max-h-[380px]"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+          borderColor: "rgba(96, 165, 250, 0.24)",
+          boxShadow: "0 14px 30px rgba(3, 10, 24, 0.38), inset 0 1px 0 rgba(147, 197, 253, 0.12)",
+        }}
+      >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2.5">
             <div
@@ -132,8 +141,8 @@ export default function CustomerMapWidget({
               <MapPinned className="h-4.5 w-4.5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-slate-900">Nearby Shops</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="text-sm font-semibold text-slate-100">Nearby Shops</h3>
+              <p className="text-xs text-blue-100/75">
                 {isLoadingShops ? "Finding shops\u2026" : `${displayShops.length} shops near you`}
               </p>
             </div>
@@ -151,9 +160,9 @@ export default function CustomerMapWidget({
           </button>
         </div>
 
-        {!isLoadingShops && displayShops.length > 0 && (
-          <ul className="space-y-1 overflow-y-auto" style={{ maxHeight: 290 }}>
-            {displayShops.map((shop) => (
+        {!isLoadingShops && compactShops.length > 0 && (
+          <ul className="space-y-1 overflow-y-auto max-h-[210px] md:max-h-[290px]">
+            {compactShops.map((shop) => (
               <li key={shop.id || shop.name}>
                 <button
                   type="button"
@@ -161,18 +170,18 @@ export default function CustomerMapWidget({
                     handleSelectShop(shop, { centerMap: true });
                     setIsMapExpanded(true);
                   }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors hover:bg-blue-50/40"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-1.5 md:py-2 text-left transition-colors hover:bg-blue-400/12"
                 >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50/60 text-blue-600">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-400/15 text-blue-200">
                     <Store className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-900">{shop.name}</p>
-                    <p className="truncate text-xs text-slate-500">{shop.countyLabel}</p>
+                    <p className="truncate text-sm font-medium text-slate-100">{shop.name}</p>
+                    <p className="truncate text-xs text-blue-100/70">{shop.countyLabel}</p>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-0.5">
                     {shop.distanceMiles > 0 && (
-                      <span className="text-xs font-medium text-slate-700">
+                      <span className="text-xs font-medium text-blue-100/85">
                         {shop.distanceMiles.toFixed(1)} mi
                       </span>
                     )}
@@ -188,15 +197,15 @@ export default function CustomerMapWidget({
         )}
 
         {!isLoadingShops && fetchError && (
-          <div className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-3">
-            <p className="text-xs text-red-600">
+          <div className="flex items-center gap-2 rounded-xl border border-rose-400/30 bg-rose-500/10 px-3 py-3">
+            <p className="text-xs text-rose-200">
               Could not load shops. Check your connection and try again.
             </p>
           </div>
         )}
 
-        {!isLoadingShops && !fetchError && displayShops.length === 0 && (
-          <p className="py-4 text-center text-sm text-slate-500">
+        {!isLoadingShops && !fetchError && compactShops.length === 0 && (
+          <p className="py-4 text-center text-sm text-blue-100/75">
             No shops found nearby. Open the map to search.
           </p>
         )}

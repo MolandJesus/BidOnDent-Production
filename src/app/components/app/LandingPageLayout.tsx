@@ -13,6 +13,7 @@ import WhoWeServeSection from "../landing/WhoWeServeSection";
 import LandingPageHeader from "../landing/LandingPageHeader";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ProfileDropdownData = {
   userType: "customer" | "shop" | "insurer";
@@ -28,6 +29,7 @@ type ProfileDropdownData = {
 
 type LandingPageLayoutProps = {
   isLoggedIn: boolean;
+  appearanceMode: DashboardAppearanceMode;
   primaryColor: string;
   secondaryColor: string;
   ctaButtonText: string;
@@ -49,6 +51,7 @@ type LandingPageLayoutProps = {
 
 export default function LandingPageLayout({
   isLoggedIn,
+  appearanceMode,
   primaryColor,
   secondaryColor,
   ctaButtonText,
@@ -67,8 +70,17 @@ export default function LandingPageLayout({
   onViewDashboard,
   profileDropdownData,
 }: LandingPageLayoutProps) {
+  const isLightAppearance = appearanceMode === "light";
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f0f6ff] via-white to-[#f0f6ff]">
+    <div
+      className="min-h-screen"
+      style={{
+        background: isLightAppearance
+          ? "linear-gradient(180deg, #f0f6ff 0%, #ffffff 50%, #eef5ff 100%)"
+          : "radial-gradient(130% 90% at 30% 8%, rgba(17, 34, 64, 0.98) 0%, rgba(8, 15, 30, 0.99) 58%, #050b16 100%)",
+      }}
+    >
       <LandingPageHeader
         isLoggedIn={isLoggedIn}
         primaryColor={primaryColor}

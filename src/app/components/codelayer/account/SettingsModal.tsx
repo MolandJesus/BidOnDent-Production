@@ -1,12 +1,31 @@
 import { Save, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type SettingsModalProps = {
   isOpen: boolean;
   primaryColor: string;
+  appearanceMode: DashboardAppearanceMode;
+  onAppearanceModeChange: (mode: DashboardAppearanceMode) => void;
   onClose: () => void;
 };
 
-export default function SettingsModal({ isOpen, primaryColor, onClose }: SettingsModalProps) {
+export default function SettingsModal({
+  isOpen,
+  primaryColor,
+  appearanceMode,
+  onAppearanceModeChange,
+  onClose,
+}: SettingsModalProps) {
+  const [selectedAppearanceMode, setSelectedAppearanceMode] =
+    useState<DashboardAppearanceMode>(appearanceMode);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedAppearanceMode(appearanceMode);
+    }
+  }, [appearanceMode, isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -58,6 +77,49 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
             </label>
           </div>
 
+          <div className="border-b pb-4">
+            <h3 className="font-semibold mb-2">System Preferences</h3>
+            <p className="text-sm text-slate-600 mb-3">
+              Choose how BidOnDent surfaces render across landing and dashboard shells.
+            </p>
+            <div className="space-y-2">
+              <label className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="appearance-mode"
+                  value="map-dark"
+                  checked={selectedAppearanceMode === "map-dark"}
+                  onChange={() => setSelectedAppearanceMode("map-dark")}
+                  className="mt-1 w-4 h-4"
+                  style={{ accentColor: primaryColor }}
+                />
+                <div>
+                  <p className="text-sm font-medium text-slate-900">Map Dark</p>
+                  <p className="text-xs text-slate-600">
+                    Default immersive shell for map-first workflows.
+                  </p>
+                </div>
+              </label>
+              <label className="flex items-start gap-3 rounded-lg border border-slate-200 px-3 py-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="appearance-mode"
+                  value="light"
+                  checked={selectedAppearanceMode === "light"}
+                  onChange={() => setSelectedAppearanceMode("light")}
+                  className="mt-1 w-4 h-4"
+                  style={{ accentColor: primaryColor }}
+                />
+                <div>
+                  <p className="text-sm font-medium text-slate-900">Light</p>
+                  <p className="text-xs text-slate-600">
+                    Brighter shell for daytime readability and reduced contrast.
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+
           <div>
             <h3 className="font-semibold mb-2">Language</h3>
             <select className="w-full p-2 border border-gray-300 rounded">
@@ -75,8 +137,8 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
             className="px-4 py-2 text-white rounded flex items-center gap-2"
             style={{ backgroundColor: primaryColor }}
             onClick={() => {
+              onAppearanceModeChange(selectedAppearanceMode);
               onClose();
-              alert("Settings saved!");
             }}
           >
             <Save className="w-4 h-4" />

@@ -1,6 +1,7 @@
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 
 export type DashboardUserType = "customer" | "shop" | "insurer";
+export type DashboardAppearanceMode = "map-dark" | "light";
 
 export interface DashboardRouterProps {
   // Navigation state
@@ -25,6 +26,7 @@ export interface DashboardRouterProps {
   websiteIdentity?: WebsiteIdentity | null;
   demoMode?: boolean;
   originalAccountType?: DashboardUserType | null;
+  appearanceMode: DashboardAppearanceMode;
 
   // Styling
   primaryColor: string;
@@ -64,6 +66,7 @@ export interface DashboardRouterProps {
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: DashboardUserType) => void;
   onExitDemoMode?: () => void;
+  onAppearanceModeChange: (mode: DashboardAppearanceMode) => void;
 
   // Account-specific handlers
   onProfileUpdate: (info: {

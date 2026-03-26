@@ -18,9 +18,11 @@ import {
   saveReportDraft,
 } from "./report/reportDraftStorage";
 import { uploadReportPhoto } from "./report/reportPhotoUpload";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ReportScreenProps = {
   primaryColor?: string;
+  appearanceMode?: DashboardAppearanceMode;
   onReportSubmit?: (report: any) => void | Promise<void>;
   onViewReports?: () => void;
   onBackToDashboard?: () => void;
@@ -32,6 +34,7 @@ type ReportScreenProps = {
 
 export default function ReportScreen({
   primaryColor = "#003d82",
+  appearanceMode = "map-dark",
   onReportSubmit,
   onViewReports,
   onBackToDashboard,
@@ -40,6 +43,7 @@ export default function ReportScreen({
   vehicles = [],
   onSaveVehicle,
 }: ReportScreenProps) {
+  const isLightAppearance = appearanceMode === "light";
   const [step, setStep] = useState(1);
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -274,6 +278,7 @@ export default function ReportScreen({
           return (
             <StepVehicleInfo
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               vehicles={vehicles}
               vehicle={vehicle}
               onVehicleChange={setVehicle}
@@ -285,6 +290,7 @@ export default function ReportScreen({
           return (
             <StepDamageArea
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               damageAreas={[...DAMAGE_AREAS]}
               damageArea={damageArea}
               onSelectDamageArea={setDamageArea}
@@ -297,6 +303,7 @@ export default function ReportScreen({
           return (
             <StepServiceLocation
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               zipCode={zipCode}
               address={address}
               onZipChange={setZipCode}
@@ -310,6 +317,7 @@ export default function ReportScreen({
           return (
             <StepPhotos
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               photos={photos}
               uploadingPhoto={uploadingPhoto}
               uploadProgress={uploadProgress}
@@ -328,6 +336,7 @@ export default function ReportScreen({
           return (
             <StepDescription
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               description={description}
               incident={incident}
               onDescriptionChange={setDescription}
@@ -343,6 +352,7 @@ export default function ReportScreen({
           return (
             <StepComplete
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               onViewReports={handleViewReports}
               onBackToDashboard={handleBackToDashboard}
             />
@@ -375,11 +385,27 @@ export default function ReportScreen({
 
   return (
     <div className="min-h-[calc(100vh-10rem)]">
-      <ReportHeader step={step} onCancel={resetForm} showCancel={step < 6} />
+      <ReportHeader
+        step={step}
+        appearanceMode={appearanceMode}
+        onCancel={resetForm}
+        showCancel={step < 6}
+      />
 
-      <ReportProgress progress={progress} primaryColor={primaryColor} />
+      <ReportProgress
+        progress={progress}
+        primaryColor={primaryColor}
+        appearanceMode={appearanceMode}
+      />
 
-      <div className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)]" style={{ background: "linear-gradient(180deg, rgba(240, 248, 255, 0.5) 0%, rgba(226, 238, 250, 0.4) 100%)" }}>
+      <div
+        className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)]"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(180deg, rgba(240, 248, 255, 0.5) 0%, rgba(226, 238, 250, 0.4) 100%)"
+            : "linear-gradient(180deg, rgba(8, 18, 38, 0.44) 0%, rgba(5, 12, 26, 0.36) 100%)",
+        }}
+      >
         <div className="max-w-4xl mx-auto">
           <div className="bd-glass-card overflow-hidden">
             <AnimatePresence mode="wait">

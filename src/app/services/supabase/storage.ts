@@ -12,7 +12,7 @@ export async function uploadPhoto(
   fileName?: string
 ): Promise<string | null> {
   try {
-    console.log("📤 Uploading photo to Supabase Storage (using public anon key)...");
+    if (import.meta.env.DEV) console.log("📤 Uploading photo to Supabase Storage (using public anon key)...");
 
     const formData = new FormData();
     formData.append("file", file);
@@ -21,7 +21,7 @@ export async function uploadPhoto(
       formData.append("fileName", fileName);
     }
 
-    console.log(`📤 Uploading to bucket: ${bucket}`);
+    if (import.meta.env.DEV) console.log(`📤 Uploading to bucket: ${bucket}`);
 
     const { publicUrl } = await requestSupabaseEdge<{ publicUrl?: string }>(
       SUPABASE_EDGE_ROUTES.uploadPhoto,
@@ -30,7 +30,7 @@ export async function uploadPhoto(
         method: "POST",
       }
     );
-    console.log("✅ Photo uploaded successfully:", publicUrl);
+    if (import.meta.env.DEV) console.log("✅ Photo uploaded successfully:", publicUrl);
     return publicUrl || null;
   } catch (error) {
     console.error("❌ Exception in uploadPhoto:", error);
@@ -55,7 +55,7 @@ export async function deletePhoto(
       return false;
     }
 
-    console.log("✅ Photo deleted from Supabase Storage");
+    if (import.meta.env.DEV) console.log("✅ Photo deleted from Supabase Storage");
     return true;
   } catch (error) {
     console.error("Error in deletePhoto:", error);
@@ -75,7 +75,7 @@ export async function uploadImageToSupabase(base64: string, fileName: string): P
     const blob = new Blob([byteArray], { type: "image/jpeg" });
 
     const sizeInMB = blob.size / 1024 / 1024;
-    console.log(`📊 Image blob size: ${sizeInMB.toFixed(2)}MB (${blob.size} bytes)`);
+    if (import.meta.env.DEV) console.log(`📊 Image blob size: ${sizeInMB.toFixed(2)}MB (${blob.size} bytes)`);
 
     if (blob.size > 2 * 1024 * 1024) {
       console.error(
@@ -85,7 +85,7 @@ export async function uploadImageToSupabase(base64: string, fileName: string): P
       return null;
     }
 
-    console.log("✅ Image size acceptable, proceeding with upload...");
+    if (import.meta.env.DEV) console.log("✅ Image size acceptable, proceeding with upload...");
 
     return await uploadPhoto(blob, SUPABASE_STORAGE_BUCKETS.reportMedia, fileName);
   } catch (error) {

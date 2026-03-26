@@ -1,4 +1,5 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { softVerifyClerkMutation } from "../utils/clerk.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -16,6 +17,16 @@ export async function createBid(
       return respond({ error: "Missing clerkUserId or damage report ID" }, 400);
     }
 
+    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
+    if (mismatch) {
+      return respond({ error: "Unauthorized: clerkUserId does not match session" }, 401);
+    }
+
+    const bidAmount = Number(bid?.amount ?? 0);
+    if (bidAmount < 0) {
+      return respond({ error: "Bid amount cannot be negative" }, 400);
+    }
+
     const { data, error } = await supabase
       .from("bids")
       .insert({
@@ -24,7 +35,7 @@ export async function createBid(
         clerk_shop_user_id: clerkUserId,
         shop_name: bid?.shop_name ?? null,
         shop_email: bid?.shop_email ?? null,
-        amount: Number(bid?.amount ?? 0),
+        amount: bidAmount,
         estimated_days: Number(bid?.estimated_days ?? bid?.estimatedDays ?? 0),
         description: bid?.description ?? "",
         notes: bid?.notes ?? null,
@@ -57,25 +68,72 @@ export async function getBids(
     const url = new URL(req.url);
     const reportId = url.searchParams.get("reportId");
     const clerkUserId = url.searchParams.get("clerkUserId");
-
-    let query = supabase.from("bids").select("*").order("created_at", { ascending: false });
+    const customerClerkUserId = url.searchParams.get("customerClerkUserId");
+    const limit = Math.min(Number(url.searchParams.get("limit") ?? 50), 200);
+    const offset = Math.max(Number(url.searchParams.get("offset") ?? 0), 0);
 
     if (reportId) {
-      query = query.eq("damage_report_id", reportId);
-    } else if (clerkUserId) {
-      query = query.eq("clerk_shop_user_id", clerkUserId);
-    } else {
-      return respond({ error: "Missing reportId or clerkUserId" }, 400);
+      const { data, error } = await supabase
+        .from("bids")
+        .select("*")
+        .eq("damage_report_id", reportId)
+        .order("created_at", { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (error) {
+        console.error("Error fetching bids by reportId:", error);
+        return respond({ error: error.message }, 500);
+      }
+      return respond({ bids: data });
     }
 
-    const { data, error } = await query;
+    if (customerClerkUserId) {
+      // Fetch all bids on reports owned by this customer
+      const { data: reports, error: reportsError } = await supabase
+        .from("damage_reports")
+        .select("id")
+        .eq("clerk_user_id", customerClerkUserId);
 
-    if (error) {
-      console.error("Error fetching bids:", error);
-      return respond({ error: error.message }, 500);
+      if (reportsError) {
+        console.error("Error fetching customer reports for bids:", reportsError);
+        return respond({ error: reportsError.message }, 500);
+      }
+
+      if (!reports || reports.length === 0) {
+        return respond({ bids: [] });
+      }
+
+      const reportIds = reports.map((r: any) => r.id);
+      const { data, error } = await supabase
+        .from("bids")
+        .select("*")
+        .in("damage_report_id", reportIds)
+        .order("created_at", { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (error) {
+        console.error("Error fetching bids for customer:", error);
+        return respond({ error: error.message }, 500);
+      }
+      return respond({ bids: data });
     }
 
-    return respond({ bids: data });
+    if (clerkUserId) {
+      const { data, error } = await supabase
+        .from("bids")
+        .select("*")
+        .eq("clerk_shop_user_id", clerkUserId)
+        .order("created_at", { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (error) {
+        console.error("Error fetching bids by shop user:", error);
+        return respond({ error: error.message }, 500);
+      }
+      return respond({ bids: data });
+    }
+
+    return respond({ error: "Missing reportId, clerkUserId, or customerClerkUserId" }, 400);
   } catch (error: any) {
     console.error("Error in get bids endpoint:", error);
     return respond({ error: error.message }, 500);
@@ -104,6 +162,11 @@ export async function updateBidStatus(
       return respond({ error: "Missing clerkUserId" }, 400);
     }
 
+    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
+    if (mismatch) {
+      return respond({ error: "Unauthorized: clerkUserId does not match session" }, 401);
+    }
+
     const { data, error } = await supabase
       .from("bids")
       .update({ status, updated_at: new Date().toISOString() })
@@ -114,6 +177,21 @@ export async function updateBidStatus(
     if (error) {
       console.error("Error updating bid status:", error);
       return respond({ error: error.message }, 500);
+    }
+
+    // Business rule: accepting a bid auto-rejects all other pending bids on the same report
+    if (status === "accepted" && data?.damage_report_id) {
+      const { error: rejectError } = await supabase
+        .from("bids")
+        .update({ status: "rejected", updated_at: new Date().toISOString() })
+        .eq("damage_report_id", data.damage_report_id)
+        .eq("status", "pending")
+        .neq("id", bidId);
+
+      if (rejectError) {
+        // Non-fatal: bid acceptance succeeded; log for monitoring
+        console.error("Error auto-rejecting competing bids:", rejectError);
+      }
     }
 
     return respond({ success: true, bid: data });

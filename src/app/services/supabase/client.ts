@@ -13,7 +13,7 @@ function getSupabaseClient(): SupabaseClient {
       return window.__bidondent_supabase__;
     }
 
-    console.log("🔵 Initializing Supabase client (first time)");
+    if (import.meta.env.DEV) console.log("🔵 Initializing Supabase client (first time)");
     const client = createClient(SUPABASE_BASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         storageKey: "bidondent-auth-token",

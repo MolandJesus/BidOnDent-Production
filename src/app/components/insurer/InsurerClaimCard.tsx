@@ -43,13 +43,19 @@ export default function InsurerClaimCard({
   onOpenApproval,
 }: InsurerClaimCardProps) {
   return (
-    <div className="bd-glass-card overflow-hidden">
+    <div
+      className="bd-glass-card overflow-hidden"
+      style={{
+        background: "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
+        borderColor: "rgba(96, 165, 250, 0.22)",
+      }}
+    >
       {/* Claim Header */}
-      <div className="p-4 border-b border-gray-100">
+      <div className="p-4 border-b border-blue-300/15">
         <div className="flex items-start justify-between mb-2">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm font-bold text-gray-700">{claim.claimNumber}</span>
+              <span className="text-sm font-bold text-blue-200/80">{claim.claimNumber}</span>
               <span
                 className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(claim.status)} flex items-center gap-1`}
               >
@@ -62,23 +68,23 @@ export default function InsurerClaimCard({
                 {claim.priority.toUpperCase()}
               </span>
             </div>
-            <h3 className="font-bold text-lg">{claim.customerName}</h3>
-            <p className="text-sm text-gray-600">{claim.vehicle}</p>
+            <h3 className="font-bold text-lg text-slate-100">{claim.customerName}</h3>
+            <p className="text-sm text-blue-100/75">{claim.vehicle}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-gray-500 mb-1">Est. Damage</p>
-            <p className="font-bold text-lg" style={{ color: primaryColor }}>
+            <p className="text-xs text-blue-200/60 mb-1">Est. Damage</p>
+            <p className="font-bold text-lg text-blue-200">
               ${claim.estimatedDamage.toLocaleString()}
             </p>
             {claim.approvedAmount && (
-              <p className="text-xs text-green-600 font-medium">
+              <p className="text-xs text-emerald-400 font-medium">
                 Approved: ${claim.approvedAmount.toLocaleString()}
               </p>
             )}
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-blue-100/70">
           <div className="flex items-center">
             <Calendar className="w-4 h-4 mr-1" />
             <span>Incident: {claim.incidentDate}</span>
@@ -91,28 +97,28 @@ export default function InsurerClaimCard({
       </div>
 
       {/* Policy & Vehicle Info */}
-      <div className="px-4 py-3 bg-slate-50/80">
+      <div className="px-4 py-3 bg-white/5">
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <p className="text-xs text-gray-500">Policy Number</p>
-            <p className="text-sm font-medium text-gray-900">{claim.policyNumber}</p>
+            <p className="text-xs text-blue-200/60">Policy Number</p>
+            <p className="text-sm font-medium text-slate-200">{claim.policyNumber}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">VIN</p>
-            <p className="text-sm font-medium text-gray-900">{claim.vin}</p>
+            <p className="text-xs text-blue-200/60">VIN</p>
+            <p className="text-sm font-medium text-slate-200">{claim.vin}</p>
           </div>
         </div>
 
         <div className="mb-3">
-          <h4 className="font-semibold text-sm mb-1" style={{ color: primaryColor }}>
+          <h4 className="font-semibold text-sm mb-1 text-blue-200">
             {claim.damageType}
           </h4>
-          <p className="text-sm text-gray-700">{claim.description}</p>
+          <p className="text-sm text-blue-100/80">{claim.description}</p>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center text-sm bg-white px-3 py-1 rounded-full border border-gray-200">
-            <ImageIcon className="w-4 h-4 mr-1 text-gray-600" />
+          <div className="flex items-center text-sm text-blue-100/80 bg-white/8 px-3 py-1 rounded-full border border-blue-300/15">
+            <ImageIcon className="w-4 h-4 mr-1 text-blue-200/60" />
             <span>{claim.photoCount} photos</span>
           </div>
         </div>
@@ -120,38 +126,38 @@ export default function InsurerClaimCard({
 
       {/* Shop Assignment / Bids */}
       {claim.shopAssigned ? (
-        <div className="px-4 py-3 bg-blue-50 border-t border-blue-100">
+        <div className="px-4 py-3 bg-blue-500/10 border-t border-blue-300/15">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-900">Assigned Shop</span>
+              <Building2 className="w-4 h-4 text-blue-300" />
+              <span className="text-sm font-semibold text-slate-100">Assigned Shop</span>
             </div>
           </div>
-          <p className="text-sm font-medium text-blue-800">{claim.shopAssigned}</p>
+          <p className="text-sm font-medium text-blue-100">{claim.shopAssigned}</p>
           {claim.shopContact && (
             <a
               href={`tel:${claim.shopContact}`}
-              className="text-sm text-blue-600 flex items-center gap-1 mt-1"
+              className="text-sm text-blue-300 flex items-center gap-1 mt-1"
             >
               <Phone className="w-3 h-3" />
               {claim.shopContact}
             </a>
           )}
           {!claim.shopContact && (
-            <p className="text-xs text-blue-600 mt-1">
+            <p className="text-xs text-blue-200/60 mt-1">
               Contact info will be provided once shop confirms assignment
             </p>
           )}
           {claim.approvalDate && (
-            <p className="text-xs text-blue-600 mt-1">Approved: {claim.approvalDate}</p>
+            <p className="text-xs text-blue-200/60 mt-1">Approved: {claim.approvalDate}</p>
           )}
         </div>
       ) : claim.shopBids && claim.shopBids.length > 0 ? (
-        <div className="px-4 py-3 bg-amber-50 border-t border-amber-100">
+        <div className="px-4 py-3 bg-amber-500/10 border-t border-blue-300/15">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-amber-600" />
-              <span className="text-sm font-semibold text-amber-900">
+              <TrendingUp className="w-4 h-4 text-amber-400" />
+              <span className="text-sm font-semibold text-slate-100">
                 Shop Bids ({claim.shopBids.length})
               </span>
             </div>
@@ -160,21 +166,21 @@ export default function InsurerClaimCard({
             {claim.shopBids.slice(0, 2).map((bid, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between bg-white p-2 rounded border border-amber-200"
+                className="flex items-center justify-between bg-white/8 p-2 rounded-lg border border-blue-300/15"
               >
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{bid.shopName}</p>
-                  <p className="text-xs text-gray-600">
-                    {bid.distance} • ⭐ {bid.rating}
+                  <p className="text-sm font-medium text-slate-200">{bid.shopName}</p>
+                  <p className="text-xs text-blue-100/70">
+                    {bid.distance} · {bid.rating}
                   </p>
                 </div>
-                <p className="font-bold text-sm" style={{ color: primaryColor }}>
+                <p className="font-bold text-sm text-blue-200">
                   ${bid.amount.toLocaleString()}
                 </p>
               </div>
             ))}
             {claim.shopBids.length > 2 && (
-              <button className="text-xs text-amber-700 font-medium hover:underline">
+              <button className="text-xs text-amber-300 font-medium hover:underline">
                 View all {claim.shopBids.length} bids
               </button>
             )}
@@ -184,17 +190,17 @@ export default function InsurerClaimCard({
 
       {/* Denial Reason */}
       {claim.status === "denied" && claim.denialReason && (
-        <div className="px-4 py-3 bg-red-50 border-t border-red-100">
+        <div className="px-4 py-3 bg-rose-500/10 border-t border-blue-300/15">
           <div className="flex items-center gap-2 mb-1">
-            <XCircle className="w-4 h-4 text-red-600" />
-            <span className="text-sm font-semibold text-red-900">Denial Reason</span>
+            <XCircle className="w-4 h-4 text-rose-400" />
+            <span className="text-sm font-semibold text-rose-200">Denial Reason</span>
           </div>
-          <p className="text-sm text-red-700">{claim.denialReason}</p>
+          <p className="text-sm text-rose-100/80">{claim.denialReason}</p>
         </div>
       )}
 
       {/* Actions */}
-      <div className="p-4 bg-white border-t border-gray-100">
+      <div className="p-4 border-t border-blue-300/15">
         <div className="mb-3">
           <RepairLifecycleTimeline
             title="Claim Lifecycle"
@@ -206,19 +212,19 @@ export default function InsurerClaimCard({
         <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
           <a
             href={`tel:${claim.customerPhone}`}
-            className="bd-glass-control--utility flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm"
+            className="flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm text-blue-100/80 bg-white/8 border border-blue-300/15 rounded-lg hover:bg-white/12 transition-colors"
           >
             <Phone className="w-4 h-4" />
             <span className="text-xs">Call</span>
           </a>
           <a
             href={`mailto:${claim.customerEmail}`}
-            className="bd-glass-control--utility flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm"
+            className="flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm text-blue-100/80 bg-white/8 border border-blue-300/15 rounded-lg hover:bg-white/12 transition-colors"
           >
             <Mail className="w-4 h-4" />
             <span className="text-xs">Email</span>
           </a>
-          <button className="bd-glass-control--utility flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm">
+          <button className="flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm text-blue-100/80 bg-white/8 border border-blue-300/15 rounded-lg hover:bg-white/12 transition-colors">
             <FileText className="w-4 h-4" />
             <span className="text-xs">Details</span>
           </button>
@@ -227,8 +233,8 @@ export default function InsurerClaimCard({
         {claim.status === "pending" && (
           <button
             onClick={() => onOpenApproval(claim)}
-            className="w-full py-3 rounded-lg text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: primaryColor }}
+            className="w-full py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
           >
             <CheckCircle className="w-5 h-5" />
             Review & Approve
@@ -237,14 +243,14 @@ export default function InsurerClaimCard({
         )}
 
         {claim.status === "approved" && (
-          <div className="w-full py-3 rounded-lg bg-green-50 border-2 border-green-200 text-green-700 font-semibold flex items-center justify-center gap-2">
+          <div className="w-full py-3 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 font-semibold flex items-center justify-center gap-2">
             <CheckCircle className="w-5 h-5" />
             Claim Approved - ${claim.approvedAmount?.toLocaleString()}
           </div>
         )}
 
         {claim.status === "denied" && (
-          <div className="w-full py-3 rounded-lg bg-red-50 border-2 border-red-200 text-red-700 font-semibold flex items-center justify-center gap-2">
+          <div className="w-full py-3 rounded-xl bg-rose-500/15 border border-rose-400/30 text-rose-300 font-semibold flex items-center justify-center gap-2">
             <XCircle className="w-5 h-5" />
             Claim Denied
           </div>

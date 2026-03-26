@@ -51,6 +51,12 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
   const [photoStorage, setPhotoStorage] = useState<Record<string, string[]>>({});
   const isSavingRef = useRef(false);
   const isLoadingFromCloudRef = useRef(false);
+  const lastSavedProfileSignatureRef = useRef("");
+  const lastSavedVehiclesSignatureRef = useRef("");
+  const lastSavedReportsSignatureRef = useRef("");
+  // Per-entity signature maps for granular dirty tracking
+  const vehicleSignaturesRef = useRef<Record<string, string>>({});
+  const reportSignaturesRef = useRef<Record<string, string>>({});
 
   // ============================================================================
   // CLOUD-FIRST DATA LOADING
@@ -66,17 +72,19 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
         localStorage.getItem(signedInEmailCacheKey) ||
         localStorage.getItem(lastActiveCacheKey) ||
         localStorage.getItem(STORAGE_KEYS.USER_DATA);
-      console.log("[DEBUG] useUserData: Checking localStorage cache", {
-        identityCacheKey,
-        signedInEmailCacheKey,
-        lastActiveCacheKey,
-        cachedData,
-      });
+      if (import.meta.env.DEV)
+        console.log("[DEBUG] useUserData: Checking localStorage cache", {
+          identityCacheKey,
+          signedInEmailCacheKey,
+          lastActiveCacheKey,
+          cachedData,
+        });
       if (cachedData) {
         try {
           const userData: UserData = JSON.parse(cachedData);
           if (userData.redirectInfo && userData.userInfo?.email) {
-            console.log("[DEBUG] useUserData: Loaded cached data", userData);
+            if (import.meta.env.DEV)
+              console.log("[DEBUG] useUserData: Loaded cached data", userData);
             setUserInfo(userData.userInfo || { name: "", email: "", profileImage: "" });
             setVehicles(userData.vehicles || []);
             setReports(userData.reports || []);
@@ -97,18 +105,20 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
 
       // Step 2: Check if we have a Clerk-backed website identity
       if (!signedInEmail || !clerkUserId) {
-        console.log("[DEBUG] useUserData: No Clerk identity available yet - skipping cloud load");
+        if (import.meta.env.DEV)
+          console.log("[DEBUG] useUserData: No Clerk identity available yet - skipping cloud load");
         setReportsLoading(false);
         return;
       }
 
       // Step 3: Load from SUPABASE (PRIMARY source of truth)
       isLoadingFromCloudRef.current = true;
-      console.log("[DEBUG] useUserData: Loading data from Supabase (PRIMARY source)...", {
-        clerkUserId,
-        websiteUserKey,
-        signedInEmail,
-      });
+      if (import.meta.env.DEV)
+        console.log("[DEBUG] useUserData: Loading data from Supabase (PRIMARY source)...", {
+          clerkUserId,
+          websiteUserKey,
+          signedInEmail,
+        });
 
       try {
         const email = signedInEmail;
@@ -125,17 +135,18 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
         }
 
         // Load profile
-        console.log("[DEBUG] useUserData: Calling getProfile", {
-          clerkUserId,
-          email,
-          websiteUserKey,
-        });
+        if (import.meta.env.DEV)
+          console.log("[DEBUG] useUserData: Calling getProfile", {
+            clerkUserId,
+            email,
+            websiteUserKey,
+          });
         const profileData = await getProfile({
           clerkUserId,
           email,
           websiteUserKey,
         });
-        console.log("[DEBUG] useUserData: getProfile result", profileData);
+        if (import.meta.env.DEV) console.log("[DEBUG] useUserData: getProfile result", profileData);
 
         if (profileData) {
           if (import.meta.env.DEV) console.log("Profile loaded from Supabase:", profileData);
@@ -201,6 +212,31 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           setBids(transformedBids);
           if (import.meta.env.DEV)
             console.log(`[DEV] Loaded ${transformedBids.length} bids from Supabase`);
+
+          // Seed autosave signatures from cloud snapshot so we don't immediately rewrite unchanged data
+          const profileSignature = JSON.stringify({
+            email: profileData.email,
+            name: profileData.name,
+            phone: profileData.phone || "",
+            profileImage: profileData.profile_image_url || "",
+            accountType: profileData.account_type,
+          });
+          const frontendVehicles = vehiclesData.map(toFrontendVehicle);
+          const transformedReports = (Array.isArray(reportsData)
+            ? reportsData.map(transformSupabaseReport)
+            : []) as unknown as DamageReport[];
+          lastSavedProfileSignatureRef.current = profileSignature;
+          lastSavedVehiclesSignatureRef.current = JSON.stringify(frontendVehicles);
+          lastSavedReportsSignatureRef.current = JSON.stringify(transformedReports);
+          // Seed per-entity signatures so auto-save only writes changed entities
+          vehicleSignaturesRef.current = {};
+          for (const v of frontendVehicles) {
+            if (v.id) vehicleSignaturesRef.current[v.id] = JSON.stringify(v);
+          }
+          reportSignaturesRef.current = {};
+          for (const r of transformedReports) {
+            if (r.id) reportSignaturesRef.current[r.id] = JSON.stringify(r);
+          }
 
           // Step 4: Update localStorage CACHE with fresh data
           const validReports = Array.isArray(reportsData) ? reportsData : [];
@@ -362,34 +398,67 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           (userInfo.profileImage.startsWith("http://") ||
             userInfo.profileImage.startsWith("https://"));
 
-        await saveProfile(
-          {
-            email: userInfo.email,
-            name: userInfo.name,
-            phone: userPhone,
-            profile_image_url: isCloudUrl ? userInfo.profileImage : undefined,
-            account_type: redirectInfo.type,
-          },
-          {
-            clerkUserId,
-            email: userInfo.email,
-            websiteUserKey,
-          }
-        );
-        if (import.meta.env.DEV) console.log("Auto-saved profile to Supabase");
+        const profileSignature = JSON.stringify({
+          email: userInfo.email,
+          name: userInfo.name,
+          phone: userPhone,
+          profileImage: userInfo.profileImage || "",
+          accountType: redirectInfo.type,
+        });
+        const vehiclesSignature = JSON.stringify(vehicles);
+        const reportsSignature = JSON.stringify(reports);
 
-        if (vehicles.length > 0) {
-          for (const vehicle of vehicles) {
-            await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
-          }
-          if (import.meta.env.DEV) console.log("Auto-saved vehicles to Supabase");
+        if (profileSignature !== lastSavedProfileSignatureRef.current) {
+          await saveProfile(
+            {
+              email: userInfo.email,
+              name: userInfo.name,
+              phone: userPhone,
+              profile_image_url: isCloudUrl ? userInfo.profileImage : undefined,
+              account_type: redirectInfo.type,
+            },
+            {
+              clerkUserId,
+              email: userInfo.email,
+              websiteUserKey,
+            }
+          );
+          lastSavedProfileSignatureRef.current = profileSignature;
+          if (import.meta.env.DEV) console.log("Auto-saved profile to Supabase");
         }
 
-        if (reports.length > 0) {
-          for (const report of reports) {
-            await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
+        if (vehiclesSignature !== lastSavedVehiclesSignatureRef.current) {
+          if (vehicles.length > 0) {
+            let savedCount = 0;
+            for (const vehicle of vehicles) {
+              const vid = vehicle.id;
+              const vSig = JSON.stringify(vehicle);
+              if (vid && vSig === vehicleSignaturesRef.current[vid]) continue;
+              await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
+              if (vid) vehicleSignaturesRef.current[vid] = vSig;
+              savedCount++;
+            }
+            if (import.meta.env.DEV && savedCount > 0)
+              console.log(`Auto-saved ${savedCount}/${vehicles.length} vehicles to Supabase`);
           }
-          if (import.meta.env.DEV) console.log("Auto-saved reports to Supabase");
+          lastSavedVehiclesSignatureRef.current = vehiclesSignature;
+        }
+
+        if (reportsSignature !== lastSavedReportsSignatureRef.current) {
+          if (reports.length > 0) {
+            let savedCount = 0;
+            for (const report of reports) {
+              const rid = report.id;
+              const rSig = JSON.stringify(report);
+              if (rid && rSig === reportSignaturesRef.current[rid]) continue;
+              await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
+              if (rid) reportSignaturesRef.current[rid] = rSig;
+              savedCount++;
+            }
+            if (import.meta.env.DEV && savedCount > 0)
+              console.log(`Auto-saved ${savedCount}/${reports.length} reports to Supabase`);
+          }
+          lastSavedReportsSignatureRef.current = reportsSignature;
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Error auto-saving to Supabase:", error);

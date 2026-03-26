@@ -5,6 +5,17 @@
 
 import { corsHeaders } from '../config/constants.ts'
 
+export const EdgeErrorCode = {
+  MISSING_FIELD: 'MISSING_FIELD',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  RATE_LIMITED: 'RATE_LIMITED',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+} as const;
+
+export type EdgeErrorCode = typeof EdgeErrorCode[keyof typeof EdgeErrorCode];
 /**
  * Strip Supabase function prefix from request paths
  * Handles both cloud deployment and local testing paths

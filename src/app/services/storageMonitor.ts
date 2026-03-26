@@ -3,10 +3,7 @@
  * Helps track usage and prevent exceeding free tier limits
  */
 
-import {
-  requestSupabaseEdge,
-  SUPABASE_EDGE_ROUTES,
-} from "./supabase/runtime";
+import { requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "./supabase/runtime";
 
 export interface StorageStats {
   totalReports: number;
@@ -30,7 +27,7 @@ export async function getStorageStats(): Promise<StorageStats> {
     });
     return data;
   } catch (error) {
-    console.error('Error fetching storage stats:', error);
+    console.error("Error fetching storage stats:", error);
     return getEstimatedStats();
   }
 }
@@ -42,12 +39,12 @@ function getEstimatedStats(): StorageStats {
   return {
     totalReports: 0,
     totalPhotos: 0,
-    estimatedStorageUsed: '0MB',
+    estimatedStorageUsed: "0MB",
     estimatedStorageUsedBytes: 0,
-    storageLimit: '1GB',
+    storageLimit: "1GB",
     storagePercentage: 0,
     bandwidthWarning: false,
-    needsCleanup: false
+    needsCleanup: false,
   };
 }
 
@@ -85,10 +82,10 @@ export async function cleanupOldReports(daysOld: number = 30): Promise<number> {
         method: "POST",
       }
     );
-    console.log(`🗑️ Cleaned up ${deletedReports || 0} old reports`);
+    if (import.meta.env.DEV) console.log(`🗑️ Cleaned up ${deletedReports || 0} old reports`);
     return deletedReports || 0;
   } catch (error) {
-    console.error('Error cleaning up old reports:', error);
+    console.error("Error cleaning up old reports:", error);
     return 0;
   }
 }

@@ -58,45 +58,63 @@ export default function InsurerClaimsScreen({
   };
 
   return (
-    <div className="min-h-screen bd-glass-panel">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bd-glass-panel sticky top-0 z-10 border-b border-blue-200/30" style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}>
+      <div
+        className="sticky top-0 z-10 border-b border-blue-300/15"
+        style={{
+          background: "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+          boxShadow: "0 4px 24px rgba(3, 10, 24, 0.30)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
         <div className="px-4 py-4">
-          <h1 className="text-2xl font-bold mb-4" style={{ color: primaryColor }}>
+          <h1 className="text-2xl font-bold mb-4 text-slate-100">
             Claims Management
           </h1>
 
           {/* Search & Filter */}
           <div className="space-y-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-200/60 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search by claim #, customer, vehicle, or policy..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-blue-200/50 rounded-xl bg-white/60 backdrop-blur-sm focus:border-blue-300 focus:ring-1 focus:ring-blue-200/50 outline-none transition-colors"
+                className="w-full pl-10 pr-4 py-2 border border-blue-300/20 rounded-xl bg-white/8 text-slate-100 placeholder:text-blue-200/50 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20 outline-none transition-colors"
               />
             </div>
 
             {/* Filter Tabs */}
             <div className="flex gap-2 overflow-x-auto pb-1">
-              {[
-                { id: "all", label: "All Claims" },
-                { id: "pending", label: "Pending" },
-                { id: "reviewing", label: "Reviewing" },
-                { id: "approved", label: "Approved" },
-                { id: "denied", label: "Denied" },
-              ].map((filter) => (
+              {(
+                [
+                  { id: "all", label: "All Claims" },
+                  { id: "pending", label: "Pending" },
+                  { id: "reviewing", label: "Reviewing" },
+                  { id: "approved", label: "Approved" },
+                  { id: "denied", label: "Denied" },
+                ] as {
+                  id: "all" | "pending" | "reviewing" | "approved" | "denied";
+                  label: string;
+                }[]
+              ).map((filter) => (
                 <button
                   key={filter.id}
-                  onClick={() => setFilterStatus(filter.id as any)}
+                  onClick={() => setFilterStatus(filter.id)}
                   className={`px-4 py-2 min-h-[44px] rounded-lg font-medium whitespace-nowrap transition-colors ${
                     filterStatus === filter.id
-                      ? "text-white"
-                      : "bg-white border border-gray-300 text-gray-700"
+                      ? "text-white shadow-sm"
+                      : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
                   }`}
-                  style={filterStatus === filter.id ? { backgroundColor: primaryColor, boxShadow: "0 2px 12px rgba(37, 99, 235, 0.22)" } : {}}
+                  style={
+                    filterStatus === filter.id
+                      ? {
+                          background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+                        }
+                      : {}
+                  }
                 >
                   {filter.label}
                 </button>
@@ -109,14 +127,26 @@ export default function InsurerClaimsScreen({
       {/* Claims List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
-          <div className="bd-glass-card p-5 sm:p-8 text-center">
-            <p className="text-slate-500">Loading claims…</p>
+          <div
+            className="bd-glass-card p-5 sm:p-8 text-center"
+            style={{
+              background: "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+              borderColor: "rgba(96, 165, 250, 0.20)",
+            }}
+          >
+            <p className="text-blue-100/70">Loading claims…</p>
           </div>
         ) : filteredClaims.length === 0 ? (
-          <div className="bd-glass-card p-5 sm:p-8 text-center">
+          <div
+            className="bd-glass-card p-5 sm:p-8 text-center"
+            style={{
+              background: "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+              borderColor: "rgba(96, 165, 250, 0.20)",
+            }}
+          >
             <AlertCircle className="w-12 h-12 text-blue-400/70 mx-auto mb-3" />
-            <p className="text-slate-700">No claims found</p>
-            <p className="text-sm text-slate-500 mt-1">Try adjusting your filters or search</p>
+            <p className="text-slate-100">No claims found</p>
+            <p className="text-sm text-blue-100/70 mt-1">Try adjusting your filters or search</p>
           </div>
         ) : (
           filteredClaims.map((claim) => (

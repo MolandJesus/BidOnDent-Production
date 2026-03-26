@@ -103,6 +103,11 @@ export default function BidsScreen({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
           className="relative overflow-hidden bd-glass-card p-5"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.82) 100%)",
+            borderColor: "rgba(96, 165, 250, 0.24)",
+          }}
         >
           <div className="flex items-center gap-3">
             {onBack && (
@@ -111,12 +116,12 @@ export default function BidsScreen({
                 onClick={onBack}
                 aria-label="Go back to dashboard"
               >
-                <ArrowLeft className="w-5 h-5 text-slate-700" />
+                <ArrowLeft className="w-5 h-5 text-blue-100" />
               </button>
             )}
             <div className="flex-1">
-              <h1 className="font-semibold text-2xl text-slate-900">Repair Bids</h1>
-              <p className="text-slate-600">
+              <h1 className="font-semibold text-2xl text-slate-100">Repair Bids</h1>
+              <p className="text-blue-100/80">
                 No live bids have been submitted for your reports yet.
               </p>
             </div>
@@ -128,12 +133,17 @@ export default function BidsScreen({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, delay: 0.05 }}
           className="bd-glass-card p-5 sm:p-6 text-center"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+            borderColor: "rgba(96, 165, 250, 0.20)",
+          }}
         >
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
-            <Clock className="h-6 w-6 text-blue-500" />
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-400/15 border border-blue-300/20">
+            <Clock className="h-6 w-6 text-blue-200" />
           </div>
-          <h2 className="text-lg font-semibold text-slate-900">Waiting for shop responses</h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600 max-w-sm mx-auto">
+          <h2 className="text-lg font-semibold text-slate-100">Waiting for shop responses</h2>
+          <p className="mt-2 text-sm leading-relaxed text-blue-100/80 max-w-sm mx-auto">
             Once you submit a damage report, nearby shops will review it and send competitive bids.
             Compare pricing, timelines, and ratings right here.
           </p>
@@ -193,6 +203,11 @@ export default function BidsScreen({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="relative overflow-hidden bd-glass-card p-4 md:p-5"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+          borderColor: "rgba(96, 165, 250, 0.24)",
+        }}
       >
         <div className="pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full bg-cyan-200/35 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-blue-200/35 blur-2xl" />
@@ -203,33 +218,33 @@ export default function BidsScreen({
               onClick={onBack}
               aria-label="Go back to dashboard"
             >
-              <ArrowLeft className="w-5 h-5 text-slate-700" />
+              <ArrowLeft className="w-5 h-5 text-blue-100" />
             </button>
           )}
           <div className="flex-1">
-            <h1 className="font-semibold text-2xl text-slate-900">Repair Bids</h1>
-            <p className="text-slate-600">
+            <h1 className="font-semibold text-2xl text-slate-100">Repair Bids</h1>
+            <p className="text-blue-100/80">
               {liveBids.length} bid{liveBids.length === 1 ? "" : "s"} for {vehicleLabel}
             </p>
           </div>
-          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium">
+          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-400/12 text-blue-100 text-sm font-medium border border-blue-300/20">
             <Sparkles className="w-4 h-4" />
             Compare before accepting
           </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div className="bd-glass-card rounded-xl px-3 py-2.5">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Lowest Bid</p>
-            <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">${lowestPrice}</p>
+          <div className="rounded-xl px-3 py-2.5 bg-white/8 border border-blue-300/15">
+            <p className="text-xs uppercase tracking-wide text-blue-200/70">Lowest Bid</p>
+            <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">${lowestPrice}</p>
           </div>
-          <div className="bd-glass-card rounded-xl px-3 py-2.5">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Average Quote</p>
-            <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">${averagePrice}</p>
+          <div className="rounded-xl px-3 py-2.5 bg-white/8 border border-blue-300/15">
+            <p className="text-xs uppercase tracking-wide text-blue-200/70">Average Quote</p>
+            <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">${averagePrice}</p>
           </div>
-          <div className="bd-glass-card rounded-xl px-3 py-2.5">
-            <p className="text-xs uppercase tracking-wide text-slate-500">Fastest Timeline</p>
-            <p className="mt-1 text-xl font-bold text-slate-900 tabular-nums">
+          <div className="rounded-xl px-3 py-2.5 bg-white/8 border border-blue-300/15">
+            <p className="text-xs uppercase tracking-wide text-blue-200/70">Fastest Timeline</p>
+            <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">
               {fastestBidDays}-{fastestBidDays + 1} days
             </p>
           </div>
@@ -241,13 +256,18 @@ export default function BidsScreen({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, delay: 0.05 }}
         className="bd-glass-card p-3"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
+          borderColor: "rgba(96, 165, 250, 0.18)",
+        }}
       >
         <div className="flex flex-wrap gap-2">
           {filters.map((item) => (
             <button
               key={item.id}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
-                filter === item.id ? "text-white shadow-sm" : "bd-glass-control text-slate-700"
+                filter === item.id ? "text-white shadow-sm" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
               }`}
               style={
                 filter === item.id

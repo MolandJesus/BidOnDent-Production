@@ -16,10 +16,12 @@ import HelpModal from "./account/HelpModal";
 import PaymentModal from "./account/PaymentModal";
 import SettingsModal from "./account/SettingsModal";
 import ShopProfileModal from "./account/ShopProfileModal";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type AccountScreenProps = {
   userType: string;
   primaryColor?: string;
+  appearanceMode?: DashboardAppearanceMode;
   userName?: string;
   userEmail?: string;
   userPhone?: string;
@@ -30,6 +32,7 @@ type AccountScreenProps = {
   onDeleteAccount?: () => Promise<void> | void;
   onLogout?: () => Promise<void> | void;
   onOpenSmokeTest?: () => void;
+  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
   onSaveProfile?: (data: {
     name: string;
     email: string;
@@ -43,6 +46,7 @@ type AccountScreenProps = {
 export default function AccountScreen({
   userType = "customer",
   primaryColor = "#003d82",
+  appearanceMode = "map-dark",
   userName = "User",
   userEmail = "user@example.com",
   userPhone = "(555) 123-4567",
@@ -54,6 +58,7 @@ export default function AccountScreen({
   onSaveProfile,
   onViewVehicles,
   onOpenSmokeTest,
+  onAppearanceModeChange,
 }: AccountScreenProps) {
   // Use default profile image if none provided
   const [profileImage, setProfileImage] = useState<string | null>(
@@ -317,6 +322,10 @@ export default function AccountScreen({
       <SettingsModal
         isOpen={showSettings}
         primaryColor={primaryColor}
+        appearanceMode={appearanceMode}
+        onAppearanceModeChange={(mode) => {
+          onAppearanceModeChange?.(mode);
+        }}
         onClose={() => setShowSettings(false)}
       />
 

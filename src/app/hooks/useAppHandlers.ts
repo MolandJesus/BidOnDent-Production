@@ -28,12 +28,12 @@ export function useAppHandlers({
       openSignUp();
       return;
     }
-    console.log("Use Clerk sign-in UI");
+    if (import.meta.env.DEV) console.log("Use Clerk sign-in UI");
   };
 
   const handleLogout = async () => {
     try {
-      console.log("Signing out from Clerk...");
+      if (import.meta.env.DEV) console.log("Signing out from Clerk...");
 
       await signOut();
 
@@ -44,7 +44,8 @@ export function useAppHandlers({
       navigation.setShowLandingPage(true);
       navigation.setShowProfileDropdown(false);
 
-      console.log("Logged out successfully - Clerk session ended and local state cleared");
+      if (import.meta.env.DEV)
+        console.log("Logged out successfully - Clerk session ended and local state cleared");
     } catch (error) {
       console.error("Error during logout:", error);
       userData.clearSession();
@@ -61,7 +62,7 @@ export function useAppHandlers({
     }
 
     try {
-      console.log("Deleting Clerk account...");
+      if (import.meta.env.DEV) console.log("Deleting Clerk account...");
       await deleteCurrentUser();
     } finally {
       userData.clearSession();
@@ -99,7 +100,7 @@ export function useAppHandlers({
     estimatedDays?: number,
     description?: string
   ) => {
-    console.log(`Submitting bid of $${bidAmount} for report ${reportId}`);
+    if (import.meta.env.DEV) console.log(`Submitting bid of $${bidAmount} for report ${reportId}`);
 
     const report = userData.reports.find((entry) => entry.id === reportId) as any;
     if (!report) {
@@ -141,7 +142,7 @@ export function useAppHandlers({
             vehicleInfo,
           }
         );
-        console.log("✅ Bid submitted and persisted to Supabase");
+        if (import.meta.env.DEV) console.log("✅ Bid submitted and persisted to Supabase");
       } else {
         console.error("Bid submission failed (Supabase error)");
       }
@@ -152,7 +153,7 @@ export function useAppHandlers({
 
   const handleReportSubmit = async (report: any) => {
     try {
-      console.log("Submitting damage report to API...");
+      if (import.meta.env.DEV) console.log("Submitting damage report to API...");
 
       const savedApiReport = await saveDamageReport(
         {
@@ -186,7 +187,7 @@ export function useAppHandlers({
         throw new Error("Failed to save report to server");
       }
 
-      console.log("Damage report saved to database:", savedApiReport.id);
+      if (import.meta.env.DEV) console.log("Damage report saved to database:", savedApiReport.id);
 
       const savedReport = {
         ...report,

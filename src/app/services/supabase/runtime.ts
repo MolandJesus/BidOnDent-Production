@@ -113,15 +113,40 @@ export function buildWebsiteIdentityQuery(params: {
   return query;
 }
 
+export const EdgeErrorCode = {
+  MISSING_FIELD: 'MISSING_FIELD',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  RATE_LIMITED: 'RATE_LIMITED',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+} as const;
+
+export type EdgeErrorCode = typeof EdgeErrorCode[keyof typeof EdgeErrorCode];
+
+export class EdgeFunctionError extends Error {
+  code: EdgeErrorCode | undefined;
+  status: number;
+
+  constructor(message: string, status: number, code?: EdgeErrorCode) {
+    super(message);
+    this.name = 'EdgeFunctionError';
+    this.code = code;
+    this.status = status;
+  }
+}
+
 export async function parseSupabaseEdgeResponse<T>(response: Response): Promise<T> {
   const payload = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(
+    const message =
       (payload as any)?.error ||
-        (payload as any)?.message ||
-        `Supabase request failed with status ${response.status}`
-    );
+      (payload as any)?.message ||
+      `Supabase request failed with status ${response.status}`;
+    const code = (payload as any)?.code as EdgeErrorCode | undefined;
+    throw new EdgeFunctionError(message, response.status, code);
   }
 
   return payload as T;

@@ -1,8 +1,10 @@
 import { type RefObject } from "react";
 import { Camera, Cloud, ImagePlus, Info, Trash2, Upload } from "lucide-react";
+import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type StepPhotosProps = {
   primaryColor: string;
+  appearanceMode?: DashboardAppearanceMode;
   photos: string[];
   uploadingPhoto: boolean;
   uploadProgress: string;
@@ -18,6 +20,7 @@ type StepPhotosProps = {
 
 export default function StepPhotos({
   primaryColor,
+  appearanceMode = "map-dark",
   photos,
   uploadingPhoto,
   uploadProgress,
@@ -30,11 +33,18 @@ export default function StepPhotos({
   onBack,
   onContinue,
 }: StepPhotosProps) {
+  const isLightAppearance = appearanceMode === "light";
   return (
     <div className="px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh]">
       {/* Title and instructions - compressed for mobile */}
-      <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 mt-1">Add damage photos</h2>
-      <p className="text-slate-600 mb-3 sm:mb-6 text-sm sm:text-base">
+      <h2
+        className={`text-xl sm:text-2xl font-bold mb-1 mt-1 ${isLightAppearance ? "text-slate-900" : "text-white/95"}`}
+      >
+        Add damage photos
+      </h2>
+      <p
+        className={`mb-3 sm:mb-6 text-sm sm:text-base ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
+      >
         Add at least one clear photo. Three photos from different angles works best.
       </p>
 
@@ -43,19 +53,27 @@ export default function StepPhotos({
         <div className="mr-2 sm:mr-3 mt-0.5">
           <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
         </div>
-        <div className="text-blue-900">
+        <div className={isLightAppearance ? "text-blue-900" : "text-blue-100/80"}>
           Good lighting and close-up shots help shops estimate faster.
         </div>
       </div>
 
       {uploadingPhoto && (
-        <div className="bg-blue-50/80 border border-blue-200/60 backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
+        <div
+          className={`backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3 border ${isLightAppearance ? "bg-blue-50/80 border-blue-200/60" : "bg-blue-900/30 border-blue-400/20"}`}
+        >
           <div className="animate-spin">
-            <Cloud className="w-5 h-5 text-blue-600" />
+            <Cloud className={`w-5 h-5 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`} />
           </div>
           <div className="flex-1">
-            <p className="text-xs sm:text-sm font-medium text-blue-800">{uploadProgress}</p>
-            <p className="text-xs text-blue-700">Photos are being saved securely...</p>
+            <p
+              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-blue-800" : "text-blue-200"}`}
+            >
+              {uploadProgress}
+            </p>
+            <p className={`text-xs ${isLightAppearance ? "text-blue-700" : "text-blue-300/70"}`}>
+              Photos are being saved securely...
+            </p>
           </div>
         </div>
       )}
@@ -63,8 +81,16 @@ export default function StepPhotos({
       {photos.length === 0 && (
         <div className="mb-4 sm:mb-6 bd-glass-card px-3 py-6 sm:px-4 sm:py-10 text-center">
           <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-blue-400/70 mx-auto mb-2" />
-          <p className="text-slate-700 font-medium text-sm sm:text-base">No photos added yet</p>
-          <p className="text-slate-500 text-xs sm:text-sm mt-1">Tap camera or upload to continue</p>
+          <p
+            className={`font-medium text-sm sm:text-base ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+          >
+            No photos added yet
+          </p>
+          <p
+            className={`text-xs sm:text-sm mt-1 ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+          >
+            Tap camera or upload to continue
+          </p>
         </div>
       )}
 
@@ -82,8 +108,14 @@ export default function StepPhotos({
               </div>
               <div className="flex items-center justify-between px-1">
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Photo {index + 1}</p>
-                  <p className="text-xs text-slate-500">
+                  <p
+                    className={`text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+                  >
+                    Photo {index + 1}
+                  </p>
+                  <p
+                    className={`text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+                  >
                     {isBase64 ? "Local photo" : "Cloud photo"}
                   </p>
                 </div>
@@ -108,16 +140,28 @@ export default function StepPhotos({
             onClick={onOpenCamera}
             className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
-            <Camera className="w-6 h-6 text-blue-600 mb-1" />
-            <span className="text-xs sm:text-sm text-slate-700 font-medium">Take Photo</span>
+            <Camera
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+            />
+            <span
+              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+            >
+              Take Photo
+            </span>
           </button>
           <button
             type="button"
             onClick={onOpenFilePicker}
             className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
           >
-            <Upload className="w-6 h-6 text-blue-600 mb-1" />
-            <span className="text-xs sm:text-sm text-slate-700 font-medium">Upload Photo</span>
+            <Upload
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+            />
+            <span
+              className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
+            >
+              Upload Photo
+            </span>
           </button>
         </div>
       )}
@@ -140,12 +184,14 @@ export default function StepPhotos({
       />
 
       {/* Sticky footer for progression controls on mobile */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-white/95 via-white/80 to-transparent px-2 pt-2 pb-[env(safe-area-inset-bottom,0.75rem)] sm:static sm:bg-none sm:p-0 border-t border-slate-200/60">
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-30 px-2 pt-2 pb-[env(safe-area-inset-bottom,0.75rem)] sm:static sm:bg-none sm:p-0 border-t ${isLightAppearance ? "bg-gradient-to-t from-white/95 via-white/80 to-transparent border-slate-200/60" : "bg-gradient-to-t from-[rgba(11,23,47,0.95)] via-[rgba(11,23,47,0.80)] to-transparent border-white/10"}`}
+      >
         <div className="flex space-x-2 sm:space-x-3 max-w-md mx-auto">
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 py-3 px-4 min-h-[44px] border border-blue-200/40 rounded-xl font-medium hover:bg-blue-50/40 transition-colors"
+            className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors ${isLightAppearance ? "border-blue-200/40 hover:bg-blue-50/40 text-slate-900" : "border-white/15 hover:bg-white/5 text-white/90"}`}
           >
             Back
           </button>
@@ -153,7 +199,10 @@ export default function StepPhotos({
             type="button"
             onClick={onContinue}
             className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`, boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)" }}
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+              boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)",
+            }}
             disabled={photos.length < 1}
           >
             Continue

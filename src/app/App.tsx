@@ -30,7 +30,8 @@ import {
 
 // Import helpers
 import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
-import type { ShopOnboardingFormData, InsurerOnboardingFormData } from "./types";
+import type { ShopOnboardingFormData, InsurerOnboardingFormData, ViewMode } from "./types";
+import type { DashboardAppearanceMode } from "./routers/dashboard-router-types";
 
 // Import components
 import AppLoading from "./components/app/AppLoading";
@@ -105,6 +106,21 @@ function useHashPage() {
   return { hashPage: page, clearHashPage: clearPage };
 }
 
+const APPEARANCE_STORAGE_KEY = "bidondent.appearance-mode";
+
+function readSavedAppearanceMode(): DashboardAppearanceMode {
+  if (typeof window === "undefined") {
+    return "map-dark";
+  }
+
+  const saved = window.localStorage.getItem(APPEARANCE_STORAGE_KEY);
+  if (saved === "light" || saved === "map-dark") {
+    return saved;
+  }
+
+  return "map-dark";
+}
+
 // Main App content (wrapped by ClerkProvider)
 function AppContent() {
   // ============================================================================
@@ -134,6 +150,14 @@ function AppContent() {
     isLoading: isBusinessProfileLoading,
     saveProfile: saveBusinessProfile,
   } = useBusinessProfile(websiteIdentity, userProfile?.user_type);
+  const [appearanceMode, setAppearanceMode] =
+    useState<DashboardAppearanceMode>(readSavedAppearanceMode);
+
+  useEffect(() => {
+    window.localStorage.setItem(APPEARANCE_STORAGE_KEY, appearanceMode);
+    document.documentElement.setAttribute("data-appearance-mode", appearanceMode);
+    document.documentElement.style.colorScheme = appearanceMode === "light" ? "light" : "dark";
+  }, [appearanceMode]);
 
   // ============================================================================
   // CUSTOM HOOKS - Centralized State Management
@@ -218,7 +242,7 @@ function AppContent() {
           if (tab) {
             navigation.setCurrentTab(tab);
           }
-          navigation.setViewMode(destination as any);
+          navigation.setViewMode(destination as ViewMode);
           navigation.setShowProfileDropdown(false);
           navigation.setShowLandingPage(false);
         },
@@ -307,6 +331,7 @@ function AppContent() {
   const renderLandingPage = (isLoggedIn: boolean) => (
     <LandingPageLayout
       isLoggedIn={isLoggedIn}
+      appearanceMode={appearanceMode}
       primaryColor={primaryColor}
       secondaryColor={secondaryColor}
       ctaButtonText={ctaButtonText}
@@ -404,7 +429,7 @@ function AppContent() {
         if (tab) {
           navigation.setCurrentTab(tab);
         }
-        navigation.setViewMode(destination as any);
+        navigation.setViewMode(destination as ViewMode);
         navigation.setShowProfileDropdown(false);
       },
       onLogout: handleLogout,
@@ -428,10 +453,13 @@ function AppContent() {
       secondaryColor,
       userImageUrl: user?.imageUrl || "",
       websiteIdentity,
+      appearanceMode,
+      onAppearanceModeChange: setAppearanceMode,
     });
 
     return (
       <DashboardLayout
+        appearanceMode={appearanceMode}
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
         currentNavTabs={currentNavTabs}
@@ -457,7 +485,7 @@ function AppContent() {
         onTabClick={handleTabClick}
         onMobileMenuTabClick={handleTabClick}
         onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
-        onOpenDemoMode={() => navigation.setViewMode("demo-switcher" as any)}
+        onOpenDemoMode={() => navigation.setViewMode("demo-switcher")}
         profileDropdownData={profileDropdownData}
         dashboardRouterProps={dashboardRouterProps}
       />

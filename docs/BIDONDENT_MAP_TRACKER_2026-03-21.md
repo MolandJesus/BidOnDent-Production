@@ -16,6 +16,7 @@
 ### Current Map State (2026-03-25 — Screenshot Verified)
 
 The Operating Regions / coverage map section is the **strongest visual identity anchor** on the entire site. Confirmed working:
+
 - Interactive Leaflet map with day/night/satellite/focus/overview/expand modes
 - ZIP search with radius selector (20-mile default)
 - County grid: Rockland, Dutchess, Westchester, Nassau, Orange, Putnam
@@ -29,6 +30,116 @@ The Operating Regions / coverage map section is the **strongest visual identity 
 **Runtime issue:** "Can't find variable: props" crash affects navigation transitions, possibly in `ReportDetailDrawer.tsx` or `MapReportMarkers.tsx`. Must fix before map interaction loop passes.
 
 **Best next pass:** Fix props crash → Map dominance finalization → Interaction flow smoothing
+
+## Pass 200 — Dashboard shell night cohesion + map/header separation (2026-03-25)
+
+- **Why this pass was chosen:** Mobile and desktop screenshot review showed the fixed map layer visually colliding with the sticky header, weakening the map-first shell feel.
+- **What changed:**
+  - `HomeScreen.tsx`: Fixed map hero layer now starts below the sticky header (`top: max(env(safe-area-inset-top), 4.25rem)`), reducing header overlap.
+  - `DashboardLayout.tsx`: Header and desktop sidebar surfaces now use dark navy glass gradients aligned to map night mode; text contrast updated for the darker shell.
+  - `MobileBottomNav.tsx`: Bottom nav moved to dark glass tone to match the map-native shell language.
+- **Validation:** Build ✓ 0 errors · 2.00s · 738KB main bundle.
+- **Impact:** Dashboard entry now reads as a coherent map-world shell instead of separate bright chrome over dark map atmosphere.
+
+## Pass 203 — Operating regions county list hierarchy treatment (2026-03-25)
+
+- **Why this pass was chosen:** Coverage county rows looked utilitarian and flat, reducing scan speed and weakening map-surface identity.
+- **What changed:**
+  - `OperatingRegionsSection.tsx`: Added “Active Counties” micro-header and live-region count badge.
+  - County rows now use left-aligned place identity + right-side active status badge.
+  - Preserved existing county data and map behavior while improving hierarchy clarity.
+- **Validation:** Build ✓ 0 errors · 1.87s · 739.64KB main bundle.
+- **Impact:** County coverage is now glanceable and map-native, improving readability on both mobile and desktop.
+
+## Pass 205 — Account system preferences appearance mode wiring (2026-03-25)
+
+- **Why this pass was chosen:** Users needed a first-class way to move between immersive map-night shell and a lighter shell without fragmenting map-first product direction.
+- **What changed:**
+  - Added persisted appearance mode at app root (`map-dark` default, `light` optional) in `App.tsx`.
+  - Wired mode through dashboard router contracts and account settings path.
+  - Added `System Preferences` controls in `SettingsModal.tsx` under Account settings.
+  - Applied selected mode to dashboard shell and landing shell backgrounds in `DashboardLayout.tsx` and `LandingPageLayout.tsx`.
+- **Validation:** Build ✓ 0 errors · 2.60s · 741.06KB main bundle. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Appearance mode now has a stable product-level control path and persistence foundation for future system-wide theming passes.
+
+## Pass 206 — Appearance shell consistency hardening (2026-03-25)
+
+- **Why this pass was chosen:** Screenshots showed shell-level theme cohesion still needed reinforcement, especially for mobile bottom navigation and future system-wide appearance expansion.
+- **What changed:**
+  - `App.tsx`: appearance mode now also sets `data-appearance-mode` and `color-scheme` on the document root for scalable styling.
+  - `DashboardLayout.tsx`: mobile bottom nav now receives active appearance mode; main content shell gets subtle mode-aware backdrop treatment.
+  - `MobileBottomNav.tsx`: fully mode-aware dark/light visual treatment and inactive-tab contrast tuning.
+- **Validation:** Build ✓ 0 errors · 2.21s · 741.65KB main bundle. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Appearance mode behavior is now more coherent across authenticated shell surfaces and better prepared for future tokenized theme expansion.
+
+## Pass 207 — Mobile contrast + map card cohesion sweep (2026-03-25)
+
+- **Why this pass was chosen:** Screenshot baseline still showed washed mobile text in light sections and inconsistent card language between dashboard shell and map-related surfaces.
+- **What changed:**
+  - Landing readability sweep in `HowItWorksSection.tsx`, `WhoWeServeSection.tsx`, `BenefitsSection.tsx`, and `AboutOpportunitySection.tsx` with stronger text contrast and cleaner card surfaces.
+  - Dashboard map cohesion in `CustomerMapWidget.tsx` by moving shop list widget from bright card treatment into dark map-native glass styling.
+  - Bids screen alignment in `BidsScreen.tsx` by upgrading empty and summary surfaces to map-dark card styling with improved typography contrast.
+- **Validation:** Build ✓ 0 errors · 2.10s · 742.03KB main bundle. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Mobile scanability and visual trust improved in both public and authenticated map-first flows.
+
+## Pass 208 — Dashboard mobile stack rhythm tuning (2026-03-25)
+
+- **Why this pass was chosen:** Dashboard home on mobile still felt vertically crowded near the top stack (map widget into welcome/actions handoff).
+- **What changed:**
+  - `HomeScreen.tsx`: increased mobile map-to-content offset, tightened top hero card spacing, and made primary action button full-width on mobile.
+  - `CustomerMapWidget.tsx`: reduced mobile density with compact list limit and smaller row rhythm while preserving full map expansion path.
+- **Validation:** Build ✓ 0 errors · 2.10s · 742.03KB main bundle. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Home dashboard now reads as a calmer map-first flow with less perceived crowding at first scroll depth.
+
+## Pass 209 — Account card dark-shell cohesion (2026-03-25)
+
+- **Why this pass was chosen:** Account tab still used bright, gray-heavy card surfaces that visually broke the dark map-shell dashboard experience.
+- **What changed:**
+  - `AccountInfoCard.tsx`: switched panel and sub-card surfaces to dark map-native glass treatment with improved text contrast.
+  - `AccountMenu.tsx`: aligned rows, icon chips, and affordance colors to dark-shell palette while preserving destructive-action clarity.
+- **Validation:** Build ✓ 0 errors · 2.05s · 742.03KB main bundle. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Account tab now visually matches the rest of the authenticated dark-shell system and feels less segmented.
+
+## Pass 210 — Report flow dark-shell cohesion (2026-03-25)
+
+- **Why this pass was chosen:** Report tab still had brighter utility bars and form surfaces that looked detached from the dark dashboard shell.
+- **What changed:**
+  - `ReportHeader.tsx`: moved title bar and step badge treatment to dark map-shell glass.
+  - `ReportProgress.tsx`: aligned inactive step and connector visuals to dark-shell system.
+  - `StepVehicleInfo.tsx`: upgraded first report step form container and fields to dark-glass styling with improved text contrast.
+- **Validation:** Build ✓ 0 errors · 2.15s · 742.03KB main bundle. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Report flow now enters with a more consistent map-night experience and less visual theme switching.
+
+## Pass 211 — Report step dark-shell parity completion (2026-03-25)
+
+- **Why this pass was chosen:** Remaining report steps (damage area and final description) still used bright card/form surfaces that broke visual continuity in the core report intake loop.
+- **What changed:**
+  - `StepDamageArea.tsx`: moved step shell and area selectors to dark map-glass styling with improved selected/unselected state contrast.
+  - `StepDescription.tsx`: moved description/incident fields, labels, back button, and submit-error surface to dark-shell treatment.
+  - Preserved step behavior and validation logic; this pass is strictly visual cohesion and readability hardening.
+- **Validation:** Build ✓ 0 errors · 2.03s · 742.03KB main bundle. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Report intake now maintains map-night visual continuity from step 1 through submit, reducing context switching in the report -> map -> shop loop.
+
+## Pass 212 — Report appearance-mode parity wiring (2026-03-25)
+
+- **Why this pass was chosen:** Report flow had hardcoded dark-shell styling but did not respond to the app's appearance mode toggle (map-dark vs light).
+- **What changed:**
+  - `DashboardRouter.tsx`: threads `appearanceMode` prop to `<ReportScreen>`.
+  - `ReportScreen.tsx`: receives mode, derives `isLightAppearance`, passes to all step components.
+  - `ReportHeader.tsx`, `ReportProgress.tsx`, `StepVehicleInfo.tsx`, `StepDamageArea.tsx`, `StepDescription.tsx`: all conditional on appearance mode.
+- **Validation:** Build ✓ 0 errors · 2.06s · 742KB main. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Report intake now responds correctly to both map-dark and light appearance modes for the first 5 steps.
+
+## Pass 213 — Remaining report steps appearance-mode completion (2026-03-25)
+
+- **Why this pass was chosen:** StepPhotos, StepServiceLocation, and StepComplete were the last report steps without appearance-mode conditional styling.
+- **What changed:**
+  - `StepPhotos.tsx`: title, info block, upload indicator, empty state, photo labels, action buttons, sticky footer — all conditional on appearance mode.
+  - `StepServiceLocation.tsx`: heading, form labels, inputs, info block, skip link — all conditional.
+  - `StepComplete.tsx`: success heading, timeline items, back-to-dashboard button — all conditional.
+  - `ReportScreen.tsx`: threads `appearanceMode` to StepServiceLocation (case 3), StepPhotos (case 4), and StepComplete (case 6).
+- **Validation:** Build ✓ 0 errors · 2.09s · 742KB main. Diagnostics: 0. Spellcheck: 0.
+- **Impact:** Entire 6-step report creation flow now responds to app appearance mode. Full dark/light parity achieved for report intake.
 
 ---
 

@@ -10,6 +10,7 @@ import {
 import ImageWithFallback from "./ImageWithFallback";
 import { formatDate, formatStatus, getReportTitle, getReportDescription } from "./home-helpers";
 import { type ActionItem, statusClasses, actionIconTones } from "./homeScreenData";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 // ============================================================================
 // Types
@@ -45,7 +46,8 @@ export function HomeOnboardingCard({
       className="rounded-2xl p-5 sm:p-6 text-white relative overflow-hidden"
       style={{
         background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        boxShadow: "0 8px 32px rgba(37, 99, 235, 0.22), 0 0 48px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+        boxShadow:
+          "0 8px 32px rgba(37, 99, 235, 0.22), 0 0 48px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
       }}
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_-10%,rgba(255,255,255,0.12),transparent_50%)]" />
@@ -75,6 +77,7 @@ export function HomeOnboardingCard({
 
 export function HomeReportsList({
   userType,
+  appearanceMode = "map-dark",
   listHeader,
   sortedReports,
   primaryColor,
@@ -84,6 +87,7 @@ export function HomeReportsList({
   onStartReport,
 }: {
   userType: string;
+  appearanceMode?: DashboardAppearanceMode;
   listHeader: string;
   sortedReports: any[];
   primaryColor: string;
@@ -92,13 +96,33 @@ export function HomeReportsList({
   onOpenReport?: (reportId: string) => void;
   onStartReport: () => void;
 }) {
+  const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="bd-glass-card p-5">
+    <div
+      className="bd-glass-card p-5"
+      style={
+        isLightAppearance
+          ? {
+              background:
+                "linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(248, 250, 252, 0.84) 100%)",
+              borderColor: "rgba(148, 163, 184, 0.25)",
+            }
+          : {
+              background:
+                "linear-gradient(180deg, rgba(8, 18, 38, 0.82) 0%, rgba(7, 14, 30, 0.78) 100%)",
+              borderColor: "rgba(96, 165, 250, 0.22)",
+            }
+      }
+    >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-slate-900">{listHeader}</h2>
+        <h2
+          className={`text-xl font-semibold ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+        >
+          {listHeader}
+        </h2>
         <button
           onClick={onViewAll}
-          className="text-sm font-medium text-blue-700 hover:text-blue-800 inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors hover:bg-blue-50/60"
+          className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-800 hover:bg-blue-50/60" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
         >
           View All
           <ArrowRight className="w-4 h-4" />
@@ -106,14 +130,22 @@ export function HomeReportsList({
       </div>
 
       {sortedReports.length === 0 && (
-        <div className="bd-glass-card p-5 sm:p-8 text-center">
-          <Camera className="w-10 h-10 text-blue-400/70 mx-auto mb-3" />
-          <p className="font-medium text-slate-900 mb-1">
+        <div
+          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-slate-50/60 border-slate-200/40" : "bg-slate-900/20 border-blue-200/15"}`}
+        >
+          <Camera
+            className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/70"}`}
+          />
+          <p
+            className={`font-medium mb-1 ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+          >
             {userType === "customer" && "No repair requests yet"}
             {userType === "shop" && "No customer requests yet"}
             {userType === "insurer" && "No claims submitted yet"}
           </p>
-          <p className="text-slate-500 text-sm mb-4">
+          <p
+            className={`text-sm mb-4 ${isLightAppearance ? "text-slate-500" : "text-blue-100/75"}`}
+          >
             {userType === "customer" &&
               "Submit your first damage report to start receiving competitive bids from local shops."}
             {userType === "shop" && "New customer requests will appear here as they come in."}
@@ -147,7 +179,7 @@ export function HomeReportsList({
             return (
               <article
                 key={report.id}
-                className={`bd-glass-card p-4 transition-shadow ${
+                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/60 border-slate-200/40" : "bg-slate-900/20 border-blue-200/15"} ${
                   canOpenReport ? "hover:shadow-md cursor-pointer" : ""
                 }`}
                 onClick={canOpenReport ? () => onOpenReport?.(String(report.id)) : undefined}
@@ -181,16 +213,26 @@ export function HomeReportsList({
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-xl font-semibold text-slate-900 truncate">{title}</h3>
+                      <h3
+                        className={`text-xl font-semibold truncate ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                      >
+                        {title}
+                      </h3>
                       <span
                         className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusClass}`}
                       >
                         {formatStatus(status)}
                       </span>
                     </div>
-                    <p className="text-slate-600 mt-1 line-clamp-2">{description}</p>
+                    <p
+                      className={`mt-1 line-clamp-2 ${isLightAppearance ? "text-slate-500" : "text-blue-100/75"}`}
+                    >
+                      {description}
+                    </p>
 
-                    <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-slate-500">
+                    <div
+                      className={`flex flex-wrap items-center gap-4 mt-3 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+                    >
                       <span className="inline-flex items-center gap-1.5">
                         <Calendar className="w-4 h-4" />
                         {formatDate(report?.submittedAt)}
@@ -203,7 +245,9 @@ export function HomeReportsList({
                       )}
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-slate-400 mt-7 flex-shrink-0" />
+                  <ChevronRight
+                    className={`w-5 h-5 mt-7 flex-shrink-0 ${isLightAppearance ? "text-slate-400" : "text-blue-200/80"}`}
+                  />
                 </div>
               </article>
             );

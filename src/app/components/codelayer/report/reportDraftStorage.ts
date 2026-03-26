@@ -97,7 +97,7 @@ export function saveReportDraft(params: {
 
   try {
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
-    console.log("💾 Draft auto-saved to local storage (text data only)");
+    if (import.meta.env.DEV) console.log("💾 Draft auto-saved to local storage (text data only)");
   } catch (error) {
     console.error("Error saving draft to localStorage:", error);
     try {
@@ -111,7 +111,7 @@ export function saveReportDraft(params: {
 export function clearReportDraft(): void {
   try {
     localStorage.removeItem(DRAFT_STORAGE_KEY);
-    console.log("🗑️ Cleared draft from local storage");
+    if (import.meta.env.DEV) console.log("🗑️ Cleared draft from local storage");
   } catch (error) {
     console.error("Error clearing draft:", error);
   }

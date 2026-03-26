@@ -85,6 +85,8 @@ export default function DashboardRouter({
   onReportSubmit,
   demoMode,
   originalAccountType,
+  appearanceMode,
+  onAppearanceModeChange,
   reportsLoading,
   reportsError,
 }: DashboardRouterProps) {
@@ -106,6 +108,27 @@ export default function DashboardRouter({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [viewMode, currentTab]);
 
+  const hasRouteMatch =
+    (viewMode === "dashboard" && currentTab === "home") ||
+    (viewMode === "dashboard" && currentTab === "report" && userType === "customer") ||
+    (viewMode === "dashboard" && currentTab === "bids" && userType === "customer") ||
+    (viewMode === "dashboard" && currentTab === "requests" && userType === "shop") ||
+    (viewMode === "dashboard" && currentTab === "jobs" && userType === "shop") ||
+    (viewMode === "dashboard" && currentTab === "claims" && userType === "insurer") ||
+    (viewMode === "dashboard" && currentTab === "shops" && userType === "insurer") ||
+    (viewMode === "dashboard" && currentTab === "account") ||
+    viewMode === "reports-list" ||
+    viewMode === "report-detail" ||
+    viewMode === "smoke-test" ||
+    viewMode === "insurer-connect" ||
+    viewMode === "liked-shops" ||
+    viewMode === "vehicles" ||
+    viewMode === "shop-directory" ||
+    (viewMode === "new-claim" && userType === "insurer") ||
+    viewMode === "insurance-companies" ||
+    viewMode === "competitor-analysis" ||
+    viewMode === "demo-switcher";
+
   return (
     <div className="w-full">
       <Suspense
@@ -121,6 +144,7 @@ export default function DashboardRouter({
             <motion.div key="home" {...screenTransition}>
               <HomeScreen
                 userType={userType}
+                appearanceMode={appearanceMode}
                 userInfo={userInfo}
                 primaryColor={primaryColor}
                 secondaryColor={secondaryColor}
@@ -175,6 +199,7 @@ export default function DashboardRouter({
             <motion.div key="report" {...screenTransition}>
               <ReportScreen
                 primaryColor={primaryColor}
+                appearanceMode={appearanceMode}
                 vehicles={vehicles}
                 onSaveVehicle={onSaveVehicle}
                 hasSeenPhotoGuide={hasSeenPhotoGuide}
@@ -260,6 +285,7 @@ export default function DashboardRouter({
               <AccountScreen
                 userType={userType}
                 primaryColor={primaryColor}
+                appearanceMode={appearanceMode}
                 userName={userInfo.name}
                 userEmail={userInfo.email}
                 userPhone={userPhone}
@@ -289,6 +315,7 @@ export default function DashboardRouter({
                 onOpenSmokeTest={() => {
                   onViewModeChange("smoke-test");
                 }}
+                onAppearanceModeChange={onAppearanceModeChange}
               />
             </motion.div>
           )}
@@ -344,6 +371,21 @@ export default function DashboardRouter({
                   </button>
                 </div>
               )}
+            </motion.div>
+          )}
+
+          {viewMode === "report-detail" && !selectedReportId && (
+            <motion.div key="report-detail-missing" {...screenTransition}>
+              <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
+                <p className="text-slate-600">No report selected.</p>
+                <button
+                  onClick={() => onViewModeChange("reports-list")}
+                  className="mt-4 px-4 py-2 rounded-xl text-white font-medium"
+                  style={{ background: primaryColor }}
+                >
+                  Back to Reports
+                </button>
+              </div>
             </motion.div>
           )}
 
@@ -479,6 +521,26 @@ export default function DashboardRouter({
                 }}
                 primaryColor={primaryColor}
               />
+            </motion.div>
+          )}
+
+          {!hasRouteMatch && (
+            <motion.div key="route-fallback" {...screenTransition}>
+              <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
+                <p className="text-slate-600">
+                  We couldn't load this view. Returning to dashboard.
+                </p>
+                <button
+                  onClick={() => {
+                    onTabChange("home");
+                    onViewModeChange("dashboard");
+                  }}
+                  className="mt-4 px-4 py-2 rounded-xl text-white font-medium"
+                  style={{ background: primaryColor }}
+                >
+                  Go to Dashboard
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

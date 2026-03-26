@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Bid, NavTab, Notification, Vehicle } from "../../types";
 import { getGlobalSurfaceTheme } from "../../theme/globalSurfaceTheme";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import NotificationCenter from "../dashboard/NotificationCenter";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
@@ -25,6 +26,7 @@ type ProfileDropdownData = {
 };
 
 type DashboardLayoutProps = {
+  appearanceMode: DashboardAppearanceMode;
   primaryColor: string;
   secondaryColor: string;
   currentNavTabs: NavTab[];
@@ -50,6 +52,7 @@ type DashboardLayoutProps = {
 };
 
 export default function DashboardLayout({
+  appearanceMode,
   primaryColor,
   secondaryColor,
   currentNavTabs,
@@ -99,16 +102,32 @@ export default function DashboardLayout({
     return () => document.removeEventListener("mousedown", onDocumentClick);
   }, []);
 
-  const surfaceTheme = getGlobalSurfaceTheme("light");
+  const isLightAppearance = appearanceMode === "light";
+  const surfaceTheme = getGlobalSurfaceTheme(isLightAppearance ? "light" : "map-dark");
 
   return (
     <div className="min-h-screen relative" style={{ background: surfaceTheme.background }}>
       {/* Map background layer (full-bleed, fixed, z-0) — deep ocean atmosphere */}
-      <div className="fixed inset-0 z-0" id="dashboard-map-bg" style={{ background: "radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)" }} />
+      <div
+        className="fixed inset-0 z-0"
+        id="dashboard-map-bg"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 130% 95% at 24% 8%, rgba(203, 224, 255, 0.74) 0%, rgba(241, 247, 255, 0.96) 62%, #f3f8ff 100%)"
+            : "radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)",
+        }}
+      />
       {/* Floating panel container (z-10) */}
       <div className="relative z-10 md:flex md:min-h-screen">
-        <aside className="hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r md:border-blue-200/30" style={{ background: "linear-gradient(180deg, rgba(240, 248, 255, 0.82) 0%, rgba(235, 245, 255, 0.72) 100%)" }}>
-          <div className="px-6 py-6 border-b border-blue-200/30">
+        <aside
+          className="hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r md:border-blue-900/40"
+          style={{
+            background: isLightAppearance
+              ? "linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(241, 247, 255, 0.92) 100%)"
+              : "linear-gradient(180deg, rgba(7, 16, 34, 0.84) 0%, rgba(6, 13, 28, 0.76) 100%)",
+          }}
+        >
+          <div className="px-6 py-6 border-b border-blue-900/35">
             <button
               onClick={onLogoClick}
               className="bd-glass-control--utility flex items-center gap-2.5 cursor-pointer bg-transparent backdrop-blur-xl shadow-none"
@@ -118,9 +137,11 @@ export default function DashboardLayout({
               <span
                 className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={{
-                  background: "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(14, 165, 233, 0.10) 100%)",
+                  background:
+                    "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(14, 165, 233, 0.10) 100%)",
                   border: "1px solid rgba(37, 99, 235, 0.22)",
-                  boxShadow: "0 0 12px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                  boxShadow:
+                    "0 0 12px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
                 }}
               >
                 <Car className="w-5 h-5" style={{ color: "#2563eb" }} />
@@ -137,7 +158,9 @@ export default function DashboardLayout({
                   Bid
                 </span>
                 <span style={{ color: "#2563eb", fontWeight: 700 }}>On</span>
-                <span className="text-slate-900">Dent</span>
+                <span className={isLightAppearance ? "text-slate-900" : "text-slate-100"}>
+                  Dent
+                </span>
               </h1>
             </button>
           </div>
@@ -161,7 +184,8 @@ export default function DashboardLayout({
                     isActive
                       ? {
                           background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                          boxShadow: "0 2px 16px rgba(37, 99, 235, 0.28), 0 0 24px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+                          boxShadow:
+                            "0 2px 16px rgba(37, 99, 235, 0.28), 0 0 24px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
                         }
                       : {}
                   }
@@ -208,7 +232,7 @@ export default function DashboardLayout({
             )}
           </nav>
 
-          <div className="p-3 border-t border-blue-200/30">
+          <div className="p-3 border-t border-blue-900/35">
             <button
               onClick={() => {
                 setShowTopProfileMenu(false);
@@ -234,17 +258,33 @@ export default function DashboardLayout({
                 </div>
               )}
               <div className="text-left min-w-0">
-                <p className="text-base font-semibold text-slate-900 truncate">
+                <p
+                  className={`text-base font-semibold truncate ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                >
                   {userProfile.name}
                 </p>
-                <p className="text-sm text-slate-500 truncate">{userProfile.email}</p>
+                <p
+                  className={`text-sm truncate ${isLightAppearance ? "text-slate-600" : "text-slate-300"}`}
+                >
+                  {userProfile.email}
+                </p>
               </div>
             </button>
           </div>
         </aside>
 
         <div className="flex-1 min-w-0">
-          <header className="sticky top-0 z-40 bd-glass-panel rounded-none border-0 border-b border-blue-200/30" style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.05), inset 0 -1px 0 rgba(147, 197, 253, 0.12)" }}>
+          <header
+            className="sticky top-0 z-40 bd-glass-panel rounded-none border-0 border-b border-blue-900/40"
+            style={{
+              background: isLightAppearance
+                ? "linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(240, 247, 255, 0.92) 100%)"
+                : "linear-gradient(180deg, rgba(7, 16, 34, 0.86) 0%, rgba(8, 18, 38, 0.78) 100%)",
+              boxShadow: isLightAppearance
+                ? "0 8px 24px rgba(37, 99, 235, 0.09), inset 0 -1px 0 rgba(37, 99, 235, 0.18)"
+                : "0 8px 28px rgba(3, 10, 24, 0.45), inset 0 -1px 0 rgba(59, 130, 246, 0.20)",
+            }}
+          >
             <div className="px-4 md:px-8 py-3.5 flex items-center justify-between gap-3">
               <button
                 onClick={onLogoClick}
@@ -259,12 +299,24 @@ export default function DashboardLayout({
                 >
                   <Car className="w-4 h-4" />
                 </span>
-                <span className="text-lg font-semibold text-slate-900">BidOnDent</span>
+                <span
+                  className={`text-lg font-semibold ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                >
+                  BidOnDent
+                </span>
               </button>
 
               <div className="hidden md:block">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">BidOnDent</p>
-                <h2 className="text-xl font-semibold text-slate-900 leading-tight">{activeTabLabel}</h2>
+                <p
+                  className={`text-xs font-medium uppercase tracking-wide ${isLightAppearance ? "text-blue-700/80" : "text-blue-200/80"}`}
+                >
+                  BidOnDent
+                </p>
+                <h2
+                  className={`text-xl font-semibold leading-tight ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                >
+                  {activeTabLabel}
+                </h2>
               </div>
 
               <div className="flex items-center gap-2.5 ml-auto">
@@ -278,9 +330,11 @@ export default function DashboardLayout({
                   </button>
                 )}
                 <div className="hidden lg:flex items-center gap-2 bd-glass-control--utility px-3 py-2 min-w-[260px]">
-                  <Search className="w-4 h-4 text-slate-400" />
+                  <Search
+                    className={`w-4 h-4 ${isLightAppearance ? "text-blue-700/65" : "text-blue-200/70"}`}
+                  />
                   <input
-                    className="bg-transparent text-sm w-full outline-none placeholder:text-slate-400 text-slate-700"
+                    className={`bg-transparent text-sm w-full outline-none ${isLightAppearance ? "placeholder:text-blue-700/50 text-slate-900" : "placeholder:text-blue-200/60 text-slate-100"}`}
                     placeholder="Search..."
                     aria-label="Search"
                   />
@@ -297,7 +351,9 @@ export default function DashboardLayout({
                     aria-label="Open notifications"
                     aria-expanded={showNotifications}
                   >
-                    <Bell className="w-5 h-5 text-slate-600" />
+                    <Bell
+                      className={`w-5 h-5 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                    />
                     {unreadCount > 0 && (
                       <>
                         <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
@@ -354,10 +410,14 @@ export default function DashboardLayout({
                       </div>
                     )}
                     <div className="hidden md:block text-left pr-1">
-                      <p className="text-sm font-semibold text-slate-900 leading-none">
+                      <p
+                        className={`text-sm font-semibold leading-none ${isLightAppearance ? "text-slate-900" : "text-slate-100"}`}
+                      >
                         {userProfile.name}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1 leading-none">
+                      <p
+                        className={`text-xs mt-1 leading-none ${isLightAppearance ? "text-slate-600" : "text-slate-300"}`}
+                      >
                         {userProfile.email}
                       </p>
                     </div>
@@ -412,7 +472,14 @@ export default function DashboardLayout({
             </div>
           </header>
 
-          <main className="px-3 md:px-8 py-4 md:py-6 pb-24 md:pb-8">
+          <main
+            className="px-3 md:px-8 py-4 md:py-6 pb-24 md:pb-8"
+            style={{
+              background: isLightAppearance
+                ? "linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%)"
+                : "linear-gradient(180deg, rgba(2, 6, 23, 0.20) 0%, rgba(2, 6, 23, 0.08) 100%)",
+            }}
+          >
             <div className="max-w-[1400px]">
               <DashboardRouter {...dashboardRouterProps} />
             </div>
@@ -421,6 +488,7 @@ export default function DashboardLayout({
       </div>
 
       <MobileBottomNav
+        appearanceMode={appearanceMode}
         tabs={currentNavTabs}
         currentTab={currentTab}
         viewMode={viewMode}

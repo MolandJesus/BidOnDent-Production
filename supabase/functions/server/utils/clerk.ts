@@ -133,3 +133,63 @@ export async function verifyClerkSessionRequest(
     claims,
   };
 }
+
+/**
+ * Soft verification for mutation endpoints.
+ *
+ * Strategy:
+ * - If CLERK_SECRET_KEY is configured AND the Authorization header contains a Clerk JWT
+ *   (detected by JWT shape), verify it and return the verified clerkUserId.
+ * - If the JWT sub claim doesn't match the clerkUserId passed in the request body → reject (returns null + mismatch flag).
+ * - If no CLERK_SECRET_KEY is configured, or the bearer token is the Supabase anon key → skip and trust the body param.
+ *
+ * This allows a safe rollout: existing anon-key flows continue to work while
+ * Clerk-JWT requests are cryptographically verified.
+ */
+export async function softVerifyClerkMutation(
+  req: Request,
+  bodyClerkUserId: string
+): Promise<{ verified: boolean; mismatch: boolean }> {
+  if (!config.CLERK_SECRET_KEY) {
+    // No secret configured — skip verification, trust body param
+    return { verified: false, mismatch: false };
+  }
+
+  let token: string;
+  try {
+    token = getBearerToken(req);
+  } catch {
+    // No valid bearer header
+    return { verified: false, mismatch: false };
+  }
+
+  // Detect if token is a JWT (three base64url parts separated by dots, starts with 'ey')
+  const isJwt = token.startsWith("ey") && token.split(".").length === 3;
+  if (!isJwt) {
+    // Bearer is the Supabase anon key — skip verification
+    return { verified: false, mismatch: false };
+  }
+
+  try {
+    const authorizedParties = getAuthorizedParties(req);
+    const claims = (await verifyToken(
+      token,
+      authorizedParties.length > 0 ? { authorizedParties, secretKey: config.CLERK_SECRET_KEY } : { secretKey: config.CLERK_SECRET_KEY }
+    )) as Record<string, unknown>;
+
+    const verifiedUserId = typeof claims.sub === "string" ? claims.sub : null;
+
+    if (!verifiedUserId) {
+      return { verified: false, mismatch: true };
+    }
+
+    if (verifiedUserId !== bodyClerkUserId) {
+      return { verified: true, mismatch: true };
+    }
+
+    return { verified: true, mismatch: false };
+  } catch {
+    // Verification failed — treat as unverified but not an error (may be misconfigured)
+    return { verified: false, mismatch: false };
+  }
+}
