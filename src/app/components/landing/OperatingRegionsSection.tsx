@@ -21,58 +21,33 @@ export default function OperatingRegionsSection({
   return (
     <section
       id="coverage"
-      className="py-14 text-white relative overflow-hidden"
+      className="py-10 sm:py-14 text-white relative overflow-hidden"
       style={{ background: "linear-gradient(180deg, #0a1628 0%, #0d1b33 50%, #091422 100%)" }}
       ref={sectionRef}
     >
+      {/* Smooth transition edges — top/bottom gradient fades */}
+      <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#0a1628]/0 to-transparent pointer-events-none z-10" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/25 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/25 to-transparent" />
       {/* Atmospheric depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:28px_28px] opacity-20" />
       <div className="absolute top-0 right-1/3 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-10 left-[10%] w-56 h-56 bg-indigo-400/[0.05] rounded-full blur-[100px]" />
       <div className="container mx-auto px-4 max-w-6xl relative">
         <div
           className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <p className="uppercase tracking-[0.12em] text-sm text-slate-300 mb-2">
-                Current Coverage
+              <p className="uppercase tracking-[0.12em] text-sm text-blue-200/80 mb-2">
+                Find a Shop
               </p>
-              <h3 className="text-3xl font-bold">Actively operating in New York service regions</h3>
-              <p className="text-slate-300 mt-2 max-w-2xl">
-                Explore coverage with our interactive map. Enter ZIP and radius to preview service
-                availability and nearby partner hubs.
-              </p>
+              <h3 className="text-2xl sm:text-3xl font-bold">Search coverage near you</h3>
             </div>
           </div>
 
-          <div className="mt-8">
-            <div className="mb-3 flex items-center justify-between gap-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/80">
-                Active Counties
-              </p>
-              <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-2.5 py-1 text-[11px] font-medium text-blue-200">
-                {operatingRegions.length} live regions
-              </span>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {operatingRegions.map((region) => (
-                <div
-                  key={region}
-                  className="rounded-xl border border-slate-700/80 bg-slate-800/50 backdrop-blur-sm px-4 py-3 flex items-center justify-between gap-3 hover:border-blue-500/40 hover:bg-slate-800/70 transition-all duration-300"
-                >
-                  <span className="inline-flex items-center gap-2 text-slate-100">
-                    <MapPin className="w-4 h-4 text-blue-300" />
-                    {region}
-                  </span>
-                  <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-300">
-                    Active
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-8">
+          {/* Search-first: CoverageSearchPanel leads */}
+          <div className="mt-4 sm:mt-6">
             <CoverageSearchPanel
               tone={coverage.surfaceTone}
               zipCode={coverage.zipCode}
@@ -102,6 +77,22 @@ export default function OperatingRegionsSection({
               onUseCurrentLocation={coverage.handleUseCurrentLocation}
               onExpandMap={() => coverage.setIsMapExpanded(true)}
             />
+
+            {/* Compact region pills — Apple Maps style */}
+            <div className="mt-3 sm:mt-4 flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <span className="shrink-0 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-200/60">
+                Active:
+              </span>
+              {operatingRegions.map((region) => (
+                <span
+                  key={region}
+                  className="shrink-0 inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-blue-400/20 bg-blue-500/8 px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium text-blue-200/80"
+                >
+                  <MapPin className="w-3 h-3 text-blue-400/60" />
+                  {region.replace(" County", "")}
+                </span>
+              ))}
+            </div>
 
             <ServiceCoverageMap
               className="mt-4"

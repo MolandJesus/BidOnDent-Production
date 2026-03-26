@@ -347,6 +347,7 @@ function AppContent() {
       redirectInfo={landingRedirectInfo}
       onLoginClick={handleLogin}
       onViewDashboard={() => navigation.setShowLandingPage(false)}
+      onAppearanceModeChange={setAppearanceMode}
       profileDropdownData={landingProfileDropdownData}
     />
   );
@@ -460,6 +461,7 @@ function AppContent() {
     return (
       <DashboardLayout
         appearanceMode={appearanceMode}
+        onAppearanceModeChange={setAppearanceMode}
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
         currentNavTabs={currentNavTabs}

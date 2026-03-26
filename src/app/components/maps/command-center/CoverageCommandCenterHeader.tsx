@@ -18,7 +18,7 @@ export default function CoverageCommandCenterHeader({
   const launchTime = formatLaunchTime(navigationSession?.launchedAt);
 
   return (
-    <div className="map-ui-enter relative overflow-hidden border-b border-white/10 px-4 py-2 text-left sm:px-5">
+    <div className="map-ui-enter relative overflow-hidden rounded-[1.5rem] border border-white/10 px-4 py-3 text-left sm:px-5">
       <div className="pointer-events-none absolute inset-0 opacity-50">
         <div className="absolute -left-24 -top-24 h-40 w-40 rounded-full bg-sky-300/16 blur-3xl" />
         <div className="absolute right-12 top-0 h-28 w-28 rounded-full bg-cyan-300/14 blur-3xl" />
@@ -27,9 +27,9 @@ export default function CoverageCommandCenterHeader({
       <div className="relative flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <div>
-            <div className={theme.eyebrowClassName}>BidOnDent Maps</div>
+            <div className={theme.eyebrowClassName}>Coverage browse</div>
             <h2 className={cn("text-sm font-semibold sm:text-base", theme.titleClassName)}>
-              Find Nearby Shops
+              Find nearby shops and route with live context
             </h2>
           </div>
         </div>

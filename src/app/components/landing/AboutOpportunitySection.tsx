@@ -26,34 +26,97 @@ const cards = [
   },
 ];
 
-export default function AboutOpportunitySection() {
+export default function AboutOpportunitySection({
+  isLightAppearance = false,
+}: {
+  isLightAppearance?: boolean;
+}) {
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
     <section
       id="about-opportunity"
-      className="py-10 md:py-16 relative overflow-hidden dark"
-      style={{ background: "linear-gradient(180deg, #0c1929 0%, #0a1628 100%)" }}
+      className={`py-10 md:py-16 relative overflow-hidden ${isLightAppearance ? "" : "dark"}`}
+      style={{
+        background: isLightAppearance
+          ? "linear-gradient(180deg, #e8e5f6 0%, #e6ecfb 40%, #eae8f8 70%, #e4ebfa 100%)"
+          : "linear-gradient(180deg, #0c1929 0%, #0a1628 100%)",
+      }}
       ref={sectionRef}
     >
+      {/* Edge blend */}
+      <div
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/15"} to-transparent`}
+      />
       {/* Decorative depth elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
-      <div className="absolute top-0 left-1/3 w-72 h-72 bg-blue-500/8 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-56 h-56 bg-blue-400/6 rounded-full blur-3xl" />
+      {isLightAppearance ? (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_-10%,rgba(99,102,241,0.10),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_75%_90%,rgba(59,130,246,0.07),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_55%_40%,rgba(37,99,235,0.05),transparent_50%)]" />
+          <div className="absolute top-0 left-[25%] w-48 h-48 bg-indigo-300/[0.07] rounded-full blur-[100px]" />
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
+          <div className="absolute top-0 left-1/3 w-72 h-72 bg-blue-500/8 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-56 h-56 bg-blue-400/6 rounded-full blur-3xl" />
+        </>
+      )}
+
+      {/* Decorative floating orbs */}
+      <div
+        className="hidden sm:block absolute top-16 right-[6%] animate-orb-glow"
+        style={{ animationDelay: "1s" }}
+      >
+        <div
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-blue-400/40"}`}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 0 18px 5px rgba(59,130,246,0.12)"
+              : "0 0 22px 7px rgba(59,130,246,0.2)",
+          }}
+        />
+      </div>
+      <div
+        className="hidden lg:flex absolute bottom-24 left-[4%] animate-orb-rotate items-center justify-center"
+        style={{ animationDelay: "3s" }}
+      >
+        <div
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/55 border border-indigo-200/40" : "bg-indigo-500/15 border border-indigo-400/20"}`}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 0 14px rgba(99,102,241,0.1)"
+              : "0 0 18px rgba(99,102,241,0.15)",
+          }}
+        >
+          <Compass
+            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-indigo-400/50"}`}
+          />
+        </div>
+      </div>
 
       <div className="container mx-auto px-4 max-w-6xl relative">
         <div
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full bd-glass-badge text-sm font-medium">
-            <span className="w-2 h-2 bg-blue-400 rounded-full mr-2" />
+          <span
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/60 bg-white/80 text-blue-700 backdrop-blur-sm" : "bd-glass-badge"}`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
+            />
             About BidOnDent
           </span>
-          <h3 className="text-3xl sm:text-4xl font-bold mt-5 mb-4 text-white">
+          <h3
+            className={`text-3xl sm:text-4xl font-bold mt-5 mb-4 ${isLightAppearance ? "text-slate-900" : "text-white"}`}
+          >
             Opportunity Through Transparency
           </h3>
-          <p className="text-base sm:text-xl leading-relaxed text-blue-100/70 max-w-3xl mx-auto">
+          <p
+            className={`text-base sm:text-xl leading-relaxed max-w-3xl mx-auto ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
+          >
             We remove friction from the repair process by giving customers, shops, and insurers one
             structured workflow from intake to completed repair.
           </p>
@@ -65,24 +128,40 @@ export default function AboutOpportunitySection() {
             return (
               <div
                 key={item.title}
-                className={`rounded-2xl bd-glass-card p-5 transition-all duration-700 hover:shadow-lg hover:-translate-y-1 ${
-                  isExpanded ? "shadow-md" : ""
-                } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                className={`rounded-2xl p-5 transition-all duration-700 hover:shadow-lg hover:-translate-y-1 ${
+                  isLightAppearance
+                    ? "bg-white/70 border border-blue-100/50 backdrop-blur-sm shadow-sm"
+                    : "bd-glass-card"
+                } ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{ transitionDelay: `${0.2 + index * 0.1}s` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-white/[0.08] border border-white/[0.1] flex items-center justify-center mb-4 shadow-sm">
-                  <item.icon className="w-6 h-6 text-blue-300" />
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-50 border border-blue-100/60" : "bg-white/[0.08] border border-white/[0.1]"}`}
+                >
+                  <item.icon
+                    className={`w-6 h-6 ${isLightAppearance ? "text-blue-600" : "text-blue-300"}`}
+                  />
                 </div>
-                <h4 className="text-xl font-bold mb-2 text-white">{item.title}</h4>
-                <p className="text-slate-300/80 leading-relaxed">{item.text}</p>
+                <h4
+                  className={`text-xl font-bold mb-2 ${isLightAppearance ? "text-slate-900" : "text-white"}`}
+                >
+                  {item.title}
+                </h4>
+                <p
+                  className={`leading-relaxed ${isLightAppearance ? "text-slate-600" : "text-slate-300/80"}`}
+                >
+                  {item.text}
+                </p>
 
-                {/* Expanded detail — smooth slide-down */}
+                {/* Expanded detail */}
                 <div
                   className={`overflow-hidden transition-all duration-500 ease-in-out ${
                     isExpanded ? "max-h-48 opacity-100 mt-4" : "max-h-0 opacity-0"
                   }`}
                 >
-                  <p className="text-sm text-slate-300/75 leading-relaxed border-t border-white/[0.1] pt-4">
+                  <p
+                    className={`text-sm leading-relaxed border-t pt-4 ${isLightAppearance ? "text-slate-500 border-slate-200" : "text-slate-300/75 border-white/[0.1]"}`}
+                  >
                     {item.expandedText}
                   </p>
                 </div>
@@ -90,7 +169,7 @@ export default function AboutOpportunitySection() {
                 <button
                   type="button"
                   onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                  className={`mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700" : "text-blue-400 hover:text-blue-300"}`}
                 >
                   {isExpanded ? "Show less" : "Learn more"}
                   <ChevronDown
@@ -105,7 +184,7 @@ export default function AboutOpportunitySection() {
         <div className="mt-8 text-center">
           <a
             href="#/about"
-            className="bd-glass-control inline-flex items-center justify-center font-medium"
+            className={`inline-flex items-center justify-center font-medium px-6 py-3 rounded-xl transition-all duration-300 ${isLightAppearance ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg" : "bd-glass-control"}`}
           >
             Read Full About Overview
           </a>

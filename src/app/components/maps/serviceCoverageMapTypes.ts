@@ -15,7 +15,10 @@ export type MapSurfaceTheme = {
   secondaryButtonClassName: string;
   destructiveButtonClassName: string;
   tertiaryButtonClassName: string;
+  compactButtonClassName: string;
+  compactActiveButtonClassName: string;
   iconButtonClassName: string;
+  compactIconButtonClassName: string;
   eyebrowClassName: string;
   metricLabelClassName: string;
   titleClassName: string;
@@ -42,7 +45,10 @@ export type MapSurfaceToneVariant = {
   secondaryButtonToneClassName: string;
   destructiveButtonToneClassName: string;
   tertiaryButtonToneClassName: string;
+  compactButtonToneClassName: string;
+  compactActiveButtonToneClassName: string;
   iconButtonToneClassName: string;
+  compactIconButtonToneClassName: string;
   titleClassName: string;
   bodyClassName: string;
   secondaryTextClassName: string;

@@ -61,7 +61,7 @@ export default function StepVehicleInfo({
           className={`mb-6 bd-glass-card p-4 ${
             isLightAppearance
               ? "bg-white/80 border-blue-200/70"
-              : "bg-slate-900/20 border-blue-200/15"
+              : "bg-slate-900/40 border-blue-200/20"
           }`}
         >
           <h3
@@ -92,7 +92,7 @@ export default function StepVehicleInfo({
                       : "border-blue-400 bg-blue-400/12"
                     : isLightAppearance
                       ? "border-blue-200/70 bg-white hover:border-blue-300"
-                      : "border-blue-300/20 bg-slate-900/20 hover:border-blue-300/40"
+                      : "border-blue-300/25 bg-slate-800/35 hover:border-blue-300/50"
                 }`}
               >
                 <div

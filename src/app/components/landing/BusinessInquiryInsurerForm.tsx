@@ -5,6 +5,7 @@ import { type InsurerForm, formatPhoneNumber } from "./businessInquiryUtils";
 type BusinessInquiryInsurerFormProps = {
   insurerForm: InsurerForm;
   isSubmitting: boolean;
+  isLightAppearance?: boolean;
   onUpdate: (form: InsurerForm) => void;
   onSubmit: (event: FormEvent) => void;
 };
@@ -12,44 +13,48 @@ type BusinessInquiryInsurerFormProps = {
 export default function BusinessInquiryInsurerForm({
   insurerForm,
   isSubmitting,
+  isLightAppearance,
   onUpdate,
   onSubmit,
 }: BusinessInquiryInsurerFormProps) {
+  const labelCls = `block text-sm font-medium mb-1 ${isLightAppearance ? "text-slate-700" : "text-blue-100/85"}`;
+  const inputCls = `w-full h-11 px-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-blue-200/50 bg-white/60 text-slate-900 placeholder:text-slate-400 focus:ring-blue-300/40 focus:border-blue-400" : "border-blue-300/25 bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:ring-blue-200/40 focus:border-blue-300"}`;
+
   return (
     <form className="grid md:grid-cols-2 gap-4" onSubmit={onSubmit}>
       <div>
-        <label className="block text-sm font-medium text-blue-100/85 mb-1">Company Name*</label>
+        <label className={labelCls}>Company Name*</label>
         <input
           required
           value={insurerForm.companyName}
           onChange={(e) => onUpdate({ ...insurerForm, companyName: e.target.value })}
           placeholder="e.g., Acme Insurance"
-          className="w-full h-11 px-3 border border-blue-300/25 rounded-lg bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:outline-none focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300 transition-colors"
+          className={inputCls}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-blue-100/85 mb-1">Contact Person*</label>
+        <label className={labelCls}>Contact Person*</label>
         <input
           required
           value={insurerForm.contactPerson}
           onChange={(e) => onUpdate({ ...insurerForm, contactPerson: e.target.value })}
           placeholder="e.g., Jane Doe"
-          className="w-full h-11 px-3 border border-blue-300/25 rounded-lg bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:outline-none focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300 transition-colors"
+          className={inputCls}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-blue-100/85 mb-1">Email Address*</label>
+        <label className={labelCls}>Email Address*</label>
         <input
           required
           type="email"
           value={insurerForm.email}
           onChange={(e) => onUpdate({ ...insurerForm, email: e.target.value })}
           placeholder="partner@insurance.com"
-          className="w-full h-11 px-3 border border-blue-300/25 rounded-lg bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:outline-none focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300 transition-colors"
+          className={inputCls}
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-blue-100/85 mb-1">Phone Number*</label>
+        <label className={labelCls}>Phone Number*</label>
         <input
           required
           value={insurerForm.phoneNumber}
@@ -57,18 +62,16 @@ export default function BusinessInquiryInsurerForm({
             onUpdate({ ...insurerForm, phoneNumber: formatPhoneNumber(e.target.value) })
           }
           placeholder="Phone number (10+ digits)"
-          className="w-full h-11 px-3 border border-blue-300/25 rounded-lg bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:outline-none focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300 transition-colors"
+          className={inputCls}
         />
       </div>
       <div className="md:col-span-2">
-        <label className="block text-sm font-medium text-blue-100/85 mb-1">
-          Partnership Notes (optional)
-        </label>
+        <label className={labelCls}>Partnership Notes (optional)</label>
         <textarea
           value={insurerForm.notes}
           onChange={(e) => onUpdate({ ...insurerForm, notes: e.target.value })}
           placeholder="Tell us about your partnership interests and expectations..."
-          className="w-full min-h-28 px-3 py-2 border border-blue-300/25 rounded-lg bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:outline-none focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300 transition-colors"
+          className={`w-full min-h-28 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-blue-200/50 bg-white/60 text-slate-900 placeholder:text-slate-400 focus:ring-blue-300/40 focus:border-blue-400" : "border-blue-300/25 bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:ring-blue-200/40 focus:border-blue-300"}`}
         />
       </div>
 
@@ -76,7 +79,7 @@ export default function BusinessInquiryInsurerForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="bd-glass-control w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 disabled:opacity-60"
+          className={`w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-60 ${isLightAppearance ? "bg-blue-600 text-white hover:bg-blue-700" : "bd-glass-control"}`}
         >
           Submit Partnership Request
           <Send className="w-4 h-4" />

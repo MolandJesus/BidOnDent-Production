@@ -46,6 +46,7 @@ type LandingPageLayoutProps = {
   initialDiscoveryRole?: NavigationDiscoveryRole;
   onLoginClick: () => void;
   onViewDashboard: () => void;
+  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
   profileDropdownData?: ProfileDropdownData;
 };
 
@@ -68,6 +69,7 @@ export default function LandingPageLayout({
   initialDiscoveryRole,
   onLoginClick,
   onViewDashboard,
+  onAppearanceModeChange,
   profileDropdownData,
 }: LandingPageLayoutProps) {
   const isLightAppearance = appearanceMode === "light";
@@ -77,7 +79,7 @@ export default function LandingPageLayout({
       className="min-h-screen"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #f0f6ff 0%, #ffffff 50%, #eef5ff 100%)"
+          ? "linear-gradient(178deg, #eeeaf6 0%, #f8f8ff 30%, #ffffff 55%, #eef5ff 100%)"
           : "radial-gradient(130% 90% at 30% 8%, rgba(17, 34, 64, 0.98) 0%, rgba(8, 15, 30, 0.99) 58%, #050b16 100%)",
       }}
     >
@@ -86,6 +88,9 @@ export default function LandingPageLayout({
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
         showLandingPage={showLandingPage}
+        isLightAppearance={isLightAppearance}
+        appearanceMode={appearanceMode}
+        onAppearanceModeChange={onAppearanceModeChange}
         onViewDashboard={onViewDashboard}
       />
 
@@ -95,6 +100,7 @@ export default function LandingPageLayout({
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
         isLoggedIn={isLoggedIn}
+        isLightAppearance={isLightAppearance}
         userType={redirectInfo?.type as "customer" | "shop" | "insurer" | undefined}
         onGetStarted={isLoggedIn ? onViewDashboard : onLoginClick}
         onLearnMore={() =>
@@ -105,6 +111,7 @@ export default function LandingPageLayout({
       <HowItWorksSection
         vehicleInspectionImage={vehicleInspectionImage}
         primaryColor={primaryColor}
+        isLightAppearance={isLightAppearance}
       />
 
       <BenefitsSection
@@ -114,21 +121,30 @@ export default function LandingPageLayout({
         precisionRepairImage={precisionRepairImage}
         primaryColor={primaryColor}
         secondaryColor={secondaryColor}
+        isLightAppearance={isLightAppearance}
       />
 
-      <WhoWeServeSection primaryColor={primaryColor} />
+      <WhoWeServeSection primaryColor={primaryColor} isLightAppearance={isLightAppearance} />
 
-      <AboutOpportunitySection />
+      <AboutOpportunitySection isLightAppearance={isLightAppearance} />
 
-      <TrustStatsSection />
+      <TrustStatsSection isLightAppearance={isLightAppearance} />
 
       <OperatingRegionsSection initialDiscoveryRole={initialDiscoveryRole} />
 
-      <BusinessInquirySection />
+      <BusinessInquirySection isLightAppearance={isLightAppearance} />
 
-      <CTASection primaryColor={primaryColor} onNavigateToDashboard={onViewDashboard} />
+      <CTASection
+        primaryColor={primaryColor}
+        isLightAppearance={isLightAppearance}
+        onNavigateToDashboard={onViewDashboard}
+      />
 
-      <FooterSection primaryColor={primaryColor} secondaryColor={secondaryColor} />
+      <FooterSection
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+        isLightAppearance={isLightAppearance}
+      />
 
       {isLoggedIn && showProfileDropdown && profileDropdownData && (
         <ProfileDropdown

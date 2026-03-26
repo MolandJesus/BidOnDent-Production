@@ -1,6 +1,10 @@
 import { CheckCircle2, Clock3, ShieldCheck, Workflow } from "lucide-react";
 
-export default function TrustStatsSection() {
+export default function TrustStatsSection({
+  isLightAppearance = false,
+}: {
+  isLightAppearance?: boolean;
+}) {
   const commitments = [
     {
       value: "Structured Intake",
@@ -26,13 +30,60 @@ export default function TrustStatsSection() {
 
   return (
     <section
-      className="py-10 md:py-16 text-white relative overflow-hidden"
-      style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f1f3d 50%, #0c1a30 100%)" }}
+      className={`py-10 md:py-16 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
+      style={{
+        background: isLightAppearance
+          ? "linear-gradient(176deg, #e4eaf8 0%, #ece8fc 40%, #e6edfa 70%, #e2e8f6 100%)"
+          : "linear-gradient(176deg, #0a1628 0%, #0f1f3d 50%, #0c1a30 100%)",
+      }}
     >
+      {/* Edge blend */}
+      <div
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/15"} to-transparent`}
+      />
       {/* Decorative background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:26px_26px] opacity-20" />
-      <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/12 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-400/8 rounded-full blur-3xl" />
+      {isLightAppearance ? (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(99,102,241,0.09),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(59,130,246,0.07),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(37,99,235,0.04),transparent_50%)]" />
+          <div className="absolute top-0 right-[30%] w-56 h-56 bg-blue-300/[0.06] rounded-full blur-[100px]" />
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:26px_26px] opacity-20" />
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/12 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-400/8 rounded-full blur-3xl" />
+        </>
+      )}
+
+      {/* Decorative floating orbs */}
+      <div
+        className="hidden sm:block absolute top-12 left-[7%] animate-orb-breathe"
+        style={{ animationDelay: "2s" }}
+      >
+        <div
+          className={`w-3.5 h-3.5 rounded-full ${isLightAppearance ? "bg-blue-400/20" : "bg-blue-400/35"}`}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 0 16px 4px rgba(59,130,246,0.1)"
+              : "0 0 20px 6px rgba(59,130,246,0.18)",
+          }}
+        />
+      </div>
+      <div
+        className="hidden md:block absolute bottom-10 right-[8%] animate-orb-float"
+        style={{ animationDelay: "4s" }}
+      >
+        <div
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-indigo-400/30"}`}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 0 14px 3px rgba(99,102,241,0.08)"
+              : "0 0 16px 4px rgba(99,102,241,0.15)",
+          }}
+        />
+      </div>
 
       <div className="container mx-auto px-4 max-w-7xl relative">
         <div className="grid md:grid-cols-4 gap-8 text-center">
@@ -43,16 +94,28 @@ export default function TrustStatsSection() {
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
-                className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm mb-3 group-hover:bg-white/15 transition-all duration-300 group-hover:scale-105 border border-white/[0.07]"
-                style={{
-                  boxShadow:
-                    "0 0 16px rgba(59, 130, 246, 0.07), inset 0 1px 0 rgba(96, 165, 250, 0.08)",
-                }}
+                className={`inline-flex items-center justify-center w-12 h-12 rounded-xl backdrop-blur-sm mb-3 group-hover:scale-105 transition-all duration-300 border ${isLightAppearance ? "bg-blue-50 border-blue-100/60 group-hover:bg-blue-100/60" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
+                style={
+                  isLightAppearance
+                    ? {}
+                    : {
+                        boxShadow:
+                          "0 0 16px rgba(59, 130, 246, 0.07), inset 0 1px 0 rgba(96, 165, 250, 0.08)",
+                      }
+                }
               >
-                <item.icon className="w-6 h-6 text-blue-300" />
+                <item.icon
+                  className={`w-6 h-6 ${isLightAppearance ? "text-blue-600" : "text-blue-300"}`}
+                />
               </div>
-              <div className="text-lg sm:text-xl font-bold mb-1.5 leading-tight">{item.value}</div>
-              <div className="text-slate-300/80 text-sm leading-relaxed max-w-[180px] mx-auto">
+              <div
+                className={`text-lg sm:text-xl font-bold mb-1.5 leading-tight ${isLightAppearance ? "text-slate-900" : ""}`}
+              >
+                {item.value}
+              </div>
+              <div
+                className={`text-sm leading-relaxed max-w-[180px] mx-auto ${isLightAppearance ? "text-slate-500" : "text-slate-300/80"}`}
+              >
                 {item.label}
               </div>
             </div>

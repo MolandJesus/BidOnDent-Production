@@ -87,42 +87,46 @@ export default function MapSurfaceStatusBar({
   const performanceLatestAgeLabel = formatSampleAgeLabel(performanceLatestSampleAgeMs);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-2.5 px-3 pb-3 sm:gap-3 sm:px-4 sm:pb-4" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 0.75rem, 0.75rem)" }}>
+    <div
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-1.5 px-2 pb-2 sm:gap-3 sm:px-4 sm:pb-4"
+      style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 0.5rem, 0.5rem)" }}
+    >
       {/* Branded info strip — compact single row */}
       <div
         className={cn(
-          "pointer-events-auto inline-flex items-center gap-2 px-3 py-2 text-xs sm:gap-3 sm:px-4 sm:py-2.5 sm:text-sm",
+          "pointer-events-auto inline-flex items-center gap-1.5 px-2 py-1.5 text-[10px] sm:gap-3 sm:px-4 sm:py-2.5 sm:text-sm",
           theme.panelStrongClassName
         )}
       >
-        <span className={cn("font-bold tracking-wide uppercase", theme.titleClassName)} style={{ fontSize: "0.65rem", letterSpacing: "0.14em" }}>
-          BidOnDent Maps
+        <span
+          className={cn("font-bold tracking-wide uppercase", theme.titleClassName)}
+          style={{ fontSize: "0.55rem", letterSpacing: "0.12em" }}
+        >
+          <span className="sm:hidden">BOD Maps</span>
+          <span className="hidden sm:inline">BidOnDent Maps</span>
         </span>
         <span className={theme.secondaryTextClassName}>·</span>
         <span className={cn("font-medium", theme.bodyClassName)}>
-          {regionCount} regions
+          {regionCount} <span className="hidden sm:inline">regions</span>
+          <span className="sm:hidden">reg</span>
         </span>
         <span className={theme.secondaryTextClassName}>·</span>
-        <span className={cn("font-medium", theme.bodyClassName)}>
-          {partnerShopCount} shops
-        </span>
+        <span className={cn("font-medium", theme.bodyClassName)}>{partnerShopCount} shops</span>
         <span className={cn("hidden sm:inline", theme.secondaryTextClassName)}>·</span>
         <span className={cn("hidden sm:inline font-medium", theme.bodyClassName)}>
           {overviewLabel || modeLabel}
         </span>
       </div>
 
-      {/* DEV-only performance overlay */}
+      {/* DEV-only performance overlay — hidden on mobile to avoid map clutter */}
       {import.meta.env.DEV && typeof performanceOverBudgetCount === "number" ? (
         <div
           className={cn(
-            "pointer-events-auto space-y-1 px-3 py-2 text-xs",
+            "pointer-events-auto hidden sm:block space-y-1 px-3 py-2 text-xs",
             theme.panelStrongClassName
           )}
         >
-          <div className={cn("font-semibold", theme.titleClassName)}>
-            {performanceLabel}
-          </div>
+          <div className={cn("font-semibold", theme.titleClassName)}>{performanceLabel}</div>
           <div className={theme.secondaryTextClassName}>
             {`${performanceDetail} • Zoom ${lastZoomDurationMs ?? "--"}ms • Pan ${lastPanDurationMs ?? "--"}ms`}
           </div>
@@ -157,9 +161,7 @@ export default function MapSurfaceStatusBar({
             theme.accentPanelClassName
           )}
         >
-          <span className={cn("font-semibold", theme.titleClassName)}>
-            {radiusMiles}-mi radius
-          </span>
+          <span className={cn("font-semibold", theme.titleClassName)}>{radiusMiles}-mi radius</span>
           {overviewLabel ? (
             <>
               <span className={theme.secondaryTextClassName}>·</span>

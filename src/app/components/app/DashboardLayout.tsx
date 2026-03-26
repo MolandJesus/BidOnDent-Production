@@ -1,4 +1,4 @@
-import { Bell, Car, Search, Sparkles } from "lucide-react";
+import { Bell, Car, Search, Settings, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Bid, NavTab, Notification, Vehicle } from "../../types";
@@ -7,6 +7,7 @@ import type { DashboardAppearanceMode } from "../../routers/dashboard-router-typ
 import NotificationCenter from "../dashboard/NotificationCenter";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
+import SettingsModal from "../codelayer/account/SettingsModal";
 
 type UserProfile = {
   name: string;
@@ -27,6 +28,7 @@ type ProfileDropdownData = {
 
 type DashboardLayoutProps = {
   appearanceMode: DashboardAppearanceMode;
+  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
   primaryColor: string;
   secondaryColor: string;
   currentNavTabs: NavTab[];
@@ -53,6 +55,7 @@ type DashboardLayoutProps = {
 
 export default function DashboardLayout({
   appearanceMode,
+  onAppearanceModeChange,
   primaryColor,
   secondaryColor,
   currentNavTabs,
@@ -79,6 +82,7 @@ export default function DashboardLayout({
   const [showTopProfileMenu, setShowTopProfileMenu] = useState(false);
   const [showSidebarProfilePanel, setShowSidebarProfilePanel] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const topProfileMenuRef = useRef<HTMLDivElement>(null);
   const notificationCenterRef = useRef<HTMLDivElement>(null);
   const unreadCount = notifications.filter((notification) => !notification.read).length;
@@ -113,8 +117,8 @@ export default function DashboardLayout({
         id="dashboard-map-bg"
         style={{
           background: isLightAppearance
-            ? "radial-gradient(ellipse 130% 95% at 24% 8%, rgba(203, 224, 255, 0.74) 0%, rgba(241, 247, 255, 0.96) 62%, #f3f8ff 100%)"
-            : "radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)",
+            ? "radial-gradient(ellipse 50% 40% at 75% 85%, rgba(139,92,246,0.04), transparent 55%), radial-gradient(ellipse 130% 95% at 24% 8%, rgba(203, 224, 255, 0.74) 0%, rgba(241, 247, 255, 0.96) 62%, #f3f8ff 100%)"
+            : "radial-gradient(ellipse 50% 40% at 70% 20%, rgba(59,130,246,0.05), transparent 50%), radial-gradient(ellipse 120% 80% at 30% 20%, rgba(15, 23, 42, 0.96) 0%, rgba(8, 15, 30, 0.99) 60%, #060d1a 100%)",
         }}
       />
       {/* Floating panel container (z-10) */}
@@ -441,9 +445,20 @@ export default function DashboardLayout({
                           profileDropdownData.onNavigate("dashboard", "home");
                           setShowTopProfileMenu(false);
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors flex items-center gap-2.5"
                       >
                         Dashboard
+                      </button>
+                      <button
+                        role="menuitem"
+                        onClick={() => {
+                          setShowTopProfileMenu(false);
+                          setShowSettingsModal(true);
+                        }}
+                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors flex items-center gap-2.5"
+                      >
+                        <Settings className="w-4 h-4 opacity-60" />
+                        Site Settings
                       </button>
                       <button
                         role="menuitem"
@@ -451,7 +466,7 @@ export default function DashboardLayout({
                           profileDropdownData.onNavigate("dashboard", "account");
                           setShowTopProfileMenu(false);
                         }}
-                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors"
+                        className="w-full text-left px-3 py-2.5 text-sm text-slate-700 hover:bg-white/40 transition-colors flex items-center gap-2.5"
                       >
                         Account Settings
                       </button>
@@ -495,6 +510,17 @@ export default function DashboardLayout({
         primaryColor={primaryColor}
         onTabClick={(tabId) => onMobileMenuTabClick(tabId)}
       />
+
+      {/* Site Settings Modal */}
+      {onAppearanceModeChange && (
+        <SettingsModal
+          isOpen={showSettingsModal}
+          primaryColor={primaryColor}
+          appearanceMode={appearanceMode}
+          onAppearanceModeChange={onAppearanceModeChange}
+          onClose={() => setShowSettingsModal(false)}
+        />
+      )}
     </div>
   );
 }

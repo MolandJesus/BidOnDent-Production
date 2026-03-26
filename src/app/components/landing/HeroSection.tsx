@@ -1,4 +1,4 @@
-import { ChevronRight, CheckCircle, Play } from "lucide-react";
+import { ChevronRight, CheckCircle, Play, Car } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
 import { useEffect, useState, useRef, useCallback } from "react";
@@ -15,6 +15,7 @@ interface HeroSectionProps {
   secondaryColor: string;
   ctaButtonText: string;
   isLoggedIn: boolean;
+  isLightAppearance?: boolean;
   userType?: "customer" | "shop" | "insurer";
   onGetStarted: () => void;
   onLearnMore: () => void;
@@ -26,6 +27,7 @@ export default function HeroSection({
   secondaryColor,
   ctaButtonText,
   isLoggedIn,
+  isLightAppearance = false,
   userType,
   onGetStarted,
   onLearnMore,
@@ -61,16 +63,76 @@ export default function HeroSection({
   };
 
   return (
-    <section className="pt-28 sm:pt-32 pb-14 sm:pb-20 overflow-hidden relative bg-gradient-to-br from-[#f8faff] via-[#f0f5fb] to-[#e8f0f8]">
-      {/* Subtle blue atmospheric depth */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-15%,rgba(59,130,246,0.08),transparent_65%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_85%_80%,rgba(59,130,246,0.05),transparent_55%)]" />
-      {/* Soft ambient blob — single, subtle */}
-      <div className="absolute top-16 right-10 w-72 h-72 bg-blue-200/20 rounded-full blur-[100px] animate-blob" />
+    <section
+      className="pt-28 sm:pt-32 pb-16 sm:pb-24 overflow-hidden relative"
+      style={{
+        background: isLightAppearance
+          ? "linear-gradient(178deg, #e4e1f4 0%, #e8ecff 22%, #eaf2fd 50%, #dfe9fb 100%)"
+          : "linear-gradient(180deg, #0c1929 0%, #0f2035 40%, #0a1628 100%)",
+      }}
+    >
+      {/* Atmospheric radiance */}
+      {isLightAppearance ? (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(99,102,241,0.12),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(59,130,246,0.09),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(37,99,235,0.06),transparent_50%)]" />
+          <div className="absolute top-20 right-[15%] w-72 h-72 bg-indigo-300/[0.08] rounded-full blur-[100px]" />
+          <div className="absolute bottom-10 left-[10%] w-56 h-56 bg-blue-300/[0.06] rounded-full blur-[120px]" />
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(59,130,246,0.15),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_80%_90%,rgba(37,99,235,0.1),transparent_55%)]" />
+          <div className="absolute top-16 right-10 w-80 h-80 bg-blue-500/8 rounded-full blur-[120px]" />
+          <div className="absolute bottom-20 -left-10 w-96 h-96 bg-blue-400/6 rounded-full blur-[120px]" />
+        </>
+      )}
+
+      {/* Decorative floating orbs */}
       <div
-        className="absolute bottom-20 -left-10 w-80 h-80 bg-blue-100/15 rounded-full blur-[100px] animate-blob"
-        style={{ animationDelay: "4s" }}
-      />
+        className="hidden sm:block absolute top-32 right-[8%] animate-orb-drift"
+        style={{ animationDelay: "0s" }}
+      >
+        <div
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/50"}`}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 0 20px 6px rgba(59,130,246,0.15)"
+              : "0 0 24px 8px rgba(59,130,246,0.25)",
+          }}
+        />
+      </div>
+      <div
+        className="hidden md:block absolute bottom-24 left-[5%] animate-orb-float"
+        style={{ animationDelay: "3s" }}
+      >
+        <div
+          className={`w-3.5 h-3.5 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-indigo-400/40"}`}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 0 16px 4px rgba(99,102,241,0.12)"
+              : "0 0 20px 6px rgba(99,102,241,0.2)",
+          }}
+        />
+      </div>
+      <div
+        className="hidden lg:flex absolute top-48 left-[3%] animate-orb-rotate items-center justify-center"
+        style={{ animationDelay: "5s" }}
+      >
+        <div
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-100/60 border border-blue-200/40" : "bg-blue-500/15 border border-blue-400/20"}`}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 0 16px rgba(59,130,246,0.1)"
+              : "0 0 20px rgba(59,130,246,0.15)",
+          }}
+        >
+          <Car
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/50"}`}
+          />
+        </div>
+      </div>
 
       <div className="container mx-auto px-5 sm:px-6 max-w-7xl relative">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
@@ -80,8 +142,15 @@ export default function HeroSection({
             <div
               className={`transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
             >
-              <span className="inline-flex items-center px-3.5 py-1.5 rounded-full bd-glass-badge text-xs sm:text-sm font-medium shadow-sm">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2 animate-pulse" />
+              <span
+                className="inline-flex items-center px-3.5 py-1.5 rounded-full border backdrop-blur-sm text-xs sm:text-sm font-medium shadow-sm"
+                style={{
+                  borderColor: isLightAppearance ? "rgba(59,130,246,0.2)" : "rgba(96,165,250,0.25)",
+                  background: isLightAppearance ? "rgba(255,255,255,0.7)" : "rgba(59,130,246,0.1)",
+                  color: isLightAppearance ? "#1e40af" : "#bfdbfe",
+                }}
+              >
+                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse" />
                 Trusted workflow for customers, shops, and insurers
               </span>
             </div>
@@ -92,13 +161,20 @@ export default function HeroSection({
                 className={`text-[1.75rem] sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-bold leading-[1.15] tracking-tight transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 style={{ transitionDelay: "0.2s" }}
               >
-                <span className="text-slate-900">Get the </span>
-                <span className="text-[#1a4f8b]">Best Price</span>
-                <span className="text-slate-900"> on Your </span>
+                <span className={isLightAppearance ? "text-[#0c2340]" : "text-slate-100"}>
+                  Get the{" "}
+                </span>
+                <span className={isLightAppearance ? "text-[#003d82]" : "text-blue-400"}>
+                  Best Price
+                </span>
+                <span className={isLightAppearance ? "text-[#0c2340]" : "text-slate-100"}>
+                  {" "}
+                  on Your{" "}
+                </span>
                 <br className="hidden sm:block" />
                 <span
                   style={{
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                    background: `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`,
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -108,7 +184,7 @@ export default function HeroSection({
                 </span>
               </h2>
               <p
-                className={`text-base sm:text-lg text-slate-500 leading-relaxed max-w-lg transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                className={`text-base sm:text-lg leading-relaxed max-w-lg transition-all duration-700 ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"} ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 style={{ transitionDelay: "0.35s" }}
               >
                 Compare competitive bids from trusted local shops and choose the solution that works
@@ -123,7 +199,7 @@ export default function HeroSection({
                 {VALUE_STATEMENTS.map((statement, i) => (
                   <p
                     key={i}
-                    className="absolute inset-x-0 flex items-start text-sm sm:text-base text-slate-600 leading-relaxed transition-all duration-500 ease-in-out"
+                    className={`absolute inset-x-0 flex items-start text-sm sm:text-base leading-relaxed transition-all duration-500 ease-in-out ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
                     style={{
                       opacity: activeValue === i ? 1 : 0,
                       transform: `translateY(${activeValue === i ? "0" : "10px"})`,
@@ -154,7 +230,14 @@ export default function HeroSection({
                       <span
                         className="h-1.5 w-1.5 rounded-full transition-all duration-300"
                         style={{
-                          backgroundColor: activeValue === i ? primaryColor : "rgba(0,61,130,0.18)",
+                          backgroundColor:
+                            activeValue === i
+                              ? isLightAppearance
+                                ? primaryColor
+                                : "#60a5fa"
+                              : isLightAppearance
+                                ? "rgba(59,130,246,0.2)"
+                                : "rgba(96,165,250,0.25)",
                           transform: activeValue === i ? "scale(1.3)" : "scale(1)",
                         }}
                       />
@@ -164,14 +247,18 @@ export default function HeroSection({
               </div>
             </div>
 
-            {/* CTA Buttons — refined sizing */}
+            {/* CTA Buttons */}
             <div
               className={`flex flex-col sm:flex-row gap-3 pt-2 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
               style={{ transitionDelay: "0.65s" }}
             >
               <button
                 onClick={onGetStarted}
-                className="bd-glass-control inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base"
+                className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base font-semibold text-white rounded-2xl px-7 py-3.5 min-h-[48px] transition-all hover:brightness-110 hover:shadow-lg active:scale-[0.97]"
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, #3b82f6 100%)`,
+                  boxShadow: "0 4px 24px rgba(37, 99, 235, 0.35), 0 0 40px rgba(59, 130, 246, 0.1)",
+                }}
                 type="button"
               >
                 {getButtonText()}
@@ -179,7 +266,7 @@ export default function HeroSection({
               </button>
               <button
                 onClick={onLearnMore}
-                className="bd-glass-control--secondary inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base"
+                className={`inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base font-medium rounded-2xl px-7 py-3.5 min-h-[48px] border backdrop-blur-sm transition-all active:scale-[0.97] ${isLightAppearance ? "text-[#003d82] border-blue-200/50 bg-white/60 hover:bg-white/80" : "text-blue-200 border-blue-400/25 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/40"}`}
                 type="button"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
@@ -195,9 +282,9 @@ export default function HeroSection({
               {["Now available in NY", "Transparent bids", "Free for customers"].map((item) => (
                 <span
                   key={item}
-                  className="inline-flex items-center gap-1.5 rounded-full bd-glass-badge px-2.5 py-1 text-xs sm:text-sm font-medium"
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs sm:text-sm font-medium ${isLightAppearance ? "border-blue-200/40 bg-white/60 text-slate-600" : "border-blue-400/20 bg-blue-500/8 text-blue-200/80"}`}
                 >
-                  <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
                   {item}
                 </span>
               ))}
@@ -211,50 +298,82 @@ export default function HeroSection({
           >
             <ImageErrorBoundary>
               <div className="relative">
-                {/* Soft glow behind image */}
-                <div className="absolute -inset-4 bg-gradient-to-br from-blue-200/25 via-transparent to-blue-100/15 rounded-[2rem] blur-xl" />
+                {/* Blue glow behind image */}
+                <div className="absolute -inset-6 bg-gradient-to-br from-blue-500/15 via-transparent to-blue-400/10 rounded-[2rem] blur-2xl" />
                 <ImageWithFallback
                   src={heroImage}
                   alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
-                  className="relative rounded-2xl w-full h-auto object-cover"
+                  className={`relative rounded-2xl w-full h-auto object-cover border ${isLightAppearance ? "border-blue-200/30" : "border-blue-300/15"}`}
                   style={{
-                    boxShadow:
-                      "0 20px 60px rgba(15, 23, 42, 0.12), 0 0 40px rgba(59, 130, 246, 0.06)",
+                    boxShadow: isLightAppearance
+                      ? "0 24px 80px rgba(30, 58, 138, 0.12), 0 0 40px rgba(59, 130, 246, 0.06)"
+                      : "0 24px 80px rgba(2, 6, 23, 0.5), 0 0 60px rgba(37, 99, 235, 0.12)",
                     aspectRatio: "16/10",
                     maxHeight: "520px",
                   }}
                 />
-                {/* Warm depth overlay on hero image */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-slate-900/8 via-transparent to-white/3 pointer-events-none" />
+                {/* Depth overlay on hero image */}
+                <div
+                  className={`absolute inset-0 rounded-2xl pointer-events-none ${isLightAppearance ? "bg-gradient-to-t from-white/20 via-transparent to-transparent" : "bg-gradient-to-t from-[#0a1628]/40 via-transparent to-transparent"}`}
+                />
               </div>
             </ImageErrorBoundary>
 
-            {/* Floating "NY" region badge — refined */}
+            {/* Floating "NY" region badge — dark glass */}
             <div
-              className={`absolute -top-1 right-0 sm:-top-2 sm:-right-3 lg:top-4 lg:-right-4 bd-glass-floating px-3 py-2 sm:px-3.5 sm:py-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
-              style={{ transitionDelay: "1.2s" }}
+              className={`absolute -top-1 right-2 sm:-top-2 sm:right-0 lg:top-4 lg:-right-4 rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              style={{
+                transitionDelay: "1.2s",
+                borderColor: isLightAppearance ? "rgba(59,130,246,0.2)" : "rgba(96,165,250,0.25)",
+                background: isLightAppearance
+                  ? "linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(240,248,255,0.88) 100%)"
+                  : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
+                boxShadow: isLightAppearance
+                  ? "0 12px 40px rgba(30, 58, 138, 0.1)"
+                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
+              }}
             >
-              <div className="text-lg sm:text-xl font-bold" style={{ color: primaryColor }}>
+              <div
+                className={`text-lg sm:text-xl font-bold ${isLightAppearance ? "text-[#003d82]" : "text-blue-400"}`}
+              >
                 NY
               </div>
-              <div className="text-[10px] sm:text-xs text-slate-500 font-medium">
+              <div
+                className={`text-[10px] sm:text-xs font-medium ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+              >
                 Active Service Region
               </div>
             </div>
 
-            {/* Floating notification card — product-story feel */}
+            {/* Floating notification card — dark glass */}
             <div
-              className={`absolute bottom-3 left-0 sm:bottom-6 sm:-left-4 lg:-left-6 lg:bottom-8 bd-glass-floating px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
-              style={{ transitionDelay: "1.6s", animationDelay: "1.5s" }}
+              className={`absolute bottom-3 left-2 sm:bottom-6 sm:-left-4 lg:-left-6 lg:bottom-8 rounded-2xl border backdrop-blur-xl px-3 py-2.5 sm:px-4 sm:py-3 flex items-center gap-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              style={{
+                transitionDelay: "1.6s",
+                animationDelay: "1.5s",
+                borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(96,165,250,0.2)",
+                background: isLightAppearance
+                  ? "linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(240,248,255,0.88) 100%)"
+                  : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
+                boxShadow: isLightAppearance
+                  ? "0 12px 40px rgba(30, 58, 138, 0.1)"
+                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
+              }}
             >
-              <div className="w-9 h-9 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 border border-green-100">
-                <CheckCircle className="w-5 h-5 text-green-500" />
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 border ${isLightAppearance ? "bg-emerald-50 border-emerald-200/60" : "bg-emerald-500/15 border-emerald-400/25"}`}
+              >
+                <CheckCircle className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
-                <div className="font-semibold text-xs sm:text-sm text-slate-800">
+                <div
+                  className={`font-semibold text-xs sm:text-sm ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                >
                   Repair Completed!
                 </div>
-                <div className="text-[10px] sm:text-xs text-slate-400">
+                <div
+                  className={`text-[10px] sm:text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/50"}`}
+                >
                   Bid selected and scheduled through platform
                 </div>
               </div>

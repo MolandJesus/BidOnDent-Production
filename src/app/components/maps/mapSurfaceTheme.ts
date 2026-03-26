@@ -1,5 +1,10 @@
 import { cn } from "../ui/utils";
-import type { MapSurfaceTheme, MapSurfaceTone, MapSurfaceToneVariant, MapTileMode } from "./serviceCoverageMapTypes";
+import type {
+  MapSurfaceTheme,
+  MapSurfaceTone,
+  MapSurfaceToneVariant,
+  MapTileMode,
+} from "./serviceCoverageMapTypes";
 
 const baseTheme = {
   shellClassName:
@@ -7,15 +12,19 @@ const baseTheme = {
   panelClassName:
     "rounded-[1.5rem] border backdrop-blur-2xl shadow-[0_18px_40px_rgba(15,23,42,0.14)] transition-[background,border-color,color,box-shadow] duration-300",
   panelStrongClassName:
-    "rounded-[1.7rem] border backdrop-blur-3xl shadow-[0_26px_64px_rgba(15,23,42,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
+    "rounded-[1.5rem] border backdrop-blur-3xl shadow-[0_26px_64px_rgba(15,23,42,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
   accentPanelClassName:
-    "rounded-[1.7rem] border backdrop-blur-3xl shadow-[0_24px_56px_rgba(59,130,246,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
+    "rounded-[1.5rem] border backdrop-blur-3xl shadow-[0_24px_56px_rgba(59,130,246,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
   segmentedClassName:
     "inline-flex items-center gap-1 rounded-full border p-1 backdrop-blur-2xl shadow-[0_16px_36px_rgba(15,23,42,0.14)] transition-[background,border-color,box-shadow] duration-300",
   buttonBaseClassName:
     "inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2.5 min-h-[44px] text-sm font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
+  compactButtonBaseClassName:
+    "inline-flex items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 min-h-[36px] text-xs font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
   iconButtonBaseClassName:
     "inline-flex h-11 w-11 items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-200 active:scale-[0.94]",
+  compactIconButtonBaseClassName:
+    "inline-flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-200 active:scale-[0.94]",
   eyebrowClassName:
     "inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em]",
   metricLabelClassName: "text-[11px] font-semibold uppercase tracking-[0.22em]",
@@ -46,8 +55,14 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
       "border-rose-200/50 bg-[linear-gradient(180deg,#fb7185,#e11d48)] text-white shadow-[0_14px_26px_rgba(244,63,94,0.22)] hover:-translate-y-0.5 hover:shadow-[0_18px_30px_rgba(244,63,94,0.28)]",
     tertiaryButtonToneClassName:
       "border-white/30 bg-white/20 text-slate-600 hover:bg-white/35 hover:text-slate-800",
+    compactButtonToneClassName:
+      "border-white/40 bg-white/30 text-slate-600 shadow-[0_2px_8px_rgba(15,23,42,0.06)] hover:bg-white/45 hover:text-slate-800",
+    compactActiveButtonToneClassName:
+      "border-sky-300/50 bg-sky-500/80 text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)]",
     iconButtonToneClassName:
       "border-white/40 bg-white/30 text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/45 hover:text-slate-900",
+    compactIconButtonToneClassName:
+      "border-white/40 bg-white/30 text-slate-700 shadow-[0_4px_12px_rgba(15,23,42,0.06)] hover:bg-white/45 hover:text-slate-900",
     titleClassName: "text-slate-950",
     bodyClassName: "text-slate-700",
     secondaryTextClassName: "text-slate-500",
@@ -81,8 +96,14 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
       "border-rose-400/25 bg-[linear-gradient(180deg,#fb7185,#e11d48)] text-white shadow-[0_14px_26px_rgba(244,63,94,0.2)] hover:-translate-y-0.5 hover:shadow-[0_18px_30px_rgba(244,63,94,0.26)]",
     tertiaryButtonToneClassName:
       "border-white/10 bg-white/6 text-slate-300 hover:bg-white/12 hover:text-slate-100",
+    compactButtonToneClassName:
+      "border-white/12 bg-slate-900/70 text-slate-200 shadow-[0_2px_8px_rgba(2,6,23,0.18)] hover:bg-slate-800/80 hover:text-white",
+    compactActiveButtonToneClassName:
+      "border-blue-300/40 bg-blue-300 text-slate-950 shadow-[0_4px_14px_rgba(59,130,246,0.3)]",
     iconButtonToneClassName:
       "border-white/12 bg-slate-900/78 text-slate-100 shadow-[0_14px_28px_rgba(2,6,23,0.24)] hover:-translate-y-0.5 hover:bg-slate-800/88 hover:text-white",
+    compactIconButtonToneClassName:
+      "border-white/12 bg-slate-900/70 text-slate-200 shadow-[0_4px_12px_rgba(2,6,23,0.18)] hover:bg-slate-800/80 hover:text-white",
     titleClassName: "text-white",
     bodyClassName: "text-slate-200",
     secondaryTextClassName: "text-slate-400",
@@ -129,7 +150,19 @@ export function getMapSurfaceTheme(
       baseTheme.buttonBaseClassName,
       toneTheme.tertiaryButtonToneClassName
     ),
+    compactButtonClassName: cn(
+      baseTheme.compactButtonBaseClassName,
+      toneTheme.compactButtonToneClassName
+    ),
+    compactActiveButtonClassName: cn(
+      baseTheme.compactButtonBaseClassName,
+      toneTheme.compactActiveButtonToneClassName
+    ),
     iconButtonClassName: cn(baseTheme.iconButtonBaseClassName, toneTheme.iconButtonToneClassName),
+    compactIconButtonClassName: cn(
+      baseTheme.compactIconButtonBaseClassName,
+      toneTheme.compactIconButtonToneClassName
+    ),
     eyebrowClassName: cn(baseTheme.eyebrowClassName, toneTheme.badgeClassName),
     metricLabelClassName: cn(baseTheme.metricLabelClassName, toneTheme.secondaryTextClassName),
     listCardClassName: cn(

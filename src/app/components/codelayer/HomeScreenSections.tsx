@@ -131,7 +131,7 @@ export function HomeReportsList({
 
       {sortedReports.length === 0 && (
         <div
-          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-slate-50/60 border-slate-200/40" : "bg-slate-900/20 border-blue-200/15"}`}
+          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-slate-50/60 border-slate-200/40" : "bg-blue-950/25 border-blue-300/20"}`}
         >
           <Camera
             className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/70"}`}

@@ -139,7 +139,17 @@ export default function ProfileDropdown({
       : "absolute right-0 mt-2 w-80 bd-glass-floating z-50";
 
   return (
-    <div ref={forwardedRef} className={containerClasses}>
+    <div
+      ref={forwardedRef}
+      className={`${containerClasses} text-slate-200`}
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(18, 36, 60, 0.97) 0%, rgba(12, 25, 41, 0.93) 100%)",
+        borderColor: "rgba(96, 165, 250, 0.24)",
+        boxShadow:
+          "0 24px 56px rgba(2, 6, 23, 0.5), 0 4px 12px rgba(2, 6, 23, 0.3), 0 0 1px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(147, 197, 253, 0.1), 0 0 40px rgba(37, 99, 235, 0.08)",
+      }}
+    >
       {/* Profile Header */}
       <div className="p-4 border-b border-slate-200/40">
         <div className="flex items-center space-x-3">
@@ -159,8 +169,8 @@ export default function ProfileDropdown({
           )}
           <div className="flex-1 min-w-0">
             <p className="font-semibold truncate">{userInfo.name || "User"}</p>
-            <p className="text-sm text-gray-500 truncate">{userInfo.email}</p>
-            <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium capitalize">
+            <p className="text-sm text-blue-200/60 truncate">{userInfo.email}</p>
+            <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded-full bg-blue-500/25 text-blue-300 font-medium capitalize">
               {userType}
             </span>
           </div>
@@ -183,15 +193,15 @@ export default function ProfileDropdown({
 
       {/* Notifications Section */}
       <div className="border-b border-slate-200/40">
-        <div className="px-4 py-2 bg-white/30 font-semibold text-sm flex items-center justify-between">
+        <div className="px-4 py-2 bg-white/5 font-semibold text-sm flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span>Notifications</span>
+            <span className="text-slate-200">Notifications</span>
             <div className="flex items-center gap-1">
               <Radio
                 className={`w-3 h-3 ${notificationSyncActive ? "text-green-500 animate-pulse" : "text-gray-400"}`}
               />
               <span
-                className={`text-xs ${notificationSyncActive ? "text-green-600" : "text-gray-500"}`}
+                className={`text-xs ${notificationSyncActive ? "text-green-400" : "text-blue-200/50"}`}
               >
                 {notificationSyncActive ? "Synced" : "Paused"}
               </span>
@@ -205,13 +215,13 @@ export default function ProfileDropdown({
         </div>
         <div className="max-h-48 overflow-y-auto">
           {notifications.length === 0 ? (
-            <div className="px-4 py-3 text-sm text-gray-500">{getEmptyStateMessage()}</div>
+            <div className="px-4 py-3 text-sm text-blue-200/60">{getEmptyStateMessage()}</div>
           ) : (
             notifications.slice(0, 5).map((notification) => (
               <div
                 key={notification.id}
-                className={`px-4 py-3 hover:bg-white/40 cursor-pointer border-b border-slate-100/40 transition-colors ${
-                  !notification.read ? "bg-blue-50/50" : ""
+                className={`px-4 py-3 hover:bg-blue-500/10 cursor-pointer border-b border-blue-200/10 transition-colors ${
+                  !notification.read ? "bg-blue-500/15" : ""
                 }`}
                 onClick={() => handleNotificationClick(notification)}
               >
@@ -224,8 +234,10 @@ export default function ProfileDropdown({
                     );
                   })()}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{notification.message}</p>
-                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                    <p className="text-sm font-medium text-slate-200 truncate">
+                      {notification.message}
+                    </p>
+                    <p className="text-xs text-blue-200/50 mt-1">{notification.time}</p>
                   </div>
                   {!notification.read && (
                     <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5" />

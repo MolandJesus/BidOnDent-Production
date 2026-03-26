@@ -319,110 +319,111 @@ export default function CoverageBrowseExperience({
   const isDesktop = useMediaQuery("(min-width: 1280px)");
 
   return (
-    <div className="relative overflow-hidden rounded-2xl sm:rounded-[1.5rem] xl:rounded-[2rem] border-0 sm:border sm:border-white/30 shadow-none sm:shadow-[0_34px_100px_rgba(15,23,42,0.2)] bg-transparent sm:bg-[linear-gradient(180deg,rgba(248,247,255,0.72),rgba(232,234,248,0.6))] sm:backdrop-blur-3xl">
-      <div className="hidden xl:block">
-        <CoverageCommandCenterHeader tone={tone} navigationSession={navigationSession} />
-      </div>
+    <div className="relative overflow-hidden rounded-2xl border-0 bg-transparent shadow-none">
+      <div className="relative">
+        <ServiceCoverageMap
+          center={effectiveCenter}
+          zoom={effectiveZoom}
+          revision={effectiveRevision}
+          tileMode={tileMode}
+          counties={counties}
+          partnerShops={partnerShops}
+          activeSearchTarget={mapSearchTarget}
+          radiusMeters={radiusMeters}
+          radiusMiles={radiusMiles}
+          regionCount={regionCount}
+          mapHeightClassName="h-[100dvh] xl:h-[74vh] min-h-[360px] xl:min-h-[600px]"
+          immersiveFullscreen
+          showSurfaceChrome={false}
+          selectedShopId={selectedShopId}
+          selectedDiscoveryPlaceId={selectedDiscoveryPlaceId || undefined}
+          showNavigationHud={false}
+          discoveryPlaces={discovery.places}
+          routeGeometry={routeGeometry}
+          routeFitKey={navigation.routePreview?.fetchedAt ?? null}
+          currentPosition={currentPosition}
+          gpsAccuracyMeters={navigation.gpsAccuracyMeters}
+          currentSpeedMph={navigation.currentSpeedMph}
+          postedSpeedLimitMph={navigation.speedLimitSnapshot?.speedLimitMph ?? null}
+          postedSpeedLimitConfidence={navigation.speedLimitSnapshot?.confidence ?? null}
+          speedLimitMatchDistanceMeters={navigation.speedLimitSnapshot?.matchDistanceMeters ?? null}
+          nearestRoadName={navigation.speedLimitSnapshot?.roadName ?? null}
+          nextInstruction={navigation.nextStep?.instruction ?? null}
+          voiceMode={navigation.settings.voiceMode}
+          onTileModeChange={onTileModeChange}
+          onCenterActive={() => {
+            setMapOverride(null);
+            onCenterActive();
+          }}
+          onResetView={() => {
+            setMapOverride(null);
+            onResetView();
+          }}
+          onSelectShop={(shopId) => {
+            const shop = partnerShops.find((entry) => `${entry.id || entry.name}` === shopId);
+            if (shop) {
+              setSelectedDiscoveryPlaceId(null);
+              onSelectShop(shop);
+            }
+          }}
+          onSelectDiscoveryPlace={(place) => {
+            handleSelectDiscoveryPlace(place);
+          }}
+        />
 
-      <div className="grid gap-0 xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[410px_minmax(0,1fr)]">
         {isDesktop ? (
-          <CoverageCommandCenterSidebar
-            tone={tone}
-            dock="left"
-            showOverviewCards={false}
-            tileMode={tileMode}
-            regionCount={regionCount}
-            partnerShops={partnerShops}
-            selectedShop={selectedShop}
-            preferredNavigationProvider={preferredNavigationProvider}
-            navigationSession={navigationSession}
-            onOpenDirections={onOpenDirections}
-          >
-            {sidebarContent}
-          </CoverageCommandCenterSidebar>
+          <div className="pointer-events-none absolute inset-x-6 top-6 z-[615] flex items-start justify-between gap-4 2xl:inset-x-8">
+            <div className="pointer-events-auto w-full max-w-[360px]">
+              <CoverageCommandCenterHeader tone={tone} navigationSession={navigationSession} />
+            </div>
+          </div>
         ) : null}
 
-        <div className="relative p-0 xl:p-4 2xl:p-6">
-          <div className="pointer-events-none absolute inset-x-6 top-6 z-10 hidden h-28 rounded-[1.5rem] bg-[linear-gradient(180deg,rgba(15,23,42,0.22),transparent)] xl:block" />
-          <ServiceCoverageMap
-            center={effectiveCenter}
-            zoom={effectiveZoom}
-            revision={effectiveRevision}
-            tileMode={tileMode}
-            counties={counties}
-            partnerShops={partnerShops}
-            activeSearchTarget={mapSearchTarget}
-            radiusMeters={radiusMeters}
-            radiusMiles={radiusMiles}
-            regionCount={regionCount}
-            mapHeightClassName="h-[100dvh] xl:h-[74vh] min-h-[360px] xl:min-h-[600px]"
-            immersiveFullscreen
-            showSurfaceChrome={false}
-            selectedShopId={selectedShopId}
-            selectedDiscoveryPlaceId={selectedDiscoveryPlaceId || undefined}
-            showNavigationHud={false}
-            discoveryPlaces={discovery.places}
-            routeGeometry={routeGeometry}
-            routeFitKey={navigation.routePreview?.fetchedAt ?? null}
-            currentPosition={currentPosition}
-            gpsAccuracyMeters={navigation.gpsAccuracyMeters}
-            currentSpeedMph={navigation.currentSpeedMph}
-            postedSpeedLimitMph={navigation.speedLimitSnapshot?.speedLimitMph ?? null}
-            postedSpeedLimitConfidence={navigation.speedLimitSnapshot?.confidence ?? null}
-            speedLimitMatchDistanceMeters={
-              navigation.speedLimitSnapshot?.matchDistanceMeters ?? null
-            }
-            nearestRoadName={navigation.speedLimitSnapshot?.roadName ?? null}
-            nextInstruction={navigation.nextStep?.instruction ?? null}
-            voiceMode={navigation.settings.voiceMode}
-            onTileModeChange={onTileModeChange}
-            onCenterActive={() => {
-              setMapOverride(null);
-              onCenterActive();
-            }}
-            onResetView={() => {
-              setMapOverride(null);
-              onResetView();
-            }}
-            onSelectShop={(shopId) => {
-              const shop = partnerShops.find((entry) => `${entry.id || entry.name}` === shopId);
-              if (shop) {
-                setSelectedDiscoveryPlaceId(null);
-                onSelectShop(shop);
-              }
-            }}
-            onSelectDiscoveryPlace={(place) => {
-              handleSelectDiscoveryPlace(place);
-            }}
-          />
+        {isDesktop ? (
+          <div className="pointer-events-none absolute inset-y-6 left-6 z-[610] hidden w-[380px] xl:block 2xl:left-8 2xl:w-[410px]">
+            <div className="pointer-events-auto h-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-transparent backdrop-blur-sm">
+              <CoverageCommandCenterSidebar
+                tone={tone}
+                dock="left"
+                showOverviewCards={false}
+                tileMode={tileMode}
+                regionCount={regionCount}
+                partnerShops={partnerShops}
+                selectedShop={selectedShop}
+                preferredNavigationProvider={preferredNavigationProvider}
+                navigationSession={navigationSession}
+                onOpenDirections={onOpenDirections}
+              >
+                {sidebarContent}
+              </CoverageCommandCenterSidebar>
+            </div>
+          </div>
+        ) : null}
 
-          <CoverageBrowseMapOverlays
-            className="hidden xl:contents"
-            theme={theme}
-            tileMode={tileMode}
-            nextInstruction={navigation.nextStep?.instruction ?? null}
-            selectedShop={selectedShop}
-            arrivalLabel={arrivalLabel}
-            routeMinutes={routeMinutes}
-            routeMiles={routeMiles}
-            canStartNavigation={
-              Boolean(navigation.routePreview) &&
-              Boolean(selectedShop) &&
-              !navigation.isLoadingRoute
-            }
-            onSidebarViewChange={setSidebarView}
-            onTileModeChange={onTileModeChange}
-            onCenterMap={() => {
-              setMapOverride(null);
-              onCenterActive();
-            }}
-            onResetMap={() => {
-              setMapOverride(null);
-              onResetView();
-            }}
-            onStartNavigation={onStartNavigation}
-          />
-        </div>
+        <CoverageBrowseMapOverlays
+          className="hidden xl:contents"
+          theme={theme}
+          tileMode={tileMode}
+          nextInstruction={navigation.nextStep?.instruction ?? null}
+          selectedShop={selectedShop}
+          arrivalLabel={arrivalLabel}
+          routeMinutes={routeMinutes}
+          routeMiles={routeMiles}
+          canStartNavigation={
+            Boolean(navigation.routePreview) && Boolean(selectedShop) && !navigation.isLoadingRoute
+          }
+          onSidebarViewChange={setSidebarView}
+          onTileModeChange={onTileModeChange}
+          onCenterMap={() => {
+            setMapOverride(null);
+            onCenterActive();
+          }}
+          onResetMap={() => {
+            setMapOverride(null);
+            onResetView();
+          }}
+          onStartNavigation={onStartNavigation}
+        />
       </div>
 
       {!isDesktop ? (

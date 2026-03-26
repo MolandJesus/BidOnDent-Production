@@ -49,7 +49,7 @@ export default function NavigationActiveManeuverCard({
     <div className="pointer-events-none absolute inset-x-3 top-3 z-[560] flex justify-center sm:inset-x-4 sm:top-4">
       <div
         className={cn(
-          "map-liquid-panel map-ui-enter pointer-events-auto relative w-full max-w-[720px] overflow-hidden rounded-[2.2rem] border backdrop-blur-3xl",
+          "map-liquid-panel map-ui-enter pointer-events-auto relative w-full max-w-[720px] overflow-hidden rounded-[1.5rem] border backdrop-blur-3xl",
           tone === "light"
             ? "border-white/85 bg-[linear-gradient(180deg,rgba(38,38,38,0.86),rgba(64,64,64,0.78))] text-white shadow-[0_28px_68px_rgba(15,23,42,0.34)]"
             : "border-white/12 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(30,41,59,0.76))] text-white shadow-[0_30px_72px_rgba(2,6,23,0.42)]"
