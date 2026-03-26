@@ -91,9 +91,9 @@ export default function ShopDirectorySearchPanel({
     <div className="bd-glass-panel p-5">
       <form className="space-y-4" onSubmit={onSearchSubmit}>
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-blue-200/50" />
           <input
-            className="w-full rounded-[22px] border border-blue-100 bg-[rgba(240,248,255,0.82)] py-3 pl-10 pr-28 text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-blue-300 bd-glass-control"
+            className="w-full rounded-[22px] border border-white/[0.12] bg-white/[0.06] py-3 pl-10 pr-28 text-slate-100 outline-none transition-colors placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08] bd-glass-control"
             onChange={(event) => onSearchQueryChange(event.target.value)}
             placeholder="Search shop, insurer program, hail, EV, ADAS, luxury..."
             type="text"
@@ -113,13 +113,13 @@ export default function ShopDirectorySearchPanel({
         <div className="grid gap-4 xl:grid-cols-2">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
                 <MapPin className="h-4 w-4" />
                 Origin
               </div>
               {selectedOrigin && (
                 <button
-                  className="text-xs font-medium bd-glass-control px-2 py-1 text-slate-700"
+                  className="text-xs font-medium bd-glass-control px-2 py-1 text-slate-300"
                   onClick={onClearOrigin}
                   type="button"
                 >
@@ -139,8 +139,8 @@ export default function ShopDirectorySearchPanel({
                     key={origin.placeId || origin.name}
                     className={`bd-glass-control px-3 py-1.5 text-sm ${
                       isActive
-                        ? "border-blue-200 bg-blue-50 text-blue-700"
-                        : "border-slate-200 bg-[rgba(240,248,255,0.82)] text-slate-600 hover:border-blue-100"
+                        ? "border-blue-400/60 bg-blue-500/20 text-white"
+                        : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
                     }`}
                     onClick={() => onSelectOrigin(origin)}
                     type="button"
@@ -155,8 +155,8 @@ export default function ShopDirectorySearchPanel({
               <button
                 className={`inline-flex items-center gap-2 bd-glass-control px-3 py-2 text-sm font-medium ${
                   selectedOrigin
-                    ? "text-slate-700"
-                    : "cursor-not-allowed bg-slate-100 text-slate-400"
+                    ? "text-slate-200"
+                    : "cursor-not-allowed bg-white/[0.02] text-slate-500"
                 }`}
                 disabled={!selectedOrigin}
                 onClick={onSaveOrigin}
@@ -166,7 +166,7 @@ export default function ShopDirectorySearchPanel({
                 {currentOriginIsSaved ? "Origin saved" : "Save origin"}
               </button>
               {selectedOrigin && (
-                <div className="rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-600">
+                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.05] px-3 py-2 text-sm text-slate-300/80">
                   {selectedOrigin.address}
                 </div>
               )}
@@ -174,7 +174,7 @@ export default function ShopDirectorySearchPanel({
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
               <Layers3 className="h-4 w-4" />
               View & Sort
             </div>
@@ -185,8 +185,8 @@ export default function ShopDirectorySearchPanel({
                   key={option.value}
                   className={`bd-glass-control px-3 py-1.5 text-sm ${
                     mapViewMode === option.value
-                      ? "bg-blue-900 text-white"
-                      : "bg-[rgba(240,248,255,0.82)] text-slate-700 hover:bg-blue-50"
+                      ? "border-blue-400/60 bg-blue-500/20 text-white"
+                      : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
                   onClick={() => onViewModeChange(option.value)}
                   type="button"
@@ -198,7 +198,7 @@ export default function ShopDirectorySearchPanel({
 
             <div className="flex flex-wrap items-center gap-2">
               <select
-                className="rounded-2xl border border-blue-100 bg-[rgba(240,248,255,0.82)] px-3 py-2 text-sm text-slate-700 outline-none bd-glass-control"
+                className="rounded-2xl border border-white/[0.12] bg-white/[0.06] px-3 py-2 text-sm text-slate-200 outline-none bd-glass-control"
                 onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
                 value={sortBy}
               >
@@ -212,8 +212,8 @@ export default function ShopDirectorySearchPanel({
               <button
                 className={`bd-glass-control px-3 py-2 text-sm font-medium ${
                   filterRating === 4.5
-                    ? "bg-amber-100 text-amber-800"
-                    : "bg-[rgba(240,248,255,0.82)] text-slate-700 hover:bg-blue-50"
+                    ? "border-amber-400/40 bg-amber-400/15 text-amber-300"
+                    : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                 }`}
                 onClick={() => onFilterRatingChange(filterRating === 4.5 ? 0 : 4.5)}
                 type="button"
@@ -222,7 +222,7 @@ export default function ShopDirectorySearchPanel({
               </button>
 
               <button
-                className="inline-flex items-center gap-2 bd-glass-control px-3 py-2 text-sm font-medium text-slate-700"
+                className="inline-flex items-center gap-2 bd-glass-control px-3 py-2 text-sm font-medium text-slate-300"
                 onClick={onToggleTheme}
                 type="button"
               >
@@ -237,12 +237,12 @@ export default function ShopDirectorySearchPanel({
       {/* Role panel: only in sidebar on list mode (shown in map overlay otherwise) */}
       {!showMapPane && (
         <div className="mt-4 bd-glass-card p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
             <RoleIcon className="h-4 w-4" />
             Role-specific panel
           </div>
-          <p className="mt-2 text-lg font-semibold text-slate-950">{roleHighlights.title}</p>
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
+          <p className="mt-2 text-lg font-semibold text-slate-100">{roleHighlights.title}</p>
+          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.06] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
             <Bookmark className="h-3.5 w-3.5" />
             {roleCollectionListings.length} in {roleCollectionTitle.toLowerCase()}
           </div>
@@ -250,19 +250,19 @@ export default function ShopDirectorySearchPanel({
             {roleHighlights.callouts.map((callout) => (
               <div
                 key={callout}
-                className="rounded-2xl bg-slate-50 px-3 py-2 text-sm leading-6 text-slate-700"
+                className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2 text-sm leading-6 text-slate-300/80"
               >
                 {callout}
               </div>
             ))}
           </div>
-          <p className="mt-3 text-xs leading-5 text-slate-500">
+          <p className="mt-3 text-xs leading-5 text-blue-200/40">
             This collection also feeds the related role screen outside the map shell so saved state
             carries through the broader dashboard.
           </p>
           {onOpenRelatedScreen && (
             <button
-              className="mt-4 rounded-2xl border border-slate-200/60 px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-white/40"
+              className="mt-4 rounded-2xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-white/[0.08]"
               onClick={onOpenRelatedScreen}
               type="button"
             >
