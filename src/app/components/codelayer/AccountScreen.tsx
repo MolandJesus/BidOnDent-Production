@@ -303,6 +303,7 @@ export default function AccountScreen({
           <AccountInfoCard
             userType={userType}
             userInfo={userInfo}
+            appearanceMode={appearanceMode}
             onEditProfile={() => setShowEditProfile(true)}
           />
 
