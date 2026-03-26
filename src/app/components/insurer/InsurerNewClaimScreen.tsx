@@ -100,7 +100,7 @@ export default function InsurerNewClaimScreen({
               Create New Claim
             </h1>
           </div>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-slate-300/80 mb-4">
             Start a new claim using active policyholders and partner routing options.
           </p>
 
@@ -134,7 +134,7 @@ export default function InsurerNewClaimScreen({
           </div>
 
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-200/50 w-5 h-5" />
             <input
               type="text"
               placeholder={
@@ -157,10 +157,10 @@ export default function InsurerNewClaimScreen({
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <h3 className="font-bold text-lg">{customer.name}</h3>
-                      <p className="text-sm text-gray-600">Policy: {customer.policyNumber}</p>
+                      <p className="text-sm text-slate-300/80">Policy: {customer.policyNumber}</p>
                     </div>
                     {customer.activeClaims > 0 && (
-                      <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded">
+                      <span className="px-2 py-1 bg-blue-400/15 text-blue-200 text-xs font-medium rounded">
                         {customer.activeClaims} Active
                       </span>
                     )}
@@ -168,15 +168,15 @@ export default function InsurerNewClaimScreen({
 
                   <div className="mb-3 space-y-1">
                     {customer.vehicles.map((vehicle, idx) => (
-                      <div key={idx} className="flex items-center text-sm text-gray-700">
-                        <Car className="w-4 h-4 mr-2 text-gray-400" />
+                      <div key={idx} className="flex items-center text-sm text-slate-200">
+                        <Car className="w-4 h-4 mr-2 text-blue-200/50" />
                         <span>
                           {vehicle.year} {vehicle.make} {vehicle.model}
                         </span>
                       </div>
                     ))}
-                    <div className="flex items-center text-sm text-gray-600">
-                      <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                    <div className="flex items-center text-sm text-slate-300/80">
+                      <MapPin className="w-4 h-4 mr-2 text-blue-200/50" />
                       <span>{customer.location}</span>
                     </div>
                   </div>
@@ -236,12 +236,12 @@ export default function InsurerNewClaimScreen({
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-bold text-lg">{shop.name}</h3>
                         {shop.certified && (
-                          <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
+                          <span className="px-2 py-0.5 bg-green-400/15 text-green-300 text-xs font-medium rounded">
                             Certified
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center text-sm text-gray-600 mb-1">
+                      <div className="flex items-center text-sm text-slate-300/80 mb-1">
                         <span className="text-yellow-500 mr-1">★</span>
                         <span className="font-medium">{shop.rating}</span>
                         <span className="mx-1">•</span>
@@ -251,20 +251,20 @@ export default function InsurerNewClaimScreen({
                   </div>
 
                   <div className="mb-3 space-y-1">
-                    <div className="flex items-center text-sm text-gray-700">
-                      <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                    <div className="flex items-center text-sm text-slate-200">
+                      <MapPin className="w-4 h-4 mr-2 text-blue-200/50" />
                       <span>{shop.address}</span>
                     </div>
-                    <div className="text-sm text-gray-600 ml-6">{shop.distance}</div>
+                    <div className="text-sm text-slate-300/80 ml-6">{shop.distance}</div>
                   </div>
 
                   <div className="mb-3">
-                    <p className="text-xs text-gray-500 mb-1">Specialties:</p>
+                    <p className="text-xs text-slate-400/70 mb-1">Specialties:</p>
                     <div className="flex flex-wrap gap-1">
                       {shop.specialties.map((specialty, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded"
+                          className="px-2 py-1 bg-blue-400/15 text-blue-200 text-xs rounded"
                         >
                           {specialty}
                         </span>
@@ -272,14 +272,14 @@ export default function InsurerNewClaimScreen({
                     </div>
                   </div>
 
-                  <div className="mb-3 p-3 bg-slate-50/80 rounded-lg">
+                  <div className="mb-3 p-3 bg-white/[0.05] border border-white/[0.06] rounded-lg">
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div>
-                        <p className="text-gray-600 text-xs">Partner Since</p>
+                        <p className="text-slate-300/80 text-xs">Partner Since</p>
                         <p className="font-medium">{shop.partnerSince}</p>
                       </div>
                       <div>
-                        <p className="text-gray-600 text-xs">Completed Jobs</p>
+                        <p className="text-slate-300/80 text-xs">Completed Jobs</p>
                         <p className="font-medium">{shop.completedJobs}</p>
                       </div>
                     </div>
@@ -314,7 +314,7 @@ export default function InsurerNewClaimScreen({
                       onClick={() => setSelectedShop(shop)}
                       className={`w-full py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all ${
                         selectedShop?.id === shop.id
-                          ? "bg-green-100 text-green-700 border-2 border-green-500"
+                          ? "bg-green-400/15 text-green-300 border-2 border-green-500"
                           : "border-2 bd-glass-control--utility"
                       }`}
                       type="button"
@@ -332,7 +332,7 @@ export default function InsurerNewClaimScreen({
                       )}
                     </button>
                   ) : (
-                    <div className="w-full py-3 rounded-lg bg-gray-100 text-gray-500 font-medium text-center text-sm">
+                    <div className="w-full py-3 rounded-lg bg-white/[0.05] text-slate-400/70 font-medium text-center text-sm">
                       Select a customer first
                     </div>
                   )}

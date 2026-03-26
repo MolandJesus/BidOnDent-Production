@@ -46,7 +46,7 @@ export default function MissingReportState({
             <AlertCircle className="h-7 w-7" />
           </motion.div>
 
-          <h2 className="mt-5 text-2xl font-semibold text-slate-950">{title}</h2>
+          <h2 className="mt-5 text-2xl font-semibold text-slate-100">{title}</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-400">{description}</p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
