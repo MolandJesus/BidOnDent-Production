@@ -36,21 +36,21 @@ export default function InsurerNewClaimForm({
           <div className="mb-4 p-4 bg-blue-400/10 border border-blue-400/20 rounded-lg">
             <p className="text-sm font-medium text-blue-900 mb-1">Policyholder</p>
             <p className="font-bold">{selectedCustomer.name}</p>
-            <p className="text-sm text-blue-700">{selectedCustomer.email}</p>
-            <p className="text-sm text-blue-700">{selectedCustomer.phone}</p>
+            <p className="text-sm text-blue-200">{selectedCustomer.email}</p>
+            <p className="text-sm text-blue-200">{selectedCustomer.phone}</p>
           </div>
 
           {selectedShop && (
             <div className="mb-4 p-4 bg-green-400/10 border border-green-400/20 rounded-lg">
               <p className="text-sm font-medium text-green-900 mb-1">Assigned Shop</p>
               <p className="font-bold">{selectedShop.name}</p>
-              <p className="text-sm text-green-700">{selectedShop.location}</p>
+              <p className="text-sm text-green-300">{selectedShop.location}</p>
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Policy Number</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Policy Number</label>
               <input
                 type="text"
                 value={claimFormData.policyNumber}
@@ -61,7 +61,7 @@ export default function InsurerNewClaimForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Incident Date</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Incident Date</label>
               <input
                 type="date"
                 value={claimFormData.incidentDate}
@@ -71,7 +71,7 @@ export default function InsurerNewClaimForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Damage Description
               </label>
               <textarea
@@ -84,7 +84,7 @@ export default function InsurerNewClaimForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-slate-300 mb-2">
                 Estimated Amount
               </label>
               <div className="relative">
@@ -103,7 +103,7 @@ export default function InsurerNewClaimForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Priority Level</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Priority Level</label>
               <select
                 value={claimFormData.priority}
                 onChange={(e) => onUpdate({ ...claimFormData, priority: e.target.value })}

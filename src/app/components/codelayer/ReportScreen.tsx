@@ -364,7 +364,7 @@ export default function ReportScreen({
       return (
         <div className="px-4 py-5">
           <div className="text-center">
-            <p className="text-gray-600">Error: Invalid step {step}</p>
+            <p className="text-slate-300/80">Error: Invalid step {step}</p>
             <button
               onClick={() => setStep(1)}
               className="mt-4 py-2 px-4 rounded-md text-white font-medium"
@@ -434,7 +434,7 @@ export default function ReportScreen({
                 {renderStep() || (
                   <div className="px-4 py-5">
                     <div className="text-center">
-                      <p className="text-gray-600">Error: Invalid step {step}</p>
+                      <p className="text-slate-300/80">Error: Invalid step {step}</p>
                       <button
                         onClick={() => setStep(1)}
                         className="mt-4 py-2 px-4 rounded-md text-white font-medium"

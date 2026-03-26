@@ -127,7 +127,7 @@ export default function VehicleProfileScreen({
               </button>
               <div>
                 <h1 className="text-xl font-bold">My Vehicles</h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-slate-300/80">
                   {vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""}
                 </p>
               </div>
@@ -157,7 +157,7 @@ export default function VehicleProfileScreen({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Year *</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Year *</label>
                   <input
                     type="text"
                     value={formData.year}
@@ -167,7 +167,7 @@ export default function VehicleProfileScreen({
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Make *</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Make *</label>
                   <input
                     type="text"
                     value={formData.make}
@@ -179,7 +179,7 @@ export default function VehicleProfileScreen({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Model *</label>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Model *</label>
                 <input
                   type="text"
                   value={formData.model}
@@ -190,7 +190,7 @@ export default function VehicleProfileScreen({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-slate-300 mb-1">
                   VIN (Optional)
                 </label>
                 <input
@@ -204,7 +204,7 @@ export default function VehicleProfileScreen({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
                     Color (Optional)
                   </label>
                   <input
@@ -216,7 +216,7 @@ export default function VehicleProfileScreen({
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
                     License Plate (Optional)
                   </label>
                   <input
@@ -257,7 +257,7 @@ export default function VehicleProfileScreen({
             <div className="bd-glass-card rounded-lg p-5 sm:p-8 text-center">
               <Car className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-bold mb-2">No vehicles added yet</h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-slate-300/80 mb-4">
                 Add your vehicles to make reporting damage faster.
               </p>
               <button
@@ -317,11 +317,11 @@ export default function VehicleProfileScreen({
                         onClick={() => handleEdit(vehicle, index)}
                         className="p-2 hover:bg-white/40 rounded-lg transition-colors"
                       >
-                        <Edit2 className="w-4 h-4 text-gray-600" />
+                        <Edit2 className="w-4 h-4 text-slate-400/70" />
                       </button>
                       <button
                         onClick={() => handleDelete(vehicle.id, index)}
-                        className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 hover:bg-rose-500/10 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </button>

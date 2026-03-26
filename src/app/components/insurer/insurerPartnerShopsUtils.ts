@@ -43,9 +43,9 @@ export function buildPartnerStatus(
 export function getStatusColor(status: FilterStatus) {
   switch (status) {
     case "active":
-      return "bg-green-100 text-green-700 border-green-200";
+      return "bg-green-400/10 text-green-300 border-green-400/30";
     case "pending":
-      return "bg-amber-100 text-amber-700 border-amber-200";
+      return "bg-amber-400/10 text-amber-300 border-amber-400/30";
     case "inactive":
       return "bg-white/[0.06] text-slate-300 border-white/[0.10]";
     default:

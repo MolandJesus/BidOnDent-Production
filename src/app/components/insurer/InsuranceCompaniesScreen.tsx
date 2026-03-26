@@ -55,7 +55,7 @@ export default function InsuranceCompaniesScreen({
       {/* Empty State — No insurance companies registered yet */}
       <div className="px-4 py-16 text-center">
         <Shield className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <h2 className="text-lg font-semibold text-gray-700 mb-2">
+        <h2 className="text-lg font-semibold text-slate-200 mb-2">
           Insurance Directory Coming Soon
         </h2>
         <p className="text-sm text-gray-500 max-w-md mx-auto">

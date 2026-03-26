@@ -78,7 +78,7 @@ export default function LoginModal({
             {loginView === "signup" && "Create Account"}
             {loginView === "login" && "Log In"}
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-300">
             <X className="w-6 h-6" />
           </button>
         </div>

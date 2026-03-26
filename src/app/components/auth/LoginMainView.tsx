@@ -15,7 +15,7 @@ export function LoginMainView({
 }: LoginMainViewProps) {
   return (
     <div className="space-y-4">
-      <p className="text-gray-600 mb-6">Choose how you want to use BidOnDent</p>
+      <p className="text-slate-300/80 mb-6">Choose how you want to use BidOnDent</p>
 
       <motion.button
         onClick={() => {

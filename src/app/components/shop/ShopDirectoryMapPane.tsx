@@ -120,8 +120,8 @@ export default function ShopDirectoryMapPane({
           >
             <Popup>
               <div className="space-y-1">
-                <p className="font-semibold text-slate-900">{selectedOrigin.name}</p>
-                <p className="text-sm text-slate-600">{selectedOrigin.address}</p>
+                <p className="font-semibold text-slate-100">{selectedOrigin.name}</p>
+                <p className="text-sm text-slate-300/80">{selectedOrigin.address}</p>
               </div>
             </Popup>
             <Tooltip direction="top" offset={[0, -8]} opacity={0.95} permanent={false}>
@@ -142,8 +142,8 @@ export default function ShopDirectoryMapPane({
           >
             <Popup>
               <div className="space-y-1">
-                <p className="font-semibold text-slate-900">{place.label}</p>
-                <p className="text-sm text-slate-600">{place.address}</p>
+                <p className="font-semibold text-slate-100">{place.label}</p>
+                <p className="text-sm text-slate-300/80">{place.address}</p>
               </div>
             </Popup>
           </CircleMarker>
@@ -167,8 +167,8 @@ export default function ShopDirectoryMapPane({
             >
               <Popup>
                 <div className="space-y-1">
-                  <p className="font-semibold text-slate-900">{route.label} route</p>
-                  <p className="text-sm text-slate-600">
+                  <p className="font-semibold text-slate-100">{route.label} route</p>
+                  <p className="text-sm text-slate-300/80">
                     {route.totalDistanceLabel} • {route.estimatedDurationMinutes} min
                   </p>
                   <p className="text-sm text-slate-500">{route.trafficLabel}</p>
@@ -200,18 +200,18 @@ export default function ShopDirectoryMapPane({
               <Popup>
                 <div className="space-y-2">
                   <div>
-                    <p className="font-semibold text-slate-900">{shop.name}</p>
-                    <p className="text-sm text-slate-600">
+                    <p className="font-semibold text-slate-100">{shop.name}</p>
+                    <p className="text-sm text-slate-300/80">
                       {shop.mapResult.address}, {shop.mapResult.city}
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className="rounded-xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
                       <p className="text-slate-500">AI fit</p>
-                      <p className="font-semibold text-slate-900">{shop.recommendationScore}%</p>
+                      <p className="font-semibold text-slate-100">{shop.recommendationScore}%</p>
                     </div>
                     <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2">
-                      <p className="text-emerald-700">Carrier fit</p>
+                      <p className="text-emerald-300">Carrier fit</p>
                       <p className="font-semibold text-emerald-900">
                         {shop.insuranceCompatibilityScore}%
                       </p>
@@ -242,7 +242,7 @@ export default function ShopDirectoryMapPane({
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-slate-600">
+              <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-slate-300/80">
                 <span className="inline-flex items-center gap-1.5">
                   <MapPin className="h-4 w-4 text-slate-400" />
                   {selectedShop.mapDistanceLabel}

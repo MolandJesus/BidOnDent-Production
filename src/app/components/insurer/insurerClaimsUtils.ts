@@ -64,9 +64,9 @@ export function getStatusColor(status: string): string {
     case "reviewing":
       return "bg-blue-100 text-blue-400 border-blue-400/20";
     case "approved":
-      return "bg-green-100 text-green-700 border-green-200";
+      return "bg-green-400/10 text-green-300 border-green-400/30";
     case "denied":
-      return "bg-red-100 text-red-700 border-red-200";
+      return "bg-red-400/10 text-red-300 border-red-400/30";
     default:
       return "bg-white/[0.06] text-slate-300 border-white/[0.10]";
   }
@@ -75,7 +75,7 @@ export function getStatusColor(status: string): string {
 export function getPriorityColor(priority: string): string {
   switch (priority) {
     case "high":
-      return "text-red-600 bg-red-50 border-red-200";
+      return "text-red-300 bg-red-400/10 border-red-400/30";
     case "medium":
       return "text-orange-600 bg-orange-50 border-orange-200";
     case "low":

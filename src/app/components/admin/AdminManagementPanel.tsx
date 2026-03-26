@@ -75,7 +75,7 @@ export default function AdminManagementPanel({
             className={`p-4 rounded-lg whitespace-pre-wrap ${
               adminManagementStatus.startsWith("✅")
                 ? "bg-green-400/10 text-green-300 border border-green-400/30"
-                : "bg-red-50 text-red-800 border border-red-200"
+                : "bg-red-400/10 text-red-300 border border-red-400/30"
             }`}
           >
             {adminManagementStatus}

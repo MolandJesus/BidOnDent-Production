@@ -35,7 +35,7 @@ export default function ReportProgress({
                   step <= activeStep
                     ? "text-white"
                     : isLightAppearance
-                      ? "bg-blue-100/80 border border-blue-200 text-blue-700"
+                      ? "bg-blue-400/15 border border-blue-400/30 text-blue-200"
                       : "bg-blue-400/10 border border-blue-300/20 text-blue-100/70"
                 }`}
                 style={

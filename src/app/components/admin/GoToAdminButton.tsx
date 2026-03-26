@@ -265,7 +265,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mt-3 flex items-start gap-2 text-red-600 bg-red-50 border border-red-200 rounded-lg p-3"
+                      className="mt-3 flex items-start gap-2 text-red-300 bg-red-400/10 border border-red-400/30 rounded-lg p-3"
                     >
                       <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                       <p className="text-sm">{error}</p>

@@ -105,7 +105,7 @@ export default function PhotoGuide({
         </div>
 
         {/* Footer Navigation */}
-        <div className="border-t border-gray-200 px-3 py-2.5 sm:p-4 bg-gray-50 shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
+        <div className="border-t border-white/[0.08] px-3 py-2.5 sm:p-4 bg-white/[0.03] shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
           <div className="flex justify-between items-center">
             <button
               onClick={prevStep}
@@ -113,7 +113,7 @@ export default function PhotoGuide({
               className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg font-medium transition-all ${
                 currentStep === 0
                   ? "text-gray-400 cursor-not-allowed"
-                  : "text-gray-700 hover:bg-gray-200 active:scale-95"
+                  : "text-slate-300 hover:bg-white/[0.08] active:scale-95"
               }`}
             >
               <ChevronLeft className="w-5 h-5" />

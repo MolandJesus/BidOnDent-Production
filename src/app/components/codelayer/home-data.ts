@@ -51,11 +51,11 @@ export const toneClasses: Record<StatItem["tone"], string> = {
 };
 
 export const statusClasses: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  "in-review": "bg-blue-100 text-blue-700",
-  active: "bg-blue-100 text-blue-700",
-  completed: "bg-emerald-100 text-emerald-700",
-  resolved: "bg-emerald-100 text-emerald-700",
+  pending: "bg-amber-400/15 text-amber-300",
+  "in-review": "bg-blue-400/15 text-blue-200",
+  active: "bg-blue-400/15 text-blue-200",
+  completed: "bg-emerald-400/15 text-emerald-300",
+  resolved: "bg-emerald-400/15 text-emerald-300",
 };
 
 export const actionIconTones = [

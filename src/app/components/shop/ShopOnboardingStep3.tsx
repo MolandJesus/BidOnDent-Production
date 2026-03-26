@@ -55,12 +55,12 @@ export default function ShopOnboardingStep3({
           <Award className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">Certifications</h2>
-        <p className="text-gray-600 text-center">Select your certifications and specialties</p>
+        <p className="text-slate-300/80 text-center">Select your certifications and specialties</p>
       </div>
 
       <div className="bd-glass-card p-4 sm:p-6 space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">Certifications</label>
+          <label className="block text-sm font-medium text-slate-300 mb-3">Certifications</label>
           <div className="flex flex-wrap gap-2">
             {certificationOptions.map((cert) => (
               <button
@@ -73,7 +73,7 @@ export default function ShopOnboardingStep3({
                 }
                 className={`px-3 py-2 rounded-md text-sm border transition-colors ${
                   formData.certifications.includes(cert)
-                    ? "bg-blue-100 border-blue-500 text-blue-700"
+                    ? "bg-blue-400/15 border-blue-500/60 text-blue-200"
                     : "bd-glass-control--utility"
                 }`}
               >
@@ -87,7 +87,7 @@ export default function ShopOnboardingStep3({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">Specialties</label>
+          <label className="block text-sm font-medium text-slate-300 mb-3">Specialties</label>
           <div className="flex flex-wrap gap-2">
             {specialtyOptions.map((specialty) => (
               <button
@@ -100,7 +100,7 @@ export default function ShopOnboardingStep3({
                 }
                 className={`px-3 py-2 rounded-md text-sm border transition-colors ${
                   formData.specialties.includes(specialty)
-                    ? "bg-blue-100 border-blue-500 text-blue-700"
+                    ? "bg-blue-400/15 border-blue-500/60 text-blue-200"
                     : "bd-glass-control--utility"
                 }`}
               >

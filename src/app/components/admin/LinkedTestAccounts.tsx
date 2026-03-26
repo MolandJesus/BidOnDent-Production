@@ -67,12 +67,12 @@ export default function LinkedTestAccounts({
                         Checking...
                       </span>
                     ) : status?.exists ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-400/15 text-green-300 text-xs rounded-full">
                         <CheckCircle className="w-3 h-3" />
                         Active
                       </span>
                     ) : status ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-400/15 text-red-300 text-xs rounded-full">
                         <XCircle className="w-3 h-3" />
                         Not Created
                       </span>

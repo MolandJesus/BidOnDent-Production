@@ -28,24 +28,24 @@ export type StatItem = {
 };
 
 export const toneClasses: Record<StatItem["tone"], string> = {
-  blue: "bg-blue-100/70 text-blue-700",
-  green: "bg-emerald-100/70 text-emerald-700",
+  blue: "bg-blue-400/15 text-blue-200",
+  green: "bg-emerald-400/15 text-emerald-300",
   purple: "bg-violet-100/70 text-violet-700",
-  amber: "bg-amber-100/70 text-amber-700",
+  amber: "bg-amber-400/15 text-amber-300",
 };
 
 export const statusClasses: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  "in-review": "bg-blue-100 text-blue-700",
-  active: "bg-blue-100 text-blue-700",
-  completed: "bg-emerald-100 text-emerald-700",
-  resolved: "bg-emerald-100 text-emerald-700",
+  pending: "bg-amber-400/15 text-amber-300",
+  "in-review": "bg-blue-400/15 text-blue-200",
+  active: "bg-blue-400/15 text-blue-200",
+  completed: "bg-emerald-400/15 text-emerald-300",
+  resolved: "bg-emerald-400/15 text-emerald-300",
 };
 
 export const actionIconTones = [
-  "bg-blue-100/80 text-blue-700 shadow-sm",
-  "bg-emerald-100/80 text-emerald-700 shadow-sm",
-  "bg-amber-100/80 text-amber-700 shadow-sm",
+  "bg-blue-400/15 text-blue-200 shadow-sm",
+  "bg-emerald-400/15 text-emerald-300 shadow-sm",
+  "bg-amber-400/15 text-amber-300 shadow-sm",
   "bg-violet-100/80 text-violet-700 shadow-sm",
 ];
 

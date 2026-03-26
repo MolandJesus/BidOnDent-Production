@@ -134,8 +134,8 @@ export default function DashboardCoveragePanel({
               <Radar className="w-3.5 h-3.5" />
               Coverage
             </div>
-            <h2 className="mt-3 text-2xl font-semibold text-slate-900">Coverage command center</h2>
-            <p className="mt-2 text-sm text-slate-600">
+            <h2 className="mt-3 text-2xl font-semibold text-slate-100">Coverage command center</h2>
+            <p className="mt-2 text-sm text-slate-300/80">
               Open the live NY coverage map from the dashboard, review partner density, and jump to
               the full search flow when you need ZIP and radius lookup.
             </p>
@@ -154,7 +154,7 @@ export default function DashboardCoveragePanel({
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="bd-glass-card p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Live Regions</div>
-            <div className="mt-2 text-2xl font-semibold text-slate-900">
+            <div className="mt-2 text-2xl font-semibold text-slate-100">
               {operatingRegions.length}
             </div>
           </div>
@@ -162,11 +162,11 @@ export default function DashboardCoveragePanel({
             <div className="text-xs uppercase tracking-[0.24em] text-slate-500">
               Partner Markers
             </div>
-            <div className="mt-2 text-2xl font-semibold text-slate-900">{partnerShops.length}</div>
+            <div className="mt-2 text-2xl font-semibold text-slate-100">{partnerShops.length}</div>
           </div>
           <div className="bd-glass-card p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-500">View Mode</div>
-            <div className="mt-2 text-2xl font-semibold text-slate-900">
+            <div className="mt-2 text-2xl font-semibold text-slate-100">
               {mapTileLayers[tileMode].label}
             </div>
           </div>

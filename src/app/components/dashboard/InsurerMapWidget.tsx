@@ -35,7 +35,7 @@ export default function InsurerMapWidget({ primaryColor, secondaryColor, onViewS
             <Building2 className="h-4.5 w-4.5" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">Network Overview</h3>
+            <h3 className="text-sm font-semibold text-slate-100">Network Overview</h3>
             <p className="text-xs text-slate-500">
               {isLoadingShops ? "Loading\u2026" : "Partner shop network"}
             </p>
@@ -59,24 +59,24 @@ export default function InsurerMapWidget({ primaryColor, secondaryColor, onViewS
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <div className="bd-glass-card p-3">
           <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Shops</div>
-          <div className="mt-1 text-xl font-semibold text-slate-900">
+          <div className="mt-1 text-xl font-semibold text-slate-100">
             {isLoadingShops ? "\u2014" : partnerShops.length}
           </div>
         </div>
         <div className="bd-glass-card p-3">
           <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Regions</div>
-          <div className="mt-1 text-xl font-semibold text-slate-900">{operatingRegions.length}</div>
+          <div className="mt-1 text-xl font-semibold text-slate-100">{operatingRegions.length}</div>
         </div>
         <div className="bd-glass-card p-3">
           <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Avg Rating</div>
-          <div className="mt-1 text-xl font-semibold text-slate-900">
+          <div className="mt-1 text-xl font-semibold text-slate-100">
             {isLoadingShops ? "\u2014" : avgRating.toFixed(1)}
           </div>
         </div>
       </div>
 
       {fetchError && (
-        <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2.5">
+        <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-400/10 border border-red-400/20 px-3 py-2.5">
           <p className="text-xs text-red-600">
             Could not load network data. Check your connection and try again.
           </p>

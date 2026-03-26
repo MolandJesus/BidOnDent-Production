@@ -44,11 +44,11 @@ export default function EditProfileModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bd-glass-floating rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-white/80 backdrop-blur-sm border-b border-blue-100/50 px-6 py-4 rounded-t-2xl z-10">
+        <div className="sticky top-0 bg-slate-900/80 backdrop-blur-sm border-b border-white/[0.08] px-6 py-4 rounded-t-2xl z-10">
           <div className="flex justify-between items-center">
             <h2 className="font-bold text-slate-100">Edit Profile</h2>
             <button
-              className="text-gray-400 hover:text-slate-400 transition-colors p-1 rounded-full hover:bg-white/[0.06]"
+              className="text-slate-400 hover:text-slate-200 transition-colors p-1 rounded-full hover:bg-white/[0.06]"
               onClick={onCancel}
               disabled={isSaving}
             >

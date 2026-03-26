@@ -216,8 +216,8 @@ export default function ShopDirectoryImmersiveMap({
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {mapListings.length === 0 && (
               <div className="rounded-2xl border border-dashed border-blue-300/20 bg-blue-500/[0.04] p-4">
-                <p className="text-sm font-semibold text-slate-900">No shops matched</p>
-                <p className="mt-1 text-xs leading-5 text-slate-600">
+                <p className="text-sm font-semibold text-slate-100">No shops matched</p>
+                <p className="mt-1 text-xs leading-5 text-slate-300/80">
                   Try broadening the search or changing the sort.
                 </p>
               </div>

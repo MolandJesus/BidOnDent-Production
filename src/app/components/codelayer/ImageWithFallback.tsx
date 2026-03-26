@@ -14,7 +14,7 @@ export default function ImageWithFallback(props: ImageWithFallbackProps) {
 
   return didError ? (
     <div
-      className={`inline-block bg-gray-100 text-center align-middle ${className ?? ''}`}
+      className={`inline-block bg-white/[0.08] text-center align-middle ${className ?? ''}`}
       style={style}
     >
       <div className="flex items-center justify-center w-full h-full">

@@ -167,7 +167,7 @@ export default function AdminAccountManager() {
 
       {/* Error/Success Messages */}
       {error && (
-        <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
+        <div className="flex items-center gap-2 p-4 bg-red-400/10 border border-red-400/30 rounded-lg text-red-300">
           <AlertCircle className="w-5 h-5" />
           {error}
         </div>

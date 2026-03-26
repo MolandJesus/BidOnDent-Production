@@ -39,12 +39,12 @@ export default function DeleteAccountModal({
         </div>
 
         <div className="space-y-4">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="bg-red-400/10 border border-red-400/30 rounded-lg p-4">
             <p className="text-sm text-red-800 font-medium mb-2">This action cannot be undone.</p>
-            <p className="text-sm text-red-700">
+            <p className="text-sm text-red-300">
               Deleting your account will permanently remove your BidOnDent sign-in access.
             </p>
-            <ul className="list-disc list-inside text-sm text-red-700 mt-2 space-y-1">
+            <ul className="list-disc list-inside text-sm text-red-300 mt-2 space-y-1">
               <li>Your ability to sign back into this account</li>
               <li>Your saved local website session on this browser</li>
               <li>

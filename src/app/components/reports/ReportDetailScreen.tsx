@@ -103,7 +103,7 @@ export default function ReportDetailScreen({
                 status === "pending"
                   ? "bg-sky-100 text-sky-700"
                   : status === "active"
-                    ? "bg-blue-100 text-blue-700"
+                    ? "bg-blue-400/15 text-blue-200"
                     : "bg-indigo-100 text-indigo-700"
               }`}
             >
