@@ -90,11 +90,11 @@ export default function BenefitsSection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-[18px] h-[18px] rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-blue-400/45"}`}
+          className={`w-[18px] h-[18px] rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-purple-400/45"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 20px 6px rgba(59,130,246,0.12)"
-              : "0 0 24px 8px rgba(59,130,246,0.22)",
+              : "0 0 24px 8px rgba(168,85,247,0.22)",
           }}
         />
       </div>
@@ -103,11 +103,11 @@ export default function BenefitsSection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-indigo-400/35"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-violet-400/35"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 16px 4px rgba(99,102,241,0.1)"
-              : "0 0 20px 6px rgba(99,102,241,0.18)",
+              : "0 0 20px 6px rgba(139,92,246,0.18)",
           }}
         />
       </div>

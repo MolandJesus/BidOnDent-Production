@@ -76,11 +76,11 @@ export default function HowItWorksSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-indigo-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-teal-400/40"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 18px 5px rgba(99,102,241,0.12)"
-              : "0 0 22px 7px rgba(99,102,241,0.2)",
+              : "0 0 22px 7px rgba(20,184,166,0.2)",
           }}
         />
       </div>
@@ -89,11 +89,11 @@ export default function HowItWorksSection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/45"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-cyan-400/45"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px 4px rgba(59,130,246,0.1)"
-              : "0 0 18px 5px rgba(59,130,246,0.18)",
+              : "0 0 18px 5px rgba(6,182,212,0.18)",
           }}
         />
       </div>
@@ -102,15 +102,15 @@ export default function HowItWorksSection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/60 border border-indigo-200/40" : "bg-indigo-500/15 border border-indigo-400/20"}`}
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/60 border border-indigo-200/40" : "bg-teal-500/15 border border-teal-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px rgba(99,102,241,0.1)"
-              : "0 0 18px rgba(99,102,241,0.15)",
+              : "0 0 18px rgba(20,184,166,0.15)",
           }}
         >
           <Wrench
-            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-indigo-400/50"}`}
+            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-teal-400/50"}`}
           />
         </div>
       </div>
@@ -152,14 +152,14 @@ export default function HowItWorksSection({
             className="hidden md:block absolute top-16 left-[33%] w-[10%] border-t-2 border-dashed"
             style={{
               transform: "translateX(-50%)",
-              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(96,165,250,0.2)",
+              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(94,234,212,0.2)",
             }}
           />
           <div
             className="hidden md:block absolute top-16 left-[67%] w-[10%] border-t-2 border-dashed"
             style={{
               transform: "translateX(-50%)",
-              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(96,165,250,0.2)",
+              borderColor: isLightAppearance ? "rgba(59,130,246,0.15)" : "rgba(94,234,212,0.2)",
             }}
           />
 
@@ -184,24 +184,24 @@ export default function HowItWorksSection({
                   style={{
                     backgroundColor: isLightAppearance
                       ? "rgba(59, 130, 246, 0.08)"
-                      : "rgba(59, 130, 246, 0.15)",
+                      : "rgba(20, 184, 166, 0.15)",
                     border: isLightAppearance
                       ? "1px solid rgba(59, 130, 246, 0.15)"
-                      : "1px solid rgba(96, 165, 250, 0.25)",
+                      : "1px solid rgba(94, 234, 212, 0.22)",
                     boxShadow: isLightAppearance
                       ? "0 0 12px rgba(59, 130, 246, 0.04)"
-                      : "0 0 16px rgba(59, 130, 246, 0.1)",
+                      : "0 0 16px rgba(20, 184, 166, 0.08)",
                   }}
                 >
                   <step.icon
-                    className={`w-6 h-6 sm:w-7 sm:h-7 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+                    className={`w-6 h-6 sm:w-7 sm:h-7 ${isLightAppearance ? "text-blue-600" : "text-teal-400"}`}
                   />
                 </div>
                 <span
                   className="absolute -bottom-1.5 -left-1.5 inline-flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold"
                   style={{
-                    background: `linear-gradient(135deg, ${primaryColor}, #3b82f6)`,
-                    boxShadow: "0 2px 8px rgba(37, 99, 235, 0.4)",
+                    background: `linear-gradient(135deg, ${primaryColor}, #14b8a6)`,
+                    boxShadow: "0 2px 8px rgba(20, 184, 166, 0.4)",
                   }}
                 >
                   {step.number}

@@ -139,11 +139,11 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-blue-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-emerald-400/40"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 18px 5px rgba(59,130,246,0.12)"
-              : "0 0 22px 7px rgba(59,130,246,0.2)",
+              : "0 0 22px 7px rgba(16,185,129,0.2)",
           }}
         />
       </div>
@@ -152,15 +152,15 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-100/55 border border-blue-200/40" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-100/55 border border-blue-200/40" : "bg-emerald-500/15 border border-emerald-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 16px rgba(59,130,246,0.1)"
-              : "0 0 20px rgba(59,130,246,0.15)",
+              : "0 0 20px rgba(16,185,129,0.12)",
           }}
         >
           <Building2
-            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/50"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-emerald-400/50"}`}
           />
         </div>
       </div>
@@ -169,11 +169,11 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "6s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-indigo-400/35"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-teal-400/30"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px 3px rgba(99,102,241,0.08)"
-              : "0 0 18px 5px rgba(99,102,241,0.15)",
+              : "0 0 18px 5px rgba(20,184,166,0.12)",
           }}
         />
       </div>

@@ -73,11 +73,11 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-blue-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/25" : "bg-amber-400/40"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 18px 5px rgba(59,130,246,0.12)"
-              : "0 0 22px 7px rgba(59,130,246,0.2)",
+              : "0 0 22px 7px rgba(251,191,36,0.18)",
           }}
         />
       </div>
@@ -86,15 +86,15 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/55 border border-indigo-200/40" : "bg-indigo-500/15 border border-indigo-400/20"}`}
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-indigo-100/55 border border-indigo-200/40" : "bg-amber-500/15 border border-amber-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 14px rgba(99,102,241,0.1)"
-              : "0 0 18px rgba(99,102,241,0.15)",
+              : "0 0 18px rgba(251,191,36,0.12)",
           }}
         >
           <Compass
-            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-indigo-400/50"}`}
+            className={`w-3.5 h-3.5 ${isLightAppearance ? "text-indigo-500/60" : "text-amber-400/50"}`}
           />
         </div>
       </div>
@@ -146,10 +146,10 @@ export default function AboutOpportunitySection({
                 }}
               >
                 <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-50 border border-blue-100/60" : "bg-white/[0.08] border border-white/[0.1]"}`}
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-50 border border-blue-100/60" : "bg-amber-500/[0.08] border border-amber-400/[0.15]"}`}
                 >
                   <item.icon
-                    className={`w-6 h-6 ${isLightAppearance ? "text-blue-600" : "text-blue-300"}`}
+                    className={`w-6 h-6 ${isLightAppearance ? "text-blue-600" : "text-amber-300"}`}
                   />
                 </div>
                 <h4
