@@ -43,7 +43,9 @@ export default function OperatingRegionsSection({
               <p className="uppercase tracking-[0.12em] text-sm text-blue-200/80 mb-2">
                 Find a Shop
               </p>
-              <h3 className="text-2xl sm:text-3xl font-bold">Search coverage near you</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent">
+                Search coverage near you
+              </h3>
             </div>
           </div>
 

@@ -192,7 +192,7 @@ export default function CustomerMapWidget({
                         {shop.distanceMiles.toFixed(1)} mi
                       </span>
                     )}
-                    <span className="inline-flex items-center gap-0.5 text-xs text-amber-600">
+                    <span className="inline-flex items-center gap-0.5 text-xs text-amber-300">
                       <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
                       {shop.rating.toFixed(1)}
                     </span>

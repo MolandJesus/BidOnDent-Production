@@ -1,4 +1,4 @@
-import { Compass, ExternalLink, LocateFixed } from "lucide-react";
+import { Compass, ExternalLink, LocateFixed, Star } from "lucide-react";
 import { cn } from "../ui/utils";
 import {
   getNavigationProviderLabel,
@@ -142,11 +142,14 @@ export default function CoverageNearestShops({
                   {shop.addressLine}
                 </div>
               ) : null}
-              <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                Rating {shop.rating.toFixed(1)}
-                {shop.specialties.length > 0
-                  ? ` • ${shop.specialties.slice(0, 3).join(" • ")}`
-                  : ""}
+              <div className={cn("mt-1 flex flex-wrap items-center gap-2 text-xs", theme.secondaryTextClassName)}>
+                <span className="inline-flex items-center gap-0.5">
+                  <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
+                  <span className="font-medium text-amber-300">{shop.rating.toFixed(1)}</span>
+                </span>
+                {shop.specialties.length > 0 && (
+                  <span>{shop.specialties.slice(0, 3).join(" • ")}</span>
+                )}
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
