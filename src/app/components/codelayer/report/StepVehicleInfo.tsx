@@ -74,7 +74,7 @@ export default function StepVehicleInfo({
                 }`}
               >
                 <div className="font-medium inline-flex items-center gap-2 text-slate-100">
-                  <Car className="w-4 h-4 text-blue-600" />
+                  <Car className="w-4 h-4 text-blue-300" />
                   {savedVehicle.year} {savedVehicle.make} {savedVehicle.model}
                 </div>
                 {savedVehicle.licensePlate && (
