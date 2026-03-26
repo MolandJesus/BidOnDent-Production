@@ -6,17 +6,28 @@
 
 | 0% |████████████████████████████████████████████████████████████████████████████| 135% 🚀 |
 
-**Passes completed:** 263 / 160+ — ⚡ GLASS DESIGN SWEEP — COMPLETE. ZERO LIGHT-MODE TOKENS REMAINING.
+**Passes completed:** 270 / 160+ — ⚡ GLASS DESIGN SWEEP COMPLETE + POST-SWEEP VISUAL POLISH (264–270)
 
 | Item             | Value                                                                                          |
 | ---------------- | ---------------------------------------------------------------------------------------------- |
-| **Last pass**    | Pass 263 — Final glass sweep: status maps, form labels, admin, onboarding, auth modals        |
-| **Current pass** | 263 ✅ complete — grep scan returns 0 hits for light-mode tokens across all user-facing files  |
+| **Last pass**    | Pass 270 — ShopDirectoryScreen map-pane border-slate-200 → glass                             |
+| **Current pass** | 270 ✅ complete                                                                                 |
 | **Build**        | ✓ 0 errors · 1.98s · 783KB main bundle                                                         |
-| **Spellcheck**   | 0 issues                                                                                       |
 | **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date, Vercel auto-deploy triggered) |
 | **Last pushed**  | 2026-03-26                                                                                     |
-| **Phase**        | GLASS SWEEP COMPLETE — all user-facing surfaces unified; devtools/demo/internal excluded by design |
+| **Phase**        | POST-SWEEP POLISH — design refinement targeting home dashboard + coverage search screens      |
+
+### Post-Sweep Visual Polish (Passes 264–270, 2026-03-26)
+
+| Pass | Title                                                                                                          | Category  | Status |
+| ---- | -------------------------------------------------------------------------------------------------------------- | --------- | ------ |
+| 264  | CustomerMapWidget star rating number text-amber-600 → text-amber-300 (too dark on dark glass)                | P2-DESIGN | ✅     |
+| 265  | CoverageNearestShops rating display: add Star icon + amber-300 number (matches CustomerMapWidget)            | P2-DESIGN | ✅     |
+| 266  | OperatingRegionsSection title gradient text: white→blue-100→blue-200 for premium brand identity              | P2-DESIGN | ✅     |
+| 267  | County pills border/bg/text contrast; home reports header dead conditional fix; mobile touch states          | P2-DESIGN | ✅     |
+| 268  | HomeScreen reports prop typed: any[] → DamageReport[] (missed in pass 247 sweep)                            | P2-TYPE   | ✅     |
+| 269  | hover:bg-white/40 → hover:bg-white/10 on dark-glass buttons (BidsScreen, VehicleProfileScreen)              | P2-DESIGN | ✅     |
+| 270  | ShopDirectoryScreen map-pane border-slate-200 → border-white/10                                              | P2-DESIGN | ✅     |
 
 ### Glass Design Sweep — Final Wave (Passes 261–263, 2026-03-26)
 
