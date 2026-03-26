@@ -157,6 +157,7 @@ When working on the app, do not assume every visible screen is fully wired end t
 ### What's Confirmed Working
 
 **Landing page (all sections verified):**
+
 - Hero: "Get the Best Price on Your Auto Body Repair" with map image, "NY Active Service Region" badge, animated value carousel, pill-shape CTAs
 - How It Works: 3-step numbered cards, clean layout
 - Why Choose BidOnDent: 3 photo cards with badge overlays (Guided Intake, Repair Network, Transparent Bids)
@@ -169,6 +170,7 @@ When working on the app, do not assume every visible screen is fully wired end t
 - Footer: 3-column layout, contact info, social links
 
 **Customer Dashboard:**
+
 - Sidebar: Dashboard, Report (with arrow), Bids, Account, Demo Mode
 - Report wizard: 5-step flow with saved vehicles, damage area selection, photo upload (camera + cloud), damage description, success screen with "What happens next" timeline
 - Map widget: Nearby shops with distance/rating, "Open Map" CTA
@@ -180,12 +182,12 @@ When working on the app, do not assume every visible screen is fully wired end t
 
 ### Known Issues (2026-03-25)
 
-| Issue | Severity | Status |
-| ----- | -------- | ------ |
-| "Can't find variable: props" runtime crash | P1 | Open — likely ReportDetailDrawer.tsx or MapReportMarkers.tsx |
-| Light landing sections feel disconnected from map identity | P3-UX | Design gap — not a bug |
-| Dashboard feels "UI with map" not "map with UI" | P3-UX | Map dominance pass needed |
-| ~~False trust claims (certified, thousands)~~ | ~~P0~~ | ✅ Fixed in Passes 112-115 |
+| Issue                                                      | Severity | Status                                                       |
+| ---------------------------------------------------------- | -------- | ------------------------------------------------------------ |
+| "Can't find variable: props" runtime crash                 | P1       | Open — likely ReportDetailDrawer.tsx or MapReportMarkers.tsx |
+| Light landing sections feel disconnected from map identity | P3-UX    | Design gap — not a bug                                       |
+| Dashboard feels "UI with map" not "map with UI"            | P3-UX    | Map dominance pass needed                                    |
+| ~~False trust claims (certified, thousands)~~              | ~~P0~~   | ✅ Fixed in Passes 112-115                                   |
 
 ## Current Supabase Reality
 
@@ -1423,17 +1425,19 @@ These features are in the production bundle with real provider backing. They wor
 
 These features exist in code but have known gaps in reliability, UX completeness, edge-case handling, or operational readiness.
 
-| Feature                        | Gap                                                                              | Next Step                                       |
-| ------------------------------ | -------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Turn-by-turn UX                | No offline fallback, no rerouting on deviation, no ETA updates during navigation | Add deviation detection + reroute trigger       |
-| Speed-limit HUD                | Overpass API can return stale/missing data in rural areas; no fallback display   | Add "no data available" graceful state          |
-| Voice navigation               | Browser TTS quality varies wildly across devices/OS; no voice selection UI       | Add voice picker, test cross-browser            |
-| Navigation session persistence | localStorage-only — no cloud sync, lost on device change                         | Migrate to Supabase `navigation_sessions` table |
-| Shop bid submission            | UI exists, cross-role data path not fully coherent                               | Wire real Supabase bid rows to shop view        |
-| Insurer claims view            | Polished UI, mostly mock data                                                    | Connect to real claim persistence               |
-| Shop/insurer dashboards        | Strong UI shells, partial real data                                              | Progressive real-data wiring                    |
-| Profile dropdown               | Real user data, no glass design treatment                                        | Adopt map theme tokens                          |
-| Landing page design            | Unified — all 7 landing surfaces now use bd-glass tokens and brand navy identity | Stage 3b: forms + data tables                   |
+| Feature                        | Gap                                                                                                                                               | Next Step                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Turn-by-turn UX                | No offline fallback, no rerouting on deviation, no ETA updates during navigation                                                                  | Add deviation detection + reroute trigger       |
+| Speed-limit HUD                | Overpass API can return stale/missing data in rural areas; no fallback display                                                                    | Add "no data available" graceful state          |
+| Voice navigation               | Browser TTS quality varies wildly across devices/OS; no voice selection UI                                                                        | Add voice picker, test cross-browser            |
+| Navigation session persistence | localStorage-only — no cloud sync, lost on device change                                                                                          | Migrate to Supabase `navigation_sessions` table |
+| Shop bid submission            | UI exists, cross-role data path not fully coherent                                                                                                | Wire real Supabase bid rows to shop view        |
+| Insurer claims view            | Polished UI, mostly mock data                                                                                                                     | Connect to real claim persistence               |
+| Shop/insurer dashboards        | Strong UI shells, partial real data                                                                                                               | Progressive real-data wiring                    |
+| Profile dropdown               | Real user data, no glass design treatment                                                                                                         | Adopt map theme tokens                          |
+| Landing page design            | Unified — all 10 landing surfaces use bd-glass tokens and navy dark identity. 4 light sections (Hero→WhoWeServe) → 6 dark sections (About→Footer) | Stage 3b: forms + data tables                   |
+| Bid cards (BidCardArticle)     | Dark shell complete (Pass 234) — matches BidsScreen dark navy background                                                                          | Wire to real bids from Supabase                 |
+| Demo account switcher          | Dark shell complete (Pass 235) — all text, banners, buttons now on-system                                                                         | Keep current; verify on mobile                  |
 
 ### Tier 3 — Aspirational (not in code, documented as future direction only)
 

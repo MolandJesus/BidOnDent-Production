@@ -4,19 +4,32 @@
 
 ### Build Progress
 
-| 0% |████████████████████████████████████████████████████████████████████████████| 123% 🚀 |
+| 0% |████████████████████████████████████████████████████████████████████████████| 124% 🚀 |
 
-**Passes completed:** 233 / 160+ — ⚡ LANDING PAGE DARK FLOW COMPLETE
+**Passes completed:** 235 / 160+ — ⚡ DARK SHELL UNIFIED ACROSS ALL APP SCREENS
 
-| Item             | Value                                                                        |
-| ---------------- | ---------------------------------------------------------------------------- |
-| **Last pass**    | Pass 233 — TrustStats compact + FooterSection logo glass treatment           |
-| **Current pass** | 233 ✅ complete (Design refinement: landing dark seam elimination)           |
-| **Build**        | ✓ 0 errors · 2.11s · 742KB main bundle                                       |
-| **Spellcheck**   | 0 issues                                                                     |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                               |
-| **Last pushed**  | 2026-03-25                                                                   |
-| **Phase**        | DESIGN REFINEMENT — landing dark flow unified, card system cohesion complete |
+| Item             | Value                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------- |
+| **Last pass**    | Pass 235 — DemoAccountSwitcher dark treatment                                      |
+| **Current pass** | 235 ✅ complete (Design refinement: bid card + demo switcher dark shell)           |
+| **Build**        | ✓ 0 errors · 1.98s · 742KB main bundle                                             |
+| **Spellcheck**   | 0 issues                                                                           |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`                                     |
+| **Last pushed**  | 2026-03-25                                                                         |
+| **Phase**        | DESIGN REFINEMENT — all dashboard screens unified to dark shell, ready for content |
+
+### Bid Card + Demo Switcher Dark Shell (Passes 234–235, 2026-03-25)
+
+| Pass | Title                                           | Category | Status |
+| ---- | ----------------------------------------------- | -------- | ------ |
+| 234  | BidCardArticle full dark-glass shell conversion | P1-UX    | ✅     |
+| 235  | DemoAccountSwitcher dark treatment              | P4-UX    | ✅     |
+
+**Key changes in this sweep:**
+
+- **BidCardArticle dark shell (P1)**: Converted from light-mode frosted glass (used across non-dark contexts) to explicit dark glass shell matching BidsScreen. Outer `motion.article`: dark inline style `rgba(11,23,47,0.82) → rgba(8,18,38,0.78)` + `rgba(96,165,250,0.18)` base border. All text: `text-slate-900` → `text-slate-100` (shop name, price), `text-slate-600` → `text-slate-300/80` (metadata, timeframe), `text-slate-500` → `text-slate-400/80` (savings). Chevron: `text-slate-500` → `text-blue-200/70`. Badge: `bg-blue-50 text-blue-700` → `bg-blue-400/15 text-blue-200` with border. Accent colors: `text-emerald-700` → `text-emerald-400`. Image container: `bg-slate-100` → `bg-white/[0.08]`.
+- **DemoAccountSwitcher dark shell (P4)**: Header card got explicit dark glass inline style. "Back to Dashboard": `text-slate-600` → `text-blue-300/80`. Heading: `text-slate-900` → `text-white/90`. Description: `text-slate-600` → `text-slate-300/80`. "Demo Mode Active" banner: `border-blue-200 bg-blue-50 text-blue-900` → `border-blue-400/30 bg-blue-400/10 text-blue-200`. Feature cards: dark glass inline style each. "KEY FEATURES": `text-slate-500` → `text-blue-200/60`. Feature items: `text-slate-700` → `text-slate-300/80`. "Switch to This View": `bg-slate-100 text-slate-800` → `bg-white/[0.10] text-slate-100`. "Currently Viewing": `bg-blue-100 text-blue-700` → `bg-blue-400/20 text-blue-200`. Exit button: `bg-white text-slate-700` → `bg-transparent text-slate-300`.
+- **Build**: ✓ 0 errors · 1.98s · 742KB
 
 ### Landing Dark Flow + Card Polish (Passes 231–233, 2026-03-25)
 

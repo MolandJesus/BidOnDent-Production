@@ -455,6 +455,58 @@ These temptations arise in every design project. Record them here to avoid rehas
 _This document lives in `/docs/MOLANDJEUS_DESIGN_DECISIONS.md` and should be updated whenever
 a significant design decision is made — agreed upon by both Mola and Jesus._
 
+---
+
+## Dark Shell Design System — Completed (2026-03-25)
+
+### Established Dark Glass Pattern (canonical across all dashboard screens)
+
+Every non-landing screen and card that sits on a dark navy background now uses this pattern:
+
+```
+background: linear-gradient(180deg, rgba(11, 23, 47, 0.82–0.84) 0%, rgba(8, 18, 38, 0.78–0.80) 100%)
+borderColor: rgba(96, 165, 250, 0.18–0.24)  [from rgba(96,165,250)]
+```
+
+**Text palette for dark-shell components:**
+
+- Primary text: `text-slate-100` (headings, prices, names)
+- Secondary text: `text-slate-300/80` (metadata, descriptions, labels)
+- Muted text: `text-slate-400/70` or `text-blue-200/60` (tertiary info)
+- Accent interactive: `text-blue-200/70` → hover `text-blue-100` (chevrons, navigation)
+- Success/positive: `text-emerald-400` (lowest bid, ratings)
+- Links/back-nav: `text-blue-300/80` → hover `text-blue-200`
+- Section label uppercase: `text-blue-200/60`
+
+**Interactive elements in dark-shell:**
+
+- Info pills: `bg-white/[0.07–0.08] text-slate-200 border border-white/[0.1]`
+- Action tint badge: `bg-blue-400/15 text-blue-200–300 border border-blue-300/20`
+- Neutral button: `border border-white/[0.12] text-slate-300 hover:bg-white/[0.08–0.10]`
+- Danger/decline: `hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/10`
+- "Currently Viewing" / active passive: `bg-blue-400/20 text-blue-200`
+- "Switch to" / secondary action: `bg-white/[0.10] text-slate-100 hover:bg-white/[0.15]`
+
+**Decorative/status banners (dark-shell):**
+
+- Info/active: `border border-blue-400/30 bg-blue-400/10 text-blue-200`
+- Image placeholder: `bg-white/[0.08]`
+
+### Screens with confirmed dark-shell treatment (Pass 234-235 final sweep):
+
+- `BidCardArticle.tsx` — full dark glass shell, all text/badge/button variants
+- `DemoAccountSwitcher.tsx` — header card + feature cards + all CTAs
+- `AccountHeader.tsx`, `AccountInfoCard.tsx`, `AccountMenu.tsx` — already compliant
+- `BidsScreen.tsx` — header, stat cards, empty state — already compliant
+- `HomeScreen.tsx` — welcome bar, map-dark mode — already compliant
+- `ShopActiveJobsScreen.tsx`, `InsurerClaimsScreen.tsx`, `ShopRequestsScreen.tsx` — already compliant (Pass 224-225)
+
+### Decision: Explicit inline style over `.dark` class propagation
+
+We chose to apply dark glass backgrounds via explicit inline styles on each component rather than propagating a `.dark` class from parent screens. Rationale: bd-glass-card components are shared across multiple surface types (light landing page and dark dashboard). Adding `.dark` at a screen level would risk cascading into unintended contexts. The inline override is safer, more intentional, and makes each component's dark treatment self-documenting.
+
+---
+
 ## Final Principle
 
 The final end-state for the maps product is not just “good UI.”
