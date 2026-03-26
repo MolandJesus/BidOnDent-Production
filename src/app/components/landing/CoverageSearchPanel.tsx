@@ -77,7 +77,7 @@ export default function CoverageSearchPanel({
         </div>
       </div>
 
-      <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1.2fr)_180px_180px]">
+      <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_140px]">
         <label className="block">
           <span className={cn("mb-2 block text-sm font-semibold", theme.titleClassName)}>
             ZIP code
@@ -105,41 +105,39 @@ export default function CoverageSearchPanel({
             <option value="35">35 miles</option>
           </select>
         </label>
-
-        <div
-          className={cn(
-            "flex flex-col justify-end rounded-[1.1rem] px-4 py-3",
-            theme.panelClassName
-          )}
-        >
-          <div className={theme.metricLabelClassName}>Focus radius</div>
-          <div className={cn("mt-1 text-lg font-semibold", theme.titleClassName)}>
-            {radiusMiles} miles
-          </div>
-        </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
+        <button
+          type="button"
+          onClick={onExpandMap}
+          className={cn(
+            theme.primaryButtonClassName,
+            "min-h-[44px] justify-center"
+          )}
+        >
+          <Expand className="h-4 w-4" />
+          Open Full Map
+        </button>
         <button
           type="button"
           onClick={onCenterMap}
           disabled={!canCenterMap}
-          className={cn(theme.primaryButtonClassName, "disabled:translate-y-0 disabled:opacity-50")}
+          className={cn(
+            theme.secondaryButtonClassName,
+            "min-h-[44px] justify-center disabled:translate-y-0 disabled:opacity-50"
+          )}
         >
           <LocateFixed className="h-4 w-4" />
-          Center Map
+          Center
         </button>
         <button
           type="button"
           onClick={onUseCurrentLocation}
-          className={theme.secondaryButtonClassName}
+          className={cn(theme.secondaryButtonClassName, "min-h-[44px] justify-center")}
         >
           <Radar className="h-4 w-4" />
-          {isFindingLocation ? "Finding Your Location..." : "Use My Current Location"}
-        </button>
-        <button type="button" onClick={onExpandMap} className={theme.secondaryButtonClassName}>
-          <Expand className="h-4 w-4" />
-          Full Screen Map
+          {isFindingLocation ? "Finding..." : "My Location"}
         </button>
       </div>
 
@@ -175,22 +173,16 @@ export default function CoverageSearchPanel({
 
       <div
         className={cn(
-          "mt-4 flex items-start gap-3 rounded-[1.3rem] px-4 py-3",
+          "mt-3 flex items-center gap-2.5 rounded-[1.2rem] px-4 py-2.5 text-sm",
           theme.panelClassName
         )}
       >
         <Navigation
-          className={cn("mt-0.5 h-4 w-4", tone === "light" ? "text-sky-600" : "text-cyan-300")}
+          className={cn("h-3.5 w-3.5 shrink-0", tone === "light" ? "text-sky-600" : "text-cyan-300")}
         />
-        <div>
-          <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-            Route preview with easy navigation handoff
-          </div>
-          <p className={cn("mt-1 text-sm leading-6", theme.secondaryTextClassName)}>
-            Preview your route to a shop, then open directions in your preferred maps app. Light and
-            dark themes adapt to your preference.
-          </p>
-        </div>
+        <span className={theme.secondaryTextClassName}>
+          Select a shop to preview routes and launch directions in your preferred maps app.
+        </span>
       </div>
     </div>
   );

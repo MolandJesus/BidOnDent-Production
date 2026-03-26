@@ -40,7 +40,7 @@ export default function HowItWorksSection({
     <section
       id="how-it-works"
       className="pt-12 md:pt-16 pb-10 md:pb-14"
-      style={{ background: "linear-gradient(180deg, #ffffff 0%, #f4f8fc 30%, #edf3fa 100%)" }}
+      style={{ background: "linear-gradient(180deg, #e8f0f8 0%, #f0f5fb 30%, #edf3fa 100%)" }}
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -55,57 +55,61 @@ export default function HowItWorksSection({
         </div>
 
         <div
-          className={`text-center mb-6 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 md:mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3 className="text-3xl sm:text-4xl font-bold mb-4">How It Works</h3>
-          <p className="text-xl text-gray-600">Get your car repaired in three simple steps</p>
+          <h3 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-900">How It Works</h3>
+          <p className="text-base sm:text-xl leading-relaxed text-slate-700">
+            Get your car repaired in three simple steps
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5 md:gap-8 relative">
+        <div className="grid md:grid-cols-3 gap-4 md:gap-6 relative">
           {/* Dashed connectors between cards (desktop only) */}
           <div
-            className="hidden md:block absolute top-24 left-[33%] w-[12%] border-t-2 border-dashed border-slate-300/50"
+            className="hidden md:block absolute top-16 left-[33%] w-[10%] border-t-2 border-dashed border-blue-200/40"
             style={{ transform: "translateX(-50%)" }}
           />
           <div
-            className="hidden md:block absolute top-24 left-[67%] w-[12%] border-t-2 border-dashed border-slate-300/50"
+            className="hidden md:block absolute top-16 left-[67%] w-[10%] border-t-2 border-dashed border-blue-200/40"
             style={{ transform: "translateX(-50%)" }}
           />
 
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className={`bd-glass-card p-4 sm:p-8 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ transitionDelay: `${0.3 + index * 0.15}s` }}
+              className={`bd-glass-card p-5 sm:p-6 hover:border-blue-300 hover:shadow-xl transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{
+                transitionDelay: `${0.3 + index * 0.15}s`,
+                background:
+                  "linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 251, 255, 0.98) 100%)",
+              }}
             >
-              {/* Icon */}
-              <div
-                className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl mb-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-sm"
-                style={{
-                  backgroundColor: `${primaryColor}18`,
-                  border: `1px solid ${primaryColor}15`,
-                  boxShadow: "0 0 16px rgba(59, 130, 246, 0.08)",
-                }}
-              >
-                <step.icon className="w-7 h-7 sm:w-8 sm:h-8 text-blue-500" />
-              </div>
-
-              {/* Step number badge - below icon */}
-              <div className="mb-4">
+              {/* Icon with overlaid step number */}
+              <div className="relative inline-block mb-5">
+                <div
+                  className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg shadow-sm"
+                  style={{
+                    backgroundColor: `${primaryColor}14`,
+                    border: `1px solid ${primaryColor}12`,
+                    boxShadow: "0 0 12px rgba(59, 130, 246, 0.06)",
+                  }}
+                >
+                  <step.icon className="w-6 h-6 sm:w-7 sm:h-7 text-blue-500" />
+                </div>
                 <span
-                  className="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold"
+                  className="absolute -bottom-1.5 -left-1.5 inline-flex items-center justify-center w-6 h-6 rounded-full text-white text-xs font-bold"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor}, #147dd6)`,
-                    boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)",
+                    boxShadow: "0 2px 6px rgba(37, 99, 235, 0.3)",
                   }}
                 >
                   {step.number}
                 </span>
               </div>
 
-              <h4 className="font-bold text-xl mb-3">{step.title}</h4>
-              <p className="text-gray-600 leading-relaxed">{step.description}</p>
+              <h4 className="font-bold text-lg sm:text-xl mb-2 text-slate-900">{step.title}</h4>
+              <p className="text-sm sm:text-base text-slate-700 leading-relaxed">{step.description}</p>
             </div>
           ))}
         </div>

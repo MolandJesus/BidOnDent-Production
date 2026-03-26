@@ -87,79 +87,83 @@ export default function MapSurfaceStatusBar({
   const performanceLatestAgeLabel = formatSampleAgeLabel(performanceLatestSampleAgeMs);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-3 p-4" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 1rem, 1rem)" }}>
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] flex flex-wrap items-end justify-between gap-2.5 px-3 pb-3 sm:gap-3 sm:px-4 sm:pb-4" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px) + 0.75rem, 0.75rem)" }}>
+      {/* Branded info strip — compact single row */}
       <div
         className={cn(
-          "pointer-events-auto flex flex-wrap items-center gap-4 px-4 py-3",
+          "pointer-events-auto inline-flex items-center gap-2 px-3 py-2 text-xs sm:gap-3 sm:px-4 sm:py-2.5 sm:text-sm",
           theme.panelStrongClassName
         )}
       >
-        <div>
-          <div className={theme.metricLabelClassName}>Regions</div>
-          <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-            {regionCount} NY regions
-          </div>
-        </div>
-        <div>
-          <div className={theme.metricLabelClassName}>Partners</div>
-          <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-            {partnerShopCount} live shops
-          </div>
-        </div>
-        <div>
-          <div className={theme.metricLabelClassName}>Map mode</div>
-          <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-            {overviewLabel || modeLabel}
-          </div>
-        </div>
-        {import.meta.env.DEV && typeof performanceOverBudgetCount === "number" ? (
-          <div className="space-y-1.5">
-            <div className={theme.metricLabelClassName}>Performance</div>
-            <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-              {performanceLabel}
-            </div>
-            <div className={cn("text-xs", theme.secondaryTextClassName)}>
-              {`${performanceDetail} • Zoom ${lastZoomDurationMs ?? "--"}ms • Pan ${lastPanDurationMs ?? "--"}ms`}
-            </div>
-            <div className={cn("text-xs", theme.secondaryTextClassName)}>
-              {typeof performanceRecentOverBudgetCount === "number"
-                ? `Recent over-budget: ${performanceRecentOverBudgetCount} • Total over-budget: ${performanceOverBudgetCount}`
-                : `Total over-budget: ${performanceOverBudgetCount}`}
-            </div>
-            <div className={cn("flex items-center gap-3 text-xs", theme.secondaryTextClassName)}>
-              <span>
-                {performanceLatestLabel
-                  ? `Last sample: ${performanceLatestLabel}${performanceLatestAgeLabel ? ` (${performanceLatestAgeLabel})` : ""}`
-                  : "Last sample: --"}
-              </span>
-              {onResetPerformance ? (
-                <button
-                  type="button"
-                  onClick={onResetPerformance}
-                  className={theme.tertiaryButtonClassName}
-                >
-                  Reset
-                </button>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
+        <span className={cn("font-bold tracking-wide uppercase", theme.titleClassName)} style={{ fontSize: "0.65rem", letterSpacing: "0.14em" }}>
+          BidOnDent Maps
+        </span>
+        <span className={theme.secondaryTextClassName}>·</span>
+        <span className={cn("font-medium", theme.bodyClassName)}>
+          {regionCount} regions
+        </span>
+        <span className={theme.secondaryTextClassName}>·</span>
+        <span className={cn("font-medium", theme.bodyClassName)}>
+          {partnerShopCount} shops
+        </span>
+        <span className={cn("hidden sm:inline", theme.secondaryTextClassName)}>·</span>
+        <span className={cn("hidden sm:inline font-medium", theme.bodyClassName)}>
+          {overviewLabel || modeLabel}
+        </span>
       </div>
+
+      {/* DEV-only performance overlay */}
+      {import.meta.env.DEV && typeof performanceOverBudgetCount === "number" ? (
+        <div
+          className={cn(
+            "pointer-events-auto space-y-1 px-3 py-2 text-xs",
+            theme.panelStrongClassName
+          )}
+        >
+          <div className={cn("font-semibold", theme.titleClassName)}>
+            {performanceLabel}
+          </div>
+          <div className={theme.secondaryTextClassName}>
+            {`${performanceDetail} • Zoom ${lastZoomDurationMs ?? "--"}ms • Pan ${lastPanDurationMs ?? "--"}ms`}
+          </div>
+          <div className={theme.secondaryTextClassName}>
+            {typeof performanceRecentOverBudgetCount === "number"
+              ? `Recent over-budget: ${performanceRecentOverBudgetCount} • Total over-budget: ${performanceOverBudgetCount}`
+              : `Total over-budget: ${performanceOverBudgetCount}`}
+          </div>
+          <div className={cn("flex items-center gap-3", theme.secondaryTextClassName)}>
+            <span>
+              {performanceLatestLabel
+                ? `Last sample: ${performanceLatestLabel}${performanceLatestAgeLabel ? ` (${performanceLatestAgeLabel})` : ""}`
+                : "Last sample: --"}
+            </span>
+            {onResetPerformance ? (
+              <button
+                type="button"
+                onClick={onResetPerformance}
+                className={theme.tertiaryButtonClassName}
+              >
+                Reset
+              </button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
 
       {radiusMiles ? (
         <div
           className={cn(
-            "pointer-events-auto inline-flex flex-wrap items-center gap-2 px-4 py-3",
+            "pointer-events-auto inline-flex items-center gap-2 px-3 py-2 text-xs sm:px-4 sm:py-2.5 sm:text-sm",
             theme.accentPanelClassName
           )}
         >
-          <span className={cn("text-sm font-semibold", theme.titleClassName)}>
-            {radiusMiles}-mile live search radius
+          <span className={cn("font-semibold", theme.titleClassName)}>
+            {radiusMiles}-mi radius
           </span>
           {overviewLabel ? (
             <>
-              <span className={theme.secondaryTextClassName}>•</span>
-              <span className={cn("text-sm", theme.bodyClassName)}>Zoom in for partner detail</span>
+              <span className={theme.secondaryTextClassName}>·</span>
+              <span className={cn("hidden sm:inline", theme.bodyClassName)}>Zoom for detail</span>
             </>
           ) : null}
         </div>

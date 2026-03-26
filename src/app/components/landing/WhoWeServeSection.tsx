@@ -79,40 +79,41 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
         </div>
 
         <div
-          className={`text-center mb-8 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 md:mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3 className="text-3xl sm:text-4xl font-bold mb-4">Who We Serve</h3>
-          <p className="text-xl text-gray-600">
+          <h3 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-900">Who We Serve</h3>
+          <p className="text-base sm:text-xl leading-relaxed text-slate-700">
             Solutions for everyone in the auto repair ecosystem
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5 md:gap-8">
+        <div className="grid md:grid-cols-3 gap-4 md:gap-6">
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-8 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-xl hover:-translate-y-2 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bg-gradient-to-br ${card.gradientFrom} to-white p-5 sm:p-6 rounded-2xl border-2 ${card.borderHover} transition-all duration-500 hover:shadow-xl hover:-translate-y-1 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 borderColor: card.borderColor,
                 transitionDelay: `${0.3 + index * 0.15}s`,
+                boxShadow: "0 6px 18px rgba(37, 99, 235, 0.06)",
                 ["--check-color" as never]: card.checkColor,
               }}
             >
-              <div className="mb-6">
+              <div className="mb-4">
                 <div
-                  className="inline-flex items-center justify-center w-14 h-14 rounded-2xl"
-                  style={{ backgroundColor: card.iconBg, boxShadow: `0 4px 16px ${card.iconBg}40` }}
+                  className="inline-flex items-center justify-center w-12 h-12 rounded-xl"
+                  style={{ backgroundColor: card.iconBg, boxShadow: `0 3px 12px ${card.iconBg}30` }}
                 >
-                  <card.icon className="w-7 h-7 text-white" />
+                  <card.icon className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <h4 className="font-bold text-2xl mb-4 text-gray-900">{card.title}</h4>
-              <ul className="space-y-3 mb-8">
+              <h4 className="font-bold text-xl mb-3 text-gray-900">{card.title}</h4>
+              <ul className="space-y-2.5">
                 {card.items.map((item, i) => (
                   <li key={i} className="flex items-start">
-                    <CheckCircle2 className="w-5 h-5 mr-2 mt-1 flex-shrink-0 text-[color:var(--check-color)]" />
-                    <span className="text-gray-700">{item}</span>
+                    <CheckCircle2 className="w-4.5 h-4.5 mr-2 mt-0.5 flex-shrink-0 text-[color:var(--check-color)]" />
+                    <span className="text-sm text-slate-700">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -122,20 +123,20 @@ export default function WhoWeServeSection({ primaryColor }: WhoWeServeSectionPro
 
         {/* Product truth badges */}
         <div
-          className={`flex flex-wrap justify-center gap-6 mt-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`flex flex-wrap justify-center gap-3 mt-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.8s" }}
         >
           {[
-            { icon: "✓", text: "$0 for Customers" },
-            { icon: "✓", text: "NY Service Area" },
-            { icon: "✓", text: "Transparent Bidding" },
+            { text: "$0 for Customers" },
+            { text: "NY Service Area" },
+            { text: "Transparent Bidding" },
           ].map((badge) => (
             <div
               key={badge.text}
-              className="flex items-center gap-2 bd-glass-card px-4 py-2 rounded-full"
+              className="flex items-center gap-1.5 rounded-full border border-blue-200/60 bg-blue-50/60 px-3.5 py-1.5"
             >
-              <span className="text-green-600 text-sm font-bold">{badge.icon}</span>
-              <span className="text-sm font-semibold text-gray-700">{badge.text}</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
+              <span className="text-xs font-semibold text-slate-600">{badge.text}</span>
             </div>
           ))}
         </div>

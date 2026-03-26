@@ -6,19 +6,43 @@
 
 | 0% |████████████████████████████████████████████████████████████████████████████| 118% 🚀 |
 
-**Passes completed:** 193 / 160+ — ⚡ PLATFORM BUGFIX SWEEP + UI QUALITY PUSH
+**Passes completed:** 221 / 160+ — ⚡ DESIGN REFINEMENT SWEEP
 
-| Item             | Value                                                       |
-| ---------------- | ----------------------------------------------------------- |
-| **Last pass**    | Pass 193 — Glass card opacity for dashboard readability     |
-| **Current pass** | 193 ✅ complete                                             |
-| **Build**        | ✓ 0 errors · 1.97s · 735KB main bundle                      |
-| **Spellcheck**   | 0 issues                                                    |
-| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`              |
-| **Last pushed**  | 2026-03-25                                                  |
-| **Phase**        | BUGFIX SWEEP — auth fixes, UI quality, production readiness |
+| Item             | Value                                                        |
+| ---------------- | ------------------------------------------------------------ |
+| **Last pass**    | Pass 221 — AboutOpportunity section tighten                  |
+| **Current pass** | 221 ✅ complete                                              |
+| **Build**        | ✓ 0 errors · 2.02s · 740KB main bundle                       |
+| **Spellcheck**   | 0 issues                                                     |
+| **Branch**       | `feature/platform-bugfix-sweep-by-MolandJesus`               |
+| **Last pushed**  | 2026-03-25                                                   |
+| **Phase**        | DESIGN REFINEMENT — density, map dominance, spatial flow     |
 
-### Platform Bugfix Sweep (Passes 190–193, 2026-03-25)
+### Design Refinement Sweep (Passes 214–221, 2026-03-25)
+
+| Pass | Title                                                      | Category   | Status |
+| ---- | ---------------------------------------------------------- | ---------- | ------ |
+| 214  | Map status bar: compact branded strip, less technical      | P4-UX      | ✅     |
+| 215  | Coverage search panel declutter + visual hierarchy         | P4-UX      | ✅     |
+| 216  | HowItWorks card density + step connector refinement        | P4-UX      | ✅     |
+| 217  | Dashboard welcome bar compact for map dominance            | P4-UX      | ✅     |
+| 218  | Landing section gradient continuity (remove white seams)   | P4-UX      | ✅     |
+| 219  | Mobile bottom nav spatial integration + blur               | P4-UX      | ✅     |
+| 220  | Benefits + WhoWeServe card density + trust badge tighten   | P4-UX      | ✅     |
+| 221  | AboutOpportunity section density tighten                   | P4-UX      | ✅     |
+
+**Key changes in this sweep:**
+
+- **Map status bar**: Replaced technical multi-row metric panel with compact branded "BidOnDent Maps · N regions · N shops" strip. DEV performance overlay stays separate.
+- **Coverage search**: Removed duplicate "Focus radius" display card, promoted "Open Full Map" as primary CTA, collapsed route preview to single-line hint.
+- **HowItWorks**: Merged step number badge into icon (corner overlay), tightened card padding from p-8 to p-6, reduced header gap.
+- **Dashboard**: Welcome card compressed from multi-line hero to compact inline bar so map widget dominates the viewport.
+- **Section continuity**: Landing sections now share continuous blue-tinted gradients instead of resetting to white at each boundary.
+- **Mobile nav**: Stronger blur/saturation, inactive tabs more subdued, active tab elevated with shadow, tighter rhythm.
+- **Card density**: Benefits, WhoWeServe, AboutOpportunity all tightened — smaller padding, smaller gaps, more compact trust badges.
+- **Bundle**: 742KB → 740KB (net reduction from CSS cleanup)
+
+### Platform Bugfix Sweep (Passes 190–212, 2026-03-25)
 
 | Pass | Title                                                      | Category   | Status |
 | ---- | ---------------------------------------------------------- | ---------- | ------ |
@@ -26,19 +50,56 @@
 | 191  | Migrate bids.ts from Supabase auth to Clerk edge functions | P1-RUNTIME | ✅     |
 | 192  | Tighten landing page section spacing (8 sections)          | P4-UX      | ✅     |
 | 193  | Glass card opacity for dashboard readability               | P4-UX      | ✅     |
+| 194  | Wire userData.bids from Supabase + bid state sync          | P2-DATA    | ✅     |
+| 195  | HowItWorks mobile spacing compression                      | P4-UX      | ✅     |
+| 196  | DashboardRouter dead-end fallback + profile upload auth    | P1-RUNTIME | ✅     |
+| 197  | Report vehicle year validation guardrails                  | P4-UX      | ✅     |
+| 198  | Coverage search mobile action layout declutter             | P4-UX      | ✅     |
+| 199  | Landing subtitle typography hierarchy harmonization        | P4-UX      | ✅     |
+| 200  | Dashboard shell night cohesion + map/header separation     | P4-UX      | ✅     |
+| 201  | Bid status persistence guard for accept/reject flows       | P2-DATA    | ✅     |
+| 202  | Autosave signature guards to reduce cloud write fan-out    | P2-DATA    | ✅     |
+| 203  | Operating regions county list map-native treatment         | P4-UX      | ✅     |
+| 204  | Dashboard home overlay cards night-mode harmonization      | P4-UX      | ✅     |
+| 205  | Account system preferences appearance mode wiring          | P3-ARCH    | ✅     |
+| 206  | Appearance shell consistency hardening                     | P4-UX      | ✅     |
+| 207  | Mobile contrast + map card cohesion sweep                  | P4-UX      | ✅     |
+| 208  | Dashboard mobile stack rhythm tuning                       | P4-UX      | ✅     |
+| 209  | Account card dark-shell cohesion                           | P4-UX      | ✅     |
+| 210  | Report flow dark-shell cohesion                            | P4-UX      | ✅     |
+| 211  | Report step dark-shell parity completion                   | P4-UX      | ✅     |
+| 212  | Report appearance-mode parity wiring                       | P4-UX      | ✅     |
+| 213  | Remaining report steps appearance-mode completion          | P4-UX      | ✅     |
 
 **Key fixes in this sweep:**
 
 - **P1 CORE LOOP FIX**: All bid operations (submit, accept, reject, delete) migrated from broken `supabase.auth.getUser()` to Clerk-authenticated edge functions. The report → bid → accept loop now has a real auth path.
+- **P1 DEAD-END FIX**: DashboardRouter now has invalid-state fallbacks so users never hit blank screens from bad route/tab state.
+- **P1 PROFILE FIX**: Profile image uploads no longer depend on Supabase auth session checks (Clerk-compatible path).
 - **Bundle size restored**: 1,080KB → 735KB (code splitting fixed)
 - **Smoke Test**: Hidden from production users (DEV-only)
 - **Landing page**: Tighter vertical rhythm across all 8 sections
 - **Dashboard**: Glass cards more opaque for text readability on dark bg
+- **Report quality**: Vehicle year now enforces valid 4-digit range (1980 to next model year)
+- **Coverage UX**: ZIP search actions now stack cleanly on mobile with full-width touch targets
+- **Landing readability**: Section subtitles now use consistent mobile-first hierarchy (`text-base` → `sm:text-xl`)
+- **Dashboard shell cohesion**: Fixed map layer/header visual collision by offsetting map below sticky header and aligned header/sidebar/mobile nav to night-map tone system
+- **Bid reliability**: Accept/reject UI updates now require successful Supabase status updates before local state mutation
+- **Cloud sync efficiency**: Autosave now checks per-entity signatures before writing profile/vehicles/reports to Supabase
+- **Map clarity**: County list now uses active-region hierarchy and status badges for faster visual scanning
+- **Night mode adoption**: Dashboard welcome/reports overlays now use dark map-native glass tones with readable contrast
+- **System preferences foundation**: Account Settings now includes a persisted appearance mode toggle (`Map Dark` / `Light`) propagated through App, dashboard shell, and landing shell for future design expansion
+- **Appearance consistency hardening**: Added document-level appearance attributes and mode-aware mobile bottom nav treatment so light mode and map-dark mode stay coherent across shell-level surfaces
+- **Mobile readability gains**: Landing section headings/body text and dashboard map/bids cards now use stronger contrast and map-native card treatments for clearer scanability on dark shell
+- **Dashboard rhythm refinement**: Home mobile map-to-content handoff now has improved spacing and compact map widget density to reduce top-stack crowding
+- **Account cohesion refinement**: Account information and account menu surfaces now align to dark map-shell card language for consistent authenticated mobile experience
+- **Report flow cohesion**: Report header/progress and vehicle step now align to dark map-shell treatment for consistent tab-to-tab dashboard experience
+- **Report step parity completion**: Damage-area and final-description steps now match dark map-shell cards, controls, and field contrast for end-to-end report flow continuity
+- **Appearance parity hardening**: Report header/progress and key intake steps now render intentionally in both `map-dark` and `light` modes via app-level appearance wiring
 
 ### Known remaining issues
 
-- **P2**: userData.bids never populated from Supabase (only useBidsForReport hook fetches)
-- **P2**: Cloud auto-save write amplification (writes ALL data on any state change)
+- **P7**: Cloud auto-save still writes full entity sets when one item changes (e.g., all vehicles if any vehicle changed)
 - **P7**: ShopDirectoryScreen is 76KB chunk — could be further split
 
 Visual audit from live screenshots confirms:

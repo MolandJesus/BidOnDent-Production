@@ -53,7 +53,7 @@ export default function BenefitsSection({
   return (
     <section
       className="pt-10 pb-12 md:pt-14 md:pb-18"
-      style={{ background: "linear-gradient(180deg, #ffffff 0%, #f5f8fd 40%, #eef4fb 100%)" }}
+      style={{ background: "linear-gradient(180deg, #edf3fa 0%, #f5f8fd 40%, #eef4fb 100%)" }}
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 max-w-7xl">
@@ -68,10 +68,10 @@ export default function BenefitsSection({
         </div>
 
         <div
-          className={`text-center mb-8 md:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 md:mb-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3 className="text-2xl sm:text-4xl font-bold mb-4">
+          <h3 className="text-2xl sm:text-4xl font-bold mb-4 text-slate-900">
             Why Choose{" "}
             <span
               style={{
@@ -83,19 +83,23 @@ export default function BenefitsSection({
             >
               Bid
             </span>
-            <span style={{ color: "#70c0ee" }}>On</span>
+            <span style={{ color: "#1e40af" }}>On</span>
             <span className="text-gray-800">Dent</span>?
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-5 md:gap-6">
           {benefits.map((benefit, index) => (
             <div
               key={benefit.title}
-              className={`bd-glass-card p-6 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-2 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ transitionDelay: `${0.3 + index * 0.15}s` }}
+              className={`bd-glass-card p-4 sm:p-5 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-1 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{
+                transitionDelay: `${0.3 + index * 0.15}s`,
+                background:
+                  "linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(247, 251, 255, 0.98) 100%)",
+              }}
             >
-              <div className="mb-4 overflow-hidden rounded-lg relative h-48 flex items-center justify-center">
+              <div className="mb-3 overflow-hidden rounded-lg relative h-44 flex items-center justify-center">
                 <ImageErrorBoundary>
                   <ImageWithFallback
                     src={benefit.image}
@@ -111,33 +115,33 @@ export default function BenefitsSection({
                 </span>
               </div>
               <h4 className="font-bold text-xl mb-3">{benefit.title}</h4>
-              <p className="text-slate-600">{benefit.description}</p>
+              <p className="text-slate-700">{benefit.description}</p>
             </div>
           ))}
         </div>
 
         {/* Trust badges row */}
         <div
-          className={`flex flex-wrap justify-center gap-5 md:gap-8 mt-10 md:mt-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`flex flex-wrap justify-center gap-3 mt-8 md:mt-10 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.8s" }}
         >
-          <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
-            <span className="text-2xl font-bold" style={{ color: primaryColor }}>
+          <div className="flex items-center gap-1.5 rounded-full border border-blue-200/50 bg-white/80 px-4 py-2">
+            <span className="text-lg font-bold" style={{ color: primaryColor }}>
               $0
             </span>
-            <span className="text-sm text-gray-600">Free for Customers</span>
+            <span className="text-xs text-slate-600 font-medium">Free for Customers</span>
           </div>
-          <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
-            <span className="text-2xl font-bold" style={{ color: primaryColor }}>
+          <div className="flex items-center gap-1.5 rounded-full border border-blue-200/50 bg-white/80 px-4 py-2">
+            <span className="text-lg font-bold" style={{ color: primaryColor }}>
               3+
             </span>
-            <span className="text-sm text-gray-600">Bids Per Request</span>
+            <span className="text-xs text-slate-600 font-medium">Bids Per Request</span>
           </div>
-          <div className="flex items-center gap-2 bd-glass-card px-5 py-3 rounded-full">
+          <div className="flex items-center gap-1.5 rounded-full border border-blue-200/50 bg-white/80 px-4 py-2">
             <span className="text-sm font-bold" style={{ color: primaryColor }}>
               NY
             </span>
-            <span className="text-sm text-gray-600">Service Area</span>
+            <span className="text-xs text-slate-600 font-medium">Service Area</span>
           </div>
         </div>
       </div>
