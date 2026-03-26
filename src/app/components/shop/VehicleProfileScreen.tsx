@@ -121,7 +121,7 @@ export default function VehicleProfileScreen({
             <div className="flex items-center">
               <button
                 onClick={onBack}
-                className="mr-3 p-2 hover:bg-white/40 rounded-lg transition-colors"
+                className="mr-3 p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
@@ -235,7 +235,7 @@ export default function VehicleProfileScreen({
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleCancel}
-                  className="flex-1 px-4 py-2 border border-gray-200/60 rounded-md font-medium hover:bg-white/40"
+                  className="flex-1 px-4 py-2 border border-white/12 rounded-md font-medium text-slate-200 hover:bg-white/10"
                 >
                   Cancel
                 </button>
@@ -315,7 +315,7 @@ export default function VehicleProfileScreen({
                     <div className="flex gap-2 ml-4">
                       <button
                         onClick={() => handleEdit(vehicle, index)}
-                        className="p-2 hover:bg-white/40 rounded-lg transition-colors"
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                       >
                         <Edit2 className="w-4 h-4 text-slate-400/70" />
                       </button>

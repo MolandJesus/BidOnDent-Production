@@ -115,7 +115,7 @@ export default function BidsScreen({
           <div className="flex items-center gap-3">
             {onBack && (
               <button
-                className="p-2 rounded-xl hover:bg-white/40 transition-colors"
+                className="p-2 rounded-xl hover:bg-white/10 transition-colors"
                 onClick={onBack}
                 aria-label="Go back to dashboard"
               >
@@ -238,7 +238,7 @@ export default function BidsScreen({
         <div className="flex items-center gap-3">
           {onBack && (
             <button
-              className="p-2 rounded-xl hover:bg-white/40 transition-colors"
+              className="p-2 rounded-xl hover:bg-white/10 transition-colors"
               onClick={onBack}
               aria-label="Go back to dashboard"
             >
