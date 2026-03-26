@@ -396,14 +396,27 @@ export default function ReportScreen({
       />
 
       <div
-        className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)]"
+        className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)] relative overflow-hidden"
         style={{
           background: isLightAppearance
             ? "linear-gradient(180deg, rgba(240, 248, 255, 0.5) 0%, rgba(226, 238, 250, 0.4) 100%)"
             : "linear-gradient(180deg, rgba(8, 18, 38, 0.44) 0%, rgba(5, 12, 26, 0.36) 100%)",
         }}
       >
-        <div className="max-w-4xl mx-auto">
+        {/* Atmospheric orbs */}
+        {!isLightAppearance && (
+          <>
+            <div
+              className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(56,189,248,0.08) 0%, transparent 70%)" }}
+            />
+            <div
+              className="absolute bottom-24 -left-20 w-40 h-40 rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)" }}
+            />
+          </>
+        )}
+        <div className="max-w-4xl mx-auto relative">
           <div className="bd-glass-card overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div

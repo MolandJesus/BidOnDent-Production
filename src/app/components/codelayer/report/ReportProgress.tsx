@@ -33,7 +33,7 @@ export default function ReportProgress({
               <div
                 className={`w-8 h-8 rounded-full text-sm font-semibold flex items-center justify-center transition-all ${
                   step <= activeStep
-                    ? "text-white shadow-sm"
+                    ? "text-white"
                     : isLightAppearance
                       ? "bg-blue-100/80 border border-blue-200 text-blue-700"
                       : "bg-blue-400/10 border border-blue-300/20 text-blue-100/70"
@@ -42,7 +42,7 @@ export default function ReportProgress({
                   step <= activeStep
                     ? {
                         backgroundColor: primaryColor,
-                        boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)",
+                        boxShadow: "0 2px 12px rgba(37, 99, 235, 0.4), 0 0 6px rgba(56, 189, 248, 0.2)",
                       }
                     : {}
                 }
@@ -67,6 +67,7 @@ export default function ReportProgress({
                             ? `${progress % 20 === 0 ? 100 : (progress % 20) * 5}%`
                             : "0%",
                       backgroundColor: primaryColor,
+                      boxShadow: step <= activeStep ? "0 0 8px rgba(37,99,235,0.35)" : "none",
                     }}
                   />
                 </div>
