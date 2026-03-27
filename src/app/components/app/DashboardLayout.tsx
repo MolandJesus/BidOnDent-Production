@@ -250,25 +250,13 @@ export default function DashboardLayout({
                   </span>
                   <span
                     className={`text-[0.9rem] font-semibold transition-colors duration-200 ${
-                      isActive
-                        ? isLightAppearance
-                          ? "text-blue-100"
-                          : "text-blue-100"
-                        : isLightAppearance
-                          ? "text-slate-300 group-hover:text-slate-100"
-                          : "text-slate-300 group-hover:text-slate-100"
+                      isActive ? "text-blue-100" : "text-slate-300 group-hover:text-slate-100"
                     }`}
                   >
                     {tab.label}
                   </span>
                   {isActive && (
-                    <span
-                      className={`ml-auto text-xs font-medium ${
-                        isLightAppearance ? "text-blue-300/50" : "text-blue-300/50"
-                      }`}
-                    >
-                      ›
-                    </span>
+                    <span className="ml-auto text-xs font-medium text-blue-300/50">›</span>
                   )}
                 </button>
               );
@@ -282,26 +270,10 @@ export default function DashboardLayout({
                   className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 hover:bg-blue-500/[0.06]`}
                   type="button"
                 >
-                  <span
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 ${
-                      isLightAppearance
-                        ? "bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]"
-                        : "bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]"
-                    }`}
-                  >
-                    <Sparkles
-                      className={`w-[18px] h-[18px] transition-colors ${
-                        isLightAppearance ? "text-purple-300/80" : "text-purple-300/80"
-                      }`}
-                    />
+                  <span className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]">
+                    <Sparkles className="w-[18px] h-[18px] transition-colors text-purple-300/80" />
                   </span>
-                  <span
-                    className={`text-[0.9rem] font-semibold transition-colors duration-200 ${
-                      isLightAppearance
-                        ? "text-slate-300 group-hover:text-slate-100"
-                        : "text-slate-300 group-hover:text-slate-100"
-                    }`}
-                  >
+                  <span className="text-[0.9rem] font-semibold transition-colors duration-200 text-slate-300 group-hover:text-slate-100">
                     Demo Mode
                   </span>
                 </button>
@@ -339,18 +311,14 @@ export default function DashboardLayout({
                 setShowTopProfileMenu(false);
                 setShowSidebarProfilePanel((current) => !current);
               }}
-              className={`group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 ${
-                isLightAppearance ? "hover:bg-blue-500/[0.06]" : "hover:bg-blue-500/[0.06]"
-              }`}
+              className="group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 hover:bg-blue-500/[0.06]"
               type="button"
             >
               {userImageUrl ? (
                 <img
                   src={userImageUrl}
                   alt="Profile"
-                  className={`w-10 h-10 rounded-full object-cover ring-2 ${
-                    isLightAppearance ? "ring-blue-500/20" : "ring-blue-500/20"
-                  }`}
+                  className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/20"
                 />
               ) : (
                 <div

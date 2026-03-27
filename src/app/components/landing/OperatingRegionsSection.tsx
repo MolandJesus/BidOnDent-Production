@@ -2,6 +2,7 @@ import { MapPin } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 import { useOperatingRegionsCoverage } from "../../hooks/useOperatingRegionsCoverage";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
+import type { MapSurfaceTone } from "../maps/serviceCoverageMapTypes";
 import ServiceCoverageMap from "../maps/ServiceCoverageMap";
 import CoverageMapDialog from "./CoverageMapDialog";
 import CoverageNearestShops from "./CoverageNearestShops";
@@ -19,6 +20,9 @@ export default function OperatingRegionsSection({
 }: OperatingRegionsSectionProps) {
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
   const coverage = useOperatingRegionsCoverage();
+
+  // In light appearance mode, force panel tone to "light" regardless of tile mode
+  const inlinePanelTone: MapSurfaceTone = isLightAppearance ? "light" : coverage.surfaceTone;
 
   return (
     <section
@@ -72,7 +76,7 @@ export default function OperatingRegionsSection({
           {/* Search-first: CoverageSearchPanel leads */}
           <div className="mt-4 sm:mt-6">
             <CoverageSearchPanel
-              tone={coverage.surfaceTone}
+              tone={inlinePanelTone}
               zipCode={coverage.zipCode}
               radiusMiles={coverage.radiusMiles}
               normalizedZip={coverage.normalizedZip}
@@ -168,7 +172,7 @@ export default function OperatingRegionsSection({
 
             <div className="mt-4">
               <CoverageNearestShops
-                tone={coverage.surfaceTone}
+                tone={inlinePanelTone}
                 isLoadingShops={coverage.isLoadingShops}
                 activeSearchTarget={coverage.listSearchTarget}
                 nearbyShops={coverage.nearbyShops}
