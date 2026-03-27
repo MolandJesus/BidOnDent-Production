@@ -9,6 +9,7 @@
 import {
   Compass,
   Crosshair,
+  Layers,
   MapPinned,
   MessageCircle,
   Moon,
@@ -120,11 +121,25 @@ export default function CoverageBrowseMapOverlays({
           </button>
           <button
             type="button"
-            onClick={() => onTileModeChange(tileMode === "night" ? "roadmap" : "night")}
+            onClick={() => {
+              const next =
+                tileMode === "roadmap" ? "night" : tileMode === "night" ? "satellite" : "roadmap";
+              onTileModeChange(next);
+            }}
             className={theme.compactIconButtonClassName}
-            aria-label="Toggle night tiles"
+            aria-label={
+              tileMode === "roadmap"
+                ? "Switch to night map"
+                : tileMode === "night"
+                  ? "Switch to satellite"
+                  : "Switch to roadmap"
+            }
           >
-            <Moon className="h-4 w-4" />
+            {tileMode === "satellite" ? (
+              <Layers className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
           </button>
           <button
             type="button"
