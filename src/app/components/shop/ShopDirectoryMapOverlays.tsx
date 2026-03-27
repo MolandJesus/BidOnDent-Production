@@ -117,7 +117,7 @@ export default function ShopDirectoryMapOverlays({
       {showIntelligence && (
         <div className="pointer-events-auto absolute left-4 top-20 z-[510] max-w-xs">
           <button
-            className={`flex items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-semibold transition-colors ${glassChip}`}
+            className={`flex min-h-[44px] items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-semibold transition-colors ${glassChip}`}
             onClick={() => setIntelligenceExpanded((v) => !v)}
             type="button"
           >
@@ -211,7 +211,7 @@ export default function ShopDirectoryMapOverlays({
                 return (
                   <button
                     key={route.id}
-                    className={`flex-1 rounded-xl px-2 py-2 text-center text-xs transition-colors ${isActive ? activeRoute : inactiveRoute}`}
+                    className={`flex-1 rounded-xl px-2 py-2 text-center text-xs transition-colors min-h-[44px] flex flex-col items-center justify-center ${isActive ? activeRoute : inactiveRoute}`}
                     onClick={() => onSelectRoute(route.id)}
                     type="button"
                   >
@@ -267,7 +267,7 @@ export default function ShopDirectoryMapOverlays({
             {/* Start Navigation CTA */}
             {onStartNavigation && (
               <button
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 min-h-[44px]"
                 onClick={onStartNavigation}
                 type="button"
               >

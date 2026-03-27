@@ -172,7 +172,7 @@ export default function ShopDirectoryImmersiveMap({
         <div className="pointer-events-auto flex items-center gap-3">
           {/* Back */}
           <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-colors ${iconBtn}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors ${iconBtn}`}
             onClick={onBack}
             type="button"
           >
@@ -197,7 +197,7 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Results drawer toggle */}
           <button
-            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${drawerOpen ? listBtnActive : listBtnInactive}`}
+            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${drawerOpen ? listBtnActive : listBtnInactive}`}
             onClick={() => setDrawerOpen((v) => !v)}
             type="button"
           >
@@ -207,7 +207,7 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Mode switches */}
           <button
-            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
+            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
             onClick={() => onSwitchMode("hybrid")}
             type="button"
           >
@@ -217,7 +217,7 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Theme toggle */}
           <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
             onClick={onToggleTheme}
             type="button"
           >
@@ -241,7 +241,7 @@ export default function ShopDirectoryImmersiveMap({
               </p>
             </div>
             <button
-              className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${drawerClose}`}
+              className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors ${drawerClose}`}
               onClick={() => setDrawerOpen(false)}
               type="button"
             >

@@ -123,7 +123,7 @@ export default function ShopDirectorySearchPanel({
               </div>
               {selectedOrigin && (
                 <button
-                  className="text-xs font-medium bd-glass-control px-2 py-1 text-slate-300"
+                  className="text-xs font-medium bd-glass-control px-3 py-2 text-slate-300"
                   onClick={onClearOrigin}
                   type="button"
                 >
