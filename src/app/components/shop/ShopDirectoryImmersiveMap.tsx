@@ -172,9 +172,10 @@ export default function ShopDirectoryImmersiveMap({
         <div className="pointer-events-auto flex items-center gap-3">
           {/* Back */}
           <button
-            className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors ${iconBtn}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
             onClick={onBack}
             type="button"
+            aria-label="Back to shop directory"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
@@ -197,9 +198,11 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Results drawer toggle */}
           <button
-            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${drawerOpen ? listBtnActive : listBtnInactive}`}
+            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${drawerOpen ? listBtnActive : listBtnInactive}`}
             onClick={() => setDrawerOpen((v) => !v)}
             type="button"
+            aria-expanded={drawerOpen}
+            aria-label="Toggle results drawer"
           >
             <List className="h-4 w-4" />
             <span className="hidden sm:inline">{mapListings.length}</span>
@@ -207,9 +210,10 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Mode switches */}
           <button
-            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
+            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
             onClick={() => onSwitchMode("hybrid")}
             type="button"
+            aria-label="Switch to split view"
           >
             <Layers3 className="h-4 w-4" />
             <span className="hidden sm:inline">Split</span>
@@ -217,9 +221,10 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Theme toggle */}
           <button
-            className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
             onClick={onToggleTheme}
             type="button"
+            aria-label={mapTheme === "light" ? "Switch to dark map" : "Switch to light map"}
           >
             <SunMoon className="h-4 w-4" />
           </button>
@@ -230,6 +235,9 @@ export default function ShopDirectoryImmersiveMap({
       {drawerOpen && (
         <aside
           className={`absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}
+          role="region"
+          aria-label="Shop results"
+          onKeyDown={(e) => e.key === "Escape" && setDrawerOpen(false)}
         >
           <div className={`flex items-center justify-between border-b px-4 py-3 ${drawerDivider}`}>
             <div>
@@ -241,9 +249,10 @@ export default function ShopDirectoryImmersiveMap({
               </p>
             </div>
             <button
-              className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors ${drawerClose}`}
+              className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${drawerClose}`}
               onClick={() => setDrawerOpen(false)}
               type="button"
+              aria-label="Close results drawer"
             >
               <PanelLeftClose className="h-4 w-4" />
             </button>

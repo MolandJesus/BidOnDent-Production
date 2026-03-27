@@ -99,7 +99,11 @@ export default function BidCardArticle({
           }}
         />
       )}
-      <button onClick={onToggle} className="w-full p-4 text-left">
+      <button
+        onClick={onToggle}
+        aria-expanded={isActive}
+        className="w-full p-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+      >
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 rounded-xl overflow-hidden bg-white/[0.08] shrink-0">
             <ImageWithFallback
@@ -251,7 +255,7 @@ export default function BidCardArticle({
                 <button
                   onClick={onAccept}
                   disabled={isAccepted}
-                  className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-sm"
+                  className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
                   }}
@@ -271,7 +275,8 @@ export default function BidCardArticle({
                   </button>
                 )}
                 <button
-                  className={`px-3 py-2.5 rounded-xl border transition-colors ${
+                  aria-label="Call shop"
+                  className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
                     isLight
                       ? "border-slate-200/80 text-slate-500 hover:bg-slate-100/60"
                       : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"
@@ -280,7 +285,8 @@ export default function BidCardArticle({
                   <Phone className="w-4 h-4" />
                 </button>
                 <button
-                  className={`px-3 py-2.5 rounded-xl border transition-colors ${
+                  aria-label="Message shop"
+                  className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
                     isLight
                       ? "border-slate-200/80 text-slate-500 hover:bg-slate-100/60"
                       : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"
@@ -289,7 +295,8 @@ export default function BidCardArticle({
                   <MessageSquare className="w-4 h-4" />
                 </button>
                 <button
-                  className={`px-3 py-2.5 rounded-xl border transition-colors ${
+                  aria-label="Visit shop website"
+                  className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
                     isLight
                       ? "border-slate-200/80 text-slate-500 hover:bg-slate-100/60"
                       : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"
@@ -299,7 +306,8 @@ export default function BidCardArticle({
                 </button>
                 {userType === "customer" && (
                   <button
-                    className={`px-3 py-2.5 rounded-xl border transition-colors ${
+                    aria-label="Rate this shop"
+                    className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
                       isLight
                         ? "border-slate-200/80 text-slate-500 hover:bg-slate-100/60"
                         : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"

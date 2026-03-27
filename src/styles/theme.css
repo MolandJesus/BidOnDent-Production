@@ -1,3 +1,9 @@
+/* WCAG AA — Global keyboard focus indicator */
+:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
 /* Control Hierarchy Variants */
 .bd-glass-control--primary {
   /* Inherit .bd-glass-control, but can be used for clarity */

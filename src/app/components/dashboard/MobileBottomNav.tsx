@@ -53,7 +53,9 @@ export default function MobileBottomNav({
               onClick={() => onTabClick(tab.id)}
               whileTap={{ scale: 0.92 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-2 min-w-[3.5rem] rounded-xl transition-colors duration-200 ${
+              aria-label={tab.label}
+              aria-current={isActive ? "page" : undefined}
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-2 min-w-[3.5rem] rounded-xl transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
                 isActive
                   ? ""
                   : isLightAppearance
