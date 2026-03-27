@@ -67,6 +67,7 @@ export default function MapViewportManager({
     center: initialCenter,
     zoom: initialZoom,
   });
+  const prevSelectedShopIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -126,8 +127,16 @@ export default function MapViewportManager({
 
   useEffect(() => {
     if (!selectedShopId) {
+      prevSelectedShopIdRef.current = null;
       return;
     }
+
+    // Only fly when the selected shop actually changes — not on every fitSignature
+    // change (which fires when viewport filter updates the visible shop list).
+    if (selectedShopId === prevSelectedShopIdRef.current) {
+      return;
+    }
+    prevSelectedShopIdRef.current = selectedShopId;
 
     const selectedShop = shops.find((shop) => shop.id === selectedShopId);
     if (!selectedShop) {
@@ -139,7 +148,7 @@ export default function MapViewportManager({
       Math.max(map.getZoom(), 12),
       { duration: 0.45 }
     );
-  }, [fitSignature, map, selectedShopId]);
+  }, [fitSignature, map, selectedShopId, shops]);
 
   useMapEvents({
     moveend() {
