@@ -65,6 +65,8 @@ export default function BidsScreen({
         bid.description || "Bid details will be confirmed with the shop after selection.",
       image: "",
       status: bid.status || "pending",
+      shopLatitude: bid.shopLatitude ?? null,
+      shopLongitude: bid.shopLongitude ?? null,
     }));
   }, [incomingBids]);
 

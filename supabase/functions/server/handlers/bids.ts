@@ -3,6 +3,40 @@ import { softVerifyClerkMutation } from "../utils/clerk.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
+/** Enrich bids with shop geo coordinates from shop_profiles table */
+async function enrichBidsWithGeo(
+  bids: any[],
+  supabase: SupabaseClient
+): Promise<any[]> {
+  if (!bids || bids.length === 0) return bids;
+
+  // Collect unique clerk_shop_user_ids
+  const clerkIds = [
+    ...new Set(bids.map((b) => b.clerk_shop_user_id).filter(Boolean)),
+  ];
+  if (clerkIds.length === 0) return bids;
+
+  const { data: shops } = await supabase
+    .from("shop_profiles")
+    .select("clerk_user_id, geo_latitude, geo_longitude")
+    .in("clerk_user_id", clerkIds);
+
+  if (!shops || shops.length === 0) return bids;
+
+  const geoMap = new Map(
+    shops.map((s: any) => [s.clerk_user_id, { lat: s.geo_latitude, lng: s.geo_longitude }])
+  );
+
+  return bids.map((bid) => {
+    const geo = geoMap.get(bid.clerk_shop_user_id);
+    return {
+      ...bid,
+      shop_latitude: geo?.lat ?? null,
+      shop_longitude: geo?.lng ?? null,
+    };
+  });
+}
+
 export async function createBid(
   req: Request,
   supabase: SupabaseClient,
@@ -84,11 +118,10 @@ export async function getBids(
         console.error("Error fetching bids by reportId:", error);
         return respond({ error: error.message }, 500);
       }
-      return respond({ bids: data });
+      return respond({ bids: await enrichBidsWithGeo(data, supabase) });
     }
 
     if (customerClerkUserId) {
-      // Fetch all bids on reports owned by this customer
       const { data: reports, error: reportsError } = await supabase
         .from("damage_reports")
         .select("id")
@@ -115,7 +148,7 @@ export async function getBids(
         console.error("Error fetching bids for customer:", error);
         return respond({ error: error.message }, 500);
       }
-      return respond({ bids: data });
+      return respond({ bids: await enrichBidsWithGeo(data, supabase) });
     }
 
     if (clerkUserId) {
@@ -130,7 +163,7 @@ export async function getBids(
         console.error("Error fetching bids by shop user:", error);
         return respond({ error: error.message }, 500);
       }
-      return respond({ bids: data });
+      return respond({ bids: await enrichBidsWithGeo(data, supabase) });
     }
 
     return respond({ error: "Missing reportId, clerkUserId, or customerClerkUserId" }, 400);

@@ -28,6 +28,8 @@ export type LiveBid = {
   warranty: string;
   description: string;
   image: string;
+  shopLatitude?: number | null;
+  shopLongitude?: number | null;
 };
 
 type BidCardArticleProps = {
@@ -227,6 +229,19 @@ export default function BidCardArticle({
                   {bid.warranty}
                 </div>
               </div>
+
+              {bid.shopLatitude && bid.shopLongitude && (
+                <div
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg mb-3 text-sm ${
+                    isLight
+                      ? "bg-blue-50/80 text-blue-700 border border-blue-200/50"
+                      : "bg-blue-400/10 text-blue-200 border border-blue-300/15"
+                  }`}
+                >
+                  <MapPin className="w-4 h-4 flex-shrink-0" />
+                  <span>Shop location available — compare on map</span>
+                </div>
+              )}
 
               <p className={`mb-4 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
                 {bid.description}

@@ -71,6 +71,8 @@ export interface Bid {
   shop_rating?: number | null;
   shop_reviews?: number | null;
   shop_distance?: string | null;
+  shop_latitude?: number | null;
+  shop_longitude?: number | null;
   created_at?: string;
   updated_at?: string;
 }

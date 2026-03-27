@@ -78,6 +78,8 @@ export default function ReportDetailScreen({
       : "Timeline pending",
     image: LANDING_PAGE_IMAGES.DEFAULT_PROFILE,
     description: bid.description || "Bid details will be finalized with the shop after selection.",
+    shopLatitude: bid.shopLatitude ?? null,
+    shopLongitude: bid.shopLongitude ?? null,
   }));
 
   return (

@@ -51,6 +51,8 @@ export interface Bid {
   shopRating?: number;
   shopReviews?: number;
   shopDistance?: string;
+  shopLatitude?: number;
+  shopLongitude?: number;
 }
 
 export interface Notification {

@@ -9,6 +9,8 @@ interface MappedBid {
   amount: number;
   estimatedDays: number;
   shopDistance: string;
+  shopLatitude: number | null;
+  shopLongitude: number | null;
   description: string;
   status: string;
 }
@@ -44,6 +46,8 @@ export function useBidsForReport(reportId?: string | null) {
         amount: Number(bid.amount || 0),
         estimatedDays: Number(bid.estimated_days || 0),
         shopDistance: bid.shop_distance || "Within service area",
+        shopLatitude: bid.shop_latitude ?? null,
+        shopLongitude: bid.shop_longitude ?? null,
         description: bid.description || "",
         status: bid.status || "pending",
       }));
