@@ -125,7 +125,7 @@ export default function ReportsListScreen({
                   {/* Small Photo Thumbnail - Left Side */}
                   {report.photos && report.photos.length > 0 && (
                     <div
-                      className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-white/[0.06] cursor-pointer hover:opacity-80 transition-opacity relative group"
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity relative group ${isLight ? "bg-slate-100" : "bg-white/[0.06]"}`}
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedPhotos(report.photos);

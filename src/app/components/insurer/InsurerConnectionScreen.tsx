@@ -159,7 +159,7 @@ export default function InsurerConnectionScreen({
               placeholder="Search carrier, headquarters, claims workflow, hail, network..."
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-lg text-slate-100 placeholder-gray-500"
+              className={`w-full pl-10 pr-4 py-3 rounded-lg ${isLight ? "border border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "text-slate-100 placeholder-gray-500"}`}
             />
           </div>
         </div>
