@@ -219,7 +219,7 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 
 | Priority | Task                                              | Notes                         |
 | -------- | ------------------------------------------------- | ----------------------------- |
-| HIGH     | Supabase RLS policies (`USING(true)` on 4 tables) | Production security risk      |
+| ✅ DONE  | Supabase RLS policies (`USING(true)` on 4 tables) | Pass 321 — migration 012 tightens profiles, submissions, activity events |
 | HIGH     | CI/CD pipeline                                    | Manual deploys only right now |
 | HIGH     | Basic test coverage                               | Zero coverage currently       |
 | MEDIUM   | Bundle size (~783KB)                              | Already split but still large |
