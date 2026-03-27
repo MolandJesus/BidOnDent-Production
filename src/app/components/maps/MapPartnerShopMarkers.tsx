@@ -50,7 +50,7 @@ export default function MapPartnerShopMarkers({
               <Popup>
                 <div className="text-sm">
                   <div className="font-semibold">{shop.name}</div>
-                  {shop.dataMode === "demo" ? <div>Demo map entry</div> : null}
+                  {shop.dataMode === "demo" ? <div className="font-semibold text-amber-500">Demo</div> : null}
                   <div>{shop.countyLabel}</div>
                   <div>{shop.label}</div>
                   <div>Rating: {(shop.rating ?? 0).toFixed(1)}</div>

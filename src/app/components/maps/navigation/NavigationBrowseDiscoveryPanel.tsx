@@ -163,9 +163,9 @@ export default function NavigationBrowseDiscoveryPanel({
           </div>
         </div>
         {activeSearchTarget ? (
-          <div className="flex flex-wrap gap-2">
-            <span className={theme.softBadgeClassName}>{nearbyShops.length} partner shops</span>
-            <span className={theme.softBadgeClassName}>{discoveryPlaces.length} live places</span>
+          <div className={cn("flex flex-wrap gap-3 text-xs font-medium", theme.secondaryTextClassName)}>
+            <span>{nearbyShops.length} partner shops</span>
+            <span>{discoveryPlaces.length} live places</span>
           </div>
         ) : null}
       </div>

@@ -44,7 +44,7 @@ export default function CoverageNearestShops({
 
   return (
     <div className={className || cn("p-4", theme.panelStrongClassName)}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <div>
           <h5 className={cn("font-semibold", theme.titleClassName)}>Nearest Partner Shops</h5>
           <p className={cn("mt-1 text-sm", theme.secondaryTextClassName)}>
@@ -56,7 +56,7 @@ export default function CoverageNearestShops({
 
         <div className="flex flex-wrap items-center gap-2">
           {activeSearchTarget ? (
-            <span className={theme.softBadgeClassName}>{radiusMiles}-mile search window</span>
+            <span className={cn("text-xs font-medium", theme.secondaryTextClassName)}>{radiusMiles}-mile search window</span>
           ) : null}
           {activeSearchTarget ? (
             <div className={theme.segmentedClassName}>

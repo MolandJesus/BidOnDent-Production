@@ -247,7 +247,7 @@ export default function PlannerRoutePreview({
           <div className={cn("mt-0.5 text-sm font-semibold", theme.titleClassName)}>
             {selectedShop ? selectedShop.name : "Choose a destination"}
           </div>
-          <div className={cn("mt-1 hidden text-xs xl:block", theme.secondaryTextClassName)}>
+          <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
             {routePreview
               ? "Preview is ready. Start route when you are set."
               : "Address + destination will auto-build a route preview."}
