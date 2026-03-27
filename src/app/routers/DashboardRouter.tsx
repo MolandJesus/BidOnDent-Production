@@ -259,7 +259,11 @@ export default function DashboardRouter({
             {/* Shop: Active Jobs Screen */}
             {viewMode === "dashboard" && currentTab === "jobs" && userType === "shop" && (
               <motion.div key="jobs" {...screenTransition}>
-                <ShopActiveJobsScreen primaryColor={primaryColor} reports={shopInsurerReports} appearanceMode={appearanceMode} />
+                <ShopActiveJobsScreen
+                  primaryColor={primaryColor}
+                  reports={shopInsurerReports}
+                  appearanceMode={appearanceMode}
+                />
               </motion.div>
             )}
 
