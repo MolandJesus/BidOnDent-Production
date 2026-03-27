@@ -11,9 +11,9 @@ import {
   Crosshair,
   MapPinned,
   MessageCircle,
+  Moon,
   RotateCcw,
   Search,
-  Volume2,
 } from "lucide-react";
 import type { MapSurfaceTheme, MapTileMode } from "../maps/serviceCoverageMapTypes";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
@@ -86,7 +86,9 @@ export default function CoverageBrowseMapOverlays({
             </div>
 
             {nextInstruction && (
-              <div className={cn("mt-1.5 text-xs sm:mt-2 sm:text-sm", theme.secondaryTextClassName)}>
+              <div
+                className={cn("mt-1.5 text-xs sm:mt-2 sm:text-sm", theme.secondaryTextClassName)}
+              >
                 {nextInstruction}
               </div>
             )}
@@ -132,7 +134,7 @@ export default function CoverageBrowseMapOverlays({
             className={theme.compactIconButtonClassName}
             aria-label="Toggle night tiles"
           >
-            <Volume2 className="h-4 w-4" />
+            <Moon className="h-4 w-4" />
           </button>
           <button
             type="button"
@@ -185,7 +187,9 @@ export default function CoverageBrowseMapOverlays({
                 >
                   {routeMinutes ?? "--"}
                 </div>
-                <div className={cn("text-[10px] sm:text-xs", theme.secondaryTextClassName)}>min</div>
+                <div className={cn("text-[10px] sm:text-xs", theme.secondaryTextClassName)}>
+                  min
+                </div>
               </div>
               <div>
                 <div

@@ -83,16 +83,46 @@ export default function PlannerRoutePreview({
               <div className={cn("text-xs", theme.bodyClassName)}>Building route preview…</div>
               <div className="grid gap-2 sm:grid-cols-3">
                 <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
-                  <div className="h-2.5 w-16 animate-pulse rounded bg-slate-300/40" />
-                  <div className="mt-1.5 h-5 w-12 animate-pulse rounded bg-slate-300/40" />
+                  <div
+                    className={cn(
+                      "h-2.5 w-16 animate-pulse rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
+                  <div
+                    className={cn(
+                      "mt-1.5 h-5 w-12 animate-pulse rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
                 </div>
                 <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
-                  <div className="h-2.5 w-20 animate-pulse rounded bg-slate-300/40" />
-                  <div className="mt-1.5 h-5 w-14 animate-pulse rounded bg-slate-300/40" />
+                  <div
+                    className={cn(
+                      "h-2.5 w-20 animate-pulse rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
+                  <div
+                    className={cn(
+                      "mt-1.5 h-5 w-14 animate-pulse rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
                 </div>
                 <div className={cn("rounded-[0.875rem] px-2.5 py-2", theme.panelClassName)}>
-                  <div className="h-2.5 w-12 animate-pulse rounded bg-slate-300/40" />
-                  <div className="mt-1.5 h-5 w-10 animate-pulse rounded bg-slate-300/40" />
+                  <div
+                    className={cn(
+                      "h-2.5 w-12 animate-pulse rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
+                  <div
+                    className={cn(
+                      "mt-1.5 h-5 w-10 animate-pulse rounded",
+                      tone === "light" ? "bg-slate-300/50" : "bg-slate-500/30"
+                    )}
+                  />
                 </div>
               </div>
             </div>

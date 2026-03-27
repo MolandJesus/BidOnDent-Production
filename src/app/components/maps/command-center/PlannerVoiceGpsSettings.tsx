@@ -198,10 +198,16 @@ export default function PlannerVoiceGpsSettings({
             className={cn(
               "mt-1.5 flex items-center gap-1.5 rounded px-2 py-1 text-[10px] font-medium leading-4",
               gpsStatus === "denied"
-                ? "bg-rose-500/20 text-rose-300"
+                ? tone === "light"
+                  ? "bg-rose-100 text-rose-800"
+                  : "bg-rose-500/20 text-rose-300"
                 : gpsStatus === "lost"
-                  ? "bg-rose-500/20 text-rose-300"
-                  : "bg-amber-500/20 text-amber-300"
+                  ? tone === "light"
+                    ? "bg-rose-100 text-rose-800"
+                    : "bg-rose-500/20 text-rose-300"
+                  : tone === "light"
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-amber-500/20 text-amber-300"
             )}
           >
             <LocateFixed className="h-3 w-3 shrink-0" />
@@ -216,7 +222,12 @@ export default function PlannerVoiceGpsSettings({
               <button
                 type="button"
                 onClick={retryGps}
-                className="ml-auto flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium bg-white/10 hover:bg-white/20 transition-colors"
+                className={cn(
+                  "ml-auto flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors",
+                  tone === "light"
+                    ? "bg-black/8 hover:bg-black/12"
+                    : "bg-white/10 hover:bg-white/20"
+                )}
               >
                 <RefreshCw className="h-2.5 w-2.5" />
                 Retry
@@ -228,7 +239,7 @@ export default function PlannerVoiceGpsSettings({
           <div
             className={cn(
               "mt-1.5 flex items-center gap-1.5 rounded px-2 py-1 text-[10px] font-medium leading-4",
-              "bg-slate-500/20 text-slate-300"
+              tone === "light" ? "bg-slate-200 text-slate-600" : "bg-slate-500/20 text-slate-300"
             )}
           >
             <ShieldAlert className="h-3 w-3 shrink-0" />
