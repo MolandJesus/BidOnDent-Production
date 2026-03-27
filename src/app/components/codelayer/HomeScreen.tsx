@@ -2,8 +2,8 @@ import { ArrowRight } from "lucide-react";
 import CustomerMapWidget from "../dashboard/CustomerMapWidget";
 import ShopMapWidget from "../dashboard/ShopMapWidget";
 import InsurerMapWidget from "../dashboard/InsurerMapWidget";
-import { buildPrimaryAction } from "./homeScreenData";
-import { HomeOnboardingCard, HomeReportsList } from "./HomeScreenSections";
+import { buildPrimaryAction, buildQuickActions } from "./homeScreenData";
+import { HomeOnboardingCard, HomeQuickActions, HomeReportsList } from "./HomeScreenSections";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
 
@@ -75,6 +75,19 @@ export default function HomeScreen({
     onCreateNewClaim,
     onStartReport
   );
+  const quickActions = buildQuickActions(userType, {
+    onStartReport,
+    onViewBids,
+    onConnectInsurance,
+    onViewLikedShops,
+    onViewShops,
+    onViewRequests,
+    onViewJobs,
+    onViewCompetitors,
+    onViewInsurers,
+    onViewClaims,
+    onCreateNewClaim,
+  });
 
   // Map-first, floating overlays layout
   return (
@@ -116,25 +129,35 @@ export default function HomeScreen({
       <div className="relative z-30 w-full max-w-4xl mt-[410px] md:mt-[320px] px-2 md:px-0 flex flex-col gap-4 md:gap-5 pointer-events-auto">
         {/* Compact welcome bar — stays tight so map dominates */}
         <section
-          className="bd-glass-floating px-4 py-3 md:px-5 md:py-3.5 flex items-center justify-between gap-3 flex-wrap"
+          className="bd-glass-floating px-4 py-3 md:px-5 md:py-3.5 flex items-center justify-between gap-3 flex-wrap relative overflow-hidden"
           style={
             isLightAppearance
               ? {
                   background:
-                    "linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.88) 100%)",
-                  borderColor: "rgba(148, 163, 184, 0.30)",
+                    "linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 255, 0.92) 100%)",
+                  borderColor: "rgba(148, 163, 184, 0.28)",
                   boxShadow:
-                    "0 10px 28px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.80)",
+                    "0 10px 32px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.90)",
                 }
               : {
                   background:
-                    "linear-gradient(180deg, rgba(10, 22, 44, 0.84) 0%, rgba(9, 18, 36, 0.78) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.24)",
+                    "linear-gradient(180deg, rgba(8, 18, 46, 0.88) 0%, rgba(7, 15, 38, 0.82) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.22)",
                   boxShadow:
-                    "0 10px 28px rgba(3, 10, 24, 0.40), inset 0 1px 0 rgba(147, 197, 253, 0.12), 0 0 30px rgba(251, 191, 36, 0.02)",
+                    "0 12px 36px rgba(2, 8, 24, 0.45), inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 40px rgba(37, 99, 235, 0.06)",
                 }
           }
         >
+          {/* Subtle royal blue left-edge accent glow */}
+          {!isLightAppearance && (
+            <div
+              className="absolute left-0 top-0 bottom-0 w-[3px] rounded-r-full pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(59, 130, 246, 0.0) 0%, rgba(59, 130, 246, 0.70) 50%, rgba(59, 130, 246, 0.0) 100%)",
+              }}
+            />
+          )}
           <div className="min-w-0">
             <h1
               className={`text-lg md:text-2xl font-bold tracking-tight truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
@@ -177,6 +200,12 @@ export default function HomeScreen({
         {isNewUser && userType === "customer" ? (
           <HomeOnboardingCard primaryColor={primaryColor} secondaryColor={secondaryColor} />
         ) : null}
+        {/* Quick Actions — role-specific navigation buttons */}
+        <HomeQuickActions
+          quickActions={quickActions}
+          appearanceMode={appearanceMode}
+          primaryColor={primaryColor}
+        />
         {/* Report list always accessible as floating panel */}
         <HomeReportsList
           userType={userType}

@@ -46,25 +46,92 @@ export function HomeOnboardingCard({
       style={{
         background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
         boxShadow:
-          "0 8px 32px rgba(37, 99, 235, 0.22), 0 0 48px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+          "0 8px 32px rgba(37, 99, 235, 0.28), 0 0 64px rgba(59, 130, 246, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.18)",
       }}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_-10%,rgba(255,255,255,0.12),transparent_50%)]" />
+      {/* Multi-layer atmospheric sheen */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_-10%,rgba(255,255,255,0.14),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_-5%_110%,rgba(255,255,255,0.08),transparent_55%)]" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
       <div className="relative">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.20em] text-white/55 mb-1">
+          Getting started
+        </p>
         <h2 className="text-xl font-semibold mb-2">How BidOnDent Works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
           {steps.map((step, i) => (
             <div key={step.label} className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 text-sm font-bold shadow-sm">
+              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 text-sm font-bold shadow-sm shrink-0 ring-1 ring-white/15">
                 {i + 1}
               </div>
               <div>
-                <p className="font-medium">{step.label}</p>
-                <p className="text-white/80 text-sm">{step.detail}</p>
+                <p className="font-semibold">{step.label}</p>
+                <p className="text-white/75 text-sm leading-5 mt-0.5">{step.detail}</p>
               </div>
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// HomeQuickActions — 2x2 grid of role-specific action buttons
+// ============================================================================
+
+export function HomeQuickActions({
+  quickActions,
+  appearanceMode = "map-dark",
+  primaryColor,
+}: {
+  quickActions: ActionItem[];
+  appearanceMode?: DashboardAppearanceMode;
+  primaryColor: string;
+}) {
+  const isLight = appearanceMode === "light";
+  if (quickActions.length === 0) return null;
+  return (
+    <section
+      className={`rounded-2xl p-4 md:p-5 border ${isLight ? "bg-white/80 border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+    >
+      <h2
+        className={`text-base font-semibold mb-3 ${isLight ? "text-slate-800" : "text-slate-100"}`}
+      >
+        Quick Actions
+      </h2>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 md:gap-3">
+        {quickActions.map((action, index) => {
+          const Icon = action.icon;
+          const iconTone = actionIconTones[index % actionIconTones.length];
+          return (
+            <button
+              key={action.title}
+              onClick={action.onClick}
+              className={`text-left p-3 md:p-4 transition-all duration-200 rounded-xl font-medium active:scale-[0.97] min-h-[44px] ${
+                isLight
+                  ? "border border-slate-200/70 bg-white/60 hover:bg-blue-50/50 hover:border-blue-300/40 hover:shadow-sm"
+                  : "bd-glass-card hover:shadow-lg hover:-translate-y-0.5 hover:border-blue-400/[0.2]"
+              }`}
+            >
+              <div
+                className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 ${iconTone}`}
+              >
+                <Icon className="w-5 h-5" />
+              </div>
+              <h3
+                className={`font-semibold text-sm leading-tight ${isLight ? "text-slate-800" : "text-slate-100"}`}
+              >
+                {action.title}
+              </h3>
+              <p
+                className={`text-xs mt-0.5 leading-snug ${isLight ? "text-slate-500" : "text-slate-500"}`}
+              >
+                {action.description}
+              </p>
+            </button>
+          );
+        })}
       </div>
     </section>
   );
@@ -97,16 +164,18 @@ export function HomeReportsList({
 }) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="bd-glass-card p-5">
+    <div
+      className={`rounded-2xl p-5 border ${isLightAppearance ? "bg-white/80 border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+    >
       <div className="flex items-center justify-between mb-4">
         <h2
-          className={`font-medium mb-1 ${isLightAppearance ? "text-slate-700" : "text-slate-100"}`}
+          className={`text-base font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
         >
           {listHeader}
         </h2>
         <button
           onClick={onViewAll}
-          className="text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors text-blue-200 hover:text-white hover:bg-blue-400/12"
+          className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700 hover:bg-blue-50" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
         >
           View All
           <ArrowRight className="w-4 h-4" />
@@ -115,12 +184,14 @@ export function HomeReportsList({
 
       {sortedReports.length === 0 && (
         <div
-          className={`bd-glass-card p-5 sm:p-8 text-center ${isLightAppearance ? "bg-white/[0.04] border-white/10" : "bg-blue-950/30 border-blue-300/[0.22]"}`}
+          className={`rounded-xl p-5 sm:p-8 text-center border ${isLightAppearance ? "bg-blue-50/60 border-blue-100/80" : "bg-blue-950/30 border-blue-300/[0.22]"}`}
         >
           <Camera
-            className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/70"}`}
+            className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/70" : "text-blue-400/70"}`}
           />
-          <p className="font-medium mb-1 text-slate-100">
+          <p
+            className={`font-medium mb-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+          >
             {userType === "customer" && "No repair requests yet"}
             {userType === "shop" && "No customer requests yet"}
             {userType === "insurer" && "No claims submitted yet"}
@@ -184,7 +255,9 @@ export function HomeReportsList({
                 }
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-800/40 flex-shrink-0 border border-white/10">
+                  <div
+                    className={`w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 border ${isLightAppearance ? "bg-slate-100 border-slate-200/70" : "bg-slate-800/40 border-white/10"}`}
+                  >
                     {hasPhoto ? (
                       <ImageWithFallback
                         src={report.photos[0]}
@@ -192,7 +265,9 @@ export function HomeReportsList({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-blue-400/50">
+                      <div
+                        className={`w-full h-full flex items-center justify-center ${isLightAppearance ? "text-blue-400/60" : "text-blue-400/50"}`}
+                      >
                         <Camera className="w-7 h-7" />
                       </div>
                     )}
@@ -200,7 +275,9 @@ export function HomeReportsList({
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-lg md:text-xl font-semibold truncate text-slate-100">
+                      <h3
+                        className={`text-base md:text-lg font-semibold truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                      >
                         {title}
                       </h3>
                       <span
