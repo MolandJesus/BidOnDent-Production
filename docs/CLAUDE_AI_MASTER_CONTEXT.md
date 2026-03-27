@@ -208,12 +208,12 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 
 ### Product Loop — Next Phase
 
-| Priority | Task                                | Why                                                               |
-| -------- | ----------------------------------- | ----------------------------------------------------------------- |
-| ✅ DONE  | Report → map pin connection         | Pass 317 — `MapReportMarkers` added to `ShopDirectoryMapPane`     |
-| P2       | Bid → spatial context               | Bid comparison should show shop location on mini-map              |
-| P2       | Shop selection → navigation handoff | Selecting a shop in directory should offer GPS navigation handoff |
-| P3       | Mobile map at 375px audit           | Map view modes need systematic mobile check                       |
+| Priority | Task                                | Why                                                           |
+| -------- | ----------------------------------- | ------------------------------------------------------------- |
+| ✅ DONE  | Report → map pin connection         | Pass 317 — `MapReportMarkers` added to `ShopDirectoryMapPane` |
+| P2       | Bid → spatial context               | Bid comparison should show shop location on mini-map          |
+| ✅ DONE  | Shop selection → navigation handoff | Pass 318 — "Start Navigation" CTA on route preview card       |
+| P3       | Mobile map at 375px audit           | Map view modes need systematic mobile check                   |
 
 ### Hardening
 
