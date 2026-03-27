@@ -148,6 +148,7 @@ export default function OperatingRegionsSection({
               radiusMiles={coverage.radiusMiles}
               regionCount={operatingRegions.length}
               selectedShopId={coverage.selectedShopId}
+              showSurfaceChrome={false}
               showNavigationHud={false}
               routeGeometry={coverage.routeGeometry}
               routeFitKey={coverage.navigation.routePreview?.fetchedAt ?? null}

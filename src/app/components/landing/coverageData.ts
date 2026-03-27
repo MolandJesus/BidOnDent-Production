@@ -65,6 +65,26 @@ export const fallbackPartnerHubs: CoveragePartnerShop[] = [
     specialties: ["Refinish", "Paintless dent repair"],
     rating: 4.7,
   },
+  {
+    name: "BidOnDent Hudson Hub",
+    dataMode: "demo" as const,
+    countyLabel: "Orange County hub",
+    lat: 41.5034,
+    lng: -74.0104,
+    label: "Newburgh, NY",
+    specialties: ["Frame alignment", "Heavy collision"],
+    rating: 4.6,
+  },
+  {
+    name: "BidOnDent Highlands Hub",
+    dataMode: "demo" as const,
+    countyLabel: "Putnam County hub",
+    lat: 41.4309,
+    lng: -73.6808,
+    label: "Carmel, NY",
+    specialties: ["Hail repair", "Glass calibration"],
+    rating: 4.8,
+  },
 ];
 
 const exactZipCoordinates: Record<string, CoverageLookup> = {
