@@ -123,7 +123,9 @@ export default function VehicleProfileScreen({
   return (
     <div className="min-h-screen bd-glass-panel pb-20">
       {/* Header */}
-      <div className={`bd-glass-panel border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}>
+      <div
+        className={`bd-glass-panel border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}
+      >
         <div className="px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -165,7 +167,7 @@ export default function VehicleProfileScreen({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                <label className={labelClass}>Year *</label>
+                  <label className={labelClass}>Year *</label>
                   <input
                     type="text"
                     value={formData.year}
@@ -175,7 +177,7 @@ export default function VehicleProfileScreen({
                   />
                 </div>
                 <div>
-                <label className={labelClass}>Make *</label>
+                  <label className={labelClass}>Make *</label>
                   <input
                     type="text"
                     value={formData.make}
@@ -187,7 +189,7 @@ export default function VehicleProfileScreen({
               </div>
 
               <div>
-              <label className={labelClass}>Model *</label>
+                <label className={labelClass}>Model *</label>
                 <input
                   type="text"
                   value={formData.model}
@@ -198,9 +200,7 @@ export default function VehicleProfileScreen({
               </div>
 
               <div>
-              <label className={labelClass}>
-                  VIN (Optional)
-                </label>
+                <label className={labelClass}>VIN (Optional)</label>
                 <input
                   type="text"
                   value={formData.vin}
@@ -212,9 +212,7 @@ export default function VehicleProfileScreen({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelClass}>
-                    Color (Optional)
-                  </label>
+                  <label className={labelClass}>Color (Optional)</label>
                   <input
                     type="text"
                     value={formData.color}
@@ -224,9 +222,7 @@ export default function VehicleProfileScreen({
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>
-                    License Plate (Optional)
-                  </label>
+                  <label className={labelClass}>License Plate (Optional)</label>
                   <input
                     type="text"
                     value={formData.licensePlate}
@@ -263,7 +259,9 @@ export default function VehicleProfileScreen({
         <div className="space-y-3">
           {vehicles.length === 0 ? (
             <div className="bd-glass-card rounded-lg p-5 sm:p-8 text-center">
-              <Car className={`w-16 h-16 mx-auto mb-4 ${isLight ? "text-slate-400" : "text-gray-300"}`} />
+              <Car
+                className={`w-16 h-16 mx-auto mb-4 ${isLight ? "text-slate-400" : "text-gray-300"}`}
+              />
               <h3 className="text-lg font-bold mb-2">No vehicles added yet</h3>
               <p className={`mb-4 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
                 Add your vehicles to make reporting damage faster.
@@ -301,20 +299,31 @@ export default function VehicleProfileScreen({
                         </h3>
                       </div>
 
-                      <div className={`space-y-1 text-sm ${isLight ? "text-slate-500" : "text-slate-400/70"}`}>
+                      <div
+                        className={`space-y-1 text-sm ${isLight ? "text-slate-500" : "text-slate-400/70"}`}
+                      >
                         {vehicle.color && (
                           <p>
-                            Color: <span className={isLight ? "text-slate-800" : "text-slate-100"}>{vehicle.color}</span>
+                            Color:{" "}
+                            <span className={isLight ? "text-slate-800" : "text-slate-100"}>
+                              {vehicle.color}
+                            </span>
                           </p>
                         )}
                         {vehicle.licensePlate && (
                           <p>
-                            Plate: <span className={isLight ? "text-slate-800" : "text-slate-100"}>{vehicle.licensePlate}</span>
+                            Plate:{" "}
+                            <span className={isLight ? "text-slate-800" : "text-slate-100"}>
+                              {vehicle.licensePlate}
+                            </span>
                           </p>
                         )}
                         {vehicle.vin && (
                           <p className="text-xs">
-                            VIN: <span className={isLight ? "text-slate-800" : "text-slate-100"}>{vehicle.vin}</span>
+                            VIN:{" "}
+                            <span className={isLight ? "text-slate-800" : "text-slate-100"}>
+                              {vehicle.vin}
+                            </span>
                           </p>
                         )}
                       </div>

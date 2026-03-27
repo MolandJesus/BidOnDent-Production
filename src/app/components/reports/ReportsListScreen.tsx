@@ -58,7 +58,9 @@ export default function ReportsListScreen({
   return (
     <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className={`bd-glass-panel border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-white/30"}`}>
+      <div
+        className={`bd-glass-panel border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-white/30"}`}
+      >
         <div className="px-4 py-4">
           <div className="flex items-center mb-3">
             <button
@@ -157,7 +159,9 @@ export default function ReportsListScreen({
                         <h3 className="font-bold text-lg truncate">
                           {report.vehicle.year} {report.vehicle.make} {report.vehicle.model}
                         </h3>
-                        <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Damage to {report.damageArea}</p>
+                        <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                          Damage to {report.damageArea}
+                        </p>
                       </div>
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2 flex-shrink-0 ${
@@ -173,13 +177,17 @@ export default function ReportsListScreen({
                     </div>
 
                     {report.description && (
-                      <p className={`text-sm mb-2 line-clamp-1 ${isLight ? "text-slate-600" : "text-slate-300"}`}>
+                      <p
+                        className={`text-sm mb-2 line-clamp-1 ${isLight ? "text-slate-600" : "text-slate-300"}`}
+                      >
                         {report.description}
                       </p>
                     )}
 
                     {/* Stats Row */}
-                    <div className={`flex items-center gap-3 text-xs mb-2 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                    <div
+                      className={`flex items-center gap-3 text-xs mb-2 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                    >
                       <div className="flex items-center">
                         <Clock className="w-3.5 h-3.5 mr-1" />
                         <span>{new Date(report.submittedAt).toLocaleDateString()}</span>
@@ -194,7 +202,9 @@ export default function ReportsListScreen({
 
                     {/* Bids Info */}
                     {report.bidsCount > 0 && (
-                      <div className={`flex items-center gap-2 pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}>
+                      <div
+                        className={`flex items-center gap-2 pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
+                      >
                         <div className="flex -space-x-1.5">
                           {[...Array(Math.min(report.bidsCount, 3))].map((_, idx) => (
                             <div
@@ -206,7 +216,9 @@ export default function ReportsListScreen({
                             </div>
                           ))}
                         </div>
-                        <span className={`text-sm font-semibold ${isLight ? "text-slate-700" : "text-slate-300"}`}>
+                        <span
+                          className={`text-sm font-semibold ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                        >
                           {report.bidsCount} {report.bidsCount === 1 ? "bid" : "bids"} received
                         </span>
                         <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
@@ -215,8 +227,12 @@ export default function ReportsListScreen({
 
                     {/* No bids yet */}
                     {report.bidsCount === 0 && (
-                      <div className={`pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}>
-                        <p className={`text-xs italic ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                      <div
+                        className={`pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
+                      >
+                        <p
+                          className={`text-xs italic ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                        >
                           Waiting for body shops to review...
                         </p>
                       </div>
