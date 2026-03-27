@@ -155,11 +155,7 @@ export default function ShopDirectoryImmersiveMap({
             mapTheme={mapTheme}
             navigationMode={navigationMode}
             onSelectRoute={onSelectRoute}
-            onStartNavigation={
-              selectedShop
-                ? () => onOpenShopDirections(selectedShop)
-                : undefined
-            }
+            onStartNavigation={selectedShop ? () => onOpenShopDirections(selectedShop) : undefined}
             routeOptions={routeOptions}
             routeSummary={routeSummary}
             selectedOrigin={selectedOrigin}
@@ -170,7 +166,9 @@ export default function ShopDirectoryImmersiveMap({
       </div>
 
       {/* Floating top bar */}
-      <div className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-4 pb-8 pt-4`}>
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-4 pb-8 pt-4`}
+      >
         <div className="pointer-events-auto flex items-center gap-3">
           {/* Back */}
           <button
@@ -184,7 +182,9 @@ export default function ShopDirectoryImmersiveMap({
           {/* Map-owned search */}
           <form className="flex-1" onSubmit={onSearchSubmit}>
             <div className="relative max-w-lg">
-              <Search className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`} />
+              <Search
+                className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`}
+              />
               <input
                 className={`w-full rounded-full border py-2.5 pl-9 pr-4 text-sm shadow-xl outline-none backdrop-blur-md transition-colors ${searchInput}`}
                 onChange={(event) => onSearchQueryChange(event.target.value)}
@@ -228,7 +228,9 @@ export default function ShopDirectoryImmersiveMap({
 
       {/* Collapsible results drawer — bottom sheet on mobile, side drawer on sm+ */}
       {drawerOpen && (
-        <aside className={`absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}>
+        <aside
+          className={`absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}
+        >
           <div className={`flex items-center justify-between border-b px-4 py-3 ${drawerDivider}`}>
             <div>
               <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${drawerLabel}`}>
@@ -249,9 +251,17 @@ export default function ShopDirectoryImmersiveMap({
 
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {mapListings.length === 0 && (
-              <div className={`rounded-2xl border border-dashed p-4 ${isDark ? "border-blue-300/20 bg-blue-500/[0.04]" : "border-blue-200 bg-blue-50"}`}>
-                <p className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}>No shops matched</p>
-                <p className={`mt-1 text-xs leading-5 ${isDark ? "text-slate-300/80" : "text-slate-500"}`}>
+              <div
+                className={`rounded-2xl border border-dashed p-4 ${isDark ? "border-blue-300/20 bg-blue-500/[0.04]" : "border-blue-200 bg-blue-50"}`}
+              >
+                <p
+                  className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}
+                >
+                  No shops matched
+                </p>
+                <p
+                  className={`mt-1 text-xs leading-5 ${isDark ? "text-slate-300/80" : "text-slate-500"}`}
+                >
                   Try broadening the search or changing the sort.
                 </p>
               </div>
