@@ -196,7 +196,7 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 | ✅ DONE | Fix `navigationMode` not passed to `ShopDirectoryMapOverlays` in hybrid mode | Fixed in pass 286 |
 | ✅ DONE | Add viewport bounds tracking in `useShopDirectorySession` | Fixed in pass 286 — full pipeline: pan → hasPanned → "Search in this area" pill → filter |
 | ✅ DONE | Add "Search in this area" button to `ShopDirectoryMapPane` | Fixed in pass 286 |
-| P1 | Real shop data from Supabase partner profiles | Currently seed data + network directory. `useCoveragePartnerShops` fetches real shops — should feed `ShopDirectoryScreen` too |
+| ✅ DONE | Real shop data from Supabase partner profiles | Pass 316 — `useCoveragePartnerShops` → `convertPartnerShopsToProfiles` → merged into `allDirectoryShops` in `useShopDirectorySession` |
 | P2 | Add `mapViewportBounds` to session persist | Saves last viewport bounds for session restore |
 | P2 | Mobile map audit at 375px | All three view modes need systematic mobile check |
 
