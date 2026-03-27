@@ -67,7 +67,7 @@ export default function CoverageNearestShops({
                   key={provider.id}
                   type="button"
                   onClick={() => onPreferredNavigationProviderChange(provider.id)}
-                  className={`rounded-full px-3 py-1.5 text-[11px] font-semibold transition ${
+                  className={`rounded-full px-3 py-2 text-[11px] font-semibold transition ${
                     preferredNavigationProvider === provider.id
                       ? theme.activeSegmentClassName
                       : theme.inactiveSegmentClassName

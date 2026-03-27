@@ -26,12 +26,12 @@ export default function MapSearchTargetMarkers({
       />
       <CircleMarker
         center={[activeSearchTarget.lat, activeSearchTarget.lng]}
-        radius={14}
+        radius={11}
         pathOptions={{
           color: "#67e8f9",
           fillColor: "#06b6d4",
           fillOpacity: 0.75,
-          weight: 3,
+          weight: 2.5,
         }}
       >
         <Popup>

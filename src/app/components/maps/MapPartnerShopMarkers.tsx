@@ -28,7 +28,7 @@ export default function MapPartnerShopMarkers({
             <CircleMarker
               key={shopKey}
               center={[shop.lat, shop.lng]}
-              radius={isNavigationPresentation ? 18 : isSelected ? 16 : 14}
+              radius={isNavigationPresentation ? 16 : isSelected ? 13 : 11}
               eventHandlers={
                 onSelectShop
                   ? {

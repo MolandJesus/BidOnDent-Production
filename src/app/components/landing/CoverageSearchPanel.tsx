@@ -77,7 +77,7 @@ export default function CoverageSearchPanel({
           onClick={onUseCurrentLocation}
           className={cn(
             theme.secondaryButtonClassName,
-            "min-h-[36px] sm:min-h-[40px] text-xs px-2.5 sm:px-3 justify-center"
+            "min-h-[44px] text-xs px-2.5 sm:px-3 justify-center"
           )}
         >
           <Radar className="h-3.5 w-3.5" />
@@ -89,7 +89,7 @@ export default function CoverageSearchPanel({
           disabled={!canCenterMap}
           className={cn(
             theme.secondaryButtonClassName,
-            "min-h-[36px] sm:min-h-[40px] text-xs px-2.5 sm:px-3 justify-center disabled:translate-y-0 disabled:opacity-50"
+            "min-h-[44px] text-xs px-2.5 sm:px-3 justify-center disabled:translate-y-0 disabled:opacity-50"
           )}
         >
           <LocateFixed className="h-3.5 w-3.5" />
@@ -101,7 +101,7 @@ export default function CoverageSearchPanel({
           onClick={onExpandMap}
           className={cn(
             theme.primaryButtonClassName,
-            "min-h-[36px] sm:min-h-[40px] text-xs px-3 sm:px-4 justify-center"
+            "min-h-[44px] text-xs px-3 sm:px-4 justify-center"
           )}
         >
           <Expand className="h-3.5 w-3.5" />

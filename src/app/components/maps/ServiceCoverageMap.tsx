@@ -334,7 +334,7 @@ export default function ServiceCoverageMap({
             <CircleMarker
               key={county.name}
               center={[county.lat, county.lng]}
-              radius={8}
+              radius={6}
               pathOptions={{
                 color: "#2563eb",
                 fillColor: "#7dd3fc",
@@ -390,12 +390,12 @@ export default function ServiceCoverageMap({
             ) : null}
             <CircleMarker
               center={currentPosition}
-              radius={isNavigationPresentation ? 14 : 12}
+              radius={isNavigationPresentation ? 12 : 10}
               pathOptions={{
                 color: "#ffffff",
                 fillColor: tone === "light" ? "#0ea5e9" : "#22d3ee",
                 fillOpacity: 1,
-                weight: 4,
+                weight: 3,
               }}
             >
               <Tooltip direction="top" offset={[0, -16]}>

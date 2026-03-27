@@ -114,25 +114,35 @@ export default function OperatingRegionsSection({
             />
 
             {/* Compact region pills — Apple Maps style */}
-            <div className="mt-3 sm:mt-4 flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              <span
-                className={`shrink-0 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] ${isLightAppearance ? "text-slate-500" : "text-blue-200/75"}`}
-              >
-                Active:
-              </span>
-              {operatingRegions.map((region) => (
+            <div className="relative mt-3 sm:mt-4">
+              <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 <span
-                  key={region}
-                  className={`shrink-0 inline-flex items-center gap-1 sm:gap-1.5 rounded-full border px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium ${
-                    isLightAppearance
-                      ? "border-blue-200/60 bg-blue-50 text-blue-700"
-                      : "border-blue-400/30 bg-blue-500/12 text-blue-100/90"
-                  }`}
+                  className={`shrink-0 text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.18em] ${isLightAppearance ? "text-slate-500" : "text-blue-200/75"}`}
                 >
-                  <MapPin className="w-3 h-3 text-blue-400/60" />
-                  {region.replace(" County", "")}
+                  Active:
                 </span>
-              ))}
+                {operatingRegions.map((region) => (
+                  <span
+                    key={region}
+                    className={`shrink-0 inline-flex items-center gap-1 sm:gap-1.5 rounded-full border px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium ${
+                      isLightAppearance
+                        ? "border-blue-200/60 bg-blue-50 text-blue-700"
+                        : "border-blue-400/30 bg-blue-500/12 text-blue-100/90"
+                    }`}
+                  >
+                    <MapPin className="w-3 h-3 text-blue-400/60" />
+                    {region.replace(" County", "")}
+                  </span>
+                ))}
+              </div>
+              {/* Fade mask — indicates horizontal scroll on mobile */}
+              <div
+                className={`pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:hidden ${
+                  isLightAppearance
+                    ? "bg-gradient-to-l from-[#e8edf4] to-transparent"
+                    : "bg-gradient-to-l from-[#0a2038] to-transparent"
+                }`}
+              />
             </div>
 
             <ServiceCoverageMap

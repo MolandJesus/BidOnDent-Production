@@ -82,12 +82,12 @@ export default function MapReportMarkers() {
         <CircleMarker
           key={report.id}
           center={[coords.lat, coords.lng]}
-          radius={16}
+          radius={12}
           pathOptions={{
             color: "#93c5fd",
             fillColor: "#2563eb",
             fillOpacity: 0.92,
-            weight: 3,
+            weight: 2.5,
             className: REPORT_MARKER_CLASS,
           }}
           eventHandlers={{
