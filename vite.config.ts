@@ -47,6 +47,10 @@ export default defineConfig({
             return "vendor-supabase";
           }
 
+          if (id.includes("@clerk")) {
+            return "vendor-clerk";
+          }
+
           if (id.includes("@mui") || id.includes("@emotion")) {
             return "vendor-mui";
           }
@@ -55,8 +59,16 @@ export default defineConfig({
             return "vendor-radix";
           }
 
+          if (id.includes("/node_modules/motion/") || id.includes("/node_modules/framer-motion/")) {
+            return "vendor-motion";
+          }
+
           if (id.includes("lucide-react") || id.includes("recharts") || id.includes("date-fns")) {
             return "vendor-ui";
+          }
+
+          if (id.includes("@sentry")) {
+            return "vendor-sentry";
           }
         },
       },
