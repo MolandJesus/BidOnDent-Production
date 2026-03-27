@@ -331,7 +331,7 @@ export default function CoverageBrowseExperience({
           radiusMeters={radiusMeters}
           radiusMiles={radiusMiles}
           regionCount={regionCount}
-          mapHeightClassName="h-[100dvh] xl:h-[74vh] min-h-[360px] xl:min-h-[600px]"
+          mapHeightClassName="h-[100dvh] xl:h-[82vh] min-h-[360px] xl:min-h-[640px]"
           immersiveFullscreen
           showSurfaceChrome={false}
           selectedShopId={selectedShopId}

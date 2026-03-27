@@ -84,12 +84,7 @@ export default function CoverageNearestShops({
         </div>
       </div>
 
-      {!activeSearchTarget ? (
-        <p className={cn("mt-4 text-sm", theme.secondaryTextClassName)}>
-          Start with a New York ZIP code or your current location to preview nearby partner
-          capacity.
-        </p>
-      ) : nearbyShops.length === 0 ? (
+      {!activeSearchTarget ? null : nearbyShops.length === 0 ? (
         <p
           className={cn(
             "mt-4 rounded-[1rem] border px-4 py-3 text-sm",

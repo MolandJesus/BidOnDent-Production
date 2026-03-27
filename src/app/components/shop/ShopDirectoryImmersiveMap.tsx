@@ -12,6 +12,7 @@ import type {
   Coordinates,
   MapTheme,
   MapViewMode,
+  MapViewportBounds,
   Place,
   RouteOption,
   SavedPlace,
@@ -52,6 +53,7 @@ type ShopDirectoryImmersiveMapProps = {
   onOpenShopDirections: (shop: ShopMapListing) => void;
   onSetMapCenter: (center: Coordinates) => void;
   onSetMapZoom: (zoom: number) => void;
+  onSetMapViewportBounds: (bounds: MapViewportBounds) => void;
   onToggleTheme: () => void;
   onSwitchMode: (mode: MapViewMode) => void;
   onBack: () => void;
@@ -86,6 +88,7 @@ export default function ShopDirectoryImmersiveMap({
   onOpenShopDirections,
   onSetMapCenter,
   onSetMapZoom,
+  onSetMapViewportBounds,
   onToggleTheme,
   onSwitchMode,
   onBack,
@@ -130,9 +133,10 @@ export default function ShopDirectoryImmersiveMap({
           initialZoom={mapZoom}
           mapTheme={mapTheme}
           onSelectShop={onSelectShop}
-          onViewportChange={(center, zoom) => {
+          onViewportChange={(center, zoom, bounds) => {
             onSetMapCenter(center);
             onSetMapZoom(zoom);
+            onSetMapViewportBounds(bounds);
           }}
           routeOptions={routeOptions}
           savedPlaces={savedPlaces}
