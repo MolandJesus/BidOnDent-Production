@@ -197,6 +197,7 @@ export default function InsurerClaimsScreen({
           primaryColor={primaryColor}
           onApprovalAmountChange={setApprovalAmount}
           onApprove={handleApproveClaim}
+          appearanceMode={appearanceMode}
           onCancel={() => {
             setShowApprovalModal(false);
             setApprovalAmount("");

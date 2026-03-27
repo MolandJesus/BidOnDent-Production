@@ -437,6 +437,7 @@ export default function InsurerNewClaimScreen({
           claimFormData={claimFormData}
           primaryColor={primaryColor}
           onUpdate={setClaimFormData}
+          appearanceMode={appearanceMode}
           onCancel={() => {
             setShowNewClaimForm(false);
             setSelectedShop(null);

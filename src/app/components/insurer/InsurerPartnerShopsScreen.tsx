@@ -301,6 +301,7 @@ export default function InsurerPartnerShopsScreen({
           primaryColor={primaryColor}
           onClose={() => setShowAddShopModal(false)}
           onSubmit={handleProspectSubmit}
+          appearanceMode={appearanceMode}
         />
       )}
     </div>
