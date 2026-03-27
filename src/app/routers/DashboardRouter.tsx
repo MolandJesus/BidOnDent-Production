@@ -209,6 +209,7 @@ export default function DashboardRouter({
                   // Navigate to "reports-list" viewMode which shows the reports list
                   onViewModeChange("reports-list");
                 }}
+                onViewShops={onViewShops}
                 onBackToDashboard={() => {
                   // Navigate back to home tab on dashboard
                   onTabChange("home");

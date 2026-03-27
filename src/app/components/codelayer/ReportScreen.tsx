@@ -26,6 +26,7 @@ type ReportScreenProps = {
   appearanceMode?: DashboardAppearanceMode;
   onReportSubmit?: (report: Record<string, unknown>) => void | Promise<void>;
   onViewReports?: () => void;
+  onViewShops?: () => void;
   onBackToDashboard?: () => void;
   hasSeenPhotoGuide?: boolean;
   onPhotoGuideComplete?: () => void;
@@ -38,6 +39,7 @@ export default function ReportScreen({
   appearanceMode = "map-dark",
   onReportSubmit,
   onViewReports,
+  onViewShops,
   onBackToDashboard,
   hasSeenPhotoGuide = false,
   onPhotoGuideComplete,
@@ -260,6 +262,12 @@ export default function ReportScreen({
     }
   };
 
+  const handleViewShops = () => {
+    if (onViewShops) {
+      onViewShops();
+    }
+  };
+
   const handleBackToDashboard = () => {
     resetForm();
     if (onBackToDashboard) {
@@ -353,6 +361,7 @@ export default function ReportScreen({
               appearanceMode={appearanceMode}
               onViewReports={handleViewReports}
               onBackToDashboard={handleBackToDashboard}
+              onFindShops={onViewShops ? handleViewShops : undefined}
             />
           );
 

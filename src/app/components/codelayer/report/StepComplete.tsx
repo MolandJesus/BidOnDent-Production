@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Clock, ListChecks, MessageSquare, Wrench } from "lucide-react";
+import { ArrowRight, Check, Clock, ListChecks, Map, MessageSquare, Wrench } from "lucide-react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type StepCompleteProps = {
@@ -6,6 +6,7 @@ type StepCompleteProps = {
   appearanceMode?: DashboardAppearanceMode;
   onViewReports: () => void;
   onBackToDashboard: () => void;
+  onFindShops?: () => void;
 };
 
 export default function StepComplete({
@@ -13,6 +14,7 @@ export default function StepComplete({
   appearanceMode = "map-dark",
   onViewReports,
   onBackToDashboard,
+  onFindShops,
 }: StepCompleteProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
@@ -117,18 +119,44 @@ export default function StepComplete({
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={onViewReports}
-        className="w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
-        style={{
-          background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-          boxShadow: "0 4px 20px rgba(37, 99, 235, 0.28), 0 0 32px rgba(59, 130, 246, 0.10)",
-        }}
-      >
-        View My Reports
-        <ArrowRight className="w-4 h-4" />
-      </button>
+      {onFindShops ? (
+        <button
+          type="button"
+          onClick={onFindShops}
+          className="w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+            boxShadow: "0 4px 20px rgba(37, 99, 235, 0.28), 0 0 32px rgba(59, 130, 246, 0.10)",
+          }}
+        >
+          <Map className="w-4 h-4" />
+          Browse shops on the map
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onViewReports}
+          className="w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+            boxShadow: "0 4px 20px rgba(37, 99, 235, 0.28), 0 0 32px rgba(59, 130, 246, 0.10)",
+          }}
+        >
+          View My Reports
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      )}
+
+      {onFindShops && (
+        <button
+          type="button"
+          onClick={onViewReports}
+          className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors mb-3 inline-flex items-center justify-center gap-2 ${isLightAppearance ? "border-blue-300/15 hover:bg-blue-500/10 text-slate-300" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+        >
+          View My Reports
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      )}
 
       <button
         type="button"
