@@ -65,6 +65,7 @@ export default function AccountScreen({
   onAppearanceModeChange,
 }: AccountScreenProps) {
   // Use default profile image if none provided
+  const isLightAppearance = appearanceMode === "light";
   const [profileImage, setProfileImage] = useState<string | null>(
     initialProfileImage || LANDING_PAGE_IMAGES.DEFAULT_PROFILE
   );
@@ -274,13 +275,17 @@ export default function AccountScreen({
       <div
         className="absolute top-40 -right-16 w-56 h-56 rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)",
+          background: isLightAppearance
+            ? "radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)"
+            : "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)",
         }}
       />
       <div
         className="absolute bottom-32 -left-20 w-48 h-48 rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)",
+          background: isLightAppearance
+            ? "radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 70%)"
+            : "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)",
         }}
       />
 
@@ -291,6 +296,7 @@ export default function AccountScreen({
           profileImage={profileImage}
           userInfo={userInfo}
           userType={userType}
+          appearanceMode={appearanceMode}
           onProfileImageClick={handleProfileImageClick}
         />
 
@@ -310,6 +316,7 @@ export default function AccountScreen({
           <AccountMenu
             userType={userType}
             isAdmin={isAdminUser}
+            appearanceMode={appearanceMode}
             onOpenSettings={() => setShowSettings(true)}
             onOpenPayment={() => setShowPayment(true)}
             onOpenShopProfile={() => setShowShopProfile(true)}
