@@ -60,7 +60,7 @@ export default function CoverageBrowseMapOverlays({
   return (
     <div className={className}>
       {/* Top row: destination card (mobile/tablet only — sidebar covers xl) + right icon rail */}
-      <div className="pointer-events-none absolute inset-x-3 top-4 z-[620] flex items-start justify-between gap-3 sm:inset-x-4 sm:top-5 xl:inset-x-6 xl:top-6 2xl:inset-x-8">
+      <div className="pointer-events-none absolute inset-x-3 top-4 z-[620] flex items-start justify-between gap-3 sm:inset-x-4 sm:top-5 xl:inset-x-6 xl:top-[4.5rem] 2xl:inset-x-8">
         {/* Destination / next-maneuver card — hidden on xl where sidebar shows this, only when shop selected */}
         {selectedShop && (
           <div className="pointer-events-auto xl:hidden flex max-w-[320px] flex-col gap-2.5 sm:max-w-[380px] sm:gap-3">
