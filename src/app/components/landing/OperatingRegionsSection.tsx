@@ -128,7 +128,7 @@ export default function OperatingRegionsSection({
             </div>
 
             <ServiceCoverageMap
-              className="mt-4"
+              className="mt-3 sm:mt-4"
               center={coverage.mapView.center}
               zoom={coverage.mapView.zoom}
               revision={coverage.mapView.revision}
@@ -170,7 +170,7 @@ export default function OperatingRegionsSection({
               onSelectShop={coverage.handleSelectShopById}
             />
 
-            <div className="mt-4">
+            <div className="mt-3 sm:mt-4">
               <CoverageNearestShops
                 tone={inlinePanelTone}
                 isLoadingShops={coverage.isLoadingShops}

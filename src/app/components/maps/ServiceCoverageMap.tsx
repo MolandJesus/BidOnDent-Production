@@ -273,7 +273,7 @@ export default function ServiceCoverageMap({
         zoomControl={false}
         attributionControl={false}
         className={cn(
-          "coverage-map-canvas h-[420px] w-full",
+          "coverage-map-canvas h-[280px] sm:h-[380px] md:h-[420px] w-full",
           theme.mapCanvasClassName,
           mapHeightClassName
         )}

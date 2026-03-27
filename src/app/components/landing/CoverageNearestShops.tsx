@@ -102,7 +102,7 @@ export default function CoverageNearestShops({
           the request for manual partner assignment.
         </p>
       ) : (
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <div className="mt-3 sm:mt-4 grid gap-2.5 sm:gap-3 md:grid-cols-2">
           {nearbyShops.map((shop) => (
             <div
               key={shop.id || shop.name}
@@ -142,7 +142,12 @@ export default function CoverageNearestShops({
                   {shop.addressLine}
                 </div>
               ) : null}
-              <div className={cn("mt-1 flex flex-wrap items-center gap-2 text-xs", theme.secondaryTextClassName)}>
+              <div
+                className={cn(
+                  "mt-1 flex flex-wrap items-center gap-2 text-xs",
+                  theme.secondaryTextClassName
+                )}
+              >
                 <span className="inline-flex items-center gap-0.5">
                   <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
                   <span className="font-medium text-amber-300">{shop.rating.toFixed(1)}</span>
@@ -152,7 +157,7 @@ export default function CoverageNearestShops({
                 )}
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-3 sm:mt-4 flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => onSelectShop(shop)}

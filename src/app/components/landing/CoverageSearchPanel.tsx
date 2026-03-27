@@ -76,7 +76,7 @@ export default function CoverageSearchPanel({
       </div>
 
       {/* Compact action row */}
-      <div className="mt-2.5 sm:mt-3 flex items-center gap-1.5 sm:gap-2">
+      <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
         <button
           type="button"
           onClick={onUseCurrentLocation}
