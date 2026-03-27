@@ -162,6 +162,7 @@ export default function LandingPageLayout({
           reports={profileDropdownData.reports}
           vehicles={profileDropdownData.vehicles}
           bids={profileDropdownData.bids}
+          isLightAppearance={isLightAppearance}
         />
       )}
     </div>

@@ -298,6 +298,7 @@ export default function DashboardLayout({
                   vehicles={vehicles}
                   bids={bids}
                   variant="embedded"
+                  isLightAppearance={isLightAppearance}
                 />
               </div>
             )}

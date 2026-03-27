@@ -37,6 +37,7 @@ interface ProfileDropdownProps {
   vehicles?: any[];
   bids?: any[];
   variant?: "popover" | "embedded";
+  isLightAppearance?: boolean;
 }
 
 export default function ProfileDropdown({
@@ -52,6 +53,7 @@ export default function ProfileDropdown({
   vehicles,
   bids,
   variant = "popover",
+  isLightAppearance = false,
 }: ProfileDropdownProps) {
   if (!isOpen) return null;
 
@@ -141,17 +143,21 @@ export default function ProfileDropdown({
   return (
     <div
       ref={forwardedRef}
-      className={`${containerClasses} text-slate-200`}
+      className={`${containerClasses} ${isLightAppearance ? "text-slate-800" : "text-slate-200"}`}
       style={{
-        background:
-          "linear-gradient(180deg, rgba(18, 36, 60, 0.97) 0%, rgba(12, 25, 41, 0.93) 100%)",
-        borderColor: "rgba(96, 165, 250, 0.24)",
-        boxShadow:
-          "0 24px 56px rgba(2, 6, 23, 0.5), 0 4px 12px rgba(2, 6, 23, 0.3), 0 0 1px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(147, 197, 253, 0.1), 0 0 40px rgba(37, 99, 235, 0.08)",
+        background: isLightAppearance
+          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 250, 252, 0.95) 100%)"
+          : "linear-gradient(180deg, rgba(18, 36, 60, 0.97) 0%, rgba(12, 25, 41, 0.93) 100%)",
+        borderColor: isLightAppearance ? "rgba(148, 163, 184, 0.35)" : "rgba(96, 165, 250, 0.24)",
+        boxShadow: isLightAppearance
+          ? "0 24px 56px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 1px rgba(148, 163, 184, 0.4)"
+          : "0 24px 56px rgba(2, 6, 23, 0.5), 0 4px 12px rgba(2, 6, 23, 0.3), 0 0 1px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(147, 197, 253, 0.1), 0 0 40px rgba(37, 99, 235, 0.08)",
       }}
     >
       {/* Profile Header */}
-      <div className="p-4 border-b border-slate-200/40">
+      <div
+        className={`p-4 border-b ${isLightAppearance ? "border-slate-200/60" : "border-slate-200/40"}`}
+      >
         <div className="flex items-center space-x-3">
           {/* Profile Picture */}
           {userInfo.profileImage ? (
@@ -169,8 +175,14 @@ export default function ProfileDropdown({
           )}
           <div className="flex-1 min-w-0">
             <p className="font-semibold truncate">{userInfo.name || "User"}</p>
-            <p className="text-sm text-blue-200/60 truncate">{userInfo.email}</p>
-            <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded-full bg-blue-500/25 text-blue-300 font-medium capitalize">
+            <p
+              className={`text-sm truncate ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+            >
+              {userInfo.email}
+            </p>
+            <span
+              className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-medium capitalize ${isLightAppearance ? "bg-blue-100 text-blue-600" : "bg-blue-500/25 text-blue-300"}`}
+            >
               {userType}
             </span>
           </div>
@@ -189,13 +201,20 @@ export default function ProfileDropdown({
         insurerPartnerShops={insurerPartnerShops}
         insurerResolvedClaims={insurerResolvedClaims}
         insurerBidCount={insurerBidCount}
+        isLightAppearance={isLightAppearance}
       />
 
       {/* Notifications Section */}
-      <div className="border-b border-slate-200/40">
-        <div className="px-4 py-2 bg-white/5 font-semibold text-sm flex items-center justify-between">
+      <div
+        className={`border-b ${isLightAppearance ? "border-slate-200/60" : "border-slate-200/40"}`}
+      >
+        <div
+          className={`px-4 py-2 font-semibold text-sm flex items-center justify-between ${isLightAppearance ? "bg-slate-50/80" : "bg-white/5"}`}
+        >
           <div className="flex items-center gap-2">
-            <span className="text-slate-200">Notifications</span>
+            <span className={isLightAppearance ? "text-slate-700" : "text-slate-200"}>
+              Notifications
+            </span>
             <div className="flex items-center gap-1">
               <Radio
                 className={`w-3 h-3 ${notificationSyncActive ? "text-green-500 animate-pulse" : "text-gray-400"}`}
@@ -215,13 +234,19 @@ export default function ProfileDropdown({
         </div>
         <div className="max-h-48 overflow-y-auto">
           {notifications.length === 0 ? (
-            <div className="px-4 py-3 text-sm text-blue-200/60">{getEmptyStateMessage()}</div>
+            <div
+              className={`px-4 py-3 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+            >
+              {getEmptyStateMessage()}
+            </div>
           ) : (
             notifications.slice(0, 5).map((notification) => (
               <div
                 key={notification.id}
-                className={`px-4 py-3 hover:bg-blue-500/10 cursor-pointer border-b border-blue-200/10 transition-colors ${
-                  !notification.read ? "bg-blue-500/15" : ""
+                className={`px-4 py-3 cursor-pointer transition-colors ${
+                  isLightAppearance
+                    ? `border-b border-slate-200/50 hover:bg-slate-50/80 ${!notification.read ? "bg-blue-50/60" : ""}`
+                    : `border-b border-blue-200/10 hover:bg-blue-500/10 ${!notification.read ? "bg-blue-500/15" : ""}`
                 }`}
                 onClick={() => handleNotificationClick(notification)}
               >
@@ -234,10 +259,16 @@ export default function ProfileDropdown({
                     );
                   })()}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-200 truncate">
+                    <p
+                      className={`text-sm font-medium truncate ${isLightAppearance ? "text-slate-700" : "text-slate-200"}`}
+                    >
                       {notification.message}
                     </p>
-                    <p className="text-xs text-blue-200/50 mt-1">{notification.time}</p>
+                    <p
+                      className={`text-xs mt-1 ${isLightAppearance ? "text-slate-400" : "text-blue-200/50"}`}
+                    >
+                      {notification.time}
+                    </p>
                   </div>
                   {!notification.read && (
                     <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1.5" />
