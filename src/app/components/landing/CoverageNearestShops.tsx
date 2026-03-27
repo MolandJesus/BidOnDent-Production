@@ -122,9 +122,9 @@ export default function CoverageNearestShops({
                     {shop.countyLabel}
                   </div>
                   {shop.dataMode === "demo" ? (
-                    <div className={cn("mt-1 text-xs font-semibold", theme.secondaryTextClassName)}>
-                      Demo map entry
-                    </div>
+                    <span className="mt-1.5 inline-flex rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-400/15 text-amber-300 border border-amber-400/25">
+                      Demo
+                    </span>
                   ) : null}
                 </div>
                 {selectedShopId === `${shop.id || shop.name}` ? (

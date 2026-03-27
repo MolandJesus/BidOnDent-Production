@@ -45,11 +45,6 @@ export default function CoverageSearchPanel({
     tone === "light"
       ? "h-12 rounded-[1.25rem] border border-white/85 bg-white/82 px-4 text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white"
       : "h-12 rounded-[1.25rem] border border-white/12 bg-slate-900/72 px-4 text-white outline-none transition placeholder:text-slate-400 focus:border-cyan-400/40 focus:bg-slate-900/88";
-  const summaryPillClassName =
-    tone === "light"
-      ? "rounded-full border border-white/80 bg-white/76 px-3 py-1.5 text-xs font-medium text-slate-600"
-      : "rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs font-medium text-slate-300";
-
   return (
     <div className={cn("mt-0 p-3 sm:p-5", theme.panelStrongClassName)}>
       {/* Apple Maps-style search bar — prominent, single row */}
@@ -114,16 +109,6 @@ export default function CoverageSearchPanel({
         </button>
       </div>
 
-      {/* Active mode summary */}
-      <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
-        <span className={summaryPillClassName}>
-          {activeOriginMode === "geolocation"
-            ? currentLocationLabel || "Using your location"
-            : "Search by ZIP"}
-        </span>
-        <span className={summaryPillClassName}>{radiusMiles}-mile radius</span>
-      </div>
-
       {normalizedZip.length > 0 ? (
         <div
           className={cn(
@@ -154,22 +139,24 @@ export default function CoverageSearchPanel({
         </div>
       ) : null}
 
-      <div
-        className={cn(
-          "mt-2.5 sm:mt-3 flex items-center gap-2 rounded-[1.2rem] px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm",
-          theme.panelClassName
-        )}
-      >
-        <Navigation
+      {normalizedZip.length > 0 ? (
+        <div
           className={cn(
-            "h-3.5 w-3.5 shrink-0",
-            tone === "light" ? "text-sky-600" : "text-cyan-300"
+            "mt-2.5 sm:mt-3 flex items-center gap-2 rounded-[1.2rem] px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm",
+            theme.panelClassName
           )}
-        />
-        <span className={theme.secondaryTextClassName}>
-          Select a shop to preview routes and launch directions in your preferred maps app.
-        </span>
-      </div>
+        >
+          <Navigation
+            className={cn(
+              "h-3.5 w-3.5 shrink-0",
+              tone === "light" ? "text-sky-600" : "text-cyan-300"
+            )}
+          />
+          <span className={theme.secondaryTextClassName}>
+            Select a shop to preview routes and launch directions in your preferred maps app.
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }

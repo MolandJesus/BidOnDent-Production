@@ -137,6 +137,7 @@ export default function OperatingRegionsSection({
 
             <ServiceCoverageMap
               className="mt-3 sm:mt-4"
+              mapHeightClassName="h-[300px] sm:h-[420px] md:h-[500px]"
               center={coverage.mapView.center}
               zoom={coverage.mapView.zoom}
               revision={coverage.mapView.revision}
