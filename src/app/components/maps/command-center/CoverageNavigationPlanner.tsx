@@ -188,11 +188,6 @@ export default function CoverageNavigationPlanner({
         theme.panelStrongClassName
       )}
     >
-      <div className="hidden xl:flex flex-wrap items-center gap-2">
-        <span className={theme.eyebrowClassName}>Route Planner</span>
-        <span className={theme.softBadgeClassName}>GPS + routing + voice</span>
-      </div>
-
       <PlannerAddressSearch
         tone={tone}
         theme={theme}
@@ -228,17 +223,6 @@ export default function CoverageNavigationPlanner({
         retryGps={retryGps}
         speedLimitStatus={speedLimitStatus}
       />
-
-      {showSavedAndDiscoveryHints ? (
-        <div
-          className={cn(
-            "hidden xl:block rounded-[0.875rem] border px-2.5 py-2 text-xs",
-            theme.panelClassName
-          )}
-        >
-          Tip: use tabs above to browse Explore, Saved, and Shops without losing search context.
-        </div>
-      ) : null}
 
       <PlannerRoutePreview
         tone={tone}

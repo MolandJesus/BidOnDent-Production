@@ -171,30 +171,25 @@ export default function CoverageCommandCenterSidebar({
         {navigationSession ? (
           <div
             className={cn(
-              "map-liquid-card map-ui-enter map-ui-enter-delay-3 p-4",
+              "map-liquid-card map-ui-enter map-ui-enter-delay-3 p-3",
               theme.panelClassName
             )}
           >
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className={theme.metricLabelClassName}>Recent Route Memory</div>
-                <div className={cn("mt-2 text-base font-semibold", theme.titleClassName)}>
+              <div className="min-w-0">
+                <div className={theme.metricLabelClassName}>Recent Route</div>
+                <div className={cn("mt-1 truncate text-sm font-semibold", theme.titleClassName)}>
                   {navigationSession.destinationName}
+                </div>
+                <div className={cn("mt-0.5 text-xs", theme.secondaryTextClassName)}>
+                  {getNavigationProviderLabel(navigationSession.provider)}
+                  {launchTime ? ` • ${launchTime}` : ""}
                 </div>
               </div>
               <span className={theme.iconButtonClassName}>
-                <History className="h-4 w-4" />
+                <History className="h-3.5 w-3.5" />
               </span>
             </div>
-            <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-              Last launched with {getNavigationProviderLabel(navigationSession.provider)}
-              {launchTime ? ` • ${launchTime}` : ""}
-            </div>
-            {navigationSession.destinationAddress ? (
-              <div className={cn("mt-2 text-xs leading-5", theme.secondaryTextClassName)}>
-                {navigationSession.destinationAddress}
-              </div>
-            ) : null}
           </div>
         ) : null}
 

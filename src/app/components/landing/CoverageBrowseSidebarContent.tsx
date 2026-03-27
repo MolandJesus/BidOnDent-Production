@@ -8,7 +8,7 @@
  * All state, hooks, and orchestration remain in CoverageBrowseExperience.
  */
 
-import { Compass, Crosshair, MapPinned, RotateCcw, Search, Star } from "lucide-react";
+import { Compass, MapPinned, Search, Star } from "lucide-react";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
@@ -47,8 +47,6 @@ type CoverageBrowseSidebarContentProps = {
   onSidebarViewChange: (view: SidebarView) => void;
   tileMode: MapTileMode;
   onTileModeChange: (mode: MapTileMode) => void;
-  onCenterActive: () => void;
-  onResetView: () => void;
 
   /* ── Navigation planner ── */
   navigation: CoverageNavigationExperience;
@@ -99,8 +97,6 @@ export default function CoverageBrowseSidebarContent({
   onSidebarViewChange,
   tileMode,
   onTileModeChange,
-  onCenterActive,
-  onResetView,
   navigation,
   selectedShop,
   onStartNavigation,
@@ -156,32 +152,6 @@ export default function CoverageBrowseSidebarContent({
               {label}
             </button>
           ))}
-        </div>
-
-        {/* Map utility controls — removed: tile mode + center/reset now live on map icon rail only */}
-        <div className="hidden xl:flex gap-1.5">
-          <button
-            type="button"
-            onClick={onCenterActive}
-            className={cn(
-              theme.tertiaryButtonClassName,
-              "flex-1 !rounded-full !py-1 !px-2 !text-[11px]"
-            )}
-          >
-            <Crosshair className="h-3 w-3" />
-            Center
-          </button>
-          <button
-            type="button"
-            onClick={onResetView}
-            className={cn(
-              theme.tertiaryButtonClassName,
-              "flex-1 !rounded-full !py-1 !px-2 !text-[11px]"
-            )}
-          >
-            <RotateCcw className="h-3 w-3" />
-            Reset
-          </button>
         </div>
       </div>
 
