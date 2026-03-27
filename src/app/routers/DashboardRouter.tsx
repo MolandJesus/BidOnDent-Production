@@ -374,6 +374,7 @@ export default function DashboardRouter({
                       onViewModeChange("dashboard");
                     }}
                     primaryColor={primaryColor}
+                    appearanceMode={appearanceMode}
                   />
                 ) : (
                   <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
@@ -524,6 +525,7 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   secondaryColor={secondaryColor}
                   identity={websiteIdentity}
+                  appearanceMode={appearanceMode}
                 />
               </motion.div>
             )}
