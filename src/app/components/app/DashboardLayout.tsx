@@ -422,6 +422,7 @@ export default function DashboardLayout({
                   {profileDropdownData ? (
                     <NotificationCenter
                       isOpen={showNotifications}
+                      isLightAppearance={isLightAppearance}
                       userType={profileDropdownData.userType}
                       notifications={notifications}
                       notificationSyncActive={notificationSyncActive}
