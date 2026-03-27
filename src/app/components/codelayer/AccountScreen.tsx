@@ -347,6 +347,7 @@ export default function AccountScreen({
         onImageClick={handleImageClick}
         fileInputRef={fileInputRef}
         onImageChange={handleImageChange}
+        appearanceMode={appearanceMode}
       />
 
       <SettingsModal
@@ -359,7 +360,7 @@ export default function AccountScreen({
         onClose={() => setShowSettings(false)}
       />
 
-      <PaymentModal isOpen={showPayment} onClose={() => setShowPayment(false)} />
+      <PaymentModal isOpen={showPayment} onClose={() => setShowPayment(false)} appearanceMode={appearanceMode} />
 
       <ShopProfileModal
         isOpen={showShopProfile}
@@ -369,6 +370,7 @@ export default function AccountScreen({
         onShopNameChange={setShopName}
         onPhoneChange={handleShopPhoneChange}
         onClose={() => setShowShopProfile(false)}
+        appearanceMode={appearanceMode}
       />
 
       <HelpModal isOpen={showHelp} primaryColor={primaryColor} onClose={() => setShowHelp(false)} />
@@ -380,6 +382,7 @@ export default function AccountScreen({
         onDeleteConfirmTextChange={setDeleteConfirmText}
         onClose={handleCloseDeleteAccount}
         onDelete={handleDeleteAccount}
+        appearanceMode={appearanceMode}
       />
 
       {/* Admin Panel Full-Screen Overlay */}

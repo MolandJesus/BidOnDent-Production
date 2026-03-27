@@ -1,4 +1,5 @@
 import { AlertCircle, Trash2, X } from "lucide-react";
+import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type DeleteAccountModalProps = {
   isOpen: boolean;
@@ -7,6 +8,7 @@ type DeleteAccountModalProps = {
   onDeleteConfirmTextChange: (value: string) => void;
   onClose: () => void;
   onDelete: () => void;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export default function DeleteAccountModal({
@@ -16,7 +18,9 @@ export default function DeleteAccountModal({
   onDeleteConfirmTextChange,
   onClose,
   onDelete,
+  appearanceMode = "map-dark",
 }: DeleteAccountModalProps) {
+  const isLight = appearanceMode === "light";
   if (!isOpen) return null;
 
   return (
@@ -27,10 +31,10 @@ export default function DeleteAccountModal({
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className="text-xl font-bold text-slate-100">Delete Account?</h2>
+            <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>Delete Account?</h2>
           </div>
           <button
-            className="text-slate-400 hover:text-slate-300"
+            className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`}
             onClick={onClose}
             disabled={isDeleting}
           >
@@ -41,10 +45,10 @@ export default function DeleteAccountModal({
         <div className="space-y-4">
           <div className="bg-red-400/10 border border-red-400/30 rounded-lg p-4">
             <p className="text-sm text-red-800 font-medium mb-2">This action cannot be undone.</p>
-            <p className="text-sm text-red-300">
+            <p className={`text-sm ${isLight ? "text-red-700" : "text-red-300"}`}>
               Deleting your account will permanently remove your BidOnDent sign-in access.
             </p>
-            <ul className="list-disc list-inside text-sm text-red-300 mt-2 space-y-1">
+            <ul className={`list-disc list-inside text-sm mt-2 space-y-1 ${isLight ? "text-red-700" : "text-red-300"}`}>
               <li>Your ability to sign back into this account</li>
               <li>Your saved local website session on this browser</li>
               <li>
@@ -57,7 +61,7 @@ export default function DeleteAccountModal({
           <div>
             <label
               htmlFor="delete-confirm"
-              className="block text-sm font-medium text-slate-300 mb-2"
+              className={`block text-sm font-medium mb-2 ${isLight ? "text-slate-700" : "text-slate-300"}`}
             >
               Type <span className="font-bold text-red-600">DELETE</span> to confirm:
             </label>
@@ -67,7 +71,7 @@ export default function DeleteAccountModal({
               value={deleteConfirmText}
               onChange={(e) => onDeleteConfirmTextChange(e.target.value)}
               placeholder="Type DELETE here"
-              className="w-full px-3 py-2 border border-white/[0.12] rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
               disabled={isDeleting}
             />
           </div>
