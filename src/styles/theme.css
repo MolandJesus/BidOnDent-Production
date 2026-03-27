@@ -539,6 +539,43 @@
     box-shadow: 0 24px 56px rgba(2, 6, 23, 0.34);
   }
 
+  /* ── Shop directory map popup/tooltip theme ── */
+  .shop-directory-map .leaflet-popup-content-wrapper,
+  .shop-directory-map .leaflet-popup-tip {
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    background: rgba(255, 255, 255, 0.88);
+    color: rgb(15 23 42);
+    backdrop-filter: blur(24px);
+    box-shadow: 0 24px 56px rgba(15, 23, 42, 0.16);
+  }
+
+  .shop-directory-map .leaflet-popup-content {
+    margin: 0.9rem 1rem;
+  }
+
+  .shop-directory-map .leaflet-tooltip {
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: rgb(15 23 42);
+    padding: 0.35rem 0.65rem;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.14);
+  }
+
+  .shop-directory-map .leaflet-tooltip::before {
+    display: none;
+  }
+
+  .shop-directory-map[data-map-theme="dark"] .leaflet-popup-content-wrapper,
+  .shop-directory-map[data-map-theme="dark"] .leaflet-popup-tip,
+  .shop-directory-map[data-map-theme="dark"] .leaflet-tooltip {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.9);
+    color: rgb(241 245 249);
+    box-shadow: 0 24px 56px rgba(2, 6, 23, 0.34);
+  }
+
   .map-liquid-panel {
     border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow:
