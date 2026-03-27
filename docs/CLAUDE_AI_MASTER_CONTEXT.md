@@ -210,7 +210,7 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 
 | Priority | Task                                | Why                                                               |
 | -------- | ----------------------------------- | ----------------------------------------------------------------- |
-| P1       | Report → map pin connection         | Submitted reports should appear on the shop's map view            |
+| ✅ DONE  | Report → map pin connection         | Pass 317 — `MapReportMarkers` added to `ShopDirectoryMapPane`     |
 | P2       | Bid → spatial context               | Bid comparison should show shop location on mini-map              |
 | P2       | Shop selection → navigation handoff | Selecting a shop in directory should offer GPS navigation handoff |
 | P3       | Mobile map at 375px audit           | Map view modes need systematic mobile check                       |
