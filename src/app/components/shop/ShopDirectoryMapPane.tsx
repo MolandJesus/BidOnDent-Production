@@ -59,38 +59,64 @@ export default function ShopDirectoryMapPane({
   const selectedRoute =
     routeOptions.find((route) => route.id === selectedRouteId) || routeOptions[0] || null;
   const tileLayer = mapTheme === "dark" ? DARK_TILE_LAYER : LIGHT_TILE_LAYER;
+  const isDark = mapTheme === "dark";
   const fitSignature = [
     selectedOrigin?.placeId || selectedOrigin?.name || "no-origin",
     shops.map((shop) => shop.id).join(","),
   ].join(":");
 
+  // Theme-aware token helpers
+  const badgeCard = isDark
+    ? "border-white/15 bg-slate-950/70 text-white shadow-xl backdrop-blur"
+    : "border-black/8 bg-white/85 text-slate-800 shadow-xl backdrop-blur";
+  const badgeLabel = isDark ? "text-white/65" : "text-slate-500";
+  const badgeValue = isDark ? "text-white/95" : "text-slate-800";
+  const topGradient = isDark
+    ? "bg-gradient-to-b from-slate-950/50 via-slate-950/12 to-transparent"
+    : "bg-gradient-to-b from-black/18 via-black/5 to-transparent";
+  const bottomGradient = isDark
+    ? "bg-gradient-to-t from-slate-950/75 via-slate-950/22 to-transparent"
+    : "bg-gradient-to-t from-black/22 via-black/8 to-transparent";
+  const shopCard = isDark
+    ? "border-white/15 bg-slate-950/92 text-white shadow-2xl backdrop-blur-xl"
+    : "border-black/8 bg-white/94 text-slate-800 shadow-2xl backdrop-blur-xl";
+  const shopCardSecondary = isDark ? "text-slate-300/80" : "text-slate-500";
+  const shopCardMeta = isDark ? "text-slate-400" : "text-slate-500";
+  const shopCardScore = isDark
+    ? "bg-slate-900 text-white"
+    : "bg-slate-100 text-slate-800";
+  const shopCardScoreLabel = isDark ? "text-white/65" : "text-slate-500";
+  const legendCard = isDark
+    ? "border-white/15 bg-slate-950/70 text-white/80 shadow-xl backdrop-blur"
+    : "border-black/8 bg-white/85 text-slate-600 shadow-xl backdrop-blur";
+
   return (
-    <div className="relative h-full min-h-[420px] w-full overflow-hidden bg-slate-200">
+    <div className="relative h-full min-h-[420px] w-full overflow-hidden">
       {!suppressHeader && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[500] bg-gradient-to-b from-slate-950/45 via-slate-950/10 to-transparent px-5 py-5">
+        <div className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${topGradient} px-5 py-5`}>
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="rounded-2xl border border-white/15 bg-slate-950/65 px-4 py-3 text-white shadow-xl backdrop-blur">
-              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/65">
+            <div className={`rounded-2xl border px-4 py-3 ${badgeCard}`}>
+              <div className={`flex items-center gap-2 text-xs uppercase tracking-[0.22em] ${badgeLabel}`}>
                 <Sparkles className="h-4 w-4" />
                 {getRoleLabel(userType)}
               </div>
-              <p className="mt-1 text-sm font-medium text-white/95">
+              <p className={`mt-1 text-sm font-medium ${badgeValue}`}>
                 {selectedOrigin
                   ? `Centered on ${selectedOrigin.name}`
-                  : "Exploring the Dallas repair market"}
+                  : "Exploring the service area"}
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/15 bg-slate-950/65 px-4 py-3 text-sm text-white shadow-xl backdrop-blur">
-              <p className="text-white/65">Visible shops</p>
-              <p className="text-xl font-semibold">{shops.length}</p>
+            <div className={`rounded-2xl border px-4 py-3 text-sm ${badgeCard}`}>
+              <p className={badgeLabel}>Visible shops</p>
+              <p className={`text-xl font-semibold ${badgeValue}`}>{shops.length}</p>
             </div>
           </div>
         </div>
       )}
 
       <MapContainer
-        center={[initialCenter?.latitude || 32.7767, initialCenter?.longitude || -96.797]}
+        center={[initialCenter?.latitude || 41.0534, initialCenter?.longitude || -73.8654]}
         className="h-full w-full"
         scrollWheelZoom
         zoom={initialZoom || 11}
@@ -120,8 +146,8 @@ export default function ShopDirectoryMapPane({
           >
             <Popup>
               <div className="space-y-1">
-                <p className="font-semibold text-slate-100">{selectedOrigin.name}</p>
-                <p className="text-sm text-slate-300/80">{selectedOrigin.address}</p>
+                <p className="font-semibold text-slate-800">{selectedOrigin.name}</p>
+                <p className="text-sm text-slate-500">{selectedOrigin.address}</p>
               </div>
             </Popup>
             <Tooltip direction="top" offset={[0, -8]} opacity={0.95} permanent={false}>
@@ -142,8 +168,8 @@ export default function ShopDirectoryMapPane({
           >
             <Popup>
               <div className="space-y-1">
-                <p className="font-semibold text-slate-100">{place.label}</p>
-                <p className="text-sm text-slate-300/80">{place.address}</p>
+                <p className="font-semibold text-slate-800">{place.label}</p>
+                <p className="text-sm text-slate-500">{place.address}</p>
               </div>
             </Popup>
           </CircleMarker>
@@ -167,8 +193,8 @@ export default function ShopDirectoryMapPane({
             >
               <Popup>
                 <div className="space-y-1">
-                  <p className="font-semibold text-slate-100">{route.label} route</p>
-                  <p className="text-sm text-slate-300/80">
+                  <p className="font-semibold text-slate-800">{route.label} route</p>
+                  <p className="text-sm text-slate-600">
                     {route.totalDistanceLabel} • {route.estimatedDurationMinutes} min
                   </p>
                   <p className="text-sm text-slate-500">{route.trafficLabel}</p>
@@ -200,19 +226,19 @@ export default function ShopDirectoryMapPane({
               <Popup>
                 <div className="space-y-2">
                   <div>
-                    <p className="font-semibold text-slate-100">{shop.name}</p>
-                    <p className="text-sm text-slate-300/80">
+                    <p className="font-semibold text-slate-800">{shop.name}</p>
+                    <p className="text-sm text-slate-500">
                       {shop.mapResult.address}, {shop.mapResult.city}
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="rounded-xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
                       <p className="text-slate-500">AI fit</p>
-                      <p className="font-semibold text-slate-100">{shop.recommendationScore}%</p>
+                      <p className="font-semibold text-slate-800">{shop.recommendationScore}%</p>
                     </div>
-                    <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2">
-                      <p className="text-emerald-300">Carrier fit</p>
-                      <p className="font-semibold text-emerald-900">
+                    <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
+                      <p className="text-emerald-600">Carrier fit</p>
+                      <p className="font-semibold text-emerald-800">
                         {shop.insuranceCompatibilityScore}%
                       </p>
                     </div>
@@ -227,44 +253,44 @@ export default function ShopDirectoryMapPane({
         })}
       </MapContainer>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[500] bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent px-5 pb-5 pt-16">
+      <div className={`pointer-events-none absolute inset-x-0 bottom-0 z-[500] ${bottomGradient} px-5 pb-5 pt-16`}>
         <div className="flex flex-wrap items-end justify-between gap-3">
           {selectedShop && (
-            <div className="max-w-md rounded-[24px] border border-white/15 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-xl">
+            <div className={`max-w-md rounded-[24px] border p-4 ${shopCard}`}>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Selected shop</p>
-                  <h3 className="mt-1 text-lg font-semibold text-slate-100">{selectedShop.name}</h3>
+                  <p className={`text-xs uppercase tracking-[0.2em] ${shopCardMeta}`}>Selected shop</p>
+                  <h3 className={`mt-1 text-lg font-semibold ${isDark ? "text-white" : "text-slate-800"}`}>{selectedShop.name}</h3>
                 </div>
-                <div className="rounded-2xl bg-slate-950 px-3 py-2 text-center text-white">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-white/65">AI Fit</p>
+                <div className={`rounded-2xl px-3 py-2 text-center ${shopCardScore}`}>
+                  <p className={`text-[11px] uppercase tracking-[0.18em] ${shopCardScoreLabel}`}>AI Fit</p>
                   <p className="text-lg font-semibold">{selectedShop.recommendationScore}%</p>
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-slate-300/80">
+              <div className={`mt-3 flex flex-wrap items-center gap-3 text-sm ${shopCardSecondary}`}>
                 <span className="inline-flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-slate-400" />
+                  <MapPin className={`h-4 w-4 ${shopCardMeta}`} />
                   {selectedShop.mapDistanceLabel}
                 </span>
                 {selectedRoute && (
                   <span className="inline-flex items-center gap-1.5">
-                    <Sparkles className="h-4 w-4 text-slate-400" />
+                    <Sparkles className={`h-4 w-4 ${shopCardMeta}`} />
                     {selectedRoute.label} • {selectedRoute.estimatedDurationMinutes} min
                   </span>
                 )}
                 <span className="inline-flex items-center gap-1.5">
-                  <Shield className="h-4 w-4 text-slate-400" />
+                  <Shield className={`h-4 w-4 ${shopCardMeta}`} />
                   {selectedShop.insuranceCompatibilityScore}% carrier fit
                 </span>
               </div>
 
-              <p className="mt-3 text-sm leading-6 text-slate-300/80">{selectedShop.aiSummary}</p>
+              <p className={`mt-3 text-sm leading-6 ${shopCardSecondary}`}>{selectedShop.aiSummary}</p>
             </div>
           )}
 
-          <div className="hidden rounded-2xl border border-white/15 bg-slate-950/70 px-4 py-3 text-xs text-white/80 shadow-xl backdrop-blur sm:block">
-            <p className="font-semibold text-white">Marker legend</p>
+          <div className={`hidden rounded-2xl border px-4 py-3 text-xs shadow-xl sm:block ${legendCard}`}>
+            <p className={`font-semibold ${isDark ? "text-white" : "text-slate-700"}`}>Marker legend</p>
             <p className="mt-1">
               Orange = origin, blue = selected, dark = top match, lines = route options
             </p>

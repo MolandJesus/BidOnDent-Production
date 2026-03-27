@@ -311,6 +311,7 @@ export default function ShopDirectoryScreen({
                   deviationPrompt={deviationPromptNode}
                   intelligenceCallouts={session.roleHighlights.callouts}
                   intelligenceTitle={session.roleHighlights.title}
+                  mapTheme={session.mapTheme}
                   onSelectRoute={session.setSelectedRouteId}
                   routeOptions={session.routeOptions}
                   routeSummary={session.routeSummary}

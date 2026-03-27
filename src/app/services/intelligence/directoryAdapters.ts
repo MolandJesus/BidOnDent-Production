@@ -15,17 +15,24 @@ const DIRECTORY_SHOP_ID_OFFSET = 10000;
 const DIRECTORY_INSURER_ID_OFFSET = 50000;
 
 const CITY_COORDINATE_DIRECTORY: Record<string, Coordinates> = {
-  "addison,tx": { latitude: 32.9618, longitude: -96.8292 },
-  "arlington,tx": { latitude: 32.7357, longitude: -97.1081 },
-  "dallas,tx": { latitude: 32.7767, longitude: -96.797 },
-  "fort worth,tx": { latitude: 32.7555, longitude: -97.3308 },
-  "frisco,tx": { latitude: 33.1507, longitude: -96.8236 },
-  "garland,tx": { latitude: 32.9126, longitude: -96.6389 },
-  "irving,tx": { latitude: 32.814, longitude: -96.9489 },
-  "mckinney,tx": { latitude: 33.1976, longitude: -96.6153 },
-  "mesquite,tx": { latitude: 32.7668, longitude: -96.5992 },
-  "plano,tx": { latitude: 33.0198, longitude: -96.6989 },
-  "richardson,tx": { latitude: 32.9483, longitude: -96.7299 },
+  // NY coverage area — Westchester, Rockland, Dutchess, Nassau, Orange, Putnam
+  "yonkers,ny": { latitude: 40.9312, longitude: -73.8988 },
+  "white plains,ny": { latitude: 41.0534, longitude: -73.7629 },
+  "new rochelle,ny": { latitude: 40.9115, longitude: -73.7826 },
+  "mount vernon,ny": { latitude: 40.9126, longitude: -73.8371 },
+  "spring valley,ny": { latitude: 41.1132, longitude: -74.0447 },
+  "nanuet,ny": { latitude: 41.0937, longitude: -74.0135 },
+  "nyack,ny": { latitude: 41.0909, longitude: -73.9179 },
+  "poughkeepsie,ny": { latitude: 41.7004, longitude: -73.9209 },
+  "beacon,ny": { latitude: 41.5034, longitude: -73.9696 },
+  "fishkill,ny": { latitude: 41.5359, longitude: -73.8996 },
+  "hempstead,ny": { latitude: 40.7062, longitude: -73.618 },
+  "garden city,ny": { latitude: 40.7268, longitude: -73.6332 },
+  "mineola,ny": { latitude: 40.7495, longitude: -73.6407 },
+  "middletown,ny": { latitude: 41.445, longitude: -74.4229 },
+  "newburgh,ny": { latitude: 41.5034, longitude: -74.0104 },
+  "carmel,ny": { latitude: 41.4298, longitude: -73.6824 },
+  "brewster,ny": { latitude: 41.3951, longitude: -73.6182 },
 };
 
 const SHOP_FALLBACK_IMAGES = [
@@ -394,7 +401,7 @@ export function buildDirectoryInsuranceProfiles(directoryInsurers: InsurerBusine
         claimsPhone: profile.companyPhone || "(555) 010-2200",
         description,
         digitalClaimsExperience: profile.digitalClaimsExperience || "standard",
-        headquarters: `${profile.companyCity || "Dallas"}, ${profile.companyState || "TX"}`,
+        headquarters: `${profile.companyCity || "White Plains"}, ${profile.companyState || "NY"}`,
         id: getDirectoryInsurerId(profile),
         name: profile.companyName,
         popular: profile.popular,

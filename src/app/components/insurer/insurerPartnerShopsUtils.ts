@@ -71,8 +71,9 @@ export function buildManualProspectCoordinate(prospect: CustomProspect) {
   const latitudeOffset = ((hashSeed % 1400) - 700) / 10000;
   const longitudeOffset = (((hashSeed >> 8) % 1400) - 700) / 10000;
 
+  // Base: Westchester County, NY — center of the active coverage area
   return {
-    lat: 32.7767 + latitudeOffset,
-    lng: -96.797 + longitudeOffset,
+    lat: 41.0534 + latitudeOffset,
+    lng: -73.8654 + longitudeOffset,
   };
 }

@@ -298,10 +298,10 @@ export function buildShopMapListings({
       shop,
       {
         address: profile?.businessAddress || "BidOnDent Network",
-        city: profile?.businessCity || "Dallas",
+        city: profile?.businessCity || "White Plains",
         coordinates,
-        state: profile?.businessState || "TX",
-        zipCode: profile?.businessZip || "75201",
+        state: profile?.businessState || "NY",
+        zipCode: profile?.businessZip || "10601",
       },
       origin
     );
@@ -358,8 +358,8 @@ export function buildRoleAwareMapHighlights({
         { label: "Insurer-Ready Shops", value: String(networkReadyCount) },
       ],
       callouts: [
-        "Nearest high-fit shops are clustered around central Dallas and Uptown.",
-        "Luxury, EV, and ADAS capabilities are the clearest differentiation pockets in the current seed market.",
+        "Nearest high-fit shops are clustered across Westchester, Rockland, and Nassau counties.",
+        "Luxury, EV, and ADAS capabilities are the clearest differentiation pockets in the current network.",
       ],
       primaryActionLabel: "Track competitor",
       secondaryActionLabel: "Review profile",

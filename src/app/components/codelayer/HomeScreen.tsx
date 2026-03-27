@@ -107,6 +107,7 @@ export default function HomeScreen({
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
               appearanceMode={appearanceMode}
+              onViewShops={onViewShops}
             />
           )}
         </div>

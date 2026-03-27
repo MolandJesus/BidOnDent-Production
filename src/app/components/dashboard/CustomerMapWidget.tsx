@@ -1,4 +1,4 @@
-import { MapPinned, Navigation, Star, Store } from "lucide-react";
+import { ArrowRight, MapPinned, Navigation, Star, Store } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useCoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
@@ -24,6 +24,7 @@ type CustomerMapWidgetProps = {
   primaryColor: string;
   secondaryColor: string;
   appearanceMode?: DashboardAppearanceMode;
+  onViewShops?: () => void;
 };
 
 /**
@@ -35,6 +36,7 @@ export default function CustomerMapWidget({
   primaryColor,
   secondaryColor,
   appearanceMode = "map-dark",
+  onViewShops,
 }: CustomerMapWidgetProps) {
   const isLight = appearanceMode === "light";
   const { partnerShops: rawShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
@@ -244,6 +246,21 @@ export default function CustomerMapWidget({
           <p className="py-4 text-center text-sm text-blue-100/75">
             No shops found nearby. Open the map to search.
           </p>
+        )}
+
+        {onViewShops && (
+          <button
+            type="button"
+            onClick={onViewShops}
+            className={`mt-3 flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+              isLight
+                ? "border border-blue-200/50 bg-blue-50/40 text-blue-700 hover:bg-blue-50/70"
+                : "border border-blue-400/20 bg-blue-500/8 text-blue-200/85 hover:bg-blue-500/15"
+            }`}
+          >
+            <span>Browse all shops & AI matching</span>
+            <ArrowRight className="h-4 w-4 shrink-0" />
+          </button>
         )}
       </section>
 

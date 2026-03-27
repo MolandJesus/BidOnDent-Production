@@ -122,7 +122,7 @@ export default function AddProspectModal({
                   value={formData.city}
                   onChange={(event) => setFormData({ ...formData, city: event.target.value })}
                   className="w-full rounded-2xl border border-slate-300 px-4 py-2"
-                  placeholder="Dallas"
+                  placeholder="White Plains"
                 />
               </div>
               <div>
@@ -132,7 +132,7 @@ export default function AddProspectModal({
                   value={formData.state}
                   onChange={(event) => setFormData({ ...formData, state: event.target.value })}
                   className="w-full rounded-2xl border border-slate-300 px-4 py-2"
-                  placeholder="TX"
+                  placeholder="NY"
                   maxLength={2}
                 />
               </div>
@@ -143,7 +143,7 @@ export default function AddProspectModal({
                   value={formData.zip}
                   onChange={(event) => setFormData({ ...formData, zip: event.target.value })}
                   className="w-full rounded-2xl border border-slate-300 px-4 py-2"
-                  placeholder="75201"
+                  placeholder="10601"
                 />
               </div>
             </div>

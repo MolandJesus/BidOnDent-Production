@@ -91,11 +91,38 @@ export default function ShopDirectoryImmersiveMap({
   onBack,
 }: ShopDirectoryImmersiveMapProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const isDark = mapTheme === "dark";
 
-  const getDefaultCenter = (): Coordinates => ({ latitude: 32.7767, longitude: -96.797 });
+  const getDefaultCenter = (): Coordinates => ({ latitude: 40.7128, longitude: -74.006 });
+
+  // Theme-aware top bar tokens
+  const topGradient = isDark
+    ? "bg-gradient-to-b from-slate-950/60 via-slate-950/20 to-transparent"
+    : "bg-gradient-to-b from-black/20 via-black/6 to-transparent";
+  const iconBtn = isDark
+    ? "border-white/20 bg-slate-950/70 text-white shadow-xl backdrop-blur-md hover:bg-slate-950/85"
+    : "border-black/10 bg-white/82 text-slate-800 shadow-xl backdrop-blur-md hover:bg-white/95";
+  const searchInput = isDark
+    ? "border-white/20 bg-slate-950/70 text-white placeholder:text-white/45 focus:border-blue-400/50 focus:bg-slate-950/80"
+    : "border-black/10 bg-white/82 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/40 focus:bg-white/95";
+  const listBtnActive = isDark
+    ? "border-blue-400/40 bg-blue-600/30 text-white"
+    : "border-blue-400/40 bg-blue-100 text-blue-700";
+  const listBtnInactive = isDark
+    ? "border-white/20 bg-slate-950/70 text-white/80 hover:bg-slate-950/85 hover:text-white"
+    : "border-black/10 bg-white/82 text-slate-600 hover:bg-white/95 hover:text-slate-800";
+  const drawerBg = isDark
+    ? "border-white/10 bg-slate-950/90 backdrop-blur-xl"
+    : "border-black/8 bg-white/92 backdrop-blur-xl";
+  const drawerDivider = isDark ? "border-white/[0.08]" : "border-black/[0.06]";
+  const drawerLabel = isDark ? "text-slate-500" : "text-slate-400";
+  const drawerTitle = isDark ? "text-slate-100" : "text-slate-800";
+  const drawerClose = isDark
+    ? "text-slate-400 hover:bg-white/[0.10] hover:text-slate-200"
+    : "text-slate-500 hover:bg-black/[0.06] hover:text-slate-700";
 
   return (
-    <div className="fixed inset-0 z-[60] bg-slate-950">
+    <div className={`fixed inset-0 z-[60] ${isDark ? "bg-slate-950" : "bg-slate-100"}`}>
       {/* Map — absolute full viewport */}
       <div className="absolute inset-0">
         <ShopDirectoryMapPane
@@ -120,6 +147,7 @@ export default function ShopDirectoryImmersiveMap({
             deviationPrompt={deviationPrompt}
             intelligenceCallouts={roleHighlights.callouts}
             intelligenceTitle={roleHighlights.title}
+            mapTheme={mapTheme}
             navigationMode={navigationMode}
             onSelectRoute={onSelectRoute}
             routeOptions={routeOptions}
@@ -132,11 +160,11 @@ export default function ShopDirectoryImmersiveMap({
       </div>
 
       {/* Floating top bar */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-[550] bg-gradient-to-b from-slate-950/60 via-slate-950/20 to-transparent px-4 pb-8 pt-4">
+      <div className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-4 pb-8 pt-4`}>
         <div className="pointer-events-auto flex items-center gap-3">
           {/* Back */}
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/70 text-white shadow-xl backdrop-blur-md transition-colors hover:bg-slate-950/85"
+            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-colors ${iconBtn}`}
             onClick={onBack}
             type="button"
           >
@@ -146,9 +174,9 @@ export default function ShopDirectoryImmersiveMap({
           {/* Map-owned search */}
           <form className="flex-1" onSubmit={onSearchSubmit}>
             <div className="relative max-w-lg">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
+              <Search className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`} />
               <input
-                className="w-full rounded-full border border-white/20 bg-slate-950/70 py-2.5 pl-9 pr-4 text-sm text-white shadow-xl outline-none backdrop-blur-md transition-colors placeholder:text-white/45 focus:border-blue-400/50 focus:bg-slate-950/80"
+                className={`w-full rounded-full border py-2.5 pl-9 pr-4 text-sm shadow-xl outline-none backdrop-blur-md transition-colors ${searchInput}`}
                 onChange={(event) => onSearchQueryChange(event.target.value)}
                 placeholder="Search shops, programs, specialties..."
                 type="text"
@@ -159,11 +187,7 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Results drawer toggle */}
           <button
-            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${
-              drawerOpen
-                ? "border-blue-400/40 bg-blue-600/30 text-white"
-                : "border-white/20 bg-slate-950/70 text-white/80 hover:bg-slate-950/85 hover:text-white"
-            }`}
+            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${drawerOpen ? listBtnActive : listBtnInactive}`}
             onClick={() => setDrawerOpen((v) => !v)}
             type="button"
           >
@@ -173,7 +197,7 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Mode switches */}
           <button
-            className="flex h-10 items-center gap-2 rounded-full border border-white/20 bg-slate-950/70 px-3 text-sm font-medium text-white/80 shadow-xl backdrop-blur-md transition-colors hover:bg-slate-950/85 hover:text-white"
+            className={`flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
             onClick={() => onSwitchMode("hybrid")}
             type="button"
           >
@@ -183,7 +207,7 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Theme toggle */}
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/70 text-white/80 shadow-xl backdrop-blur-md transition-colors hover:bg-slate-950/85 hover:text-white"
+            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors ${iconBtn}`}
             onClick={onToggleTheme}
             type="button"
           >
@@ -194,18 +218,18 @@ export default function ShopDirectoryImmersiveMap({
 
       {/* Collapsible results drawer — bottom sheet on mobile, side drawer on sm+ */}
       {drawerOpen && (
-        <aside className="absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t border-white/10 bg-slate-950/90 shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r">
-          <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
+        <aside className={`absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}>
+          <div className={`flex items-center justify-between border-b px-4 py-3 ${drawerDivider}`}>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${drawerLabel}`}>
                 Results
               </p>
-              <p className="text-lg font-semibold text-slate-100">
+              <p className={`text-lg font-semibold ${drawerTitle}`}>
                 {mapListings.length} shop{mapListings.length === 1 ? "" : "s"}
               </p>
             </div>
             <button
-              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-white/[0.10] hover:text-slate-200"
+              className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${drawerClose}`}
               onClick={() => setDrawerOpen(false)}
               type="button"
             >
@@ -215,9 +239,9 @@ export default function ShopDirectoryImmersiveMap({
 
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {mapListings.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-blue-300/20 bg-blue-500/[0.04] p-4">
-                <p className="text-sm font-semibold text-slate-100">No shops matched</p>
-                <p className="mt-1 text-xs leading-5 text-slate-300/80">
+              <div className={`rounded-2xl border border-dashed p-4 ${isDark ? "border-blue-300/20 bg-blue-500/[0.04]" : "border-blue-200 bg-blue-50"}`}>
+                <p className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}>No shops matched</p>
+                <p className={`mt-1 text-xs leading-5 ${isDark ? "text-slate-300/80" : "text-slate-500"}`}>
                   Try broadening the search or changing the sort.
                 </p>
               </div>
