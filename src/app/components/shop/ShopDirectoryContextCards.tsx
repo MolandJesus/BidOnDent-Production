@@ -25,8 +25,8 @@ export default function ShopDirectoryContextCards({
           {userInfo?.name?.split(" ")[0] || "This user"} is browsing as a {userType} account
         </p>
         <p className="mt-2 text-sm leading-6 text-slate-300/80">
-          The map is reading persisted website identity memory, insurer connections, and repair
-          context instead of relying on a single auth-provider model.
+          Account preferences, insurer connections, and repair history are being used to personalize
+          shop rankings and routing recommendations.
         </p>
       </div>
 
