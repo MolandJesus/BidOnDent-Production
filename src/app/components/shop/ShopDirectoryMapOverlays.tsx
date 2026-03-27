@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronUp, MapPin, Sparkles, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Compass, MapPin, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
@@ -34,6 +34,10 @@ type ShopDirectoryMapOverlaysProps = {
   userId?: string;
   /** Map tile/surface theme — drives overlay color tokens */
   mapTheme?: MapTheme;
+  /** Called when the user taps "Start Navigation" on the route preview card */
+  onStartNavigation?: () => void;
+  /** Label for the navigation CTA (e.g. "Directions (Google Maps)") */
+  directionsLabel?: string;
 };
 
 export default function ShopDirectoryMapOverlays({
@@ -49,6 +53,8 @@ export default function ShopDirectoryMapOverlays({
   navigationMode = "browse",
   userId,
   mapTheme = "dark",
+  onStartNavigation,
+  directionsLabel,
 }: ShopDirectoryMapOverlaysProps) {
   const [routeExpanded, setRouteExpanded] = useState(false);
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
@@ -62,8 +68,12 @@ export default function ShopDirectoryMapOverlays({
     ? "border-blue-400/20 bg-slate-950/70 text-white backdrop-blur-md hover:bg-slate-950/80"
     : "border-black/8 bg-white/85 text-slate-700 backdrop-blur-md hover:bg-white/95";
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
-  const inactiveRoute = isDark ? "bg-white/[0.06] text-white/70 hover:bg-white/[0.1]" : "bg-black/[0.04] text-slate-500 hover:bg-black/[0.08]";
-  const activeRoute = isDark ? "bg-slate-950 font-semibold text-white" : "bg-white font-semibold text-slate-800 shadow-sm";
+  const inactiveRoute = isDark
+    ? "bg-white/[0.06] text-white/70 hover:bg-white/[0.1]"
+    : "bg-black/[0.04] text-slate-500 hover:bg-black/[0.08]";
+  const activeRoute = isDark
+    ? "bg-slate-950 font-semibold text-white"
+    : "bg-white font-semibold text-slate-800 shadow-sm";
   const routeSubtext = isDark ? "text-white/70" : "text-slate-500";
   const routeSubtextActive = isDark ? "text-white/70" : "text-slate-400";
   const divider = isDark ? "border-white/10" : "border-black/8";
@@ -136,18 +146,33 @@ export default function ShopDirectoryMapOverlays({
               </div>
               <div className="mt-2 space-y-1.5">
                 {intelligenceCallouts.map((callout) => (
-                  <p key={callout} className={`text-xs leading-5 ${isDark ? "text-white/85" : "text-slate-700"}`}>
+                  <p
+                    key={callout}
+                    className={`text-xs leading-5 ${isDark ? "text-white/85" : "text-slate-700"}`}
+                  >
                     {callout}
                   </p>
                 ))}
                 {hasRoute && (
                   <>
-                    <p className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}>Distance: {distanceLabel}</p>
-                    <p className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}>ETA: {etaLabel}</p>
+                    <p
+                      className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}
+                    >
+                      Distance: {distanceLabel}
+                    </p>
+                    <p
+                      className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}
+                    >
+                      ETA: {etaLabel}
+                    </p>
                   </>
                 )}
                 {sessionStateText && (
-                  <p className={`text-xs leading-5 ${isDark ? "text-blue-200/70" : "text-blue-600"}`}>Session: {sessionStateText}</p>
+                  <p
+                    className={`text-xs leading-5 ${isDark ? "text-blue-200/70" : "text-blue-600"}`}
+                  >
+                    Session: {sessionStateText}
+                  </p>
                 )}
               </div>
             </div>
@@ -160,7 +185,9 @@ export default function ShopDirectoryMapOverlays({
         <div className="pointer-events-auto absolute bottom-36 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-32">
           <div className={`rounded-2xl border p-3 shadow-2xl ${glassPanel}`}>
             <div className="flex items-center justify-between">
-              <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] ${secondaryText}`}>
+              <div
+                className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] ${secondaryText}`}
+              >
                 <MapPin className="h-3.5 w-3.5" />
                 Route
               </div>
@@ -189,7 +216,9 @@ export default function ShopDirectoryMapOverlays({
                     type="button"
                   >
                     <span className="block font-semibold">{route.estimatedDurationMinutes}m</span>
-                    <span className={`block text-[10px] ${isActive ? routeSubtextActive : routeSubtext}`}>
+                    <span
+                      className={`block text-[10px] ${isActive ? routeSubtextActive : routeSubtext}`}
+                    >
                       {route.totalDistanceLabel}
                     </span>
                   </button>
@@ -202,7 +231,9 @@ export default function ShopDirectoryMapOverlays({
               <span className="truncate">
                 {selectedOrigin.name} → {selectedShop.name}
               </span>
-              <span className={`ml-2 font-semibold whitespace-nowrap ${isDark ? "text-white" : "text-slate-800"}`}>
+              <span
+                className={`ml-2 font-semibold whitespace-nowrap ${isDark ? "text-white" : "text-slate-800"}`}
+              >
                 {distanceLabel && etaLabel ? `${distanceLabel} • ${etaLabel}` : ""}
               </span>
             </div>
@@ -219,7 +250,9 @@ export default function ShopDirectoryMapOverlays({
                       {index + 1}
                     </div>
                     <div className="min-w-0">
-                      <p className={`font-medium ${isDark ? "text-white" : "text-slate-800"}`}>{instruction.title}</p>
+                      <p className={`font-medium ${isDark ? "text-white" : "text-slate-800"}`}>
+                        {instruction.title}
+                      </p>
                       <p className={secondaryText}>
                         {instruction.durationMinutes > 0
                           ? `${instruction.durationMinutes} min`
@@ -229,6 +262,18 @@ export default function ShopDirectoryMapOverlays({
                   </div>
                 ))}
               </div>
+            )}
+
+            {/* Start Navigation CTA */}
+            {onStartNavigation && (
+              <button
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
+                onClick={onStartNavigation}
+                type="button"
+              >
+                <Compass className="h-4 w-4" />
+                {directionsLabel || "Start Navigation"}
+              </button>
             )}
           </div>
         </div>

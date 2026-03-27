@@ -10,9 +10,7 @@ import ShopDirectorySearchPanel from "./ShopDirectorySearchPanel";
 import NavigationDeviationPrompt from "../maps/navigation/NavigationDeviationPrompt";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
-import {
-  getDefaultMapCenter,
-} from "../../services/intelligence/shopMapExperience";
+import { getDefaultMapCenter } from "../../services/intelligence/shopMapExperience";
 import {
   useNavigationIntelligence,
   useNavigationReroute,
@@ -144,7 +142,10 @@ export default function ShopDirectoryScreen({
           id: String(selectedShop.id),
           label: selectedShop.name,
           address: selectedShop.mapResult.address,
-          coordinate: { lat: selectedShop.mapResult.coordinates.latitude, lng: selectedShop.mapResult.coordinates.longitude },
+          coordinate: {
+            lat: selectedShop.mapResult.coordinates.latitude,
+            lng: selectedShop.mapResult.coordinates.longitude,
+          },
         }
       );
     }
@@ -244,7 +245,9 @@ export default function ShopDirectoryScreen({
       {!session.showMapPane && deviationPromptNode}
 
       <section className="overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:border-white/[0.08] bg-transparent md:shadow-none">
-        <div className={`min-w-0 ${session.showMapPane ? `lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}>
+        <div
+          className={`min-w-0 ${session.showMapPane ? `lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}
+        >
           <aside
             className={`${session.showMapPane ? "lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-180px)]" : ""} min-h-0 border-white/[0.08] bg-transparent`}
           >
@@ -316,11 +319,17 @@ export default function ShopDirectoryScreen({
               >
                 <ShopDirectoryMapOverlays
                   deviationPrompt={deviationPromptNode}
+                  directionsLabel={session.directionsActionLabel}
                   intelligenceCallouts={session.roleHighlights.callouts}
                   intelligenceTitle={session.roleHighlights.title}
                   mapTheme={session.mapTheme}
                   navigationMode={navigationMode}
                   onSelectRoute={session.setSelectedRouteId}
+                  onStartNavigation={
+                    session.selectedShop
+                      ? () => session.handleOpenShopDirections(session.selectedShop!)
+                      : undefined
+                  }
                   routeOptions={session.routeOptions}
                   routeSummary={session.routeSummary}
                   selectedOrigin={session.selectedOrigin}

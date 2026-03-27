@@ -149,11 +149,17 @@ export default function ShopDirectoryImmersiveMap({
         >
           <ShopDirectoryMapOverlays
             deviationPrompt={deviationPrompt}
+            directionsLabel={directionsActionLabel}
             intelligenceCallouts={roleHighlights.callouts}
             intelligenceTitle={roleHighlights.title}
             mapTheme={mapTheme}
             navigationMode={navigationMode}
             onSelectRoute={onSelectRoute}
+            onStartNavigation={
+              selectedShop
+                ? () => onOpenShopDirections(selectedShop)
+                : undefined
+            }
             routeOptions={routeOptions}
             routeSummary={routeSummary}
             selectedOrigin={selectedOrigin}
