@@ -492,6 +492,7 @@ export default function DashboardRouter({
               <motion.div key="new-claim" {...screenTransition}>
                 <InsurerNewClaimScreen
                   primaryColor={primaryColor}
+                  appearanceMode={appearanceMode}
                   onBack={() => onViewModeChange("dashboard")}
                   onCreateClaim={(claimData) => {
                     console.info("[BidOnDent] New claim created:", claimData);

@@ -20,12 +20,14 @@ import {
   type Policyholder,
 } from "./newClaimData";
 import InsurerNewClaimForm, { type ClaimFormData } from "./InsurerNewClaimForm";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type InsurerNewClaimScreenProps = {
   primaryColor?: string;
   reports?: any[];
   onBack?: () => void;
   onCreateClaim?: (claimData: any) => void;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export default function InsurerNewClaimScreen({
@@ -33,7 +35,9 @@ export default function InsurerNewClaimScreen({
   reports = [],
   onBack,
   onCreateClaim,
+  appearanceMode = "map-dark",
 }: InsurerNewClaimScreenProps) {
+  const isLight = appearanceMode === "light";
   const [activeTab, setActiveTab] = useState<"customers" | "shops">("customers");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState<Policyholder | null>(null);
@@ -88,7 +92,21 @@ export default function InsurerNewClaimScreen({
 
   return (
     <div className="min-h-screen bd-glass-panel">
-      <div className="bd-glass-panel border-b border-blue-200/30 sticky top-0 z-10">
+      <div
+        className={`bd-glass-panel border-b sticky top-0 z-10 ${
+          isLight ? "border-slate-200/60" : "border-blue-200/30"
+        }`}
+        style={
+          isLight
+            ? {}
+            : {
+                background:
+                  "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+                boxShadow: "0 4px 24px rgba(3, 10, 24, 0.30)",
+                backdropFilter: "blur(12px)",
+              }
+        }
+      >
         <div className="px-4 py-4">
           <div className="flex items-center mb-4">
             {onBack && (
@@ -100,7 +118,7 @@ export default function InsurerNewClaimScreen({
               Create New Claim
             </h1>
           </div>
-          <p className="text-sm text-slate-300/80 mb-4">
+          <p className={`text-sm mb-4 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
             Start a new claim using active policyholders and partner routing options.
           </p>
 
@@ -134,7 +152,11 @@ export default function InsurerNewClaimScreen({
           </div>
 
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-200/50 w-5 h-5" />
+            <Search
+              className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
+                isLight ? "text-slate-400" : "text-blue-200/50"
+              }`}
+            />
             <input
               type="text"
               placeholder={
@@ -142,7 +164,11 @@ export default function InsurerNewClaimScreen({
               }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg"
+              className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
+                isLight
+                  ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60"
+                  : "border-blue-300/20 bg-white/[0.08] text-slate-100 placeholder:text-blue-200/50 focus:border-blue-400/40 focus:ring-1 focus:ring-blue-400/20"
+              }`}
             />
           </div>
         </div>
@@ -156,8 +182,14 @@ export default function InsurerNewClaimScreen({
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg">{customer.name}</h3>
-                      <p className="text-sm text-slate-300/80">Policy: {customer.policyNumber}</p>
+                      <h3
+                        className={`font-bold text-lg ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                      >
+                        {customer.name}
+                      </h3>
+                      <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-300/80"}`}>
+                        Policy: {customer.policyNumber}
+                      </p>
                     </div>
                     {customer.activeClaims > 0 && (
                       <span className="px-2 py-1 bg-blue-400/15 text-blue-200 text-xs font-medium rounded">
@@ -168,15 +200,24 @@ export default function InsurerNewClaimScreen({
 
                   <div className="mb-3 space-y-1">
                     {customer.vehicles.map((vehicle, idx) => (
-                      <div key={idx} className="flex items-center text-sm text-slate-200">
-                        <Car className="w-4 h-4 mr-2 text-blue-200/50" />
+                      <div
+                        key={idx}
+                        className={`flex items-center text-sm ${isLight ? "text-slate-700" : "text-slate-200"}`}
+                      >
+                        <Car
+                          className={`w-4 h-4 mr-2 ${isLight ? "text-slate-400" : "text-blue-200/50"}`}
+                        />
                         <span>
                           {vehicle.year} {vehicle.make} {vehicle.model}
                         </span>
                       </div>
                     ))}
-                    <div className="flex items-center text-sm text-slate-300/80">
-                      <MapPin className="w-4 h-4 mr-2 text-blue-200/50" />
+                    <div
+                      className={`flex items-center text-sm ${isLight ? "text-slate-500" : "text-slate-300/80"}`}
+                    >
+                      <MapPin
+                        className={`w-4 h-4 mr-2 ${isLight ? "text-slate-400" : "text-blue-200/50"}`}
+                      />
                       <span>{customer.location}</span>
                     </div>
                   </div>
@@ -234,14 +275,20 @@ export default function InsurerNewClaimScreen({
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-lg">{shop.name}</h3>
+                        <h3
+                          className={`font-bold text-lg ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                        >
+                          {shop.name}
+                        </h3>
                         {shop.certified && (
                           <span className="px-2 py-0.5 bg-green-400/15 text-green-300 text-xs font-medium rounded">
                             Certified
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center text-sm text-slate-300/80 mb-1">
+                      <div
+                        className={`flex items-center text-sm mb-1 ${isLight ? "text-slate-500" : "text-slate-300/80"}`}
+                      >
                         <span className="text-yellow-500 mr-1">★</span>
                         <span className="font-medium">{shop.rating}</span>
                         <span className="mx-1">•</span>
@@ -251,15 +298,27 @@ export default function InsurerNewClaimScreen({
                   </div>
 
                   <div className="mb-3 space-y-1">
-                    <div className="flex items-center text-sm text-slate-200">
-                      <MapPin className="w-4 h-4 mr-2 text-blue-200/50" />
+                    <div
+                      className={`flex items-center text-sm ${isLight ? "text-slate-700" : "text-slate-200"}`}
+                    >
+                      <MapPin
+                        className={`w-4 h-4 mr-2 ${isLight ? "text-slate-400" : "text-blue-200/50"}`}
+                      />
                       <span>{shop.address}</span>
                     </div>
-                    <div className="text-sm text-slate-300/80 ml-6">{shop.distance}</div>
+                    <div
+                      className={`text-sm ml-6 ${isLight ? "text-slate-500" : "text-slate-300/80"}`}
+                    >
+                      {shop.distance}
+                    </div>
                   </div>
 
                   <div className="mb-3">
-                    <p className="text-xs text-slate-400/70 mb-1">Specialties:</p>
+                    <p
+                      className={`text-xs mb-1 ${isLight ? "text-slate-500" : "text-slate-400/70"}`}
+                    >
+                      Specialties:
+                    </p>
                     <div className="flex flex-wrap gap-1">
                       {shop.specialties.map((specialty, idx) => (
                         <span
@@ -272,15 +331,37 @@ export default function InsurerNewClaimScreen({
                     </div>
                   </div>
 
-                  <div className="mb-3 p-3 bg-white/[0.05] border border-white/[0.06] rounded-lg">
+                  <div
+                    className={`mb-3 p-3 border rounded-lg ${
+                      isLight
+                        ? "bg-slate-50 border-slate-200"
+                        : "bg-white/[0.05] border-white/[0.06]"
+                    }`}
+                  >
                     <div className="grid grid-cols-2 gap-2 text-sm">
                       <div>
-                        <p className="text-slate-300/80 text-xs">Partner Since</p>
-                        <p className="font-medium">{shop.partnerSince}</p>
+                        <p
+                          className={`text-xs ${isLight ? "text-slate-500" : "text-slate-300/80"}`}
+                        >
+                          Partner Since
+                        </p>
+                        <p
+                          className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                        >
+                          {shop.partnerSince}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-slate-300/80 text-xs">Completed Jobs</p>
-                        <p className="font-medium">{shop.completedJobs}</p>
+                        <p
+                          className={`text-xs ${isLight ? "text-slate-500" : "text-slate-300/80"}`}
+                        >
+                          Completed Jobs
+                        </p>
+                        <p
+                          className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                        >
+                          {shop.completedJobs}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -332,7 +413,13 @@ export default function InsurerNewClaimScreen({
                       )}
                     </button>
                   ) : (
-                    <div className="w-full py-3 rounded-lg bg-white/[0.05] text-slate-400/70 font-medium text-center text-sm">
+                    <div
+                      className={`w-full py-3 rounded-lg font-medium text-center text-sm ${
+                        isLight
+                          ? "bg-slate-100 text-slate-400 border border-slate-200"
+                          : "bg-white/[0.05] text-slate-400/70"
+                      }`}
+                    >
                       Select a customer first
                     </div>
                   )}
