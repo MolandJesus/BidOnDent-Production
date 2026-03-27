@@ -10,6 +10,7 @@ import ShopDirectorySearchPanel from "./ShopDirectorySearchPanel";
 import NavigationDeviationPrompt from "../maps/navigation/NavigationDeviationPrompt";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import { getDefaultMapCenter } from "../../services/intelligence/shopMapExperience";
 import {
   useNavigationIntelligence,
@@ -26,6 +27,7 @@ import { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
 type ShopDirectoryScreenProps = {
   onBack: () => void;
   onOpenRelatedScreen?: () => void;
+  appearanceMode?: DashboardAppearanceMode;
   primaryColor?: string;
   secondaryColor?: string;
   identity?: WebsiteIdentity | null;
@@ -70,6 +72,7 @@ function getRoleAccent(userType: MarketUserType) {
 export default function ShopDirectoryScreen({
   onBack,
   onOpenRelatedScreen,
+  appearanceMode = "map-dark",
   primaryColor = "#003d82",
   secondaryColor = "#00a0e9",
   identity,
@@ -227,6 +230,7 @@ export default function ShopDirectoryScreen({
   return (
     <div className={session.showMapPane ? "pb-4" : "space-y-6 pb-20"}>
       <ShopDirectoryHero
+        appearanceMode={appearanceMode}
         RoleIcon={RoleIcon}
         accentClasses={accentClasses}
         connectedCarrierNames={session.connectedCarrierNames}
@@ -253,6 +257,7 @@ export default function ShopDirectoryScreen({
           >
             <div className="flex h-full flex-col">
               <ShopDirectorySearchPanel
+                appearanceMode={appearanceMode}
                 RoleIcon={RoleIcon}
                 currentOriginIsSaved={session.currentOriginIsSaved}
                 filterRating={session.filterRating}
@@ -284,6 +289,7 @@ export default function ShopDirectoryScreen({
               />
 
               <ShopDirectoryListBody
+                appearanceMode={appearanceMode}
                 session={session}
                 userType={userType}
                 primaryColor={primaryColor}
@@ -346,6 +352,7 @@ export default function ShopDirectoryScreen({
       {/* Context cards: only on list mode (map mode maximizes map real estate) */}
       {!session.showMapPane && (
         <ShopDirectoryContextCards
+          appearanceMode={appearanceMode}
           connectedCarrierNames={session.connectedCarrierNames}
           reportCount={reports.length}
           userInfo={userInfo}

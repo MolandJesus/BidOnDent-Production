@@ -464,6 +464,7 @@ export default function DashboardRouter({
 
                     onViewModeChange("liked-shops");
                   }}
+                  appearanceMode={appearanceMode}
                   primaryColor={primaryColor}
                   secondaryColor={secondaryColor}
                   identity={websiteIdentity}

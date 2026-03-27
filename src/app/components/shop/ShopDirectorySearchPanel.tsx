@@ -4,6 +4,7 @@ import type { ShopSortOption } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import { getRoleCollectionTitle } from "../../services/intelligence/shopMapExperience";
 import type { MapTheme, MapViewMode, Place, SavedPlace } from "../../types/mapDomain";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 const SORT_OPTIONS: Array<{ value: ShopSortOption; label: string }> = [
   { value: "smart-match", label: "Smart Match" },
@@ -32,6 +33,7 @@ type ShopDirectorySearchPanelProps = {
   secondaryColor: string;
   userType: MarketUserType;
   showMapPane: boolean;
+  appearanceMode?: DashboardAppearanceMode;
   roleCollectionListings: Array<{ id: number; name: string }>;
   roleHighlights: {
     title: string;
@@ -67,6 +69,7 @@ export default function ShopDirectorySearchPanel({
   secondaryColor,
   userType,
   showMapPane,
+  appearanceMode = "map-dark",
   roleCollectionListings,
   roleHighlights,
   onSearchQueryChange,
@@ -83,6 +86,7 @@ export default function ShopDirectorySearchPanel({
   searchWithinViewport,
   RoleIcon,
 }: ShopDirectorySearchPanelProps) {
+  const isLight = appearanceMode === "light";
   const roleCollectionTitle = getRoleCollectionTitle(userType);
   const relatedScreenLabel =
     userType === "shop"
@@ -92,12 +96,22 @@ export default function ShopDirectorySearchPanel({
         : "Saved Shops";
 
   return (
-    <div className="bd-glass-panel p-5">
+    <div
+      className={isLight ? "bg-white/95 border-b border-slate-200/60 p-5" : "bd-glass-panel p-5"}
+    >
       <form className="space-y-4" onSubmit={onSearchSubmit}>
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-blue-200/50" />
+          <Search
+            className={`pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 ${
+              isLight ? "text-blue-400" : "text-blue-200/50"
+            }`}
+          />
           <input
-            className="w-full rounded-[22px] border border-white/[0.12] bg-white/[0.06] py-3 pl-10 pr-28 text-slate-100 outline-none transition-colors placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08] bd-glass-control"
+            className={`w-full rounded-[22px] border py-3 pl-10 pr-28 outline-none transition-colors bd-glass-control ${
+              isLight
+                ? "border-slate-200/80 bg-white/80 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white"
+                : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
+            }`}
             onChange={(event) => onSearchQueryChange(event.target.value)}
             placeholder="Search shop, insurer program, hail, EV, ADAS, luxury..."
             type="text"
@@ -117,7 +131,11 @@ export default function ShopDirectorySearchPanel({
         <div className="grid gap-4 xl:grid-cols-2">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
+              <div
+                className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
+                  isLight ? "text-blue-600/70" : "text-blue-200/50"
+                }`}
+              >
                 <MapPin className="h-4 w-4" />
                 Origin
               </div>
@@ -143,8 +161,12 @@ export default function ShopDirectorySearchPanel({
                     key={origin.placeId || origin.name}
                     className={`bd-glass-control px-3 py-1.5 text-sm ${
                       isActive
-                        ? "border-blue-400/60 bg-blue-500/20 text-white"
-                        : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
+                        ? isLight
+                          ? "border-blue-400 bg-blue-100 text-blue-700"
+                          : "border-blue-400/60 bg-blue-500/20 text-white"
+                        : isLight
+                          ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+                          : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
                     }`}
                     onClick={() => onSelectOrigin(origin)}
                     type="button"
@@ -170,7 +192,13 @@ export default function ShopDirectorySearchPanel({
                 {currentOriginIsSaved ? "Origin saved" : "Save origin"}
               </button>
               {selectedOrigin && (
-                <div className="rounded-2xl border border-white/[0.08] bg-white/[0.05] px-3 py-2 text-sm text-slate-300/80">
+                <div
+                  className={`rounded-2xl border px-3 py-2 text-sm ${
+                    isLight
+                      ? "border-slate-200/80 bg-slate-50 text-slate-600"
+                      : "border-white/[0.08] bg-white/[0.05] text-slate-300/80"
+                  }`}
+                >
                   {selectedOrigin.address}
                 </div>
               )}
@@ -178,7 +206,11 @@ export default function ShopDirectorySearchPanel({
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
+            <div
+              className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
+                isLight ? "text-blue-600/70" : "text-blue-200/50"
+              }`}
+            >
               <Layers3 className="h-4 w-4" />
               View & Sort
             </div>
@@ -189,8 +221,12 @@ export default function ShopDirectorySearchPanel({
                   key={option.value}
                   className={`bd-glass-control px-3 py-1.5 text-sm ${
                     mapViewMode === option.value
-                      ? "border-blue-400/60 bg-blue-500/20 text-white"
-                      : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+                      ? isLight
+                        ? "border-blue-400 bg-blue-100 text-blue-700"
+                        : "border-blue-400/60 bg-blue-500/20 text-white"
+                      : isLight
+                        ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
+                        : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
                   onClick={() => onViewModeChange(option.value)}
                   type="button"
@@ -202,7 +238,11 @@ export default function ShopDirectorySearchPanel({
 
             <div className="flex flex-wrap items-center gap-2">
               <select
-                className="rounded-2xl border border-white/[0.12] bg-white/[0.06] px-3 py-2 text-sm text-slate-200 outline-none bd-glass-control"
+                className={`rounded-2xl border px-3 py-2 text-sm outline-none bd-glass-control ${
+                  isLight
+                    ? "border-slate-200/80 bg-white text-slate-800"
+                    : "border-white/[0.12] bg-white/[0.06] text-slate-200"
+                }`}
                 onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
                 value={sortBy}
               >
@@ -251,13 +291,33 @@ export default function ShopDirectorySearchPanel({
 
       {/* Role panel: only in sidebar on list mode (shown in map overlay otherwise) */}
       {!showMapPane && (
-        <div className="mt-4 bd-glass-card p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
+        <div
+          className={`mt-4 ${
+            isLight ? "bg-white/80 border border-slate-200/60 rounded-2xl" : "bd-glass-card"
+          } p-4`}
+        >
+          <div
+            className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
+              isLight ? "text-blue-600/70" : "text-blue-200/50"
+            }`}
+          >
             <RoleIcon className="h-4 w-4" />
             Role-specific panel
           </div>
-          <p className="mt-2 text-lg font-semibold text-slate-100">{roleHighlights.title}</p>
-          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.06] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
+          <p
+            className={`mt-2 text-lg font-semibold ${
+              isLight ? "text-slate-900" : "text-slate-100"
+            }`}
+          >
+            {roleHighlights.title}
+          </p>
+          <div
+            className={`mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] ${
+              isLight
+                ? "border-slate-200 bg-white text-slate-700"
+                : "border-white/[0.10] bg-white/[0.06] text-slate-300"
+            }`}
+          >
             <Bookmark className="h-3.5 w-3.5" />
             {roleCollectionListings.length} in {roleCollectionTitle.toLowerCase()}
           </div>
@@ -265,19 +325,29 @@ export default function ShopDirectorySearchPanel({
             {roleHighlights.callouts.map((callout) => (
               <div
                 key={callout}
-                className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2 text-sm leading-6 text-slate-300/80"
+                className={`rounded-2xl border px-3 py-2 text-sm leading-6 ${
+                  isLight
+                    ? "border-slate-200/60 bg-slate-50 text-slate-600"
+                    : "border-white/[0.06] bg-white/[0.05] text-slate-300/80"
+                }`}
               >
                 {callout}
               </div>
             ))}
           </div>
-          <p className="mt-3 text-xs leading-5 text-blue-200/40">
+          <p
+            className={`mt-3 text-xs leading-5 ${isLight ? "text-slate-400" : "text-blue-200/40"}`}
+          >
             This collection also feeds the related role screen outside the map shell so saved state
             carries through the broader dashboard.
           </p>
           {onOpenRelatedScreen && (
             <button
-              className="mt-4 rounded-2xl border border-white/[0.10] bg-white/[0.04] px-4 py-3 text-sm font-medium text-slate-300 transition-colors hover:bg-white/[0.08]"
+              className={`mt-4 rounded-2xl border px-4 py-3 text-sm font-medium transition-colors ${
+                isLight
+                  ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+                  : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+              }`}
               onClick={onOpenRelatedScreen}
               type="button"
             >

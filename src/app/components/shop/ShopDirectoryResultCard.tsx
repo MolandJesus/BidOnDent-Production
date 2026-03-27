@@ -1,6 +1,7 @@
 import { ChevronRight, Clock3, Compass, MapPin, Star } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 export interface ShopDirectoryResultCardProps {
   shop: ShopMapListing;
@@ -10,6 +11,7 @@ export interface ShopDirectoryResultCardProps {
   primaryActionLabel: string;
   secondaryActionLabel: string;
   directionsActionLabel: string;
+  appearanceMode?: DashboardAppearanceMode;
   onPrimaryAction: () => void;
   onSecondaryAction: () => void;
   onDirectionsAction: () => void;
@@ -23,16 +25,22 @@ export default function ShopDirectoryResultCard({
   primaryActionLabel,
   secondaryActionLabel,
   directionsActionLabel,
+  appearanceMode = "map-dark",
   onPrimaryAction,
   onSecondaryAction,
   onDirectionsAction,
 }: ShopDirectoryResultCardProps) {
+  const isLight = appearanceMode === "light";
   return (
     <article
-      className={`overflow-hidden bd-glass-card transition-all ${
-        isSelected
-          ? "border-blue-400/60 ring-2 ring-blue-400/20"
-          : "border-white/[0.10] hover:border-white/[0.20]"
+      className={`overflow-hidden transition-all ${
+        isLight
+          ? isSelected
+            ? "bg-white border border-blue-300 shadow-md rounded-2xl ring-2 ring-blue-200/60"
+            : "bg-white/80 border border-slate-200/60 shadow-sm rounded-2xl hover:border-blue-200"
+          : isSelected
+            ? "bd-glass-card border-blue-400/60 ring-2 ring-blue-400/20"
+            : "bd-glass-card border-white/[0.10] hover:border-white/[0.20]"
       }`}
     >
       <div className={`flex ${compact ? "gap-4 p-4" : "flex-col"}`}>
@@ -54,46 +62,102 @@ export default function ShopDirectoryResultCard({
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-lg font-semibold text-slate-100">{shop.name}</h3>
+                <h3
+                  className={`text-lg font-semibold ${
+                    isLight ? "text-slate-900" : "text-slate-100"
+                  }`}
+                >
+                  {shop.name}
+                </h3>
                 {shop.topPick && (
-                  <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-200">
+                  <span
+                    className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
+                      isLight
+                        ? "border-blue-200 bg-blue-100 text-blue-700"
+                        : "border-blue-400/30 bg-blue-400/15 text-blue-200"
+                    }`}
+                  >
                     Best fit
                   </span>
                 )}
                 {isSelected && (
-                  <span className="rounded-full bg-blue-400/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-200">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
+                      isLight ? "bg-blue-100 text-blue-700" : "bg-blue-400/15 text-blue-200"
+                    }`}
+                  >
                     Selected
                   </span>
                 )}
               </div>
 
-              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-300/70">
+              <div
+                className={`mt-2 flex flex-wrap items-center gap-3 text-sm ${
+                  isLight ? "text-slate-500" : "text-slate-300/70"
+                }`}
+              >
                 <span className="inline-flex items-center gap-1.5">
                   <Star className="h-4 w-4 text-amber-400" fill="#fbbf24" />
-                  <span className="font-semibold text-slate-100">{shop.rating}</span>
+                  <span
+                    className={`font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                  >
+                    {shop.rating}
+                  </span>
                   <span>({shop.reviews})</span>
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-blue-200/50" />
+                  <MapPin className={`h-4 w-4 ${isLight ? "text-blue-400" : "text-blue-200/50"}`} />
                   {shop.mapDistanceLabel}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock3 className="h-4 w-4 text-blue-200/50" />
+                  <Clock3 className={`h-4 w-4 ${isLight ? "text-blue-400" : "text-blue-200/50"}`} />
                   {shop.responseTimeLabel}
                 </span>
               </div>
             </div>
 
             <div className="grid min-w-[150px] grid-cols-2 gap-2">
-              <div className="rounded-2xl border border-blue-400/30 bg-blue-500/20 px-3 py-2">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-blue-200/60">AI Fit</p>
-                <p className="text-lg font-semibold text-slate-100">{shop.recommendationScore}%</p>
+              <div
+                className={`rounded-2xl border px-3 py-2 ${
+                  isLight ? "border-blue-200 bg-blue-50" : "border-blue-400/30 bg-blue-500/20"
+                }`}
+              >
+                <p
+                  className={`text-[11px] uppercase tracking-[0.16em] ${
+                    isLight ? "text-blue-600/70" : "text-blue-200/60"
+                  }`}
+                >
+                  AI Fit
+                </p>
+                <p
+                  className={`text-lg font-semibold ${
+                    isLight ? "text-blue-800" : "text-slate-100"
+                  }`}
+                >
+                  {shop.recommendationScore}%
+                </p>
               </div>
-              <div className="rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-emerald-300/80">
+              <div
+                className={`rounded-2xl border px-3 py-2 ${
+                  isLight
+                    ? "border-emerald-200 bg-emerald-50"
+                    : "border-emerald-400/30 bg-emerald-400/10"
+                }`}
+              >
+                <p
+                  className={`text-[11px] uppercase tracking-[0.16em] ${
+                    isLight ? "text-emerald-600/80" : "text-emerald-300/80"
+                  }`}
+                >
                   Carrier
                 </p>
-                <p className="text-lg font-semibold text-emerald-200">{shop.insuranceCompatibilityScore}%</p>
+                <p
+                  className={`text-lg font-semibold ${
+                    isLight ? "text-emerald-700" : "text-emerald-200"
+                  }`}
+                >
+                  {shop.insuranceCompatibilityScore}%
+                </p>
               </div>
             </div>
           </div>
@@ -101,13 +165,25 @@ export default function ShopDirectoryResultCard({
           {!compact && <p className="text-sm leading-6 text-slate-300/80">{shop.aiSummary}</p>}
 
           <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
-              <p className="text-blue-200/50">Completion</p>
-              <p className="font-semibold text-slate-100">{shop.completionRate}%</p>
+            <div
+              className={`rounded-2xl border px-3 py-2 ${
+                isLight ? "border-slate-200/80 bg-slate-50" : "border-white/[0.06] bg-white/[0.05]"
+              }`}
+            >
+              <p className={isLight ? "text-slate-500" : "text-blue-200/50"}>Completion</p>
+              <p className={`font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+                {shop.completionRate}%
+              </p>
             </div>
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
-              <p className="text-blue-200/50">Avg ticket</p>
-              <p className="font-semibold text-slate-100">{shop.averagePriceLabel}</p>
+            <div
+              className={`rounded-2xl border px-3 py-2 ${
+                isLight ? "border-slate-200/80 bg-slate-50" : "border-white/[0.06] bg-white/[0.05]"
+              }`}
+            >
+              <p className={isLight ? "text-slate-500" : "text-blue-200/50"}>Avg ticket</p>
+              <p className={`font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+                {shop.averagePriceLabel}
+              </p>
             </div>
           </div>
 
@@ -115,7 +191,9 @@ export default function ShopDirectoryResultCard({
             {shop.matchReasons.map((reason) => (
               <span
                 key={reason}
-                className="rounded-full bg-blue-400/15 px-2.5 py-1 text-xs font-medium text-blue-200"
+                className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                  isLight ? "bg-blue-100 text-blue-700" : "bg-blue-400/15 text-blue-200"
+                }`}
               >
                 {reason}
               </span>
