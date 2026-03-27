@@ -38,8 +38,6 @@ const VIEW_TABS: Array<{ id: SidebarView; label: string; Icon: typeof Search }> 
   { id: "shops", label: "Shops", Icon: MapPinned },
 ];
 
-const TILE_MODES: MapTileMode[] = ["roadmap", "satellite", "night"];
-
 type CoverageBrowseSidebarContentProps = {
   tone: MapSurfaceTone;
   theme: MapSurfaceTheme;
@@ -160,33 +158,7 @@ export default function CoverageBrowseSidebarContent({
           ))}
         </div>
 
-        {/* Tile mode segmented control — desktop sidebar only */}
-        <div
-          className={cn(
-            "hidden xl:flex overflow-hidden rounded-full border",
-            tone === "light" ? "border-white/40 bg-white/25" : "border-white/12 bg-slate-900/50"
-          )}
-        >
-          {TILE_MODES.map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => onTileModeChange(mode)}
-              className={cn(
-                "flex flex-1 items-center justify-center py-1 text-[11px] font-semibold transition-colors",
-                tileMode === mode
-                  ? "bg-sky-500/80 text-white"
-                  : tone === "light"
-                    ? "text-slate-600 hover:bg-white/40"
-                    : "text-slate-300 hover:bg-white/10"
-              )}
-            >
-              {mode === "roadmap" ? "Map" : mode === "satellite" ? "Sat" : "Night"}
-            </button>
-          ))}
-        </div>
-
-        {/* Map utility controls — desktop sidebar only */}
+        {/* Map utility controls — removed: tile mode + center/reset now live on map icon rail only */}
         <div className="hidden xl:flex gap-1.5">
           <button
             type="button"

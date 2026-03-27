@@ -73,19 +73,7 @@ export default function PlannerVoiceGpsSettings({
   speedLimitStatus,
 }: PlannerVoiceGpsSettingsProps) {
   if (!showAdvancedControls) {
-    return (
-      <div
-        className={cn(
-          "map-liquid-card map-ui-enter map-ui-enter-delay-2 hidden xl:block p-3",
-          theme.panelClassName
-        )}
-      >
-        <div className={theme.metricLabelClassName}>Navigation shell</div>
-        <div className={cn("mt-1 text-xs", theme.bodyClassName)}>
-          Voice, speed, and route controls appear when you switch tabs.
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (

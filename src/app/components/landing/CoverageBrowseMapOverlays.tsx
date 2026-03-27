@@ -102,18 +102,6 @@ export default function CoverageBrowseMapOverlays({
                 <MapPinned className="h-3.5 w-3.5" />
                 Shops
               </button>
-              <button
-                type="button"
-                onClick={onStartNavigation}
-                disabled={!canStartNavigation}
-                className={cn(
-                  theme.primaryButtonClassName,
-                  "min-h-[36px] px-3.5 py-1.5 text-xs disabled:opacity-50 sm:min-h-[40px] sm:px-4 sm:py-2"
-                )}
-              >
-                <Compass className="h-3.5 w-3.5" />
-                Start Route
-              </button>
             </div>
           </div>
         </div>
