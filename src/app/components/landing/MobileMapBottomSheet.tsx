@@ -29,7 +29,7 @@ type MobileMapBottomSheetProps = {
 };
 
 const COLLAPSED = 24;
-const PEEK = 90;
+const PEEK = 100;
 const HALF = 0.4;
 const FULL = 0.88;
 const SNAP_POINTS = [COLLAPSED, PEEK, HALF, FULL] as const;
