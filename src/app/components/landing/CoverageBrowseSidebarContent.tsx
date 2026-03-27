@@ -215,50 +215,52 @@ export default function CoverageBrowseSidebarContent({
 
       {/* ── Panel content (wrapped in error boundary) ── */}
       <NavigationErrorBoundary>
-        <CoverageNavigationPlanner
-          tone={tone}
-          selectedShop={selectedShop}
-          activeOriginLabel={navigation.activeOriginLabel}
-          addressQuery={navigation.addressQuery}
-          onAddressQueryChange={navigation.setAddressQuery}
-          onSearchAddresses={() => {
-            void navigation.searchAddresses();
-          }}
-          addressResults={navigation.addressResults}
-          selectedAddressResult={navigation.selectedAddressResult}
-          isSearchingAddresses={navigation.isSearchingAddresses}
-          addressError={navigation.addressError}
-          onChooseAddressResult={navigation.chooseAddressResult}
-          onClearAddressResult={navigation.clearAddressResult}
-          addressSuggestions={navigation.addressSuggestions}
-          settings={navigation.settings}
-          onVoiceModeChange={navigation.setVoiceMode}
-          onVoiceVolumePresetChange={navigation.setVoiceVolumePreset}
-          onGpsTrackingEnabledChange={navigation.setGpsTrackingEnabled}
-          onSpeedLimitMonitorEnabledChange={navigation.setSpeedLimitMonitorEnabled}
-          onResetNavigationSettings={navigation.resetNavigationSettings}
-          onRetryRoutePreview={navigation.refreshRoutePreview}
-          onStartNavigation={onStartNavigation}
-          preferredVoiceLabel={navigation.preferredVoiceLabel}
-          voiceGuidanceSupported={navigation.voiceGuidanceSupported}
-          voiceStatusLabel={navigation.voiceStatusLabel}
-          routePreview={navigation.routePreview}
-          routeAlternatives={navigation.routeAlternatives}
-          selectedRouteIndex={navigation.selectedRouteIndex}
-          onSelectRouteIndex={navigation.setSelectedRouteIndex}
-          isLoadingRoute={navigation.isLoadingRoute}
-          routeError={navigation.routeError}
-          currentStepIndex={navigation.currentStepIndex}
-          gpsAccuracyMeters={navigation.gpsAccuracyMeters}
-          gpsError={navigation.gpsError}
-          gpsStatus={navigation.gpsStatus}
-          retryGps={navigation.retryGps}
-          speedLimitStatus={navigation.speedLimitStatus}
-          focusMode={sidebarView === "search" ? "search" : "route"}
-          showDiagnostics={import.meta.env.DEV && sidebarView !== "search"}
-          showSavedAndDiscoveryHints={sidebarView === "search"}
-          showAdvancedControls={sidebarView !== "search"}
-        />
+        {sidebarView === "search" && (
+          <CoverageNavigationPlanner
+            tone={tone}
+            selectedShop={selectedShop}
+            activeOriginLabel={navigation.activeOriginLabel}
+            addressQuery={navigation.addressQuery}
+            onAddressQueryChange={navigation.setAddressQuery}
+            onSearchAddresses={() => {
+              void navigation.searchAddresses();
+            }}
+            addressResults={navigation.addressResults}
+            selectedAddressResult={navigation.selectedAddressResult}
+            isSearchingAddresses={navigation.isSearchingAddresses}
+            addressError={navigation.addressError}
+            onChooseAddressResult={navigation.chooseAddressResult}
+            onClearAddressResult={navigation.clearAddressResult}
+            addressSuggestions={navigation.addressSuggestions}
+            settings={navigation.settings}
+            onVoiceModeChange={navigation.setVoiceMode}
+            onVoiceVolumePresetChange={navigation.setVoiceVolumePreset}
+            onGpsTrackingEnabledChange={navigation.setGpsTrackingEnabled}
+            onSpeedLimitMonitorEnabledChange={navigation.setSpeedLimitMonitorEnabled}
+            onResetNavigationSettings={navigation.resetNavigationSettings}
+            onRetryRoutePreview={navigation.refreshRoutePreview}
+            onStartNavigation={onStartNavigation}
+            preferredVoiceLabel={navigation.preferredVoiceLabel}
+            voiceGuidanceSupported={navigation.voiceGuidanceSupported}
+            voiceStatusLabel={navigation.voiceStatusLabel}
+            routePreview={navigation.routePreview}
+            routeAlternatives={navigation.routeAlternatives}
+            selectedRouteIndex={navigation.selectedRouteIndex}
+            onSelectRouteIndex={navigation.setSelectedRouteIndex}
+            isLoadingRoute={navigation.isLoadingRoute}
+            routeError={navigation.routeError}
+            currentStepIndex={navigation.currentStepIndex}
+            gpsAccuracyMeters={navigation.gpsAccuracyMeters}
+            gpsError={navigation.gpsError}
+            gpsStatus={navigation.gpsStatus}
+            retryGps={navigation.retryGps}
+            speedLimitStatus={navigation.speedLimitStatus}
+            focusMode="search"
+            showDiagnostics={import.meta.env.DEV}
+            showSavedAndDiscoveryHints
+            showAdvancedControls={false}
+          />
+        )}
 
         {sidebarView === "explore" ? (
           <NavigationBrowseDiscoveryPanel
