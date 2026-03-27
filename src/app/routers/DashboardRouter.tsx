@@ -248,6 +248,7 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
                   reportsLoading={marketplaceLoading}
+                  appearanceMode={appearanceMode}
                   onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
                     onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
                   }}
@@ -258,7 +259,7 @@ export default function DashboardRouter({
             {/* Shop: Active Jobs Screen */}
             {viewMode === "dashboard" && currentTab === "jobs" && userType === "shop" && (
               <motion.div key="jobs" {...screenTransition}>
-                <ShopActiveJobsScreen primaryColor={primaryColor} reports={shopInsurerReports} />
+                <ShopActiveJobsScreen primaryColor={primaryColor} reports={shopInsurerReports} appearanceMode={appearanceMode} />
               </motion.div>
             )}
 
