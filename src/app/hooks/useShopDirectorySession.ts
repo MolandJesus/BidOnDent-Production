@@ -106,7 +106,7 @@ export function useShopDirectorySession({
   );
   const [mapZoom, setMapZoom] = useState<number | undefined>(savedMemory.mapSession?.lastMapZoom);
   const [mapViewportBounds, setMapViewportBounds] = useState<MapViewportBounds | undefined>(
-    undefined
+    savedMemory.mapSession?.lastViewportBounds
   );
   const [searchWithinViewport, setSearchWithinViewport] = useState(false);
   const [sessionIntelligenceOpen, setSessionIntelligenceOpen] = useState(
@@ -133,6 +133,7 @@ export function useShopDirectorySession({
     setSelectedRouteId(memory.mapSession?.selectedRouteId || "fastest");
     setMapCenter(memory.mapSession?.lastMapCenter);
     setMapZoom(memory.mapSession?.lastMapZoom);
+    setMapViewportBounds(memory.mapSession?.lastViewportBounds);
     setSessionIntelligenceOpen(memory.shopDirectory.sessionIntelligenceOpen);
   }, [identity?.websiteUserKey]);
 
@@ -273,6 +274,7 @@ export function useShopDirectorySession({
         mapSession: {
           lastMapCenter: mapCenter,
           lastMapZoom: mapZoom,
+          lastViewportBounds: mapViewportBounds,
           lastSearchFilters: {
             minRating: filterRating,
           },

@@ -249,6 +249,7 @@ export interface MapSessionMemory {
   selectedRouteId?: string;
   lastMapCenter?: Coordinates;
   lastMapZoom?: number;
+  lastViewportBounds?: MapViewportBounds;
 
   // Updated timestamp
   updatedAt: string;
