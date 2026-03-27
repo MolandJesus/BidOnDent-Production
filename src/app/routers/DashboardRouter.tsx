@@ -269,6 +269,9 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
                   reportsLoading={marketplaceLoading}
+                  onApproveClaim={(claimId, amount) => {
+                    console.info("[BidOnDent] Claim approved:", { claimId, amount });
+                  }}
                 />
               </motion.div>
             )}
@@ -478,6 +481,11 @@ export default function DashboardRouter({
                 <InsurerNewClaimScreen
                   primaryColor={primaryColor}
                   onBack={() => onViewModeChange("dashboard")}
+                  onCreateClaim={(claimData) => {
+                    console.info("[BidOnDent] New claim created:", claimData);
+                    onTabChange("claims");
+                    onViewModeChange("dashboard");
+                  }}
                 />
               </motion.div>
             )}
