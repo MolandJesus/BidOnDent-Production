@@ -304,15 +304,6 @@ export default function PlannerRoutePreview({
           </div>
         </div>
       ) : null}
-
-      {!isSearchFocus ? (
-        <div
-          className={cn("rounded-[1rem] border px-3 py-3 text-xs leading-5", theme.panelClassName)}
-        >
-          This planner uses submit-based OpenStreetMap address search, an OSRM route preview, device
-          GPS speed when available, and nearby-road maxspeed tags.
-        </div>
-      ) : null}
     </>
   );
 }
