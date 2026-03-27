@@ -202,23 +202,20 @@ export default function DashboardLayout({
           >
             <button
               onClick={onLogoClick}
-              className="bd-glass-control--utility flex items-center gap-2.5 cursor-pointer bg-transparent backdrop-blur-xl shadow-none"
+              className="flex items-center gap-2.5 cursor-pointer bg-transparent"
               type="button"
-              style={{ boxShadow: "none", background: "transparent" }}
             >
               <span
                 className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={{
-                  background:
-                    "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(14, 165, 233, 0.10) 100%)",
-                  border: "1px solid rgba(37, 99, 235, 0.22)",
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                   boxShadow:
-                    "0 0 12px rgba(59, 130, 246, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                    "0 4px 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
                 }}
               >
-                <Car className="w-5 h-5" style={{ color: "#2563eb" }} />
+                <Car className="w-5 h-5 text-white" />
               </span>
-              <h1 className="text-2xl font-bold tracking-tight flex items-center gap-1">
+              <h1 className="text-xl font-bold tracking-tight">
                 <span
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
@@ -229,7 +226,9 @@ export default function DashboardLayout({
                 >
                   Bid
                 </span>
-                <span style={{ color: "#2563eb", fontWeight: 700 }}>On</span>
+                <span className="italic" style={{ color: "#3b82f6" }}>
+                  On
+                </span>
                 <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
                   Dent
                 </span>
@@ -424,18 +423,36 @@ export default function DashboardLayout({
             <div className="px-4 md:px-8 py-2.5 md:py-3.5 flex items-center justify-between gap-3">
               <button
                 onClick={onLogoClick}
-                className="bd-glass-control--utility md:hidden flex items-center gap-2 cursor-pointer"
+                className="md:hidden flex items-center gap-2 cursor-pointer"
                 type="button"
               >
                 <span
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                    boxShadow: "0 3px 10px rgba(37, 99, 235, 0.30)",
                   }}
                 >
                   <Car className="w-4 h-4" />
                 </span>
-                <span className="text-lg font-semibold text-slate-100">BidOnDent</span>
+                <span className="text-lg font-bold tracking-tight">
+                  <span
+                    style={{
+                      background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }}
+                  >
+                    Bid
+                  </span>
+                  <span className="italic" style={{ color: "#3b82f6" }}>
+                    On
+                  </span>
+                  <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
+                    Dent
+                  </span>
+                </span>
               </button>
 
               <div className="hidden md:block">
