@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft, Car, Plus, Edit2, Trash2 } from "lucide-react";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { Vehicle } from "../../types";
 
 type VehicleProfileScreenProps = {
@@ -7,6 +8,7 @@ type VehicleProfileScreenProps = {
   vehicles: Vehicle[];
   onSaveVehicles: (vehicles: Vehicle[]) => void;
   primaryColor?: string;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export default function VehicleProfileScreen({
@@ -14,7 +16,9 @@ export default function VehicleProfileScreen({
   vehicles: initialVehicles,
   onSaveVehicles,
   primaryColor = "#003d82",
+  appearanceMode = "map-dark",
 }: VehicleProfileScreenProps) {
+  const isLight = appearanceMode === "light";
   const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -112,10 +116,14 @@ export default function VehicleProfileScreen({
     });
   };
 
+  const labelClass = `block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`;
+  const inputClass = `w-full px-3 py-3 border rounded-md ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/60"}`;
+  const inputClassSm = `w-full px-3 py-2 border rounded-md uppercase ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/60"}`;
+
   return (
     <div className="min-h-screen bd-glass-panel pb-20">
       {/* Header */}
-      <div className="bd-glass-panel border-b border-blue-200/30 sticky top-0 z-10">
+      <div className={`bd-glass-panel border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}>
         <div className="px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -127,7 +135,7 @@ export default function VehicleProfileScreen({
               </button>
               <div>
                 <h1 className="text-xl font-bold">My Vehicles</h1>
-                <p className="text-sm text-slate-300/80">
+                <p className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
                   {vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""}
                 </p>
               </div>
@@ -157,66 +165,66 @@ export default function VehicleProfileScreen({
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Year *</label>
+                <label className={labelClass}>Year *</label>
                   <input
                     type="text"
                     value={formData.year}
                     onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                    className={inputClass}
                     placeholder="2021"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Make *</label>
+                <label className={labelClass}>Make *</label>
                   <input
                     type="text"
                     value={formData.make}
                     onChange={(e) => setFormData({ ...formData, make: e.target.value })}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                    className={inputClass}
                     placeholder="Toyota"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">Model *</label>
+              <label className={labelClass}>Model *</label>
                 <input
                   type="text"
                   value={formData.model}
                   onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className={inputClass}
                   placeholder="Camry"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
+              <label className={labelClass}>
                   VIN (Optional)
                 </label>
                 <input
                   type="text"
                   value={formData.vin}
                   onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                  className={inputClass}
                   placeholder="1HGBH41JXMN109186"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className={labelClass}>
                     Color (Optional)
                   </label>
                   <input
                     type="text"
                     value={formData.color}
                     onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                    className="w-full px-3 py-3 border border-gray-300 rounded-md"
+                    className={inputClass}
                     placeholder="Silver"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                  <label className={labelClass}>
                     License Plate (Optional)
                   </label>
                   <input
@@ -225,7 +233,7 @@ export default function VehicleProfileScreen({
                     onChange={(e) =>
                       setFormData({ ...formData, licensePlate: e.target.value.toUpperCase() })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md uppercase"
+                    className={inputClassSm}
                     placeholder="ABC1234"
                     maxLength={10}
                   />
@@ -235,7 +243,7 @@ export default function VehicleProfileScreen({
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleCancel}
-                  className="flex-1 px-4 py-2 border border-white/12 rounded-md font-medium text-slate-200 hover:bg-white/10"
+                  className={`flex-1 px-4 py-2 border rounded-md font-medium ${isLight ? "border-slate-200 text-slate-600 hover:bg-slate-100" : "border-white/12 text-slate-200 hover:bg-white/10"}`}
                 >
                   Cancel
                 </button>
@@ -255,9 +263,9 @@ export default function VehicleProfileScreen({
         <div className="space-y-3">
           {vehicles.length === 0 ? (
             <div className="bd-glass-card rounded-lg p-5 sm:p-8 text-center">
-              <Car className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <Car className={`w-16 h-16 mx-auto mb-4 ${isLight ? "text-slate-400" : "text-gray-300"}`} />
               <h3 className="text-lg font-bold mb-2">No vehicles added yet</h3>
-              <p className="text-slate-300/80 mb-4">
+              <p className={`mb-4 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
                 Add your vehicles to make reporting damage faster.
               </p>
               <button
@@ -293,20 +301,20 @@ export default function VehicleProfileScreen({
                         </h3>
                       </div>
 
-                      <div className="space-y-1 text-sm text-slate-400/70">
+                      <div className={`space-y-1 text-sm ${isLight ? "text-slate-500" : "text-slate-400/70"}`}>
                         {vehicle.color && (
                           <p>
-                            Color: <span className="text-slate-100">{vehicle.color}</span>
+                            Color: <span className={isLight ? "text-slate-800" : "text-slate-100"}>{vehicle.color}</span>
                           </p>
                         )}
                         {vehicle.licensePlate && (
                           <p>
-                            Plate: <span className="text-slate-100">{vehicle.licensePlate}</span>
+                            Plate: <span className={isLight ? "text-slate-800" : "text-slate-100"}>{vehicle.licensePlate}</span>
                           </p>
                         )}
                         {vehicle.vin && (
                           <p className="text-xs">
-                            VIN: <span className="text-slate-100">{vehicle.vin}</span>
+                            VIN: <span className={isLight ? "text-slate-800" : "text-slate-100"}>{vehicle.vin}</span>
                           </p>
                         )}
                       </div>

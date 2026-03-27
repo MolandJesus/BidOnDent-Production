@@ -344,6 +344,7 @@ export default function DashboardRouter({
                     onViewModeChange("report-detail");
                   }}
                   primaryColor={primaryColor}
+                  appearanceMode={appearanceMode}
                 />
               </motion.div>
             )}
@@ -442,6 +443,7 @@ export default function DashboardRouter({
                   }}
                   primaryColor={primaryColor}
                   onSaveVehicles={onSaveVehicles}
+                  appearanceMode={appearanceMode}
                 />
               </motion.div>
             )}
