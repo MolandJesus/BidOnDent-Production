@@ -167,12 +167,18 @@ export default function InsurerConnectionScreen({
 
       <div className="px-4 py-4 space-y-4">
         <div className="bd-glass-card rounded-2xl border border-blue-100 p-4">
-          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-3 ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-500/10 text-blue-400"}`}>
+          <div
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-3 ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-500/10 text-blue-400"}`}
+          >
             <Sparkles className="w-4 h-4" />
             Insurance intelligence active
           </div>
-          <h2 className={`text-lg font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>{summary.title}</h2>
-          <p className={`text-sm mt-1 ${isLight ? "text-slate-600" : "text-slate-400"}`}>{summary.description}</p>
+          <h2 className={`text-lg font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+            {summary.title}
+          </h2>
+          <p className={`text-sm mt-1 ${isLight ? "text-slate-600" : "text-slate-400"}`}>
+            {summary.description}
+          </p>
           <div className="grid gap-2 mt-4">
             {summary.callouts.map((callout) => (
               <div
@@ -185,7 +191,9 @@ export default function InsurerConnectionScreen({
           </div>
         </div>
 
-        <div className={`border border-blue-400/20 rounded-2xl p-4 flex items-start ${isLight ? "bg-blue-50" : "bg-blue-500/10"}`}>
+        <div
+          className={`border border-blue-400/20 rounded-2xl p-4 flex items-start ${isLight ? "bg-blue-50" : "bg-blue-500/10"}`}
+        >
           <Info className="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-blue-800">
             <p className="font-medium mb-1">Why connect your insurance?</p>
@@ -199,7 +207,9 @@ export default function InsurerConnectionScreen({
 
         {connectedInsurers.length > 0 && (
           <div className="space-y-3">
-            <h2 className={`font-bold text-lg ${isLight ? "text-slate-900" : "text-slate-100"}`}>Connected Insurance</h2>
+            <h2 className={`font-bold text-lg ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+              Connected Insurance
+            </h2>
             {insurerDirectory
               .filter((insurer) => connectedInsurers.includes(insurer.id))
               .map((insurer) => (
@@ -212,13 +222,21 @@ export default function InsurerConnectionScreen({
                   </div>
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className={`font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>{insurer.name}</h3>
+                      <h3
+                        className={`font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                      >
+                        {insurer.name}
+                      </h3>
                       <span className="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
                         Connected
                       </span>
                     </div>
-                    <p className={`text-sm mt-1 ${isLight ? "text-slate-600" : "text-slate-400"}`}>{insurer.description}</p>
-                    <div className={`flex flex-wrap gap-3 mt-3 text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                    <p className={`text-sm mt-1 ${isLight ? "text-slate-600" : "text-slate-400"}`}>
+                      {insurer.description}
+                    </p>
+                    <div
+                      className={`flex flex-wrap gap-3 mt-3 text-xs ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                    >
                       <span className="inline-flex items-center gap-1">
                         <Building2 className="w-3.5 h-3.5" />
                         {insurer.headquarters}
@@ -252,35 +270,63 @@ export default function InsurerConnectionScreen({
               className="w-full bd-glass-card rounded-2xl p-4 hover:border-blue-300 transition-colors text-left"
             >
               <div className="flex items-start gap-3">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${isLight ? "bg-slate-100" : "bg-white/[0.08]"}`}>
+                <div
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${isLight ? "bg-slate-100" : "bg-white/[0.08]"}`}
+                >
                   <Shield className="w-6 h-6 text-slate-500" />
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h3 className={`font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>{insurer.name}</h3>
+                    <h3
+                      className={`font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                    >
+                      {insurer.name}
+                    </h3>
                     {insurer.popular && (
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-500/10 text-blue-400"}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-500/10 text-blue-400"}`}
+                      >
                         Popular
                       </span>
                     )}
                     {insurer.connected && (
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${isLight ? "bg-green-100 text-green-700" : "bg-green-400/10 text-green-300"}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${isLight ? "bg-green-100 text-green-700" : "bg-green-400/10 text-green-300"}`}
+                      >
                         Connected
                       </span>
                     )}
                   </div>
 
-                  <p className={`text-sm ${isLight ? "text-slate-600" : "text-slate-400"}`}>{insurer.description}</p>
+                  <p className={`text-sm ${isLight ? "text-slate-600" : "text-slate-400"}`}>
+                    {insurer.description}
+                  </p>
 
                   <div className="grid sm:grid-cols-2 gap-2 mt-3 text-sm">
-                    <div className={`rounded-xl px-3 py-2 ${isLight ? "bg-slate-100" : "bg-white/[0.04]"}`}>
-                      <p className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-slate-400"}`}>Headquarters</p>
-                      <p className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>{insurer.headquarters}</p>
+                    <div
+                      className={`rounded-xl px-3 py-2 ${isLight ? "bg-slate-100" : "bg-white/[0.04]"}`}
+                    >
+                      <p
+                        className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                      >
+                        Headquarters
+                      </p>
+                      <p className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+                        {insurer.headquarters}
+                      </p>
                     </div>
-                    <div className={`rounded-xl px-3 py-2 ${isLight ? "bg-slate-100" : "bg-white/[0.04]"}`}>
-                      <p className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-slate-400"}`}>Claims line</p>
-                      <p className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>{insurer.claimsPhone}</p>
+                    <div
+                      className={`rounded-xl px-3 py-2 ${isLight ? "bg-slate-100" : "bg-white/[0.04]"}`}
+                    >
+                      <p
+                        className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                      >
+                        Claims line
+                      </p>
+                      <p className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+                        {insurer.claimsPhone}
+                      </p>
                     </div>
                   </div>
 
@@ -297,8 +343,14 @@ export default function InsurerConnectionScreen({
                 </div>
 
                 <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                  <div className={`rounded-xl px-3 py-2 min-w-[82px] text-center ${isLight ? "bg-slate-100 text-slate-900" : "bg-slate-900 text-white"}`}>
-                    <p className={`text-[11px] uppercase tracking-wide ${isLight ? "text-slate-500" : "text-white/70"}`}>Fit</p>
+                  <div
+                    className={`rounded-xl px-3 py-2 min-w-[82px] text-center ${isLight ? "bg-slate-100 text-slate-900" : "bg-slate-900 text-white"}`}
+                  >
+                    <p
+                      className={`text-[11px] uppercase tracking-wide ${isLight ? "text-slate-500" : "text-white/70"}`}
+                    >
+                      Fit
+                    </p>
                     <p className="text-lg font-bold">{insurer.fitScore}%</p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -315,20 +367,32 @@ export default function InsurerConnectionScreen({
             <div className="p-4 sm:p-6">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
-                  <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+                  <h2
+                    className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                  >
                     Connect {selectedCarrier.name}
                   </h2>
-                  <p className={`text-sm mt-1 ${isLight ? "text-slate-600" : "text-slate-400"}`}>{selectedCarrier.description}</p>
+                  <p className={`text-sm mt-1 ${isLight ? "text-slate-600" : "text-slate-400"}`}>
+                    {selectedCarrier.description}
+                  </p>
                 </div>
-                <div className={`rounded-xl px-3 py-2 text-center ${isLight ? "bg-slate-100 text-slate-900" : "bg-slate-900 text-white"}`}>
-                  <p className={`text-[11px] uppercase tracking-wide ${isLight ? "text-slate-500" : "text-white/70"}`}>HQ</p>
+                <div
+                  className={`rounded-xl px-3 py-2 text-center ${isLight ? "bg-slate-100 text-slate-900" : "bg-slate-900 text-white"}`}
+                >
+                  <p
+                    className={`text-[11px] uppercase tracking-wide ${isLight ? "text-slate-500" : "text-white/70"}`}
+                  >
+                    HQ
+                  </p>
                   <p className="text-xs font-semibold">{selectedCarrier.headquarters}</p>
                 </div>
               </div>
 
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}>
+                  <label
+                    className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                  >
                     Policy Number *
                   </label>
                   <input
@@ -341,7 +405,9 @@ export default function InsurerConnectionScreen({
                 </div>
 
                 <div>
-                  <label className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}>
+                  <label
+                    className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                  >
                     Claim Number (Optional)
                   </label>
                   <input
@@ -351,11 +417,17 @@ export default function InsurerConnectionScreen({
                     className={`w-full px-3 py-3 border rounded-md ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] text-slate-100 placeholder:text-slate-400/60"}`}
                     placeholder="CLM-987654321"
                   />
-                  <p className={`text-xs mt-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>Add this if a claim already exists.</p>
+                  <p className={`text-xs mt-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                    Add this if a claim already exists.
+                  </p>
                 </div>
 
-                <div className={`rounded-2xl p-4 border ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-white/[0.10]"}`}>
-                  <div className={`flex items-center gap-2 text-sm font-semibold mb-3 ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+                <div
+                  className={`rounded-2xl p-4 border ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-white/[0.10]"}`}
+                >
+                  <div
+                    className={`flex items-center gap-2 text-sm font-semibold mb-3 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                  >
                     <Shield className="w-4 h-4 text-slate-500" />
                     Connection notes
                   </div>
