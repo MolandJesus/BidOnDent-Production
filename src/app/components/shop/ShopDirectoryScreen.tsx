@@ -305,6 +305,7 @@ export default function ShopDirectoryScreen({
                 }}
                 routeOptions={session.routeOptions}
                 savedPlaces={session.savedPlaces}
+                preserveViewport={session.searchWithinViewport}
                 searchWithinViewport={session.searchWithinViewport}
                 selectedOrigin={session.selectedOrigin}
                 selectedRouteId={session.selectedRoute?.id}
