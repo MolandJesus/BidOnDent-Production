@@ -4,55 +4,76 @@
 
 ### Build Progress
 
-| 0% |████████████████████████████████████████████████████████████████████████████| 135% 🚀 |
+| 0% |████████████████████████████████████████████████████████████████████████████| 140% 🚀 |
 
-**Passes completed:** 270 / 160+ — ⚡ GLASS DESIGN SWEEP COMPLETE + POST-SWEEP VISUAL POLISH (264–270)
+**Passes completed:** 276 / 160+ — ⚡ GLASS MIGRATION COMPLETE + LIGHT-MODE CONTRAST FIXES (271–274) + LANDING TERNARY CLEANUP (275) + DOC SYNC (276)
 
 | Item             | Value                                                                                          |
 | ---------------- | ---------------------------------------------------------------------------------------------- |
-| **Last pass**    | Pass 270 — ShopDirectoryScreen map-pane border-slate-200 → glass                             |
-| **Current pass** | 270 ✅ complete                                                                                 |
-| **Build**        | ✓ 0 errors · 1.98s · 783KB main bundle                                                         |
+| **Last pass**    | Pass 276 — Doc sync: governing docs aligned to passes 271-276                                  |
+| **Current pass** | 276 ✅ complete                                                                                |
+| **Build**        | ✓ 0 errors · 1.92s · 783KB main bundle                                                         |
 | **Branch**       | `BidOnDent-Horizon-Beta` (working) → `main` (stable, up to date, Vercel auto-deploy triggered) |
 | **Last pushed**  | 2026-03-26                                                                                     |
-| **Phase**        | POST-SWEEP POLISH — design refinement targeting home dashboard + coverage search screens      |
+| **Phase**        | PHASE A — Product quality push (design, UX, mobile, doc continuity)                            |
+
+### Light-Mode Contrast + Cleanup (Passes 271–276, 2026-03-26)
+
+| Pass | Title                                                                  | Category   | Status |
+| ---- | ---------------------------------------------------------------------- | ---------- | ------ |
+| 271  | Welcome heading light-mode contrast fix + vehicle icon color           | P4-UX      | ✅     |
+| 272  | Report wizard header + progress light-mode contrast fix                | P4-UX      | ✅     |
+| 273  | Account info card light/dark mode + tile depth                         | P4-UX      | ✅     |
+| 274  | Immersive drawer + map popup glass migration                           | P4-UX      | ✅     |
+| 275  | Clean 23 redundant isLightAppearance ternaries in landing pages        | P7-CLEANUP | ✅     |
+| 276  | Doc sync: Product Brain, Map Tracker, Build Dashboard → passes 271-276 | P5-DOC     | ✅     |
+
+**Key changes:**
+
+- **Pass 271**: `HomeScreen.tsx` welcome heading `text-slate-100` → conditional `text-slate-800`/`text-slate-100` for light mode. `StepVehicleInfo.tsx` car icon color fix.
+- **Pass 272**: `ReportHeader.tsx` heading/subtitle/icon/badge light-mode contrast. `ReportProgress.tsx` inactive step indicators.
+- **Pass 273**: `AccountScreen.tsx` + `AccountInfoCard.tsx` appearance mode threading, info tile depth shadows, DRY refactor (5 tile blocks → data-driven map).
+- **Pass 274**: `ShopDirectoryImmersiveMap.tsx` drawer `bg-white/95` → `bg-slate-950/90`. `ShopDirectoryMapPane.tsx` popup glass migration.
+- **Pass 275**: 10 landing page files, -34 lines, removed 23 redundant ternaries where both branches had identical values.
+- **Pass 276**: Synced Product Brain, Map Tracker, Build Progress Dashboard to reflect passes 271-276. Marked props crash as FIXED.
+- **Build**: ✓ 0 errors · 1.92s · 783KB
 
 ### Post-Sweep Visual Polish (Passes 264–270, 2026-03-26)
 
-| Pass | Title                                                                                                          | Category  | Status |
-| ---- | -------------------------------------------------------------------------------------------------------------- | --------- | ------ |
-| 264  | CustomerMapWidget star rating number text-amber-600 → text-amber-300 (too dark on dark glass)                | P2-DESIGN | ✅     |
-| 265  | CoverageNearestShops rating display: add Star icon + amber-300 number (matches CustomerMapWidget)            | P2-DESIGN | ✅     |
-| 266  | OperatingRegionsSection title gradient text: white→blue-100→blue-200 for premium brand identity              | P2-DESIGN | ✅     |
-| 267  | County pills border/bg/text contrast; home reports header dead conditional fix; mobile touch states          | P2-DESIGN | ✅     |
-| 268  | HomeScreen reports prop typed: any[] → DamageReport[] (missed in pass 247 sweep)                            | P2-TYPE   | ✅     |
-| 269  | hover:bg-white/40 → hover:bg-white/10 on dark-glass buttons (BidsScreen, VehicleProfileScreen)              | P2-DESIGN | ✅     |
-| 270  | ShopDirectoryScreen map-pane border-slate-200 → border-white/10                                              | P2-DESIGN | ✅     |
+| Pass | Title                                                                                               | Category  | Status |
+| ---- | --------------------------------------------------------------------------------------------------- | --------- | ------ |
+| 264  | CustomerMapWidget star rating number text-amber-600 → text-amber-300 (too dark on dark glass)       | P2-DESIGN | ✅     |
+| 265  | CoverageNearestShops rating display: add Star icon + amber-300 number (matches CustomerMapWidget)   | P2-DESIGN | ✅     |
+| 266  | OperatingRegionsSection title gradient text: white→blue-100→blue-200 for premium brand identity     | P2-DESIGN | ✅     |
+| 267  | County pills border/bg/text contrast; home reports header dead conditional fix; mobile touch states | P2-DESIGN | ✅     |
+| 268  | HomeScreen reports prop typed: any[] → DamageReport[] (missed in pass 247 sweep)                    | P2-TYPE   | ✅     |
+| 269  | hover:bg-white/40 → hover:bg-white/10 on dark-glass buttons (BidsScreen, VehicleProfileScreen)      | P2-DESIGN | ✅     |
+| 270  | ShopDirectoryScreen map-pane border-slate-200 → border-white/10                                     | P2-DESIGN | ✅     |
 
 ### Glass Design Sweep — Final Wave (Passes 261–263, 2026-03-26)
 
-| Pass | Title                                                                                                        | Category  | Status |
-| ---- | ------------------------------------------------------------------------------------------------------------ | --------- | ------ |
-| 261  | home-data toneClasses/actionIconTones/activity tones, insurerClaimsUtils green, insurerPartnerShopsUtils    | P2-DESIGN | ✅     |
-| 262  | ShopDirectoryMapPane 8 hits, ImmersiveMap, ShopOnboarding, DashboardCoveragePanel, InsurerMapWidget, Timeline | P2-DESIGN | ✅     |
+| Pass | Title                                                                                                                                                                            | Category  | Status |
+| ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------ |
+| 261  | home-data toneClasses/actionIconTones/activity tones, insurerClaimsUtils green, insurerPartnerShopsUtils                                                                         | P2-DESIGN | ✅     |
+| 262  | ShopDirectoryMapPane 8 hits, ImmersiveMap, ShopOnboarding, DashboardCoveragePanel, InsurerMapWidget, Timeline                                                                    | P2-DESIGN | ✅     |
 | 263  | statusClasses in home-data+homeScreenData; auth modals; VehicleProfileScreen/ShopOnboarding 1-4/ShopRatingModal/PhotoGuide; admin red-50 error boxes; InsurerNewClaimForm labels | P2-DESIGN | ✅     |
 
 ### Glass Design Sweep — Main Wave (Passes 249–260, 2026-03-26)
 
-| Pass | Title                                                                                          | Category  | Status |
-| ---- | ---------------------------------------------------------------------------------------------- | --------- | ------ |
-| 249  | ShopDirectoryRoutePanel — route buttons, active state, instruction cards glass              | P2-DESIGN | ✅     |
-| 250  | LikedShopsScreen — remove button, stats boxes, badges, AI summary full glass                | P2-DESIGN | ✅     |
-| 251  | ShopDirectoryResultCard, InsurerPartnerShopCard, ManualProspectCard, VehicleScreen glass    | P2-DESIGN | ✅     |
-| 252  | ShopDirectoryContextCards, ShopDirectoryIntelligencePanel glass                             | P2-DESIGN | ✅     |
-| 253  | ShopDirectorySearchPanel, ShopDirectoryListBody — all controls and chips glass              | P2-DESIGN | ✅     |
-| 254  | MissingReportState, InsurerNewClaimScreen — gray tokens removed                             | P2-DESIGN | ✅     |
-| 255  | DashboardCoveragePanel, photo-guide-steps — semantic accent colors preserved, bg glass      | P2-DESIGN | ✅     |
-| 256  | DashboardHeader, DesktopNavTabs, InsurerConnectionScreen, RepairLifecycleTimeline          | P2-DESIGN | ✅     |
-| 257  | StepPhotos, HomeScreenSections fallback, InsurerMapWidget hint box                         | P2-DESIGN | ✅     |
-| 258  | Admin panel components (6 files) — green/blue confirmation boxes                           | P2-DESIGN | ✅     |
-| 259  | ShopDirectoryScreen role badges + shell, insurer forms, shop onboarding hint               | P2-DESIGN | ✅     |
-| 260  | DashboardHeader final, ProfileDropdown, ShopDirectoryMapPane, ImmersiveMap, ErrorBoundary  | P2-DESIGN | ✅     |
+| Pass | Title                                                                                     | Category  | Status |
+| ---- | ----------------------------------------------------------------------------------------- | --------- | ------ |
+| 249  | ShopDirectoryRoutePanel — route buttons, active state, instruction cards glass            | P2-DESIGN | ✅     |
+| 250  | LikedShopsScreen — remove button, stats boxes, badges, AI summary full glass              | P2-DESIGN | ✅     |
+| 251  | ShopDirectoryResultCard, InsurerPartnerShopCard, ManualProspectCard, VehicleScreen glass  | P2-DESIGN | ✅     |
+| 252  | ShopDirectoryContextCards, ShopDirectoryIntelligencePanel glass                           | P2-DESIGN | ✅     |
+| 253  | ShopDirectorySearchPanel, ShopDirectoryListBody — all controls and chips glass            | P2-DESIGN | ✅     |
+| 254  | MissingReportState, InsurerNewClaimScreen — gray tokens removed                           | P2-DESIGN | ✅     |
+| 255  | DashboardCoveragePanel, photo-guide-steps — semantic accent colors preserved, bg glass    | P2-DESIGN | ✅     |
+| 256  | DashboardHeader, DesktopNavTabs, InsurerConnectionScreen, RepairLifecycleTimeline         | P2-DESIGN | ✅     |
+| 257  | StepPhotos, HomeScreenSections fallback, InsurerMapWidget hint box                        | P2-DESIGN | ✅     |
+| 258  | Admin panel components (6 files) — green/blue confirmation boxes                          | P2-DESIGN | ✅     |
+| 259  | ShopDirectoryScreen role badges + shell, insurer forms, shop onboarding hint              | P2-DESIGN | ✅     |
+| 260  | DashboardHeader final, ProfileDropdown, ShopDirectoryMapPane, ImmersiveMap, ErrorBoundary | P2-DESIGN | ✅     |
 
 **Key changes in this sweep (Passes 249–263):**
 
@@ -64,12 +85,12 @@
 
 ### Type Safety Sweep (Passes 243–248, 2026-03-26)
 
-| Pass | Title                                                                     | Category  | Status |
-| ---- | ------------------------------------------------------------------------- | --------- | ------ |
-| 243  | P0 security audit — confirmed all 11 console.logs already DEV-guarded    | P0-AUDIT  | ✅     |
-| 244  | Core router types — `any[]` → proper types in DashboardRouterProps       | P2-TYPES  | ✅     |
-| 245  | Hook types — useAppHandlers `Record<string,any>` removed, userDataUtils  | P2-TYPES  | ✅     |
-| 246  | Service types — clerkService ClerkUserLike, storage catch blocks         | P2-TYPES  | ✅     |
+| Pass | Title                                                                   | Category | Status |
+| ---- | ----------------------------------------------------------------------- | -------- | ------ |
+| 243  | P0 security audit — confirmed all 11 console.logs already DEV-guarded   | P0-AUDIT | ✅     |
+| 244  | Core router types — `any[]` → proper types in DashboardRouterProps      | P2-TYPES | ✅     |
+| 245  | Hook types — useAppHandlers `Record<string,any>` removed, userDataUtils | P2-TYPES | ✅     |
+| 246  | Service types — clerkService ClerkUserLike, storage catch blocks        | P2-TYPES | ✅     |
 
 **Key changes in this sweep:**
 
@@ -81,15 +102,15 @@
 
 ### Liquid Glass System — All Surfaces (Passes 236–242, 2026-03-26)
 
-| Pass | Title                                                              | Category | Status |
-| ---- | ------------------------------------------------------------------ | -------- | ------ |
-| 236  | Mobile header bugs — avatar distortion, Dashboard button crowding  | P1-UX    | ✅     |
-| 237  | Report steps glass overhaul — inline white styles removed          | P2-UX    | ✅     |
-| 238  | Report form inputs — bg-white → translucent glass                  | P2-UX    | ✅     |
-| 239  | Theme.css control variants — secondary/utility dark base           | P3-ARCH  | ✅     |
-| 240  | QA audit — AppLoading white flash, App.tsx fallback, 32 ternaries  | P2-UX    | ✅     |
-| 241  | Dashboard home cards glass — HomeScreenSections/HomeScreen         | P3-UX    | ✅     |
-| 242  | Map overlays dark glass — ShopDirectoryMapOverlays                 | P3-UX    | ✅     |
+| Pass | Title                                                             | Category | Status |
+| ---- | ----------------------------------------------------------------- | -------- | ------ |
+| 236  | Mobile header bugs — avatar distortion, Dashboard button crowding | P1-UX    | ✅     |
+| 237  | Report steps glass overhaul — inline white styles removed         | P2-UX    | ✅     |
+| 238  | Report form inputs — bg-white → translucent glass                 | P2-UX    | ✅     |
+| 239  | Theme.css control variants — secondary/utility dark base          | P3-ARCH  | ✅     |
+| 240  | QA audit — AppLoading white flash, App.tsx fallback, 32 ternaries | P2-UX    | ✅     |
+| 241  | Dashboard home cards glass — HomeScreenSections/HomeScreen        | P3-UX    | ✅     |
+| 242  | Map overlays dark glass — ShopDirectoryMapOverlays                | P3-UX    | ✅     |
 
 **Key changes in this sweep:**
 

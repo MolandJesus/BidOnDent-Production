@@ -182,12 +182,12 @@ When working on the app, do not assume every visible screen is fully wired end t
 
 ### Known Issues (2026-03-25)
 
-| Issue                                                      | Severity | Status                                                       |
-| ---------------------------------------------------------- | -------- | ------------------------------------------------------------ |
-| "Can't find variable: props" runtime crash                 | P1       | Open — likely ReportDetailDrawer.tsx or MapReportMarkers.tsx |
-| Light landing sections feel disconnected from map identity | P3-UX    | Design gap — not a bug                                       |
-| Dashboard feels "UI with map" not "map with UI"            | P3-UX    | Map dominance pass needed                                    |
-| ~~False trust claims (certified, thousands)~~              | ~~P0~~   | ✅ Fixed in Passes 112-115                                   |
+| Issue                                                      | Severity | Status                                                                                              |
+| ---------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| ~~"Can't find variable: props" runtime crash~~             | ~~P1~~   | ✅ Fixed Pass 186 — `DashboardRouter.tsx` destructured params referenced undefined `props` variable |
+| Light landing sections feel disconnected from map identity | P3-UX    | Design gap — not a bug                                                                              |
+| Dashboard feels "UI with map" not "map with UI"            | P3-UX    | Map dominance pass needed                                                                           |
+| ~~False trust claims (certified, thousands)~~              | ~~P0~~   | ✅ Fixed in Passes 112-115                                                                          |
 
 ## Current Supabase Reality
 

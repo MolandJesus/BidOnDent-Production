@@ -27,9 +27,9 @@ The Operating Regions / coverage map section is the **strongest visual identity 
 
 **Map-first gap remaining:** Dashboard map widget exists but dashboard still feels like "UI with a map" rather than "map with floating panels." Next priority: map dominance finalization — reduce visual weight of non-map dashboard elements.
 
-**Runtime issue:** "Can't find variable: props" crash affects navigation transitions, possibly in `ReportDetailDrawer.tsx` or `MapReportMarkers.tsx`. Must fix before map interaction loop passes.
+**Runtime issue:** ~~"Can't find variable: props" crash~~ — ✅ **FIXED Pass 186**. Root cause: `DashboardRouter.tsx` destructured params but referenced undefined `props` variable.
 
-**Best next pass:** Fix props crash → Map dominance finalization → Interaction flow smoothing
+**Best next pass:** Map dominance finalization → Interaction flow smoothing → Feature completion (bid pipeline, shop ops)
 
 ## Pass 200 — Dashboard shell night cohesion + map/header separation (2026-03-25)
 
