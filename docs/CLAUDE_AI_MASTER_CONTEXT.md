@@ -220,7 +220,7 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 | Priority | Task                                              | Notes                                                                        |
 | -------- | ------------------------------------------------- | ---------------------------------------------------------------------------- |
 | ✅ DONE  | Supabase RLS policies (`USING(true)` on 4 tables) | Pass 321 — migration 012 tightens profiles, submissions, activity events     |
-| HIGH     | CI/CD pipeline                                    | Manual deploys only right now                                                |
+| ✅ DONE  | CI/CD pipeline                                    | Pass 327 — GitHub Actions: format check → test → build on push/PR            |
 | ✅ DONE  | Basic test coverage                               | Pass 324 — Vitest + 33 tests for formatters, routing, collections            |
 | ✅ DONE  | Bundle size (~783KB → 502KB)                      | Pass 325 — vendor-motion, vendor-clerk, vendor-sentry chunks (36% reduction) |
 | ✅ DONE  | WCAG AA audit                                     | Pass 326 — focus-visible, aria-labels, Escape handlers                       |
