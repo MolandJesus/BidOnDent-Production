@@ -269,6 +269,7 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
                   reportsLoading={marketplaceLoading}
+                  appearanceMode={appearanceMode}
                   onApproveClaim={(claimId, amount) => {
                     console.info("[BidOnDent] Claim approved:", { claimId, amount });
                   }}
@@ -282,6 +283,7 @@ export default function DashboardRouter({
                 <InsurerPartnerShopsScreen
                   primaryColor={primaryColor}
                   identity={websiteIdentity}
+                  appearanceMode={appearanceMode}
                   onOpenMap={() => onViewModeChange("shop-directory")}
                 />
               </motion.div>
@@ -414,6 +416,7 @@ export default function DashboardRouter({
                   identity={websiteIdentity}
                   userType={userType}
                   reports={reports}
+                  appearanceMode={appearanceMode}
                 />
               </motion.div>
             )}

@@ -26,12 +26,14 @@ import {
 import AddProspectModal from "./AddProspectModal";
 import InsurerPartnerShopCard from "./InsurerPartnerShopCard";
 import ManualProspectCard from "./ManualProspectCard";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type InsurerPartnerShopsScreenProps = {
   primaryColor?: string;
   identity?: WebsiteIdentity | null;
   onAddShop?: (shopData: any) => void;
   onOpenMap?: () => void;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export default function InsurerPartnerShopsScreen({
@@ -39,7 +41,9 @@ export default function InsurerPartnerShopsScreen({
   identity,
   onAddShop,
   onOpenMap,
+  appearanceMode = "map-dark",
 }: InsurerPartnerShopsScreenProps) {
+  const isLight = appearanceMode === "light";
   const { inventory } = useNetworkDirectory();
   const memory = loadWebsiteSessionMemory(identity);
   const [searchQuery, setSearchQuery] = useState("");
@@ -172,7 +176,7 @@ export default function InsurerPartnerShopsScreen({
   return (
     <div className="min-h-screen">
       <div
-        className="sticky top-0 z-10 border-b border-blue-400/20/30 bd-glass-panel !rounded-none"
+        className="sticky top-0 z-10 border-b border-blue-400/20 bd-glass-panel !rounded-none"
         style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}
       >
         <div className="px-4 py-4">
@@ -216,11 +220,11 @@ export default function InsurerPartnerShopsScreen({
                 placeholder="Search shops by name, location, or specialty..."
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                className="w-full rounded-2xl border border-blue-400/20/30 bg-white/10 backdrop-blur-sm py-2.5 pl-10 pr-4 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20"
+                className={`w-full rounded-2xl border border-blue-400/20 backdrop-blur-sm py-2.5 pl-10 pr-4 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 ${isLight ? "bg-white text-slate-800 placeholder:text-slate-400" : "bg-white/10 text-slate-100 placeholder:text-slate-400/60"}`}
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-blue-400/20/30 bg-white/10 backdrop-blur-sm p-2">
+            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-blue-400/20 bg-white/10 backdrop-blur-sm p-2">
               <span className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                 Directions Provider
               </span>
