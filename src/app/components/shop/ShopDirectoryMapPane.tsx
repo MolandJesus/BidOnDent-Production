@@ -13,6 +13,7 @@ import type {
   RouteOption,
   SavedPlace,
 } from "../../types/mapDomain";
+import MapReportMarkers from "../maps/MapReportMarkers";
 import MapViewportManager, {
   DARK_TILE_LAYER,
   getRoleLabel,
@@ -204,6 +205,8 @@ export default function ShopDirectoryMapPane({
             </Popup>
           </CircleMarker>
         ))}
+
+        <MapReportMarkers />
 
         {routeOptions.map((route) => {
           const isSelectedRoute = route.id === selectedRoute?.id;
