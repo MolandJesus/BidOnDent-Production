@@ -1,5 +1,7 @@
 # BidOnDent — Backend & Service Layer Task Prompt
 
+> **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first.
+
 **For: AI assistant working on non-UI tasks**
 **Date: 2026-03-25**
 **Branch: `feature/platform-bugfix-sweep-by-MolandJesus`**

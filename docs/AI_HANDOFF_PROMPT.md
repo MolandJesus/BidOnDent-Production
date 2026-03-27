@@ -1,5 +1,7 @@
 # BidOnDent — AI Handoff Master Prompt
 
+> **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first.
+
 > **Date**: March 26, 2026
 > **Author**: GitHub Copilot (Claude Opus 4.6) — handing off to next AI agent
 > **Repository**: `MolandJesus/BidOnDent-Production`

@@ -1,3 +1,9 @@
+## START HERE
+
+Read [`docs/CLAUDE_AI_MASTER_CONTEXT.md`](../docs/CLAUDE_AI_MASTER_CONTEXT.md) before every session. It is the single source of truth for product context, architecture, design system, current state, map program status, and next priorities.
+
+---
+
 - [x] Verify that the copilot-instructions.md file in the .github directory is created.
 - [x] Clarify Project Requirements
 - [x] Scaffold the Project

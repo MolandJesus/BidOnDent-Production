@@ -1,5 +1,7 @@
 # BidOnDent — Design & UI Continuation Prompt
 
+> **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first. The passes listed here (1–7) are all complete.
+
 **For: Claude Code (design AI) continuing autopilot in a new chat**
 **Date: 2026-03-25**
 **Branch: `feature/platform-bugfix-sweep-by-MolandJesus`**

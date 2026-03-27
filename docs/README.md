@@ -1,7 +1,9 @@
-## Map Vision & Design Governance (2026-03-25)
+## Documentation Index
 
-**Last updated:** March 25, 2026
-**Status:** Active documentation index and governance — FINISHING PHASE
+> **Start here: [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md)** — single source of truth for any AI agent. Read this before anything else.
+
+**Last updated:** March 26, 2026
+**Status:** Active documentation index and governance — MAP PROGRAM PHASE
 
 For all map, navigation, and design governance, see:
 
@@ -25,6 +27,10 @@ This folder is a governed documentation set. Only keep documents that are:
 - intentionally non-duplicative
 
 ## Source Of Truth Documents
+
+### Master AI context (start here)
+
+- `CLAUDE_AI_MASTER_CONTEXT.md` — **single source of truth for every AI session**: product overview, architecture, design system, current state, map program, next priorities, hard rules, file reference. All other AI handoff docs defer to this.
 
 ### Onboarding and environment
 

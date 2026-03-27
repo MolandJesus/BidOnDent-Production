@@ -1,5 +1,7 @@
 # BidOnDent — Backend, Code Cleanup & Bug Fix Autopilot Prompt
 
+> **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first for current priorities.
+
 **Date:** March 26, 2026 (Updated)
 **Branch:** `feature/platform-bugfix-sweep-by-MolandJesus`
 **Repo:** `MolandJesus/BidOnDent-Production`

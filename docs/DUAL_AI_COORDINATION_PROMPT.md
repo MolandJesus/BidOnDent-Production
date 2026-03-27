@@ -1,6 +1,8 @@
 # BidOnDent — Dual AI Coordination Prompt
 
-**Created:** 2026-03-25  
+> **SUPERSEDED** — Dual AI coordination is no longer in use. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md).
+
+**Created:** 2026-03-25
 **Context:** Passes 1–214 complete. Two AI agents now work the codebase concurrently.  
 **Branch:** `feature/platform-bugfix-sweep-by-MolandJesus`
 

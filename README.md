@@ -8,13 +8,13 @@
 
 ## Quick Links
 
-| Resource        | Path                                           |
-| --------------- | ---------------------------------------------- |
-| Build Progress  | `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`   |
-| Map Master Plan | `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` |
-| Map Tracker     | `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`     |
-| Product Brain   | `docs/BIDONDENT_PRODUCT_BRAIN.md`              |
-| Doc Governance  | `docs/README.md`                               |
+| Resource | Path |
+| -------- | ---- |
+| **AI Master Context** | [`docs/CLAUDE_AI_MASTER_CONTEXT.md`](docs/CLAUDE_AI_MASTER_CONTEXT.md) — **start here every session** |
+| Build Progress | [`docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`](docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md) |
+| Map Master Plan | [`docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`](docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md) |
+| Product Brain | [`docs/BIDONDENT_PRODUCT_BRAIN.md`](docs/BIDONDENT_PRODUCT_BRAIN.md) |
+| Doc Governance | [`docs/README.md`](docs/README.md) |
 
 ## Design Identity
 

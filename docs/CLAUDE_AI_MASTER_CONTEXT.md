@@ -1,0 +1,353 @@
+# BidOnDent — Master AI Context
+
+> **Single source of truth for any AI agent working on this repo.**
+> All other AI handoff docs defer to this file. Read this first, every session.
+>
+> **Last updated:** 2026-03-26 (Pass 286 — Map NY data/theme/viewport/customer routing complete)
+> **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
+> **Build:** ✅ 0 errors · ~2.01s · 786KB main bundle
+
+---
+
+## 1. What Is BidOnDent?
+
+BidOnDent is a **map-first marketplace for automotive dent repair**. The map is not a feature — it IS the product. Three user types interact through a spatial loop:
+
+```
+Customer: Report damage → Pin on map → Shops bid → Accept → Navigate to repair
+Shop:     See report map → Submit bid → Win job → Get customer
+Insurer:  Browse shop network → Partner shops → Track claims
+```
+
+**Tech stack:**
+- React 18 + TypeScript + Vite 6.4.1
+- Tailwind CSS (custom `bd-glass-*` design tokens)
+- Supabase (PostgreSQL, Storage, Edge Functions via Hono)
+- Clerk (identity — auth, user metadata, provider-agnostic website identity)
+- React Leaflet / Leaflet (interactive maps)
+- Vercel deployment (auto from `main`)
+
+**Coverage area:** NY metro — Westchester, Rockland, Dutchess, Nassau, Orange, Putnam counties.
+
+---
+
+## 2. Architecture Rules (Non-Negotiable)
+
+```
+services/   = data/domain logic only — no React, no UI state
+hooks/      = orchestration/state lifecycle — bridges services ↔ components
+components/ = rendering + local interaction only — calls hooks, not services directly
+utils/      = transforms/formatting/calculations — pure functions only
+```
+
+- **Clerk** = identity (auth, user metadata, session)
+- **Supabase** = backend (always via edge functions, never direct DB calls in components)
+- **localStorage** = cache only, never source of truth
+- File soft limit: 300 lines. Hard limit: 500 lines.
+- Never bypass Supabase RLS; never commit `.env` files.
+
+### Appearance Mode System
+
+`DashboardAppearanceMode` = `"light"` | `"map-dark"` (set via `data-appearance-mode` attribute)
+
+**Critical:** Both modes use a **dark navy base surface**. "Light" mode is warmer frosted glass — NOT white. Text must always be light (`text-slate-100`/`text-white`). Never use `text-slate-900`/`text-slate-800` for body text in dashboard components.
+
+The landing page is a separate surface — it HAS light sections with dark text.
+
+### Map Theme System (Separate from Appearance Mode)
+
+`MapTheme` = `"light"` | `"dark"` — per-map tile toggle inside `ShopDirectoryScreen`.
+
+- `"dark"` → CARTO dark tiles + dark glass overlays
+- `"light"` → OpenStreetMap tiles + light glass overlays (white text over map is wrong — overlays adapt)
+- Map theme is stored in `useShopDirectorySession` as `mapTheme` state
+- Leaflet popup backgrounds are always white — popup content always uses dark text (`text-slate-800`)
+
+---
+
+## 3. Design System
+
+**Target aesthetic:** Apple Maps-inspired. Map is base layer. Everything floats above geography.
+
+**Glass CSS classes** (defined in `src/styles/theme.css`):
+- `bd-glass-panel` — floating panels, sidebars
+- `bd-glass-card` — content cards, result cards
+- `bd-glass-control` — interactive controls (buttons, pills)
+- `bd-glass-badge` — status badges
+- `bd-glass-floating` — top-level floats (notification center, overlays)
+
+**Color system:**
+- Royal blue `#003d82` → primary identity / CTAs
+- Sky blue `#00a0e9` → secondary / gradients
+- Navy → depth / night background
+- Soft blue → atmosphere tints
+
+**Rules:**
+- Use `bd-glass-*` classes. Avoid inline `rgba(255,255,255,...)` hacks.
+- Touch targets: min 44×44px.
+- Mobile-first — 375px minimum viewport.
+- No horizontal scroll at any breakpoint.
+- No `bg-white` on premium surfaces.
+
+---
+
+## 4. Current State — Pass History
+
+**276 structured passes completed before this session** (at 173% of original 160-pass plan).
+
+### What's been built and is solid:
+- Glass design system across all screens (`bd-glass-*`)
+- Dark surface color system — all light backgrounds eliminated
+- Appearance mode (light/map-dark) system + cross-tab sync
+- Dashboard shell (DashboardLayout, MobileBottomNav, NotificationCenter)
+- Report wizard (5-step glass flow, Supabase photo storage)
+- Bid system (real Supabase data, acceptance flow)
+- Clerk identity + provider-agnostic website session memory
+- Network directory (shops + insurers from Supabase, seed fallback)
+- Route-level code splitting (783KB, down from 1078KB)
+- Type safety sweep (39 files, no `any[]` in critical paths)
+- Security hardening (console.log DEV-gates, path traversal fix, MIME validation)
+- Supabase edge functions (canonical slug `server`)
+- Liquid glass UI (passes 236-242): all white surfaces eliminated
+- Navigation system (useNavigationSession, useNavigationIntelligence, voice alerts, reroute)
+
+### Map program — this session (Pass 286):
+
+**Problem found:** Map was entirely hardcoded to Dallas, TX. All overlays had hardcoded dark styles ignoring `mapTheme` toggle. Customers had no path from dashboard home to ShopDirectoryScreen.
+
+**What was fixed:**
+
+| File | What Changed |
+|------|-------------|
+| `src/app/components/shop/ShopDirectoryMapPane.tsx` | Full `mapTheme` theming (9 token variables), NY fallback center, fixed Leaflet popup text to dark-on-white; added "Search in this area" + "Searching this area" pills with `onSearchInArea` / `onClearAreaSearch` / `searchWithinViewport` props; local `hasPanned` state shows pill after first pan |
+| `src/app/components/shop/ShopDirectoryMapOverlays.tsx` | Added `mapTheme` prop, full light/dark token set for all overlays |
+| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx` | `mapTheme` theming for top bar + drawer, NY fallback center; added `onSetMapViewportBounds` prop wired to `onViewportChange` |
+| `src/app/components/shop/ShopDirectoryScreen.tsx` | Added `mapTheme` pass-through to hybrid mode overlays; wired `navigationMode` to hybrid mode overlays (was missing); viewport bounds wired in both hybrid and immersive `onViewportChange`; passes `handleSearchInArea` / `handleClearAreaSearch` / `searchWithinViewport` to map pane; passes `onSetMapViewportBounds` to immersive map |
+| `src/app/services/intelligence/shopMapData.ts` | Replaced all Dallas TX data with NY coverage area (6 shops: Yonkers, White Plains, Spring Valley, Poughkeepsie, Hempstead, Middletown) |
+| `src/app/services/intelligence/shopMapExperience.ts` | Fixed directory shop fallback city/state from Dallas/TX to White Plains/NY; fixed shop callout text to reference NY counties; added `viewportBounds` param to `buildShopMapListings` → passed to `applyShopMapListingFilters` |
+| `src/app/services/intelligence/directoryAdapters.ts` | Replaced TX-only `CITY_COORDINATE_DIRECTORY` with 17 NY coverage area cities; fixed insurer HQ fallback to White Plains/NY |
+| `src/app/components/insurer/insurerPartnerShopsUtils.ts` | Fixed `buildManualProspectCoordinate` base from Dallas to Westchester NY |
+| `src/app/components/insurer/AddProspectModal.tsx` | Updated city/state/zip placeholders to NY |
+| `src/app/components/dashboard/CustomerMapWidget.tsx` | Added `onViewShops` prop + "Browse all shops & AI matching" button |
+| `src/app/components/codelayer/HomeScreen.tsx` | Wired `onViewShops` to `CustomerMapWidget` so customers reach `ShopDirectoryScreen` |
+| `src/app/hooks/useShopDirectorySession.ts` | Added `mapViewportBounds` + `searchWithinViewport` state; wired into `buildShopMapListings`; added `handleSearchInArea` + `handleClearAreaSearch` handlers; exposed all four from hook return |
+
+---
+
+## 5. Map Program Architecture
+
+The map program has two subsystems:
+
+### A. ServiceCoverageMap (landing page + coverage dialog)
+
+Used by: `OperatingRegionsSection`, `CustomerMapWidget`, `CoverageMapDialog`
+
+```
+ServiceCoverageMap.tsx       ← Leaflet base map, tile mode switcher
+CoverageMapDialog.tsx        ← Full-screen coverage modal (customer widget)
+CoverageMapOverlays.tsx      ← Landing page overlays
+useCoveragePartnerShops.ts   ← Fetches real partner shops from Supabase
+useCoverageNavigationExperience.ts ← Navigation origin management
+```
+
+**Theme:** Uses `resolveMapSurfaceTone(tileMode)` → `getMapSurfaceTheme(tone)` from `mapSurfaceTheme.ts`.
+
+### B. ShopDirectoryMapPane (dashboard Find A Shop)
+
+Used by: `ShopDirectoryScreen` (hybrid + list modes), `ShopDirectoryImmersiveMap` (full-screen map mode)
+
+```
+ShopDirectoryScreen.tsx              ← Orchestrator (hybrid + list layout)
+  └── ShopDirectoryMapPane.tsx       ← Leaflet map pane (markers, routes, overlays)
+        └── ShopDirectoryMapViewportManager.tsx ← Viewport fit/fly logic
+        └── ShopDirectoryMapOverlays.tsx        ← Floating overlays (intelligence, route, actions)
+ShopDirectoryImmersiveMap.tsx        ← Full-viewport map mode (own top bar + results drawer)
+useShopDirectorySession.ts           ← All session state (search, filter, sort, map, routes)
+shopMapExperience.ts                 ← buildShopMapListings, buildShopRouteOptions, filters
+shopMapData.ts                       ← NY coordinates, suggested origins
+shopMapRouting.ts                    ← Distance, ETA, route building
+directoryAdapters.ts                 ← Supabase shop/insurer → map listing adapters
+```
+
+**Three view modes:**
+- `"hybrid"` — sidebar (search + list) + map pane side by side
+- `"list"` — sidebar only, no map
+- `"map"` — full-screen immersive (`ShopDirectoryImmersiveMap`)
+
+### C. Entry Points to ShopDirectoryScreen
+
+| Entry | User Type | How |
+|-------|-----------|-----|
+| `CustomerMapWidget` "Browse all shops" button | customer | `onViewShops` → `DashboardRouter` → `ShopDirectoryScreen` |
+| `ShopMapWidget` "View Map" button | shop | `onViewShops` → same |
+| `InsurerMapWidget` "View Map" button | insurer | `onViewShops` → same |
+| `LikedShopsScreen` "Open Map" | customer | `onOpenMap` → same |
+| `CompetitorAnalysisScreen` "Open Map" | shop | `onOpenMap` → same |
+| `InsurerPartnerShopsScreen` "Open Map" | insurer | `onOpenMap` → same |
+
+---
+
+## 6. What Needs to Happen Next (Priority Order)
+
+### Map Program — Immediate
+
+| Priority | Task | Why |
+|----------|------|-----|
+| ✅ DONE | Fix `navigationMode` not passed to `ShopDirectoryMapOverlays` in hybrid mode | Fixed in pass 286 |
+| ✅ DONE | Add viewport bounds tracking in `useShopDirectorySession` | Fixed in pass 286 — full pipeline: pan → hasPanned → "Search in this area" pill → filter |
+| ✅ DONE | Add "Search in this area" button to `ShopDirectoryMapPane` | Fixed in pass 286 |
+| P1 | Real shop data from Supabase partner profiles | Currently seed data + network directory. `useCoveragePartnerShops` fetches real shops — should feed `ShopDirectoryScreen` too |
+| P2 | Add `mapViewportBounds` to session persist | Saves last viewport bounds for session restore |
+| P2 | Mobile map audit at 375px | All three view modes need systematic mobile check |
+
+### Product Loop — Next Phase
+
+| Priority | Task | Why |
+|----------|------|-----|
+| P1 | Report → map pin connection | Submitted reports should appear on the shop's map view |
+| P2 | Bid → spatial context | Bid comparison should show shop location on mini-map |
+| P2 | Shop selection → navigation handoff | Selecting a shop in directory should offer GPS navigation handoff |
+| P3 | Mobile map at 375px audit | Map view modes need systematic mobile check |
+
+### Hardening
+
+| Priority | Task | Notes |
+|----------|------|-------|
+| HIGH | Supabase RLS policies (`USING(true)` on 4 tables) | Production security risk |
+| HIGH | CI/CD pipeline | Manual deploys only right now |
+| HIGH | Basic test coverage | Zero coverage currently |
+| MEDIUM | Bundle size (~783KB) | Already split but still large |
+| MEDIUM | WCAG AA audit | Keyboard nav + contrast |
+
+---
+
+## 7. Hard Rules for Any AI
+
+1. **Read this doc first.** Then read `.github/copilot-instructions.md`.
+2. **Map is the primary product surface.** Every pass must strengthen the spatial experience.
+3. **One pass = one coherent change.** Never bundle unrelated fixes.
+4. **Run `npm run build` after every pass.** Zero errors required.
+5. **Mobile-first.** Validate 375px before desktop for every UI change.
+6. **Both appearance modes use dark surfaces.** Text should be light (`text-slate-100`). Never dark text on dark backgrounds.
+7. **Map theme (`mapTheme`) is separate from appearance mode.** Components with map surfaces need both.
+8. **Leaflet popups are always white.** Always use dark text inside Leaflet popups.
+9. **NY is the coverage area.** No Dallas/TX coordinates anywhere in the codebase.
+10. **Stop and ask** if: deleting >3 files, touching auth/payment/Clerk config, Supabase RLS policies, or build fails after 2 attempts.
+
+---
+
+## 8. Key Files Quick Reference
+
+### Map Program
+| File | Purpose |
+|------|---------|
+| `src/app/components/shop/ShopDirectoryScreen.tsx` | Main orchestrator for dashboard shop discovery |
+| `src/app/components/shop/ShopDirectoryMapPane.tsx` | Leaflet map pane with theme-aware overlays |
+| `src/app/components/shop/ShopDirectoryMapOverlays.tsx` | Floating intelligence + route + action overlays |
+| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx` | Full-viewport immersive map mode |
+| `src/app/components/shop/ShopDirectoryMapViewportManager.tsx` | Viewport fit/fly-to + tile layers |
+| `src/app/hooks/useShopDirectorySession.ts` | All session state for shop directory |
+| `src/app/services/intelligence/shopMapExperience.ts` | Shop listing builder, filters, role highlights |
+| `src/app/services/intelligence/shopMapData.ts` | NY shop coordinates + suggested origins |
+| `src/app/services/intelligence/shopMapRouting.ts` | Distance/ETA/route computation |
+| `src/app/services/intelligence/directoryAdapters.ts` | Supabase shop/insurer → ShopMapListing adapter |
+| `src/app/components/maps/ServiceCoverageMap.tsx` | Landing page map (separate from dashboard) |
+| `src/app/components/landing/CoverageMapDialog.tsx` | Full-screen coverage map modal |
+| `src/app/components/dashboard/CustomerMapWidget.tsx` | Customer home map widget |
+| `src/app/components/dashboard/ShopMapWidget.tsx` | Shop home map widget |
+| `src/app/components/dashboard/InsurerMapWidget.tsx` | Insurer home map widget |
+
+### Core Shell
+| File | Purpose |
+|------|---------|
+| `src/app/App.tsx` | Root component, appearance mode state |
+| `src/app/components/app/DashboardLayout.tsx` | Dashboard shell, header, sidebar |
+| `src/app/routers/DashboardRouter.tsx` | All view routing (shop-directory, liked-shops, etc.) |
+| `src/app/components/codelayer/HomeScreen.tsx` | Dashboard home (3 map widgets by userType) |
+| `src/styles/theme.css` | All `bd-glass-*` CSS design tokens |
+
+### Services
+| File | Purpose |
+|------|---------|
+| `src/app/services/auth/websiteIdentity.ts` | Provider-agnostic identity + session memory |
+| `src/app/services/networkProfiles.ts` | Directory inventory (shops + insurers from Supabase) |
+| `src/app/services/supabase/runtime.ts` | Canonical Supabase client |
+| `src/app/services/intelligence/marketIntelligence.ts` | Shop recommendation engine |
+
+---
+
+## 9. Development Commands
+
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Production build (must = 0 errors) |
+| `npx cspell lint "src/**/*.{ts,tsx}" --no-progress` | Spellcheck |
+| **Do NOT** `npx tsc --noEmit` | Resolves wrong package — use Vite diagnostics instead |
+
+---
+
+## 10. Known Technical Debt
+
+| Issue | Severity | Notes |
+|-------|----------|-------|
+| Supabase RLS `USING(true)` on 4 tables | HIGH | Production security gap |
+| No CI/CD pipeline | HIGH | Manual deploys only |
+| No test coverage | HIGH | Zero automated tests |
+| Bundle 783KB | MEDIUM | Already split; needs further lazy loading |
+| 2–14MB PNG assets | MEDIUM | Need WebP conversion |
+| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW | Prevents chunk separation |
+
+---
+
+## 11. Branch & Deployment
+
+- **Working branch:** `BidOnDent-Horizon-Beta`
+- **Stable/deploy branch:** `main` (Vercel auto-deploys from here)
+- **Supabase project:** `wmdcnjgtsppftrofaqqa`
+- **Canonical edge function:** `server` (legacy alias: `make-server-9f243523`)
+- **Storage buckets:** `bidondent-account-media`, `bidondent-vehicle-media`, `bidondent-report-media`
+
+---
+
+## 12. Pass Format (Required for Every Pass)
+
+```
+### Pass N — [Title] (YYYY-MM-DD)
+
+1. Pass chosen and why: [1-2 sentences]
+2. What changed: [bullet list]
+3. Files touched: [list]
+4. Validation: Build [time/errors]. Diagnostics [count]. Mobile/Desktop [status].
+5. What this unlocks: [next capabilities]
+6. Best next pass: [specific recommendation]
+```
+
+---
+
+## 13. Docs That Reference This File
+
+All other AI docs in this repo point to this file as the master context. The following are historical/specialized and should be consulted for deep context on specific areas:
+
+| Doc | Use When |
+|-----|----------|
+| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` | Need full pass history (passes 1–285) |
+| `docs/BIDONDENT_FINISHING_MASTER_PLAN.md` | Need the product completion roadmap |
+| `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` | Need map design law and strategic intent |
+| `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` | Need map delivery reality tracker |
+| `docs/BIDONDENT_PRODUCT_BRAIN.md` | Need full product strategy framework |
+| `.github/copilot-instructions.md` | Need architecture rules + pass output format |
+| `docs/GETTING_STARTED.md` | New developer environment setup |
+| `docs/SUPABASE_SETUP_GUIDE.md` | Supabase project configuration |
+
+**Retired (superseded by this doc):**
+- `docs/AI_HANDOFF_PROMPT.md` — replaced by this file
+- `docs/AI_DESIGN_HANDOFF_PROMPT.md` — replaced by this file
+- `docs/AI_LIQUID_GLASS_HANDOFF_PROMPT.md` — work is complete (passes 236-242 done)
+- `docs/AI_DASHBOARD_WORK_PROMPT.md` — replaced by this file
+- `docs/AI_BACKEND_TASK_PROMPT.md` — replaced by this file
+- `docs/DUAL_AI_COORDINATION_PROMPT.md` — no longer running dual agents
+
+---
+
+*Updated each session. Next AI: read this, then `.github/copilot-instructions.md`, then start the highest-priority item from Section 6.*

@@ -1,5 +1,7 @@
 # BidOnDent — Liquid Glass UI Refinement & QA Handoff Prompt
 
+> **SUPERSEDED** — All 7 passes in this doc are complete (passes 236-242). The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md).
+
 **Date:** March 26, 2026 (Updated — Passes 1–7 COMPLETE)
 **Branch:** `BidOnDent-Horizon-Beta` (working), `main` (stable default)
 **Repository:** MolandJesus/BidOnDent-Production
