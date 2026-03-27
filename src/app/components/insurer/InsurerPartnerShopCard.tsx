@@ -1,5 +1,6 @@
 import { Award, CheckCircle, Compass, Mail, MapPin, Phone, Shield, TrendingUp } from "lucide-react";
 import { toggleRoleCollectionShopId } from "../../services/intelligence/shopMapExperience";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type MappedPartnerShop = {
   id: number;
@@ -34,6 +35,7 @@ type InsurerPartnerShopCardProps = {
   primaryColor: string;
   onDirections: (entry: MappedPartnerShop) => void;
   onToggleShortlist: (updater: (ids: number[]) => number[]) => void;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export type { MappedPartnerShop };
@@ -43,7 +45,9 @@ export default function InsurerPartnerShopCard({
   primaryColor,
   onDirections,
   onToggleShortlist,
+  appearanceMode = "map-dark",
 }: InsurerPartnerShopCardProps) {
+  const isLight = appearanceMode === "light";
   const statusColorMap: Record<string, string> = {
     active: "border-green-400/30 bg-green-400/10 text-green-300",
     pending: "border-yellow-400/30 bg-yellow-400/10 text-yellow-300",
@@ -70,7 +74,7 @@ export default function InsurerPartnerShopCard({
         <div className="mb-2 flex items-start justify-between gap-3">
           <div className="flex-1">
             <div className="mb-1 flex flex-wrap items-center gap-2">
-              <h3 className="text-lg font-bold text-slate-100">{entry.name}</h3>
+              <h3 className={`text-lg font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>{entry.name}</h3>
               {entry.certified && (
                 <span className="flex items-center gap-1 rounded-full border border-green-400/30 bg-green-400/10 px-2 py-0.5 text-xs font-medium text-green-300">
                   <CheckCircle className="h-3 w-3" />
@@ -81,66 +85,68 @@ export default function InsurerPartnerShopCard({
                 {entry.status.toUpperCase()}
               </span>
             </div>
-            <div className="flex items-center text-sm text-slate-300/70">
+            <div className={`flex items-center text-sm ${isLight ? "text-slate-500" : "text-slate-300/70"}`}>
               <span className="mr-1 text-amber-400">★</span>
-              <span className="font-medium text-slate-100">{entry.rating}</span>
+              <span className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>{entry.rating}</span>
               <span className="mx-1">•</span>
               <span>{entry.reviews} reviews</span>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-blue-400/30 bg-blue-500/20 px-3 py-2 text-center">
-            <p className="text-[11px] uppercase tracking-[0.16em] text-blue-200/60">Carrier Fit</p>
-            <p className="text-lg font-semibold text-slate-100">{entry.insuranceCompatibilityScore}%</p>
+          <div className={`rounded-2xl border px-3 py-2 text-center ${
+            isLight ? "border-blue-400/40 bg-blue-50" : "border-blue-400/30 bg-blue-500/20"
+          }`}>
+            <p className={`text-[11px] uppercase tracking-[0.16em] ${isLight ? "text-blue-500" : "text-blue-200/60"}`}>Carrier Fit</p>
+            <p className={`text-lg font-semibold ${isLight ? "text-blue-700" : "text-slate-100"}`}>{entry.insuranceCompatibilityScore}%</p>
           </div>
         </div>
 
-        <div className="space-y-1 text-sm text-slate-300/70">
+        <div className={`space-y-1 text-sm ${isLight ? "text-slate-600" : "text-slate-300/70"}`}>
           <div className="flex items-center">
-            <MapPin className="mr-2 h-4 w-4 text-blue-200/50" />
+            <MapPin className={`mr-2 h-4 w-4 ${isLight ? "text-slate-400" : "text-blue-200/50"}`} />
             <span>
               {entry.mapResult.address}, {entry.mapResult.city}, {entry.mapResult.state}{" "}
-              <div className="ml-6 flex items-center text-slate-400/70">Best route context ready</div>
+              <div className={`ml-6 flex items-center ${isLight ? "text-slate-400" : "text-slate-400/70"}`}>Best route context ready</div>
             </span>
           </div>
-          <div className="ml-6 flex items-center text-slate-400/70">{entry.mapDistanceLabel} away</div>
+          <div className={`ml-6 flex items-center ${isLight ? "text-slate-400" : "text-slate-400/70"}`}>{entry.mapDistanceLabel} away</div>
         </div>
       </div>
 
-      <div className="bg-white/[0.03] p-4">
+      <div className={`p-4 ${isLight ? "bg-slate-50/80" : "bg-white/[0.03]"}`}>
         <div className="mb-3 grid grid-cols-2 gap-3">
           <div>
-            <p className="text-xs text-blue-200/50">Pipeline State</p>
-            <p className="text-sm font-medium text-slate-100">
+            <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/50"}`}>Pipeline State</p>
+            <p className={`text-sm font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>
               {entry.shortlisted ? "Shortlisted partner" : "Evaluation candidate"}
             </p>
           </div>
           <div>
-            <p className="text-xs text-blue-200/50">Completed Jobs</p>
-            <p className="text-sm font-medium text-slate-100">{entry.completedJobs}</p>
+            <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/50"}`}>Completed Jobs</p>
+            <p className={`text-sm font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>{entry.completedJobs}</p>
           </div>
           <div>
-            <p className="text-xs text-blue-200/50">Active Jobs</p>
+            <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/50"}`}>Active Jobs</p>
             <p className="text-sm font-medium" style={{ color: primaryColor }}>
               {entry.activeJobs}
             </p>
           </div>
           <div>
-            <p className="text-xs text-blue-200/50">Avg Completion</p>
-            <p className="text-sm font-medium text-slate-100">{entry.avgCompletionDays} days</p>
+            <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/50"}`}>Avg Completion</p>
+            <p className={`text-sm font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>{entry.avgCompletionDays} days</p>
           </div>
         </div>
 
         <div className="mb-3 rounded-2xl bd-glass-card p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-blue-200/50">Average Cost</p>
+              <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/50"}`}>Average Cost</p>
               <p className="text-lg font-bold" style={{ color: primaryColor }}>
                 ${entry.averagePriceValue.toLocaleString()}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-blue-200/50">Network Trend</p>
+              <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/50"}`}>Network Trend</p>
               <div className="flex items-center gap-1 text-green-400">
                 <TrendingUp className="h-4 w-4" />
                 <span className="text-sm font-medium">

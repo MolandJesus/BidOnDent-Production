@@ -1,23 +1,30 @@
 import { Compass, Mail, MapPin, Phone } from "lucide-react";
 import type { CustomProspect } from "./insurerPartnerShopsUtils";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ManualProspectCardProps = {
   prospect: CustomProspect;
   onDirections: (prospect: CustomProspect) => void;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
-export default function ManualProspectCard({ prospect, onDirections }: ManualProspectCardProps) {
+export default function ManualProspectCard({
+  prospect,
+  onDirections,
+  appearanceMode = "map-dark",
+}: ManualProspectCardProps) {
+  const isLight = appearanceMode === "light";
   return (
     <article className="overflow-hidden bd-glass-card">
-      <div className="border-b border-blue-200/30 p-4">
+      <div className={`border-b p-4 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}>
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold text-slate-100">{prospect.name}</h3>
+          <h3 className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>{prospect.name}</h3>
           <span className="rounded-full border border-amber-400/30 bg-amber-400/15 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-300">
             Manual lead
           </span>
         </div>
-        <div className="mt-2 flex items-center gap-2 text-sm text-slate-300/70">
-          <MapPin className="h-4 w-4 text-blue-200/50" />
+        <div className={`mt-2 flex items-center gap-2 text-sm ${isLight ? "text-slate-600" : "text-slate-300/70"}`}>
+          <MapPin className={`h-4 w-4 ${isLight ? "text-slate-400" : "text-blue-200/50"}`} />
           {prospect.address}, {prospect.city}, {prospect.state} {prospect.zip}
         </div>
       </div>

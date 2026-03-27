@@ -183,6 +183,7 @@ export default function InsurerClaimsScreen({
               key={claim.id}
               claim={claim}
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               onOpenApproval={handleOpenApproval}
             />
           ))

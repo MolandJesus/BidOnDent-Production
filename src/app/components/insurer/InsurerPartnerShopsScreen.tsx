@@ -277,6 +277,7 @@ export default function InsurerPartnerShopsScreen({
               <ManualProspectCard
                 key={entry.id}
                 prospect={entry}
+                appearanceMode={appearanceMode}
                 onDirections={openManualProspectDirections}
               />
             );
@@ -287,6 +288,7 @@ export default function InsurerPartnerShopsScreen({
               key={entry.id}
               entry={entry}
               primaryColor={primaryColor}
+              appearanceMode={appearanceMode}
               onDirections={openMappedShopDirections}
               onToggleShortlist={setShortlistIds}
             />
