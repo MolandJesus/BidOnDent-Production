@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Heart, MapPin, Phone, Search, Shield, Star } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import {
   loadWebsiteSessionMemory,
@@ -15,6 +16,7 @@ type LikedShopsScreenProps = {
   primaryColor?: string;
   secondaryColor?: string;
   identity?: WebsiteIdentity | null;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export default function LikedShopsScreen({
@@ -23,7 +25,9 @@ export default function LikedShopsScreen({
   primaryColor = "#003d82",
   secondaryColor = "#00a0e9",
   identity,
+  appearanceMode = "map-dark",
 }: LikedShopsScreenProps) {
+  const isLight = appearanceMode === "light";
   const { inventory } = useNetworkDirectory();
   const memory = loadWebsiteSessionMemory(identity);
   const [savedShopIds, setSavedShopIds] = useState<number[]>(
@@ -118,10 +122,20 @@ export default function LikedShopsScreen({
 
       <div className="px-4 py-4">
         {savedListings.length === 0 ? (
-          <div className="rounded-[28px] bd-glass-card p-5 sm:p-8 text-center">
-            <Heart className="mx-auto mb-4 h-16 w-16 text-blue-400/70" />
-            <h3 className="text-xl font-semibold text-slate-100">No saved shops yet</h3>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-300/80">
+          <div
+            className={`rounded-[28px] p-5 sm:p-8 text-center ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+          >
+            <Heart
+              className={`mx-auto mb-4 h-16 w-16 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
+            />
+            <h3
+              className={`text-xl font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+            >
+              No saved shops yet
+            </h3>
+            <p
+              className={`mx-auto mt-2 max-w-xl text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}
+            >
               Save shops from the Smart Shop Map to keep a customer shortlist for bids, follow-up,
               and future repair decisions.
             </p>
@@ -138,9 +152,14 @@ export default function LikedShopsScreen({
         ) : (
           <div className="space-y-4">
             {filteredListings.map((shop) => (
-              <article key={shop.id} className="overflow-hidden rounded-[28px] bd-glass-card">
+              <article
+                key={shop.id}
+                className={`overflow-hidden rounded-[28px] ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+              >
                 <div className="flex flex-col gap-4 p-4 md:flex-row md:p-5">
-                  <div className="h-36 w-full overflow-hidden rounded-[22px] bg-white/[0.08] md:h-auto md:w-44 md:flex-shrink-0">
+                  <div
+                    className={`h-36 w-full overflow-hidden rounded-[22px] md:h-auto md:w-44 md:flex-shrink-0 ${isLight ? "bg-slate-100/80" : "bg-white/[0.08]"}`}
+                  >
                     <ImageWithFallback
                       src={shop.image}
                       alt={shop.name}
@@ -152,25 +171,41 @@ export default function LikedShopsScreen({
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-xl font-semibold text-slate-100">{shop.name}</h3>
+                          <h3
+                            className={`text-xl font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                          >
+                            {shop.name}
+                          </h3>
                           {shop.topPick && (
-                            <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-200">
+                            <span
+                              className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${isLight ? "border-blue-400/40 bg-blue-100 text-blue-700" : "border-blue-400/30 bg-blue-400/15 text-blue-200"}`}
+                            >
                               Top fit
                             </span>
                           )}
                         </div>
-                        <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-300/70">
+                        <div
+                          className={`mt-2 flex flex-wrap items-center gap-3 text-sm ${isLight ? "text-slate-500" : "text-slate-300/70"}`}
+                        >
                           <span className="inline-flex items-center gap-1">
                             <Star className="h-4 w-4 text-amber-400" fill="#fbbf24" />
-                            <span className="font-semibold text-slate-100">{shop.rating}</span>
+                            <span
+                              className={`font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                            >
+                              {shop.rating}
+                            </span>
                             <span>({shop.reviews})</span>
                           </span>
                           <span className="inline-flex items-center gap-1">
-                            <MapPin className="h-4 w-4 text-blue-200/50" />
+                            <MapPin
+                              className={`h-4 w-4 ${isLight ? "text-blue-500/60" : "text-blue-200/50"}`}
+                            />
                             {shop.mapDistanceLabel}
                           </span>
                           <span className="inline-flex items-center gap-1">
-                            <Shield className="h-4 w-4 text-blue-200/50" />
+                            <Shield
+                              className={`h-4 w-4 ${isLight ? "text-blue-500/60" : "text-blue-200/50"}`}
+                            />
                             {shop.insuranceCompatibilityScore}% carrier fit
                           </span>
                         </div>
@@ -185,28 +220,52 @@ export default function LikedShopsScreen({
                       </button>
                     </div>
 
-                    <p className="mt-3 text-sm leading-6 text-slate-300/80">{shop.aiSummary}</p>
+                    <p
+                      className={`mt-3 text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}
+                    >
+                      {shop.aiSummary}
+                    </p>
 
                     <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-blue-200/50">AI Fit</p>
-                        <p className="text-lg font-semibold text-slate-100">
+                      <div
+                        className={`rounded-2xl border px-3 py-2 ${isLight ? "border-blue-200 bg-blue-50" : "border-white/[0.06] bg-white/[0.05]"}`}
+                      >
+                        <p
+                          className={`text-xs uppercase tracking-[0.16em] ${isLight ? "text-blue-600/70" : "text-blue-200/50"}`}
+                        >
+                          AI Fit
+                        </p>
+                        <p
+                          className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                        >
                           {shop.recommendationScore}%
                         </p>
                       </div>
-                      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-blue-200/50">
+                      <div
+                        className={`rounded-2xl border px-3 py-2 ${isLight ? "border-blue-200 bg-blue-50" : "border-white/[0.06] bg-white/[0.05]"}`}
+                      >
+                        <p
+                          className={`text-xs uppercase tracking-[0.16em] ${isLight ? "text-blue-600/70" : "text-blue-200/50"}`}
+                        >
                           Avg ticket
                         </p>
-                        <p className="text-lg font-semibold text-slate-100">
+                        <p
+                          className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                        >
                           {shop.averagePriceLabel}
                         </p>
                       </div>
-                      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.05] px-3 py-2">
-                        <p className="text-xs uppercase tracking-[0.16em] text-blue-200/50">
+                      <div
+                        className={`rounded-2xl border px-3 py-2 ${isLight ? "border-blue-200 bg-blue-50" : "border-white/[0.06] bg-white/[0.05]"}`}
+                      >
+                        <p
+                          className={`text-xs uppercase tracking-[0.16em] ${isLight ? "text-blue-600/70" : "text-blue-200/50"}`}
+                        >
                           Response
                         </p>
-                        <p className="text-lg font-semibold text-slate-100">
+                        <p
+                          className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                        >
                           {shop.responseTimeLabel}
                         </p>
                       </div>
@@ -216,7 +275,7 @@ export default function LikedShopsScreen({
                       {shop.specialties.slice(0, 4).map((specialty) => (
                         <span
                           key={specialty}
-                          className="rounded-full bg-blue-400/15 px-2.5 py-1 text-xs font-medium text-blue-200"
+                          className={`rounded-full px-2.5 py-1 text-xs font-medium ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-400/15 text-blue-200"}`}
                         >
                           {specialty}
                         </span>

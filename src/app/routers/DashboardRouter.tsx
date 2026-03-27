@@ -426,6 +426,7 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   secondaryColor={secondaryColor}
                   identity={websiteIdentity}
+                  appearanceMode={appearanceMode}
                 />
               </motion.div>
             )}
