@@ -163,7 +163,9 @@ export default function NavigationBrowseDiscoveryPanel({
           </div>
         </div>
         {activeSearchTarget ? (
-          <div className={cn("flex flex-wrap gap-3 text-xs font-medium", theme.secondaryTextClassName)}>
+          <div
+            className={cn("flex flex-wrap gap-3 text-xs font-medium", theme.secondaryTextClassName)}
+          >
             <span>{nearbyShops.length} partner shops</span>
             <span>{discoveryPlaces.length} live places</span>
           </div>

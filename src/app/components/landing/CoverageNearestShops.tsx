@@ -56,7 +56,9 @@ export default function CoverageNearestShops({
 
         <div className="flex flex-wrap items-center gap-2">
           {activeSearchTarget ? (
-            <span className={cn("text-xs font-medium", theme.secondaryTextClassName)}>{radiusMiles}-mile search window</span>
+            <span className={cn("text-xs font-medium", theme.secondaryTextClassName)}>
+              {radiusMiles}-mile search window
+            </span>
           ) : null}
           {activeSearchTarget ? (
             <div className={theme.segmentedClassName}>
