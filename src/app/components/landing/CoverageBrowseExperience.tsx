@@ -370,7 +370,14 @@ export default function CoverageBrowseExperience({
 
         {isDesktop ? (
           <div className="pointer-events-none absolute inset-y-6 left-6 z-[610] hidden w-[380px] xl:block 2xl:left-8 2xl:w-[410px]">
-            <div className="pointer-events-auto h-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-transparent backdrop-blur-sm">
+            <div
+              className={cn(
+                "pointer-events-auto h-full overflow-hidden rounded-[1.5rem] border backdrop-blur-2xl",
+                tone === "dark"
+                  ? "border-white/10 bg-slate-950/55 shadow-[0_24px_64px_rgba(2,6,23,0.4)]"
+                  : "border-blue-100/50 bg-white/50 shadow-[0_24px_64px_rgba(15,23,42,0.12)]"
+              )}
+            >
               <CoverageCommandCenterSidebar
                 tone={tone}
                 dock="left"
