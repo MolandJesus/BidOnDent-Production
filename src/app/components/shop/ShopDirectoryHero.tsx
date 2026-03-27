@@ -19,7 +19,6 @@ type ShopDirectoryHeroProps = {
   contextChips: string[];
   identity?: WebsiteIdentity | null;
   sessionIntelligenceOpen: boolean;
-  userType: string;
   onBack: () => void;
   onToggleIntelligence: () => void;
   RoleIcon: React.ElementType;
@@ -35,7 +34,6 @@ export default function ShopDirectoryHero({
   contextChips,
   identity,
   sessionIntelligenceOpen,
-  userType,
   onBack,
   onToggleIntelligence,
   RoleIcon,
@@ -47,6 +45,7 @@ export default function ShopDirectoryHero({
           <button
             className="bd-glass-control inline-flex h-10 w-10 items-center justify-center"
             onClick={onBack}
+            type="button"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
@@ -75,6 +74,7 @@ export default function ShopDirectoryHero({
             <button
               className="bd-glass-control inline-flex h-11 w-11 items-center justify-center"
               onClick={onBack}
+              type="button"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
@@ -91,9 +91,7 @@ export default function ShopDirectoryHero({
               Smart Shop Map
             </h1>
             <p className="mt-2 max-w-3xl text-base leading-7 text-bd-blue-200">
-              {roleHighlights.description} This is now a dedicated map-first shell for the signed-in{" "}
-              {userType} experience, while the recommendation intelligence and identity/session
-              plumbing stay intact underneath it.
+              {roleHighlights.description}
             </p>
           </div>
 

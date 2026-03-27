@@ -238,7 +238,6 @@ export default function ShopDirectoryScreen({
         sessionIntelligenceOpen={session.sessionIntelligenceOpen}
         showMapPane={session.showMapPane}
         summary={session.summary}
-        userType={userType}
       />
 
       {/* Deviation prompt: only rendered outside map on list mode */}
