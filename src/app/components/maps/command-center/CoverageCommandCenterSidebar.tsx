@@ -51,11 +51,11 @@ export default function CoverageCommandCenterSidebar({
   return (
     <aside
       className={cn(
-        "border-t border-white/10 p-2.5 sm:p-3.5 xl:border-t-0",
+        "flex h-full flex-col border-t border-white/10 p-2.5 sm:p-3.5 xl:border-t-0",
         dock === "left" ? "xl:border-r" : "xl:border-l"
       )}
     >
-      <div className="max-h-[76vh] space-y-3 overflow-y-auto pr-0.5 sm:max-h-[80vh]">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-0.5">
         {showOverviewCards ? (
           <div
             className={cn(
