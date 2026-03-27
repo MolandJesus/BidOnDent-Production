@@ -55,10 +55,10 @@ export default function ShopDirectoryHero({
             <RoleIcon className="h-4 w-4" />
             {roleHighlights.badge}
           </span>
-          <h1 className="text-lg font-semibold tracking-tight text-bd-blue-900">Smart Shop Map</h1>
+          <h1 className="text-lg font-semibold tracking-tight text-slate-100">Smart Shop Map</h1>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-bd-blue-300">
+          <span className="text-sm text-blue-200/50">
             {mapListingsCount} shop{mapListingsCount === 1 ? "" : "s"}
           </span>
         </div>
@@ -87,10 +87,10 @@ export default function ShopDirectoryHero({
           </div>
 
           <div className="mt-4">
-            <h1 className="text-3xl font-semibold tracking-tight text-bd-blue-900 md:text-[2.35rem]">
+            <h1 className="text-3xl font-semibold tracking-tight text-slate-100 md:text-[2.35rem]">
               Smart Shop Map
             </h1>
-            <p className="mt-2 max-w-3xl text-base leading-7 text-bd-blue-200">
+            <p className="mt-2 max-w-3xl text-base leading-7 text-slate-300/80">
               {roleHighlights.description}
             </p>
           </div>
@@ -98,10 +98,10 @@ export default function ShopDirectoryHero({
           <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-2">
             {roleHighlights.metrics.map((metric) => (
               <div key={metric.label} className="bd-glass-card px-4 py-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-bd-blue-300">
+                <p className="text-xs uppercase tracking-[0.18em] text-blue-200/50">
                   {metric.label}
                 </p>
-                <p className="mt-2 text-2xl font-semibold text-bd-blue-900">{metric.value}</p>
+                <p className="mt-2 text-2xl font-semibold text-slate-100">{metric.value}</p>
               </div>
             ))}
           </div>
@@ -118,16 +118,16 @@ export default function ShopDirectoryHero({
 
         <div className="grid gap-3 xl:w-[420px]">
           <div className="bd-glass-card p-4">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-bd-blue-400">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
               <Sparkles className="h-4 w-4" />
               Map intelligence active
             </div>
-            <p className="mt-3 text-lg font-semibold text-bd-blue-900">{roleHighlights.title}</p>
+            <p className="mt-3 text-lg font-semibold text-slate-100">{roleHighlights.title}</p>
             <div className="mt-3 space-y-2">
               {roleHighlights.callouts.map((callout) => (
                 <div
                   key={callout}
-                  className="bd-glass-panel px-3 py-2 text-sm leading-6 text-bd-blue-200"
+                  className="bd-glass-panel px-3 py-2 text-sm leading-6 text-slate-300/80"
                 >
                   {callout}
                 </div>
@@ -136,11 +136,11 @@ export default function ShopDirectoryHero({
           </div>
 
           <div className="bd-glass-card p-4">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-bd-blue-300">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-blue-200/50">
               <TrendingUp className="h-4 w-4" />
               Current ranking explanation
             </div>
-            <p className="mt-3 text-sm leading-6 text-bd-blue-200">{summary.description}</p>
+            <p className="mt-3 text-sm leading-6 text-slate-300/80">{summary.description}</p>
           </div>
         </div>
       </div>
