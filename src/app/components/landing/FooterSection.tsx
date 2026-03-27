@@ -16,7 +16,7 @@ export default function FooterSection({
 
   return (
     <footer
-      className={`pt-12 sm:pt-16 pb-10 sm:pb-12 relative overflow-hidden ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/70"}`}
+      className="pt-12 sm:pt-16 pb-10 sm:pb-12 relative overflow-hidden text-blue-100/70"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #0a1832 0%, #081430 50%, #060e24 100%)"
@@ -46,9 +46,7 @@ export default function FooterSection({
           className={`grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <div className="col-span-2 md:col-span-1">
-            <div
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex ${isLightAppearance ? "bg-white/[0.07] border border-white/[0.1]" : "bg-white/[0.07] border border-white/[0.1]"}`}
-            >
+            <div className="flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex bg-white/[0.07] border border-white/[0.1]">
               <span
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
                 style={{
@@ -69,14 +67,10 @@ export default function FooterSection({
                   Bid
                 </span>
                 <span style={{ color: "#70c0ee" }}>On</span>
-                <span className={isLightAppearance ? "text-blue-100/80" : "text-blue-100/80"}>
-                  Dent
-                </span>
+                <span className="text-blue-100/80">Dent</span>
               </h3>
             </div>
-            <p
-              className={`text-sm leading-relaxed ${isLightAppearance ? "text-blue-100/55 mb-4" : "text-blue-100/55 mb-4"}`}
-            >
+            <p className="text-sm leading-relaxed text-blue-100/55 mb-4">
               The smart way to handle auto repairs. Connect with trusted shops, compare bids, and
               get your car fixed with confidence.
             </p>

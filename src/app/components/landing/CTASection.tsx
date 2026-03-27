@@ -83,9 +83,7 @@ export default function CTASection({
           <div
             className={`mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
-            <span
-              className={`inline-flex items-center px-4 py-2 rounded-full text-sm md:text-base font-semibold ${isLightAppearance ? "bd-glass-badge" : "bd-glass-badge"}`}
-            >
+            <span className="inline-flex items-center px-4 py-2 rounded-full text-sm md:text-base font-semibold bd-glass-badge">
               <Sparkles className="w-4 h-4 mr-2" />
               Start Your Repair Journey
             </span>
@@ -139,7 +137,7 @@ export default function CTASection({
           </div>
 
           <p
-            className={`mt-6 text-sm sm:text-base transition-all duration-700 ${isLightAppearance ? "text-blue-100/55" : "text-blue-100/55"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+            className={`mt-6 text-sm sm:text-base transition-all duration-700 text-blue-100/55 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
             style={{ transitionDelay: "0.6s" }}
           >
             Free to use &bull; No obligation &bull; Get quotes in minutes

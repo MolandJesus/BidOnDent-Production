@@ -153,7 +153,7 @@ export default function HeroSection({
                     ? "rgba(96,165,250,0.22)"
                     : "rgba(96,165,250,0.25)",
                   background: isLightAppearance ? "rgba(59,130,246,0.08)" : "rgba(59,130,246,0.1)",
-                  color: isLightAppearance ? "#bfdbfe" : "#bfdbfe",
+                  color: "#bfdbfe",
                 }}
               >
                 <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse" />
@@ -302,7 +302,7 @@ export default function HeroSection({
                 <ImageWithFallback
                   src={heroImage}
                   alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
-                  className={`relative rounded-2xl w-full h-auto object-cover border ${isLightAppearance ? "border-blue-300/15" : "border-blue-300/15"}`}
+                  className="relative rounded-2xl w-full h-auto object-cover border border-blue-300/15"
                   style={{
                     boxShadow: isLightAppearance
                       ? "0 24px 80px rgba(4, 10, 24, 0.45), 0 0 50px rgba(37, 99, 235, 0.10)"
@@ -332,11 +332,7 @@ export default function HeroSection({
                   : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
               }}
             >
-              <div
-                className={`text-lg sm:text-xl font-bold ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-              >
-                NY
-              </div>
+              <div className="text-lg sm:text-xl font-bold text-blue-400">NY</div>
               <div
                 className={`text-[10px] sm:text-xs font-medium ${isLightAppearance ? "text-blue-200/65" : "text-blue-200/60"}`}
               >

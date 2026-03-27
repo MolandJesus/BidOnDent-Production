@@ -106,9 +106,7 @@ export default function AboutOpportunitySection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8 text-blue-200 backdrop-blur-sm" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
-            <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-400" : "bg-blue-400"}`}
-            />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             About BidOnDent
           </span>
           <h3
@@ -194,7 +192,7 @@ export default function AboutOpportunitySection({
         <div className="mt-10 text-center">
           <a
             href="#/about"
-            className={`inline-flex items-center justify-center font-semibold px-6 py-3 rounded-xl transition-all duration-300 text-sm sm:text-base ${isLightAppearance ? "border border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/40 backdrop-blur-sm" : "border border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/40 backdrop-blur-sm"}`}
+            className="inline-flex items-center justify-center font-semibold px-6 py-3 rounded-xl transition-all duration-300 text-sm sm:text-base border border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/40 backdrop-blur-sm"
           >
             Read Full About Overview
           </a>

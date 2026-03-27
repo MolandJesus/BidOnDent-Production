@@ -150,9 +150,7 @@ export default function WhoWeServeSection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8 text-blue-200" : "border border-blue-400/20 bg-blue-500/10 text-blue-200"}`}
           >
-            <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-400" : "bg-blue-400"}`}
-            />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Everyone Wins
           </span>
         </div>
@@ -233,9 +231,7 @@ export default function WhoWeServeSection({
               key={badge.text}
               className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8" : "border border-blue-400/25 bg-blue-500/10"}`}
             >
-              <CheckCircle2
-                className={`w-3.5 h-3.5 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-              />
+              <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />
               <span
                 className={`text-xs font-semibold ${isLightAppearance ? "text-blue-200/75" : "text-blue-200/70"}`}
               >

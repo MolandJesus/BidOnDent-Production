@@ -17,7 +17,7 @@ export default function BusinessInquiryShopForm({
   onUpdate,
   onSubmit,
 }: BusinessInquiryShopFormProps) {
-  const labelCls = `block text-sm font-medium mb-1 ${isLightAppearance ? "text-blue-100/85" : "text-blue-100/85"}`;
+  const labelCls = "block text-sm font-medium mb-1 text-blue-100/85";
   const inputCls = `w-full h-11 px-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-blue-300/22 bg-slate-900/18 text-slate-100 placeholder:text-blue-100/35 focus:ring-blue-200/35 focus:border-blue-300" : "border-blue-300/25 bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:ring-blue-200/40 focus:border-blue-300"}`;
 
   return (
@@ -130,7 +130,7 @@ export default function BusinessInquiryShopForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all disabled:opacity-60 ${isLightAppearance ? "bd-glass-control" : "bd-glass-control"}`}
+          className="w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all disabled:opacity-60 bd-glass-control"
         >
           Submit Shop Application
           <Send className="w-4 h-4" />

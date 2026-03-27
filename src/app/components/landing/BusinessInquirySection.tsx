@@ -313,7 +313,7 @@ export default function BusinessInquirySection({
                     setFormOpen(false);
                     setSubmitMessage("");
                   }}
-                  className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${isLightAppearance ? "text-blue-100/60 hover:text-blue-100" : "text-blue-100/60 hover:text-blue-100"}`}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium transition-colors text-blue-100/60 hover:text-blue-100"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Back

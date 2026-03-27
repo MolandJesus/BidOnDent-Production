@@ -124,9 +124,7 @@ export default function HowItWorksSection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full border backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border-blue-400/22 bg-blue-500/8 text-blue-200" : "border-blue-400/25 bg-blue-500/10 text-blue-200"}`}
           >
-            <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-blue-400" : "bg-blue-400"}`}
-            />
+            <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Three Steps
           </span>
         </div>

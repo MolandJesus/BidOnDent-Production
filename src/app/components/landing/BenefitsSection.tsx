@@ -120,9 +120,7 @@ export default function BenefitsSection({
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-indigo-400/22 bg-indigo-500/8 text-indigo-200" : "border border-indigo-400/25 bg-indigo-500/10 text-indigo-200"}`}
           >
-            <span
-              className={`w-2 h-2 rounded-full mr-2 ${isLightAppearance ? "bg-indigo-400" : "bg-indigo-400"}`}
-            />
+            <span className="w-2 h-2 rounded-full mr-2 bg-indigo-400" />
             Built for Real Repairs
           </span>
         </div>
@@ -194,11 +192,7 @@ export default function BenefitsSection({
           <div
             className={`flex items-center gap-1.5 rounded-full px-4 py-2 ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8" : "border border-blue-400/25 bg-blue-500/10"}`}
           >
-            <span
-              className={`text-lg font-bold ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-            >
-              $0
-            </span>
+            <span className="text-lg font-bold text-blue-400">$0</span>
             <span
               className={`text-xs font-medium ${isLightAppearance ? "text-blue-200/75" : "text-blue-200/70"}`}
             >
@@ -208,11 +202,7 @@ export default function BenefitsSection({
           <div
             className={`flex items-center gap-1.5 rounded-full px-4 py-2 ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8" : "border border-blue-400/25 bg-blue-500/10"}`}
           >
-            <span
-              className={`text-lg font-bold ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-            >
-              3+
-            </span>
+            <span className="text-lg font-bold text-blue-400">3+</span>
             <span
               className={`text-xs font-medium ${isLightAppearance ? "text-blue-200/75" : "text-blue-200/70"}`}
             >
@@ -222,11 +212,7 @@ export default function BenefitsSection({
           <div
             className={`flex items-center gap-1.5 rounded-full px-4 py-2 ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8" : "border border-blue-400/25 bg-blue-500/10"}`}
           >
-            <span
-              className={`text-sm font-bold ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
-            >
-              NY
-            </span>
+            <span className="text-sm font-bold text-blue-400">NY</span>
             <span
               className={`text-xs font-medium ${isLightAppearance ? "text-blue-200/75" : "text-blue-200/70"}`}
             >
