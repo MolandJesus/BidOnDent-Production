@@ -1,687 +1,222 @@
-# 🚗 BidOnDent — Auto Repair Bidding Platform
+# BidOnDent
 
-> **The map-first marketplace connecting customers, body shops, and insurers.**
+> **Map-first auto repair bidding marketplace** connecting customers, body shops, and insurers.
 
-**Active branch:** `horizon/bidondent-map-final` — the final product branch. All future work continues here.
-
----
-
-## Quick Links
-
-| Resource | Path |
-| -------- | ---- |
-| **AI Master Context** | [`docs/CLAUDE_AI_MASTER_CONTEXT.md`](docs/CLAUDE_AI_MASTER_CONTEXT.md) — **start here every session** |
-| Build Progress | [`docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`](docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md) |
-| Map Master Plan | [`docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`](docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md) |
-| Product Brain | [`docs/BIDONDENT_PRODUCT_BRAIN.md`](docs/BIDONDENT_PRODUCT_BRAIN.md) |
-| Doc Governance | [`docs/README.md`](docs/README.md) |
-
-## Design Identity
-
-- **Map is the product** — everything floats above geography
-- **Blue system**: royal blue (identity/action), soft blue (atmosphere), navy (depth)
-- **Liquid glass**: warm, translucent, breathable overlays (`bd-glass-panel`, `bd-glass-card`)
-- **Premium + calm**: no harsh borders, no flat white cards, no cramped layouts
-
-## Build Status
-
-- **189 passes** completed (118% of original 160-pass plan)
-- **0 build errors**, **0 warnings**, **1.9s** build time
-- Vite + React + TypeScript + Supabase + Apple MapKit JS
+[![CI](https://github.com/MolandJesus/BidOnDent-Production/actions/workflows/ci.yml/badge.svg)](https://github.com/MolandJesus/BidOnDent-Production/actions/workflows/ci.yml)
 
 ---
 
-## 📖 What is BidOnDent?
+## Overview
 
-BidOnDent is a comprehensive web-based marketplace that revolutionizes the auto repair industry by creating a transparent, competitive bidding environment. The platform connects three distinct user groups—car owners needing repairs, auto body shops seeking business, and insurance companies managing claims—in a seamless, efficient ecosystem.
+BidOnDent is a web-based platform that creates a transparent, competitive bidding environment for auto repair. Customers submit damage reports, shops compete with real-time bids, and insurers manage claims — all through a map-driven interface.
 
-### 🎯 The Problem We Solve
+### Core Loop
 
-**For Customers:**
-
-- 🤷 Difficulty finding trustworthy repair shops
-- 💰 Uncertainty about fair pricing
-- 📱 Time-consuming process of calling multiple shops
-- 📋 No centralized way to track repair quotes
-
-**For Auto Body Shops:**
-
-- 📉 Inconsistent lead generation
-- 🎯 Difficulty reaching customers actively seeking repairs
-- 💼 Manual quote management processes
-- 🤝 Limited visibility to potential customers
-
-**For Insurance Companies:**
-
-- 🏢 Challenges maintaining preferred shop networks
-- 📊 Inefficient claim processing workflows
-- 🔍 Difficulty tracking repair progress
-- 🤝 Complex partner management
-
-### 💡 The BidOnDent Solution
-
-BidOnDent creates a streamlined digital marketplace where:
-
-1. **Customers** submit damage reports with photos in minutes
-2. **Shops** receive notifications and submit competitive bids instantly
-3. **Insurers** manage claims and partner networks efficiently
-4. Everyone benefits from **transparency**, **speed**, and **competitive pricing**
-
----
-
-## 🌟 Key Features at a Glance
-
-### Latest UI Updates (March 2026)
-
-- **Landing page glass unification (Pass 1)** — All primary marketing surfaces (HeroSection, header nav, BenefitsSection, CTASection, TrustStatsSection, HowItWorksSection, WhoWeServeSection, FooterSection) now use the BidOnDent glass design system; landing and dashboard feel like one product
-- **Unified glass design system** — Royal-blue glass tokens (`bd-glass-panel`, `bd-glass-card`, `bd-glass-badge`, `bd-glass-control`, `bd-glass-floating`) now govern all interactive surfaces across map, dashboard, and landing
-- **Navy dark mode** — Deep navy base (`#0c1929`) with blue-tinted glass, replacing generic gray-900
-- **Standardized hover language** — All interactive elements use `hover:bg-white/40` soft glow instead of ad-hoc `hover:bg-slate-50/100` patterns
-- **Apple Maps-quality map controls** — Zoom pill, segmented tile modes, glass-blur floating controls with hover lift
-- Modernized dashboard layout with tighter spacing and improved visual hierarchy
-- Redesigned bids experience with richer comparison cards and smoother animations
-- Refined 5-step report flow styling and progress behavior
-- Updated account screen to match the newer dashboard design system
-- Improved sidebar/top-right profile menu behavior and demo mode placement
-- Landing page CTA and logo treatment polished for a more app-like feel
-- Rebuilt the shop directory as a map-first discovery shell with a real interactive map
-- Added provider-agnostic website identity/session memory for map, insurer, and directory context
-- Connected customer saved shops, shop competitor watchlists, and insurer partner shortlists across their related screens
-- Added cloud-backed provider-agnostic website preference sync keyed by website user identity
-- Added provider-agnostic business profile persistence for shop and insurer onboarding
-- Added live directory inventory hydration so the map and insurer connection flows can merge persisted profiles with seeded fallback
-- Added durable provider-agnostic relationship records for saved shops, shop watchlists, insurer shortlists, and connected carriers
-
-### For Customers 👤
-
-**Damage Reporting Made Easy:**
-
-- **5-step guided workflow** - No confusion, just follow the steps
-- **Photo documentation** - Camera capture or file upload
-- **Vehicle management** - Store multiple vehicles for quick selection
-- **Instant bid comparison** - View all quotes side-by-side
-- **Shop discovery** - Browse local shops, save favorites
-- **Repair tracking** - Monitor status from quote to completion
-
-**User Experience Highlights:**
-
-- Auto-save drafts (never lose your progress)
-- Mobile-optimized camera capture
-- Visual progress indicators
-- One-click bid acceptance
-- Complete repair history
-
-### For Auto Body Shops 🏪
-
-**Efficient Lead Management:**
-
-- **Real-time request notifications** - Never miss an opportunity
-- **Quick bid submission** - Submit quotes in minutes
-- **Active job tracking** - Manage all ongoing repairs
-- **Profile customization** - Showcase specialties and certifications
-- **Service area definition** - Target your ideal customers
-
-**Business Tools:**
-
-- Live notification system (<500ms latency)
-- Visual indicators for new requests
-- Professional shop profile pages
-- Competitive bidding analytics
-- Customer communication tools
-
-### For Insurance Companies 🛡️
-
-**Streamlined Claim Management:**
-
-- **Partner shop network** - Add and manage preferred shops
-- **Claim creation workflow** - Digital claim filing
-- **Bid approval system** - Review and approve shop quotes
-- **Claims tracking** - Monitor all active claims
-- **Analytics dashboard** - Insights on costs and partnerships
-
-**Network Management:**
-
-- Browse and recruit new partner shops
-- Track partnership performance
-- Manage claim assignments
-- Monitor repair quality and costs
-
----
-
-## 🧭 Developer Quick Map
-
-**Project structure (most-used paths):**
-
-- `src/main.tsx` - App entry
-- `src/app/App.tsx` - Root app component
-- `src/app/components/` - Feature-based UI components
-- `src/app/components/admin/` - Admin tools
-- `src/app/components/auth/` - Auth flows and Clerk helpers
-- `src/app/components/demo/` - Demo mode UI
-- `src/app/components/devtools/` - Debug and storage tools
-- `src/app/components/insurer/` - Insurer screens
-- `src/app/components/landing/` - Landing page sections
-- `src/app/components/reports/` - Reports list/detail screens
-- `src/app/components/shop/` - Shop screens
-- `src/app/components/shop/ShopDirectoryScreen.tsx` - Map-first shop directory experience
-- `src/app/components/shop/ShopDirectoryMapPane.tsx` - Leaflet map pane
-- `src/app/components/codelayer/` - Legacy screens used by the dashboard router
-- `src/app/routers/` - Screen routing and view composition
-- `src/app/services/` - Supabase/Clerk and business logic
-- `src/app/services/auth/websiteIdentity.ts` - Provider-agnostic website identity and session memory
-- `src/app/services/networkProfiles.ts` - Provider-agnostic business profile and shared directory inventory client
-- `src/app/services/auth/websiteRelationshipsSync.ts` - Durable relationship sync for map collections and connected carriers
-- `src/app/services/intelligence/shopMapExperience.ts` - Map geo/search adapter
-- `src/app/hooks/` - Shared app effects/handlers and state hooks
-- `src/assets/` - Images used by UI components
-
-**Configuration keys:**
-
-- Update `clerkPublishableKey` in `utils/clerk/info.tsx`.
-- Update `projectId` and `publicAnonKey` in `utils/supabase/info.tsx`.
-- Canonical frontend Supabase runtime now lives in `src/app/services/supabase/runtime.ts`.
-- Canonical edge function slug is `server`; `make-server-9f243523` is kept deployed as a legacy alias only.
-- Canonical website storage buckets are:
-  - `bidondent-account-media`
-  - `bidondent-vehicle-media`
-  - `bidondent-report-media`
-- Legacy buckets `bidondent-profiles`, `bidondent-vehicles`, and `bidondent-damage-photos` remain only for previously uploaded data until migration is complete.
-- Keep operator-only Supabase CLI credentials in local `.env` only:
-  `SUPABASE_ACCESS_TOKEN` and, when needed for direct DB work, `SUPABASE_DB_URL` or `SUPABASE_DB_PASSWORD`.
-  `.env` and all `.env.*` variants are gitignored and must never be committed or copied into tracked docs/source files.
-
-**Data persistence:**
-
-- Supabase is the source of truth for profiles, vehicles, reports, and photo URLs.
-- localStorage is cache-only and scoped per user for faster initial loads.
-- website session memory also stores map/origin/search preferences per website user key.
-- shop and insurer onboarding now persist provider-agnostic business directory profiles keyed by website user identity.
-- saved shops, competitor watchlists, insurer shortlists, and connected carriers now also mirror into durable cloud relationship rows.
-- Report drafts are stored locally and do not sync across devices.
-
----
-
-## 🔐 Account System & Demo Mode
+```
+Report damage → See shops on map → Receive bids → Accept best offer → Track repair
+```
 
 ### Three Account Types
 
-**1. Customer Account**
-
-```
-Sign Up → Select "I need repairs" → Access Customer Dashboard
-- Report damage
-- Manage vehicles
-- View and compare bids
-- Track repair status
-- Browse shop directory
-```
-
-**2. Shop Account**
-
-```
-Sign Up → Select "I'm a repair shop" → Access Shop Dashboard
-- View repair requests
-- Submit competitive bids
-- Manage active jobs
-- Update shop profile
-- Real-time notifications
-```
-
-**3. Insurer Account**
-
-```
-Sign Up → Select "I'm an insurer" → Access Insurer Dashboard
-- Manage partner shops
-- Create insurance claims
-- Approve bids
-- Track claim progress
-- View analytics
-```
-
-### 🎨 Innovative Demo Mode
-
-**Experience all account types without multiple signups:**
-
-One of BidOnDent's unique features is **Demo Mode**, allowing users to instantly switch between all three account types to explore the full platform:
-
-1. **Sign in with any account**
-2. **Click profile dropdown** → "Switch Demo Account"
-3. **Choose demo type:** Customer, Shop, or Insurer
-4. **Explore with demo data** - Full functionality, realistic scenarios
-5. **Exit anytime** - Return to your real account with one click
-
-**Benefits:**
-
-- ✨ **No additional signups** - One account explores everything
-- 🔄 **Instant switching** - Change account types in real-time
-- 📊 **Realistic demo data** - Pre-populated scenarios
-- 🎯 **Full functionality** - All features available in demo mode
-- 🔒 **Isolated data** - Demo actions don't affect real data
-- 👁️ **Visual indicator** - Clear banner shows demo mode is active
-
-**Perfect for:**
-
-- Prospective users evaluating the platform
-- Stakeholders understanding all perspectives
-- Demonstrations and presentations
-- Training and onboarding
+| Role | Key Actions |
+|------|------------|
+| **Customer** | Report damage, compare bids, accept quotes, track repairs |
+| **Shop** | View requests, submit bids, manage active jobs |
+| **Insurer** | Create claims, manage partner shops, approve bids |
 
 ---
 
-## 🚀 Complete User Journey Examples
+## Tech Stack
 
-### Customer Journey: Reporting Damage
-
-**Step 1: Create Account**
-
-```
-Landing Page → "Get Started Now" → Sign Up with Google/Email
-→ Choose "I need repairs" → Enter name & phone → Dashboard
-```
-
-**Step 2: Add Vehicle (Optional)**
-
-```
-Dashboard → Vehicles Tab → "Add Vehicle"
-→ Enter: Make, Model, Year, License Plate → Upload photo → Save
-```
-
-**Step 3: Report Damage**
-
-```
-Dashboard → Home Tab → "Report Damage" → 5-Step Flow:
-
-1. Location: Enter repair location, set urgency
-2. Vehicle: Select from saved vehicles (or enter new one)
-3. Photos: Upload damage photos (tap for camera or select files)
-4. Description: Describe damage, add notes
-5. Review: Confirm all details → Submit
-```
-
-**Step 4: Receive & Compare Bids**
-
-```
-Dashboard → Reports Tab → Select damage report
-→ View all shop bids side-by-side
-→ Compare: Price, Timeline, Shop Rating, Location
-→ Accept preferred bid → Confirm repair
-```
-
-**Step 5: Track Repair**
-
-```
-Dashboard → Reports Tab → "In Progress" status
-→ View shop details, contact info, updates
-→ Upon completion → Rate shop, leave review
-```
-
-### Shop Journey: Winning a Bid
-
-**Step 1: Create Shop Account**
-
-```
-Landing Page → "Get Started Now" → Sign Up
-→ Choose "I'm a repair shop" → Setup profile
-→ Add: Shop name, certifications, service area, specialties
-```
-
-**Step 2: Receive Notification**
-
-```
-🔔 Real-time notification: "New repair request in your area"
-→ Click notification → View damage report
-→ See: Photos, description, vehicle info, customer location
-```
-
-**Step 3: Submit Bid**
-
-```
-Repair Request Detail → "Submit Bid" button
-→ Enter: Quote amount, estimated timeline, notes
-→ Add: Warranty details, special offers
-→ Submit bid
-```
-
-**Step 4: Win the Job**
-
-```
-🎉 Notification: "Your bid was accepted!"
-→ Dashboard → Active Jobs Tab → New job appears
-→ View: Customer contact info, vehicle details, agreed price
-→ Begin repair work
-```
-
-**Step 5: Complete & Get Paid**
-
-```
-Active Jobs → Select job → "Mark Complete"
-→ Upload completion photos
-→ Customer receives notification → Reviews work
-→ Payment processed (future feature)
-```
-
-### Insurer Journey: Managing Claims
-
-**Step 1: Create Insurer Account**
-
-```
-Landing Page → Sign Up → Choose "I'm an insurer"
-→ Setup: Company name, contact details
-```
-
-**Step 2: Build Partner Network**
-
-```
-Dashboard → Partner Shops Tab → "Browse Shops"
-→ Filter: Location, certifications, ratings
-→ Add partners to network
-```
-
-**Step 3: Create Insurance Claim**
-
-```
-Dashboard → Claims Tab → "New Claim"
-→ Enter: Policy number, customer info, incident details
-→ Upload: Police report, initial photos
-→ Submit to partner shops
-```
-
-**Step 4: Review Bids & Approve**
-
-```
-Claims Tab → Select claim → View shop bids
-→ Compare: Estimates, shop credentials, timeline
-→ Approve preferred bid
-→ Notify customer and shop
-```
-
-**Step 5: Track to Completion**
-
-```
-Claims Tab → "In Progress" claims
-→ Monitor: Status updates, milestones, costs
-→ Upon completion → Review, close claim, update records
-```
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 18, TypeScript, Tailwind CSS v4, Vite 6 |
+| **Auth** | Clerk (Google OAuth, email/password) |
+| **Backend** | Supabase (PostgreSQL, Edge Functions via Hono, Storage) |
+| **Maps** | Leaflet with custom glass overlays |
+| **Testing** | Vitest (81 tests), GitHub Actions CI |
+| **Design** | Liquid glass system — dark navy base, royal blue accents |
 
 ---
 
-## 🎯 Getting Started
-
-Use the setup guide for a clean, step-by-step local install:
-
-- [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
-
----
-
-## 🏗️ Architecture Overview
-
-### Authentication & User Management
-
-- **Clerk** - Complete authentication system (sign up, login, OAuth)
-- User profiles stored in Clerk metadata (name, phone, account type)
-
-### Data Storage
-
-- **Supabase** - PostgreSQL database for application data
-  - Vehicles
-  - Damage reports
-  - Bids
-  - Profile sync (optional)
-- **Supabase Storage** - Image storage with aggressive compression
-  - Profile images
-  - Vehicle photos
-  - Damage report photos
-
-### Key Features
-
-- **Multi-User System**: 3 account types (Customer, Shop, Insurer)
-- **Demo Mode**: Switch between account types without creating new accounts
-- **5-Step Damage Reporting**: Guided flow with photo uploads
-- **Bid Comparison System**: Compare quotes from multiple shops
-- **Responsive Design**: Mobile-first with bottom navigation tabs
-- **Real-Time Updates**: Live bid notifications
-- **Storage Management**: Built-in monitoring for free tier optimization
-
----
-
-## 📁 Project Structure
-
-```
-bidondent/
-├── src/app/
-│   ├── App.tsx                    # Main application component
-│   ├── components/                # React components
-│   │   ├── landing/              # Landing page sections
-│   │   ├── dashboard/            # Dashboard components
-│   │   ├── ClerkAccountTypeSelector.tsx
-│   │   ├── DemoModeBanner.tsx
-│   │   ├── StorageMonitor.tsx
-│   │   └── ...
-│   ├── services/                  # Business logic services
-│   │   ├── clerkService.ts       # Clerk auth utilities
-│   │   ├── supabase/             # Modular Supabase services
-│   │   ├── supabaseService.ts    # Supabase re-exports
-│   │   ├── demoAuthService.ts    # Demo mode management
-│   │   └── storageMonitor.ts     # Storage tracking
-│   ├── hooks/                     # Custom React hooks
-│   │   ├── useUserData.ts        # User data management
-│   │   ├── useNavigation.ts      # Navigation state
-│   │   ├── useAppEffects.ts      # Shared app effects
-│   │   └── useAppHandlers.ts     # Shared app handlers
-│   ├── config/                    # Configuration files
-│   │   └── demoMode.ts           # Demo mode config
-│   └── utils/                     # Utility functions
-│       ├── buildDashboardRouterProps.ts # Dashboard router props builder
-│       ├── imageCompression.ts   # Aggressive image compression
-│       └── photoUtils.ts         # Photo handling
-│
-├── supabase/
-│   ├── functions/server/         # Edge functions
-│   │   ├── index.tsx             # Main server routes
-│   │   ├── storage_init.tsx      # Storage bucket setup
-│   │   └── kv_store.tsx          # Key-value storage
-│   └── migrations/               # Database migrations
-│       ├── 001_create_profiles_table.sql
-│       ├── 002_create_vehicles_table.sql
-│       └── 003_create_damage_reports_table.sql
-│
-├── utils/
-│   ├── clerk/info.tsx            # Clerk configuration
-│   └── supabase/info.tsx         # Supabase configuration
-│
-└── docs/                          # Documentation hub
-  ├── GETTING_STARTED.md
-  ├── README.md
-  ├── SUPABASE_SETUP_GUIDE.md
-  ├── GOOGLE_OAUTH_SETUP.md
-  ├── BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md
-  ├── BIDONDENT_MAP_TRACKER_2026-03-21.md
-  └── ATTRIBUTIONS.md
-```
-
----
-
-## 📚 Docs Index
-
-All documentation lives in the docs folder:
-
-- **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)** - Local setup and first login
-- **[docs/README.md](docs/README.md)** - Documentation index and governance rules
-- **[docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md)** - Database setup
-- **[docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md)** - Google sign-in setup
-- **[docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md](docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md)** - Map strategy and non-negotiables
-- **[docs/BIDONDENT_MAP_TRACKER_2026-03-21.md](docs/BIDONDENT_MAP_TRACKER_2026-03-21.md)** - Map execution tracker
-- **[docs/ATTRIBUTIONS.md](docs/ATTRIBUTIONS.md)** - Credits and licenses
-
----
-
-## 🎨 Demo Mode
-
-Demo Mode allows users to experience all three account types without creating multiple accounts:
-
-### How to Use
-
-1. **Enable**: Click your profile → "Switch Demo Account"
-2. **Choose Type**: Customer, Shop, or Insurer
-3. **Explore**: Full functionality with demo data
-4. **Exit**: Return to your real account anytime
-
-### Features
-
-- Real-time account type switching
-- Persistent demo data
-- Dynamic navigation tabs
-- No signup required
-- Visual banner when active
-
----
-
-## 🖼️ Image Compression Strategy
-
-To stay within Supabase's free tier limits, we use **extremely aggressive compression**:
-
-- **Max Dimensions**: 800px
-- **Quality**: 50%
-- **Target Size**: 500KB per image
-- **Format**: JPEG with optimized encoding
-
-### Storage Management
-
-- **Built-in Monitor**: Real-time storage usage tracking
-- **Automatic Cleanup**: Endpoints for removing old images
-- **User Limits**: Per-user storage quotas
-- **Debug Tools**: Storage monitoring utilities
-
----
-
-## 🧪 Testing
-
-### Manual Testing
-
-```bash
-npm run dev
-```
-
-### Test Accounts
-
-- **Demo Mode**: Use the demo switcher for all account types
-
-## 🚀 Deployment
+## Getting Started
 
 ### Prerequisites
 
+- Node.js 22+ (see `.nvmrc`)
+- npm 10+
 - Clerk account with publishable key
-- Supabase project with database and storage
-- Node.js 18+ runtime
+- Supabase project with anon key
 
-### Configuration Keys
-
-- `utils/clerk/info.tsx` → `clerkPublishableKey`
-- `utils/supabase/info.tsx` → `projectId`, `publicAnonKey`
-- local-only `.env` → `SUPABASE_ACCESS_TOKEN` for CLI deploys, plus `SUPABASE_DB_URL` or `SUPABASE_DB_PASSWORD` for direct database work when needed
-
-### Supabase Deployment Notes
-
-- Deploy `supabase/functions/server` as function `server`
-- Also deploy `supabase/functions/make-server-9f243523` as the legacy alias until all callers are off the old slug
-- As of March 21, 2026, the live project `wmdcnjgtsppftrofaqqa` is verified on edge version `2026-03-21-v10`
-- Live canonical buckets are `bidondent-account-media`, `bidondent-vehicle-media`, and `bidondent-report-media`
-
-### Build
+### Install and Run
 
 ```bash
-npm run build
+# Clone
+git clone https://github.com/MolandJesus/BidOnDent-Production.git
+cd BidOnDent-Production
+
+# Install dependencies
+npm install
+
+# Configure environment
+cp .env.example .env
+# Fill in your Clerk and Supabase keys
+
+# Start development server
+npm run dev
 ```
 
-### Deploy
+### Configuration
 
-Deploy the `dist/` folder to your hosting provider (Vercel, Netlify, etc.)
+| File | Purpose |
+|------|---------|
+| `utils/clerk/info.tsx` | Clerk publishable key |
+| `utils/supabase/info.tsx` | Supabase project URL and anon key |
+| `.env` | Sentry DSN (optional) |
 
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-- **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Tailwind CSS v4** - Styling
-- **Vite** - Build tool
-- **Lucide React** - Icons
-
-### Backend & Services
-
-- **Clerk** - Authentication & user management
-- **Supabase** - Database & storage
-  - PostgreSQL database
-  - Edge Functions (Deno)
-  - Storage buckets
-- **Hono** - Edge function router
-
-### Libraries
-
-- **@clerk/clerk-react** - Clerk integration
-- **@supabase/supabase-js** - Supabase client
-- **react-slick** - Carousels
-- **sonner** - Toast notifications
+For detailed setup, see [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) and [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md).
 
 ---
 
-## 📊 Current Status
+## Project Structure
 
-✅ **Production Ready Features:**
+```
+src/
+  main.tsx                          # App entry point
+  app/
+    App.tsx                         # Root component
+    components/
+      codelayer/                    # Dashboard screens (Home, Report, Account)
+      dashboard/                    # Map widgets (Customer, Shop, Insurer)
+      landing/                      # Landing page sections
+      shop/                         # Shop directory + map experience
+      insurer/                      # Insurer claim screens
+      auth/                         # Auth flows
+      app/                          # Shell (DashboardLayout, header, sidebar)
+    routers/                        # DashboardRouter — all view routing
+    services/                       # Business logic + Supabase clients
+      auth/                         # Identity, session, relationships
+      intelligence/                 # Map data, routing, recommendations
+      supabase/                     # DB runtime client
+      networkProfiles.ts            # Directory inventory
+    hooks/                          # State orchestration
+    types/                          # Shared type definitions
+  styles/                           # CSS (Tailwind, glass tokens, animations)
+  assets/                           # Images
 
-- Clerk authentication fully integrated
-- Multi-user dashboard system
-- 5-step damage reporting with photo uploads
-- Bid submission and comparison
-- Demo mode with full account switching
-- Storage monitoring and management
-- Responsive mobile/desktop design
-- Real-time notifications
+supabase/
+  functions/server/                 # Edge functions (11 Hono handlers)
+  migrations/                       # PostgreSQL schema migrations
 
-🚧 **In Development:**
-
-- Shop discovery and filtering
-- Insurance claim integration
-- Payment processing
-- Advanced analytics dashboard
-
----
-
-## 📄 License
-
-[Add your license here]
-
----
-
-## 🙏 Credits
-
-See [docs/ATTRIBUTIONS.md](docs/ATTRIBUTIONS.md) for full credits and licenses.
-
----
-
-## 🆘 Need Help?
-
-- **Getting Started Issues**: See [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
-- **Setup Problems**: Check [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md)
-- **OAuth Setup**: Follow [docs/GOOGLE_OAUTH_SETUP.md](docs/GOOGLE_OAUTH_SETUP.md)
-- **Current Status**: Review [docs/README.md](docs/README.md)
+docs/                               # Project documentation
+```
 
 ---
 
-**Built with ❤️ for seamless auto repair bidding**
+## Development
+
+```bash
+# Development server
+npm run dev
+
+# Production build
+npm run build
+
+# Run tests
+npm test
+
+# Format code
+npm run format
+
+# Spell check
+npx cspell lint "src/**/*.{ts,tsx}" --no-progress
+```
+
+### Build Stats
+
+- **Build time:** ~2s
+- **Bundle size:** ~504KB (vendor-split)
+- **Tests:** 81 passing
+- **Build errors:** 0
 
 ---
 
-## 🚀 Latest Productization Passes (March 2026)
+## Architecture
 
-- **Pass 178 — Map-first overlays, dashboard bugfixes, mobile fix:**
-  - HomeScreen refactored for map-first overlays, floating panels
-  - DashboardHeader/logo micro-fix, removed blocky blue background
-  - Mobile loading bug and report marker tap-to-open fixed
-  - Strict verification and doc update
-- **Pass 179 — Shop loop completion (spatial shop actions, map-driven shop bid/accept):**
-  - In progress: Begin spatial shop action loop, map-driven shop bid/accept, shop overlays, and action flows
+### Design System
 
-See `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, and `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` for full pass logs and details.
+BidOnDent uses a **liquid glass** design system with dark navy surfaces and royal blue accents:
+
+- `bd-glass-panel` — primary container surfaces
+- `bd-glass-card` — content cards with translucent depth
+- `bd-glass-floating` — elevated controls and overlays
+- `bd-glass-badge` — status indicators
+- `bd-glass-control` — interactive elements
+
+### Data Flow
+
+```
+Clerk (identity) → Supabase (persistence) → Services → Hooks → Components
+```
+
+- **Supabase** is the source of truth for profiles, vehicles, reports, bids, and photos.
+- **localStorage** is cache-only, scoped per user.
+- **Edge Functions** handle server-side operations with CORS and auth validation.
+
+### Map System
+
+The map is the primary product surface — not a supporting component.
+
+- **ShopDirectoryScreen** — full map-first shop discovery experience
+- **CustomerMapWidget / ShopMapWidget / InsurerMapWidget** — dashboard map widgets
+- **ServiceCoverageMap** — landing page map
+- Leaflet with theme-aware glass overlays and floating intelligence panels
+
+---
+
+## Demo Mode
+
+Experience all three account types without creating additional accounts:
+
+1. Sign in with any account
+2. Click profile dropdown → **Switch Demo Account**
+3. Choose: Customer, Shop, or Insurer
+4. Explore with pre-populated demo data
+5. Exit anytime to return to your real account
+
+---
+
+## Branches
+
+| Branch | Purpose |
+|--------|---------|
+| `main` | Production — auto-deploys via Vercel |
+| `BidOnDent-Horizon-Beta` | Active development |
+
+Archived branches (`archive/*`) are preserved for history but inactive.
+
+---
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [AI Master Context](docs/CLAUDE_AI_MASTER_CONTEXT.md) | Single source of truth for AI agents — **start here** |
+| [Product Brain](docs/BIDONDENT_PRODUCT_BRAIN.md) | Product vision, identity, roadmap |
+| [Map Master Plan](docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md) | Map strategy and design law |
+| [Map Tracker](docs/BIDONDENT_MAP_TRACKER_2026-03-21.md) | Execution log and validation |
+| [Build Progress](docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md) | Pass-by-pass build dashboard |
+| [Getting Started](docs/GETTING_STARTED.md) | Local setup guide |
+| [Supabase Setup](docs/SUPABASE_SETUP_GUIDE.md) | Database configuration |
+
+---
+
+## License
+
+Proprietary — all rights reserved.
+
+---
+
+## Credits
+
+See [docs/ATTRIBUTIONS.md](docs/ATTRIBUTIONS.md) for third-party licenses and credits.
