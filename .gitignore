@@ -6,6 +6,7 @@ dist
 # Local-only environment and secret files
 .env
 .env.*
+!.env.example
 .secrets/
 *.pem
 *.key

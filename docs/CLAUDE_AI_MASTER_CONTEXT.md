@@ -211,19 +211,19 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 | Priority | Task                                | Why                                                           |
 | -------- | ----------------------------------- | ------------------------------------------------------------- |
 | ✅ DONE  | Report → map pin connection         | Pass 317 — `MapReportMarkers` added to `ShopDirectoryMapPane` |
-| P2       | Bid → spatial context               | Bid comparison should show shop location on mini-map          |
+| ✅ DONE  | Bid → spatial context               | Pass 323 — shop geo coordinates wired through bid pipeline    |
 | ✅ DONE  | Shop selection → navigation handoff | Pass 318 — "Start Navigation" CTA on route preview card       |
 | P3       | Mobile map at 375px audit           | Pass 320 — 44px touch targets enforced                        |
 
 ### Hardening
 
-| Priority | Task                                              | Notes                         |
-| -------- | ------------------------------------------------- | ----------------------------- |
-| ✅ DONE  | Supabase RLS policies (`USING(true)` on 4 tables) | Pass 321 — migration 012 tightens profiles, submissions, activity events |
-| HIGH     | CI/CD pipeline                                    | Manual deploys only right now |
-| HIGH     | Basic test coverage                               | Zero coverage currently       |
-| MEDIUM   | Bundle size (~783KB)                              | Already split but still large |
-| MEDIUM   | WCAG AA audit                                     | Keyboard nav + contrast       |
+| Priority | Task                                              | Notes                                                                        |
+| -------- | ------------------------------------------------- | ---------------------------------------------------------------------------- |
+| ✅ DONE  | Supabase RLS policies (`USING(true)` on 4 tables) | Pass 321 — migration 012 tightens profiles, submissions, activity events     |
+| HIGH     | CI/CD pipeline                                    | Manual deploys only right now                                                |
+| ✅ DONE  | Basic test coverage                               | Pass 324 — Vitest + 33 tests for formatters, routing, collections            |
+| ✅ DONE  | Bundle size (~783KB → 502KB)                      | Pass 325 — vendor-motion, vendor-clerk, vendor-sentry chunks (36% reduction) |
+| ✅ DONE  | WCAG AA audit                                     | Pass 326 — focus-visible, aria-labels, Escape handlers                       |
 
 ---
 
