@@ -60,7 +60,8 @@ export default function CoverageBrowseMapOverlays({
     <div className={className}>
       {/* Top row: destination card (mobile/tablet only — sidebar covers xl) + right icon rail */}
       <div className="pointer-events-none absolute inset-x-3 top-4 z-[620] flex items-start justify-between gap-3 sm:inset-x-4 sm:top-5 xl:inset-x-6 xl:top-6 2xl:inset-x-8">
-        {/* Destination / next-maneuver card — hidden on xl where sidebar shows this */}
+        {/* Destination / next-maneuver card — hidden on xl where sidebar shows this, only when shop selected */}
+        {selectedShop && (
         <div className="pointer-events-auto xl:hidden flex max-w-[320px] flex-col gap-2.5 sm:max-w-[380px] sm:gap-3">
           <div
             className={cn(
@@ -77,11 +78,11 @@ export default function CoverageBrowseMapOverlays({
                     theme.titleClassName
                   )}
                 >
-                  {selectedShop ? selectedShop.name : "Select a shop to preview route"}
+                  {selectedShop.name}
                 </div>
               </div>
               <span className={cn("shrink-0 text-[10px] sm:text-xs", theme.softBadgeClassName)}>
-                {selectedShop ? "Route ready" : "Select shop"}
+                Route ready
               </span>
             </div>
 
@@ -105,6 +106,7 @@ export default function CoverageBrowseMapOverlays({
             </div>
           </div>
         </div>
+        )}
 
         {/* Right icon rail — map utility shortcuts */}
         <div className="pointer-events-auto map-ui-enter map-ui-enter-delay-3 ml-auto flex flex-col gap-1.5 sm:gap-2">
@@ -127,7 +129,7 @@ export default function CoverageBrowseMapOverlays({
           <button
             type="button"
             onClick={onCenterMap}
-            className={theme.compactIconButtonClassName}
+            className={cn(theme.compactIconButtonClassName, "hidden xl:flex")}
             aria-label="Center map"
           >
             <Crosshair className="h-4 w-4" />
@@ -135,7 +137,7 @@ export default function CoverageBrowseMapOverlays({
           <button
             type="button"
             onClick={onResetMap}
-            className={theme.compactIconButtonClassName}
+            className={cn(theme.compactIconButtonClassName, "hidden xl:flex")}
             aria-label="Reset map view"
           >
             <RotateCcw className="h-4 w-4" />
