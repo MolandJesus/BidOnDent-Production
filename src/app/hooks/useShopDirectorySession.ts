@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useState, type FormEvent } from "react";
+import { useDeferredValue, useEffect, useMemo, useState, type FormEvent } from "react";
 import type { ShopSortOption, WebsiteIdentity } from "../services/auth/websiteIdentity";
 import {
   loadWebsiteSessionMemory,
@@ -20,6 +20,7 @@ import {
   toggleRoleCollectionShopId,
   type ShopMapListing,
 } from "../services/intelligence/shopMapExperience";
+import { convertPartnerShopsToProfiles } from "../services/intelligence/directoryAdapters";
 import {
   getNavigationProviderLabel,
   openDirections,
@@ -34,6 +35,7 @@ import type {
   RecentSearch,
   SavedPlace,
 } from "../types/mapDomain";
+import { useCoveragePartnerShops } from "./useCoveragePartnerShops";
 import { useNetworkDirectory } from "./useNetworkDirectory";
 import {
   buildRecentSearches,
@@ -61,6 +63,7 @@ export function useShopDirectorySession({
   reports,
 }: UseShopDirectorySessionArgs) {
   const { inventory } = useNetworkDirectory();
+  const { partnerShops } = useCoveragePartnerShops();
   const savedMemory = loadWebsiteSessionMemory(identity);
   const suggestedOrigins = getSuggestedSearchOrigins();
 
@@ -134,10 +137,23 @@ export function useShopDirectorySession({
   }, [identity?.websiteUserKey]);
 
   // ── Computed values ──
+  const allDirectoryShops = useMemo(() => {
+    const partnerProfiles = convertPartnerShopsToProfiles(partnerShops);
+    if (partnerProfiles.length === 0) return inventory.shops;
+    const byName = new Map(inventory.shops.map((s) => [s.businessName.toLowerCase(), s]));
+    const merged = [...inventory.shops];
+    for (const profile of partnerProfiles) {
+      if (!byName.has(profile.businessName.toLowerCase())) {
+        merged.push(profile);
+      }
+    }
+    return merged;
+  }, [inventory.shops, partnerShops]);
+
   const mapListings = buildShopMapListings({
     connectedInsurerIds,
     directoryInsurers: inventory.insurers,
-    directoryShops: inventory.shops,
+    directoryShops: allDirectoryShops,
     filterRating,
     filters: searchWithinViewport ? { searchWithinViewport: true } : undefined,
     origin: selectedOrigin,
@@ -173,7 +189,7 @@ export function useShopDirectorySession({
   const collectionUniverse = buildShopMapListings({
     connectedInsurerIds,
     directoryInsurers: inventory.insurers,
-    directoryShops: inventory.shops,
+    directoryShops: allDirectoryShops,
     origin: selectedOrigin,
     reports,
     searchQuery: "",

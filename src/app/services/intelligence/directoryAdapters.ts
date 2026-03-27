@@ -1,8 +1,6 @@
+import type { CoveragePartnerShop } from "../../components/maps/serviceCoverageMapTypes";
 import type { Coordinates } from "../../types/mapDomain";
-import type {
-  InsurerBusinessProfile,
-  ShopBusinessProfile,
-} from "../../types/networkProfiles";
+import type { InsurerBusinessProfile, ShopBusinessProfile } from "../../types/networkProfiles";
 import type {
   DirectoryReport,
   DirectoryVehicle,
@@ -97,8 +95,8 @@ function buildApproximateCoordinates(seed: string, city?: string | null, state?:
   const cityKey = `${city || ""},${state || ""}`.toLowerCase();
   const anchor = CITY_COORDINATE_DIRECTORY[cityKey] || CITY_COORDINATE_DIRECTORY["dallas,tx"];
   const hash = hashString(seed);
-  const latitudeOffset = (((hash % 1000) / 1000) - 0.5) * 0.18;
-  const longitudeOffset = ((((Math.floor(hash / 1000) % 1000) / 1000) - 0.5) * 0.24);
+  const latitudeOffset = ((hash % 1000) / 1000 - 0.5) * 0.18;
+  const longitudeOffset = ((Math.floor(hash / 1000) % 1000) / 1000 - 0.5) * 0.24;
 
   return {
     latitude: anchor.latitude + latitudeOffset,
@@ -192,7 +190,11 @@ function buildReasons(
   const matchingCarriers = connectedCarrierNames.filter((carrierName) =>
     insurerPrograms.map((program) => program.toLowerCase()).includes(carrierName.toLowerCase())
   );
-  const capabilityValues = [...profile.specialties, ...profile.certifications, profile.aboutSummary || ""]
+  const capabilityValues = [
+    ...profile.specialties,
+    ...profile.certifications,
+    profile.aboutSummary || "",
+  ]
     .join(" ")
     .toLowerCase();
   const capabilityMatch = damageSignals.find((signal) => capabilityValues.includes(signal));
@@ -225,11 +227,17 @@ function buildReasons(
 }
 
 export function getDirectoryShopId(profile: ShopBusinessProfile) {
-  return DIRECTORY_SHOP_ID_OFFSET + (hashString(profile.websiteUserKey || profile.businessName) % 900000000);
+  return (
+    DIRECTORY_SHOP_ID_OFFSET +
+    (hashString(profile.websiteUserKey || profile.businessName) % 900000000)
+  );
 }
 
 export function getDirectoryInsurerId(profile: InsurerBusinessProfile) {
-  return DIRECTORY_INSURER_ID_OFFSET + (hashString(profile.websiteUserKey || profile.companyName) % 900000000);
+  return (
+    DIRECTORY_INSURER_ID_OFFSET +
+    (hashString(profile.websiteUserKey || profile.companyName) % 900000000)
+  );
 }
 
 export function buildDirectoryShopRecommendations({
@@ -426,4 +434,38 @@ export function mergeDirectoryEntriesByName<T extends { name: string; id: number
   });
 
   return [...merged.values()];
+}
+
+export function convertPartnerShopsToProfiles(
+  partnerShops: CoveragePartnerShop[]
+): ShopBusinessProfile[] {
+  return partnerShops.map((shop) => ({
+    id: shop.id,
+    websiteUserKey: `partner-shop-${shop.id || shop.name}`,
+    businessName: shop.name,
+    businessAddress: shop.addressLine || "",
+    businessCity: shop.label?.split(",")[0]?.trim() || "",
+    businessState: shop.label?.split(",")[1]?.trim() || "NY",
+    businessZip: "",
+    businessPhone: shop.phoneNumber || "",
+    certifications: [],
+    specialties: shop.specialties,
+    acceptsInsuranceClaims: true,
+    offersEstimates: true,
+    insurerPrograms: [],
+    supportedMakes: [],
+    averageRating: shop.rating,
+    totalReviews: null,
+    isAcceptingBids: true,
+    averageTicketValue: null,
+    responseTimeHours: null,
+    completionRate: null,
+    profileImageUrl: null,
+    aboutSummary: null,
+    geoLatitude: shop.lat,
+    geoLongitude: shop.lng,
+    isDirectoryVisible: true,
+    website: null,
+    businessHours: null,
+  }));
 }
