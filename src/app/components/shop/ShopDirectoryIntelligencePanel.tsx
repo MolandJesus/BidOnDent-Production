@@ -35,8 +35,8 @@ export default function ShopDirectoryIntelligencePanel({
           </div>
           <p className="mt-2 text-base font-semibold text-slate-100 sm:text-lg">{summary.title}</p>
           <p className="mt-1 text-sm leading-6 text-slate-300/80">
-            Open the live ranking context, session fingerprint, connected carriers, and current map
-            signals only when you need the extra detail.
+            See the live ranking context, connected carriers, and current map signals that are
+            shaping which shops appear and in what order.
           </p>
         </div>
 
