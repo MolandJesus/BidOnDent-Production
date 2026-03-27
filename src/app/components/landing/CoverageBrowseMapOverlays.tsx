@@ -62,50 +62,50 @@ export default function CoverageBrowseMapOverlays({
       <div className="pointer-events-none absolute inset-x-3 top-4 z-[620] flex items-start justify-between gap-3 sm:inset-x-4 sm:top-5 xl:inset-x-6 xl:top-6 2xl:inset-x-8">
         {/* Destination / next-maneuver card — hidden on xl where sidebar shows this, only when shop selected */}
         {selectedShop && (
-        <div className="pointer-events-auto xl:hidden flex max-w-[320px] flex-col gap-2.5 sm:max-w-[380px] sm:gap-3">
-          <div
-            className={cn(
-              "map-liquid-card map-glass-float map-ui-enter map-ui-enter-delay-1 overflow-hidden rounded-[1.25rem] border px-3.5 py-2.5 backdrop-blur-3xl sm:rounded-[1.5rem] sm:px-4 sm:py-3",
-              theme.panelStrongClassName
-            )}
-          >
-            <div className="flex items-start justify-between gap-2.5">
-              <div>
-                <div className={theme.metricLabelClassName}>Destination</div>
-                <div
-                  className={cn(
-                    "mt-0.5 text-sm font-semibold leading-tight sm:mt-1 sm:text-base",
-                    theme.titleClassName
-                  )}
-                >
-                  {selectedShop.name}
+          <div className="pointer-events-auto xl:hidden flex max-w-[320px] flex-col gap-2.5 sm:max-w-[380px] sm:gap-3">
+            <div
+              className={cn(
+                "map-liquid-card map-glass-float map-ui-enter map-ui-enter-delay-1 overflow-hidden rounded-[1.25rem] border px-3.5 py-2.5 backdrop-blur-3xl sm:rounded-[1.5rem] sm:px-4 sm:py-3",
+                theme.panelStrongClassName
+              )}
+            >
+              <div className="flex items-start justify-between gap-2.5">
+                <div>
+                  <div className={theme.metricLabelClassName}>Destination</div>
+                  <div
+                    className={cn(
+                      "mt-0.5 text-sm font-semibold leading-tight sm:mt-1 sm:text-base",
+                      theme.titleClassName
+                    )}
+                  >
+                    {selectedShop.name}
+                  </div>
                 </div>
+                <span className={cn("shrink-0 text-[10px] sm:text-xs", theme.softBadgeClassName)}>
+                  Route ready
+                </span>
               </div>
-              <span className={cn("shrink-0 text-[10px] sm:text-xs", theme.softBadgeClassName)}>
-                Route ready
-              </span>
-            </div>
 
-            {nextInstruction && (
-              <div
-                className={cn("mt-1.5 text-xs sm:mt-2 sm:text-sm", theme.secondaryTextClassName)}
-              >
-                {nextInstruction}
+              {nextInstruction && (
+                <div
+                  className={cn("mt-1.5 text-xs sm:mt-2 sm:text-sm", theme.secondaryTextClassName)}
+                >
+                  {nextInstruction}
+                </div>
+              )}
+
+              <div className="mt-2.5 flex flex-wrap items-center gap-1.5 sm:mt-3 sm:gap-2">
+                <button
+                  type="button"
+                  onClick={() => onSidebarViewChange("shops")}
+                  className={theme.compactButtonClassName}
+                >
+                  <MapPinned className="h-3.5 w-3.5" />
+                  Shops
+                </button>
               </div>
-            )}
-
-            <div className="mt-2.5 flex flex-wrap items-center gap-1.5 sm:mt-3 sm:gap-2">
-              <button
-                type="button"
-                onClick={() => onSidebarViewChange("shops")}
-                className={theme.compactButtonClassName}
-              >
-                <MapPinned className="h-3.5 w-3.5" />
-                Shops
-              </button>
             </div>
           </div>
-        </div>
         )}
 
         {/* Right icon rail — map utility shortcuts */}

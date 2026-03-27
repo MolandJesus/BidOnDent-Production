@@ -264,7 +264,9 @@ export default function ShopDirectoryMapPane({
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className={`rounded-xl border px-3 py-2 ${popupScoreCard}`}>
                       <p>AI fit</p>
-                      <p className={`font-semibold ${popupScoreValue}`}>{shop.recommendationScore}%</p>
+                      <p className={`font-semibold ${popupScoreValue}`}>
+                        {shop.recommendationScore}%
+                      </p>
                     </div>
                     <div className={`rounded-xl border px-3 py-2 ${popupCarrierCard}`}>
                       <p>Carrier fit</p>
@@ -337,11 +339,29 @@ export default function ShopDirectoryMapPane({
             className={`hidden rounded-2xl border px-4 py-3 text-xs shadow-xl sm:block ${legendCard}`}
           >
             <p className={`font-semibold ${isDark ? "text-white" : "text-slate-700"}`}>
-              Marker legend
+              Map legend
             </p>
-            <p className="mt-1">
-              Orange = origin, blue = selected, dark = top match, lines = route options
-            </p>
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-orange-500" />
+                Origin
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-600" />
+                Selected
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-slate-900" />
+                Top match
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span
+                  className="inline-block h-3 w-5 rounded border border-current opacity-50"
+                  style={{ borderStyle: "dashed" }}
+                />
+                Routes
+              </span>
+            </div>
           </div>
         </div>
       </div>
