@@ -51,11 +51,11 @@ export default function TrustStatsSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:20px_20px] opacity-30" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(59,130,246,0.14),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_20%_20%,rgba(99,102,241,0.10),transparent_50%)]" />
-          <div className="absolute top-0 left-1/4 w-64 h-64 bg-blue-500/[0.10] rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-indigo-400/[0.08] rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:20px_20px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(59,130,246,0.18),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_20%_20%,rgba(99,102,241,0.14),transparent_50%)]" />
+          <div className="absolute top-0 left-1/4 w-80 h-80 bg-blue-500/[0.14] rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-indigo-400/[0.10] rounded-full blur-3xl" />
         </>
       )}
 
@@ -65,11 +65,11 @@ export default function TrustStatsSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-3.5 h-3.5 rounded-full ${isLightAppearance ? "bg-blue-400/28" : "bg-blue-400/35"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/35" : "bg-blue-400/45"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 18px 5px rgba(59,130,246,0.14)"
-              : "0 0 20px 6px rgba(59,130,246,0.18)",
+              ? "0 0 24px 8px rgba(59,130,246,0.18)"
+              : "0 0 28px 10px rgba(59,130,246,0.24)",
           }}
         />
       </div>
@@ -78,11 +78,11 @@ export default function TrustStatsSection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-indigo-400/30"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/30" : "bg-indigo-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 16px 4px rgba(99,102,241,0.11)"
-              : "0 0 16px 4px rgba(99,102,241,0.15)",
+              ? "0 0 20px 6px rgba(99,102,241,0.15)"
+              : "0 0 22px 7px rgba(99,102,241,0.20)",
           }}
         />
       </div>

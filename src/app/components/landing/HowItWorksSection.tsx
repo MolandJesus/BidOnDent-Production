@@ -63,11 +63,11 @@ export default function HowItWorksSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(59,130,246,0.03)_39px,rgba(59,130,246,0.03)_40px)] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_75%_-5%,rgba(59,130,246,0.08),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_85%,rgba(37,99,235,0.06),transparent_55%)]" />
-          <div className="absolute top-0 right-1/4 w-72 h-72 bg-blue-500/[0.06] rounded-full blur-[100px]" />
-          <div className="absolute -bottom-10 left-[15%] w-56 h-56 bg-blue-400/[0.04] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_39px,rgba(59,130,246,0.04)_39px,rgba(59,130,246,0.04)_40px)] opacity-50" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_75%_-5%,rgba(59,130,246,0.12),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_20%_85%,rgba(37,99,235,0.09),transparent_55%)]" />
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/[0.09] rounded-full blur-[120px]" />
+          <div className="absolute -bottom-10 left-[15%] w-72 h-72 bg-indigo-400/[0.06] rounded-full blur-[110px]" />
         </>
       )}
 
@@ -77,11 +77,11 @@ export default function HowItWorksSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/35" : "bg-blue-400/40"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/42" : "bg-blue-400/50"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 20px 6px rgba(59,130,246,0.18)"
-              : "0 0 22px 7px rgba(59,130,246,0.2)",
+              ? "0 0 26px 8px rgba(59,130,246,0.22)"
+              : "0 0 30px 10px rgba(59,130,246,0.26)",
           }}
         />
       </div>
@@ -90,11 +90,11 @@ export default function HowItWorksSection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-blue-400/40" : "bg-blue-400/45"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/45" : "bg-blue-400/55"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 16px 5px rgba(59,130,246,0.15)"
-              : "0 0 18px 5px rgba(37,99,235,0.18)",
+              ? "0 0 22px 7px rgba(59,130,246,0.20)"
+              : "0 0 26px 8px rgba(37,99,235,0.24)",
           }}
         />
       </div>

@@ -82,11 +82,11 @@ export default function HeroSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_15%_-10%,rgba(59,130,246,0.14),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_85%_90%,rgba(37,99,235,0.06),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_35%_at_50%_100%,rgba(30,58,138,0.04),transparent_45%)]" />
-          <div className="absolute top-16 right-10 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-20 -left-10 w-96 h-96 bg-blue-500/[0.04] rounded-full blur-[140px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.18),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.10),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.06),transparent_45%)]" />
+          <div className="absolute top-16 right-10 w-[28rem] h-[28rem] bg-blue-500/[0.12] rounded-full blur-[140px]" />
+          <div className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.06] rounded-full blur-[160px]" />
         </>
       )}
 
@@ -99,11 +99,11 @@ export default function HeroSection({
         style={{ animationDelay: "0s" }}
       >
         <div
-          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/45" : "bg-blue-400/50"}`}
+          className={`w-6 h-6 rounded-full ${isLightAppearance ? "bg-blue-400/50" : "bg-blue-400/60"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 22px 7px rgba(59,130,246,0.20)"
-              : "0 0 24px 8px rgba(59,130,246,0.25)",
+              ? "0 0 28px 10px rgba(59,130,246,0.25)"
+              : "0 0 32px 12px rgba(59,130,246,0.30)",
           }}
         />
       </div>
@@ -112,11 +112,11 @@ export default function HeroSection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-3.5 h-3.5 rounded-full ${isLightAppearance ? "bg-indigo-400/35" : "bg-indigo-400/40"}`}
+          className={`w-4.5 h-4.5 rounded-full ${isLightAppearance ? "bg-indigo-400/42" : "bg-indigo-400/50"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 18px 5px rgba(99,102,241,0.16)"
-              : "0 0 20px 6px rgba(99,102,241,0.2)",
+              ? "0 0 24px 8px rgba(99,102,241,0.22)"
+              : "0 0 28px 10px rgba(99,102,241,0.26)",
           }}
         />
       </div>

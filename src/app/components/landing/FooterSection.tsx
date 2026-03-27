@@ -37,8 +37,10 @@ export default function FooterSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.015)_1px,transparent_1px)] [background-size:18px_18px] opacity-15" />
-          <div className="absolute bottom-0 right-1/3 w-48 h-48 bg-blue-500/[0.03] rounded-full blur-[80px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.02)_1px,transparent_1px)] [background-size:18px_18px] opacity-25" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_30%_80%,rgba(59,130,246,0.06),transparent_55%)]" />
+          <div className="absolute bottom-0 right-1/3 w-72 h-72 bg-blue-500/[0.05] rounded-full blur-[100px]" />
+          <div className="absolute top-10 left-1/4 w-56 h-56 bg-indigo-400/[0.04] rounded-full blur-[90px]" />
         </>
       )}
       <div className="container mx-auto px-4 max-w-7xl relative">

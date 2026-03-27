@@ -89,11 +89,11 @@ export default function WhoWeServeSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.03)_1px,transparent_1px)] [background-size:36px_36px] opacity-25" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_50%_-5%,rgba(59,130,246,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_75%,rgba(59,130,246,0.05),transparent_55%)]" />
-          <div className="absolute top-1/4 right-0 w-72 h-72 bg-blue-400/[0.04] rounded-full blur-[110px]" />
-          <div className="absolute -bottom-10 left-1/4 w-60 h-60 bg-blue-400/[0.03] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.04)_1px,transparent_1px)] [background-size:36px_36px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_50%_at_50%_-5%,rgba(59,130,246,0.12),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_55%_at_15%_75%,rgba(99,102,241,0.08),transparent_55%)]" />
+          <div className="absolute top-1/4 right-0 w-96 h-96 bg-blue-400/[0.07] rounded-full blur-[120px]" />
+          <div className="absolute -bottom-10 left-1/4 w-80 h-80 bg-indigo-400/[0.05] rounded-full blur-[110px]" />
         </>
       )}
 
@@ -103,11 +103,11 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "0s" }}
       >
         <div
-          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/32" : "bg-blue-400/35"}`}
+          className={`w-7 h-7 rounded-full ${isLightAppearance ? "bg-blue-400/35" : "bg-blue-400/45"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 24px 7px rgba(59,130,246,0.16)"
-              : "0 0 26px 8px rgba(59,130,246,0.18)",
+              ? "0 0 30px 10px rgba(59,130,246,0.20)"
+              : "0 0 36px 12px rgba(59,130,246,0.25)",
           }}
         />
       </div>
@@ -133,11 +133,11 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/28" : "bg-blue-400/30"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/35" : "bg-indigo-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 16px 5px rgba(99,102,241,0.13)"
-              : "0 0 18px 5px rgba(59,130,246,0.14)",
+              ? "0 0 22px 7px rgba(99,102,241,0.18)"
+              : "0 0 24px 8px rgba(99,102,241,0.22)",
           }}
         />
       </div>

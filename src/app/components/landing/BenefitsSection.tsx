@@ -76,11 +76,11 @@ export default function BenefitsSection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.025)_34px,rgba(99,102,241,0.025)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.025)_34px,rgba(99,102,241,0.025)_35px)] opacity-50" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_50%_at_30%_-10%,rgba(99,102,241,0.10),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_75%_85%,rgba(79,70,229,0.06),transparent_55%)]" />
-          <div className="absolute -top-10 left-1/3 w-80 h-80 bg-indigo-500/[0.06] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-[10%] w-64 h-64 bg-indigo-400/[0.04] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.035)_34px,rgba(99,102,241,0.035)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.035)_34px,rgba(99,102,241,0.035)_35px)] opacity-60" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_30%_-10%,rgba(99,102,241,0.14),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_75%_85%,rgba(79,70,229,0.09),transparent_55%)]" />
+          <div className="absolute -top-10 left-1/3 w-[26rem] h-[26rem] bg-indigo-500/[0.09] rounded-full blur-[140px]" />
+          <div className="absolute bottom-0 right-[10%] w-80 h-80 bg-indigo-400/[0.06] rounded-full blur-[120px]" />
         </>
       )}
 
@@ -90,11 +90,11 @@ export default function BenefitsSection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-[18px] h-[18px] rounded-full ${isLightAppearance ? "bg-indigo-400/40" : "bg-indigo-400/45"}`}
+          className={`w-6 h-6 rounded-full ${isLightAppearance ? "bg-indigo-400/45" : "bg-indigo-400/55"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 22px 7px rgba(99,102,241,0.18)"
-              : "0 0 24px 8px rgba(99,102,241,0.22)",
+              ? "0 0 28px 10px rgba(99,102,241,0.24)"
+              : "0 0 32px 12px rgba(99,102,241,0.28)",
           }}
         />
       </div>
@@ -103,11 +103,11 @@ export default function BenefitsSection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/30" : "bg-indigo-400/35"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/38" : "bg-indigo-400/45"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 18px 5px rgba(99,102,241,0.14)"
-              : "0 0 20px 6px rgba(99,102,241,0.18)",
+              ? "0 0 24px 7px rgba(99,102,241,0.20)"
+              : "0 0 26px 8px rgba(99,102,241,0.24)",
           }}
         />
       </div>

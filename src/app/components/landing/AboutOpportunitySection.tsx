@@ -59,11 +59,11 @@ export default function AboutOpportunitySection({
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(59,130,246,0.02)_49px,rgba(59,130,246,0.02)_50px)] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_30%_-10%,rgba(59,130,246,0.06),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_75%_90%,rgba(37,99,235,0.07),transparent_55%)]" />
-          <div className="absolute top-0 left-1/3 w-72 h-72 bg-blue-500/[0.05] rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-56 h-56 bg-blue-400/[0.03] rounded-full blur-3xl" />
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_49px,rgba(59,130,246,0.03)_49px,rgba(59,130,246,0.03)_50px)] opacity-50" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_-10%,rgba(59,130,246,0.10),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_55%_at_75%_90%,rgba(37,99,235,0.10),transparent_55%)]" />
+          <div className="absolute top-0 left-1/3 w-96 h-96 bg-blue-500/[0.08] rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-indigo-400/[0.06] rounded-full blur-3xl" />
         </>
       )}
 
@@ -73,11 +73,11 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/32" : "bg-blue-400/40"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/38" : "bg-blue-400/50"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 20px 6px rgba(59,130,246,0.15)"
-              : "0 0 22px 7px rgba(59,130,246,0.18)",
+              ? "0 0 26px 8px rgba(59,130,246,0.20)"
+              : "0 0 30px 10px rgba(59,130,246,0.26)",
           }}
         />
       </div>
