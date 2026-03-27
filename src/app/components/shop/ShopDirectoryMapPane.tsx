@@ -98,6 +98,17 @@ export default function ShopDirectoryMapPane({
   const legendCard = isDark
     ? "border-white/15 bg-slate-950/70 text-white/80 shadow-xl backdrop-blur"
     : "border-black/8 bg-white/85 text-slate-600 shadow-xl backdrop-blur";
+  const popupTitle = isDark ? "text-slate-100" : "text-slate-800";
+  const popupSub = isDark ? "text-slate-300" : "text-slate-500";
+  const popupBody = isDark ? "text-slate-400" : "text-slate-600";
+  const popupScoreCard = isDark
+    ? "border-white/12 bg-slate-800/60 text-slate-300"
+    : "border-slate-200 bg-slate-50 text-slate-500";
+  const popupScoreValue = isDark ? "text-white" : "text-slate-800";
+  const popupCarrierCard = isDark
+    ? "border-emerald-400/20 bg-emerald-900/30 text-emerald-300"
+    : "border-emerald-200 bg-emerald-50 text-emerald-600";
+  const popupCarrierValue = isDark ? "text-emerald-200" : "text-emerald-800";
 
   return (
     <div
@@ -165,8 +176,8 @@ export default function ShopDirectoryMapPane({
           >
             <Popup>
               <div className="space-y-1">
-                <p className="font-semibold text-slate-800">{selectedOrigin.name}</p>
-                <p className="text-sm text-slate-500">{selectedOrigin.address}</p>
+                <p className={`font-semibold ${popupTitle}`}>{selectedOrigin.name}</p>
+                <p className={`text-sm ${popupSub}`}>{selectedOrigin.address}</p>
               </div>
             </Popup>
             <Tooltip direction="top" offset={[0, -8]} opacity={0.95} permanent={false}>
@@ -187,8 +198,8 @@ export default function ShopDirectoryMapPane({
           >
             <Popup>
               <div className="space-y-1">
-                <p className="font-semibold text-slate-800">{place.label}</p>
-                <p className="text-sm text-slate-500">{place.address}</p>
+                <p className={`font-semibold ${popupTitle}`}>{place.label}</p>
+                <p className={`text-sm ${popupSub}`}>{place.address}</p>
               </div>
             </Popup>
           </CircleMarker>
@@ -212,11 +223,11 @@ export default function ShopDirectoryMapPane({
             >
               <Popup>
                 <div className="space-y-1">
-                  <p className="font-semibold text-slate-800">{route.label} route</p>
-                  <p className="text-sm text-slate-600">
+                  <p className={`font-semibold ${popupTitle}`}>{route.label} route</p>
+                  <p className={`text-sm ${popupBody}`}>
                     {route.totalDistanceLabel} • {route.estimatedDurationMinutes} min
                   </p>
-                  <p className="text-sm text-slate-500">{route.trafficLabel}</p>
+                  <p className={`text-sm ${popupSub}`}>{route.trafficLabel}</p>
                 </div>
               </Popup>
             </Polyline>
@@ -245,19 +256,19 @@ export default function ShopDirectoryMapPane({
               <Popup>
                 <div className="space-y-2">
                   <div>
-                    <p className="font-semibold text-slate-800">{shop.name}</p>
-                    <p className="text-sm text-slate-500">
+                    <p className={`font-semibold ${popupTitle}`}>{shop.name}</p>
+                    <p className={`text-sm ${popupSub}`}>
                       {shop.mapResult.address}, {shop.mapResult.city}
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-                      <p className="text-slate-500">AI fit</p>
-                      <p className="font-semibold text-slate-800">{shop.recommendationScore}%</p>
+                    <div className={`rounded-xl border px-3 py-2 ${popupScoreCard}`}>
+                      <p>AI fit</p>
+                      <p className={`font-semibold ${popupScoreValue}`}>{shop.recommendationScore}%</p>
                     </div>
-                    <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
-                      <p className="text-emerald-600">Carrier fit</p>
-                      <p className="font-semibold text-emerald-800">
+                    <div className={`rounded-xl border px-3 py-2 ${popupCarrierCard}`}>
+                      <p>Carrier fit</p>
+                      <p className={`font-semibold ${popupCarrierValue}`}>
                         {shop.insuranceCompatibilityScore}%
                       </p>
                     </div>
