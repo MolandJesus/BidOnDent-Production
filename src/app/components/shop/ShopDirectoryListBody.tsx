@@ -30,6 +30,7 @@ export default function ShopDirectoryListBody({
       {/* Route panel: in sidebar on list mode only (floating overlay on map modes) */}
       {!session.showMapPane && (
         <ShopDirectoryRoutePanel
+          appearanceMode={appearanceMode}
           onSelectRoute={session.setSelectedRouteId}
           routeOptions={session.routeOptions}
           routeSummary={session.routeSummary}

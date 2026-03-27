@@ -148,6 +148,7 @@ export default function ShopDirectoryHero({
           </div>
 
           <ShopDirectoryIntelligencePanel
+            appearanceMode={appearanceMode}
             connectedCarrierNames={connectedCarrierNames}
             contextChips={contextChips}
             identity={identity}
