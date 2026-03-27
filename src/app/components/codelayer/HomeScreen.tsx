@@ -100,7 +100,7 @@ export default function HomeScreen({
           paddingTop: "0.5rem",
         }}
       >
-        <div className="w-full max-w-4xl px-2 md:px-6">
+        <div className="w-full max-w-4xl px-2 md:px-6 pointer-events-auto">
           {userType === "shop" ? (
             <ShopMapWidget
               primaryColor={primaryColor}

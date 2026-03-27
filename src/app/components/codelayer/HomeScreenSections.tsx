@@ -17,6 +17,7 @@ import type { DamageReport } from "../../types";
 // ============================================================================
 
 type ActivityItem = {
+  id: string;
   label: string;
   time: string;
   icon: LucideIcon;
