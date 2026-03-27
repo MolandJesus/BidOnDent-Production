@@ -14,7 +14,6 @@ import {
 import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import ServiceCoverageMap from "../maps/ServiceCoverageMap";
-import CoverageCommandCenterHeader from "../maps/command-center/CoverageCommandCenterHeader";
 import CoverageCommandCenterSidebar from "../maps/command-center/CoverageCommandCenterSidebar";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import type {
@@ -370,14 +369,6 @@ export default function CoverageBrowseExperience({
             handleSelectDiscoveryPlace(place);
           }}
         />
-
-        {isDesktop ? (
-          <div className="pointer-events-none absolute inset-x-6 top-6 z-[615] flex items-start justify-between gap-4 2xl:inset-x-8">
-            <div className="pointer-events-auto w-full max-w-[360px]">
-              <CoverageCommandCenterHeader tone={tone} navigationSession={navigationSession} />
-            </div>
-          </div>
-        ) : null}
 
         {isDesktop ? (
           <div className="pointer-events-none absolute inset-y-6 left-6 z-[610] hidden w-[380px] xl:block 2xl:left-8 2xl:w-[410px]">
