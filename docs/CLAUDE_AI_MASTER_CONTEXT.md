@@ -204,7 +204,7 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 | ✅ DONE  | Add "Search in this area" button to `ShopDirectoryMapPane`                   | Fixed in pass 286                                                                                                                     |
 | ✅ DONE  | Real shop data from Supabase partner profiles                                | Pass 316 — `useCoveragePartnerShops` → `convertPartnerShopsToProfiles` → merged into `allDirectoryShops` in `useShopDirectorySession` |
 | ✅ DONE  | Add `mapViewportBounds` to session persist                                   | Pass 319 — persists viewport bounds in `MapSessionMemory`, restores on session/identity reload                                        |
-| P2       | Mobile map audit at 375px                                                    | All three view modes need systematic mobile check                                                                                     |
+| ✅ DONE  | Mobile map audit at 375px                                                    | Pass 320 — touch targets enforced to 44px min across immersive map, overlays, search panel                                            |
 
 ### Product Loop — Next Phase
 
@@ -213,7 +213,7 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 | ✅ DONE  | Report → map pin connection         | Pass 317 — `MapReportMarkers` added to `ShopDirectoryMapPane` |
 | P2       | Bid → spatial context               | Bid comparison should show shop location on mini-map          |
 | ✅ DONE  | Shop selection → navigation handoff | Pass 318 — "Start Navigation" CTA on route preview card       |
-| P3       | Mobile map at 375px audit           | Map view modes need systematic mobile check                   |
+| P3       | Mobile map at 375px audit           | Pass 320 — 44px touch targets enforced                        |
 
 ### Hardening
 
