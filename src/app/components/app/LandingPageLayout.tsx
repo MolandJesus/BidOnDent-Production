@@ -130,7 +130,10 @@ export default function LandingPageLayout({
 
       <TrustStatsSection isLightAppearance={isLightAppearance} />
 
-      <OperatingRegionsSection initialDiscoveryRole={initialDiscoveryRole} />
+      <OperatingRegionsSection
+        initialDiscoveryRole={initialDiscoveryRole}
+        isLightAppearance={isLightAppearance}
+      />
 
       <BusinessInquirySection isLightAppearance={isLightAppearance} />
 

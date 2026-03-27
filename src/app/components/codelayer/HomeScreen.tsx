@@ -99,10 +99,15 @@ export default function HomeScreen({
             <InsurerMapWidget
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
+              appearanceMode={appearanceMode}
               onViewShops={onViewShops}
             />
           ) : (
-            <CustomerMapWidget primaryColor={primaryColor} secondaryColor={secondaryColor} />
+            <CustomerMapWidget
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+              appearanceMode={appearanceMode}
+            />
           )}
         </div>
       </div>
@@ -130,7 +135,9 @@ export default function HomeScreen({
           }
         >
           <div className="min-w-0">
-            <h1 className={`text-lg md:text-2xl font-bold tracking-tight truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}>
+            <h1
+              className={`text-lg md:text-2xl font-bold tracking-tight truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            >
               {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}`}
             </h1>
             <p
