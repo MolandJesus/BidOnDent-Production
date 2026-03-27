@@ -5,6 +5,7 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -91,7 +92,7 @@ export async function getShopProfile(
 
     if (error) {
       console.error("Error fetching shop profile:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({
@@ -100,7 +101,7 @@ export async function getShopProfile(
     });
   } catch (error: any) {
     console.error("Error in get shop profile endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -128,7 +129,7 @@ export async function saveShopProfile(
 
     if (error) {
       console.error("Error saving shop profile:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({
@@ -137,7 +138,7 @@ export async function saveShopProfile(
     });
   } catch (error: any) {
     console.error("Error in save shop profile endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -162,7 +163,7 @@ export async function getInsurerProfile(
 
     if (error) {
       console.error("Error fetching insurer profile:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({
@@ -171,7 +172,7 @@ export async function getInsurerProfile(
     });
   } catch (error: any) {
     console.error("Error in get insurer profile endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -199,7 +200,7 @@ export async function saveInsurerProfile(
 
     if (error) {
       console.error("Error saving insurer profile:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({
@@ -208,7 +209,7 @@ export async function saveInsurerProfile(
     });
   } catch (error: any) {
     console.error("Error in save insurer profile endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 

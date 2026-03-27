@@ -9,6 +9,7 @@ import {
   isSupportedStorageBucket,
   supportedStorageBuckets,
 } from "../config/storage.ts";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 const PRO_STORAGE_LIMIT_BYTES = 100 * 1024 * 1024 * 1024;
 
@@ -140,7 +141,7 @@ export async function handleUploadPhoto(
       });
 
     if (error) {
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     const { data: { publicUrl } } = supabase.storage
@@ -154,7 +155,7 @@ export async function handleUploadPhoto(
       success: true,
     });
   } catch (error: any) {
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -195,7 +196,7 @@ export async function handleStorageStats(
       bandwidthWarning: false,
     });
   } catch (error: any) {
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -217,7 +218,7 @@ export async function handleCleanupOldReports(
       .lt('created_at', cutoffDate.toISOString());
 
     if (fetchError) {
-      return respond({ error: fetchError.message }, 500);
+      return respond({ error: sanitizeErrorMessage(fetchError) }, 500);
     }
 
     let deletedCount = 0;
@@ -247,7 +248,7 @@ export async function handleCleanupOldReports(
           deletedCount++;
         }
       } catch (err: any) {
-        errors.push({ reportId: report.id, error: err.message });
+        errors.push({ reportId: report.id, error: sanitizeErrorMessage(err) });
       }
     }
 
@@ -259,6 +260,6 @@ export async function handleCleanupOldReports(
       supportedBuckets: supportedStorageBuckets,
     });
   } catch (error: any) {
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }

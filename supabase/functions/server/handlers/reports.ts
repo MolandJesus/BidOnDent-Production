@@ -6,6 +6,7 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { findExistingProfile } from "./profiles.ts";
 import { softVerifyClerkMutation } from "../utils/clerk.ts";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -82,13 +83,13 @@ export async function createReport(
 
     if (error) {
       console.error('Error saving damage report:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true, report: data });
   } catch (error: any) {
     console.error('Error in save damage report endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -121,13 +122,13 @@ export async function getReports(
 
     if (error) {
       console.error('Error fetching damage reports:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ reports: data });
   } catch (error: any) {
     console.error('Error in get damage reports endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -165,13 +166,13 @@ export async function updateReport(
 
     if (error) {
       console.error('Error updating damage report:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true, report: data });
   } catch (error: any) {
     console.error('Error in update damage report endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -188,13 +189,13 @@ export async function getMarketplaceReports(
 
     if (error) {
       console.error('Error fetching marketplace reports:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ reports: data });
   } catch (error: any) {
     console.error('Error in marketplace reports endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -217,12 +218,12 @@ export async function deleteReport(
 
     if (error) {
       console.error('Error deleting report:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true, message: 'Report deleted' });
   } catch (error: any) {
     console.error('Error in delete report endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }

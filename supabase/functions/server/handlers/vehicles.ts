@@ -5,6 +5,7 @@
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { findExistingProfile } from "./profiles.ts";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -41,8 +42,11 @@ export async function saveVehicle(
       return respond({ error: 'Missing clerkUserId' }, 400);
     }
 
-    // Convert year to number if it's a string
+    // Convert year to number if it's a string and validate range
     const yearNum = typeof vehicle.year === 'string' ? parseInt(vehicle.year, 10) : vehicle.year;
+    if (isNaN(yearNum) || yearNum < 1900 || yearNum > new Date().getFullYear() + 2) {
+      return respond({ error: 'Vehicle year must be between 1900 and next year' }, 400);
+    }
 
     // Check if vehicle has a valid UUID (existing vehicle)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -93,13 +97,13 @@ export async function saveVehicle(
 
     if (error) {
       console.error('Error saving vehicle:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true, vehicle: data });
   } catch (error: any) {
     console.error('Error in save vehicle endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -133,13 +137,13 @@ export async function getVehicles(
 
     if (error) {
       console.error('Error fetching vehicles:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ vehicles: data });
   } catch (error: any) {
     console.error('Error in get vehicles endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -168,13 +172,13 @@ export async function deleteVehicleByPost(
 
     if (error) {
       console.error('Error deleting vehicle:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true, message: 'Vehicle deleted' });
   } catch (error: any) {
     console.error('Error in delete vehicle endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -201,12 +205,12 @@ export async function deleteVehicleByDelete(
 
     if (error) {
       console.error('Error deleting vehicle:', error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true, message: 'Vehicle deleted' });
   } catch (error: any) {
     console.error('Error in delete vehicle endpoint:', error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }

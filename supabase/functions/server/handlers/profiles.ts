@@ -1,4 +1,5 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -93,7 +94,7 @@ export async function getUserProfile(
     });
   } catch (error: any) {
     console.error("Error fetching user profile:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -142,7 +143,7 @@ export async function saveUserProfile(
 
     if (error) {
       console.error("Error saving user profile:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({
@@ -151,6 +152,6 @@ export async function saveUserProfile(
     });
   } catch (error: any) {
     console.error("Error saving user profile:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }

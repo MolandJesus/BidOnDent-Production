@@ -16,6 +16,29 @@ export const EdgeErrorCode = {
 } as const;
 
 export type EdgeErrorCode = typeof EdgeErrorCode[keyof typeof EdgeErrorCode];
+
+/**
+ * Sanitize error messages before sending to client.
+ * Removes database schema details, constraint names, and internal paths.
+ * Full error is still logged server-side via console.error.
+ */
+export function sanitizeErrorMessage(error: any): string {
+  const message = typeof error === 'string' ? error : error?.message || 'An unexpected error occurred';
+
+  // Patterns that reveal internal schema/infrastructure
+  if (/violat|constraint|foreign key|unique|duplicate key|relation "/i.test(message)) {
+    return 'The operation could not be completed due to a data conflict.';
+  }
+  if (/permission denied|row-level security/i.test(message)) {
+    return 'You do not have permission to perform this action.';
+  }
+  if (/column "|table "|schema "/i.test(message)) {
+    return 'The operation could not be completed. Please try again.';
+  }
+
+  return message;
+}
+
 /**
  * Strip Supabase function prefix from request paths
  * Handles both cloud deployment and local testing paths

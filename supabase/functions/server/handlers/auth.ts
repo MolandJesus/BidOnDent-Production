@@ -4,6 +4,7 @@
  */
 
 import { verifyToken } from "npm:@clerk/backend";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 function getAuthorizedParties(req: Request): string[] {
   const parties = new Set<string>();
@@ -59,12 +60,12 @@ export async function handleTrackLogin(
     const { error: updateError } = await query
 
     if (updateError) {
-      return respond({ error: updateError.message }, 500)
+      return respond({ error: sanitizeErrorMessage(updateError) }, 500)
     }
 
     return respond({ success: true })
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: sanitizeErrorMessage(error) }, 500)
   }
 }
 
@@ -162,7 +163,7 @@ export async function handleDeleteAccount(
       .eq('clerk_shop_user_id', clerkUserId)
 
     if (deleteBidsResult.error) {
-      return respond({ error: deleteBidsResult.error.message }, 500)
+      return respond({ error: sanitizeErrorMessage(deleteBidsResult.error) }, 500)
     }
 
     const deleteReportsResult = await supabase
@@ -171,7 +172,7 @@ export async function handleDeleteAccount(
       .eq('clerk_user_id', clerkUserId)
 
     if (deleteReportsResult.error) {
-      return respond({ error: deleteReportsResult.error.message }, 500)
+      return respond({ error: sanitizeErrorMessage(deleteReportsResult.error) }, 500)
     }
 
     const deleteVehiclesResult = await supabase
@@ -180,7 +181,7 @@ export async function handleDeleteAccount(
       .eq('clerk_user_id', clerkUserId)
 
     if (deleteVehiclesResult.error) {
-      return respond({ error: deleteVehiclesResult.error.message }, 500)
+      return respond({ error: sanitizeErrorMessage(deleteVehiclesResult.error) }, 500)
     }
 
     const deleteAssignmentsResult = await supabase
@@ -191,7 +192,7 @@ export async function handleDeleteAccount(
       )
 
     if (deleteAssignmentsResult.error) {
-      return respond({ error: deleteAssignmentsResult.error.message }, 500)
+      return respond({ error: sanitizeErrorMessage(deleteAssignmentsResult.error) }, 500)
     }
 
     if (profile?.user_id) {
@@ -201,7 +202,7 @@ export async function handleDeleteAccount(
         return respond(
           {
             error: 'Failed to delete legacy authentication account',
-            details: authDeleteError.message
+            details: sanitizeErrorMessage(authDeleteError)
           },
           500
         )
@@ -215,7 +216,7 @@ export async function handleDeleteAccount(
         .eq('email', profile.email)
 
       if (deleteProfileResult.error) {
-        return respond({ error: deleteProfileResult.error.message }, 500)
+        return respond({ error: sanitizeErrorMessage(deleteProfileResult.error) }, 500)
       }
     }
 
@@ -224,6 +225,6 @@ export async function handleDeleteAccount(
       message: 'Account deleted successfully'
     })
   } catch (error: any) {
-    return respond({ error: error.message || 'Failed to delete account' }, 500)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to delete account' }, 500)
   }
 }

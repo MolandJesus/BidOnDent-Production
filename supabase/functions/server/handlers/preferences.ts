@@ -4,6 +4,7 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -28,7 +29,7 @@ export async function getWebsitePreferences(
 
     if (error) {
       console.error("Error fetching website preferences:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({
@@ -37,7 +38,7 @@ export async function getWebsitePreferences(
     });
   } catch (error: any) {
     console.error("Error in get website preferences endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -75,7 +76,7 @@ export async function saveWebsitePreferences(
 
     if (error) {
       console.error("Error saving website preferences:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({
@@ -84,6 +85,6 @@ export async function saveWebsitePreferences(
     });
   } catch (error: any) {
     console.error("Error in save website preferences endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }

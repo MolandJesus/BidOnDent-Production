@@ -4,6 +4,7 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -132,7 +133,7 @@ export async function getWebsiteRelationships(
 
     if (error) {
       console.error("Error fetching website relationships:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     const relationships = Array.isArray(data) ? data : [];
@@ -157,7 +158,7 @@ export async function getWebsiteRelationships(
     });
   } catch (error: any) {
     console.error("Error in get website relationships endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -191,7 +192,7 @@ export async function saveWebsiteRelationships(
 
     if (deleteError) {
       console.error("Error deleting stale website relationships:", deleteError);
-      return respond({ error: deleteError.message }, 500);
+      return respond({ error: sanitizeErrorMessage(deleteError) }, 500);
     }
 
     const rows = buildRelationshipRows(identity.websiteUserKey, accountType, nextCollections);
@@ -200,7 +201,7 @@ export async function saveWebsiteRelationships(
 
       if (insertError) {
         console.error("Error saving website relationships:", insertError);
-        return respond({ error: insertError.message }, 500);
+        return respond({ error: sanitizeErrorMessage(insertError) }, 500);
       }
     }
 
@@ -211,6 +212,6 @@ export async function saveWebsiteRelationships(
     });
   } catch (error: any) {
     console.error("Error in save website relationships endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }

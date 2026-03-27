@@ -1,5 +1,6 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { softVerifyClerkMutation } from "../utils/clerk.ts";
+import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -83,13 +84,13 @@ export async function createBid(
 
     if (error) {
       console.error("Error saving bid:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true, bid: data });
   } catch (error: any) {
     console.error("Error in create bid endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -116,7 +117,7 @@ export async function getBids(
 
       if (error) {
         console.error("Error fetching bids by reportId:", error);
-        return respond({ error: error.message }, 500);
+        return respond({ error: sanitizeErrorMessage(error) }, 500);
       }
       return respond({ bids: await enrichBidsWithGeo(data, supabase) });
     }
@@ -129,7 +130,7 @@ export async function getBids(
 
       if (reportsError) {
         console.error("Error fetching customer reports for bids:", reportsError);
-        return respond({ error: reportsError.message }, 500);
+        return respond({ error: sanitizeErrorMessage(reportsError) }, 500);
       }
 
       if (!reports || reports.length === 0) {
@@ -146,7 +147,7 @@ export async function getBids(
 
       if (error) {
         console.error("Error fetching bids for customer:", error);
-        return respond({ error: error.message }, 500);
+        return respond({ error: sanitizeErrorMessage(error) }, 500);
       }
       return respond({ bids: await enrichBidsWithGeo(data, supabase) });
     }
@@ -161,7 +162,7 @@ export async function getBids(
 
       if (error) {
         console.error("Error fetching bids by shop user:", error);
-        return respond({ error: error.message }, 500);
+        return respond({ error: sanitizeErrorMessage(error) }, 500);
       }
       return respond({ bids: await enrichBidsWithGeo(data, supabase) });
     }
@@ -169,7 +170,7 @@ export async function getBids(
     return respond({ error: "Missing reportId, clerkUserId, or customerClerkUserId" }, 400);
   } catch (error: any) {
     console.error("Error in get bids endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -209,7 +210,7 @@ export async function updateBidStatus(
 
     if (error) {
       console.error("Error updating bid status:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     // Business rule: accepting a bid auto-rejects all other pending bids on the same report
@@ -230,7 +231,7 @@ export async function updateBidStatus(
     return respond({ success: true, bid: data });
   } catch (error: any) {
     console.error("Error in update bid status endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }
 
@@ -260,12 +261,12 @@ export async function deleteBid(
 
     if (error) {
       console.error("Error deleting bid:", error);
-      return respond({ error: error.message }, 500);
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
     return respond({ success: true });
   } catch (error: any) {
     console.error("Error in delete bid endpoint:", error);
-    return respond({ error: error.message }, 500);
+    return respond({ error: sanitizeErrorMessage(error) }, 500);
   }
 }

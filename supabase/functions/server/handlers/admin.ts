@@ -5,6 +5,7 @@
 
 import { config } from '../config/constants.ts'
 import { verifyClerkSessionRequest } from '../utils/clerk.ts'
+import { sanitizeErrorMessage } from '../utils/helpers.ts'
 
 type SubmissionStatus = 'submitted' | 'reviewing' | 'approved' | 'rejected'
 
@@ -100,7 +101,7 @@ export async function handleAdminSetup(
         email_confirm: true,
         user_metadata: { name: 'Admin User', phone: '', user_type: 'customer' }
       })
-      if (updateError) return respond({ error: updateError.message }, 500)
+      if (updateError) return respond({ error: sanitizeErrorMessage(updateError) }, 500)
     } else {
       const { data: userData, error: createError } = await supabase.auth.admin.createUser({
         email,
@@ -108,7 +109,7 @@ export async function handleAdminSetup(
         email_confirm: true,
         user_metadata: { name: 'Admin User', phone: '', user_type: 'customer' }
       })
-      if (createError) return respond({ error: createError.message }, 500)
+      if (createError) return respond({ error: sanitizeErrorMessage(createError) }, 500)
       if (!userData.user) return respond({ error: 'No user data returned' }, 500)
       userId = userData.user.id
     }
@@ -126,7 +127,7 @@ export async function handleAdminSetup(
       { onConflict: 'user_id' }
     )
 
-    if (profileError) return respond({ error: profileError.message }, 500)
+    if (profileError) return respond({ error: sanitizeErrorMessage(profileError) }, 500)
 
     return respond({
       success: true,
@@ -134,7 +135,7 @@ export async function handleAdminSetup(
       userId
     })
   } catch (error: any) {
-    return respond({ error: error.message || 'Failed to set up admin account' }, 500)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to set up admin account' }, 500)
   }
 }
 
@@ -157,7 +158,7 @@ export async function handleCheckAdminExists(
       totalUsers: existingUsers?.users?.length || 0
     })
   } catch (error: any) {
-    return respond({ exists: false, error: error.message }, 200)
+    return respond({ exists: false, error: sanitizeErrorMessage(error) }, 200)
   }
 }
 
@@ -198,7 +199,7 @@ export async function handleCreateUser(
         email_confirm: true,
         user_metadata: { name: name || 'Test Account', phone: '', user_type: account_type }
       })
-      if (updateError) return respond({ error: updateError.message }, 500)
+      if (updateError) return respond({ error: sanitizeErrorMessage(updateError) }, 500)
     } else {
       const { data: userData, error: createError } = await supabase.auth.admin.createUser({
         email,
@@ -206,7 +207,7 @@ export async function handleCreateUser(
         email_confirm: true,
         user_metadata: { name: name || 'Test Account', phone: '', user_type: account_type }
       })
-      if (createError) return respond({ error: createError.message }, 500)
+      if (createError) return respond({ error: sanitizeErrorMessage(createError) }, 500)
       if (!userData.user) return respond({ error: 'No user data returned' }, 500)
       userId = userData.user.id
     }
@@ -227,7 +228,7 @@ export async function handleCreateUser(
     if (profileError) {
       return respond(
         {
-          error: `User ${isUpdate ? 'updated' : 'created'} but profile error: ${profileError.message}`,
+          error: `User ${isUpdate ? 'updated' : 'created'} but profile error: ${sanitizeErrorMessage(profileError)}`,
           userId
         },
         500
@@ -242,7 +243,7 @@ export async function handleCreateUser(
       message: isUpdate ? 'User updated and profile synced' : 'User created successfully'
     })
   } catch (error: any) {
-    return respond({ error: error.message || 'Failed to create user' }, 500)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to create user' }, 500)
   }
 }
 
@@ -279,13 +280,13 @@ export async function handleDeleteUser(
     const userId = profiles.user_id
 
     const { error: deleteAuthError } = await supabase.auth.admin.deleteUser(userId)
-    if (deleteAuthError) return respond({ error: deleteAuthError.message }, 500)
+    if (deleteAuthError) return respond({ error: sanitizeErrorMessage(deleteAuthError) }, 500)
 
     await supabase.from('profiles').delete().eq('user_id', userId)
 
     return respond({ success: true, email, userId })
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: sanitizeErrorMessage(error) }, 500)
   }
 }
 
@@ -333,7 +334,7 @@ export async function handleManageAdmin(
       message: `${targetEmail} ${promote ? 'promoted to admin' : 'demoted from admin'}`
     })
   } catch (error: any) {
-    return respond({ error: error.message || 'Failed to manage admin' }, 500)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to manage admin' }, 500)
   }
 }
 
@@ -348,7 +349,7 @@ export async function handleListUsers(
     const { data: authData } = await supabase.auth.admin.listUsers()
     return respond({ users: authData?.users || [] })
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: sanitizeErrorMessage(error) }, 500)
   }
 }
 
@@ -378,7 +379,7 @@ export async function handleListProfiles(
     const { data, error } = await query
 
     if (error) {
-      return respond({ error: error.message }, 500)
+      return respond({ error: sanitizeErrorMessage(error) }, 500)
     }
 
     return respond({
@@ -386,7 +387,7 @@ export async function handleListProfiles(
       success: true,
     })
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: sanitizeErrorMessage(error) }, 500)
   }
 }
 
@@ -413,12 +414,12 @@ export async function handleDeleteUsers(
       try {
         const { error: authError } = await supabase.auth.admin.deleteUser(userId)
         if (authError) {
-          errors.push({ userId, error: authError.message })
+          errors.push({ userId, error: sanitizeErrorMessage(authError) })
         } else {
           deleted++
         }
       } catch (error: any) {
-        errors.push({ userId, error: error.message })
+        errors.push({ userId, error: sanitizeErrorMessage(error) })
       }
     }
 
@@ -428,7 +429,7 @@ export async function handleDeleteUsers(
       errors: errors.length > 0 ? errors : undefined
     })
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: sanitizeErrorMessage(error) }, 500)
   }
 }
 
@@ -472,7 +473,7 @@ export async function handleCreateTestAccount(
     })
 
     if (profileError) {
-      return respond({ error: profileError.message }, 500)
+      return respond({ error: sanitizeErrorMessage(profileError) }, 500)
     }
 
     return respond({
@@ -482,7 +483,7 @@ export async function handleCreateTestAccount(
       userType
     })
   } catch (error: any) {
-    return respond({ error: error.message }, 500)
+    return respond({ error: sanitizeErrorMessage(error) }, 500)
   }
 }
 
@@ -519,9 +520,9 @@ export async function handleGetIntakeOperations(
       return respond(
         {
           error:
-            shopsResult.error?.message ||
-            insurersResult.error?.message ||
-            eventsResult.error?.message ||
+            sanitizeErrorMessage(shopsResult.error) ||
+            sanitizeErrorMessage(insurersResult.error) ||
+            sanitizeErrorMessage(eventsResult.error) ||
             'Failed to load intake operations data',
         },
         500
@@ -535,7 +536,7 @@ export async function handleGetIntakeOperations(
     })
   } catch (error: any) {
     const status = getAdminErrorStatus(error)
-    return respond({ error: error.message || 'Failed to load intake operations' }, status)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to load intake operations' }, status)
   }
 }
 
@@ -578,7 +579,7 @@ export async function handleUpdateIntakeSubmissionStatus(
       .maybeSingle()
 
     if (updateError) {
-      return respond({ error: updateError.message }, 500)
+      return respond({ error: sanitizeErrorMessage(updateError) }, 500)
     }
 
     if (!updatedSubmission) {
@@ -596,7 +597,7 @@ export async function handleUpdateIntakeSubmissionStatus(
     })
 
     if (activityError) {
-      return respond({ error: activityError.message }, 500)
+      return respond({ error: sanitizeErrorMessage(activityError) }, 500)
     }
 
     return respond({
@@ -605,6 +606,6 @@ export async function handleUpdateIntakeSubmissionStatus(
     })
   } catch (error: any) {
     const status = getAdminErrorStatus(error)
-    return respond({ error: error.message || 'Failed to update submission status' }, status)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to update submission status' }, status)
   }
 }
