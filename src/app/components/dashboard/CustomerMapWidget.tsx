@@ -128,7 +128,7 @@ export default function CustomerMapWidget({
     <>
       {/* ── Compact widget card ── */}
       <section
-        className="bd-glass-card p-4 md:p-5 max-h-[340px] md:max-h-[380px]"
+        className="bd-glass-card p-4 md:p-5"
         style={
           isLight
             ? {
@@ -168,7 +168,13 @@ export default function CustomerMapWidget({
           </div>
           <button
             type="button"
-            onClick={() => setIsMapExpanded(true)}
+            onClick={() => {
+              if (onViewShops) {
+                onViewShops();
+              } else {
+                setIsMapExpanded(true);
+              }
+            }}
             className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 min-h-[44px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.96] shadow-md"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,

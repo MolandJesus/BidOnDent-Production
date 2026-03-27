@@ -406,7 +406,7 @@ export default function ReportScreen({
       />
 
       <div
-        className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)] relative overflow-hidden"
+        className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)] relative"
         style={{
           background: isLightAppearance
             ? "linear-gradient(180deg, rgba(240, 248, 255, 0.5) 0%, rgba(226, 238, 250, 0.4) 100%)"
@@ -431,7 +431,7 @@ export default function ReportScreen({
           </>
         )}
         <div className="max-w-4xl mx-auto relative">
-          <div className="bd-glass-card overflow-hidden">
+          <div className="bd-glass-card">
             <AnimatePresence mode="wait">
               <motion.div
                 key={step}
