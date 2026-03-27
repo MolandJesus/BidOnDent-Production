@@ -53,11 +53,25 @@ const SHOP_LOCATION_DIRECTORY: Record<number, ShopLocationRecord> = {
     zipCode: "11550",
   },
   6: {
-    coordinates: { latitude: 41.445,  longitude: -74.4229 },
+    coordinates: { latitude: 41.445, longitude: -74.4229 },
     address: "60 Dolson Ave",
     city: "Middletown",
     state: "NY",
     zipCode: "10940",
+  },
+  7: {
+    coordinates: { latitude: 40.9115, longitude: -73.7826 },
+    address: "525 Main St",
+    city: "New Rochelle",
+    state: "NY",
+    zipCode: "10801",
+  },
+  8: {
+    coordinates: { latitude: 41.0762, longitude: -73.859 },
+    address: "78 Broadway",
+    city: "Tarrytown",
+    state: "NY",
+    zipCode: "10591",
   },
 };
 
@@ -83,6 +97,16 @@ const SUGGESTED_SEARCH_ORIGINS: Place[] = [
     placeId: "white-plains-ny",
   },
   {
+    name: "New Rochelle",
+    address: "515 North Ave",
+    city: "New Rochelle",
+    state: "NY",
+    zipCode: "10801",
+    latitude: 40.9115,
+    longitude: -73.7826,
+    placeId: "new-rochelle-ny",
+  },
+  {
     name: "Spring Valley",
     address: "200 N Main St",
     city: "Spring Valley",
@@ -93,6 +117,26 @@ const SUGGESTED_SEARCH_ORIGINS: Place[] = [
     placeId: "spring-valley-ny",
   },
   {
+    name: "Hempstead",
+    address: "1 Washington St",
+    city: "Hempstead",
+    state: "NY",
+    zipCode: "11550",
+    latitude: 40.7062,
+    longitude: -73.618,
+    placeId: "hempstead-ny",
+  },
+  {
+    name: "Middletown",
+    address: "16 James St",
+    city: "Middletown",
+    state: "NY",
+    zipCode: "10940",
+    latitude: 41.445,
+    longitude: -74.4229,
+    placeId: "middletown-ny",
+  },
+  {
     name: "Poughkeepsie",
     address: "62 Civic Center Plaza",
     city: "Poughkeepsie",
@@ -101,6 +145,16 @@ const SUGGESTED_SEARCH_ORIGINS: Place[] = [
     latitude: 41.7004,
     longitude: -73.9209,
     placeId: "poughkeepsie-ny",
+  },
+  {
+    name: "Tarrytown",
+    address: "1 Depot Plaza",
+    city: "Tarrytown",
+    state: "NY",
+    zipCode: "10591",
+    latitude: 41.0762,
+    longitude: -73.859,
+    placeId: "tarrytown-ny",
   },
 ];
 

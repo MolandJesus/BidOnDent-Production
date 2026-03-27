@@ -6,6 +6,7 @@ import type {
   MapViewportBounds,
   SearchOrigin,
 } from "../../types/mapDomain";
+
 import type { ShopBusinessProfile } from "../../types/networkProfiles";
 import {
   buildShopRecommendations,
@@ -252,6 +253,7 @@ export function buildShopMapListings({
   origin,
   directoryInsurers = [],
   directoryShops = [],
+  viewportBounds,
 }: {
   userType: MarketUserType;
   searchQuery?: string;
@@ -264,6 +266,7 @@ export function buildShopMapListings({
   origin?: SearchOrigin;
   directoryInsurers?: Parameters<typeof getInsuranceDirectory>[0];
   directoryShops?: ShopBusinessProfile[];
+  viewportBounds?: MapViewportBounds;
 }) {
   const minimumRating = filters?.minRating ?? filterRating;
   const baseRecommendations = buildShopRecommendations({
@@ -314,6 +317,7 @@ export function buildShopMapListings({
       minRating: minimumRating,
     },
     listings: sortListings(mergedListings, sortBy),
+    viewportBounds,
   });
 }
 

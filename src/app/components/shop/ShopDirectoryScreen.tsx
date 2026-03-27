@@ -201,6 +201,7 @@ export default function ShopDirectoryScreen({
         onSelectShop={session.setSelectedShopId}
         onSetMapCenter={session.setMapCenter}
         onSetMapZoom={session.setMapZoom}
+        onSetMapViewportBounds={session.setMapViewportBounds}
         onSwitchMode={session.setMapViewMode}
         onToggleRoleCollection={session.handleToggleRoleCollection}
         onToggleTheme={session.handleToggleTheme}
@@ -244,9 +245,9 @@ export default function ShopDirectoryScreen({
       {!session.showMapPane && deviationPromptNode}
 
       <section className="overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:border-white/[0.08] bg-transparent md:shadow-none">
-        <div className={`min-w-0 ${session.showMapPane ? `lg:grid ${mapShellLayoutClass}` : ""}`}>
+        <div className={`min-w-0 ${session.showMapPane ? `lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}>
           <aside
-            className={`${session.showMapPane ? "lg:border-r" : ""} min-h-0 border-white/[0.08] bg-transparent`}
+            className={`${session.showMapPane ? "lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-180px)]" : ""} min-h-0 border-white/[0.08] bg-transparent`}
           >
             <div className="flex h-full flex-col">
               <ShopDirectorySearchPanel
@@ -255,6 +256,7 @@ export default function ShopDirectoryScreen({
                 filterRating={session.filterRating}
                 mapTheme={session.mapTheme}
                 mapViewMode={session.mapViewMode}
+                onClearAreaSearch={session.handleClearAreaSearch}
                 onClearOrigin={() => session.setSelectedOrigin(null)}
                 onFilterRatingChange={session.setFilterRating}
                 onOpenRelatedScreen={onOpenRelatedScreen}
@@ -270,6 +272,7 @@ export default function ShopDirectoryScreen({
                 roleHighlights={session.roleHighlights}
                 savedPlaces={session.savedPlaces}
                 searchQuery={session.searchQuery}
+                searchWithinViewport={session.searchWithinViewport}
                 secondaryColor={secondaryColor}
                 selectedOrigin={session.selectedOrigin}
                 showMapPane={session.showMapPane}
@@ -284,27 +287,31 @@ export default function ShopDirectoryScreen({
                 primaryColor={primaryColor}
                 compactCards={compactCards}
               />
-
             </div>
           </aside>
 
           {session.showMapPane && (
-            <div className="min-h-[460px] border-t border-white/10 lg:min-h-[820px] lg:border-t-0">
+            <div className="h-[540px] border-t border-white/10 lg:h-[calc(100vh-180px)] lg:border-t-0 lg:sticky lg:top-0">
               <ShopDirectoryMapPane
                 initialCenter={session.mapCenter || getDefaultMapCenter()}
                 initialZoom={session.mapZoom}
                 mapTheme={session.mapTheme}
+                onClearAreaSearch={session.handleClearAreaSearch}
+                onSearchInArea={session.handleSearchInArea}
                 onSelectShop={session.setSelectedShopId}
-                onViewportChange={(center, zoom) => {
+                onViewportChange={(center, zoom, bounds) => {
                   session.setMapCenter(center);
                   session.setMapZoom(zoom);
+                  session.setMapViewportBounds(bounds);
                 }}
                 routeOptions={session.routeOptions}
                 savedPlaces={session.savedPlaces}
+                searchWithinViewport={session.searchWithinViewport}
                 selectedOrigin={session.selectedOrigin}
                 selectedRouteId={session.selectedRoute?.id}
                 selectedShopId={session.selectedShopId}
                 shops={session.mapListings}
+                suppressHeader
                 userType={userType}
               >
                 <ShopDirectoryMapOverlays
@@ -312,6 +319,7 @@ export default function ShopDirectoryScreen({
                   intelligenceCallouts={session.roleHighlights.callouts}
                   intelligenceTitle={session.roleHighlights.title}
                   mapTheme={session.mapTheme}
+                  navigationMode={navigationMode}
                   onSelectRoute={session.setSelectedRouteId}
                   routeOptions={session.routeOptions}
                   routeSummary={session.routeSummary}

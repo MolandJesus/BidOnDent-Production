@@ -1,6 +1,7 @@
 import "leaflet/dist/leaflet.css";
 
-import { MapPin, Shield, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Search, Shield, Sparkles, X } from "lucide-react";
 import { CircleMarker, MapContainer, Polyline, Popup, TileLayer, Tooltip } from "react-leaflet";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
@@ -36,6 +37,12 @@ type ShopDirectoryMapPaneProps = {
   children?: React.ReactNode;
   /** When true, suppress the built-in top gradient header badges (used in immersive mode) */
   suppressHeader?: boolean;
+  /** Whether the search-in-area filter is currently active */
+  searchWithinViewport?: boolean;
+  /** Called when the user taps "Search in this area" after panning */
+  onSearchInArea?: () => void;
+  /** Called when the user clears the area search */
+  onClearAreaSearch?: () => void;
 };
 
 export default function ShopDirectoryMapPane({
@@ -54,7 +61,11 @@ export default function ShopDirectoryMapPane({
   onViewportChange,
   children,
   suppressHeader,
+  searchWithinViewport,
+  onSearchInArea,
+  onClearAreaSearch,
 }: ShopDirectoryMapPaneProps) {
+  const [hasPanned, setHasPanned] = useState(false);
   const selectedShop = shops.find((shop) => shop.id === selectedShopId) || shops[0] || null;
   const selectedRoute =
     routeOptions.find((route) => route.id === selectedRouteId) || routeOptions[0] || null;
@@ -128,7 +139,10 @@ export default function ShopDirectoryMapPane({
           fitSignature={fitSignature}
           initialCenter={initialCenter}
           initialZoom={initialZoom}
-          onViewportChange={onViewportChange}
+          onViewportChange={(center, zoom, bounds) => {
+            setHasPanned(true);
+            onViewportChange(center, zoom, bounds);
+          }}
           preserveViewport={preserveViewport}
           selectedOrigin={selectedOrigin}
           selectedShopId={selectedShopId}
@@ -297,6 +311,45 @@ export default function ShopDirectoryMapPane({
           </div>
         </div>
       </div>
+
+      {/* Search in this area pill — appears after first pan, hides in area-search mode */}
+      {onSearchInArea && hasPanned && !searchWithinViewport && (
+        <div className="pointer-events-auto absolute inset-x-0 top-4 z-[600] flex justify-center">
+          <button
+            type="button"
+            onClick={onSearchInArea}
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${
+              isDark
+                ? "border-white/20 bg-slate-950/80 text-white hover:bg-slate-950/95"
+                : "border-black/10 bg-white/90 text-slate-800 hover:bg-white"
+            }`}
+          >
+            <Search className="h-3.5 w-3.5" />
+            Search in this area
+          </button>
+        </div>
+      )}
+
+      {/* Clear area search pill — visible while area search is active */}
+      {onClearAreaSearch && searchWithinViewport && (
+        <div className="pointer-events-auto absolute inset-x-0 top-4 z-[600] flex justify-center">
+          <button
+            type="button"
+            onClick={() => {
+              onClearAreaSearch();
+              setHasPanned(false);
+            }}
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${
+              isDark
+                ? "border-blue-400/40 bg-blue-600/30 text-white hover:bg-blue-600/45"
+                : "border-blue-400/40 bg-blue-100 text-blue-700 hover:bg-blue-200"
+            }`}
+          >
+            <X className="h-3.5 w-3.5" />
+            Searching this area
+          </button>
+        </div>
+      )}
 
       {/* Floating overlay children (route preview, intelligence, deviation prompt) */}
       {children}

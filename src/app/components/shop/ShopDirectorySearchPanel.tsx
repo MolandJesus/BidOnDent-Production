@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { Bookmark, Layers3, MapPin, Plus, Search, SunMoon } from "lucide-react";
+import { Bookmark, Layers3, MapPin, MapPinOff, Plus, Search, SunMoon } from "lucide-react";
 import type { ShopSortOption } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import { getRoleCollectionTitle } from "../../services/intelligence/shopMapExperience";
@@ -48,6 +48,8 @@ type ShopDirectorySearchPanelProps = {
   onSaveOrigin: () => void;
   onToggleTheme: () => void;
   onOpenRelatedScreen?: () => void;
+  onClearAreaSearch?: () => void;
+  searchWithinViewport?: boolean;
   RoleIcon: React.ElementType;
 };
 
@@ -77,6 +79,8 @@ export default function ShopDirectorySearchPanel({
   onSaveOrigin,
   onToggleTheme,
   onOpenRelatedScreen,
+  onClearAreaSearch,
+  searchWithinViewport,
   RoleIcon,
 }: ShopDirectorySearchPanelProps) {
   const roleCollectionTitle = getRoleCollectionTitle(userType);
@@ -229,6 +233,17 @@ export default function ShopDirectorySearchPanel({
                 <SunMoon className="h-4 w-4" />
                 {mapTheme === "light" ? "Dark tiles" : "Light tiles"}
               </button>
+
+              {searchWithinViewport && onClearAreaSearch && (
+                <button
+                  className="inline-flex items-center gap-2 bd-glass-control border-blue-400/40 bg-blue-500/15 px-3 py-2 text-sm font-medium text-blue-200 hover:bg-blue-500/25"
+                  onClick={onClearAreaSearch}
+                  type="button"
+                >
+                  <MapPinOff className="h-4 w-4" />
+                  Map area active — clear
+                </button>
+              )}
             </div>
           </div>
         </div>

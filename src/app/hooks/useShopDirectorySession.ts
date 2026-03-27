@@ -29,6 +29,7 @@ import type {
   Coordinates,
   MapTheme,
   MapViewMode,
+  MapViewportBounds,
   Place,
   RecentSearch,
   SavedPlace,
@@ -101,6 +102,10 @@ export function useShopDirectorySession({
     savedMemory.mapSession?.lastMapCenter
   );
   const [mapZoom, setMapZoom] = useState<number | undefined>(savedMemory.mapSession?.lastMapZoom);
+  const [mapViewportBounds, setMapViewportBounds] = useState<MapViewportBounds | undefined>(
+    undefined
+  );
+  const [searchWithinViewport, setSearchWithinViewport] = useState(false);
   const [sessionIntelligenceOpen, setSessionIntelligenceOpen] = useState(
     savedMemory.shopDirectory.sessionIntelligenceOpen
   );
@@ -134,12 +139,14 @@ export function useShopDirectorySession({
     directoryInsurers: inventory.insurers,
     directoryShops: inventory.shops,
     filterRating,
+    filters: searchWithinViewport ? { searchWithinViewport: true } : undefined,
     origin: selectedOrigin,
     reports,
     searchQuery: deferredSearchQuery,
     sortBy,
     userType,
     vehicles,
+    viewportBounds: mapViewportBounds,
   });
 
   const summary = buildShopIntelligenceSummary(mapListings, {
@@ -378,6 +385,14 @@ export function useShopDirectorySession({
     setMapTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
   };
 
+  const handleSearchInArea = () => {
+    setSearchWithinViewport(true);
+  };
+
+  const handleClearAreaSearch = () => {
+    setSearchWithinViewport(false);
+  };
+
   return {
     // State
     searchQuery,
@@ -393,6 +408,8 @@ export function useShopDirectorySession({
     selectedRouteId,
     mapCenter,
     mapZoom,
+    mapViewportBounds,
+    searchWithinViewport,
     sessionIntelligenceOpen,
     // Setters
     setSearchQuery,
@@ -406,6 +423,7 @@ export function useShopDirectorySession({
     setSelectedRouteId,
     setMapCenter,
     setMapZoom,
+    setMapViewportBounds,
     setSessionIntelligenceOpen,
     // Computed
     mapListings,
@@ -432,5 +450,7 @@ export function useShopDirectorySession({
     handleToggleRoleCollection,
     handleOpenShopDirections,
     handleToggleTheme,
+    handleSearchInArea,
+    handleClearAreaSearch,
   };
 }
