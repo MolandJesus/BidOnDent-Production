@@ -4,9 +4,11 @@ import { ArrowLeft, Clock, Sparkles } from "lucide-react";
 import ShopRatingModal from "../shop/ShopRatingModal";
 import BidCardArticle from "./BidCardArticle";
 import type { Bid, DamageReport } from "../../types";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type BidsScreenProps = {
   primaryColor?: string;
+  appearanceMode?: DashboardAppearanceMode;
   onBack?: () => void;
   onStartReport?: () => void;
   userType?: "customer" | "shop" | "insurer";
@@ -26,6 +28,7 @@ type FilterType = "all" | "lowest" | "fastest" | "rating";
 
 export default function BidsScreen({
   primaryColor = "#003d82",
+  appearanceMode = "map-dark",
   onBack,
   onStartReport,
   userType = "customer",
@@ -34,6 +37,7 @@ export default function BidsScreen({
   onAcceptBid,
   onRejectBid,
 }: BidsScreenProps) {
+  const isLight = appearanceMode === "light";
   const [activeBid, setActiveBid] = useState<string | number | null>(null);
   const [acceptedBidId, setAcceptedBidId] = useState<string | number | null>(null);
   const [filter, setFilter] = useState<FilterType>("all");
@@ -107,24 +111,29 @@ export default function BidsScreen({
           transition={{ duration: 0.3 }}
           className="relative overflow-hidden bd-glass-card p-5"
           style={{
-            background:
-              "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.82) 100%)",
-            borderColor: "rgba(96, 165, 250, 0.24)",
+            background: isLight
+              ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
+              : "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.82) 100%)",
+            borderColor: isLight ? "rgba(148,163,184,0.30)" : "rgba(96, 165, 250, 0.24)",
           }}
         >
           <div className="flex items-center gap-3">
             {onBack && (
               <button
-                className="p-2 rounded-xl hover:bg-white/10 transition-colors"
+                className={`p-2 rounded-xl transition-colors ${isLight ? "hover:bg-slate-100" : "hover:bg-white/10"}`}
                 onClick={onBack}
                 aria-label="Go back to dashboard"
               >
-                <ArrowLeft className="w-5 h-5 text-blue-100" />
+                <ArrowLeft className={`w-5 h-5 ${isLight ? "text-blue-600" : "text-blue-100"}`} />
               </button>
             )}
             <div className="flex-1">
-              <h1 className="font-semibold text-2xl text-slate-100">Repair Bids</h1>
-              <p className="text-blue-100/80">
+              <h1
+                className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
+              >
+                Repair Bids
+              </h1>
+              <p className={isLight ? "text-slate-500" : "text-blue-100/80"}>
                 No live bids have been submitted for your reports yet.
               </p>
             </div>
@@ -137,16 +146,25 @@ export default function BidsScreen({
           transition={{ duration: 0.25, delay: 0.05 }}
           className="bd-glass-card p-5 sm:p-6 text-center"
           style={{
-            background:
-              "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-            borderColor: "rgba(96, 165, 250, 0.20)",
+            background: isLight
+              ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
+              : "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+            borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.20)",
           }}
         >
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-blue-400/15 border border-blue-300/20">
-            <Clock className="h-6 w-6 text-blue-200" />
+          <div
+            className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border ${
+              isLight ? "bg-blue-50 border-blue-200/50" : "bg-blue-400/15 border-blue-300/20"
+            }`}
+          >
+            <Clock className={`h-6 w-6 ${isLight ? "text-blue-500" : "text-blue-200"}`} />
           </div>
-          <h2 className="text-lg font-semibold text-slate-100">Waiting for shop responses</h2>
-          <p className="mt-2 text-sm leading-relaxed text-blue-100/80 max-w-sm mx-auto">
+          <h2 className={`text-lg font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+            Waiting for shop responses
+          </h2>
+          <p
+            className={`mt-2 text-sm leading-relaxed max-w-sm mx-auto ${isLight ? "text-slate-500" : "text-blue-100/80"}`}
+          >
             Once you submit a damage report, nearby shops will review it and send competitive bids.
             Compare pricing, timelines, and ratings right here.
           </p>
@@ -218,40 +236,55 @@ export default function BidsScreen({
         transition={{ duration: 0.3 }}
         className="relative overflow-hidden bd-glass-card p-4 md:p-5"
         style={{
-          background:
-            "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
-          borderColor: "rgba(96, 165, 250, 0.24)",
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
+            : "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
+          borderColor: isLight ? "rgba(148,163,184,0.30)" : "rgba(96, 165, 250, 0.24)",
         }}
       >
         <div
           className="pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)",
+            background: isLight
+              ? "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)"
+              : "radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)",
           }}
         />
         <div
           className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)",
+            background: isLight
+              ? "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)"
+              : "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)",
           }}
         />
         <div className="flex items-center gap-3">
           {onBack && (
             <button
-              className="p-2 rounded-xl hover:bg-white/10 transition-colors"
+              className={`p-2 rounded-xl transition-colors ${isLight ? "hover:bg-slate-100" : "hover:bg-white/10"}`}
               onClick={onBack}
               aria-label="Go back to dashboard"
             >
-              <ArrowLeft className="w-5 h-5 text-blue-100" />
+              <ArrowLeft className={`w-5 h-5 ${isLight ? "text-blue-600" : "text-blue-100"}`} />
             </button>
           )}
           <div className="flex-1">
-            <h1 className="font-semibold text-2xl text-slate-100">Repair Bids</h1>
-            <p className="text-blue-100/80">
+            <h1
+              className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
+              Repair Bids
+            </h1>
+            <p className={isLight ? "text-slate-500" : "text-blue-100/80"}>
               {liveBids.length} bid{liveBids.length === 1 ? "" : "s"} for {vehicleLabel}
             </p>
           </div>
-          <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-400/12 text-blue-100 text-sm font-medium border border-blue-300/20">
+          <div
+            className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border ${
+              isLight
+                ? "bg-blue-50 text-blue-700 border-blue-200/50"
+                : "bg-blue-400/12 text-blue-100 border-blue-300/20"
+            }`}
+          >
             <Sparkles className="w-4 h-4" />
             Compare before accepting
           </div>
@@ -259,25 +292,53 @@ export default function BidsScreen({
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div
-            className="rounded-xl px-3 py-2.5 bg-slate-900/25 border border-blue-300/18"
-            style={{ boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
+            className={`rounded-xl px-3 py-2.5 border ${
+              isLight ? "bg-white/70 border-slate-200/50" : "bg-slate-900/25 border-blue-300/18"
+            }`}
+            style={isLight ? {} : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
           >
-            <p className="text-xs uppercase tracking-wide text-blue-200/70">Lowest Bid</p>
-            <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">${lowestPrice}</p>
+            <p
+              className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
+              Lowest Bid
+            </p>
+            <p
+              className={`mt-1 text-xl font-bold tabular-nums ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
+              ${lowestPrice}
+            </p>
           </div>
           <div
-            className="rounded-xl px-3 py-2.5 bg-slate-900/25 border border-blue-300/18"
-            style={{ boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
+            className={`rounded-xl px-3 py-2.5 border ${
+              isLight ? "bg-white/70 border-slate-200/50" : "bg-slate-900/25 border-blue-300/18"
+            }`}
+            style={isLight ? {} : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
           >
-            <p className="text-xs uppercase tracking-wide text-blue-200/70">Average Quote</p>
-            <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">${averagePrice}</p>
+            <p
+              className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
+              Average Quote
+            </p>
+            <p
+              className={`mt-1 text-xl font-bold tabular-nums ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
+              ${averagePrice}
+            </p>
           </div>
           <div
-            className="rounded-xl px-3 py-2.5 bg-slate-900/25 border border-blue-300/18"
-            style={{ boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
+            className={`rounded-xl px-3 py-2.5 border ${
+              isLight ? "bg-white/70 border-slate-200/50" : "bg-slate-900/25 border-blue-300/18"
+            }`}
+            style={isLight ? {} : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
           >
-            <p className="text-xs uppercase tracking-wide text-blue-200/70">Fastest Timeline</p>
-            <p className="mt-1 text-xl font-bold text-slate-100 tabular-nums">
+            <p
+              className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
+              Fastest Timeline
+            </p>
+            <p
+              className={`mt-1 text-xl font-bold tabular-nums ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
               {fastestBidDays}-{fastestBidDays + 1} days
             </p>
           </div>
@@ -290,9 +351,10 @@ export default function BidsScreen({
         transition={{ duration: 0.25, delay: 0.05 }}
         className="bd-glass-card p-3"
         style={{
-          background:
-            "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
-          borderColor: "rgba(96, 165, 250, 0.18)",
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
+            : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
+          borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
         }}
       >
         <div className="flex flex-wrap gap-2">
@@ -302,7 +364,9 @@ export default function BidsScreen({
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
                 filter === item.id
                   ? "text-white border border-blue-400/40 shadow-sm"
-                  : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
+                  : isLight
+                    ? "text-slate-600 bg-slate-100/80 border border-slate-200/60 hover:bg-slate-200/60"
+                    : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
               }`}
               style={
                 filter === item.id
@@ -343,6 +407,7 @@ export default function BidsScreen({
               lowestPrice={lowestPrice}
               primaryColor={primaryColor}
               userType={userType}
+              appearanceMode={appearanceMode}
               userRating={userRated}
               onToggle={() => setActiveBid((prev) => (prev === bid.id ? null : bid.id))}
               onAccept={() => {

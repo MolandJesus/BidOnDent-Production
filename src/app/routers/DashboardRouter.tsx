@@ -226,6 +226,7 @@ export default function DashboardRouter({
                 userType={userType}
                 bids={liveBids.length > 0 ? liveBids : bids}
                 reports={reports}
+                appearanceMode={appearanceMode}
                 onAcceptBid={onAcceptBid}
                 onRejectBid={onRejectBid}
                 onStartReport={() => onTabChange("report")}
