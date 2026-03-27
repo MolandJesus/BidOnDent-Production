@@ -155,47 +155,9 @@ export default function ShopDirectoryMapOverlays({
         </div>
       )}
 
-      {/* Shop action overlay — bottom center, mobile-first */}
-      {hasRoute && selectedShop && (
-        <div
-          className="pointer-events-auto fixed z-[530] flex -translate-x-1/2 flex-col items-center gap-3 px-4 sm:absolute sm:bottom-10 sm:left-1/2 left-1/2"
-          style={{ bottom: "max(env(safe-area-inset-bottom, 0px) + 1.5rem, 1.5rem)" }}
-        >
-          <div className={`rounded-2xl border flex flex-col gap-2 p-4 min-w-[260px] max-w-[95vw] shadow-2xl ${glassPanel}`}>
-            <div className={`mb-2 text-center text-base font-semibold ${isDark ? "text-white" : "text-slate-800"}`}>
-              {selectedShop.name}
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
-              <button
-                className="flex-1 rounded-xl px-6 py-3 text-base font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors min-h-[44px] min-w-[120px]"
-                type="button"
-                onClick={() =>
-                  window.dispatchEvent(
-                    new CustomEvent("shop-bid-action", { detail: { shop: selectedShop } })
-                  )
-                }
-              >
-                Place Bid
-              </button>
-              <button
-                className={`flex-1 rounded-xl px-6 py-3 text-base font-bold transition-colors min-h-[44px] min-w-[120px] border ${isDark ? "text-blue-200 bg-blue-500/15 hover:bg-blue-500/25 border-blue-400/25" : "text-blue-700 bg-blue-50 hover:bg-blue-100 border-blue-200"}`}
-                type="button"
-                onClick={() =>
-                  window.dispatchEvent(
-                    new CustomEvent("shop-accept-action", { detail: { shop: selectedShop } })
-                  )
-                }
-              >
-                Accept
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Route preview — bottom-left floating card */}
+      {/* Route preview — bottom-left floating card, sits above the shop info bar */}
       {showRoute && (
-        <div className="pointer-events-auto absolute bottom-64 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-24">
+        <div className="pointer-events-auto absolute bottom-36 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-32">
           <div className={`rounded-2xl border p-3 shadow-2xl ${glassPanel}`}>
             <div className="flex items-center justify-between">
               <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] ${secondaryText}`}>
