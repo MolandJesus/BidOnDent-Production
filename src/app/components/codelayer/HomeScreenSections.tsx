@@ -101,7 +101,7 @@ export function HomeQuickActions({
       >
         Quick Actions
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 md:gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
         {quickActions.map((action, index) => {
           const Icon = action.icon;
           const iconTone = actionIconTones[index % actionIconTones.length];

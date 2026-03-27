@@ -33,30 +33,30 @@ export default function PhotoGuide({
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-50 p-0 sm:p-2 md:p-4">
+    <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-[60] p-0 sm:p-2 md:p-4">
       <motion.div
-        className="bd-glass-floating rounded-t-2xl sm:rounded-2xl md:rounded-3xl max-w-2xl w-full h-[88dvh] sm:h-auto sm:max-h-[92vh] md:max-h-[90vh] overflow-hidden flex flex-col"
+        className="bd-glass-floating rounded-t-2xl sm:rounded-2xl md:rounded-3xl max-w-2xl w-full h-[85dvh] sm:h-auto sm:max-h-[92vh] md:max-h-[90vh] overflow-hidden flex flex-col"
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
       >
         {/* Header */}
         <div
-          className="p-4 sm:p-5 md:p-6 text-white relative shrink-0"
+          className="p-3 sm:p-5 md:p-6 text-white relative shrink-0"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
           }}
         >
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
-          <div className="flex items-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
+          <div className="flex items-center space-x-3 sm:space-x-4 mb-2 sm:mb-4">
             <motion.div
-              className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
+              className="w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
               key={currentStep}
               initial={{ scale: 0.8, rotate: -10 }}
               animate={{ scale: 1, rotate: 0 }}
@@ -105,12 +105,12 @@ export default function PhotoGuide({
         </div>
 
         {/* Footer Navigation */}
-        <div className="border-t border-white/[0.08] px-3 py-2.5 sm:p-4 bg-white/[0.03] shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
-          <div className="flex justify-between items-center">
+        <div className="border-t border-white/[0.12] px-3 py-3 sm:p-4 bg-white/[0.05] shrink-0 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+          <div className="flex justify-between items-center gap-2">
             <button
               onClick={prevStep}
               disabled={currentStep === 0}
-              className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg font-medium transition-all ${
+              className={`flex items-center space-x-1 sm:space-x-2 px-3 py-2.5 sm:px-4 rounded-lg font-medium transition-all min-h-[44px] ${
                 currentStep === 0
                   ? "text-gray-400 cursor-not-allowed"
                   : "text-slate-300 hover:bg-white/[0.08] active:scale-95"
@@ -120,7 +120,7 @@ export default function PhotoGuide({
               <span className="hidden sm:inline">Previous</span>
             </button>
 
-            <div className="flex space-x-2">
+            <div className="flex space-x-1.5 sm:space-x-2">
               {steps.map((_, index) => (
                 <button
                   key={index}
@@ -143,8 +143,8 @@ export default function PhotoGuide({
             {currentStep < steps.length - 1 ? (
               <button
                 onClick={nextStep}
-                className="flex items-center space-x-2 px-4 py-2.5 rounded-lg text-white font-medium transition-all hover:shadow-md active:scale-95"
-                style={{ backgroundColor: primaryColor }}
+                className="flex items-center space-x-1 sm:space-x-2 px-4 py-2.5 sm:px-5 rounded-lg text-white font-semibold transition-all hover:shadow-md active:scale-95 min-h-[44px] shadow-lg"
+                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)` }}
               >
                 <span>Next</span>
                 <ChevronRight className="w-5 h-5" />
@@ -152,7 +152,8 @@ export default function PhotoGuide({
             ) : (
               <button
                 onClick={onComplete}
-                className="flex items-center space-x-2 px-5 py-2.5 rounded-lg text-white font-medium transition-all hover:shadow-md bg-[#003d82] hover:bg-[#002d62] active:scale-95"
+                className="flex items-center space-x-1 sm:space-x-2 px-4 py-2.5 sm:px-5 rounded-lg text-white font-semibold transition-all hover:shadow-md active:scale-95 min-h-[44px] shadow-lg"
+                style={{ background: `linear-gradient(135deg, #003d82 0%, #00a0e9 100%)` }}
               >
                 <Check className="w-5 h-5" />
                 <span className="hidden sm:inline">Let's Go!</span>
