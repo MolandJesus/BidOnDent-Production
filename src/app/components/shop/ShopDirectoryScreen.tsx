@@ -228,6 +228,7 @@ export default function ShopDirectoryScreen({
         selectedRouteId={session.selectedRouteId}
         selectedShop={session.selectedShop}
         selectedShopId={session.selectedShopId}
+        userCoords={session.userGeolocation.coords}
         userType={userType}
       />
     );
@@ -333,6 +334,7 @@ export default function ShopDirectoryScreen({
                 selectedShopId={session.selectedShopId}
                 shops={session.mapListings}
                 suppressHeader
+                userCoords={session.userGeolocation.coords}
                 userType={userType}
               >
                 <ShopDirectoryMapOverlays

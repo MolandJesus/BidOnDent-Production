@@ -57,6 +57,7 @@ type ShopDirectoryImmersiveMapProps = {
   onToggleTheme: () => void;
   onSwitchMode: (mode: MapViewMode) => void;
   onBack: () => void;
+  userCoords?: Coordinates | null;
 };
 
 export default function ShopDirectoryImmersiveMap({
@@ -92,6 +93,7 @@ export default function ShopDirectoryImmersiveMap({
   onToggleTheme,
   onSwitchMode,
   onBack,
+  userCoords,
 }: ShopDirectoryImmersiveMapProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isDark = mapTheme === "dark";
@@ -145,6 +147,7 @@ export default function ShopDirectoryImmersiveMap({
           selectedShopId={selectedShopId}
           shops={mapListings}
           suppressHeader
+          userCoords={userCoords}
           userType={userType}
         >
           <ShopDirectoryMapOverlays

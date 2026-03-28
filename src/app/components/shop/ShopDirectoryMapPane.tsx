@@ -44,6 +44,8 @@ type ShopDirectoryMapPaneProps = {
   onSearchInArea?: () => void;
   /** Called when the user clears the area search */
   onClearAreaSearch?: () => void;
+  /** User's real-time geolocation coordinates (blue dot on map) */
+  userCoords?: Coordinates | null;
 };
 
 export default function ShopDirectoryMapPane({
@@ -65,6 +67,7 @@ export default function ShopDirectoryMapPane({
   searchWithinViewport,
   onSearchInArea,
   onClearAreaSearch,
+  userCoords,
 }: ShopDirectoryMapPaneProps) {
   const [hasPanned, setHasPanned] = useState(false);
   const selectedShop = shops.find((shop) => shop.id === selectedShopId) || shops[0] || null;
@@ -183,6 +186,30 @@ export default function ShopDirectoryMapPane({
             </Popup>
             <Tooltip direction="top" offset={[0, -8]} opacity={0.95} permanent={false}>
               Starting point
+            </Tooltip>
+          </CircleMarker>
+        )}
+
+        {/* User geolocation blue dot */}
+        {userCoords && (
+          <CircleMarker
+            center={[userCoords.latitude, userCoords.longitude]}
+            fillColor={isDark ? "#60a5fa" : "#2563eb"}
+            fillOpacity={0.95}
+            pathOptions={{ color: "#fff", weight: 3 }}
+            radius={8}
+            stroke
+          >
+            <CircleMarker
+              center={[userCoords.latitude, userCoords.longitude]}
+              fillColor={isDark ? "#60a5fa" : "#3b82f6"}
+              fillOpacity={0.2}
+              pathOptions={{ color: isDark ? "#60a5fa" : "#3b82f6", weight: 1.5 }}
+              radius={22}
+              stroke
+            />
+            <Tooltip direction="top" offset={[0, -12]} opacity={0.95} permanent={false}>
+              Your location
             </Tooltip>
           </CircleMarker>
         )}

@@ -1,5 +1,14 @@
 import type { FormEvent } from "react";
-import { Bookmark, Layers3, MapPin, MapPinOff, Navigation2, Plus, Search, SunMoon } from "lucide-react";
+import {
+  Bookmark,
+  Layers3,
+  MapPin,
+  MapPinOff,
+  Navigation2,
+  Plus,
+  Search,
+  SunMoon,
+} from "lucide-react";
 import type { ShopSortOption } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import { getRoleCollectionTitle } from "../../services/intelligence/shopMapExperience";
