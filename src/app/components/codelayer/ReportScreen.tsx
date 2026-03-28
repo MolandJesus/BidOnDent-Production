@@ -120,26 +120,39 @@ export default function ReportScreen({
     setUploadProgress(`Uploading ${files.length} photo(s)...`);
 
     try {
+      let cloudCount = 0;
+      let fallbackCount = 0;
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        setUploadProgress(`Processing photo ${i + 1} of ${files.length}...`);
         setUploadProgress(`Uploading photo ${i + 1} of ${files.length}...`);
         const uploadedPhoto = await uploadReportPhoto(file);
         setPhotos((prev) => [...prev, uploadedPhoto]);
+        if (isBase64Photo(uploadedPhoto)) {
+          fallbackCount++;
+        } else {
+          cloudCount++;
+        }
       }
 
-      setUploadProgress("Upload complete!");
+      if (fallbackCount > 0 && cloudCount === 0) {
+        setUploadProgress("Photos saved locally — will retry on submit");
+      } else if (fallbackCount > 0) {
+        setUploadProgress(`${cloudCount} uploaded, ${fallbackCount} saved locally`);
+      } else {
+        setUploadProgress("Upload complete!");
+      }
       setTimeout(() => {
         setUploadingPhoto(false);
         setUploadProgress("");
-      }, 1500);
+      }, 2500);
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error uploading photos:", error);
-      setUploadProgress("Upload failed");
+      setUploadProgress("Upload failed — please try again");
       setTimeout(() => {
         setUploadingPhoto(false);
         setUploadProgress("");
-      }, 2000);
+      }, 2500);
     }
   };
 
@@ -268,9 +281,10 @@ export default function ReportScreen({
       nextStep();
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error submitting report:", error);
+      const msg = error instanceof Error ? error.message : "";
       const message =
-        error instanceof Error && error.message.includes("sign in")
-          ? error.message
+        msg.includes("sign in") || msg.includes("Please")
+          ? msg
           : "Something went wrong while submitting. Please check your connection and try again.";
       setSubmitError(message);
     } finally {
