@@ -112,6 +112,7 @@ export default function MapReportMarkers({ mapTheme = "dark" }: MapReportMarkers
         open={drawerOpen}
         onOpenChange={handleDrawerChange}
         report={selectedReport}
+        mapTheme={mapTheme}
       />
     </>
   );
