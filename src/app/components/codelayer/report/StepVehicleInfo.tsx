@@ -40,8 +40,14 @@ export default function StepVehicleInfo({
       className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
     >
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-1 text-slate-100">Tell us about your vehicle</h2>
-        <p className="text-blue-100/80">This helps local shops prepare accurate bids quickly.</p>
+        <h2
+          className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+        >
+          Tell us about your vehicle
+        </h2>
+        <p className={isLightAppearance ? "text-slate-500" : "text-blue-100/80"}>
+          This helps local shops prepare accurate bids quickly.
+        </p>
       </div>
 
       {vehicles && vehicles.length > 0 && (
@@ -50,7 +56,11 @@ export default function StepVehicleInfo({
             isLightAppearance ? "border-blue-300/15" : "bg-slate-900/40 border-blue-200/20"
           }`}
         >
-          <h3 className="text-base font-semibold mb-3 text-blue-100/80">Pick a saved vehicle</h3>
+          <h3
+            className={`text-base font-semibold mb-3 ${isLightAppearance ? "text-slate-700" : "text-blue-100/80"}`}
+          >
+            Pick a saved vehicle
+          </h3>
           <div className="space-y-2.5">
             {vehicles.map((savedVehicle: any) => (
               <button
@@ -68,20 +78,24 @@ export default function StepVehicleInfo({
                   vehicle.model === savedVehicle.model &&
                   vehicle.year === savedVehicle.year
                     ? isLightAppearance
-                      ? "border-blue-400 bg-blue-400/12"
+                      ? "border-blue-400 bg-blue-50"
                       : "border-blue-400 bg-blue-400/12"
                     : isLightAppearance
-                      ? "border-blue-300/15 bg-white/[0.06] hover:border-blue-300/30"
+                      ? "border-slate-200 bg-slate-50/80 hover:border-blue-300/50"
                       : "border-blue-300/25 bg-slate-800/35 hover:border-blue-300/50"
                 }`}
               >
-                <div className="font-medium inline-flex items-center gap-2 text-slate-100">
-                  <Car className="w-4 h-4 text-blue-300" />
+                <div
+                  className={`font-medium inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                >
+                  <Car
+                    className={`w-4 h-4 ${isLightAppearance ? "text-blue-500" : "text-blue-300"}`}
+                  />
                   {savedVehicle.year} {savedVehicle.make} {savedVehicle.model}
                 </div>
                 {savedVehicle.licensePlate && (
                   <div
-                    className={`text-sm ${isLightAppearance ? "text-blue-100/60" : "text-blue-100/70"}`}
+                    className={`text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
                   >
                     Plate: {savedVehicle.licensePlate}
                   </div>
@@ -99,7 +113,7 @@ export default function StepVehicleInfo({
               <span
                 className={`px-2 backdrop-blur-sm rounded ${
                   isLightAppearance
-                    ? "bg-slate-800/50 text-slate-400"
+                    ? "bg-white text-slate-500 shadow-sm"
                     : "bg-slate-900/50 text-blue-100/70"
                 }`}
               >
@@ -115,7 +129,7 @@ export default function StepVehicleInfo({
           <label
             htmlFor="make"
             className={`block text-sm font-medium mb-1.5 ${
-              isLightAppearance ? "text-slate-300" : "text-blue-100/85"
+              isLightAppearance ? "text-slate-700" : "text-blue-100/85"
             }`}
           >
             Make <span className="text-rose-500">*</span>
@@ -128,7 +142,7 @@ export default function StepVehicleInfo({
             onChange={(e) => onVehicleChange({ ...vehicle, make: e.target.value })}
             className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
               isLightAppearance
-                ? "border-white/[0.12] bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
+                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
                 : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
             }`}
             placeholder="Toyota"
@@ -139,7 +153,7 @@ export default function StepVehicleInfo({
           <label
             htmlFor="model"
             className={`block text-sm font-medium mb-1.5 ${
-              isLightAppearance ? "text-slate-300" : "text-blue-100/85"
+              isLightAppearance ? "text-slate-700" : "text-blue-100/85"
             }`}
           >
             Model <span className="text-rose-500">*</span>
@@ -152,7 +166,7 @@ export default function StepVehicleInfo({
             onChange={(e) => onVehicleChange({ ...vehicle, model: e.target.value })}
             className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
               isLightAppearance
-                ? "border-white/[0.12] bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
+                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
                 : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
             }`}
             placeholder="Camry"
@@ -163,7 +177,7 @@ export default function StepVehicleInfo({
           <label
             htmlFor="year"
             className={`block text-sm font-medium mb-1.5 ${
-              isLightAppearance ? "text-slate-300" : "text-blue-100/85"
+              isLightAppearance ? "text-slate-700" : "text-blue-100/85"
             }`}
           >
             Year <span className="text-rose-500">*</span>
@@ -176,7 +190,7 @@ export default function StepVehicleInfo({
             onChange={(e) => onVehicleChange({ ...vehicle, year: e.target.value })}
             className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
               isLightAppearance
-                ? "border-white/[0.12] bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
+                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
                 : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
             }`}
             placeholder="2021"
@@ -194,7 +208,7 @@ export default function StepVehicleInfo({
           <label
             htmlFor="vin"
             className={`block text-sm font-medium mb-1.5 ${
-              isLightAppearance ? "text-slate-300" : "text-blue-100/85"
+              isLightAppearance ? "text-slate-700" : "text-blue-100/85"
             }`}
           >
             VIN (Optional)
@@ -207,7 +221,7 @@ export default function StepVehicleInfo({
             onChange={(e) => onVehicleChange({ ...vehicle, vin: e.target.value })}
             className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
               isLightAppearance
-                ? "border-white/[0.12] bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
+                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
                 : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
             }`}
             placeholder="1HGBH41JXMN109186"

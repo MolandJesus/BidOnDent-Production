@@ -31,12 +31,12 @@ export default function StepComplete({
           <Check className="w-8 h-8 text-white" />
         </div>
         <h2
-          className={`text-2xl font-bold mb-2 ${isLightAppearance ? "text-slate-100" : "text-white/95"}`}
+          className={`text-2xl font-bold mb-2 ${isLightAppearance ? "text-slate-800" : "text-white/95"}`}
         >
           Report submitted
         </h2>
         <p
-          className={`max-w-xl mx-auto ${isLightAppearance ? "text-blue-100/60" : "text-blue-100/70"}`}
+          className={`max-w-xl mx-auto ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
         >
           Nice work. Shops in your area can now review your details and send bids.
         </p>
@@ -44,7 +44,7 @@ export default function StepComplete({
 
       <div className={`bd-glass-card p-5 mb-8${isLightAppearance ? " bd-light-surface" : ""}`}>
         <h3
-          className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-100" : "text-white/90"}`}
+          className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-800" : "text-white/90"}`}
         >
           <ListChecks
             className={`w-4 h-4 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
@@ -63,13 +63,11 @@ export default function StepComplete({
             </div>
             <div>
               <p
-                className={`text-sm font-medium ${isLightAppearance ? "text-slate-100" : "text-white/85"}`}
+                className={`text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/85"}`}
               >
                 Shops review your report
               </p>
-              <p
-                className={`text-xs ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
-              >
+              <p className={`text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-200/60"}`}>
                 Local body shops see your damage details and photos
               </p>
             </div>
@@ -85,13 +83,11 @@ export default function StepComplete({
             </div>
             <div>
               <p
-                className={`text-sm font-medium ${isLightAppearance ? "text-slate-100" : "text-white/85"}`}
+                className={`text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/85"}`}
               >
                 Bids start arriving
               </p>
-              <p
-                className={`text-xs ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
-              >
+              <p className={`text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-200/60"}`}>
                 You receive notifications as shops send their estimates
               </p>
             </div>
@@ -107,13 +103,11 @@ export default function StepComplete({
             </div>
             <div>
               <p
-                className={`text-sm font-medium ${isLightAppearance ? "text-slate-100" : "text-white/85"}`}
+                className={`text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/85"}`}
               >
                 Compare and choose
               </p>
-              <p
-                className={`text-xs ${isLightAppearance ? "text-blue-200/50" : "text-blue-200/60"}`}
-              >
+              <p className={`text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-200/60"}`}>
                 Pick the best price, timeline, and shop — then schedule your repair
               </p>
             </div>
@@ -153,7 +147,7 @@ export default function StepComplete({
         <button
           type="button"
           onClick={onViewReports}
-          className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors mb-3 inline-flex items-center justify-center gap-2 ${isLightAppearance ? "border-blue-300/15 hover:bg-blue-500/10 text-slate-300" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+          className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors mb-3 inline-flex items-center justify-center gap-2 ${isLightAppearance ? "border-slate-200 hover:bg-slate-50 text-slate-600" : "border-white/15 hover:bg-white/5 text-white/90"}`}
         >
           View My Reports
           <ArrowRight className="w-4 h-4" />
@@ -163,7 +157,7 @@ export default function StepComplete({
       <button
         type="button"
         onClick={onBackToDashboard}
-        className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors ${isLightAppearance ? "border-blue-300/15 hover:bg-blue-500/10 text-slate-300" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+        className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors ${isLightAppearance ? "border-slate-200 hover:bg-slate-50 text-slate-600" : "border-white/15 hover:bg-white/5 text-white/90"}`}
       >
         Back to Dashboard
       </button>

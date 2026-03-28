@@ -1322,10 +1322,9 @@
   color: #334155;
 }
 
-/* Frosted warm text adaptation — same as dark since base is dark navy */
-[data-appearance-mode="light"] .bd-glass-card,
-[data-appearance-mode="light"] .bd-glass-panel,
-[data-appearance-mode="light"] .bd-glass-floating {
+/* Frosted warm text adaptation — only for glass without bd-light-surface */
+[data-appearance-mode="light"]
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating):not(.bd-light-surface) {
   color: #cbd5e1;
 }
 
