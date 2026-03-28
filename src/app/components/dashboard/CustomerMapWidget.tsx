@@ -13,6 +13,7 @@ import { haversineMiles } from "../../services/supabase/map";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import CoverageMapDialog from "../landing/CoverageMapDialog";
 import { countyCenters, defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
+import DashboardMapPreview from "./DashboardMapPreview";
 import type {
   CoverageNearbyShop,
   CoveragePartnerShop,
@@ -126,56 +127,74 @@ export default function CustomerMapWidget({
 
   return (
     <>
-      {/* ── Compact widget card ── */}
+      {/* ── Map-backed widget card ── */}
       <section
-        className={`bd-glass-card p-4 md:p-5${isLight ? " bd-light-surface" : ""}`}
+        className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
         style={
           isLight
             ? {
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(248,250,252,0.88) 100%)",
                 borderColor: "rgba(148,163,184,0.30)",
                 boxShadow: "0 14px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.80)",
               }
             : {
-                background:
-                  "linear-gradient(180deg, rgba(11,23,47,0.84) 0%, rgba(8,18,38,0.80) 100%)",
                 borderColor: "rgba(96,165,250,0.24)",
                 boxShadow: "0 14px 30px rgba(3,10,24,0.38), inset 0 1px 0 rgba(147,197,253,0.12)",
               }
         }
       >
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2.5">
-            <div
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-white"
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-              }}
+        {/* Embedded mini-map */}
+        <div className="relative h-[200px] md:h-[220px]">
+          <DashboardMapPreview
+            shops={partnerShops}
+            center={mapCenter}
+            zoom={9}
+            isLight={isLight}
+            onShopClick={(shop) => {
+              handleSelectShop(shop, { centerMap: true });
+              setIsMapExpanded(true);
+            }}
+            onMapClick={() => {
+              if (onViewShops) onViewShops();
+              else setIsMapExpanded(true);
+            }}
+          />
+
+          {/* Floating badge — top left */}
+          <div
+            className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-xl px-3 py-1.5 pointer-events-none"
+            style={{
+              background: isLight
+                ? "rgba(255,255,255,0.90)"
+                : "rgba(8,18,38,0.85)",
+              backdropFilter: "blur(12px)",
+              border: isLight
+                ? "1px solid rgba(148,163,184,0.25)"
+                : "1px solid rgba(96,165,250,0.20)",
+              boxShadow: isLight
+                ? "0 2px 8px rgba(0,0,0,0.06)"
+                : "0 2px 10px rgba(0,0,0,0.30)",
+            }}
+          >
+            <MapPinned
+              className={`h-3.5 w-3.5 ${isLight ? "text-blue-600" : "text-blue-300"}`}
+            />
+            <span
+              className={`text-xs font-semibold ${isLight ? "text-slate-700" : "text-slate-100"}`}
             >
-              <MapPinned className="h-4.5 w-4.5" />
-            </div>
-            <div>
-              <h3
-                className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
-              >
-                Nearby Shops
-              </h3>
-              <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/75"}`}>
-                {isLoadingShops ? "Finding shops\u2026" : `${displayShops.length} shops near you`}
-              </p>
-            </div>
+              {isLoadingShops
+                ? "Finding shops\u2026"
+                : `${displayShops.length} shops near you`}
+            </span>
           </div>
+
+          {/* Floating CTA — top right */}
           <button
             type="button"
             onClick={() => {
-              if (onViewShops) {
-                onViewShops();
-              } else {
-                setIsMapExpanded(true);
-              }
+              if (onViewShops) onViewShops();
+              else setIsMapExpanded(true);
             }}
-            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 min-h-[44px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.96] shadow-md"
+            className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 min-h-[40px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.96] shadow-lg"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
@@ -185,89 +204,93 @@ export default function CustomerMapWidget({
           </button>
         </div>
 
-        {!isLoadingShops && compactShops.length > 0 && (
-          <ul className="space-y-1 overflow-y-auto max-h-[210px] md:max-h-[290px]">
-            {compactShops.map((shop) => (
-              <li key={shop.id || shop.name}>
+        {/* Compact shop summary row below map */}
+        <div className="px-4 py-3 md:px-5">
+          {!isLoadingShops && compactShops.length > 0 ? (
+            <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-0.5">
+              {compactShops.map((shop) => (
                 <button
+                  key={shop.id || shop.name}
                   type="button"
                   onClick={() => {
                     handleSelectShop(shop, { centerMap: true });
                     setIsMapExpanded(true);
                   }}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-1.5 md:py-2 text-left transition-colors active:scale-[0.98] ${isLight ? "hover:bg-slate-100 active:bg-slate-200/80" : "hover:bg-blue-400/12 active:bg-blue-400/20"}`}
+                  className={`flex items-center gap-2 shrink-0 rounded-xl px-3 py-2 text-left transition-colors active:scale-[0.97] ${
+                    isLight
+                      ? "bg-slate-50 hover:bg-slate-100 border border-slate-200/60"
+                      : "bg-white/[0.05] hover:bg-white/[0.09] border border-white/[0.08]"
+                  }`}
                 >
                   <div
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${isLight ? "bg-blue-50 text-blue-600" : "bg-blue-400/15 text-blue-200"}`}
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
+                      isLight ? "bg-blue-50 text-blue-600" : "bg-blue-400/15 text-blue-200"
+                    }`}
                   >
-                    <Store className="h-4 w-4" />
+                    <Store className="h-3.5 w-3.5" />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0">
+                    <p
+                      className={`text-xs font-medium truncate max-w-[100px] ${
+                        isLight ? "text-slate-700" : "text-slate-100"
+                      }`}
+                    >
+                      {shop.name}
+                    </p>
                     <div className="flex items-center gap-1.5">
-                      <p
-                        className={`truncate text-sm font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}
-                      >
-                        {shop.name}
-                      </p>
-                      {shop.dataMode === "demo" && (
-                        <span className="shrink-0 rounded px-1 py-0.5 text-[10px] font-medium uppercase tracking-wide bg-amber-400/15 text-amber-300 border border-amber-400/25">
-                          Demo
+                      {shop.distanceMiles > 0 && (
+                        <span
+                          className={`text-[10px] ${
+                            isLight ? "text-slate-500" : "text-blue-100/70"
+                          }`}
+                        >
+                          {shop.distanceMiles.toFixed(1)} mi
                         </span>
                       )}
-                    </div>
-                    <p
-                      className={`truncate text-xs ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
-                    >
-                      {shop.countyLabel}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 flex-col items-end gap-0.5">
-                    {shop.distanceMiles > 0 && (
-                      <span
-                        className={`text-xs font-medium ${isLight ? "text-slate-600" : "text-blue-100/85"}`}
-                      >
-                        {shop.distanceMiles.toFixed(1)} mi
+                      <span className="inline-flex items-center gap-0.5 text-[10px] text-amber-400">
+                        <Star className="h-2.5 w-2.5 fill-amber-400 stroke-amber-400" />
+                        {shop.rating.toFixed(1)}
                       </span>
-                    )}
-                    <span className="inline-flex items-center gap-0.5 text-xs text-amber-300">
-                      <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
-                      {shop.rating.toFixed(1)}
-                    </span>
+                    </div>
                   </div>
                 </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {!isLoadingShops && fetchError && (
-          <div className="flex items-center gap-2 rounded-xl border border-rose-400/30 bg-rose-500/10 px-3 py-3">
-            <p className="text-xs text-rose-200">
-              Could not load shops. Check your connection and try again.
+              ))}
+            </div>
+          ) : !isLoadingShops && fetchError ? (
+            <div
+              className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 ${
+                isLight
+                  ? "border-rose-200 bg-rose-50 text-rose-700"
+                  : "border-rose-400/30 bg-rose-500/10 text-rose-200"
+              }`}
+            >
+              <p className="text-xs">Could not load shops. Check your connection.</p>
+            </div>
+          ) : !isLoadingShops ? (
+            <p
+              className={`text-center text-sm py-2 ${
+                isLight ? "text-slate-500" : "text-blue-100/75"
+              }`}
+            >
+              No shops found nearby. Open the map to search.
             </p>
-          </div>
-        )}
+          ) : null}
 
-        {!isLoadingShops && !fetchError && compactShops.length === 0 && (
-          <p className="py-4 text-center text-sm text-blue-100/75">
-            No shops found nearby. Open the map to search.
-          </p>
-        )}
-
-        {onViewShops && (
-          <button
-            type="button"
-            onClick={onViewShops}
-            className={`mt-3 flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-              isLight
-                ? "border border-blue-200/50 bg-blue-50/40 text-blue-700 hover:bg-blue-50/70"
-                : "border border-blue-400/20 bg-blue-500/8 text-blue-200/85 hover:bg-blue-500/15"
-            }`}
-          >
-            <span>Browse all shops & AI matching</span>
-            <ArrowRight className="h-4 w-4 shrink-0" />
-          </button>
-        )}
+          {onViewShops && (
+            <button
+              type="button"
+              onClick={onViewShops}
+              className={`mt-2.5 flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                isLight
+                  ? "border border-blue-200/50 bg-blue-50/40 text-blue-700 hover:bg-blue-50/70"
+                  : "border border-blue-400/20 bg-blue-500/8 text-blue-200/85 hover:bg-blue-500/15"
+              }`}
+            >
+              <span>Browse all shops & AI matching</span>
+              <ArrowRight className="h-4 w-4 shrink-0" />
+            </button>
+          )}
+        </div>
       </section>
 
       {/* ── Full-screen map dialog (triggered from widget) ── */}
