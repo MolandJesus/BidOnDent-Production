@@ -190,7 +190,11 @@ export default function HomeScreen({
             {demoMode && onExitDemoMode && userType !== originalAccountType && (
               <button
                 onClick={onExitDemoMode}
-                className="bd-glass-control px-3 py-2 min-h-[40px] text-sm text-blue-100 font-medium"
+                className={`px-3 py-2 min-h-[40px] text-sm font-medium rounded-xl border transition-colors ${
+                  isLightAppearance
+                    ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
+                    : "bd-glass-control text-blue-100"
+                }`}
               >
                 Exit Demo
               </button>

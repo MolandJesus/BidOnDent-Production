@@ -130,7 +130,8 @@ export default function BusinessInquiryShopForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all disabled:opacity-60 bd-glass-control"
+          className={`w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all disabled:opacity-60 text-white shadow-lg ${isLightAppearance ? "shadow-blue-200/30" : ""}`}
+          style={{ background: "linear-gradient(135deg, #003d82 0%, #0ea5e9 100%)" }}
         >
           Submit Shop Application
           <Send className="w-4 h-4" />

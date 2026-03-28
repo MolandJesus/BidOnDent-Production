@@ -1,11 +1,13 @@
 import { ArrowLeft, Search, Shield } from "lucide-react";
 import { useState } from "react";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 interface InsuranceCompaniesScreenProps {
   onBack: () => void;
   primaryColor: string;
   secondaryColor: string;
   userType?: "customer" | "shop" | "insurer";
+  appearanceMode?: DashboardAppearanceMode;
 }
 
 export default function InsuranceCompaniesScreen({
@@ -13,11 +15,13 @@ export default function InsuranceCompaniesScreen({
   primaryColor,
   secondaryColor,
   userType = "customer",
+  appearanceMode = "map-dark",
 }: InsuranceCompaniesScreenProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const isLight = appearanceMode === "light";
 
   return (
-    <div className="min-h-screen bd-glass-panel pb-20">
+    <div className={`min-h-screen pb-20 ${isLight ? "" : "bd-glass-panel"}`}>
       {/* Header */}
       <div
         className="sticky top-0 z-10 px-4 py-4 text-white shadow-md"
@@ -54,11 +58,15 @@ export default function InsuranceCompaniesScreen({
 
       {/* Empty State — No insurance companies registered yet */}
       <div className="px-4 py-16 text-center">
-        <Shield className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <h2 className="text-lg font-semibold text-slate-200 mb-2">
+        <Shield
+          className={`w-16 h-16 mx-auto mb-4 ${isLight ? "text-slate-300" : "text-gray-300"}`}
+        />
+        <h2
+          className={`text-lg font-semibold mb-2 ${isLight ? "text-slate-700" : "text-slate-200"}`}
+        >
           Insurance Directory Coming Soon
         </h2>
-        <p className="text-sm text-gray-500 max-w-md mx-auto">
+        <p className={`text-sm max-w-md mx-auto ${isLight ? "text-slate-500" : "text-gray-500"}`}>
           {userType === "shop"
             ? "Insurance company partnerships will be available here once carriers join the BidOnDent network."
             : "Insurance companies will appear here as they join the BidOnDent platform. Check back soon."}
