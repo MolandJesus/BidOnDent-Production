@@ -89,7 +89,7 @@ export default function ReportDetailScreen({
   return (
     <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className="bd-glass-panel border-b border-white/30 sticky top-0 z-10">
+      <div className={`bd-glass-panel border-b sticky top-0 z-10${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}>
         <div className="px-4 py-4">
           <div className="flex items-center">
             <button
@@ -125,7 +125,7 @@ export default function ReportDetailScreen({
 
       <div className="px-2 py-2 space-y-3 sm:px-4 sm:py-4 sm:space-y-4">
         {/* Photo Gallery */}
-        <div className="bd-glass-card overflow-hidden">
+        <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
           <div className="p-3 sm:p-4">
             <h2 className="font-bold text-lg mb-2 sm:mb-3">Damage Photos</h2>
             {photos.length === 0 ? (
@@ -155,7 +155,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Vehicle Information */}
-        <div className="bd-glass-card p-3 sm:p-4">
+        <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
           <h2 className="font-bold text-lg mb-3">Vehicle Information</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
@@ -184,7 +184,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Damage Description */}
-        <div className="bd-glass-card p-3 sm:p-4">
+        <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
           <h2 className="font-bold text-lg mb-3">Damage Description</h2>
           <p className={isLight ? "text-slate-700" : "text-slate-300"}>{description}</p>
           {report.incident && (
@@ -196,7 +196,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Submission Details */}
-        <div className="bd-glass-card p-3 sm:p-4">
+        <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
           <h2 className="font-bold text-lg mb-3">Submission Details</h2>
           <div
             className={`flex items-center text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}
@@ -222,7 +222,7 @@ export default function ReportDetailScreen({
         />
 
         {/* Interested Shops */}
-        <div className="bd-glass-card p-3 sm:p-4">
+        <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
           <div className="flex justify-between items-center mb-3">
             <h2 className="font-bold text-lg">Interested Shops</h2>
             <span className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
@@ -241,7 +241,7 @@ export default function ReportDetailScreen({
               {interestedShops.map((shop) => (
                 <div
                   key={shop.id}
-                  className="bd-glass-card p-3 hover:shadow-md transition-all duration-200"
+                  className={`bd-glass-card p-3 hover:shadow-md transition-all duration-200${isLight ? " bd-light-surface" : ""}`}
                 >
                   <div className="flex items-start gap-3">
                     <div

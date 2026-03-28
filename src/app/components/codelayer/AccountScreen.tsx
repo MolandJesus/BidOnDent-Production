@@ -289,7 +289,12 @@ export default function AccountScreen({
         }}
       />
 
-      <AccountOverlays isSaving={isSaving} saveSuccess={saveSuccess} primaryColor={primaryColor} appearanceMode={appearanceMode} />
+      <AccountOverlays
+        isSaving={isSaving}
+        saveSuccess={saveSuccess}
+        primaryColor={primaryColor}
+        appearanceMode={appearanceMode}
+      />
 
       <div className="px-4 md:px-6 py-4 md:py-5 space-y-5 w-full relative">
         <AccountHeader

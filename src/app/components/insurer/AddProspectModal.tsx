@@ -61,9 +61,7 @@ export default function AddProspectModal({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
       <div
-        className={`max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bd-glass-card sm:rounded-2xl ${
-          isLight ? "bg-white shadow-xl" : ""
-        }`}
+        className={`max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bd-glass-card sm:rounded-2xl${isLight ? " bd-light-surface" : ""}`}
       >
         <div className="p-4 sm:p-6">
           <h2

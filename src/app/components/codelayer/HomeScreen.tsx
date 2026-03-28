@@ -129,7 +129,7 @@ export default function HomeScreen({
       <div className="relative z-30 w-full max-w-4xl mt-[410px] md:mt-[320px] px-2 md:px-0 flex flex-col gap-4 md:gap-5 pointer-events-auto">
         {/* Compact welcome bar — stays tight so map dominates */}
         <section
-          className="bd-glass-floating px-4 py-3 md:px-5 md:py-3.5 flex items-center justify-between gap-3 flex-wrap relative overflow-hidden"
+          className={`bd-glass-floating px-4 py-3 md:px-5 md:py-3.5 flex items-center justify-between gap-3 flex-wrap relative overflow-hidden${isLightAppearance ? " bd-light-surface" : ""}`}
           style={
             isLightAppearance
               ? {

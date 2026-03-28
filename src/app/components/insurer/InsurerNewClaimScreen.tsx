@@ -91,11 +91,9 @@ export default function InsurerNewClaimScreen({
   };
 
   return (
-    <div className="min-h-screen bd-glass-panel">
+    <div className={`min-h-screen bd-glass-panel${isLight ? " bd-light-surface" : ""}`}>
       <div
-        className={`bd-glass-panel border-b sticky top-0 z-10 ${
-          isLight ? "border-slate-200/60" : "border-blue-200/30"
-        }`}
+        className={`bd-glass-panel border-b sticky top-0 z-10${isLight ? " bd-light-surface border-slate-200/60" : " border-blue-200/30"}`}
         style={
           isLight
             ? {}

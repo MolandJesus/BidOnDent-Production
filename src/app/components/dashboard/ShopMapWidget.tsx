@@ -27,7 +27,7 @@ export default function ShopMapWidget({
 
   return (
     <section
-      className="bd-glass-card p-5"
+      className={`bd-glass-card p-5${isLight ? " bd-light-surface" : ""}`}
       style={{
         maxHeight: 380,
         background: isLight

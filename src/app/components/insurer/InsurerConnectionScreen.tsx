@@ -129,7 +129,7 @@ export default function InsurerConnectionScreen({
   };
 
   return (
-    <div className="min-h-screen bd-glass-panel pb-20">
+    <div className={`min-h-screen bd-glass-panel pb-20${isLight ? " bd-light-surface" : ""}`}>
       <div
         className="text-white sticky top-0 z-10"
         style={{

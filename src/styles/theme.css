@@ -1305,6 +1305,22 @@
   box-shadow: var(--bd-glow-pool);
 }
 
+/* ── Light-surface utility ──────────────────────────────────────────
+   When a glass container should render as a white/light surface in
+   light mode (i.e. the component handles its own text colours via
+   isLight conditionals), add .bd-light-surface alongside the glass
+   class.  This overrides the translucent dark glass to a frosted
+   white panel and sets an appropriate dark base text colour.
+   ───────────────────────────────────────────────────────────────── */
+[data-appearance-mode="light"] :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating).bd-light-surface {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 255, 0.92) 100%);
+  border-color: rgba(148, 163, 184, 0.28);
+  box-shadow:
+    0 10px 32px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.90);
+  color: #334155;
+}
+
 /* Frosted warm text adaptation — same as dark since base is dark navy */
 [data-appearance-mode="light"] .bd-glass-card,
 [data-appearance-mode="light"] .bd-glass-panel,
@@ -1313,7 +1329,7 @@
 }
 
 [data-appearance-mode="light"]
-  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating):not(.bd-light-surface)
   :is(
     [class*="text-slate-9"],
     [class*="text-gray-9"],
@@ -1324,19 +1340,19 @@
 }
 
 [data-appearance-mode="light"]
-  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating):not(.bd-light-surface)
   :is([class*="text-slate-7"], [class*="text-gray-7"]) {
   color: #cbd5e1;
 }
 
 [data-appearance-mode="light"]
-  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating):not(.bd-light-surface)
   :is([class*="text-slate-6"], [class*="text-gray-6"]) {
   color: #94a3b8;
 }
 
 [data-appearance-mode="light"]
-  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating):not(.bd-light-surface)
   :is(
     [class*="border-slate-2"],
     [class*="border-slate-3"],
@@ -1347,7 +1363,7 @@
 }
 
 [data-appearance-mode="light"]
-  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating)
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating):not(.bd-light-surface)
   :is(
     [class*="bg-slate-50"],
     [class*="bg-gray-50"],

@@ -197,7 +197,7 @@ export default function CompetitorAnalysisScreen({
       </div>
 
       <div
-        className={`border-b bd-glass-panel px-4 py-4 ${isLight ? "border-slate-200/60" : "border-white/30"}`}
+        className={`border-b bd-glass-panel px-4 py-4${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
       >
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div className="text-center">
@@ -252,7 +252,7 @@ export default function CompetitorAnalysisScreen({
       </div>
 
       <div
-        className={`border-b bd-glass-panel px-4 py-3 ${isLight ? "border-slate-200/60" : "border-white/30"}`}
+        className={`border-b bd-glass-panel px-4 py-3${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
       >
         <div className="flex gap-2 overflow-x-auto">
           <button
@@ -289,7 +289,7 @@ export default function CompetitorAnalysisScreen({
         {marketListings.map((shop, index) => (
           <article
             key={shop.id}
-            className="bd-glass-card overflow-hidden rounded-[26px] transition-shadow hover:shadow-md"
+            className={`bd-glass-card overflow-hidden rounded-[26px] transition-shadow hover:shadow-md${isLight ? " bd-light-surface" : ""}`}
           >
             <div
               className={`border-b p-4 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}

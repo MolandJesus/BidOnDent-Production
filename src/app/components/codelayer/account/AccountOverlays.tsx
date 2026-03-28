@@ -42,8 +42,12 @@ export default function AccountOverlays({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <p className={`font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}>Uploading image...</p>
-            <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Compressing and saving to cloud</p>
+            <p className={`font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}>
+              Uploading image...
+            </p>
+            <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+              Compressing and saving to cloud
+            </p>
           </div>
         </div>
       )}
@@ -74,8 +78,12 @@ export default function AccountOverlays({
             </svg>
           </div>
           <div className="flex-1">
-            <p className={`font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}>Profile Saved</p>
-            <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Changes synced to cloud</p>
+            <p className={`font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+              Profile Saved
+            </p>
+            <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+              Changes synced to cloud
+            </p>
           </div>
         </div>
       )}

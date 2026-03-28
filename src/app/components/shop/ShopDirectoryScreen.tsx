@@ -249,7 +249,9 @@ export default function ShopDirectoryScreen({
       {/* Deviation prompt: only rendered outside map on list mode */}
       {!session.showMapPane && deviationPromptNode}
 
-      <section className={`overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:shadow-none bg-transparent ${isLight ? "md:border-slate-200/60" : "md:border-white/[0.08]"}`}>
+      <section
+        className={`overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:shadow-none bg-transparent ${isLight ? "md:border-slate-200/60" : "md:border-white/[0.08]"}`}
+      >
         <div
           className={`min-w-0 ${session.showMapPane ? `lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}
         >

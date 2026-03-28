@@ -71,7 +71,7 @@ export default function BidCardArticle({
       variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
       whileHover={{ y: -3, scale: 1.003 }}
       transition={{ duration: 0.2 }}
-      className={`group relative bd-glass-card overflow-hidden transition-all ${
+      className={`group relative bd-glass-card overflow-hidden transition-all${isLight ? " bd-light-surface" : ""} ${
         isActive
           ? isLight
             ? "border-blue-400/60 shadow-md"

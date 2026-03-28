@@ -242,7 +242,7 @@ export default function ShopRequestsScreen({
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
           <div
-            className="bd-glass-card p-5 sm:p-8 text-center"
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
             style={
               isLight
                 ? {}
@@ -259,7 +259,7 @@ export default function ShopRequestsScreen({
           </div>
         ) : filteredRequests.length === 0 ? (
           <div
-            className="bd-glass-card p-5 sm:p-8 text-center"
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
             style={
               isLight
                 ? {}
@@ -282,7 +282,7 @@ export default function ShopRequestsScreen({
           filteredRequests.map((request) => (
             <div
               key={request.id}
-              className="bd-glass-card overflow-hidden"
+              className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
               style={
                 isLight
                   ? {}

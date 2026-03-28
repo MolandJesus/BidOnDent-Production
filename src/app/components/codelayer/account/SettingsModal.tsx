@@ -33,7 +33,7 @@ export default function SettingsModal({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div
-        className={`bd-glass-floating p-5 sm:p-6 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto ${isLight ? "bg-white shadow-xl" : ""}`}
+        className={`bd-glass-floating p-5 sm:p-6 rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto${isLight ? " bd-light-surface" : ""}`}
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>

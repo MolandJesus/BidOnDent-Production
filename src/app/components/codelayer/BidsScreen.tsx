@@ -111,7 +111,7 @@ export default function BidsScreen({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="relative overflow-hidden bd-glass-card p-5"
+          className={`relative overflow-hidden bd-glass-card p-5${isLight ? " bd-light-surface" : ""}`}
           style={{
             background: isLight
               ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
@@ -146,7 +146,7 @@ export default function BidsScreen({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, delay: 0.05 }}
-          className="bd-glass-card p-5 sm:p-6 text-center"
+          className={`bd-glass-card p-5 sm:p-6 text-center${isLight ? " bd-light-surface" : ""}`}
           style={{
             background: isLight
               ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"

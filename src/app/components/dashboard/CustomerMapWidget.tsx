@@ -128,7 +128,7 @@ export default function CustomerMapWidget({
     <>
       {/* ── Compact widget card ── */}
       <section
-        className="bd-glass-card p-4 md:p-5"
+        className={`bd-glass-card p-4 md:p-5${isLight ? " bd-light-surface" : ""}`}
         style={
           isLight
             ? {

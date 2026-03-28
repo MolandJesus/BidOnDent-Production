@@ -15,7 +15,7 @@ export default function ManualProspectCard({
 }: ManualProspectCardProps) {
   const isLight = appearanceMode === "light";
   return (
-    <article className="overflow-hidden bd-glass-card">
+    <article className={`overflow-hidden bd-glass-card${isLight ? " bd-light-surface" : ""}`}>
       <div className={`border-b p-4 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}>
         <div className="flex items-center gap-2">
           <h3 className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>

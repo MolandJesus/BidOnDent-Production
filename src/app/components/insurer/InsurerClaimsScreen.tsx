@@ -143,7 +143,7 @@ export default function InsurerClaimsScreen({
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
           <div
-            className={`bd-glass-card p-5 sm:p-8 text-center ${isLight ? "" : ""}`}
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
             style={
               isLight
                 ? {}
@@ -158,7 +158,7 @@ export default function InsurerClaimsScreen({
           </div>
         ) : filteredClaims.length === 0 ? (
           <div
-            className="bd-glass-card p-5 sm:p-8 text-center"
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
             style={
               isLight
                 ? {}

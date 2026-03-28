@@ -105,7 +105,8 @@ export default function ShopOnboardingStep1({
         <div className="flex items-start gap-2.5 rounded-xl bg-blue-400/10 border border-blue-400/20 px-3.5 py-3">
           <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-slate-500 leading-relaxed">
-            Your shop location will appear on the BidOnDent coverage map, making it discoverable by customers in your area.
+            Your shop location will appear on the BidOnDent coverage map, making it discoverable by
+            customers in your area.
           </p>
         </div>
 
@@ -122,7 +123,9 @@ export default function ShopOnboardingStep1({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Website (Optional)</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">
+            Website (Optional)
+          </label>
           <input
             type="url"
             value={formData.website}

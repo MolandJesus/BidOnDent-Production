@@ -32,7 +32,7 @@ export default function InsurerMapWidget({
 
   return (
     <section
-      className="bd-glass-card p-5"
+      className={`bd-glass-card p-5${isLight ? " bd-light-surface" : ""}`}
       style={
         isLight
           ? {

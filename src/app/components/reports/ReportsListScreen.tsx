@@ -59,7 +59,7 @@ export default function ReportsListScreen({
     <div className="min-h-screen pb-20">
       {/* Header */}
       <div
-        className={`bd-glass-panel border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-white/30"}`}
+        className={`bd-glass-panel border-b sticky top-0 z-10${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
       >
         <div className="px-4 py-4">
           <div className="flex items-center mb-3">
@@ -103,15 +103,15 @@ export default function ReportsListScreen({
       {/* Reports List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
-          <div className="bd-glass-card p-5 sm:p-8 text-center">
+          <div className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}>
             <p className={isLight ? "text-slate-500" : "text-slate-400"}>Loading reports…</p>
           </div>
         ) : reportsError ? (
-          <div className="bd-glass-card p-5 sm:p-8 text-center">
+          <div className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}>
             <p className="text-red-600 font-semibold">Unable to load reports</p>
           </div>
         ) : filteredReports.length === 0 ? (
-          <div className="bd-glass-card p-5 sm:p-8 text-center">
+          <div className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}>
             <p className={isLight ? "text-slate-500" : "text-slate-400"}>No reports yet</p>
           </div>
         ) : (
@@ -119,7 +119,7 @@ export default function ReportsListScreen({
             return (
               <div
                 key={report.id}
-                className="bd-glass-card overflow-hidden hover:shadow-md transition-shadow"
+                className={`bd-glass-card overflow-hidden hover:shadow-md transition-shadow${isLight ? " bd-light-surface" : ""}`}
               >
                 <div className="flex gap-3 p-4">
                   {/* Small Photo Thumbnail - Left Side */}
