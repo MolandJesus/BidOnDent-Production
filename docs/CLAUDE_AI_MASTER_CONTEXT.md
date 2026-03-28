@@ -51,9 +51,17 @@ utils/      = transforms/formatting/calculations — pure functions only
 
 `DashboardAppearanceMode` = `"light"` | `"map-dark"` (set via `data-appearance-mode` attribute)
 
-**Critical:** Both modes use a **dark navy base surface**. "Light" mode is warmer frosted glass — NOT white. Text must always be light (`text-slate-100`/`text-white`). Never use `text-slate-900`/`text-slate-800` for body text in dashboard components.
+**Two-layer design:**
 
-The landing page is a separate surface — it HAS light sections with dark text.
+- **`map-dark` mode:** Dark navy frosted glass everywhere. Light text (`text-slate-100`/`text-white`).
+- **`light` mode:** Glass containers with `.bd-light-surface` class render as white surfaces with dark text (`#334155`). Glass containers WITHOUT `.bd-light-surface` keep the CSS fallback (light text on warm dark glass — still readable).
+
+**`bd-light-surface` pattern (Passes 353–354):**  
+Add `${isLight ? " bd-light-surface" : ""}` to any `bd-glass-card`, `bd-glass-panel`, or `bd-glass-floating` element that uses `isLight`/`isLightAppearance` text conditionals. The CSS utility overrides the glass background to white gradient and excludes the element from forced-light-text descendant overrides in `theme.css`.
+
+**Do NOT add `bd-light-surface`** to elements that already swap glass classes in a ternary (e.g., `isLight ? "bg-white/80..." : "bd-glass-card"`), or to elements with always-dark inline backgrounds.
+
+The landing page is a separate surface — it uses inline style conditionals for light/dark, not `bd-light-surface`.
 
 ### Map Theme System (Separate from Appearance Mode)
 
@@ -234,7 +242,7 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 3. **One pass = one coherent change.** Never bundle unrelated fixes.
 4. **Run `npm run build` after every pass.** Zero errors required.
 5. **Mobile-first.** Validate 375px before desktop for every UI change.
-6. **Both appearance modes use dark surfaces.** Text should be light (`text-slate-100`). Never dark text on dark backgrounds.
+6. **Light mode uses `bd-light-surface` for white surfaces.** In `map-dark` mode, text is light on dark glass. In `light` mode, elements with `bd-light-surface` get white backgrounds with dark text. Elements without it retain dark glass + light text (CSS fallback). See "Appearance Mode System" above.
 7. **Map theme (`mapTheme`) is separate from appearance mode.** Components with map surfaces need both.
 8. **Leaflet popups are always white.** Always use dark text inside Leaflet popups.
 9. **NY is the coverage area.** No Dallas/TX coordinates anywhere in the codebase.
