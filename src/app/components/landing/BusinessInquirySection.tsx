@@ -114,15 +114,18 @@ export default function BusinessInquirySection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/30" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(99,102,241,0.06),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(59,130,246,0.05),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(255,191,105,0.03),transparent_50%)]" />
-          <div className="absolute bottom-0 left-[30%] w-48 h-48 bg-blue-300/[0.07] rounded-full blur-[100px]" />
+          {/* Subtle dot grid texture */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.025)_1px,transparent_1px)] [background-size:28px_28px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(99,102,241,0.11),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(59,130,246,0.09),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(255,191,105,0.06),transparent_50%)]" />
+          <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-blue-300/[0.12] rounded-full blur-[110px]" />
+          <div className="absolute top-10 right-[20%] w-48 h-48 bg-indigo-300/[0.08] rounded-full blur-[120px]" />
         </>
       ) : (
         <>
@@ -140,10 +143,10 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/20" : "bg-blue-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 20px 6px rgba(59,130,246,0.10)"
+              ? "0 0 24px 8px rgba(59,130,246,0.15)"
               : "0 0 22px 7px rgba(59,130,246,0.2)",
           }}
         />
@@ -153,10 +156,10 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-50/80 border border-blue-200/30" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-200/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 18px rgba(59,130,246,0.06)"
+              ? "0 0 22px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.6)"
               : "0 0 20px rgba(59,130,246,0.12)",
           }}
         >
@@ -170,10 +173,10 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "6s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/15" : "bg-blue-400/30"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/22" : "bg-blue-400/30"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 16px 4px rgba(99,102,241,0.07)"
+              ? "0 0 20px 5px rgba(99,102,241,0.12)"
               : "0 0 18px 5px rgba(59,130,246,0.12)",
           }}
         />
@@ -184,7 +187,7 @@ export default function BusinessInquirySection({
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/40 bg-white/50 text-blue-700 backdrop-blur-sm" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/30 bg-white/40 text-blue-700 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Growth &amp; Partnerships
@@ -208,7 +211,7 @@ export default function BusinessInquirySection({
             isLightAppearance
               ? {
                   background:
-                    "linear-gradient(180deg, rgba(255, 255, 255, 0.80) 0%, rgba(248, 250, 255, 0.70) 100%)",
+                    "linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(248, 250, 255, 0.55) 100%)",
                   boxShadow:
                     "0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.08)",
                 }
@@ -237,7 +240,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/60 bg-white/40 hover:bg-white/60 hover:border-blue-200/50" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/50 bg-white/35 hover:bg-white/55 hover:border-blue-200/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-600" : "bg-[#003d82]"}`}
@@ -268,7 +271,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/60 bg-white/40 hover:bg-white/60 hover:border-blue-200/50" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/50 bg-white/35 hover:bg-white/55 hover:border-blue-200/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-indigo-600" : "bg-[#1e3a5f]"}`}

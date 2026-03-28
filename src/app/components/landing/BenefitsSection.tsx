@@ -64,15 +64,18 @@ export default function BenefitsSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-indigo-400/30"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/30" : "via-indigo-400/30"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(255,191,105,0.04),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(99,102,241,0.06),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(59,130,246,0.04),transparent_55%)]" />
-          <div className="absolute -top-10 right-[15%] w-64 h-64 bg-indigo-300/[0.07] rounded-full blur-[120px]" />
+          {/* Subtle cross-hatch texture */}
+          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.02)_34px,rgba(99,102,241,0.02)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.02)_34px,rgba(99,102,241,0.02)_35px)] opacity-50" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(255,191,105,0.07),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(99,102,241,0.12),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(59,130,246,0.08),transparent_55%)]" />
+          <div className="absolute -top-10 right-[15%] w-72 h-72 bg-indigo-300/[0.12] rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-blue-300/[0.08] rounded-full blur-[130px]" />
         </>
       ) : (
         <>
@@ -90,10 +93,10 @@ export default function BenefitsSection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-6 h-6 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-indigo-400/55"}`}
+          className={`w-6 h-6 rounded-full ${isLightAppearance ? "bg-indigo-400/35" : "bg-indigo-400/55"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 28px 10px rgba(99,102,241,0.12)"
+              ? "0 0 32px 12px rgba(99,102,241,0.18)"
               : "0 0 32px 12px rgba(99,102,241,0.28)",
           }}
         />
@@ -103,10 +106,10 @@ export default function BenefitsSection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/22" : "bg-indigo-400/45"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/30" : "bg-indigo-400/45"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 24px 7px rgba(99,102,241,0.10)"
+              ? "0 0 28px 9px rgba(99,102,241,0.15)"
               : "0 0 26px 8px rgba(99,102,241,0.24)",
           }}
         />
@@ -118,7 +121,7 @@ export default function BenefitsSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-indigo-200/40 bg-white/50 text-indigo-700" : "border border-indigo-400/25 bg-indigo-500/10 text-indigo-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-indigo-200/30 bg-white/40 text-indigo-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-indigo-400/25 bg-indigo-500/10 text-indigo-200"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-indigo-400" />
             Built for Real Repairs
@@ -156,7 +159,7 @@ export default function BenefitsSection({
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.80) 0%, rgba(248, 250, 255, 0.70) 100%)"
+                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(248, 250, 255, 0.55) 100%)"
                   : "linear-gradient(180deg, rgba(30, 27, 75, 0.30) 0%, rgba(15, 14, 40, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.08)"

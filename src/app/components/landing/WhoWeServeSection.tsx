@@ -77,15 +77,18 @@ export default function WhoWeServeSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/20" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/30" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(59,130,246,0.06),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(99,102,241,0.05),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(255,191,105,0.04),transparent_50%)]" />
-          <div className="absolute bottom-0 right-[20%] w-56 h-56 bg-blue-300/[0.07] rounded-full blur-[100px]" />
+          {/* Subtle dot grid texture */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.03)_1px,transparent_1px)] [background-size:36px_36px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(59,130,246,0.11),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(99,102,241,0.10),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(255,191,105,0.07),transparent_50%)]" />
+          <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-blue-300/[0.12] rounded-full blur-[110px]" />
+          <div className="absolute top-10 left-[15%] w-48 h-48 bg-indigo-300/[0.08] rounded-full blur-[120px]" />
         </>
       ) : (
         <>
@@ -103,10 +106,10 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "0s" }}
       >
         <div
-          className={`w-7 h-7 rounded-full ${isLightAppearance ? "bg-blue-400/20" : "bg-blue-400/45"}`}
+          className={`w-7 h-7 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/45"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 30px 10px rgba(59,130,246,0.10)"
+              ? "0 0 34px 12px rgba(59,130,246,0.16)"
               : "0 0 36px 12px rgba(59,130,246,0.25)",
           }}
         />
@@ -116,15 +119,15 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-500/8 border border-blue-300/20" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 18px rgba(59,130,246,0.06)"
+              ? "0 0 22px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.6)"
               : "0 0 20px rgba(59,130,246,0.12)",
           }}
         >
           <Shield
-            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/50" : "text-blue-400/50"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/50"}`}
           />
         </div>
       </div>
@@ -133,10 +136,10 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/20" : "bg-indigo-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/30" : "bg-indigo-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 22px 7px rgba(99,102,241,0.10)"
+              ? "0 0 26px 9px rgba(99,102,241,0.15)"
               : "0 0 24px 8px rgba(99,102,241,0.22)",
           }}
         />
@@ -148,7 +151,7 @@ export default function WhoWeServeSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-blue-200/40 bg-white/50 text-blue-700" : "border border-blue-400/20 bg-blue-500/10 text-blue-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-blue-200/30 bg-white/40 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Everyone Wins
@@ -179,7 +182,7 @@ export default function WhoWeServeSection({
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.80) 0%, rgba(248, 250, 255, 0.70) 100%)"
+                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(248, 250, 255, 0.55) 100%)"
                   : "linear-gradient(180deg, rgba(15, 30, 60, 0.35) 0%, rgba(14, 22, 38, 0.75) 100%)",
                 boxShadow: isLightAppearance
                   ? "0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.08)"
@@ -237,7 +240,7 @@ export default function WhoWeServeSection({
           ].map((badge) => (
             <div
               key={badge.text}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 ${isLightAppearance ? "border border-blue-200/40 bg-white/50" : "border border-blue-400/25 bg-blue-500/10"}`}
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 ${isLightAppearance ? "border border-blue-200/30 bg-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-blue-400/25 bg-blue-500/10"}`}
             >
               <CheckCircle2
                 className={`w-3.5 h-3.5 ${isLightAppearance ? "text-blue-500" : "text-blue-400"}`}

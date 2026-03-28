@@ -26,14 +26,16 @@ export default function FooterSection({
     >
       {/* Top edge fade */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/15" : "via-blue-400/10"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/25" : "via-blue-400/10"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_80%,rgba(99,102,241,0.04),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_70%_20%,rgba(59,130,246,0.03),transparent_55%)]" />
-          <div className="absolute bottom-0 left-[15%] w-48 h-48 bg-blue-300/[0.05] rounded-full blur-[100px]" />
+          {/* Fine dot texture */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.02)_1px,transparent_1px)] [background-size:18px_18px] opacity-35" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_80%,rgba(99,102,241,0.07),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_70%_20%,rgba(59,130,246,0.05),transparent_55%)]" />
+          <div className="absolute bottom-0 left-[15%] w-56 h-56 bg-blue-300/[0.08] rounded-full blur-[110px]" />
         </>
       ) : (
         <>
@@ -49,7 +51,7 @@ export default function FooterSection({
         >
           <div className="col-span-2 md:col-span-1">
             <div
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex ${isLightAppearance ? "bg-white/60 border border-slate-200/50" : "bg-white/[0.07] border border-white/[0.1]"}`}
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex ${isLightAppearance ? "bg-white/50 border border-slate-200/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "bg-white/[0.07] border border-white/[0.1]"}`}
             >
               <span
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white"

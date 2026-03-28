@@ -39,15 +39,18 @@ export default function TrustStatsSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/30" : "via-blue-400/25"} to-transparent`}
       />
       {/* Decorative background elements */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(99,102,241,0.06),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(59,130,246,0.05),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(255,191,105,0.04),transparent_50%)]" />
-          <div className="absolute top-0 right-[30%] w-56 h-56 bg-blue-300/[0.08] rounded-full blur-[100px]" />
+          {/* Subtle dot grid texture */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(99,102,241,0.03)_1px,transparent_1px)] [background-size:20px_20px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(99,102,241,0.12),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(59,130,246,0.10),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(255,191,105,0.07),transparent_50%)]" />
+          <div className="absolute top-0 right-[30%] w-64 h-64 bg-blue-300/[0.13] rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-indigo-300/[0.08] rounded-full blur-[120px]" />
         </>
       ) : (
         <>
@@ -65,10 +68,10 @@ export default function TrustStatsSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/20" : "bg-blue-400/45"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/45"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 24px 8px rgba(59,130,246,0.10)"
+              ? "0 0 28px 10px rgba(59,130,246,0.16)"
               : "0 0 28px 10px rgba(59,130,246,0.24)",
           }}
         />
@@ -78,10 +81,10 @@ export default function TrustStatsSection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/18" : "bg-indigo-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/28" : "bg-indigo-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 20px 6px rgba(99,102,241,0.08)"
+              ? "0 0 24px 8px rgba(99,102,241,0.14)"
               : "0 0 22px 7px rgba(99,102,241,0.20)",
           }}
         />
@@ -96,12 +99,12 @@ export default function TrustStatsSection({
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
-                className={`inline-flex items-center justify-center w-12 h-12 rounded-xl backdrop-blur-sm mb-3 group-hover:scale-105 transition-all duration-300 border ${isLightAppearance ? "bg-blue-50/80 border-blue-200/30 group-hover:bg-blue-50" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
+                className={`inline-flex items-center justify-center w-12 h-12 rounded-xl backdrop-blur-sm mb-3 group-hover:scale-105 transition-all duration-300 border ${isLightAppearance ? "bg-white/50 border-blue-200/25 group-hover:bg-white/65" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
                 style={
                   isLightAppearance
                     ? {
                         boxShadow:
-                          "0 2px 8px rgba(59, 130, 246, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5)",
+                          "0 2px 12px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6)",
                       }
                     : {
                         boxShadow:

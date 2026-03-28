@@ -74,14 +74,21 @@ export default function HeroSection({
       {/* Atmospheric radiance */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(99,102,241,0.08),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(59,130,246,0.06),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(255,191,105,0.05),transparent_50%)]" />
-          <div className="absolute top-20 right-[15%] w-72 h-72 bg-blue-300/[0.10] rounded-full blur-[100px]" />
-          <div className="absolute bottom-10 left-[10%] w-56 h-56 bg-indigo-300/[0.08] rounded-full blur-[120px]" />
+          {/* Subtle mesh texture */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.03)_1px,transparent_1px)] [background-size:32px_32px] opacity-40" />
+          {/* Color atmosphere */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(99,102,241,0.14),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(59,130,246,0.11),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(255,191,105,0.08),transparent_50%)]" />
+          {/* Large ambient blur pools */}
+          <div className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-blue-300/[0.16] rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-indigo-300/[0.13] rounded-full blur-[140px]" />
+          <div className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-sky-200/[0.08] rounded-full blur-[160px]" />
         </>
       ) : (
         <>
+          {/* Subtle dot grid texture */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.035)_1px,transparent_1px)] [background-size:32px_32px] opacity-35" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.18),transparent_60%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.10),transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.06),transparent_45%)]" />
@@ -92,7 +99,7 @@ export default function HeroSection({
 
       {/* Bottom edge fade for smooth transition to next section */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-16 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#e8edf5]/60" : "bg-gradient-to-b from-transparent to-[#071a34]/50"}`}
+        className={`absolute bottom-0 left-0 right-0 h-24 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent via-[#e8edf5]/40 to-[#e8edf5]/80" : "bg-gradient-to-b from-transparent to-[#071a34]/50"}`}
       />
 
       {/* Decorative floating orbs */}
@@ -101,10 +108,10 @@ export default function HeroSection({
         style={{ animationDelay: "0s" }}
       >
         <div
-          className={`w-6 h-6 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/60"}`}
+          className={`w-7 h-7 rounded-full ${isLightAppearance ? "bg-blue-400/40" : "bg-blue-400/60"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 28px 10px rgba(59,130,246,0.15)"
+              ? "0 0 36px 14px rgba(59,130,246,0.22)"
               : "0 0 32px 12px rgba(59,130,246,0.30)",
           }}
         />
@@ -114,10 +121,10 @@ export default function HeroSection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-4.5 h-4.5 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-indigo-400/50"}`}
+          className={`w-5 h-5 rounded-full ${isLightAppearance ? "bg-indigo-400/35" : "bg-indigo-400/50"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 24px 8px rgba(99,102,241,0.12)"
+              ? "0 0 30px 12px rgba(99,102,241,0.18)"
               : "0 0 28px 10px rgba(99,102,241,0.26)",
           }}
         />
@@ -127,15 +134,15 @@ export default function HeroSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-500/8 border border-blue-300/20" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-10 h-10 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-white/50 border border-blue-300/30 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 18px rgba(59,130,246,0.08)"
+              ? "0 0 24px rgba(59,130,246,0.14), inset 0 1px 0 rgba(255,255,255,0.6)"
               : "0 0 20px rgba(59,130,246,0.15)",
           }}
         >
           <Car
-            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/50" : "text-blue-400/50"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/50"}`}
           />
         </div>
       </div>
@@ -152,11 +159,13 @@ export default function HeroSection({
                 className="inline-flex items-center px-3.5 py-1.5 rounded-full border backdrop-blur-sm text-xs sm:text-sm font-medium shadow-sm"
                 style={{
                   borderColor: isLightAppearance
-                    ? "rgba(59,130,246,0.18)"
+                    ? "rgba(59,130,246,0.20)"
                     : "rgba(96,165,250,0.25)",
-                  background: isLightAppearance ? "rgba(255,255,255,0.70)" : "rgba(59,130,246,0.1)",
+                  background: isLightAppearance ? "rgba(255,255,255,0.50)" : "rgba(59,130,246,0.1)",
                   color: isLightAppearance ? "#334155" : "#bfdbfe",
-                  boxShadow: isLightAppearance ? "0 2px 8px rgba(0,0,0,0.06)" : undefined,
+                  boxShadow: isLightAppearance
+                    ? "0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.7)"
+                    : undefined,
                 }}
               >
                 <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-2 animate-pulse" />
@@ -273,7 +282,7 @@ export default function HeroSection({
               </button>
               <button
                 onClick={onLearnMore}
-                className={`inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base font-medium rounded-2xl px-7 py-3.5 min-h-[48px] border backdrop-blur-sm transition-all active:scale-[0.97] ${isLightAppearance ? "text-slate-700 border-slate-300/50 bg-white/60 hover:bg-white/80 hover:border-slate-300/70" : "text-blue-200 border-blue-400/25 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/40"}`}
+                className={`inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base font-medium rounded-2xl px-7 py-3.5 min-h-[48px] border backdrop-blur-md transition-all active:scale-[0.97] ${isLightAppearance ? "text-slate-700 border-slate-300/40 bg-white/45 hover:bg-white/65 hover:border-slate-300/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]" : "text-blue-200 border-blue-400/25 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/40"}`}
                 type="button"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
@@ -289,7 +298,7 @@ export default function HeroSection({
               {["Now available in NY", "Transparent bids", "Free for customers"].map((item) => (
                 <span
                   key={item}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs sm:text-sm font-medium ${isLightAppearance ? "border-blue-200/40 bg-white/50 text-slate-600" : "border-blue-400/20 bg-blue-500/8 text-blue-200/80"}`}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs sm:text-sm font-medium backdrop-blur-sm ${isLightAppearance ? "border-blue-200/30 bg-white/40 text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-blue-500/8 text-blue-200/80"}`}
                 >
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
                   {item}
@@ -331,12 +340,12 @@ export default function HeroSection({
               className={`absolute -top-1 right-2 sm:-top-2 sm:right-0 lg:top-4 lg:-right-4 rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
               style={{
                 transitionDelay: "1.2s",
-                borderColor: isLightAppearance ? "rgba(148,163,184,0.25)" : "rgba(96,165,250,0.25)",
+                borderColor: isLightAppearance ? "rgba(148,163,184,0.20)" : "rgba(96,165,250,0.25)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 255, 0.80) 100%)"
+                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(248, 250, 255, 0.55) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 12px 40px rgba(0, 0, 0, 0.08), 0 0 1px rgba(148, 163, 184, 0.3)"
+                  ? "0 12px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.7), 0 0 1px rgba(148, 163, 184, 0.2)"
                   : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
               }}
             >
@@ -358,12 +367,12 @@ export default function HeroSection({
               style={{
                 transitionDelay: "1.6s",
                 animationDelay: "1.5s",
-                borderColor: isLightAppearance ? "rgba(148,163,184,0.20)" : "rgba(96,165,250,0.2)",
+                borderColor: isLightAppearance ? "rgba(148,163,184,0.15)" : "rgba(96,165,250,0.2)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 255, 0.80) 100%)"
+                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.60) 0%, rgba(248, 250, 255, 0.55) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 12px 40px rgba(0, 0, 0, 0.08), 0 0 1px rgba(148, 163, 184, 0.25)"
+                  ? "0 12px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.7), 0 0 1px rgba(148, 163, 184, 0.15)"
                   : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
               }}
             >

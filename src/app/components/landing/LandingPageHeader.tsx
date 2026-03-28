@@ -67,10 +67,10 @@ export default function LandingPageHeader({
       style={{
         background: isScrolled
           ? isLightAppearance
-            ? "linear-gradient(180deg, rgba(245, 247, 251, 0.92) 0%, rgba(238, 242, 249, 0.90) 100%)"
+            ? "linear-gradient(180deg, rgba(245, 247, 251, 0.88) 0%, rgba(238, 242, 249, 0.85) 100%)"
             : "linear-gradient(180deg, rgba(12, 25, 41, 0.95) 0%, rgba(10, 22, 38, 0.92) 100%)"
           : isLightAppearance
-            ? "rgba(245, 247, 251, 0.3)"
+            ? "rgba(245, 247, 251, 0.25)"
             : "rgba(12, 25, 41, 0.3)",
       }}
     >
@@ -153,7 +153,7 @@ export default function LandingPageHeader({
               {showLandingPage && (
                 <button
                   onClick={onViewDashboard}
-                  className={`inline-flex items-center gap-1.5 font-medium px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all ${isLightAppearance ? "border-slate-200/50 bg-white/50 text-slate-700 hover:bg-white/70" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
+                  className={`inline-flex items-center gap-1.5 font-medium px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border backdrop-blur-sm transition-all ${isLightAppearance ? "border-slate-200/40 bg-white/40 text-slate-700 hover:bg-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
                   type="button"
                 >
                   <Home
@@ -199,7 +199,7 @@ export default function LandingPageHeader({
                   <div
                     role="menu"
                     aria-label="User profile menu"
-                    className={`absolute right-0 mt-2 w-56 rounded-xl border backdrop-blur-xl shadow-lg z-50 overflow-hidden ${isLightAppearance ? "bg-white/95 border-slate-200/50 shadow-black/10" : "bg-[#0c1929]/95 border-blue-400/20 shadow-black/30"}`}
+                    className={`absolute right-0 mt-2 w-56 rounded-xl border backdrop-blur-xl shadow-lg z-50 overflow-hidden ${isLightAppearance ? "bg-white/90 border-slate-200/40 shadow-black/10" : "bg-[#0c1929]/95 border-blue-400/20 shadow-black/30"}`}
                   >
                     <div
                       className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-slate-200/40" : "border-blue-400/15"}`}
@@ -297,7 +297,7 @@ export default function LandingPageHeader({
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileMenuOpen ? "max-h-80 opacity-100 border-t" : "max-h-0 opacity-0 border-t-0"} ${isLightAppearance ? "border-slate-200/40" : "border-blue-400/15"}`}
         style={{
-          background: isLightAppearance ? "rgba(245, 247, 251, 0.97)" : "rgba(10, 22, 38, 0.97)",
+          background: isLightAppearance ? "rgba(245, 247, 251, 0.94)" : "rgba(10, 22, 38, 0.97)",
         }}
       >
         <div className="container mx-auto px-6 py-4 flex flex-col gap-1 max-w-7xl">
