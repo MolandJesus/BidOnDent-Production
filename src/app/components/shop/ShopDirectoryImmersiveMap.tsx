@@ -149,6 +149,8 @@ export default function ShopDirectoryImmersiveMap({
           suppressHeader
           userCoords={userCoords}
           userType={userType}
+          onOpenShopDirections={onOpenShopDirections}
+          directionsActionLabel={directionsActionLabel}
         >
           <ShopDirectoryMapOverlays
             deviationPrompt={deviationPrompt}

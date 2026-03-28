@@ -1,4 +1,3 @@
-import { supabase } from "./client";
 import type { Vehicle } from "./types";
 import {
   buildWebsiteIdentityQuery,
@@ -34,173 +33,71 @@ export async function getVehicles(
 ): Promise<Vehicle[]> {
   const identity = normalizeVehicleIdentity(identityOrClerkUserId);
 
-  if (identity?.clerkUserId || identity?.email || identity?.websiteUserKey) {
-    try {
-      const searchParams = buildWebsiteIdentityQuery(identity);
-      const payload = await requestSupabaseEdge<{ vehicles?: Vehicle[] }>(
-        `${SUPABASE_EDGE_ROUTES.vehicles}?${searchParams.toString()}`,
-        {
-          method: "GET",
-        }
-      );
-
-      return payload.vehicles || [];
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Error in getVehicles edge path:", error);
-      return [];
+  if (!identity?.clerkUserId && !identity?.email && !identity?.websiteUserKey) {
+    if (import.meta.env.DEV) {
+      console.warn("getVehicles: missing identity");
     }
+    return [];
   }
 
   try {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      if (import.meta.env.DEV) console.log("ℹ️ No authenticated user");
-      return [];
-    }
-
-    const { data, error } = await supabase
-      .from("vehicles")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      if (error.code === "PGRST205" || error.code === "42P01") {
-        if (import.meta.env.DEV) console.log("ℹ️ Vehicles table not set up yet - using local storage");
-        return [];
+    const searchParams = buildWebsiteIdentityQuery(identity);
+    const payload = await requestSupabaseEdge<{ vehicles?: Vehicle[] }>(
+      `${SUPABASE_EDGE_ROUTES.vehicles}?${searchParams.toString()}`,
+      {
+        method: "GET",
       }
-      if (import.meta.env.DEV) console.error("Error fetching vehicles:", error);
-      return [];
-    }
+    );
 
-    if (import.meta.env.DEV) console.log(`✅ Loaded ${data.length} vehicles from Supabase`);
-    return data as Vehicle[];
+    return payload.vehicles || [];
   } catch (error) {
-    if (import.meta.env.DEV) console.error("Error in getVehicles:", error);
+    if (import.meta.env.DEV) console.error("Error in getVehicles edge path:", error);
     return [];
   }
 }
 
 export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promise<boolean> {
-  if (clerkUserId) {
-    try {
-      await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.vehicles, {
-        body: JSON.stringify({
-          clerkUserId,
-          vehicle,
-        }),
-        method: "POST",
-      });
-      return true;
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Error in saveVehicle edge path:", error);
-      return false;
+  if (!clerkUserId) {
+    if (import.meta.env.DEV) {
+      console.warn("saveVehicle: missing Clerk user ID");
     }
+    return false;
   }
 
   try {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return false;
-    }
-
-    const yearNum = typeof vehicle.year === "string" ? parseInt(vehicle.year, 10) : vehicle.year;
-
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    const hasValidId = vehicle.id && uuidRegex.test(vehicle.id);
-
-    if (hasValidId) {
-      const { error } = await supabase
-        .from("vehicles")
-        .update({
-          make: vehicle.make,
-          model: vehicle.model,
-          year: yearNum,
-          color: vehicle.color,
-          license_plate: vehicle.license_plate,
-          vin: vehicle.vin,
-          image_url: vehicle.image_url
-        })
-        .eq("id", vehicle.id)
-        .eq("user_id", user.id);
-
-      if (error) {
-        if (import.meta.env.DEV) console.error("Error updating vehicle:", error);
-        return false;
-      }
-    } else {
-      const { error } = await supabase.from("vehicles").insert({
-        user_id: user.id,
-        make: vehicle.make,
-        model: vehicle.model,
-        year: yearNum,
-        color: vehicle.color,
-        license_plate: vehicle.license_plate,
-        vin: vehicle.vin,
-        image_url: vehicle.image_url
-      });
-
-      if (error) {
-        if (import.meta.env.DEV) console.error("Error inserting vehicle:", error);
-        return false;
-      }
-    }
-
-    if (import.meta.env.DEV) console.log("✅ Vehicle saved to Supabase");
+    await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.vehicles, {
+      body: JSON.stringify({
+        clerkUserId,
+        vehicle,
+      }),
+      method: "POST",
+    });
     return true;
   } catch (error) {
-    if (import.meta.env.DEV) console.error("Error in saveVehicle:", error);
+    if (import.meta.env.DEV) console.error("Error in saveVehicle edge path:", error);
     return false;
   }
 }
 
 export async function deleteVehicle(vehicleId: string, clerkUserId?: string): Promise<boolean> {
-  if (clerkUserId) {
-    try {
-      await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.deleteVehicle, {
-        body: JSON.stringify({
-          clerkUserId,
-          vehicleId,
-        }),
-        method: "POST",
-      });
-      return true;
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Error in deleteVehicle edge path:", error);
-      return false;
+  if (!clerkUserId) {
+    if (import.meta.env.DEV) {
+      console.warn("deleteVehicle: missing Clerk user ID");
     }
+    return false;
   }
 
   try {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return false;
-    }
-
-    const { error } = await supabase
-      .from("vehicles")
-      .delete()
-      .eq("id", vehicleId)
-      .eq("user_id", user.id);
-
-    if (error) {
-      if (import.meta.env.DEV) console.error("Error deleting vehicle:", error);
-      return false;
-    }
-
-    if (import.meta.env.DEV) console.log("✅ Vehicle deleted from Supabase");
+    await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.deleteVehicle, {
+      body: JSON.stringify({
+        clerkUserId,
+        vehicleId,
+      }),
+      method: "POST",
+    });
     return true;
   } catch (error) {
-    if (import.meta.env.DEV) console.error("Error in deleteVehicle:", error);
+    if (import.meta.env.DEV) console.error("Error in deleteVehicle edge path:", error);
     return false;
   }
 }

@@ -1,19 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import { getBidsForReport } from "../services/supabase/bids";
+import type { Bid } from "../types";
 
-interface MappedBid {
-  id: string;
-  reportId: string;
-  shopName: string;
-  shopRating: number;
-  shopReviews: number;
-  amount: number;
-  estimatedDays: number;
-  shopDistance: string;
-  shopLatitude: number | null;
-  shopLongitude: number | null;
-  description: string;
-  status: string;
-}
+interface MappedBid extends Bid {}
 
 /**
  * Fetches bids for a specific damage report from Supabase.
@@ -34,22 +23,24 @@ export function useBidsForReport(reportId?: string | null) {
     setError(null);
 
     try {
-      const { getBidsForReport } = await import("../services/supabase/bids");
       const data = await getBidsForReport(reportId);
 
       const mapped: MappedBid[] = data.map((bid) => ({
         id: bid.id || "",
         reportId: bid.report_id || bid.damage_report_id || reportId,
+        shopId: bid.shop_id || bid.shop_user_id || bid.clerk_shop_user_id || "",
+        shopEmail: bid.shop_email || "",
         shopName: bid.shop_name || "Auto Shop",
         shopRating: Number(bid.shop_rating || 0),
         shopReviews: Number(bid.shop_reviews || 0),
         amount: Number(bid.amount || 0),
         estimatedDays: Number(bid.estimated_days || 0),
         shopDistance: bid.shop_distance || "Within service area",
-        shopLatitude: bid.shop_latitude ?? null,
-        shopLongitude: bid.shop_longitude ?? null,
+        shopLatitude: bid.shop_latitude ?? undefined,
+        shopLongitude: bid.shop_longitude ?? undefined,
         description: bid.description || "",
-        status: bid.status || "pending",
+        status: bid.status === "accepted" || bid.status === "rejected" ? bid.status : "pending",
+        createdAt: bid.created_at || new Date().toISOString(),
       }));
 
       setBids(mapped);

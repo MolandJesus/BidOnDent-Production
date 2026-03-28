@@ -1,18 +1,21 @@
-import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
-
-const EDGE_FUNCTION_PREFIX = `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523`;
+import {
+  buildSupabaseEdgeHeadersAsync,
+  buildSupabaseFunctionUrl,
+} from "./runtime";
 
 export function buildEdgeFunctionUrl(path: string): string {
-  return `${EDGE_FUNCTION_PREFIX}${path.startsWith("/") ? path : `/${path}`}`;
+  return buildSupabaseFunctionUrl(path);
 }
 
 export async function edgeFunctionFetch(
   path: string,
   init: RequestInit = {}
 ): Promise<Response> {
-  const headers = new Headers(init.headers);
-  headers.set("Authorization", `Bearer ${publicAnonKey}`);
-  headers.set("apikey", publicAnonKey);
+  const bodyIsFormData = typeof FormData !== "undefined" && init.body instanceof FormData;
+  const headers = await buildSupabaseEdgeHeadersAsync({
+    headers: init.headers,
+    json: !bodyIsFormData,
+  });
 
   return fetch(buildEdgeFunctionUrl(path), {
     ...init,

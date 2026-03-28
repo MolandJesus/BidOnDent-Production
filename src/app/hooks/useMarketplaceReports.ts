@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getAllDamageReports } from "../services/supabase/reports";
 import { transformSupabaseReport } from "./userDataUtils";
 
 /**
@@ -19,7 +20,6 @@ export function useMarketplaceReports(userType: string) {
 
     (async () => {
       try {
-        const { getAllDamageReports } = await import("../services/supabase/reports");
         const raw = await getAllDamageReports();
         if (!cancelled) {
           const reports = Array.isArray(raw) ? raw : [];

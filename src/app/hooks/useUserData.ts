@@ -36,7 +36,12 @@ import {
   toFrontendBid,
 } from "./userDataUtils";
 
-export function useUserData(clerkUserId?: string, websiteUserKey?: string, signedInEmail?: string) {
+export function useUserData(
+  clerkUserId?: string,
+  websiteUserKey?: string,
+  signedInEmail?: string,
+  authReady = true
+) {
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: "", email: "", profileImage: "" });
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [reports, setReports] = useState<DamageReport[]>([]);
@@ -104,10 +109,14 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
         }
       }
 
-      // Step 2: Check if we have a Clerk-backed website identity
-      if (!signedInEmail || !clerkUserId) {
+      // Step 2: Check if we have a Clerk-backed website identity and auth token path
+      if (!authReady || !signedInEmail || !clerkUserId) {
         if (import.meta.env.DEV)
-          console.log("[DEBUG] useUserData: No Clerk identity available yet - skipping cloud load");
+          console.log("[DEBUG] useUserData: Clerk auth not ready yet - skipping cloud load", {
+            authReady,
+            clerkUserId,
+            signedInEmail,
+          });
         setReportsLoading(false);
         return;
       }
@@ -135,24 +144,9 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           localStorage.removeItem(STORAGE_KEYS.USER_DATA);
         }
 
-        // Load profile
-        if (import.meta.env.DEV)
-          console.log("[DEBUG] useUserData: Calling getProfile", {
-            clerkUserId,
-            email,
-            websiteUserKey,
-          });
-        const profileData = await getProfile({
-          clerkUserId,
-          email,
-          websiteUserKey,
-        });
-        if (import.meta.env.DEV) console.log("[DEBUG] useUserData: getProfile result", profileData);
-
-        if (profileData) {
+        const hydrateFromSupabaseProfile = async (profileData: any) => {
           if (import.meta.env.DEV) console.log("Profile loaded from Supabase:", profileData);
 
-          // Set state from Supabase data
           setUserInfo({
             name: profileData.name,
             email: profileData.email,
@@ -165,24 +159,26 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           });
           setNotifications(getNotificationsByUserType(profileData.account_type));
 
-          // Load vehicles from Supabase
           const vehiclesData = await getVehicles(clerkUserId);
-          setVehicles(vehiclesData.map(toFrontendVehicle));
-          if (import.meta.env.DEV)
+          const frontendVehicles = vehiclesData.map(toFrontendVehicle);
+          setVehicles(frontendVehicles);
+          if (import.meta.env.DEV) {
             console.log(`Loaded ${vehiclesData.length} vehicles from Supabase`);
+          }
 
-          // Load reports from Supabase
           setReportsLoading(true);
           setReportsError(null);
           const reportsData = await getDamageReports(clerkUserId);
+
+          let transformedReports: DamageReport[] = [];
+          let validReports: any[] = [];
+
           if (Array.isArray(reportsData)) {
-            // Success
-            const transformedReports = reportsData.map(
-              transformSupabaseReport
-            ) as unknown as DamageReport[];
+            validReports = reportsData;
+            transformedReports = reportsData.map(transformSupabaseReport) as unknown as DamageReport[];
             setReports(transformedReports);
             setReportsError(null);
-            // Populate photoStorage from reports
+
             const photoStorageData: Record<string, string[]> = {};
             reportsData.forEach((report: any) => {
               if (report.photo_urls && Array.isArray(report.photo_urls)) {
@@ -190,8 +186,9 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               }
             });
             setPhotoStorage(photoStorageData);
-            if (import.meta.env.DEV)
+            if (import.meta.env.DEV) {
               console.log(`[DEV] Loaded ${transformedReports.length} reports from Supabase`);
+            }
           } else if (reportsData && reportsData.error) {
             setReports([]);
             setReportsError(reportsData.error);
@@ -207,14 +204,13 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
           }
           setReportsLoading(false);
 
-          // Load bids from Supabase
           const bidsData = await getMyBids(clerkUserId);
           const transformedBids = bidsData.map(toFrontendBid);
           setBids(transformedBids);
-          if (import.meta.env.DEV)
+          if (import.meta.env.DEV) {
             console.log(`[DEV] Loaded ${transformedBids.length} bids from Supabase`);
+          }
 
-          // Seed autosave signatures from cloud snapshot so we don't immediately rewrite unchanged data
           const profileSignature = JSON.stringify({
             email: profileData.email,
             name: profileData.name,
@@ -222,32 +218,31 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             profileImage: profileData.profile_image_url || "",
             accountType: profileData.account_type,
           });
-          const frontendVehicles = vehiclesData.map(toFrontendVehicle);
-          const transformedReports = (Array.isArray(reportsData)
-            ? reportsData.map(transformSupabaseReport)
-            : []) as unknown as DamageReport[];
           lastSavedProfileSignatureRef.current = profileSignature;
           lastSavedVehiclesSignatureRef.current = JSON.stringify(frontendVehicles);
           lastSavedReportsSignatureRef.current = JSON.stringify(transformedReports);
-          // Seed per-entity signatures so auto-save only writes changed entities
+
           vehicleSignaturesRef.current = {};
-          for (const v of frontendVehicles) {
-            if (v.id) vehicleSignaturesRef.current[v.id] = JSON.stringify(v);
-          }
-          reportSignaturesRef.current = {};
-          for (const r of transformedReports) {
-            if (r.id) reportSignaturesRef.current[r.id] = JSON.stringify(r);
+          for (const vehicle of frontendVehicles) {
+            if (vehicle.id) {
+              vehicleSignaturesRef.current[vehicle.id] = JSON.stringify(vehicle);
+            }
           }
 
-          // Step 4: Update localStorage CACHE with fresh data
-          const validReports = Array.isArray(reportsData) ? reportsData : [];
+          reportSignaturesRef.current = {};
+          for (const report of transformedReports) {
+            if (report.id) {
+              reportSignaturesRef.current[report.id] = JSON.stringify(report);
+            }
+          }
+
           const freshUserData: UserData = {
             userInfo: {
               name: profileData.name,
               email: profileData.email,
               profileImage: profileData.profile_image_url || "",
             },
-            vehicles: vehiclesData.map(toFrontendVehicle),
+            vehicles: frontendVehicles,
             reports: validReports.map(transformSupabaseReport) as unknown as DamageReport[],
             bids: transformedBids,
             userPhone: profileData.phone || "",
@@ -271,15 +266,33 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
               STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
               websiteUserKey || normalizeEmail(email)
             );
-            if (import.meta.env.DEV) console.log("Cache updated with fresh Supabase data");
+            if (import.meta.env.DEV) {
+              console.log("Cache updated with fresh Supabase data");
+            }
           } catch {
             // Graceful: quota exceeded or private mode — Supabase is source of truth
           }
+        };
+
+        if (import.meta.env.DEV)
+          console.log("[DEBUG] useUserData: Calling getProfile", {
+            clerkUserId,
+            email,
+            websiteUserKey,
+          });
+        const profileData = await getProfile({
+          clerkUserId,
+          email,
+          websiteUserKey,
+        });
+        if (import.meta.env.DEV) console.log("[DEBUG] useUserData: getProfile result", profileData);
+
+        if (profileData) {
+          await hydrateFromSupabaseProfile(profileData);
         } else {
           if (import.meta.env.DEV)
             console.log("No profile found in Supabase - new user or needs migration");
 
-          // Check if we have cached data for this user (migration case)
           if (cachedData) {
             let userData: UserData;
             try {
@@ -290,13 +303,12 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
             if (userData?.userInfo?.email === email && userData.redirectInfo) {
               if (import.meta.env.DEV) console.log("Migrating cached data to Supabase...");
 
-              // Create profile in Supabase from cached data
-              await saveProfile(
+              const profileSaved = await saveProfile(
                 {
                   email: email,
                   name: userData.userInfo.name,
                   phone: userData.userPhone || "",
-                  profile_image_url: undefined, // Don't migrate base64 images
+                  profile_image_url: undefined,
                   account_type: userData.redirectInfo.type,
                 },
                 {
@@ -306,7 +318,14 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
                 }
               );
 
-              // Migrate vehicles
+              if (!profileSaved) {
+                if (import.meta.env.DEV) {
+                  console.warn("Cached profile migration did not complete; skipping hard reload.");
+                }
+                setReportsLoading(false);
+                return;
+              }
+
               if (userData.vehicles && userData.vehicles.length > 0) {
                 for (const vehicle of userData.vehicles) {
                   await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
@@ -314,12 +333,40 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
                 if (import.meta.env.DEV) console.log("Migrated vehicles to Supabase");
               }
 
-              if (import.meta.env.DEV)
-                console.log("Migration complete - reloading from Supabase...");
-              // Reload to get fresh data with UUIDs
-              window.location.reload();
+              if (userData.reports && userData.reports.length > 0) {
+                for (const report of userData.reports) {
+                  await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
+                }
+                if (import.meta.env.DEV) console.log("Migrated reports to Supabase");
+              }
+
+              lastSavedProfileSignatureRef.current = JSON.stringify({
+                email,
+                name: userData.userInfo.name,
+                phone: userData.userPhone || "",
+                profileImage: "",
+                accountType: userData.redirectInfo.type,
+              });
+              lastSavedVehiclesSignatureRef.current = JSON.stringify(userData.vehicles || []);
+              lastSavedReportsSignatureRef.current = JSON.stringify(userData.reports || []);
+
+              const refreshedProfile = await getProfile({
+                clerkUserId,
+                email,
+                websiteUserKey,
+              });
+
+              if (refreshedProfile) {
+                if (import.meta.env.DEV) {
+                  console.log("Migration complete - hydrated fresh Supabase data without reload");
+                }
+                await hydrateFromSupabaseProfile(refreshedProfile);
+              } else if (import.meta.env.DEV) {
+                console.warn("Migration saved data but profile refresh was not yet available");
+              }
             }
           }
+          setReportsLoading(false);
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Error loading from Supabase:", error);
@@ -329,7 +376,7 @@ export function useUserData(clerkUserId?: string, websiteUserKey?: string, signe
     };
 
     loadUserData();
-  }, [clerkUserId, signedInEmail, websiteUserKey]);
+  }, [authReady, clerkUserId, signedInEmail, websiteUserKey]);
 
   // ============================================================================
   // CACHE UPDATE (localStorage) - for quick offline access

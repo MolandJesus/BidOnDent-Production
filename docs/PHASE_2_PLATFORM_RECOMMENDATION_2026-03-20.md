@@ -1,5 +1,8 @@
 # Phase 2 Platform Recommendation
 
+**Last updated:** March 28, 2026
+**Status:** Historical architecture recommendation reference
+
 **Date**: March 20, 2026  
 **Scope**: Architecture-first Phase 2 recommendation plus one tightly scoped implementation wave  
 **North Star**: Move BidOnDent toward a premium map-driven product surface with honest capability boundaries.  

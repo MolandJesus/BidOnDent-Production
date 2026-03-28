@@ -28,7 +28,11 @@ export type ClaimShop = {
   avgCompletionDays: number;
 };
 
-export function buildPolicyholders(reports: Record<string, unknown>[]): Policyholder[] {
+function asRecord(value: unknown): Record<string, any> {
+  return value && typeof value === "object" ? (value as Record<string, any>) : {};
+}
+
+export function buildPolicyholders(reports: Array<Record<string, any>>): Policyholder[] {
   if (!reports.length) {
     return [
       {
@@ -47,25 +51,29 @@ export function buildPolicyholders(reports: Record<string, unknown>[]): Policyho
   }
 
   return reports.slice(0, 8).map((report, index) => {
-    const vehicleData = report?.vehicle || report?.vehicleInfo || {};
-    const status = String(report?.status ?? "pending").toLowerCase();
+    const safeReport = asRecord(report);
+    const vehicleData = asRecord(safeReport.vehicle || safeReport.vehicleInfo);
+    const status = String(safeReport.status ?? "pending").toLowerCase();
     const activeClaims = status === "completed" || status === "resolved" ? 0 : 1;
 
     return {
-      id: `customer-${report?.id ?? index}`,
-      name: report?.customerName || "Policyholder on file",
-      email: report?.customerEmail || "On file",
-      phone: report?.customerPhone || "On file",
-      policyNumber: report?.policyNumber || "Pending verification",
+      id: `customer-${safeReport.id ?? index}`,
+      name: typeof safeReport.customerName === "string" ? safeReport.customerName : "Policyholder on file",
+      email: typeof safeReport.customerEmail === "string" ? safeReport.customerEmail : "On file",
+      phone: typeof safeReport.customerPhone === "string" ? safeReport.customerPhone : "On file",
+      policyNumber:
+        typeof safeReport.policyNumber === "string"
+          ? safeReport.policyNumber
+          : "Pending verification",
       vehicles: [
         {
-          year: vehicleData.year || "",
-          make: vehicleData.make || "Vehicle",
-          model: vehicleData.model || "Pending",
-          vin: vehicleData.vin,
+          year: typeof vehicleData.year === "string" || typeof vehicleData.year === "number" ? vehicleData.year : "",
+          make: typeof vehicleData.make === "string" ? vehicleData.make : "Vehicle",
+          model: typeof vehicleData.model === "string" ? vehicleData.model : "Pending",
+          vin: typeof vehicleData.vin === "string" ? vehicleData.vin : undefined,
         },
       ],
-      location: report?.location || "New York Service Region",
+      location: typeof safeReport.location === "string" ? safeReport.location : "New York Service Region",
       memberSince: "2026",
       activeClaims,
       status: "active",

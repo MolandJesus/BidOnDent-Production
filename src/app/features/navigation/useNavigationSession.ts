@@ -11,10 +11,10 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 
 import {
+  deleteNavigationSessionFromCloud,
   fetchNavigationSession,
   saveNavigationSessionToCloud,
 } from "../../services/navigation/navigationSessionCloudService";
-import type { ExternalNavigationSession } from "../../types/navigation";
 import type {
   NavigationSession,
   NavigationSessionActions,
@@ -40,7 +40,8 @@ export function useNavigationSession(authUserId?: string): NavigationSessionActi
   // ...rest of hook logic remains unchanged
 
   // Use Clerk user ID when available; stable per-browser anonymous ID otherwise
-  const userId = authUserId || getStableAnonId();
+  const storageOwnerKey = authUserId || getStableAnonId();
+  const cloudSyncEnabled = Boolean(authUserId);
   const [session, setSession] = useState<NavigationSession>(createIdleSession);
   const [restoredFromCloud, setRestoredFromCloud] = useState(false);
   const [syncError, setSyncError] = useState<string | null>(null);
@@ -51,13 +52,14 @@ export function useNavigationSession(authUserId?: string): NavigationSessionActi
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const cloudSession = await fetchNavigationSession(userId, session.id);
-      if (cloudSession && mounted) {
-        // Only apply hydration if session is still idle — prevents
-        // overwriting user actions that occurred while fetch was in flight
+      const persistedSession = await fetchNavigationSession(storageOwnerKey, {
+        enableCloud: cloudSyncEnabled,
+      });
+
+      if (persistedSession && mounted && shouldRestoreSession(persistedSession)) {
         setSession((prev) => {
           if (prev.status !== "idle") return prev;
-          return { ...prev, ...cloudSession };
+          return persistedSession;
         });
         setRestoredFromCloud(true);
       }
@@ -65,35 +67,42 @@ export function useNavigationSession(authUserId?: string): NavigationSessionActi
     return () => {
       mounted = false;
     };
-  }, [userId, session.id]);
+  }, [storageOwnerKey, cloudSyncEnabled]);
 
   const dispatch = useCallback(
     (event: NavigationSessionEvent) => {
       setSession((prev) => {
         const next = reduceSession(prev, event);
-        // Map NavigationSession to ExternalNavigationSession for cloud sync
-        function navigationSessionToExternal(
-          session: NavigationSession
-        ): ExternalNavigationSession {
-          return {
-            provider: "apple",
-            destinationId: session.destination?.id ?? "",
-            destinationName: session.destination?.label ?? "",
-            destinationAddress: session.destination?.address ?? "",
-            destinationCoordinates: session.destination?.coordinate ?? { lat: 0, lng: 0 },
-            originLabel: session.origin?.label ?? "",
-            originCoordinates: session.origin?.coordinate ?? { lat: 0, lng: 0 },
-            launchedAt: session.activatedAt ?? new Date().toISOString(),
-          };
+
+        if (next === prev) {
+          return prev;
         }
 
-        saveNavigationSessionToCloud(userId, next.id, navigationSessionToExternal(next)).then(
-          () => setSyncError(null),
-          (err) => {
-            if (import.meta.env.DEV) console.warn("[NavigationSession] Sync error — service will retry", err);
-            setSyncError(err instanceof Error ? err.message : "Cloud sync failed");
-          }
-        );
+        if (event.type === "RESET") {
+          deleteNavigationSessionFromCloud(storageOwnerKey, prev.id, {
+            enableCloud: cloudSyncEnabled,
+          }).then(
+            () => setSyncError(null),
+            (err) => {
+              if (import.meta.env.DEV) {
+                console.warn("[NavigationSession] Reset cleanup failed", err);
+              }
+              setSyncError(err instanceof Error ? err.message : "Navigation cleanup failed");
+            }
+          );
+        } else {
+          saveNavigationSessionToCloud(storageOwnerKey, next, {
+            enableCloud: cloudSyncEnabled,
+          }).then(
+            () => setSyncError(null),
+            (err) => {
+              if (import.meta.env.DEV) {
+                console.warn("[NavigationSession] Sync error — service will retry", err);
+              }
+              setSyncError(err instanceof Error ? err.message : "Cloud sync failed");
+            }
+          );
+        }
 
         if (next.activatedAt && next.status !== "idle") {
           return { ...next, activeSeconds: computeActiveSeconds(next) };
@@ -101,7 +110,7 @@ export function useNavigationSession(authUserId?: string): NavigationSessionActi
         return next;
       });
     },
-    [userId]
+    [cloudSyncEnabled, storageOwnerKey]
   );
 
   const startPlanning = useCallback(
@@ -145,6 +154,12 @@ export function useNavigationSession(authUserId?: string): NavigationSessionActi
     syncError,
     session,
   };
+}
+
+function shouldRestoreSession(session: NavigationSession): boolean {
+  return (
+    session.status === "planning" || session.status === "active" || session.status === "paused"
+  );
 }
 
 // Helper functions (outside the hook)

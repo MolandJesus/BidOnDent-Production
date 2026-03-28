@@ -1,4 +1,3 @@
-import { supabase } from "./client";
 import type { DamageReport } from "./types";
 import {
   buildWebsiteIdentityQuery,
@@ -44,71 +43,40 @@ export async function getDamageReports(
 ): Promise<DamageReport[] | { error: string }> {
   const identity = normalizeReportIdentity(identityOrClerkUserId);
 
-  if (identity?.clerkUserId || identity?.email || identity?.websiteUserKey) {
-    let edgeError = null;
-    let edgePayload = null;
-    // Try edge function, retry once if fails
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const searchParams = buildWebsiteIdentityQuery(identity);
-        const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
-          `${SUPABASE_EDGE_ROUTES.reports}?${searchParams.toString()}`,
-          {
-            method: "GET",
-          }
-        );
-        if (payload && Array.isArray(payload.reports)) {
-          if (import.meta.env.DEV && attempt > 0) {
-            console.log("[DEV] Edge function succeeded on retry");
-          }
-          return payload.reports;
-        }
-        edgePayload = payload;
-      } catch (error) {
-        edgeError = error;
-        if (import.meta.env.DEV) {
-          console.error(`[DEV] Edge function attempt ${attempt + 1} failed:`, error);
-        }
-      }
-    }
-    // Fallback to direct query if edge fails — try clerk_user_id first, then user_id
+  if (!identity?.clerkUserId && !identity?.email && !identity?.websiteUserKey) {
     if (import.meta.env.DEV) {
-      console.warn("[DEV] Edge function failed, falling back to direct Supabase query");
+      console.warn("[DEV] getDamageReports: no identity available");
     }
+    return { error: "no identity available" };
+  }
+
+  for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      // Try querying by clerk_user_id directly (most reports are saved this way)
-      const clerkId = identity?.clerkUserId;
-      if (clerkId) {
-        const { data, error } = await supabase
-          .from("damage_reports")
-          .select("*")
-          .eq("clerk_user_id", clerkId)
-          .order("created_at", { ascending: false });
-        if (!error && Array.isArray(data) && data.length > 0) {
-          return data;
+      const searchParams = buildWebsiteIdentityQuery(identity);
+      const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
+        `${SUPABASE_EDGE_ROUTES.reports}?${searchParams.toString()}`,
+        {
+          method: "GET",
         }
-        if (import.meta.env.DEV && error) {
-          console.error("[DEV] Fallback clerk_user_id query error:", error);
+      );
+      if (payload && Array.isArray(payload.reports)) {
+        if (import.meta.env.DEV && attempt > 0) {
+          console.log("[DEV] Edge function succeeded on retry");
         }
+        return payload.reports;
       }
       return [];
-    } catch (fallbackError) {
+    } catch (error) {
       if (import.meta.env.DEV) {
-        console.error("[DEV] Fallback Supabase query threw:", fallbackError);
+        console.error(`[DEV] Edge function attempt ${attempt + 1} failed:`, error);
       }
-      return [];
     }
   }
 
-  // No clerkUserId or identity provided — cannot fetch reports for Clerk-authenticated users
-  if (import.meta.env.DEV) {
-    console.warn("[DEV] getDamageReports: no clerkUserId available");
-  }
-  return { error: "no clerkUserId available" };
+  return [];
 }
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {
-  // Use the edge function (service-role) to bypass RLS and get all reports
   try {
     const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
       `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
@@ -119,31 +87,11 @@ export async function getAllDamageReports(): Promise<DamageReport[]> {
       return payload.reports;
     }
   } catch (edgeError) {
-    if (import.meta.env.DEV) console.warn("[DEV] Marketplace edge failed, trying direct:", edgeError);
-  }
-
-  // Fallback: direct query (will only work if RLS allows it)
-  try {
-    const { data, error } = await supabase
-      .from("damage_reports")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      if (error.code === "PGRST205" || error.code === "42P01") {
-        if (import.meta.env.DEV) console.log("[DEV] Damage reports table not set up yet");
-        return [];
-      }
-      if (import.meta.env.DEV) console.error("[DEV] Error fetching all damage reports:", error);
-      return [];
-    }
-
-    if (import.meta.env.DEV) console.log(`[DEV] Loaded ${data.length} total damage reports`);
-    return Array.isArray(data) ? (data as DamageReport[]) : [];
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("Error in getAllDamageReports:", error);
+    if (import.meta.env.DEV) console.warn("[DEV] Marketplace edge failed:", edgeError);
     return [];
   }
+
+  return [];
 }
 
 export async function saveDamageReport(
@@ -226,45 +174,24 @@ export async function deleteDamageReport(
   reportId: string,
   clerkUserId?: string
 ): Promise<boolean> {
-  if (clerkUserId) {
-    try {
-      const searchParams = new URLSearchParams({ clerkUserId });
-      await requestSupabaseEdge<{ success: boolean }>(
-        `${SUPABASE_EDGE_ROUTES.reports}/${reportId}?${searchParams.toString()}`,
-        {
-          method: "DELETE",
-        }
-      );
-      return true;
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("[DEV] Error in deleteDamageReport edge path:", error);
-      return false;
+  if (!clerkUserId) {
+    if (import.meta.env.DEV) {
+      console.warn("[DEV] deleteDamageReport: missing Clerk user ID");
     }
+    return false;
   }
 
   try {
-    const {
-      data: { user }
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return false;
-    }
-
-    const { error } = await supabase
-      .from("damage_reports")
-      .delete()
-      .eq("id", reportId)
-      .eq("user_id", user.id);
-
-    if (error) {
-      if (import.meta.env.DEV) console.error("[DEV] Error deleting damage report:", error);
-      return false;
-    }
-
+    const searchParams = new URLSearchParams({ clerkUserId });
+    await requestSupabaseEdge<{ success: boolean }>(
+      `${SUPABASE_EDGE_ROUTES.reports}/${reportId}?${searchParams.toString()}`,
+      {
+        method: "DELETE",
+      }
+    );
     return true;
   } catch (error) {
-    if (import.meta.env.DEV) console.error("[DEV] Error in deleteDamageReport:", error);
+    if (import.meta.env.DEV) console.error("[DEV] Error in deleteDamageReport edge path:", error);
     return false;
   }
 }

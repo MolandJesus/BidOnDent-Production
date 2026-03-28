@@ -23,7 +23,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # BidOnDent Product Brain
 
-Last updated: March 21, 2026
+Last updated: March 28, 2026
 Status: Active strategic reference
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
@@ -152,7 +152,9 @@ When working on the app, do not assume every visible screen is fully wired end t
 
 ## Screenshot Reality Check
 
-**Latest Screenshots (2026-03-25)** — Post Pass 185, visual audit from live app at localhost:5173. These screenshots are the ground truth for current UI state.
+**Latest Screenshots (2026-03-25)** — Post Pass 185 visual audit from live app at localhost:5173.
+
+Archive note: This screenshot set is a historical visual snapshot, not the active canonical execution source. For current pre-refactor execution truth, use `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` and `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`.
 
 ### What's Confirmed Working
 

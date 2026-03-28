@@ -1,7 +1,7 @@
 import "leaflet/dist/leaflet.css";
 
 import { useState } from "react";
-import { MapPin, Search, Shield, Sparkles, X } from "lucide-react";
+import { Compass, MapPin, Search, Shield, Sparkles, X } from "lucide-react";
 import { CircleMarker, MapContainer, Polyline, Popup, TileLayer, Tooltip } from "react-leaflet";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
@@ -46,6 +46,10 @@ type ShopDirectoryMapPaneProps = {
   onClearAreaSearch?: () => void;
   /** User's real-time geolocation coordinates (blue dot on map) */
   userCoords?: Coordinates | null;
+  /** Optional action to launch directions from selected-shop card */
+  onOpenShopDirections?: (shop: ShopMapListing) => void;
+  /** Optional CTA label for selected-shop directions action */
+  directionsActionLabel?: string;
 };
 
 export default function ShopDirectoryMapPane({
@@ -68,6 +72,8 @@ export default function ShopDirectoryMapPane({
   onSearchInArea,
   onClearAreaSearch,
   userCoords,
+  onOpenShopDirections,
+  directionsActionLabel,
 }: ShopDirectoryMapPaneProps) {
   const [hasPanned, setHasPanned] = useState(false);
   const selectedShop = shops.find((shop) => shop.id === selectedShopId) || shops[0] || null;
@@ -121,26 +127,26 @@ export default function ShopDirectoryMapPane({
     >
       {!suppressHeader && (
         <div
-          className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${topGradient} px-5 py-5`}
+          className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${topGradient} px-3 py-3 sm:px-5 sm:py-4`}
         >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className={`rounded-2xl border px-4 py-3 ${badgeCard}`}>
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div className={`rounded-xl border px-3 py-2 ${badgeCard}`}>
               <div
-                className={`flex items-center gap-2 text-xs uppercase tracking-[0.22em] ${badgeLabel}`}
+                className={`flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] ${badgeLabel}`}
               >
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="h-3 w-3" />
                 {getRoleLabel(userType)}
               </div>
-              <p className={`mt-1 text-sm font-medium ${badgeValue}`}>
+              <p className={`mt-0.5 text-xs font-medium ${badgeValue}`}>
                 {selectedOrigin
                   ? `Centered on ${selectedOrigin.name}`
                   : "Exploring the service area"}
               </p>
             </div>
 
-            <div className={`rounded-2xl border px-4 py-3 text-sm ${badgeCard}`}>
-              <p className={badgeLabel}>Visible shops</p>
-              <p className={`text-xl font-semibold ${badgeValue}`}>{shops.length}</p>
+            <div className={`rounded-xl border px-3 py-2 text-right ${badgeCard}`}>
+              <p className={`text-[10px] uppercase tracking-[0.2em] ${badgeLabel}`}>Shops</p>
+              <p className={`text-lg font-semibold leading-tight ${badgeValue}`}>{shops.length}</p>
             </div>
           </div>
         </div>
@@ -362,31 +368,44 @@ export default function ShopDirectoryMapPane({
               <p className={`mt-3 text-sm leading-6 ${shopCardSecondary}`}>
                 {selectedShop.aiSummary}
               </p>
+
+              {onOpenShopDirections && (
+                <button
+                  type="button"
+                  onClick={() => onOpenShopDirections(selectedShop)}
+                  className={`pointer-events-auto mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
+                    isDark
+                      ? "border-blue-400/35 bg-blue-500/20 text-white hover:bg-blue-500/30"
+                      : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                  }`}
+                >
+                  <Compass className="h-3.5 w-3.5" />
+                  {directionsActionLabel || "Directions"}
+                </button>
+              )}
             </div>
           )}
 
           <div
-            className={`hidden rounded-2xl border px-4 py-3 text-xs shadow-xl sm:block ${legendCard}`}
+            className={`hidden rounded-xl border px-3 py-2 text-[11px] shadow-lg sm:block ${legendCard}`}
           >
-            <p className={`font-semibold ${isDark ? "text-white" : "text-slate-700"}`}>
-              Map legend
-            </p>
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-orange-500" />
+            <p className={`font-semibold ${isDark ? "text-white" : "text-slate-700"}`}>Legend</p>
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <span className="inline-flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
                 Origin
               </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-blue-600" />
+              <span className="inline-flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-blue-600" />
                 Selected
               </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-slate-900" />
-                Top match
+              <span className="inline-flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-slate-900" />
+                Top
               </span>
-              <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1">
                 <span
-                  className="inline-block h-3 w-5 rounded border border-current opacity-50"
+                  className="inline-block h-2.5 w-4 rounded border border-current opacity-50"
                   style={{ borderStyle: "dashed" }}
                 />
                 Routes
@@ -398,39 +417,39 @@ export default function ShopDirectoryMapPane({
 
       {/* Search in this area pill — appears after first pan, hides in area-search mode */}
       {onSearchInArea && hasPanned && !searchWithinViewport && (
-        <div className="pointer-events-auto absolute inset-x-0 top-4 z-[600] flex justify-center">
+        <div className="pointer-events-auto absolute inset-x-0 top-3 z-[600] flex justify-center">
           <button
             type="button"
             onClick={onSearchInArea}
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${
+            className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
               isDark
                 ? "border-white/20 bg-slate-950/80 text-white hover:bg-slate-950/95"
                 : "border-black/10 bg-white/90 text-slate-800 hover:bg-white"
             }`}
           >
-            <Search className="h-3.5 w-3.5" />
-            Search in this area
+            <Search className="h-3 w-3" />
+            Search this area
           </button>
         </div>
       )}
 
       {/* Clear area search pill — visible while area search is active */}
       {onClearAreaSearch && searchWithinViewport && (
-        <div className="pointer-events-auto absolute inset-x-0 top-4 z-[600] flex justify-center">
+        <div className="pointer-events-auto absolute inset-x-0 top-3 z-[600] flex justify-center">
           <button
             type="button"
             onClick={() => {
               onClearAreaSearch();
               setHasPanned(false);
             }}
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-xl backdrop-blur-md transition-colors ${
+            className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
               isDark
                 ? "border-blue-400/40 bg-blue-600/30 text-white hover:bg-blue-600/45"
                 : "border-blue-400/40 bg-blue-100 text-blue-700 hover:bg-blue-200"
             }`}
           >
-            <X className="h-3.5 w-3.5" />
-            Searching this area
+            <X className="h-3 w-3" />
+            Area active
           </button>
         </div>
       )}

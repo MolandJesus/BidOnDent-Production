@@ -5,7 +5,7 @@ import type {
   ShopBusinessProfile,
 } from "../types/networkProfiles";
 import {
-  buildSupabaseEdgeHeaders,
+  buildSupabaseEdgeHeadersAsync,
   buildSupabaseFunctionUrl,
   SUPABASE_EDGE_ROUTES,
 } from "./supabase/runtime";
@@ -24,73 +24,67 @@ function toStringArray(value: unknown) {
   return Array.isArray(value) ? value.filter((entry) => typeof entry === "string") : [];
 }
 
+function toStringValue(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function toOptionalString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function toNullableString(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function toNullableNumber(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && value.trim().length > 0) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
+
+function toDirectoryExperience(value: unknown): "standard" | "strong" | "excellent" {
+  return value === "strong" || value === "excellent" ? value : "standard";
+}
+
 function toShopBusinessProfile(record: Record<string, unknown>): ShopBusinessProfile {
   return {
-    aboutSummary: record?.about_summary || null,
+    aboutSummary: toNullableString(record?.about_summary),
     acceptsInsuranceClaims: !!record?.accepts_insurance_claims,
-    averageRating:
-      typeof record?.average_rating === "number"
-        ? record.average_rating
-        : record?.average_rating
-          ? Number(record.average_rating)
-          : null,
-    averageTicketValue:
-      typeof record?.average_ticket_value === "number"
-        ? record.average_ticket_value
-        : record?.average_ticket_value
-          ? Number(record.average_ticket_value)
-          : null,
-    businessAddress: record?.business_address || "",
-    businessCity: record?.business_city || "",
-    businessHours: record?.business_hours || null,
-    businessName: record?.business_name || "",
-    businessPhone: record?.business_phone || "",
-    businessState: record?.business_state || "",
-    businessZip: record?.business_zip || "",
+    averageRating: toNullableNumber(record?.average_rating),
+    averageTicketValue: toNullableNumber(record?.average_ticket_value),
+    businessAddress: toStringValue(record?.business_address),
+    businessCity: toStringValue(record?.business_city),
+    businessHours: toNullableString(record?.business_hours),
+    businessName: toStringValue(record?.business_name),
+    businessPhone: toStringValue(record?.business_phone),
+    businessState: toStringValue(record?.business_state),
+    businessZip: toStringValue(record?.business_zip),
     certifications: toStringArray(record?.certifications),
-    clerkUserId: record?.clerk_user_id || null,
-    completionRate:
-      typeof record?.completion_rate === "number"
-        ? record.completion_rate
-        : record?.completion_rate != null
-          ? Number(record.completion_rate)
-          : null,
-    createdAt: record?.created_at,
-    geoLatitude:
-      typeof record?.geo_latitude === "number"
-        ? record.geo_latitude
-        : record?.geo_latitude != null
-          ? Number(record.geo_latitude)
-          : null,
-    geoLongitude:
-      typeof record?.geo_longitude === "number"
-        ? record.geo_longitude
-        : record?.geo_longitude != null
-          ? Number(record.geo_longitude)
-          : null,
-    id: record?.id,
+    clerkUserId: toNullableString(record?.clerk_user_id),
+    completionRate: toNullableNumber(record?.completion_rate),
+    createdAt: toOptionalString(record?.created_at),
+    geoLatitude: toNullableNumber(record?.geo_latitude),
+    geoLongitude: toNullableNumber(record?.geo_longitude),
+    id: toOptionalString(record?.id),
     insurerPrograms: toStringArray(record?.insurer_programs),
     isAcceptingBids: record?.is_accepting_bids !== false,
     isDirectoryVisible: record?.is_directory_visible !== false,
     offersEstimates: !!record?.offers_estimates,
-    profileImageUrl: record?.profile_image_url || null,
-    responseTimeHours:
-      typeof record?.response_time_hours === "number"
-        ? record.response_time_hours
-        : record?.response_time_hours != null
-          ? Number(record.response_time_hours)
-          : null,
+    profileImageUrl: toNullableString(record?.profile_image_url),
+    responseTimeHours: toNullableNumber(record?.response_time_hours),
     specialties: toStringArray(record?.specialties),
     supportedMakes: toStringArray(record?.supported_makes),
-    totalReviews:
-      typeof record?.total_reviews === "number"
-        ? record.total_reviews
-        : record?.total_reviews != null
-          ? Number(record.total_reviews)
-          : null,
-    updatedAt: record?.updated_at,
-    website: record?.website || null,
-    websiteUserKey: record?.website_user_key || "",
+    totalReviews: toNullableNumber(record?.total_reviews),
+    updatedAt: toOptionalString(record?.updated_at),
+    website: toNullableString(record?.website),
+    websiteUserKey: toStringValue(record?.website_user_key),
   };
 }
 
@@ -100,38 +94,33 @@ function toInsurerBusinessProfile(record: Record<string, unknown>): InsurerBusin
     autoApproval: !!record?.auto_approval,
     benefits: toStringArray(record?.benefits),
     claimTypes: toStringArray(record?.claim_types),
-    clerkUserId: record?.clerk_user_id || null,
-    companyAddress: record?.company_address || "",
-    companyCity: record?.company_city || "",
-    companyName: record?.company_name || "",
-    companyPhone: record?.company_phone || "",
-    companyState: record?.company_state || "",
-    companyZip: record?.company_zip || "",
-    createdAt: record?.created_at,
-    description: record?.description || null,
-    digitalClaimsExperience: record?.digital_claims_experience || "standard",
-    id: record?.id,
+    clerkUserId: toNullableString(record?.clerk_user_id),
+    companyAddress: toStringValue(record?.company_address),
+    companyCity: toStringValue(record?.company_city),
+    companyName: toStringValue(record?.company_name),
+    companyPhone: toStringValue(record?.company_phone),
+    companyState: toStringValue(record?.company_state),
+    companyZip: toStringValue(record?.company_zip),
+    createdAt: toOptionalString(record?.created_at),
+    description: toNullableString(record?.description),
+    digitalClaimsExperience: toDirectoryExperience(record?.digital_claims_experience),
+    id: toOptionalString(record?.id),
     isDirectoryVisible: record?.is_directory_visible !== false,
-    licenseNumber: record?.license_number || null,
-    licenseState: record?.license_state || null,
-    maxClaimAmount:
-      typeof record?.max_claim_amount === "number"
-        ? record.max_claim_amount
-        : record?.max_claim_amount != null
-          ? Number(record.max_claim_amount)
-          : null,
+    licenseNumber: toNullableString(record?.license_number),
+    licenseState: toNullableString(record?.license_state),
+    maxClaimAmount: toNullableNumber(record?.max_claim_amount),
     popular: !!record?.popular,
     preferredShops: !!record?.preferred_shops,
-    profileImageUrl: record?.profile_image_url || null,
+    profileImageUrl: toNullableString(record?.profile_image_url),
     repairProgramFocus: toStringArray(record?.repair_program_focus),
-    updatedAt: record?.updated_at,
-    website: record?.website || null,
-    websiteUserKey: record?.website_user_key || "",
+    updatedAt: toOptionalString(record?.updated_at),
+    website: toNullableString(record?.website),
+    websiteUserKey: toStringValue(record?.website_user_key),
   };
 }
 
-function getRequestHeaders() {
-  return buildSupabaseEdgeHeaders();
+async function getRequestHeaders() {
+  return await buildSupabaseEdgeHeadersAsync();
 }
 
 function buildIdentityQuery(identity: WebsiteIdentity) {
@@ -166,7 +155,7 @@ export function getDirectoryInventoryUpdatedEventName() {
 export async function fetchShopBusinessProfile(identity: WebsiteIdentity) {
   const response = await fetch(`${SHOP_PROFILE_ENDPOINT}?${buildIdentityQuery(identity)}`, {
     method: "GET",
-    headers: getRequestHeaders(),
+    headers: await getRequestHeaders(),
   });
 
   const payload = await response.json().catch(() => ({}));
@@ -183,7 +172,7 @@ export async function saveShopBusinessProfile(
 ) {
   const response = await fetch(SHOP_PROFILE_ENDPOINT, {
     method: "POST",
-    headers: getRequestHeaders(),
+    headers: await getRequestHeaders(),
     body: JSON.stringify({
       identity,
       profile,
@@ -203,7 +192,7 @@ export async function saveShopBusinessProfile(
 export async function fetchInsurerBusinessProfile(identity: WebsiteIdentity) {
   const response = await fetch(`${INSURER_PROFILE_ENDPOINT}?${buildIdentityQuery(identity)}`, {
     method: "GET",
-    headers: getRequestHeaders(),
+    headers: await getRequestHeaders(),
   });
 
   const payload = await response.json().catch(() => ({}));
@@ -220,7 +209,7 @@ export async function saveInsurerBusinessProfile(
 ) {
   const response = await fetch(INSURER_PROFILE_ENDPOINT, {
     method: "POST",
-    headers: getRequestHeaders(),
+    headers: await getRequestHeaders(),
     body: JSON.stringify({
       identity,
       profile,
@@ -248,7 +237,7 @@ export async function fetchDirectoryInventory(forceRefresh = false) {
 
   directoryInventoryPromise = fetch(DIRECTORY_INVENTORY_ENDPOINT, {
     method: "GET",
-    headers: getRequestHeaders(),
+    headers: await getRequestHeaders(),
   })
     .then(async (response) => {
       const payload = await response.json().catch(() => ({}));

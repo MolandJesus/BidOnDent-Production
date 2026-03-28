@@ -1,5 +1,8 @@
 # BidOnDent — Backend, Code Cleanup & Bug Fix Autopilot Prompt
 
+**Last updated:** March 28, 2026
+**Status:** Historical superseded prompt
+
 > **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first for current priorities.
 
 **Date:** March 26, 2026 (Updated)
@@ -78,6 +81,7 @@ All 11 console.logs confirmed DEV-guarded (passes 4eb958ed, 2766b482, 0a52c6a2, 
 ### 🟡 P2 — Type Safety Debt (remaining ~20 `any` annotations)
 
 Completed (passes 244-246):
+
 - ✅ `dashboard-router-types.ts` — `reports/vehicles/bids: any[]` → typed
 - ✅ `buildDashboardRouterProps.ts` — inline `any` casts removed
 - ✅ `useAppHandlers.ts` — `Record<string,any>` extension removed, setters typed
@@ -88,12 +92,12 @@ Completed (passes 244-246):
 
 Remaining debt:
 
-| Category          | Files                                                                                 | Count   |
-| ----------------- | ------------------------------------------------------------------------------------- | ------- |
-| Component Props   | `ReportScreen.tsx`, `BidsScreen.tsx`, `HomeScreenSections.tsx`, `DashboardLayout.tsx` | 12 uses |
-| Service Functions | `networkProfiles.ts`, `RealtimeBidService.ts`                                         | 3 uses  |
-| Helper Functions  | `home-helpers.ts`, `home-data.ts`, `newClaimData.ts`                                  | 11 uses |
-| buildSupabaseReportPayload | `userDataUtils.ts` — mixed-shape input, `any` acceptable boundary       | 1 use   |
+| Category                   | Files                                                                                 | Count   |
+| -------------------------- | ------------------------------------------------------------------------------------- | ------- |
+| Component Props            | `ReportScreen.tsx`, `BidsScreen.tsx`, `HomeScreenSections.tsx`, `DashboardLayout.tsx` | 12 uses |
+| Service Functions          | `networkProfiles.ts`, `RealtimeBidService.ts`                                         | 3 uses  |
+| Helper Functions           | `home-helpers.ts`, `home-data.ts`, `newClaimData.ts`                                  | 11 uses |
+| buildSupabaseReportPayload | `userDataUtils.ts` — mixed-shape input, `any` acceptable boundary                     | 1 use   |
 
 **Next priority:** Component prop `any` types in BidsScreen and ReportScreen (high traffic, user-facing).
 

@@ -1,5 +1,8 @@
 # BidOnDent — Liquid Glass UI Refinement & QA Handoff Prompt
 
+**Last updated:** March 28, 2026
+**Status:** Historical superseded prompt
+
 > **SUPERSEDED** — All 7 passes in this doc are complete (passes 236-242). The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md).
 
 **Date:** March 26, 2026 (Updated — Passes 1–7 COMPLETE)
@@ -25,17 +28,17 @@ The system has two appearance modes: `"light"` and `"map-dark"`. Both use dark n
 
 ## COMPLETED PASSES ✅
 
-All 7 passes from the original handoff are done. Build: 0 errors, 2.16s. See BIDONDENT_BUILD_PROGRESS_DASHBOARD.md for details.
+All 7 passes from the original handoff are done. Build: 0 errors, 2.16s. See `BIDONDENT_MAP_TRACKER_2026-03-21.md` for active pass governance context and `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` for historical archive details.
 
-| Pass | Title | Status |
-|------|-------|--------|
-| 1 | Mobile header bugs (avatar distortion, Dashboard button crowding) | ✅ |
-| 2 | Report steps glass overhaul — inline white styles removed | ✅ |
-| 3 | Report form inputs — bg-white → translucent glass | ✅ |
-| 4 | Theme.css control variants — secondary/utility dark base | ✅ |
-| 5 | QA audit — AppLoading white flash, App.tsx fallback, 32 ternaries | ✅ |
-| 6 | Dashboard home cards glass — HomeScreenSections/HomeScreen | ✅ |
-| 7 | Map overlays dark glass — ShopDirectoryMapOverlays | ✅ |
+| Pass | Title                                                             | Status |
+| ---- | ----------------------------------------------------------------- | ------ |
+| 1    | Mobile header bugs (avatar distortion, Dashboard button crowding) | ✅     |
+| 2    | Report steps glass overhaul — inline white styles removed         | ✅     |
+| 3    | Report form inputs — bg-white → translucent glass                 | ✅     |
+| 4    | Theme.css control variants — secondary/utility dark base          | ✅     |
+| 5    | QA audit — AppLoading white flash, App.tsx fallback, 32 ternaries | ✅     |
+| 6    | Dashboard home cards glass — HomeScreenSections/HomeScreen        | ✅     |
+| 7    | Map overlays dark glass — ShopDirectoryMapOverlays                | ✅     |
 
 ---
 
@@ -46,6 +49,7 @@ All 7 passes from the original handoff are done. Build: 0 errors, 2.16s. See BID
 **Why this is next:** ShopDirectoryScreen.tsx main container uses `bg-white` + `#ffffff` sidebar gradient — the most visible remaining white surface in the app. These sit adjacent to the map (the main product surface) and break the dark glass aesthetic.
 
 **Scope warning:** Changing ShopDirectoryScreen.tsx container cascades into child components. Plan as a multi-file pass:
+
 - `src/app/components/shop/ShopDirectoryScreen.tsx` — main container + sidebar gradient
 - `src/app/components/shop/ShopDirectorySearchPanel.tsx` — search/filter panel
 - `src/app/components/shop/ShopDirectoryListBody.tsx` — results list
@@ -63,6 +67,7 @@ This file was modified outside the recent passes (shows as dirty in git). Audit 
 ### PASS 10 — Console.log Security Sweep (P0-SECURITY)
 
 Remaining from AI_DASHBOARD_WORK_PROMPT.md — DEV-guard all unguarded console.logs:
+
 - `src/app/components/admin/GoToAdminButton.tsx` (lines 57-76, 103-104) — CRITICAL: user email, session tokens
 - `src/app/hooks/useUserData.ts` (lines 76, 87, 109) — CRITICAL: email, Clerk ID
 - `src/app/components/admin/useAdminRoleManagement.ts` (line 30)

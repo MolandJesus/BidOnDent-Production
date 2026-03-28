@@ -30,10 +30,14 @@ export interface DamageReport {
   status: "pending" | "in-review" | "active" | "completed";
   createdAt: string;
   submittedAt?: string;
+  address?: string;
   damageArea?: string;
+  incident?: string;
+  zipCode?: string;
   damageType?: string;
   bidAmount?: number;
-  vehicle?: { year?: string; make?: string; model?: string };
+  bidsCount?: number;
+  vehicle?: { year?: string; make?: string; model?: string; vin?: string };
   bids?: Bid[];
 }
 
@@ -67,15 +71,20 @@ export interface Notification {
 
 export interface Activity {
   id: string;
-  type: "bid_submitted" | "request_viewed" | "job_accepted" | "claim_created" | "shop_added";
+  type:
+    | "bid_submitted"
+    | "request_viewed"
+    | "job_accepted"
+    | "claim_created"
+    | "shop_added"
+    | "claim_opened"
+    | "claim_in_progress"
+    | "claim_approved"
+    | "claim_denied"
+    | "new_user";
   message: string;
   timestamp: string;
-  metadata?: {
-    reportId?: string;
-    bidAmount?: number;
-    vehicleInfo?: string;
-    [key: string]: any;
-  };
+  metadata?: Record<string, unknown>;
 }
 
 export interface RedirectInfo {

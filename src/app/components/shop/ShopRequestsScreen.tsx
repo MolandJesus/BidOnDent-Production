@@ -107,6 +107,10 @@ export default function ShopRequestsScreen({
           estimated_days: days,
           vehicle: selectedRequest.vehicle,
         },
+      }).catch((error) => {
+        if (import.meta.env.DEV) {
+          console.warn("Failed to record workflow event:", error);
+        }
       });
       onSubmitBid?.(
         String(selectedRequest.id),

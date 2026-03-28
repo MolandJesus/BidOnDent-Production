@@ -20,6 +20,10 @@
  */
 
 import { supabase } from "../supabaseService";
+import { getProfile } from "../supabase/profiles";
+import { getDamageReports } from "../supabase/reports";
+import { isSupportedSupabaseBucket } from "../supabase/runtime";
+import { getVehicles } from "../supabase/vehicles";
 
 interface CacheEntry<T> {
   data: T;
@@ -215,6 +219,14 @@ class PerformanceOptimizer {
       format?: "origin";
     }
   ): string {
+    if (isSupportedSupabaseBucket(bucket)) {
+      return `storage://${encodeURIComponent(bucket)}/${path
+        .replace(/^\/+/, "")
+        .split("/")
+        .map((segment) => encodeURIComponent(segment))
+        .join("/")}`;
+    }
+
     const { data } = supabase.storage.from(bucket).getPublicUrl(path, {
       transform: {
         width: options?.width,
@@ -292,25 +304,20 @@ class PerformanceOptimizer {
   async preloadCriticalData(userId: string): Promise<void> {
     if (import.meta.env.DEV) console.log("⚡ Preloading critical data...");
 
+    const identity = userId.includes("@") ? { email: userId } : { clerkUserId: userId };
+
     const preloadTasks = [
       this.prefetch(`profile-${userId}`, async () => {
-        const { data } = await supabase.from("profiles").select("*").eq("user_id", userId).single();
-        return data;
+        return await getProfile(identity);
       }),
 
       this.prefetch(`vehicles-${userId}`, async () => {
-        const { data } = await supabase.from("vehicles").select("*").eq("user_id", userId);
-        return data;
+        return await getVehicles(identity);
       }),
 
       this.prefetch(`reports-${userId}`, async () => {
-        const { data } = await supabase
-          .from("damage_reports")
-          .select("*")
-          .eq("user_id", userId)
-          .order("created_at", { ascending: false })
-          .limit(10);
-        return data;
+        const reports = await getDamageReports(identity);
+        return Array.isArray(reports) ? reports.slice(0, 10) : [];
       }),
     ];
 

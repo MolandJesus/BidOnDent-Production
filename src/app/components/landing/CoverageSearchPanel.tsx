@@ -46,22 +46,22 @@ export default function CoverageSearchPanel({
       ? "h-12 rounded-[1.25rem] border border-white/85 bg-white/82 px-4 text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] outline-none transition placeholder:text-slate-400 focus:border-sky-300 focus:bg-white"
       : "h-12 rounded-[1.25rem] border border-white/12 bg-slate-900/72 px-4 text-white outline-none transition placeholder:text-slate-400 focus:border-cyan-400/40 focus:bg-slate-900/88";
   return (
-    <div className={cn("mt-0 p-3 sm:p-5", theme.panelStrongClassName)}>
+    <div className={cn("mt-0 p-3 sm:p-5 overflow-hidden", theme.panelStrongClassName)}>
       {/* Apple Maps-style search bar — prominent, single row */}
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+        <div className="relative min-w-0">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <input
             value={zipCode}
             onChange={(event) => onZipCodeChange(event.target.value)}
             placeholder="Search by ZIP code"
-            className={cn(fieldClassName, "pl-11 text-base h-11 sm:h-12")}
+            className={cn(fieldClassName, "w-full min-w-0 pl-11 text-base h-11 sm:h-12")}
           />
         </div>
         <select
           value={radiusMiles}
           onChange={(event) => onRadiusMilesChange(event.target.value)}
-          className={cn(fieldClassName, "w-[90px] sm:w-[110px] shrink-0 text-sm h-11 sm:h-12")}
+          className={cn(fieldClassName, "w-20 sm:w-[110px] shrink-0 text-sm h-11 sm:h-12")}
         >
           <option value="10">10 mi</option>
           <option value="20">20 mi</option>
@@ -71,13 +71,13 @@ export default function CoverageSearchPanel({
       </div>
 
       {/* Compact action row */}
-      <div className="mt-2.5 sm:mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2">
+      <div className="mt-2.5 sm:mt-3 grid grid-cols-3 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-2">
         <button
           type="button"
           onClick={onUseCurrentLocation}
           className={cn(
             theme.secondaryButtonClassName,
-            "min-h-[44px] text-xs px-2.5 sm:px-3 justify-center"
+            "min-h-[44px] w-full text-[11px] sm:text-xs px-2 sm:px-3 justify-center"
           )}
         >
           <Radar className="h-3.5 w-3.5" />
@@ -89,19 +89,18 @@ export default function CoverageSearchPanel({
           disabled={!canCenterMap}
           className={cn(
             theme.secondaryButtonClassName,
-            "min-h-[44px] text-xs px-2.5 sm:px-3 justify-center disabled:translate-y-0 disabled:opacity-50"
+            "min-h-[44px] w-full text-[11px] sm:text-xs px-2 sm:px-3 justify-center disabled:translate-y-0 disabled:opacity-50"
           )}
         >
           <LocateFixed className="h-3.5 w-3.5" />
           Center
         </button>
-        <div className="flex-1" />
         <button
           type="button"
           onClick={onExpandMap}
           className={cn(
             theme.primaryButtonClassName,
-            "min-h-[44px] text-xs px-3 sm:px-4 justify-center"
+            "min-h-[44px] w-full text-[11px] sm:text-xs px-2 sm:px-4 justify-center"
           )}
         >
           <Expand className="h-3.5 w-3.5" />

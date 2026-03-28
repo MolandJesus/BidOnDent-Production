@@ -76,7 +76,8 @@ export default function LandingPageLayout({
 
   return (
     <div
-      className="min-h-screen"
+      className={`min-h-screen ${isLightAppearance ? "" : "dark"}`}
+      data-theme={isLightAppearance ? "light" : "dark"}
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #f5f7fb 0%, #eef2f9 50%, #e8edf5 100%)"

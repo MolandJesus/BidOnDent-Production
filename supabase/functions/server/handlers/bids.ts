@@ -1,5 +1,9 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { softVerifyClerkMutation } from "../utils/clerk.ts";
+import {
+  ensureClerkUserMatchesSession,
+  requireAuthenticatedProfile,
+  requireClerkSession,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
@@ -45,6 +49,9 @@ export async function createBid(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: true,
+    });
     const { clerkUserId, bid } = body;
     const damageReportId = bid?.damage_report_id ?? bid?.report_id;
 
@@ -52,10 +59,11 @@ export async function createBid(
       return respond({ error: "Missing clerkUserId or damage report ID" }, 400);
     }
 
-    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
-    if (mismatch) {
-      return respond({ error: "Unauthorized: clerkUserId does not match session" }, 401);
+    if (!profile?.is_admin && profile?.account_type !== "shop") {
+      return respond({ error: "Forbidden" }, 403);
     }
+
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
 
     const bidAmount = Number(bid?.amount ?? 0);
     if (bidAmount < 0) {
@@ -67,7 +75,7 @@ export async function createBid(
       .insert({
         damage_report_id: damageReportId,
         shop_user_id: bid?.shop_user_id ?? null,
-        clerk_shop_user_id: clerkUserId,
+        clerk_shop_user_id: authenticatedClerkUserId,
         shop_name: bid?.shop_name ?? null,
         shop_email: bid?.shop_email ?? null,
         amount: bidAmount,
@@ -90,7 +98,14 @@ export async function createBid(
     return respond({ success: true, bid: data });
   } catch (error: any) {
     console.error("Error in create bid endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -101,6 +116,9 @@ export async function getBids(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: true,
+    });
     const reportId = url.searchParams.get("reportId");
     const clerkUserId = url.searchParams.get("clerkUserId");
     const customerClerkUserId = url.searchParams.get("customerClerkUserId");
@@ -108,6 +126,25 @@ export async function getBids(
     const offset = Math.max(Number(url.searchParams.get("offset") ?? 0), 0);
 
     if (reportId) {
+      const { data: report, error: reportError } = await supabase
+        .from("damage_reports")
+        .select("id, clerk_user_id")
+        .eq("id", reportId)
+        .maybeSingle();
+
+      if (reportError) {
+        console.error("Error fetching report for bid access:", reportError);
+        return respond({ error: sanitizeErrorMessage(reportError) }, 500);
+      }
+
+      if (!report) {
+        return respond({ bids: [] });
+      }
+
+      if (!profile?.is_admin && report.clerk_user_id !== session.clerkUserId) {
+        return respond({ error: "Forbidden" }, 403);
+      }
+
       const { data, error } = await supabase
         .from("bids")
         .select("*")
@@ -123,6 +160,8 @@ export async function getBids(
     }
 
     if (customerClerkUserId) {
+      ensureClerkUserMatchesSession(session, customerClerkUserId);
+
       const { data: reports, error: reportsError } = await supabase
         .from("damage_reports")
         .select("id")
@@ -153,6 +192,8 @@ export async function getBids(
     }
 
     if (clerkUserId) {
+      ensureClerkUserMatchesSession(session, clerkUserId);
+
       const { data, error } = await supabase
         .from("bids")
         .select("*")
@@ -170,7 +211,14 @@ export async function getBids(
     return respond({ error: "Missing reportId, clerkUserId, or customerClerkUserId" }, 400);
   } catch (error: any) {
     console.error("Error in get bids endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -186,6 +234,9 @@ export async function updateBidStatus(
     }
 
     const body = await req.json();
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: true,
+    });
     const { status, clerkUserId } = body;
 
     if (!status || !["accepted", "rejected"].includes(status)) {
@@ -196,9 +247,36 @@ export async function updateBidStatus(
       return respond({ error: "Missing clerkUserId" }, 400);
     }
 
-    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
-    if (mismatch) {
-      return respond({ error: "Unauthorized: clerkUserId does not match session" }, 401);
+    ensureClerkUserMatchesSession(session, clerkUserId);
+
+    const { data: existingBid, error: existingBidError } = await supabase
+      .from("bids")
+      .select("id, damage_report_id")
+      .eq("id", bidId)
+      .maybeSingle();
+
+    if (existingBidError) {
+      console.error("Error fetching bid for status update:", existingBidError);
+      return respond({ error: sanitizeErrorMessage(existingBidError) }, 500);
+    }
+
+    if (!existingBid?.damage_report_id) {
+      return respond({ error: "Bid not found" }, 404);
+    }
+
+    const { data: reportOwner, error: reportOwnerError } = await supabase
+      .from("damage_reports")
+      .select("id, clerk_user_id")
+      .eq("id", existingBid.damage_report_id)
+      .maybeSingle();
+
+    if (reportOwnerError) {
+      console.error("Error fetching report owner for bid update:", reportOwnerError);
+      return respond({ error: sanitizeErrorMessage(reportOwnerError) }, 500);
+    }
+
+    if (!profile?.is_admin && reportOwner?.clerk_user_id !== session.clerkUserId) {
+      return respond({ error: "Forbidden" }, 403);
     }
 
     const { data, error } = await supabase
@@ -231,7 +309,14 @@ export async function updateBidStatus(
     return respond({ success: true, bid: data });
   } catch (error: any) {
     console.error("Error in update bid status endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -246,6 +331,7 @@ export async function deleteBid(
       return respond({ error: "Missing bid ID" }, 400);
     }
 
+    const session = await requireClerkSession(req, { requireEmail: true });
     const url = new URL(req.url);
     const clerkUserId = url.searchParams.get("clerkUserId");
 
@@ -253,11 +339,13 @@ export async function deleteBid(
       return respond({ error: "Missing clerkUserId" }, 400);
     }
 
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
+
     const { error } = await supabase
       .from("bids")
       .delete()
       .eq("id", bidId)
-      .eq("clerk_shop_user_id", clerkUserId);
+      .eq("clerk_shop_user_id", authenticatedClerkUserId);
 
     if (error) {
       console.error("Error deleting bid:", error);
@@ -267,6 +355,13 @@ export async function deleteBid(
     return respond({ success: true });
   } catch (error: any) {
     console.error("Error in delete bid endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }

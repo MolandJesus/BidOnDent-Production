@@ -231,9 +231,7 @@ export default function DashboardLayout({
                 >
                   Bid
                 </span>
-                <span className="italic" style={{ color: "#3b82f6" }}>
-                  On
-                </span>
+                <span style={{ color: "#3b82f6" }}>On</span>
                 <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
                   Dent
                 </span>
@@ -455,9 +453,7 @@ export default function DashboardLayout({
                   >
                     Bid
                   </span>
-                  <span className="italic" style={{ color: "#3b82f6" }}>
-                    On
-                  </span>
+                  <span style={{ color: "#3b82f6" }}>On</span>
                   <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
                     Dent
                   </span>

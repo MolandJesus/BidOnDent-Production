@@ -2,20 +2,26 @@
 // Service for Supabase-backed navigation session sync
 // with localStorage fallback + background retry
 
-import { supabase } from "../supabaseService";
-import type { ExternalNavigationSession } from "../../types/navigation";
+import {
+  requestSupabaseEdge,
+  SUPABASE_EDGE_ROUTES,
+} from "../supabase/runtime";
+import type { NavigationSession } from "../../features/navigation/sessionTypes";
 
-const TABLE = "navigation_sessions";
 const LS_PREFIX = "bidondent_nav_session_";
+const ACTIVE_SESSION_PREFIX = "bidondent_nav_active_session_";
 const STALENESS_MS = 24 * 60 * 60 * 1000; // 24 hours
 const PENDING_QUEUE_KEY = "bidondent_nav_pending_writes";
+
+type CloudOptions = {
+  enableCloud?: boolean;
+};
 
 // ─── Retry queue (in-memory, non-blocking) ─────────────────────
 
 type PendingWrite = {
-  userId: string;
-  sessionId: string;
-  session: ExternalNavigationSession;
+  ownerKey: string;
+  session: NavigationSession;
   attempts: number;
   queuedAt: number;
 };
@@ -33,8 +39,8 @@ function getRetryDelay(attempt: number): number {
   return RETRY_DELAYS_MS[Math.max(0, index)];
 }
 
-function writeKey(userId: string, sessionId: string): string {
-  return `${userId}::${sessionId}`;
+function writeKey(ownerKey: string, sessionId: string): string {
+  return `${ownerKey}::${sessionId}`;
 }
 
 // ─── Persistent queue (survives tab close / refresh) ───────────
@@ -64,7 +70,7 @@ function recoverPendingQueue(): void {
     const recovered: PendingWrite[] = JSON.parse(raw);
     if (!Array.isArray(recovered) || recovered.length === 0) return;
     for (const entry of recovered) {
-      if (entry.userId && entry.sessionId && entry.session) {
+      if (entry.ownerKey && entry.session?.id) {
         pendingWrites.push({
           ...entry,
           attempts: entry.attempts + 1,
@@ -106,11 +112,11 @@ function scheduleRetry() {
     pendingWrites.length = 0;
     for (const entry of batch) {
       // Skip stale retries — a newer write for this session has already been issued
-      const key = writeKey(entry.userId, entry.sessionId);
+      const key = writeKey(entry.ownerKey, entry.session.id);
       const latest = latestWriteTs.get(key) ?? 0;
       if (entry.queuedAt < latest) continue;
 
-      const ok = await writeToCloud(entry.userId, entry.sessionId, entry.session);
+      const ok = await writeToCloud(entry.session);
       if (!ok && entry.attempts < MAX_RETRY_ATTEMPTS) {
         pendingWrites.push({ ...entry, attempts: entry.attempts + 1 });
       }
@@ -121,39 +127,75 @@ function scheduleRetry() {
 
 // ─── localStorage helpers ──────────────────────────────────────
 
-function lsKey(userId: string, sessionId: string) {
-  return `${LS_PREFIX}${userId}_${sessionId}`;
+function lsKey(ownerKey: string, sessionId: string) {
+  return `${LS_PREFIX}${ownerKey}_${sessionId}`;
 }
 
-function saveToLocalStorage(userId: string, sessionId: string, session: ExternalNavigationSession) {
-  try {
-    const payload = { session, savedAt: Date.now() };
-    localStorage.setItem(lsKey(userId, sessionId), JSON.stringify(payload));
-  } catch {
-    // localStorage full or unavailable — non-blocking
-  }
+function activeSessionKey(ownerKey: string) {
+  return `${ACTIVE_SESSION_PREFIX}${ownerKey}`;
 }
 
-function loadFromLocalStorage(userId: string, sessionId: string): ExternalNavigationSession | null {
+function shouldTrackAsActiveSession(session: NavigationSession) {
+  return (
+    session.status === "planning" || session.status === "active" || session.status === "paused"
+  );
+}
+
+function resolveActiveSessionId(ownerKey: string) {
   try {
-    const raw = localStorage.getItem(lsKey(userId, sessionId));
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!parsed?.session || !parsed?.savedAt) return null;
-    const age = Date.now() - parsed.savedAt;
-    if (age > STALENESS_MS) {
-      localStorage.removeItem(lsKey(userId, sessionId));
-      return null;
-    }
-    return parsed.session as ExternalNavigationSession;
+    return localStorage.getItem(activeSessionKey(ownerKey));
   } catch {
     return null;
   }
 }
 
-function clearLocalStorage(userId: string, sessionId: string) {
+function saveToLocalStorage(ownerKey: string, session: NavigationSession) {
   try {
-    localStorage.removeItem(lsKey(userId, sessionId));
+    const payload = { session, savedAt: Date.now() };
+    localStorage.setItem(lsKey(ownerKey, session.id), JSON.stringify(payload));
+
+    if (shouldTrackAsActiveSession(session)) {
+      localStorage.setItem(activeSessionKey(ownerKey), session.id);
+    } else {
+      localStorage.removeItem(activeSessionKey(ownerKey));
+    }
+  } catch {
+    // localStorage full or unavailable — non-blocking
+  }
+}
+
+function loadFromLocalStorage(ownerKey: string): NavigationSession | null {
+  try {
+    const sessionId = resolveActiveSessionId(ownerKey);
+    if (!sessionId) return null;
+
+    const raw = localStorage.getItem(lsKey(ownerKey, sessionId));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed?.session || !parsed?.savedAt) return null;
+    const age = Date.now() - parsed.savedAt;
+    if (age > STALENESS_MS) {
+      localStorage.removeItem(lsKey(ownerKey, sessionId));
+      localStorage.removeItem(activeSessionKey(ownerKey));
+      return null;
+    }
+    return parsed.session as NavigationSession;
+  } catch {
+    return null;
+  }
+}
+
+function clearLocalStorage(ownerKey: string, sessionId?: string) {
+  try {
+    const resolvedSessionId = sessionId || resolveActiveSessionId(ownerKey);
+    if (resolvedSessionId) {
+      localStorage.removeItem(lsKey(ownerKey, resolvedSessionId));
+    }
+
+    const activeSessionId = resolveActiveSessionId(ownerKey);
+    if (!sessionId || activeSessionId === sessionId) {
+      localStorage.removeItem(activeSessionKey(ownerKey));
+    }
   } catch {
     // non-blocking
   }
@@ -161,67 +203,69 @@ function clearLocalStorage(userId: string, sessionId: string) {
 
 // ─── Cloud operations ──────────────────────────────────────────
 
-async function writeToCloud(
-  userId: string,
-  sessionId: string,
-  session: ExternalNavigationSession
-): Promise<boolean> {
+async function writeToCloud(session: NavigationSession): Promise<boolean> {
   try {
-    const { error } = await supabase.from(TABLE).upsert(
-      {
-        user_id: userId,
-        session_id: sessionId,
-        session_data: session,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id,session_id" }
-    );
-    return !error;
+    await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.navigationSession, {
+      body: JSON.stringify({
+        session,
+        sessionId: session.id,
+      }),
+      method: "POST",
+    });
+    return true;
   } catch {
     return false;
   }
 }
 
+function canUseCloudSync(options?: CloudOptions) {
+  return options?.enableCloud === true;
+}
+
 // ─── Public API ────────────────────────────────────────────────
 
 export async function fetchNavigationSession(
-  userId: string,
-  sessionId: string
-): Promise<ExternalNavigationSession | null> {
-  try {
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select("session_data")
-      .eq("user_id", userId)
-      .eq("session_id", sessionId)
-      .single();
-    if (!error && data) {
-      // Update localStorage cache with cloud truth
-      saveToLocalStorage(userId, sessionId, data.session_data as ExternalNavigationSession);
-      return data.session_data as ExternalNavigationSession;
+  ownerKey: string,
+  options?: CloudOptions
+): Promise<NavigationSession | null> {
+  if (canUseCloudSync(options)) {
+    try {
+      const data = await requestSupabaseEdge<{
+        session?: NavigationSession | null;
+        sessionId?: string | null;
+      }>(SUPABASE_EDGE_ROUTES.navigationSession, { method: "GET" });
+
+      if (data?.session) {
+        saveToLocalStorage(ownerKey, data.session);
+        return data.session;
+      }
+    } catch {
+      // Fall through to localStorage cache recovery
     }
-  } catch {
-    // Supabase unreachable — fall through to localStorage
   }
-  // Fallback: try localStorage (cache recovery)
-  return loadFromLocalStorage(userId, sessionId);
+
+  return loadFromLocalStorage(ownerKey);
 }
 
 export async function saveNavigationSessionToCloud(
-  userId: string,
-  sessionId: string,
-  session: ExternalNavigationSession
+  ownerKey: string,
+  session: NavigationSession,
+  options?: CloudOptions
 ): Promise<boolean> {
   // Always cache locally first (instant durability)
-  saveToLocalStorage(userId, sessionId, session);
+  saveToLocalStorage(ownerKey, session);
+
+  if (!canUseCloudSync(options)) {
+    return true;
+  }
 
   const now = Date.now();
-  latestWriteTs.set(writeKey(userId, sessionId), now);
+  latestWriteTs.set(writeKey(ownerKey, session.id), now);
 
-  const ok = await writeToCloud(userId, sessionId, session);
+  const ok = await writeToCloud(session);
   if (!ok) {
     // Queue for background retry instead of silently failing
-    pendingWrites.push({ userId, sessionId, session, attempts: 1, queuedAt: now });
+    pendingWrites.push({ ownerKey, session, attempts: 1, queuedAt: now });
     scheduleRetry();
     if (import.meta.env.DEV)
       console.warn("[NavigationSession] Cloud save failed — queued for retry");
@@ -230,17 +274,22 @@ export async function saveNavigationSessionToCloud(
 }
 
 export async function deleteNavigationSessionFromCloud(
-  userId: string,
-  sessionId: string
+  ownerKey: string,
+  sessionId: string,
+  options?: CloudOptions
 ): Promise<boolean> {
-  clearLocalStorage(userId, sessionId);
+  clearLocalStorage(ownerKey, sessionId);
+
+  if (!canUseCloudSync(options)) {
+    return true;
+  }
+
   try {
-    const { error } = await supabase
-      .from(TABLE)
-      .delete()
-      .eq("user_id", userId)
-      .eq("session_id", sessionId);
-    return !error;
+    await requestSupabaseEdge<{ success: boolean }>(SUPABASE_EDGE_ROUTES.navigationSession, {
+      body: JSON.stringify({ sessionId }),
+      method: "DELETE",
+    });
+    return true;
   } catch {
     return false;
   }

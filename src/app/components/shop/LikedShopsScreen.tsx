@@ -83,24 +83,30 @@ export default function LikedShopsScreen({
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className={`min-h-screen pb-20 ${isLight ? "bg-slate-50/80" : ""}`}>
       <div
-        className="sticky top-0 z-10 border-b border-white/10 text-white shadow-md"
+        className={`sticky top-0 z-10 border-b shadow-md ${
+          isLight ? "border-slate-200/70 text-slate-900" : "border-white/10 text-white"
+        }`}
         style={{
-          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.94) 100%)"
+            : `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
         }}
       >
         <div className="px-4 py-5">
           <div className="flex items-center gap-3">
             <button
               onClick={onBack}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 transition-colors hover:bg-white/20"
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
+                isLight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/10 hover:bg-white/20"
+              }`}
             >
-              <ArrowLeft className="h-5 w-5 text-white" />
+              <ArrowLeft className={`h-5 w-5 ${isLight ? "text-slate-700" : "text-white"}`} />
             </button>
             <div>
               <h1 className="text-2xl font-bold">Saved Shops</h1>
-              <p className="text-sm text-white/80">
+              <p className={`text-sm ${isLight ? "text-slate-600" : "text-white/80"}`}>
                 {savedListings.length} customer shortlist{savedListings.length === 1 ? "" : "s"}{" "}
                 synced from the map
               </p>
@@ -108,13 +114,21 @@ export default function LikedShopsScreen({
           </div>
 
           <div className="relative mt-4">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/60" />
+            <Search
+              className={`pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 ${
+                isLight ? "text-slate-500" : "text-white/60"
+              }`}
+            />
             <input
               type="text"
               placeholder="Search saved shops, specialties, or carrier programs..."
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              className="w-full rounded-2xl border border-white/20 bg-white/15 py-3 pl-10 pr-4 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/35"
+              className={`w-full rounded-2xl border py-3 pl-10 pr-4 focus:outline-none focus:ring-2 ${
+                isLight
+                  ? "border-slate-300 bg-white text-slate-900 placeholder:text-slate-500 focus:ring-blue-300"
+                  : "border-white/20 bg-white/15 text-white placeholder:text-white/60 focus:ring-white/35"
+              }`}
             />
           </div>
         </div>
@@ -213,7 +227,11 @@ export default function LikedShopsScreen({
 
                       <button
                         onClick={() => handleUnlike(shop.id)}
-                        className="inline-flex items-center gap-2 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-3 py-2 text-sm font-medium text-rose-300 transition-colors hover:bg-rose-500/20"
+                        className={`inline-flex items-center gap-2 rounded-2xl border px-3 py-2 text-sm font-medium transition-colors ${
+                          isLight
+                            ? "border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                            : "border-rose-400/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20"
+                        }`}
                       >
                         <Heart className="h-4 w-4" fill="currentColor" />
                         Remove
@@ -286,7 +304,11 @@ export default function LikedShopsScreen({
                       {shop.insurerPrograms.slice(0, 3).map((program) => (
                         <span
                           key={program}
-                          className="rounded-full bg-emerald-400/15 px-2.5 py-1 text-xs font-medium text-emerald-300"
+                          className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                            isLight
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-emerald-400/15 text-emerald-300"
+                          }`}
                         >
                           {program}
                         </span>
@@ -301,7 +323,13 @@ export default function LikedShopsScreen({
                       >
                         Review In Map
                       </button>
-                      <button className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors bd-glass-control--utility">
+                      <button
+                        className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
+                          isLight
+                            ? "border border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+                            : "bd-glass-control--utility"
+                        }`}
+                      >
                         <Phone className="h-4 w-4" />
                         Contact Shop
                       </button>

@@ -1,3 +1,320 @@
+## Pass 399 — Refactor-governance docs hardening + kickoff prompt packaging (2026-03-28)
+
+- **Why this pass was chosen:** After reconciling concurrent AI implementation updates, the project needed explicit refactor-governance constraints and a reusable kickoff prompt to start the next refactor chat with consistent expectations.
+- **What changed:**
+  - Added explicit pre-refactor governance constraints in baseline/matrix docs: preserve Clerk->edge->Supabase boundaries, verify security assumptions on service-contract changes, and enforce file-size limits (hard 600, preferred 500).
+  - Added dedicated kickoff prompt artifact for the next chat so refactor execution starts with product/architecture/doc-update discipline instead of ad-hoc prompting.
+- **Files touched:** `docs/PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`, `docs/FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`, `docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md`
+- **Validation:** Spellcheck: complete (0 issues across 6 touched docs). Diagnostics: complete (no errors in touched docs). Build: not required (docs-only pass).
+- **Impact:** Reduces startup friction for next-session refactor work and hardens execution boundaries so UI/feature changes do not regress auth/security architecture.
+
+## Pass 398 — Concurrent AI security-track reconciliation into source-of-truth docs (2026-03-28)
+
+- **Why this pass was chosen:** Parallel AI work landed substantial auth/storage/edge changes; core source-of-truth docs needed to reflect implementation reality before refactor planning proceeds.
+- **What changed:**
+  - `CLAUDE_AI_MASTER_CONTEXT.md`: updated last-updated marker and added concurrent AI snapshot covering edge auth headers, intake/workflow edge routing, Clerk-keyed navigation session persistence, private-storage lifecycle, and stricter server authz helpers.
+  - `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`: added verified concurrent security-track behavior and refactor constraints.
+  - `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`: added explicit security boundary verification checklist and refactor gate items.
+- **Files touched:** `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`, `docs/FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`
+- **Validation:** Spellcheck: complete (0 issues across 6 touched docs). Diagnostics: complete (no errors in touched docs). Build: not required (docs-only pass).
+- **Impact:** Keeps execution truth synchronized with live implementation so the next refactor phase starts from verified system reality.
+
+## Build Hygiene Note — bids/reports import-path cleanup (2026-03-28)
+
+- **Why this slice was chosen:** After the storage hardening pass, the recurring remaining build defect was the Vite warning pair caused by dynamically importing `supabase/bids` and `supabase/reports` from files where those modules were already part of the static runtime graph.
+- **What changed:**
+  - Replaced stale dynamic imports with direct imports in `useMarketplaceReports.ts`, `useBidsForReport.ts`, `useAppHandlers.ts`, and `buildDashboardRouterProps.ts`.
+  - Kept behavior unchanged while removing the false signal that those modules were being split into separate lazy chunks.
+- **Files touched:** `src/app/hooks/useMarketplaceReports.ts`, `src/app/hooks/useBidsForReport.ts`, `src/app/hooks/useAppHandlers.ts`, `src/app/utils/buildDashboardRouterProps.ts`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** Build: ✓ 0 errors · 2.19s, with the prior Vite dynamic-import warnings removed. Tests: ✓ 81 passed / 5 files. TypeScript: ✓ `npx tsc --noEmit`. `git diff --check`: ✓ clean.
+- **Impact:** Cleans the build signal for future stabilization work and sets a clearer refactor rule for service-module loading boundaries.
+
+## Security Track Note — Generic storage adapter boundary hardening (2026-03-28)
+
+- **Why this slice was chosen:** After the intake/workflow hardening, the most likely remaining boundary-regression seam was the shared `StorageService`/`SupabaseStorageAdapter` path, which still allowed browser-direct private-bucket operations if future code reused it.
+- **What changed:**
+  - Added authenticated storage edge routes for scoped file listing and scoped signed-URL generation.
+  - Extended the upload route to accept path-preserving uploads while keeping user ownership scoped under `users/{clerkUserId}/`.
+  - Updated `SupabaseStorageAdapter` to route user-scoped private buckets through authenticated edge flows for upload, delete, list, and signed-url operations instead of direct browser storage mutations.
+- **Files touched:** `src/app/services/supabase/runtime.ts`, `src/app/services/supabase/storage.ts`, `src/app/services/storage/SupabaseStorageAdapter.ts`, `supabase/functions/server/utils/storage.ts`, `supabase/functions/server/handlers/storage.ts`, `supabase/functions/server/index.ts`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** Build: ✓ 0 errors · 2.17s. Tests: ✓ 81 passed / 5 files. TypeScript: ✓ `npx tsc --noEmit`. `git diff --check`: ✓ clean.
+- **Impact:** Removes a legacy shared-service bypass around private media handling and leaves a smaller, clearer future refactor seam: unify generic storage and media-optimization behavior behind one server-owned media gateway.
+
+## Security Track Note — Public intake + workflow edge-boundary hardening (2026-03-28)
+
+- **Why this slice was chosen:** After the navigation/storage hardening passes, the remaining live browser-write seams with the highest operational risk were public business-inquiry submissions and shop-side workflow event logging.
+- **What changed:**
+  - Added edge handlers for public intake submissions (`shop-interest`, `insurer-interest`) with centralized payload validation and server-side activity-event logging.
+  - Routed landing inquiry services through edge endpoints instead of direct browser table inserts.
+  - Added authenticated edge handlers for workflow events and job-assignment mutations, and moved `workflow.ts` to those routes.
+  - Hardened `ShopRequestsScreen.tsx` against unhandled workflow-event promise rejections.
+- **Files touched:** `supabase/functions/server/handlers/intake.ts`, `supabase/functions/server/handlers/workflow.ts`, `supabase/functions/server/index.ts`, `src/app/services/supabase/runtime.ts`, `src/app/services/supabase/intake.ts`, `src/app/services/supabase/workflow.ts`, `src/app/components/shop/ShopRequestsScreen.tsx`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** Build: ✓ 0 errors · 2.41s. Tests: ✓ 81 passed / 5 files. TypeScript: ✓ `npx tsc --noEmit`. `git diff --check`: ✓ clean.
+- **Impact:** Reduces anonymous/browser mutation surface, brings more operational writes under rate-limited edge control, and sharpens a future refactor seam for consolidating public intake plus app command mutations into one server-owned command layer.
+
+## Pass 397 — MCP plan + legacy tracker archive-language alignment (2026-03-28)
+
+- **Why this pass was chosen:** Remaining docs still included one operational plan source and one legacy tracker line that could imply the archived dashboard is still an active workflow anchor.
+- **What changed:**
+  - `MCP_PLUGIN_INTEGRATION_PLAN.md`: updated Phase 2 sync source from archived build dashboard to active map tracker governance.
+  - `BIDONDENT_MAP_TRACKER_2026-03-21.md`: reworded a legacy historical narrative line so it explicitly treats build dashboard as pass-era archive context.
+- **Files touched:** `docs/MCP_PLUGIN_INTEGRATION_PLAN.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Validation:** Spellcheck: complete (0 issues across 3 touched docs). Build: not required (docs-only pass).
+- **Impact:** Removes another routing ambiguity where automation plans or historical narrative could accidentally reactivate retired reporting behavior.
+
+## Pass 396 — Historical sprint report governance alignment (2026-03-28)
+
+- **Why this pass was chosen:** The historical sprint report still used active-governance wording that could be misread as current process rules.
+- **What changed:**
+  - `COMPREHENSIVE_SPRINT_REPORT_PASSES_1_40.md`: reworded stale "actively maintained" and "update after every pass" language to explicit historical-sprint context.
+  - Updated sprint report document-ecosystem table entries so build dashboard is clearly archived and tracker status is scoped as historical snapshot for that sprint period.
+- **Files touched:** `docs/COMPREHENSIVE_SPRINT_REPORT_PASSES_1_40.md`
+- **Validation:** Spellcheck: complete (0 issues across 3 touched docs). Build: not required (docs-only pass).
+- **Impact:** Reduces governance ambiguity by preventing old sprint-report wording from overriding active documentation policy.
+
+## Pass 395 — Residual archive-reference cleanup in authority docs (2026-03-28)
+
+- **Why this pass was chosen:** Residual references in authority docs still implied the build dashboard could be used as an active detailed pass log.
+- **What changed:**
+  - `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`: updated legacy pass reference line to use map tracker as active governance and build dashboard as historical context.
+  - `CLAUDE_AI_MASTER_CONTEXT.md`: updated docs reference table entry to explicitly label build dashboard as archived pass history context.
+- **Files touched:** `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/CLAUDE_AI_MASTER_CONTEXT.md`
+- **Validation:** Spellcheck: complete (0 issues across 3 touched docs). Build: not required (docs-only pass).
+- **Impact:** Removes remaining ambiguous wording that could route agents to retired status workflows.
+
+## Pass 394 — Prompt docs governance alignment (archive vs active trackers) (2026-03-28)
+
+- **Why this pass was chosen:** Multiple AI prompt/coordination docs still pointed execution updates to the archived build dashboard, risking process drift.
+- **What changed:**
+  - `AI_HANDOFF_PROMPT.md`: reclassified build dashboard references as historical archive in docs inventory tables.
+  - `DUAL_AI_COORDINATION_PROMPT.md`: moved active coordination update instructions from build dashboard to map tracker/master docs.
+  - `CHATGPT_AUTOPILOT_STRATEGY_QUESTIONS.md`: replaced archived dashboard in core-doc list with active map tracker.
+  - `AI_LIQUID_GLASS_HANDOFF_PROMPT.md`: clarified map tracker as active governance source and build dashboard as historical archive.
+- **Files touched:** `docs/AI_HANDOFF_PROMPT.md`, `docs/DUAL_AI_COORDINATION_PROMPT.md`, `docs/CHATGPT_AUTOPILOT_STRATEGY_QUESTIONS.md`, `docs/AI_LIQUID_GLASS_HANDOFF_PROMPT.md`
+- **Validation:** Spellcheck: complete (0 issues across 6 touched docs). Build: not required (docs-only pass).
+- **Impact:** Reduces future AI workflow drift by aligning operational prompts with active documentation governance.
+
+## Pass 393 — Onboarding/execution doc policy alignment (2026-03-28)
+
+- **Why this pass was chosen:** Continued stale-doc cleanup found a governance mismatch where the finishing plan still required updating a now-archived dashboard doc every pass.
+- **What changed:**
+  - `BIDONDENT_FINISHING_MASTER_PLAN.md`: corrected Documentation Rule so active pass logging targets tracker/master/README policy surfaces instead of the archived build dashboard.
+  - `GETTING_STARTED.md`: refreshed metadata date and added a scope note pointing execution truth to current baseline/verification docs.
+- **Files touched:** `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`, `docs/GETTING_STARTED.md`
+- **Validation:** Spellcheck: complete (0 issues across 4 touched docs). Build: not required (docs-only pass).
+- **Impact:** Removes policy contradiction that could cause future agents to write status into retired docs and improves onboarding clarity.
+
+## Pass 392 — Authority docs archival clarity (Product Brain + Master Context) (2026-03-28)
+
+- **Why this pass was chosen:** User requested continued stale-doc cleanup; two highest-authority docs still contained historical sections framed as current state.
+- **What changed:**
+  - `CLAUDE_AI_MASTER_CONTEXT.md`: relabeled old "Current State" block as a historical Pass 286 snapshot, added archive notes, and redirected active execution truth to baseline/verification docs.
+  - `BIDONDENT_PRODUCT_BRAIN.md`: updated metadata date and reclassified the 2026-03-25 screenshot section as historical visual snapshot instead of current canonical state.
+- **Files touched:** `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/BIDONDENT_PRODUCT_BRAIN.md`
+- **Validation:** Spellcheck: complete (0 issues across 4 touched docs). Build: not required (docs-only pass).
+- **Impact:** Prevents high-authority docs from unintentionally overriding current execution truth with stale snapshot language.
+
+## Pass 391 — Map docs archival clarity: retire stale "current/in progress" labels (2026-03-28)
+
+- **Why this pass was chosen:** The user requested continued stale-content removal; map docs still had legacy sections labeled as current/in-progress that could mislead execution.
+- **What changed:**
+  - Corrected Pass 390 validation to reflect completed spellcheck run.
+  - Reframed `Current Program Status (Pass 92)` as a historical snapshot and added explicit pointers to active baseline/matrix docs.
+  - Reframed legacy `Pass 179` status in map master plan as historical (recorded as in progress at time of capture), not an active current state.
+  - Clarified that map master themes are a historical strategic snapshot and that current truth lives in current baseline/verification docs.
+- **Files touched:** `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** Spellcheck: complete (0 issues across 2 touched docs). Build: not required (docs-only pass).
+- **Impact:** Reduces documentation trust risk by preventing old status blocks from being interpreted as current execution state.
+
+## Pass 390 — Stale docs cleanup: retire legacy sequencing + archive old status board (2026-03-28)
+
+- **Why this pass was chosen:** User requested continued full-doc cleanup, including deleting outdated guidance that no longer matches current execution reality.
+- **What changed:**
+  - `BIDONDENT_FINISHING_MASTER_PLAN.md`: removed legacy pass-numbered roadmap sequencing and replaced it with current pre-refactor execution policy tied to active baseline/matrix/map docs.
+  - `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`: reclassified as historical archive and redirected readers to active execution trackers.
+  - `docs/README.md`: updated planning section to classify build dashboard as historical (non-authoritative for current status).
+- **Files touched:** `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`, `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`, `docs/README.md`
+- **Validation:** Spellcheck: complete (0 issues across 5 touched docs). Build: not required (docs-only pass).
+- **Impact:** Reduces stale execution drift by removing outdated pass sequencing and clarifying current source-of-truth documentation paths.
+
+## Pass 389 — Full docs synchronization (README + Supabase/Auth guides + parallel-track protocol) (2026-03-28)
+
+- **Why this pass was chosen:** User requested full-documentation updates across all doc surfaces before refactor, specifically including README and Supabase/auth setup docs, with merge-safe coordination for a concurrent security AI.
+- **What changed:**
+  - Consolidated duplicated docs index structure and refreshed governance/parallel-AI protocol in `docs/README.md`.
+  - Updated Supabase setup/auth ownership guide in `docs/SUPABASE_SETUP_GUIDE.md` with current date and explicit parallel security-track merge guidance.
+  - Updated `docs/GOOGLE_OAUTH_SETUP.md` metadata and added auth-doc synchronization note.
+  - Updated `docs/CLAUDE_AI_MASTER_CONTEXT.md` last-updated marker and added concurrent security-track documentation rule.
+  - Updated pre-refactor baseline and functional verification matrix docs to include additive merge protocol for parallel security updates.
+- **Files touched:** `docs/README.md`, `docs/SUPABASE_SETUP_GUIDE.md`, `docs/GOOGLE_OAUTH_SETUP.md`, `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`, `docs/FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`
+- **Validation:** Spellcheck: pending at end of pass run. Build: not required (docs-only pass).
+- **Impact:** Aligns full docs stack with current execution reality and reduces cross-agent doc drift while security and UX tracks run in parallel.
+
+## Pass 388 — Full-site functionality verification matrix + docs synchronization (2026-03-28)
+
+- **Why this pass was chosen:** Pre-refactor execution needed an explicit account/page verification matrix and synchronized doc references so functional completeness can be tracked across all site surfaces, not only major map docs.
+- **What changed:**
+  - Added `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md` with role-based route coverage, shared surface checks, map-program checks, and mobile/desktop verification gates.
+  - Updated docs governance references to include the new matrix in `docs/README.md` and `BIDONDENT_FINISHING_MASTER_PLAN.md`.
+- **Files touched:** `docs/FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`, `docs/README.md`, `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`
+- **Validation:** Build: ✓ 0 errors · 2.04s. Diagnostics: 0 in touched code files. Spellcheck: ✓ clean on touched docs.
+- **Impact:** Establishes a concrete, auditable pre-refactor functionality gate across account types, pages, and map/mobile/desktop flows.
+
+## Pass 387 — Landing settings overlay layering + dashboard logo typography fix (2026-03-28)
+
+- **Why this pass was chosen:** Two user-visible regressions were blocking quality: landing-page site settings could appear under landing content layers, and dashboard logo typography rendered a stylized/tilted "On" that violated brand intent.
+- **What changed:**
+  - `SettingsModal.tsx`: switched modal rendering to `createPortal(..., document.body)` and kept high z-index overlay, guaranteeing top-layer rendering across landing/dashboard shells.
+  - `DashboardLayout.tsx`: removed italic styling from the "On" span in both desktop and mobile header logo render paths.
+- **Files touched:** `src/app/components/codelayer/account/SettingsModal.tsx`, `src/app/components/app/DashboardLayout.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.04s. Diagnostics: 0 in touched files. Mobile/Desktop: modal overlay no longer constrained by header stacking context; logo text styling now straight.
+- **Impact:** Restores reliable settings accessibility on landing and aligns dashboard wordmark typography with intended branding.
+
+## Pass 386 — Pre-refactor full-site baseline + docs metadata normalization (2026-03-28)
+
+- **Why this pass was chosen:** Before broad refactor work, the project needed one coherent cross-account functionality baseline and documentation governance consistency across the full docs set, not only map-major files.
+- **What changed:**
+  - Added `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` with audited coverage across account types, site pages, map program state, mobile/desktop readiness, and code-structure risk seams.
+  - Updated `docs/README.md` index to include the new pre-refactor baseline artifact.
+  - Normalized explicit `Last updated` / `Status` metadata markers across docs that were missing them (historical prompts, architecture snapshots, sprint report, and planning docs).
+- **Files touched:** `docs/PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`, `docs/README.md`, `docs/AI_BACKEND_TASK_PROMPT.md`, `docs/AI_DASHBOARD_WORK_PROMPT.md`, `docs/AI_DESIGN_HANDOFF_PROMPT.md`, `docs/AI_HANDOFF_PROMPT.md`, `docs/AI_LIQUID_GLASS_HANDOFF_PROMPT.md`, `docs/CHATGPT_AUTOPILOT_STRATEGY_QUESTIONS.md`, `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/CODE_ORGANIZATION_AUDIT.md`, `docs/COMPREHENSIVE_SPRINT_REPORT_PASSES_1_40.md`, `docs/DUAL_AI_COORDINATION_PROMPT.md`, `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`, `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`, `docs/MCP_PLUGIN_INTEGRATION_PLAN.md`, `docs/PHASE_1_PLATFORM_ARCHITECTURE_AUDIT_2026-03-20.md`, `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md`
+- **Validation:** Metadata coverage check: ✓ all docs include `Last updated` and `Status` markers. Spellcheck: pending at end of pass run. Mobile/Desktop: baseline status documented for pre-refactor planning.
+- **Impact:** Establishes a shared, auditable readiness baseline and removes documentation-governance drift before refactor sequencing.
+
+## Pass 385 — Search-panel control touch-target compliance (2026-03-28)
+
+- **Why this pass was chosen:** Shop directory search/origin/view controls were still using compact 32px chip sizing, which increased mis-tap risk in the core mobile map-discovery flow.
+- **What changed:**
+  - `ShopDirectorySearchPanel.tsx`: raised submit, origin chips, location/save actions, view-mode chips, sort/filter/theme/area pills, clear-origin action, and related-screen CTA to explicit 44px minimum touch targets.
+  - `ShopDirectorySearchPanel.tsx`: normalized control text sizing/spacing to maintain readability after target-size increases.
+- **Files touched:** `src/app/components/shop/ShopDirectorySearchPanel.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.08s. Diagnostics: 0 in touched files. Spellcheck: 0 issues in touched files/docs. Mobile/Desktop: improved tap reliability across the shop-directory control stack without changing behavior.
+- **Impact:** Reduces control-level friction in the report -> map -> shop loop by making primary discovery controls easier to hit on phones.
+
+## Pass 384 — Map-pane action touch-target compliance (2026-03-28)
+
+- **Why this pass was chosen:** The map-pane selected-shop CTA and area-search pills were below preferred mobile tap-size guidance, increasing mis-tap risk in high-frequency map actions.
+- **What changed:**
+  - `ShopDirectoryMapPane.tsx`: raised selected-shop directions CTA from 40px to explicit `min-h-[44px]` and normalized legibility sizing.
+  - `ShopDirectoryMapPane.tsx`: upgraded `Search this area` and `Area active` pills to `min-h-[44px]` with larger spacing/text for mobile reliability.
+- **Files touched:** `src/app/components/shop/ShopDirectoryMapPane.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.07s. Diagnostics: 0 in touched files. Spellcheck: 0 issues in touched files/docs. Mobile/Desktop: tap confidence improved on map-over-map controls without changing behavior.
+- **Impact:** Strengthens action reliability in the map-first flow by reducing touch friction on phone-sized screens.
+
+## Pass 383 — Shop result-card light-mode readability + touch-target hardening (2026-03-28)
+
+- **Why this pass was chosen:** Core shop result cards still had dark-biased copy/chip styling in light mode and lacked explicit 44px minimum action targets, creating readability and tap-confidence risk in the map -> shop decision loop.
+- **What changed:**
+  - `ShopDirectoryResultCard.tsx`: made non-compact AI summary copy mode-aware (`text-slate-600` in light mode).
+  - `ShopDirectoryResultCard.tsx`: made certification chips mode-aware (light-mode amber chip tokens, dark mode unchanged).
+  - `ShopDirectoryResultCard.tsx`: enforced `min-h-[44px]` on all three action buttons (primary, secondary, directions).
+- **Files touched:** `src/app/components/shop/ShopDirectoryResultCard.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.12s. Diagnostics: 0 in touched files. Spellcheck: 0 issues in touched files/docs. Mobile/Desktop: stronger light-mode contrast and explicit tap-target compliance in list cards.
+- **Impact:** Improves readability and action reliability in one of the highest-frequency map-adjacent decision surfaces.
+
+## Pass 382 — Liked shops appearance-mode parity hardening (2026-03-28)
+
+- **Why this pass was chosen:** Liked Shops still had dark-biased header/control surfaces in light mode, creating readability and visual-cohesion drift inside the customer map loop.
+- **What changed:**
+  - `LikedShopsScreen.tsx`: added mode-aware page shell background for light mode.
+  - `LikedShopsScreen.tsx`: converted sticky header (background, border, back button, title support copy) to light/dark conditional styling.
+  - `LikedShopsScreen.tsx`: converted search icon/input styling to light/dark conditional tokens.
+  - `LikedShopsScreen.tsx`: converted remove-button, insurer-program chips, and secondary `Contact Shop` action to light/dark conditional styling.
+- **Files touched:** `src/app/components/shop/LikedShopsScreen.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.11s. Diagnostics: 0 in touched files. Spellcheck: 0 issues in touched files/docs. Mobile/Desktop: improved contrast and visual parity in light mode while preserving map-dark behavior.
+- **Impact:** Increases trust and legibility for customer shortlist flows and keeps appearance-mode behavior consistent in map-adjacent surfaces.
+
+## Pass 383 — Reload-loop fix for authenticated startup + cached-data migration (2026-03-28)
+
+- **Why this pass was chosen:** The site could enter a repeated reload loop when Clerk-backed startup hit the cached-data migration path and forced a full page refresh before cloud state had fully stabilized.
+- **What changed:**
+  - `useUserData.ts`: removed the hard `window.location.reload()` from the cached-data migration branch, migrated cached reports alongside profile/vehicles, rehydrated from Supabase in-place, and gated cloud bootstrap on Clerk auth readiness.
+  - `App.tsx`: waited for Clerk auth readiness before registering the edge-token getter and before kicking off authenticated user-data loading.
+  - `ClerkAccountTypeSelector.tsx`: removed the full-page reload after account setup completion so Clerk metadata updates can flow through normal app state.
+- **Files touched:** `src/app/App.tsx`, `src/app/hooks/useUserData.ts`, `src/app/components/auth/ClerkAccountTypeSelector.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.09s. Tests: ✓ 81 passed / 5 files. `git diff --check`: ✓ clean.
+- **Impact:** Stops the repeated reload behavior, reduces startup thrash during authenticated sessions, and keeps user migration/setup inside stable stateful flow instead of hard browser refreshes.
+
+## Pass 381 — Directions CTA language parity across map flows (2026-03-28)
+
+- **Why this pass was chosen:** The selected map-shop CTA used hardcoded copy that drifted from session-level directions wording used elsewhere, creating subtle language inconsistency in the same user action flow.
+- **What changed:**
+  - `ShopDirectoryMapPane.tsx`: introduced optional `directionsActionLabel` prop and replaced hardcoded selected-card CTA text with the shared label fallback pattern.
+  - `ShopDirectoryScreen.tsx`: passed `session.directionsActionLabel` into `ShopDirectoryMapPane` in the standard map flow.
+  - `ShopDirectoryImmersiveMap.tsx`: passed `directionsActionLabel` into `ShopDirectoryMapPane` in immersive flow.
+- **Files touched:** `src/app/components/shop/ShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.15s. Diagnostics: 0 in touched files. Spellcheck: 0 issues in touched files/docs. Mobile/Desktop: selected-shop map CTA now matches shared directions language in both standard and immersive views.
+- **Impact:** Improves map/list action-language coherence and reduces cognitive friction in the report -> map -> shop -> action loop.
+
+## Pass 380 — Selected-map-shop actionability boost (2026-03-28)
+
+- **Why this pass was chosen:** The selected shop card on the map had strong context but no direct action, creating unnecessary friction versus list cards that already expose actionable controls.
+- **What changed:**
+  - `ShopDirectoryMapPane.tsx`: added optional `onOpenShopDirections` callback prop and a direct CTA button inside the selected shop card (`Open directions`).
+  - `ShopDirectoryScreen.tsx`: wired standard map flow to pass `session.handleOpenShopDirections` into `ShopDirectoryMapPane`.
+  - `ShopDirectoryImmersiveMap.tsx`: wired immersive map flow to pass existing `onOpenShopDirections` callback into `ShopDirectoryMapPane`.
+- **Files touched:** `src/app/components/shop/ShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.03s. Diagnostics: 0 in touched files. Mobile/Desktop: selected-map-shop now has immediate action parity with list flow.
+- **Impact:** Reduces map-to-action friction by enabling direct navigation launch from the selected shop card on mobile and desktop map views.
+
+## Pass 382 — Security hardening follow-up: remove client DB fallbacks + document edge-only admin verification (2026-03-28)
+
+- **Why this pass was chosen:** After the initial security sweep, a few legacy client helpers still contained raw browser-side table reads or direct-query fallback paths that could undermine the hardened edge-auth model if left in place.
+- **What changed:**
+  - `useAdminActions.ts`: replaced direct browser database verification with an authenticated deep health check through the protected edge function.
+  - `admin.ts`: added a typed admin deep-health helper so admin diagnostics flow through the same secured edge request path as the rest of the dashboard.
+  - `admin-dashboard-core-actions.ts`: removed legacy direct `profiles` reads and public-anon health fetch usage in favor of admin edge helpers.
+  - `reports.ts`, `vehicles.ts`: removed direct browser fallback reads/writes/deletes and kept those flows on Clerk-authenticated edge routes only.
+  - `PerformanceOptimizer.ts`: replaced direct preload table reads with the secured profile/vehicle/report service layer to avoid hidden browser bypass paths.
+- **Files touched:** `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `src/app/components/admin/useAdminActions.ts`, `src/app/components/admin/admin-dashboard-core-actions.ts`, `src/app/services/performance/PerformanceOptimizer.ts`, `src/app/services/supabase/admin.ts`, `src/app/services/supabase/reports.ts`, `src/app/services/supabase/runtime.ts`, `src/app/services/supabase/vehicles.ts`
+- **Validation:** Build: ✓ 0 errors · 2.19s. Tests: ✓ 81 passed / 5 files. `git diff --check`: ✓ clean.
+- **Impact:** Reduces browser-side exposure paths, keeps admin diagnostics behind authenticated edge authorization, and tightens the rule that sensitive account/report/vehicle data must flow through the hardened server boundary.
+
+## Pass 379 — Mobile safe-area clearance for dashboard map list flow (2026-03-28)
+
+- **Why this pass was chosen:** In map mode, lower list content could visually collide with fixed mobile nav/browser chrome, reducing access to final cards and actions.
+- **What changed:**
+  - `ShopDirectoryListBody.tsx`: added mobile-only bottom safe-area padding when map pane is active (`pb-[calc(env(safe-area-inset-bottom)+6.5rem)]`) while keeping desktop density unchanged.
+- **Files touched:** `src/app/components/shop/ShopDirectoryListBody.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.09s. Diagnostics: 0 in touched files. Mobile/Desktop: map-mode list now has clearer end-of-scroll breathing room on mobile.
+- **Impact:** Prevents content clipping behind fixed chrome and improves completion of map-list browsing actions on phones.
+
+## Pass 378 — Mobile map control hierarchy alignment (2026-03-28)
+
+- **Why this pass was chosen:** After Pass 377 fixes, map controls still felt visually inconsistent between landing and dashboard on mobile, and iOS touch-scroll resilience needed hardening in settings.
+- **What changed:**
+  - `SettingsModal.tsx`: added explicit touch-scroll hints (`touchAction: pan-y`, `-webkit-overflow-scrolling: touch`) to both outer and inner scroll containers.
+  - `ShopDirectorySearchPanel.tsx`: restructured search row to bounded two-column grid (`query + Update`) matching landing control hierarchy, reduced input pressure, and normalized view/sort controls with minimum touch heights.
+  - `ShopDirectorySearchPanel.tsx`: converted lower control cluster to responsive grid on mobile to reduce chip-wrap crowding and improve tap confidence.
+- **Files touched:** `src/app/components/codelayer/account/SettingsModal.tsx`, `src/app/components/shop/ShopDirectorySearchPanel.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.09s. Diagnostics: 0 in touched files. Mobile/Desktop: improved control rhythm on mobile, desktop behavior preserved.
+- **Impact:** Landing and dashboard map controls now read as one system on mobile, and settings scrolling is more robust on touch devices.
+
+## Pass 377 — Mobile viewport fixes: settings scroll, landing map controls, dashboard map polish (2026-03-28)
+
+- **Why this pass was chosen:** Three mobile regressions were blocking smooth usage: settings modal scroll friction, landing coverage control overflow, and dashboard map list density/crowding.
+- **What changed:**
+  - `SettingsModal.tsx`: rebuilt modal as a viewport-safe scroll container (`overflow-y-auto` shell + internal scroll body + fixed footer actions) and increased panel opacity to prevent background bleed-through on mobile.
+  - `CoverageSearchPanel.tsx`: switched top controls to a bounded two-column grid (`ZIP input + radius selector`) with `min-w-0`/`overflow-hidden` protections and mobile 3-column action buttons so the range selector stays inside the panel.
+  - `ShopDirectoryHero.tsx`: ensured back control icon contrast in dark map mode.
+  - `ShopDirectoryListBody.tsx`: tightened mobile spacing, chip/button sizing, and converted recommendation header row to stack on mobile for cleaner map-list readability.
+- **Files touched:** `src/app/components/codelayer/account/SettingsModal.tsx`, `src/app/components/landing/CoverageSearchPanel.tsx`, `src/app/components/shop/ShopDirectoryHero.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.28s. Diagnostics: 0 in touched files. Mobile/Desktop: updated mobile behavior for all three reported surfaces while preserving desktop layouts.
+- **Impact:** Mobile settings are now scroll-safe, landing map search controls remain contained, and dashboard map/list sections are cleaner and easier to scan.
+
+## Pass 376 — Map screen layout refinement + dark-mode appearance fix (2026-03-28)
+
+- **Why this pass was chosen:** Mobile map/list surfaces remained visually dense and the appearance mode settings modal could render incorrectly when opened from landing dark mode due to missing dark-theme container attributes.
+- **What changed:**
+  - `LandingPageLayout.tsx`: added dark theme shell attributes (`dark` class + `data-theme`) so settings modal glass surfaces render correctly in dark mode when launched from landing view.
+  - `ShopDirectorySearchPanel.tsx`: compacted mobile controls (search row, origin chips, view/sort controls, role panel) and reduced vertical pressure while preserving all existing actions.
+  - `ShopDirectoryMapPane.tsx`: tightened top badges, refined selected-shop bottom card rhythm, and reduced map overlay pill density for better map visibility.
+  - `ShopDirectoryHero.tsx`: reduced map-mode header density (smaller back chip, role chip, title sizing) for better first-screen map focus.
+  - `ShopDirectoryScreen.tsx`: adjusted split-shell geometry for desktop and responsive map height behavior for mobile.
+- **Files touched:** `src/app/components/app/LandingPageLayout.tsx`, `src/app/components/shop/ShopDirectorySearchPanel.tsx`, `src/app/components/shop/ShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryHero.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Validation:** Build: ✓ 0 errors · 2.12s. Diagnostics: 0 in touched files. Mobile/Desktop: map/list parity updated for both view modes.
+- **Impact:** Shop map experience is denser, clearer, and more map-forward on mobile while keeping desktop split-view usable. Appearance mode behavior is now consistent in dark mode from landing and dashboard entry points.
+
 ## Passes 181–185 — Design Consolidation + Infrastructure (2026-03-24)
 
 **Summary:** 8-pass design consolidation sweep covering glass system unification, blue token upgrade, CTA hierarchy, empty state visibility, report flow touch targets, landing page consistency, Sentry project creation, and MCP plugin integration planning.
@@ -80,7 +397,7 @@ The Operating Regions / coverage map section is the **strongest visual identity 
   - Dashboard map cohesion in `CustomerMapWidget.tsx` by moving shop list widget from bright card treatment into dark map-native glass styling.
   - Bids screen alignment in `BidsScreen.tsx` by upgrading empty and summary surfaces to map-dark card styling with improved typography contrast.
 - **Validation:** Build ✓ 0 errors · 2.10s · 742.03KB main bundle. Diagnostics: 0. Spellcheck: 0.
-- **Impact:** Mobile scanability and visual trust improved in both public and authenticated map-first flows.
+- **Impact:** Mobile readability and visual trust improved in both public and authenticated map-first flows.
 
 ## Pass 208 — Dashboard mobile stack rhythm tuning (2026-03-25)
 
@@ -932,7 +1249,9 @@ Also cross-reference:
 
 Track execution slices, validation outcomes, and next map priorities without duplicating master-plan strategy.
 
-## Current Program Status (Pass 92)
+## Historical Program Snapshot (Pass 92, 2026-03-23)
+
+Archive note: This section records the program snapshot captured during Pass 92. For current execution reality, use `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` and `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`.
 
 - Reliability and diagnostics: **Advanced** — GPS degradation, speed-limit fallback, error boundaries, cloud sync, circuit breaker, session retry all delivered. Network error recovery UI pending.
 - Explainable trust UI: **Stable** — Provider health surfaced in planner. Confidence trends documented. Trust signals wired.
@@ -1850,6 +2169,6 @@ This roadmap tracks the progression from current state toward aspirational featu
 14. ~~Cross-browser voice audit.~~ — Delivered. Created `voiceSupport.ts` with `VoiceSupportStatus` type (available/no-api/no-voices/gesture-blocked), `detectVoiceSupport()` snapshot, `primeVoiceEngine()` for Safari gesture gate. Hardened `voiceGuidance.ts`: `SpeakResult` return type (spoken/muted/no-api/no-text) replaces boolean, `onerror` handler on utterances tracks speech failures, cross-browser compatibility documented in code headers. Wired `primeVoiceEngine()` into `useCoverageNavigationExperience` — fires on voice mode activation from user gesture. Browser matrix documented: Chrome async voices, Safari gesture gate, Firefox limited voices, iOS screen-lock, Chrome 15s pause bug.
 15. ~~Voice deviation alerts + reroute announcements.~~ — Delivered. Created `deviationVoicePhrases.ts`: phrase pools for off-route (medium + high severity), delay increase, reroute pending, reroute confirmed — all randomly sampled. Created `useNavigationVoiceAlerts.ts`: orchestration hook consuming `latestEvent` + `rerouteStatus` + voice settings. Deduplicates via announced-event-ID set and last-announced-reroute-status ref. Off-route/delay-increase filtered by severity (low = silent). Delay increase restricted to `full` mode; off-route fires on `alerts-only` and `full`. Reroute pending + cooldown (= just completed) each spoken once on transition. Single voice entry point: all speech dispatched through `speakNavigationInstruction`. Wired into `ShopDirectoryScreen` alongside intelligence + reroute hooks. Barrel exports extended. Build: 2395 modules, 1.64s, 0 errors. Diagnostics: 0. Spellcheck: 0.
 16. ~~Typed navigation domain refinement.~~ — Delivered. `DeviationEvent` converted from flat interface with `Record<string, unknown>` metadata to a **discriminated union**: `RouteChangeEvent`, `OffRouteEvent`, `StoppedEvent`, `DelayIncreaseEvent`, `UnknownDeviationEvent` — each variant carries a typed metadata interface, consumers can narrow by `type` literal safely. Removed generic `buildEvent()` from `detectDeviation.ts` — each detector now returns its specific variant type directly. Added `NavigationVoiceSettings = Pick<NavigationGuidanceSettings, "voiceMode" | "voicePersona" | "voiceVolumePreset">` to `types/navigation.ts` as the canonical voice settings slice. Added `SpeakInstructionArgs = NavigationVoiceSettings & { text: string }` to `voiceGuidance.ts` — eliminates inline type duplication at call sites. Retired `VoiceAlertSettings` duplicate — `useNavigationVoiceAlerts` now accepts `NavigationVoiceSettings`. Barrel exports extended with all 5 variant types + `DeviationPosition`. Build: 2395 modules, 1.73s, 0 errors. Diagnostics: 0. Spellcheck: 0.
-17. ~~Map UX realignment + Build Progress Dashboard.~~ — Delivered. Created `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`: living AI-maintained visual progress board with 16 sections, progress bars, status icons, per-system delivered/missing/next-move, AI maintenance rules, and mandatory future-pass reporting format. Map-first UX structural correction: created `ShopDirectoryMapOverlays.tsx` — floating in-map overlay layer (intelligence chip top-left, route preview card bottom-left, deviation prompt top-center) using glass-style `bg-slate-950/70 backdrop-blur-md` styling. Modified `ShopDirectoryMapPane.tsx` to accept `children?: React.ReactNode` for overlay injection. Refactored `ShopDirectoryScreen.tsx`: hero collapses to compact bar in map/hybrid modes; route panel, role intelligence panel, and context cards hidden from sidebar in map/hybrid modes (now surface on map overlay); `NavigationDeviationPrompt` moved to float on map surface in map/hybrid modes. Fullscreen map now map-first — sidebar contains only search + results. Build: 2396 modules, 1.62s, 0 errors. Diagnostics: 0. Spellcheck: 0.
+17. ~~Map UX realignment + Build Progress Dashboard.~~ — Delivered. Created `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` as a pass-era progress board for that historical phase (now archived). Map-first UX structural correction: created `ShopDirectoryMapOverlays.tsx` — floating in-map overlay layer (intelligence chip top-left, route preview card bottom-left, deviation prompt top-center) using glass-style `bg-slate-950/70 backdrop-blur-md` styling. Modified `ShopDirectoryMapPane.tsx` to accept `children?: React.ReactNode` for overlay injection. Refactored `ShopDirectoryScreen.tsx`: hero collapses to compact bar in map/hybrid modes; route panel, role intelligence panel, and context cards hidden from sidebar in map/hybrid modes (now surface on map overlay); `NavigationDeviationPrompt` moved to float on map surface in map/hybrid modes. Fullscreen map now map-first — sidebar contains only search + results. Build: 2396 modules, 1.62s, 0 errors. Diagnostics: 0. Spellcheck: 0.
 18. ~~Map UX realignment Phase 2 — immersive viewport + map-owned search.~~ — Delivered. Created `ShopDirectoryImmersiveMap.tsx` (253 lines): full-viewport (`fixed inset-0 z-40`) immersive map experience. Map takes over entire viewport in map mode. Floating glass top bar with back button, map-owned search input (`rounded-full bg-slate-950/70 backdrop-blur-md`), results drawer toggle, mode switch (Split/List), and theme toggle. Collapsible left-side results drawer with `ShopDirectoryResultCard` list replaces fixed sidebar. `ShopDirectoryScreen` now early-returns the immersive component in map mode — list/hybrid paths unchanged. Added `suppressHeader` boolean prop to `ShopDirectoryMapPane` to hide built-in top gradient badges in immersive mode. Added `navigationMode` prop (`browse | route-preview | guidance`) to `ShopDirectoryMapOverlays` — intelligence chip and route card gated by mode; deviation prompt shows only in route-preview/guidance. `ShopDirectoryScreen` derives `navigationMode` from intelligence events and selected route. Build: 2397 modules, 1.67s, 0 errors. Diagnostics: 0. Spellcheck: 0.
 19. ~~ShopDirectoryScreen extraction + navigation session lifecycle.~~ — Delivered. **Extraction**: `ShopDirectoryScreen.tsx` slimmed from 1163 → 478 lines via 3 extractions. Created `useShopDirectorySession.ts` (494 lines): all 18 state variables, effects, handlers, and computed values extracted to dedicated hook. Created `ShopDirectorySearchPanel.tsx` (276 lines): search form, origin selector, view/sort controls, role panel. Created `ShopDirectoryHero.tsx` (149 lines): two-mode hero (compact bar vs full card). Fixed potential TDZ bug: `selectedRoute` const used before declaration in navigation mode ternary. **Navigation session lifecycle**: Created `sessionTypes.ts` (96 lines): formal state machine `idle → planning → active ⇄ paused → ended` with `NavigationSession`, `NavigationSessionEvent`, `SessionWaypoint`, `SessionPauseEntry` types. Created `useNavigationSession.ts` (190 lines): reducer-driven hook with `startPlanning`, `selectRoute`, `activate`, `pause`, `resume`, `end`, `reset` actions; tracks active seconds minus pause time; `isNavigating` and `hasSession` derived booleans. Integrated into `ShopDirectoryScreen`: session auto-transitions `idle → planning` on shop+route selection, `planning → route-locked` on route select, ends on route clear. Build: 2401 modules, 1.63s, 0 errors. Diagnostics: 0. Spellcheck: 0.

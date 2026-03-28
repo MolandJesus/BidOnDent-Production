@@ -1,7 +1,9 @@
 # Google OAuth Setup Guide for Clerk
 
-Last updated: March 21, 2026
+Last updated: March 28, 2026
 Status: Active setup guide
+
+Parallel security-track note: if auth/security passes update Clerk or provider boundaries, update this guide additively and keep `CLAUDE_AI_MASTER_CONTEXT.md` synchronized in the same documentation pass.
 
 ## ⚠️ **Google Sign-In Not Working?**
 

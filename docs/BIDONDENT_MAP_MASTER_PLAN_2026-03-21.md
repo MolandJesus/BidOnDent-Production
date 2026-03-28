@@ -1,6 +1,193 @@
+### Implementation Note — Pass 399 (2026-03-28)
+
+- Added explicit pre-refactor governance constraints and kickoff-prompt packaging so the next chat can begin refactor work with clear architecture, validation, and documentation-update requirements.
+- Standardized refactor gate language around file-size governance (hard 600-line cap, preferred under 500) and security-boundary revalidation on service contract changes.
+- Strategic effect: reduces execution drift at refactor kickoff and improves consistency for human/AI handoff quality.
+
+### Implementation Note — Pass 398 (2026-03-28)
+
+- Reconciled concurrent AI security/runtime implementation changes into active source-of-truth docs (master context, baseline, verification matrix).
+- Captured live boundary changes: Clerk-backed edge auth headers, edge-routed intake/workflow mutations, Clerk-keyed navigation cloud sessions, and private-storage lifecycle assumptions.
+- Strategic effect: ensures refactor planning operates on current implementation truth instead of stale architecture assumptions.
+
+### Implementation Note — Bids/reports import-path cleanup (2026-03-28)
+
+- Removed stale dynamic imports for `supabase/bids` and `supabase/reports` in hooks/router glue where those modules were already statically present elsewhere, converting the call sites to direct imports instead.
+- Strategic effect: eliminates misleading build noise, keeps the current app-loading behavior honest, and gives future refactor work a cleaner rule for service access: either lazy-load a module consistently or treat it as part of the normal runtime graph.
+
+### Implementation Note — Generic storage adapter boundary hardening (2026-03-28)
+
+- Rewired the shared Supabase storage adapter so user-scoped private buckets now mint signed URLs and list files through Clerk-authenticated edge routes instead of direct browser storage calls.
+- Extended the storage edge surface to support scoped signed-URL generation, scoped file listing, and optional path-preserving uploads, keeping the generic storage layer aligned with the already-hardened upload/delete runtime.
+- Strategic effect: closes a legacy bypass seam in shared infrastructure code, reduces the chance of future feature work reintroducing browser-direct private-media access, and creates a cleaner refactor path to collapse storage adapter plus media-optimization concerns under one server-owned media gateway.
+
+### Implementation Note — Public intake + workflow edge-boundary hardening (2026-03-28)
+
+- Moved landing business-inquiry submissions and their activity-event logging off direct browser table writes and behind server routes with centralized validation and rate limiting.
+- Moved shop-side workflow event and job-assignment service helpers onto authenticated edge endpoints so app-origin operational writes follow the same Clerk-boundary pattern as the rest of the hardened runtime.
+- Strategic effect: reduces anonymous/browser write surface, improves consistency of operational event flows, and creates a cleaner future refactor seam for consolidating public intake plus app workflow mutations under a single server-owned command layer.
+
+### Implementation Note — Pass 397 (2026-03-28)
+
+- Aligned MCP integration planning docs to source active progress state from the map tracker instead of the archived build dashboard.
+- Reworded a legacy tracker narrative item so build-dashboard references are clearly historical.
+- Strategic effect: keeps future automation and ops integrations aligned with current governance anchors.
+
+### Implementation Note — Pass 396 (2026-03-28)
+
+- Updated the historical sprint report (passes 1-40) to explicitly mark old governance instructions as period-specific rather than active policy.
+- Reclassified sprint-report references to the build dashboard as archival context only.
+- Strategic effect: protects current execution discipline from legacy-report wording drift.
+
+### Implementation Note — Pass 395 (2026-03-28)
+
+- Cleaned residual authority-doc references that still framed the build dashboard as an active pass-detail source.
+- Standardized wording so map tracker remains active execution governance and build dashboard remains historical context.
+- Strategic effect: further reduces documentation routing ambiguity for future AI/human operators.
+
+### Implementation Note — Pass 394 (2026-03-28)
+
+- Updated legacy AI handoff/coordination prompt docs to stop treating `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` as the active execution tracker.
+- Standardized guidance to use `BIDONDENT_MAP_TRACKER_2026-03-21.md` for pass-level updates and `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` for strategy notes.
+- Strategic effect: improves multi-agent consistency and prevents reactivation of retired documentation workflows.
+
+### Implementation Note — Pass 393 (2026-03-28)
+
+- Aligned the finishing plan's documentation protocol with the current governance model by removing mandatory pass logging to the archived build dashboard.
+- Clarified setup-doc scope (`GETTING_STARTED.md`) so onboarding guidance does not compete with baseline/verification execution truth sources.
+- Strategic effect: reduces process drift and keeps future pass reporting anchored to active governance artifacts.
+
+### Implementation Note — Pass 392 (2026-03-28)
+
+- Updated authority-layer docs (`BIDONDENT_PRODUCT_BRAIN.md`, `CLAUDE_AI_MASTER_CONTEXT.md`) to explicitly distinguish historical snapshots from active execution truth.
+- Added archive guidance routing current decisions to the latest pre-refactor baseline and verification matrix docs.
+- Strategic effect: lowers governance risk from stale high-authority wording while preserving historical context.
+
+### Implementation Note — Pass 391 (2026-03-28)
+
+- Reclassified stale "current" and "in progress" legacy map-status references as historical snapshots with explicit capture dates.
+- Added guidance to use the latest baseline/verification docs as active execution truth.
+- Strategic effect: lowers decision risk from status drift while preserving historical delivery context.
+
+### Implementation Note — Navigation session boundary + restoration fix (2026-03-28)
+
+- Rebuilt navigation session persistence around a Clerk-authenticated edge route and corrected the stored payload from partial launch metadata to the full navigation lifecycle state machine.
+- Added Clerk-keyed navigation session storage schema support so cloud persistence no longer depends on mismatched profile-UUID assumptions, and anonymous map browsing now stays local-only by design.
+- Cleared active-session restoration logic by tracking the latest restorable session instead of generating a fresh session ID and then querying for a row that could never exist.
+- Cleared the current VS Code TypeScript problem set in the report/bids surfaces by aligning shared report fields, bid mapping output, and report list/detail contracts to the live app model.
+- Strategic effect: makes map-navigation continuity real for signed-in users, blocks direct browser writes to navigation session storage, and defines a clean future refactor seam to consolidate navigation persistence with broader website-memory services under one identity-aware state layer.
+
+### Implementation Note — Storage auth boundary hardening (2026-03-28)
+
+- Added a Clerk-authenticated delete path for private storage objects so photo removal no longer depends on direct browser-side storage access.
+- Repaired the server cleanup path to use the current storage-target extraction helper, keeping report-media cleanup aligned with signed/private URL handling.
+- Strategic effect: closes a private-bucket lifecycle gap by keeping both upload and delete operations inside the authenticated edge boundary.
+
+### Implementation Note — Pass 390 (2026-03-28)
+
+- Retired stale pass-number execution sequencing from the finishing roadmap and replaced it with current baseline/matrix-driven policy.
+- Reclassified the old build progress dashboard as a historical archive to prevent stale status assumptions.
+- Strategic effect: improves documentation trust by ensuring active plans reference only current, governed execution artifacts.
+
+### Implementation Note — Pass 389 (2026-03-28)
+
+- Executed a full documentation synchronization pass including README, Supabase setup/auth ownership docs, OAuth setup docs, and baseline verification artifacts.
+- Added explicit merge-safe protocol for concurrent security-track documentation updates so parallel AI work does not cause destructive doc drift.
+- Strategic effect: keeps project memory coherent across simultaneous engineering tracks and improves pre-refactor planning reliability.
+
+### Implementation Note — Pass 388 (2026-03-28)
+
+- Added a dedicated full-site functionality verification matrix spanning account roles, route/page coverage, map-flow checks, and mobile/desktop readiness gates.
+- Integrated the matrix into docs governance references so pre-refactor execution is anchored to explicit functional checkpoints, not narrative status alone.
+- Strategic effect: improves execution discipline before refactor and reduces ambiguity about what "fully functional" means across the product.
+
+### Implementation Note — Pass 387 (2026-03-28)
+
+- Fixed landing settings layering by rendering `SettingsModal` through a root-level portal, removing parent stacking-context constraints.
+- Corrected dashboard logo typography by removing italic treatment from the "On" segment in `BidOnDent` for consistent brand rendering.
+- Strategic effect: resolves visible trust/polish regressions while preserving map-first shell behavior.
+
+### Implementation Note — Pass 386 (2026-03-28)
+
+- Added a pre-refactor full-site baseline artifact covering account-type functionality, page reachability, map program state, mobile/desktop readiness, and code-structure pressure points.
+- Normalized explicit metadata governance (`Last updated`, `Status`) across docs that were missing standard markers, extending documentation discipline beyond map-major files.
+- Strategic effect: reduces planning ambiguity before large refactor work and gives future agents one aligned execution baseline.
+
+### Implementation Note — Pass 385 (2026-03-28)
+
+- Hardened `ShopDirectorySearchPanel` by enforcing 44px minimum touch-target sizing across the full discovery control surface (origin, filters, tiles, view modes, and related-screen CTA).
+- Rebalanced control typography/spacing to preserve scan speed while increasing touch reliability.
+- Strategic effect: strengthens mobile interaction fidelity in the map discovery stage before shop selection and action.
+
+### Implementation Note — Pass 384 (2026-03-28)
+
+- Enforced 44px touch-target minimums on key map-pane interaction controls (`directions` CTA, `Search this area`, `Area active`).
+- Increased action control legibility in the map pane while preserving routing/search behavior and layout intent.
+- Strategic effect: improves action completion reliability in map-first mobile sessions where overlays sit directly over geography.
+
+### Implementation Note — Pass 383 (2026-03-28)
+
+- Hardened `ShopDirectoryResultCard` appearance parity by making summary/certification surfaces fully mode-aware in light and map-dark modes.
+- Added explicit 44px minimum heights for all primary card actions to enforce mobile touch-target reliability in the list decision path.
+- Strategic effect: improves trust and completion confidence in the shop selection layer that bridges map discovery to action.
+
+### Implementation Note — Pass 380 (2026-03-28)
+
+- Completed appearance-mode parity hardening for `LikedShopsScreen` by making header, search, and supporting action/chip surfaces mode-aware.
+- Preserved map-dark baseline while improving light-mode readability and contrast for shortlist management interactions.
+- Strategic effect: reduces visual inconsistency in customer map-adjacent flows and supports stronger trust in mode switching.
+
+### Implementation Note — Pass 383 (2026-03-28)
+
+- Fixed a user-facing reload loop by removing hard page refreshes from Clerk account setup and cached-data-to-Supabase migration flow.
+- Added Clerk-auth readiness gating before cloud data bootstrap so transient unauthenticated edge reads do not misclassify an account as “missing” and re-enter migration logic.
+- Strategic effect: stabilizes authenticated app startup, prevents repeated full-page reloads, and keeps migration/sync behavior inside normal React state flow.
+
+### Implementation Note — Pass 381 (2026-03-28)
+
+- Unified directions CTA language for selected map-shop cards by threading a shared `directionsActionLabel` into `ShopDirectoryMapPane` from both standard and immersive map orchestration paths.
+- Removed hardcoded label dependency in map-pane selected-card action while preserving safe fallback behavior.
+- Strategic effect: improves interaction-language consistency across map/list contexts and strengthens trust in repeated navigation actions.
+
+### Implementation Note — Pass 380 (2026-03-28)
+
+- Added direct map-card actionability by wiring a selected-shop "Open directions" CTA inside `ShopDirectoryMapPane`.
+- Propagated callback wiring through both standard and immersive map flows to preserve behavior consistency.
+- Strategic effect: tightens the report -> map -> shop -> action loop by removing one context-switch step before navigation launch.
+
+### Implementation Note — Pass 382 (2026-03-28)
+
+- Continued the security hardening sweep by removing stale browser-side direct database fallbacks from admin/data services and routing verification flows back through authenticated edge endpoints.
+- Added a tracked admin-only deep health path for database verification so operational checks no longer depend on client table reads.
+- Strategic effect: reduces accidental data-exposure risk if browser-side permissions drift and keeps admin/runtime diagnostics aligned with the hardened Clerk-authenticated boundary.
+
+### Implementation Note — Pass 379 (2026-03-28)
+
+- Added mobile safe-area-aware bottom clearance for dashboard map-list content in active map mode.
+- Strategic effect: reduces clipped interactions at the end of map-list flows and increases action completion reliability on phone-sized viewports.
+
+### Implementation Note — Pass 378 (2026-03-28)
+
+- Aligned map control hierarchy between landing and dashboard mobile surfaces by converging on bounded two-column search rows and clearer control clustering.
+- Added explicit touch-scroll behavior hints to settings modal containers to reduce iOS scroll friction in layered overlays.
+- Strategic effect: improves cross-surface coherence and lowers interaction cost in the map-first mobile workflow.
+
+### Implementation Note — Pass 377 (2026-03-28)
+
+- Resolved three mobile execution gaps across map-adjacent surfaces: settings modal scroll containment, landing coverage search control bounding, and dashboard map-list density.
+- Reinforced viewport-safe behavior by using bounded grids/min-width guards for control rows and explicit scroll zones for modal content.
+- Strategic effect: improves trust and usability in map-first mobile sessions by removing interaction friction before deeper feature work.
+
+### Implementation Note — Pass 376 (2026-03-28)
+
+- Refined shop-directory map shell density for both map and list view modes, prioritizing map visibility on mobile while preserving desktop split-pane utility.
+- Compacted search/origin/view controls and map overlays to reduce vertical crowding and improve immediate map interaction confidence.
+- Hardened appearance-mode behavior by ensuring landing-shell dark mode propagates the same theme context expected by glass-based settings surfaces.
+- Strategic effect: strengthens map-first execution quality in day-to-day use and reduces mode-driven visual inconsistencies between landing and authenticated flows.
+
 ## Passes 181–185 — Design Consolidation Sweep (2026-03-24)
 
-Full-stack design system consolidation: glass unification, blue token upgrade, empty state visibility, CTA hierarchy, report flow touch targets, Sentry setup, MCP plugin plan. See `BIDONDENT_MAP_TRACKER_2026-03-21.md` and `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` for detailed pass-by-pass logs.
+Full-stack design system consolidation: glass unification, blue token upgrade, empty state visibility, CTA hierarchy, report flow touch targets, Sentry setup, MCP plugin plan. See `BIDONDENT_MAP_TRACKER_2026-03-21.md` for active pass governance and `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` for historical archive context.
 
 **Key outcomes:**
 
@@ -364,7 +551,7 @@ Map reliability is not hidden infrastructure. It is a user-facing quality signal
 
 ## Future Direction Themes
 
-The themes above (1–6) describe the current program. The themes below describe future evolution that is documented but not yet in active development. Each theme follows the consistent 6-part structure: Current State → Productizing → Aspirational → Prerequisites → UI/UX Evolution → Non-goals. The Product Brain contains the full detail — this plan captures strategic direction.
+The themes above (1–6) capture a historical strategic snapshot from the 2026-03-23 planning cycle. The themes below describe future evolution that is documented but not yet in active development. Each theme follows the consistent 6-part structure: Current State → Productizing → Aspirational → Prerequisites → UI/UX Evolution → Non-goals. For current execution reality, use the latest baseline and verification matrix docs.
 
 ### Future Theme A: Navigation productization
 
@@ -511,7 +698,7 @@ The themes above (1–6) describe the current program. The themes below describe
 
 ## Pass 179 — Shop loop completion (spatial shop actions, map-driven shop bid/accept) (2026-03-24)
 
-**Status:** In progress
+**Status:** Historical snapshot (recorded as in progress on 2026-03-24)
 
 **Summary:**
 

@@ -310,7 +310,7 @@ export function HomeReportsList({
                       {userType !== "insurer" && (
                         <span className="inline-flex items-center gap-1.5">
                           <DollarSign className="w-4 h-4" />
-                          {Number(report?.bidsCount || 0)} bids received
+                          {Number(report?.bids?.length ?? report?.bidsCount ?? 0)} bids received
                         </span>
                       )}
                     </div>

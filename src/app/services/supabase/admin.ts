@@ -43,6 +43,17 @@ export async function getEdgeFunctionHealth() {
   });
 }
 
+export async function getDeepEdgeFunctionHealth() {
+  return requestSupabaseEdge<{
+    checks?: Record<string, string>;
+    status: string;
+    timestamp?: string;
+    version?: string;
+  }>(SUPABASE_EDGE_ROUTES.healthDeep, {
+    method: "GET",
+  });
+}
+
 export async function checkAdminAccountExists() {
   return requestSupabaseEdge<{
     email?: string;

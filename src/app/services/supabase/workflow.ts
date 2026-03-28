@@ -1,4 +1,4 @@
-import { supabase } from "./client";
+import { requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "./runtime";
 
 export type WorkflowEventType =
   | "report_submitted"
@@ -32,51 +32,35 @@ type JobAssignmentPayload = {
 };
 
 export async function logWorkflowEvent(payload: EventPayload) {
-  const { data, error } = await supabase
-    .from("platform_activity_events")
-    .insert({
-      event_type: payload.event_type,
-      source: payload.source || "app",
-      payload: payload.payload || {},
-    })
-    .select("id")
-    .single();
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
+  return await requestSupabaseEdge<{ eventId?: string | null }>(SUPABASE_EDGE_ROUTES.workflowEvent, {
+    body: JSON.stringify(payload),
+    method: "POST",
+  });
 }
 
 export async function createJobAssignment(payload: JobAssignmentPayload) {
-  const { data, error } = await supabase
-    .from("job_assignments")
-    .insert(payload)
-    .select("id, status")
-    .single();
+  const data = await requestSupabaseEdge<{ assignment?: { id: string; status: string } | null }>(
+    SUPABASE_EDGE_ROUTES.jobAssignment,
+    {
+      body: JSON.stringify(payload),
+      method: "POST",
+    }
+  );
 
-  if (error) {
-    throw error;
-  }
-
-  return data;
+  return data.assignment;
 }
 
 export async function updateJobAssignmentStatus(
   assignmentId: string,
   status: "scheduled" | "in_progress" | "awaiting_parts" | "completed" | "cancelled"
 ) {
-  const { data, error } = await supabase
-    .from("job_assignments")
-    .update({ status })
-    .eq("id", assignmentId)
-    .select("id, status")
-    .single();
+  const data = await requestSupabaseEdge<{ assignment?: { id: string; status: string } | null }>(
+    SUPABASE_EDGE_ROUTES.jobAssignmentStatus,
+    {
+      body: JSON.stringify({ assignmentId, status }),
+      method: "POST",
+    }
+  );
 
-  if (error) {
-    throw error;
-  }
-
-  return data;
+  return data.assignment;
 }

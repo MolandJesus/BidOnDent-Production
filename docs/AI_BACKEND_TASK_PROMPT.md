@@ -1,5 +1,8 @@
 # BidOnDent — Backend & Service Layer Task Prompt
 
+**Last updated:** March 28, 2026
+**Status:** Historical superseded prompt
+
 > **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first.
 
 **For: AI assistant working on non-UI tasks**
@@ -13,6 +16,7 @@
 Another AI is actively working on all visual/design/component work. You must **never** modify any of these file categories:
 
 ### OFF-LIMITS (do not edit, do not "clean up", do not refactor):
+
 - `src/app/components/**/*.tsx` — ALL component files
 - `src/app/components/**/*.css` — ALL style files
 - Any Tailwind classes, colors, layouts, spacing, or visual output
@@ -24,6 +28,7 @@ Another AI is actively working on all visual/design/component work. You must **n
 - Any `docs/*.md` files (those are tracked by the design AI)
 
 ### YOUR DOMAIN (safe to work on):
+
 - `supabase/functions/server/**` — Edge function handlers
 - `src/app/services/supabase/*.ts` — Client-side Supabase service layer
 - `src/app/services/realtime/*.ts` — Realtime bid service
@@ -50,6 +55,7 @@ Another AI is actively working on all visual/design/component work. You must **n
 ## PROJECT CONTEXT
 
 BidOnDent is an auto body repair bidding platform. Stack:
+
 - **Frontend:** React + TypeScript + Vite + Tailwind CSS
 - **Auth:** Clerk (primary), with legacy Supabase auth fallbacks being phased out
 - **Backend:** Supabase (Postgres DB + Edge Functions + Storage)
@@ -58,12 +64,14 @@ BidOnDent is an auto body repair bidding platform. Stack:
 - **No test framework configured yet** — only manual browser console tests exist
 
 ### Auth Model
+
 - Clerk handles authentication. `clerkUserId` is the primary identity key everywhere.
 - Legacy `user_id` (Supabase auth UUID) still exists in some DB rows and fallback code.
 - Edge functions receive `clerkUserId` in request body or query params — they do NOT use Supabase auth sessions.
 - Client gets `clerkUserId` from Clerk's `useUser()` hook via `useAuth()`.
 
 ### Database Tables (known)
+
 - `profiles` — user profiles, keyed by `clerk_user_id`
 - `vehicles` — saved vehicles, keyed by `clerk_user_id`
 - `damage_reports` — repair intake reports, keyed by `clerk_user_id`
@@ -181,6 +189,7 @@ npx vitest run
 ## FILES YOU'LL NEED TO READ FIRST
 
 Before starting, read these to understand the full service architecture:
+
 - `src/app/services/supabase/runtime.ts` — how client calls edge functions
 - `supabase/functions/server/index.ts` — edge function routing
 - `supabase/functions/server/config/clients.ts` — Supabase client init

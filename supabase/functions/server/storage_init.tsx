@@ -34,12 +34,12 @@ export async function initializeStorageBuckets() {
 
     const existingBucketNames = existingBuckets?.map(b => b.name) || [];
     const buckets = [
-      { name: canonicalStorageBuckets.accountMedia, public: true },
-      { name: canonicalStorageBuckets.vehicleMedia, public: true },
-      { name: canonicalStorageBuckets.reportMedia, public: true },
+      { name: canonicalStorageBuckets.accountMedia, public: false },
+      { name: canonicalStorageBuckets.vehicleMedia, public: false },
+      { name: canonicalStorageBuckets.reportMedia, public: false },
       ...[legacyStorageBuckets.profiles, legacyStorageBuckets.vehicles, legacyStorageBuckets.damagePhotos]
         .filter((bucketName) => existingBucketNames.includes(bucketName))
-        .map((bucketName) => ({ name: bucketName, public: true })),
+        .map((bucketName) => ({ name: bucketName, public: false })),
     ];
 
     // Create each bucket if it doesn't exist
@@ -47,14 +47,14 @@ export async function initializeStorageBuckets() {
       if (existingBucketNames.includes(bucket.name)) {
         console.log(`✅ Bucket '${bucket.name}' already exists`);
         
-        // Update existing bucket to ensure it's public
+        // Update existing bucket to ensure user media stays private.
         try {
           await supabase.storage.updateBucket(bucket.name, {
-            public: true,
+            public: false,
             fileSizeLimit: 10485760, // 10MB limit (increased from 5MB)
             allowedMimeTypes: bucketMimeTypes
           });
-          console.log(`✅ Updated bucket '${bucket.name}' to be public`);
+          console.log(`✅ Updated bucket '${bucket.name}' to be private`);
         } catch (updateError) {
           console.log(`⚠️ Could not update bucket '${bucket.name}':`, updateError);
         }
@@ -62,7 +62,7 @@ export async function initializeStorageBuckets() {
       }
 
       const { error: createError } = await supabase.storage.createBucket(bucket.name, {
-        public: true,
+        public: false,
         fileSizeLimit: 10485760, // 10MB limit
         allowedMimeTypes: bucketMimeTypes
       });
@@ -70,7 +70,7 @@ export async function initializeStorageBuckets() {
       if (createError) {
         console.error(`❌ Error creating bucket '${bucket.name}':`, createError);
       } else {
-        console.log(`✅ Created public bucket '${bucket.name}'`);
+        console.log(`✅ Created private bucket '${bucket.name}'`);
       }
     }
 

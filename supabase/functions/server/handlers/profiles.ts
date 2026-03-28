@@ -1,5 +1,11 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import {
+  ensureWebsiteUserKeyMatchesSession,
+  getAuthenticatedProfile,
+  requireClerkSession,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { hydrateSignedStorageUrl } from "../utils/storage.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -77,24 +83,45 @@ export async function getUserProfile(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const identity: ProfileIdentity = {
-      clerkUserId: url.searchParams.get("clerkUserId"),
-      email: url.searchParams.get("email"),
-      websiteUserKey: url.searchParams.get("websiteUserKey"),
-    };
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const requestedClerkUserId = url.searchParams.get("clerkUserId");
+    const requestedEmail = normalizeEmail(url.searchParams.get("email"));
 
-    if (!identity.clerkUserId && !identity.email && !identity.websiteUserKey) {
-      return respond({ error: "Missing profile identity" }, 400);
+    if (requestedClerkUserId && requestedClerkUserId !== session.clerkUserId) {
+      return respond({ error: "Forbidden" }, 403);
     }
 
-    const profile = await findExistingProfile(supabase, identity);
+    if (requestedEmail && requestedEmail !== normalizeEmail(session.email)) {
+      return respond({ error: "Forbidden" }, 403);
+    }
+
+    ensureWebsiteUserKeyMatchesSession(session, url.searchParams.get("websiteUserKey"));
+
+    const profile = await getAuthenticatedProfile(supabase, session);
+    const hydratedProfile = profile
+      ? {
+          ...profile,
+          profile_image_url: await hydrateSignedStorageUrl(
+            supabase,
+            typeof profile.profile_image_url === "string" ? profile.profile_image_url : null
+          ),
+        }
+      : null;
+
     return respond({
-      profile: profile || null,
+      profile: hydratedProfile,
       success: true,
     });
   } catch (error: any) {
     console.error("Error fetching user profile:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -105,34 +132,44 @@ export async function saveUserProfile(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const identity: ProfileIdentity = body?.identity || {};
     const profile = body?.profile || {};
+    const normalizedSessionEmail = normalizeEmail(session.email);
 
-    const normalizedEmail = normalizeEmail(profile.email || identity.email);
-    if (!normalizedEmail || !profile?.name || !profile?.account_type) {
+    if (!normalizedSessionEmail || !profile?.name || !profile?.account_type) {
       return respond({ error: "Missing profile email, name, or account type" }, 400);
     }
 
+    if (identity.clerkUserId && identity.clerkUserId !== session.clerkUserId) {
+      return respond({ error: "Forbidden" }, 403);
+    }
+
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      identity.websiteUserKey || null
+    );
+
     const existingProfile = await findExistingProfile(supabase, {
-      clerkUserId: identity.clerkUserId || null,
-      email: normalizedEmail,
-      websiteUserKey: identity.websiteUserKey || null,
+      clerkUserId: session.clerkUserId,
+      email: normalizedSessionEmail,
+      websiteUserKey,
     });
 
     const payload = {
       account_type: profile.account_type,
-      clerk_user_id: identity.clerkUserId || existingProfile?.clerk_user_id || null,
-      email: normalizedEmail,
+      clerk_user_id: session.clerkUserId,
+      email: normalizedSessionEmail,
       is_admin:
-        normalizedEmail === "figmaadmin@bidondent.com" ||
-        normalizedEmail === "bidondent@gmail.com" ||
+        normalizedSessionEmail === "figmaadmin@bidondent.com" ||
+        normalizedSessionEmail === "bidondent@gmail.com" ||
         !!existingProfile?.is_admin,
       last_login: profile.last_login || existingProfile?.last_login || null,
       name: profile.name,
       phone: profile.phone || null,
       profile_image_url: profile.profile_image_url || null,
       setup_completed: profile.setup_completed ?? existingProfile?.setup_completed ?? false,
-      website_user_key: identity.websiteUserKey || existingProfile?.website_user_key || null,
+      website_user_key: websiteUserKey,
     };
 
     const query = existingProfile
@@ -147,11 +184,24 @@ export async function saveUserProfile(
     }
 
     return respond({
-      profile: data,
+      profile: {
+        ...data,
+        profile_image_url: await hydrateSignedStorageUrl(
+          supabase,
+          typeof data?.profile_image_url === "string" ? data.profile_image_url : null
+        ),
+      },
       success: true,
     });
   } catch (error: any) {
     console.error("Error saving user profile:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }

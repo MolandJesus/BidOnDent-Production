@@ -4,6 +4,7 @@ import { supabase } from "../../services/supabaseService";
 import {
   createAdminUser,
   deleteAdminUser,
+  getDeepEdgeFunctionHealth,
   getEdgeFunctionHealth,
   listAdminProfiles,
   type AdminProfileSummary,
@@ -60,32 +61,15 @@ export function useAdminActions(adminEmail: string) {
   const verifyDatabase = async () => {
     setOperationStatus("Verifying database connection...");
     try {
-      const { data: profiles, error: profilesError } = await supabase
-        .from("profiles")
-        .select("id")
-        .limit(1);
-
-      if (profilesError) {
-        setOperationStatus(
-          `❌ Database Error: ${profilesError.message}\n\nCode: ${profilesError.code}\nDetails: ${profilesError.details}`
-        );
-        return;
-      }
-
-      const { data: businessProfiles, error: businessError } = await supabase
-        .from("business_profiles")
-        .select("id")
-        .limit(1);
-
-      if (businessError) {
-        setOperationStatus(
-          `⚠️ Profiles table OK (${profiles?.length || 0} rows)\n❌ Business Profiles Error: ${businessError.message}`
-        );
-        return;
-      }
+      const health = await getDeepEdgeFunctionHealth();
+      const checks = Object.entries(health.checks || {});
+      const formattedChecks =
+        checks.length > 0
+          ? checks.map(([table, status]) => `${table}: ${status}`).join("\n")
+          : "No table checks returned";
 
       setOperationStatus(
-        `✅ Database Connected!\n\nProfiles table: OK (${profiles?.length || 0} rows)\nBusiness Profiles table: OK (${businessProfiles?.length || 0} rows)\n\nAll tables accessible.`
+        `${health.status === "ok" ? "✅" : "⚠️"} Database verification: ${health.status}\nVersion: ${health.version || "unknown"}\n\n${formattedChecks}`
       );
     } catch (error) {
       setOperationStatus(

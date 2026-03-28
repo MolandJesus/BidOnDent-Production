@@ -5,7 +5,12 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import {
+  ensureWebsiteUserKeyMatchesSession,
+  requireClerkSession,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { hydrateSignedStorageUrl } from "../utils/storage.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -23,7 +28,7 @@ function buildShopProfilePayload(identity: any, profile: any) {
     business_state: profile.businessState || null,
     business_zip: profile.businessZip || null,
     certifications: Array.isArray(profile.certifications) ? profile.certifications : [],
-    clerk_user_id: identity?.provider === "clerk" ? identity.providerUserId || null : null,
+    clerk_user_id: identity?.providerUserId || null,
     completion_rate: profile.completionRate ?? null,
     geo_latitude: profile.geoLatitude ?? null,
     geo_longitude: profile.geoLongitude ?? null,
@@ -49,7 +54,7 @@ function buildInsurerProfilePayload(identity: any, profile: any) {
     auto_approval: !!profile.autoApproval,
     benefits: Array.isArray(profile.benefits) ? profile.benefits : [],
     claim_types: Array.isArray(profile.claimTypes) ? profile.claimTypes : [],
-    clerk_user_id: identity?.provider === "clerk" ? identity.providerUserId || null : null,
+    clerk_user_id: identity?.providerUserId || null,
     company_address: profile.companyAddress || null,
     company_city: profile.companyCity || null,
     company_name: profile.companyName,
@@ -78,11 +83,11 @@ export async function getShopProfile(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const websiteUserKey = url.searchParams.get("websiteUserKey");
-
-    if (!websiteUserKey) {
-      return respond({ error: "Missing websiteUserKey" }, 400);
-    }
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      url.searchParams.get("websiteUserKey")
+    );
 
     const { data, error } = await supabase
       .from("shop_profiles")
@@ -96,12 +101,27 @@ export async function getShopProfile(
     }
 
     return respond({
-      profile: data || null,
+      profile: data
+        ? {
+            ...data,
+            profile_image_url: await hydrateSignedStorageUrl(
+              supabase,
+              typeof data.profile_image_url === "string" ? data.profile_image_url : null
+            ),
+          }
+        : null,
       success: true,
     });
   } catch (error: any) {
     console.error("Error in get shop profile endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -112,13 +132,26 @@ export async function saveShopProfile(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { identity, profile } = body || {};
 
-    if (!identity?.websiteUserKey || !profile?.businessName) {
+    if (!profile?.businessName) {
       return respond({ error: "Missing identity or businessName" }, 400);
     }
 
-    const payload = buildShopProfilePayload(identity, profile);
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      identity?.websiteUserKey || null
+    );
+    const payload = buildShopProfilePayload(
+      {
+        ...identity,
+        provider: "clerk",
+        providerUserId: session.clerkUserId,
+        websiteUserKey,
+      },
+      profile
+    );
     const { data, error } = await supabase
       .from("shop_profiles")
       .upsert(payload, {
@@ -133,12 +166,25 @@ export async function saveShopProfile(
     }
 
     return respond({
-      profile: data,
+      profile: {
+        ...data,
+        profile_image_url: await hydrateSignedStorageUrl(
+          supabase,
+          typeof data?.profile_image_url === "string" ? data.profile_image_url : null
+        ),
+      },
       success: true,
     });
   } catch (error: any) {
     console.error("Error in save shop profile endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -149,11 +195,11 @@ export async function getInsurerProfile(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const websiteUserKey = url.searchParams.get("websiteUserKey");
-
-    if (!websiteUserKey) {
-      return respond({ error: "Missing websiteUserKey" }, 400);
-    }
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      url.searchParams.get("websiteUserKey")
+    );
 
     const { data, error } = await supabase
       .from("insurer_profiles")
@@ -167,12 +213,27 @@ export async function getInsurerProfile(
     }
 
     return respond({
-      profile: data || null,
+      profile: data
+        ? {
+            ...data,
+            profile_image_url: await hydrateSignedStorageUrl(
+              supabase,
+              typeof data.profile_image_url === "string" ? data.profile_image_url : null
+            ),
+          }
+        : null,
       success: true,
     });
   } catch (error: any) {
     console.error("Error in get insurer profile endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -183,13 +244,26 @@ export async function saveInsurerProfile(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { identity, profile } = body || {};
 
-    if (!identity?.websiteUserKey || !profile?.companyName) {
+    if (!profile?.companyName) {
       return respond({ error: "Missing identity or companyName" }, 400);
     }
 
-    const payload = buildInsurerProfilePayload(identity, profile);
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      identity?.websiteUserKey || null
+    );
+    const payload = buildInsurerProfilePayload(
+      {
+        ...identity,
+        provider: "clerk",
+        providerUserId: session.clerkUserId,
+        websiteUserKey,
+      },
+      profile
+    );
     const { data, error } = await supabase
       .from("insurer_profiles")
       .upsert(payload, {
@@ -204,12 +278,25 @@ export async function saveInsurerProfile(
     }
 
     return respond({
-      profile: data,
+      profile: {
+        ...data,
+        profile_image_url: await hydrateSignedStorageUrl(
+          supabase,
+          typeof data?.profile_image_url === "string" ? data.profile_image_url : null
+        ),
+      },
       success: true,
     });
   } catch (error: any) {
     console.error("Error in save insurer profile endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -242,9 +329,28 @@ export async function getDirectoryInventory(
       });
     }
 
+    const signedShops = await Promise.all(
+      (shops || []).map(async (shop: any) => ({
+        ...shop,
+        profile_image_url: await hydrateSignedStorageUrl(
+          supabase,
+          typeof shop?.profile_image_url === "string" ? shop.profile_image_url : null
+        ),
+      }))
+    );
+    const signedInsurers = await Promise.all(
+      (insurers || []).map(async (insurer: any) => ({
+        ...insurer,
+        profile_image_url: await hydrateSignedStorageUrl(
+          supabase,
+          typeof insurer?.profile_image_url === "string" ? insurer.profile_image_url : null
+        ),
+      }))
+    );
+
     return respond({
-      insurers: insurers || [],
-      shops: shops || [],
+      insurers: signedInsurers,
+      shops: signedShops,
       success: true,
     });
   } catch (error: any) {

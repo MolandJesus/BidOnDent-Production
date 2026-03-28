@@ -162,7 +162,11 @@ export default function ShopDirectoryResultCard({
             </div>
           </div>
 
-          {!compact && <p className="text-sm leading-6 text-slate-300/80">{shop.aiSummary}</p>}
+          {!compact && (
+            <p className={`text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
+              {shop.aiSummary}
+            </p>
+          )}
 
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div
@@ -205,7 +209,9 @@ export default function ShopDirectoryResultCard({
               {shop.certifications.slice(0, 3).map((certification) => (
                 <span
                   key={certification}
-                  className="rounded-full bg-amber-400/15 px-2.5 py-1 text-xs font-medium text-amber-300"
+                  className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                    isLight ? "bg-amber-100 text-amber-700" : "bg-amber-400/15 text-amber-300"
+                  }`}
                 >
                   {certification}
                 </span>
@@ -215,7 +221,7 @@ export default function ShopDirectoryResultCard({
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
-              className={`flex-1 font-medium text-sm px-4 py-3 rounded-2xl border transition-colors ${
+              className={`flex-1 min-h-[44px] rounded-2xl border px-4 py-3 text-sm font-medium transition-colors ${
                 isLight
                   ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
                   : "bd-glass-control text-slate-100"
@@ -226,7 +232,7 @@ export default function ShopDirectoryResultCard({
               {primaryActionLabel}
             </button>
             <button
-              className="flex-1 text-white font-medium text-sm px-4 py-3 rounded-2xl shadow-lg"
+              className="flex-1 min-h-[44px] rounded-2xl px-4 py-3 text-sm font-medium text-white shadow-lg"
               onClick={onSecondaryAction}
               style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, #147dd6 100%)` }}
               type="button"
@@ -237,7 +243,7 @@ export default function ShopDirectoryResultCard({
               </span>
             </button>
             <button
-              className={`flex-1 font-medium text-sm px-4 py-3 rounded-2xl border transition-colors ${
+              className={`flex-1 min-h-[44px] rounded-2xl border px-4 py-3 text-sm font-medium transition-colors ${
                 isLight
                   ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
                   : "bd-glass-control text-slate-100"

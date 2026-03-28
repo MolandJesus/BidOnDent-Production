@@ -26,7 +26,9 @@ export default function ShopDirectoryListBody({
     isLight ? "text-blue-600/70" : "text-blue-200/50"
   }`;
   return (
-    <div className="min-h-0 flex-1 p-5 lg:overflow-y-auto">
+    <div
+      className={`min-h-0 flex-1 p-3 sm:p-4 lg:p-5 lg:overflow-y-auto ${session.showMapPane ? "pb-[calc(env(safe-area-inset-bottom)+6.5rem)] sm:pb-6" : ""}`}
+    >
       {/* Route panel: in sidebar on list mode only (floating overlay on map modes) */}
       {!session.showMapPane && (
         <ShopDirectoryRoutePanel
@@ -97,16 +99,16 @@ export default function ShopDirectoryListBody({
       )}
 
       {session.savedPlaces.length > 0 && (
-        <div className="mb-5">
+        <div className="mb-4 sm:mb-5">
           <div className={sectionLabelClass}>
             <Bookmark className="h-4 w-4" />
             Saved places
           </div>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-2.5 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
             {session.savedPlaces.map((place) => (
               <button
                 key={place.id}
-                className={`rounded-2xl border px-3 py-2 text-left text-sm transition-colors ${
+                className={`rounded-xl sm:rounded-2xl border px-2.5 py-1.5 sm:px-3 sm:py-2 text-left text-xs sm:text-sm transition-colors ${
                   isLight
                     ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
                     : "border-white/[0.10] bg-white/[0.05] text-slate-100 hover:bg-white/[0.10]"
@@ -127,16 +129,16 @@ export default function ShopDirectoryListBody({
       )}
 
       {session.recentSearches.length > 0 && (
-        <div className="mb-5">
+        <div className="mb-4 sm:mb-5">
           <div className={sectionLabelClass}>
             <Search className="h-4 w-4" />
             Recent searches
           </div>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-2.5 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
             {session.recentSearches.map((search) => (
               <button
                 key={`${search.query}-${search.timestamp}`}
-                className={`rounded-2xl border px-3 py-2 text-sm transition-colors ${
+                className={`rounded-xl sm:rounded-2xl border px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm transition-colors ${
                   isLight
                     ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
                     : "border-white/[0.10] bg-white/[0.05] text-slate-100 hover:border-white/[0.20] hover:bg-white/[0.08]"
@@ -161,7 +163,7 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-3">
         <div>
           <p
             className={`text-xs font-semibold uppercase tracking-[0.18em] ${
@@ -180,7 +182,7 @@ export default function ShopDirectoryListBody({
         </div>
         {session.selectedShop && (
           <div
-            className={`rounded-2xl border px-4 py-3 ${
+            className={`rounded-xl sm:rounded-2xl border px-3 py-2 sm:px-4 sm:py-3 ${
               isLight ? "border-blue-200 bg-blue-50" : "border-blue-400/30 bg-blue-500/20"
             }`}
           >

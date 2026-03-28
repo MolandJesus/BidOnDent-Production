@@ -1,7 +1,9 @@
 import type { useNavigation } from "./useNavigation";
 import type { useUserData } from "./useUserData";
 import { saveDamageReport } from "../services/supabaseService";
+import { submitBid as submitBidToSupabase } from "../services/supabase/bids";
 import { buildSupabaseReportPayload, toFrontendBid } from "./userDataUtils";
+import type { DamageReport } from "../types";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData>;
@@ -128,9 +130,7 @@ export function useAppHandlers({
     };
 
     try {
-      // Import submitBid from supabase/bids
-      const { submitBid } = await import("../services/supabase/bids");
-      const savedBid = await submitBid(bid as any, userId);
+      const savedBid = await submitBidToSupabase(bid as any, userId);
       if (savedBid) {
         userData.setBids((prev) => [...prev, toFrontendBid(savedBid)]);
         addActivity(
@@ -151,7 +151,7 @@ export function useAppHandlers({
     }
   };
 
-  const handleReportSubmit = async (report: Record<string, unknown>) => {
+  const handleReportSubmit = async (report: DamageReport) => {
     try {
       if (!userId) {
         throw new Error("Please sign in to submit a damage report.");
@@ -172,8 +172,8 @@ export function useAppHandlers({
         ...report,
         id: savedApiReport.id || report.id,
       };
-      userData.setReports((previous: any[]) => [...previous, savedReport]);
-      if (savedReport?.id && Array.isArray(savedReport.photos)) {
+      userData.setReports((previous) => [...previous, savedReport as DamageReport]);
+      if (savedReport.id && Array.isArray(savedReport.photos)) {
         userData.setPhotoStorage((previous: Record<string, string[]>) => ({
           ...previous,
           [savedReport.id]: savedReport.photos,
@@ -181,8 +181,8 @@ export function useAppHandlers({
       }
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error submitting report:", error);
-      userData.setReports((previous) => [...previous, report as never]);
-      if (report?.id && Array.isArray(report.photos)) {
+      userData.setReports((previous) => [...previous, report]);
+      if (report.id && Array.isArray(report.photos)) {
         userData.setPhotoStorage((previous: Record<string, string[]>) => ({
           ...previous,
           [report.id]: report.photos,

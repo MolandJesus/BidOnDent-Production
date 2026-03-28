@@ -120,6 +120,6 @@ export async function migrateDatabase(
     return respond({ success: true, message: 'Database migration completed' });
   } catch (error: any) {
     console.error('Migration error:', error);
-    return respond({ error: 'Migration failed', details: error.message }, 500);
+    return respond({ error: 'Migration failed' }, 500);
   }
 }

@@ -1,5 +1,8 @@
 # BidOnDent Architecture Extraction Sprint — Comprehensive Report (Passes 1–40)
 
+**Last updated:** March 28, 2026
+**Status:** Historical sprint reference
+
 **Date:** March 23, 2026  
 **Author:** AI Engineering Partner (GitHub Copilot)  
 **Branch:** `milestone/map-navigation-productization` (PR #13)  
@@ -208,7 +211,7 @@ These patterns were established and repeated consistently across the sprint:
 1. **Clean separation of concerns**: Components render, hooks orchestrate, services handle data/domain logic
 2. **Zero oversized map/navigation files**: All map-core files are under the hard limit
 3. **Consistent extraction patterns**: Future developers can follow established patterns
-4. **Comprehensive documentation**: Product Brain, Map Master Plan, Map Tracker, Code Organization Audit, Build Progress Dashboard all actively maintained
+4. **Comprehensive documentation (historical sprint context)**: Product Brain, Map Master Plan, Map Tracker, Code Organization Audit, and Build Progress Dashboard were maintained during this sprint window.
 5. **Cloud-first with cache fallback**: Supabase is source of truth, localStorage is cache/recovery only
 6. **Design system maturity**: Glass token system (`bd-glass-*`) consistently applied across all surfaces
 7. **Blue semantic system**: Royal blue as identity, sky blue as atmosphere, navy as depth — not decoration
@@ -242,22 +245,22 @@ Every single pass was validated with:
 1. **`npm run build`** — Vite build (~1.65s, 2,433 modules). Zero failures across 40 passes.
 2. **VS Code diagnostics** — `get_errors` on all touched files. Zero uncaught type errors.
 3. **Spellcheck** — `npx cspell lint` on touched files. Zero issues (domain words added to `cspell.json` when needed).
-4. **Doc alignment** — Build Progress Dashboard, Map Tracker, and relevant product docs updated after every meaningful pass.
+4. **Doc alignment (historical sprint context)** — Build Progress Dashboard, Map Tracker, and relevant product docs were updated after meaningful passes in this sprint period.
 
 ---
 
 ## Document Ecosystem
 
-| Document                                        | Purpose                                                                            | Status                          |
-| ----------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------- |
-| `BIDONDENT_PRODUCT_BRAIN.md`                    | Primary execution framework — quick cards, upgrade checklists, change impact index | Active, current                 |
-| `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`       | Strategic map law — non-negotiables, blue system vision, future themes             | Active, current                 |
-| `BIDONDENT_MAP_TRACKER_2026-03-21.md`           | Delivery reality — completed slices, validation outcomes                           | Active, current through Pass 40 |
-| `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`         | At-a-glance build progress — AI-maintained, per-pass entries                       | Active, current through Pass 40 |
-| `CODE_ORGANIZATION_AUDIT.md`                    | Weak seams, safe boundaries, architecture snapshot                                 | Active, current                 |
-| `MOLANDJEUS_DESIGN_DECISIONS.md`                | Design articulation — atmosphere, depth, glass, emotional target                   | Active                          |
-| `PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` | Platform evolution path                                                            | Reference                       |
-| `GETTING_STARTED.md`                            | Developer onboarding                                                               | Reference                       |
+| Document                                        | Purpose                                                                            | Status                                                                            |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `BIDONDENT_PRODUCT_BRAIN.md`                    | Primary execution framework — quick cards, upgrade checklists, change impact index | Active, current                                                                   |
+| `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`       | Strategic map law — non-negotiables, blue system vision, future themes             | Active, current                                                                   |
+| `BIDONDENT_MAP_TRACKER_2026-03-21.md`           | Delivery reality — completed slices, validation outcomes                           | Historical snapshot for this sprint (active tracker now continues beyond Pass 40) |
+| `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`         | At-a-glance build progress archive for earlier passes                              | Historical archive                                                                |
+| `CODE_ORGANIZATION_AUDIT.md`                    | Weak seams, safe boundaries, architecture snapshot                                 | Active, current                                                                   |
+| `MOLANDJEUS_DESIGN_DECISIONS.md`                | Design articulation — atmosphere, depth, glass, emotional target                   | Active                                                                            |
+| `PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` | Platform evolution path                                                            | Reference                                                                         |
+| `GETTING_STARTED.md`                            | Developer onboarding                                                               | Reference                                                                         |
 
 ---
 
@@ -297,7 +300,7 @@ These rules were established across the sprint and must be maintained:
 
 ### Documentation Rules
 
-1. Update Build Progress Dashboard after every pass.
+1. Historical sprint rule: update Build Progress Dashboard after every pass (superseded by current governance).
 2. Update Map Tracker and Map Master Plan for any map-related change.
 3. Planned vs shipped must be clearly distinguished.
 4. Future AI or human should be able to read one Quick Card and begin correct work.

@@ -11,7 +11,7 @@ interface ClerkUserLike {
   id: string;
   emailAddresses?: Array<{ emailAddress: string }>;
   unsafeMetadata?: Record<string, unknown>;
-  update: (params: { unsafeMetadata: Record<string, unknown> }) => Promise<void>;
+  update: (params: { unsafeMetadata: Record<string, unknown> }) => Promise<unknown>;
 }
 
 export interface UserProfile {

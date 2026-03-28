@@ -4,27 +4,15 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { findExistingProfile } from "./profiles.ts";
-import { softVerifyClerkMutation } from "../utils/clerk.ts";
+import {
+  ensureClerkUserMatchesSession,
+  requireClerkSession,
+  requireMarketplaceContext,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { hydrateSignedStorageUrls } from "../utils/storage.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
-
-async function resolveReportClerkUserId(
-  supabase: SupabaseClient,
-  identity: {
-    clerkUserId?: string | null;
-    email?: string | null;
-    websiteUserKey?: string | null;
-  }
-) {
-  if (identity.clerkUserId) {
-    return identity.clerkUserId;
-  }
-
-  const profile = await findExistingProfile(supabase, identity);
-  return profile?.clerk_user_id || null;
-}
 
 function buildReportPayload(clerkUserId: string, report: any) {
   return {
@@ -50,6 +38,16 @@ function buildReportPayload(clerkUserId: string, report: any) {
   };
 }
 
+async function hydrateReport(record: any, supabase: SupabaseClient) {
+  return {
+    ...record,
+    photo_urls: await hydrateSignedStorageUrls(
+      supabase,
+      Array.isArray(record?.photo_urls) ? record.photo_urls : []
+    ),
+  };
+}
+
 export async function createReport(
   req: Request,
   supabase: SupabaseClient,
@@ -57,11 +55,12 @@ export async function createReport(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { clerkUserId, report } = body;
-
-    if (!clerkUserId) {
-      return respond({ error: 'Missing clerkUserId' }, 400);
-    }
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(
+      session,
+      clerkUserId || null
+    );
 
     const requiredFields = ['vehicle_make', 'vehicle_model', 'vehicle_year', 'damage_type'] as const;
     for (const field of requiredFields) {
@@ -70,14 +69,9 @@ export async function createReport(
       }
     }
 
-    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
-    if (mismatch) {
-      return respond({ error: 'Unauthorized: clerkUserId does not match session' }, 401);
-    }
-
     const { data, error } = await supabase
       .from('damage_reports')
-      .insert(buildReportPayload(clerkUserId, report))
+      .insert(buildReportPayload(authenticatedClerkUserId, report))
       .select()
       .single();
 
@@ -86,10 +80,20 @@ export async function createReport(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
-    return respond({ success: true, report: data });
+    return respond({
+      success: true,
+      report: data ? await hydrateReport(data, supabase) : null,
+    });
   } catch (error: any) {
     console.error('Error in save damage report endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -100,15 +104,11 @@ export async function getReports(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const clerkUserId = await resolveReportClerkUserId(supabase, {
-      clerkUserId: url.searchParams.get('clerkUserId'),
-      email: url.searchParams.get('email'),
-      websiteUserKey: url.searchParams.get('websiteUserKey'),
-    });
-
-    if (!clerkUserId) {
-      return respond({ error: 'Missing clerkUserId or equivalent website identity' }, 400);
-    }
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const clerkUserId = ensureClerkUserMatchesSession(
+      session,
+      url.searchParams.get('clerkUserId')
+    );
 
     const limit = Math.min(Number(url.searchParams.get('limit') ?? 50), 200);
     const offset = Math.max(Number(url.searchParams.get('offset') ?? 0), 0);
@@ -125,10 +125,19 @@ export async function getReports(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
-    return respond({ reports: data });
+    return respond({
+      reports: await Promise.all((data || []).map((record: any) => hydrateReport(record, supabase))),
+    });
   } catch (error: any) {
     console.error('Error in get damage reports endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -140,19 +149,16 @@ export async function updateReport(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { clerkUserId, report } = body;
 
     if (!reportId || !clerkUserId) {
       return respond({ error: 'Missing reportId or clerkUserId' }, 400);
     }
-
-    const { mismatch } = await softVerifyClerkMutation(req, clerkUserId);
-    if (mismatch) {
-      return respond({ error: 'Unauthorized: clerkUserId does not match session' }, 401);
-    }
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
 
     const payload = {
-      ...buildReportPayload(clerkUserId, report),
+      ...buildReportPayload(authenticatedClerkUserId, report),
       updated_at: new Date().toISOString(),
     };
 
@@ -160,7 +166,7 @@ export async function updateReport(
       .from('damage_reports')
       .update(payload)
       .eq('id', reportId)
-      .eq('clerk_user_id', clerkUserId)
+      .eq('clerk_user_id', authenticatedClerkUserId)
       .select()
       .single();
 
@@ -169,19 +175,31 @@ export async function updateReport(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
-    return respond({ success: true, report: data });
+    return respond({
+      success: true,
+      report: data ? await hydrateReport(data, supabase) : null,
+    });
   } catch (error: any) {
     console.error('Error in update damage report endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
 export async function getMarketplaceReports(
-  _req: Request,
+  req: Request,
   supabase: SupabaseClient,
   respond: RespondFunction
 ): Promise<Response> {
   try {
+    await requireMarketplaceContext(req, supabase);
+
     const { data, error } = await supabase
       .from('damage_reports')
       .select('*')
@@ -192,29 +210,44 @@ export async function getMarketplaceReports(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
-    return respond({ reports: data });
+    return respond({
+      reports: await Promise.all((data || []).map((record: any) => hydrateReport(record, supabase))),
+    });
   } catch (error: any) {
     console.error('Error in marketplace reports endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Marketplace access required")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
 export async function deleteReport(
+  req: Request,
   reportId: string | undefined,
-  clerkUserId: string | null,
   supabase: SupabaseClient,
   respond: RespondFunction
 ): Promise<Response> {
   try {
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const url = new URL(req.url);
+    const clerkUserId = url.searchParams.get("clerkUserId");
+
     if (!reportId || !clerkUserId) {
       return respond({ error: 'Missing reportId or clerkUserId' }, 400);
     }
+
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
 
     const { error } = await supabase
       .from('damage_reports')
       .delete()
       .eq('id', reportId)
-      .eq('clerk_user_id', clerkUserId);
+      .eq('clerk_user_id', authenticatedClerkUserId);
 
     if (error) {
       console.error('Error deleting report:', error);
@@ -224,6 +257,13 @@ export async function deleteReport(
     return respond({ success: true, message: 'Report deleted' });
   } catch (error: any) {
     console.error('Error in delete report endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }

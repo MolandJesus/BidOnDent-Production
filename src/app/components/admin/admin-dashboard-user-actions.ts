@@ -1,5 +1,8 @@
 import { TEST_ACCOUNTS } from "../../config/adminConfig";
-import { SUPABASE_PROJECT_ID as projectId, SUPABASE_ANON_KEY as publicAnonKey } from "../../services/supabase/runtime";
+import {
+  buildSupabaseEdgeHeadersAsync,
+  buildSupabaseFunctionUrl,
+} from "../../services/supabase/runtime";
 import { supabase } from "../../services/supabaseService";
 
 type SetState<T> = (value: T | ((prev: T) => T)) => void;
@@ -28,13 +31,10 @@ export async function deleteAccountAction(params: {
 
   try {
     const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/delete-user`,
+      buildSupabaseFunctionUrl("/admin/delete-user"),
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${publicAnonKey}`,
-        },
+        headers: await buildSupabaseEdgeHeadersAsync(),
         body: JSON.stringify({ email, adminEmail }),
       }
     );
@@ -86,13 +86,10 @@ export async function createAccountAction(params: {
   try {
     const accountInfo = TEST_ACCOUNTS.find((a) => a.email === email);
     const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-user`,
+      buildSupabaseFunctionUrl("/admin/create-user"),
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${publicAnonKey}`,
-        },
+        headers: await buildSupabaseEdgeHeadersAsync(),
         body: JSON.stringify({
           email,
           password,
@@ -186,13 +183,10 @@ export async function createCustomAccountAction(params: {
     const name = newAccountName || "Test Account";
 
     const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/create-user`,
+      buildSupabaseFunctionUrl("/admin/create-user"),
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${publicAnonKey}`,
-        },
+        headers: await buildSupabaseEdgeHeadersAsync(),
         body: JSON.stringify({
           email,
           password,
@@ -306,13 +300,10 @@ export async function manageAdminStatusAction(params: {
 
   try {
     const response = await fetch(
-      `https://${projectId}.supabase.co/functions/v1/server/make-server-9f243523/admin/manage-admin`,
+      buildSupabaseFunctionUrl("/admin/manage-admin"),
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${publicAnonKey}`,
-        },
+        headers: await buildSupabaseEdgeHeadersAsync(),
         body: JSON.stringify({
           email: targetAdminEmail,
           promote,

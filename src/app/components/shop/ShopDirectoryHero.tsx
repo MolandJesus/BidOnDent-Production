@@ -47,39 +47,37 @@ export default function ShopDirectoryHero({
       <div
         className={`${
           isLight ? "bg-white/95 border-b border-slate-200/60" : "bd-glass-panel"
-        } flex flex-wrap items-center justify-between gap-3 px-4 py-3`}
+        } flex flex-wrap items-center justify-between gap-2 px-3 py-2 sm:px-4 sm:py-3`}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors ${
+            className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors ${
               isLight
                 ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
-                : "bd-glass-control"
+                : "bd-glass-control text-slate-100"
             }`}
             onClick={onBack}
             type="button"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
           </button>
           <span
-            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${accentClasses}`}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${accentClasses}`}
           >
-            <RoleIcon className="h-4 w-4" />
+            <RoleIcon className="h-3 w-3" />
             {roleHighlights.badge}
           </span>
           <h1
-            className={`text-lg font-semibold tracking-tight ${
+            className={`text-sm font-semibold tracking-tight ${
               isLight ? "text-slate-800" : "text-slate-100"
             }`}
           >
             Smart Shop Map
           </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <span className={`text-sm ${isLight ? "text-blue-600/70" : "text-blue-200/50"}`}>
-            {mapListingsCount} shop{mapListingsCount === 1 ? "" : "s"}
-          </span>
-        </div>
+        <span className={`text-xs ${isLight ? "text-blue-600/70" : "text-blue-200/50"}`}>
+          {mapListingsCount} shop{mapListingsCount === 1 ? "" : "s"}
+        </span>
       </div>
     );
   }

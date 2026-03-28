@@ -1,4 +1,5 @@
 import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
+import { getClerkTokenForEdgeRequests } from "./authSession";
 
 export const SUPABASE_PROJECT_ID = projectId;
 export const SUPABASE_ANON_KEY = publicAnonKey;
@@ -18,6 +19,13 @@ export const SUPABASE_LEGACY_STORAGE_BUCKETS = {
   profiles: "bidondent-profiles",
   vehicles: "bidondent-vehicles",
 } as const;
+
+export const SUPABASE_USER_SCOPED_STORAGE_BUCKETS = [
+  ...Object.values(SUPABASE_STORAGE_BUCKETS),
+  SUPABASE_LEGACY_STORAGE_BUCKETS.damagePhotos,
+  SUPABASE_LEGACY_STORAGE_BUCKETS.profiles,
+  SUPABASE_LEGACY_STORAGE_BUCKETS.vehicles,
+] as const;
 
 export const SUPABASE_ALL_STORAGE_BUCKETS = [
   ...Object.values(SUPABASE_STORAGE_BUCKETS),
@@ -42,19 +50,29 @@ export const SUPABASE_EDGE_ROUTES = {
   },
   bids: "/bids",
   cleanupOldReports: "/cleanup-old-reports",
+  deletePhoto: "/delete-photo",
   deleteVehicle: "/delete-vehicle",
   directoryInventory: "/directory-inventory",
   health: "/health",
+  healthDeep: "/health/deep",
   insurerProfile: "/insurer-profile",
+  insurerInterest: "/intake/insurer-interest",
+  jobAssignment: "/job-assignment",
+  jobAssignmentStatus: "/job-assignment/status",
   migrateDatabase: "/migrate-database",
+  navigationSession: "/navigation-session",
   reports: "/reports",
+  shopInterest: "/intake/shop-interest",
   shopProfile: "/shop-profile",
+  storageList: "/storage/list",
+  storageSignedUrl: "/storage/signed-url",
   storageStats: "/storage-stats",
   uploadPhoto: "/upload-photo",
   userProfile: "/user-profile",
   vehicles: "/vehicles",
   websitePreferences: "/website-preferences",
   websiteRelationships: "/website-relationships",
+  workflowEvent: "/workflow-event",
 } as const;
 
 export type CanonicalSupabaseBucket =
@@ -64,6 +82,9 @@ export type LegacySupabaseBucket =
   (typeof SUPABASE_LEGACY_STORAGE_BUCKETS)[keyof typeof SUPABASE_LEGACY_STORAGE_BUCKETS];
 
 export type SupportedSupabaseBucket = CanonicalSupabaseBucket | LegacySupabaseBucket;
+
+export type UserScopedSupabaseBucket =
+  (typeof SUPABASE_USER_SCOPED_STORAGE_BUCKETS)[number];
 
 type RequestOptions = Omit<RequestInit, "headers"> & {
   headers?: HeadersInit;
@@ -84,6 +105,32 @@ export function buildSupabaseEdgeHeaders(options?: {
     headers.set("Authorization", `Bearer ${SUPABASE_ANON_KEY}`);
   }
 
+  if (!headers.has("apikey")) {
+    headers.set("apikey", SUPABASE_ANON_KEY);
+  }
+
+  if (options?.json !== false && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  return headers;
+}
+
+export async function buildSupabaseEdgeHeadersAsync(options?: {
+  headers?: HeadersInit;
+  json?: boolean;
+}) {
+  const headers = new Headers(options?.headers);
+
+  if (!headers.has("Authorization")) {
+    const accessToken = await getClerkTokenForEdgeRequests();
+    headers.set("Authorization", `Bearer ${accessToken || SUPABASE_ANON_KEY}`);
+  }
+
+  if (!headers.has("apikey")) {
+    headers.set("apikey", SUPABASE_ANON_KEY);
+  }
+
   if (options?.json !== false && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
@@ -100,14 +147,16 @@ export function buildWebsiteIdentityQuery(params: {
 
   if (params.clerkUserId) {
     query.set("clerkUserId", params.clerkUserId);
-  }
-
-  if (params.email) {
-    query.set("email", params.email);
+    return query;
   }
 
   if (params.websiteUserKey) {
     query.set("websiteUserKey", params.websiteUserKey);
+    return query;
+  }
+
+  if (params.email) {
+    query.set("email", params.email);
   }
 
   return query;
@@ -157,12 +206,13 @@ export async function requestSupabaseEdge<T>(
   options?: RequestOptions
 ): Promise<T> {
   const bodyIsFormData = typeof FormData !== "undefined" && options?.body instanceof FormData;
+  const headers = await buildSupabaseEdgeHeadersAsync({
+    headers: options?.headers,
+    json: !bodyIsFormData,
+  });
   const response = await fetch(buildSupabaseFunctionUrl(path), {
     ...options,
-    headers: buildSupabaseEdgeHeaders({
-      headers: options?.headers,
-      json: !bodyIsFormData,
-    }),
+    headers,
   });
 
   return parseSupabaseEdgeResponse<T>(response);
@@ -170,4 +220,8 @@ export async function requestSupabaseEdge<T>(
 
 export function isSupportedSupabaseBucket(bucket: string): bucket is SupportedSupabaseBucket {
   return SUPABASE_ALL_STORAGE_BUCKETS.includes(bucket as SupportedSupabaseBucket);
+}
+
+export function isUserScopedSupabaseBucket(bucket: string): bucket is UserScopedSupabaseBucket {
+  return SUPABASE_USER_SCOPED_STORAGE_BUCKETS.includes(bucket as UserScopedSupabaseBucket);
 }

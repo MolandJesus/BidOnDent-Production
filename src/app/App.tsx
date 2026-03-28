@@ -1,9 +1,10 @@
-import { ClerkProvider, useUser, useClerk } from "@clerk/clerk-react";
+import { ClerkProvider, useUser, useClerk, useAuth as useClerkAuth } from "@clerk/clerk-react";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
 import { buildWebsiteIdentity } from "./services/auth/websiteIdentity";
+import { setClerkTokenGetter } from "./services/supabase/authSession";
 
 // Import custom hooks (for non-auth state management)
 import { useUserData } from "./hooks/useUserData";
@@ -138,7 +139,21 @@ function AppContent() {
   // ============================================================================
   const { user, isLoaded: isUserLoaded } = useUser();
   const { signOut, openSignUp } = useClerk();
+  const { getToken, isLoaded: isClerkAuthLoaded } = useClerkAuth();
   const userProfile = user ? extractUserProfile(user) : null;
+
+  useEffect(() => {
+    if (!isClerkAuthLoaded) {
+      return;
+    }
+
+    setClerkTokenGetter(() => getToken());
+
+    return () => {
+      setClerkTokenGetter(null);
+    };
+  }, [getToken, isClerkAuthLoaded]);
+
   const websiteIdentity = userProfile
     ? buildWebsiteIdentity({
         provider: "clerk",
@@ -182,7 +197,12 @@ function AppContent() {
   // ============================================================================
 
   // User data state (profile, vehicles, reports, Supabase sync)
-  const userData = useUserData(user?.id, websiteIdentity?.websiteUserKey, userProfile?.email);
+  const userData = useUserData(
+    user?.id,
+    websiteIdentity?.websiteUserKey,
+    userProfile?.email,
+    isClerkAuthLoaded
+  );
 
   // Navigation state (tabs, views, modals, refs)
   const navigation = useNavigation();
@@ -390,6 +410,7 @@ function AppContent() {
   // Wait for Clerk to load
   if (
     !isUserLoaded ||
+    !isClerkAuthLoaded ||
     (user && websiteIdentity && !isWebsiteSessionHydrated) ||
     shouldWaitForBusinessProfile
   ) {

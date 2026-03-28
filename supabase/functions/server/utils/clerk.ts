@@ -110,7 +110,14 @@ export async function verifyClerkSessionRequest(
 
   const claims = (await verifyToken(
     token,
-    authorizedParties.length > 0 ? { authorizedParties } : {}
+    authorizedParties.length > 0
+      ? {
+          authorizedParties,
+          ...(config.CLERK_SECRET_KEY ? { secretKey: config.CLERK_SECRET_KEY } : {}),
+        }
+      : config.CLERK_SECRET_KEY
+        ? { secretKey: config.CLERK_SECRET_KEY }
+        : {}
   )) as Record<string, unknown>;
 
   const clerkUserId = typeof claims.sub === "string" ? claims.sub : null;

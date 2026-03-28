@@ -1,6 +1,6 @@
 import type { WebsiteIdentity, WebsiteSessionMemory } from "./websiteIdentity";
 import {
-  buildSupabaseEdgeHeaders,
+  buildSupabaseEdgeHeadersAsync,
   buildSupabaseFunctionUrl,
   SUPABASE_EDGE_ROUTES,
 } from "../supabase/runtime";
@@ -29,8 +29,8 @@ const pendingSyncTimers = new Map<string, number>();
 const queuedCollectionSignatures = new Map<string, string>();
 const savedCollectionSignatures = new Map<string, string>();
 
-function buildHeaders() {
-  return buildSupabaseEdgeHeaders();
+async function buildHeaders() {
+  return await buildSupabaseEdgeHeadersAsync();
 }
 
 function toNumericCollection(values: unknown) {
@@ -98,7 +98,7 @@ export async function fetchWebsiteRelationshipCollectionsFromCloud(identity: Web
   try {
     const response = await withTimeout(
       fetch(url.toString(), {
-        headers: buildHeaders(),
+        headers: await buildHeaders(),
         method: "GET",
       })
     );
@@ -177,7 +177,7 @@ export async function saveWebsiteRelationshipCollectionsToCloud({
           collections,
           identity,
         }),
-        headers: buildHeaders(),
+        headers: await buildHeaders(),
         method: "POST",
       })
     );

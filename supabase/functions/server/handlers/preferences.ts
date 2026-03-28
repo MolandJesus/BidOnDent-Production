@@ -4,6 +4,11 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import {
+  ensureWebsiteUserKeyMatchesSession,
+  normalizeEmail,
+  requireClerkSession,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
@@ -15,11 +20,11 @@ export async function getWebsitePreferences(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const websiteUserKey = url.searchParams.get("websiteUserKey");
-
-    if (!websiteUserKey) {
-      return respond({ error: "Missing websiteUserKey" }, 400);
-    }
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      url.searchParams.get("websiteUserKey")
+    );
 
     const { data, error } = await supabase
       .from("website_preferences")
@@ -38,7 +43,14 @@ export async function getWebsitePreferences(
     });
   } catch (error: any) {
     console.error("Error in get website preferences endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -49,21 +61,27 @@ export async function saveWebsitePreferences(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { accountType, identity, sessionMemory } = body || {};
 
-    if (!identity?.websiteUserKey || !sessionMemory) {
+    if (!sessionMemory) {
       return respond({ error: "Missing identity or sessionMemory" }, 400);
     }
 
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      identity?.websiteUserKey || null
+    );
+
     const payload = {
       account_type: accountType || null,
-      clerk_user_id: identity.provider === "clerk" ? identity.providerUserId || null : null,
-      display_name: identity.displayName || null,
-      normalized_email: identity.normalizedEmail || null,
-      provider: identity.provider || null,
-      provider_user_id: identity.providerUserId || null,
+      clerk_user_id: session.clerkUserId,
+      display_name: identity?.displayName || null,
+      normalized_email: normalizeEmail(session.email),
+      provider: "clerk",
+      provider_user_id: session.clerkUserId,
       session_memory: sessionMemory,
-      website_user_key: identity.websiteUserKey,
+      website_user_key: websiteUserKey,
     };
 
     const { data, error } = await supabase
@@ -85,6 +103,13 @@ export async function saveWebsitePreferences(
     });
   } catch (error: any) {
     console.error("Error in save website preferences endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }

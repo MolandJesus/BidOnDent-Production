@@ -4,7 +4,7 @@
  */
 
 import { config } from '../config/constants.ts'
-import { verifyClerkSessionRequest } from '../utils/clerk.ts'
+import { requireAdminContext } from '../utils/authz.ts'
 import { sanitizeErrorMessage } from '../utils/helpers.ts'
 
 type SubmissionStatus = 'submitted' | 'reviewing' | 'approved' | 'rejected'
@@ -24,32 +24,6 @@ function getAdminErrorStatus(error: any) {
   }
 
   return 401
-}
-
-async function requireAdminContext(req: Request, supabase: any) {
-  const session = await verifyClerkSessionRequest(req, { requireEmail: true })
-  const adminEmail = session.email
-
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('email, is_admin')
-    .eq('email', adminEmail)
-    .maybeSingle()
-
-  if (error) {
-    throw new Error(`Failed to verify admin profile: ${error.message}`)
-  }
-
-  const hasAdminAccess = Boolean(profile?.is_admin) || adminEmail === config.ADMIN_EMAIL.toLowerCase()
-
-  if (!hasAdminAccess) {
-    throw new Error('Admin access required')
-  }
-
-  return {
-    clerkUserId: session.clerkUserId,
-    adminEmail,
-  }
 }
 
 export type AdminProfileSummary = {
@@ -72,71 +46,13 @@ export async function handleAdminSetup(
   supabase: any,
   respond: Function
 ): Promise<Response> {
-  try {
-    const body = await req.json()
-    const { email, password } = body
-
-    if (!email || email.toLowerCase() !== 'figmaadmin@bidondent.com') {
-      return respond(
-        { error: 'This endpoint is only for setting up figmaadmin@bidondent.com' },
-        403
-      )
-    }
-
-    if (!password || password.length < 6) {
-      return respond({ error: 'Password must be at least 6 characters' }, 400)
-    }
-
-    const { data: existingUsers } = await supabase.auth.admin.listUsers()
-    const existingUser = existingUsers?.users?.find(
-      (u: any) => u.email?.toLowerCase() === email.toLowerCase()
-    )
-
-    let userId: string
-
-    if (existingUser) {
-      userId = existingUser.id
-      const { error: updateError } = await supabase.auth.admin.updateUserById(userId, {
-        password,
-        email_confirm: true,
-        user_metadata: { name: 'Admin User', phone: '', user_type: 'customer' }
-      })
-      if (updateError) return respond({ error: sanitizeErrorMessage(updateError) }, 500)
-    } else {
-      const { data: userData, error: createError } = await supabase.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true,
-        user_metadata: { name: 'Admin User', phone: '', user_type: 'customer' }
-      })
-      if (createError) return respond({ error: sanitizeErrorMessage(createError) }, 500)
-      if (!userData.user) return respond({ error: 'No user data returned' }, 500)
-      userId = userData.user.id
-    }
-
-    const { error: profileError } = await supabase.from('profiles').upsert(
-      {
-        user_id: userId,
-        email,
-        name: 'Admin User',
-        phone: '',
-        account_type: 'customer',
-        setup_completed: false,
-        is_admin: true
-      },
-      { onConflict: 'user_id' }
-    )
-
-    if (profileError) return respond({ error: sanitizeErrorMessage(profileError) }, 500)
-
-    return respond({
-      success: true,
-      message: 'Admin account created successfully',
-      userId
-    })
-  } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) || 'Failed to set up admin account' }, 500)
-  }
+  return respond(
+    {
+      error:
+        'This bootstrap endpoint is disabled. Create the admin through Clerk using the configured admin email.',
+    },
+    403
+  )
 }
 
 /**
@@ -147,15 +63,20 @@ export async function handleCheckAdminExists(
   respond: Function
 ): Promise<Response> {
   try {
-    const { data: existingUsers } = await supabase.auth.admin.listUsers()
-    const existingUser = existingUsers?.users?.find(
-      (u: any) => u.email?.toLowerCase() === 'figmaadmin@bidondent.com'
-    )
+    const { data: existingAdmin, error } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('email', config.ADMIN_EMAIL.toLowerCase())
+      .eq('is_admin', true)
+      .maybeSingle()
+
+    if (error) {
+      return respond({ exists: false, error: sanitizeErrorMessage(error) }, 200)
+    }
 
     return respond({
-      exists: !!existingUser,
+      exists: !!existingAdmin,
       email: 'figmaadmin@bidondent.com',
-      totalUsers: existingUsers?.users?.length || 0
     })
   } catch (error: any) {
     return respond({ exists: false, error: sanitizeErrorMessage(error) }, 200)
@@ -171,12 +92,9 @@ export async function handleCreateUser(
   respond: Function
 ): Promise<Response> {
   try {
+    await requireAdminContext(req, supabase)
     const body = await req.json()
-    const { email, password, name, account_type, adminEmail } = body
-
-    if (adminEmail?.toLowerCase() !== 'figmaadmin@bidondent.com') {
-      return respond({ error: 'Unauthorized' }, 403)
-    }
+    const { email, password, name, account_type } = body
 
     if (!email || !password || !account_type) {
       return respond({ error: 'Missing required fields: email, password, account_type' }, 400)
@@ -243,7 +161,8 @@ export async function handleCreateUser(
       message: isUpdate ? 'User updated and profile synced' : 'User created successfully'
     })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) || 'Failed to create user' }, 500)
+    const status = getAdminErrorStatus(error)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to create user' }, status)
   }
 }
 
@@ -256,12 +175,9 @@ export async function handleDeleteUser(
   respond: Function
 ): Promise<Response> {
   try {
+    await requireAdminContext(req, supabase)
     const body = await req.json()
-    const { email, adminEmail } = body
-
-    if (adminEmail?.toLowerCase() !== 'figmaadmin@bidondent.com') {
-      return respond({ error: 'Unauthorized' }, 403)
-    }
+    const { email } = body
 
     if (!email) {
       return respond({ error: 'Missing email' }, 400)
@@ -286,7 +202,8 @@ export async function handleDeleteUser(
 
     return respond({ success: true, email, userId })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) }, 500)
+    const status = getAdminErrorStatus(error)
+    return respond({ error: sanitizeErrorMessage(error) }, status)
   }
 }
 
@@ -299,14 +216,12 @@ export async function handleManageAdmin(
   respond: Function
 ): Promise<Response> {
   try {
+    const { adminEmail } = await requireAdminContext(req, supabase)
     const body = await req.json()
-    const { email: targetEmail, promote, adminEmail } = body
+    const { email: targetEmail, promote } = body
 
-    if (adminEmail?.toLowerCase() !== 'figmaadmin@bidondent.com') {
-      return respond(
-        { error: 'Only the super admin can manage admin accounts' },
-        403
-      )
+    if (adminEmail !== config.ADMIN_EMAIL.toLowerCase()) {
+      return respond({ error: 'Only the super admin can manage admin accounts' }, 403)
     }
 
     if (!targetEmail || typeof promote !== 'boolean') {
@@ -334,7 +249,8 @@ export async function handleManageAdmin(
       message: `${targetEmail} ${promote ? 'promoted to admin' : 'demoted from admin'}`
     })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) || 'Failed to manage admin' }, 500)
+    const status = getAdminErrorStatus(error)
+    return respond({ error: sanitizeErrorMessage(error) || 'Failed to manage admin' }, status)
   }
 }
 
@@ -342,14 +258,17 @@ export async function handleManageAdmin(
  * List all users (admin-only)
  */
 export async function handleListUsers(
+  req: Request,
   supabase: any,
   respond: Function
 ): Promise<Response> {
   try {
+    await requireAdminContext(req, supabase)
     const { data: authData } = await supabase.auth.admin.listUsers()
     return respond({ users: authData?.users || [] })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) }, 500)
+    const status = getAdminErrorStatus(error)
+    return respond({ error: sanitizeErrorMessage(error) }, status)
   }
 }
 
@@ -362,6 +281,7 @@ export async function handleListProfiles(
   respond: Function
 ): Promise<Response> {
   try {
+    await requireAdminContext(req, supabase)
     const url = new URL(req.url)
     const email = url.searchParams.get('email')?.trim().toLowerCase() || null
 
@@ -387,7 +307,8 @@ export async function handleListProfiles(
       success: true,
     })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) }, 500)
+    const status = getAdminErrorStatus(error)
+    return respond({ error: sanitizeErrorMessage(error) }, status)
   }
 }
 
@@ -400,6 +321,7 @@ export async function handleDeleteUsers(
   respond: Function
 ): Promise<Response> {
   try {
+    await requireAdminContext(req, supabase)
     const body = await req.json()
     const { userIds } = body
 
@@ -429,7 +351,8 @@ export async function handleDeleteUsers(
       errors: errors.length > 0 ? errors : undefined
     })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) }, 500)
+    const status = getAdminErrorStatus(error)
+    return respond({ error: sanitizeErrorMessage(error) }, status)
   }
 }
 
@@ -442,6 +365,7 @@ export async function handleCreateTestAccount(
   respond: Function
 ): Promise<Response> {
   try {
+    await requireAdminContext(req, supabase)
     const body = await req.json()
     const { email, password, userType } = body
 
@@ -483,7 +407,8 @@ export async function handleCreateTestAccount(
       userType
     })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) }, 500)
+    const status = getAdminErrorStatus(error)
+    return respond({ error: sanitizeErrorMessage(error) }, status)
   }
 }
 

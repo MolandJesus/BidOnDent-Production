@@ -1,5 +1,17 @@
 # BidOnDent — Build Progress Dashboard
 
+**Last updated:** March 28, 2026
+**Status:** Historical archive (active status tracking moved to governed docs)
+
+This file is retained as a historical pass archive.
+
+For current execution state, use:
+
+- `BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`
+- `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`
+
 ## ⚡ AT-A-GLANCE STATUS (updated 2026-03-26)
 
 ### Build Progress

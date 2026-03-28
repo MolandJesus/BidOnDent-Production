@@ -1,5 +1,8 @@
 # BidOnDent — Dual AI Coordination Prompt
 
+**Last updated:** March 28, 2026
+**Status:** Historical superseded coordination prompt
+
 > **SUPERSEDED** — Dual AI coordination is no longer in use. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md).
 
 **Created:** 2026-03-25
@@ -117,7 +120,7 @@ Read these docs first (in this order):
 2. `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — map strategy
 3. `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — delivery reality
 4. `docs/CODE_ORGANIZATION_AUDIT.md` — architecture boundaries
-5. `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` — what's been done (214 passes)
+5. `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — active delivery reality and pass tracking
 6. This file — coordination boundaries
 
 ### Suggested Focus Areas (by product impact)
@@ -241,10 +244,10 @@ To avoid merge conflicts, the two agents should prefer different file zones:
 
 ### Communication via Docs
 
-Both agents update `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` but in separate sections:
+Both agents should append updates to `BIDONDENT_MAP_TRACKER_2026-03-21.md` and add strategic notes to `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` when needed:
 
-- Refinement section: "Refinement Sweep (Passes R-215+)"
-- Build section: "Feature Build (Passes B-1+)"
+- Refinement entries: appearance/map UX passes with validation
+- Build entries: feature/data/integration passes with validation
 
 ---
 

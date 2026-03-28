@@ -19,12 +19,12 @@ import {
 } from "./report/reportDraftStorage";
 import { uploadReportPhoto, isBase64Photo, retryUploadBase64 } from "./report/reportPhotoUpload";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-import type { Vehicle } from "../../types";
+import type { DamageReport, Vehicle } from "../../types";
 
 type ReportScreenProps = {
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
-  onReportSubmit?: (report: Record<string, unknown>) => void | Promise<void>;
+  onReportSubmit?: (report: DamageReport) => void | Promise<void>;
   onViewReports?: () => void;
   onViewShops?: () => void;
   onBackToDashboard?: () => void;
@@ -214,7 +214,7 @@ export default function ReportScreen({
       );
       if (isNewVehicle) {
         onSaveVehicle({
-          id: Date.now(),
+          id: String(Date.now()),
           make: vehicle.make,
           model: vehicle.model,
           year: vehicle.year,
@@ -262,17 +262,29 @@ export default function ReportScreen({
       }
 
       if (onReportSubmit) {
-        const report = {
+        const submittedAt = new Date().toISOString();
+        const report: DamageReport = {
           id: Date.now().toString(),
-          vehicle,
+          vehicleId: vehicle.vin || `vehicle-${Date.now()}`,
+          vehicleInfo: {
+            make: vehicle.make,
+            model: vehicle.model,
+            year: vehicle.year,
+          },
+          damageAreas: [damageArea],
+          vehicle: {
+            make: vehicle.make,
+            model: vehicle.model,
+            year: vehicle.year,
+          },
           damageArea,
           zipCode,
           address,
           photos: uploadedPhotos,
           description,
-          incident,
           status: "pending" as const,
-          submittedAt: new Date().toISOString(),
+          createdAt: submittedAt,
+          submittedAt,
           bidsCount: 0,
         };
         await onReportSubmit(report);

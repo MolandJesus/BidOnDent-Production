@@ -5,6 +5,8 @@ import type { useUserData } from "../hooks/useUserData";
 import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
 import type { ViewMode, DamageReport, Vehicle, Bid } from "../types";
 import { deleteVehicle } from "../services/supabaseService";
+import { getBidsForReport, updateBidStatus } from "../services/supabase/bids";
+import { updateReportStatus } from "../services/supabase/reports";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData>;
@@ -161,7 +163,6 @@ export function buildDashboardRouterProps({
     }) => {
       try {
         const clerkId = userProfile?.id;
-        const { updateBidStatus } = await import("../services/supabase/bids");
         const acceptedBid = await updateBidStatus(details.bidId, "accepted", clerkId);
         if (!acceptedBid) {
           if (import.meta.env.DEV) console.error("Failed to accept bid in Supabase:", details.bidId);
@@ -171,7 +172,6 @@ export function buildDashboardRouterProps({
         // Use the reportId passed from BidsScreen (sourced from live Supabase data)
         const reportId = details.reportId || navigation.selectedReportId || userData.reports[0]?.id;
         if (reportId && userProfile?.id) {
-          const { updateReportStatus } = await import("../services/supabase/reports");
           await updateReportStatus(reportId.toString(), "active", userProfile.id);
           userData.setReports(
             userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
@@ -181,7 +181,6 @@ export function buildDashboardRouterProps({
         // Reject competing bids for the same report via Supabase query
         if (reportId) {
           try {
-            const { getBidsForReport } = await import("../services/supabase/bids");
             const allBidsForReport = await getBidsForReport(reportId.toString());
             const competingBids = allBidsForReport.filter(
               (b) => b.id !== details.bidId && b.status !== "rejected"
@@ -211,7 +210,6 @@ export function buildDashboardRouterProps({
     },
     onRejectBid: async (details: { bidId: string; shopName: string }) => {
       try {
-        const { updateBidStatus } = await import("../services/supabase/bids");
         const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
         if (!rejectedBid) {
           if (import.meta.env.DEV) console.error("Failed to reject bid in Supabase:", details.bidId);

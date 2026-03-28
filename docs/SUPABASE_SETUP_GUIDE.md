@@ -1,6 +1,6 @@
 # Supabase Setup Guide
 
-Last updated: March 21, 2026
+Last updated: March 28, 2026
 Status: Active setup guide
 
 BidOnDent uses Clerk for authentication and Supabase for application data, storage, and edge-function-backed website services.
@@ -37,6 +37,15 @@ BidOnDent uses Clerk for authentication and Supabase for application data, stora
 - session lifecycle
 - account deletion at the auth-provider layer
 - top-level user identity that BidOnDent translates into `websiteIdentity`
+
+## Parallel Security-Track Coordination
+
+When a parallel AI/security pass updates auth, edge guards, or data-access docs:
+
+- Keep this guide additive; do not delete fresh security notes without verification.
+- Preserve source-of-truth ownership: Clerk = identity, Supabase = data/storage/edge.
+- If new edge/auth flows are introduced, update both this guide and `CLAUDE_AI_MASTER_CONTEXT.md` in the same pass.
+- Record pass notes in trackers rather than rewriting historical setup details.
 
 ## Local Configuration
 

@@ -1,6 +1,6 @@
 import type { WebsiteIdentity, WebsiteSessionMemory } from "./websiteIdentity";
 import {
-  buildSupabaseEdgeHeaders,
+  buildSupabaseEdgeHeadersAsync,
   buildSupabaseFunctionUrl,
   SUPABASE_EDGE_ROUTES,
 } from "../supabase/runtime";
@@ -17,8 +17,8 @@ const WEBSITE_PREFERENCES_ENDPOINT = buildSupabaseFunctionUrl(
 const SYNC_TIMEOUT_MS = 5000;
 const pendingSyncTimers = new Map<string, number>();
 
-function buildHeaders() {
-  return buildSupabaseEdgeHeaders();
+async function buildHeaders() {
+  return await buildSupabaseEdgeHeadersAsync();
 }
 
 async function withTimeout<T>(promise: Promise<T>, timeoutMs = SYNC_TIMEOUT_MS): Promise<T> {
@@ -50,7 +50,7 @@ export async function fetchWebsiteSessionMemoryFromCloud(identity: WebsiteIdenti
   try {
     const response = await withTimeout(
       fetch(url.toString(), {
-        headers: buildHeaders(),
+        headers: await buildHeaders(),
         method: "GET",
       })
     );
@@ -84,7 +84,7 @@ export async function saveWebsiteSessionMemoryToCloud({
           identity,
           sessionMemory,
         }),
-        headers: buildHeaders(),
+        headers: await buildHeaders(),
         method: "POST",
       })
     );

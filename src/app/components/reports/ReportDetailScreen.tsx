@@ -5,37 +5,13 @@ import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { customerLifecycle } from "../workflow/lifecycle-presets";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import type { DamageReport } from "../../types";
 
-type Report = {
-  id: number | string;
-  vehicle?: {
-    make: string;
-    model: string;
-    year: string;
-    vin?: string;
-  };
+type Report = DamageReport & {
   // Support flattened vehicle info (from Supabase)
   vehicle_make?: string;
   vehicle_model?: string;
   vehicle_year?: number;
-  damageArea: string;
-  photos: string[];
-  description: string;
-  incident?: string;
-  status: string;
-  submittedAt: string;
-  bidsCount: number;
-  bids?: Array<{
-    id: string | number;
-    shopName?: string;
-    shopEmail?: string;
-    amount?: number;
-    estimatedDays?: number;
-    description?: string;
-    shopRating?: number;
-    shopReviews?: number;
-    shopDistance?: string;
-  }>;
 };
 
 type ReportDetailScreenProps = {

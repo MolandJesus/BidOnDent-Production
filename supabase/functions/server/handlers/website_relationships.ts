@@ -4,6 +4,10 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
+import {
+  ensureWebsiteUserKeyMatchesSession,
+  requireClerkSession,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
@@ -116,11 +120,11 @@ export async function getWebsiteRelationships(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const websiteUserKey = url.searchParams.get("websiteUserKey");
-
-    if (!websiteUserKey) {
-      return respond({ error: "Missing websiteUserKey" }, 400);
-    }
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      url.searchParams.get("websiteUserKey")
+    );
 
     const { data, error } = await supabase
       .from("website_relationships")
@@ -158,7 +162,14 @@ export async function getWebsiteRelationships(
     });
   } catch (error: any) {
     console.error("Error in get website relationships endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -169,11 +180,17 @@ export async function saveWebsiteRelationships(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { accountType, collections, identity } = body || {};
 
-    if (!identity?.websiteUserKey) {
+    if (!identity) {
       return respond({ error: "Missing identity" }, 400);
     }
+
+    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+      session,
+      identity.websiteUserKey || null
+    );
 
     const nextCollections: RelationshipCollections = {
       connectedInsurerIds: toNumericIds(collections?.connectedInsurerIds),
@@ -187,7 +204,7 @@ export async function saveWebsiteRelationships(
     const { error: deleteError } = await supabase
       .from("website_relationships")
       .delete()
-      .eq("website_user_key", identity.websiteUserKey)
+      .eq("website_user_key", websiteUserKey)
       .in("relationship_type", relationshipTypes);
 
     if (deleteError) {
@@ -195,7 +212,7 @@ export async function saveWebsiteRelationships(
       return respond({ error: sanitizeErrorMessage(deleteError) }, 500);
     }
 
-    const rows = buildRelationshipRows(identity.websiteUserKey, accountType, nextCollections);
+    const rows = buildRelationshipRows(websiteUserKey, accountType, nextCollections);
     if (rows.length > 0) {
       const { error: insertError } = await supabase.from("website_relationships").insert(rows);
 
@@ -212,6 +229,13 @@ export async function saveWebsiteRelationships(
     });
   } catch (error: any) {
     console.error("Error in save website relationships endpoint:", error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("website identity mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }

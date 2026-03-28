@@ -11,6 +11,9 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
+**Last updated:** March 28, 2026
+**Status:** Active source-of-truth audit
+
 **Date**: March 22, 2026  
 **Scope**: Current checked-out BidOnDent repo only  
 **Status**: Active source-of-truth for code structure and design-system governance

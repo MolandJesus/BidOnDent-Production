@@ -258,13 +258,13 @@ export default function ShopDirectoryScreen({
       {!session.showMapPane && deviationPromptNode}
 
       <section
-        className={`overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:shadow-none bg-transparent ${isLight ? "md:border-slate-200/60" : "md:border-white/[0.08]"}`}
+        className={`overflow-hidden rounded-none border-0 shadow-none md:rounded-2xl md:border md:shadow-none bg-transparent ${isLight ? "md:border-slate-200/60" : "md:border-white/[0.08]"}`}
       >
         <div
           className={`min-w-0 ${session.showMapPane ? `lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}
         >
           <aside
-            className={`${session.showMapPane ? "lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-180px)]" : ""} min-h-0 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"} bg-transparent`}
+            className={`${session.showMapPane ? "lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-140px)]" : ""} min-h-0 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"} bg-transparent`}
           >
             <div className="flex h-full flex-col">
               <ShopDirectorySearchPanel
@@ -313,7 +313,9 @@ export default function ShopDirectoryScreen({
           </aside>
 
           {session.showMapPane && (
-            <div className="h-[540px] border-t border-white/10 lg:h-[calc(100vh-180px)] lg:border-t-0 lg:sticky lg:top-0">
+            <div
+              className={`h-[calc(100vh-280px)] min-h-[400px] max-h-[600px] border-t lg:h-[calc(100vh-140px)] lg:max-h-none lg:border-t-0 lg:sticky lg:top-0 ${isLight ? "border-slate-200/40" : "border-white/10"}`}
+            >
               <ShopDirectoryMapPane
                 initialCenter={session.mapCenter || getDefaultMapCenter()}
                 initialZoom={session.mapZoom}
@@ -337,6 +339,8 @@ export default function ShopDirectoryScreen({
                 suppressHeader
                 userCoords={session.userGeolocation.coords}
                 userType={userType}
+                onOpenShopDirections={session.handleOpenShopDirections}
+                directionsActionLabel={session.directionsActionLabel}
               >
                 <ShopDirectoryMapOverlays
                   deviationPrompt={deviationPromptNode}

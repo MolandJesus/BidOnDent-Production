@@ -4,6 +4,7 @@
  */
 
 import { verifyToken } from "npm:@clerk/backend";
+import { requireClerkSession } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 function getAuthorizedParties(req: Request): string[] {
@@ -35,27 +36,13 @@ export async function handleTrackLogin(
   respond: Function
 ): Promise<Response> {
   try {
-    let body: Record<string, unknown> = {}
-    try {
-      body = await req.json()
-    } catch {
-      return respond({ error: 'Invalid JSON in request body' }, 400)
-    }
-    const { email, user_id } = body
-
-    if (!email && !user_id) {
-      return respond({ error: 'Missing email or user_id' }, 400)
-    }
+    const session = await requireClerkSession(req, { requireEmail: true })
 
     let query = supabase.from('profiles').update({
       last_login: new Date().toISOString()
     })
 
-    if (email) {
-      query = query.eq('email', email)
-    } else if (user_id) {
-      query = query.eq('user_id', user_id)
-    }
+    query = query.eq('clerk_user_id', session.clerkUserId)
 
     const { error: updateError } = await query
 
@@ -65,7 +52,12 @@ export async function handleTrackLogin(
 
     return respond({ success: true })
   } catch (error: any) {
-    return respond({ error: sanitizeErrorMessage(error) }, 500)
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : 500
+    return respond({ error: sanitizeErrorMessage(error) }, status)
   }
 }
 
@@ -105,25 +97,19 @@ export async function handleDeleteAccount(
         token,
         authorizedParties.length > 0 ? { authorizedParties } : {}
       )
-    } catch (authError: any) {
-      return respond(
-        {
-          error: 'Unauthorized',
-          details: authError?.message || 'Invalid Clerk session token'
-        },
-        401
-      )
+    } catch {
+      return respond({ error: 'Unauthorized' }, 401)
     }
 
     const clerkUserId =
       typeof verifiedToken.sub === 'string' ? verifiedToken.sub : null
 
     if (!clerkUserId) {
-      return respond({ error: 'Unauthorized', details: 'Missing Clerk user ID' }, 401)
+      return respond({ error: 'Unauthorized' }, 401)
     }
 
     if (requestedClerkUserId && requestedClerkUserId !== clerkUserId) {
-      return respond({ error: 'Forbidden', details: 'Authenticated user mismatch' }, 403)
+      return respond({ error: 'Forbidden' }, 403)
     }
 
     const profileResult = requestedEmail
@@ -202,7 +188,6 @@ export async function handleDeleteAccount(
         return respond(
           {
             error: 'Failed to delete legacy authentication account',
-            details: sanitizeErrorMessage(authDeleteError)
           },
           500
         )

@@ -1,12 +1,15 @@
 # ChatGPT Autopilot Strategy Questions — BidOnDent Production
 
+**Last updated:** March 28, 2026
+**Status:** Historical strategy reference
+
 **Date:** March 24, 2026  
 **Context:** These questions are from the GitHub Copilot AI agent working inside VS Code on the BidOnDent-Production codebase. The agent has completed 141 passes of systematic development. The goal is to get strategic recommendations from ChatGPT on how to continue building the platform to production readiness on full autopilot.
 
 **Docs you should have access to (5 total):**
 
 1. `BIDONDENT_PRODUCT_BRAIN.md` — Master product strategy, role interaction model, upgrade checklists, change recipes
-2. `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` — All 141 passes documented, per-system completion bars, drift risks
+2. `BIDONDENT_MAP_TRACKER_2026-03-21.md` — active pass log and execution reality
 3. `CODE_ORGANIZATION_AUDIT.md` — Architecture weak seams, file responsibilities, safe boundaries
 4. `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — Map/navigation strategic law
 
@@ -256,6 +259,5 @@ Looking at the architecture (Clerk auth, Supabase backend, Vite frontend, localS
 **Branch:** `feature/platform-bugfix-sweep-by-MolandJesus` (141 commits ahead of main)
 
 ---
-
 
 **Instructions for ChatGPT:** Please answer all 36 questions with specific, actionable recommendations. However, do **not** treat all questions as equally urgent. First identify the launch-blocking questions, then the important-but-deferrable ones, then the future-facing ones. For execution-related questions (Q31-Q36), provide exact file names, likely table additions, safe sequencing, and pass-by-pass plans where possible. Prioritize recommendations by **impact, feasibility, and launch relevance**. Assume the AI agent doing the work has full codebase access and can make autonomous changes, but should avoid unnecessary rewrites and should preserve current architecture unless there is a compelling production reason to change it.

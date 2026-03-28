@@ -2,30 +2,14 @@ import { useState } from "react";
 import { ArrowLeft, Clock, DollarSign, ChevronRight, ZoomIn, X, ChevronLeft } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-
-type Report = {
-  id: number;
-  vehicle: {
-    make: string;
-    model: string;
-    year: string;
-    vin?: string;
-  };
-  damageArea: string;
-  photos: string[];
-  description: string;
-  incident?: string;
-  status: string;
-  submittedAt: string;
-  bidsCount: number;
-};
+import type { DamageReport } from "../../types";
 
 type ReportsListScreenProps = {
-  reports: Report[];
+  reports: DamageReport[];
   reportsLoading: boolean;
   reportsError: string | null;
   onBack: () => void;
-  onSelectReport: (reportId: number) => void;
+  onSelectReport: (reportId: string) => void;
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -122,6 +106,9 @@ export default function ReportsListScreen({
           </div>
         ) : (
           filteredReports.map((report) => {
+            const submittedAt = report.submittedAt || report.createdAt;
+            const bidsCount = report.bidsCount || 0;
+
             return (
               <div
                 key={report.id}
@@ -158,15 +145,17 @@ export default function ReportsListScreen({
                   {/* Report Information - Right Side (Prominent) */}
                   <div
                     className="flex-1 min-w-0 cursor-pointer"
-                    onClick={() => onSelectReport(report.id)}
+                    onClick={() => onSelectReport(String(report.id))}
                   >
                     <div className="flex items-start justify-between mb-1">
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-lg truncate">
-                          {report.vehicle.year} {report.vehicle.make} {report.vehicle.model}
+                          {report.vehicle?.year || report.vehicleInfo?.year}{" "}
+                          {report.vehicle?.make || report.vehicleInfo?.make}{" "}
+                          {report.vehicle?.model || report.vehicleInfo?.model}
                         </h3>
                         <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-                          Damage to {report.damageArea}
+                          Damage to {report.damageArea || report.damageAreas?.[0] || "reported area"}
                         </p>
                       </div>
                       <span
@@ -196,23 +185,23 @@ export default function ReportsListScreen({
                     >
                       <div className="flex items-center">
                         <Clock className="w-3.5 h-3.5 mr-1" />
-                        <span>{new Date(report.submittedAt).toLocaleDateString()}</span>
+                        <span>{new Date(submittedAt).toLocaleDateString()}</span>
                       </div>
-                      {report.bidsCount > 0 && (
+                      {bidsCount > 0 && (
                         <div className="flex items-center text-blue-600 font-medium">
                           <DollarSign className="w-3.5 h-3.5 mr-1" />
-                          <span>{report.bidsCount} bids</span>
+                          <span>{bidsCount} bids</span>
                         </div>
                       )}
                     </div>
 
                     {/* Bids Info */}
-                    {report.bidsCount > 0 && (
+                    {bidsCount > 0 && (
                       <div
                         className={`flex items-center gap-2 pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
                       >
                         <div className="flex -space-x-1.5">
-                          {[...Array(Math.min(report.bidsCount, 3))].map((_, idx) => (
+                          {[...Array(Math.min(bidsCount, 3))].map((_, idx) => (
                             <div
                               key={idx}
                               className="w-7 h-7 rounded-full border-2 border-white flex items-center justify-center text-xs font-medium"

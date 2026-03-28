@@ -1,5 +1,8 @@
 # BidOnDent — Design & UI Continuation Prompt
 
+**Last updated:** March 28, 2026
+**Status:** Historical superseded prompt
+
 > **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first. The passes listed here (1–7) are all complete.
 
 **For: Claude Code (design AI) continuing autopilot in a new chat**
@@ -17,7 +20,7 @@ Before doing anything, read the two memory files that define your behavior:
 1. **`~/.claude/projects/.../memory/feedback_autopilot_rules.md`** — Strict autopilot execution discipline: no scope creep, one pass at a time, decision filters
 2. **`~/.claude/projects/.../memory/feedback_design_identity.md`** — BidOnDent design identity: calm/premium/map-first, blue system rules, what to avoid
 
-These are law. Every pass must satisfy the primary filter: *"Does this make the site feel more central, more premium, more breathable, and more distinctly BidOnDent?"*
+These are law. Every pass must satisfy the primary filter: _"Does this make the site feel more central, more premium, more breathable, and more distinctly BidOnDent?"_
 
 ---
 
@@ -78,10 +81,12 @@ FooterSection — src/app/components/landing/FooterSection.tsx
 ```
 
 Layout shells:
+
 - `src/app/components/app/LandingPageLayout.tsx` — assembles landing sections
 - `src/app/components/app/DashboardLayout.tsx` — dashboard with sidebar + mobile bottom nav
 
 Dashboard tabs (mobile bottom nav):
+
 - Dashboard (HomeScreen) — `src/app/components/codelayer/HomeScreen.tsx` / `HomeScreenSections.tsx`
 - Report — `src/app/components/codelayer/ReportScreen.tsx` + `report/*.tsx` steps
 - Bids — `src/app/components/codelayer/BidsScreen.tsx`
@@ -174,18 +179,21 @@ Dashboard tabs (mobile bottom nav):
 Each pass follows this exact structure:
 
 ### Before the pass:
+
 ```bash
 # Verify clean build
 npx vite build
 ```
 
 ### During the pass:
+
 1. **State the pass number and what you're changing** (e.g., "Pass 222 — P1: Fix BenefitsSection card title readability on mobile")
 2. **Read the file(s) you'll edit** — never edit blind
 3. **Make the minimum changes** to fix the stated issue
 4. **Verify build** after changes
 
 ### After the pass:
+
 ```bash
 # Type check
 npx tsc --noEmit
@@ -194,6 +202,7 @@ npx vite build
 ```
 
 ### Pass discipline:
+
 - **One issue per pass.** Don't bundle unrelated fixes.
 - **Never add features.** This is design refinement only.
 - **Never touch service/hook logic.** If you see a data bug, note it and move on.
@@ -218,32 +227,32 @@ After that commit, start fresh passes at **222**.
 
 ## LANDING PAGE FILE QUICK REFERENCE
 
-| Section | File | Key mobile issue |
-|---------|------|-----------------|
-| Header | `landing/LandingPageHeader.tsx` | Slightly tall on mobile |
-| Hero | `landing/HeroSection.tsx` | Bottom padding too generous |
-| How It Works | `landing/HowItWorksSection.tsx` | Icon border artifact |
-| Benefits | `landing/BenefitsSection.tsx` | **Card titles unreadable, trust badges wrap** |
-| Who We Serve | `landing/WhoWeServeSection.tsx` | Heavy card borders |
-| About | `landing/AboutOpportunitySection.tsx` | Button feels disconnected |
-| Trust Stats | `landing/TrustStatsSection.tsx` | Single-col wastes space |
-| Operating Regions | `landing/OperatingRegionsSection.tsx` | Map diagnostics visible |
-| Coverage Search | `landing/CoverageSearchPanel.tsx` | Clean — no issues |
-| Business Inquiry | `landing/BusinessInquirySection.tsx` | **Heading gradient unreadable** |
-| CTA | `landing/CTASection.tsx` | Decorative circles oversized |
-| Footer | `landing/FooterSection.tsx` | Long single-col on mobile |
+| Section           | File                                  | Key mobile issue                              |
+| ----------------- | ------------------------------------- | --------------------------------------------- |
+| Header            | `landing/LandingPageHeader.tsx`       | Slightly tall on mobile                       |
+| Hero              | `landing/HeroSection.tsx`             | Bottom padding too generous                   |
+| How It Works      | `landing/HowItWorksSection.tsx`       | Icon border artifact                          |
+| Benefits          | `landing/BenefitsSection.tsx`         | **Card titles unreadable, trust badges wrap** |
+| Who We Serve      | `landing/WhoWeServeSection.tsx`       | Heavy card borders                            |
+| About             | `landing/AboutOpportunitySection.tsx` | Button feels disconnected                     |
+| Trust Stats       | `landing/TrustStatsSection.tsx`       | Single-col wastes space                       |
+| Operating Regions | `landing/OperatingRegionsSection.tsx` | Map diagnostics visible                       |
+| Coverage Search   | `landing/CoverageSearchPanel.tsx`     | Clean — no issues                             |
+| Business Inquiry  | `landing/BusinessInquirySection.tsx`  | **Heading gradient unreadable**               |
+| CTA               | `landing/CTASection.tsx`              | Decorative circles oversized                  |
+| Footer            | `landing/FooterSection.tsx`           | Long single-col on mobile                     |
 
 ## DASHBOARD FILE QUICK REFERENCE
 
-| Screen | File | Status |
-|--------|------|--------|
-| Home | `codelayer/HomeScreen.tsx` + `HomeScreenSections.tsx` | Clean, minor spacing |
-| Report wizard | `codelayer/ReportScreen.tsx` + `report/*.tsx` | Clean after dark theme pass |
-| Bids | `codelayer/BidsScreen.tsx` | Clean |
-| Account | `codelayer/AccountScreen.tsx` + `account/*.tsx` | Clean after redesign |
-| Map widget | `dashboard/CustomerMapWidget.tsx` | Diagnostics need DEV gate |
-| Mobile nav | `dashboard/MobileBottomNav.tsx` | Clean |
-| Dashboard shell | `app/DashboardLayout.tsx` | Clean |
+| Screen          | File                                                  | Status                      |
+| --------------- | ----------------------------------------------------- | --------------------------- |
+| Home            | `codelayer/HomeScreen.tsx` + `HomeScreenSections.tsx` | Clean, minor spacing        |
+| Report wizard   | `codelayer/ReportScreen.tsx` + `report/*.tsx`         | Clean after dark theme pass |
+| Bids            | `codelayer/BidsScreen.tsx`                            | Clean                       |
+| Account         | `codelayer/AccountScreen.tsx` + `account/*.tsx`       | Clean after redesign        |
+| Map widget      | `dashboard/CustomerMapWidget.tsx`                     | Diagnostics need DEV gate   |
+| Mobile nav      | `dashboard/MobileBottomNav.tsx`                       | Clean                       |
+| Dashboard shell | `app/DashboardLayout.tsx`                             | Clean                       |
 
 ---
 

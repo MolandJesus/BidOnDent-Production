@@ -1,5 +1,8 @@
 # BidOnDent — AI Handoff Master Prompt
 
+**Last updated:** March 28, 2026
+**Status:** Historical superseded prompt
+
 > **SUPERSEDED** — This doc is historical. The current master context is [`CLAUDE_AI_MASTER_CONTEXT.md`](CLAUDE_AI_MASTER_CONTEXT.md). Read that first.
 
 > **Date**: March 26, 2026
@@ -80,7 +83,7 @@ All major docs are maintained:
 - `docs/BIDONDENT_PRODUCT_BRAIN.md` — primary execution framework
 - `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — strategic map law
 - `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — delivery reality tracker
-- `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` — pass-by-pass progress
+- `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` — historical pass archive
 - `docs/BIDONDENT_FINISHING_MASTER_PLAN.md` — finishing roadmap
 
 ---
@@ -216,7 +219,7 @@ Target aesthetic: **Apple Maps-inspired**
 | `docs/BIDONDENT_PRODUCT_BRAIN.md`                     | Product strategy and execution framework               |
 | `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`        | Map system strategic plan                              |
 | `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`            | Map delivery progress tracker                          |
-| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`          | Pass-by-pass build log                                 |
+| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`          | Historical pass archive (not active tracker)           |
 | `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`             | Finishing roadmap                                      |
 | `src/app/App.tsx`                                     | Root component, appearance mode state                  |
 | `src/app/components/app/DashboardLayout.tsx`          | Dashboard shell, header, sidebar                       |

@@ -138,6 +138,16 @@
     "recents",
     "popstate",
     "pushstate",
-    "unindexed"
+    "unindexed",
+    "docstrings",
+    "Molalign",
+    "textareas",
+    "scanability",
+    "Flagsmith",
+    "Hempstead",
+    "Unwired",
+    "querability",
+    "Deconfliction",
+    "wordmark"
   ]
 }

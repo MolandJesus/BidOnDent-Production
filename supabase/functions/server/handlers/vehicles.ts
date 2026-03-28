@@ -4,26 +4,14 @@
  */
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { findExistingProfile } from "./profiles.ts";
+import {
+  ensureClerkUserMatchesSession,
+  requireClerkSession,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { hydrateSignedStorageUrl } from "../utils/storage.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
-
-async function resolveVehicleClerkUserId(
-  supabase: SupabaseClient,
-  identity: {
-    clerkUserId?: string | null;
-    email?: string | null;
-    websiteUserKey?: string | null;
-  }
-) {
-  if (identity.clerkUserId) {
-    return identity.clerkUserId;
-  }
-
-  const profile = await findExistingProfile(supabase, identity);
-  return profile?.clerk_user_id || null;
-}
 
 /**
  * POST /vehicles - Save or update a vehicle
@@ -36,11 +24,12 @@ export async function saveVehicle(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { clerkUserId, vehicle } = body;
-
-    if (!clerkUserId) {
-      return respond({ error: 'Missing clerkUserId' }, 400);
-    }
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(
+      session,
+      clerkUserId || null
+    );
 
     // Convert year to number if it's a string and validate range
     const yearNum = typeof vehicle.year === 'string' ? parseInt(vehicle.year, 10) : vehicle.year;
@@ -68,7 +57,7 @@ export async function saveVehicle(
           image_url: vehicle.image_url
         })
         .eq('id', vehicle.id)
-        .eq('clerk_user_id', clerkUserId)
+        .eq('clerk_user_id', authenticatedClerkUserId)
         .select()
         .single();
 
@@ -79,7 +68,7 @@ export async function saveVehicle(
       const result = await supabase
         .from('vehicles')
         .insert({
-          clerk_user_id: clerkUserId,
+          clerk_user_id: authenticatedClerkUserId,
           make: vehicle.make,
           model: vehicle.model,
           year: yearNum,
@@ -100,10 +89,28 @@ export async function saveVehicle(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
-    return respond({ success: true, vehicle: data });
+    return respond({
+      success: true,
+      vehicle: data
+        ? {
+            ...data,
+            image_url: await hydrateSignedStorageUrl(
+              supabase,
+              typeof data.image_url === "string" ? data.image_url : null
+            ),
+          }
+        : null,
+    });
   } catch (error: any) {
     console.error('Error in save vehicle endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -118,17 +125,12 @@ export async function getVehicles(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const clerkUserId = await resolveVehicleClerkUserId(supabase, {
-      clerkUserId: url.searchParams.get('clerkUserId'),
-      email: url.searchParams.get('email'),
-      websiteUserKey: url.searchParams.get('websiteUserKey'),
-    });
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const clerkUserId = ensureClerkUserMatchesSession(
+      session,
+      url.searchParams.get('clerkUserId')
+    );
 
-    if (!clerkUserId) {
-      return respond({ error: 'Missing clerkUserId or equivalent website identity' }, 400);
-    }
-
-    // Use service role to bypass RLS
     const { data, error } = await supabase
       .from('vehicles')
       .select('*')
@@ -140,10 +142,27 @@ export async function getVehicles(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
-    return respond({ vehicles: data });
+    return respond({
+      vehicles: await Promise.all(
+        (data || []).map(async (vehicle: any) => ({
+          ...vehicle,
+          image_url: await hydrateSignedStorageUrl(
+            supabase,
+            typeof vehicle?.image_url === "string" ? vehicle.image_url : null
+          ),
+        }))
+      ),
+    });
   } catch (error: any) {
     console.error('Error in get vehicles endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -158,17 +177,20 @@ export async function deleteVehicleByPost(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const session = await requireClerkSession(req, { requireEmail: true });
     const { vehicleId, clerkUserId } = body;
 
     if (!vehicleId || !clerkUserId) {
       return respond({ error: 'Missing vehicleId or clerkUserId' }, 400);
     }
 
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
+
     const { error } = await supabase
       .from('vehicles')
       .delete()
       .eq('id', vehicleId)
-      .eq('clerk_user_id', clerkUserId);
+      .eq('clerk_user_id', authenticatedClerkUserId);
 
     if (error) {
       console.error('Error deleting vehicle:', error);
@@ -178,7 +200,14 @@ export async function deleteVehicleByPost(
     return respond({ success: true, message: 'Vehicle deleted' });
   } catch (error: any) {
     console.error('Error in delete vehicle endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }
 
@@ -187,21 +216,27 @@ export async function deleteVehicleByPost(
  * Alternative delete method using REST-style DELETE HTTP method
  */
 export async function deleteVehicleByDelete(
+  req: Request,
   vehicleId: string | undefined,
-  clerkUserId: string | null,
   supabase: SupabaseClient,
   respond: RespondFunction
 ): Promise<Response> {
   try {
+    const session = await requireClerkSession(req, { requireEmail: true });
+    const url = new URL(req.url);
+    const clerkUserId = url.searchParams.get("clerkUserId");
+
     if (!vehicleId || !clerkUserId) {
       return respond({ error: 'Missing vehicleId or clerkUserId' }, 400);
     }
+
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
 
     const { error } = await supabase
       .from('vehicles')
       .delete()
       .eq('id', vehicleId)
-      .eq('clerk_user_id', clerkUserId);
+      .eq('clerk_user_id', authenticatedClerkUserId);
 
     if (error) {
       console.error('Error deleting vehicle:', error);
@@ -211,6 +246,13 @@ export async function deleteVehicleByDelete(
     return respond({ success: true, message: 'Vehicle deleted' });
   } catch (error: any) {
     console.error('Error in delete vehicle endpoint:', error);
-    return respond({ error: sanitizeErrorMessage(error) }, 500);
+    const status =
+      error?.message === "No Authorization header provided" ||
+      error?.message?.includes("Authorization header")
+        ? 401
+        : error?.message?.includes("Authenticated user mismatch")
+          ? 403
+          : 500;
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }

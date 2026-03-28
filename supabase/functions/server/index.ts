@@ -10,7 +10,17 @@ import { initializeStorageBuckets } from './storage_init.tsx'
 import { corsHeaders, config } from './config/constants.ts'
 import { supabase, supabaseAuth } from './config/clients.ts'
 import { stripFunctionPrefix, createResponse } from './utils/helpers.ts'
+import { requireAdminContext } from './utils/authz.ts'
 import { healthCheck, migrateDatabase, deepHealthCheck } from './handlers/health.ts'
+import {
+  submitInsurerInterest,
+  submitShopInterest,
+} from './handlers/intake.ts'
+import {
+  deleteNavigationSession,
+  getNavigationSession,
+  saveNavigationSession,
+} from './handlers/navigation.ts'
 import {
   saveVehicle,
   getVehicles,
@@ -34,9 +44,14 @@ import {
   handleListProfiles,
   handleDeleteUsers,
   handleCreateTestAccount,
+  handleGetIntakeOperations,
+  handleUpdateIntakeSubmissionStatus,
 } from './handlers/admin.ts'
 import { handleTrackLogin, handleDeleteAccount } from './handlers/auth.ts'
 import {
+  handleDeletePhoto,
+  handleGetSignedStorageUrl,
+  handleListStorageObjects,
   handleUploadPhoto,
   handleStorageStats,
   handleCleanupOldReports,
@@ -45,6 +60,11 @@ import {
   getWebsitePreferences,
   saveWebsitePreferences,
 } from './handlers/preferences.ts'
+import {
+  createJobAssignment,
+  logWorkflowEvent,
+  updateJobAssignmentStatus,
+} from './handlers/workflow.ts'
 import {
   getWebsiteRelationships,
   saveWebsiteRelationships,
@@ -104,11 +124,33 @@ Deno.serve(async (req) => {
     }
 
     if (path === '/health/deep' && req.method === 'GET') {
+      await requireAdminContext(req, supabase)
       return await deepHealthCheck(supabase, respond)
     }
 
     if (path === '/migrate-database' && req.method === 'POST') {
+      await requireAdminContext(req, supabase)
       return await migrateDatabase(initializeDatabaseTables, respond)
+    }
+
+    if (path === '/intake/shop-interest' && req.method === 'POST') {
+      return await submitShopInterest(req, supabase, respond)
+    }
+
+    if (path === '/intake/insurer-interest' && req.method === 'POST') {
+      return await submitInsurerInterest(req, supabase, respond)
+    }
+
+    if (path === '/navigation-session' && req.method === 'GET') {
+      return await getNavigationSession(req, supabase, respond)
+    }
+
+    if (path === '/navigation-session' && req.method === 'POST') {
+      return await saveNavigationSession(req, supabase, respond)
+    }
+
+    if (path === '/navigation-session' && req.method === 'DELETE') {
+      return await deleteNavigationSession(req, supabase, respond)
     }
 
     if (path === '/admin/setup-admin' && req.method === 'POST') {
@@ -132,7 +174,7 @@ Deno.serve(async (req) => {
     }
 
     if (path === '/admin/list-users' && req.method === 'GET') {
-      return await handleListUsers(supabase, respond)
+      return await handleListUsers(req, supabase, respond)
     }
 
     if (path === '/admin/profiles' && req.method === 'GET') {
@@ -147,6 +189,14 @@ Deno.serve(async (req) => {
       return await handleCreateTestAccount(req, supabase, respond)
     }
 
+    if (path === '/admin/intake-operations' && req.method === 'GET') {
+      return await handleGetIntakeOperations(req, supabase, respond)
+    }
+
+    if (path === '/admin/intake-operations/status' && req.method === 'POST') {
+      return await handleUpdateIntakeSubmissionStatus(req, supabase, respond)
+    }
+
     if (path === '/track-login' && req.method === 'POST') {
       return await handleTrackLogin(req, supabase, respond)
     }
@@ -159,12 +209,36 @@ Deno.serve(async (req) => {
       return await handleUploadPhoto(req, supabase, respond)
     }
 
+    if (path === '/delete-photo' && req.method === 'POST') {
+      return await handleDeletePhoto(req, supabase, respond)
+    }
+
+    if (path === '/storage/list' && req.method === 'GET') {
+      return await handleListStorageObjects(req, supabase, respond)
+    }
+
+    if (path === '/storage/signed-url' && req.method === 'POST') {
+      return await handleGetSignedStorageUrl(req, supabase, respond)
+    }
+
     if (path === '/storage-stats' && req.method === 'GET') {
-      return await handleStorageStats(supabase, respond)
+      return await handleStorageStats(req, supabase, respond)
     }
 
     if (path === '/cleanup-old-reports' && req.method === 'POST') {
       return await handleCleanupOldReports(req, supabase, respond)
+    }
+
+    if (path === '/workflow-event' && req.method === 'POST') {
+      return await logWorkflowEvent(req, supabase, respond)
+    }
+
+    if (path === '/job-assignment' && req.method === 'POST') {
+      return await createJobAssignment(req, supabase, respond)
+    }
+
+    if (path === '/job-assignment/status' && req.method === 'POST') {
+      return await updateJobAssignmentStatus(req, supabase, respond)
     }
 
     if (path === '/website-preferences' && req.method === 'GET') {
@@ -225,8 +299,7 @@ Deno.serve(async (req) => {
 
     if (path.startsWith('/vehicles/') && req.method === 'DELETE') {
       const vehicleId = path.split('/').pop()
-      const clerkUserId = url.searchParams.get('clerkUserId')
-      return await deleteVehicleByDelete(vehicleId, clerkUserId, supabase, respond)
+      return await deleteVehicleByDelete(req, vehicleId, supabase, respond)
     }
 
     if (path === '/reports' && req.method === 'POST') {
@@ -248,8 +321,7 @@ Deno.serve(async (req) => {
 
     if (path.startsWith('/reports/') && req.method === 'DELETE') {
       const reportId = path.split('/').pop()
-      const clerkUserId = url.searchParams.get('clerkUserId')
-      return await deleteReport(reportId, clerkUserId, supabase, respond)
+      return await deleteReport(req, reportId, supabase, respond)
     }
 
     if (path === '/bids' && req.method === 'POST') {
@@ -273,6 +345,6 @@ Deno.serve(async (req) => {
     return respond({ error: 'Not found', path }, 404)
   } catch (error: any) {
     console.error('Error:', error)
-    return respond({ error: 'Internal server error', details: error?.message }, 500)
+    return respond({ error: 'Internal server error' }, 500)
   }
 })

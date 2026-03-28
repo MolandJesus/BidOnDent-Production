@@ -3,7 +3,8 @@
 > **Single source of truth for any AI agent working on this repo.**
 > All other AI handoff docs defer to this file. Read this first, every session.
 >
-> **Last updated:** 2026-03-26 (Pass 286 — Map NY data/theme/viewport/customer routing complete)
+> **Last updated:** 2026-03-28 (Pass 398 — concurrent AI security-track reconciliation)
+> **Status:** Active master context source of truth
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~2.01s · 786KB main bundle
 
@@ -46,6 +47,26 @@ utils/      = transforms/formatting/calculations — pure functions only
 - **localStorage** = cache only, never source of truth
 - File soft limit: 300 lines. Hard limit: 500 lines.
 - Never bypass Supabase RLS; never commit `.env` files.
+
+### Concurrent Security-Track Rule
+
+If another AI is actively updating security/auth/data boundaries:
+
+- Keep documentation updates additive and merge-safe.
+- Do not overwrite newly added security guidance without verification.
+- Synchronize auth/storage ownership notes across `SUPABASE_SETUP_GUIDE.md`, `GOOGLE_OAUTH_SETUP.md`, and this master context in the same pass.
+
+### Concurrent AI Snapshot (2026-03-28)
+
+Verified concurrent security/runtime work landed while docs governance passes were running:
+
+- Supabase edge runtime now supports Clerk-backed auth headers for app-origin edge requests.
+- Public intake writes and workflow event/job-assignment mutations were routed behind edge handlers.
+- Navigation-session persistence moved to Clerk-bound cloud session semantics with local-only fallback for anonymous mode.
+- Storage model hardened toward private user buckets with signed URL hydration and authenticated deletion flows.
+- Server handlers adopted stricter authz gates (admin, marketplace, website identity) and reduced sensitive error leakage.
+
+Execution implication: future refactor work must preserve the Clerk -> edge -> Supabase boundary and avoid reintroducing direct browser table/storage mutation paths.
 
 ### Appearance Mode System
 
@@ -103,7 +124,9 @@ The landing page is a separate surface — it uses inline style conditionals for
 
 ---
 
-## 4. Current State — Pass History
+## 4. Historical Snapshot — Pass 286 Era
+
+Archive note: This section captures the implementation snapshot from the Pass 286 time window and immediate follow-on hardening notes. For current execution truth before refactor, use `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` and `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`.
 
 **276 structured passes completed before this session** (at 173% of original 160-pass plan).
 
@@ -124,7 +147,7 @@ The landing page is a separate surface — it uses inline style conditionals for
 - Liquid glass UI (passes 236-242): all white surfaces eliminated
 - Navigation system (useNavigationSession, useNavigationIntelligence, voice alerts, reroute)
 
-### Map program — this session (Pass 286):
+### Map program snapshot — Pass 286 (historical):
 
 **Problem found:** Map was entirely hardcoded to Dallas, TX. All overlays had hardcoded dark styles ignoring `mapTheme` toggle. Customers had no path from dashboard home to ShopDirectoryScreen.
 
@@ -201,7 +224,9 @@ directoryAdapters.ts                 ← Supabase shop/insurer → map listing a
 
 ---
 
-## 6. What Needs to Happen Next (Priority Order)
+## 6. Historical Action Log (Pass 286 Follow-on)
+
+Archive note: The checklist below records the priorities captured during the Pass 286 cycle. Do not treat this block as the active next-pass queue.
 
 ### Map Program — Immediate
 
@@ -348,7 +373,7 @@ All other AI docs in this repo point to this file as the master context. The fol
 
 | Doc                                            | Use When                                     |
 | ---------------------------------------------- | -------------------------------------------- |
-| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`   | Need full pass history (passes 1–285)        |
+| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`   | Need archived pass history context           |
 | `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`      | Need the product completion roadmap          |
 | `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` | Need map design law and strategic intent     |
 | `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`     | Need map delivery reality tracker            |
