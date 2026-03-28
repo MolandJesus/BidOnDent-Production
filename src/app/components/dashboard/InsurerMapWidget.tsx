@@ -1,7 +1,8 @@
 import { Building2, MapPinned, Navigation } from "lucide-react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
-import { operatingRegions } from "../landing/coverageData";
+import { defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
+import DashboardMapPreview from "./DashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type InsurerMapWidgetProps = {
@@ -12,9 +13,8 @@ type InsurerMapWidgetProps = {
 };
 
 /**
- * Compact CarPlay-style "Network Overview" widget for the insurer dashboard.
- * Structure-only placeholder — real network analytics require queryable shop data.
- * Max height 300px. Glanceable network stats with region breakdown.
+ * Map-backed "Network Overview" widget for the insurer dashboard.
+ * Shows partner shop density on an embedded mini-map with network stats.
  */
 export default function InsurerMapWidget({
   primaryColor,
@@ -32,46 +32,50 @@ export default function InsurerMapWidget({
 
   return (
     <section
-      className={`bd-glass-card p-5${isLight ? " bd-light-surface" : ""}`}
-      style={
-        isLight
-          ? {
-              maxHeight: 380,
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(248,250,252,0.88) 100%)",
-              borderColor: "rgba(148,163,184,0.30)",
-              boxShadow: "0 14px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.80)",
-            }
-          : { maxHeight: 380 }
-      }
+      className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
+      style={{
+        borderColor: isLight ? "rgba(148,163,184,0.30)" : "rgba(96,165,250,0.24)",
+        boxShadow: isLight
+          ? "0 14px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.80)"
+          : "0 14px 30px rgba(3,10,24,0.38), inset 0 1px 0 rgba(147,197,253,0.12)",
+      }}
     >
-      {" "}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2.5">
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-xl text-white"
-            style={{
-              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-            }}
+      {/* Embedded mini-map */}
+      <div className="relative h-[180px] md:h-[200px]">
+        <DashboardMapPreview
+          shops={partnerShops}
+          center={defaultCoverageCenter}
+          zoom={9}
+          isLight={isLight}
+          onMapClick={onViewShops}
+        />
+
+        {/* Floating badge — top left */}
+        <div
+          className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-xl px-3 py-1.5 pointer-events-none"
+          style={{
+            background: isLight ? "rgba(255,255,255,0.90)" : "rgba(8,18,38,0.85)",
+            backdropFilter: "blur(12px)",
+            border: isLight
+              ? "1px solid rgba(148,163,184,0.25)"
+              : "1px solid rgba(96,165,250,0.20)",
+            boxShadow: isLight ? "0 2px 8px rgba(0,0,0,0.06)" : "0 2px 10px rgba(0,0,0,0.30)",
+          }}
+        >
+          <Building2 className={`h-3.5 w-3.5 ${isLight ? "text-blue-600" : "text-blue-300"}`} />
+          <span
+            className={`text-xs font-semibold ${isLight ? "text-slate-700" : "text-slate-100"}`}
           >
-            <Building2 className="h-4.5 w-4.5" />
-          </div>
-          <div>
-            <h3
-              className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
-            >
-              Network Overview
-            </h3>
-            <p className={`text-xs ${isLight ? "text-slate-500" : "text-slate-500"}`}>
-              {isLoadingShops ? "Loading\u2026" : "Partner shop network"}
-            </p>
-          </div>
+            Network Overview
+          </span>
         </div>
+
+        {/* Floating CTA — top right */}
         {onViewShops && (
           <button
             type="button"
             onClick={onViewShops}
-            className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 min-h-[44px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
+            className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 min-h-[40px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.96] shadow-lg"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
@@ -81,59 +85,92 @@ export default function InsurerMapWidget({
           </button>
         )}
       </div>
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
-        <div className={`bd-glass-card p-3 ${isLight ? "!bg-slate-50 !border-slate-200/60" : ""}`}>
+
+      {/* Stats + info below map */}
+      <div className="px-4 py-3 md:px-5">
+        <div className="grid grid-cols-3 gap-2">
           <div
-            className={`text-xs uppercase tracking-[0.2em] ${isLight ? "text-slate-500" : "text-slate-500"}`}
+            className={`rounded-xl p-2.5 ${
+              isLight
+                ? "bg-slate-50 border border-slate-200/60"
+                : "bg-white/[0.04] border border-white/[0.08]"
+            }`}
           >
-            Shops
+            <div
+              className={`text-[10px] uppercase tracking-[0.2em] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
+              Shops
+            </div>
+            <div
+              className={`mt-0.5 text-lg font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
+              {isLoadingShops ? "\u2014" : partnerShops.length}
+            </div>
           </div>
           <div
-            className={`mt-1 text-xl font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            className={`rounded-xl p-2.5 ${
+              isLight
+                ? "bg-slate-50 border border-slate-200/60"
+                : "bg-white/[0.04] border border-white/[0.08]"
+            }`}
           >
-            {isLoadingShops ? "\u2014" : partnerShops.length}
+            <div
+              className={`text-[10px] uppercase tracking-[0.2em] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
+              Regions
+            </div>
+            <div
+              className={`mt-0.5 text-lg font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
+              {operatingRegions.length}
+            </div>
+          </div>
+          <div
+            className={`rounded-xl p-2.5 ${
+              isLight
+                ? "bg-slate-50 border border-slate-200/60"
+                : "bg-white/[0.04] border border-white/[0.08]"
+            }`}
+          >
+            <div
+              className={`text-[10px] uppercase tracking-[0.2em] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
+              Avg Rating
+            </div>
+            <div
+              className={`mt-0.5 text-lg font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
+              {isLoadingShops ? "\u2014" : avgRating.toFixed(1)}
+            </div>
           </div>
         </div>
-        <div className={`bd-glass-card p-3 ${isLight ? "!bg-slate-50 !border-slate-200/60" : ""}`}>
+
+        {fetchError && (
           <div
-            className={`text-xs uppercase tracking-[0.2em] ${isLight ? "text-slate-500" : "text-slate-500"}`}
+            className={`mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2 ${
+              isLight
+                ? "bg-rose-50 border border-rose-200 text-rose-700"
+                : "bg-rose-500/10 border border-rose-400/20 text-rose-200"
+            }`}
           >
-            Regions
+            <p className="text-xs">Could not load network data.</p>
           </div>
-          <div
-            className={`mt-1 text-xl font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
-          >
-            {operatingRegions.length}
-          </div>
-        </div>
-        <div className={`bd-glass-card p-3 ${isLight ? "!bg-slate-50 !border-slate-200/60" : ""}`}>
-          <div
-            className={`text-xs uppercase tracking-[0.2em] ${isLight ? "text-slate-500" : "text-slate-500"}`}
-          >
-            Avg Rating
-          </div>
-          <div
-            className={`mt-1 text-xl font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
-          >
-            {isLoadingShops ? "\u2014" : avgRating.toFixed(1)}
-          </div>
-        </div>
-      </div>
-      {fetchError && (
-        <div className="mt-3 flex items-center gap-2 rounded-xl bg-red-400/10 border border-red-400/20 px-3 py-2.5">
-          <p className="text-xs text-red-600">
-            Could not load network data. Check your connection and try again.
+        )}
+
+        <div
+          className={`mt-2.5 flex items-center gap-2 rounded-xl px-3 py-2 ${
+            isLight
+              ? "bg-blue-50/40 border border-blue-200/40"
+              : "bg-blue-500/[0.06] border border-blue-400/[0.12]"
+          }`}
+        >
+          <MapPinned
+            className={`h-3.5 w-3.5 shrink-0 ${isLight ? "text-blue-600" : "text-blue-400"}`}
+          />
+          <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/70"}`}>
+            Network analytics dashboard coming soon.
           </p>
         </div>
-      )}
-      <div
-        className={`mt-4 flex items-center gap-2 rounded-xl px-3 py-2.5 ${isLight ? "bg-blue-50 border border-blue-200/60" : "bg-blue-500/[0.08] border border-blue-400/[0.15]"}`}
-      >
-        <MapPinned className={`h-4 w-4 ${isLight ? "text-blue-600" : "text-blue-400"}`} />
-        <p className={`text-xs ${isLight ? "text-slate-600" : "text-slate-500"}`}>
-          Network analytics dashboard coming soon. Region-level claims and shop performance data
-          will appear here.
-        </p>
       </div>
     </section>
   );

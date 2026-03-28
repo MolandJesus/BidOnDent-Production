@@ -163,27 +163,19 @@ export default function CustomerMapWidget({
           <div
             className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-xl px-3 py-1.5 pointer-events-none"
             style={{
-              background: isLight
-                ? "rgba(255,255,255,0.90)"
-                : "rgba(8,18,38,0.85)",
+              background: isLight ? "rgba(255,255,255,0.90)" : "rgba(8,18,38,0.85)",
               backdropFilter: "blur(12px)",
               border: isLight
                 ? "1px solid rgba(148,163,184,0.25)"
                 : "1px solid rgba(96,165,250,0.20)",
-              boxShadow: isLight
-                ? "0 2px 8px rgba(0,0,0,0.06)"
-                : "0 2px 10px rgba(0,0,0,0.30)",
+              boxShadow: isLight ? "0 2px 8px rgba(0,0,0,0.06)" : "0 2px 10px rgba(0,0,0,0.30)",
             }}
           >
-            <MapPinned
-              className={`h-3.5 w-3.5 ${isLight ? "text-blue-600" : "text-blue-300"}`}
-            />
+            <MapPinned className={`h-3.5 w-3.5 ${isLight ? "text-blue-600" : "text-blue-300"}`} />
             <span
               className={`text-xs font-semibold ${isLight ? "text-slate-700" : "text-slate-100"}`}
             >
-              {isLoadingShops
-                ? "Finding shops\u2026"
-                : `${displayShops.length} shops near you`}
+              {isLoadingShops ? "Finding shops\u2026" : `${displayShops.length} shops near you`}
             </span>
           </div>
 
