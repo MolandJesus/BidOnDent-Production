@@ -153,23 +153,17 @@ export function useAppHandlers({
 
   const handleReportSubmit = async (report: Record<string, unknown>) => {
     try {
+      if (!userId) {
+        throw new Error("Please sign in to submit a damage report.");
+      }
+
       if (import.meta.env.DEV) console.log("Submitting damage report to API...");
 
-      const savedApiReport = await saveDamageReport(
-        buildSupabaseReportPayload(report),
-        userId
-      );
+      const savedApiReport = await saveDamageReport(buildSupabaseReportPayload(report), userId);
 
       if (!savedApiReport) {
         if (import.meta.env.DEV) console.error("Failed to save report");
-        userData.setReports((previous) => [...previous, report as never]);
-        if (report?.id && Array.isArray(report.photos)) {
-          userData.setPhotoStorage((previous: Record<string, string[]>) => ({
-            ...previous,
-            [report.id]: report.photos,
-          }));
-        }
-        throw new Error("Failed to save report to server");
+        throw new Error("Failed to save report to server. Please try again.");
       }
 
       if (import.meta.env.DEV) console.log("Damage report saved to database:", savedApiReport.id);

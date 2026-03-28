@@ -17,7 +17,7 @@ import {
   loadReportDraft,
   saveReportDraft,
 } from "./report/reportDraftStorage";
-import { uploadReportPhoto } from "./report/reportPhotoUpload";
+import { uploadReportPhoto, isBase64Photo, retryUploadBase64 } from "./report/reportPhotoUpload";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { Vehicle } from "../../types";
 
@@ -228,6 +228,26 @@ export default function ReportScreen({
     setIsSubmitting(true);
     setSubmitError(null);
     try {
+      // Retry uploading any photos that fell back to base64
+      let finalPhotos = photos;
+      const pendingBase64 = photos.filter(isBase64Photo);
+      if (pendingBase64.length > 0) {
+        if (import.meta.env.DEV)
+          console.log(`Retrying upload for ${pendingBase64.length} base64 photo(s)...`);
+        const retried = await Promise.all(
+          photos.map((p) => (isBase64Photo(p) ? retryUploadBase64(p) : Promise.resolve(p)))
+        );
+        finalPhotos = retried;
+        setPhotos(retried);
+      }
+
+      // Strip any remaining base64 photos from the payload — they're too large for the DB
+      const uploadedPhotos = finalPhotos.filter((p) => !isBase64Photo(p));
+      const failedCount = finalPhotos.length - uploadedPhotos.length;
+      if (failedCount > 0 && import.meta.env.DEV) {
+        console.warn(`${failedCount} photo(s) could not be uploaded and will be excluded`);
+      }
+
       if (onReportSubmit) {
         const report = {
           id: Date.now().toString(),
@@ -235,7 +255,7 @@ export default function ReportScreen({
           damageArea,
           zipCode,
           address,
-          photos,
+          photos: uploadedPhotos,
           description,
           incident,
           status: "pending" as const,
@@ -248,7 +268,11 @@ export default function ReportScreen({
       nextStep();
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error submitting report:", error);
-      setSubmitError("Something went wrong. Your report was saved locally. Please try again.");
+      const message =
+        error instanceof Error && error.message.includes("sign in")
+          ? error.message
+          : "Something went wrong while submitting. Please check your connection and try again.";
+      setSubmitError(message);
     } finally {
       setIsSubmitting(false);
     }

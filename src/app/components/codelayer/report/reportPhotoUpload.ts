@@ -61,6 +61,19 @@ export async function compressImageToBase64(file: File): Promise<string> {
   });
 }
 
+export function isBase64Photo(photo: string): boolean {
+  return photo.startsWith("data:");
+}
+
+export async function retryUploadBase64(base64: string): Promise<string> {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(7);
+  const imagePath = `damage-reports/${timestamp}-${random}.jpg`;
+
+  const uploadedUrl = await uploadImageToSupabase(base64, imagePath);
+  return uploadedUrl || base64;
+}
+
 export async function uploadReportPhoto(file: File): Promise<string> {
   const compressedBase64 = await compressImageToBase64(file);
   const timestamp = Date.now();

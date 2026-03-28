@@ -33,8 +33,12 @@ export default function StepDescription({
     <div
       className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
     >
-      <h2 className="text-2xl font-bold mb-1 text-slate-100">Describe the damage</h2>
-      <p className={`mb-6 ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/80"}`}>
+      <h2
+        className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+      >
+        Describe the damage
+      </h2>
+      <p className={`mb-6 ${isLightAppearance ? "text-slate-500" : "text-blue-100/80"}`}>
         The better your details, the better your bids will be.
       </p>
 
@@ -42,7 +46,7 @@ export default function StepDescription({
         <label
           htmlFor="description"
           className={`text-sm font-medium mb-1.5 inline-flex items-center gap-1.5 ${
-            isLightAppearance ? "text-slate-300" : "text-blue-100/85"
+            isLightAppearance ? "text-slate-700" : "text-blue-100/85"
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -54,13 +58,13 @@ export default function StepDescription({
           rows={4}
           className={`w-full px-3.5 py-2.5 border rounded-xl outline-none transition-all ${
             isLightAppearance
-              ? "bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
+              ? "bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40"
               : "bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
           } ${
             description.length > 0 && !isDescriptionValid
-              ? "border-amber-300"
+              ? "border-amber-400"
               : isLightAppearance
-                ? "border-white/[0.12]"
+                ? "border-slate-200"
                 : "border-blue-300/25"
           }`}
           placeholder="Front bumper has a dent on the passenger side and paint scratches near the corner..."
@@ -68,7 +72,7 @@ export default function StepDescription({
           onChange={(e) => onDescriptionChange(e.target.value)}
         ></textarea>
         {description.length > 0 && !isDescriptionValid && (
-          <p className="text-xs text-amber-600 mt-1">
+          <p className={`text-xs mt-1 ${isLightAppearance ? "text-amber-600" : "text-amber-400"}`}>
             Please add at least 10 characters to help shops understand the damage.
           </p>
         )}
@@ -78,7 +82,7 @@ export default function StepDescription({
         <label
           htmlFor="incident"
           className={`text-sm font-medium mb-1.5 inline-flex items-center gap-1.5 ${
-            isLightAppearance ? "text-slate-300" : "text-blue-100/85"
+            isLightAppearance ? "text-slate-700" : "text-blue-100/85"
           }`}
         >
           <MessageSquareQuote className="w-4 h-4" />
@@ -90,7 +94,7 @@ export default function StepDescription({
           rows={3}
           className={`w-full px-3.5 py-2.5 border rounded-xl outline-none transition-all ${
             isLightAppearance
-              ? "border-white/[0.12] bg-white/[0.06] text-slate-200 focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400/40"
+              ? "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40"
               : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
           }`}
           placeholder="I was backing out in a parking lot and clipped a pole..."
@@ -100,9 +104,17 @@ export default function StepDescription({
       </div>
 
       {submitError && (
-        <div className="mb-4 p-3 rounded-xl border border-rose-400/30 bg-rose-500/10 flex items-start gap-2.5">
-          <AlertTriangle className="w-4 h-4 text-rose-200 mt-0.5 shrink-0" />
-          <p className="text-sm text-rose-200">{submitError}</p>
+        <div
+          className={`mb-4 p-3 rounded-xl border flex items-start gap-2.5 ${
+            isLightAppearance
+              ? "border-rose-200 bg-rose-50 text-rose-700"
+              : "border-rose-400/30 bg-rose-500/10 text-rose-200"
+          }`}
+        >
+          <AlertTriangle
+            className={`w-4 h-4 mt-0.5 shrink-0 ${isLightAppearance ? "text-rose-500" : "text-rose-300"}`}
+          />
+          <p className="text-sm">{submitError}</p>
         </div>
       )}
 
@@ -113,7 +125,7 @@ export default function StepDescription({
           disabled={isSubmitting}
           className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
             isLightAppearance
-              ? "border-blue-300/15 text-slate-300 hover:bg-blue-500/10"
+              ? "border-slate-200 text-slate-600 hover:bg-slate-50"
               : "border-blue-300/25 text-blue-100 hover:bg-blue-400/12"
           }`}
         >
