@@ -16,24 +16,24 @@ export default function FooterSection({
 
   return (
     <footer
-      className="pt-12 sm:pt-16 pb-10 sm:pb-12 relative overflow-hidden text-blue-100/70"
+      className={`pt-12 sm:pt-16 pb-10 sm:pb-12 relative overflow-hidden ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #0a1832 0%, #081430 50%, #060e24 100%)"
+          ? "linear-gradient(180deg, #e6ebf3 0%, #e2e8f0 50%, #dde4ef 100%)"
           : "linear-gradient(180deg, #061428 0%, #040e1e 100%)",
       }}
       ref={footerRef}
     >
       {/* Top edge fade */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-400/12" : "via-blue-400/10"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/15" : "via-blue-400/10"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_80%,rgba(99,102,241,0.06),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_70%_20%,rgba(59,130,246,0.04),transparent_55%)]" />
-          <div className="absolute bottom-0 left-[15%] w-48 h-48 bg-blue-400/[0.04] rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_80%,rgba(99,102,241,0.04),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_70%_20%,rgba(59,130,246,0.03),transparent_55%)]" />
+          <div className="absolute bottom-0 left-[15%] w-48 h-48 bg-blue-300/[0.05] rounded-full blur-[100px]" />
         </>
       ) : (
         <>
@@ -48,7 +48,9 @@ export default function FooterSection({
           className={`grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex bg-white/[0.07] border border-white/[0.1]">
+            <div
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex ${isLightAppearance ? "bg-white/60 border border-slate-200/50" : "bg-white/[0.07] border border-white/[0.1]"}`}
+            >
               <span
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
                 style={{
@@ -69,16 +71,22 @@ export default function FooterSection({
                   Bid
                 </span>
                 <span style={{ color: "#70c0ee" }}>On</span>
-                <span className="text-blue-100/80">Dent</span>
+                <span className={isLightAppearance ? "text-slate-800" : "text-blue-100/80"}>
+                  Dent
+                </span>
               </h3>
             </div>
-            <p className="text-sm leading-relaxed text-blue-100/55 mb-4">
+            <p
+              className={`text-sm leading-relaxed mb-4 ${isLightAppearance ? "text-slate-500" : "text-blue-100/55"}`}
+            >
               The smart way to handle auto repairs. Connect with trusted shops, compare bids, and
               get your car fixed with confidence.
             </p>
 
             {/* Contact info */}
-            <div className="space-y-2 text-sm text-blue-200/60">
+            <div
+              className={`space-y-2 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+            >
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" style={{ color: primaryColor }} />
                 <span>bidondent@gmail.com</span>
@@ -90,14 +98,16 @@ export default function FooterSection({
             </div>
           </div>
           <div>
-            <h4 className={`font-bold mb-4 ${isLightAppearance ? "text-slate-100" : "text-white"}`}>
+            <h4 className={`font-bold mb-4 ${isLightAppearance ? "text-slate-800" : "text-white"}`}>
               For Customers
             </h4>
-            <ul className="space-y-2 text-blue-200/60">
+            <ul
+              className={`space-y-2 ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+            >
               <li>
                 <a
                   href="#how-it-works"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   How It Works
                 </a>
@@ -105,7 +115,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#business-inquiry"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Submit Report
                 </a>
@@ -113,7 +123,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#coverage"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Coverage
                 </a>
@@ -121,12 +131,18 @@ export default function FooterSection({
             </ul>
           </div>
           <div>
-            <h4 className="font-bold mb-4 text-slate-100">For Businesses</h4>
-            <ul className="space-y-2 text-blue-200/60">
+            <h4
+              className={`font-bold mb-4 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            >
+              For Businesses
+            </h4>
+            <ul
+              className={`space-y-2 ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+            >
               <li>
                 <a
                   href="#business-inquiry"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Shop Signup
                 </a>
@@ -134,7 +150,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#/insurer-partnership"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Insurer Partnership
                 </a>
@@ -142,7 +158,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#who-we-serve"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Free for Customers
                 </a>
@@ -150,12 +166,18 @@ export default function FooterSection({
             </ul>
           </div>
           <div>
-            <h4 className="font-bold mb-4 text-slate-100">Company</h4>
-            <ul className="space-y-2 text-blue-200/60">
+            <h4
+              className={`font-bold mb-4 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            >
+              Company
+            </h4>
+            <ul
+              className={`space-y-2 ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+            >
               <li>
                 <a
                   href="#/about"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   About Us
                 </a>
@@ -163,7 +185,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="mailto:bidondent@gmail.com"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Contact
                 </a>
@@ -171,7 +193,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#/privacy-policy"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Privacy Policy
                 </a>
@@ -179,7 +201,7 @@ export default function FooterSection({
               <li>
                 <a
                   href="#/terms-of-service"
-                  className="transition-colors hover:translate-x-1 inline-block duration-200 hover:text-blue-100"
+                  className={`transition-colors hover:translate-x-1 inline-block duration-200 ${isLightAppearance ? "hover:text-blue-600" : "hover:text-blue-100"}`}
                 >
                   Terms of Service
                 </a>
@@ -188,10 +210,12 @@ export default function FooterSection({
           </div>
         </div>
         <div
-          className={`border-t pt-8 flex flex-col md:flex-row items-center justify-between transition-all duration-700 border-[#1c2e47] ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+          className={`border-t pt-8 flex flex-col md:flex-row items-center justify-between transition-all duration-700 ${isLightAppearance ? "border-slate-300/40" : "border-[#1c2e47]"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           style={{ transitionDelay: "0.3s" }}
         >
-          <p className="text-blue-200/40">&copy; 2026 BidOnDent. All rights reserved.</p>
+          <p className={isLightAppearance ? "text-slate-400" : "text-blue-200/40"}>
+            &copy; 2026 BidOnDent. All rights reserved.
+          </p>
 
           {/* Social icons */}
           <div className="flex items-center gap-4 mt-4 md:mt-0">
@@ -199,7 +223,7 @@ export default function FooterSection({
               <a
                 key={social}
                 href="#"
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 bg-blue-900/30 border border-blue-400/15 text-blue-200/60 hover:bg-blue-800/40 hover:text-blue-100"
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 ${isLightAppearance ? "bg-white/50 border border-slate-200/50 text-slate-500 hover:bg-white/70 hover:text-blue-600" : "bg-blue-900/30 border border-blue-400/15 text-blue-200/60 hover:bg-blue-800/40 hover:text-blue-100"}`}
                 aria-label={social}
               >
                 {social === "facebook" && (

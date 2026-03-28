@@ -21,22 +21,22 @@ export default function CTASection({
       className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #0c1a3e 0%, #0e2248 40%, #0c1e42 70%, #0a1a3c 100%)"
+          ? "linear-gradient(180deg, #eaeff6 0%, #edf2f9 40%, #e8edf5 70%, #e6ebf3 100%)"
           : "linear-gradient(180deg, #0c1e4a 0%, #142a5c 45%, #102450 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-400/22" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(99,102,241,0.10),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(59,130,246,0.08),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(99,102,241,0.06),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(59,130,246,0.05),transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(255,191,105,0.03),transparent_50%)]" />
-          <div className="absolute top-0 right-[25%] w-56 h-56 bg-indigo-400/[0.06] rounded-full blur-[100px]" />
+          <div className="absolute top-0 right-[25%] w-56 h-56 bg-blue-300/[0.07] rounded-full blur-[100px]" />
         </>
       ) : (
         <>

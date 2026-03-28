@@ -107,22 +107,22 @@ export default function BusinessInquirySection({
       className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #0c1e3a 0%, #102244 35%, #0c1c3a 70%, #0a1836 100%)"
+          ? "linear-gradient(180deg, #edf1f8 0%, #f0f4fa 35%, #eaeff6 70%, #e8ecf4 100%)"
           : "linear-gradient(180deg, #071828 0%, #0a2036 50%, #081a30 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-400/22" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/20" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(99,102,241,0.09),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(59,130,246,0.07),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(99,102,241,0.06),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(59,130,246,0.05),transparent_55%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(255,191,105,0.03),transparent_50%)]" />
-          <div className="absolute bottom-0 left-[30%] w-48 h-48 bg-indigo-400/[0.05] rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-[30%] w-48 h-48 bg-blue-300/[0.07] rounded-full blur-[100px]" />
         </>
       ) : (
         <>
@@ -140,10 +140,10 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/32" : "bg-blue-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-blue-400/20" : "bg-blue-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 20px 6px rgba(59,130,246,0.15)"
+              ? "0 0 20px 6px rgba(59,130,246,0.10)"
               : "0 0 22px 7px rgba(59,130,246,0.2)",
           }}
         />
@@ -153,15 +153,15 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-500/12 border border-blue-400/18" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-50/80 border border-blue-200/30" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 18px rgba(59,130,246,0.10)"
+              ? "0 0 18px rgba(59,130,246,0.06)"
               : "0 0 20px rgba(59,130,246,0.12)",
           }}
         >
           <Building2
-            className={`w-4 h-4 ${isLightAppearance ? "text-blue-400/55" : "text-blue-400/50"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/60" : "text-blue-400/50"}`}
           />
         </div>
       </div>
@@ -170,10 +170,10 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "6s" }}
       >
         <div
-          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/25" : "bg-blue-400/30"}`}
+          className={`w-3 h-3 rounded-full ${isLightAppearance ? "bg-indigo-400/15" : "bg-blue-400/30"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 16px 4px rgba(99,102,241,0.11)"
+              ? "0 0 16px 4px rgba(99,102,241,0.07)"
               : "0 0 18px 5px rgba(59,130,246,0.12)",
           }}
         />
@@ -184,16 +184,18 @@ export default function BusinessInquirySection({
           className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-400/22 bg-blue-500/8 text-blue-200 backdrop-blur-sm" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/40 bg-white/50 text-blue-700 backdrop-blur-sm" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Growth &amp; Partnerships
           </span>
-          <h3 className="text-2xl sm:text-4xl font-bold mt-5 mb-3 text-slate-100">
+          <h3
+            className={`text-2xl sm:text-4xl font-bold mt-5 mb-3 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+          >
             Shop Signup and Insurer Partnerships
           </h3>
           <p
-            className={`text-base sm:text-xl leading-relaxed max-w-3xl mx-auto ${isLightAppearance ? "text-blue-100/75" : "text-blue-100/70"}`}
+            className={`text-base sm:text-xl leading-relaxed max-w-3xl mx-auto ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
           >
             Submit your information to join the BidOnDent network. Every request is reviewed and
             confirmed by our team.
@@ -201,14 +203,14 @@ export default function BusinessInquirySection({
         </div>
 
         <div
-          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "border border-blue-300/20 backdrop-blur-sm" : "border border-blue-400/22 backdrop-blur-sm rounded-2xl"}`}
+          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "border border-slate-200/60 backdrop-blur-sm" : "border border-blue-400/22 backdrop-blur-sm rounded-2xl"}`}
           style={
             isLightAppearance
               ? {
                   background:
-                    "linear-gradient(180deg, rgba(10, 18, 35, 0.82) 0%, rgba(8, 14, 28, 0.78) 100%)",
+                    "linear-gradient(180deg, rgba(255, 255, 255, 0.80) 0%, rgba(248, 250, 255, 0.70) 100%)",
                   boxShadow:
-                    "0 14px 36px rgba(4, 10, 24, 0.45), inset 0 1px 0 rgba(59, 130, 246, 0.12), 0 0 0 1px rgba(59, 130, 246, 0.05)",
+                    "0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.08)",
                 }
               : {
                   background:
@@ -221,7 +223,9 @@ export default function BusinessInquirySection({
           {!formOpen ? (
             /* ── Gateway: choose your role before the form appears ── */
             <div className="py-4">
-              <p className="text-center mb-8 max-w-lg mx-auto text-blue-100/70">
+              <p
+                className={`text-center mb-8 max-w-lg mx-auto ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+              >
                 Tell us about your business and we will get you set up. Shops go through a quick
                 verification review. Insurers are onboarded through our partnership team.
               </p>
@@ -233,18 +237,28 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/35" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/60 bg-white/40 hover:bg-white/60 hover:border-blue-200/50" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#003d82] flex items-center justify-center">
+                  <div
+                    className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-600" : "bg-[#003d82]"}`}
+                  >
                     <Building2 className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-lg text-slate-100">Join as a Shop</div>
-                    <div className="text-sm mt-0.5 text-blue-100/65">
+                    <div
+                      className={`font-bold text-lg ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                    >
+                      Join as a Shop
+                    </div>
+                    <div
+                      className={`text-sm mt-0.5 ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
+                    >
                       Get listed and start receiving bids
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 text-blue-300/60 group-hover:text-blue-300" />
+                  <ArrowRight
+                    className={`w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 ${isLightAppearance ? "text-blue-400/60 group-hover:text-blue-500" : "text-blue-300/60 group-hover:text-blue-300"}`}
+                  />
                 </button>
 
                 <button
@@ -254,18 +268,28 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/35" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/60 bg-white/40 hover:bg-white/60 hover:border-blue-200/50" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#1e3a5f] flex items-center justify-center">
+                  <div
+                    className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-indigo-600" : "bg-[#1e3a5f]"}`}
+                  >
                     <Shield className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-lg text-slate-100">Partner as Insurer</div>
-                    <div className="text-sm mt-0.5 text-blue-100/65">
+                    <div
+                      className={`font-bold text-lg ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                    >
+                      Partner as Insurer
+                    </div>
+                    <div
+                      className={`text-sm mt-0.5 ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
+                    >
                       Reduce claims costs via our network
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 text-blue-300/60 group-hover:text-blue-300" />
+                  <ArrowRight
+                    className={`w-5 h-5 group-hover:translate-x-0.5 transition-all duration-200 ${isLightAppearance ? "text-blue-400/60 group-hover:text-blue-500" : "text-blue-300/60 group-hover:text-blue-300"}`}
+                  />
                 </button>
               </div>
             </div>
@@ -281,7 +305,7 @@ export default function BusinessInquirySection({
                       activeForm === "shop"
                         ? "bg-blue-600 text-white"
                         : isLightAppearance
-                          ? "bg-white/10 text-blue-100/80 hover:bg-white/15"
+                          ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
                           : "bg-white/10 text-blue-100/80 hover:bg-white/15"
                     }`}
                   >
@@ -297,7 +321,7 @@ export default function BusinessInquirySection({
                       activeForm === "insurer"
                         ? "bg-blue-600 text-white"
                         : isLightAppearance
-                          ? "bg-white/10 text-blue-100/80 hover:bg-white/15"
+                          ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
                           : "bg-white/10 text-blue-100/80 hover:bg-white/15"
                     }`}
                   >
@@ -313,7 +337,7 @@ export default function BusinessInquirySection({
                     setFormOpen(false);
                     setSubmitMessage("");
                   }}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium transition-colors text-blue-100/60 hover:text-blue-100"
+                  className={`inline-flex items-center gap-1.5 text-sm font-medium transition-colors ${isLightAppearance ? "text-slate-500 hover:text-slate-700" : "text-blue-100/60 hover:text-blue-100"}`}
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Back
@@ -343,10 +367,10 @@ export default function BusinessInquirySection({
                   className={`mt-4 p-3 rounded-lg text-sm font-medium ${
                     submitMessage.startsWith("✓")
                       ? isLightAppearance
-                        ? "bg-emerald-500/12 text-emerald-300 border border-emerald-400/22"
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
                         : "bg-emerald-500/15 text-emerald-300 border border-emerald-400/25"
                       : isLightAppearance
-                        ? "bg-red-500/12 text-red-300 border border-red-400/22"
+                        ? "bg-red-50 text-red-700 border border-red-200/60"
                         : "bg-red-500/15 text-red-300 border border-red-400/25"
                   }`}
                 >
