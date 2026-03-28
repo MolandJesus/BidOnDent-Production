@@ -196,7 +196,9 @@ export default function CompetitorAnalysisScreen({
         </div>
       </div>
 
-      <div className={`border-b bd-glass-panel px-4 py-4 ${isLight ? "border-slate-200/60" : "border-white/30"}`}>
+      <div
+        className={`border-b bd-glass-panel px-4 py-4 ${isLight ? "border-slate-200/60" : "border-white/30"}`}
+      >
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div className="text-center">
             <p className="text-2xl font-bold" style={{ color: primaryColor }}>
@@ -220,7 +222,11 @@ export default function CompetitorAnalysisScreen({
 
         <div className="mt-4 rounded-2xl bg-blue-500/100/10 p-3">
           <div className="flex items-center justify-between">
-            <span className={`text-sm font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}>Estimated Market Share</span>
+            <span
+              className={`text-sm font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}
+            >
+              Estimated Market Share
+            </span>
             <span className="text-sm font-bold" style={{ color: primaryColor }}>
               {((yourShopJobs / Math.max(totalJobs, 1)) * 100).toFixed(1)}%
             </span>
@@ -245,7 +251,9 @@ export default function CompetitorAnalysisScreen({
         </div>
       </div>
 
-      <div className={`border-b bd-glass-panel px-4 py-3 ${isLight ? "border-slate-200/60" : "border-white/30"}`}>
+      <div
+        className={`border-b bd-glass-panel px-4 py-3 ${isLight ? "border-slate-200/60" : "border-white/30"}`}
+      >
         <div className="flex gap-2 overflow-x-auto">
           <button
             onClick={() => setSortBy("rating")}
@@ -283,12 +291,16 @@ export default function CompetitorAnalysisScreen({
             key={shop.id}
             className="bd-glass-card overflow-hidden rounded-[26px] transition-shadow hover:shadow-md"
           >
-            <div className={`border-b p-4 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}>
+            <div
+              className={`border-b p-4 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-lg font-bold text-slate-400">#{index + 1}</span>
-                    <h3 className={`font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>{shop.name}</h3>
+                    <h3 className={`font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+                      {shop.name}
+                    </h3>
                     {shop.topPick && <CheckCircle className="h-4 w-4 text-blue-500" />}
                     {shop.watched && (
                       <span className="rounded-full bg-blue-500/100/10 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-400">
@@ -334,28 +346,44 @@ export default function CompetitorAnalysisScreen({
                   <Wrench className="h-4 w-4 text-slate-400" />
                   <div>
                     <p className="text-xs text-slate-500">Monthly Jobs</p>
-                    <p className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}>{shop.monthlyJobs}</p>
+                    <p
+                      className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                    >
+                      {shop.monthlyJobs}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-slate-400" />
                   <div>
                     <p className="text-xs text-slate-500">Avg Cost</p>
-                    <p className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}>{shop.averagePriceLabel}</p>
+                    <p
+                      className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                    >
+                      {shop.averagePriceLabel}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-slate-400" />
                   <div>
                     <p className="text-xs text-slate-500">Avg Time</p>
-                    <p className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}>{shop.averageRepairTime}</p>
+                    <p
+                      className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                    >
+                      {shop.averageRepairTime}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-slate-400" />
                   <div>
                     <p className="text-xs text-slate-500">Location</p>
-                    <p className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}>{shop.location}</p>
+                    <p
+                      className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}
+                    >
+                      {shop.location}
+                    </p>
                   </div>
                 </div>
               </div>

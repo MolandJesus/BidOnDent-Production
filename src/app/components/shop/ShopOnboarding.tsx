@@ -54,10 +54,10 @@ export default function ShopOnboarding({
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f0f7ff] to-[#e8f0fa]">
       {/* Progress Bar */}
-      <div className="bd-glass-panel border-b border-white/20">
+      <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200/60">
         <div className="px-4 py-3">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="font-bold text-slate-100">Shop Setup</h1>
+            <h1 className="font-bold text-slate-900">Shop Setup</h1>
             <span className="text-sm text-slate-500">Step {step} of 4</span>
           </div>
           <div className="h-2 bg-slate-200/60 rounded-full overflow-hidden">

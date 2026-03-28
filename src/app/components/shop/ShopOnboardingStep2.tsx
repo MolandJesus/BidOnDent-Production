@@ -31,12 +31,12 @@ export default function ShopOnboardingStep2({
           <Clock className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">Business Hours</h2>
-        <p className="text-slate-300/80 text-center">When are you open for business?</p>
+        <p className="text-slate-600 text-center">When are you open for business?</p>
       </div>
 
-      <div className="bd-glass-card p-4 sm:p-6 space-y-4">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200/60 shadow-sm p-4 sm:p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Business Hours</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Business Hours</label>
           <input
             type="text"
             value={formData.hours}

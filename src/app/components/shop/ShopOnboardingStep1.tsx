@@ -41,12 +41,12 @@ export default function ShopOnboardingStep1({
           <Building className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">Shop Information</h2>
-        <p className="text-slate-300/80 text-center">Let's start with the basics</p>
+        <p className="text-slate-600 text-center">Let's start with the basics</p>
       </div>
 
-      <div className="bd-glass-card p-4 sm:p-6 space-y-4">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200/60 shadow-sm p-4 sm:p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Shop Name *</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Shop Name *</label>
           <input
             type="text"
             value={formData.shopName}
@@ -57,7 +57,7 @@ export default function ShopOnboardingStep1({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Street Address *</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Street Address *</label>
           <input
             type="text"
             value={formData.address}
@@ -69,7 +69,7 @@ export default function ShopOnboardingStep1({
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">City *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">City *</label>
             <input
               type="text"
               value={formData.city}
@@ -79,7 +79,7 @@ export default function ShopOnboardingStep1({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">State *</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">State *</label>
             <input
               type="text"
               value={formData.state}
@@ -91,7 +91,7 @@ export default function ShopOnboardingStep1({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">ZIP Code *</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">ZIP Code *</label>
           <input
             type="text"
             value={formData.zip}
@@ -104,13 +104,13 @@ export default function ShopOnboardingStep1({
         {/* Map integration note */}
         <div className="flex items-start gap-2.5 rounded-xl bg-blue-400/10 border border-blue-400/20 px-3.5 py-3">
           <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-slate-300/80 leading-relaxed">
+          <p className="text-xs text-slate-500 leading-relaxed">
             Your shop location will appear on the BidOnDent coverage map, making it discoverable by customers in your area.
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Phone Number *</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Phone Number *</label>
           <input
             type="tel"
             value={formData.phone}
@@ -122,7 +122,7 @@ export default function ShopOnboardingStep1({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-1">Website (Optional)</label>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Website (Optional)</label>
           <input
             type="url"
             value={formData.website}

@@ -55,12 +55,12 @@ export default function ShopOnboardingStep3({
           <Award className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">Certifications</h2>
-        <p className="text-slate-300/80 text-center">Select your certifications and specialties</p>
+        <p className="text-slate-600 text-center">Select your certifications and specialties</p>
       </div>
 
-      <div className="bd-glass-card p-4 sm:p-6 space-y-6">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200/60 shadow-sm p-4 sm:p-6 space-y-6">
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-3">Certifications</label>
+          <label className="block text-sm font-medium text-slate-700 mb-3">Certifications</label>
           <div className="flex flex-wrap gap-2">
             {certificationOptions.map((cert) => (
               <button
@@ -87,7 +87,7 @@ export default function ShopOnboardingStep3({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-3">Specialties</label>
+          <label className="block text-sm font-medium text-slate-700 mb-3">Specialties</label>
           <div className="flex flex-wrap gap-2">
             {specialtyOptions.map((specialty) => (
               <button

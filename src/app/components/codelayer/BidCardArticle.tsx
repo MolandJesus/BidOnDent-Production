@@ -105,7 +105,9 @@ export default function BidCardArticle({
         className="w-full p-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
       >
         <div className="flex items-center gap-3">
-          <div className={`w-14 h-14 rounded-xl overflow-hidden shrink-0 ${isLight ? "bg-slate-100" : "bg-white/[0.08]"}`}>
+          <div
+            className={`w-14 h-14 rounded-xl overflow-hidden shrink-0 ${isLight ? "bg-slate-100" : "bg-white/[0.08]"}`}
+          >
             <ImageWithFallback
               src={bid.image}
               alt={bid.shopName}

@@ -7,7 +7,11 @@ type PaymentModalProps = {
   appearanceMode?: DashboardAppearanceMode;
 };
 
-export default function PaymentModal({ isOpen, onClose, appearanceMode = "map-dark" }: PaymentModalProps) {
+export default function PaymentModal({
+  isOpen,
+  onClose,
+  appearanceMode = "map-dark",
+}: PaymentModalProps) {
   const isLight = appearanceMode === "light";
   if (!isOpen) return null;
 
@@ -16,31 +20,42 @@ export default function PaymentModal({ isOpen, onClose, appearanceMode = "map-da
       <div className="bd-glass-floating p-5 sm:p-6 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Payment Methods</h2>
-          <button className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`} onClick={onClose}>
+          <button
+            className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`}
+            onClick={onClose}
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
         <div className="space-y-4">
-          <div className={`border rounded-lg p-4 ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-slate-700/30"}`}>
+          <div
+            className={`border rounded-lg p-4 ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-slate-700/30"}`}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CreditCard className="w-6 h-6 text-slate-400" />
                 <div>
                   <p className="font-medium">•••• •••• •••• 4242</p>
-                  <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Expires 12/25</p>
+                  <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                    Expires 12/25
+                  </p>
                 </div>
               </div>
               <button className="text-sm text-blue-600 hover:underline">Remove</button>
             </div>
           </div>
 
-          <div className={`border rounded-lg p-4 ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-slate-700/30"}`}>
+          <div
+            className={`border rounded-lg p-4 ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-slate-700/30"}`}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CreditCard className="w-6 h-6 text-slate-400" />
                 <div>
                   <p className="font-medium">•••• •••• •••• 1234</p>
-                  <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Expires 08/26</p>
+                  <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                    Expires 08/26
+                  </p>
                 </div>
               </div>
               <button className="text-sm text-blue-600 hover:underline">Remove</button>

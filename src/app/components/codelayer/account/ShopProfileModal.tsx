@@ -30,13 +30,20 @@ export default function ShopProfileModal({
       <div className="bd-glass-floating p-5 sm:p-6 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Shop Profile</h2>
-          <button className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`} onClick={onClose}>
+          <button
+            className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`}
+            onClick={onClose}
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
         <div className="space-y-4">
           <div>
-            <label className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}>Shop Name</label>
+            <label
+              className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+            >
+              Shop Name
+            </label>
             <input
               type="text"
               value={shopName}
@@ -45,7 +52,11 @@ export default function ShopProfileModal({
             />
           </div>
           <div>
-            <label className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}>Business Address</label>
+            <label
+              className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+            >
+              Business Address
+            </label>
             <input
               type="text"
               defaultValue="123 Main St, City, State 12345"
@@ -53,7 +64,11 @@ export default function ShopProfileModal({
             />
           </div>
           <div>
-            <label className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}>Phone Number</label>
+            <label
+              className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+            >
+              Phone Number
+            </label>
             <input
               type="tel"
               value={editablePhone}
@@ -62,7 +77,11 @@ export default function ShopProfileModal({
             />
           </div>
           <div>
-            <label className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}>Business Hours</label>
+            <label
+              className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+            >
+              Business Hours
+            </label>
             <input
               type="text"
               defaultValue="Mon-Fri: 8AM-6PM, Sat: 9AM-3PM"
@@ -70,7 +89,11 @@ export default function ShopProfileModal({
             />
           </div>
           <div>
-            <label className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}>Certifications</label>
+            <label
+              className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+            >
+              Certifications
+            </label>
             <textarea
               defaultValue="ASE Certified, I-CAR Gold Class"
               className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}

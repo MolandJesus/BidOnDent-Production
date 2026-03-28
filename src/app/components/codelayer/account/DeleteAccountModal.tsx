@@ -31,7 +31,9 @@ export default function DeleteAccountModal({
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>Delete Account?</h2>
+            <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+              Delete Account?
+            </h2>
           </div>
           <button
             className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`}
@@ -48,7 +50,9 @@ export default function DeleteAccountModal({
             <p className={`text-sm ${isLight ? "text-red-700" : "text-red-300"}`}>
               Deleting your account will permanently remove your BidOnDent sign-in access.
             </p>
-            <ul className={`list-disc list-inside text-sm mt-2 space-y-1 ${isLight ? "text-red-700" : "text-red-300"}`}>
+            <ul
+              className={`list-disc list-inside text-sm mt-2 space-y-1 ${isLight ? "text-red-700" : "text-red-300"}`}
+            >
               <li>Your ability to sign back into this account</li>
               <li>Your saved local website session on this browser</li>
               <li>

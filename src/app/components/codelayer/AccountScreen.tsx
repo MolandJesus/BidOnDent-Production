@@ -360,7 +360,11 @@ export default function AccountScreen({
         onClose={() => setShowSettings(false)}
       />
 
-      <PaymentModal isOpen={showPayment} onClose={() => setShowPayment(false)} appearanceMode={appearanceMode} />
+      <PaymentModal
+        isOpen={showPayment}
+        onClose={() => setShowPayment(false)}
+        appearanceMode={appearanceMode}
+      />
 
       <ShopProfileModal
         isOpen={showShopProfile}

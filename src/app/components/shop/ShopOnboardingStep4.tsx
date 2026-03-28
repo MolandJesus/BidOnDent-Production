@@ -29,14 +29,14 @@ export default function ShopOnboardingStep4({
           <Check className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">Almost Done!</h2>
-        <p className="text-slate-300/80 text-center">Just a few more preferences</p>
+        <p className="text-slate-600 text-center">Just a few more preferences</p>
       </div>
 
-      <div className="bd-glass-card p-4 sm:p-6 space-y-4">
+      <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200/60 shadow-sm p-4 sm:p-6 space-y-4">
         <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
           <div>
             <p className="font-medium">Accept insurance claims</p>
-            <p className="text-sm text-slate-300/80">Work directly with insurance companies</p>
+            <p className="text-sm text-slate-600">Work directly with insurance companies</p>
           </div>
           <input
             type="checkbox"
@@ -50,7 +50,7 @@ export default function ShopOnboardingStep4({
         <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
           <div>
             <p className="font-medium">Provide free estimates</p>
-            <p className="text-sm text-slate-300/80">Offer complimentary damage assessments</p>
+            <p className="text-sm text-slate-600">Offer complimentary damage assessments</p>
           </div>
           <input
             type="checkbox"
