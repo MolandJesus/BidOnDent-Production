@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 import { Navigation, X } from "lucide-react";
 import type { DeviationEvent } from "../../../features/navigation";
+import type { MapTheme } from "../../../types/mapDomain";
 
 /* ------------------------------------------------------------------ */
 /*  Props                                                              */
@@ -25,6 +26,8 @@ export interface NavigationDeviationPromptProps {
   onReviewRoute?: () => void;
   /** Called when the user dismisses the prompt. */
   onDismiss?: () => void;
+  /** Map theme for consistent appearance-mode styling. */
+  mapTheme?: MapTheme;
 }
 
 /* ------------------------------------------------------------------ */
@@ -49,7 +52,9 @@ export default function NavigationDeviationPrompt({
   event,
   onReviewRoute,
   onDismiss,
+  mapTheme = "dark",
 }: NavigationDeviationPromptProps) {
+  const isDark = mapTheme === "dark";
   /* ------ visibility state ------ */
   const [dismissed, setDismissed] = useState(false);
 
@@ -71,21 +76,31 @@ export default function NavigationDeviationPrompt({
   /* ------ render ------ */
   return (
     <div
-      className="bd-glass-floating animate-in fade-in slide-in-from-top-2 mx-auto flex max-w-2xl items-center gap-4 px-5 py-3.5 duration-300"
+      className={`animate-in fade-in slide-in-from-top-2 mx-auto flex max-w-2xl items-center gap-4 rounded-2xl border px-5 py-3.5 shadow-xl backdrop-blur-xl duration-300 ${
+        isDark
+          ? "border-white/[0.12] bg-slate-950/80 text-white"
+          : "border-slate-200/80 bg-white/90 text-slate-900 shadow-lg"
+      }`}
       role="status"
       aria-live="polite"
     >
       {/* Icon */}
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300">
+      <div
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+          isDark ? "bg-blue-900/40 text-blue-300" : "bg-blue-100 text-blue-600"
+        }`}
+      >
         <Navigation className="h-4.5 w-4.5" />
       </div>
 
       {/* Text */}
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold leading-5 text-slate-900 dark:text-slate-100">
+        <p
+          className={`text-sm font-semibold leading-5 ${isDark ? "text-slate-100" : "text-slate-900"}`}
+        >
           You&rsquo;re off route
         </p>
-        <p className="mt-0.5 text-xs leading-4 text-slate-500 dark:text-slate-400">
+        <p className={`mt-0.5 text-xs leading-4 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
           {supportingLine(event)}
         </p>
       </div>
@@ -93,7 +108,11 @@ export default function NavigationDeviationPrompt({
       {/* Primary action */}
       {onReviewRoute && (
         <button
-          className="bd-glass-control shrink-0 px-3.5 py-1.5 text-xs font-semibold text-blue-700 dark:text-blue-300"
+          className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+            isDark
+              ? "border-white/[0.12] bg-white/[0.06] text-blue-300 hover:bg-white/[0.10]"
+              : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+          }`}
           onClick={onReviewRoute}
           type="button"
         >
@@ -103,7 +122,9 @@ export default function NavigationDeviationPrompt({
 
       {/* Dismiss */}
       <button
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-colors ${
+          isDark ? "text-slate-500 hover:text-slate-300" : "text-slate-400 hover:text-slate-600"
+        }`}
         onClick={handleDismiss}
         type="button"
         aria-label="Dismiss off-route notification"

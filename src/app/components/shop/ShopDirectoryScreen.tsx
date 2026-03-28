@@ -174,6 +174,7 @@ export default function ShopDirectoryScreen({
   const deviationPromptNode = intelligence.latestEvent ? (
     <NavigationDeviationPrompt
       event={intelligence.latestEvent}
+      mapTheme={session.mapTheme}
       onReviewRoute={
         reroute.isEligible
           ? () => {
