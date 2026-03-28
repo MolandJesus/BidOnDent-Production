@@ -187,7 +187,10 @@ export default function SettingsModal({
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-2">
-          <button className="bd-glass-control--secondary px-4 py-2" onClick={onClose}>
+          <button
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isLight ? "text-slate-600 hover:bg-slate-100 hover:text-slate-800" : "text-blue-200/80 hover:bg-white/10 hover:text-blue-100"}`}
+            onClick={onClose}
+          >
             Cancel
           </button>
           <button

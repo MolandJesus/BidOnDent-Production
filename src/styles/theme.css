@@ -1279,6 +1279,32 @@
   color: #e8edf4;
 }
 
+/* ── Controls inside bd-light-surface ── */
+/* When glass controls live inside a white surface, swap to dark-on-light colours. */
+[data-appearance-mode="light"] .bd-light-surface .bd-glass-control--secondary {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.06) 100%);
+  color: #1e40af;
+}
+
+[data-appearance-mode="light"] .bd-light-surface .bd-glass-control--secondary:hover {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.16) 0%, rgba(37, 99, 235, 0.1) 100%);
+  color: #1e3a8a;
+}
+
+[data-appearance-mode="light"] .bd-light-surface .bd-glass-control--utility {
+  color: #475569;
+}
+
+[data-appearance-mode="light"] .bd-light-surface .bd-glass-control--utility:hover {
+  background: rgba(59, 130, 246, 0.08);
+  color: #1e293b;
+}
+
+[data-appearance-mode="light"] .bd-light-surface .bd-glass-control--utility:active {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1e293b;
+}
+
 /* Frosted floating — elevated warm glass */
 [data-appearance-mode="light"] .bd-glass-floating {
   border-color: rgba(150, 190, 240, 0.18);
