@@ -1,166 +1,222 @@
-import { useState } from "react";
-import { Check, X, ChevronRight, ChevronLeft } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { buildPhotoGuideSteps } from "./photo-guide-steps";
+import { Camera, Check, X, Sun, Move, ChevronRight } from "lucide-react";
+import { motion } from "motion/react";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type PhotoGuideProps = {
   onClose: () => void;
   onComplete: () => void;
   primaryColor?: string;
+  appearanceMode?: DashboardAppearanceMode;
 };
+
+const TIPS = [
+  {
+    icon: <Sun className="w-4 h-4" />,
+    label: "Natural light",
+    detail: "Shoot outdoors or in a well-lit area",
+  },
+  {
+    icon: <Move className="w-4 h-4" />,
+    label: "4+ angles",
+    detail: "Wide, medium, close-up, and side",
+  },
+  {
+    icon: <Camera className="w-4 h-4" />,
+    label: "Hold steady",
+    detail: "Tap to focus on damage, then shoot",
+  },
+];
 
 export default function PhotoGuide({
   onClose,
   onComplete,
   primaryColor = "#003d82",
+  appearanceMode = "map-dark",
 }: PhotoGuideProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
-  const steps = buildPhotoGuideSteps({ isDesktop, onComplete, primaryColor });
-
-  const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const progress = ((currentStep + 1) / steps.length) * 100;
+  const isLight = appearanceMode === "light";
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-end md:items-center justify-center z-[60] p-0 sm:p-2 md:p-4">
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center">
+      {/* Backdrop */}
       <motion.div
-        className="bd-glass-floating rounded-t-2xl sm:rounded-2xl md:rounded-3xl max-w-2xl w-full h-[85dvh] sm:h-auto sm:max-h-[92vh] md:max-h-[90vh] overflow-hidden flex flex-col"
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-      >
-        {/* Header */}
-        <div
-          className="p-3 sm:p-5 md:p-6 text-white relative shrink-0"
-          style={{
-            background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
-          }}
-        >
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white/80 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center"
-          >
-            <X className="w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
+        className="absolute inset-0 bg-black/60"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      />
 
-          <div className="flex items-center space-x-3 sm:space-x-4 mb-2 sm:mb-4">
-            <motion.div
-              className="w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center"
-              key={currentStep}
-              initial={{ scale: 0.8, rotate: -10 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: "spring", stiffness: 200 }}
+      {/* Sheet */}
+      <motion.div
+        className={`relative w-full sm:max-w-md sm:mx-4 rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[80dvh] sm:max-h-[85vh] ${
+          isLight
+            ? "bg-white shadow-xl shadow-slate-300/40"
+            : "bg-slate-900/95 backdrop-blur-2xl shadow-2xl shadow-black/60 border border-white/[0.08]"
+        }`}
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 60 }}
+        transition={{ type: "spring", damping: 28, stiffness: 300 }}
+      >
+        {/* Drag handle (mobile) */}
+        <div className="flex justify-center pt-2.5 pb-1 sm:hidden">
+          <div className={`w-10 h-1 rounded-full ${isLight ? "bg-slate-300" : "bg-white/20"}`} />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-3 pb-2 sm:pt-5 sm:pb-3 shrink-0">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
+              style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0ea5e9 100%)` }}
             >
-              {steps[currentStep].icon}
-            </motion.div>
-            <div className="flex-1">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-0.5 sm:mb-1 pr-6">
-                {steps[currentStep].title}
+              <Camera className="w-5 h-5" />
+            </div>
+            <div>
+              <h2
+                className={`text-lg font-bold leading-tight ${isLight ? "text-slate-900" : "text-slate-100"}`}
+              >
+                Photo tips
               </h2>
-              <p className="text-white/90 text-sm md:text-base">{steps[currentStep].subtitle}</p>
+              <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                Better photos = better estimates
+              </p>
             </div>
           </div>
-
-          {/* Progress bar */}
-          <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
-            <motion.div
-              className="h-full bg-white rounded-full shadow-lg"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-            />
-          </div>
-          <div className="flex justify-between mt-2 text-xs sm:text-sm text-white/90 font-medium">
-            <span>
-              Step {currentStep + 1} of {steps.length}
-            </span>
-            <span>{Math.round(progress)}% Complete</span>
-          </div>
+          <button
+            onClick={onClose}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors min-w-[44px] min-h-[44px] ${
+              isLight ? "hover:bg-slate-100 text-slate-400" : "hover:bg-white/10 text-slate-400"
+            }`}
+            aria-label="Close photo guide"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Content */}
-        <div className="p-3 sm:p-4 md:p-6 overflow-y-auto flex-1 min-h-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {steps[currentStep].content}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Footer Navigation */}
-        <div className="border-t border-white/[0.12] px-3 py-3 sm:p-4 bg-white/[0.05] shrink-0 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
-          <div className="flex justify-between items-center gap-2">
-            <button
-              onClick={prevStep}
-              disabled={currentStep === 0}
-              className={`flex items-center space-x-1 sm:space-x-2 px-3 py-2.5 sm:px-4 rounded-lg font-medium transition-all min-h-[44px] ${
-                currentStep === 0
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "text-slate-300 hover:bg-white/[0.08] active:scale-95"
-              }`}
-            >
-              <ChevronLeft className="w-5 h-5" />
-              <span className="hidden sm:inline">Previous</span>
-            </button>
-
-            <div className="flex space-x-1.5 sm:space-x-2">
-              {steps.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentStep(index)}
-                  className={`h-2.5 rounded-full transition-all ${
-                    index === currentStep ? "w-8" : "w-2.5 hover:bg-gray-400"
+        <div className="flex-1 overflow-y-auto overscroll-contain px-5 pb-2">
+          {/* Tip cards */}
+          <div className="space-y-2.5 mt-2">
+            {TIPS.map((tip) => (
+              <div
+                key={tip.label}
+                className={`flex items-start gap-3 p-3 rounded-xl border ${
+                  isLight
+                    ? "border-slate-200/80 bg-slate-50/70"
+                    : "border-white/[0.06] bg-white/[0.04]"
+                }`}
+              >
+                <div
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                    isLight ? "bg-blue-50 text-blue-600" : "bg-blue-500/15 text-blue-300"
                   }`}
-                  style={{
-                    backgroundColor:
-                      index === currentStep
-                        ? primaryColor
-                        : index < currentStep
-                          ? primaryColor + "80"
-                          : "#d1d5db",
-                  }}
-                />
+                >
+                  {tip.icon}
+                </div>
+                <div className="min-w-0">
+                  <p
+                    className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                  >
+                    {tip.label}
+                  </p>
+                  <p className={`text-xs mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                    {tip.detail}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Angle shots grid */}
+          <div className="mt-4">
+            <p
+              className={`text-xs font-semibold uppercase tracking-wide mb-2.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+            >
+              Capture these angles
+            </p>
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { emoji: "🚗", label: "Wide" },
+                { emoji: "📷", label: "Medium" },
+                { emoji: "🔍", label: "Close" },
+                { emoji: "📐", label: "Side" },
+              ].map((shot) => (
+                <div
+                  key={shot.label}
+                  className={`text-center py-3 px-1 rounded-xl border ${
+                    isLight ? "border-slate-200/80 bg-white" : "border-white/[0.06] bg-white/[0.03]"
+                  }`}
+                >
+                  <div className="text-xl mb-1">{shot.emoji}</div>
+                  <p
+                    className={`text-xs font-medium ${isLight ? "text-slate-600" : "text-slate-300"}`}
+                  >
+                    {shot.label}
+                  </p>
+                </div>
               ))}
             </div>
-
-            {currentStep < steps.length - 1 ? (
-              <button
-                onClick={nextStep}
-                className="flex items-center space-x-1 sm:space-x-2 px-4 py-2.5 sm:px-5 rounded-lg text-white font-semibold transition-all hover:shadow-md active:scale-95 min-h-[44px] shadow-lg"
-                style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)` }}
-              >
-                <span>Next</span>
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            ) : (
-              <button
-                onClick={onComplete}
-                className="flex items-center space-x-1 sm:space-x-2 px-4 py-2.5 sm:px-5 rounded-lg text-white font-semibold transition-all hover:shadow-md active:scale-95 min-h-[44px] shadow-lg"
-                style={{ background: `linear-gradient(135deg, #003d82 0%, #00a0e9 100%)` }}
-              >
-                <Check className="w-5 h-5" />
-                <span className="hidden sm:inline">Let's Go!</span>
-                <span className="sm:hidden">Start</span>
-              </button>
-            )}
           </div>
+
+          {/* Quick do/don't */}
+          <div className="grid grid-cols-2 gap-2.5 mt-4">
+            <div
+              className={`rounded-xl p-3 border ${isLight ? "border-emerald-200 bg-emerald-50/50" : "border-emerald-500/20 bg-emerald-500/[0.06]"}`}
+            >
+              <p
+                className={`text-xs font-bold mb-1.5 flex items-center gap-1 ${isLight ? "text-emerald-700" : "text-emerald-300"}`}
+              >
+                <Check className="w-3.5 h-3.5" /> Do
+              </p>
+              <ul
+                className={`text-xs space-y-1 ${isLight ? "text-emerald-600" : "text-emerald-300/80"}`}
+              >
+                <li>Daylight / overcast</li>
+                <li>Clean damage area</li>
+                <li>Steady hands</li>
+              </ul>
+            </div>
+            <div
+              className={`rounded-xl p-3 border ${isLight ? "border-red-200 bg-red-50/50" : "border-red-500/20 bg-red-500/[0.06]"}`}
+            >
+              <p
+                className={`text-xs font-bold mb-1.5 flex items-center gap-1 ${isLight ? "text-red-700" : "text-red-300"}`}
+              >
+                <X className="w-3.5 h-3.5" /> Avoid
+              </p>
+              <ul className={`text-xs space-y-1 ${isLight ? "text-red-600" : "text-red-300/80"}`}>
+                <li>Camera flash</li>
+                <li>Dark garages</li>
+                <li>Harsh direct sun</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer CTA */}
+        <div
+          className={`shrink-0 px-5 pt-3 pb-[max(env(safe-area-inset-bottom),1rem)] border-t ${isLight ? "border-slate-200/60 bg-slate-50/50" : "border-white/[0.06] bg-white/[0.02]"}`}
+        >
+          <button
+            onClick={onComplete}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold text-sm transition-all active:scale-[0.98] min-h-[48px] shadow-lg"
+            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0ea5e9 100%)` }}
+          >
+            <Camera className="w-4.5 h-4.5" />
+            <span>Got it — start taking photos</span>
+            <ChevronRight className="w-4 h-4 opacity-70" />
+          </button>
+          <button
+            onClick={onClose}
+            className={`w-full mt-2 py-2 text-sm font-medium rounded-lg transition-colors min-h-[44px] ${
+              isLight
+                ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.05]"
+            }`}
+          >
+            Skip for now
+          </button>
         </div>
       </motion.div>
     </div>

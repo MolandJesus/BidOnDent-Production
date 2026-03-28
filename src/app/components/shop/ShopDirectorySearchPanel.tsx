@@ -107,10 +107,10 @@ export default function ShopDirectorySearchPanel({
             }`}
           />
           <input
-            className={`w-full rounded-[22px] border py-3 pl-10 pr-28 outline-none transition-colors bd-glass-control ${
+            className={`w-full rounded-[22px] border py-3 pl-10 pr-28 outline-none transition-colors ${
               isLight
-                ? "border-slate-200/80 bg-white/80 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white"
-                : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
+                ? "border-slate-200/80 bg-white/80 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-sm"
+                : "bd-glass-control border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
             }`}
             onChange={(event) => onSearchQueryChange(event.target.value)}
             placeholder="Search shop, insurer program, hail, EV, ADAS, luxury..."
@@ -118,9 +118,10 @@ export default function ShopDirectorySearchPanel({
             value={searchQuery}
           />
           <button
-            className="absolute right-2 top-1/2 -translate-y-1/2 bd-glass-control px-4 py-2 text-sm font-medium text-white"
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-2xl px-4 py-2 text-sm font-medium text-white"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+              boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)",
             }}
             type="submit"
           >
@@ -141,7 +142,11 @@ export default function ShopDirectorySearchPanel({
               </div>
               {selectedOrigin && (
                 <button
-                  className="text-xs font-medium bd-glass-control px-3 py-2 text-slate-300"
+                  className={`text-xs font-medium rounded-full px-3 py-2 transition-colors ${
+                    isLight
+                      ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                      : "bd-glass-control text-slate-300"
+                  }`}
                   onClick={onClearOrigin}
                   type="button"
                 >
@@ -159,14 +164,14 @@ export default function ShopDirectorySearchPanel({
                 return (
                   <button
                     key={origin.placeId || origin.name}
-                    className={`bd-glass-control px-3 py-1.5 text-sm ${
+                    className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
                       isActive
                         ? isLight
-                          ? "border-blue-400 bg-blue-100 text-blue-700"
-                          : "border-blue-400/60 bg-blue-500/20 text-white"
+                          ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
+                          : "bd-glass-control border-blue-400/60 bg-blue-500/20 text-white"
                         : isLight
-                          ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
-                          : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
+                          ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                          : "bd-glass-control border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
                     }`}
                     onClick={() => onSelectOrigin(origin)}
                     type="button"
@@ -179,10 +184,14 @@ export default function ShopDirectorySearchPanel({
 
             <div className="flex flex-wrap gap-2">
               <button
-                className={`inline-flex items-center gap-2 bd-glass-control px-3 py-2 text-sm font-medium ${
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
                   selectedOrigin
-                    ? "text-slate-200"
-                    : "cursor-not-allowed bg-white/[0.02] text-slate-500"
+                    ? isLight
+                      ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                      : "bd-glass-control text-slate-200"
+                    : isLight
+                      ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-400"
+                      : "cursor-not-allowed bd-glass-control bg-white/[0.02] text-slate-500"
                 }`}
                 disabled={!selectedOrigin}
                 onClick={onSaveOrigin}
@@ -219,14 +228,14 @@ export default function ShopDirectorySearchPanel({
               {VIEW_MODE_OPTIONS.map((option) => (
                 <button
                   key={option.value}
-                  className={`bd-glass-control px-3 py-1.5 text-sm ${
+                  className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
                     mapViewMode === option.value
                       ? isLight
-                        ? "border-blue-400 bg-blue-100 text-blue-700"
-                        : "border-blue-400/60 bg-blue-500/20 text-white"
+                        ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
+                        : "bd-glass-control border-blue-400/60 bg-blue-500/20 text-white"
                       : isLight
-                        ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
-                        : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+                        ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                        : "bd-glass-control border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
                   onClick={() => onViewModeChange(option.value)}
                   type="button"
@@ -238,10 +247,10 @@ export default function ShopDirectorySearchPanel({
 
             <div className="flex flex-wrap items-center gap-2">
               <select
-                className={`rounded-2xl border px-3 py-2 text-sm outline-none bd-glass-control ${
+                className={`rounded-2xl border px-3 py-2 text-sm outline-none ${
                   isLight
-                    ? "border-slate-200/80 bg-white text-slate-800"
-                    : "border-white/[0.12] bg-white/[0.06] text-slate-200"
+                    ? "border-slate-200/80 bg-white text-slate-800 shadow-sm"
+                    : "bd-glass-control border-white/[0.12] bg-white/[0.06] text-slate-200"
                 }`}
                 onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
                 value={sortBy}
@@ -254,10 +263,14 @@ export default function ShopDirectorySearchPanel({
               </select>
 
               <button
-                className={`bd-glass-control px-3 py-2 text-sm font-medium ${
+                className={`rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
                   filterRating === 4.5
-                    ? "border-amber-400/40 bg-amber-400/15 text-amber-300"
-                    : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+                    ? isLight
+                      ? "border-amber-400/60 bg-amber-50 text-amber-700 shadow-sm"
+                      : "bd-glass-control border-amber-400/40 bg-amber-400/15 text-amber-300"
+                    : isLight
+                      ? "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50 shadow-sm"
+                      : "bd-glass-control border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                 }`}
                 onClick={() => onFilterRatingChange(filterRating === 4.5 ? 0 : 4.5)}
                 type="button"
@@ -266,7 +279,11 @@ export default function ShopDirectorySearchPanel({
               </button>
 
               <button
-                className="inline-flex items-center gap-2 bd-glass-control px-3 py-2 text-sm font-medium text-slate-300"
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                  isLight
+                    ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                    : "bd-glass-control text-slate-300"
+                }`}
                 onClick={onToggleTheme}
                 type="button"
               >
@@ -276,7 +293,11 @@ export default function ShopDirectorySearchPanel({
 
               {searchWithinViewport && onClearAreaSearch && (
                 <button
-                  className="inline-flex items-center gap-2 bd-glass-control border-blue-400/40 bg-blue-500/15 px-3 py-2 text-sm font-medium text-blue-200 hover:bg-blue-500/25"
+                  className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                    isLight
+                      ? "border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                      : "bd-glass-control border-blue-400/40 bg-blue-500/15 text-blue-200 hover:bg-blue-500/25"
+                  }`}
                   onClick={onClearAreaSearch}
                   type="button"
                 >

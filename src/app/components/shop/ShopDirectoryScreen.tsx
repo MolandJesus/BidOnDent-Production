@@ -57,16 +57,22 @@ function getRoleIcon(userType: MarketUserType) {
   return Car;
 }
 
-function getRoleAccent(userType: MarketUserType) {
+function getRoleAccent(userType: MarketUserType, isLight: boolean) {
   if (userType === "shop") {
-    return "bg-amber-400/15 text-amber-300 border-amber-400/30";
+    return isLight
+      ? "bg-amber-50 text-amber-700 border-amber-300/60"
+      : "bg-amber-400/15 text-amber-300 border-amber-400/30";
   }
 
   if (userType === "insurer") {
-    return "bg-emerald-400/15 text-emerald-300 border-emerald-400/30";
+    return isLight
+      ? "bg-emerald-50 text-emerald-700 border-emerald-300/60"
+      : "bg-emerald-400/15 text-emerald-300 border-emerald-400/30";
   }
 
-  return "bg-blue-400/15 text-blue-200 border-blue-400/30";
+  return isLight
+    ? "bg-blue-50 text-blue-700 border-blue-300/60"
+    : "bg-blue-400/15 text-blue-200 border-blue-400/30";
 }
 
 export default function ShopDirectoryScreen({
@@ -97,8 +103,8 @@ export default function ShopDirectoryScreen({
   );
 
   const RoleIcon = getRoleIcon(userType);
-  const accentClasses = getRoleAccent(userType);
   const isLight = appearanceMode === "light";
+  const accentClasses = getRoleAccent(userType, isLight);
   const compactCards = session.mapViewMode === "map";
 
   const navigationMode: "browse" | "route-preview" | "guidance" = intelligence.latestEvent

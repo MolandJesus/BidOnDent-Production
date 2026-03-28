@@ -391,7 +391,7 @@ export default function ReportScreen({
   const progress = Math.min(Math.round((step / 6) * 100), 100);
 
   return (
-    <div className="min-h-[calc(100vh-10rem)]">
+    <div className="min-h-[calc(100dvh-10rem)]" style={{ touchAction: "pan-x pan-y" }}>
       <ReportHeader
         step={step}
         appearanceMode={appearanceMode}
@@ -473,6 +473,7 @@ export default function ReportScreen({
             nextStep();
           }}
           primaryColor={primaryColor}
+          appearanceMode={appearanceMode}
         />
       )}
 

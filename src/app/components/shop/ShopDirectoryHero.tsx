@@ -51,14 +51,18 @@ export default function ShopDirectoryHero({
       >
         <div className="flex items-center gap-3">
           <button
-            className="bd-glass-control inline-flex h-10 w-10 items-center justify-center"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors ${
+              isLight
+                ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
+                : "bd-glass-control"
+            }`}
             onClick={onBack}
             type="button"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <span
-            className={`bd-glass-card inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${accentClasses}`}
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${accentClasses}`}
           >
             <RoleIcon className="h-4 w-4" />
             {roleHighlights.badge}
@@ -90,14 +94,18 @@ export default function ShopDirectoryHero({
         <div className="max-w-4xl">
           <div className="flex flex-wrap items-center gap-3">
             <button
-              className="bd-glass-control inline-flex h-11 w-11 items-center justify-center"
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-xl border transition-colors ${
+                isLight
+                  ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
+                  : "bd-glass-control"
+              }`}
               onClick={onBack}
               type="button"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
             <span
-              className={`bd-glass-card inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${accentClasses}`}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${accentClasses}`}
             >
               <RoleIcon className="h-4 w-4" />
               {roleHighlights.badge}

@@ -4,6 +4,12 @@
   outline-offset: 2px;
 }
 
+/* Prevent elastic overscroll / bounce on mobile that dislodges fixed elements */
+html,
+body {
+  overscroll-behavior: none;
+}
+
 /* Control Hierarchy Variants */
 .bd-glass-control--primary {
   /* Inherit .bd-glass-control, but can be used for clarity */

@@ -181,10 +181,12 @@ export default function DashboardLayout({
         }}
       />
       {/* Floating panel container (z-10) */}
-      <div className="relative z-10 md:flex md:min-h-screen">
+      <div className="relative z-10 md:flex md:min-h-screen h-[100dvh] md:h-auto flex flex-col md:flex-row overflow-hidden md:overflow-visible">
         <aside
           className={`hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r ${
-            isLightAppearance ? "md:border-slate-200/60" : "md:border-blue-400/[0.12]"
+            isLightAppearance
+              ? "bd-light-surface md:border-slate-200/60"
+              : "md:border-blue-400/[0.12]"
           }`}
           style={{
             background: isLightAppearance
@@ -408,7 +410,7 @@ export default function DashboardLayout({
           </div>
         </aside>
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
           <header
             className={`sticky top-0 z-40 rounded-none border-0 border-b ${
               isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.12]"
@@ -648,7 +650,7 @@ export default function DashboardLayout({
           </header>
 
           <main
-            className="px-3 md:px-8 py-4 md:py-6 pb-24 md:pb-8"
+            className="px-3 md:px-8 py-4 md:py-6 pb-24 md:pb-8 flex-1 overflow-y-auto overscroll-contain"
             style={{
               background: isLightAppearance
                 ? "linear-gradient(180deg, rgba(219, 234, 254, 0.08) 0%, transparent 100%)"
