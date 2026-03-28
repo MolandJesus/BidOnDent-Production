@@ -98,6 +98,7 @@ export default function ShopDirectoryScreen({
 
   const RoleIcon = getRoleIcon(userType);
   const accentClasses = getRoleAccent(userType);
+  const isLight = appearanceMode === "light";
   const compactCards = session.mapViewMode === "map";
 
   const navigationMode: "browse" | "route-preview" | "guidance" = intelligence.latestEvent
@@ -248,12 +249,12 @@ export default function ShopDirectoryScreen({
       {/* Deviation prompt: only rendered outside map on list mode */}
       {!session.showMapPane && deviationPromptNode}
 
-      <section className="overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:border-white/[0.08] bg-transparent md:shadow-none">
+      <section className={`overflow-hidden rounded-none border-0 shadow-none md:rounded-[32px] md:border md:shadow-none bg-transparent ${isLight ? "md:border-slate-200/60" : "md:border-white/[0.08]"}`}>
         <div
           className={`min-w-0 ${session.showMapPane ? `lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}
         >
           <aside
-            className={`${session.showMapPane ? "lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-180px)]" : ""} min-h-0 border-white/[0.08] bg-transparent`}
+            className={`${session.showMapPane ? "lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-180px)]" : ""} min-h-0 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"} bg-transparent`}
           >
             <div className="flex h-full flex-col">
               <ShopDirectorySearchPanel
