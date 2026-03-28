@@ -16,24 +16,24 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE);
  */
 export async function initializeDatabaseTables() {
   console.log('🔧 Initializing database tables...');
-  
+
   if (!DB_URL) {
     console.warn('⚠️ SUPABASE_DB_URL is not set. Skipping DB init.');
     return;
   }
-  
+
   try {
     // Lazy-load postgres client - only when needed
     const { Client } = await import('https://deno.land/x/postgres@v0.17.0/mod.ts');
     const client = new Client(DB_URL);
-    
+
     await client.connect();
     console.log('✅ Connected to database');
 
     try {
       // Suppress notices by setting client_min_messages to WARNING
       await client.queryArray("SET client_min_messages TO WARNING;");
-      
+
       // Execute all SQL in a single transaction to avoid deadlocks
       const allSQL = `
         -- Create or replace function for updated_at trigger first
@@ -64,12 +64,12 @@ export async function initializeDatabaseTables() {
         );
 
         -- Add setup_completed column if it doesn't exist (for existing databases)
-        DO $$ 
+        DO $$
         BEGIN
           IF NOT EXISTS (
-            SELECT 1 FROM information_schema.columns 
-            WHERE table_schema = 'public' 
-            AND table_name = 'profiles' 
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'profiles'
             AND column_name = 'setup_completed'
           ) THEN
             ALTER TABLE public.profiles ADD COLUMN setup_completed BOOLEAN DEFAULT FALSE;
@@ -119,12 +119,12 @@ export async function initializeDatabaseTables() {
         END $$;
 
         -- Add last_login column if it doesn't exist (for existing databases)
-        DO $$ 
+        DO $$
         BEGIN
           IF NOT EXISTS (
-            SELECT 1 FROM information_schema.columns 
-            WHERE table_schema = 'public' 
-            AND table_name = 'profiles' 
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'profiles'
             AND column_name = 'last_login'
           ) THEN
             ALTER TABLE public.profiles ADD COLUMN last_login TIMESTAMPTZ;
@@ -133,12 +133,12 @@ export async function initializeDatabaseTables() {
         END $$;
 
         -- Add is_admin column if it doesn't exist (for existing databases)
-        DO $$ 
+        DO $$
         BEGIN
           IF NOT EXISTS (
-            SELECT 1 FROM information_schema.columns 
-            WHERE table_schema = 'public' 
-            AND table_name = 'profiles' 
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'profiles'
             AND column_name = 'is_admin'
           ) THEN
             ALTER TABLE public.profiles ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;
@@ -147,10 +147,10 @@ export async function initializeDatabaseTables() {
         END $$;
 
         -- Set super admin (figmaadmin@bidondent.com) as admin
-        DO $$ 
+        DO $$
         BEGIN
-          UPDATE public.profiles 
-          SET is_admin = TRUE 
+          UPDATE public.profiles
+          SET is_admin = TRUE
           WHERE email = 'figmaadmin@bidondent.com';
           RAISE NOTICE 'Set figmaadmin@bidondent.com as admin';
         END $$;
@@ -430,56 +430,56 @@ export async function initializeDatabaseTables() {
         CREATE INDEX IF NOT EXISTS idx_vehicles_user_id ON public.vehicles(user_id);
 
         -- Add clerk_user_id column if it doesn't exist (for existing databases)
-        DO $$ 
+        DO $$
         BEGIN
           -- Add clerk_user_id column
           IF NOT EXISTS (
-            SELECT 1 FROM information_schema.columns 
-            WHERE table_schema = 'public' 
-            AND table_name = 'vehicles' 
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'vehicles'
             AND column_name = 'clerk_user_id'
           ) THEN
             ALTER TABLE public.vehicles ADD COLUMN clerk_user_id TEXT;
             RAISE NOTICE 'Added clerk_user_id column to vehicles table';
           END IF;
-          
+
           -- Make user_id nullable if it's currently NOT NULL
           IF EXISTS (
-            SELECT 1 FROM information_schema.columns 
-            WHERE table_schema = 'public' 
-            AND table_name = 'vehicles' 
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'vehicles'
             AND column_name = 'user_id'
             AND is_nullable = 'NO'
           ) THEN
             ALTER TABLE public.vehicles ALTER COLUMN user_id DROP NOT NULL;
             RAISE NOTICE 'Made user_id nullable in vehicles table';
           END IF;
-          
+
           -- Create index on clerk_user_id if it doesn't exist (using EXECUTE for DDL)
           IF NOT EXISTS (
-            SELECT 1 FROM pg_indexes 
-            WHERE tablename = 'vehicles' 
+            SELECT 1 FROM pg_indexes
+            WHERE tablename = 'vehicles'
             AND indexname = 'idx_vehicles_clerk_user_id'
           ) THEN
             EXECUTE 'CREATE INDEX idx_vehicles_clerk_user_id ON public.vehicles(clerk_user_id)';
             RAISE NOTICE 'Created index on clerk_user_id in vehicles table';
           END IF;
         END $$;
-        
+
         -- Add constraint to ensure either user_id OR clerk_user_id exists
         DO $$
         BEGIN
           IF NOT EXISTS (
-            SELECT 1 FROM pg_constraint 
+            SELECT 1 FROM pg_constraint
             WHERE conname = 'vehicles_user_id_or_clerk_user_id'
           ) THEN
-            ALTER TABLE public.vehicles 
-            ADD CONSTRAINT vehicles_user_id_or_clerk_user_id 
+            ALTER TABLE public.vehicles
+            ADD CONSTRAINT vehicles_user_id_or_clerk_user_id
             CHECK (user_id IS NOT NULL OR clerk_user_id IS NOT NULL);
             RAISE NOTICE 'Added constraint to vehicles table';
           END IF;
         END $$;
-        
+
         ALTER TABLE public.vehicles ENABLE ROW LEVEL SECURITY;
 
         DROP POLICY IF EXISTS "Users can read their own vehicles" ON public.vehicles;
@@ -542,6 +542,36 @@ export async function initializeDatabaseTables() {
         CREATE INDEX IF NOT EXISTS idx_damage_reports_status ON public.damage_reports(status);
         CREATE INDEX IF NOT EXISTS idx_damage_reports_created_at ON public.damage_reports(created_at DESC);
 
+        -- Make user_id nullable for Clerk-based auth (existing tables may still have NOT NULL)
+        ALTER TABLE public.damage_reports ALTER COLUMN user_id DROP NOT NULL;
+
+        -- Add clerk_user_id column if missing
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name = 'damage_reports'
+            AND column_name = 'clerk_user_id'
+          ) THEN
+            ALTER TABLE public.damage_reports ADD COLUMN clerk_user_id TEXT;
+          END IF;
+        END $$;
+
+        -- Add check constraint if missing
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conname = 'user_id_or_clerk_user_id'
+            AND conrelid = 'public.damage_reports'::regclass
+          ) THEN
+            ALTER TABLE public.damage_reports
+              ADD CONSTRAINT user_id_or_clerk_user_id
+              CHECK (user_id IS NOT NULL OR clerk_user_id IS NOT NULL);
+          END IF;
+        END $$;
+
         ALTER TABLE public.damage_reports ENABLE ROW LEVEL SECURITY;
 
         DROP POLICY IF EXISTS "Users can read their own damage reports" ON public.damage_reports;
@@ -594,7 +624,7 @@ export async function initializeDatabaseTables() {
 
     } catch (error) {
       // Only log error if it's not about existing objects
-      if (!error.message.includes('already exists') && 
+      if (!error.message.includes('already exists') &&
           !error.message.includes('does not exist, skipping')) {
         console.error('❌ Database initialization error:', error);
       }
@@ -615,13 +645,13 @@ export async function initializeDatabaseTables() {
       const { Client } = await import('https://deno.land/x/postgres@v0.17.0/mod.ts');
       const verifyClient = new Client(DB_URL);
       await verifyClient.connect();
-      
+
       const result = await verifyClient.queryArray(
         "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('profiles', 'vehicles', 'damage_reports')"
       );
-      
+
       await verifyClient.end();
-      
+
       if (result.rows.length === 3) {
         console.log('✅ All 3 tables verified: profiles, vehicles, damage_reports');
         console.log('✅ Database is ready for use!');
