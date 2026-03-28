@@ -445,6 +445,7 @@ export default function BidsScreen({
             handleRating(selectedShop, rating, review, categoryRatings)
           }
           primaryColor={primaryColor}
+          appearanceMode={appearanceMode}
         />
       )}
     </div>

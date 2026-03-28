@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { X, Star } from "lucide-react";
+import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ShopRatingModalProps = {
   shopName: string;
@@ -10,6 +11,7 @@ type ShopRatingModalProps = {
     categoryRatings: { quality: number; service: number; timeliness: number; value: number }
   ) => void;
   primaryColor?: string;
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export default function ShopRatingModal({
@@ -17,7 +19,9 @@ export default function ShopRatingModal({
   onClose,
   onSubmit,
   primaryColor = "#003d82",
+  appearanceMode = "map-dark",
 }: ShopRatingModalProps) {
+  const isLight = appearanceMode === "light";
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [category, setCategory] = useState({
@@ -84,16 +88,16 @@ export default function ShopRatingModal({
         <div className="p-4 sm:p-6 space-y-6">
           {/* Overall Rating */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Overall Rating *</label>
+            <label className={`block text-sm font-medium mb-2 ${isLight ? "text-slate-700" : "text-slate-300"}`}>Overall Rating *</label>
             <StarRating value={rating} onChange={setRating} />
           </div>
 
           {/* Category Ratings */}
           <div className="space-y-4">
-            <p className="text-sm text-slate-300/80">Rate specific aspects (optional):</p>
+            <p className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>Rate specific aspects (optional):</p>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className={`block text-sm font-medium mb-2 ${isLight ? "text-slate-700" : "text-slate-300"}`}>
                 Quality of Work
               </label>
               <StarRating
@@ -104,7 +108,7 @@ export default function ShopRatingModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className={`block text-sm font-medium mb-2 ${isLight ? "text-slate-700" : "text-slate-300"}`}>
                 Customer Service
               </label>
               <StarRating
@@ -115,7 +119,7 @@ export default function ShopRatingModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Timeliness</label>
+              <label className={`block text-sm font-medium mb-2 ${isLight ? "text-slate-700" : "text-slate-300"}`}>Timeliness</label>
               <StarRating
                 value={category.timeliness}
                 onChange={(val) => setCategory({ ...category, timeliness: val })}
@@ -124,7 +128,7 @@ export default function ShopRatingModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className={`block text-sm font-medium mb-2 ${isLight ? "text-slate-700" : "text-slate-300"}`}>
                 Value for Money
               </label>
               <StarRating
@@ -137,7 +141,7 @@ export default function ShopRatingModal({
 
           {/* Written Review */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+            <label className={`block text-sm font-medium mb-2 ${isLight ? "text-slate-700" : "text-slate-300"}`}>
               Your Review (Optional)
             </label>
             <textarea
