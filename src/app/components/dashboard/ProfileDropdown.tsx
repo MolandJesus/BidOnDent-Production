@@ -220,7 +220,7 @@ export default function ProfileDropdown({
                 className={`w-3 h-3 ${notificationSyncActive ? "text-green-500 animate-pulse" : "text-gray-400"}`}
               />
               <span
-                className={`text-xs ${notificationSyncActive ? "text-green-400" : "text-blue-200/50"}`}
+                className={`text-xs ${notificationSyncActive ? (isLightAppearance ? "text-green-600" : "text-green-400") : (isLightAppearance ? "text-slate-400" : "text-blue-200/50")}`}
               >
                 {notificationSyncActive ? "Synced" : "Paused"}
               </span>
@@ -286,7 +286,7 @@ export default function ProfileDropdown({
           onClick={() => onNavigate("dashboard", "account")}
           className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
         >
-          <Settings className="w-4 h-4 text-gray-500" />
+          <Settings className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
           <span className="text-sm">Account Settings</span>
         </button>
 
@@ -297,21 +297,21 @@ export default function ProfileDropdown({
               onClick={() => onNavigate("vehicles")}
               className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
-              <Car className="w-4 h-4 text-gray-500" />
+              <Car className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
               <span className="text-sm">My Vehicles</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "report")}
               className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
             >
-              <Camera className="w-4 h-4 text-gray-500" />
+              <Camera className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
               <span className="text-sm">Submit Report</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "bids")}
               className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
-              <FileCheck className="w-4 h-4 text-gray-500" />
+              <FileCheck className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
               <span className="text-sm">My Bids</span>
             </button>
           </>
@@ -324,14 +324,14 @@ export default function ProfileDropdown({
               onClick={() => onNavigate("dashboard", "requests")}
               className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
             >
-              <ClipboardList className="w-4 h-4 text-gray-500" />
+              <ClipboardList className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
               <span className="text-sm">Repair Requests</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "jobs")}
               className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
-              <Wrench className="w-4 h-4 text-gray-500" />
+              <Wrench className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
               <span className="text-sm">Active Jobs</span>
             </button>
           </>
@@ -344,14 +344,14 @@ export default function ProfileDropdown({
               onClick={() => onNavigate("dashboard", "claims")}
               className="w-full px-4 py-2 text-left bd-glass-control--secondary flex items-center space-x-2"
             >
-              <FileText className="w-4 h-4 text-gray-500" />
+              <FileText className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
               <span className="text-sm">Manage Claims</span>
             </button>
             <button
               onClick={() => onNavigate("dashboard", "shops")}
               className="w-full px-4 py-2 text-left bd-glass-control--utility flex items-center space-x-2"
             >
-              <Building2 className="w-4 h-4 text-gray-500" />
+              <Building2 className={`w-4 h-4 ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`} />
               <span className="text-sm">Partner Shops</span>
             </button>
           </>
