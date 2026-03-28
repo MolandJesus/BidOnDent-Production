@@ -5,19 +5,32 @@ import { zipToCoordinates } from "../../services/supabase/map";
 import { ReportDetailDrawer } from "./ReportDetailDrawer";
 import type { DamageReport } from "../../services/supabase/types";
 
+import type { MapTheme } from "../../types/mapDomain";
+
 const REPORT_MARKER_STYLE_ID = "bd-report-marker-style";
 const REPORT_MARKER_CLASS = "bd-report-marker";
 
-export default function MapReportMarkers() {
+type MapReportMarkersProps = {
+  mapTheme?: MapTheme;
+};
+
+export default function MapReportMarkers({ mapTheme = "dark" }: MapReportMarkersProps) {
+  const isDark = mapTheme === "dark";
   useEffect(() => {
     if (typeof document === "undefined") return;
-    if (document.getElementById(REPORT_MARKER_STYLE_ID)) return;
+
+    // Remove existing style to update for theme change
+    const existing = document.getElementById(REPORT_MARKER_STYLE_ID);
+    if (existing) existing.remove();
+
+    const glowColor = isDark ? "#60a5fa" : "#2563eb";
+    const glowAlpha = isDark ? "rgba(59, 130, 246, 0.45)" : "rgba(37, 99, 235, 0.3)";
 
     const style = document.createElement("style");
     style.id = REPORT_MARKER_STYLE_ID;
     style.innerHTML = `
       .${REPORT_MARKER_CLASS} {
-        filter: drop-shadow(0 0 12px #60a5fa) drop-shadow(0 0 24px rgba(59, 130, 246, 0.45));
+        filter: drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 24px ${glowAlpha});
         animation: bd-report-pulse 1.6s infinite cubic-bezier(0.4, 0, 0.6, 1);
       }
 
@@ -28,7 +41,7 @@ export default function MapReportMarkers() {
       }
     `;
     document.head.appendChild(style);
-  }, []);
+  }, [isDark]);
 
   const [reports, setReports] = useState<DamageReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<DamageReport | null>(null);
@@ -84,9 +97,9 @@ export default function MapReportMarkers() {
           center={[coords.lat, coords.lng]}
           radius={12}
           pathOptions={{
-            color: "#93c5fd",
-            fillColor: "#2563eb",
-            fillOpacity: 0.92,
+            color: isDark ? "#93c5fd" : "#1e40af",
+            fillColor: isDark ? "#2563eb" : "#1d4ed8",
+            fillOpacity: isDark ? 0.92 : 0.85,
             weight: 2.5,
             className: REPORT_MARKER_CLASS,
           }}

@@ -233,7 +233,7 @@ export default function ShopDirectoryMapPane({
           </CircleMarker>
         ))}
 
-        <MapReportMarkers />
+        <MapReportMarkers mapTheme={mapTheme} />
 
         {routeOptions.map((route) => {
           const isSelectedRoute = route.id === selectedRoute?.id;
