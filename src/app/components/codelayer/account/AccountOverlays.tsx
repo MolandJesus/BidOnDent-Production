@@ -20,7 +20,9 @@ export default function AccountOverlays({
       {/* Loading Overlay for Image Upload */}
       {isSaving && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bd-glass-floating rounded-lg p-6 flex flex-col items-center">
+          <div
+            className={`bd-glass-floating rounded-lg p-6 flex flex-col items-center${isLight ? " bd-light-surface" : ""}`}
+          >
             <svg
               className="animate-spin h-12 w-12 mb-3"
               xmlns="http://www.w3.org/2000/svg"
@@ -55,7 +57,7 @@ export default function AccountOverlays({
       {/* Success Toast */}
       {saveSuccess && (
         <div
-          className="fixed top-20 right-4 bd-glass-card border-l-4 px-4 py-3 rounded shadow-lg z-50 flex items-center gap-3 animate-slide-in-right"
+          className={`fixed top-20 right-4 bd-glass-card border-l-4 px-4 py-3 rounded shadow-lg z-50 flex items-center gap-3 animate-slide-in-right${isLight ? " bd-light-surface" : ""}`}
           style={{ borderColor: primaryColor }}
         >
           <div

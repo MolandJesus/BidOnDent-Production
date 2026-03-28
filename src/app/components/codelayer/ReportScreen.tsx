@@ -431,7 +431,7 @@ export default function ReportScreen({
           </>
         )}
         <div className="max-w-4xl mx-auto relative">
-          <div className="bd-glass-card">
+          <div className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""}`}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={step}

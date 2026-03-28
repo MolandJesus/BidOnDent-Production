@@ -137,8 +137,8 @@ export default function ProfileDropdown({
 
   const containerClasses =
     variant === "embedded"
-      ? "w-full bd-glass-card"
-      : "absolute right-0 mt-2 w-80 bd-glass-floating z-50";
+      ? `w-full bd-glass-card${isLightAppearance ? " bd-light-surface" : ""}`
+      : `absolute right-0 mt-2 w-80 bd-glass-floating z-50${isLightAppearance ? " bd-light-surface" : ""}`;
 
   return (
     <div

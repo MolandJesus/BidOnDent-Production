@@ -36,7 +36,9 @@ export default function StepVehicleInfo({
   const canContinue = Boolean(normalizedMake && normalizedModel && isValidYear);
 
   return (
-    <div className="px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl">
+    <div
+      className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
+    >
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-1 text-slate-100">Tell us about your vehicle</h2>
         <p className="text-blue-100/80">This helps local shops prepare accurate bids quickly.</p>
@@ -44,7 +46,7 @@ export default function StepVehicleInfo({
 
       {vehicles && vehicles.length > 0 && (
         <div
-          className={`mb-6 bd-glass-card p-4 ${
+          className={`mb-6 bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} p-4 ${
             isLightAppearance ? "border-blue-300/15" : "bg-slate-900/40 border-blue-200/20"
           }`}
         >

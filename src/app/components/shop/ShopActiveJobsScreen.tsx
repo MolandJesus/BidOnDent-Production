@@ -238,7 +238,7 @@ export default function ShopActiveJobsScreen({
       <div className="px-4 py-4 space-y-4">
         {filteredJobs.length === 0 ? (
           <div
-            className="bd-glass-card p-5 sm:p-8 text-center"
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
             style={
               isLight
                 ? {}
@@ -261,7 +261,7 @@ export default function ShopActiveJobsScreen({
           filteredJobs.map((job) => (
             <div
               key={job.id}
-              className="bd-glass-card overflow-hidden"
+              className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
               style={
                 isLight
                   ? {}

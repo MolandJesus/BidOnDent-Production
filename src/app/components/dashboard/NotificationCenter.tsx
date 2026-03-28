@@ -52,7 +52,7 @@ export default function NotificationCenter({
 
   return (
     <div
-      className="absolute right-0 mt-2 w-[min(24rem,calc(100vw-1rem))] overflow-hidden rounded-2xl bd-glass-floating z-[70] max-md:fixed max-md:left-2 max-md:right-2 max-md:w-auto max-md:mt-0 max-md:top-[calc(env(safe-area-inset-top)+3.9rem)]"
+      className={`absolute right-0 mt-2 w-[min(24rem,calc(100vw-1rem))] overflow-hidden rounded-2xl bd-glass-floating z-[70] max-md:fixed max-md:left-2 max-md:right-2 max-md:w-auto max-md:mt-0 max-md:top-[calc(env(safe-area-inset-top)+3.9rem)]${isLightAppearance ? " bd-light-surface" : ""}`}
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(241,245,249,0.95) 100%)"

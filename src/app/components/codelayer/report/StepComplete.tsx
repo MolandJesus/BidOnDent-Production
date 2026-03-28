@@ -18,7 +18,9 @@ export default function StepComplete({
 }: StepCompleteProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="px-4 md:px-6 py-6 md:py-8 bd-glass-card rounded-2xl">
+    <div
+      className={`px-4 md:px-6 py-6 md:py-8 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
+    >
       <div className="text-center mb-8">
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-500"
@@ -40,7 +42,7 @@ export default function StepComplete({
         </p>
       </div>
 
-      <div className="bd-glass-card p-5 mb-8">
+      <div className={`bd-glass-card p-5 mb-8${isLightAppearance ? " bd-light-surface" : ""}`}>
         <h3
           className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-100" : "text-white/90"}`}
         >

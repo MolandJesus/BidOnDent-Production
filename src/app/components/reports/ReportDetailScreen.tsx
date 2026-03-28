@@ -89,7 +89,9 @@ export default function ReportDetailScreen({
   return (
     <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className={`bd-glass-panel border-b sticky top-0 z-10${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}>
+      <div
+        className={`bd-glass-panel border-b sticky top-0 z-10${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
+      >
         <div className="px-4 py-4">
           <div className="flex items-center">
             <button

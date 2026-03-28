@@ -233,7 +233,7 @@ export function HomeReportsList({
             return (
               <article
                 key={report.id}
-                className={`bd-glass-card p-4 transition-shadow ${isLightAppearance ? "bg-white/[0.06] border-white/10" : "bg-slate-900/25 border-blue-400/[0.18]"} ${
+                className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} p-4 transition-shadow ${isLightAppearance ? "bg-white/[0.06] border-white/10" : "bg-slate-900/25 border-blue-400/[0.18]"} ${
                   canOpenReport ? "hover:shadow-md cursor-pointer" : ""
                 }`}
                 style={

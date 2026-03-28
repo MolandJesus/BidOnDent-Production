@@ -103,15 +103,21 @@ export default function ReportsListScreen({
       {/* Reports List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
-          <div className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}>
+          <div
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
+          >
             <p className={isLight ? "text-slate-500" : "text-slate-400"}>Loading reports…</p>
           </div>
         ) : reportsError ? (
-          <div className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}>
+          <div
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
+          >
             <p className="text-red-600 font-semibold">Unable to load reports</p>
           </div>
         ) : filteredReports.length === 0 ? (
-          <div className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}>
+          <div
+            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
+          >
             <p className={isLight ? "text-slate-500" : "text-slate-400"}>No reports yet</p>
           </div>
         ) : (

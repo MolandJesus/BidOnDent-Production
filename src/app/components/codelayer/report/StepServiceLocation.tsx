@@ -24,7 +24,9 @@ export default function StepServiceLocation({
 }: StepServiceLocationProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="p-4 sm:p-6 space-y-5 bd-glass-card rounded-2xl">
+    <div
+      className={`p-4 sm:p-6 space-y-5 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
+    >
       <div className="text-center">
         <div
           className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"

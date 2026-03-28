@@ -176,7 +176,7 @@ export default function InsurerPartnerShopsScreen({
   return (
     <div className="min-h-screen">
       <div
-        className="sticky top-0 z-10 border-b border-blue-400/20 bd-glass-panel !rounded-none"
+        className={`sticky top-0 z-10 border-b border-blue-400/20 bd-glass-panel !rounded-none${isLight ? " bd-light-surface" : ""}`}
         style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}
       >
         <div className="px-4 py-4">

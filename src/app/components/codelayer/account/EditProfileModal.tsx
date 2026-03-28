@@ -46,7 +46,9 @@ export default function EditProfileModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bd-glass-floating rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div
+        className={`bd-glass-floating rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto${isLight ? " bd-light-surface" : ""}`}
+      >
         {/* Header */}
         <div
           className={`sticky top-0 backdrop-blur-sm border-b px-6 py-4 rounded-t-2xl z-10 ${isLight ? "bg-white/95 border-slate-200/60" : "bg-slate-900/80 border-white/[0.08]"}`}

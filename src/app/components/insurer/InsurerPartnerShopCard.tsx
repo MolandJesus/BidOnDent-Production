@@ -56,7 +56,9 @@ export default function InsurerPartnerShopCard({
   const statusColor = statusColorMap[entry.status] || statusColorMap.inactive;
 
   return (
-    <article className="overflow-hidden rounded-[26px] bd-glass-card">
+    <article
+      className={`overflow-hidden rounded-[26px] bd-glass-card${isLight ? " bd-light-surface" : ""}`}
+    >
       <div className="relative h-44 w-full overflow-hidden bg-white/[0.08]">
         <img
           src={entry.image}
@@ -171,7 +173,7 @@ export default function InsurerPartnerShopCard({
           </div>
         </div>
 
-        <div className="mb-3 rounded-2xl bd-glass-card p-3">
+        <div className={`mb-3 rounded-2xl bd-glass-card p-3${isLight ? " bd-light-surface" : ""}`}>
           <div className="flex items-center justify-between">
             <div>
               <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/50"}`}>

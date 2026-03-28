@@ -35,7 +35,9 @@ export default function StepPhotos({
 }: StepPhotosProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div className="px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh] bd-glass-card rounded-2xl">
+    <div
+      className={`px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh] bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
+    >
       {/* Title and instructions - compressed for mobile */}
       <h2
         className={`text-xl sm:text-2xl font-bold mb-1 mt-1 ${isLightAppearance ? "text-slate-100" : "text-white/95"}`}
@@ -49,7 +51,9 @@ export default function StepPhotos({
       </p>
 
       {/* Info block - collapsed on mobile */}
-      <div className="bd-glass-card p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm">
+      <div
+        className={`bd-glass-card p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm${isLightAppearance ? " bd-light-surface" : ""}`}
+      >
         <div className="mr-2 sm:mr-3 mt-0.5">
           <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
         </div>
@@ -79,7 +83,9 @@ export default function StepPhotos({
       )}
 
       {photos.length === 0 && (
-        <div className="mb-4 sm:mb-6 bd-glass-card px-3 py-6 sm:px-4 sm:py-10 text-center">
+        <div
+          className={`mb-4 sm:mb-6 bd-glass-card px-3 py-6 sm:px-4 sm:py-10 text-center${isLightAppearance ? " bd-light-surface" : ""}`}
+        >
           <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-blue-400/70 mx-auto mb-2" />
           <p
             className={`font-medium text-sm sm:text-base ${isLightAppearance ? "text-white/75" : "text-white/80"}`}
@@ -98,7 +104,10 @@ export default function StepPhotos({
         {photos.map((photo, index) => {
           const isBase64 = photo.startsWith("data:");
           return (
-            <div key={`photo-${index}`} className="relative bd-glass-card p-2.5">
+            <div
+              key={`photo-${index}`}
+              className={`relative bd-glass-card p-2.5${isLightAppearance ? " bd-light-surface" : ""}`}
+            >
               <div className="w-full aspect-video bg-white/[0.08] rounded-lg overflow-hidden mb-2">
                 <img
                   src={photo}
@@ -138,7 +147,7 @@ export default function StepPhotos({
           <button
             type="button"
             onClick={onOpenCamera}
-            className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
+            className={`py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200${isLightAppearance ? " bd-light-surface" : ""}`}
           >
             <Camera
               className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
@@ -152,7 +161,7 @@ export default function StepPhotos({
           <button
             type="button"
             onClick={onOpenFilePicker}
-            className="py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200"
+            className={`py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200${isLightAppearance ? " bd-light-surface" : ""}`}
           >
             <Upload
               className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}

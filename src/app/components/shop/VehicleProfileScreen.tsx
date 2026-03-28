@@ -121,10 +121,10 @@ export default function VehicleProfileScreen({
   const inputClassSm = `w-full px-3 py-2 border rounded-md uppercase ${isLight ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/60"}`;
 
   return (
-    <div className="min-h-screen bd-glass-panel pb-20">
+    <div className={`min-h-screen bd-glass-panel pb-20${isLight ? " bd-light-surface" : ""}`}>
       {/* Header */}
       <div
-        className={`bd-glass-panel border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}
+        className={`bd-glass-panel${isLight ? " bd-light-surface" : ""} border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}
       >
         <div className="px-4 py-4">
           <div className="flex items-center justify-between">
@@ -159,7 +159,7 @@ export default function VehicleProfileScreen({
       <div className="px-4 py-4 max-w-2xl mx-auto">
         {/* Add/Edit Form */}
         {showAddForm && (
-          <div className="bd-glass-card p-4 sm:p-6 mb-4">
+          <div className={`bd-glass-card p-4 sm:p-6 mb-4${isLight ? " bd-light-surface" : ""}`}>
             <h3 className="text-lg font-bold mb-4">
               {editingId ? "Edit Vehicle" : "Add New Vehicle"}
             </h3>
@@ -258,7 +258,9 @@ export default function VehicleProfileScreen({
         {/* Vehicles List */}
         <div className="space-y-3">
           {vehicles.length === 0 ? (
-            <div className="bd-glass-card rounded-lg p-5 sm:p-8 text-center">
+            <div
+              className={`bd-glass-card rounded-lg p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
+            >
               <Car
                 className={`w-16 h-16 mx-auto mb-4 ${isLight ? "text-slate-400" : "text-gray-300"}`}
               />
@@ -288,7 +290,7 @@ export default function VehicleProfileScreen({
                     vehicle.id ||
                     `vehicle-${index}-${vehicle.make}-${vehicle.model}-${vehicle.year}`
                   }
-                  className="bd-glass-card p-4"
+                  className={`bd-glass-card p-4${isLight ? " bd-light-surface" : ""}`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

@@ -30,7 +30,9 @@ export default function StepDescription({
   const isDescriptionValid = description.trim().length >= 10;
 
   return (
-    <div className="px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl">
+    <div
+      className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
+    >
       <h2 className="text-2xl font-bold mb-1 text-slate-100">Describe the damage</h2>
       <p className={`mb-6 ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/80"}`}>
         The better your details, the better your bids will be.

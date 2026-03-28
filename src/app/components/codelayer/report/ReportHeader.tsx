@@ -18,7 +18,7 @@ export default function ReportHeader({
 
   return (
     <div
-      className={`bd-glass-panel !rounded-none px-3 sm:px-4 md:px-6 py-2.5 sm:py-3.5 flex items-start sm:items-center gap-2.5 ${
+      className={`bd-glass-panel${isLightAppearance ? " bd-light-surface" : ""} !rounded-none px-3 sm:px-4 md:px-6 py-2.5 sm:py-3.5 flex items-start sm:items-center gap-2.5 ${
         isLightAppearance ? "border-b border-blue-200/35" : "border-b border-blue-300/20"
       }`}
       style={{

@@ -45,7 +45,7 @@ export default function AccountInfoCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.05 }}
-      className="bd-glass-card rounded-2xl p-5 mb-5 relative overflow-hidden"
+      className={`bd-glass-card rounded-2xl p-5 mb-5 relative overflow-hidden${isLightAppearance ? " bd-light-surface" : ""}`}
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(241, 247, 255, 0.88) 100%)"
@@ -121,7 +121,7 @@ export default function AccountInfoCard({
           .map((field) => (
             <div
               key={field.label}
-              className={`bd-glass-card rounded-xl p-3.5 ${
+              className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} rounded-xl p-3.5 ${
                 isLightAppearance
                   ? "bg-white/60 border-blue-200/30"
                   : "bg-slate-900/35 border-blue-200/18"
@@ -146,7 +146,7 @@ export default function AccountInfoCard({
           ))}
         {userType === "customer" && userInfo.vehicles.length > 0 && (
           <div
-            className={`bd-glass-card rounded-xl p-3.5 ${
+            className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} rounded-xl p-3.5 ${
               isLightAppearance
                 ? "bg-white/60 border-blue-200/30"
                 : "bg-slate-900/35 border-blue-200/18"

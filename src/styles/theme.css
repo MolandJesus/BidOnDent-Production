@@ -1312,12 +1312,13 @@
    class.  This overrides the translucent dark glass to a frosted
    white panel and sets an appropriate dark base text colour.
    ───────────────────────────────────────────────────────────────── */
-[data-appearance-mode="light"] :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating).bd-light-surface {
+[data-appearance-mode="light"]
+  :is(.bd-glass-card, .bd-glass-panel, .bd-glass-floating).bd-light-surface {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 255, 0.92) 100%);
   border-color: rgba(148, 163, 184, 0.28);
   box-shadow:
     0 10px 32px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.90);
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   color: #334155;
 }
 

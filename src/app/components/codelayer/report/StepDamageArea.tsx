@@ -29,13 +29,17 @@ export default function StepDamageArea({
   const isLightAppearance = appearanceMode === "light";
 
   return (
-    <div className="px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl">
+    <div
+      className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
+    >
       <h2 className="text-2xl font-bold mb-1 text-slate-100">Where is the damage?</h2>
       <p className={`mb-6 ${isLightAppearance ? "text-blue-100/70" : "text-blue-100/80"}`}>
         Choose the area that best matches what you see.
       </p>
 
-      <div className="relative mb-6 bd-glass-card overflow-hidden max-w-md mx-auto md:max-w-sm">
+      <div
+        className={`relative mb-6 bd-glass-card overflow-hidden max-w-md mx-auto md:max-w-sm${isLightAppearance ? " bd-light-surface" : ""}`}
+      >
         <ImageWithFallback
           src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
           alt="Car diagram"
