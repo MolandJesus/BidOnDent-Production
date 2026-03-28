@@ -601,6 +601,7 @@ export default function ShopActiveJobsScreen({
                   subtitle="Standardized execution phases for this repair"
                   steps={shopLifecycle(selectedJob.status)}
                   compact
+                  appearanceMode={appearanceMode}
                 />
 
                 <button

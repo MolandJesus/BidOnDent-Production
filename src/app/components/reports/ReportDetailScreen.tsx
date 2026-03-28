@@ -218,6 +218,7 @@ export default function ReportDetailScreen({
           title="Repair Progress"
           subtitle="Track where your request is in the repair journey"
           steps={customerLifecycle(status)}
+          appearanceMode={appearanceMode}
         />
 
         {/* Interested Shops */}

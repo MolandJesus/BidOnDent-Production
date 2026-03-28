@@ -261,6 +261,7 @@ export default function InsurerClaimCard({
             title="Claim Lifecycle"
             steps={insurerLifecycle(claim.status)}
             compact
+            appearanceMode={appearanceMode}
           />
         </div>
 
