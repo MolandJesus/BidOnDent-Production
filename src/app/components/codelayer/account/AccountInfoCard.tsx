@@ -84,7 +84,7 @@ export default function AccountInfoCard({
           </p>
         </div>
         <div
-          className={`h-2 rounded-full overflow-hidden ${isLightAppearance ? "bg-blue-100/60 border border-blue-200/50" : "bg-slate-900/45 border border-blue-300/10"}`}
+          className={`h-2 rounded-full overflow-hidden ${isLightAppearance ? "bg-blue-100 border border-blue-200/70" : "bg-slate-900/45 border border-blue-300/10"}`}
         >
           <div
             className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500"
@@ -123,12 +123,12 @@ export default function AccountInfoCard({
               key={field.label}
               className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} rounded-xl p-3.5 ${
                 isLightAppearance
-                  ? "bg-white/60 border-blue-200/30"
+                  ? "bg-white/80 border-slate-200/50"
                   : "bg-slate-900/35 border-blue-200/18"
               }`}
               style={{
                 boxShadow: isLightAppearance
-                  ? "0 1px 3px rgba(37,99,235,0.08), inset 0 1px 0 rgba(255,255,255,0.6)"
+                  ? "0 1px 3px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.6)"
                   : "0 1px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(148,163,184,0.06)",
               }}
             >
@@ -148,7 +148,7 @@ export default function AccountInfoCard({
           <div
             className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} rounded-xl p-3.5 ${
               isLightAppearance
-                ? "bg-white/60 border-blue-200/30"
+                ? "bg-white/80 border-slate-200/50"
                 : "bg-slate-900/35 border-blue-200/18"
             }`}
             style={{

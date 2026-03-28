@@ -42,6 +42,14 @@ export const statusClasses: Record<string, string> = {
   resolved: "bg-emerald-400/15 text-emerald-300",
 };
 
+export const statusClassesLight: Record<string, string> = {
+  pending: "bg-amber-50 text-amber-700 border border-amber-200/60",
+  "in-review": "bg-blue-50 text-blue-700 border border-blue-200/60",
+  active: "bg-blue-50 text-blue-700 border border-blue-200/60",
+  completed: "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
+  resolved: "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
+};
+
 export const actionIconTones = [
   "bg-blue-400/15 text-blue-200 shadow-sm",
   "bg-emerald-400/15 text-emerald-300 shadow-sm",

@@ -328,9 +328,13 @@ export default function DashboardLayout({
                   type="button"
                 >
                   <span className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]">
-                    <Sparkles className="w-[18px] h-[18px] transition-colors text-purple-300/80" />
+                    <Sparkles
+                      className={`w-[18px] h-[18px] transition-colors ${isLightAppearance ? "text-purple-500" : "text-purple-300/80"}`}
+                    />
                   </span>
-                  <span className="text-[0.9rem] font-semibold transition-colors duration-200 text-slate-300 group-hover:text-slate-100">
+                  <span
+                    className={`text-[0.9rem] font-semibold transition-colors duration-200 ${isLightAppearance ? "text-slate-600 group-hover:text-slate-800" : "text-slate-300 group-hover:text-slate-100"}`}
+                  >
                     Demo Mode
                   </span>
                 </button>

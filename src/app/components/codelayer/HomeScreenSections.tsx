@@ -9,7 +9,12 @@ import {
 } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 import { formatDate, formatStatus, getReportTitle, getReportDescription } from "./home-helpers";
-import { type ActionItem, statusClasses, actionIconTones } from "./homeScreenData";
+import {
+  type ActionItem,
+  statusClasses,
+  statusClassesLight,
+  actionIconTones,
+} from "./homeScreenData";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
 
@@ -224,7 +229,9 @@ export function HomeReportsList({
         <div className="space-y-3">
           {sortedReports.slice(0, 4).map((report) => {
             const status = String(report?.status ?? "pending").toLowerCase();
-            const statusClass = statusClasses[status] ?? "bg-white/[0.08] text-slate-300";
+            const statusClass = isLightAppearance
+              ? (statusClassesLight[status] ?? "bg-slate-100 text-slate-600")
+              : (statusClasses[status] ?? "bg-white/[0.08] text-slate-300");
             const title = getReportTitle(report, userType);
             const description = getReportDescription(report, userType);
             const hasPhoto = Array.isArray(report?.photos) && report.photos.length > 0;
@@ -233,7 +240,7 @@ export function HomeReportsList({
             return (
               <article
                 key={report.id}
-                className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} p-4 transition-shadow ${isLightAppearance ? "bg-white/[0.06] border-white/10" : "bg-slate-900/25 border-blue-400/[0.18]"} ${
+                className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} p-4 transition-shadow ${isLightAppearance ? "border-slate-200/60" : "bg-slate-900/25 border-blue-400/[0.18]"} ${
                   canOpenReport ? "hover:shadow-md cursor-pointer" : ""
                 }`}
                 style={
