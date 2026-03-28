@@ -382,7 +382,12 @@ export default function AccountScreen({
         appearanceMode={appearanceMode}
       />
 
-      <HelpModal isOpen={showHelp} primaryColor={primaryColor} onClose={() => setShowHelp(false)} />
+      <HelpModal
+        isOpen={showHelp}
+        primaryColor={primaryColor}
+        onClose={() => setShowHelp(false)}
+        appearanceMode={appearanceMode}
+      />
 
       <DeleteAccountModal
         isOpen={showDeleteAccount}

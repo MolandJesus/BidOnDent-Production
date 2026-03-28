@@ -91,11 +91,11 @@ export default function MobileBottomNav({
                 />
               )}
               <Icon
-                className={`w-5 h-5 ${isActive ? (isLightAppearance ? "text-blue-100" : "text-blue-100") : ""}`}
+                className={`w-5 h-5 ${isActive ? (isLightAppearance ? "text-blue-600" : "text-blue-100") : ""}`}
               />
               <span
                 className={`text-[0.7rem] font-medium leading-none ${
-                  isActive ? (isLightAppearance ? "text-blue-50" : "text-blue-50") : ""
+                  isActive ? (isLightAppearance ? "text-blue-700" : "text-blue-50") : ""
                 }`}
               >
                 {tab.label}

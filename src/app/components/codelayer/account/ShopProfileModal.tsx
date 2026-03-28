@@ -31,7 +31,9 @@ export default function ShopProfileModal({
         className={`bd-glass-floating p-5 sm:p-6 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto${isLight ? " bd-light-surface" : ""}`}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Shop Profile</h2>
+          <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+            Shop Profile
+          </h2>
           <button
             className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`}
             onClick={onClose}
