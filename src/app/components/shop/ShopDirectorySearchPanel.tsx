@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { Bookmark, Layers3, MapPin, MapPinOff, Plus, Search, SunMoon } from "lucide-react";
+import { Bookmark, Layers3, MapPin, MapPinOff, Navigation2, Plus, Search, SunMoon } from "lucide-react";
 import type { ShopSortOption } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import { getRoleCollectionTitle } from "../../services/intelligence/shopMapExperience";
@@ -51,6 +51,9 @@ type ShopDirectorySearchPanelProps = {
   onToggleTheme: () => void;
   onOpenRelatedScreen?: () => void;
   onClearAreaSearch?: () => void;
+  onUseMyLocation?: () => void;
+  isLocating?: boolean;
+  locationError?: string | null;
   searchWithinViewport?: boolean;
   RoleIcon: React.ElementType;
 };
@@ -83,6 +86,9 @@ export default function ShopDirectorySearchPanel({
   onToggleTheme,
   onOpenRelatedScreen,
   onClearAreaSearch,
+  onUseMyLocation,
+  isLocating,
+  locationError,
   searchWithinViewport,
   RoleIcon,
 }: ShopDirectorySearchPanelProps) {
@@ -156,6 +162,25 @@ export default function ShopDirectorySearchPanel({
             </div>
 
             <div className="flex flex-wrap gap-2">
+              {onUseMyLocation && (
+                <button
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+                    selectedOrigin?.placeId === "user-geolocation"
+                      ? isLight
+                        ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
+                        : "bd-glass-control border-blue-400/60 bg-blue-500/20 text-white"
+                      : isLight
+                        ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 shadow-sm"
+                        : "bd-glass-control border-emerald-400/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+                  }`}
+                  disabled={isLocating}
+                  onClick={onUseMyLocation}
+                  type="button"
+                >
+                  <Navigation2 className={`h-3.5 w-3.5 ${isLocating ? "animate-pulse" : ""}`} />
+                  {isLocating ? "Locating…" : "My Location"}
+                </button>
+              )}
               {suggestedOrigins.map((origin) => {
                 const isActive =
                   (selectedOrigin?.placeId || selectedOrigin?.name) ===
@@ -181,6 +206,12 @@ export default function ShopDirectorySearchPanel({
                 );
               })}
             </div>
+
+            {locationError && (
+              <p className={`text-xs ${isLight ? "text-red-500" : "text-red-400/80"}`}>
+                {locationError}
+              </p>
+            )}
 
             <div className="flex flex-wrap gap-2">
               <button

@@ -1,4 +1,12 @@
-import { useDeferredValue, useEffect, useMemo, useState, type FormEvent } from "react";
+import {
+  useDeferredValue,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import type { ShopSortOption, WebsiteIdentity } from "../services/auth/websiteIdentity";
 import {
   loadWebsiteSessionMemory,
@@ -37,6 +45,7 @@ import type {
 } from "../types/mapDomain";
 import { useCoveragePartnerShops } from "./useCoveragePartnerShops";
 import { useNetworkDirectory } from "./useNetworkDirectory";
+import { useUserGeolocation } from "./useUserGeolocation";
 import {
   buildRecentSearches,
   buildSavedPlace,
@@ -64,6 +73,8 @@ export function useShopDirectorySession({
 }: UseShopDirectorySessionArgs) {
   const { inventory } = useNetworkDirectory();
   const { partnerShops } = useCoveragePartnerShops();
+  const geolocation = useUserGeolocation();
+  const pendingMyLocationRef = useRef(false);
   const savedMemory = loadWebsiteSessionMemory(identity);
   const suggestedOrigins = getSuggestedSearchOrigins();
 
@@ -241,6 +252,27 @@ export function useShopDirectorySession({
       )
     : false;
 
+  // ── Auto-center on geolocation when no prior origin saved ──
+  useEffect(() => {
+    if (!geolocation.coords || selectedOrigin) return;
+    // Only auto-apply if there was no saved session origin
+    if (savedMemory.mapSession?.lastSearchOrigin) return;
+
+    const myPlace: Place = {
+      name: "My Location",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      latitude: geolocation.coords.latitude,
+      longitude: geolocation.coords.longitude,
+      placeId: "user-geolocation",
+    };
+    setSelectedOrigin(myPlace);
+    setMapCenter(geolocation.coords);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [geolocation.coords]);
+
   // ── Selection sync effects ──
   useEffect(() => {
     if (!selectedShopId && mapListings[0]) {
@@ -411,6 +443,46 @@ export function useShopDirectorySession({
     setSearchWithinViewport(false);
   };
 
+  const handleUseMyLocation = useCallback(() => {
+    if (geolocation.coords) {
+      const myPlace: Place = {
+        name: "My Location",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        latitude: geolocation.coords.latitude,
+        longitude: geolocation.coords.longitude,
+        placeId: "user-geolocation",
+      };
+      setSelectedOrigin(myPlace);
+      setMapCenter(geolocation.coords);
+      pendingMyLocationRef.current = false;
+      return;
+    }
+    pendingMyLocationRef.current = true;
+    geolocation.requestLocation();
+  }, [geolocation]);
+
+  // Resolve pending "My Location" request when coords arrive
+  useEffect(() => {
+    if (!pendingMyLocationRef.current || !geolocation.coords) return;
+    pendingMyLocationRef.current = false;
+
+    const myPlace: Place = {
+      name: "My Location",
+      address: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      latitude: geolocation.coords.latitude,
+      longitude: geolocation.coords.longitude,
+      placeId: "user-geolocation",
+    };
+    setSelectedOrigin(myPlace);
+    setMapCenter(geolocation.coords);
+  }, [geolocation.coords]);
+
   return {
     // State
     searchQuery,
@@ -470,5 +542,8 @@ export function useShopDirectorySession({
     handleToggleTheme,
     handleSearchInArea,
     handleClearAreaSearch,
+    handleUseMyLocation,
+    // Geolocation
+    userGeolocation: geolocation,
   };
 }

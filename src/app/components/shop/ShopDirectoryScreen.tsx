@@ -270,6 +270,8 @@ export default function ShopDirectoryScreen({
                 RoleIcon={RoleIcon}
                 currentOriginIsSaved={session.currentOriginIsSaved}
                 filterRating={session.filterRating}
+                isLocating={session.userGeolocation.isLocating}
+                locationError={session.userGeolocation.error}
                 mapTheme={session.mapTheme}
                 mapViewMode={session.mapViewMode}
                 onClearAreaSearch={session.handleClearAreaSearch}
@@ -282,6 +284,7 @@ export default function ShopDirectoryScreen({
                 onSelectOrigin={session.handleSelectOrigin}
                 onSortChange={session.setSortBy}
                 onToggleTheme={session.handleToggleTheme}
+                onUseMyLocation={session.handleUseMyLocation}
                 onViewModeChange={session.setMapViewMode}
                 primaryColor={primaryColor}
                 roleCollectionListings={session.roleCollectionListings}
