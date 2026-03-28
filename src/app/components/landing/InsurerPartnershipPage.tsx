@@ -67,7 +67,8 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
           <div className="mt-5">
             <button
               onClick={onBackToHome}
-              className="bd-glass-control inline-flex items-center justify-center px-4 py-2.5"
+              className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-white font-semibold shadow-lg"
+              style={{ background: "linear-gradient(135deg, #003d82 0%, #0ea5e9 100%)" }}
             >
               Back to Home
             </button>

@@ -215,14 +215,18 @@ export default function ShopDirectoryResultCard({
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <button
-              className="flex-1 bd-glass-control text-slate-100 font-medium text-sm px-4 py-3"
+              className={`flex-1 font-medium text-sm px-4 py-3 rounded-2xl border transition-colors ${
+                isLight
+                  ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
+                  : "bd-glass-control text-slate-100"
+              }`}
               onClick={onPrimaryAction}
               type="button"
             >
               {primaryActionLabel}
             </button>
             <button
-              className="flex-1 bd-glass-control text-white font-medium text-sm px-4 py-3"
+              className="flex-1 text-white font-medium text-sm px-4 py-3 rounded-2xl shadow-lg"
               onClick={onSecondaryAction}
               style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, #147dd6 100%)` }}
               type="button"
@@ -233,7 +237,11 @@ export default function ShopDirectoryResultCard({
               </span>
             </button>
             <button
-              className="flex-1 bd-glass-control text-slate-100 font-medium text-sm px-4 py-3"
+              className={`flex-1 font-medium text-sm px-4 py-3 rounded-2xl border transition-colors ${
+                isLight
+                  ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
+                  : "bd-glass-control text-slate-100"
+              }`}
               onClick={onDirectionsAction}
               type="button"
             >
