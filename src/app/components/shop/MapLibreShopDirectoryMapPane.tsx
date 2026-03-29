@@ -299,7 +299,7 @@ export default function MapLibreShopDirectoryMapPane({
         onClick={handleMapClick}
         onMouseEnter={() => setCursor("pointer")}
         onMouseLeave={() => setCursor("")}
-        attributionControl={true}
+        attributionControl={{ compact: true }}
       >
         {/* Viewport management (fit, fly, broadcast) */}
         <MapLibreShopDirectoryViewportManager
