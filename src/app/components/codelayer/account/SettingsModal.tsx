@@ -33,7 +33,7 @@ export default function SettingsModal({
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-[1000] overflow-y-auto overscroll-contain bg-black/70 backdrop-blur-sm p-3 sm:p-4"
+      className={`fixed inset-0 z-[1000] overflow-y-auto overscroll-contain bg-black/70 backdrop-blur-sm p-3 sm:p-4${!isLight ? " dark" : ""}`}
       style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}
     >
       <div

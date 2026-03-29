@@ -94,7 +94,7 @@ export default function DashboardLayout({
       <DashboardAtmosphere isLightAppearance={isLightAppearance} />
 
       <div
-        className="relative z-10 md:flex md:min-h-screen h-[100dvh] md:h-auto flex flex-col md:flex-row overflow-hidden md:overflow-visible"
+        className="relative z-10 flex flex-col md:flex-row h-[100dvh] overflow-hidden"
         style={{ touchAction: "pan-y pinch-zoom" }}
       >
         <DashboardSidebar
