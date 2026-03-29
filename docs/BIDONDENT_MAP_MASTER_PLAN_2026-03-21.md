@@ -1,3 +1,9 @@
+### Implementation Note — Pass T530 Shop Directory Tablet-Shell Breakpoint Rebalance (2026-03-29)
+
+- Added a dedicated tablet-landscape split breakpoint (`min-[960px]`) to the shop-directory map shell so list/map composition no longer waits for full desktop sizing.
+- Promoted sidebar scroll and sticky map pane behavior to that threshold for steadier two-column interaction while preserving mobile stack and large-desktop tuning.
+- Strategic effect: the primary map workflow now transitions more smoothly from phone -> tablet -> desktop in the core dashboard shop directory surface.
+
 ### Implementation Note — Pass T529 Coverage Map Tablet Breakpoint Upgrade (2026-03-29)
 
 - Promoted coverage command-center desktop behavior from `xl` to `lg` so 1024-class tablet screens now receive sidebar + map composition instead of phone-style bottom-sheet-only behavior.

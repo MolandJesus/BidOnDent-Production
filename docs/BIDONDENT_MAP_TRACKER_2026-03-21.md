@@ -1,3 +1,15 @@
+## Pass T530 — Shop Directory tablet-shell breakpoint rebalance (2026-03-29)
+
+- **Why this pass was chosen:** Shop Directory hybrid shell still switched to split map/list too late and too abruptly. Tablet-landscape users were seeing inconsistent map/list balance between mobile stack and full desktop split.
+- **What changed:**
+  - Introduced a dedicated tablet-landscape split threshold (`min-[960px]`) for map/list shell composition instead of waiting for `lg` only.
+  - Rebalanced map/list column sizing at `min-[960px]` while preserving desktop `lg` tuning.
+  - Promoted sidebar scroll container + right map sticky behavior to the same `min-[960px]` threshold for stable side-by-side interaction.
+- **Files touched:** `ShopDirectoryScreen.tsx`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0.
+
+---
+
 ## Pass T529 — Coverage map tablet breakpoints (2026-03-29)
 
 - **Why this pass was chosen:** Coverage map browse/navigation was still waiting until `xl` to switch to desktop-style sidebar overlays. On tablets (`lg`, 1024-class), users were getting phone-style behavior with oversized full-height map and delayed sidebar/map composition.

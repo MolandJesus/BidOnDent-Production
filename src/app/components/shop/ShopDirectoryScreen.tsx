@@ -90,8 +90,8 @@ export default function ShopDirectoryScreen({
 
   const mapShellLayoutClass = session.showMapPane
     ? session.mapViewMode === "map"
-      ? "lg:grid-cols-[minmax(320px,360px)_minmax(0,1fr)]"
-      : "lg:grid-cols-[clamp(340px,31vw,420px)_minmax(0,1fr)]"
+      ? "min-[960px]:grid-cols-[minmax(300px,340px)_minmax(0,1fr)] lg:grid-cols-[minmax(320px,360px)_minmax(0,1fr)]"
+      : "min-[960px]:grid-cols-[clamp(320px,33vw,390px)_minmax(0,1fr)] lg:grid-cols-[clamp(340px,31vw,420px)_minmax(0,1fr)]"
     : "";
 
   const renderGuidanceOverlay = (containerClassName: string) =>
@@ -216,10 +216,10 @@ export default function ShopDirectoryScreen({
         className={`overflow-hidden rounded-none border-0 shadow-none md:rounded-2xl md:border md:shadow-none bg-transparent ${isLight ? "md:border-slate-200/60" : "md:border-white/[0.08]"}`}
       >
         <div
-          className={`min-w-0 ${session.showMapPane ? `flex flex-col lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}
+          className={`min-w-0 ${session.showMapPane ? `flex flex-col min-[960px]:grid min-[960px]:items-stretch ${mapShellLayoutClass}` : ""}`}
         >
           <aside
-            className={`${session.showMapPane ? "lg:order-1 lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-140px)]" : ""} min-h-0 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"} bg-transparent`}
+            className={`${session.showMapPane ? "min-[960px]:order-1 min-[960px]:border-r min-[960px]:overflow-y-auto min-[960px]:max-h-[calc(100vh-140px)]" : ""} min-h-0 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"} bg-transparent`}
           >
             <div className="flex h-full flex-col">
               <ShopDirectorySearchPanel
@@ -282,7 +282,7 @@ export default function ShopDirectoryScreen({
 
           {session.showMapPane && (
             <div
-              className={`-order-1 lg:order-2 h-[48dvh] min-h-[300px] max-h-[560px] sm:h-[52dvh] md:h-[56dvh] lg:h-[calc(100vh-140px)] lg:max-h-none lg:sticky lg:top-0`}
+              className={`-order-1 min-[960px]:order-2 h-[48dvh] min-h-[300px] max-h-[560px] sm:h-[52dvh] md:h-[56dvh] min-[960px]:h-[calc(100vh-140px)] min-[960px]:max-h-none min-[960px]:sticky min-[960px]:top-0`}
             >
               <NavigationErrorBoundary>
                 <ShopDirectoryMapPane
