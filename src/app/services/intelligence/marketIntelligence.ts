@@ -361,8 +361,9 @@ export function buildShopIntelligenceSummary(
 
   if (!topRecommendation) {
     return {
-      title: "No shops matched that filter",
-      description: "Try loosening the rating filter or using a broader shop category.",
+      title: "No shops matched",
+      description:
+        "Try broadening the search, switching to Smart Match, or removing the 4.5+ filter.",
       callouts: ["Fallback path: broaden search or sort by distance."],
     };
   }

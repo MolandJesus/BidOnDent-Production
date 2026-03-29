@@ -7,7 +7,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { NavigationCoordinate, NavigationSpeedLimitSnapshot } from "../types/navigation";
 import { haversineMiles } from "../services/supabase/map";
-import { calculateFallbackSpeedMph } from "../services/navigation/navigationGuidanceHelpers";
+import {
+  calculateFallbackSpeedMph,
+  resolveReliableCurrentSpeedMph,
+} from "../services/navigation/navigationGuidanceHelpers";
 import { fetchNearestSpeedLimit } from "../services/navigation/speedLimit";
 import { createTimeoutAbortController } from "../services/navigation/requestTimeout";
 
@@ -49,6 +52,7 @@ export function useNavigationGpsTracking({
 
   const previousPositionRef = useRef<NavigationCoordinate | null>(null);
   const previousPositionTimestampRef = useRef<number | null>(null);
+  const previousAcceptedSpeedRef = useRef<number | null>(null);
   const lastGpsUpdateRef = useRef<number>(Date.now());
   const staleAutoRetryFiredRef = useRef(false);
   const lastSpeedLimitLookupRef = useRef<{
@@ -70,6 +74,7 @@ export function useNavigationGpsTracking({
       setSpeedLimitSnapshot(null);
       previousPositionRef.current = null;
       previousPositionTimestampRef.current = null;
+      previousAcceptedSpeedRef.current = null;
       return;
     }
 
@@ -88,9 +93,17 @@ export function useNavigationGpsTracking({
           lng: position.coords.longitude,
         };
         const nextTimestamp = position.timestamp;
+        const nextAccuracyMeters =
+          typeof position.coords.accuracy === "number" && Number.isFinite(position.coords.accuracy)
+            ? position.coords.accuracy
+            : null;
         const speedFromDevice =
           typeof position.coords.speed === "number" && Number.isFinite(position.coords.speed)
             ? position.coords.speed * 2.23694
+            : null;
+        const elapsedMs =
+          previousPositionTimestampRef.current !== null
+            ? nextTimestamp - previousPositionTimestampRef.current
             : null;
         const fallbackSpeed = calculateFallbackSpeedMph(
           previousPositionRef.current,
@@ -98,20 +111,29 @@ export function useNavigationGpsTracking({
           nextPosition,
           nextTimestamp
         );
+        const nextSpeed = resolveReliableCurrentSpeedMph({
+          speedFromDeviceMph: speedFromDevice,
+          fallbackSpeedMph: fallbackSpeed,
+          previousSpeedMph: previousAcceptedSpeedRef.current,
+          elapsedMs,
+          gpsAccuracyMeters: nextAccuracyMeters,
+        });
 
         previousPositionRef.current = nextPosition;
         previousPositionTimestampRef.current = nextTimestamp;
+        previousAcceptedSpeedRef.current = nextSpeed;
         lastGpsUpdateRef.current = Date.now();
         staleAutoRetryFiredRef.current = false;
         setCurrentPosition(nextPosition);
-        setCurrentSpeedMph(
-          speedFromDevice !== null && speedFromDevice >= 0 ? speedFromDevice : fallbackSpeed
-        );
-        setGpsAccuracyMeters(position.coords.accuracy || null);
+        setCurrentSpeedMph(nextSpeed);
+        setGpsAccuracyMeters(nextAccuracyMeters);
         setGpsError("");
         setGpsStatus("active");
       },
       (error) => {
+        previousAcceptedSpeedRef.current = null;
+        setCurrentSpeedMph(null);
+        setGpsAccuracyMeters(null);
         if (error.code === 1) {
           setGpsError("Location permission denied. Please allow location access and retry.");
           setGpsStatus("denied");
@@ -132,6 +154,9 @@ export function useNavigationGpsTracking({
 
     const stalenessInterval = setInterval(() => {
       if (Date.now() - lastGpsUpdateRef.current > GPS_STALE_THRESHOLD_MS) {
+        previousAcceptedSpeedRef.current = null;
+        setCurrentSpeedMph(null);
+        setGpsAccuracyMeters(null);
         setGpsStatus("stale");
         // Auto-retry the watch once per stale episode to recover from transient signal drops
         if (!staleAutoRetryFiredRef.current) {

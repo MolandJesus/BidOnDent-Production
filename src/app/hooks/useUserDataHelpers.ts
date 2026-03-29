@@ -6,6 +6,11 @@ import type {
   DamageReport as SupabaseDamageReport,
 } from "../services/supabase/types";
 import type { UserData } from "../types";
+import {
+  getUserCacheKey as buildUserCacheKey,
+  readLocalStorageItemSafely,
+  writeLocalStorageItemSafely,
+} from "./userDataUtils";
 
 type CachePayloadArgs = {
   userInfo: UserData["userInfo"];
@@ -34,6 +39,57 @@ type ReportWithBids = SupabaseDamageReport & {
   bids?: SupabaseBid[];
 };
 
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((entry) => typeof entry === "string");
+}
+
+function isRedirectInfo(value: unknown): value is UserData["redirectInfo"] {
+  if (typeof value !== "object" || value === null) return false;
+  const redirectInfo = value as Record<string, unknown>;
+  return (
+    (redirectInfo.type === "customer" ||
+      redirectInfo.type === "shop" ||
+      redirectInfo.type === "insurer") &&
+    (!("email" in redirectInfo) ||
+      redirectInfo.email === undefined ||
+      typeof redirectInfo.email === "string") &&
+    (!("isReturning" in redirectInfo) ||
+      redirectInfo.isReturning === undefined ||
+      typeof redirectInfo.isReturning === "boolean")
+  );
+}
+
+function isPhotoStorage(value: unknown): value is Record<string, string[]> {
+  if (typeof value !== "object" || value === null) return false;
+  return Object.values(value).every((entry) => isStringArray(entry));
+}
+
+function isCachedUserData(value: unknown): value is UserData {
+  if (typeof value !== "object" || value === null) return false;
+  const userData = value as Record<string, unknown>;
+  const userInfo = userData.userInfo;
+  return (
+    typeof userInfo === "object" &&
+    userInfo !== null &&
+    typeof (userInfo as Record<string, unknown>).name === "string" &&
+    typeof (userInfo as Record<string, unknown>).email === "string" &&
+    typeof (userInfo as Record<string, unknown>).profileImage === "string" &&
+    Array.isArray(userData.vehicles) &&
+    Array.isArray(userData.reports) &&
+    Array.isArray(userData.bids) &&
+    typeof userData.userPhone === "string" &&
+    isRedirectInfo(userData.redirectInfo) &&
+    Array.isArray(userData.notifications) &&
+    typeof userData.hasSeenPhotoGuide === "boolean" &&
+    (!("photoStorage" in userData) ||
+      userData.photoStorage === undefined ||
+      isPhotoStorage(userData.photoStorage)) &&
+    (!("activities" in userData) ||
+      userData.activities === undefined ||
+      Array.isArray(userData.activities))
+  );
+}
+
 export function normalizeEmail(email?: string): string {
   return email ? email.toLowerCase() : "";
 }
@@ -44,27 +100,38 @@ export function getUserCacheKey(email?: string): string {
 }
 
 export function getLastActiveEmail(): string {
-  const lastActive = localStorage.getItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
+  const lastActive = readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
   return normalizeEmail(lastActive || undefined);
 }
 
 export function loadCachedUserData(): CachedUserDataResult | null {
   const lastActiveEmail = getLastActiveEmail();
   const lastActiveCacheKey = lastActiveEmail
-    ? getUserCacheKey(lastActiveEmail)
+    ? buildUserCacheKey(lastActiveEmail)
     : STORAGE_KEYS.USER_DATA;
   const cachedData =
-    localStorage.getItem(lastActiveCacheKey) || localStorage.getItem(STORAGE_KEYS.USER_DATA);
+    readLocalStorageItemSafely(lastActiveCacheKey) ||
+    readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA);
 
   if (!cachedData) {
     return null;
   }
 
+  const parsed = parseCachedUserData(cachedData);
+  if (!parsed) {
+    return null;
+  }
+
+  return {
+    raw: cachedData,
+    data: parsed,
+  };
+}
+
+export function parseCachedUserData(raw: string): UserData | null {
   try {
-    return {
-      raw: cachedData,
-      data: JSON.parse(cachedData) as UserData,
-    };
+    const parsed: unknown = JSON.parse(raw);
+    return isCachedUserData(parsed) ? parsed : null;
   } catch (error) {
     if (import.meta.env.DEV) console.error("Error loading cached data:", error);
     return null;
@@ -72,18 +139,14 @@ export function loadCachedUserData(): CachedUserDataResult | null {
 }
 
 export function saveUserDataCache(userData: UserData, email?: string): void {
-  try {
-    localStorage.setItem(
-      getUserCacheKey(email || userData.userInfo.email),
-      JSON.stringify(userData)
-    );
-    localStorage.setItem(
-      STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-      normalizeEmail(email || userData.userInfo.email)
-    );
-  } catch {
-    // Graceful: quota exceeded or private mode — Supabase is source of truth
-  }
+  writeLocalStorageItemSafely(
+    buildUserCacheKey(email || userData.userInfo.email),
+    JSON.stringify(userData)
+  );
+  writeLocalStorageItemSafely(
+    STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
+    normalizeEmail(email || userData.userInfo.email)
+  );
 }
 
 export function buildPhotoStorageFromReports(

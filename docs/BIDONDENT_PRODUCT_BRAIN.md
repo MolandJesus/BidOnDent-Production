@@ -23,7 +23,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # BidOnDent Product Brain
 
-Last updated: March 29, 2026 (Pass 437 — doc system refactor)
+Last updated: March 29, 2026 (Passes 478-483 map + dashboard live-data sync)
 Status: Active strategic reference
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
@@ -230,6 +230,10 @@ The repo now has a real first-pass map foundation. Important facts:
 - onboarding for shop and insurer accounts now has a real persistence target instead of stopping at form UI.
 - live directory inventory can now feed the map and insurer connection flows, with seeded fallback still preserved.
 - those saved/watchlist/shortlist/carrier collections now also mirror into durable provider-agnostic relationship rows.
+- shop and insurer dashboard role views now prefer merged live report data (including hydrated photo storage) before demo fallback, so a newly submitted report can surface downstream faster.
+- fullscreen mobile map browse now uses stronger touch-scroll handling and less vertically bloated quick-origin/menu lanes.
+- compact fullscreen/mobile shop-result cards now favor a single clear route CTA with lighter support actions instead of preserving the heavier desktop card hierarchy.
+- pre-navigation route preview now shows a shorter, cleaner step stack on phones and no longer leaves light mode partially styled like a dark-only panel.
 
 Implication:
 
@@ -1078,7 +1082,8 @@ Main controls:
 - per-shop:
   - call
   - email
-  - message
+  - mapped shops: `BidOnDent Maps`
+  - manual prospects: `Export Directions`
 - add-shop modal:
   - shop info fields
   - specialty toggles
@@ -1440,7 +1445,7 @@ These features are in the production bundle with real provider backing. They wor
 | Royal-blue glass map controls           | theme.css + mapSurfaceTheme.ts                   |
 | In-map command pod + overlays           | CoverageBrowseExperience.tsx                     |
 | Provider health telemetry               | Diagnostics checks, trust state UI               |
-| External directions launch              | Apple Maps / Google Maps / Waze handoff          |
+| Directions handoff                      | BidOnDent Maps in-app by default, external export fallback |
 | Customer report flow                    | Clerk auth → Supabase persistence → photo upload |
 | Customer vehicle management             | Real CRUD with Supabase                          |
 | Demo mode                               | First-class role preview, clearly gated          |
@@ -1718,6 +1723,10 @@ The navigation system works end-to-end. GPS tracks, routes calculate, voice spea
 | Cloud persistence   | Not implemented        | Sessions lost on device change             |
 | Settings UI         | Not implemented        | No user controls for voice/speed/providers |
 | Integration testing | Not implemented        | No test coverage for navigation flows      |
+
+As of March 29, 2026, coverage browse and landing-route previews keep the user-selected ZIP/address context authoritative by default; passive background GPS only takes over when the user explicitly switches the surface into geolocation mode. The public landing coverage entry also now accepts U.S.-wide home/store address search as a first-class origin, so route previews can start from real addresses before fullscreen map entry. Apple Maps / Google Maps / Waze export is still available, but it is now intentionally demoted behind an explicit export disclosure during active navigation so the BidOnDent route experience remains primary.
+
+Fullscreen route chrome has also been tightened on the same date: the active-navigation summary sheet, maneuver rail, speed panel, and mobile browse sheet now bias toward smaller map-first controls instead of oversized card stacks. This is a UI polish step, not a capability leap; integration testing and route-reliability hardening are still required before the navigation system can be treated as fully production-grade.
 
 ### 2. Productizing Stage
 

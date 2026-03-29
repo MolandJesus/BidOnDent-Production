@@ -23,7 +23,11 @@ import {
   buildPhotoStorageFromReports,
   toSupabaseVehicle,
   buildSupabaseReportPayload,
+  readLocalStorageItemSafely,
+  writeLocalStorageItemSafely,
+  removeLocalStorageItemSafely,
 } from "./userDataUtils";
+import { parseCachedUserData } from "./useUserDataHelpers";
 import { hydrateFromCloudProfile, migrateLocalToCloud } from "./useUserDataLoader";
 
 export function useUserData(
@@ -79,16 +83,12 @@ export function useUserData(
     vehicleSignaturesRef.current = result.signatures.vehicleMap;
     reportSignaturesRef.current = result.signatures.reportMap;
 
-    try {
-      localStorage.setItem(cacheKey, JSON.stringify(result.cachePayload));
-      localStorage.setItem(
-        STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-        websiteUserKey || normalizeEmail(result.userInfo.email)
-      );
-      if (import.meta.env.DEV) console.log("Cache updated with fresh Supabase data");
-    } catch {
-      // Graceful: quota exceeded or private mode — Supabase is source of truth
-    }
+    writeLocalStorageItemSafely(cacheKey, JSON.stringify(result.cachePayload));
+    writeLocalStorageItemSafely(
+      STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
+      websiteUserKey || normalizeEmail(result.userInfo.email)
+    );
+    if (import.meta.env.DEV) console.log("Cache updated with fresh Supabase data");
   };
 
   useEffect(() => {
@@ -98,10 +98,10 @@ export function useUserData(
       const signedInEmailCacheKey = getUserCacheKey(signedInEmail);
       const lastActiveCacheKey = getLastActiveCacheKey();
       const cachedData =
-        localStorage.getItem(identityCacheKey) ||
-        localStorage.getItem(signedInEmailCacheKey) ||
-        localStorage.getItem(lastActiveCacheKey) ||
-        localStorage.getItem(STORAGE_KEYS.USER_DATA);
+        readLocalStorageItemSafely(identityCacheKey) ||
+        readLocalStorageItemSafely(signedInEmailCacheKey) ||
+        readLocalStorageItemSafely(lastActiveCacheKey) ||
+        readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA);
       if (import.meta.env.DEV)
         console.log("[DEBUG] useUserData: Checking localStorage cache", {
           identityCacheKey,
@@ -110,27 +110,21 @@ export function useUserData(
           cachedData,
         });
       if (cachedData) {
-        try {
-          const userData: UserData = JSON.parse(cachedData);
-          if (userData.redirectInfo && userData.userInfo?.email) {
-            if (import.meta.env.DEV)
-              console.log("[DEBUG] useUserData: Loaded cached data", userData);
-            setUserInfo(userData.userInfo || { name: "", email: "", profileImage: "" });
-            setVehicles(userData.vehicles || []);
-            setReports(userData.reports || []);
-            setUserPhone(userData.userPhone || "");
-            setRedirectInfo(userData.redirectInfo);
-            setNotifications(
-              userData.notifications ?? getNotificationsByUserType(userData.redirectInfo.type)
-            );
-            setHasSeenPhotoGuide(userData.hasSeenPhotoGuide || false);
-            const cachedPhotoStorage =
-              userData.photoStorage || buildPhotoStorageFromReports(userData.reports || []);
-            setPhotoStorage(cachedPhotoStorage);
-          }
-        } catch (error) {
-          if (import.meta.env.DEV)
-            console.error("[DEBUG] useUserData: Error loading cached data:", error);
+        const userData = parseCachedUserData(cachedData);
+        if (userData?.redirectInfo && userData.userInfo.email) {
+          if (import.meta.env.DEV) console.log("[DEBUG] useUserData: Loaded cached data", userData);
+          setUserInfo(userData.userInfo);
+          setVehicles(userData.vehicles);
+          setReports(userData.reports);
+          setUserPhone(userData.userPhone);
+          setRedirectInfo(userData.redirectInfo);
+          setNotifications(
+            userData.notifications ?? getNotificationsByUserType(userData.redirectInfo.type)
+          );
+          setHasSeenPhotoGuide(userData.hasSeenPhotoGuide);
+          const cachedPhotoStorage =
+            userData.photoStorage || buildPhotoStorageFromReports(userData.reports);
+          setPhotoStorage(cachedPhotoStorage);
         }
       }
 
@@ -163,10 +157,12 @@ export function useUserData(
         }
 
         const userCacheKey = getUserCacheKey(email, websiteUserKey);
-        const legacyCache = localStorage.getItem(STORAGE_KEYS.USER_DATA);
-        if (legacyCache && !localStorage.getItem(userCacheKey)) {
-          localStorage.setItem(userCacheKey, legacyCache);
-          localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+        const legacyCache = readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA);
+        if (legacyCache && !readLocalStorageItemSafely(userCacheKey)) {
+          const migrated = writeLocalStorageItemSafely(userCacheKey, legacyCache);
+          if (migrated) {
+            removeLocalStorageItemSafely(STORAGE_KEYS.USER_DATA);
+          }
         }
 
         if (import.meta.env.DEV)
@@ -228,19 +224,15 @@ export function useUserData(
           hasSeenPhotoGuide,
           photoStorage,
         };
-        try {
-          localStorage.setItem(
-            getUserCacheKey(userInfo.email, websiteUserKey),
-            JSON.stringify(userData)
-          );
-          localStorage.setItem(
-            STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-            websiteUserKey || normalizeEmail(userInfo.email)
-          );
-          if (import.meta.env.DEV) console.log("Cache updated (localStorage)");
-        } catch {
-          // Graceful: quota exceeded or private mode — Supabase is source of truth
-        }
+        writeLocalStorageItemSafely(
+          getUserCacheKey(userInfo.email, websiteUserKey),
+          JSON.stringify(userData)
+        );
+        writeLocalStorageItemSafely(
+          STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
+          websiteUserKey || normalizeEmail(userInfo.email)
+        );
+        if (import.meta.env.DEV) console.log("Cache updated (localStorage)");
       }, 500);
 
       return () => clearTimeout(timeoutId);
@@ -396,14 +388,14 @@ export function useUserData(
   const clearSession = () => {
     // Clear cache only - Supabase data persists
     const cacheKey = getUserCacheKey(userInfo.email, websiteUserKey);
-    const lastActiveIdentifier = localStorage.getItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
-    localStorage.removeItem(cacheKey);
-    localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+    const lastActiveIdentifier = readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
+    removeLocalStorageItemSafely(cacheKey);
+    removeLocalStorageItemSafely(STORAGE_KEYS.USER_DATA);
     if (
       lastActiveIdentifier &&
       lastActiveIdentifier === (websiteUserKey || normalizeEmail(userInfo.email))
     ) {
-      localStorage.removeItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
+      removeLocalStorageItemSafely(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
     }
     setRedirectInfo(null);
     setUserInfo({ name: "", email: "", profileImage: "" });

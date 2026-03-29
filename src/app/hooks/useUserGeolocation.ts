@@ -15,6 +15,27 @@ type GeolocationState = {
 const GEO_CACHE_KEY = "bd-user-geolocation";
 const GEO_CACHE_MAX_AGE = 10 * 60 * 1000; // 10 minutes
 
+function clearCache() {
+  try {
+    sessionStorage.removeItem(GEO_CACHE_KEY);
+  } catch {
+    // sessionStorage unavailable — silently ignore
+  }
+}
+
+function isValidCachedCoordinates(value: unknown): value is Coordinates {
+  if (typeof value !== "object" || value === null) return false;
+  const coords = value as Record<string, unknown>;
+  return (
+    typeof coords.latitude === "number" &&
+    Number.isFinite(coords.latitude) &&
+    Math.abs(coords.latitude) <= 90 &&
+    typeof coords.longitude === "number" &&
+    Number.isFinite(coords.longitude) &&
+    Math.abs(coords.longitude) <= 180
+  );
+}
+
 function loadCached(): Coordinates | null {
   try {
     const raw = sessionStorage.getItem(GEO_CACHE_KEY);
@@ -23,9 +44,18 @@ function loadCached(): Coordinates | null {
       coords: Coordinates;
       timestamp: number;
     };
-    if (Date.now() - timestamp > GEO_CACHE_MAX_AGE) return null;
+    if (
+      !isValidCachedCoordinates(coords) ||
+      typeof timestamp !== "number" ||
+      !Number.isFinite(timestamp) ||
+      Date.now() - timestamp > GEO_CACHE_MAX_AGE
+    ) {
+      clearCache();
+      return null;
+    }
     return coords;
   } catch {
+    clearCache();
     return null;
   }
 }

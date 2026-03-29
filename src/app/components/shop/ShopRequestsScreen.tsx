@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Search, AlertCircle } from "lucide-react";
 import { logWorkflowEvent } from "../../services/supabaseService";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import type { DamageReport } from "../../types";
 import ShopRequestCard, { type RepairRequest } from "./ShopRequestCard";
 import ShopBidModal from "./ShopBidModal";
 
 type ShopRequestsScreenProps = {
   primaryColor?: string;
-  reports?: any[];
+  reports?: DamageReport[];
   reportsLoading?: boolean;
   isSeedData?: boolean;
   onSubmitBid?: (
@@ -30,7 +31,7 @@ export default function ShopRequestsScreen({
   const isLight = appearanceMode === "light";
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "new" | "bidding" | "closed">("all");
-  const [selectedRequest, setSelectedRequest] = useState<any | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<RepairRequest | null>(null);
   const [bidAmount, setBidAmount] = useState("");
   const [estimatedDays, setEstimatedDays] = useState("");
   const [bidDescription, setBidDescription] = useState("");
@@ -38,39 +39,45 @@ export default function ShopRequestsScreen({
   const [bidError, setBidError] = useState<string | null>(null);
   const [isSubmittingBid, setIsSubmittingBid] = useState(false);
 
-  const liveRequests = reports.map((report: any, index: number) => {
+  const liveRequests = reports.map((report, index): RepairRequest => {
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
     const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
     const status = String(report?.status ?? "pending").toLowerCase();
     const normalizedStatus =
       status === "pending" ? "new" : status === "in-review" ? "bidding" : "closed";
     const bidCount = Number(report?.bidsCount) || 0;
+    const reportPhotos = Array.isArray(report?.photos) ? report.photos.filter(Boolean) : [];
 
-    const zipCode: string = report?.zip_code || "";
-    const address: string = report?.address || "";
+    const zipCode = report?.zipCode || report?.zip_code || "";
+    const locationParts = [report?.address, report?.city, report?.state].filter(Boolean);
+    const address = locationParts.join(", ");
     const hasLocation = Boolean(zipCode || address);
     const locationLabel = address || (zipCode ? `ZIP ${zipCode}` : "No location");
+    const submittedAt = report?.submittedAt || report?.createdAt || "";
 
     return {
       id: String(report?.id ?? `request-${index}`),
-      customerName: "Customer",
-      customerEmail: "Contact via BidOnDent",
-      customerPhone: "Via platform",
+      customerName: report?.customerName || "Customer",
+      customerEmail: report?.customerEmail || "Contact via BidOnDent",
+      customerPhone: report?.customerPhone || "Via platform",
       vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
       damageType: report?.damageArea || report?.damageType || "Damage report",
-      description: report?.description || "No description provided yet.",
+      description:
+        report?.damageDescription || report?.description || "No description provided yet.",
       location: locationLabel,
       distance: locationLabel,
       hasLocation,
-      photoCount: Array.isArray(report?.photos) ? report.photos.length : 0,
-      submittedAt: report?.submittedAt || "",
-      submittedDate: report?.submittedAt
-        ? new Date(report.submittedAt).toLocaleDateString()
+      photoCount: reportPhotos.length,
+      photoUrls: reportPhotos,
+      previewPhoto: reportPhotos[0] ?? null,
+      submittedAt,
+      submittedDate: submittedAt
+        ? new Date(submittedAt).toLocaleDateString()
         : "Recently submitted",
       status: normalizedStatus,
       urgency: bidCount === 0 ? "high" : bidCount < 3 ? "medium" : "low",
-      insuranceClaim: false,
-      insuranceCompany: "",
+      insuranceClaim: Boolean(report?.policyNumber || report?.claimNumber),
+      insuranceCompany: report?.policyNumber || "",
       bidCount,
     };
   });
@@ -87,7 +94,7 @@ export default function ShopRequestsScreen({
     // Sort: 0-bid requests first (most urgent), then newest by submission date
     .sort((a, b) => {
       if (a.bidCount !== b.bidCount) return a.bidCount - b.bidCount;
-      return b.submittedAt.localeCompare(a.submittedAt);
+      return (Date.parse(b.submittedAt || "") || 0) - (Date.parse(a.submittedAt || "") || 0);
     });
 
   const handleSubmitBid = async () => {
@@ -209,8 +216,8 @@ export default function ShopRequestsScreen({
           >
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>
-              Showing demo requests — live marketplace data will appear when customers submit
-              reports.
+              Showing example requests for preview. Incoming repair requests will appear here as
+              customers submit reports in your area.
             </span>
           </div>
         </div>

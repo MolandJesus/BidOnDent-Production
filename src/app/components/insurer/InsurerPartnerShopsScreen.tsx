@@ -5,10 +5,7 @@ import {
   loadWebsiteSessionMemory,
   updateWebsiteSessionMemory,
 } from "../../services/auth/websiteIdentity";
-import {
-  buildShopMapListings,
-  toggleRoleCollectionShopId,
-} from "../../services/intelligence/shopMapExperience";
+import { buildShopMapListings } from "../../services/intelligence/shopMapExperience";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 import {
   navigationProviderOptions,
@@ -135,27 +132,33 @@ export default function InsurerPartnerShopsScreen({
     setShowAddShopModal(false);
   };
 
-  const openMappedShopDirections = (entry: {
+  const openMappedShopInBidOnDentMaps = (entry: {
     id: number;
     name: string;
     mapResult: {
       coordinates: { latitude: number; longitude: number };
-      address: string;
-      city: string;
-      state: string;
-      zipCode: string;
     };
   }) => {
-    openDirections({
-      provider: directionsProvider,
-      destination: {
-        id: String(entry.id),
-        name: entry.name,
-        lat: entry.mapResult.coordinates.latitude,
-        lng: entry.mapResult.coordinates.longitude,
-        addressLine: `${entry.mapResult.address}, ${entry.mapResult.city}, ${entry.mapResult.state} ${entry.mapResult.zipCode}`,
+    updateWebsiteSessionMemory(
+      identity,
+      {
+        shopDirectory: {
+          lastViewedShopId: entry.id,
+        },
+        mapSession: {
+          lastViewedShopId: entry.id,
+          mapViewMode: "map",
+          lastMapCenter: {
+            latitude: entry.mapResult.coordinates.latitude,
+            longitude: entry.mapResult.coordinates.longitude,
+          },
+          lastMapZoom: 12,
+        },
       },
-    });
+      { accountType: "insurer" }
+    );
+
+    onOpenMap?.();
   };
 
   const openManualProspectDirections = (entry: CustomProspect) => {
@@ -224,26 +227,38 @@ export default function InsurerPartnerShopsScreen({
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-blue-400/20 bg-white/10 backdrop-blur-sm p-2">
-              <span className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
-                Directions Provider
-              </span>
-              {navigationProviderOptions.map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => setDirectionsProvider(option.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                    directionsProvider === option.id ? "text-white" : "bd-glass-control--utility"
-                  }`}
-                  style={
-                    directionsProvider === option.id ? { backgroundColor: primaryColor } : undefined
-                  }
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+            {customProspects.length > 0 ? (
+              <div className="rounded-2xl border border-blue-400/20 bg-white/10 p-2 backdrop-blur-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    Manual Lead Export
+                  </span>
+                  {navigationProviderOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setDirectionsProvider(option.id)}
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                        directionsProvider === option.id
+                          ? "text-white"
+                          : "bd-glass-control--utility"
+                      }`}
+                      style={
+                        directionsProvider === option.id
+                          ? { backgroundColor: primaryColor }
+                          : undefined
+                      }
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="px-2 pt-2 text-xs text-slate-500">
+                  Partner shops now open inside BidOnDent Maps. This picker only affects manual
+                  prospect export to Apple Maps, Google Maps, or Waze.
+                </p>
+              </div>
+            ) : null}
 
             <div className="flex gap-2 overflow-x-auto pb-1">
               {[
@@ -289,7 +304,7 @@ export default function InsurerPartnerShopsScreen({
               entry={entry}
               primaryColor={primaryColor}
               appearanceMode={appearanceMode}
-              onDirections={openMappedShopDirections}
+              onDirections={openMappedShopInBidOnDentMaps}
               onToggleShortlist={setShortlistIds}
             />
           );

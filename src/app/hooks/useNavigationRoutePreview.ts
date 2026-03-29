@@ -16,6 +16,7 @@ import type {
 import { fetchNavigationRouteOptions } from "../services/navigation/routeEngine";
 import { createTimeoutAbortController } from "../services/navigation/requestTimeout";
 import {
+  getArrivalCompletionDistanceMeters,
   buildDestinationKey,
   buildOriginKey,
   computeCarriedSpokenSteps,
@@ -38,6 +39,7 @@ export type UseNavigationRoutePreviewArgs = {
   currentSpeedMph: number | null;
   gpsAccuracyMeters: number | null;
   gpsTrackingEnabled: boolean;
+  voiceGuidanceEnabled: boolean;
   voiceMode: NavigationVoiceMode;
   voicePersona: NavigationVoicePersona;
   voiceVolumePreset: NavigationVoiceVolumePreset;
@@ -50,6 +52,7 @@ export type NavigationRoutePreviewState = {
   isLoadingRoute: boolean;
   routeError: string;
   currentStepIndex: number;
+  hasArrived: boolean;
   nextStep: NavigationRouteStep | null;
   refreshRoutePreview: () => void;
 };
@@ -61,6 +64,7 @@ export function useNavigationRoutePreview({
   currentSpeedMph,
   gpsAccuracyMeters,
   gpsTrackingEnabled,
+  voiceGuidanceEnabled,
   voiceMode,
   voicePersona,
   voiceVolumePreset,
@@ -71,6 +75,7 @@ export function useNavigationRoutePreview({
   const [isLoadingRoute, setIsLoadingRoute] = useState(false);
   const [routeError, setRouteError] = useState("");
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [hasArrived, setHasArrived] = useState(false);
 
   const lastRouteOriginKeyRef = useRef<string | null>(null);
   const lastRouteDestinationKeyRef = useRef<string | null>(null);
@@ -79,6 +84,8 @@ export function useNavigationRoutePreview({
 
   const originKey = buildOriginKey(activeOriginTarget);
   const destinationKey = buildDestinationKey(selectedShop);
+  const originTracksGps =
+    gpsTrackingEnabled && activeOriginTarget?.source === "geolocation" && Boolean(currentPosition);
 
   // Route fetching
   useEffect(() => {
@@ -87,6 +94,7 @@ export function useNavigationRoutePreview({
       setRouteAlternatives([]);
       setRouteError("");
       setCurrentStepIndex(0);
+      setHasArrived(false);
       spokenStepIdsRef.current.clear();
       cancelVoiceGuidance();
       lastRouteOriginKeyRef.current = null;
@@ -102,14 +110,14 @@ export function useNavigationRoutePreview({
     const hasDestinationChanged = destinationKey !== lastRouteDestinationKeyRef.current;
     const hasOriginChanged = originKey !== lastRouteOriginKeyRef.current;
     const gpsMovedEnough =
-      gpsTrackingEnabled && currentPosition
+      originTracksGps && currentPosition
         ? !lastRouteOriginCoordinateRef.current ||
           haversineMiles(currentPosition, lastRouteOriginCoordinateRef.current) >= 0.18
         : false;
     const shouldRefreshRoute =
       !routePreview ||
       hasDestinationChanged ||
-      (gpsTrackingEnabled && currentPosition ? gpsMovedEnough : hasOriginChanged);
+      (originTracksGps ? gpsMovedEnough : hasOriginChanged);
 
     if (!shouldRefreshRoute) {
       return;
@@ -138,12 +146,14 @@ export function useNavigationRoutePreview({
         if (selectedRoute) {
           const resumeIndex = resolveStepIndexAfterRefresh(selectedRoute.steps, currentPosition);
           setCurrentStepIndex(resumeIndex);
+          setHasArrived(false);
           spokenStepIdsRef.current = computeCarriedSpokenSteps(
             selectedRoute.steps,
             spokenStepIdsRef.current
           );
         } else {
           setCurrentStepIndex(0);
+          setHasArrived(false);
           spokenStepIdsRef.current.clear();
         }
 
@@ -186,6 +196,7 @@ export function useNavigationRoutePreview({
     selectedShop,
     selectedRouteIndex,
     gpsTrackingEnabled,
+    originTracksGps,
   ]);
 
   // Alternative route selection
@@ -206,6 +217,7 @@ export function useNavigationRoutePreview({
     // Preserve progress when switching between alternative routes
     const resumeIndex = resolveStepIndexAfterRefresh(selectedRoute.steps, currentPosition);
     setCurrentStepIndex(resumeIndex);
+    setHasArrived(false);
     spokenStepIdsRef.current = computeCarriedSpokenSteps(
       selectedRoute.steps,
       spokenStepIdsRef.current
@@ -220,11 +232,13 @@ export function useNavigationRoutePreview({
       return;
     }
 
-    if (!gpsTrackingEnabled || !currentPosition || !nextStep) {
+    if (hasArrived || !gpsTrackingEnabled || !currentPosition || !nextStep) {
       return;
     }
 
     const stepDistanceMeters = haversineMiles(currentPosition, nextStep.location) * 1609.34;
+    const arrivalCompletionThresholdMeters =
+      getArrivalCompletionDistanceMeters(gpsAccuracyMeters);
     const adaptiveSpeakThresholdMeters =
       getManeuverBaseSpeakDistanceMeters(nextStep) +
       getSpeedAdjustmentMeters(currentSpeedMph) +
@@ -233,6 +247,7 @@ export function useNavigationRoutePreview({
       getManeuverAdvanceDistanceMeters(nextStep) +
       getAccuracyAdjustmentMeters(gpsAccuracyMeters) * 0.5;
     const shouldSpeak =
+      voiceGuidanceEnabled &&
       stepDistanceMeters <= adaptiveSpeakThresholdMeters &&
       !spokenStepIdsRef.current.has(nextStep.id) &&
       shouldSpeakStep(nextStep, voiceMode);
@@ -247,6 +262,15 @@ export function useNavigationRoutePreview({
       spokenStepIdsRef.current.add(nextStep.id);
     }
 
+    if (
+      nextStep.maneuverType === "arrive" &&
+      stepDistanceMeters <= arrivalCompletionThresholdMeters
+    ) {
+      setCurrentStepIndex(routePreview.steps.length - 1);
+      setHasArrived(true);
+      return;
+    }
+
     if (stepDistanceMeters <= adaptiveAdvanceThresholdMeters) {
       setCurrentStepIndex((current) => Math.min(current + 1, routePreview.steps.length - 1));
     }
@@ -254,9 +278,11 @@ export function useNavigationRoutePreview({
     currentSpeedMph,
     currentPosition,
     gpsAccuracyMeters,
+    hasArrived,
     nextStep,
     routePreview,
     gpsTrackingEnabled,
+    voiceGuidanceEnabled,
     voiceMode,
     voicePersona,
     voiceVolumePreset,
@@ -268,12 +294,14 @@ export function useNavigationRoutePreview({
     isLoadingRoute,
     routeError,
     currentStepIndex,
+    hasArrived,
     nextStep,
     refreshRoutePreview: () => {
       setRoutePreview(null);
       setRouteAlternatives([]);
       setRouteError("");
       setCurrentStepIndex(0);
+      setHasArrived(false);
       lastRouteOriginKeyRef.current = null;
       lastRouteDestinationKeyRef.current = null;
       lastRouteOriginCoordinateRef.current = null;

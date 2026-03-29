@@ -181,7 +181,10 @@ export default function ShopActiveJobsScreen({
             }`}
           >
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            <span>Showing demo jobs — active jobs will appear when bids are accepted.</span>
+            <span>
+              Showing example jobs for preview. Your active jobs will appear here once a bid is
+              accepted.
+            </span>
           </div>
         </div>
       )}
@@ -204,9 +207,9 @@ export default function ShopActiveJobsScreen({
             <AlertCircle
               className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
             />
-            <p className={isLight ? "text-slate-900" : "text-slate-100"}>No active jobs found</p>
+            <p className={isLight ? "text-slate-900" : "text-slate-100"}>No active jobs yet</p>
             <p className={`text-sm mt-1 ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
-              Try adjusting your filters or search
+              Jobs appear here once a customer accepts one of your bids
             </p>
           </div>
         ) : (

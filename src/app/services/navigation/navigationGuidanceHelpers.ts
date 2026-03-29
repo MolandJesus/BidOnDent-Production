@@ -15,6 +15,10 @@ import type { CoveragePartnerShop } from "../../components/maps/serviceCoverageM
 import { haversineMiles } from "../supabase/map";
 
 const ROUTE_KEY_COORD_PRECISION = 6;
+const MAX_REASONABLE_NAV_SPEED_MPH = 95;
+const DEVICE_FALLBACK_SPEED_DISAGREEMENT_MPH = 24;
+const MAX_ACCELERATION_MPH_PER_SECOND = 18;
+const POOR_GPS_ACCURACY_METERS = 55;
 
 function normalizeKeyPart(value: string | undefined) {
   return (value || "").trim().toLowerCase().replace(/\s+/g, " ");
@@ -54,6 +58,77 @@ export function calculateFallbackSpeedMph(
   }
 
   return haversineMiles(previousPosition, nextPosition) / elapsedHours;
+}
+
+type ResolveReliableCurrentSpeedMphArgs = {
+  speedFromDeviceMph: number | null;
+  fallbackSpeedMph: number | null;
+  previousSpeedMph: number | null;
+  elapsedMs: number | null;
+  gpsAccuracyMeters: number | null;
+};
+
+function sanitizeSpeedCandidate(speedMph: number | null | undefined) {
+  if (typeof speedMph !== "number" || !Number.isFinite(speedMph) || speedMph < 0) {
+    return null;
+  }
+
+  return Math.min(speedMph, MAX_REASONABLE_NAV_SPEED_MPH);
+}
+
+export function resolveReliableCurrentSpeedMph({
+  speedFromDeviceMph,
+  fallbackSpeedMph,
+  previousSpeedMph,
+  elapsedMs,
+  gpsAccuracyMeters,
+}: ResolveReliableCurrentSpeedMphArgs) {
+  const deviceSpeed = sanitizeSpeedCandidate(speedFromDeviceMph);
+  const fallbackSpeed = sanitizeSpeedCandidate(fallbackSpeedMph);
+  const previousSpeed = sanitizeSpeedCandidate(previousSpeedMph);
+  const hasPoorAccuracy =
+    typeof gpsAccuracyMeters === "number" &&
+    Number.isFinite(gpsAccuracyMeters) &&
+    gpsAccuracyMeters > POOR_GPS_ACCURACY_METERS;
+
+  let nextSpeed: number | null = null;
+
+  if (deviceSpeed !== null && fallbackSpeed !== null) {
+    if (previousSpeed !== null) {
+      const deviceDelta = Math.abs(deviceSpeed - previousSpeed);
+      const fallbackDelta = Math.abs(fallbackSpeed - previousSpeed);
+      nextSpeed = deviceDelta <= fallbackDelta ? deviceSpeed : fallbackSpeed;
+
+      if (
+        Math.abs(deviceSpeed - fallbackSpeed) > DEVICE_FALLBACK_SPEED_DISAGREEMENT_MPH &&
+        Math.min(deviceDelta, fallbackDelta) > DEVICE_FALLBACK_SPEED_DISAGREEMENT_MPH
+      ) {
+        nextSpeed = Math.min(deviceSpeed, fallbackSpeed);
+      }
+    } else {
+      nextSpeed =
+        Math.abs(deviceSpeed - fallbackSpeed) > DEVICE_FALLBACK_SPEED_DISAGREEMENT_MPH
+          ? Math.min(deviceSpeed, fallbackSpeed)
+          : deviceSpeed;
+    }
+  } else {
+    nextSpeed = deviceSpeed ?? fallbackSpeed;
+  }
+
+  if (nextSpeed === null) {
+    return null;
+  }
+
+  if (previousSpeed !== null && typeof elapsedMs === "number" && elapsedMs > 0) {
+    const elapsedSeconds = elapsedMs / 1000;
+    const maxAllowedIncrease = Math.max(12, elapsedSeconds * MAX_ACCELERATION_MPH_PER_SECOND);
+
+    if (nextSpeed > previousSpeed + maxAllowedIncrease) {
+      return hasPoorAccuracy ? previousSpeed : previousSpeed + maxAllowedIncrease;
+    }
+  }
+
+  return nextSpeed;
 }
 
 export function shouldSpeakStep(step: NavigationRouteStep, voiceMode: NavigationVoiceMode) {
@@ -126,6 +201,10 @@ export function getAccuracyAdjustmentMeters(gpsAccuracyMeters: number | null) {
   }
 
   return Math.max(0, Math.min(45, gpsAccuracyMeters * 0.25));
+}
+
+export function getArrivalCompletionDistanceMeters(gpsAccuracyMeters: number | null) {
+  return 18 + getAccuracyAdjustmentMeters(gpsAccuracyMeters) * 0.35;
 }
 
 export function buildOriginKey(target: CoverageSearchTarget | null) {

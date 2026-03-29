@@ -259,7 +259,7 @@ export default function NavigationBrowseDiscoveryPanel({
                     className={theme.primaryButtonClassName}
                   >
                     <Navigation className="h-4 w-4" />
-                    Directions
+                    Start Route
                   </button>
                 </div>
               </div>
@@ -338,7 +338,7 @@ export default function NavigationBrowseDiscoveryPanel({
                       className={theme.primaryButtonClassName}
                     >
                       <Navigation className="h-4 w-4" />
-                      Directions
+                      Start Route
                     </button>
                   </div>
                 </div>

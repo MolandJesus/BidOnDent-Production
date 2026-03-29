@@ -107,7 +107,7 @@ body {
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
+:where(:root) {
   .bd-glass-control,
   .bd-glass-control:hover,
   .bd-glass-control:active {

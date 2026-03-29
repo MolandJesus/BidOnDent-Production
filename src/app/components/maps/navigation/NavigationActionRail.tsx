@@ -37,10 +37,10 @@ export default function NavigationActionRail({
       : "border-white/15 bg-[linear-gradient(180deg,rgba(15,23,42,0.78),rgba(30,41,59,0.64))]";
 
   return (
-    <div className="pointer-events-none absolute right-3 top-1/2 z-[560] -translate-y-1/2 map-ui-enter sm:right-4">
+    <div className="pointer-events-none absolute bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_8rem)] left-1/2 z-[560] -translate-x-1/2 map-ui-enter sm:left-auto sm:right-4 sm:top-1/2 sm:bottom-auto sm:translate-x-0 sm:-translate-y-1/2">
       <div
         className={cn(
-          "map-liquid-rail pointer-events-auto relative flex flex-col gap-2.5 overflow-hidden rounded-[2rem] border p-2 backdrop-blur-2xl sm:gap-3 sm:p-2.5",
+          "map-liquid-rail pointer-events-auto relative flex flex-row gap-2 overflow-hidden rounded-[1.4rem] border p-1.5 backdrop-blur-2xl sm:flex-col sm:gap-2.5 sm:rounded-[1.7rem] sm:p-2",
           railShellClassName
         )}
       >
@@ -54,33 +54,33 @@ export default function NavigationActionRail({
           type="button"
           onClick={onToggleTurnList}
           className={cn(
-            "inline-flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.94] md:h-14 md:w-14",
+            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
             actionButtonClassName(tone, turnListOpen)
           )}
           aria-pressed={turnListOpen}
         >
-          <List className="h-6 w-6" />
+          <List className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
         </button>
         <button
           type="button"
           onClick={onToggleVoiceControls}
           className={cn(
-            "inline-flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.94] md:h-14 md:w-14",
+            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
             actionButtonClassName(tone, voiceControlsOpen)
           )}
           aria-pressed={voiceControlsOpen}
         >
-          <Volume2 className="h-6 w-6" />
+          <Volume2 className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
         </button>
         <button
           type="button"
           onClick={onRecenter}
           className={cn(
-            "inline-flex h-12 w-12 items-center justify-center rounded-full border transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.94] md:h-14 md:w-14",
+            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
             actionButtonClassName(tone, false)
           )}
         >
-          <LocateFixed className="h-6 w-6" />
+          <LocateFixed className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
         </button>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import type { DamageReport } from "../../types";
 
 export type ClaimData = {
-  id: number;
+  id: string;
   claimNumber: string;
   customerName: string;
   customerEmail: string;
@@ -17,6 +17,8 @@ export type ClaimData = {
   status: string;
   priority: string;
   photoCount: number;
+  photos: string[];
+  previewPhoto: string | null;
   description: string;
   shopAssigned: string | null;
   approvedAmount?: number;
@@ -33,13 +35,31 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
     const rawStatus = String(report?.status ?? "pending").toLowerCase();
     const status =
       rawStatus === "completed" ? "approved" : rawStatus === "in-review" ? "reviewing" : "pending";
-    const bidAmount = Number(report?.bidAmount) || 0;
+    const reportPhotos = Array.isArray(report?.photos) ? report.photos.filter(Boolean) : [];
+    const inferredBidAmount =
+      Number(report?.bidAmount) ||
+      (Array.isArray(report?.bids) && report.bids.length > 0
+        ? Math.max(...report.bids.map((bid) => Number(bid.amount) || 0))
+        : 0);
     const zipCode = report?.zipCode || report?.zip_code;
     const vin = report?.vehicle?.vin || report?.vehicleInfo?.vin || "Not provided";
+    const reportedAt = report?.submittedAt || report?.createdAt || "";
+    const locationParts = [report?.address, report?.city, report?.state].filter(Boolean);
+    const location = locationParts.join(", ") || (zipCode ? `ZIP ${zipCode}` : "Service region");
+    const claimId = String(report?.id ?? `claim-${index + 1}`);
+    const bidSummaries =
+      Array.isArray(report?.bids) && report.bids.length > 0
+        ? report.bids.map((bid) => ({
+            shopName: bid.shopName,
+            amount: Number(bid.amount) || 0,
+            distance: bid.shopDistance || "Distance pending",
+            rating: bid.shopRating || 4.7,
+          }))
+        : undefined;
 
     return {
-      id: Number(index + 1),
-      claimNumber: `CLM-${String(index + 1).padStart(4, "0")}`,
+      id: claimId,
+      claimNumber: report?.claimNumber || `CLM-${String(index + 1).padStart(4, "0")}`,
       customerName: report?.customerName || "Policyholder on file",
       customerEmail: report?.customerEmail || "On file",
       customerPhone: report?.customerPhone || "On file",
@@ -47,16 +67,24 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
       vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
       vin,
       damageType: report?.damageArea || report?.damageType || "Damage report",
-      incidentDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
-      reportedDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
-      estimatedDamage: bidAmount,
-      location: report?.address || (zipCode ? `ZIP ${zipCode}` : "Service region"),
+      incidentDate: reportedAt ? new Date(reportedAt).toLocaleDateString() : "N/A",
+      reportedDate: reportedAt ? new Date(reportedAt).toLocaleDateString() : "N/A",
+      estimatedDamage: inferredBidAmount,
+      location,
       status,
-      priority: bidAmount >= 1800 ? "high" : bidAmount >= 1000 ? "medium" : "low",
-      photoCount: Array.isArray(report?.photos) ? report.photos.length : 0,
-      description: report?.description || "Claim details pending review.",
+      priority:
+        inferredBidAmount >= 1800 || reportPhotos.length >= 4
+          ? "high"
+          : inferredBidAmount >= 1000 || reportPhotos.length >= 2
+            ? "medium"
+            : "low",
+      photoCount: reportPhotos.length,
+      photos: reportPhotos,
+      previewPhoto: reportPhotos[0] ?? null,
+      description: report?.damageDescription || report?.description || "Claim details pending review.",
       shopAssigned: null,
-      approvedAmount: status === "approved" ? bidAmount : undefined,
+      approvedAmount: status === "approved" ? inferredBidAmount : undefined,
+      shopBids: bidSummaries,
     };
   });
 }

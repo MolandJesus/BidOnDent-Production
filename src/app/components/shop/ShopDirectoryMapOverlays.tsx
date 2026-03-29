@@ -1,44 +1,46 @@
-import { ChevronDown, ChevronUp, Compass, MapPin, Sparkles, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
+import type { NavigationSessionStatus } from "../../features/navigation";
 import type { MapTheme, Place, RouteOption } from "../../types/mapDomain";
-import { useNavigationSession } from "../../features/navigation/useNavigationSession";
 import {
-  haversineDistanceMiles,
-  formatDistance,
   computeETA,
+  formatDistance,
+  haversineDistanceMiles,
 } from "../../features/navigation/computeNavigationMetrics";
-
-/* ------------------------------------------------------------------ */
-/*  Floating overlays rendered INSIDE the map surface                  */
-/*  These adopt the Apple Maps overlay pattern:                        */
-/*  – glass-style floating cards                                       */
-/*  – positioned absolutely within the map pane                        */
-/*  – contextual: only show when data is available                     */
-/* ------------------------------------------------------------------ */
+import ShopDirectoryGuidanceCard from "./ShopDirectoryGuidanceCard";
+import ShopDirectoryRoutePreviewCard from "./ShopDirectoryRoutePreviewCard";
 
 type ShopDirectoryMapOverlaysProps = {
   routeOptions: RouteOption[];
   selectedRoute: RouteOption | null;
   selectedOrigin: Place | null;
   selectedShop: ShopMapListing | null;
+  hasArrived?: boolean;
   routeSummary: IntelligenceSummary;
   onSelectRoute: (id: string) => void;
   intelligenceTitle: string;
   intelligenceCallouts: string[];
   deviationPrompt?: React.ReactNode;
-  /** Controls which overlays are visible based on navigation state */
   navigationMode?: "browse" | "route-preview" | "guidance";
-  /** Clerk user ID for navigation session identity */
-  userId?: string;
-  /** Map tile/surface theme — drives overlay color tokens */
   mapTheme?: MapTheme;
-  /** Called when the user taps "Start Navigation" on the route preview card */
+  sessionStatus?: NavigationSessionStatus;
+  sessionDestinationId?: string | null;
+  sessionActiveSeconds?: number;
+  sessionDestinationLabel?: string | null;
+  remainingEtaLabel?: string | null;
+  remainingDistanceLabel?: string | null;
+  usingLiveRoutes?: boolean;
+  routeError?: string;
+  isLoadingRoute?: boolean;
+  onPauseNavigation?: () => void;
+  onResumeNavigation?: () => void;
+  onEndNavigation?: () => void;
+  onRecenterNavigation?: () => void;
   onStartNavigation?: () => void;
-  /** Label for the navigation CTA (e.g. "Directions (Google Maps)") */
+  onDismissRoutePreview?: () => void;
   directionsLabel?: string;
-  /** Override top position class for floating overlays (default: "top-20") */
   overlayTopClass?: string;
 };
 
@@ -47,45 +49,42 @@ export default function ShopDirectoryMapOverlays({
   selectedRoute,
   selectedOrigin,
   selectedShop,
+  hasArrived = false,
   routeSummary,
   onSelectRoute,
   intelligenceTitle,
   intelligenceCallouts,
   deviationPrompt,
   navigationMode = "browse",
-  userId,
   mapTheme = "dark",
+  sessionStatus = "idle",
+  sessionDestinationId,
+  sessionActiveSeconds = 0,
+  sessionDestinationLabel,
+  remainingEtaLabel,
+  remainingDistanceLabel,
+  usingLiveRoutes = false,
+  routeError = "",
+  isLoadingRoute = false,
+  onPauseNavigation,
+  onResumeNavigation,
+  onEndNavigation,
+  onRecenterNavigation,
   onStartNavigation,
+  onDismissRoutePreview,
   directionsLabel,
   overlayTopClass = "top-20",
 }: ShopDirectoryMapOverlaysProps) {
-  const [routeExpanded, setRouteExpanded] = useState(false);
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
   const isDark = mapTheme === "dark";
 
-  // Theme-aware overlay tokens
   const glassPanel = isDark
-    ? "border-blue-400/15 bg-slate-950/80 backdrop-blur-md text-white"
+    ? "border-blue-400/25 bg-slate-950/82 backdrop-blur-md text-white shadow-[0_0_24px_rgba(59,130,246,0.08)]"
     : "border-black/8 bg-white/88 backdrop-blur-md text-slate-800";
   const glassChip = isDark
-    ? "border-blue-400/20 bg-slate-950/70 text-white backdrop-blur-md hover:bg-slate-950/80"
+    ? "border-blue-400/30 bg-slate-950/75 text-white backdrop-blur-md hover:bg-slate-950/85 shadow-[0_0_16px_rgba(59,130,246,0.06)]"
     : "border-black/8 bg-white/85 text-slate-700 backdrop-blur-md hover:bg-white/95";
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
-  const inactiveRoute = isDark
-    ? "bg-white/[0.06] text-white/70 hover:bg-white/[0.1]"
-    : "bg-black/[0.04] text-slate-500 hover:bg-black/[0.08]";
-  const activeRoute = isDark
-    ? "bg-slate-950 font-semibold text-white"
-    : "bg-white font-semibold text-slate-800 shadow-sm";
-  const routeSubtext = isDark ? "text-white/70" : "text-slate-500";
-  const routeSubtextActive = isDark ? "text-white/70" : "text-slate-400";
-  const divider = isDark ? "border-white/10" : "border-black/8";
-
-  // Navigation session state
-  const { session } = useNavigationSession(userId);
-  const sessionStatus = session.status;
-
-  // Compute distance and ETA only if origin, shop, and route exist
   let distanceLabel = "";
   let etaLabel = "";
   if (selectedOrigin && selectedShop && selectedRoute) {
@@ -94,7 +93,6 @@ export default function ShopDirectoryMapOverlays({
     etaLabel = computeETA(distance);
   }
 
-  // Session state indicator (text only)
   let sessionStateText = "";
   if (sessionStatus === "idle") sessionStateText = "Idle";
   else if (sessionStatus === "planning") sessionStateText = "Planning route";
@@ -102,14 +100,21 @@ export default function ShopDirectoryMapOverlays({
   else if (sessionStatus === "paused") sessionStateText = "Paused";
   else if (sessionStatus === "ended") sessionStateText = "Session ended";
 
-  const hasRoute = selectedOrigin && selectedShop && selectedRoute;
+  const hasRoute = Boolean(selectedOrigin && selectedShop && selectedRoute);
+  const selectedShopMatchesSessionDestination = Boolean(
+    selectedShop && sessionDestinationId === String(selectedShop.id)
+  );
+  const isArrivedForSelectedShop = hasArrived && selectedShopMatchesSessionDestination;
+  const showGuidanceCard =
+    hasRoute &&
+    selectedShopMatchesSessionDestination &&
+    (sessionStatus === "active" || sessionStatus === "paused");
   const showIntelligence = navigationMode === "browse" || navigationMode === "route-preview";
   const showRoute = (navigationMode === "browse" || navigationMode === "route-preview") && hasRoute;
   const showDeviation = navigationMode === "route-preview" || navigationMode === "guidance";
 
   return (
     <>
-      {/* Deviation prompt — top center floating */}
       {showDeviation && deviationPrompt && (
         <div
           className={`pointer-events-auto absolute inset-x-0 ${overlayTopClass} z-[520] flex justify-center px-4`}
@@ -118,12 +123,11 @@ export default function ShopDirectoryMapOverlays({
         </div>
       )}
 
-      {/* Intelligence chip — top-left, below header badges */}
       {showIntelligence && (
         <div className={`pointer-events-auto absolute left-4 ${overlayTopClass} z-[510] max-w-xs`}>
           <button
             className={`flex min-h-[44px] items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-semibold transition-colors ${glassChip}`}
-            onClick={() => setIntelligenceExpanded((v) => !v)}
+            onClick={() => setIntelligenceExpanded((value) => !value)}
             type="button"
           >
             <Sparkles className="h-3.5 w-3.5 text-blue-400" />
@@ -160,129 +164,94 @@ export default function ShopDirectoryMapOverlays({
                 ))}
                 {hasRoute && (
                   <>
-                    <p
-                      className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}
-                    >
-                      Distance: {distanceLabel}
-                    </p>
-                    <p
-                      className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}
-                    >
-                      ETA: {etaLabel}
-                    </p>
+                    {isArrivedForSelectedShop ? (
+                      <p
+                        className={`text-xs leading-5 ${isDark ? "text-emerald-200/90" : "text-emerald-700"}`}
+                      >
+                        Arrival confirmed at {selectedShop?.name}.
+                      </p>
+                    ) : (
+                      <>
+                        <p
+                          className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}
+                        >
+                          Distance: {distanceLabel}
+                        </p>
+                        <p
+                          className={`text-xs leading-5 ${isDark ? "text-blue-200/90" : "text-blue-700"}`}
+                        >
+                          ETA: {etaLabel}
+                        </p>
+                      </>
+                    )}
+                    {routeSummary.description ? (
+                      <p
+                        className={`text-xs leading-5 ${isDark ? "text-white/80" : "text-slate-700"}`}
+                      >
+                        {routeSummary.description}
+                      </p>
+                    ) : null}
                   </>
                 )}
-                {sessionStateText && (
+                {sessionStateText ? (
                   <p
                     className={`text-xs leading-5 ${isDark ? "text-blue-200/70" : "text-blue-600"}`}
                   >
                     Session: {sessionStateText}
                   </p>
-                )}
+                ) : null}
               </div>
             </div>
           )}
         </div>
       )}
 
-      {/* Route preview — bottom-left floating card, sits above the shop info bar */}
-      {showRoute && (
-        <div className="pointer-events-auto absolute bottom-16 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-20">
-          <div className={`rounded-2xl border p-3 shadow-2xl ${glassPanel}`}>
-            <div className="flex items-center justify-between">
-              <div
-                className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] ${secondaryText}`}
-              >
-                <MapPin className="h-3.5 w-3.5" />
-                Route
-              </div>
-              <button
-                className={`rounded-full p-1 transition-colors ${secondaryText} hover:opacity-80`}
-                onClick={() => setRouteExpanded((v) => !v)}
-                type="button"
-              >
-                {routeExpanded ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronUp className="h-4 w-4" />
-                )}
-              </button>
-            </div>
+      {showGuidanceCard && selectedOrigin && selectedShop && selectedRoute ? (
+        <ShopDirectoryGuidanceCard
+          selectedOrigin={selectedOrigin}
+          selectedShop={selectedShop}
+          selectedRoute={selectedRoute}
+          sessionStatus={sessionStatus}
+          sessionDestinationLabel={sessionDestinationLabel}
+          routeSummary={routeSummary}
+          hasArrived={hasArrived}
+          routeError={routeError}
+          isLoadingRoute={isLoadingRoute}
+          usingLiveRoutes={usingLiveRoutes}
+          sessionActiveSeconds={sessionActiveSeconds}
+          remainingEtaLabel={remainingEtaLabel}
+          remainingDistanceLabel={remainingDistanceLabel}
+          distanceLabel={distanceLabel}
+          etaLabel={etaLabel}
+          isDark={isDark}
+          onPauseNavigation={onPauseNavigation}
+          onResumeNavigation={onResumeNavigation}
+          onEndNavigation={onEndNavigation}
+          onRecenterNavigation={onRecenterNavigation}
+        />
+      ) : null}
 
-            {/* Compact route tabs */}
-            <div className="mt-2 flex gap-1.5">
-              {routeOptions.map((route) => {
-                const isActive = route.id === selectedRoute.id;
-                return (
-                  <button
-                    key={route.id}
-                    className={`flex-1 rounded-xl px-2 py-2 text-center text-xs transition-colors min-h-[44px] flex flex-col items-center justify-center ${isActive ? activeRoute : inactiveRoute}`}
-                    onClick={() => onSelectRoute(route.id)}
-                    type="button"
-                  >
-                    <span className="block font-semibold">{route.estimatedDurationMinutes}m</span>
-                    <span
-                      className={`block text-[10px] ${isActive ? routeSubtextActive : routeSubtext}`}
-                    >
-                      {route.totalDistanceLabel}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* ETA summary line with real metrics */}
-            <div className={`mt-2 flex items-center justify-between text-xs ${secondaryText}`}>
-              <span className="truncate">
-                {selectedOrigin.name} → {selectedShop.name}
-              </span>
-              <span
-                className={`ml-2 font-semibold whitespace-nowrap ${isDark ? "text-white" : "text-slate-800"}`}
-              >
-                {distanceLabel && etaLabel ? `${distanceLabel} • ${etaLabel}` : ""}
-              </span>
-            </div>
-
-            {/* Expanded turn list */}
-            {routeExpanded && (
-              <div className={`mt-3 max-h-48 space-y-2 overflow-y-auto border-t pt-3 ${divider}`}>
-                {selectedRoute.instructions.map((instruction, index) => (
-                  <div key={instruction.id} className="flex gap-2 text-xs">
-                    <div
-                      className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-white"
-                      style={{ backgroundColor: selectedRoute.accentColor }}
-                    >
-                      {index + 1}
-                    </div>
-                    <div className="min-w-0">
-                      <p className={`font-medium ${isDark ? "text-white" : "text-slate-800"}`}>
-                        {instruction.title}
-                      </p>
-                      <p className={secondaryText}>
-                        {instruction.durationMinutes > 0
-                          ? `${instruction.durationMinutes} min`
-                          : instruction.distanceLabel}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Start Navigation CTA */}
-            {onStartNavigation && (
-              <button
-                className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 min-h-[44px]"
-                onClick={onStartNavigation}
-                type="button"
-              >
-                <Compass className="h-4 w-4" />
-                {directionsLabel || "Start Navigation"}
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+      {showRoute && selectedOrigin && selectedShop && selectedRoute ? (
+        <ShopDirectoryRoutePreviewCard
+          routeOptions={routeOptions}
+          selectedRoute={selectedRoute}
+          selectedOrigin={selectedOrigin}
+          selectedShop={selectedShop}
+          isArrivedForSelectedShop={isArrivedForSelectedShop}
+          routeSummary={routeSummary}
+          routeError={routeError}
+          isLoadingRoute={isLoadingRoute}
+          usingLiveRoutes={usingLiveRoutes}
+          hasArrived={hasArrived}
+          distanceLabel={distanceLabel}
+          etaLabel={etaLabel}
+          isDark={isDark}
+          onSelectRoute={onSelectRoute}
+          onStartNavigation={onStartNavigation}
+          onDismiss={onDismissRoutePreview}
+          directionsLabel={directionsLabel}
+        />
+      ) : null}
     </>
   );
 }

@@ -85,17 +85,25 @@ export default function OperatingRegionsSection({
           <div className="mt-4 sm:mt-6">
             <CoverageSearchPanel
               tone={inlinePanelTone}
+              searchQuery={coverage.searchQuery}
               zipCode={coverage.zipCode}
               radiusMiles={coverage.radiusMiles}
               normalizedZip={coverage.normalizedZip}
               hasCoverageSignal={coverage.hasCoverageSignal}
               coverageCounty={coverage.coverageCounty}
               activeOriginMode={coverage.activeOriginMode}
-              currentLocationLabel={coverage.currentLocationLabel}
+              activeOriginLabel={coverage.activeOriginLabel}
               geoMessage={coverage.geoMessage}
               isFindingLocation={coverage.isFindingLocation}
+              isSearchingAddresses={coverage.isSearchingAddresses}
               canCenterMap={Boolean(coverage.mapFocusTarget)}
+              addressSuggestions={coverage.addressSuggestions}
+              addressResults={coverage.addressResults}
+              addressError={coverage.addressError}
               onZipCodeChange={coverage.handleZipCodeChange}
+              onSearchSubmit={coverage.handleSearchSubmit}
+              onChooseAddressResult={coverage.handleChooseAddressResult}
+              onClearAddressResult={coverage.handleClearAddressResult}
               onRadiusMilesChange={coverage.setRadiusMiles}
               onCenterMap={() => {
                 if (!coverage.mapFocusTarget) {
@@ -198,10 +206,8 @@ export default function OperatingRegionsSection({
                 nearbyShops={coverage.nearbyShops}
                 radiusMiles={coverage.radiusMiles}
                 selectedShopId={coverage.selectedShopId}
-                preferredNavigationProvider={coverage.preferredNavigationProvider}
                 onSelectShop={(shop) => coverage.handleSelectShop(shop, { centerMap: true })}
-                onPreferredNavigationProviderChange={coverage.setPreferredNavigationProvider}
-                onOpenDirections={coverage.handleOpenDirections}
+                onOpenDirections={coverage.handleOpenBidOnDentNavigation}
               />
             </div>
           </div>
@@ -229,13 +235,16 @@ export default function OperatingRegionsSection({
         preferredNavigationProvider={coverage.preferredNavigationProvider}
         selectedShop={coverage.selectedShop}
         navigationSession={coverage.navigationSession}
+        startNavigationRequestId={coverage.navigationStartRequestId}
         navigation={coverage.navigation}
         onTileModeChange={coverage.setTileMode}
         onCenterActive={() => coverage.centerOnTarget(coverage.mapFocusTarget)}
         onResetView={coverage.resetOverviewMap}
         onSelectShop={(shop) => coverage.handleSelectShop(shop, { centerMap: true })}
         onPreferredNavigationProviderChange={coverage.setPreferredNavigationProvider}
-        onOpenDirections={coverage.handleOpenDirections}
+        onOpenBidOnDentNavigation={coverage.handleOpenBidOnDentNavigation}
+        onExportDirections={coverage.handleOpenDirections}
+        onVoiceGuidanceEnabledChange={coverage.setVoiceGuidanceEnabled}
       />
     </section>
   );

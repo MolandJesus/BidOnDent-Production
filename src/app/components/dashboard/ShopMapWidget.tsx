@@ -1,6 +1,7 @@
 import { MapPinned, Navigation, Wrench } from "lucide-react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
+import type { DamageReport } from "../../types";
 import { defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
@@ -9,6 +10,7 @@ type ShopMapWidgetProps = {
   primaryColor: string;
   secondaryColor: string;
   appearanceMode?: DashboardAppearanceMode;
+  reports?: DamageReport[];
   onViewShops?: () => void;
 };
 
@@ -20,10 +22,21 @@ export default function ShopMapWidget({
   primaryColor,
   secondaryColor,
   appearanceMode = "map-dark",
+  reports = [],
   onViewShops,
 }: ShopMapWidgetProps) {
   const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
   const isLight = appearanceMode === "light";
+  const liveRequestCount = reports.filter((report) =>
+    ["pending", "in-review", "active"].includes(String(report.status))
+  ).length;
+  const newestRequest = reports[0] || null;
+  const newestRequestLabel =
+    newestRequest?.damageArea ||
+    newestRequest?.damageType ||
+    newestRequest?.damageDescription ||
+    newestRequest?.description ||
+    "Live repair activity";
 
   return (
     <section
@@ -144,9 +157,18 @@ export default function ShopMapWidget({
           <MapPinned
             className={`h-3.5 w-3.5 shrink-0 ${isLight ? "text-blue-600" : "text-blue-400"}`}
           />
-          <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/70"}`}>
-            Service-area management coming soon.
-          </p>
+          <div className="min-w-0">
+            <p className={`text-xs font-medium ${isLight ? "text-slate-700" : "text-blue-100/85"}`}>
+              {liveRequestCount > 0
+                ? `${liveRequestCount} live request${liveRequestCount === 1 ? "" : "s"} in your queue`
+                : "Waiting for live repair requests"}
+            </p>
+            <p className={`truncate text-[11px] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}>
+              {liveRequestCount > 0
+                ? `Newest intake: ${newestRequestLabel}`
+                : "New customer requests will appear here as soon as they land."}
+            </p>
+          </div>
         </div>
       </div>
     </section>

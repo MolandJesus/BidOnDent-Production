@@ -19,7 +19,6 @@ type SessionStatus = NavigationSession["status"];
 const SESSION_TOAST_MAP: Partial<Record<SessionStatus, { title: string; body: string }>> = {
   active: { title: "Navigation started", body: "Follow the route to your destination." },
   paused: { title: "Navigation paused", body: "Resume when you're ready to continue." },
-  ended: { title: "Navigation ended", body: "You've completed your route." },
 };
 
 /** Toast messages for deviation events. */

@@ -19,6 +19,14 @@ interface GoToAdminButtonProps {
   primaryColor: string;
 }
 
+function persistAdminSwitchFlag() {
+  try {
+    window.sessionStorage.setItem("bidondent_switching_to_admin", "true");
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("Could not persist admin switch flag:", error);
+  }
+}
+
 const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
   const [showModal, setShowModal] = useState(false);
   const [password, setPassword] = useState("");
@@ -61,7 +69,7 @@ const GoToAdminButton = ({ userEmail, primaryColor }: GoToAdminButtonProps) => {
       }
 
       // Set a flag in sessionStorage to prevent showing onboarding during switch
-      sessionStorage.setItem("bidondent_switching_to_admin", "true");
+      persistAdminSwitchFlag();
 
       // Sign out current user
       if (import.meta.env.DEV) console.log("📤 Signing out current user...");

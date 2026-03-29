@@ -22,10 +22,11 @@ export type SavedCoverageState = {
   radiusMiles?: string;
   tileMode?: MapTileMode;
   isMapExpanded?: boolean;
-  activeOriginMode?: "zip" | "geolocation";
+  activeOriginMode?: "zip" | "geolocation" | "address";
   selectedShopId?: string;
   preferredNavigationProvider?: NavigationProvider;
   currentLocationTarget?: CoverageSearchTarget | null;
+  manualSearchTarget?: CoverageSearchTarget | null;
   mapView?: {
     center?: [number, number];
     zoom?: number;
@@ -59,7 +60,11 @@ export function loadSavedCoverageState(): SavedCoverageState {
           : undefined,
       isMapExpanded: Boolean(parsed.isMapExpanded),
       activeOriginMode:
-        parsed.activeOriginMode === "geolocation" ? "geolocation" : parsed.activeOriginMode,
+        parsed.activeOriginMode === "zip" ||
+        parsed.activeOriginMode === "geolocation" ||
+        parsed.activeOriginMode === "address"
+          ? parsed.activeOriginMode
+          : undefined,
       selectedShopId: typeof parsed.selectedShopId === "string" ? parsed.selectedShopId : undefined,
       preferredNavigationProvider:
         parsed.preferredNavigationProvider === "google" ||
@@ -73,6 +78,12 @@ export function loadSavedCoverageState(): SavedCoverageState {
         typeof parsed.currentLocationTarget.lat === "number" &&
         typeof parsed.currentLocationTarget.lng === "number"
           ? parsed.currentLocationTarget
+          : null,
+      manualSearchTarget:
+        parsed.manualSearchTarget &&
+        typeof parsed.manualSearchTarget.lat === "number" &&
+        typeof parsed.manualSearchTarget.lng === "number"
+          ? parsed.manualSearchTarget
           : null,
       mapView:
         parsed.mapView &&

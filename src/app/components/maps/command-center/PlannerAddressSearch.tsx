@@ -83,14 +83,14 @@ export default function PlannerAddressSearch({
             htmlFor="planner-address-search"
             className={cn("mb-1.5 block text-xs font-semibold", theme.titleClassName)}
           >
-            Search house or store address
+            Search any U.S. house or store address
           </label>
           <div className="flex gap-1.5">
             <input
               id="planner-address-search"
               value={addressQuery}
               onChange={(event) => onAddressQueryChange(event.target.value)}
-              placeholder="42 Broadway, New York..."
+              placeholder="1600 Amphitheatre Pkwy, Mountain View..."
               className={cn(
                 "h-9 flex-1 rounded-[0.875rem] border px-3 text-sm outline-none transition",
                 tone === "light"
@@ -110,6 +110,10 @@ export default function PlannerAddressSearch({
               {isSearchingAddresses ? "…" : "Search"}
             </button>
           </div>
+
+          <p className={cn("mt-1 text-[10px]", theme.secondaryTextClassName)}>
+            Nominatim search spans U.S. addresses nationwide.
+          </p>
 
           {addressSuggestions.length > 0 && !selectedAddressResult && !addressResults.length ? (
             <div className="map-ui-enter mt-1.5 space-y-0.5">

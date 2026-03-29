@@ -141,7 +141,7 @@ export default function MapLibrePartnerShopLayer({
           <div className="text-sm">
             <div className="font-semibold">{popupShop.name}</div>
             {popupShop.dataMode === "demo" ? (
-              <div className="font-semibold text-amber-500">Demo</div>
+              <div className="text-xs text-amber-600">Example shop for preview</div>
             ) : null}
             <div>{popupShop.countyLabel}</div>
             <div>{popupShop.label}</div>

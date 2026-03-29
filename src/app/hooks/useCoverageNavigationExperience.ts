@@ -37,6 +37,8 @@ export type { GpsStatus, SpeedLimitStatus };
 type UseCoverageNavigationExperienceArgs = {
   selectedShop: CoveragePartnerShop | null;
   fallbackOriginTarget: CoverageSearchTarget | null;
+  originPriority?: "gps-first" | "fallback-first";
+  voiceGuidanceEnabled?: boolean;
 };
 
 export type CoverageNavigationExperience = {
@@ -64,6 +66,7 @@ export type CoverageNavigationExperience = {
   isLoadingRoute: boolean;
   routeError: string;
   currentStepIndex: number;
+  hasArrived: boolean;
   nextStep: NavigationRouteStep | null;
   currentPosition: NavigationCoordinate | null;
   currentSpeedMph: number | null;
@@ -85,6 +88,8 @@ export type CoverageNavigationExperience = {
 export function useCoverageNavigationExperience({
   selectedShop,
   fallbackOriginTarget,
+  originPriority = "gps-first",
+  voiceGuidanceEnabled = false,
 }: UseCoverageNavigationExperienceArgs): CoverageNavigationExperience {
   const [settings, setSettings] = useState<NavigationGuidanceSettings>(() =>
     loadNavigationGuidanceSettings()
@@ -145,18 +150,23 @@ export function useCoverageNavigationExperience({
   }, [settings.voicePersona]);
 
   const activeOriginTarget = useMemo<CoverageSearchTarget | null>(() => {
-    if (settings.gpsTrackingEnabled && currentPosition) {
-      return toCoverageSearchTarget(currentPosition, "Live GPS position", "geolocation");
-    }
-
     if (selectedManualOriginTarget) {
       return selectedManualOriginTarget;
+    }
+
+    if (originPriority === "fallback-first" && fallbackOriginTarget) {
+      return fallbackOriginTarget;
+    }
+
+    if (settings.gpsTrackingEnabled && currentPosition) {
+      return toCoverageSearchTarget(currentPosition, "Live GPS position", "geolocation");
     }
 
     return fallbackOriginTarget;
   }, [
     currentPosition,
     fallbackOriginTarget,
+    originPriority,
     selectedManualOriginTarget,
     settings.gpsTrackingEnabled,
   ]);
@@ -164,9 +174,9 @@ export function useCoverageNavigationExperience({
   const activeOriginLabel =
     selectedAddressResult?.primaryLabel ||
     selectedManualOriginTarget?.label ||
-    (settings.gpsTrackingEnabled && currentPosition
-      ? "Live GPS position"
-      : fallbackOriginTarget?.label) ||
+    (originPriority === "fallback-first" && fallbackOriginTarget?.label) ||
+    ((settings.gpsTrackingEnabled && currentPosition ? "Live GPS position" : null) ??
+      fallbackOriginTarget?.label) ||
     "Service area";
 
   const {
@@ -175,6 +185,7 @@ export function useCoverageNavigationExperience({
     isLoadingRoute,
     routeError,
     currentStepIndex,
+    hasArrived,
     nextStep,
     refreshRoutePreview,
   } = useNavigationRoutePreview({
@@ -184,6 +195,7 @@ export function useCoverageNavigationExperience({
     currentSpeedMph,
     gpsAccuracyMeters,
     gpsTrackingEnabled: settings.gpsTrackingEnabled,
+    voiceGuidanceEnabled,
     voiceMode: settings.voiceMode,
     voicePersona: settings.voicePersona,
     voiceVolumePreset: settings.voiceVolumePreset,
@@ -233,6 +245,7 @@ export function useCoverageNavigationExperience({
     isLoadingRoute,
     routeError,
     currentStepIndex,
+    hasArrived,
     nextStep,
     currentPosition,
     currentSpeedMph,

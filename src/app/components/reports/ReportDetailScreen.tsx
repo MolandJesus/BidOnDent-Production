@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Clock, MapPin, Star } from "lucide-react";
+import { ArrowLeft, Clock, MapPin, Search, Star } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { customerLifecycle } from "../workflow/lifecycle-presets";
@@ -18,6 +18,7 @@ type ReportDetailScreenProps = {
   report: Report;
   onBack: () => void;
   onViewAllBids?: () => void;
+  onFindShops?: () => void;
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -26,6 +27,7 @@ export default function ReportDetailScreen({
   report,
   onBack,
   onViewAllBids,
+  onFindShops,
   primaryColor = "#003d82",
   appearanceMode = "map-dark",
 }: ReportDetailScreenProps) {
@@ -212,7 +214,17 @@ export default function ReportDetailScreen({
             <div
               className={`rounded-xl border border-dashed border-slate-300/60 p-4 text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}
             >
-              No bids have arrived yet. Shops will appear here as soon as they respond.
+              <p>No bids have arrived yet. Shops will appear here as soon as they respond.</p>
+              {onFindShops && (
+                <button
+                  className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl text-white text-sm font-semibold"
+                  style={{ backgroundColor: primaryColor }}
+                  onClick={onFindShops}
+                >
+                  <Search className="h-4 w-4" />
+                  Find Nearby Shops
+                </button>
+              )}
             </div>
           ) : (
             <div className="space-y-3">

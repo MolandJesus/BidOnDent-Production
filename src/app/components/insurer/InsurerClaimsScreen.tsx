@@ -4,13 +4,14 @@ import { transformReportsToClaims, type ClaimData } from "./insurerClaimsUtils";
 import InsurerClaimCard from "./InsurerClaimCard";
 import InsurerClaimApprovalModal from "./InsurerClaimApprovalModal";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import type { DamageReport } from "../../types";
 
 type InsurerClaimsScreenProps = {
   primaryColor?: string;
-  reports?: any[];
+  reports?: DamageReport[];
   reportsLoading?: boolean;
   isSeedData?: boolean;
-  onApproveClaim?: (claimId: number, amount: number) => void;
+  onApproveClaim?: (claimId: string, amount: number) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
 
@@ -27,7 +28,7 @@ export default function InsurerClaimsScreen({
   const [filterStatus, setFilterStatus] = useState<
     "all" | "pending" | "reviewing" | "approved" | "denied"
   >("all");
-  const [selectedClaim, setSelectedClaim] = useState<any | null>(null);
+  const [selectedClaim, setSelectedClaim] = useState<ClaimData | null>(null);
   const [approvalAmount, setApprovalAmount] = useState("");
   const [showApprovalModal, setShowApprovalModal] = useState(false);
 
@@ -153,7 +154,8 @@ export default function InsurerClaimsScreen({
           >
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>
-              Showing demo claims — live claims will appear when damage reports are filed.
+              Showing example claims for preview. Active claims will appear here as repair reports
+              are filed.
             </span>
           </div>
         </div>

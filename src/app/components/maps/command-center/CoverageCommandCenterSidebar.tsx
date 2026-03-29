@@ -1,10 +1,7 @@
 import { Compass, History, MapPinned, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import type { CoveragePartnerShop, MapSurfaceTone, MapTileMode } from "../serviceCoverageMapTypes";
-import {
-  getNavigationProviderLabel,
-  type NavigationProvider,
-} from "../../../services/navigation/externalNavigation";
+import { getNavigationProviderLabel } from "../../../services/navigation/externalNavigation";
 import type { ExternalNavigationSession } from "../../../types/navigation";
 import { cn } from "../../ui/utils";
 import {
@@ -22,7 +19,6 @@ type CoverageCommandCenterSidebarProps = {
   regionCount: number;
   partnerShops: CoveragePartnerShop[];
   selectedShop: CoveragePartnerShop | null;
-  preferredNavigationProvider: NavigationProvider;
   navigationSession: ExternalNavigationSession | null;
   onOpenDirections: (shop: CoveragePartnerShop) => void;
   children: ReactNode;
@@ -36,7 +32,6 @@ export default function CoverageCommandCenterSidebar({
   regionCount,
   partnerShops,
   selectedShop,
-  preferredNavigationProvider,
   navigationSession,
   onOpenDirections,
   children,
@@ -90,7 +85,7 @@ export default function CoverageCommandCenterSidebar({
 
             <p className={cn("mt-2 text-sm leading-6", theme.bodyClassName)}>
               {selectedShop
-                ? `Use ${getNavigationProviderLabel(preferredNavigationProvider)} for live driving directions, then jump back into BidOnDent to keep comparing nearby shops and market context.`
+                ? "Navigate directly in BidOnDent Maps for live driving directions while comparing nearby shops and market context."
                 : "Search a ZIP, use live location, or choose a nearby place to build a cleaner BidOnDent route setup flow."}
             </p>
 
@@ -119,7 +114,7 @@ export default function CoverageCommandCenterSidebar({
                   className={theme.primaryButtonClassName}
                 >
                   <Compass className="h-4 w-4" />
-                  Open directions
+                  Start Route
                 </button>
               </div>
             ) : null}

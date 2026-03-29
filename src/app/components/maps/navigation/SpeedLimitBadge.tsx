@@ -34,10 +34,10 @@ export default function SpeedLimitBadge({ postedSpeedLimitMph, confidence }: Spe
   if (!Number.isFinite(postedSpeedLimitMph)) return null;
 
   return (
-    <div className="relative grid h-[76px] w-[76px] place-items-center rounded-full border-[6px] border-rose-500 bg-white text-slate-950 shadow-[0_22px_52px_rgba(15,23,42,0.18)] sm:h-[104px] sm:w-[104px] sm:border-[8px]">
+    <div className="relative grid h-[84px] w-[84px] place-items-center rounded-full border-[6px] border-rose-500 bg-white text-slate-950 shadow-[0_22px_52px_rgba(15,23,42,0.18)] sm:h-[100px] sm:w-[100px] sm:border-[8px]">
       <div className="text-center leading-none">
         <div className="text-[8px] font-bold uppercase tracking-[0.22em] sm:text-[9px]">Speed</div>
-        <div className="mt-0.5 text-[1.5rem] font-black leading-none sm:mt-1 sm:text-4xl">
+        <div className="mt-0.5 text-[1.6rem] font-black leading-none sm:mt-1 sm:text-[2rem]">
           {Math.round(Number(postedSpeedLimitMph))}
         </div>
         <div className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.22em] sm:mt-1 sm:text-[9px]">

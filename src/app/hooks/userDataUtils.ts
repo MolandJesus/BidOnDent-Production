@@ -63,6 +63,47 @@ export const isUuidLike = (value?: string | null) =>
 
 export const normalizeEmail = (email?: string) => (email ? email.toLowerCase() : "");
 
+export function readLocalStorageItemSafely(key: string): string | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    if (import.meta.env.DEV) console.error(`Error reading localStorage item "${key}":`, error);
+    return null;
+  }
+}
+
+export function writeLocalStorageItemSafely(key: string, value: string): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    window.localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error(`Error saving localStorage item "${key}":`, error);
+    return false;
+  }
+}
+
+export function removeLocalStorageItemSafely(key: string): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    window.localStorage.removeItem(key);
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error(`Error clearing localStorage item "${key}":`, error);
+    return false;
+  }
+}
+
 export const getUserCacheKey = (email?: string, explicitWebsiteUserKey?: string) => {
   if (explicitWebsiteUserKey) {
     return `${STORAGE_KEYS.USER_DATA}:${explicitWebsiteUserKey}`;
@@ -72,7 +113,7 @@ export const getUserCacheKey = (email?: string, explicitWebsiteUserKey?: string)
 };
 
 export const getLastActiveCacheKey = () => {
-  const lastActiveIdentifier = localStorage.getItem(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
+  const lastActiveIdentifier = readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA_LAST_ACTIVE);
   if (!lastActiveIdentifier) {
     return STORAGE_KEYS.USER_DATA;
   }

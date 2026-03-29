@@ -106,6 +106,7 @@ export default function HomeScreen({
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
               appearanceMode={appearanceMode}
+              reports={reports}
               onViewShops={onViewShops}
             />
           ) : userType === "insurer" ? (
@@ -113,6 +114,7 @@ export default function HomeScreen({
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
               appearanceMode={appearanceMode}
+              reports={reports}
               onViewShops={onViewShops}
             />
           ) : (

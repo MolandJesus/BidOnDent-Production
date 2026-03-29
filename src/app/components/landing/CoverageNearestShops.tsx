@@ -1,10 +1,5 @@
-import { Compass, ExternalLink, LocateFixed, Star } from "lucide-react";
+import { ExternalLink, LocateFixed, Navigation, Star } from "lucide-react";
 import { cn } from "../ui/utils";
-import {
-  getNavigationProviderLabel,
-  navigationProviderOptions,
-  type NavigationProvider,
-} from "../../services/navigation/externalNavigation";
 import { formatApproximateDriveWindow } from "../maps/mapRoutePresentation";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import type {
@@ -20,9 +15,7 @@ type CoverageNearestShopsProps = {
   nearbyShops: CoverageNearbyShop[];
   radiusMiles: string;
   selectedShopId?: string;
-  preferredNavigationProvider: NavigationProvider;
   onSelectShop: (shop: CoverageNearbyShop) => void;
-  onPreferredNavigationProviderChange: (provider: NavigationProvider) => void;
   onOpenDirections: (shop: CoverageNearbyShop) => void;
   className?: string;
 };
@@ -34,9 +27,7 @@ export default function CoverageNearestShops({
   nearbyShops,
   radiusMiles,
   selectedShopId,
-  preferredNavigationProvider,
   onSelectShop,
-  onPreferredNavigationProviderChange,
   onOpenDirections,
   className,
 }: CoverageNearestShopsProps) {
@@ -49,8 +40,8 @@ export default function CoverageNearestShops({
           <h5 className={cn("font-semibold", theme.titleClassName)}>Nearest Partner Shops</h5>
           <p className={cn("mt-1 text-sm", theme.secondaryTextClassName)}>
             {activeSearchTarget
-              ? `Launch directions from ${activeSearchTarget.label}`
-              : "Enter a 5-digit ZIP code or use your live location to view the closest shops."}
+              ? `Route from ${activeSearchTarget.label}`
+              : "Search by ZIP, home, or store address to view the closest partner shops."}
           </p>
         </div>
 
@@ -59,24 +50,6 @@ export default function CoverageNearestShops({
             <span className={cn("text-xs font-medium", theme.secondaryTextClassName)}>
               {radiusMiles}-mile search window
             </span>
-          ) : null}
-          {activeSearchTarget ? (
-            <div className={theme.segmentedClassName}>
-              {navigationProviderOptions.map((provider) => (
-                <button
-                  key={provider.id}
-                  type="button"
-                  onClick={() => onPreferredNavigationProviderChange(provider.id)}
-                  className={`rounded-full px-3 py-2 text-[11px] font-semibold transition ${
-                    preferredNavigationProvider === provider.id
-                      ? theme.activeSegmentClassName
-                      : theme.inactiveSegmentClassName
-                  }`}
-                >
-                  {provider.label}
-                </button>
-              ))}
-            </div>
           ) : null}
           {isLoadingShops ? (
             <span className={cn("text-xs", theme.secondaryTextClassName)}>
@@ -168,8 +141,8 @@ export default function CoverageNearestShops({
                   onClick={() => onOpenDirections(shop)}
                   className={theme.primaryButtonClassName}
                 >
-                  <Compass className="h-3.5 w-3.5" />
-                  Open in {getNavigationProviderLabel(preferredNavigationProvider)}
+                  <Navigation className="h-3.5 w-3.5" />
+                  Start Route
                 </button>
                 {shop.phoneNumber ? (
                   <a href={`tel:${shop.phoneNumber}`} className={theme.secondaryButtonClassName}>

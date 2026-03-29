@@ -46,14 +46,21 @@ export default function InsurerClaimCard({
   appearanceMode = "map-dark",
 }: InsurerClaimCardProps) {
   const isLight = appearanceMode === "light";
+  const estimatedDamageLabel =
+    claim.estimatedDamage > 0 ? `$${claim.estimatedDamage.toLocaleString()}` : "Pending";
+
   return (
     <div
-      className="bd-glass-card overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
-        borderColor: "rgba(96, 165, 250, 0.22)",
-      }}
+      className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
+      style={
+        isLight
+          ? undefined
+          : {
+              background:
+                "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
+              borderColor: "rgba(96, 165, 250, 0.22)",
+            }
+      }
     >
       {/* Claim Header */}
       <div className={`p-4 border-b ${isLight ? "border-slate-200/60" : "border-blue-300/15"}`}>
@@ -89,7 +96,7 @@ export default function InsurerClaimCard({
               Est. Damage
             </p>
             <p className={`font-bold text-lg ${isLight ? "text-blue-600" : "text-blue-200"}`}>
-              ${claim.estimatedDamage.toLocaleString()}
+              {estimatedDamageLabel}
             </p>
             {claim.approvedAmount && (
               <p className="text-xs text-emerald-400 font-medium">
@@ -115,6 +122,42 @@ export default function InsurerClaimCard({
 
       {/* Policy & Vehicle Info */}
       <div className={`px-4 py-3 ${isLight ? "bg-slate-50/80" : "bg-white/5"}`}>
+        <div className="mb-3 flex items-start gap-3">
+          <div
+            className={`h-24 w-24 shrink-0 overflow-hidden rounded-2xl border ${
+              isLight ? "border-slate-200 bg-white" : "border-blue-300/15 bg-white/[0.06]"
+            }`}
+          >
+            {claim.previewPhoto ? (
+              <img
+                src={claim.previewPhoto}
+                alt={`${claim.damageType} preview`}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <div
+                className={`flex h-full w-full items-center justify-center ${
+                  isLight ? "text-slate-400" : "text-blue-200/50"
+                }`}
+              >
+                <ImageIcon className="h-8 w-8" />
+              </div>
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h4
+              className={`font-semibold text-sm mb-1 ${isLight ? "text-blue-600" : "text-blue-200"}`}
+            >
+              {claim.damageType}
+            </h4>
+            <p className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/80"}`}>
+              {claim.description}
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
             <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/60"}`}>
@@ -130,17 +173,6 @@ export default function InsurerClaimCard({
               {claim.vin}
             </p>
           </div>
-        </div>
-
-        <div className="mb-3">
-          <h4
-            className={`font-semibold text-sm mb-1 ${isLight ? "text-blue-600" : "text-blue-200"}`}
-          >
-            {claim.damageType}
-          </h4>
-          <p className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/80"}`}>
-            {claim.description}
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

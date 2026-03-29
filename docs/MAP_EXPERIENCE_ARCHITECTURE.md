@@ -16,6 +16,8 @@ This document records the actual checked-in shape of the BidOnDent map/search ex
 - The active renderer is `maplibre-gl@5.21.1` with `react-map-gl@8.1.0`.
 - The desktop experience uses one rounded clipped shell with a stable left rail + right map pane.
 - The mobile-safe path remains list-forward, with the same shared intelligence and memory behind it.
+- Compact fullscreen/mobile shop results now use a route-first card hierarchy instead of mirroring the denser desktop action stack.
+- Pre-navigation route preview is also now intentionally abbreviated on phones, showing only the earliest steps until live guidance begins.
 
 ## Key Files
 
@@ -23,12 +25,36 @@ This document records the actual checked-in shape of the BidOnDent map/search ex
   Map-first orchestration screen. Owns search, view mode, theme, origin, recent searches, saved places, and result selection.
 - `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`
   MapLibre pane with GeoJSON sources/layers, route glow, selected/origin markers, and popup-driven selection.
+- `src/app/components/shop/ShopDirectoryMapLayers.tsx`
+  Extracted route/marker Source+Layer block for the shop-directory map surface.
+- `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+  Extracted map-pane chrome for header badges, legend, selected-shop card, and search-area pills.
+- `src/app/components/shop/ShopDirectoryOriginSearch.tsx`
+  Reusable origin-search lane for the shop flow, combining U.S.-wide Nominatim address lookup with quick-pick origin chips.
+- `src/app/components/shop/ShopDirectoryResultCard.tsx`
+  Shared result card for shop browse states. Compact mode now uses a route-first mobile hierarchy with smaller media, lighter metric pills, and reduced action clutter.
+- `src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+  Pre-navigation route chooser. Now uses appearance-aware active-route styling and shorter instruction previews so phone-sized planning surfaces stay readable.
 - `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx`
   Shop-directory viewport orchestration for fit/fly/broadcast behavior.
+- `src/app/hooks/useShopDirectoryRoutePreview.ts`
+  OSRM-backed live route preview hook for the shop flow, with local fallback route generation when the live provider is unavailable.
 - `src/app/components/maps/MapLibreServiceCoverageMap.tsx`
   Coverage-map renderer for landing and dashboard flows.
+- `src/app/components/maps/MapLibreCoverageMapLayers.tsx`
+  Extracted route/county/GPS/search-target layers for the coverage map.
+- `src/app/components/landing/CoverageMapDialog.tsx`
+  Fullscreen coverage shell that can now auto-enter BidOnDent navigation from landing/dashboard direction requests once route preview is ready.
+- `src/app/components/landing/CoverageSearchPanel.tsx`
+  Public coverage command bar. Now accepts ZIP, home, and store-address input with manual-origin status feedback before fullscreen map entry.
+- `src/app/components/landing/MobileMapBottomSheet.tsx`
+  Mobile fullscreen coverage browse sheet. Keeps sidebar/search/discovery content accessible without trapping the map and now uses taller snap behavior for route-first mobile browsing.
+- `src/app/hooks/useOperatingRegionsCoverage.ts`
+  Landing coverage orchestration hook. Now owns the landing-section request token that opens BidOnDent Maps first for shop directions and persists manual address-origin state for public coverage search.
 - `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`
   Compact click-through dashboard preview surface.
+- `src/app/routers/DashboardRouter.tsx`
+  Merges marketplace reports with hydrated local report/photo state so shop and insurer dashboard surfaces can render live request/claim content before demo fallback.
 - `src/app/components/maps/mapLibreControllers.tsx`
   Shared viewport, follow-location, and route-fit controllers used by the coverage map.
 - `src/app/components/shop/LikedShopsScreen.tsx`
@@ -36,7 +62,7 @@ This document records the actual checked-in shape of the BidOnDent map/search ex
 - `src/app/components/reports/CompetitorAnalysisScreen.tsx`
   Shop competitor watchlist view, now reading the same map session collection.
 - `src/app/components/insurer/InsurerPartnerShopsScreen.tsx`
-  Insurer shortlist / recruitment view, now reading the same map session collection plus manual prospects.
+  Insurer shortlist / recruitment view, now reading the same map session collection plus manual prospects. Mapped partner-shop actions can now seed website map memory and open the insurer-scoped shop-directory map flow.
 - `src/app/services/intelligence/shopMapExperience.ts`
   Seeded geo metadata, provider-agnostic directory overlays, distance math, and role-aware map panel copy.
 - `src/app/services/intelligence/marketIntelligence.ts`
@@ -193,6 +219,10 @@ The current map layer is now hybrid:
 - Explicit map height so the MapLibre canvas stays inside the pane
 - Shared `useMap()` camera controllers handle fit/fly/follow behavior after mount and route changes
 - Persisted map center and zoom on interaction end
+- Coverage browse/search surfaces now preserve explicit ZIP/address-selected origin context until the user intentionally switches into geolocation mode
+- Active navigation summary sheets now treat Apple/Google/Waze as explicit export fallback, not a co-equal primary route mode
+- Fullscreen browse/navigation light-mode shells now avoid the previous washed-out white glass by using more restrained slate-blue immersive tokens
+- Mobile browse sheets/results drawers now normalize snap/scroll state and use explicit touch-scroll containers so fullscreen map menus do not get stuck open but unable to scroll on phones
 
 ## Known Gaps / Next Slices
 
@@ -200,7 +230,8 @@ The current map layer is now hybrid:
 - Live profile markers still use approximate city-anchored placement until a real geocoder/polygon service is added
 - Saved shops, watchlists, shortlists, and insurer connections now mirror into durable relationship rows, but they are still generic relationship entities rather than fully normalized domain-specific business tables
 - No marker clustering library yet, even though map session has future-facing cluster preferences
-- Route preview and external-directions launch exist, but not every shop-search surface has first-class in-app guidance
+- Route preview and in-app navigation are now defaulted in the shop-directory flow, coverage browse `Shops` actions, landing/dashboard coverage shop-direction entry points, and mapped insurer partner-shop actions, but not every map/search surface has first-class in-app guidance yet
+- Manual insurer prospects are still exported externally because they are not yet modeled as first-class in-app destinations
 - No true insurer network-contract workflow yet beyond shortlist and directory persistence
 - Turn-by-turn phrasing needs continued expansion and QA toward 1,000+ scenario-sensitive responses while keeping instructions concise and safe
 - Live directory entries still need universal route-launch actions and real geocoding before the map can be treated as fully operational

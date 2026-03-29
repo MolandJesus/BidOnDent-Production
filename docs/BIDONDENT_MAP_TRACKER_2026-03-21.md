@@ -1,3 +1,820 @@
+## Support Pass T524-S — Kickoff prompt now treats in-motion files as owned (2026-03-29)
+
+- **Why this pass was chosen:** The repo is carrying live multi-AI churn, and the support-vs-lead lane rule was already documented, but a future AI could still read the kickoff prompt and step into a file that was visibly already moving in `git status` or recent tracker entries.
+- **What changed:** Tightened `AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md` so fresh AI sessions now explicitly treat already-in-motion files as owned unless they are only finishing their own prior support edit.
+- **Files touched:** `docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Future AI sessions now have a clearer anti-collision rule in the first-start prompt, which makes support-lane autopilot slightly harder to misuse during active product finishing.
+
+---
+
+## Pass T525 — Action rail touch targets + speed limit badge sizing (2026-03-29)
+
+- **Why this pass was chosen:** Action rail buttons were 40×40px on mobile — barely meeting the 44px minimum. Speed limit badge jumped from 76px→104px with no intermediate breakpoint, creating jarring size shift.
+- **What changed:**
+  - Action rail buttons increased to 44×44px (h-11 w-11) on mobile. Removed desktop-only hover:-translate-y-0.5 (not useful on touch).
+  - Speed limit badge smoothed: 76→84px mobile, 104→100px desktop. Text jump smoothed from 1.5rem/2.25rem to 1.6rem/2rem.
+- **Files touched:** `NavigationActionRail.tsx`, `SpeedLimitBadge.tsx`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
+## Pass T524 — Maneuver card mobile typography + following step visibility (2026-03-29)
+
+- **Why this pass was chosen:** Turn instruction text jumped from 18px→32px (text-lg→text-[2rem]) with no intermediate. The "following step" row was completely hidden on mobile (`hidden sm:block`), removing turn awareness on phones.
+- **What changed:**
+  - Instruction text smoothed: text-base → sm:text-xl → md:text-2xl (3-step progression).
+  - Following step now visible on mobile with compact sizing (h-8 w-8 icon, text-sm, py-2).
+- **Files touched:** `NavigationActiveManeuverCard.tsx`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
+## Pass T522-T523 — Compact navigation summary sheet + offset fixes (2026-03-29)
+
+- **Why this pass was chosen:** Active navigation bottom panel consumed ~60% of screen. Verbose "Route Mode" card, oversized metric typography, full-width destructive "End Route" button, and stacked Share ETA button all wasted space. Speed panel and action rail hard-coded offsets assumed old panel height.
+- **What changed:**
+  - Metrics: 3-column grid → inline row. Typography: 1.7rem/2.5rem → xl/2xl. Compact padding.
+  - Destination: rounded card → inline row with truncated name + address.
+  - Removed verbose "Route Mode" card entirely — replaced with inline Export button.
+  - Actions: Share ETA + Export + End Route in compact 3-button row instead of stacked.
+  - Export provider picker remains expandable below action row.
+  - Speed panel offset: 15rem → 10rem. Action rail offset: 12.5rem → 8rem.
+  - Removed unused ChevronDown import.
+- **Files touched:** `NavigationSummarySheet.tsx`, `NavigationActiveSpeedPanel.tsx`, `NavigationActionRail.tsx`
+- **Validation:** Build: 0 errors, 3.04s. Bundle shrank 1.23 kB. Diagnostics: 0.
+
+---
+
+## Pass T521 — Auto-scroll sidebar to selected shop on marker tap (2026-03-29)
+
+- **Why this pass was chosen:** When a user taps a shop marker on the map, the sidebar list didn't scroll to show the selected shop. Users had to manually scroll to find the highlighted card — breaking the map→list connection.
+- **What changed:**
+  - Added `useRef` + `useEffect` in `ShopDirectoryListBody` that smooth-scrolls to the selected shop card when `selectedShopId` changes.
+  - Wrapped each `ShopDirectoryResultCard` in a div with conditional ref for the selected card.
+  - Tracks previous selection to only scroll on new selections (not re-renders).
+- **Files touched:** `ShopDirectoryListBody.tsx`
+- **Validation:** Build: 0 errors, 3.06s. Diagnostics: 0.
+
+---
+
+## Support Pass T523-S — Report draft persistence now clears stale completed drafts (2026-03-29)
+
+- **Why this pass was chosen:** Report-draft hydration was already validating the stored draft shape more carefully, but the save path still let completed-flow drafts linger in browser storage and treated any `savedAt` string as good enough. That left one more stale browser-payload seam in a low-conflict support area.
+- **What changed:**
+  - Tightened `reportDraftStorage.ts` so persisted drafts now require a parseable timestamp string, not just any string field named `savedAt`.
+  - Updated the save path to clear the stored draft when the flow reaches step 6 instead of leaving an older draft behind in browser storage.
+  - Added a final runtime shape check before persisting a draft, with invalid save payloads self-clearing instead of being written.
+- **Files touched:** `src/app/components/codelayer/report/reportDraftStorage.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/codelayer/report/reportDraftStorage.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/report/reportDraftStorage.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** The report flow now reuses one less stale browser draft seam and treats draft timestamps more defensively without touching the lead AI's active map/product files.
+
+---
+
+## Support Pass T522-S — Demo data writes now survive blocked browser storage more gracefully (2026-03-29)
+
+- **Why this pass was chosen:** Demo data hydration was already sanitizing browser-stored vehicles, reports, and bids, but the write side still assumed `localStorage` would always succeed. That left demo-mode persistence too optimistic about blocked browser storage after the read seam had already been hardened.
+- **What changed:**
+  - Hardened `demoDataService.ts` so demo collection writes and clears now use safe browser-storage helpers with an in-session memory fallback.
+  - Tightened demo vehicle/report/bid update flows so merged records must still satisfy the expected runtime shape before persistence.
+  - Updated the file header language to match reality: browser-backed demo storage, not purely `localStorage`-only behavior.
+- **Files touched:** `src/app/services/demoDataService.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/services/demoDataService.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/services/demoDataService.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Demo-mode data now degrades more defensively when browser storage is unavailable, without stepping into the lead AI's active product-finishing files.
+
+---
+
+## Pass T520 — Address in map bottom overlay shop card (2026-03-29)
+
+- **Why this pass was chosen:** Map overlay shop card showed name, score, distance, and AI summary but NO address. Users couldn't verify location without leaving the map view.
+- **What changed:** Added city/state line below shop name in the bottom overlay shop card.
+- **Files touched:** `ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** Build: 0 errors, 3.07s. Diagnostics: 0.
+
+---
+
+## Pass T519 — Shop address in list and drawer cards (2026-03-29)
+
+- **Why this pass was chosen:** Shop list cards showed rating, distance, response time, and scores but no address. Users couldn't compare shops by location without opening each one individually.
+- **What changed:** Added city/state line below shop name in both compact (list) and full (expanded) card views. Immersive map drawer also benefits since it reuses the same component.
+- **Files touched:** `ShopDirectoryResultCard.tsx`
+- **Validation:** Build: 0 errors, 3.08s. Diagnostics: 0.
+
+---
+
+## Pass T518 — Route preview close button (2026-03-29)
+
+- **Why this pass was chosen:** Route preview floating card had no explicit close/dismiss affordance. On mobile especially, users had no obvious way to "change their mind" after previewing a route.
+- **What changed:**
+  - Added `onDismiss` prop to `ShopDirectoryRoutePreviewCard` → renders an X close button next to the expand/collapse chevron.
+  - Threaded `onDismissRoutePreview` prop through `ShopDirectoryMapOverlays` from `ShopDirectoryScreen` → clears `selectedShopId` to dismiss the card.
+- **Files touched:** `ShopDirectoryRoutePreviewCard.tsx`, `ShopDirectoryMapOverlays.tsx`, `ShopDirectoryScreen.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0.
+
+---
+
+## Pass T517 — Navigation toast deduplication and manual-end clarity (2026-03-29)
+
+- **Why this pass was chosen:** On arrival, two toasts fired: "Arrived at {shop}" AND "Navigation ended — You've completed your route" (from toast bridge). On manual end, the toast said "completed your route" which was misleading.
+- **What changed:**
+  - Removed the `ended` entry from `SESSION_TOAST_MAP` in `useNavigationToastBridge.ts` — eliminates duplicate.
+  - Wrapped `onEndNavigation` callback in `useShopDirectoryNavigation.ts`: detects if arrival already happened, only shows "Route ended" toast for manual-end (not arrival).
+- **Files touched:** `useNavigationToastBridge.ts`, `useShopDirectoryNavigation.ts`
+- **Validation:** Build: 0 errors, 3.02s. Diagnostics: 0.
+
+---
+
+## Pass T516 — Unified empty state messaging (2026-03-29)
+
+- **Why this pass was chosen:** "No shops matched" messages differed between list body ("No shops matched that filter" + verbose hint) and immersive map drawer ("No shops matched" + short hint). Inconsistent copy.
+- **What changed:** Unified to "No shops matched" with "Try broadening the search, switching to Smart Match, or removing the 4.5+ filter." across list body, immersive map drawer, and market intelligence service layer.
+- **Files touched:** `ShopDirectoryListBody.tsx`, `ShopDirectoryImmersiveMap.tsx`, `marketIntelligence.ts`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
+## Pass T515 — Mobile view mode buttons always visible (2026-03-29)
+
+- **Why this pass was chosen:** View mode buttons (Hybrid / Map / List) were hidden inside a collapsible "Mobile controls" section. Map is the primary product surface — users shouldn't need an extra tap to discover it.
+- **What changed:**
+  - Moved view mode buttons (Hybrid / Map / List) ABOVE the collapsible toggle — always visible on mobile.
+  - Renamed collapsible trigger from "Mobile controls" to "Sort & filters" — reflects what's actually inside.
+  - Sort, rating filter, theme toggle, and area filter remain in the collapsible section.
+- **Files touched:** `ShopDirectorySearchPanel.tsx`
+- **Validation:** Build: 0 errors, 3.04s. Diagnostics: 0.
+
+---
+
+## Pass T514 — Shop card dismiss on empty map tap (2026-03-29)
+
+- **Why this pass was chosen:** Users could not deselect a shop card by tapping empty map space — they were "trapped" with a selected shop. Standard mobile map UX expects tapping empty space to dismiss selection.
+- **What changed:**
+  - Widened `onSelectShop` prop type from `(shopId: number)` to `(shopId: number | null)` in `MapLibreShopDirectoryMapPane` and `ShopDirectoryImmersiveMap`.
+  - Added deselect logic in `handleMapClick`: when no feature is clicked AND navigation is idle/ended, calls `onSelectShop(null)`.
+- **Files touched:** `MapLibreShopDirectoryMapPane.tsx`, `ShopDirectoryImmersiveMap.tsx`
+- **Validation:** Build: 0 errors, 3.01s. Diagnostics: 0.
+
+---
+
+## Support Pass T521-S — Demo auth storage now degrades more honestly (2026-03-29)
+
+- **Why this pass was chosen:** Demo auth already validated stored user shape on hydration, but it still assumed browser storage was available for demo-user seeding, sign-in, sign-out, and profile updates. That left one more low-conflict support seam too optimistic about browser-controlled storage.
+- **What changed:**
+  - Hardened `demoAuthService.ts` with safe local-storage read/write/remove helpers for demo-user bootstrap and session persistence.
+  - Changed demo auth flows to return explicit persistence errors when browser storage is unavailable instead of silently assuming the demo session was saved.
+  - Tightened `updateProfile()` so merged profile updates must still match the expected `DemoUser` shape before they are persisted.
+- **Files touched:** `src/app/services/demoAuthService.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npx prettier --check src/app/services/demoAuthService.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint src/app/services/demoAuthService.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Demo-mode auth now handles blocked browser storage more defensively and reports persistence failures more honestly instead of over-trusting that support-only local state was saved.
+
+---
+
+## Pass T513 — Map dominance: mobile-first reorder + height cap removal (2026-03-29)
+
+- **Why this pass was chosen:** On mobile, the map rendered below the sidebar (search + list), pushing the primary product surface below the fold. A `max-h-[600px]` cap also unnecessarily compressed the map on taller viewports.
+- **What changed:**
+  - Removed `max-h-[600px]` from the map container on mobile — map now uses its full calculated height.
+  - Added `flex flex-col` to the shell container + `order` classes so the map renders above the sidebar on mobile while preserving desktop grid layout.
+  - Removed the mobile `border-t` that visually framed the map as a subordinate component.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Validation:** Build: 0 errors, 3.13s. Diagnostics: 0.
+
+---
+
+## Pass T512 — Demo badge clarity in map shop popup (2026-03-29)
+
+- **Why this pass was chosen:** Map popup for demo shops showed a bare "Demo" label with no explanation, confusing users.
+- **What changed:** Changed popup text from bold "Demo" to "Example shop for preview" with smaller, amber styling.
+- **Files touched:** `src/app/components/maps/MapLibrePartnerShopLayer.tsx`
+- **Validation:** Build: 0 errors, 3.06s. Diagnostics: 0.
+
+---
+
+## Pass T511 — Arrival metrics cleanup in GuidanceCard (2026-03-29)
+
+- **Why this pass was chosen:** When user arrived, the GuidanceCard showed stale ETA/Distance columns. These metrics are meaningless post-arrival.
+- **What changed:** When `hasArrived`, the 3-column metrics grid (Active, ETA, Distance) is replaced with a single "Trip duration" metric showing total active time.
+- **Files touched:** `src/app/components/shop/ShopDirectoryGuidanceCard.tsx`
+- **Validation:** Build: 0 errors, 4.33s. Diagnostics: 0.
+
+---
+
+## Pass T510 — Arrival state CTA in GuidanceCard (2026-03-29)
+
+- **Why this pass was chosen:** When user arrived at a shop, the GuidanceCard still showed Pause/Resume + Recenter + End Route — all meaningless at arrival. This was a dead-end state in the core product loop.
+- **What changed:**
+  - When `hasArrived`, action buttons replaced with a single full-width emerald "Done" button that calls `onEndNavigation`.
+  - Added arrival confirmation message: "You've arrived at {shop.name}."
+- **Files touched:** `src/app/components/shop/ShopDirectoryGuidanceCard.tsx`
+- **Validation:** Build: 0 errors, 4.33s. Diagnostics: 0.
+
+---
+
+## Pass T509 — Mobile drawer grab handle (2026-03-29)
+
+- **Why this pass was chosen:** The immersive map's bottom-sheet drawer on mobile lacked the standard drag handle indicator bar. Users expect this visual affordance on mobile bottom sheets.
+- **What changed:** Added a centered horizontal grab handle bar (`h-1 w-10 rounded-full`) at the top of the drawer, visible only on mobile (hidden on `sm+`).
+- **Files touched:** `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`
+- **Validation:** Build: 0 errors, 3.51s. Diagnostics: 0.
+
+---
+
+## Pass T508 — Trust surface refinement: route labels + demo messaging + error recovery (2026-03-29)
+
+- **Why this pass was chosen:** Comprehensive audit found developer jargon in route labels, raw error strings passed to users, vague demo data messaging, and missing navigation transition toasts.
+- **What changed:**
+  - Route source labels: "Preview fallback" → "Route estimate", "Local preview" → "Estimated route" (4 files)
+  - Route error recovery: Raw `{routeError}` replaced with user-friendly "Using estimated route — live directions temporarily unavailable" across all 4 overlay surfaces
+  - Demo data messaging: Replaced vague "marketplace data is unavailable" with role-specific context messages (4 files)
+  - Empty state: "No active jobs found / Try adjusting your filters" → "No active jobs yet / Jobs appear here once a customer accepts one of your bids"
+  - Navigation toasts: Added start/resume confirmation toasts in useShopDirectoryNavigation
+  - Mobile overlay safe zones: Legend pushed above floating card zone when compact mode active
+- **Files touched:** ShopDirectoryRoutePanel.tsx, ShopDirectoryRoutePreviewCard.tsx, ShopDirectoryGuidanceCard.tsx, ShopDirectoryMapPaneOverlays.tsx, ShopDirectoryScreen.tsx, ShopActiveJobsScreen.tsx, ShopRequestsScreen.tsx, InsurerClaimsScreen.tsx, useShopDirectoryNavigation.ts
+- **Validation:** Build: 0 errors, 3.81s → 4.17s. Diagnostics: 0.
+
+---
+
+## Pass T507 — Persisted app-navigation state now self-heals malformed cache (2026-03-29)
+
+- **Why this pass was chosen:** The generic app-navigation state helper already fell back safely on bad JSON, but it still left malformed browser state in place and re-read the same storage payload multiple times during boot.
+- **What changed:**
+  - Tightened `useNavigation.ts` so persisted app-navigation state now clears broken payloads, rewrites semantically invalid saved state back to a sanitized shape, and rejects empty-string report IDs before reuse.
+  - Switched the hook to hydrate from one lazy storage read instead of parsing the same cached payload again for each individual state initializer.
+- **Files touched:** `src/app/hooks/useNavigation.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint src/app/hooks/useNavigation.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Generic persisted app-navigation state is now a little more defensive and a little less noisy at startup without changing the visible navigation flow.
+
+---
+
+## Pass T506 — Cloud-first user-data cache-key bootstrap now tolerates blocked storage (2026-03-29)
+
+- **Why this pass was chosen:** The user-data payload parser was already hardened, but the cloud-first cache-selection and legacy-cache migration helpers still used raw `localStorage` reads. That left one more support-layer bootstrap seam vulnerable to blocked browser storage and partial cache cleanup failures.
+- **What changed:**
+  - Added shared safe local-storage access helpers in `userDataUtils.ts` and reused them in `useUserDataHelpers.ts` for last-active cache selection and cache writes.
+  - Updated `useUserData.ts` to route cache reads, legacy-cache migration, cache refresh, and cache cleanup through those helpers instead of directly assuming `localStorage` access will succeed.
+- **Files touched:** `src/app/hooks/userDataUtils.ts`, `src/app/hooks/useUserDataHelpers.ts`, `src/app/hooks/useUserData.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint src/app/hooks/userDataUtils.ts src/app/hooks/useUserDataHelpers.ts src/app/hooks/useUserData.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** The cloud-first user-data path now degrades more cleanly when browser storage is blocked or partially unavailable, without changing valid cache behavior.
+
+---
+
+## Pass T505 — Startup appearance/session storage bootstrap hardened (2026-03-29)
+
+- **Why this pass was chosen:** A few remaining browser bootstrap helpers still assumed local/session storage was both available and already sane. That left startup and identity bootstrap more fragile than the newer support-layer cache guards.
+- **What changed:**
+  - Hardened `App.tsx` so appearance-mode hydration now catches blocked storage reads/writes, clears invalid stored mode values, and falls back cleanly to OS preference instead of trusting malformed browser state.
+  - Hardened `websiteIdentity.ts` so provider-agnostic session ID bootstrap now validates cached session IDs before reuse and tolerates `sessionStorage` read/write failures without breaking identity creation.
+- **Files touched:** `src/app/App.tsx`, `src/app/services/auth/websiteIdentity.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint src/app/App.tsx src/app/services/auth/websiteIdentity.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Browser-controlled preference/session bootstrap is now more defensive and less likely to turn blocked or malformed storage into startup instability.
+
+---
+
+## Pass T504 — Website session-memory hydration hardened + support lane conflict rule tightened (2026-03-29)
+
+- **Why this pass was chosen:** Provider-agnostic website session memory was still trusting browser-stored nested map/shop preference payloads too loosely, and the active docs still left a small gap where a future support AI could pile into already-churning lead-owned files.
+- **What changed:**
+  - Hardened `websiteIdentity.ts` so browser-stored website session memory now validates shop-directory enums, relationship ID arrays, timestamps, coordinates, viewport bounds, and cached saved-place/recent-search records before hydration.
+  - Added self-healing on read so malformed website session JSON is cleared and semantically invalid stored memory is rewritten back to the sanitized shape instead of being re-trusted each boot.
+  - Clarified `docs/README.md` so support-lane passes explicitly avoid stacking edits into lead-lane files that already show active unowned churn.
+- **Files touched:** `src/app/services/auth/websiteIdentity.ts`, `docs/README.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint src/app/services/auth/websiteIdentity.ts docs/README.md docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Browser-controlled website session memory is now treated more defensively, and future support AI passes have a slightly clearer rule for staying out of the lead AI’s active finishing loop.
+
+---
+
+## Pass T503 — Cached user-data hydration now requires a sane top-level shape (2026-03-29)
+
+- **Why this pass was chosen:** Cached user data was still being parsed directly from browser storage in the cloud-first user-data path and migration helper. That made a high-value support-layer cache seam too trusting of malformed top-level payloads.
+- **What changed:**
+  - Added a shared shallow cache validator in `useUserDataHelpers.ts` so cached user data now requires a sane top-level shape before it is treated as `UserData`.
+  - Updated `useUserData.ts` and `useUserDataLoader.ts` to reuse that parser instead of directly trusting `JSON.parse(...)` output for hydration or local-to-cloud migration.
+- **Files touched:** `src/app/hooks/useUserDataHelpers.ts`, `src/app/hooks/useUserData.ts`, `src/app/hooks/useUserDataLoader.ts`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint src/app/hooks/useUserDataHelpers.ts src/app/hooks/useUserData.ts src/app/hooks/useUserDataLoader.ts`
+- **Impact:** The cloud-first user-data path is now more defensive against malformed browser cache payloads without changing valid hydration behavior.
+
+---
+
+## Pass T502 — Parallel-AI lane boundary clarified + demo data hydration sanitized (2026-03-29)
+
+- **Why this pass was chosen:** The docs control surface still implied parallel coordination without clearly naming the lead versus support lanes, and demo-mode browser data was still being hydrated as raw arrays without validating item shape first.
+- **What changed:**
+  - Clarified `docs/README.md` and `docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md` so future AI sessions can distinguish lead-owned product shells from support-lane governance and hardening work before editing files.
+  - Hardened `demoDataService.ts` so stored vehicles, reports, and bids now validate shape on hydration, discard malformed entries, and self-heal invalid storage payloads back to sanitized arrays or safe fallbacks.
+- **Files touched:** `docs/README.md`, `docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md`, `src/app/services/demoDataService.ts`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint docs/README.md docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md src/app/services/demoDataService.ts`
+- **Impact:** Future parallel AI sessions have a clearer lane boundary, and demo-mode local storage is less able to rehydrate malformed collection data into the app.
+
+---
+
+## Pass T501 — Relationship-sync ID coercion tightened to positive integers (2026-03-29)
+
+- **Why this pass was chosen:** Shared relationship-sync payloads were already deduplicated, but they still accepted any finite numeric coercion. That left room for negative or decimal IDs to survive browser-memory hydration and cloud sync paths.
+- **What changed:**
+  - Tightened `websiteRelationshipsSync.ts` so relationship collections now accept only positive integer IDs after numeric coercion.
+  - Kept the change isolated to the normalization helper, so existing sync timing, fetch behavior, and payload structure remain unchanged for valid data.
+- **Files touched:** `src/app/services/auth/websiteRelationshipsSync.ts`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint src/app/services/auth/websiteRelationshipsSync.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Browser-derived relationship collections are now harder to poison with malformed numeric IDs before sync or merge logic consumes them.
+
+---
+
+## Pass T500 — Docs operating-index simplification + demo auth storage hardening (2026-03-29)
+
+- **Why this pass was chosen:** The docs system was still heavier than it needed to be for fast AI/human startup, and a safe non-map security target was available in the demo auth storage layer. This pass tightened both without touching the lead AI’s reserved map surfaces.
+- **What changed:**
+  - Rewrote `docs/README.md` into a true operating index with a 30-second startup flow, clearer doc categories, explicit “do not read everything” guidance, and stronger anti-sprawl rules.
+  - Tightened `docs/BIDONDENT_FINISHING_MASTER_PLAN.md` so it now acts as execution policy instead of mixed roadmap/history, and repurposed `docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md` as an optional helper instead of a competing entry point.
+  - Hardened `demoAuthService.ts` so browser-stored demo users must match the expected shape before they hydrate current-session or users-list state; malformed payloads are cleared and rebuilt instead of being trusted.
+- **Files touched:** `docs/README.md`, `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`, `docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md`, `src/app/services/demoAuthService.ts`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx cspell lint docs/README.md docs/BIDONDENT_FINISHING_MASTER_PLAN.md docs/AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md src/app/services/demoAuthService.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Startup friction is lower, the doc hierarchy is clearer, and demo-mode local storage is treated more like untrusted input.
+
+---
+
+## Pass T499 — Draft storage validation tightened for malformed local data (2026-03-29)
+
+- **Why this pass was chosen:** Browser storage is user-controlled and easy to tamper with. The report-draft loader already rejected obviously bad payloads, but it still accepted out-of-range `step` values and unchecked optional address fields that could poison form hydration.
+- **What changed:**
+  - Tightened `reportDraftStorage.ts` so persisted drafts now require an integer `step` in the valid flow range and validate optional `zipCode` / `address` fields before hydrating.
+  - Kept the change isolated to the existing draft validator so no report UI or flow behavior changed for valid drafts.
+- **Files touched:** `src/app/components/codelayer/report/reportDraftStorage.ts`
+- **Validation:** `npm run build` passed. `npx tsc --noEmit --pretty false` was blocked by concurrent edits in reserved `src/app/components/shop/ShopDirectoryScreen.tsx`, so that file was logged and not touched.
+- **Impact:** Tampered or malformed saved drafts are now less likely to leak invalid state back into the report flow.
+
+---
+
+## Pass T498 — Geolocation cache hydration hardening (2026-03-29)
+
+- **Why this pass was chosen:** Small, non-reserved storage hydration helpers are a good security and reliability target while lead AI extraction work is active elsewhere. The geolocation cache trusted `sessionStorage` payloads too loosely and would silently accept malformed coordinate objects.
+- **What changed:**
+  - Tightened `useUserGeolocation.ts` so cached coordinates must be finite, within valid latitude/longitude bounds, and paired with a finite timestamp before they are reused.
+  - Invalid or expired geolocation cache payloads are now actively cleared instead of being left behind for repeated failed hydration attempts.
+- **Files touched:** `src/app/hooks/useUserGeolocation.ts`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`
+- **Impact:** The app now treats browser geolocation cache as untrusted input and recovers more cleanly from tampered or corrupted session data.
+
+---
+
+## Pass 497 — Live and arrived route-status badges on shop result cards (2026-03-29)
+
+- **Why this pass was chosen:** CTA labels were now consistent after arrival, but the list and immersive drawer cards still made active, paused, and completed routes look visually identical to ordinary browse results until the user read the button text. That left too much session context hidden inside the CTA itself.
+- **What changed:**
+  - Updated `ShopDirectoryResultCard.tsx` to accept a lightweight route-status badge with dedicated live, paused, and arrived tones for both compact and full card layouts.
+  - Updated `ShopDirectoryListBody.tsx` and `ShopDirectoryImmersiveMap.tsx` so cards that own the current route now surface `Live guidance`, `Paused route`, or `Arrived` directly in the card header instead of relying on the CTA label alone.
+  - Kept the badge lightweight and selection-aware so the list stays scannable while still making active route ownership obvious during browse, pause, and post-arrival states.
+- **Files touched:** `src/app/components/shop/ShopDirectoryResultCard.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/hooks/shopDirectorySessionUtils.ts src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryListBody.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/ShopDirectoryResultCard.tsx src/app/components/shop/MapLibreShopDirectoryMapPane.tsx src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx src/app/components/shop/ShopDirectoryMapOverlays.tsx src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+- **Impact:** Shop results now advertise route ownership and completion state at a glance, which makes the live navigation flow feel integrated into the browse UI instead of hidden behind whichever button label happens to be showing.
+
+---
+
+## Pass 496 — Arrival-aware route CTAs across shop cards and popups (2026-03-29)
+
+- **Why this pass was chosen:** The map shell and route panel had started speaking the new arrival language, but shared route-action labels still fell back to generic navigation wording in some shop cards. That made trip completion feel inconsistent once users moved between the map, list, and immersive drawer surfaces.
+- **What changed:**
+  - Extended `shopDirectorySessionUtils.ts` so the shared `getShopRouteActionLabel()` helper now understands an arrived state and can surface `Start Again` when the selected shop already owns a completed trip with a ready route.
+  - Updated `ShopDirectoryListBody.tsx` and `ShopDirectoryImmersiveMap.tsx` so compact result cards and immersive drawer cards now reuse that arrival-aware CTA label instead of dropping back to generic route wording after a completed trip.
+  - Updated `ShopDirectoryScreen.tsx` and `MapLibreShopDirectoryMapPane.tsx` so selected-shop and popup route actions consume the same shared arrival-aware CTA vocabulary, reducing drift between the main map shell and the surrounding shop cards.
+- **Files touched:** `src/app/hooks/shopDirectorySessionUtils.ts`, `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/hooks/shopDirectorySessionUtils.ts src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryListBody.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/MapLibreShopDirectoryMapPane.tsx src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx src/app/components/shop/ShopDirectoryMapOverlays.tsx src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+- **Impact:** Completed trips now keep a consistent `Start Again` affordance across the shop map, the list, and the immersive results drawer, so arrival no longer feels like a one-surface special case.
+
+---
+
+## Pass 495 — Arrival-aware route chrome across shop route panels and map cards (2026-03-29)
+
+- **Why this pass was chosen:** Arrival detection and success toasts were working, but the shop route chrome still mostly spoke in preview-vs-live terms. After a trip completed, the route panel and selected-shop cards could fall back to generic preview language instead of honestly reflecting that the user had already reached the destination.
+- **What changed:**
+  - Updated `ShopDirectoryScreen.tsx` to derive a selected-shop arrival state and thread it into the sidebar route panel, hybrid map, immersive map, and map-owned overlay surfaces.
+  - Updated `ShopDirectoryRoutePanel.tsx`, `ShopDirectoryMapOverlays.tsx`, and `ShopDirectoryMapPaneOverlays.tsx` so completed trips now render `Trip complete`, `Arrived`, `Here`, and arrival-confirmation messaging instead of continuing to look like a normal preview/live route card.
+  - Updated `MapLibreShopDirectoryMapPane.tsx` and `ShopDirectoryImmersiveMap.tsx` so selected-shop popups and immersive map cards now preserve that same arrival-aware language and expose a `Start Again` restart action from the map surface itself.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/hooks/shopDirectorySessionUtils.ts src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryListBody.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/MapLibreShopDirectoryMapPane.tsx src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx src/app/components/shop/ShopDirectoryMapOverlays.tsx src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+- **Impact:** The shop route experience now keeps honest completion state after arrival, so the user sees a clear “trip complete” shell instead of an abrupt reversion to ordinary preview chrome.
+
+---
+
+## Pass 494 — Arrival acknowledgement toasts for coverage + shop turn-by-turn completion (2026-03-29)
+
+- **Why this pass was chosen:** Arrival detection and session shutdown were working, but the completion moment still felt abrupt. Users could hit the destination and lose active guidance without any explicit in-app confirmation that the route had successfully finished.
+- **What changed:**
+  - Updated `CoverageMapDialog.tsx` to emit a success toast when fullscreen turn-by-turn reaches the destination, using the shared notification system and deduping the toast per active arrival state.
+  - Updated `ShopDirectoryScreen.tsx` to emit the same success toast when an active in-app shop session reaches the destination, before the session tears down its active guidance state.
+  - Kept the completion acknowledgement lightweight and global instead of adding a new modal or blocking sheet, so the route can end cleanly without fighting the existing fullscreen and shop-map layouts.
+- **Files touched:** `src/app/components/landing/CoverageMapDialog.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/components/landing/CoverageMapDialog.tsx src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Impact:** Turn-by-turn completion now feels intentional instead of silent. When the user arrives, the app confirms that outcome explicitly before the rest of the navigation chrome falls away.
+
+---
+
+## Pass 493 — Arrival-aware route completion for live navigation sessions (2026-03-29)
+
+- **Why this pass was chosen:** Voice arming was fixed, but the live guidance loop still lacked a clean finish. Active navigation could keep acting “in progress” even after the user was effectively at the destination.
+- **What changed:**
+  - Added shared arrival detection to `useNavigationRoutePreview.ts`, backed by a new completion threshold helper in `navigationGuidanceHelpers.ts`, so the routing layer can distinguish “final arrive maneuver nearby” from “trip complete.”
+  - Exposed that completion state through `useCoverageNavigationExperience.ts`, allowing fullscreen coverage navigation to stop treating the trip like an active turn-by-turn session once the destination is reached.
+  - Updated `CoverageMapDialog.tsx` so arrival now disarms voice guidance immediately and exits the fullscreen turn-by-turn presentation back to browse mode instead of leaving stale active-navigation chrome on screen.
+  - Updated `ShopDirectoryScreen.tsx` so an active in-app shop session now ends itself once arrival is detected, preventing the shop map from lingering in a false “still navigating” state after the destination is reached.
+- **Files touched:** `src/app/services/navigation/navigationGuidanceHelpers.ts`, `src/app/hooks/useNavigationRoutePreview.ts`, `src/app/hooks/useCoverageNavigationExperience.ts`, `src/app/components/landing/CoverageMapDialog.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/services/navigation/navigationGuidanceHelpers.ts src/app/hooks/useNavigationRoutePreview.ts src/app/hooks/useCoverageNavigationExperience.ts src/app/components/landing/CoverageMapDialog.tsx src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Impact:** Turn-by-turn now has a more complete lifecycle. The app can start voice only when navigation is intentional, and it can now also complete that trip cleanly instead of leaving active guidance running after arrival.
+
+---
+
+## Pass 492 — Navigation voice arming only after explicit start/resume (2026-03-29)
+
+- **Why this pass was chosen:** Turn instructions were still allowed to speak as soon as a shared route preview and live GPS existed, which meant passive dashboard and coverage-map browse surfaces could leak routing voice before the user actually started in-app navigation.
+- **What changed:**
+  - Added an explicit `voiceGuidanceEnabled` gate to `useNavigationRoutePreview.ts` so shared route previews can continue rendering live geometry and step progress without automatically speaking instructions.
+  - Extended `useCoverageNavigationExperience.ts` and `CoverageMapDialog.tsx` so fullscreen coverage voice guidance only arms while the dialog is in real navigating mode, with dashboard, landing, and coverage entry points all priming the speech engine from the user’s start-navigation gesture.
+  - Updated `ShopDirectoryScreen.tsx` and `useNavigationVoiceAlerts.ts` so turn-by-turn speech, deviation alerts, and reroute announcements only run for an actively navigating in-app shop session, not for preview/planning/dashboard states.
+  - Wired the coverage entry surfaces (`CustomerMapWidget.tsx`, `DashboardCoveragePanel.tsx`, `OperatingRegionsSection.tsx`, `CoverageBrowseExperience.tsx`, `useOperatingRegionsCoverage.ts`) to explicitly disable voice again when fullscreen navigation is exited.
+- **Files touched:** `src/app/hooks/useNavigationRoutePreview.ts`, `src/app/hooks/useCoverageNavigationExperience.ts`, `src/app/features/navigation/useNavigationVoiceAlerts.ts`, `src/app/components/landing/CoverageMapDialog.tsx`, `src/app/components/landing/CoverageBrowseExperience.tsx`, `src/app/hooks/useOperatingRegionsCoverage.ts`, `src/app/components/landing/OperatingRegionsSection.tsx`, `src/app/components/dashboard/CustomerMapWidget.tsx`, `src/app/components/dashboard/DashboardCoveragePanel.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/hooks/useNavigationRoutePreview.ts src/app/hooks/useCoverageNavigationExperience.ts src/app/features/navigation/useNavigationVoiceAlerts.ts src/app/components/landing/CoverageMapDialog.tsx src/app/components/landing/CoverageBrowseExperience.tsx src/app/hooks/useOperatingRegionsCoverage.ts src/app/components/landing/OperatingRegionsSection.tsx src/app/components/dashboard/CustomerMapWidget.tsx src/app/components/dashboard/DashboardCoveragePanel.tsx src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Impact:** The map stack now behaves more like a real navigation product: browse surfaces stay silent, explicit start/resume actions arm voice cleanly, and active in-app sessions keep ownership of spoken guidance instead of shared preview state doing it opportunistically.
+
+---
+
+## Pass 491 — Destination-aware live-state guards for map guidance chrome (2026-03-29)
+
+- **Why this pass was chosen:** After the map-shell status work, one truthfulness bug remained: some map-owned badges and the floating guidance card could still read as “live” whenever any navigation session was active, even if the currently selected shop was not the active destination.
+- **What changed:**
+  - Updated `MapLibreShopDirectoryMapPane.tsx` so popup and selected-shop bottom-card live guidance treatment now requires the selected shop to actually match the active session destination instead of only checking for any active/paused session.
+  - Added explicit live-destination matching to `ShopDirectoryMapOverlays.tsx`, preventing the floating active-guidance card from appearing for the wrong shop while the user browses elsewhere during another live route.
+  - Extended `ShopDirectoryMapPaneOverlays.tsx`, `ShopDirectoryImmersiveMap.tsx`, and `ShopDirectoryScreen.tsx` prop flow so map chrome can distinguish “a live session exists somewhere” from “this specific shop owns the live session.”
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/MapLibreShopDirectoryMapPane.tsx src/app/components/shop/ShopDirectoryMapOverlays.tsx src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Impact:** The shop map now stays more honest while browsing during a live route. Live guidance chrome only lights up for the shop that actually owns the session, reducing misleading status cues across popup, bottom card, and floating guidance surfaces.
+
+---
+
+## Pass 490 — Map-shell route source/status clarity for popup and selected-shop cards (2026-03-29)
+
+- **Why this pass was chosen:** The sidebar route panel had become live-aware, but the map-owned shop surfaces still looked like generic static preview UI. Popups and selected-shop cards did not clearly indicate whether the route was live, refreshing, or temporarily on preview fallback.
+- **What changed:**
+  - Extended `MapLibreShopDirectoryMapPane.tsx` so the popup now shows live-route source badges, active/paused guidance status, refresh state, route trip metrics, and fallback warnings instead of only shop fit scores and a generic CTA.
+  - Upgraded `ShopDirectoryMapPaneOverlays.tsx` selected-shop card to surface live guidance badges, route-source pills, refresh state, remaining ETA/distance, and fallback warnings when route refresh fails.
+  - Updated `ShopDirectoryMapOverlays.tsx` route-preview and active-guidance cards so both map overlay modes explicitly communicate live-route source, refresh status, and preview fallback, aligning them with the newer sidebar route panel.
+  - Threaded the necessary route diagnostics (`usingLiveRoutes`, `isLoadingRoute`, `routeError`, remaining metrics) through `ShopDirectoryScreen.tsx` and `ShopDirectoryImmersiveMap.tsx` so map-owned surfaces stay synchronized with the same live route state the rest of the shop flow now uses.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/MapLibreShopDirectoryMapPane.tsx src/app/components/shop/ShopDirectoryMapOverlays.tsx src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Impact:** The map shell now tells a more honest story about navigation state. Whether the route is live, refreshing, or on fallback, that status is visible in the popup and selected-shop map cards instead of only inside the sidebar route panel.
+
+---
+
+## Pass 489 — Live-aware route panel for list-mode guidance + route fallback clarity (2026-03-29)
+
+- **Why this pass was chosen:** The shop map itself had become much more live-session aware, but the list-mode route panel was still reading mostly like a static preview block. It did not clearly communicate when the app was following a live route, when a live refresh was loading, or when the flow had fallen back to local preview geometry.
+- **What changed:**
+  - Reworked `ShopDirectoryRoutePanel.tsx` into explicit preview-vs-guidance modes so the panel can render live session badges, live-route source pills, refresh state, and fallback warnings instead of a single generic route card.
+  - Threaded live route state from `ShopDirectoryScreen.tsx` into list mode, including active guidance route options, remaining ETA/distance, current step index, and the next/following maneuver copy already powering the map guidance layer.
+  - Updated `ShopDirectoryListBody.tsx` to consume the new route-panel state object so the sidebar route panel now stays aligned with the same live route source the map uses during active navigation.
+  - Added clearer route-refresh and fallback messaging to the panel so degraded live-routing conditions no longer silently collapse into generic preview UI.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryListBody.tsx src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+- **Impact:** List mode now behaves more like a real navigation control surface instead of a detached planning summary. The user can see when guidance is live, what maneuver is next, and whether the route is live, refreshing, or temporarily falling back.
+
+---
+
+## Pass 488 — Live-route CTA consistency across non-focused shop surfaces (2026-03-29)
+
+- **Why this pass was chosen:** After the live guidance and route-sync work, one behavior gap remained: once a shop already owned the active navigation session, list cards, immersive drawer cards, and selected-shop map cards could still fall back to preview wording or preview behavior unless that same shop was also the currently focused route-preview target.
+- **What changed:**
+  - Added `shouldUseShopNavigationAction()` in `shopDirectorySessionUtils.ts` so shop surfaces can consistently decide when a CTA should route into the owned in-app navigation session versus the preview/open-directions path.
+  - Updated `getShopRouteActionLabel()` to prioritize live paused/active session labels before route-preview readiness, allowing `Resume Navigation` and `Open Live Route` to appear even when the shop is not the current route-preview focus.
+  - Wired `ShopDirectoryListBody.tsx` and `ShopDirectoryImmersiveMap.tsx` to use that shared action decision, so tapping the active destination card now resumes or reopens the live route instead of bouncing back through a generic preview flow.
+  - Updated `MapLibreShopDirectoryMapPane.tsx` popup/button behavior and `ShopDirectoryMapPaneOverlays.tsx` selected-shop bottom CTA so map-owned route actions no longer hardcode `Start Navigation` when the real action is resume/live-route reopen.
+- **Files touched:** `src/app/hooks/shopDirectorySessionUtils.ts`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/hooks/shopDirectorySessionUtils.ts src/app/components/shop/ShopDirectoryListBody.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/MapLibreShopDirectoryMapPane.tsx src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Impact:** The shop flow now treats a live navigation destination as live everywhere that matters, not only on the currently focused card. Labels and button behavior stay aligned across drawer, list, popup, and bottom-map entry points.
+
+---
+
+## Pass 487 — Live route-geometry sync + remaining guidance metrics for shop navigation (2026-03-29)
+
+- **Why this pass was chosen:** After wiring live GPS-follow and maneuver guidance into the shop flow, the visible route line and active session metrics could still lag behind the refreshed navigation preview. The shop map needed its painted route and guidance card numbers to follow the same live route source.
+- **What changed:**
+  - Exported reusable live-route conversion logic from `useShopDirectoryRoutePreview.ts` so navigation preview alternatives can be translated back into map `RouteOption` objects without duplicating route-shaping code.
+  - Updated `ShopDirectoryScreen.tsx` to swap in live guidance route options whenever the selected shop owns the active navigation session, keeping the rendered route geometry aligned with refreshed navigation preview data.
+  - Rebuilt the active selected-route summary in `ShopDirectoryScreen.tsx` from the live route option when navigation is underway, so shop guidance surfaces stop relying on stale pre-navigation route presentation.
+  - Extended `ShopDirectoryMapOverlays.tsx` and `ShopDirectoryImmersiveMap.tsx` to accept live remaining ETA/distance labels, letting the active guidance card reflect remaining route progress instead of only static origin-to-destination preview math.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/hooks/useShopDirectoryRoutePreview.ts`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/ShopDirectoryMapOverlays.tsx src/app/hooks/useShopDirectoryRoutePreview.ts`
+- **Impact:** Active shop navigation now looks and reads like one coherent live system: the route line, selected route summary, and ETA/distance card all stay closer to the current guidance route instead of drifting behind the real navigation preview state.
+
+---
+
+## Pass 486 — Live GPS-follow + maneuver guidance inside the shop map flow (2026-03-29)
+
+- **Why this pass was chosen:** The shop directory could already own route sessions and in-map session controls, but it still was not taking advantage of the richer live-navigation layer already built elsewhere in the product. The missing pieces were live GPS-driven user positioning, follow-camera recentering, and an actual active maneuver card inside the shop map surfaces.
+- **What changed:**
+  - Wired `ShopDirectoryScreen.tsx` into `useNavigationGpsTracking()` and `useNavigationRoutePreview()` so the shop flow can reuse the shared live-navigation stack instead of relying only on static route-preview state.
+  - Added a live maneuver overlay to the shop map using `NavigationActiveManeuverCard.tsx`, including next-step and following-step guidance while the selected shop owns the active navigation session.
+  - Fed GPS-derived coordinates into both hybrid and immersive shop maps so the live user marker now prefers real tracked position over the older one-shot geolocation cache whenever guidance is available.
+  - Enabled map follow-state + recenter revisions across `MapLibreShopDirectoryMapPane.tsx`, `ShopDirectoryImmersiveMap.tsx`, and `ShopDirectoryMapOverlays.tsx`, letting active shop navigation snap back to the live position after route start or manual recenter.
+  - Updated navigation-intelligence snapshots in `ShopDirectoryScreen.tsx` to evaluate against live GPS position/speed and the refreshed route geometry, improving the fidelity of deviation-aware guidance behavior inside the shop loop.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md src/app/components/shop/ShopDirectoryScreen.tsx src/app/components/shop/ShopDirectoryImmersiveMap.tsx src/app/components/shop/MapLibreShopDirectoryMapPane.tsx src/app/components/shop/ShopDirectoryMapOverlays.tsx src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx`
+- **Impact:** The shop directory now behaves much closer to a true live-navigation product: route session state, live GPS position, maneuver guidance, and recenter/follow behavior all stay on the same owned map path instead of splitting between preview UI and separate navigation surfaces.
+
+---
+
+## Pass 485 — Live shop-navigation session controls + single-session ownership (2026-03-29)
+
+- **Why this pass was chosen:** The shop map could preview and start routes, but it still lacked true live-session control inside the shop flow. The floating overlay was also spinning up its own navigation-session hook instead of consuming the screen’s real session owner, which risked status drift between the visible UI and the actual session lifecycle.
+- **What changed:**
+  - Reworked `ShopDirectoryMapOverlays.tsx` to consume shared session state from `ShopDirectoryScreen.tsx` instead of creating its own navigation-session instance.
+  - Added a live in-map navigation card for active/paused shop sessions with `Pause`, `Resume`, and `End Route` controls plus active-time, ETA, and distance status.
+  - Extended CTA labeling across shop cards and selected-shop surfaces so route-ready actions now distinguish `Start Navigation`, `Resume Navigation`, and `Open Live Route` based on the real session/destination state.
+  - Hardened `ShopDirectoryScreen.tsx` lifecycle sync so route selection responds to session-status transitions, stale planning sessions reset cleanly, and switching from one live destination to another can re-seed a fresh in-app session instead of getting stuck behind the previous one.
+  - Updated `useNavigationSession.ts` so `activeSeconds` actually ticks during live/paused sessions, allowing the shop guidance card to show a truthful active-duration timer.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/hooks/shopDirectorySessionUtils.ts`, `src/app/features/navigation/useNavigationSession.ts`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`
+- **Impact:** The shop map now behaves more like a real owned navigation product instead of a route-preview shell: one session source of truth, live controls in-context, and clearer handling for start/resume/already-live route states.
+
+---
+
+## Pass 484 — Route-ready CTA consistency across shop surfaces (2026-03-29)
+
+- **Why this pass was chosen:** The shop-directory flow was already stateful enough to know when a route was ready, but list cards, map popups, and map-bottom cards still kept saying `Get Directions` even when the next real action was to start or resume in-app navigation.
+- **What changed:**
+  - Made shop result cards in `ShopDirectoryListBody.tsx` and `ShopDirectoryImmersiveMap.tsx` switch their primary route CTA from `Get Directions` to `Start Navigation` only when the focused shop already has a selected origin + route ready.
+  - Updated `MapLibreShopDirectoryMapPane.tsx` and `ShopDirectoryMapPaneOverlays.tsx` so popup and bottom-card CTAs use the same route-ready rule instead of keeping stale preview wording.
+  - Hardened `ShopDirectoryScreen.tsx` start-navigation handling so paused sessions resume cleanly, active sessions do not requeue activation, and planning sessions still auto-activate after the in-app map transition.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`
+- **Impact:** Shop-directory navigation language now matches actual app state, reducing the “preview vs start” mismatch and making resume/start behavior feel more intentional across list, fullscreen, and map-card entry points.
+
+---
+
+## Pass 483 — Route-preview panel light/mobile cleanup (2026-03-29)
+
+- **Why this pass was chosen:** The route-preview panel still assumed darker treatment in its active-route block and could grow too tall on phones by rendering every instruction before navigation had even started.
+- **What changed:**
+  - Made the `ShopDirectoryRoutePanel.tsx` active-route block appearance-aware so light mode no longer inherits dark-only surfaces and text treatment.
+  - Tightened route-preview spacing on smaller screens and reduced instruction-card padding.
+  - Limited the pre-navigation instruction preview to the first two steps on compact phone-sized states, with a clear “more steps once active” continuation note instead of a long stack.
+- **Files touched:** `src/app/components/shop/ShopDirectoryRoutePanel.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Route preview now feels calmer and more legible on phones, while light-mode route planning no longer looks partially skinned with dark-only blocks.
+
+---
+
+## Pass 482 — Compact mobile shop-card cleanup + dashboard map CTA clarity (2026-03-29)
+
+- **Why this pass was chosen:** The latest phone screenshots still showed compact shop results carrying too much desktop weight, with stacked metrics/actions that made fullscreen map browsing feel busy. The dashboard entry CTA was also still using the vague `Open Map` label.
+- **What changed:**
+  - Rebuilt `ShopDirectoryResultCard.tsx` compact mode into a true route-first mobile card with one strong full-width route CTA, lighter secondary actions, smaller media, and reduced metric clutter.
+  - Collapsed compact card score treatment into lighter pills so AI/carrier/price context stays visible without dominating the card.
+  - Updated the customer dashboard widget CTA copy from `Open Map` to `Open Smart Map` to better match the actual BidOnDent map product entry path.
+- **Files touched:** `src/app/components/shop/ShopDirectoryResultCard.tsx`, `src/app/components/dashboard/CustomerMapWidget.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Fullscreen and compact shop-browse states now feel cleaner and more touch-friendly on phones, and the dashboard map-entry language is more intentional.
+
+---
+
+## Pass 481 — Mobile map scroll + smart-shop menu cleanup (2026-03-29)
+
+- **Why this pass was chosen:** Mobile fullscreen map menus were still easy to trap. The coverage browse bottom sheet depended on exact snap-point equality, and the smart-shop mobile drawers/pill rows still felt cramped and hard to scroll.
+- **What changed:**
+  - Normalized `MobileMapBottomSheet.tsx` snap-point handling so half/full states reliably become scrollable even when Vaul returns string snap values.
+  - Added explicit touch-scroll affordances (`touch-pan-y`, scroll containment, `data-vaul-no-drag`) to the mobile coverage browse sheet content.
+  - Hardened the immersive shop-results drawer in `ShopDirectoryImmersiveMap.tsx` with safe-area padding and touch-friendly overflow behavior.
+  - Switched the mobile quick-origin chip lane in `ShopDirectoryOriginSearch.tsx` from tall wrapping rows to horizontal scroll, reducing menu bloat in the smart-shop flow.
+- **Files touched:** `src/app/components/landing/MobileMapBottomSheet.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/ShopDirectoryOriginSearch.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Mobile fullscreen map browse/smart-shop menus now scroll more reliably and feel less crowded, especially in the exact menu states shown in the latest screenshots.
+
+---
+
+## Pass 480 — Live dashboard/shop/insurer report feed + photo-backed cards (2026-03-29)
+
+- **Why this pass was chosen:** Shop and insurer dashboards were still dropping back to demo marketplace cards even when a fresh customer report with photos already existed in local/live app state.
+- **What changed:**
+  - Reworked `DashboardRouter.tsx` to merge marketplace reports with the signed-in session's hydrated reports and photo storage before falling back to `SEED_DAMAGE_REPORTS`.
+  - Updated shop and insurer dashboard screens so seed/demo banners now only appear when there is truly no live report data at all.
+  - Enriched `ShopRequestsScreen.tsx` + `ShopRequestCard.tsx` with real customer/report metadata and a photo preview so recent submitted reports look live instead of generic.
+  - Enriched `insurerClaimsUtils.ts`, `InsurerClaimsScreen.tsx`, and `InsurerClaimCard.tsx` with stable real report IDs, preview photos, real claim-number preference, bid-derived estimate fallback, and cleaner pending-estimate presentation.
+- **Files touched:** `src/app/routers/DashboardRouter.tsx`, `src/app/components/shop/ShopRequestsScreen.tsx`, `src/app/components/shop/ShopRequestCard.tsx`, `src/app/components/insurer/insurerClaimsUtils.ts`, `src/app/components/insurer/InsurerClaimsScreen.tsx`, `src/app/components/insurer/InsurerClaimCard.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Recent submitted reports now surface across shop and insurer dashboard flows with real details and photos before the app ever falls back to demo data.
+
+---
+
+## Pass 479 — Fullscreen light-theme + mobile navigation chrome cleanup (2026-03-29)
+
+- **Why this pass was chosen:** The latest screenshots still showed washed-out light-mode fullscreen glass, oversized active-navigation chrome, and a mobile browse sheet that felt too shallow and bulky for real turn-by-turn use.
+- **What changed:**
+  - Adjusted `mapSurfaceTheme.ts` light immersive tokens so fullscreen coverage browse/navigation panels use cooler slate-blue glass instead of milky white overlays.
+  - Tightened `NavigationSummarySheet.tsx`, `NavigationActionRail.tsx`, `NavigationActiveManeuverCard.tsx`, and `NavigationActiveSpeedPanel.tsx` so fullscreen turn-by-turn controls feel smaller, cleaner, and more map-first.
+  - Increased `MobileMapBottomSheet.tsx` snap quality and max height so mobile fullscreen browse can keep more content accessible without burying the map.
+  - Hardened the desktop fullscreen browse shell in `CoverageBrowseExperience.tsx` so the left rail better matches the updated immersive light theme.
+- **Files touched:** `src/app/components/maps/mapSurfaceTheme.ts`, `src/app/components/landing/CoverageBrowseExperience.tsx`, `src/app/components/landing/MobileMapBottomSheet.tsx`, `src/app/components/maps/navigation/NavigationSummarySheet.tsx`, `src/app/components/maps/navigation/NavigationActionRail.tsx`, `src/app/components/maps/navigation/NavigationActiveManeuverCard.tsx`, `src/app/components/maps/navigation/NavigationActiveSpeedPanel.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Fullscreen browse/navigation now reads more intentional on desktop and mobile, with less bloated route chrome and a much cleaner light-mode glass treatment.
+
+---
+
+## Pass 478 — Public coverage nationwide address-origin search (2026-03-29)
+
+- **Why this pass was chosen:** The public landing coverage entry was still effectively ZIP-first even though the repo already had nationwide Nominatim search infrastructure. Users needed to be able to route from real U.S. home/store addresses before entering fullscreen BidOnDent navigation.
+- **What changed:**
+  - Extended `useOperatingRegionsCoverage.ts` and `coverageState.ts` with explicit `"address"` origin mode plus persisted `manualSearchTarget` state.
+  - Reworked `CoverageSearchPanel.tsx` into a true ZIP/home/store command bar with address suggestions/results, origin-status feedback, and clear-address controls.
+  - Updated `OperatingRegionsSection.tsx` to pass the new address-search orchestration through the landing/public coverage flow.
+  - Updated nearby-shop copy in `CoverageNearestShops.tsx` so the public map now reads as routing from a selected address instead of only building ZIP-based coverage.
+- **Files touched:** `src/app/hooks/useOperatingRegionsCoverage.ts`, `src/app/components/landing/coverageState.ts`, `src/app/components/landing/CoverageSearchPanel.tsx`, `src/app/components/landing/OperatingRegionsSection.tsx`, `src/app/components/landing/CoverageNearestShops.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Public coverage search can now start from real U.S. house/store addresses, carry that manual origin into nearby-shop selection, and enter fullscreen BidOnDent navigation with the intended address context intact.
+
+---
+
+## Pass 477 — Demote external-map export inside active navigation (2026-03-29)
+
+- **Why this pass was chosen:** The active navigation summary sheet still visually centered Apple Maps / Google Maps / Waze provider export, which conflicted with the BidOnDent-first direction model and the screenshots still made third-party handoff feel like a co-equal primary route mode.
+- **What changed:**
+  - Reworked `NavigationSummarySheet.tsx` so the active state now clearly says BidOnDent Maps is the live route mode.
+  - Moved Apple Maps / Google Maps / Waze selection behind an explicit `Export Route` disclosure rather than showing provider tabs by default.
+  - Renamed the direct handoff CTA from `Open in ...` to `Export to ...` so the intent reads as fallback/export instead of primary continuation.
+- **Files touched:** `src/app/components/maps/navigation/NavigationSummarySheet.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Active navigation now reinforces BidOnDent Maps as the primary route experience while still preserving third-party export for users who explicitly need it.
+
+---
+
+## Pass 476 — Coverage browse origin lock + landing command-bar cleanup (2026-03-29)
+
+- **Why this pass was chosen:** The current landing/dashboard screenshots showed a major route-context mismatch: ZIP-based coverage browse surfaces could still inherit passive live-GPS routing behavior, producing huge interstate-looking route previews that did not match the selected ZIP/search area. The landing control stack also still rendered as three oversized action rows instead of a tighter command bar.
+- **What changed:**
+  - Added explicit origin-priority control to `useCoverageNavigationExperience` and switched `useOperatingRegionsCoverage` to `fallback-first` whenever the user is browsing via ZIP/search mode.
+  - Updated `useNavigationRoutePreview` so GPS movement only triggers route refresh when the active route origin is truly geolocation-based, rather than any time GPS is enabled in the background.
+  - Refined `CoverageSearchPanel.tsx` into a more compact two-row command-bar layout on mobile and a single cleaner action row on larger screens, plus an explicit origin-status strip.
+- **Files touched:** `src/app/hooks/useCoverageNavigationExperience.ts`, `src/app/hooks/useNavigationRoutePreview.ts`, `src/app/hooks/useOperatingRegionsCoverage.ts`, `src/app/components/landing/CoverageSearchPanel.tsx`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Coverage browse, landing search, and fullscreen coverage dialog now keep ZIP/search route previews anchored to the intended browse origin instead of drifting toward passive live-GPS behavior, and the landing controls read as a tighter map command surface.
+
+---
+
+## Pass 475 — Insurer mapped partner shops → BidOnDent Maps (2026-03-29)
+
+- **Why this pass was chosen:** Insurer partner-shop cards still used third-party map launch for mapped shops even though the BidOnDent map program already had enough state/memory plumbing to receive a preselected destination.
+- **What changed:**
+  - Rewired `InsurerPartnerShopsScreen.tsx` so mapped partner-shop route actions now persist the selected shop + camera target into website map memory and then open the existing shop-directory map flow for insurer users.
+  - Updated insurer partner-shop card CTA copy to `BidOnDent Maps` so the destination of the action is explicit.
+  - Kept manual prospects on explicit external export, and clarified the provider selector copy so it only describes those manual-lead exports.
+- **Files touched:** `src/app/components/insurer/InsurerPartnerShopsScreen.tsx`, `src/app/components/insurer/InsurerPartnerShopCard.tsx`, `src/app/components/insurer/ManualProspectCard.tsx`
+- **Validation:** `npx tsc --noEmit`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Insurer mapped partner shops now join the BidOnDent-first direction model, while manual prospects remain a deliberate fallback until generic non-directory destinations are supported in-app.
+
+---
+
+## Pass 474 — Coverage landing/dashboard in-app navigation default (2026-03-29)
+
+- **Why this pass was chosen:** The fullscreen coverage dialog already supported in-app routing, but the landing-page coverage section and dashboard coverage widgets were still using external-map handoff as their primary shop-direction path.
+- **What changed:**
+  - Added a start-navigation request token path through `CoverageMapDialog.tsx`, allowing outer surfaces to open the fullscreen BidOnDent map and auto-enter navigation as soon as route preview is ready.
+  - Added `handleOpenBidOnDentNavigation` flows in `useOperatingRegionsCoverage.ts`, `CustomerMapWidget.tsx`, and `DashboardCoveragePanel.tsx` so shop-direction actions now prioritize the BidOnDent map program.
+  - Preserved `openDirections` only as an explicit export fallback from the active navigation summary sheet, rather than the default shop-route action.
+  - Updated landing/coverage copy so route CTAs consistently describe the in-app BidOnDent map flow.
+- **Files touched:** `src/app/hooks/useOperatingRegionsCoverage.ts`, `src/app/components/landing/CoverageMapDialog.tsx`, `src/app/components/landing/OperatingRegionsSection.tsx`, `src/app/components/dashboard/CustomerMapWidget.tsx`, `src/app/components/dashboard/DashboardCoveragePanel.tsx`, `src/app/components/landing/CoverageSearchPanel.tsx`, `src/app/components/maps/command-center/CoverageCommandCenterSidebar.tsx`, `src/app/components/maps/navigation/NavigationSummarySheet.tsx`
+- **Validation:** `npx tsc --noEmit`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Landing-page coverage search, fullscreen coverage browse, and dashboard coverage entry points now funnel shop-direction intent into BidOnDent Maps first, with Apple Maps / Google Maps / Waze relegated to explicit export fallback.
+
+---
+
+## Pass 473 — Coverage tabs in-app routing handoff (2026-03-29)
+
+- **Why this pass was chosen:** The Coverage Browse `Shops` and `Explore` tab actions still handed users to external map apps, which broke the in-app map program continuity goal.
+- **What changed:**
+  - Rewired coverage browse direction handlers in `CoverageBrowseExperience` so shop actions now select the target shop, switch to `search` mode, center map context, and auto-start in-app navigation when route preview is ready.
+  - Changed explore-place direction behavior from external launch to in-app map focus (`Open on map`) and updated shop/explore CTA copy to `Start Route` to match in-app behavior.
+  - Kept recent-location memory writes so route/discovery history continuity is preserved.
+- **Files touched:** `src/app/components/landing/CoverageBrowseExperience.tsx`, `src/app/components/landing/CoverageNearestShops.tsx`, `src/app/components/maps/navigation/NavigationBrowseDiscoveryPanel.tsx`, `src/app/components/maps/navigation/NavigationDiscoveryPlacesList.tsx`
+- **Validation:** `npm run build`, touched-file diagnostics, touched-file `npx cspell lint ...`
+- **Impact:** Coverage `Shops` and `Explore` tabs now keep users inside BidOnDent Maps instead of bouncing to Apple/Google/Waze.
+
+---
+
+## Pass 472 — Coverage map control polish (icons + glass backgrounds) (2026-03-29)
+
+- **Why this pass was chosen:** The current map program still had low-contrast control backgrounds and weak icon legibility in key browse surfaces, including the dashboard-to-map entry affordance and segmented sidebar tabs.
+- **What changed:**
+  - Upgraded shared dark-mode map surface tokens to stronger glass gradients and clearer inactive/active contrast for segmented controls, secondary actions, and icon buttons.
+  - Increased sidebar tab icon size/spacing in `CoverageBrowseSidebarContent` to prevent icon fade/visual loss at a glance.
+  - Polished landing-header dashboard entry button (glass depth, icon contrast, spacing) so the symbol remains clear against dark atmospheric backgrounds.
+- **Files touched:** `src/app/components/maps/mapSurfaceTheme.ts`, `src/app/components/landing/CoverageBrowseSidebarContent.tsx`, `src/app/components/landing/LandingPageHeader.tsx`
+- **Validation:** `npm run build`, touched-file diagnostics, touched-file `npx cspell lint ...`
+- **Impact:** The map browse shell now reads cleaner and more intentional, with higher-confidence controls and clearer icon affordances across desktop and mobile map entry points.
+
+---
+
+## Pass 471 — In-app directions default + nationwide origin expansion (2026-03-29)
+
+- **Why this pass was chosen:** Direction actions in the shop map flow were still routing users to third-party apps, the shop route card was still backed by local placeholder geometry, and nationwide address search was missing from the shop-directory origin lane.
+- **What changed:**
+  - Rewired `useShopDirectoryHandlers.handleOpenShopDirections` to keep users in the BidOnDent immersive map flow (`setSelectedShopId`, `setMapCenter`, `setMapViewMode("map")`) instead of launching Apple Maps / Google Maps / Waze from the shop flow.
+  - Added `useShopDirectoryRoutePreview.ts`, which fetches live OSRM route alternatives and converts them into the existing `RouteOption` shape used by the shop map and overlays.
+  - Preserved the existing local route builder as fallback so the shop flow still works if live OSRM lookup fails or times out.
+  - Added `ShopDirectoryOriginSearch.tsx` and wired `useNavigationAddressSearch` into `useShopDirectorySession`, giving the shop origin picker U.S.-wide Nominatim address / city / ZIP search while keeping the NY quick-pick chips.
+  - Updated `ShopDirectoryScreen` and `ShopDirectoryImmersiveMap` so "Start Navigation" activates the in-app navigation session once planning is ready.
+  - Updated browse-direction CTA copy to `Open in BidOnDent Maps`, reserving `Start Navigation` for the actual in-app route-preview action.
+- **Files touched:** `src/app/hooks/useShopDirectoryHandlers.ts`, `src/app/hooks/useShopDirectorySession.ts`, `src/app/hooks/useShopDirectoryRoutePreview.ts`, `src/app/hooks/shopDirectorySessionUtils.ts`, `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/ShopDirectorySearchPanel.tsx`, `src/app/components/shop/ShopDirectoryOriginSearch.tsx`
+- **Validation:** `npx tsc --noEmit`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Shop-directory users now stay inside the BidOnDent map program for directions, get real route geometry/turn steps when live routing is available, and can start from real U.S. addresses instead of only the seeded NY origin chips.
+
+---
+
+## Pass 470 — Safe-area bottom spacing + legend polish (2026-03-29)
+
+- **Why this pass was chosen:** The floating shop-map overlays had improved top safe-area handling already, but the bottom legend/route chrome still sat too close to the home-indicator zone on modern phones and the dark-mode legend no longer fully matched the upgraded marker hierarchy.
+- **What changed:**
+  - Added safe-area-aware bottom spacing for the selected-shop bottom overlay so the legend/card breathes above iPhone-style bottom insets.
+  - Made the floating route-preview card safe-area-aware as well, keeping it clear of the home-indicator zone in immersive browsing/navigation flows.
+  - Boosted dark-mode bottom-card CTA contrast and updated the legend's "Top pick" marker styling so it remains readable against the darker glass treatment.
+- **Files touched:** `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/CODE_ORGANIZATION_AUDIT.md`, `docs/MAP_EXPERIENCE_ARCHITECTURE.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Validation:** `npx tsc --noEmit`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** Floating map chrome now feels more intentional on small devices and the legend/CTA better matches the actual marker emphasis on the map.
+
+---
+
+## Pass 469 — Coverage-map layer extraction to restore file-size hygiene (2026-03-29)
+
+- **Why this pass was chosen:** After the later map-design passes, `MapLibreServiceCoverageMap.tsx` had grown back into the main oversized map file. The safest next step was another structural extraction with no behavior change.
+- **What changed:**
+  - Extracted the route, county, GPS, and search-target `Source`/`Layer` block into `MapLibreCoverageMapLayers.tsx`.
+  - Kept `MapLibreServiceCoverageMap.tsx` focused on camera control, chrome, performance tracking, and overall composition.
+  - Reduced `MapLibreServiceCoverageMap.tsx` from 683 lines to 473 lines.
+  - Restored both primary map surfaces to sub-500-line compliance while preserving the recent visual upgrades.
+- **Files touched:** `src/app/components/maps/MapLibreServiceCoverageMap.tsx`, `src/app/components/maps/MapLibreCoverageMapLayers.tsx`, `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/CODE_ORGANIZATION_AUDIT.md`, `docs/MAP_EXPERIENCE_ARCHITECTURE.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Validation:** `npx tsc --noEmit`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** The landing/coverage map is now much easier to iterate on without changing the actual map program behavior, and the active docs match the new component split.
+
+---
+
+## Pass 468 — Keep map popup synced with sidebar selection (2026-03-29)
+
+- **Why this pass was chosen:** Shop selection in the sidebar/list could desync with map popup context, forcing users to hunt for confirmation on map.
+- **What changed:**
+  - Updated `MapLibreShopDirectoryMapPane.tsx` popup sync effect to keep popup location/content aligned with externally selected shop.
+  - Popup now clears only when selection is removed or filtered out, instead of closing on every external selection change.
+- **Files touched:** `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** `npm run build`, targeted diagnostics
+- **Impact:** Stronger list ↔ map cohesion in the core browse → select → action loop.
+
+---
+
+## Pass 467 — Feed live GPS into shop navigation intelligence (2026-03-29)
+
+- **Why this pass was chosen:** Navigation intelligence snapshots in shop flow were not receiving real-time position, limiting off-route/deviation quality.
+- **What changed:**
+  - Wired `session.userGeolocation.coords` into `NavigationSnapshot.currentPosition` in `ShopDirectoryScreen.tsx`.
+  - Updated effect dependencies so intelligence re-evaluates as GPS coordinates update.
+- **Files touched:** `src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Validation:** `npm run build`, targeted diagnostics
+- **Impact:** Deviation detection can now evaluate real position during route-preview/guidance flow.
+
+---
+
+## Pass 466 — Dark overlay contrast boost (isolated map pane) (2026-03-29)
+
+- **Why this pass was chosen:** The shop-directory dark map pane still had a few low-contrast glass tokens after the larger MapLibre migration, especially around badges, gradient treatments, popup subtext, and the selected-shop bottom card.
+- **What changed:**
+  - Increased dark-mode contrast for the map-pane header badges, gradients, selected-shop card, legend, and search pills.
+  - Strengthened popup subtitle, score-card, carrier-fit, and CTA contrast inside `MapLibreShopDirectoryMapPane.tsx`.
+  - Kept the changes isolated to map-pane files to avoid overlapping the other AI's broader map-session work.
+- **Files touched:** `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** `npm run build`
+- **Impact:** The dark shop-map surface now reads more clearly over CARTO dark tiles without changing layout or route behavior.
+
+---
+
+## Pass 465 — Premium route polyline outline layer (2026-03-29)
+
+- **Why this pass was chosen:** The shop-directory route line was still visually flatter than the coverage-map route treatment, so the active path did not feel premium enough in the core browse → route-preview flow.
+- **What changed:**
+  - Added a brighter selected-route glow and a white/ice outline layer between the glow and the inner accent-color core.
+  - Kept unselected routes dashed and lower-emphasis.
+  - Preserved the later route-width boost while making the selected path read more like a primary navigation object.
+- **Impact:** Active routes now stand out more clearly against both dark and light map themes.
+
+## Pass 464 — Immersive map mobile layout improvements (2026-03-29)
+
+- **Why this pass was chosen:** The immersive map top bar and overlays were still colliding on small screens, especially around safe-area space and the intelligence chip position.
+- **What changed:**
+  - Added safer top-bar spacing for modern iPhone-style safe areas.
+  - Shifted floating overlay positioning lower in immersive mode so the intelligence chip and deviation prompt do not sit under the top controls.
+  - Reduced top-bar crowding on narrow screens by tightening mobile control density.
+- **Impact:** The immersive map reads more intentionally on 375px-class devices and keeps important overlays visible during navigation and browsing.
+
+## Pass 463 — County labels + search-radius distance label (2026-03-29)
+
+- **Why this pass was chosen:** The landing coverage map needed clearer geographic context and stronger explanation of what the current search radius actually means.
+- **What changed:**
+  - Added county name label symbols to county markers.
+  - Added a distance label anchored to the eastern edge of the active search radius.
+- **Impact:** The first map surface is more self-explanatory and gives users better spatial orientation during coverage browsing.
+
 ## Pass 462 — ShopDirectory layer extraction to restore file-size hygiene (2026-03-29)
 
 - **Why this pass was chosen:** After passes 460-461 added legitimate map polish, `MapLibreShopDirectoryMapPane.tsx` grew back over the repo hard cap. The next safest step was a pure structural extraction that would not change route, popup, or session behavior.
@@ -50,16 +867,16 @@
 **Tiles:** OpenStreetMap → CARTO Voyager (light), CARTO Dark All (night), Esri Satellite
 **Result:** 14 Leaflet files deleted (2,021 lines), 7 MapLibre components created, leaflet/react-leaflet/@types/leaflet packages removed
 
-| Component                                  | Purpose                                                   |
-| ------------------------------------------ | --------------------------------------------------------- |
-| `MapLibreServiceCoverageMap.tsx`           | Landing + coverage map with route glow + GPS glow         |
-| `MapLibreShopDirectoryMapPane.tsx`         | Dashboard shop discovery map with GeoJSON sources         |
-| `MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport management for shop directory           |
-| `MapLibreDashboardMapPreview.tsx`          | Lightweight click-through preview for dashboard widgets   |
-| `MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                         |
-| `MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                               |
-| `MapLibreDiscoveryPlaceLayer.tsx`          | Discovery place circles with category colors              |
-| `mapLibreStyles.ts`                        | StyleSpecification objects for 3 tile modes               |
+| Component                                  | Purpose                                                 |
+| ------------------------------------------ | ------------------------------------------------------- |
+| `MapLibreServiceCoverageMap.tsx`           | Landing + coverage map with route glow + GPS glow       |
+| `MapLibreShopDirectoryMapPane.tsx`         | Dashboard shop discovery map with GeoJSON sources       |
+| `MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport management for shop directory         |
+| `MapLibreDashboardMapPreview.tsx`          | Lightweight click-through preview for dashboard widgets |
+| `MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                       |
+| `MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                             |
+| `MapLibreDiscoveryPlaceLayer.tsx`          | Discovery place circles with category colors            |
+| `mapLibreStyles.ts`                        | StyleSpecification objects for 3 tile modes             |
 
 ---
 

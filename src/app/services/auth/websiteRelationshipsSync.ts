@@ -33,9 +33,17 @@ async function buildHeaders() {
   return await buildSupabaseEdgeHeadersAsync();
 }
 
+function isValidRelationshipId(value: number) {
+  return Number.isInteger(value) && value > 0;
+}
+
 function toNumericCollection(values: unknown) {
   return Array.isArray(values)
-    ? [...new Set(values.map((value) => Number(value)).filter((value) => Number.isFinite(value)))]
+    ? [
+        ...new Set(
+          values.map((value) => Number(value)).filter((value) => isValidRelationshipId(value))
+        ),
+      ]
     : [];
 }
 

@@ -1,30 +1,75 @@
+import { useEffect, useRef } from "react";
 import { Bookmark, Search } from "lucide-react";
 import ShopDirectoryRoutePanel from "./ShopDirectoryRoutePanel";
 import ShopDirectoryResultCard from "./ShopDirectoryResultCard";
 import { getRoleCollectionActionLabels } from "../../services/intelligence/shopMapExperience";
+import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
+import type { NavigationSessionStatus } from "../../features/navigation";
 import type { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
+import {
+  getShopRouteActionLabel,
+  shouldUseShopNavigationAction,
+} from "../../hooks/shopDirectorySessionUtils";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ShopDirectoryListBodyProps = {
   session: ReturnType<typeof useShopDirectorySession>;
+  routePanel: {
+    routeSummary: { title: string; description: string };
+    routeOptions: ReturnType<typeof useShopDirectorySession>["routeOptions"];
+    selectedRoute: ReturnType<typeof useShopDirectorySession>["selectedRoute"];
+    mode: "preview" | "guidance";
+    hasArrived: boolean;
+    isLoadingRoute: boolean;
+    routeError: string;
+    usingLiveRoutes: boolean;
+    remainingEtaLabel: string | null;
+    remainingDistanceLabel: string | null;
+    currentStepIndex: number;
+    nextInstruction: string | null;
+    followingInstruction: string | null;
+    navigationSessionStatus: NavigationSessionStatus;
+  };
   userType: MarketUserType;
   primaryColor: string;
   compactCards: boolean;
   appearanceMode?: DashboardAppearanceMode;
+  onStartNavigation?: (shop: ShopMapListing) => void;
+  navigationSessionStatus: NavigationSessionStatus;
+  navigationSessionDestinationId: string | null;
 };
 
 export default function ShopDirectoryListBody({
   session,
+  routePanel,
   userType,
   primaryColor,
   compactCards,
   appearanceMode = "map-dark",
+  onStartNavigation,
+  navigationSessionStatus,
+  navigationSessionDestinationId,
 }: ShopDirectoryListBodyProps) {
   const isLight = appearanceMode === "light";
   const sectionLabelClass = `flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
     isLight ? "text-blue-600/70" : "text-blue-200/50"
   }`;
+
+  /* Auto-scroll sidebar to selected shop when marker tapped on map */
+  const selectedRef = useRef<HTMLDivElement>(null);
+  const prevSelectedId = useRef<number | null>(null);
+  useEffect(() => {
+    if (
+      session.selectedShopId != null &&
+      session.selectedShopId !== prevSelectedId.current &&
+      selectedRef.current
+    ) {
+      selectedRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    prevSelectedId.current = session.selectedShopId;
+  }, [session.selectedShopId]);
+
   return (
     <div
       className={`min-h-0 flex-1 p-3 sm:p-4 lg:p-5 lg:overflow-y-auto ${session.showMapPane ? "pb-[calc(env(safe-area-inset-bottom)+6.5rem)] sm:pb-6" : ""}`}
@@ -33,12 +78,23 @@ export default function ShopDirectoryListBody({
       {!session.showMapPane && (
         <ShopDirectoryRoutePanel
           appearanceMode={appearanceMode}
+          currentStepIndex={routePanel.currentStepIndex}
+          followingInstruction={routePanel.followingInstruction}
+          hasArrived={routePanel.hasArrived}
+          isLoadingRoute={routePanel.isLoadingRoute}
+          mode={routePanel.mode}
+          navigationSessionStatus={routePanel.navigationSessionStatus}
+          nextInstruction={routePanel.nextInstruction}
           onSelectRoute={session.setSelectedRouteId}
-          routeOptions={session.routeOptions}
-          routeSummary={session.routeSummary}
+          remainingDistanceLabel={routePanel.remainingDistanceLabel}
+          remainingEtaLabel={routePanel.remainingEtaLabel}
+          routeError={routePanel.routeError}
+          routeOptions={routePanel.routeOptions}
+          routeSummary={routePanel.routeSummary}
           selectedOrigin={session.selectedOrigin}
-          selectedRoute={session.selectedRoute}
+          selectedRoute={routePanel.selectedRoute}
           selectedShop={session.selectedShop}
+          usingLiveRoutes={routePanel.usingLiveRoutes}
         />
       )}
 
@@ -207,13 +263,12 @@ export default function ShopDirectoryListBody({
           } p-4 sm:p-6`}
         >
           <p className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
-            No shops matched that filter
+            No shops matched
           </p>
           <p
             className={`mt-2 text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}
           >
-            Try broadening the search, switching back to Smart Match, or removing the 4.5+ filter to
-            reopen the full recommendation set.
+            Try broadening the search, switching to Smart Match, or removing the 4.5+ filter.
           </p>
         </div>
       )}
@@ -224,22 +279,66 @@ export default function ShopDirectoryListBody({
             userType,
             session.roleCollectionIds.includes(shop.id)
           );
+          const shopOwnsSessionDestination = navigationSessionDestinationId === String(shop.id);
+          const hasArrivedForShop = routePanel.hasArrived && session.selectedShopId === shop.id;
+          const routeReadyForShop = Boolean(
+            onStartNavigation &&
+              session.selectedOrigin &&
+              session.selectedRoute &&
+              session.selectedShopId === shop.id
+          );
+          const routeStatusLabel = hasArrivedForShop
+            ? "Arrived"
+            : shopOwnsSessionDestination && navigationSessionStatus === "paused"
+              ? "Paused route"
+              : shopOwnsSessionDestination && navigationSessionStatus === "active"
+                ? "Live guidance"
+                : null;
+          const routeStatusTone = hasArrivedForShop
+            ? ("arrived" as const)
+            : navigationSessionStatus === "paused"
+              ? ("paused" as const)
+              : ("live" as const);
+          const shouldUseNavigationAction = Boolean(
+            onStartNavigation &&
+              shouldUseShopNavigationAction({
+                shopId: shop.id,
+                routeReady: routeReadyForShop,
+                navigationSessionStatus,
+                navigationSessionDestinationId,
+              })
+          );
+          const directionsActionLabel = getShopRouteActionLabel({
+            shopId: shop.id,
+            routeReady: routeReadyForShop,
+            hasArrived: hasArrivedForShop,
+            defaultLabel: session.directionsActionLabel,
+            navigationSessionStatus,
+            navigationSessionDestinationId,
+          });
 
           return (
-            <ShopDirectoryResultCard
-              appearanceMode={appearanceMode}
-              compact={compactCards}
-              directionsActionLabel={session.directionsActionLabel}
-              isSelected={session.selectedShopId === shop.id}
-              key={shop.id}
-              onDirectionsAction={() => session.handleOpenShopDirections(shop)}
-              onPrimaryAction={() => session.handleToggleRoleCollection(shop.id)}
-              onSecondaryAction={() => session.setSelectedShopId(shop.id)}
-              primaryActionLabel={roleCollectionAction.primary}
-              primaryColor={primaryColor}
-              secondaryActionLabel={session.roleHighlights.secondaryActionLabel}
-              shop={shop}
-            />
+            <div key={shop.id} ref={session.selectedShopId === shop.id ? selectedRef : undefined}>
+              <ShopDirectoryResultCard
+                appearanceMode={appearanceMode}
+                compact={compactCards}
+                directionsActionLabel={directionsActionLabel}
+                isSelected={session.selectedShopId === shop.id}
+                onDirectionsAction={() =>
+                  shouldUseNavigationAction && onStartNavigation
+                    ? onStartNavigation(shop)
+                    : session.handleOpenShopDirections(shop)
+                }
+                onPrimaryAction={() => session.handleToggleRoleCollection(shop.id)}
+                onSecondaryAction={() => session.setSelectedShopId(shop.id)}
+                primaryActionLabel={roleCollectionAction.primary}
+                primaryColor={primaryColor}
+                routeStatusLabel={routeStatusLabel}
+                routeStatusTone={routeStatusTone}
+                secondaryActionLabel={session.roleHighlights.secondaryActionLabel}
+                shop={shop}
+              />
+            </div>
           );
         })}
       </div>

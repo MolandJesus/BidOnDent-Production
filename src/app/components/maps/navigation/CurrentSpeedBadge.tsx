@@ -8,6 +8,9 @@ type CurrentSpeedBadgeProps = {
   postedSpeedLimitMph?: number | null;
 };
 
+/** Speed readings above this threshold are treated as GPS noise and shown as "—". */
+const GPS_SPEED_SANITY_CAP_MPH = 120;
+
 export default function CurrentSpeedBadge({
   tone,
   currentSpeedMph,
@@ -15,7 +18,9 @@ export default function CurrentSpeedBadge({
 }: CurrentSpeedBadgeProps) {
   const hasCurrentSpeed = Number.isFinite(currentSpeedMph);
   const hasPostedLimit = Number.isFinite(postedSpeedLimitMph);
-  const speedValue = hasCurrentSpeed ? Math.round(Number(currentSpeedMph)) : null;
+  const rawSpeed = hasCurrentSpeed ? Math.round(Number(currentSpeedMph)) : null;
+  const isGpsNoise = rawSpeed !== null && rawSpeed > GPS_SPEED_SANITY_CAP_MPH;
+  const speedValue = isGpsNoise ? null : rawSpeed;
   const postedValue = hasPostedLimit ? Math.round(Number(postedSpeedLimitMph)) : null;
   const overage =
     hasCurrentSpeed && hasPostedLimit && speedValue !== null && postedValue !== null

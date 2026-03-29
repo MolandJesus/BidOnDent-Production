@@ -17,6 +17,7 @@ const InsurerPartnerShopsScreen = lazy(
 );
 
 import { SEED_DAMAGE_REPORTS } from "../constants";
+import type { DamageReport } from "../types";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import DashboardSecondaryViews from "./DashboardSecondaryViews";
 
@@ -87,8 +88,67 @@ export default function DashboardRouter({
 
   // Fetch all reports from Supabase for shop/insurer marketplace views
   const { marketplaceReports, loading: marketplaceLoading } = useMarketplaceReports(userType);
-  const shopInsurerReports =
-    marketplaceReports.length > 0 ? marketplaceReports : SEED_DAMAGE_REPORTS;
+  const enrichedUserReports = reports.map((report) => ({
+    ...report,
+    photos:
+      Array.isArray(photoStorage[report.id]) && photoStorage[report.id].length > 0
+        ? photoStorage[report.id]
+        : Array.isArray(report.photos)
+          ? report.photos
+          : [],
+  }));
+
+  const liveReportMap = new Map<string, DamageReport>();
+
+  marketplaceReports.forEach((report) => {
+    liveReportMap.set(String(report.id), report);
+  });
+
+  enrichedUserReports.forEach((report) => {
+    const reportKey = String(report.id);
+    const existing = liveReportMap.get(reportKey);
+
+    if (!existing) {
+      liveReportMap.set(reportKey, report);
+      return;
+    }
+
+    liveReportMap.set(reportKey, {
+      ...existing,
+      customerName: report.customerName || existing.customerName,
+      customerEmail: report.customerEmail || existing.customerEmail,
+      customerPhone: report.customerPhone || existing.customerPhone,
+      description: report.description || existing.description,
+      damageDescription: report.damageDescription || existing.damageDescription,
+      damageArea: report.damageArea || existing.damageArea,
+      damageType: report.damageType || existing.damageType,
+      address: report.address || existing.address,
+      city: report.city || existing.city,
+      state: report.state || existing.state,
+      zipCode: report.zipCode || existing.zipCode,
+      zip_code: report.zip_code || existing.zip_code,
+      claimNumber: report.claimNumber || existing.claimNumber,
+      policyNumber: report.policyNumber || existing.policyNumber,
+      vehicle: report.vehicle || existing.vehicle,
+      vehicleInfo: report.vehicleInfo || existing.vehicleInfo,
+      photos: report.photos.length > 0 ? report.photos : existing.photos,
+      bids: Array.isArray(report.bids) && report.bids.length > 0 ? report.bids : existing.bids,
+      bidsCount: report.bidsCount ?? existing.bidsCount,
+      bidAmount: report.bidAmount ?? existing.bidAmount,
+      submittedAt: report.submittedAt || existing.submittedAt,
+      createdAt: report.createdAt || existing.createdAt,
+      status: report.status || existing.status,
+    });
+  });
+
+  const liveMarketplaceReports = Array.from(liveReportMap.values()).sort((left, right) => {
+    const leftDate = Date.parse(left.submittedAt || left.createdAt || "");
+    const rightDate = Date.parse(right.submittedAt || right.createdAt || "");
+    return rightDate - leftDate;
+  });
+  const usingSeedFallback = liveMarketplaceReports.length === 0;
+  const shopInsurerReports = usingSeedFallback ? SEED_DAMAGE_REPORTS : liveMarketplaceReports;
+  const shopInsurerReportsLoading = marketplaceLoading && liveMarketplaceReports.length === 0;
 
   // Scroll to top whenever view changes
   useEffect(() => {
@@ -173,10 +233,7 @@ export default function DashboardRouter({
                     // For customers, show only their own reports
                     userType === "shop" || userType === "insurer"
                       ? shopInsurerReports
-                      : reports.map((report) => ({
-                          ...report,
-                          photos: photoStorage[report.id] || [],
-                        }))
+                      : enrichedUserReports
                   }
                 />
               </motion.div>
@@ -233,8 +290,8 @@ export default function DashboardRouter({
                 <ShopRequestsScreen
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
-                  reportsLoading={marketplaceLoading}
-                  isSeedData={marketplaceReports.length === 0}
+                  reportsLoading={shopInsurerReportsLoading}
+                  isSeedData={usingSeedFallback}
                   appearanceMode={appearanceMode}
                   onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
                     onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
@@ -249,7 +306,7 @@ export default function DashboardRouter({
                 <ShopActiveJobsScreen
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
-                  isSeedData={marketplaceReports.length === 0}
+                  isSeedData={usingSeedFallback}
                   appearanceMode={appearanceMode}
                 />
               </motion.div>
@@ -261,8 +318,8 @@ export default function DashboardRouter({
                 <InsurerClaimsScreen
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
-                  reportsLoading={marketplaceLoading}
-                  isSeedData={marketplaceReports.length === 0}
+                  reportsLoading={shopInsurerReportsLoading}
+                  isSeedData={usingSeedFallback}
                   appearanceMode={appearanceMode}
                   onApproveClaim={(claimId, amount) => {
                     if (import.meta.env.DEV)

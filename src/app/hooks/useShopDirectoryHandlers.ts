@@ -1,10 +1,9 @@
 import { useCallback, useRef, useEffect, type FormEvent } from "react";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
 import { toggleRoleCollectionShopId } from "../services/intelligence/shopMapExperience";
-import { openDirections } from "../services/navigation/externalNavigation";
-import { loadNavigationSession } from "../services/navigation/navigationSession";
 import type {
   Coordinates,
+  MapViewMode,
   MapTheme,
   MapViewportBounds,
   Place,
@@ -31,6 +30,7 @@ interface UseShopDirectoryHandlersArgs {
   setShopWatchlistIds: React.Dispatch<React.SetStateAction<number[]>>;
   setInsurerShortlistIds: React.Dispatch<React.SetStateAction<number[]>>;
   setMapTheme: React.Dispatch<React.SetStateAction<MapTheme>>;
+  setMapViewMode: React.Dispatch<React.SetStateAction<MapViewMode>>;
   setMapCenter: React.Dispatch<React.SetStateAction<Coordinates | undefined>>;
   setSearchWithinViewport: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -54,6 +54,7 @@ export function useShopDirectoryHandlers({
   setShopWatchlistIds,
   setInsurerShortlistIds,
   setMapTheme,
+  setMapViewMode,
   setMapCenter,
   setSearchWithinViewport,
   geolocation,
@@ -112,26 +113,33 @@ export function useShopDirectoryHandlers({
   };
 
   const handleOpenShopDirections = (shop: ShopMapListing) => {
-    const provider = loadNavigationSession()?.provider || "google";
+    // Keep direction flow in-app: focus selected shop and switch to immersive map mode.
+    setSelectedShopId(shop.id);
+    setMapCenter(shop.mapResult.coordinates);
+    setMapViewMode("map");
+    setSearchWithinViewport(false);
 
-    openDirections({
-      provider,
-      destination: {
-        id: String(shop.id),
-        name: shop.name,
-        lat: shop.mapResult.coordinates.latitude,
-        lng: shop.mapResult.coordinates.longitude,
-        addressLine: `${shop.mapResult.address}, ${shop.mapResult.city}, ${shop.mapResult.state} ${shop.mapResult.zipCode}`,
-      },
-      origin: selectedOrigin
-        ? {
-            label: selectedOrigin.name,
-            lat: selectedOrigin.latitude,
-            lng: selectedOrigin.longitude,
-            source: "address",
-          }
-        : undefined,
-    });
+    if (selectedOrigin) {
+      return;
+    }
+
+    if (geolocation.coords) {
+      const myPlace: Place = {
+        name: "My Location",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        latitude: geolocation.coords.latitude,
+        longitude: geolocation.coords.longitude,
+        placeId: "user-geolocation",
+      };
+      setSelectedOrigin(myPlace);
+      return;
+    }
+
+    pendingMyLocationRef.current = true;
+    geolocation.requestLocation();
   };
 
   const handleToggleTheme = () => {

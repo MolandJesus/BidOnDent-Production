@@ -6,11 +6,7 @@ import {
   loadNavigationDiscoveryRole,
   saveNavigationDiscoveryRole,
 } from "../../services/navigation/discoveryPreferences";
-import {
-  openDirections,
-  type NavigationMapDestination,
-  type NavigationProvider,
-} from "../../services/navigation/externalNavigation";
+import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
 import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
@@ -48,7 +44,6 @@ type CoverageBrowseExperienceProps = {
   isLoadingShops: boolean;
   selectedShopId?: string;
   initialDiscoveryRole?: NavigationDiscoveryRole;
-  preferredNavigationProvider: NavigationProvider;
   selectedShop: CoveragePartnerShop | null;
   navigationSession: ExternalNavigationSession | null;
   navigation: CoverageNavigationExperience;
@@ -56,8 +51,8 @@ type CoverageBrowseExperienceProps = {
   onCenterActive: () => void;
   onResetView: () => void;
   onSelectShop: (shop: CoveragePartnerShop) => void;
-  onPreferredNavigationProviderChange: (provider: NavigationProvider) => void;
-  onOpenDirections: (shop: CoveragePartnerShop) => void;
+  onOpenBidOnDentNavigation: (shop: CoveragePartnerShop) => void;
+  onExportDirections: (shop: CoveragePartnerShop) => void;
   onStartNavigation: () => void;
 };
 
@@ -78,7 +73,6 @@ export default function CoverageBrowseExperience({
   isLoadingShops,
   selectedShopId,
   initialDiscoveryRole,
-  preferredNavigationProvider,
   selectedShop,
   navigationSession,
   navigation,
@@ -86,8 +80,7 @@ export default function CoverageBrowseExperience({
   onCenterActive,
   onResetView,
   onSelectShop,
-  onPreferredNavigationProviderChange,
-  onOpenDirections,
+  onOpenBidOnDentNavigation,
   onStartNavigation,
 }: CoverageBrowseExperienceProps) {
   const theme = getMapSurfaceTheme(tone, true);
@@ -108,6 +101,9 @@ export default function CoverageBrowseExperience({
   });
   const selectedDiscoveryPlace =
     discovery.places.find((place) => place.id === selectedDiscoveryPlaceId) || null;
+  const [navigationStartRequestedShopId, setNavigationStartRequestedShopId] = useState<
+    string | null
+  >(null);
   const [sidebarView, setSidebarView] = useState<"search" | "explore" | "saved" | "shops">(
     "search"
   );
@@ -151,6 +147,33 @@ export default function CoverageBrowseExperience({
     setMapOverride(null);
   }, [discoveryRole, listSearchTarget]);
 
+  useEffect(() => {
+    if (!navigationStartRequestedShopId) {
+      return;
+    }
+
+    if (
+      !selectedShop ||
+      `${selectedShop.id || selectedShop.name}` !== navigationStartRequestedShopId
+    ) {
+      return;
+    }
+
+    if (!navigation.activeOriginTarget || navigation.isLoadingRoute || !navigation.routePreview) {
+      return;
+    }
+
+    onStartNavigation();
+    setNavigationStartRequestedShopId(null);
+  }, [
+    navigationStartRequestedShopId,
+    selectedShop,
+    navigation.activeOriginTarget,
+    navigation.isLoadingRoute,
+    navigation.routePreview,
+    onStartNavigation,
+  ]);
+
   function focusMapOnDiscoveryPlace(place: NavigationDiscoveryPlace) {
     setMapOverride((current) => ({
       center: [place.coordinate.lat, place.coordinate.lng],
@@ -186,7 +209,11 @@ export default function CoverageBrowseExperience({
     });
   }
 
-  function handleOpenDirectionsWithHistory(shop: CoveragePartnerShop) {
+  function handleStartShopRouteInApp(shop: CoveragePartnerShop) {
+    if (navigation.settings.voiceMode !== "muted") {
+      primeVoiceEngine();
+    }
+
     setSelectedDiscoveryPlaceId(null);
     savedNavigation.saveRecentLocation({
       label: shop.name,
@@ -196,11 +223,20 @@ export default function CoverageBrowseExperience({
         lng: shop.lng,
       },
     });
-    onOpenDirections(shop);
+
+    onSelectShop(shop);
+    setSidebarView("search");
+    setMapOverride((current) => ({
+      center: [shop.lat, shop.lng],
+      zoom: Math.max(current?.zoom || zoom, 12.5),
+      revision: (current?.revision || revision) + 1,
+    }));
+    setNavigationStartRequestedShopId(`${shop.id || shop.name}`);
   }
 
   function handleOpenDiscoveryPlaceDirections(place: NavigationDiscoveryPlace) {
-    handleSelectDiscoveryPlace(place);
+    handleSelectDiscoveryPlace(place, { centerMap: true });
+    setSidebarView("explore");
     savedNavigation.saveRecentLocation({
       label: place.label,
       subtitle: place.subtitle,
@@ -208,20 +244,6 @@ export default function CoverageBrowseExperience({
         lat: place.coordinate.lat,
         lng: place.coordinate.lng,
       },
-    });
-
-    const destination: NavigationMapDestination = {
-      id: place.id,
-      name: place.label,
-      lat: place.coordinate.lat,
-      lng: place.coordinate.lng,
-      addressLine: place.subtitle,
-    };
-
-    openDirections({
-      provider: preferredNavigationProvider,
-      destination,
-      origin: navigation.activeOriginTarget,
     });
   }
 
@@ -231,7 +253,7 @@ export default function CoverageBrowseExperience({
   }
 
   function handleOpenShopDirections(shop: CoverageNearbyShop) {
-    handleOpenDirectionsWithHistory(shop);
+    handleStartShopRouteInApp(shop);
   }
 
   function handleSelectDiscoveryPlaceWithCenter(place: NavigationDiscoveryPlace) {
@@ -295,9 +317,7 @@ export default function CoverageBrowseExperience({
       onClearParkedCar={savedNavigation.clearParkedCar}
       isLoadingShops={isLoadingShops}
       radiusMiles={radiusMiles}
-      preferredNavigationProvider={preferredNavigationProvider}
-      onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
-      onOpenDirections={handleOpenDirectionsWithHistory}
+      onOpenDirections={handleStartShopRouteInApp}
     />
   );
 
@@ -375,7 +395,7 @@ export default function CoverageBrowseExperience({
                 "pointer-events-auto h-full overflow-hidden rounded-[1.5rem] border backdrop-blur-2xl",
                 tone === "dark"
                   ? "border-white/10 bg-slate-950/55 shadow-[0_24px_64px_rgba(2,6,23,0.4)]"
-                  : "border-blue-100/50 bg-white/50 shadow-[0_24px_64px_rgba(15,23,42,0.12)]"
+                  : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.8),rgba(226,232,240,0.74))] shadow-[0_24px_64px_rgba(15,23,42,0.1)]"
               )}
             >
               <CoverageCommandCenterSidebar
@@ -386,9 +406,8 @@ export default function CoverageBrowseExperience({
                 regionCount={regionCount}
                 partnerShops={partnerShops}
                 selectedShop={selectedShop}
-                preferredNavigationProvider={preferredNavigationProvider}
                 navigationSession={navigationSession}
-                onOpenDirections={onOpenDirections}
+                onOpenDirections={onOpenBidOnDentNavigation}
               >
                 {sidebarContent}
               </CoverageCommandCenterSidebar>

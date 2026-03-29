@@ -1,5 +1,5 @@
-import { useEffect, type FormEvent } from "react";
-import { Briefcase, Car, Shield } from "lucide-react";
+import { type FormEvent } from "react";
+import { AlertTriangle, Briefcase, Car, Shield } from "lucide-react";
 import ShopDirectoryMapPane from "./MapLibreShopDirectoryMapPane";
 import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
 import ShopDirectoryImmersiveMap from "./ShopDirectoryImmersiveMap";
@@ -7,22 +7,15 @@ import ShopDirectoryListBody from "./ShopDirectoryListBody";
 import ShopDirectoryContextCards from "./ShopDirectoryContextCards";
 import ShopDirectoryHero from "./ShopDirectoryHero";
 import ShopDirectorySearchPanel from "./ShopDirectorySearchPanel";
+import NavigationActiveManeuverCard from "../maps/navigation/NavigationActiveManeuverCard";
 import NavigationDeviationPrompt from "../maps/navigation/NavigationDeviationPrompt";
+import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import { getDefaultMapCenter } from "../../services/intelligence/shopMapExperience";
-import {
-  useNavigationIntelligence,
-  useNavigationReroute,
-  useNavigationSession,
-  useNavigationToastBridge,
-  useNavigationVoiceAlerts,
-} from "../../features/navigation";
-import type { NavigationSnapshot } from "../../features/navigation";
-import { loadNavigationGuidanceSettings } from "../../services/navigation/navigationPreferences";
-import { useNotifications } from "../../features/notifications";
 import { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
+import { useShopDirectoryNavigation } from "../../hooks/useShopDirectoryNavigation";
 
 type ShopDirectoryScreenProps = {
   onBack: () => void;
@@ -88,30 +81,12 @@ export default function ShopDirectoryScreen({
   reports = [],
 }: ShopDirectoryScreenProps) {
   const session = useShopDirectorySession({ identity, userType, vehicles, reports });
-  const intelligence = useNavigationIntelligence();
-  const navSession = useNavigationSession(identity?.providerUserId ?? undefined);
-  const reroute = useNavigationReroute(intelligence.latestEvent);
-  const voiceSettings = loadNavigationGuidanceSettings();
-  useNavigationVoiceAlerts(intelligence.latestEvent, reroute.state.status, voiceSettings);
-  const notifications = useNotifications();
-  useNavigationToastBridge(
-    navSession.session,
-    intelligence.latestEvent,
-    notifications,
-    navSession.restoredFromCloud,
-    navSession.syncError
-  );
+  const nav = useShopDirectoryNavigation({ session, identity, userType });
 
   const RoleIcon = getRoleIcon(userType);
   const isLight = appearanceMode === "light";
   const accentClasses = getRoleAccent(userType, isLight);
   const compactCards = session.mapViewMode === "map";
-
-  const navigationMode: "browse" | "route-preview" | "guidance" = intelligence.latestEvent
-    ? "guidance"
-    : session.selectedRoute
-      ? "route-preview"
-      : "browse";
 
   const mapShellLayoutClass = session.showMapPane
     ? session.mapViewMode === "map"
@@ -119,130 +94,80 @@ export default function ShopDirectoryScreen({
       : "lg:grid-cols-[clamp(340px,31vw,420px)_minmax(0,1fr)]"
     : "";
 
-  useEffect(() => {
-    const livePosition = session.userGeolocation.coords
-      ? {
-          latitude: session.userGeolocation.coords.latitude,
-          longitude: session.userGeolocation.coords.longitude,
-        }
-      : null;
+  const renderGuidanceOverlay = (containerClassName: string) =>
+    nav.liveNavigationForSelectedShop && nav.routePreview ? (
+      <NavigationActiveManeuverCard
+        containerClassName={containerClassName}
+        followingStep={nav.followingStep}
+        nextStep={nav.nextStep}
+        tone={session.mapTheme}
+      />
+    ) : null;
 
-    const snapshot: NavigationSnapshot = {
-      routeId: session.selectedRoute?.id ?? null,
-      estimatedDurationMinutes: session.selectedRoute?.estimatedDurationMinutes ?? null,
-      currentPosition: livePosition,
-      currentSpeedMph: null,
-      routePolyline: session.selectedRoute?.polyline ?? [],
-      capturedAt: new Date().toISOString(),
-    };
-
-    intelligence.evaluate(snapshot);
-  }, [
-    session.selectedRoute?.id,
-    session.selectedRoute?.estimatedDurationMinutes,
-    session.userGeolocation.coords,
-  ]);
-
-  /* ── Sync navigation session lifecycle with shop directory state ── */
-  useEffect(() => {
-    const { selectedShop, selectedOrigin, selectedRoute } = session;
-    const { status } = navSession.session;
-
-    // When a shop + route are selected, start planning (if idle)
-    if (selectedShop && selectedRoute && status === "idle") {
-      navSession.startPlanning(
-        selectedOrigin
-          ? {
-              id: selectedOrigin.placeId ?? "origin",
-              label: selectedOrigin.name,
-              address: selectedOrigin.address,
-              coordinate: { lat: selectedOrigin.latitude, lng: selectedOrigin.longitude },
-            }
-          : null,
-        {
-          id: String(selectedShop.id),
-          label: selectedShop.name,
-          address: selectedShop.mapResult.address,
-          coordinate: {
-            lat: selectedShop.mapResult.coordinates.latitude,
-            lng: selectedShop.mapResult.coordinates.longitude,
-          },
-        }
-      );
-    }
-
-    // Lock in the route during planning
-    if (selectedRoute && status === "planning") {
-      navSession.selectRoute(selectedRoute.id);
-    }
-
-    // If the route is cleared while in a session, end it
-    if (!selectedRoute && (status === "active" || status === "paused")) {
-      navSession.end();
-    }
-  }, [session.selectedShop?.id, session.selectedOrigin?.placeId, session.selectedRoute?.id]);
-
-  const deviationPromptNode = intelligence.latestEvent ? (
+  const deviationPromptNode = nav.deviationEvent ? (
     <NavigationDeviationPrompt
-      event={intelligence.latestEvent}
+      event={nav.deviationEvent}
       mapTheme={session.mapTheme}
-      onReviewRoute={
-        reroute.isEligible
-          ? () => {
-              const request = reroute.requestReroute(session.selectedRouteId);
-              if (request) {
-                const alternateRoute = session.routeOptions.find(
-                  (r) => r.id !== session.selectedRouteId
-                );
-                if (alternateRoute) {
-                  session.setSelectedRouteId(alternateRoute.id);
-                }
-                reroute.confirmReroute();
-              }
-            }
-          : undefined
-      }
+      onReviewRoute={nav.handleReviewRoute}
     />
   ) : undefined;
-
   /* ── Immersive full-viewport map mode ───────────────────── */
   if (session.isImmersive) {
     return (
-      <ShopDirectoryImmersiveMap
-        deviationPrompt={deviationPromptNode}
-        directionsActionLabel={session.directionsActionLabel}
-        mapCenter={session.mapCenter ?? null}
-        mapListings={session.mapListings}
-        mapTheme={session.mapTheme}
-        mapZoom={session.mapZoom ?? 9}
-        navigationMode={navigationMode}
-        onBack={onBack}
-        onOpenShopDirections={session.handleOpenShopDirections}
-        onSearchQueryChange={session.setSearchQuery}
-        onSearchSubmit={session.handleSearchSubmit as (event: FormEvent) => void}
-        onSelectRoute={session.setSelectedRouteId}
-        onSelectShop={session.setSelectedShopId}
-        onSetMapCenter={session.setMapCenter}
-        onSetMapZoom={session.setMapZoom}
-        onSetMapViewportBounds={session.setMapViewportBounds}
-        onSwitchMode={session.setMapViewMode}
-        onToggleRoleCollection={session.handleToggleRoleCollection}
-        onToggleTheme={session.handleToggleTheme}
-        primaryColor={primaryColor}
-        roleCollectionIds={session.roleCollectionIds}
-        roleHighlights={session.roleHighlights}
-        routeOptions={session.routeOptions}
-        routeSummary={session.routeSummary}
-        savedPlaces={session.savedPlaces}
-        searchQuery={session.searchQuery}
-        selectedOrigin={session.selectedOrigin}
-        selectedRoute={session.selectedRoute}
-        selectedRouteId={session.selectedRouteId}
-        selectedShop={session.selectedShop}
-        selectedShopId={session.selectedShopId}
-        userCoords={session.userGeolocation.coords}
-        userType={userType}
-      />
+      <NavigationErrorBoundary>
+        <ShopDirectoryImmersiveMap
+          deviationPrompt={deviationPromptNode}
+          directionsActionLabel={session.directionsActionLabel}
+          followCurrentPosition={nav.liveNavigationForSelectedShop}
+          followCurrentPositionRevision={nav.followCurrentPositionRevision}
+          guidanceOverlay={renderGuidanceOverlay("top-20 sm:top-24")}
+          mapCenter={session.mapCenter ?? null}
+          mapListings={session.mapListings}
+          mapTheme={session.mapTheme}
+          mapZoom={session.mapZoom ?? 9}
+          navigationMode={nav.navigationMode}
+          navigationSessionDestinationId={nav.navigationSessionDestinationId}
+          navigationSessionStatus={nav.navigationSessionStatus}
+          onBack={onBack}
+          onEndNavigation={nav.onEndNavigation}
+          onOpenShopDirections={session.handleOpenShopDirections}
+          onPauseNavigation={nav.onPauseNavigation}
+          onRecenterNavigation={nav.onRecenterNavigation}
+          onResumeNavigation={nav.onResumeNavigation}
+          onStartNavigation={nav.handleStartInAppNavigation}
+          onSearchQueryChange={session.setSearchQuery}
+          onSearchSubmit={session.handleSearchSubmit as (event: FormEvent) => void}
+          onSelectRoute={session.setSelectedRouteId}
+          onSelectShop={session.setSelectedShopId}
+          onSetMapCenter={session.setMapCenter}
+          onSetMapZoom={session.setMapZoom}
+          onSetMapViewportBounds={session.setMapViewportBounds}
+          onSwitchMode={session.setMapViewMode}
+          onToggleRoleCollection={session.handleToggleRoleCollection}
+          onToggleTheme={session.handleToggleTheme}
+          primaryColor={primaryColor}
+          hasArrived={nav.hasArrivedForSelectedShop}
+          isLoadingRoute={nav.routePanel.isLoadingRoute}
+          remainingDistanceLabel={nav.liveRemainingDistanceLabel}
+          remainingEtaLabel={nav.liveRemainingEtaLabel}
+          roleCollectionIds={session.roleCollectionIds}
+          roleHighlights={session.roleHighlights}
+          routeError={nav.routePanel.routeError}
+          routeOptions={nav.mapRouteOptions}
+          routeSummary={nav.mapRouteSummary}
+          sessionActiveSeconds={nav.sessionActiveSeconds}
+          savedPlaces={session.savedPlaces}
+          searchQuery={session.searchQuery}
+          selectedOrigin={session.selectedOrigin}
+          selectedRoute={nav.mapSelectedRoute}
+          selectedRouteId={session.selectedRouteId}
+          selectedShop={session.selectedShop}
+          selectedShopId={session.selectedShopId}
+          usingLiveRoutes={nav.routePanel.usingLiveRoutes}
+          userCoords={nav.shopMapUserCoords}
+          userType={userType}
+        />
+      </NavigationErrorBoundary>
     );
   }
 
@@ -265,6 +190,23 @@ export default function ShopDirectoryScreen({
         summary={session.summary}
       />
 
+      {/* Demo fallback indicator */}
+      {session.usingDemoFallback && (
+        <div
+          className={`mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs ${
+            isLight
+              ? "border-amber-300/60 bg-amber-50 text-amber-700"
+              : "border-amber-400/30 bg-amber-400/10 text-amber-300"
+          }`}
+        >
+          <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
+          <span>
+            Showing example shop locations. Verified partner shops will appear once your account is
+            connected.
+          </span>
+        </div>
+      )}
+
       {/* Deviation prompt: only rendered outside map on list mode */}
       {!session.showMapPane && deviationPromptNode}
 
@@ -272,10 +214,10 @@ export default function ShopDirectoryScreen({
         className={`overflow-hidden rounded-none border-0 shadow-none md:rounded-2xl md:border md:shadow-none bg-transparent ${isLight ? "md:border-slate-200/60" : "md:border-white/[0.08]"}`}
       >
         <div
-          className={`min-w-0 ${session.showMapPane ? `lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}
+          className={`min-w-0 ${session.showMapPane ? `flex flex-col lg:grid lg:items-stretch ${mapShellLayoutClass}` : ""}`}
         >
           <aside
-            className={`${session.showMapPane ? "lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-140px)]" : ""} min-h-0 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"} bg-transparent`}
+            className={`${session.showMapPane ? "lg:order-1 lg:border-r lg:overflow-y-auto lg:max-h-[calc(100vh-140px)]" : ""} min-h-0 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"} bg-transparent`}
           >
             <div className="flex h-full flex-col">
               <ShopDirectorySearchPanel
@@ -284,21 +226,30 @@ export default function ShopDirectoryScreen({
                 currentOriginIsSaved={session.currentOriginIsSaved}
                 filterRating={session.filterRating}
                 isLocating={session.userGeolocation.isLocating}
+                isSearchingOrigins={session.isSearchingOrigins}
                 locationError={session.userGeolocation.error}
                 mapTheme={session.mapTheme}
                 mapViewMode={session.mapViewMode}
                 onClearAreaSearch={session.handleClearAreaSearch}
-                onClearOrigin={() => session.setSelectedOrigin(null)}
+                onClearOrigin={session.handleClearOrigin}
                 onFilterRatingChange={session.setFilterRating}
+                onOriginSearchQueryChange={session.handleOriginSearchQueryChange}
                 onOpenRelatedScreen={onOpenRelatedScreen}
+                onSearchOrigin={session.handleSearchOrigin}
                 onSaveOrigin={session.handleSaveOrigin}
                 onSearchQueryChange={session.setSearchQuery}
                 onSearchSubmit={session.handleSearchSubmit}
                 onSelectOrigin={session.handleSelectOrigin}
+                onSelectOriginSearchResult={session.handleSelectOriginSearchResult}
+                onSelectOriginSuggestion={session.handleSelectOriginSuggestion}
                 onSortChange={session.setSortBy}
                 onToggleTheme={session.handleToggleTheme}
                 onUseMyLocation={session.handleUseMyLocation}
                 onViewModeChange={session.setMapViewMode}
+                originSearchError={session.originSearchError}
+                originSearchQuery={session.originSearchQuery}
+                originSearchResults={session.originSearchResults}
+                originSuggestions={session.originSuggestions}
                 primaryColor={primaryColor}
                 roleCollectionListings={session.roleCollectionListings}
                 roleHighlights={session.roleHighlights}
@@ -315,6 +266,10 @@ export default function ShopDirectoryScreen({
 
               <ShopDirectoryListBody
                 appearanceMode={appearanceMode}
+                onStartNavigation={nav.handleStartInAppNavigation}
+                navigationSessionDestinationId={nav.navigationSessionDestinationId}
+                navigationSessionStatus={nav.navigationSessionStatus}
+                routePanel={nav.routePanel}
                 session={session}
                 userType={userType}
                 primaryColor={primaryColor}
@@ -325,55 +280,85 @@ export default function ShopDirectoryScreen({
 
           {session.showMapPane && (
             <div
-              className={`h-[calc(100vh-280px)] min-h-[400px] max-h-[600px] border-t lg:h-[calc(100vh-140px)] lg:max-h-none lg:border-t-0 lg:sticky lg:top-0 ${isLight ? "border-slate-200/40" : "border-white/10"}`}
+              className={`-order-1 lg:order-2 h-[calc(100vh-280px)] min-h-[400px] lg:h-[calc(100vh-140px)] lg:max-h-none lg:sticky lg:top-0`}
             >
-              <ShopDirectoryMapPane
-                initialCenter={session.mapCenter || getDefaultMapCenter()}
-                initialZoom={session.mapZoom}
-                mapTheme={session.mapTheme}
-                onClearAreaSearch={session.handleClearAreaSearch}
-                onSearchInArea={session.handleSearchInArea}
-                onSelectShop={session.setSelectedShopId}
-                onViewportChange={(center, zoom, bounds) => {
-                  session.setMapCenter(center);
-                  session.setMapZoom(zoom);
-                  session.setMapViewportBounds(bounds);
-                }}
-                routeOptions={session.routeOptions}
-                savedPlaces={session.savedPlaces}
-                preserveViewport={session.searchWithinViewport}
-                searchWithinViewport={session.searchWithinViewport}
-                selectedOrigin={session.selectedOrigin}
-                selectedRouteId={session.selectedRoute?.id}
-                selectedShopId={session.selectedShopId}
-                shops={session.mapListings}
-                suppressHeader
-                userCoords={session.userGeolocation.coords}
-                userType={userType}
-                onOpenShopDirections={session.handleOpenShopDirections}
-                directionsActionLabel={session.directionsActionLabel}
-              >
-                <ShopDirectoryMapOverlays
-                  deviationPrompt={deviationPromptNode}
-                  directionsLabel={session.directionsActionLabel}
-                  intelligenceCallouts={session.roleHighlights.callouts}
-                  intelligenceTitle={session.roleHighlights.title}
+              <NavigationErrorBoundary>
+                <ShopDirectoryMapPane
+                  initialCenter={session.mapCenter || getDefaultMapCenter()}
+                  initialZoom={session.mapZoom}
                   mapTheme={session.mapTheme}
-                  navigationMode={navigationMode}
-                  onSelectRoute={session.setSelectedRouteId}
-                  onStartNavigation={
-                    session.selectedShop
-                      ? () => session.handleOpenShopDirections(session.selectedShop!)
-                      : undefined
-                  }
-                  routeOptions={session.routeOptions}
-                  routeSummary={session.routeSummary}
+                  onClearAreaSearch={session.handleClearAreaSearch}
+                  onSearchInArea={session.handleSearchInArea}
+                  onSelectShop={session.setSelectedShopId}
+                  onViewportChange={(center, zoom, bounds) => {
+                    session.setMapCenter(center);
+                    session.setMapZoom(zoom);
+                    session.setMapViewportBounds(bounds);
+                  }}
+                  routeOptions={nav.mapRouteOptions}
+                  savedPlaces={session.savedPlaces}
+                  preserveViewport={session.searchWithinViewport}
+                  searchWithinViewport={session.searchWithinViewport}
                   selectedOrigin={session.selectedOrigin}
-                  selectedRoute={session.selectedRoute}
-                  selectedShop={session.selectedShop}
-                  userId={identity?.providerUserId ?? undefined}
-                />
-              </ShopDirectoryMapPane>
+                  selectedRouteId={nav.mapSelectedRoute?.id ?? session.selectedRouteId}
+                  selectedShopId={session.selectedShopId}
+                  shops={session.mapListings}
+                  suppressHeader
+                  userCoords={nav.shopMapUserCoords}
+                  userType={userType}
+                  followCurrentPosition={nav.liveNavigationForSelectedShop}
+                  followCurrentPositionRevision={nav.followCurrentPositionRevision}
+                  onOpenShopDirections={session.handleOpenShopDirections}
+                  onStartNavigation={nav.handleStartInAppNavigation}
+                  navigationSessionDestinationId={nav.navigationSessionDestinationId}
+                  navigationSessionStatus={nav.navigationSessionStatus}
+                  directionsActionLabel={session.directionsActionLabel}
+                  hasArrived={nav.hasArrivedForSelectedShop}
+                  isLoadingRoute={nav.routePanel.isLoadingRoute}
+                  remainingDistanceLabel={nav.liveRemainingDistanceLabel}
+                  remainingEtaLabel={nav.liveRemainingEtaLabel}
+                  routeError={nav.routePanel.routeError}
+                  usingLiveRoutes={nav.routePanel.usingLiveRoutes}
+                >
+                  <>
+                    <ShopDirectoryMapOverlays
+                      deviationPrompt={deviationPromptNode}
+                      directionsLabel={nav.selectedShopNavigationActionLabel}
+                      intelligenceCallouts={session.roleHighlights.callouts}
+                      intelligenceTitle={session.roleHighlights.title}
+                      mapTheme={session.mapTheme}
+                      navigationMode={nav.navigationMode}
+                      onEndNavigation={nav.onEndNavigation}
+                      onDismissRoutePreview={() => session.setSelectedShopId(null)}
+                      onPauseNavigation={nav.onPauseNavigation}
+                      onRecenterNavigation={nav.onRecenterNavigation}
+                      onResumeNavigation={nav.onResumeNavigation}
+                      onSelectRoute={session.setSelectedRouteId}
+                      onStartNavigation={
+                        session.selectedShop
+                          ? () => nav.handleStartInAppNavigation(session.selectedShop)
+                          : undefined
+                      }
+                      remainingDistanceLabel={nav.liveRemainingDistanceLabel}
+                      remainingEtaLabel={nav.liveRemainingEtaLabel}
+                      routeError={nav.routePanel.routeError}
+                      routeOptions={nav.mapRouteOptions}
+                      routeSummary={nav.mapRouteSummary}
+                      hasArrived={nav.hasArrivedForSelectedShop}
+                      sessionActiveSeconds={nav.sessionActiveSeconds}
+                      sessionDestinationId={nav.navigationSessionDestinationId}
+                      sessionDestinationLabel={nav.sessionDestinationLabel}
+                      sessionStatus={nav.navigationSessionStatus}
+                      isLoadingRoute={nav.routePanel.isLoadingRoute}
+                      selectedOrigin={session.selectedOrigin}
+                      selectedRoute={nav.mapSelectedRoute}
+                      selectedShop={session.selectedShop}
+                      usingLiveRoutes={nav.routePanel.usingLiveRoutes}
+                    />
+                    {renderGuidanceOverlay("top-4 sm:top-5")}
+                  </>
+                </ShopDirectoryMapPane>
+              </NavigationErrorBoundary>
             </div>
           )}
         </div>

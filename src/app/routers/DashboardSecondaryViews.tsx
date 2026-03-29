@@ -117,6 +117,7 @@ export default function DashboardSecondaryViews({
                 onTabChange("bids");
                 onViewModeChange("dashboard");
               }}
+              onFindShops={() => onViewModeChange("shop-directory")}
               primaryColor={primaryColor}
               appearanceMode={appearanceMode}
             />

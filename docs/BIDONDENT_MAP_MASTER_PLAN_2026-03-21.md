@@ -1,3 +1,243 @@
+### Implementation Note — Support Pass T524-S (2026-03-29)
+
+- Tightened the fresh-session kickoff prompt so already-in-motion files are treated as owned when `git status` or recent tracker entries show active churn.
+- Strategic effect: future support passes are slightly less likely to collide with the lead AI's finishing loop because the startup prompt now carries a concrete anti-collision rule, not just general lane labels.
+
+### Implementation Note — Pass T521-T525 Lead-AI Release (2026-03-29)
+
+- **T521**: Auto-scroll sidebar list to selected shop when map marker is tapped. Smooth-scroll with previous-selection tracking to avoid redundant scrolls.
+- **T522-T523**: Compact navigation summary sheet — removed verbose Route Mode card, condensed metrics to inline row, 3-button compact action bar. Speed panel and action rail offsets reduced to match new panel height.
+- **T524**: Maneuver card now shows following-step on mobile (was hidden). Typography smoothed across 3 breakpoints instead of 2.
+- **T525**: Action rail touch targets increased to 44×44px minimum on mobile. Speed limit badge sizing smoothed between breakpoints.
+- Strategic effect: Active navigation now exposes ~40% more map area on mobile. Map→list connection is immediate. All navigation overlay components have proper mobile touch targets and smoother responsive behavior.
+
+### Implementation Note — Support Pass T523-S (2026-03-29)
+
+- Tightened report-draft persistence so cached drafts now require a parseable timestamp string and the save path self-clears invalid payloads instead of writing them.
+- Updated report draft saving to clear browser-stored draft state once the flow reaches step 6, which prevents stale completed drafts from being reused on the next visit.
+- Strategic effect: closes one more low-conflict stale-browser-cache seam without touching the lead AI's active map/product finishing files.
+
+### Implementation Note — Support Pass T522-S (2026-03-29)
+
+- Hardened demo data writes so sanitized vehicle/report/bid collections now persist through safe browser-storage helpers and keep an in-session fallback when `localStorage` is blocked.
+- Tightened demo update flows so merged demo vehicles, reports, and bids still need to satisfy the expected runtime shape before persistence.
+- Strategic effect: protects another support-only browser-storage seam without touching the lead AI's active map/product finishing files.
+
+### Implementation Note — Support Pass T521-S (2026-03-29)
+
+- Hardened demo auth storage access so demo-user bootstrap, sign-in, sign-out, and profile updates now degrade more honestly when browser storage is blocked.
+- Tightened merged demo profile updates so they still need to satisfy the expected `DemoUser` shape before persistence.
+- Strategic effect: protects one more support-only browser-storage seam without touching the lead AI's active map/product finishing files.
+
+### Implementation Note — Pass T507 (2026-03-29)
+
+- Tightened persisted app-navigation state so malformed browser payloads are cleared or rewritten to a sanitized shape before the generic view-mode shell reuses them.
+- Strategic effect: reduces one more browser-cache drift seam in shared app scaffolding without stepping into the lead AI's active product-finishing files.
+
+### Implementation Note — Pass T506 (2026-03-29)
+
+- Added shared safe local-storage helpers for the cloud-first user-data layer and reused them for last-active cache selection, legacy-cache migration, cache refresh, and cache cleanup.
+- Strategic effect: hardens another user-data bootstrap seam so blocked browser storage degrades more cleanly instead of interfering with the cache-assisted cloud path.
+
+### Implementation Note — Pass T505 (2026-03-29)
+
+- Hardened startup appearance-mode persistence so invalid stored theme values are cleared and blocked browser storage falls back cleanly to OS preference instead of destabilizing app boot.
+- Tightened provider-agnostic session ID bootstrap so cached session IDs must match the expected shape before reuse, and storage-access failures no longer break identity creation.
+- Strategic effect: makes another shared browser-bootstrap seam more defensive without touching the lead AI's active map/product execution lane.
+
+### Implementation Note — Pass T504 (2026-03-29)
+
+- Hardened website session-memory hydration so browser-stored shop/map preference payloads now validate enums, IDs, timestamps, coordinates, viewport bounds, and cached saved-place/recent-search records before reuse.
+- Added self-healing for malformed website session storage so broken JSON is cleared and semantically invalid cached memory is rewritten back to a sanitized shape.
+- Tightened the docs operating layer so support-lane work explicitly skips already-churning lead-lane files instead of stacking edits into the lead AI's active finishing surface.
+- Strategic effect: protects another shared browser-cache seam and makes future parallel support passes less likely to collide with active product finishing work.
+
+### Implementation Note — Pass T503 (2026-03-29)
+
+- Tightened the cloud-first user-data cache boundary so browser-stored `UserData` payloads now need a sane top-level shape before hydration or migration paths will trust them.
+- Strategic effect: hardens another shared browser-cache seam without changing the product-facing map flow or competing with the lead AI’s main execution lane.
+
+### Implementation Note — Pass T502 (2026-03-29)
+
+- Clarified the lead-AI versus support-AI lane boundary in the docs operating layer so future parallel sessions are less likely to collide in the main map/product shells.
+- Hardened demo-data hydration so browser-stored demo collections now validate record shape before they are reused.
+- Strategic effect: improves parallel-work governance and treats one more browser-controlled support-layer seam as untrusted input.
+
+### Implementation Note — Pass T501 (2026-03-29)
+
+- Tightened relationship-sync normalization so browser-derived insurer/shop relationship collections now accept only positive integer IDs after coercion.
+- Strategic effect: reduces malformed local-state bleed into cloud relationship sync without changing the higher-level session or map-product architecture.
+
+### Implementation Note — Pass T500 (2026-03-29)
+
+- Tightened the docs operating layer so `docs/README.md` now acts as a fast control surface, `BIDONDENT_FINISHING_MASTER_PLAN.md` is scoped back to execution policy, and the AI kickoff prompt is clearly optional rather than a competing truth source.
+- Hardened demo-auth browser storage so malformed local user payloads are cleared instead of being trusted during hydration.
+- Strategic effect: reduces startup ambiguity for future AI sessions and reinforces the rule that browser-controlled storage, even in demo flows, should be treated as untrusted input.
+
+### Implementation Note — Pass T499 (2026-03-29)
+
+- Tightened saved report-draft validation so browser-local draft hydration now rejects out-of-range steps and malformed optional address fields before the report flow consumes them.
+- Strategic effect: reduces trust in browser-controlled local data without touching the lead AI’s active map-shell files.
+
+### Implementation Note — Pass T498 (2026-03-29)
+
+- Hardened geolocation cache hydration so session-stored coordinates must be finite, in-range, and paired with a sane timestamp before they are reused.
+- Strategic effect: treats browser storage as untrusted input and lowers the chance of malformed local cache poisoning map-origin state during hydration.
+
+### Implementation Note — Pass 497 (2026-03-29)
+
+- Added lightweight live/paused/arrived status badges to shop result cards so route ownership is visible in the list and immersive drawer even before the user reads the CTA.
+- Strategic effect: makes active navigation state legible inside browse surfaces, tightening the connection between the navigation shell and the recommendation cards around it.
+
+### Implementation Note — Pass 496 (2026-03-29)
+
+- Extended the shared shop-route CTA helper so arrival state now carries through to result cards, immersive drawer cards, selected-shop cards, and map popups instead of reverting to generic route wording after a completed trip.
+- Strategic effect: makes route restart behavior feel like a coherent product rule across the entire shop experience, not a special-case label that only exists inside the map shell.
+
+### Implementation Note — Pass 495 (2026-03-29)
+
+- Propagated selected-shop arrival state into the shop route panel, popup, bottom overlay, and immersive map chrome so completed trips now render explicit `Trip complete` / `Arrived` messaging rather than falling back to ordinary preview language.
+- Strategic effect: gives turn-by-turn a more honest post-arrival shell, which makes the navigation lifecycle feel complete instead of abruptly snapping back to browse UI.
+
+### Implementation Note — Pass 494 (2026-03-29)
+
+- Added lightweight arrival-confirmation toasts to both fullscreen coverage navigation and the shop directory’s active in-app route flow.
+- Strategic effect: gives turn-by-turn a clearer completion moment without introducing another blocking arrival modal or fragmenting the navigation shell.
+
+### Implementation Note — Pass 493 (2026-03-29)
+
+- Added an arrival-completion signal to the shared route-preview layer so active navigation can end honestly when the destination has effectively been reached, instead of remaining indefinitely “live.”
+- Coverage fullscreen navigation now drops back to browse mode on arrival, and the shop directory auto-ends its active session once the destination is reached.
+- Strategic effect: moves turn-by-turn closer to a complete lifecycle product by giving navigation a clean end state, not just a clean start state.
+
+### Implementation Note — Pass 492 (2026-03-29)
+
+- Added an explicit voice-arming layer above shared route previews so live browse maps can still paint routes and step progress without speaking before the user intentionally starts in-app navigation.
+- Coverage-map fullscreen flows now own that armed state, while the shop directory only allows spoken guidance and reroute/deviation announcements during an active session for the selected destination.
+- Strategic effect: resolves a trust-breaking dashboard bug and makes turn-by-turn voice feel like a deliberate product mode instead of a side effect of route preview state.
+
+### Implementation Note — Pass 491 (2026-03-29)
+
+- Tightened the map shell’s live-session guards so selected-shop cards, popups, and floating guidance overlays now only present “live” state when that exact shop matches the active session destination.
+- Strategic effect: improves trust in the navigation chrome by removing false-positive live guidance cues while the user explores other shops during an active route.
+
+### Implementation Note — Pass 490 (2026-03-29)
+
+- Propagated live route-source/loading/fallback diagnostics into the popup and selected-shop map cards so the map shell itself now reflects whether guidance is live, refreshing, or temporarily degraded.
+- Brought the floating map overlay cards into the same route-status vocabulary as the sidebar route panel, reducing visual mismatch between “what the shell says” and “what the map session is actually doing.”
+- Strategic effect: makes the full shop-map experience feel like one coherent navigation product rather than a live guidance core surrounded by static preview chrome.
+
+### Implementation Note — Pass 489 (2026-03-29)
+
+- Upgraded the list-mode route panel to consume the same live route/guidance state as the active shop map, including remaining metrics, next maneuver context, and refresh/fallback status.
+- Reframed the panel layout around explicit preview-vs-guidance states so live navigation in the shop flow now reads consistently even outside the fullscreen map surface.
+- Strategic effect: closes another product gap between the map canvas and the surrounding shell by making the sidebar a trustworthy companion to live navigation instead of a stale planning-only panel.
+
+### Implementation Note — Pass 488 (2026-03-29)
+
+- Unified shop-route CTA behavior around the existing live session so paused/active destination actions now stay truthful even when that shop is no longer the currently focused preview target.
+- Extended that same action logic into the list, immersive drawer, popup, and selected-shop bottom card so map-owned navigation no longer visually promises one action while dispatching another.
+- Strategic effect: removes one of the last trust gaps in the shop navigation loop by keeping CTA language and CTA behavior synchronized across all major entry points.
+
+### Implementation Note — Pass 487 (2026-03-29)
+
+- Reused the live navigation-preview alternatives as the shop map’s rendered active route during owned navigation sessions, instead of leaving the painted route line on the older static preview geometry.
+- Fed remaining ETA/distance from the live guidance preview into the shop guidance card so active map metrics now better reflect route progress, not just the original preview envelope.
+- Strategic effect: the shop directory’s live guidance stack now updates both the user-position layer and the route-presentation layer, reducing the last visible mismatch between “where the app says you are going” and “what the map is drawing.”
+
+### Implementation Note — Pass 486 (2026-03-29)
+
+- Extended the shop-directory navigation path to reuse the shared live GPS/route-preview engine, not just the session shell, so shop maps now receive live tracked position, route refreshes, and next-step guidance.
+- Added maneuver-card and follow/recenter behavior to both immersive and hybrid shop map surfaces, keeping the active shop route visually aligned with the same owned navigation lifecycle introduced in the previous pass.
+- Strategic effect: closes another gap between the shop directory and BidOnDent’s fuller navigation system, moving the shop map from “session-aware preview” to “live guidance-capable” without introducing a second navigation stack.
+
+### Implementation Note — Pass 485 (2026-03-29)
+
+- Removed the duplicate shop-overlay navigation-session owner and routed live shop-map guidance UI through the single screen-level session lifecycle instead.
+- Added active/paused in-map controls for the shop flow (`Pause`, `Resume`, `End Route`) plus live session timing so BidOnDent-owned navigation inside the shop directory is no longer just a start-only preview state.
+- Strategic effect: upgrades the shop map from route-preview-capable to session-aware navigation, with clearer ownership and less risk of UI/session drift.
+
+### Implementation Note — Pass 484 (2026-03-29)
+
+- Made shop-directory route CTAs state-aware so list cards, map popups, and map-bottom cards only say `Start Navigation` when a live origin + route already exist for the focused shop; otherwise they remain `Get Directions` preview actions.
+- Updated the shop navigation session bridge so paused sessions resume cleanly from those route-ready CTAs instead of silently behaving like a fresh preview request.
+- Strategic effect: aligns route language with the actual BidOnDent map lifecycle, reducing friction between preview, start, and resume states across the shop flow.
+
+### Implementation Note — Pass 483 (2026-03-29)
+
+- Tightened the pre-navigation route-preview panel for phone use by making its active-route card appearance-aware, reducing instruction density, and showing only the first steps before live navigation starts.
+- Strategic effect: keeps route planning readable and trustworthy on smaller screens without making the preview panel feel like a second oversized drawer.
+
+### Implementation Note — Pass 482 (2026-03-29)
+
+- Rebuilt compact shop-result cards around a route-first mobile hierarchy: one strong route CTA, lighter support actions, reduced score-card bulk, and smaller media footprint.
+- Renamed the customer dashboard map-entry CTA from `Open Map` to `Open Smart Map` so the map program entry reads as product-specific instead of generic.
+- Strategic effect: reduces phone-level browse clutter and makes the transition from dashboard to BidOnDent Maps feel clearer and more premium.
+
+### Implementation Note — Pass 481 (2026-03-29)
+
+- Fixed the mobile fullscreen browse/menu trap by normalizing bottom-sheet snap values, enabling explicit touch-scroll containers, and reducing smart-shop menu height pressure with horizontally scrolling quick-origin chips.
+- Strategic effect: makes the map program feel operable on phones instead of visually present but interaction-fragile.
+
+### Implementation Note — Pass 480 (2026-03-29)
+
+- Replaced the shop/insurer router's simplistic marketplace-or-demo fallback with a merged live-feed strategy that hydrates local submitted reports and photo storage before seed data is allowed.
+- Upgraded shop requests and insurer claims cards to show real report details and preview images, not only synthetic text/counts.
+- Strategic effect: makes role dashboards reflect real submitted customer activity sooner and reduces the credibility gap between report intake and downstream role views.
+
+### Implementation Note — Pass 479 (2026-03-29)
+
+- Rebalanced fullscreen browse/navigation chrome around the map itself: cooler light-mode glass, slimmer summary sheet, smaller active-navigation rail/buttons, and a taller/more useful mobile browse bottom sheet.
+- Strategic effect: makes BidOnDent Maps feel less like layered mockup cards and more like a controlled, map-first navigation product on both desktop and mobile.
+
+### Implementation Note — Pass 478 (2026-03-29)
+
+- Extended the public coverage entry from ZIP-first lookup into a true nationwide origin command bar that accepts U.S. home/store addresses and persists a manual address origin through route preview and fullscreen map entry.
+- Strategic effect: closes one of the biggest credibility gaps between public landing search and the richer in-app map program by letting users start from real-world addresses before they ever open a third-party map.
+
+### Implementation Note — Pass 477 (2026-03-29)
+
+- Demoted Apple Maps / Google Maps / Waze selection inside the active navigation summary sheet behind an explicit `Export Route` disclosure.
+- Reframed the handoff CTA as `Export to ...` so BidOnDent navigation stays visually primary and third-party apps read as fallback.
+- Strategic effect: aligns active-navigation chrome with the product rule that BidOnDent Maps is the default experience and external providers are secondary escape hatches.
+
+### Implementation Note — Pass 476 (2026-03-29)
+
+- Locked coverage browse/landing routing to respect the user-selected ZIP/search origin by default, with live GPS only taking precedence when the experience is explicitly in geolocation mode.
+- Stopped passive GPS updates from continuously refreshing ZIP-based route previews, reducing route-context drift in browse surfaces.
+- Tightened the landing coverage action bar into a more compact command surface with explicit origin status.
+- Strategic effect: makes the public coverage/search entry layer feel more trustworthy by aligning visible route geometry, selected origin, and control density.
+
+### Implementation Note — Pass 475 (2026-03-29)
+
+- Shifted insurer mapped partner-shop direction actions off of third-party launch and into the existing shop-directory map flow by persisting the selected shop/camera target into website map memory before opening BidOnDent Maps.
+- Kept manual prospects on explicit external export because they still lack first-class in-app destination modeling.
+- Strategic effect: extends the BidOnDent-first navigation principle into insurer recruitment workflows without faking generic place support that the map stack does not yet truly own.
+
+### Implementation Note — Pass 474 (2026-03-29)
+
+- Extended the in-app navigation default from coverage browse tabs to the landing coverage section and dashboard coverage widgets by routing shop-direction actions into `CoverageMapDialog` first.
+- Added an auto-start request-token path so the fullscreen BidOnDent map can enter active navigation as soon as route preview is ready, while external-map launch remains an explicit export fallback only.
+- Strategic effect: consolidates shop-direction intent around the BidOnDent map program across public and authenticated entry points instead of fragmenting it across third-party apps.
+
+### Implementation Note — Pass 473 (2026-03-29)
+
+- Replaced Coverage Browse `Shops`/`Explore` external map handoff behavior with in-app map routing/focus flow.
+- Shop actions now transition users into in-app route planning/navigation; discovery-place actions now keep users in-map via focused place preview.
+- Strategic effect: extends the in-app map continuity principle beyond shop directory into coverage browse tabs.
+
+### Implementation Note — Pass 472 (2026-03-29)
+
+- Upgraded shared dark map-control tokens for segmented tabs, secondary actions, and icon rails to improve readability and reduce flat/washed backgrounds.
+- Increased Browse sidebar tab icon/label spacing and strengthened landing-header dashboard map-entry button contrast.
+- Strategic effect: improves map control trust and scan speed at the product entry layer without changing route, search, or persistence behavior.
+
+### Implementation Note — Pass 471 (2026-03-29)
+
+- Shifted the shop-directory directions path to default to in-app map navigation instead of third-party handoff.
+- Added U.S.-wide Nominatim origin search to the shop flow while preserving the existing NY quick-pick chips as convenience shortcuts.
+- Strategic effect: keeps users in the BidOnDent map product loop (discover -> route -> navigate) and improves first-use relevance outside the Northeast.
+
 ### Implementation Note — Pass 399 (2026-03-28)
 
 - Added explicit pre-refactor governance constraints and kickoff-prompt packaging so the next chat can begin refactor work with clear architecture, validation, and documentation-update requirements.

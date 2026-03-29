@@ -1,12 +1,18 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Map, Popup } from "react-map-gl/maplibre";
+import { Map } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
-import { Compass } from "lucide-react";
+import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
+import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
 
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
+import type { NavigationSessionStatus } from "../../features/navigation";
+import {
+  getShopRouteActionLabel,
+  shouldUseShopNavigationAction,
+} from "../../hooks/shopDirectorySessionUtils";
 import type {
   Coordinates,
   MapTheme,
@@ -19,6 +25,7 @@ import { mapLibreStyles } from "../maps/mapLibreStyles";
 import MapLibreReportLayer from "../maps/MapLibreReportLayer";
 import MapLibreShopDirectoryViewportManager from "./MapLibreShopDirectoryViewportManager";
 import ShopDirectoryMapLayers, { SHOP_LAYER } from "./ShopDirectoryMapLayers";
+import { MapLibreFollowLocationController } from "../maps/mapLibreControllers";
 import {
   MapPaneHeaderBadges,
   MapPaneBottomOverlay,
@@ -31,7 +38,7 @@ type ShopDirectoryMapPaneProps = {
   routeOptions: RouteOption[];
   selectedRouteId?: string | null;
   selectedShopId: number | null;
-  onSelectShop: (shopId: number) => void;
+  onSelectShop: (shopId: number | null) => void;
   selectedOrigin?: Place | null;
   savedPlaces: SavedPlace[];
   mapTheme: MapTheme;
@@ -46,8 +53,19 @@ type ShopDirectoryMapPaneProps = {
   onSearchInArea?: () => void;
   onClearAreaSearch?: () => void;
   userCoords?: Coordinates | null;
+  followCurrentPosition?: boolean;
+  followCurrentPositionRevision?: number;
   onOpenShopDirections?: (shop: ShopMapListing) => void;
+  onStartNavigation?: (shop: ShopMapListing) => void;
+  navigationSessionStatus: NavigationSessionStatus;
+  navigationSessionDestinationId: string | null;
   directionsActionLabel?: string;
+  hasArrived?: boolean;
+  remainingEtaLabel?: string | null;
+  remainingDistanceLabel?: string | null;
+  usingLiveRoutes?: boolean;
+  routeError?: string;
+  isLoadingRoute?: boolean;
 };
 
 export default function MapLibreShopDirectoryMapPane({
@@ -70,8 +88,19 @@ export default function MapLibreShopDirectoryMapPane({
   onSearchInArea,
   onClearAreaSearch,
   userCoords,
+  followCurrentPosition = false,
+  followCurrentPositionRevision = 0,
   onOpenShopDirections,
+  onStartNavigation,
+  navigationSessionStatus,
+  navigationSessionDestinationId,
   directionsActionLabel,
+  hasArrived = false,
+  remainingEtaLabel,
+  remainingDistanceLabel,
+  usingLiveRoutes = false,
+  routeError = "",
+  isLoadingRoute = false,
 }: ShopDirectoryMapPaneProps) {
   const [hasPanned, setHasPanned] = useState(false);
   const [cursor, setCursor] = useState("");
@@ -110,27 +139,40 @@ export default function MapLibreShopDirectoryMapPane({
   const selectedShop = shops.find((s) => s.id === selectedShopId) || shops[0] || null;
   const selectedRoute =
     routeOptions.find((r) => r.id === selectedRouteId) || routeOptions[0] || null;
+  const selectedShopHasLiveNavigation = Boolean(
+    selectedShop &&
+      navigationSessionDestinationId === String(selectedShop.id) &&
+      (navigationSessionStatus === "active" || navigationSessionStatus === "paused")
+  );
+  const canStartNavigationForSelectedShop = Boolean(
+    selectedShop && selectedOrigin && selectedRoute && onStartNavigation
+  );
+  const canUseNavigationActionForSelectedShop = Boolean(
+    selectedShop &&
+      onStartNavigation &&
+      shouldUseShopNavigationAction({
+        shopId: selectedShop.id,
+        routeReady: canStartNavigationForSelectedShop,
+        navigationSessionStatus,
+        navigationSessionDestinationId,
+      })
+  );
+  const selectedShopActionLabel = selectedShop
+    ? getShopRouteActionLabel({
+        shopId: selectedShop.id,
+        routeReady: canStartNavigationForSelectedShop,
+        hasArrived,
+        defaultLabel: directionsActionLabel || "Get Directions",
+        navigationSessionStatus,
+        navigationSessionDestinationId,
+      })
+    : directionsActionLabel || "Get Directions";
   const isDark = mapTheme === "dark";
   const mapStyle = isDark ? mapLibreStyles.night : mapLibreStyles.roadmap;
   const fitSignature = [
     selectedOrigin?.placeId || selectedOrigin?.name || "no-origin",
     shops.map((s) => s.id).join(","),
   ].join(":");
-
-  /* ── Popup theme tokens ───────────────────────────────────────────── */
-  const popupTitle = isDark ? "text-slate-100" : "text-slate-800";
-  const popupSub = isDark ? "text-slate-200" : "text-slate-500";
-  const popupScoreCard = isDark
-    ? "border-white/22 bg-slate-900/72 text-slate-200"
-    : "border-slate-200 bg-slate-50 text-slate-500";
-  const popupScoreValue = isDark ? "text-white" : "text-slate-800";
-  const popupCarrierCard = isDark
-    ? "border-emerald-300/35 bg-emerald-900/42 text-emerald-200"
-    : "border-emerald-200 bg-emerald-50 text-emerald-600";
-  const popupCarrierValue = isDark ? "text-emerald-200" : "text-emerald-800";
-  const popupCta = isDark
-    ? "border-blue-300/55 bg-blue-600/42 text-white hover:bg-blue-600/55"
-    : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100";
 
   /* ── GeoJSON data ─────────────────────────────────────────────────── */
   const shopsGeoJson = useMemo(
@@ -226,6 +268,10 @@ export default function MapLibreShopDirectoryMapPane({
       const feature = e.features?.[0];
       if (!feature) {
         setShopPopup(null);
+        // Deselect shop on empty map tap — only when not actively navigating
+        if (navigationSessionStatus === "idle" || navigationSessionStatus === "ended") {
+          onSelectShop(null);
+        }
         return;
       }
       if (feature.layer?.id === SHOP_LAYER) {
@@ -243,7 +289,7 @@ export default function MapLibreShopDirectoryMapPane({
         }
       }
     },
-    [onSelectShop, shops]
+    [onSelectShop, shops, navigationSessionStatus]
   );
 
   const handleMapMouseMove = useCallback((e: MapLayerMouseEvent) => {
@@ -268,103 +314,101 @@ export default function MapLibreShopDirectoryMapPane({
       )}
 
       {/* ── MapLibre GL map ── */}
-      <Map
-        id="shop-directory-map"
-        initialViewState={{
-          longitude: initialCenter?.longitude ?? -73.8654,
-          latitude: initialCenter?.latitude ?? 41.0534,
-          zoom: initialZoom ?? 11,
-        }}
-        mapStyle={mapStyle}
-        style={{ width: "100%", height: "100%" }}
-        cursor={cursor}
-        interactiveLayerIds={interactiveLayerIds}
-        onClick={handleMapClick}
-        onMouseMove={handleMapMouseMove}
-        onMouseLeave={() => setCursor("")}
-        attributionControl={{ compact: true }}
-      >
-        {/* Viewport management (fit, fly, broadcast) */}
-        <MapLibreShopDirectoryViewportManager
-          fitSignature={fitSignature}
-          shops={shops}
-          selectedShopId={selectedShopId}
-          selectedOrigin={selectedOrigin}
-          initialCenter={initialCenter}
-          initialZoom={initialZoom}
-          preserveViewport={preserveViewport}
-          onViewportChange={(center, zoom, bounds) => {
-            setHasPanned(true);
-            onViewportChange(center, zoom, bounds);
+      <NavigationErrorBoundary>
+        <Map
+          id="shop-directory-map"
+          initialViewState={{
+            longitude: initialCenter?.longitude ?? -73.8654,
+            latitude: initialCenter?.latitude ?? 41.0534,
+            zoom: initialZoom ?? 11,
           }}
-        />
+          mapStyle={mapStyle}
+          style={{ width: "100%", height: "100%" }}
+          cursor={cursor}
+          interactiveLayerIds={interactiveLayerIds}
+          onClick={handleMapClick}
+          onMouseMove={handleMapMouseMove}
+          onMouseLeave={() => setCursor("")}
+          attributionControl={{ compact: true }}
+        >
+          {/* Viewport management (fit, fly, broadcast) */}
+          <MapLibreShopDirectoryViewportManager
+            fitSignature={fitSignature}
+            shops={shops}
+            selectedShopId={selectedShopId}
+            selectedOrigin={selectedOrigin}
+            initialCenter={initialCenter}
+            initialZoom={initialZoom}
+            preserveViewport={preserveViewport}
+            onViewportChange={(center, zoom, bounds) => {
+              setHasPanned(true);
+              onViewportChange(center, zoom, bounds);
+            }}
+          />
 
-        {/* Report markers (Supabase-fetched) */}
-        <MapLibreReportLayer mapTheme={mapTheme} />
+          {/* Report markers (Supabase-fetched) */}
+          <MapLibreReportLayer mapTheme={mapTheme} />
 
-        <ShopDirectoryMapLayers
-          isDark={isDark}
-          hasRoutes={routeOptions.length > 0}
-          routesGeoJson={routesGeoJson}
-          originGeoJson={originGeoJson}
-          userCoordsGeoJson={userCoordsGeoJson}
-          savedPlacesGeoJson={savedPlacesGeoJson}
-          shopsGeoJson={shopsGeoJson}
-        />
+          <ShopDirectoryMapLayers
+            isDark={isDark}
+            hasRoutes={routeOptions.length > 0}
+            routesGeoJson={routesGeoJson}
+            originGeoJson={originGeoJson}
+            userCoordsGeoJson={userCoordsGeoJson}
+            savedPlacesGeoJson={savedPlacesGeoJson}
+            shopsGeoJson={shopsGeoJson}
+          />
 
-        {/* ── Shop popup ── */}
-        {shopPopup && (
-          <Popup
-            longitude={shopPopup.lng}
-            latitude={shopPopup.lat}
-            anchor="bottom"
-            offset={14}
-            closeOnClick={false}
-            onClose={() => setShopPopup(null)}
-          >
-            <div className="space-y-2">
-              <div>
-                <p className={`font-semibold ${popupTitle}`}>{shopPopup.shop.name}</p>
-                <p className={`text-sm ${popupSub}`}>
-                  {shopPopup.shop.mapResult.address}, {shopPopup.shop.mapResult.city}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className={`rounded-xl border px-3 py-2 ${popupScoreCard}`}>
-                  <p>AI fit</p>
-                  <p className={`font-semibold ${popupScoreValue}`}>
-                    {shopPopup.shop.recommendationScore}%
-                  </p>
-                </div>
-                <div className={`rounded-xl border px-3 py-2 ${popupCarrierCard}`}>
-                  <p>Carrier fit</p>
-                  <p className={`font-semibold ${popupCarrierValue}`}>
-                    {shopPopup.shop.insuranceCompatibilityScore}%
-                  </p>
-                </div>
-              </div>
-              {onOpenShopDirections && (
-                <button
-                  type="button"
-                  onClick={() => onOpenShopDirections(shopPopup.shop)}
-                  className={`inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${popupCta}`}
-                >
-                  <Compass className="h-3.5 w-3.5" />
-                  {directionsActionLabel || "Directions"}
-                </button>
-              )}
-            </div>
-          </Popup>
-        )}
-      </Map>
+          <MapLibreFollowLocationController
+            enabled={followCurrentPosition}
+            currentPosition={
+              userCoords ? ([userCoords.latitude, userCoords.longitude] as [number, number]) : null
+            }
+            revision={followCurrentPositionRevision}
+          />
+
+          {/* ── Shop popup ── */}
+          {shopPopup && (
+            <ShopDirectoryMapPopup
+              shopPopup={shopPopup}
+              onClose={() => setShopPopup(null)}
+              mapTheme={mapTheme}
+              selectedShop={selectedShop}
+              selectedOrigin={selectedOrigin}
+              selectedRoute={selectedRoute}
+              navigationSessionStatus={navigationSessionStatus}
+              navigationSessionDestinationId={navigationSessionDestinationId}
+              directionsActionLabel={directionsActionLabel}
+              hasArrived={hasArrived}
+              remainingEtaLabel={remainingEtaLabel}
+              remainingDistanceLabel={remainingDistanceLabel}
+              usingLiveRoutes={usingLiveRoutes}
+              routeError={routeError}
+              isLoadingRoute={isLoadingRoute}
+              onOpenShopDirections={onOpenShopDirections}
+              onStartNavigation={onStartNavigation}
+            />
+          )}
+        </Map>
+      </NavigationErrorBoundary>
 
       {/* ── Bottom gradient overlay: selected shop card + legend ── */}
       <MapPaneBottomOverlay
         isDark={isDark}
         selectedShop={selectedShop}
         selectedRoute={selectedRoute}
+        hasArrived={hasArrived}
         onOpenShopDirections={onOpenShopDirections}
-        directionsActionLabel={directionsActionLabel}
+        onStartNavigation={onStartNavigation}
+        canStartNavigation={canUseNavigationActionForSelectedShop}
+        directionsActionLabel={selectedShopActionLabel}
+        hasLiveNavigation={selectedShopHasLiveNavigation}
+        isLoadingRoute={isLoadingRoute}
+        navigationSessionStatus={navigationSessionStatus}
+        remainingDistanceLabel={remainingDistanceLabel}
+        remainingEtaLabel={remainingEtaLabel}
+        routeError={routeError}
+        usingLiveRoutes={usingLiveRoutes}
         compact={Boolean(children && selectedRoute)}
       />
 

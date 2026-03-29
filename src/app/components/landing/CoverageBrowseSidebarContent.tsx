@@ -12,7 +12,6 @@ import { Compass, MapPinned, Search, Star } from "lucide-react";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
-import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import type {
   CoverageNearbyShop,
   CoveragePartnerShop,
@@ -85,8 +84,6 @@ type CoverageBrowseSidebarContentProps = {
   /* ── Shops panel ── */
   isLoadingShops: boolean;
   radiusMiles: string;
-  preferredNavigationProvider: NavigationProvider;
-  onPreferredNavigationProviderChange: (provider: NavigationProvider) => void;
   onOpenDirections: (shop: CoveragePartnerShop) => void;
 };
 
@@ -123,8 +120,6 @@ export default function CoverageBrowseSidebarContent({
   onClearParkedCar,
   isLoadingShops,
   radiusMiles,
-  preferredNavigationProvider,
-  onPreferredNavigationProviderChange,
   onOpenDirections,
 }: CoverageBrowseSidebarContentProps) {
   return (
@@ -144,11 +139,11 @@ export default function CoverageBrowseSidebarContent({
               type="button"
               onClick={() => onSidebarViewChange(id)}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1 rounded-full px-2 py-2 min-h-[44px] text-[11px] font-semibold transition-all duration-200",
+                "flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-2.5 min-h-[44px] text-xs font-semibold transition-all duration-200",
                 sidebarView === id ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
               )}
             >
-              <Icon className="h-3 w-3" />
+              <Icon className="h-3.5 w-3.5 shrink-0" />
               {label}
             </button>
           ))}
@@ -251,9 +246,7 @@ export default function CoverageBrowseSidebarContent({
             nearbyShops={nearbyShops}
             radiusMiles={radiusMiles}
             selectedShopId={selectedShopId}
-            preferredNavigationProvider={preferredNavigationProvider}
             onSelectShop={onSelectShop}
-            onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
             onOpenDirections={onOpenDirections}
           />
         ) : null}

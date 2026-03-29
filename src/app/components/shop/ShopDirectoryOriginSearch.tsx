@@ -1,0 +1,241 @@
+import { MapPin, Navigation2, Plus, Search } from "lucide-react";
+
+import type {
+  NavigationAddressResult,
+  NavigationAddressSuggestion,
+} from "../../types/navigation";
+import type { Place } from "../../types/mapDomain";
+
+type ShopDirectoryOriginSearchProps = {
+  isLight: boolean;
+  selectedOrigin: Place | null;
+  suggestedOrigins: Place[];
+  currentOriginIsSaved: boolean;
+  originSearchQuery: string;
+  originSearchResults: NavigationAddressResult[];
+  originSuggestions: NavigationAddressSuggestion[];
+  isSearchingOrigins?: boolean;
+  originSearchError?: string;
+  locationError?: string | null;
+  isLocating?: boolean;
+  onSelectOrigin: (origin: Place) => void;
+  onOriginSearchQueryChange: (query: string) => void;
+  onSearchOrigin: () => void | Promise<void>;
+  onSelectOriginSearchResult: (result: NavigationAddressResult) => void;
+  onSelectOriginSuggestion: (suggestion: NavigationAddressSuggestion) => void;
+  onClearOrigin: () => void;
+  onSaveOrigin: () => void;
+  onUseMyLocation?: () => void;
+};
+
+export default function ShopDirectoryOriginSearch({
+  isLight,
+  selectedOrigin,
+  suggestedOrigins,
+  currentOriginIsSaved,
+  originSearchQuery,
+  originSearchResults,
+  originSuggestions,
+  isSearchingOrigins = false,
+  originSearchError,
+  locationError,
+  isLocating = false,
+  onSelectOrigin,
+  onOriginSearchQueryChange,
+  onSearchOrigin,
+  onSelectOriginSearchResult,
+  onSelectOriginSuggestion,
+  onClearOrigin,
+  onSaveOrigin,
+  onUseMyLocation,
+}: ShopDirectoryOriginSearchProps) {
+  const originCandidates = originSearchResults.length > 0 ? originSearchResults : originSuggestions;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <div
+          className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] ${
+            isLight ? "text-blue-600/70" : "text-blue-200/50"
+          }`}
+        >
+          <MapPin className="h-3.5 w-3.5" />
+          Origin
+        </div>
+        {selectedOrigin && (
+          <button
+            className={`min-h-[44px] rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+              isLight
+                ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+            onClick={onClearOrigin}
+            type="button"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+        <div className="relative min-w-0">
+          <Search
+            className={`pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 ${
+              isLight ? "text-blue-400" : "text-blue-200/50"
+            }`}
+          />
+          <input
+            className={`w-full min-w-0 rounded-full border py-2.5 pl-9 pr-3 text-sm outline-none transition-colors ${
+              isLight
+                ? "border-slate-200/80 bg-white/90 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-sm"
+                : "bd-glass-control border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
+            }`}
+            onChange={(event) => onOriginSearchQueryChange(event.target.value)}
+            placeholder="Search any U.S. address, city, or ZIP..."
+            type="text"
+            value={originSearchQuery}
+          />
+        </div>
+        <button
+          className={`min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+            isLight
+              ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+              : "border-white/[0.10] bg-white/[0.04] text-slate-200 hover:bg-white/[0.08]"
+          }`}
+          onClick={() => {
+            void onSearchOrigin();
+          }}
+          type="button"
+        >
+          {isSearchingOrigins ? "Finding..." : "Find"}
+        </button>
+      </div>
+
+      {originCandidates.length > 0 && originSearchQuery.trim().length >= 2 && (
+        <div
+          className={`overflow-hidden rounded-2xl border ${
+            isLight
+              ? "border-slate-200/80 bg-white/90 shadow-sm"
+              : "border-white/[0.10] bg-slate-950/72 backdrop-blur-md"
+          }`}
+        >
+          {originCandidates.slice(0, 5).map((candidate) => {
+            const isResult = "primaryLabel" in candidate;
+            const title = isResult ? candidate.primaryLabel : candidate.title;
+            const subtitle = isResult ? candidate.secondaryLabel : candidate.subtitle;
+
+            return (
+              <button
+                key={candidate.id}
+                className={`flex min-h-[44px] w-full items-start gap-2 border-b px-3 py-2 text-left text-sm transition-colors last:border-b-0 ${
+                  isLight
+                    ? "border-slate-200/70 text-slate-700 hover:bg-blue-50"
+                    : "border-white/[0.08] text-slate-100 hover:bg-white/[0.06]"
+                }`}
+                onClick={() =>
+                  isResult
+                    ? onSelectOriginSearchResult(candidate)
+                    : onSelectOriginSuggestion(candidate)
+                }
+                type="button"
+              >
+                <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-400" />
+                <span className="min-w-0">
+                  <span className="block truncate font-medium">{title}</span>
+                  {subtitle ? (
+                    <span
+                      className={`block truncate text-xs ${isLight ? "text-slate-500" : "text-slate-400/70"}`}
+                    >
+                      {subtitle}
+                    </span>
+                  ) : null}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="flex gap-1.5 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
+        {onUseMyLocation && (
+          <button
+            className={`shrink-0 inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+              selectedOrigin?.placeId === "user-geolocation"
+                ? isLight
+                  ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
+                  : "border-blue-400/60 bg-blue-500/20 text-white"
+                : isLight
+                  ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 shadow-sm"
+                  : "border-emerald-400/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+            }`}
+            disabled={isLocating}
+            onClick={onUseMyLocation}
+            type="button"
+          >
+            <Navigation2 className={`h-3 w-3 ${isLocating ? "animate-pulse" : ""}`} />
+            {isLocating ? "Locating..." : "My Location"}
+          </button>
+        )}
+        {suggestedOrigins.map((origin) => {
+          const isActive =
+            (selectedOrigin?.placeId || selectedOrigin?.name) === (origin.placeId || origin.name);
+
+          return (
+            <button
+              key={origin.placeId || origin.name}
+              className={`shrink-0 min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                isActive
+                  ? isLight
+                    ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
+                    : "border-blue-400/60 bg-blue-500/20 text-white"
+                  : isLight
+                    ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                    : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
+              }`}
+              onClick={() => onSelectOrigin(origin)}
+              type="button"
+            >
+              {origin.name}
+            </button>
+          );
+        })}
+      </div>
+
+      {(locationError || originSearchError) && (
+        <p className={`text-xs ${isLight ? "text-red-500" : "text-red-400/80"}`}>
+          {locationError || originSearchError}
+        </p>
+      )}
+
+      <div className="flex flex-wrap items-center gap-1.5">
+        <button
+          className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+            selectedOrigin
+              ? isLight
+                ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                : "border-white/[0.10] text-slate-200 hover:bg-white/[0.06]"
+              : isLight
+                ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-400"
+                : "cursor-not-allowed border-white/[0.05] bg-white/[0.02] text-slate-500"
+          }`}
+          disabled={!selectedOrigin}
+          onClick={onSaveOrigin}
+          type="button"
+        >
+          <Plus className="h-3 w-3" />
+          {currentOriginIsSaved ? "Saved" : "Save"}
+        </button>
+        {selectedOrigin && (
+          <span
+            className={`truncate max-w-[180px] sm:max-w-xs text-xs ${
+              isLight ? "text-slate-500" : "text-slate-400/70"
+            }`}
+            title={selectedOrigin.address}
+          >
+            {selectedOrigin.address}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}

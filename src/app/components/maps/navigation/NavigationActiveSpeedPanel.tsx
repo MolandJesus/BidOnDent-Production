@@ -43,7 +43,7 @@ export default function NavigationActiveSpeedPanel({
   const hasDistance = Number.isFinite(speedLimitMatchDistanceMeters);
 
   return (
-    <div className="pointer-events-none absolute bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_17rem)] right-3 z-[560] flex max-w-[min(240px,calc(100%-1.5rem))] flex-col items-end gap-2 sm:gap-3 sm:right-4 md:right-[5.5rem] md:max-w-[280px]">
+    <div className="pointer-events-none absolute bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_10rem)] right-3 z-[560] flex max-w-[min(220px,calc(100%-1.5rem))] flex-col items-end gap-2 sm:gap-2.5 sm:right-4 md:right-[5rem] md:max-w-[248px]">
       <div className="pointer-events-auto flex items-end gap-2 sm:gap-3">
         <CurrentSpeedBadge
           tone={tone}
@@ -56,31 +56,33 @@ export default function NavigationActiveSpeedPanel({
         />
       </div>
 
-      <div
-        className={cn(
-          "map-liquid-card map-ui-enter map-ui-enter-delay-1 pointer-events-auto hidden max-w-[280px] px-4 py-3 md:block",
-          theme.panelClassName
-        )}
-      >
-        <div className={theme.metricLabelClassName}>Current road</div>
-        <div className={cn("mt-1 text-sm font-semibold", theme.titleClassName)}>
-          {roadName || "Looking up the nearest road"}
+      {import.meta.env.DEV ? (
+        <div
+          className={cn(
+            "map-liquid-card map-ui-enter map-ui-enter-delay-1 pointer-events-auto hidden max-w-[248px] px-3.5 py-3 md:block",
+            theme.panelClassName
+          )}
+        >
+          <div className={theme.metricLabelClassName}>Current road</div>
+          <div className={cn("mt-1 text-sm font-semibold", theme.titleClassName)}>
+            {roadName || "Looking up the nearest road"}
+          </div>
+          <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+            {gpsAccuracyMeters
+              ? `GPS accuracy about +/-${Math.round(gpsAccuracyMeters)} m`
+              : "Waiting for tighter on-device GPS accuracy"}
+          </div>
+          <div className={cn("mt-1 text-[11px] font-medium", theme.secondaryTextClassName)}>
+            {hasPostedLimit
+              ? hasDistance
+                ? `${describeSpeedLimitConfidence(postedSpeedLimitConfidence)} (${Math.round(
+                    Number(speedLimitMatchDistanceMeters)
+                  )} m)`
+                : describeSpeedLimitConfidence(postedSpeedLimitConfidence)
+              : "Speed limit confidence will appear when road data is available"}
+          </div>
         </div>
-        <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-          {gpsAccuracyMeters
-            ? `GPS accuracy about +/-${Math.round(gpsAccuracyMeters)} m`
-            : "Waiting for tighter on-device GPS accuracy"}
-        </div>
-        <div className={cn("mt-1 text-[11px] font-medium", theme.secondaryTextClassName)}>
-          {hasPostedLimit
-            ? hasDistance
-              ? `${describeSpeedLimitConfidence(postedSpeedLimitConfidence)} (${Math.round(
-                  Number(speedLimitMatchDistanceMeters)
-                )} m)`
-              : describeSpeedLimitConfidence(postedSpeedLimitConfidence)
-            : "Speed limit confidence will appear when road data is available"}
-        </div>
-      </div>
+      ) : null}
     </div>
   );
 }

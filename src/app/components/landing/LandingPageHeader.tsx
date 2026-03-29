@@ -153,14 +153,15 @@ export default function LandingPageHeader({
               {showLandingPage && (
                 <button
                   onClick={onViewDashboard}
-                  className={`inline-flex items-center gap-1.5 font-medium px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border backdrop-blur-sm transition-all ${isLightAppearance ? "border-slate-200/40 bg-white/40 text-slate-700 hover:bg-white/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
+                  className={`inline-flex min-h-[40px] items-center gap-2 font-medium px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border backdrop-blur-md transition-all ${isLightAppearance ? "border-slate-200/55 bg-white/65 text-slate-700 hover:bg-white/80 shadow-[0_8px_18px_rgba(15,23,42,0.08)]" : "border-blue-300/28 bg-[linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))] text-blue-100 hover:bg-[linear-gradient(180deg,rgba(59,130,246,0.28),rgba(15,23,42,0.78))] shadow-[0_10px_22px_rgba(2,6,23,0.32)]"}`}
                   type="button"
                 >
                   <Home
-                    className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+                    className={`w-4 h-4 shrink-0 ${isLightAppearance ? "text-blue-700" : "text-blue-200"}`}
+                    strokeWidth={2.3}
                   />
                   <span
-                    className={`hidden sm:inline ${isLightAppearance ? "text-slate-700" : "text-blue-200"}`}
+                    className={`hidden sm:inline ${isLightAppearance ? "text-slate-700" : "text-blue-100"}`}
                   >
                     Dashboard
                   </span>

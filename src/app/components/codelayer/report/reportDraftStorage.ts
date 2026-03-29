@@ -25,15 +25,25 @@ export const DEFAULT_VEHICLE_DRAFT: VehicleDraft = {
   vin: "",
 };
 
+function isValidTimestampString(value: unknown): value is string {
+  return typeof value === "string" && Number.isFinite(Date.parse(value));
+}
+
 function isValidDraft(value: unknown): value is ReportDraft {
   if (typeof value !== "object" || value === null) return false;
   const v = value as Record<string, unknown>;
+  const step = v.step;
   if (
-    typeof v.step !== "number" ||
+    typeof step !== "number" ||
+    !Number.isInteger(step) ||
+    step < 0 ||
+    step > 6 ||
     typeof v.damageArea !== "string" ||
     typeof v.description !== "string" ||
     typeof v.incident !== "string" ||
-    typeof v.savedAt !== "string" ||
+    !isValidTimestampString(v.savedAt) ||
+    ("zipCode" in v && v.zipCode !== undefined && typeof v.zipCode !== "string") ||
+    ("address" in v && v.address !== undefined && typeof v.address !== "string") ||
     typeof v.vehicle !== "object" ||
     v.vehicle === null
   )
@@ -81,6 +91,7 @@ export function saveReportDraft(params: {
   const { step, vehicle, damageArea, zipCode, address, description, incident } = params;
 
   if (step === 6) {
+    clearReportDraft();
     return;
   }
 
@@ -94,6 +105,11 @@ export function saveReportDraft(params: {
     incident,
     savedAt: new Date().toISOString(),
   };
+
+  if (!isValidDraft(draft)) {
+    clearReportDraft();
+    return;
+  }
 
   try {
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));

@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** March 29, 2026 (MapLibre stabilization + doc sync)
+**Last updated:** March 29, 2026 (Map program passes 478-483 sync)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -21,6 +21,8 @@ All future map/product/design direction is planned/aspirational unless otherwise
 ## Purpose
 
 This document replaces the older generic audit checklist with a repo-specific view of how BidOnDent is actually organized today.
+
+Recent map-program sync note: coverage browse/landing routing now uses explicit origin precedence, so ZIP/search browse context wins over passive GPS unless the user intentionally switches the surface into geolocation mode. Public landing coverage search now also accepts real U.S. house/store addresses as first-class manual origins, fullscreen browse/navigation chrome has been tightened for cleaner mobile/desktop map-first use, mobile browse/result menus now use more reliable touch-scroll handling, shop/insurer dashboards now prefer hydrated live report/photo data before demo seed fallback, compact phone-sized shop cards now use a slimmer route-first action hierarchy, and route-preview panels now collapse pre-navigation step density more gracefully on phones.
 
 Use this together with:
 
@@ -82,19 +84,32 @@ Use this together with:
 
 ## File Size Status
 
-The repository is mostly under the active 500-line hard cap, with one current MapLibre migration exception:
+The repository is back under the active 500-line hard cap for the primary map surfaces after the follow-up MapLibre extractions:
 
 - `src/app/components/shop/ShopDirectoryScreen.tsx` reduced from 1383 → 979 lines via Pass 2; refactored in Pass 9 (~1060 lines); Pass 10 added immersive early-return (~1163 lines); **Pass 11 extraction: 1163 → 478 lines.** State, effects, handlers, computed values extracted to `useShopDirectorySession` hook. Hero and search panel extracted to dedicated components. Screen is now a thin composition layer: navigation intelligence orchestration + layout delegation. Under 500-line hard cap.
 - `src/app/hooks/useShopDirectorySession.ts` (**new, Pass 11**, 494 lines): all 18 state variables, session-memory sync, selection effects, search/origin/directions handlers, all computed values (mapListings, summary, contextChips, roleHighlights, routeOptions, etc). Accepts `{ identity, userType, vehicles, reports }`.
 - `src/app/components/shop/ShopDirectoryHero.tsx` (**new, Pass 11**, 149 lines): two render modes — compact bar (map/hybrid) with back+badge+title+count, or full hero card with gradient, metrics grid, intelligence panel, callout cards.
-- `src/app/components/shop/ShopDirectorySearchPanel.tsx` (**new, Pass 11**, 276 lines): search form, origin selector, suggested origins, save origin button, view mode toggle, sort select, rating filter, theme toggle, role-specific panel.
+- `src/app/components/shop/ShopDirectorySearchPanel.tsx` (**new, Pass 11**, now 363 lines): search form, view mode toggle, sort select, rating filter, theme toggle, and role-specific panel. The heavier origin-search lane is now extracted again to keep this file under the hard cap.
 - `src/app/components/shop/ShopDirectoryImmersiveMap.tsx` (Pass 10, 253 lines): full-viewport immersive map experience. `fixed inset-0 z-40` container. Floating glass top bar (back + search + drawer toggle + mode switch + theme). Collapsible left-side results drawer with compact result cards. Renders `MapLibreShopDirectoryMapPane` + `ShopDirectoryMapOverlays` at full viewport.
-- `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (Pass 9, updated Pass 10, 187 lines): floating in-map overlay layer. Renders intelligence chip (top-left, expandable), route preview card (bottom-left, expandable turn list), and deviation prompt slot (top-center). Added `navigationMode` prop (`browse | route-preview | guidance`) gating overlay visibility by navigation state.
+- `src/app/components/shop/ShopDirectoryOriginSearch.tsx` (241 lines): extracted U.S.-wide origin search lane for the shop flow. Combines Nominatim-backed address/city/ZIP search with quick-pick origin chips, My Location, and save-origin affordances.
+- `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (Pass 9, updated through Pass 470, 288 lines): floating in-map overlay layer. Renders intelligence chip (top-left, expandable), route preview card (bottom-left, expandable turn list), and deviation prompt slot (top-center). Now includes immersive top-offset control plus safe-area-aware route-card bottom spacing.
 - `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx` (MapLibre migration + follow-up extraction, 365 lines): dashboard shop-discovery map surface now focused on state, interaction, popup handling, and composition. Back under the 500-line hard cap.
 - `src/app/components/shop/ShopDirectoryMapLayers.tsx` (265 lines): extracted Source/Layer rendering block for routes, origin, user marker, saved places, and shop marker hierarchy.
-- `src/app/components/maps/MapLibreServiceCoverageMap.tsx` (MapLibre migration + stabilization, 620 lines): coverage-map renderer with route glow, GPS glow, discovery/report/shop layers, and shared controller hookups. Still above the 500-line hard cap and the largest remaining map extraction target.
+- `src/app/hooks/useShopDirectoryRoutePreview.ts` (234 lines): OSRM-backed live route-alternative hook for the shop flow. Converts public-provider route geometry and step instructions into `RouteOption` data, with local fallback route generation preserved for resilience.
+- `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx` (255 lines): extracted map-pane chrome for header badges, selected-shop bottom card, legend, and search-area pills. Includes compact legend mode and safe-area-aware bottom spacing.
+- `src/app/components/maps/MapLibreServiceCoverageMap.tsx` (MapLibre migration + follow-up extraction, 473 lines): coverage-map renderer now focused on state, chrome, performance tracking, and canvas composition. Back under the 500-line hard cap.
+- `src/app/components/maps/MapLibreCoverageMapLayers.tsx` (282 lines): extracted route/county/GPS/search-target rendering block for the coverage map.
 - `src/app/components/maps/mapLibreControllers.tsx` (115 lines): extracted shared camera controllers for viewport, follow-location, and route-fit behavior.
-- **Passes 400-407 (2026-03-28):** Refactored 8 remaining oversized files. The earlier sweep brought the repo under the 500-line hard cap; the MapLibre follow-up extraction closed the shop-directory exception, leaving `MapLibreServiceCoverageMap.tsx` as the main remaining outlier.
+- **March 29, 2026 shop navigation follow-up:** Shop-directory directions now default into the BidOnDent immersive map flow instead of launching external map apps, and shop routes now prefer live OSRM previews with turn steps while preserving a local fallback.
+- **March 29, 2026 coverage navigation follow-up:** Landing-page coverage search and dashboard coverage widgets now open `CoverageMapDialog` into the BidOnDent map program for shop-direction intent, using an auto-start request token and reserving Apple/Google/Waze export for explicit fallback only.
+- **March 29, 2026 public coverage search follow-up:** `CoverageSearchPanel.tsx` plus `useOperatingRegionsCoverage.ts` now support persisted `"address"` origin mode with manual Nominatim-backed home/store address selection for the public landing/coverage route flow.
+- **March 29, 2026 fullscreen UI follow-up:** immersive light-theme map tokens, fullscreen browse shell glass, mobile browse bottom-sheet snaps, and active navigation summary chrome were tightened to reduce oversized/washed-out presentation in the latest screenshots.
+- **March 29, 2026 live dashboard feed follow-up:** `DashboardRouter.tsx` now merges marketplace reports with hydrated local report/photo state so shop/insurer surfaces show real submitted reports before demo fallback; request/claim cards now include preview imagery.
+- **March 29, 2026 mobile map interaction follow-up:** `MobileMapBottomSheet.tsx` now normalizes snap-point values and enables explicit touch-scroll containers; smart-shop immersive drawers and origin chips were also adjusted for safer mobile scrolling.
+- **March 29, 2026 compact-card follow-up:** `ShopDirectoryResultCard.tsx` compact mode was redesigned around a single primary route CTA with lighter secondary controls so fullscreen/mobile browse states no longer inherit desktop card heaviness.
+- **March 29, 2026 route-preview follow-up:** `ShopDirectoryRoutePanel.tsx` now uses appearance-aware active-route styling and a shorter pre-navigation step stack, reducing mobile route-panel bloat before active guidance begins.
+- **March 29, 2026 insurer partner-shop follow-up:** Mapped insurer partner shops now write `lastViewedShopId` + camera state into website map memory and open the insurer-scoped shop-directory map flow; only manual prospects still depend on external export.
+- **Passes 400-407 (2026-03-28):** Refactored 8 remaining oversized files. The later MapLibre migration briefly reintroduced oversized map files, and the follow-up extractions closed those gaps for both the shop-directory and coverage-map surfaces.
 - **March 29, 2026 map stabilization:** Zero TypeScript errors restored and re-verified with `npx tsc --noEmit` after the MapLibre migration follow-up fixes.
 - **Pass 430 (2026-03-28):** Image assets reduced 53.6MB → 22.9MB (57%) via PNG→JPEG conversion. 3 dead image imports removed.
 - **Passes 433-434 (2026-03-29):** Zero production `any` types (was 21). Hooks/services: 14→0 across 10 files. Component helpers/type defs: 8→0 across 5 files. Only 7 `as any` assertions remain in test files.

@@ -3,7 +3,7 @@
 > **Single source of truth for any AI agent working on this repo.**
 > All other AI handoff docs defer to this file. Read this first, every session.
 >
-> **Last updated:** 2026-03-29 (MapLibre stabilization + doc sync)
+> **Last updated:** 2026-03-29 (Map program passes 478-483 sync)
 > **Status:** Active master context source of truth
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.1s · MapLibre GL JS WebGL engine
@@ -185,11 +185,13 @@ The map program has two subsystems:
 
 ### A. ServiceCoverageMap (landing page + coverage dialog)
 
-Used by: `OperatingRegionsSection`, `CustomerMapWidget`, `CoverageMapDialog`
+Used by: `OperatingRegionsSection`, `CustomerMapWidget`, `DashboardCoveragePanel`, `CoverageMapDialog`
 
 ```
 MapLibreServiceCoverageMap.tsx       ← MapLibre GL JS base map, tile mode switcher, route glow, GPS glow
-CoverageMapDialog.tsx                ← Full-screen coverage map modal (customer widget)
+  └── MapLibreCoverageMapLayers.tsx  ← Extracted route/county/GPS/search-target rendering block
+CoverageMapDialog.tsx                ← Full-screen coverage map modal with auto-start navigation handoff
+useOperatingRegionsCoverage.ts       ← Landing coverage orchestration + map-open/start-navigation requests
 CoverageMapOverlays.tsx              ← Landing page overlays
 MapLibrePartnerShopLayer.tsx         ← GeoJSON partner shop circle layer
 MapLibreReportLayer.tsx              ← GeoJSON report marker layer
@@ -212,13 +214,16 @@ Used by: `ShopDirectoryScreen` (hybrid + list modes), `ShopDirectoryImmersiveMap
 ShopDirectoryScreen.tsx                    ← Orchestrator (hybrid + list layout)
   └── MapLibreShopDirectoryMapPane.tsx     ← MapLibre map pane (GeoJSON sources, route glow, overlays)
         └── ShopDirectoryMapLayers.tsx     ← Extracted Source/Layer rendering block for routes + markers
+        └── ShopDirectoryMapPaneOverlays.tsx ← Header badges, bottom card/legend, search-area pills
         └── MapLibreShopDirectoryViewportManager.tsx ← useMap() viewport fit/fly logic
         └── ShopDirectoryMapOverlays.tsx   ← Floating overlays (intelligence, route, actions)
 ShopDirectoryImmersiveMap.tsx              ← Full-viewport map mode (own top bar + results drawer)
+ShopDirectoryOriginSearch.tsx              ← U.S.-wide origin search UI (Nominatim + suggested origin chips)
 useShopDirectorySession.ts                 ← All session state (search, filter, sort, map, routes)
-shopMapExperience.ts                       ← buildShopMapListings, buildShopRouteOptions, filters
+useShopDirectoryRoutePreview.ts            ← OSRM-backed live route alternatives with local fallback
+shopMapExperience.ts                       ← buildShopMapListings, role-aware copy, filters
 shopMapData.ts                             ← NY coordinates, suggested origins
-shopMapRouting.ts                          ← Distance, ETA, route building
+shopMapRouting.ts                          ← Local route fallback + distance/ETA helpers
 directoryAdapters.ts                       ← Supabase shop/insurer → map listing adapters
 ```
 
@@ -246,6 +251,7 @@ MapLibreDashboardMapPreview.tsx      ← Lightweight click-through preview maps
 | `LikedShopsScreen` "Open Map"                 | customer  | `onOpenMap` → same                                        |
 | `CompetitorAnalysisScreen` "Open Map"         | shop      | `onOpenMap` → same                                        |
 | `InsurerPartnerShopsScreen` "Open Map"        | insurer   | `onOpenMap` → same                                        |
+| `InsurerPartnerShopCard` "BidOnDent Maps"     | insurer   | write map memory → `onOpenMap` → preselected destination  |
 
 ---
 
@@ -304,31 +310,36 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ### Map Program (MapLibre GL JS — Leaflet fully removed Pass 448)
 
-| File                                                               | Purpose                                              |
-| ------------------------------------------------------------------ | ---------------------------------------------------- |
-| `src/app/components/shop/ShopDirectoryScreen.tsx`                  | Main orchestrator for dashboard shop discovery       |
-| `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)    |
+| File                                                               | Purpose                                               |
+| ------------------------------------------------------------------ | ----------------------------------------------------- |
+| `src/app/components/shop/ShopDirectoryScreen.tsx`                  | Main orchestrator for dashboard shop discovery        |
+| `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)     |
 | `src/app/components/shop/ShopDirectoryMapLayers.tsx`               | Extracted Source/Layer rendering for shop directory   |
-| `src/app/components/shop/ShopDirectoryMapOverlays.tsx`             | Floating intelligence + route + action overlays      |
-| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`            | Full-viewport immersive map mode                     |
-| `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                         |
-| `src/app/components/maps/MapLibreServiceCoverageMap.tsx`           | Landing + coverage map (route glow, GPS glow)        |
-| `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`     | Lightweight click-through dashboard preview maps     |
-| `src/app/components/maps/MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                    |
-| `src/app/components/maps/MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                          |
-| `src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx`          | Category-colored discovery place circles             |
+| `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`         | Map-pane badges, legend, shop card, search pills      |
+| `src/app/components/shop/ShopDirectoryMapOverlays.tsx`             | Floating intelligence + route + action overlays       |
+| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`            | Full-viewport immersive map mode                      |
+| `src/app/components/shop/ShopDirectoryOriginSearch.tsx`            | U.S.-wide origin search UI for shop flow              |
+| `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                          |
+| `src/app/components/maps/MapLibreServiceCoverageMap.tsx`           | Landing + coverage map (route glow, GPS glow)         |
+| `src/app/components/maps/MapLibreCoverageMapLayers.tsx`            | Extracted route/county/GPS/search-target layers       |
+| `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`     | Lightweight click-through dashboard preview maps      |
+| `src/app/components/maps/MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                     |
+| `src/app/components/maps/MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                           |
+| `src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx`          | Category-colored discovery place circles              |
 | `src/app/components/maps/mapLibreControllers.tsx`                  | Shared MapLibre viewport/follow/route-fit controllers |
-| `src/app/components/maps/mapLibreHelpers.ts`                       | Shared geometry helpers for coverage map rendering   |
-| `src/app/components/maps/mapLibreStyles.ts`                        | StyleSpecification objects (roadmap/night/satellite) |
-| `src/app/hooks/useShopDirectorySession.ts`                         | All session state for shop directory                 |
-| `src/app/services/intelligence/shopMapExperience.ts`               | Shop listing builder, filters, role highlights       |
-| `src/app/services/intelligence/shopMapData.ts`                     | NY shop coordinates + suggested origins              |
-| `src/app/services/intelligence/shopMapRouting.ts`                  | Distance/ETA/route computation                       |
-| `src/app/services/intelligence/directoryAdapters.ts`               | Supabase shop/insurer → ShopMapListing adapter       |
-| `src/app/components/landing/CoverageMapDialog.tsx`                 | Full-screen coverage map modal                       |
-| `src/app/components/dashboard/CustomerMapWidget.tsx`               | Customer home map widget                             |
-| `src/app/components/dashboard/ShopMapWidget.tsx`                   | Shop home map widget                                 |
-| `src/app/components/dashboard/InsurerMapWidget.tsx`                | Insurer home map widget                              |
+| `src/app/components/maps/mapLibreHelpers.ts`                       | Shared geometry helpers for coverage map rendering    |
+| `src/app/components/maps/mapLibreStyles.ts`                        | StyleSpecification objects (roadmap/night/satellite)  |
+| `src/app/hooks/useShopDirectorySession.ts`                         | All session state for shop directory                  |
+| `src/app/hooks/useShopDirectoryRoutePreview.ts`                    | Live OSRM route alternatives for shop directory       |
+| `src/app/services/intelligence/shopMapExperience.ts`               | Shop listing builder, filters, role highlights        |
+| `src/app/services/intelligence/shopMapData.ts`                     | NY shop coordinates + suggested origins               |
+| `src/app/services/intelligence/shopMapRouting.ts`                  | Local route fallback + distance/ETA helpers           |
+| `src/app/services/intelligence/directoryAdapters.ts`               | Supabase shop/insurer → ShopMapListing adapter        |
+| `src/app/components/landing/CoverageMapDialog.tsx`                 | Full-screen coverage map modal + auto-start handoff   |
+| `src/app/hooks/useOperatingRegionsCoverage.ts`                     | Landing coverage orchestration + in-app route launch  |
+| `src/app/components/dashboard/CustomerMapWidget.tsx`               | Customer home map widget                              |
+| `src/app/components/dashboard/ShopMapWidget.tsx`                   | Shop home map widget                                  |
+| `src/app/components/dashboard/InsurerMapWidget.tsx`                | Insurer home map widget                               |
 
 ### Core Shell
 
@@ -470,29 +481,54 @@ Major milestones in this phase:
 
 ---
 
-## 15. MapLibre GL JS Migration (Passes 442–457)
+## 15. MapLibre GL JS Migration + Stabilization (Passes 442–481)
 
-Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL). Leaflet fully removed.
+Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL), followed by ongoing map-surface stabilization and layout refinement. Leaflet is fully removed.
 
-| Pass | Title                                                  | Status  |
-| ---- | ------------------------------------------------------ | ------- |
-| 442  | Map + Dashboard security hardening                     | ✅ Done |
-| 443  | Runtime safety — .charAt/.split guards                 | ✅ Done |
-| 444  | Map tile upgrade — OSM → CARTO Voyager                 | ✅ Done |
-| 445  | Type safety — remove `as any` cast                     | ✅ Done |
-| 446  | MapLibre Phase 1 — Core coverage map engine swap       | ✅ Done |
-| 447  | ShopDirectory + Dashboard MapLibre migration           | ✅ Done |
-| 448  | Remove Leaflet entirely — 14 files, 2021 lines deleted | ✅ Done |
-| 449  | MapLibre popup + attribution CSS (glass blur)          | ✅ Done |
-| 450  | MapLibre code fixes (audit findings)                   | ✅ Done |
-| 451  | Route line glow + GPS position glow effects            | ✅ Done |
-| 452  | Master context + map docs MapLibre alignment           | ✅ Done |
-| 453  | Dashboard preview click + popup-selection sync         | ✅ Done |
-| 454  | Extract shared MapLibre controllers + helpers          | ✅ Done |
-| 455  | Dashboard preview controlled viewport fix              | ✅ Done |
-| 456  | Remove dead ServiceCoverageMap popup code              | ✅ Done |
-| 457  | Fix ShopDirectory `attributionControl` typing          | ✅ Done |
-| 462  | Extract shop directory Source/Layer block              | ✅ Done |
+| Pass | Title                                                        | Status  |
+| ---- | ------------------------------------------------------------ | ------- |
+| 442  | Map + Dashboard security hardening                           | ✅ Done |
+| 443  | Runtime safety — .charAt/.split guards                       | ✅ Done |
+| 444  | Map tile upgrade — OSM → CARTO Voyager                       | ✅ Done |
+| 445  | Type safety — remove `as any` cast                           | ✅ Done |
+| 446  | MapLibre Phase 1 — Core coverage map engine swap             | ✅ Done |
+| 447  | ShopDirectory + Dashboard MapLibre migration                 | ✅ Done |
+| 448  | Remove Leaflet entirely — 14 files, 2021 lines deleted       | ✅ Done |
+| 449  | MapLibre popup + attribution CSS (glass blur)                | ✅ Done |
+| 450  | MapLibre code fixes (audit findings)                         | ✅ Done |
+| 451  | Route line glow + GPS position glow effects                  | ✅ Done |
+| 452  | Master context + map docs MapLibre alignment                 | ✅ Done |
+| 453  | Dashboard preview click + popup-selection sync               | ✅ Done |
+| 454  | Extract shared MapLibre controllers + helpers                | ✅ Done |
+| 455  | Dashboard preview controlled viewport fix                    | ✅ Done |
+| 456  | Remove dead ServiceCoverageMap popup code                    | ✅ Done |
+| 457  | Fix ShopDirectory `attributionControl` typing                | ✅ Done |
+| 458  | MapLibre stabilization + doc truth sync                      | ✅ Done |
+| 459  | Add directions CTA to shop map popup                         | ✅ Done |
+| 460  | Shop marker visual hierarchy + labels                        | ✅ Done |
+| 461  | Mobile-first bottom overlay + always-visible legend          | ✅ Done |
+| 462  | Extract shop directory Source/Layer block                    | ✅ Done |
+| 463  | County labels + search-radius distance label                 | ✅ Done |
+| 464  | Immersive map mobile layout improvements                     | ✅ Done |
+| 465  | Premium route polyline outline layer                         | ✅ Done |
+| 466  | Dark overlay contrast boost (isolated map pane)              | ✅ Done |
+| 467  | Feed live GPS into shop navigation intelligence              | ✅ Done |
+| 468  | Keep shop map popup synced with sidebar selection            | ✅ Done |
+| 469  | Extract coverage-map route and marker layers                 | ✅ Done |
+| 470  | Safe-area bottom spacing + legend polish                     | ✅ Done |
+| 471  | In-app directions default + live routes + nationwide origins | ✅ Done |
+| 472  | Coverage control polish: icons + glass backgrounds           | ✅ Done |
+| 473  | Coverage tabs in-app routing handoff                         | ✅ Done |
+| 474  | Coverage landing/dashboard in-app navigation default         | ✅ Done |
+| 475  | Insurer mapped partner shops → BidOnDent Maps               | ✅ Done |
+| 476  | Coverage browse origin lock + landing command-bar cleanup   | ✅ Done |
+| 477  | Demote external export in active navigation sheet           | ✅ Done |
+| 478  | Public coverage nationwide address-origin search            | ✅ Done |
+| 479  | Fullscreen light-theme + mobile navigation chrome cleanup   | ✅ Done |
+| 480  | Live dashboard/shop/insurer report feed + photo cards       | ✅ Done |
+| 481  | Mobile map scroll + smart-shop menu cleanup                 | ✅ Done |
+| 482  | Compact mobile shop-card cleanup + dashboard CTA clarity    | ✅ Done |
+| 483  | Route-preview panel light/mobile cleanup                    | ✅ Done |
 
 **MapLibre architecture:**
 
@@ -501,6 +537,21 @@ Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL). Leaflet fu
 - `mapLibreStyles.ts` — tile StyleSpecifications (raster tile sources)
 - `mapLibreControllers.tsx` — reusable `useMap()` camera controllers
 - `mapLibreHelpers.ts` — shared geometry helper extraction
+- `ShopDirectoryMapPaneOverlays.tsx` — extracted map-pane chrome (badges, legend, search pills)
+- `MapLibreCoverageMapLayers.tsx` — extracted coverage-map route/county/GPS/search-target layers
+- `ShopDirectoryMapLayers.tsx` — extracted shop-directory route/marker layers
+- `ShopDirectoryOriginSearch.tsx` — reusable U.S.-wide origin search lane for shop flow
+- `useShopDirectoryRoutePreview.ts` — real OSRM-backed shop-route alternatives with local fallback
+- `DashboardRouter.tsx` — now merges marketplace reports with hydrated local report/photo state before allowing shop/insurer dashboards to fall back to demo seed data
+- `ShopRequestCard.tsx` / `InsurerClaimCard.tsx` — downstream role cards now surface preview imagery from live submitted reports
+- Landing coverage and dashboard coverage widgets now open BidOnDent Maps first for shop directions; Apple/Google/Waze are retained only as explicit export fallback from the active navigation summary sheet
+- Coverage browse/landing surfaces now keep ZIP/address search targets authoritative until the user explicitly switches to geolocation mode; passive background GPS no longer hijacks browse route previews
+- Public landing coverage search now accepts U.S.-wide ZIP, home, and store-address input, persisting manual address origins into nearby-shop routing and fullscreen coverage navigation
+- Active navigation summary chrome now keeps Apple/Google/Waze hidden behind an explicit export disclosure, reinforcing BidOnDent Maps as the primary live route mode
+- Fullscreen light-mode browse/navigation shells now use cooler slate-blue glass and tighter mobile-safe route chrome instead of the earlier washed-out white treatment
+- Compact mobile shop-result cards now prioritize route start, lighter supporting actions, and smaller score treatment instead of carrying full desktop card density into fullscreen browse states
+- Route-preview cards now use appearance-aware styling and shorter pre-navigation step stacks so route planning stays readable on phones and in light mode
+- Insurer mapped partner-shop cards now preselect a destination in website map memory and open the BidOnDent shop-directory map flow; manual prospects still export externally
 - GeoJSON Source + Layer approach for all markers (data-driven paint expressions)
 - `useMap()` imperative API for viewport management
 - Route glow: `line-blur` paint property for premium Apple Maps-like effect

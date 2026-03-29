@@ -69,6 +69,39 @@ export function useNavigationSession(authUserId?: string): NavigationSessionActi
     };
   }, [storageOwnerKey, cloudSyncEnabled]);
 
+  useEffect(() => {
+    if (!session.activatedAt || (session.status !== "active" && session.status !== "paused")) {
+      return;
+    }
+
+    const syncActiveSeconds = () => {
+      setSession((prev) => {
+        if (
+          !prev.activatedAt ||
+          (prev.status !== "active" && prev.status !== "paused" && prev.status !== "ended")
+        ) {
+          return prev;
+        }
+
+        const nextActiveSeconds = computeActiveSeconds(prev);
+        if (nextActiveSeconds === prev.activeSeconds) {
+          return prev;
+        }
+
+        return { ...prev, activeSeconds: nextActiveSeconds };
+      });
+    };
+
+    syncActiveSeconds();
+
+    if (session.status !== "active") {
+      return;
+    }
+
+    const intervalId = window.setInterval(syncActiveSeconds, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [session.activatedAt, session.pauses, session.status]);
+
   const dispatch = useCallback(
     (event: NavigationSessionEvent) => {
       setSession((prev) => {

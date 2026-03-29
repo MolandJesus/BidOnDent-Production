@@ -199,7 +199,7 @@ export default function NavigationDiscoveryPlacesList({
               className={theme.primaryButtonClassName}
             >
               <Navigation className="h-4 w-4" />
-              Open in Maps
+              Open on map
             </button>
             {selectedDiscoveryPlace.website ? (
               <a
@@ -276,7 +276,7 @@ export default function NavigationDiscoveryPlacesList({
               className={theme.primaryButtonClassName}
             >
               <Navigation className="h-4 w-4" />
-              Open in Maps
+              Open on map
             </button>
             {place.website ? (
               <a

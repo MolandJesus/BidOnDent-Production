@@ -13,14 +13,12 @@ import {
   buildRoleAwareMapHighlights,
   buildRoleAwareRouteSummary,
   buildShopMapListings,
-  buildShopRouteOptions,
   getRoleCollectionKey,
   getRoleCollectionTitle,
   getSuggestedSearchOrigins,
 } from "../services/intelligence/shopMapExperience";
 import { convertPartnerShopsToProfiles } from "../services/intelligence/directoryAdapters";
-import { getNavigationProviderLabel } from "../services/navigation/externalNavigation";
-import { loadNavigationSession } from "../services/navigation/navigationSession";
+import type { NavigationAddressResult, NavigationAddressSuggestion } from "../types/navigation";
 import type {
   Coordinates,
   MapTheme,
@@ -31,10 +29,17 @@ import type {
   SavedPlace,
 } from "../types/mapDomain";
 import { useCoveragePartnerShops } from "./useCoveragePartnerShops";
+import { useNavigationAddressSearch } from "./useNavigationAddressSearch";
 import { useNetworkDirectory } from "./useNetworkDirectory";
 import { useShopDirectoryHandlers } from "./useShopDirectoryHandlers";
+import { useShopDirectoryRoutePreview } from "./useShopDirectoryRoutePreview";
 import { useUserGeolocation } from "./useUserGeolocation";
-import { getContextChips, slugify } from "./shopDirectorySessionUtils";
+import {
+  buildPlaceFromAddressResult,
+  buildPlaceFromAddressSuggestion,
+  getContextChips,
+  slugify,
+} from "./shopDirectorySessionUtils";
 
 type UseShopDirectorySessionArgs = {
   identity?: WebsiteIdentity | null;
@@ -55,8 +60,9 @@ export function useShopDirectorySession({
   reports,
 }: UseShopDirectorySessionArgs) {
   const { inventory } = useNetworkDirectory();
-  const { partnerShops } = useCoveragePartnerShops();
+  const { partnerShops, usingDemoFallback } = useCoveragePartnerShops();
   const geolocation = useUserGeolocation();
+  const originSearch = useNavigationAddressSearch();
   const savedMemory = loadWebsiteSessionMemory(identity);
   const suggestedOrigins = getSuggestedSearchOrigins();
 
@@ -207,10 +213,11 @@ export function useShopDirectorySession({
     roleCollectionIds.includes(shop.id)
   );
 
-  const routeOptions = buildShopRouteOptions({
-    origin: selectedOrigin,
-    shop: selectedShop,
-  });
+  const { routeOptions, isLoadingRoutes, routeError, usingLiveRoutes } =
+    useShopDirectoryRoutePreview({
+      selectedOrigin,
+      selectedShop,
+    });
 
   const selectedRoute =
     routeOptions.find((route) => route.id === selectedRouteId) || routeOptions[0] || null;
@@ -221,8 +228,7 @@ export function useShopDirectorySession({
     userType,
   });
 
-  const preferredDirectionsProvider = loadNavigationSession()?.provider || "google";
-  const directionsActionLabel = `Directions (${getNavigationProviderLabel(preferredDirectionsProvider)})`;
+  const directionsActionLabel = "Get Directions";
 
   const showMapPane = mapViewMode !== "list";
   const isImmersive = mapViewMode === "map";
@@ -233,6 +239,32 @@ export function useShopDirectorySession({
           place.id === `saved-place-${selectedOrigin.placeId || slugify(selectedOrigin.name)}`
       )
     : false;
+
+  const handleSelectOriginSearchResult = (result: NavigationAddressResult) => {
+    originSearch.chooseAddressResult(result);
+    setSelectedOrigin(buildPlaceFromAddressResult(result));
+    setMapCenter({
+      latitude: result.lat,
+      longitude: result.lng,
+    });
+    setSearchWithinViewport(false);
+  };
+
+  const handleSelectOriginSuggestion = (suggestion: NavigationAddressSuggestion) => {
+    originSearch.selectManualOrigin({
+      lat: suggestion.coordinate.lat,
+      lng: suggestion.coordinate.lng,
+      county: suggestion.subtitle,
+      label: suggestion.title,
+      source: "address",
+    });
+    setSelectedOrigin(buildPlaceFromAddressSuggestion(suggestion));
+    setMapCenter({
+      latitude: suggestion.coordinate.lat,
+      longitude: suggestion.coordinate.lng,
+    });
+    setSearchWithinViewport(false);
+  };
 
   // ── Auto-center on geolocation when no prior origin saved ──
   useEffect(() => {
@@ -336,7 +368,7 @@ export function useShopDirectorySession({
   ]);
 
   // ── Handlers (extracted) ──
-  const handlers = useShopDirectoryHandlers({
+  const baseHandlers = useShopDirectoryHandlers({
     searchQuery,
     selectedOrigin,
     mapListingsLength: mapListings.length,
@@ -349,10 +381,32 @@ export function useShopDirectorySession({
     setShopWatchlistIds,
     setInsurerShortlistIds,
     setMapTheme,
+    setMapViewMode,
     setMapCenter,
     setSearchWithinViewport,
     geolocation,
   });
+
+  const handleSelectOrigin = (origin: Place) => {
+    originSearch.setAddressQuery("");
+    originSearch.clearManualOrigin();
+    baseHandlers.handleSelectOrigin(origin);
+    setSearchWithinViewport(false);
+  };
+
+  const handleClearOrigin = () => {
+    originSearch.setAddressQuery("");
+    originSearch.clearManualOrigin();
+    setSelectedOrigin(null);
+    setSearchWithinViewport(false);
+  };
+
+  const handleUseMyLocation = () => {
+    originSearch.setAddressQuery("");
+    originSearch.clearManualOrigin();
+    baseHandlers.handleUseMyLocation();
+    setSearchWithinViewport(false);
+  };
 
   return {
     // State
@@ -399,14 +453,31 @@ export function useShopDirectorySession({
     routeOptions,
     selectedRoute,
     routeSummary,
+    isLoadingRoutes,
+    routeError,
+    usingLiveRoutes,
     directionsActionLabel,
     suggestedOrigins,
+    originSearchQuery: originSearch.addressQuery,
+    originSearchResults: originSearch.addressResults,
+    originSuggestions: originSearch.addressSuggestions,
+    isSearchingOrigins: originSearch.isSearchingAddresses,
+    originSearchError: originSearch.addressError,
     showMapPane,
     isImmersive,
     currentOriginIsSaved,
     // Handlers
-    ...handlers,
+    ...baseHandlers,
+    handleSelectOrigin,
+    handleClearOrigin,
+    handleUseMyLocation,
+    handleSearchOrigin: originSearch.searchAddresses,
+    handleOriginSearchQueryChange: originSearch.setAddressQuery,
+    handleSelectOriginSearchResult,
+    handleSelectOriginSuggestion,
     // Geolocation
     userGeolocation: geolocation,
+    // Data source
+    usingDemoFallback,
   };
 }

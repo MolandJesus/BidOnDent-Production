@@ -55,7 +55,7 @@ export default function ManualProspectCard({
             className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors bd-glass-control--utility"
           >
             <Compass className="h-4 w-4" />
-            Directions
+            Export Directions
           </button>
         </div>
 

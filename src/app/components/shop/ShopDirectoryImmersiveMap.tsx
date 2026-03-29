@@ -7,6 +7,11 @@ import ShopDirectoryResultCard from "./ShopDirectoryResultCard";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
+import type { NavigationSessionStatus } from "../../features/navigation";
+import {
+  getShopRouteActionLabel,
+  shouldUseShopNavigationAction,
+} from "../../hooks/shopDirectorySessionUtils";
 import { getRoleCollectionActionLabels } from "../../services/intelligence/shopMapExperience";
 import type {
   Coordinates,
@@ -42,15 +47,32 @@ type ShopDirectoryImmersiveMapProps = {
   primaryColor: string;
   directionsActionLabel: string;
   searchQuery: string;
+  navigationSessionStatus: NavigationSessionStatus;
+  navigationSessionDestinationId: string | null;
+  sessionActiveSeconds: number;
+  hasArrived?: boolean;
+  remainingEtaLabel?: string | null;
+  remainingDistanceLabel?: string | null;
+  usingLiveRoutes?: boolean;
+  routeError?: string;
+  isLoadingRoute?: boolean;
+  guidanceOverlay?: React.ReactNode;
+  followCurrentPosition?: boolean;
+  followCurrentPositionRevision?: number;
   deviationPrompt?: React.ReactNode;
   navigationMode: "browse" | "route-preview" | "guidance";
 
   onSearchQueryChange: (query: string) => void;
   onSearchSubmit: (event: FormEvent) => void;
-  onSelectShop: (id: number) => void;
+  onSelectShop: (id: number | null) => void;
   onSelectRoute: (id: string) => void;
   onToggleRoleCollection: (shopId: number) => void;
   onOpenShopDirections: (shop: ShopMapListing) => void;
+  onStartNavigation?: (shop: ShopMapListing) => void;
+  onPauseNavigation?: () => void;
+  onResumeNavigation?: () => void;
+  onEndNavigation?: () => void;
+  onRecenterNavigation?: () => void;
   onSetMapCenter: (center: Coordinates) => void;
   onSetMapZoom: (zoom: number) => void;
   onSetMapViewportBounds: (bounds: MapViewportBounds) => void;
@@ -79,6 +101,18 @@ export default function ShopDirectoryImmersiveMap({
   primaryColor,
   directionsActionLabel,
   searchQuery,
+  navigationSessionStatus,
+  navigationSessionDestinationId,
+  sessionActiveSeconds,
+  hasArrived = false,
+  remainingEtaLabel,
+  remainingDistanceLabel,
+  usingLiveRoutes = false,
+  routeError = "",
+  isLoadingRoute = false,
+  guidanceOverlay,
+  followCurrentPosition = false,
+  followCurrentPositionRevision = 0,
   deviationPrompt,
   navigationMode,
   onSearchQueryChange,
@@ -87,6 +121,11 @@ export default function ShopDirectoryImmersiveMap({
   onSelectRoute,
   onToggleRoleCollection,
   onOpenShopDirections,
+  onStartNavigation,
+  onPauseNavigation,
+  onResumeNavigation,
+  onEndNavigation,
+  onRecenterNavigation,
   onSetMapCenter,
   onSetMapZoom,
   onSetMapViewportBounds,
@@ -149,25 +188,70 @@ export default function ShopDirectoryImmersiveMap({
           suppressHeader
           userCoords={userCoords}
           userType={userType}
+          followCurrentPosition={followCurrentPosition}
+          followCurrentPositionRevision={followCurrentPositionRevision}
           onOpenShopDirections={onOpenShopDirections}
+          onStartNavigation={onStartNavigation}
+          navigationSessionStatus={navigationSessionStatus}
+          navigationSessionDestinationId={navigationSessionDestinationId}
           directionsActionLabel={directionsActionLabel}
+          hasArrived={hasArrived}
+          isLoadingRoute={isLoadingRoute}
+          remainingDistanceLabel={remainingDistanceLabel}
+          remainingEtaLabel={remainingEtaLabel}
+          routeError={routeError}
+          usingLiveRoutes={usingLiveRoutes}
         >
-          <ShopDirectoryMapOverlays
-            deviationPrompt={deviationPrompt}
-            directionsLabel={directionsActionLabel}
-            intelligenceCallouts={roleHighlights.callouts}
-            intelligenceTitle={roleHighlights.title}
-            mapTheme={mapTheme}
-            navigationMode={navigationMode}
-            onSelectRoute={onSelectRoute}
-            onStartNavigation={selectedShop ? () => onOpenShopDirections(selectedShop) : undefined}
-            routeOptions={routeOptions}
-            routeSummary={routeSummary}
-            selectedOrigin={selectedOrigin}
-            selectedRoute={selectedRoute}
-            selectedShop={selectedShop}
-            overlayTopClass="top-28"
-          />
+          <>
+            <ShopDirectoryMapOverlays
+              deviationPrompt={deviationPrompt}
+              directionsLabel={
+                selectedShop
+                  ? getShopRouteActionLabel({
+                      shopId: selectedShop.id,
+                      routeReady: Boolean(selectedOrigin && selectedRoute),
+                      defaultLabel: directionsActionLabel,
+                      navigationSessionStatus,
+                      navigationSessionDestinationId,
+                    })
+                  : directionsActionLabel
+              }
+              intelligenceCallouts={roleHighlights.callouts}
+              intelligenceTitle={roleHighlights.title}
+              mapTheme={mapTheme}
+              navigationMode={navigationMode}
+              onEndNavigation={onEndNavigation}
+              onPauseNavigation={onPauseNavigation}
+              onRecenterNavigation={onRecenterNavigation}
+              onResumeNavigation={onResumeNavigation}
+              onSelectRoute={onSelectRoute}
+              onStartNavigation={
+                selectedShop
+                  ? () =>
+                      onStartNavigation
+                        ? onStartNavigation(selectedShop)
+                        : onOpenShopDirections(selectedShop)
+                  : undefined
+              }
+              routeOptions={routeOptions}
+              routeSummary={routeSummary}
+              hasArrived={hasArrived}
+              remainingDistanceLabel={remainingDistanceLabel}
+              remainingEtaLabel={remainingEtaLabel}
+              routeError={routeError}
+              sessionActiveSeconds={sessionActiveSeconds}
+              sessionDestinationId={navigationSessionDestinationId}
+              sessionDestinationLabel={selectedShop?.name ?? null}
+              sessionStatus={navigationSessionStatus}
+              isLoadingRoute={isLoadingRoute}
+              selectedOrigin={selectedOrigin}
+              selectedRoute={selectedRoute}
+              selectedShop={selectedShop}
+              usingLiveRoutes={usingLiveRoutes}
+              overlayTopClass="top-28"
+            />
+            {guidanceOverlay}
+          </>
         </ShopDirectoryMapPane>
       </div>
 
@@ -176,25 +260,25 @@ export default function ShopDirectoryImmersiveMap({
         className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-3 pb-8 sm:px-4`}
         style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0.75rem))" }}
       >
-        <div className="pointer-events-auto flex items-center gap-2 sm:gap-3">
+        <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2.5">
           {/* Back */}
           <button
-            className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
+            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-11 ${iconBtn}`}
             onClick={onBack}
             type="button"
             aria-label="Back to shop directory"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </button>
 
           {/* Map-owned search */}
           <form className="flex-1" onSubmit={onSearchSubmit}>
             <div className="relative max-w-lg">
               <Search
-                className={`pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`}
+                className={`pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`}
               />
               <input
-                className={`w-full rounded-full border py-2.5 pl-9 pr-4 text-sm shadow-xl outline-none backdrop-blur-md transition-colors ${searchInput}`}
+                className={`w-full rounded-full border py-2.5 pl-9 pr-4 text-sm shadow-xl outline-none backdrop-blur-md transition-colors sm:py-2.5 ${searchInput}`}
                 onChange={(event) => onSearchQueryChange(event.target.value)}
                 placeholder="Search shops, programs, specialties..."
                 type="text"
@@ -205,35 +289,35 @@ export default function ShopDirectoryImmersiveMap({
 
           {/* Results drawer toggle */}
           <button
-            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${drawerOpen ? listBtnActive : listBtnInactive}`}
+            className={`flex h-10 items-center gap-1.5 rounded-full border px-2.5 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:gap-2 sm:px-3 ${drawerOpen ? listBtnActive : listBtnInactive}`}
             onClick={() => setDrawerOpen((v) => !v)}
             type="button"
             aria-expanded={drawerOpen}
             aria-label="Toggle results drawer"
           >
-            <List className="h-4 w-4" />
+            <List className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">{mapListings.length}</span>
           </button>
 
-          {/* Mode switches — hidden on small mobile to save space */}
+          {/* Mode switches */}
           <button
-            className={`hidden sm:flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
+            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-auto sm:gap-2 sm:px-3 sm:text-sm sm:font-medium ${iconBtn}`}
             onClick={() => onSwitchMode("hybrid")}
             type="button"
             aria-label="Switch to split view"
           >
-            <Layers3 className="h-4 w-4" />
+            <Layers3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Split</span>
           </button>
 
           {/* Theme toggle */}
           <button
-            className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
+            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-11 ${iconBtn}`}
             onClick={onToggleTheme}
             type="button"
             aria-label={mapTheme === "light" ? "Switch to dark map" : "Switch to light map"}
           >
-            <SunMoon className="h-4 w-4" />
+            <SunMoon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </button>
         </div>
       </div>
@@ -241,12 +325,19 @@ export default function ShopDirectoryImmersiveMap({
       {/* Collapsible results drawer — bottom sheet on mobile, side drawer on sm+ */}
       {drawerOpen && (
         <aside
-          className={`absolute inset-x-0 bottom-0 z-[530] flex max-h-[60vh] flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}
+          className={`pointer-events-auto absolute inset-x-0 bottom-0 z-[530] flex max-h-[72vh] touch-pan-y flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}
           role="region"
           aria-label="Shop results"
           onKeyDown={(e) => e.key === "Escape" && setDrawerOpen(false)}
+          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
-          <div className={`flex items-center justify-between border-b px-4 py-3 ${drawerDivider}`}>
+          {/* Mobile drag handle indicator */}
+          <div className="flex justify-center py-2 sm:hidden">
+            <div className={`h-1 w-10 rounded-full ${isDark ? "bg-white/20" : "bg-black/15"}`} />
+          </div>
+          <div
+            className={`flex items-center justify-between border-b px-4 py-3 sm:pt-3 ${drawerDivider}`}
+          >
             <div>
               <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${drawerLabel}`}>
                 Results
@@ -265,7 +356,7 @@ export default function ShopDirectoryImmersiveMap({
             </button>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto p-4">
+          <div className="flex-1 min-h-0 space-y-3 overflow-y-auto overscroll-y-contain p-4 touch-pan-y [-webkit-overflow-scrolling:touch]">
             {mapListings.length === 0 && (
               <div
                 className={`rounded-2xl border border-dashed p-4 ${isDark ? "border-blue-300/20 bg-blue-500/[0.04]" : "border-blue-200 bg-blue-50"}`}
@@ -278,7 +369,7 @@ export default function ShopDirectoryImmersiveMap({
                 <p
                   className={`mt-1 text-xs leading-5 ${isDark ? "text-slate-300/80" : "text-slate-500"}`}
                 >
-                  Try broadening the search or changing the sort.
+                  Try broadening the search, switching to Smart Match, or removing the 4.5+ filter.
                 </p>
               </div>
             )}
@@ -288,18 +379,57 @@ export default function ShopDirectoryImmersiveMap({
                 userType,
                 roleCollectionIds.includes(shop.id)
               );
+              const shopOwnsSessionDestination = navigationSessionDestinationId === String(shop.id);
+              const hasArrivedForShop = hasArrived && selectedShopId === shop.id;
+              const routeReadyForShop = Boolean(
+                onStartNavigation && selectedOrigin && selectedRoute && selectedShopId === shop.id
+              );
+              const routeStatusLabel = hasArrivedForShop
+                ? "Arrived"
+                : shopOwnsSessionDestination && navigationSessionStatus === "paused"
+                  ? "Paused route"
+                  : shopOwnsSessionDestination && navigationSessionStatus === "active"
+                    ? "Live guidance"
+                    : null;
+              const routeStatusTone = hasArrivedForShop
+                ? ("arrived" as const)
+                : navigationSessionStatus === "paused"
+                  ? ("paused" as const)
+                  : ("live" as const);
+              const shouldUseNavigationAction = Boolean(
+                onStartNavigation &&
+                  shouldUseShopNavigationAction({
+                    shopId: shop.id,
+                    routeReady: routeReadyForShop,
+                    navigationSessionStatus,
+                    navigationSessionDestinationId,
+                  })
+              );
 
               return (
                 <ShopDirectoryResultCard
                   compact
-                  directionsActionLabel={directionsActionLabel}
+                  directionsActionLabel={getShopRouteActionLabel({
+                    shopId: shop.id,
+                    routeReady: routeReadyForShop,
+                    hasArrived: hasArrivedForShop,
+                    defaultLabel: directionsActionLabel,
+                    navigationSessionStatus,
+                    navigationSessionDestinationId,
+                  })}
                   isSelected={selectedShopId === shop.id}
                   key={shop.id}
-                  onDirectionsAction={() => onOpenShopDirections(shop)}
+                  onDirectionsAction={() =>
+                    shouldUseNavigationAction && onStartNavigation
+                      ? onStartNavigation(shop)
+                      : onOpenShopDirections(shop)
+                  }
                   onPrimaryAction={() => onToggleRoleCollection(shop.id)}
                   onSecondaryAction={() => onSelectShop(shop.id)}
                   primaryActionLabel={roleAction.primary}
                   primaryColor={primaryColor}
+                  routeStatusLabel={routeStatusLabel}
+                  routeStatusTone={routeStatusTone}
                   secondaryActionLabel={roleHighlights.secondaryActionLabel}
                   shop={shop}
                 />

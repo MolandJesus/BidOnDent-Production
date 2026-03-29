@@ -241,7 +241,7 @@ export default function InsurerPartnerShopCard({
             className="flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-medium bd-glass-control--utility"
           >
             <Compass className="h-4 w-4" />
-            <span className="text-xs">Directions</span>
+            <span className="text-center text-xs">BidOnDent Maps</span>
           </button>
           <button
             onClick={() =>

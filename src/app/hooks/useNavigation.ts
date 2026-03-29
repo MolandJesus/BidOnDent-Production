@@ -3,6 +3,11 @@ import { useState, useRef, useEffect } from "react";
 import type { ViewMode } from "../types";
 
 const NAVIGATION_STORAGE_KEY = "bidondent_navigation_state";
+const FALLBACK_NAVIGATION_STATE = {
+  currentTab: "home",
+  viewMode: "dashboard" as ViewMode,
+  selectedReportId: null as string | null,
+};
 
 const VALID_VIEW_MODES = new Set<string>([
   "dashboard",
@@ -19,40 +24,79 @@ const VALID_VIEW_MODES = new Set<string>([
   "demo-switcher",
 ]);
 
+function persistSavedState(state: typeof FALLBACK_NAVIGATION_STATE) {
+  try {
+    localStorage.setItem(NAVIGATION_STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("Error saving navigation state:", error);
+  }
+}
+
+function clearSavedState() {
+  try {
+    localStorage.removeItem(NAVIGATION_STORAGE_KEY);
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("Error clearing navigation state:", error);
+  }
+}
+
 // Load saved navigation state from localStorage with shape validation
 const loadSavedState = () => {
-  const fallback = {
-    currentTab: "home",
-    viewMode: "dashboard" as ViewMode,
-    selectedReportId: null as string | null,
-  };
-
   try {
     const saved = localStorage.getItem(NAVIGATION_STORAGE_KEY);
-    if (!saved) return fallback;
+    if (!saved) return FALLBACK_NAVIGATION_STATE;
 
-    const parsed = JSON.parse(saved);
-    if (typeof parsed !== "object" || parsed === null) return fallback;
+    const parsed: unknown = JSON.parse(saved);
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+      clearSavedState();
+      return FALLBACK_NAVIGATION_STATE;
+    }
 
-    const currentTab = typeof parsed.currentTab === "string" ? parsed.currentTab : "home";
-    const viewMode = VALID_VIEW_MODES.has(parsed.viewMode)
-      ? (parsed.viewMode as ViewMode)
-      : "dashboard";
+    const navigationState = parsed as Record<string, unknown>;
+    const currentTab =
+      typeof navigationState.currentTab === "string" && navigationState.currentTab.trim().length > 0
+        ? navigationState.currentTab
+        : FALLBACK_NAVIGATION_STATE.currentTab;
+    const viewMode =
+      typeof navigationState.viewMode === "string" && VALID_VIEW_MODES.has(navigationState.viewMode)
+        ? (navigationState.viewMode as ViewMode)
+        : FALLBACK_NAVIGATION_STATE.viewMode;
     const selectedReportId =
-      typeof parsed.selectedReportId === "string" ? parsed.selectedReportId : null;
+      typeof navigationState.selectedReportId === "string" &&
+      navigationState.selectedReportId.trim().length > 0
+        ? navigationState.selectedReportId
+        : null;
 
-    return { currentTab, viewMode, selectedReportId };
-  } catch {
-    return fallback;
+    const isValidSavedState =
+      typeof navigationState.currentTab === "string" &&
+      navigationState.currentTab.trim().length > 0 &&
+      typeof navigationState.viewMode === "string" &&
+      VALID_VIEW_MODES.has(navigationState.viewMode) &&
+      (navigationState.selectedReportId === undefined ||
+        navigationState.selectedReportId === null ||
+        (typeof navigationState.selectedReportId === "string" &&
+          navigationState.selectedReportId.trim().length > 0));
+
+    const sanitizedState = { currentTab, viewMode, selectedReportId };
+    if (!isValidSavedState) {
+      persistSavedState(sanitizedState);
+    }
+
+    return sanitizedState;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("Error loading navigation state:", error);
+    clearSavedState();
+    return FALLBACK_NAVIGATION_STATE;
   }
 };
 
 export function useNavigation() {
   // Use lazy initialization to only load once on mount
-  const [currentTab, setCurrentTab] = useState(() => loadSavedState().currentTab);
-  const [viewMode, setViewMode] = useState<ViewMode>(() => loadSavedState().viewMode);
+  const [savedNavigationState] = useState(loadSavedState);
+  const [currentTab, setCurrentTab] = useState(savedNavigationState.currentTab);
+  const [viewMode, setViewMode] = useState<ViewMode>(savedNavigationState.viewMode);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(
-    () => loadSavedState().selectedReportId
+    savedNavigationState.selectedReportId
   );
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingComplete, setOnboardingComplete] = useState(false);
@@ -84,11 +128,7 @@ export function useNavigation() {
       selectedReportId,
     };
 
-    try {
-      localStorage.setItem(NAVIGATION_STORAGE_KEY, JSON.stringify(navigationState));
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Error saving navigation state:", error);
-    }
+    persistSavedState(navigationState);
 
     // Skip pushing when this update came from popstate (we're going backward)
     if (isRestoringFromHistory.current) {
@@ -103,7 +143,11 @@ export function useNavigation() {
   // Handle browser back/forward (popstate) — restore app state without pushing
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
-      const state = event.state as { currentTab?: string; viewMode?: string; selectedReportId?: string | null } | null;
+      const state = event.state as {
+        currentTab?: string;
+        viewMode?: string;
+        selectedReportId?: string | null;
+      } | null;
       isRestoringFromHistory.current = true;
       if (state?.viewMode && VALID_VIEW_MODES.has(state.viewMode)) {
         setViewMode(state.viewMode as ViewMode);

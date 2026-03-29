@@ -1,19 +1,12 @@
-import type { FormEvent } from "react";
-import {
-  Bookmark,
-  Layers3,
-  MapPin,
-  MapPinOff,
-  Navigation2,
-  Plus,
-  Search,
-  SunMoon,
-} from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { ChevronDown, Bookmark, Layers3, MapPinOff, Search, SunMoon } from "lucide-react";
 import type { ShopSortOption } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
+import type { NavigationAddressResult, NavigationAddressSuggestion } from "../../types/navigation";
 import { getRoleCollectionTitle } from "../../services/intelligence/shopMapExperience";
 import type { MapTheme, MapViewMode, Place, SavedPlace } from "../../types/mapDomain";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import ShopDirectoryOriginSearch from "./ShopDirectoryOriginSearch";
 
 const SORT_OPTIONS: Array<{ value: ShopSortOption; label: string }> = [
   { value: "smart-match", label: "Smart Match" },
@@ -37,6 +30,11 @@ type ShopDirectorySearchPanelProps = {
   selectedOrigin: Place | null;
   savedPlaces: SavedPlace[];
   suggestedOrigins: Place[];
+  originSearchQuery: string;
+  originSearchResults: NavigationAddressResult[];
+  originSuggestions: NavigationAddressSuggestion[];
+  isSearchingOrigins?: boolean;
+  originSearchError?: string;
   currentOriginIsSaved: boolean;
   primaryColor: string;
   secondaryColor: string;
@@ -55,6 +53,10 @@ type ShopDirectorySearchPanelProps = {
   onSortChange: (sort: ShopSortOption) => void;
   onViewModeChange: (mode: MapViewMode) => void;
   onSelectOrigin: (origin: Place) => void;
+  onOriginSearchQueryChange: (query: string) => void;
+  onSearchOrigin: () => void | Promise<void>;
+  onSelectOriginSearchResult: (result: NavigationAddressResult) => void;
+  onSelectOriginSuggestion: (suggestion: NavigationAddressSuggestion) => void;
   onClearOrigin: () => void;
   onSaveOrigin: () => void;
   onToggleTheme: () => void;
@@ -76,6 +78,11 @@ export default function ShopDirectorySearchPanel({
   selectedOrigin,
   savedPlaces,
   suggestedOrigins,
+  originSearchQuery,
+  originSearchResults,
+  originSuggestions,
+  isSearchingOrigins = false,
+  originSearchError,
   currentOriginIsSaved,
   primaryColor,
   secondaryColor,
@@ -90,6 +97,10 @@ export default function ShopDirectorySearchPanel({
   onSortChange,
   onViewModeChange,
   onSelectOrigin,
+  onOriginSearchQueryChange,
+  onSearchOrigin,
+  onSelectOriginSearchResult,
+  onSelectOriginSuggestion,
   onClearOrigin,
   onSaveOrigin,
   onToggleTheme,
@@ -102,6 +113,7 @@ export default function ShopDirectorySearchPanel({
   RoleIcon,
 }: ShopDirectorySearchPanelProps) {
   const isLight = appearanceMode === "light";
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(() => !showMapPane);
   const roleCollectionTitle = getRoleCollectionTitle(userType);
   const relatedScreenLabel =
     userType === "shop"
@@ -109,6 +121,12 @@ export default function ShopDirectorySearchPanel({
       : userType === "insurer"
         ? "Partner Shops"
         : "Saved Shops";
+  const mobileFilterSummary = [
+    VIEW_MODE_OPTIONS.find((option) => option.value === mapViewMode)?.label || "Hybrid",
+    SORT_OPTIONS.find((option) => option.value === sortBy)?.label || "Smart Match",
+    filterRating === 4.5 ? "4.5+" : "All ratings",
+    `Tiles: ${mapTheme === "light" ? "Dark" : "Light"}`,
+  ].join(" · ");
 
   return (
     <div
@@ -152,111 +170,27 @@ export default function ShopDirectorySearchPanel({
 
         <div className="grid gap-3 xl:grid-cols-2">
           <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <div
-                className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] ${
-                  isLight ? "text-blue-600/70" : "text-blue-200/50"
-                }`}
-              >
-                <MapPin className="h-3.5 w-3.5" />
-                Origin
-              </div>
-              {selectedOrigin && (
-                <button
-                  className={`min-h-[44px] rounded-full px-3 py-2 text-sm font-medium transition-colors ${
-                    isLight
-                      ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
-                      : "text-slate-400 hover:text-slate-200"
-                  }`}
-                  onClick={onClearOrigin}
-                  type="button"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            <div className="flex flex-wrap gap-1.5">
-              {onUseMyLocation && (
-                <button
-                  className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
-                    selectedOrigin?.placeId === "user-geolocation"
-                      ? isLight
-                        ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
-                        : "border-blue-400/60 bg-blue-500/20 text-white"
-                      : isLight
-                        ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 shadow-sm"
-                        : "border-emerald-400/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
-                  }`}
-                  disabled={isLocating}
-                  onClick={onUseMyLocation}
-                  type="button"
-                >
-                  <Navigation2 className={`h-3 w-3 ${isLocating ? "animate-pulse" : ""}`} />
-                  {isLocating ? "Locating…" : "My Location"}
-                </button>
-              )}
-              {suggestedOrigins.map((origin) => {
-                const isActive =
-                  (selectedOrigin?.placeId || selectedOrigin?.name) ===
-                  (origin.placeId || origin.name);
-
-                return (
-                  <button
-                    key={origin.placeId || origin.name}
-                    className={`min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive
-                        ? isLight
-                          ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
-                          : "border-blue-400/60 bg-blue-500/20 text-white"
-                        : isLight
-                          ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
-                          : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:border-blue-400/30 hover:bg-white/[0.08]"
-                    }`}
-                    onClick={() => onSelectOrigin(origin)}
-                    type="button"
-                  >
-                    {origin.name}
-                  </button>
-                );
-              })}
-            </div>
-
-            {locationError && (
-              <p className={`text-xs ${isLight ? "text-red-500" : "text-red-400/80"}`}>
-                {locationError}
-              </p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-1.5">
-              <button
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
-                  selectedOrigin
-                    ? isLight
-                      ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
-                      : "border-white/[0.10] text-slate-200 hover:bg-white/[0.06]"
-                    : isLight
-                      ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-400"
-                      : "cursor-not-allowed border-white/[0.05] bg-white/[0.02] text-slate-500"
-                }`}
-                disabled={!selectedOrigin}
-                onClick={onSaveOrigin}
-                type="button"
-              >
-                <Plus className="h-3 w-3" />
-                {currentOriginIsSaved ? "Saved" : "Save"}
-              </button>
-              {selectedOrigin && (
-                <span
-                  className={`truncate max-w-[180px] sm:max-w-xs text-xs ${
-                    isLight ? "text-slate-500" : "text-slate-400/70"
-                  }`}
-                  title={selectedOrigin.address}
-                >
-                  {selectedOrigin.address}
-                </span>
-              )}
-            </div>
+            <ShopDirectoryOriginSearch
+              currentOriginIsSaved={currentOriginIsSaved}
+              isLight={isLight}
+              isLocating={isLocating}
+              isSearchingOrigins={isSearchingOrigins}
+              locationError={locationError}
+              onClearOrigin={onClearOrigin}
+              onOriginSearchQueryChange={onOriginSearchQueryChange}
+              onSaveOrigin={onSaveOrigin}
+              onSearchOrigin={onSearchOrigin}
+              onSelectOrigin={onSelectOrigin}
+              onSelectOriginSearchResult={onSelectOriginSearchResult}
+              onSelectOriginSuggestion={onSelectOriginSuggestion}
+              onUseMyLocation={onUseMyLocation}
+              originSearchError={originSearchError}
+              originSearchQuery={originSearchQuery}
+              originSearchResults={originSearchResults}
+              originSuggestions={originSuggestions}
+              selectedOrigin={selectedOrigin}
+              suggestedOrigins={suggestedOrigins}
+            />
           </div>
 
           <div className="space-y-2">
@@ -290,66 +224,88 @@ export default function ShopDirectorySearchPanel({
               ))}
             </div>
 
-            <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-1.5">
-              <select
-                className={`col-span-2 min-h-[44px] rounded-full border px-3 py-2 text-sm outline-none sm:col-span-1 ${
-                  isLight
-                    ? "border-slate-200/80 bg-white text-slate-800 shadow-sm"
-                    : "border-white/[0.12] bg-white/[0.06] text-slate-200"
-                }`}
-                onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
-                value={sortBy}
-              >
-                {SORT_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+            <button
+              type="button"
+              onClick={() => setMobileFiltersOpen((current) => !current)}
+              className={`sm:hidden flex min-h-[44px] w-full items-center justify-between rounded-2xl border px-3 py-2.5 text-left text-sm transition-colors ${
+                isLight
+                  ? "border-slate-200 bg-white text-slate-700 shadow-sm"
+                  : "border-white/[0.10] bg-white/[0.04] text-slate-200"
+              }`}
+            >
+              <span className="min-w-0">
+                <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] opacity-70">
+                  Sort & filters
+                </span>
+                <span className="mt-0.5 block truncate text-sm">{mobileFilterSummary}</span>
+              </span>
+              <ChevronDown
+                className={`h-4 w-4 shrink-0 transition-transform ${mobileFiltersOpen ? "rotate-180" : ""}`}
+              />
+            </button>
 
-              <button
-                className={`min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
-                  filterRating === 4.5
-                    ? isLight
-                      ? "border-amber-400/60 bg-amber-50 text-amber-700 shadow-sm"
-                      : "border-amber-400/40 bg-amber-400/15 text-amber-300"
-                    : isLight
-                      ? "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50 shadow-sm"
-                      : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
-                }`}
-                onClick={() => onFilterRatingChange(filterRating === 4.5 ? 0 : 4.5)}
-                type="button"
-              >
-                4.5+ only
-              </button>
+            <div className={mobileFiltersOpen ? "space-y-2" : "hidden space-y-2 sm:block"}>
+              <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-1.5">
+                <select
+                  className={`col-span-2 min-h-[44px] rounded-full border px-3 py-2 text-sm outline-none sm:col-span-1 ${
+                    isLight
+                      ? "border-slate-200/80 bg-white text-slate-800 shadow-sm"
+                      : "border-white/[0.12] bg-white/[0.06] text-slate-200"
+                  }`}
+                  onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
+                  value={sortBy}
+                >
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
 
-              <button
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
-                  isLight
-                    ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
-                    : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
-                }`}
-                onClick={onToggleTheme}
-                type="button"
-              >
-                <SunMoon className="h-3 w-3" />
-                Tiles: {mapTheme === "light" ? "Dark" : "Light"}
-              </button>
+                <button
+                  className={`min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                    filterRating === 4.5
+                      ? isLight
+                        ? "border-amber-400/60 bg-amber-50 text-amber-700 shadow-sm"
+                        : "border-amber-400/40 bg-amber-400/15 text-amber-300"
+                      : isLight
+                        ? "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50 shadow-sm"
+                        : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+                  }`}
+                  onClick={() => onFilterRatingChange(filterRating === 4.5 ? 0 : 4.5)}
+                  type="button"
+                >
+                  4.5+ only
+                </button>
 
-              {searchWithinViewport && onClearAreaSearch && (
                 <button
                   className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
                     isLight
-                      ? "border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100"
-                      : "border-blue-400/40 bg-blue-500/15 text-blue-200 hover:bg-blue-500/25"
+                      ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                      : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
-                  onClick={onClearAreaSearch}
+                  onClick={onToggleTheme}
                   type="button"
                 >
-                  <MapPinOff className="h-3 w-3" />
-                  Area active
+                  <SunMoon className="h-3 w-3" />
+                  Tiles: {mapTheme === "light" ? "Dark" : "Light"}
                 </button>
-              )}
+
+                {searchWithinViewport && onClearAreaSearch && (
+                  <button
+                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                      isLight
+                        ? "border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                        : "border-blue-400/40 bg-blue-500/15 text-blue-200 hover:bg-blue-500/25"
+                    }`}
+                    onClick={onClearAreaSearch}
+                    type="button"
+                  >
+                    <MapPinOff className="h-3 w-3" />
+                    Area active
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

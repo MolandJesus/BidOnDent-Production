@@ -1,125 +1,109 @@
 # BidOnDent — Finishing Master Plan
 
-**Last updated:** March 28, 2026
-
+**Last updated:** March 29, 2026
 **Created:** 2026-03-25
-**Status:** Active execution policy (legacy roadmap archived)
-**Phase:** Pre-refactor stabilization and verification
-**Context:** Use current verification artifacts instead of legacy pass-number sequencing.
+**Status:** Active execution policy
+**Phase:** Pre-refactor stabilization, verification, and controlled completion
 
-This is the single source of truth for what remains to finish BidOnDent. It synthesizes insights from screenshots, all governing docs, ChatGPT analysis, and codebase audit.
+This doc defines **how finishing work should be prioritized and governed**. It is not the pass log, not the setup guide, and not the product-architecture source of truth.
 
-Pre-refactor verification references:
+Use alongside:
 
-- `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`
-- `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`
-
----
-
-## The Product Truth
-
-BidOnDent is a **map-first auto body repair marketplace**. The map is not a feature — it is the product. Everything else (reports, bids, shop discovery, insurer workflows) supports the spatial experience.
-
-The site is **109% past its original milestone** (185/160 passes). The design system is unified. The glass tokens are locked. The blue identity is established. What remains is not more polish — it is **product completion and coherence**.
-
-### What the screenshots confirm is strong
-
-- Hero section: premium, clean, honest
-- Map/coverage section: the strongest, most product-owned surface on the entire site
-- Report wizard: functional 5-step flow with cloud storage
-- Glass system: unified across all surfaces
-- Trust stats and copy: honest, no false claims
-- Business inquiry gateway: progressive disclosure, no wall-of-inputs
-
-### What the screenshots reveal as gaps
-
-- Light landing sections feel disconnected from the stronger map/dark identity
-- Dashboard feels like "UI with a map widget" not "map with floating panels"
-- Some navigation transitions crash ("Can't find variable: props")
-- Section stacking in lighter areas feels template-like
-- Customer journey (landing → report → bids → decision) doesn't yet feel like one connected spatial experience
+- `CLAUDE_AI_MASTER_CONTEXT.md` for product and architecture truth
+- `BIDONDENT_MAP_TRACKER_2026-03-21.md` for current execution reality
+- `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` for the verified baseline snapshot
+- `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md` for active validation coverage
 
 ---
+
+## Product Truth
+
+BidOnDent is a **map-first auto body repair marketplace**. The map is not a feature. It is the product surface that ties together damage reporting, shop discovery, routing, bids, and insurer workflows.
+
+The platform is past its original milestone and no longer needs broad idea generation. It needs disciplined completion, coherence, and verification.
+
+## What This Doc Owns
+
+- Finishing priorities
+- Validation discipline
+- Stop conditions
+- Rules for keeping completion work coherent
+
+## What This Doc Does Not Own
+
+- Pass-by-pass execution history
+- Setup instructions
+- Deep architecture reference
+- Historical sprint sequencing
+
+For those, use the tracker, setup guides, or archive.
 
 ## Hard Rules
 
-1. **NO new features** — finish what exists
-2. **NO scope expansion** — log unrelated issues, don't fix them
-3. **NO design experimentation** — the design system is locked
-4. **NO touching unrelated files** — surgical passes only
-5. **NO fantasy data or fake capabilities** — honesty is the product
-6. **NO skipping doc updates** — every pass updates the build dashboard
-7. **NO batching unrelated changes** — one pass, one goal
+1. **No silent scope expansion.** If a problem is real but outside the pass, log it instead of absorbing it.
+2. **No fake capability.** Product trust depends on honest behavior, copy, and data boundaries.
+3. **No broad rewrites during finishing work.** Prefer scoped slices, extraction, and verification.
+4. **No mixing unrelated work.** One coherent pass should have one main goal.
+5. **No doc drift.** If execution truth changes, update the relevant active docs in the same pass.
+6. **No bypassing architecture law.** Keep services, hooks, components, and backend boundaries intact.
 
----
+## Current Finishing Priorities
+
+1. Functional correctness across customer, shop, and insurer routes.
+2. Map-first continuity across the main product loop: report -> map -> shop -> action.
+3. Security, data-boundary, and trust issues before polish.
+4. Validation accuracy across baseline, matrix, and current tracker.
+5. Refactor readiness only after current behavior is clearly verified.
 
 ## Current Execution Policy
 
-This document previously used strict pass numbers (`Pass 186+`) as if upcoming work were fixed and sequential.
-That content is now **historical** and should not be treated as active sequencing guidance.
+Use this order when deciding what to do next:
 
-Active pre-refactor execution should use:
+1. Fix real breakage or trust failures first.
+2. Fix blockers in the core product loop next.
+3. Tighten architecture only when it directly reduces delivery risk.
+4. Polish only after behavior, trust, and verification are solid.
 
-- `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`
-- `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`
-- `BIDONDENT_MAP_TRACKER_2026-03-21.md`
-- `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+Execution should stay **vertical and truthful**:
 
-### Practical Priority Order (Current)
+- verify a real problem
+- fix one coherent slice
+- validate it
+- update active docs if truth changed
 
-1. Functional correctness across customer/shop/insurer routes and pages.
-2. Map-first flow continuity (`report -> map -> shop -> action`) on mobile and desktop.
-3. UI trust issues that block or confuse real users.
-4. Documentation coherence across all active docs (including setup/auth docs).
-5. Refactor readiness hardening only after verification artifacts are current.
+## Validation Gate
 
-### Legacy Roadmap Archive Note
+Every finishing pass should be able to answer yes to these questions:
 
-The older phase-by-phase numbered roadmap remains in git history as context, but is intentionally retired from active execution policy to prevent stale pass numbering and false sequencing constraints.
+1. Does this make the product more correct or more trustworthy?
+2. Does this reduce friction in the real user flow?
+3. Does this reinforce the map-first product identity?
+4. Is the validation result explicit and honest?
 
----
-
-## Validation Gate (Run After Every Pass)
-
-Every pass must answer YES to all four:
-
-1. **Does this make the map feel more central?**
-2. **Does this reduce friction?**
-3. **Does this feel more like an app than a website?**
-4. **Would a premium map-first product do this?**
-
-If any answer is NO → revise before continuing.
-
----
+If any answer is no, the pass likely needs to be narrowed or reconsidered.
 
 ## Documentation Rule
 
-After each completed pass:
+After a completed pass:
 
-1. Update `BIDONDENT_MAP_TRACKER_2026-03-21.md` — pass log entry for executed work
-2. Update `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — when strategy/architecture implications change
-3. Update this plan if execution policy or finishing priorities change
-4. Update `docs/README.md` only when source-of-truth classification changes
-
----
+1. Update `BIDONDENT_MAP_TRACKER_2026-03-21.md` when execution reality changed.
+2. Update `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` when map strategy, architecture, or map-law implications changed.
+3. Update `docs/README.md` when the documentation hierarchy or source-of-truth guidance changed.
+4. Update this plan only when finishing policy or priority order changed.
 
 ## Stop Conditions
 
-Pause and ask for direction if:
+Pause and realign if:
 
-- Build breaks in a genuinely new way
-- Required product behavior is unclear
-- Scope expansion would be needed to continue
-- Docs are contradictory enough to block safe execution
+- the build breaks in a genuinely new way
+- required product behavior is unclear
+- a reserved or concurrent-work file would need risky edits
+- docs are contradictory enough to block safe action
 
-Otherwise: **keep going.**
-
----
+Otherwise: keep moving.
 
 ## North Star
 
-The user should feel like they are **navigating a system** — not using a website.
+The product should feel like a **live map system**, not a disconnected website with map widgets attached.
 
-The map is alive. Location is context. Every action is spatial. Trust is earned through clarity, not claimed through marketing.
-
-**Finish BidOnDent.**
+Every finishing pass should make BidOnDent feel more spatial, more trustworthy, and more operationally coherent.

@@ -9,6 +9,7 @@ import {
 } from "../../services/navigation/externalNavigation";
 import { markRecentNavigationLocation } from "../../services/navigation/savedLocations";
 import { loadNavigationSession } from "../../services/navigation/navigationSession";
+import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
 import { haversineMiles } from "../../services/supabase/map";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import CoverageMapDialog from "../landing/CoverageMapDialog";
@@ -46,6 +47,8 @@ export default function DashboardCoveragePanel({
   const [navigationSession, setNavigationSession] = useState<ExternalNavigationSession | null>(
     loadNavigationSession
   );
+  const [navigationStartRequestId, setNavigationStartRequestId] = useState(0);
+  const [voiceGuidanceEnabled, setVoiceGuidanceEnabled] = useState(false);
 
   const selectedShop = useMemo<CoveragePartnerShop | null>(
     () =>
@@ -57,6 +60,7 @@ export default function DashboardCoveragePanel({
   const navigation = useCoverageNavigationExperience({
     selectedShop,
     fallbackOriginTarget: null,
+    voiceGuidanceEnabled,
   });
   const nearbyShops = useMemo<CoverageNearbyShop[]>(() => {
     if (!navigation.activeOriginTarget) {
@@ -93,6 +97,12 @@ export default function DashboardCoveragePanel({
     return () => window.removeEventListener("focus", syncNavigationSession);
   }, []);
 
+  useEffect(() => {
+    if (!isMapExpanded && voiceGuidanceEnabled) {
+      setVoiceGuidanceEnabled(false);
+    }
+  }, [isMapExpanded, voiceGuidanceEnabled]);
+
   function updateMapView(center: [number, number], zoom: number) {
     setMapCenter(center);
     setMapZoom(zoom);
@@ -123,6 +133,23 @@ export default function DashboardCoveragePanel({
       origin: navigation.activeOriginTarget,
     });
     setNavigationSession(loadNavigationSession());
+  }
+
+  function handleOpenBidOnDentNavigation(shop: CoveragePartnerShop) {
+    handleSelectShop(shop, { centerMap: true });
+    markRecentNavigationLocation({
+      label: shop.name,
+      subtitle: shop.addressLine || shop.countyLabel,
+      coordinate: {
+        lat: shop.lat,
+        lng: shop.lng,
+      },
+    });
+    if (navigation.settings.voiceMode !== "muted") {
+      primeVoiceEngine();
+    }
+    setIsMapExpanded(true);
+    setNavigationStartRequestId((current) => current + 1);
   }
 
   return (
@@ -236,7 +263,9 @@ export default function DashboardCoveragePanel({
         preferredNavigationProvider={preferredNavigationProvider}
         selectedShop={selectedShop}
         navigationSession={navigationSession}
+        startNavigationRequestId={navigationStartRequestId}
         navigation={navigation}
+        onVoiceGuidanceEnabledChange={setVoiceGuidanceEnabled}
         onTileModeChange={setTileMode}
         onCenterActive={() => {
           if (!navigation.activeOriginTarget) {
@@ -248,7 +277,8 @@ export default function DashboardCoveragePanel({
         onResetView={() => updateMapView(defaultCoverageCenter, 9)}
         onSelectShop={(shop) => handleSelectShop(shop, { centerMap: true })}
         onPreferredNavigationProviderChange={setPreferredNavigationProvider}
-        onOpenDirections={handleOpenDirections}
+        onOpenBidOnDentNavigation={handleOpenBidOnDentNavigation}
+        onExportDirections={handleOpenDirections}
       />
     </>
   );

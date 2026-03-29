@@ -1,4 +1,9 @@
+import type {
+  NavigationAddressResult,
+  NavigationAddressSuggestion,
+} from "../types/navigation";
 import type { Place, RecentSearch, SavedPlace } from "../types/mapDomain";
+import type { NavigationSessionStatus } from "../features/navigation";
 
 const MAX_RECENT_SEARCHES = 6;
 
@@ -19,6 +24,45 @@ export function buildSavedPlace(origin: Place): SavedPlace {
     createdAt: timestamp,
     lastUsedAt: timestamp,
     metadata: { category: "custom", icon: "map-pin" },
+  };
+}
+
+function splitLocalityLabel(value?: string) {
+  if (!value) {
+    return { city: "", state: "" };
+  }
+
+  const [city = "", state = ""] = value.split(",").map((part) => part.trim());
+  return { city, state };
+}
+
+export function buildPlaceFromAddressResult(result: NavigationAddressResult): Place {
+  const { city, state } = splitLocalityLabel(result.secondaryLabel);
+
+  return {
+    name: result.primaryLabel,
+    address: result.primaryLabel,
+    city,
+    state,
+    zipCode: "",
+    latitude: result.lat,
+    longitude: result.lng,
+    placeId: `nominatim-${result.id}`,
+  };
+}
+
+export function buildPlaceFromAddressSuggestion(suggestion: NavigationAddressSuggestion): Place {
+  const { city, state } = splitLocalityLabel(suggestion.subtitle);
+
+  return {
+    name: suggestion.title,
+    address: suggestion.title,
+    city,
+    state,
+    zipCode: "",
+    latitude: suggestion.coordinate.lat,
+    longitude: suggestion.coordinate.lng,
+    placeId: `nominatim-${suggestion.id}`,
   };
 }
 
@@ -72,4 +116,55 @@ export function getContextChips(vehicles: VehicleInput[] = [], reports: ReportIn
   ].slice(0, 3);
 
   return [...vehicleMakes, ...damageSignals].filter(Boolean) as string[];
+}
+
+type ShopRouteActionLabelArgs = {
+  shopId: number;
+  routeReady: boolean;
+  hasArrived?: boolean;
+  defaultLabel: string;
+  navigationSessionStatus: NavigationSessionStatus;
+  navigationSessionDestinationId: string | null;
+};
+
+export function shouldUseShopNavigationAction({
+  shopId,
+  routeReady,
+  navigationSessionStatus,
+  navigationSessionDestinationId,
+}: Omit<ShopRouteActionLabelArgs, "defaultLabel">) {
+  const matchesSessionDestination = navigationSessionDestinationId === String(shopId);
+  const hasLiveSessionForShop =
+    matchesSessionDestination &&
+    (navigationSessionStatus === "active" || navigationSessionStatus === "paused");
+
+  return hasLiveSessionForShop || routeReady;
+}
+
+export function getShopRouteActionLabel({
+  shopId,
+  routeReady,
+  hasArrived = false,
+  defaultLabel,
+  navigationSessionStatus,
+  navigationSessionDestinationId,
+}: ShopRouteActionLabelArgs) {
+  const matchesSessionDestination = navigationSessionDestinationId === String(shopId);
+  if (matchesSessionDestination && hasArrived && routeReady) {
+    return "Start Again";
+  }
+
+  if (matchesSessionDestination && navigationSessionStatus === "paused") {
+    return "Resume Navigation";
+  }
+
+  if (matchesSessionDestination && navigationSessionStatus === "active") {
+    return "Open Live Route";
+  }
+
+  if (!routeReady) {
+    return defaultLabel;
+  }
+
+  return "Start Navigation";
 }

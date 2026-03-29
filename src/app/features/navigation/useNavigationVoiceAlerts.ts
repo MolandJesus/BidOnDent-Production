@@ -78,7 +78,8 @@ const DEVIATION_ALERT_MODES: ReadonlySet<NavigationVoiceMode> = new Set(["full",
 export function useNavigationVoiceAlerts(
   latestEvent: DeviationEvent | null,
   rerouteStatus: RerouteStatus,
-  settings: NavigationVoiceSettings
+  settings: NavigationVoiceSettings,
+  enabled = true
 ): NavigationVoiceAlerts {
   // Track which event IDs we've already announced
   const announcedEventIdsRef = useRef<Set<string>>(new Set());
@@ -94,7 +95,10 @@ export function useNavigationVoiceAlerts(
   /* ------ Deviation event alerts ------ */
   useEffect(() => {
     if (!latestEvent) return;
-    if (settings.voiceMode === "muted") return;
+    if (!enabled || settings.voiceMode === "muted") {
+      announcedEventIdsRef.current.add(latestEvent.id);
+      return;
+    }
 
     // Already announced this exact event
     if (announcedEventIdsRef.current.has(latestEvent.id)) return;
@@ -118,11 +122,14 @@ export function useNavigationVoiceAlerts(
     deviationCountRef.current += 1;
     lastPhraseRef.current = phrase;
     lastResultRef.current = result;
-  }, [latestEvent, settings.voiceMode, settings.voicePersona, settings.voiceVolumePreset]);
+  }, [enabled, latestEvent, settings.voiceMode, settings.voicePersona, settings.voiceVolumePreset]);
 
   /* ------ Reroute lifecycle announcements ------ */
   useEffect(() => {
-    if (settings.voiceMode === "muted") return;
+    if (!enabled || settings.voiceMode === "muted") {
+      lastAnnouncedRerouteStatusRef.current = rerouteStatus;
+      return;
+    }
 
     // Only announce transitions, not repeat of same status
     if (rerouteStatus === lastAnnouncedRerouteStatusRef.current) return;
@@ -144,7 +151,7 @@ export function useNavigationVoiceAlerts(
     rerouteCountRef.current += 1;
     lastPhraseRef.current = phrase;
     lastResultRef.current = result;
-  }, [rerouteStatus, settings.voiceMode, settings.voicePersona, settings.voiceVolumePreset]);
+  }, [enabled, rerouteStatus, settings.voiceMode, settings.voicePersona, settings.voiceVolumePreset]);
 
   return {
     snapshot: {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { cn } from "../ui/utils";
@@ -14,8 +14,10 @@ import NavigationSummarySheet from "../maps/navigation/NavigationSummarySheet";
 import NavigationTurnListSheet from "../maps/navigation/NavigationTurnListSheet";
 import NavigationVoiceControlsSheet from "../maps/navigation/NavigationVoiceControlsSheet";
 import { getMapSurfaceTheme, resolveMapSurfaceTone } from "../maps/mapSurfaceTheme";
+import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
+import { useNotifications } from "../../features/notifications";
 import type {
   CoverageCountyMarker,
   CoverageNearbyShop,
@@ -52,7 +54,10 @@ type CoverageMapDialogProps = {
   onResetView: () => void;
   onSelectShop: (shop: CoveragePartnerShop) => void;
   onPreferredNavigationProviderChange: (provider: NavigationProvider) => void;
-  onOpenDirections: (shop: CoveragePartnerShop) => void;
+  onOpenBidOnDentNavigation: (shop: CoveragePartnerShop) => void;
+  onExportDirections: (shop: CoveragePartnerShop) => void;
+  onVoiceGuidanceEnabledChange?: (enabled: boolean) => void;
+  startNavigationRequestId?: number;
 };
 
 type CoverageMapDialogPresentationMode = "browse" | "navigating";
@@ -84,16 +89,22 @@ export default function CoverageMapDialog({
   onResetView,
   onSelectShop,
   onPreferredNavigationProviderChange,
-  onOpenDirections,
+  onOpenBidOnDentNavigation,
+  onExportDirections,
+  onVoiceGuidanceEnabledChange,
+  startNavigationRequestId = 0,
 }: CoverageMapDialogProps) {
   const tone = resolveMapSurfaceTone(tileMode);
   const theme = getMapSurfaceTheme(tone, true);
+  const notifications = useNotifications();
   const [presentationMode, setPresentationMode] =
     useState<CoverageMapDialogPresentationMode>("browse");
   const [turnListOpen, setTurnListOpen] = useState(false);
   const [voiceControlsOpen, setVoiceControlsOpen] = useState(false);
   const [followCurrentPositionRevision, setFollowCurrentPositionRevision] = useState(0);
   const [shareFeedback, setShareFeedback] = useState("");
+  const [lastHandledStartRequestId, setLastHandledStartRequestId] = useState(0);
+  const lastArrivalToastKeyRef = useRef<string | null>(null);
   const routeGeometry =
     navigation.routePreview?.geometry.map(({ lat, lng }) => [lat, lng] as [number, number]) ||
     undefined;
@@ -102,9 +113,11 @@ export default function CoverageMapDialog({
     : null;
   const isNavigationActive =
     presentationMode === "navigating" && Boolean(selectedShop && navigation.routePreview);
-  const followingStep = navigation.routePreview?.steps[navigation.currentStepIndex + 1] || null;
+  const followingStep = navigation.hasArrived
+    ? null
+    : navigation.routePreview?.steps[navigation.currentStepIndex + 1] || null;
   const remainingDurationSeconds = useMemo(() => {
-    if (!navigation.routePreview) {
+    if (!navigation.routePreview || navigation.hasArrived) {
       return 0;
     }
 
@@ -113,9 +126,9 @@ export default function CoverageMapDialog({
       .reduce((total, step) => total + step.durationSeconds, 0);
 
     return remaining || navigation.routePreview.durationSeconds;
-  }, [navigation.currentStepIndex, navigation.routePreview]);
+  }, [navigation.currentStepIndex, navigation.hasArrived, navigation.routePreview]);
   const remainingDistanceMeters = useMemo(() => {
-    if (!navigation.routePreview) {
+    if (!navigation.routePreview || navigation.hasArrived) {
       return 0;
     }
 
@@ -124,7 +137,7 @@ export default function CoverageMapDialog({
       .reduce((total, step) => total + step.distanceMeters, 0);
 
     return remaining || navigation.routePreview.distanceMeters;
-  }, [navigation.currentStepIndex, navigation.routePreview]);
+  }, [navigation.currentStepIndex, navigation.hasArrived, navigation.routePreview]);
 
   useEffect(() => {
     if (!open) {
@@ -136,12 +149,73 @@ export default function CoverageMapDialog({
   }, [open]);
 
   useEffect(() => {
+    if (startNavigationRequestId <= lastHandledStartRequestId) {
+      return;
+    }
+
+    if (!open || !selectedShop || !navigation.routePreview) {
+      return;
+    }
+
+    setPresentationMode("navigating");
+    setTurnListOpen(false);
+    setVoiceControlsOpen(false);
+    setFollowCurrentPositionRevision((current) => current + 1);
+    setLastHandledStartRequestId(startNavigationRequestId);
+  }, [
+    lastHandledStartRequestId,
+    navigation.routePreview,
+    open,
+    selectedShop,
+    startNavigationRequestId,
+  ]);
+
+  useEffect(() => {
     if (presentationMode === "navigating" && (!selectedShop || !navigation.routePreview)) {
       setPresentationMode("browse");
       setTurnListOpen(false);
       setVoiceControlsOpen(false);
     }
   }, [navigation.routePreview, presentationMode, selectedShop]);
+
+  useEffect(() => {
+    onVoiceGuidanceEnabledChange?.(isNavigationActive && !navigation.hasArrived);
+  }, [isNavigationActive, navigation.hasArrived, onVoiceGuidanceEnabledChange]);
+
+  useEffect(() => {
+    if (!isNavigationActive || !navigation.hasArrived || !selectedShop) {
+      return;
+    }
+
+    const arrivalKey = `${selectedShop.id || selectedShop.name}:${navigation.routePreview?.fetchedAt || "route"}`;
+    if (lastArrivalToastKeyRef.current === arrivalKey) {
+      return;
+    }
+
+    notifications.showToast({
+      message: `Arrived at ${selectedShop.name}.`,
+      variant: "success",
+      durationMs: 3200,
+      deepLink: null,
+    });
+    lastArrivalToastKeyRef.current = arrivalKey;
+  }, [
+    isNavigationActive,
+    navigation.hasArrived,
+    navigation.routePreview?.fetchedAt,
+    notifications,
+    selectedShop,
+  ]);
+
+  useEffect(() => {
+    if (!isNavigationActive || !navigation.hasArrived) {
+      return;
+    }
+
+    setPresentationMode("browse");
+    setTurnListOpen(false);
+    setVoiceControlsOpen(false);
+  }, [isNavigationActive, navigation.hasArrived]);
 
   useEffect(() => {
     if (!shareFeedback) {
@@ -155,6 +229,10 @@ export default function CoverageMapDialog({
   function handleStartNavigation() {
     if (!selectedShop || !navigation.routePreview) {
       return;
+    }
+
+    if (navigation.settings.voiceMode !== "muted") {
+      primeVoiceEngine();
     }
 
     setPresentationMode("navigating");
@@ -336,10 +414,12 @@ export default function CoverageMapDialog({
             remainingDurationSeconds={remainingDurationSeconds}
             remainingDistanceMeters={remainingDistanceMeters}
             shareFeedback={shareFeedback}
+            preferredNavigationProvider={preferredNavigationProvider}
+            onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
             onShareEta={() => {
               void handleShareEta();
             }}
-            onOpenDirections={() => onOpenDirections(selectedShop)}
+            onOpenDirections={() => onExportDirections(selectedShop)}
             onEndRoute={handleExitNavigation}
           />
         </div>
@@ -400,7 +480,6 @@ export default function CoverageMapDialog({
             isLoadingShops={isLoadingShops}
             selectedShopId={selectedShopId}
             initialDiscoveryRole={initialDiscoveryRole}
-            preferredNavigationProvider={preferredNavigationProvider}
             selectedShop={selectedShop}
             navigationSession={navigationSession}
             navigation={navigation}
@@ -408,8 +487,8 @@ export default function CoverageMapDialog({
             onCenterActive={onCenterActive}
             onResetView={onResetView}
             onSelectShop={onSelectShop}
-            onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
-            onOpenDirections={onOpenDirections}
+            onOpenBidOnDentNavigation={onOpenBidOnDentNavigation}
+            onExportDirections={onExportDirections}
             onStartNavigation={handleStartNavigation}
           />
         )}

@@ -1,5 +1,11 @@
 import { ExternalLink, Phone, Share2 } from "lucide-react";
+import { useState } from "react";
 import { cn } from "../../ui/utils";
+import {
+  getNavigationProviderLabel,
+  navigationProviderOptions,
+  type NavigationProvider,
+} from "../../../services/navigation/externalNavigation";
 import {
   formatArrivalTimeFromNow,
   formatDurationMinutes,
@@ -14,6 +20,8 @@ type NavigationSummarySheetProps = {
   remainingDurationSeconds: number;
   remainingDistanceMeters: number;
   shareFeedback: string;
+  preferredNavigationProvider: NavigationProvider;
+  onPreferredNavigationProviderChange: (provider: NavigationProvider) => void;
   onShareEta: () => void;
   onOpenDirections: () => void;
   onEndRoute: () => void;
@@ -25,131 +33,175 @@ export default function NavigationSummarySheet({
   remainingDurationSeconds,
   remainingDistanceMeters,
   shareFeedback,
+  preferredNavigationProvider,
+  onPreferredNavigationProviderChange,
   onShareEta,
   onOpenDirections,
   onEndRoute,
 }: NavigationSummarySheetProps) {
+  const [showExportOptions, setShowExportOptions] = useState(false);
   const theme = getMapSurfaceTheme(tone, true);
   const arrivalLabel = formatArrivalTimeFromNow(remainingDurationSeconds);
   const durationLabel = formatDurationMinutes(remainingDurationSeconds);
   const distanceLabel = formatTurnDistance(remainingDistanceMeters);
+  const exportProviderLabel = getNavigationProviderLabel(preferredNavigationProvider);
 
   return (
     <div className="pointer-events-none absolute inset-x-3 bottom-[max(env(safe-area-inset-bottom),0.75rem)] z-[560] flex justify-center sm:inset-x-4 sm:bottom-[max(env(safe-area-inset-bottom),1rem)]">
       <div
         className={cn(
-          "map-liquid-panel map-ui-enter pointer-events-auto relative w-full max-w-[760px] overflow-hidden p-3.5 sm:p-5",
+          "map-liquid-panel map-ui-enter pointer-events-auto relative w-full max-w-[720px] overflow-hidden p-2.5 sm:p-3.5",
           theme.panelStrongClassName
         )}
       >
         <div className="map-liquid-sheen pointer-events-none absolute inset-0 opacity-70" />
 
-        <div className="grid grid-cols-3 gap-2 border-b border-white/10 pb-2 text-center sm:gap-3 sm:pb-4">
-          <div>
-            <div
-              className={cn(
-                "text-2xl font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
-                theme.titleClassName
-              )}
-            >
-              {arrivalLabel || "--"}
+        {/* ── Compact metric bar ─────────────────────────────────── */}
+        <div className="flex items-baseline justify-between gap-3 border-b border-white/10 pb-2 sm:pb-2.5">
+          <div className="flex items-baseline gap-4 sm:gap-6">
+            <div className="text-center">
+              <span
+                className={cn(
+                  "text-xl font-semibold tracking-[-0.02em] sm:text-2xl",
+                  theme.titleClassName
+                )}
+              >
+                {arrivalLabel || "--"}
+              </span>
+              <span
+                className={cn(
+                  "ml-1 text-[10px] font-medium sm:text-xs",
+                  theme.secondaryTextClassName
+                )}
+              >
+                arrival
+              </span>
             </div>
-            <div className={cn("text-xs font-medium sm:text-sm", theme.secondaryTextClassName)}>
-              arrival
+            <div className="text-center">
+              <span
+                className={cn(
+                  "text-xl font-semibold tracking-[-0.02em] sm:text-2xl",
+                  theme.titleClassName
+                )}
+              >
+                {durationLabel ? durationLabel.replace(" min", "") : "--"}
+              </span>
+              <span
+                className={cn(
+                  "ml-1 text-[10px] font-medium sm:text-xs",
+                  theme.secondaryTextClassName
+                )}
+              >
+                min
+              </span>
             </div>
-          </div>
-          <div>
-            <div
-              className={cn(
-                "text-2xl font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
-                theme.titleClassName
-              )}
-            >
-              {durationLabel ? durationLabel.replace(" min", "") : "--"}
-            </div>
-            <div className={cn("text-xs font-medium sm:text-sm", theme.secondaryTextClassName)}>
-              min
-            </div>
-          </div>
-          <div>
-            <div
-              className={cn(
-                "text-2xl font-semibold tracking-[-0.03em] sm:text-4xl sm:tracking-[-0.04em]",
-                theme.titleClassName
-              )}
-            >
-              {distanceLabel ? distanceLabel.replace(" mi", "") : "--"}
-            </div>
-            <div className={cn("text-xs font-medium sm:text-sm", theme.secondaryTextClassName)}>
-              {distanceLabel?.includes("ft") ? "ft" : "mi"}
+            <div className="text-center">
+              <span
+                className={cn(
+                  "text-xl font-semibold tracking-[-0.02em] sm:text-2xl",
+                  theme.titleClassName
+                )}
+              >
+                {distanceLabel ? distanceLabel.replace(" mi", "") : "--"}
+              </span>
+              <span
+                className={cn(
+                  "ml-1 text-[10px] font-medium sm:text-xs",
+                  theme.secondaryTextClassName
+                )}
+              >
+                {distanceLabel?.includes("ft") ? "ft" : "mi"}
+              </span>
             </div>
           </div>
         </div>
 
-        <div
-          className={cn(
-            "mt-2 flex items-center justify-between gap-2 rounded-2xl border border-white/16 px-3 py-2.5 sm:gap-3 sm:rounded-[1.8rem] sm:px-4 sm:py-4",
-            tone === "light"
-              ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.74),rgba(241,245,249,0.56))]"
-              : "bg-[linear-gradient(180deg,rgba(15,23,42,0.66),rgba(30,41,59,0.5))]"
-          )}
-        >
+        {/* ── Destination row ────────────────────────────────────── */}
+        <div className="mt-1.5 flex items-center justify-between gap-2 sm:mt-2">
           <div className="min-w-0">
             <div
               className={cn(
-                "line-clamp-2 text-base font-semibold leading-snug sm:text-2xl sm:tracking-[-0.03em]",
+                "truncate text-sm font-semibold leading-snug sm:text-base",
                 theme.titleClassName
               )}
             >
               {selectedShop.name}
             </div>
-            <div
-              className={cn(
-                "mt-0.5 truncate text-xs sm:mt-1 sm:text-sm",
-                theme.secondaryTextClassName
-              )}
-            >
+            <div className={cn("truncate text-[11px] sm:text-xs", theme.secondaryTextClassName)}>
               {selectedShop.addressLine || selectedShop.countyLabel}
             </div>
           </div>
           {selectedShop.phoneNumber ? (
-            <a href={`tel:${selectedShop.phoneNumber}`} className={theme.iconButtonClassName}>
-              <Phone className="h-5 w-5" />
+            <a
+              href={`tel:${selectedShop.phoneNumber}`}
+              className={cn(theme.iconButtonClassName, "shrink-0")}
+            >
+              <Phone className="h-4 w-4" />
             </a>
           ) : null}
         </div>
 
-        <div className="mt-2 flex gap-2 sm:mt-4 sm:grid sm:grid-cols-2 sm:gap-3">
-          <button type="button" onClick={onShareEta} className={theme.secondaryButtonClassName}>
-            <Share2 className="h-4 w-4" />
+        {/* ── Action row: Share · Export · End ────────────────────── */}
+        <div className="mt-2 flex items-center gap-2 sm:mt-2.5">
+          <button
+            type="button"
+            onClick={onShareEta}
+            className={cn(theme.secondaryButtonClassName, "flex-1 py-2 text-xs sm:text-sm")}
+          >
+            <Share2 className="h-3.5 w-3.5" />
             Share ETA
           </button>
           <button
             type="button"
-            onClick={onOpenDirections}
-            className={theme.secondaryButtonClassName}
+            onClick={() => {
+              if (showExportOptions) {
+                onOpenDirections();
+              } else {
+                setShowExportOptions(true);
+              }
+            }}
+            className={cn(theme.secondaryButtonClassName, "flex-1 py-2 text-xs sm:text-sm")}
           >
-            <ExternalLink className="h-4 w-4" />
-            Open external maps
+            <ExternalLink className="h-3.5 w-3.5" />
+            {showExportOptions ? `Export to ${exportProviderLabel}` : "Export"}
+          </button>
+          <button
+            type="button"
+            onClick={onEndRoute}
+            className={cn(theme.destructiveButtonClassName, "flex-1 py-2 text-xs sm:text-sm")}
+          >
+            End Route
           </button>
         </div>
 
-        {shareFeedback ? (
-          <div className={cn("mt-3 text-center text-xs", theme.secondaryTextClassName)}>
-            {shareFeedback}
+        {/* ── Export provider picker (expandable) ────────────────── */}
+        {showExportOptions ? (
+          <div className="mt-2">
+            <div className={theme.segmentedClassName}>
+              {navigationProviderOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => onPreferredNavigationProviderChange(option.id)}
+                  className={cn(
+                    "flex min-h-[44px] flex-1 items-center justify-center rounded-full px-2 py-1.5 text-xs font-semibold transition-all duration-200 sm:text-sm",
+                    preferredNavigationProvider === option.id
+                      ? theme.activeSegmentClassName
+                      : theme.inactiveSegmentClassName
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
         ) : null}
 
-        <button
-          type="button"
-          onClick={onEndRoute}
-          className={cn(
-            theme.destructiveButtonClassName,
-            "mt-2 w-full py-2.5 text-sm sm:mt-4 sm:py-4 sm:text-base"
-          )}
-        >
-          End Route
-        </button>
+        {shareFeedback ? (
+          <div className={cn("mt-2 text-center text-xs", theme.secondaryTextClassName)}>
+            {shareFeedback}
+          </div>
+        ) : null}
       </div>
     </div>
   );

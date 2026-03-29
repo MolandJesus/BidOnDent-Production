@@ -1,6 +1,7 @@
 import { Building2, MapPinned, Navigation } from "lucide-react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
+import type { DamageReport } from "../../types";
 import { defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
@@ -9,6 +10,7 @@ type InsurerMapWidgetProps = {
   primaryColor: string;
   secondaryColor: string;
   appearanceMode?: DashboardAppearanceMode;
+  reports?: DamageReport[];
   onViewShops?: () => void;
 };
 
@@ -20,10 +22,17 @@ export default function InsurerMapWidget({
   primaryColor,
   secondaryColor,
   appearanceMode = "map-dark",
+  reports = [],
   onViewShops,
 }: InsurerMapWidgetProps) {
   const isLight = appearanceMode === "light";
   const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
+  const pendingClaimCount = reports.filter((report) =>
+    ["pending", "in-review"].includes(String(report.status))
+  ).length;
+  const photoBackedClaimCount = reports.filter(
+    (report) => Array.isArray(report.photos) && report.photos.length > 0
+  ).length;
 
   const avgRating =
     partnerShops.length > 0
@@ -167,9 +176,18 @@ export default function InsurerMapWidget({
           <MapPinned
             className={`h-3.5 w-3.5 shrink-0 ${isLight ? "text-blue-600" : "text-blue-400"}`}
           />
-          <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-200/70"}`}>
-            Network analytics dashboard coming soon.
-          </p>
+          <div className="min-w-0">
+            <p className={`text-xs font-medium ${isLight ? "text-slate-700" : "text-blue-100/85"}`}>
+              {pendingClaimCount > 0
+                ? `${pendingClaimCount} live claim${pendingClaimCount === 1 ? "" : "s"} awaiting review`
+                : "No pending live claims right now"}
+            </p>
+            <p className={`truncate text-[11px] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}>
+              {photoBackedClaimCount > 0
+                ? `${photoBackedClaimCount} claim${photoBackedClaimCount === 1 ? "" : "s"} include photo evidence`
+                : "New filed claims with photos will show up here automatically."}
+            </p>
+          </div>
         </div>
       </div>
     </section>

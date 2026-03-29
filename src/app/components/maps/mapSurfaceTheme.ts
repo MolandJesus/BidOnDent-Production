@@ -37,40 +37,44 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
     shellToneClassName:
       "border-blue-100/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.8),rgba(219,234,254,0.66))] shadow-[0_34px_90px_rgba(30,58,138,0.16)]",
     immersiveShellToneClassName:
-      "border-blue-100/60 bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.62),rgba(239,246,255,0.86)_36%,rgba(219,234,254,0.78)_100%)] shadow-[0_44px_120px_rgba(30,58,138,0.2)]",
+      "border-slate-200/72 bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.18),rgba(248,250,252,0.82)_28%,rgba(226,232,240,0.78)_100%)] shadow-[0_44px_120px_rgba(15,23,42,0.16)]",
     mapCanvasClassName: "bg-[#dce8f7]",
-    panelToneClassName: "border-white/40 bg-white/36",
+    panelToneClassName:
+      "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.82),rgba(226,232,240,0.74))]",
     panelStrongToneClassName:
-      "border-blue-100/50 bg-[linear-gradient(180deg,rgba(255,255,255,0.58),rgba(219,234,254,0.42))]",
+      "border-slate-200/82 bg-[linear-gradient(180deg,rgba(248,250,252,0.88),rgba(226,232,240,0.78))]",
     accentPanelToneClassName:
-      "border-blue-300/40 bg-[linear-gradient(180deg,rgba(239,246,255,0.64),rgba(191,219,254,0.48))]",
-    segmentedToneClassName: "border-white/40 bg-white/30",
+      "border-sky-200/70 bg-[linear-gradient(180deg,rgba(239,246,255,0.84),rgba(219,234,254,0.72))]",
+    segmentedToneClassName:
+      "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(241,245,249,0.7))]",
     activeSegmentClassName: "bg-sky-500/80 text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)]",
     inactiveSegmentClassName: "text-slate-600 hover:bg-white/35 hover:text-slate-900",
     primaryButtonToneClassName:
       "border-blue-300/40 bg-[linear-gradient(180deg,rgba(59,130,246,0.82),rgba(29,78,216,0.88))] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(37,99,235,0.28)] hover:brightness-110",
     secondaryButtonToneClassName:
-      "border-white/40 bg-white/30 text-slate-700 shadow-[0_4px_16px_rgba(15,23,42,0.06)] hover:-translate-y-0.5 hover:bg-white/45 hover:text-slate-900",
+      "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.76),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/90 hover:text-slate-950",
     destructiveButtonToneClassName:
       "border-rose-200/50 bg-[linear-gradient(180deg,#fb7185,#e11d48)] text-white shadow-[0_14px_26px_rgba(244,63,94,0.22)] hover:-translate-y-0.5 hover:shadow-[0_18px_30px_rgba(244,63,94,0.28)]",
     tertiaryButtonToneClassName:
       "border-white/30 bg-white/20 text-slate-600 hover:bg-white/35 hover:text-slate-800",
     compactButtonToneClassName:
-      "border-white/40 bg-white/30 text-slate-600 shadow-[0_2px_8px_rgba(15,23,42,0.06)] hover:bg-white/45 hover:text-slate-800",
+      "border-slate-200/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.74),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_4px_12px_rgba(15,23,42,0.08)] hover:bg-white/88 hover:text-slate-950",
     compactActiveButtonToneClassName:
       "border-sky-300/50 bg-sky-500/80 text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)]",
     iconButtonToneClassName:
-      "border-white/40 bg-white/30 text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/45 hover:text-slate-900",
+      "border-slate-200/82 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_12px_28px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:bg-white/92 hover:text-slate-950",
     compactIconButtonToneClassName:
-      "border-white/40 bg-white/30 text-slate-700 shadow-[0_4px_12px_rgba(15,23,42,0.06)] hover:bg-white/45 hover:text-slate-900",
+      "border-slate-200/82 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-white/92 hover:text-slate-950",
     titleClassName: "text-slate-950",
     bodyClassName: "text-slate-700",
     secondaryTextClassName: "text-slate-500",
     badgeClassName: "border-blue-200/80 bg-blue-100/80 text-blue-900",
-    softBadgeClassName: "border-white/40 bg-white/30 text-slate-600",
-    listCardToneClassName: "border-white/35 bg-white/30 hover:-translate-y-0.5 hover:bg-white/42",
+    softBadgeClassName:
+      "border-slate-200/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(241,245,249,0.68))] text-slate-600",
+    listCardToneClassName:
+      "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.8),rgba(226,232,240,0.72))] hover:-translate-y-0.5 hover:bg-white/88",
     selectedListCardToneClassName:
-      "border-blue-300/40 bg-[linear-gradient(180deg,rgba(239,246,255,0.72),rgba(191,219,254,0.52))] shadow-[0_16px_36px_rgba(37,99,235,0.14)]",
+      "border-sky-300/58 bg-[linear-gradient(180deg,rgba(239,246,255,0.86),rgba(219,234,254,0.78))] shadow-[0_18px_40px_rgba(37,99,235,0.12)]",
   },
   dark: {
     ambientOverlayClassName:
@@ -80,30 +84,33 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
     immersiveShellToneClassName:
       "border-blue-200/12 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.24),rgba(15,23,42,0.92)_36%,rgba(2,6,23,0.96)_100%)] shadow-[0_40px_110px_rgba(2,6,23,0.52)]",
     mapCanvasClassName: "bg-slate-950",
-    panelToneClassName: "border-white/12 bg-slate-900/70",
+    panelToneClassName:
+      "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))]",
     panelStrongToneClassName:
-      "border-blue-200/15 bg-[linear-gradient(180deg,rgba(30,58,138,0.28),rgba(15,23,42,0.74))]",
+      "border-blue-200/22 bg-[linear-gradient(180deg,rgba(30,58,138,0.34),rgba(15,23,42,0.82))]",
     accentPanelToneClassName:
-      "border-blue-300/25 bg-[linear-gradient(180deg,rgba(37,99,235,0.3),rgba(15,23,42,0.9))]",
-    segmentedToneClassName: "border-white/12 bg-slate-900/78",
-    activeSegmentClassName: "bg-blue-300 text-slate-950 shadow-[0_12px_22px_rgba(59,130,246,0.3)]",
-    inactiveSegmentClassName: "text-slate-100 hover:bg-white/8 hover:text-white",
+      "border-blue-300/30 bg-[linear-gradient(180deg,rgba(37,99,235,0.36),rgba(15,23,42,0.92))]",
+    segmentedToneClassName:
+      "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(15,23,42,0.8))]",
+    activeSegmentClassName:
+      "bg-[linear-gradient(180deg,#93c5fd,#60a5fa)] text-slate-950 shadow-[0_12px_24px_rgba(59,130,246,0.34)]",
+    inactiveSegmentClassName: "text-slate-200 hover:bg-blue-500/15 hover:text-white",
     primaryButtonToneClassName:
       "border-blue-300/30 bg-blue-300 text-slate-950 shadow-[0_14px_26px_rgba(59,130,246,0.24)] hover:-translate-y-0.5 hover:bg-blue-200",
     secondaryButtonToneClassName:
-      "border-white/12 bg-slate-900/78 text-slate-100 hover:-translate-y-0.5 hover:bg-slate-800/88 hover:text-white",
+      "border-blue-200/16 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(30,41,59,0.74))] text-slate-100 hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(30,58,138,0.38),rgba(30,41,59,0.82))] hover:text-white",
     destructiveButtonToneClassName:
       "border-rose-400/25 bg-[linear-gradient(180deg,#fb7185,#e11d48)] text-white shadow-[0_14px_26px_rgba(244,63,94,0.2)] hover:-translate-y-0.5 hover:shadow-[0_18px_30px_rgba(244,63,94,0.26)]",
     tertiaryButtonToneClassName:
       "border-white/10 bg-white/6 text-slate-300 hover:bg-white/12 hover:text-slate-100",
     compactButtonToneClassName:
-      "border-white/12 bg-slate-900/70 text-slate-200 shadow-[0_2px_8px_rgba(2,6,23,0.18)] hover:bg-slate-800/80 hover:text-white",
+      "border-blue-200/16 bg-[linear-gradient(180deg,rgba(15,23,42,0.8),rgba(30,41,59,0.72))] text-slate-200 shadow-[0_2px_8px_rgba(2,6,23,0.18)] hover:bg-[linear-gradient(180deg,rgba(30,58,138,0.35),rgba(30,41,59,0.8))] hover:text-white",
     compactActiveButtonToneClassName:
       "border-blue-300/40 bg-blue-300 text-slate-950 shadow-[0_4px_14px_rgba(59,130,246,0.3)]",
     iconButtonToneClassName:
-      "border-white/12 bg-slate-900/78 text-slate-100 shadow-[0_14px_28px_rgba(2,6,23,0.24)] hover:-translate-y-0.5 hover:bg-slate-800/88 hover:text-white",
+      "border-blue-200/18 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(30,41,59,0.78))] text-slate-100 shadow-[0_14px_28px_rgba(2,6,23,0.24)] hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(30,58,138,0.42),rgba(30,41,59,0.84))] hover:text-white",
     compactIconButtonToneClassName:
-      "border-white/12 bg-slate-900/70 text-slate-200 shadow-[0_4px_12px_rgba(2,6,23,0.18)] hover:bg-slate-800/80 hover:text-white",
+      "border-blue-200/18 bg-[linear-gradient(180deg,rgba(15,23,42,0.8),rgba(30,41,59,0.72))] text-slate-200 shadow-[0_4px_12px_rgba(2,6,23,0.18)] hover:bg-[linear-gradient(180deg,rgba(30,58,138,0.35),rgba(30,41,59,0.8))] hover:text-white",
     titleClassName: "text-white",
     bodyClassName: "text-slate-200",
     secondaryTextClassName: "text-slate-400",

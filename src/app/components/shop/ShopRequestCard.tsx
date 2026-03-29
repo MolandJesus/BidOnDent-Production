@@ -27,6 +27,8 @@ export type RepairRequest = {
   distance: string;
   hasLocation: boolean;
   photoCount: number;
+  photoUrls: string[];
+  previewPhoto: string | null;
   submittedAt: string;
   submittedDate: string;
   status: string;
@@ -160,12 +162,39 @@ export default function ShopRequestCard({
 
       {/* Damage Details */}
       <div className="p-4">
-        <h4 className={`font-semibold mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}>
-          {request.damageType}
-        </h4>
-        <p className={`text-sm mb-3 ${isLight ? "text-slate-600" : "text-blue-100/75"}`}>
-          {request.description}
-        </p>
+        <div className="mb-3 flex items-start gap-3">
+          <div
+            className={`h-24 w-24 shrink-0 overflow-hidden rounded-2xl border ${
+              isLight ? "border-slate-200 bg-slate-100" : "border-blue-300/15 bg-white/[0.06]"
+            }`}
+          >
+            {request.previewPhoto ? (
+              <img
+                src={request.previewPhoto}
+                alt={`${request.damageType} preview`}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <div
+                className={`flex h-full w-full items-center justify-center ${
+                  isLight ? "text-slate-400" : "text-blue-200/50"
+                }`}
+              >
+                <ImageIcon className="h-8 w-8" />
+              </div>
+            )}
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h4 className={`font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+              {request.damageType}
+            </h4>
+            <p className={`mt-1 text-sm ${isLight ? "text-slate-600" : "text-blue-100/75"}`}>
+              {request.description}
+            </p>
+          </div>
+        </div>
 
         <div className="flex flex-wrap gap-2 mb-3">
           <div

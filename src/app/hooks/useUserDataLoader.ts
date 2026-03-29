@@ -32,6 +32,7 @@ import {
   toSupabaseVehicle,
   toFrontendBid,
 } from "./userDataUtils";
+import { parseCachedUserData } from "./useUserDataHelpers";
 
 export type HydrationResult = {
   userInfo: UserInfo;
@@ -192,10 +193,8 @@ export async function migrateLocalToCloud(
   clerkUserId: string,
   websiteUserKey?: string
 ): Promise<HydrationResult | null> {
-  let userData: UserData;
-  try {
-    userData = JSON.parse(cachedData);
-  } catch {
+  const userData = parseCachedUserData(cachedData);
+  if (!userData) {
     return null;
   }
 
