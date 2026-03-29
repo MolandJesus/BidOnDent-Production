@@ -143,11 +143,12 @@ export function useAppHandlers({
           }
         );
         if (import.meta.env.DEV) console.log("✅ Bid submitted and persisted to Supabase");
-      } else if (import.meta.env.DEV) {
-        console.error("Bid submission failed (Supabase error)");
+      } else {
+        throw new Error("Bid submission failed — no response from server");
       }
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error submitting bid to Supabase:", error);
+      throw error;
     }
   };
 

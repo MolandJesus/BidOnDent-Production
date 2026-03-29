@@ -14,7 +14,7 @@ type ShopRequestsScreenProps = {
     bidAmount: number,
     estimatedDays: number,
     description: string
-  ) => void;
+  ) => Promise<void> | void;
   appearanceMode?: DashboardAppearanceMode;
 };
 
@@ -33,6 +33,8 @@ export default function ShopRequestsScreen({
   const [estimatedDays, setEstimatedDays] = useState("");
   const [bidDescription, setBidDescription] = useState("");
   const [showBidModal, setShowBidModal] = useState(false);
+  const [bidError, setBidError] = useState<string | null>(null);
+  const [isSubmittingBid, setIsSubmittingBid] = useState(false);
 
   const liveRequests = reports.map((report: any, index: number) => {
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
@@ -86,9 +88,12 @@ export default function ShopRequestsScreen({
       return b.submittedAt.localeCompare(a.submittedAt);
     });
 
-  const handleSubmitBid = () => {
+  const handleSubmitBid = async () => {
     const days = parseInt(estimatedDays, 10);
     if (selectedRequest && bidAmount && days > 0) {
+      setIsSubmittingBid(true);
+      setBidError(null);
+
       void logWorkflowEvent({
         event_type: "bid_submitted",
         source: "shop-requests",
@@ -103,17 +108,24 @@ export default function ShopRequestsScreen({
           console.warn("Failed to record workflow event:", error);
         }
       });
-      onSubmitBid?.(
-        String(selectedRequest.id),
-        parseFloat(bidAmount),
-        days,
-        bidDescription.trim() || "Repair bid submitted via BidOnDent"
-      );
-      setShowBidModal(false);
-      setBidAmount("");
-      setEstimatedDays("");
-      setBidDescription("");
-      setSelectedRequest(null);
+
+      try {
+        await onSubmitBid?.(
+          String(selectedRequest.id),
+          parseFloat(bidAmount),
+          days,
+          bidDescription.trim() || "Repair bid submitted via BidOnDent"
+        );
+        setShowBidModal(false);
+        setBidAmount("");
+        setEstimatedDays("");
+        setBidDescription("");
+        setSelectedRequest(null);
+      } catch {
+        setBidError("Failed to submit bid. Please try again.");
+      } finally {
+        setIsSubmittingBid(false);
+      }
     }
   };
 
@@ -248,6 +260,8 @@ export default function ShopRequestsScreen({
           bidAmount={bidAmount}
           estimatedDays={estimatedDays}
           bidDescription={bidDescription}
+          isSubmitting={isSubmittingBid}
+          error={bidError}
           onBidAmountChange={setBidAmount}
           onEstimatedDaysChange={setEstimatedDays}
           onBidDescriptionChange={setBidDescription}
@@ -257,6 +271,7 @@ export default function ShopRequestsScreen({
             setBidAmount("");
             setEstimatedDays("");
             setBidDescription("");
+            setBidError(null);
             setSelectedRequest(null);
           }}
         />

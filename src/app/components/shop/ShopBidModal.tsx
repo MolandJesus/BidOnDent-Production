@@ -13,6 +13,8 @@ type ShopBidModalProps = {
   bidAmount: string;
   estimatedDays: string;
   bidDescription: string;
+  isSubmitting?: boolean;
+  error?: string | null;
   onBidAmountChange: (value: string) => void;
   onEstimatedDaysChange: (value: string) => void;
   onBidDescriptionChange: (value: string) => void;
@@ -27,6 +29,8 @@ export default function ShopBidModal({
   bidAmount,
   estimatedDays,
   bidDescription,
+  isSubmitting = false,
+  error,
   onBidAmountChange,
   onEstimatedDaysChange,
   onBidDescriptionChange,
@@ -136,9 +140,18 @@ export default function ShopBidModal({
             )}
           </div>
 
+          {error && (
+            <p
+              className={`text-sm text-center mb-3 ${isLight ? "text-rose-600" : "text-rose-400"}`}
+            >
+              {error}
+            </p>
+          )}
+
           <div className="flex gap-3">
             <button
               onClick={onClose}
+              disabled={isSubmitting}
               className={`flex-1 py-3 min-h-[44px] rounded-xl font-medium transition-colors ${isLight ? "text-slate-700 border border-slate-200 hover:bg-slate-50" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
             >
               Cancel
@@ -146,6 +159,7 @@ export default function ShopBidModal({
             <button
               onClick={onSubmit}
               disabled={
+                isSubmitting ||
                 !bidAmount ||
                 parseFloat(bidAmount) <= 0 ||
                 !estimatedDays ||
@@ -156,7 +170,7 @@ export default function ShopBidModal({
                 background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
               }}
             >
-              Submit Bid
+              {isSubmitting ? "Submitting..." : "Submit Bid"}
             </button>
           </div>
         </div>
