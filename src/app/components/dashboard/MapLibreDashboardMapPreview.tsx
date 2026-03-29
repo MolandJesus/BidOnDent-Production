@@ -61,7 +61,12 @@ export default function MapLibreDashboardMapPreview({
         style={{ width: "100%", height: "100%" }}
         mapStyle={mapStyle}
         attributionControl={false}
-        interactive={false}
+        scrollZoom={false}
+        dragPan={false}
+        dragRotate={false}
+        doubleClickZoom={false}
+        touchZoomRotate={false}
+        keyboard={false}
         interactiveLayerIds={["dashboard-shops-circle"]}
         onClick={handleMapClick}
       >

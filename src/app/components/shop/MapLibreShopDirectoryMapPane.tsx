@@ -1,6 +1,6 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Layer, Map, Popup, Source } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { Compass, MapPin, Search, Shield, Sparkles, X } from "lucide-react";
@@ -85,6 +85,13 @@ export default function MapLibreShopDirectoryMapPane({
     lat: number;
     shop: ShopMapListing;
   } | null>(null);
+
+  /* Close popup when selection changes externally (e.g. sidebar click) */
+  useEffect(() => {
+    if (shopPopup && shopPopup.shop.id !== selectedShopId) {
+      setShopPopup(null);
+    }
+  }, [selectedShopId, shopPopup]);
 
   const selectedShop = shops.find((s) => s.id === selectedShopId) || shops[0] || null;
   const selectedRoute =
