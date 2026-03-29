@@ -10,6 +10,7 @@ export default function ClerkAccountTypeSelector() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const isLight = document.documentElement.getAttribute("data-appearance-mode") === "light";
 
@@ -17,6 +18,7 @@ export default function ClerkAccountTypeSelector() {
     if (!user || !name.trim()) return;
 
     setIsLoading(true);
+    setSaveError(null);
     try {
       await updateUserMetadata(user, {
         user_type: selectedType,
@@ -27,7 +29,7 @@ export default function ClerkAccountTypeSelector() {
       setIsLoading(false);
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error saving user profile:", error);
-      alert("Error saving profile. Please try again.");
+      setSaveError("Error saving profile. Please try again.");
       setIsLoading(false);
     }
   };
@@ -153,6 +155,7 @@ export default function ClerkAccountTypeSelector() {
         >
           {isLoading ? "Saving..." : "Complete Setup"}
         </button>
+        {saveError && <p className="text-sm text-rose-600 text-center mt-3">{saveError}</p>}
       </div>
     </div>
   );
