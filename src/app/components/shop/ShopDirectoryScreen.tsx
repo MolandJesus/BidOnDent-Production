@@ -120,17 +120,28 @@ export default function ShopDirectoryScreen({
     : "";
 
   useEffect(() => {
+    const livePosition = session.userGeolocation.coords
+      ? {
+          latitude: session.userGeolocation.coords.latitude,
+          longitude: session.userGeolocation.coords.longitude,
+        }
+      : null;
+
     const snapshot: NavigationSnapshot = {
       routeId: session.selectedRoute?.id ?? null,
       estimatedDurationMinutes: session.selectedRoute?.estimatedDurationMinutes ?? null,
-      currentPosition: null,
+      currentPosition: livePosition,
       currentSpeedMph: null,
       routePolyline: session.selectedRoute?.polyline ?? [],
       capturedAt: new Date().toISOString(),
     };
 
     intelligence.evaluate(snapshot);
-  }, [session.selectedRoute?.id, session.selectedRoute?.estimatedDurationMinutes]);
+  }, [
+    session.selectedRoute?.id,
+    session.selectedRoute?.estimatedDurationMinutes,
+    session.userGeolocation.coords,
+  ]);
 
   /* ── Sync navigation session lifecycle with shop directory state ── */
   useEffect(() => {
