@@ -258,14 +258,20 @@ function AppContent() {
     data: Parameters<typeof completeShopOnboarding>[0]
   ) => {
     if (!websiteIdentity || !userProfile) return;
-    await completeShopOnboarding(data, saveBusinessProfile);
+    const adaptedSave = async (d: Record<string, unknown>) => {
+      await saveBusinessProfile(d as Parameters<typeof saveBusinessProfile>[0]);
+    };
+    await completeShopOnboarding(data, adaptedSave);
   };
 
   const handleInsurerOnboardingComplete = async (
     data: Parameters<typeof completeInsurerOnboarding>[0]
   ) => {
     if (!websiteIdentity || !userProfile) return;
-    await completeInsurerOnboarding(data, saveBusinessProfile);
+    const adaptedSave = async (d: Record<string, unknown>) => {
+      await saveBusinessProfile(d as Parameters<typeof saveBusinessProfile>[0]);
+    };
+    await completeInsurerOnboarding(data, adaptedSave);
   };
 
   const renderLandingPage = (isLoggedIn: boolean) => (

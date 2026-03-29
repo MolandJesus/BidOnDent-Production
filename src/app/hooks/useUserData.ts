@@ -14,6 +14,7 @@ import type {
 } from "../types";
 import { getProfile, saveProfile, saveVehicle } from "../services/supabaseService";
 import { saveProfileToCloud, saveVehiclesToCloud, saveReportsToCloud } from "./userDataActions";
+import { saveDamageReport } from "../services/supabase/reports";
 import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
 import {
   normalizeEmail,
