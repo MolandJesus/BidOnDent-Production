@@ -40,8 +40,9 @@ export function formatStatus(status?: string): string {
  * @returns Report title string
  */
 export function getReportTitle(report: DamageReport, userType: string): string {
-  if (userType === "insurer" && report?.claimNumber) {
-    return `Claim #${report.claimNumber}`;
+  const claimNumber = report?.claimNumber?.trim();
+  if (userType === "insurer" && claimNumber) {
+    return `Claim #${claimNumber}`;
   }
 
   const year = report?.vehicle?.year ? String(report.vehicle.year) : "";
@@ -62,8 +63,9 @@ export function getReportTitle(report: DamageReport, userType: string): string {
  * @returns Report description text
  */
 export function getReportDescription(report: DamageReport, userType: string): string {
-  if (report?.damageDescription) {
-    return report.damageDescription.substring(0, 100);
+  const damageDescription = report?.damageDescription?.trim() || report?.description?.trim();
+  if (damageDescription) {
+    return damageDescription.substring(0, 100);
   }
 
   if (userType === "insurer" && report?.claimNumber) {

@@ -23,18 +23,28 @@ export interface DamageReport {
     year: string;
     make: string;
     model: string;
+    vin?: string;
   };
   damageAreas: string[];
   photos: string[];
   description: string;
-  status: "pending" | "in-review" | "active" | "completed";
+  damageDescription?: string;
+  status: "pending" | "in-review" | "active" | "completed" | "resolved";
   createdAt: string;
   submittedAt?: string;
   address?: string;
+  city?: string;
+  state?: string;
   damageArea?: string;
   incident?: string;
   zipCode?: string;
+  zip_code?: string;
   damageType?: string;
+  claimNumber?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  policyNumber?: string;
   bidAmount?: number;
   bidsCount?: number;
   vehicle?: { year?: string; make?: string; model?: string; vin?: string };
@@ -66,7 +76,7 @@ export interface Notification {
   time: string;
   read: boolean;
   createdAt?: string;
-  reportData?: Record<string, unknown>;
+  reportData?: Record<string, unknown> | DamageReport | Bid;
 }
 
 export interface Activity {

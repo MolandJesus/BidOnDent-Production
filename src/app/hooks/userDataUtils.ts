@@ -92,34 +92,55 @@ export const buildPhotoStorageFromReports = (reportsData: FrontendReport[]) => {
   return photoStorageData;
 };
 
-export const transformSupabaseReport = (report: SupabaseReport) => ({
-  id: report.id || "",
-  vehicleId: report.vehicle_id || "",
-  vehicleInfo: {
-    year: report.vehicle_year?.toString() || "",
-    make: report.vehicle_make || "",
-    model: report.vehicle_model || "",
-  },
-  vehicle: {
-    make: report.vehicle_make || "",
-    model: report.vehicle_model || "",
-    year: report.vehicle_year?.toString() || "",
-    vin: "",
-  },
-  damageAreas: [report.damage_location || report.damage_type || "unknown"],
-  damageArea: report.damage_location || report.damage_type || "unknown",
-  photos: report.photo_urls || [],
-  description: report.damage_description || "",
-  incident: report.additional_notes || "",
-  address: report.address || "",
-  city: report.city || "",
-  state: report.state || "",
-  zip_code: report.zip_code || "",
-  status: report.status || "pending",
-  createdAt: report.created_at || new Date().toISOString(),
-  submittedAt: report.created_at || new Date().toISOString(),
-  bidsCount: 0,
-});
+function normalizeReportStatus(value?: string): FrontendReport["status"] {
+  switch (value) {
+    case "active":
+    case "completed":
+    case "in-review":
+    case "resolved":
+      return value;
+    default:
+      return "pending";
+  }
+}
+
+export const transformSupabaseReport = (report: SupabaseReport): FrontendReport => {
+  const damageArea = report.damage_location || report.damage_type || "unknown";
+  const createdAt = report.created_at || new Date().toISOString();
+  const zipCode = report.zip_code || "";
+
+  return {
+    id: report.id || "",
+    vehicleId: report.vehicle_id || "",
+    vehicleInfo: {
+      year: report.vehicle_year?.toString() || "",
+      make: report.vehicle_make || "",
+      model: report.vehicle_model || "",
+    },
+    vehicle: {
+      make: report.vehicle_make || "",
+      model: report.vehicle_model || "",
+      year: report.vehicle_year?.toString() || "",
+      vin: "",
+    },
+    damageAreas: [damageArea],
+    damageArea,
+    photos: report.photo_urls || [],
+    description: report.damage_description || "",
+    damageDescription: report.damage_description || "",
+    incident: report.additional_notes || "",
+    address: report.address || "",
+    city: report.city || "",
+    state: report.state || "",
+    zipCode,
+    zip_code: zipCode,
+    damageType: report.damage_type || "",
+    status: normalizeReportStatus(report.status),
+    createdAt,
+    submittedAt: createdAt,
+    bidsCount: 0,
+  };
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts both frontend and Supabase report shapes
 export const buildSupabaseReportPayload = (report: Record<string, any>) => ({

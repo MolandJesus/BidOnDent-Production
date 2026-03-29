@@ -9,7 +9,7 @@ import {
   Shield,
   Building2,
 } from "lucide-react";
-import type { NavTab } from "../types";
+import type { DamageReport, NavTab } from "../types";
 
 // Import NEW professional auto body repair photos - January 2025
 import heroPhoto from "../../assets/e8f91a58c62f0ff2f49336844f4e54fe4e748352.jpg"; // NEW HERO: Person on phone with damaged blue car - perfect customer context!
@@ -97,24 +97,33 @@ export function getNotificationsByUserType(userType: "customer" | "shop" | "insu
   ];
 }
 
-export const SEED_DAMAGE_REPORTS = [
+const seedReportOneTimestamp = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+const seedReportTwoTimestamp = new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString();
+
+export const SEED_DAMAGE_REPORTS: DamageReport[] = [
   {
     id: "seed-report-1",
+    vehicleId: "seed-vehicle-1",
     vehicleInfo: { year: "2021", make: "Toyota", model: "Camry" },
+    damageAreas: ["Front Bumper"],
     damageArea: "Front Bumper",
     description: "Front bumper damage from a parking lot collision.",
     status: "pending",
-    submittedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    createdAt: seedReportOneTimestamp,
+    submittedAt: seedReportOneTimestamp,
     bidsCount: 0,
     photos: [],
   },
   {
     id: "seed-report-2",
+    vehicleId: "seed-vehicle-2",
     vehicleInfo: { year: "2019", make: "Honda", model: "CR-V" },
+    damageAreas: ["Rear Door"],
     damageArea: "Rear Door",
     description: "Rear passenger-side dent with light paint transfer.",
     status: "in-review",
-    submittedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+    createdAt: seedReportTwoTimestamp,
+    submittedAt: seedReportTwoTimestamp,
     bidsCount: 2,
     photos: [],
   },

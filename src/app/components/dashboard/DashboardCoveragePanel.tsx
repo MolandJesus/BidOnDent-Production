@@ -13,7 +13,7 @@ import { haversineMiles } from "../../services/supabase/map";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import CoverageMapDialog from "../landing/CoverageMapDialog";
 import { countyCenters, defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
-import { mapTileLayers } from "../maps/mapTileLayers";
+import { mapLibreTileLabels } from "../maps/mapLibreStyles";
 import type {
   CoverageNearbyShop,
   CoveragePartnerShop,
@@ -167,7 +167,7 @@ export default function DashboardCoveragePanel({
           <div className="bd-glass-card p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-500">View Mode</div>
             <div className="mt-2 text-2xl font-semibold text-slate-100">
-              {mapTileLayers[tileMode].label}
+              {mapLibreTileLabels[tileMode]}
             </div>
           </div>
         </div>

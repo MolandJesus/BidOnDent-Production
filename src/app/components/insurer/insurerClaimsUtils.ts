@@ -34,6 +34,8 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
     const status =
       rawStatus === "completed" ? "approved" : rawStatus === "in-review" ? "reviewing" : "pending";
     const bidAmount = Number(report?.bidAmount) || 0;
+    const zipCode = report?.zipCode || report?.zip_code;
+    const vin = report?.vehicle?.vin || report?.vehicleInfo?.vin || "Not provided";
 
     return {
       id: Number(index + 1),
@@ -43,12 +45,12 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
       customerPhone: report?.customerPhone || "On file",
       policyNumber: report?.policyNumber || "Pending verification",
       vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
-      vin: vehicleData?.vin || "Not provided",
+      vin,
       damageType: report?.damageArea || report?.damageType || "Damage report",
       incidentDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
       reportedDate: report?.submittedAt ? new Date(report.submittedAt).toLocaleDateString() : "N/A",
       estimatedDamage: bidAmount,
-      location: report?.address || (report?.zip_code ? `ZIP ${report.zip_code}` : "Service region"),
+      location: report?.address || (zipCode ? `ZIP ${zipCode}` : "Service region"),
       status,
       priority: bidAmount >= 1800 ? "high" : bidAmount >= 1000 ? "medium" : "low",
       photoCount: Array.isArray(report?.photos) ? report.photos.length : 0,

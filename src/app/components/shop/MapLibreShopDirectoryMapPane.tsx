@@ -26,6 +26,8 @@ import {
 
 /* ── Layer IDs ──────────────────────────────────────────────────────── */
 const SHOP_LAYER = "shop-dir-circles";
+const SHOP_GLOW_LAYER = "shop-dir-glow";
+const SHOP_LABEL_LAYER = "shop-dir-labels";
 const ROUTE_SELECTED_LAYER = "route-selected-line";
 const ROUTE_UNSELECTED_LAYER = "route-unselected-line";
 const ORIGIN_LAYER = "origin-circle";
@@ -235,6 +237,11 @@ export default function MapLibreShopDirectoryMapPane({
     [onSelectShop, shops]
   );
 
+  const handleMapMouseMove = useCallback((e: MapLayerMouseEvent) => {
+    const isHoveringShop = e.features?.some((feature) => feature.layer?.id === SHOP_LAYER);
+    setCursor(isHoveringShop ? "pointer" : "");
+  }, []);
+
   /* ── Render ───────────────────────────────────────────────────────── */
   return (
     <div
@@ -264,7 +271,7 @@ export default function MapLibreShopDirectoryMapPane({
         cursor={cursor}
         interactiveLayerIds={interactiveLayerIds}
         onClick={handleMapClick}
-        onMouseEnter={() => setCursor("pointer")}
+        onMouseMove={handleMapMouseMove}
         onMouseLeave={() => setCursor("")}
         attributionControl={{ compact: true }}
       >
@@ -328,7 +335,7 @@ export default function MapLibreShopDirectoryMapPane({
               paint={
                 {
                   "line-color": ["get", "accentColor"],
-                  "line-width": 5,
+                  "line-width": 7,
                   "line-opacity": 0.92,
                 } as Record<string, unknown>
               }
@@ -403,18 +410,57 @@ export default function MapLibreShopDirectoryMapPane({
         {/* ── Shop markers ── */}
         {shopsGeoJson.features.length > 0 && (
           <Source id="shops-source" type="geojson" data={shopsGeoJson}>
+            {/* Selected shop glow ring */}
+            <Layer
+              id={SHOP_GLOW_LAYER}
+              type="circle"
+              filter={["==", ["get", "isSelected"], 1]}
+              paint={
+                {
+                  "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 18, 12, 24, 15, 30],
+                  "circle-color": "#2563eb",
+                  "circle-opacity": 0.2,
+                  "circle-blur": 1,
+                } as Record<string, unknown>
+              }
+            />
+            {/* Shop dot markers (zoom-responsive sizing) */}
             <Layer
               id={SHOP_LAYER}
               type="circle"
               paint={
                 {
                   "circle-radius": [
-                    "case",
-                    ["==", ["get", "isSelected"], 1],
-                    12,
-                    ["==", ["get", "topPick"], 1],
-                    10,
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
                     8,
+                    [
+                      "case",
+                      ["==", ["get", "isSelected"], 1],
+                      7,
+                      ["==", ["get", "topPick"], 1],
+                      6,
+                      4,
+                    ],
+                    12,
+                    [
+                      "case",
+                      ["==", ["get", "isSelected"], 1],
+                      12,
+                      ["==", ["get", "topPick"], 1],
+                      10,
+                      8,
+                    ],
+                    15,
+                    [
+                      "case",
+                      ["==", ["get", "isSelected"], 1],
+                      16,
+                      ["==", ["get", "topPick"], 1],
+                      13,
+                      10,
+                    ],
                   ],
                   "circle-color": [
                     "case",
@@ -424,7 +470,7 @@ export default function MapLibreShopDirectoryMapPane({
                     "#0f172a",
                     "#38bdf8",
                   ],
-                  "circle-opacity": 0.9,
+                  "circle-opacity": 0.92,
                   "circle-stroke-width": ["case", ["==", ["get", "isSelected"], 1], 4, 2],
                   "circle-stroke-color": [
                     "case",
@@ -432,6 +478,31 @@ export default function MapLibreShopDirectoryMapPane({
                     "#dbeafe",
                     "#eff6ff",
                   ],
+                } as Record<string, unknown>
+              }
+            />
+            {/* Shop name labels (appear at zoom >= 12) */}
+            <Layer
+              id={SHOP_LABEL_LAYER}
+              type="symbol"
+              minzoom={12}
+              layout={
+                {
+                  "text-field": ["get", "name"],
+                  "text-size": ["interpolate", ["linear"], ["zoom"], 12, 10, 15, 13],
+                  "text-offset": [0, 1.8],
+                  "text-anchor": "top",
+                  "text-max-width": 10,
+                  "text-allow-overlap": false,
+                  "text-optional": true,
+                } as Record<string, unknown>
+              }
+              paint={
+                {
+                  "text-color": isDark ? "#e2e8f0" : "#1e293b",
+                  "text-halo-color": isDark ? "#0f172a" : "#ffffff",
+                  "text-halo-width": 1.5,
+                  "text-opacity": ["case", ["==", ["get", "isSelected"], 1], 1, 0.8],
                 } as Record<string, unknown>
               }
             />

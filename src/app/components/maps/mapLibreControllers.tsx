@@ -56,9 +56,9 @@ export function MapLibreFollowLocationController({
     const last = lastPositionRef.current;
 
     if (!shouldForce && last) {
-      const dlat = currentPosition[0] - last[0];
-      const dlng = currentPosition[1] - last[1];
-      const dist = Math.sqrt(dlat * dlat + dlng * dlng) * 111320;
+      const deltaLat = currentPosition[0] - last[0];
+      const deltaLng = currentPosition[1] - last[1];
+      const dist = Math.sqrt(deltaLat * deltaLat + deltaLng * deltaLng) * 111320;
       if (dist < 18) return;
     }
 
