@@ -1,4 +1,5 @@
-import { Save, X } from "lucide-react";
+import { CheckCircle, Save, X } from "lucide-react";
+import { useState } from "react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type ShopProfileModalProps = {
@@ -64,7 +65,7 @@ export default function ShopProfileModal({
             </label>
             <input
               type="text"
-              defaultValue="123 Main St, City, State 12345"
+              placeholder="123 Main St, City, State 12345"
               className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
             />
           </div>
@@ -89,7 +90,7 @@ export default function ShopProfileModal({
             </label>
             <input
               type="text"
-              defaultValue="Mon-Fri: 8AM-6PM, Sat: 9AM-3PM"
+              placeholder="Mon-Fri: 8AM-6PM, Sat: 9AM-3PM"
               className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
             />
           </div>
@@ -100,7 +101,7 @@ export default function ShopProfileModal({
               Certifications
             </label>
             <textarea
-              defaultValue="ASE Certified, I-CAR Gold Class"
+              placeholder="e.g. ASE Certified, I-CAR Gold Class"
               className={`w-full p-2 border rounded ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
               rows={3}
             />
@@ -126,9 +127,13 @@ export default function ShopProfileModal({
             disabled={saved}
           >
             {saved ? (
-              <><CheckCircle className="w-4 h-4" /> Saved!</>
+              <>
+                <CheckCircle className="w-4 h-4" /> Saved!
+              </>
             ) : (
-              <><Save className="w-4 h-4" /> Save Changes</>
+              <>
+                <Save className="w-4 h-4" /> Save Changes
+              </>
             )}
           </button>
         </div>
