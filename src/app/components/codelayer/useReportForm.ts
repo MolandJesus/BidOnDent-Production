@@ -1,0 +1,290 @@
+import { useState, useRef, useEffect } from "react";
+import {
+  clearReportDraft,
+  DEFAULT_VEHICLE_DRAFT,
+  loadReportDraft,
+  saveReportDraft,
+} from "./report/reportDraftStorage";
+import { uploadReportPhoto, isBase64Photo, retryUploadBase64 } from "./report/reportPhotoUpload";
+import type { DamageReport, Vehicle } from "../../types";
+
+interface UseReportFormArgs {
+  onReportSubmit?: (report: DamageReport) => void | Promise<void>;
+  onSaveVehicle?: (vehicle: Vehicle) => void;
+  vehicles: Vehicle[];
+  hasSeenPhotoGuide: boolean;
+  hasSeenGuideThisSession: boolean;
+  setHasSeenGuideThisSession: (value: boolean) => void;
+  setShowPhotoGuide: (value: boolean) => void;
+}
+
+export function useReportForm({
+  onReportSubmit,
+  onSaveVehicle,
+  vehicles,
+  hasSeenPhotoGuide,
+  hasSeenGuideThisSession,
+  setHasSeenGuideThisSession,
+  setShowPhotoGuide,
+}: UseReportFormArgs) {
+  const [step, setStep] = useState(1);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<string>("");
+  const [vehicle, setVehicle] = useState({ ...DEFAULT_VEHICLE_DRAFT });
+  const [damageArea, setDamageArea] = useState("front");
+  const [zipCode, setZipCode] = useState("");
+  const [address, setAddress] = useState("");
+  const [description, setDescription] = useState("");
+  const [incident, setIncident] = useState("");
+  const [showSaveIndicator, setShowSaveIndicator] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const saveIndicatorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+
+  // Load draft from localStorage on mount
+  useEffect(() => {
+    const draft = loadReportDraft();
+    if (!draft) return;
+
+    setStep(draft.step || 1);
+    setVehicle(draft.vehicle || { ...DEFAULT_VEHICLE_DRAFT });
+    setDamageArea(draft.damageArea || "front");
+    setZipCode(draft.zipCode || "");
+    setAddress(draft.address || "");
+    setDescription(draft.description || "");
+    setIncident(draft.incident || "");
+  }, []);
+
+  // Save draft to localStorage whenever any field changes (except on completion)
+  useEffect(() => {
+    if (step === 6) return;
+    saveReportDraft({ step, vehicle, damageArea, zipCode, address, description, incident });
+  }, [step, vehicle, damageArea, zipCode, address, description, incident]);
+
+  useEffect(() => {
+    return () => {
+      if (saveIndicatorTimeoutRef.current) {
+        clearTimeout(saveIndicatorTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const clearDraft = () => {
+    clearReportDraft();
+  };
+
+  const handlePhotoUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    setUploadingPhoto(true);
+    setUploadProgress(`Uploading ${files.length} photo(s)...`);
+
+    try {
+      let cloudCount = 0;
+      let fallbackCount = 0;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        setUploadProgress(`Uploading photo ${i + 1} of ${files.length}...`);
+        const uploadedPhoto = await uploadReportPhoto(file);
+        setPhotos((prev) => [...prev, uploadedPhoto]);
+        if (isBase64Photo(uploadedPhoto)) {
+          fallbackCount++;
+        } else {
+          cloudCount++;
+        }
+      }
+
+      if (fallbackCount > 0 && cloudCount === 0) {
+        setUploadProgress("Photos saved locally — will retry on submit");
+      } else if (fallbackCount > 0) {
+        setUploadProgress(`${cloudCount} uploaded, ${fallbackCount} saved locally`);
+      } else {
+        setUploadProgress("Upload complete!");
+      }
+      setTimeout(() => {
+        setUploadingPhoto(false);
+        setUploadProgress("");
+      }, 2500);
+    } catch (error) {
+      if (import.meta.env.DEV) console.error("Error uploading photos:", error);
+      setUploadProgress("Upload failed — please try again");
+      setTimeout(() => {
+        setUploadingPhoto(false);
+        setUploadProgress("");
+      }, 2500);
+    }
+  };
+
+  const openFilePicker = () => fileInputRef.current?.click();
+  const openCamera = () => cameraInputRef.current?.click();
+
+  const removePhoto = (index: number) => {
+    const newPhotos = [...photos];
+    newPhotos.splice(index, 1);
+    setPhotos(newPhotos);
+  };
+
+  const nextStep = () => {
+    setStep((previousStep) => {
+      const next = Math.min(previousStep + 1, 6);
+      if (next <= 5) {
+        setShowSaveIndicator(true);
+        if (saveIndicatorTimeoutRef.current) {
+          clearTimeout(saveIndicatorTimeoutRef.current);
+        }
+        saveIndicatorTimeoutRef.current = setTimeout(() => {
+          setShowSaveIndicator(false);
+        }, 1500);
+      }
+      return next;
+    });
+  };
+
+  const prevStep = () => setStep(step - 1);
+
+  const resetForm = () => {
+    setStep(1);
+    setPhotos([]);
+    setVehicle({ ...DEFAULT_VEHICLE_DRAFT });
+    setDamageArea("front");
+    setZipCode("");
+    setAddress("");
+    setDescription("");
+    setIncident("");
+    setHasSeenGuideThisSession(false);
+    clearDraft();
+  };
+
+  const handleVehicleContinue = () => {
+    if (onSaveVehicle && vehicle.make && vehicle.model && vehicle.year) {
+      const isNewVehicle = !vehicles.some(
+        (v) => v.make === vehicle.make && v.model === vehicle.model && v.year === vehicle.year
+      );
+      if (isNewVehicle) {
+        onSaveVehicle({
+          id: String(Date.now()),
+          make: vehicle.make,
+          model: vehicle.model,
+          year: vehicle.year,
+          vin: vehicle.vin || "",
+        });
+      }
+    }
+    nextStep();
+  };
+
+  const handleDamageContinue = () => nextStep();
+
+  const handleLocationContinue = () => {
+    if (!hasSeenPhotoGuide && !hasSeenGuideThisSession) {
+      setShowPhotoGuide(true);
+    } else {
+      nextStep();
+    }
+  };
+
+  const handleSubmitReport = async () => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      let finalPhotos = photos;
+      const pendingBase64 = photos.filter(isBase64Photo);
+      if (pendingBase64.length > 0) {
+        if (import.meta.env.DEV)
+          console.log(`Retrying upload for ${pendingBase64.length} base64 photo(s)...`);
+        const retried = await Promise.all(
+          photos.map((p) => (isBase64Photo(p) ? retryUploadBase64(p) : Promise.resolve(p)))
+        );
+        finalPhotos = retried;
+        setPhotos(retried);
+      }
+
+      const uploadedPhotos = finalPhotos.filter((p) => !isBase64Photo(p));
+      const failedCount = finalPhotos.length - uploadedPhotos.length;
+      if (failedCount > 0 && import.meta.env.DEV) {
+        console.warn(`${failedCount} photo(s) could not be uploaded and will be excluded`);
+      }
+
+      if (onReportSubmit) {
+        const submittedAt = new Date().toISOString();
+        const report: DamageReport = {
+          id: Date.now().toString(),
+          vehicleId: vehicle.vin || `vehicle-${Date.now()}`,
+          vehicleInfo: {
+            make: vehicle.make,
+            model: vehicle.model,
+            year: vehicle.year,
+          },
+          damageAreas: [damageArea],
+          vehicle: {
+            make: vehicle.make,
+            model: vehicle.model,
+            year: vehicle.year,
+          },
+          damageArea,
+          zipCode,
+          address,
+          photos: uploadedPhotos,
+          description,
+          status: "pending" as const,
+          createdAt: submittedAt,
+          submittedAt,
+          bidsCount: 0,
+        };
+        await onReportSubmit(report);
+      }
+      clearDraft();
+      nextStep();
+    } catch (error) {
+      if (import.meta.env.DEV) console.error("Error submitting report:", error);
+      const msg = error instanceof Error ? error.message : "";
+      const message =
+        msg.includes("sign in") || msg.includes("Please")
+          ? msg
+          : "Something went wrong while submitting. Please check your connection and try again.";
+      setSubmitError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return {
+    step,
+    photos,
+    uploadingPhoto,
+    uploadProgress,
+    vehicle,
+    damageArea,
+    zipCode,
+    address,
+    description,
+    incident,
+    showSaveIndicator,
+    isSubmitting,
+    submitError,
+    fileInputRef,
+    cameraInputRef,
+    setVehicle,
+    setDamageArea,
+    setZipCode,
+    setAddress,
+    setDescription,
+    setIncident,
+    setStep,
+    handlePhotoUpload,
+    openFilePicker,
+    openCamera,
+    removePhoto,
+    nextStep,
+    prevStep,
+    resetForm,
+    handleVehicleContinue,
+    handleDamageContinue,
+    handleLocationContinue,
+    handleSubmitReport,
+  };
+}
