@@ -18,8 +18,8 @@ function getViewportBounds(map: ReturnType<typeof useMap>) {
 
 export const LIGHT_TILE_LAYER = {
   attribution:
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO',
+  url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
 };
 
 export const DARK_TILE_LAYER = {
