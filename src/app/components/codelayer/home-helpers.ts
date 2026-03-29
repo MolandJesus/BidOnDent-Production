@@ -2,6 +2,7 @@
  * HomeScreen Helper Functions
  * Utility functions for formatting and data transformation
  */
+import type { DamageReport } from "../../types";
 
 /**
  * Format a date string to a readable format
@@ -38,7 +39,7 @@ export function formatStatus(status?: string): string {
  * @param userType Type of user ("customer", "shop", "insurer")
  * @returns Report title string
  */
-export function getReportTitle(report: any, userType: string): string {
+export function getReportTitle(report: DamageReport, userType: string): string {
   if (userType === "insurer" && report?.claimNumber) {
     return `Claim #${report.claimNumber}`;
   }
@@ -60,7 +61,7 @@ export function getReportTitle(report: any, userType: string): string {
  * @param userType Type of user
  * @returns Report description text
  */
-export function getReportDescription(report: any, userType: string): string {
+export function getReportDescription(report: DamageReport, userType: string): string {
   if (report?.damageDescription) {
     return report.damageDescription.substring(0, 100);
   }

@@ -1,3 +1,5 @@
+import type { DamageReport } from "../../types";
+
 export type ClaimData = {
   id: number;
   claimNumber: string;
@@ -24,8 +26,8 @@ export type ClaimData = {
   shopBids?: { shopName: string; amount: number; distance: string; rating: number }[];
 };
 
-export function transformReportsToClaims(reports: any[]): ClaimData[] {
-  return reports.map((report: any, index: number) => {
+export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
+  return reports.map((report: DamageReport, index: number) => {
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
     const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
     const rawStatus = String(report?.status ?? "pending").toLowerCase();

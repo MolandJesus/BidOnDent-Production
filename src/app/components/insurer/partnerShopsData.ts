@@ -1,3 +1,5 @@
+import type { DamageReport } from "../../types";
+
 export type PartnerShop = {
   id: string;
   name: string;
@@ -65,7 +67,7 @@ export const defaultPartnerShops: PartnerShop[] = [
   },
 ];
 
-export function buildDerivedPartnerShops(reports: any[]): PartnerShop[] {
+export function buildDerivedPartnerShops(reports: DamageReport[]): PartnerShop[] {
   if (!reports.length) return defaultPartnerShops;
 
   const totalReports = reports.length;

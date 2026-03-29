@@ -66,7 +66,7 @@ export interface Notification {
   time: string;
   read: boolean;
   createdAt?: string;
-  reportData?: any;
+  reportData?: Record<string, unknown>;
 }
 
 export interface Activity {
@@ -112,7 +112,7 @@ export type LoginView = "main" | "login" | "signup" | "customer" | "shop" | "ins
 export interface NavTab {
   id: string;
   label: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string; size?: number }>;
 }
 
 export interface UserData {

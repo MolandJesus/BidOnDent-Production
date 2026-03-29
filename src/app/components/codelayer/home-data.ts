@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { formatDate, getReportTitle } from "./home-helpers";
+import type { DamageReport } from "../../types";
 
 export type ActionItem = {
   title: string;
@@ -65,7 +66,7 @@ export const actionIconTones = [
   "bg-violet-400/15 text-violet-300",
 ];
 
-export function sortReports(reports: any[]) {
+export function sortReports(reports: DamageReport[]) {
   return [...reports].sort((a, b) => {
     const aTime = new Date(a?.submittedAt ?? 0).getTime();
     const bTime = new Date(b?.submittedAt ?? 0).getTime();
@@ -73,7 +74,7 @@ export function sortReports(reports: any[]) {
   });
 }
 
-export function buildStats(userType: string, sortedReports: any[]): StatItem[] {
+export function buildStats(userType: string, sortedReports: DamageReport[]): StatItem[] {
   const activeCount = sortedReports.filter((report) => {
     const status = String(report?.status ?? "").toLowerCase();
     return status !== "completed" && status !== "resolved";
@@ -246,7 +247,7 @@ export function buildPrimaryAction(userType: string, handlers: HomeActionHandler
   return { label: "New Repair Request", onClick: handlers.onStartReport };
 }
 
-export function buildActivityItems(userType: string, sortedReports: any[]) {
+export function buildActivityItems(userType: string, sortedReports: DamageReport[]) {
   return sortedReports.slice(0, 4).map((report) => {
     const status = String(report?.status ?? "pending").toLowerCase();
     const title = getReportTitle(report, userType);
