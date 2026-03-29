@@ -136,7 +136,11 @@ export default function BidsScreen({
                 Repair Bids
               </h1>
               <p className={isLight ? "text-slate-500" : "text-blue-100/80"}>
-                No live bids have been submitted for your reports yet.
+                {userType === "shop"
+                  ? "No active bids from your shop yet."
+                  : userType === "insurer"
+                    ? "No bids on connected claims yet."
+                    : "No live bids have been submitted for your reports yet."}
               </p>
             </div>
           </div>
@@ -162,15 +166,22 @@ export default function BidsScreen({
             <Clock className={`h-6 w-6 ${isLight ? "text-blue-500" : "text-blue-200"}`} />
           </div>
           <h2 className={`text-lg font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
-            Waiting for shop responses
+            {userType === "shop"
+              ? "No bids placed yet"
+              : userType === "insurer"
+                ? "No claims with active bids"
+                : "Waiting for shop responses"}
           </h2>
           <p
             className={`mt-2 text-sm leading-relaxed max-w-sm mx-auto ${isLight ? "text-slate-500" : "text-blue-100/80"}`}
           >
-            Once you submit a damage report, nearby shops will review it and send competitive bids.
-            Compare pricing, timelines, and ratings right here.
+            {userType === "shop"
+              ? "When customers submit damage reports near your shop, you'll see them here and can send competitive bids."
+              : userType === "insurer"
+                ? "Bids on claims connected to your network will appear here for review."
+                : "Once you submit a damage report, nearby shops will review it and send competitive bids. Compare pricing, timelines, and ratings right here."}
           </p>
-          {onStartReport && (
+          {userType === "customer" && onStartReport && (
             <button
               onClick={onStartReport}
               className="mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
