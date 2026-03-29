@@ -4,7 +4,6 @@ import Map, {
   Source,
   Layer,
   Popup,
-  useMap,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -22,6 +21,12 @@ import NavigationErrorBoundary from "./NavigationErrorBoundary";
 import { getMapSurfaceTheme, resolveMapSurfaceTone } from "./mapSurfaceTheme";
 import { mapLibreStyles, mapLibreTileLabels } from "./mapLibreStyles";
 import {
+  MapLibreViewportController,
+  MapLibreFollowLocationController,
+  MapLibreRouteFitController,
+} from "./mapLibreControllers";
+import { circlePolygon } from "./mapLibreHelpers";
+import {
   clearMapInteractionSamples,
   getMapPerformanceSummary,
   recordMapInteractionSample,
@@ -35,132 +40,6 @@ import type {
 } from "./serviceCoverageMapTypes";
 import type { NavigationSpeedLimitConfidence, NavigationVoiceMode } from "../../types/navigation";
 import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
-
-/* ---------- helpers ---------- */
-
-function circlePolygon(
-  lat: number,
-  lng: number,
-  radiusMeters: number,
-  points = 64
-): GeoJSON.Feature<GeoJSON.Polygon> {
-  const km = radiusMeters / 1000;
-  const distX = km / (111.32 * Math.cos((lat * Math.PI) / 180));
-  const distY = km / 110.574;
-  const coords: [number, number][] = [];
-  for (let i = 0; i <= points; i++) {
-    const theta = (i / points) * 2 * Math.PI;
-    coords.push([lng + distX * Math.cos(theta), lat + distY * Math.sin(theta)]);
-  }
-  return {
-    type: "Feature",
-    geometry: { type: "Polygon", coordinates: [coords] },
-    properties: {},
-  };
-}
-
-/* ---------- inner map controllers ---------- */
-
-function MapLibreViewportController({
-  center,
-  zoom,
-  revision,
-}: {
-  center: [number, number];
-  zoom: number;
-  revision: number;
-}) {
-  const { current: map } = useMap();
-  const hasInitialized = useRef(false);
-
-  useEffect(() => {
-    if (!map) return;
-    if (!hasInitialized.current) {
-      map.jumpTo({ center: [center[1], center[0]], zoom });
-      hasInitialized.current = true;
-      return;
-    }
-    map.flyTo({ center: [center[1], center[0]], zoom, duration: 1150 });
-  }, [map, center, zoom, revision]);
-
-  return null;
-}
-
-function MapLibreFollowLocationController({
-  enabled,
-  currentPosition,
-  minimumZoom = 15.5,
-  revision = 0,
-}: {
-  enabled: boolean;
-  currentPosition: [number, number] | null | undefined;
-  minimumZoom?: number;
-  revision?: number;
-}) {
-  const { current: map } = useMap();
-  const lastPositionRef = useRef<[number, number] | null>(null);
-  const lastRevisionRef = useRef(revision);
-
-  useEffect(() => {
-    if (!enabled || !currentPosition || !map) return;
-
-    const shouldForce = revision !== lastRevisionRef.current;
-    const last = lastPositionRef.current;
-
-    if (!shouldForce && last) {
-      const dlat = currentPosition[0] - last[0];
-      const dlng = currentPosition[1] - last[1];
-      const dist = Math.sqrt(dlat * dlat + dlng * dlng) * 111320;
-      if (dist < 18) return;
-    }
-
-    map.flyTo({
-      center: [currentPosition[1], currentPosition[0]],
-      zoom: Math.max(map.getZoom(), minimumZoom),
-      duration: 850,
-    });
-
-    lastPositionRef.current = currentPosition;
-    lastRevisionRef.current = revision;
-  }, [enabled, currentPosition, map, minimumZoom, revision]);
-
-  return null;
-}
-
-function MapLibreRouteFitController({
-  routeGeometry,
-  routeFitKey,
-}: {
-  routeGeometry: [number, number][];
-  routeFitKey?: string | null;
-}) {
-  const { current: map } = useMap();
-
-  useEffect(() => {
-    if (!routeFitKey || routeGeometry.length < 2 || !map) return;
-
-    let minLng = Infinity,
-      maxLng = -Infinity,
-      minLat = Infinity,
-      maxLat = -Infinity;
-    for (const [lat, lng] of routeGeometry) {
-      if (lng < minLng) minLng = lng;
-      if (lng > maxLng) maxLng = lng;
-      if (lat < minLat) minLat = lat;
-      if (lat > maxLat) maxLat = lat;
-    }
-
-    map.fitBounds(
-      [
-        [minLng, minLat],
-        [maxLng, maxLat],
-      ],
-      { padding: 72, maxZoom: 14 }
-    );
-  }, [map, routeFitKey, routeGeometry]);
-
-  return null;
-}
 
 /* ---------- main component ---------- */
 
