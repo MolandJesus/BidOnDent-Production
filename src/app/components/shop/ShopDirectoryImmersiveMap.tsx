@@ -1,13 +1,16 @@
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Layers3, List, MapPin, PanelLeftClose, Search, SunMoon } from "lucide-react";
 import ShopDirectoryMapPane from "./MapLibreShopDirectoryMapPane";
 import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
 import ShopDirectoryResultCard from "./ShopDirectoryResultCard";
+import NavigationActionRail from "../maps/navigation/NavigationActionRail";
+import NavigationTurnListSheet from "../maps/navigation/NavigationTurnListSheet";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
+import type { NavigationRouteStep } from "../../types/navigation";
 import {
   getShopRouteActionLabel,
   shouldUseShopNavigationAction,
@@ -61,6 +64,8 @@ type ShopDirectoryImmersiveMapProps = {
   followCurrentPositionRevision?: number;
   deviationPrompt?: React.ReactNode;
   navigationMode: "browse" | "route-preview" | "guidance";
+  routeSteps?: NavigationRouteStep[];
+  currentStepIndex?: number;
 
   onSearchQueryChange: (query: string) => void;
   onSearchSubmit: (event: FormEvent) => void;
@@ -115,6 +120,8 @@ export default function ShopDirectoryImmersiveMap({
   followCurrentPositionRevision = 0,
   deviationPrompt,
   navigationMode,
+  routeSteps = [],
+  currentStepIndex = 0,
   onSearchQueryChange,
   onSearchSubmit,
   onSelectShop,
@@ -135,7 +142,15 @@ export default function ShopDirectoryImmersiveMap({
   userCoords,
 }: ShopDirectoryImmersiveMapProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [turnListOpen, setTurnListOpen] = useState(false);
   const isDark = mapTheme === "dark";
+  const isGuidanceMode = navigationMode === "guidance";
+
+  useEffect(() => {
+    if (!isGuidanceMode && turnListOpen) {
+      setTurnListOpen(false);
+    }
+  }, [isGuidanceMode, turnListOpen]);
 
   const getDefaultCenter = (): Coordinates => ({ latitude: 40.7128, longitude: -74.006 });
 
@@ -251,6 +266,26 @@ export default function ShopDirectoryImmersiveMap({
               overlayTopClass="top-28"
             />
             {guidanceOverlay}
+            {isGuidanceMode && (
+              <>
+                <NavigationActionRail
+                  tone={mapTheme}
+                  turnListOpen={turnListOpen}
+                  voiceControlsOpen={false}
+                  showVoiceControl={false}
+                  onToggleTurnList={() => setTurnListOpen((c) => !c)}
+                  onToggleVoiceControls={() => {}}
+                  onRecenter={() => onRecenterNavigation?.()}
+                />
+                <NavigationTurnListSheet
+                  tone={mapTheme}
+                  open={turnListOpen}
+                  steps={routeSteps}
+                  currentStepIndex={currentStepIndex}
+                  onClose={() => setTurnListOpen(false)}
+                />
+              </>
+            )}
           </>
         </ShopDirectoryMapPane>
       </div>
@@ -325,7 +360,7 @@ export default function ShopDirectoryImmersiveMap({
       {/* Collapsible results drawer — bottom sheet on mobile, side drawer on sm+ */}
       {drawerOpen && (
         <aside
-          className={`pointer-events-auto absolute inset-x-0 bottom-0 z-[530] flex max-h-[72vh] touch-pan-y flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}
+          className={`pointer-events-auto absolute inset-x-0 bottom-0 z-[530] flex max-h-[78dvh] touch-pan-y overscroll-y-contain flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}
           role="region"
           aria-label="Shop results"
           onKeyDown={(e) => e.key === "Escape" && setDrawerOpen(false)}
@@ -356,7 +391,7 @@ export default function ShopDirectoryImmersiveMap({
             </button>
           </div>
 
-          <div className="flex-1 min-h-0 space-y-3 overflow-y-auto overscroll-y-contain p-4 touch-pan-y [-webkit-overflow-scrolling:touch]">
+          <div className="flex-1 min-h-0 space-y-3 overflow-y-auto overscroll-y-contain p-4 pb-6 touch-pan-y [-webkit-overflow-scrolling:touch]">
             {mapListings.length === 0 && (
               <div
                 className={`rounded-2xl border border-dashed p-4 ${isDark ? "border-blue-300/20 bg-blue-500/[0.04]" : "border-blue-200 bg-blue-50"}`}

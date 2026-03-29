@@ -92,15 +92,9 @@ export default function HomeScreen({
   // Map-first, floating overlays layout
   return (
     <div className="relative w-full h-full min-h-[80vh] flex flex-col items-center justify-start pb-20 md:pb-10">
-      {/* Map widget as hero floating panel — offset for sidebar on desktop */}
-      <div
-        className="fixed left-0 md:left-72 w-full md:w-[calc(100%-18rem)] z-20 flex flex-col items-center pointer-events-none"
-        style={{
-          top: "max(env(safe-area-inset-top), 4.25rem)",
-          paddingTop: "0.5rem",
-        }}
-      >
-        <div className="w-full max-w-4xl px-2 md:px-6 pointer-events-auto">
+      {/* Map widget as hero — sticky at top, flows with content */}
+      <div className="sticky top-0 z-20 w-full flex flex-col items-center pt-2">
+        <div className="w-full max-w-4xl px-2 md:px-6">
           {userType === "shop" ? (
             <ShopMapWidget
               primaryColor={primaryColor}
@@ -127,8 +121,8 @@ export default function HomeScreen({
           )}
         </div>
       </div>
-      {/* Floating overlays for onboarding and report list */}
-      <div className="relative z-30 w-full max-w-4xl mt-[420px] md:mt-[420px] px-2 md:px-0 flex flex-col gap-4 md:gap-5 pointer-events-auto">
+      {/* Overlays for onboarding, quick actions, and report list */}
+      <div className="relative z-10 w-full max-w-4xl mt-4 px-2 md:px-6 flex flex-col gap-4 md:gap-5">
         {/* Compact welcome bar — stays tight so map dominates */}
         <section
           className={`bd-glass-floating px-4 py-3 md:px-5 md:py-3.5 flex items-center justify-between gap-3 flex-wrap relative overflow-hidden${isLightAppearance ? " bd-light-surface" : ""}`}

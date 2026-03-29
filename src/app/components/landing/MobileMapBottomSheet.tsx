@@ -49,8 +49,8 @@ function normalizeSnapValue(value: number | string | null) {
 
 export default function MobileMapBottomSheet({ tone, children }: MobileMapBottomSheetProps) {
   const theme = getMapSurfaceTheme(tone, true);
-  // Start at PEEK so the map is fully visible; user swipes up when ready (map-first)
-  const [snap, setSnap] = useState<number | string | null>(PEEK);
+  // Start at HALF so map sections are immediately reachable and scrollable on mobile.
+  const [snap, setSnap] = useState<number | string | null>(HALF);
   const snapValue = normalizeSnapValue(snap);
   const isCollapsed = snapValue <= COLLAPSED + 1;
   const isScrollable = snapValue >= PEEK - 0.01;

@@ -1,3 +1,38 @@
+## Pass T528 — Mobile full-screen map scroll recovery + pane height rebalance (2026-03-29)
+
+- **Why this pass was chosen:** Mobile full-screen map flows felt trapped. Users could not reliably browse map sections in coverage mode, and the shop-directory hybrid map pane consumed too much height on phones/tablets, starving list/search content.
+- **What changed:**
+  - Coverage mobile bottom sheet now opens at half snap by default instead of peek-only, so Search/Explore/Saved/Shops sections are immediately reachable and scrollable.
+  - Shop-directory hybrid map pane height was rebalanced for mobile/tablet (`48dvh` / `52dvh` / `56dvh`) while preserving full desktop behavior.
+- **Files touched:** `MobileMapBottomSheet.tsx`, `ShopDirectoryScreen.tsx`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
+## Pass T527 — Mobile immersive turn-by-turn access (2026-03-29)
+
+- **Why this pass was chosen:** In immersive full-screen map mode on mobile, users had no reliable in-app turn-list access during live guidance. That broke core turn-by-turn usability.
+- **What changed:**
+  - Added mobile guidance action rail + turn-list sheet to `ShopDirectoryImmersiveMap` when guidance mode is active.
+  - Wired live route steps + current step index from `useShopDirectoryNavigation` through `ShopDirectoryScreen` into immersive map props.
+  - Added guidance-mode cleanup so turn list auto-closes when leaving guidance.
+  - Hid non-functional voice button in immersive rail path to avoid dead controls.
+- **Files touched:** `ShopDirectoryImmersiveMap.tsx`, `ShopDirectoryScreen.tsx`, `useShopDirectoryNavigation.ts`, `NavigationActionRail.tsx`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
+## Pass T526 — Home dashboard map shell stabilization (2026-03-29)
+
+- **Why this pass was chosen:** Home dashboard map hero used fixed positioning and a large hard-coded offset (`mt-[420px]`), which created broken layering/scroll behavior across mobile and desktop.
+- **What changed:**
+  - Replaced fixed map hero wrapper with sticky flow layout so map and content stack naturally.
+  - Removed hard-coded 420px content offset and normalized spacing/padding for mobile + desktop.
+- **Files touched:** `HomeScreen.tsx`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
 ## Support Pass T524-S — Kickoff prompt now treats in-motion files as owned (2026-03-29)
 
 - **Why this pass was chosen:** The repo is carrying live multi-AI churn, and the support-vs-lead lane rule was already documented, but a future AI could still read the kickoff prompt and step into a file that was visibly already moving in `git status` or recent tracker entries.

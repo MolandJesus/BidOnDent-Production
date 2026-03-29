@@ -513,6 +513,11 @@ export function useShopDirectoryNavigation({
     routePanel,
     liveRemainingEtaLabel,
     liveRemainingDistanceLabel,
+    routeSteps:
+      liveNavigationForSelectedShop && shopGuidancePreview.routePreview
+        ? shopGuidancePreview.routePreview.steps
+        : [],
+    currentStepIndex: liveNavigationForSelectedShop ? shopGuidancePreview.currentStepIndex : 0,
 
     nextStep: shopGuidancePreview.nextStep ?? null,
     followingStep,

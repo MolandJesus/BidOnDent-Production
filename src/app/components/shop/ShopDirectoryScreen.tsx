@@ -155,6 +155,7 @@ export default function ShopDirectoryScreen({
           routeError={nav.routePanel.routeError}
           routeOptions={nav.mapRouteOptions}
           routeSummary={nav.mapRouteSummary}
+          routeSteps={nav.routeSteps}
           sessionActiveSeconds={nav.sessionActiveSeconds}
           savedPlaces={session.savedPlaces}
           searchQuery={session.searchQuery}
@@ -163,6 +164,7 @@ export default function ShopDirectoryScreen({
           selectedRouteId={session.selectedRouteId}
           selectedShop={session.selectedShop}
           selectedShopId={session.selectedShopId}
+          currentStepIndex={nav.currentStepIndex}
           usingLiveRoutes={nav.routePanel.usingLiveRoutes}
           userCoords={nav.shopMapUserCoords}
           userType={userType}
@@ -280,7 +282,7 @@ export default function ShopDirectoryScreen({
 
           {session.showMapPane && (
             <div
-              className={`-order-1 lg:order-2 h-[calc(100vh-280px)] min-h-[400px] lg:h-[calc(100vh-140px)] lg:max-h-none lg:sticky lg:top-0`}
+              className={`-order-1 lg:order-2 h-[48dvh] min-h-[300px] max-h-[560px] sm:h-[52dvh] md:h-[56dvh] lg:h-[calc(100vh-140px)] lg:max-h-none lg:sticky lg:top-0`}
             >
               <NavigationErrorBoundary>
                 <ShopDirectoryMapPane

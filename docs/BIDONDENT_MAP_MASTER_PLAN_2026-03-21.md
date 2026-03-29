@@ -1,3 +1,10 @@
+### Implementation Note — Pass T526-T528 Dashboard Map Stability + Mobile Guidance Access (2026-03-29)
+
+- **T526**: Stabilized HomeScreen map shell by replacing fixed hero positioning + hard-coded content offset with sticky flow layout so dashboard map surfaces no longer break scroll/layering on mobile and desktop.
+- **T527**: Added mobile turn-by-turn access in immersive shop map guidance: action rail + turn-list sheet now render in guidance mode, and route step data is fully wired from navigation hook to immersive UI.
+- **T528**: Rebalanced mobile map browse ergonomics by opening coverage bottom sheet at a usable half snap and reducing hybrid shop-map pane height on mobile/tablet to restore scrollable access to map sections.
+- Strategic effect: dashboard map experiences now preserve map-first immersion without trapping mobile users; turn-by-turn guidance remains reachable in full-screen mode and section browsing works across both phone and desktop layouts.
+
 ### Implementation Note — Support Pass T524-S (2026-03-29)
 
 - Tightened the fresh-session kickoff prompt so already-in-motion files are treated as owned when `git status` or recent tracker entries show active churn.

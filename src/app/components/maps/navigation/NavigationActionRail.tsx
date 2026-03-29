@@ -6,6 +6,7 @@ type NavigationActionRailProps = {
   tone: MapSurfaceTone;
   turnListOpen: boolean;
   voiceControlsOpen: boolean;
+  showVoiceControl?: boolean;
   onToggleTurnList: () => void;
   onToggleVoiceControls: () => void;
   onRecenter: () => void;
@@ -27,6 +28,7 @@ export default function NavigationActionRail({
   tone,
   turnListOpen,
   voiceControlsOpen,
+  showVoiceControl = true,
   onToggleTurnList,
   onToggleVoiceControls,
   onRecenter,
@@ -61,17 +63,19 @@ export default function NavigationActionRail({
         >
           <List className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
         </button>
-        <button
-          type="button"
-          onClick={onToggleVoiceControls}
-          className={cn(
-            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
-            actionButtonClassName(tone, voiceControlsOpen)
-          )}
-          aria-pressed={voiceControlsOpen}
-        >
-          <Volume2 className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
-        </button>
+        {showVoiceControl ? (
+          <button
+            type="button"
+            onClick={onToggleVoiceControls}
+            className={cn(
+              "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+              actionButtonClassName(tone, voiceControlsOpen)
+            )}
+            aria-pressed={voiceControlsOpen}
+          >
+            <Volume2 className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+          </button>
+        ) : null}
         <button
           type="button"
           onClick={onRecenter}
