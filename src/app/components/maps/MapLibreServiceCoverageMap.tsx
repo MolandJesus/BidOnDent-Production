@@ -1,10 +1,4 @@
-import Map, {
-  AttributionControl,
-  NavigationControl,
-  Source,
-  Layer,
-  Popup,
-} from "react-map-gl/maplibre";
+import Map, { AttributionControl, NavigationControl, Source, Layer } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "../ui/utils";
@@ -272,8 +266,6 @@ export default function MapLibreServiceCoverageMap({
       ],
     };
   }, [activeSearchTarget]);
-
-  const [searchTargetPopupOpen] = useState(false);
 
   const interactiveLayerIds = useMemo(() => {
     const ids = [PARTNER_SHOPS_LAYER_ID];
@@ -591,21 +583,6 @@ export default function MapLibreServiceCoverageMap({
                   />
                 </Source>
               ) : null}
-              <Popup
-                longitude={activeSearchTarget.lng}
-                latitude={activeSearchTarget.lat}
-                closeButton={false}
-                closeOnClick={false}
-                anchor="bottom"
-                offset={16}
-                className={searchTargetPopupOpen ? "" : "hidden"}
-              >
-                <div className="text-sm">
-                  <div className="font-semibold">{activeSearchTarget.label}</div>
-                  <div>{activeSearchTarget.county || "Service area"}</div>
-                  <div>Search radius: {radiusMiles} miles</div>
-                </div>
-              </Popup>
             </>
           ) : null}
         </Map>
