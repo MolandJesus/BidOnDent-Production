@@ -1,3 +1,39 @@
+## Pass 452 — Master context + map docs MapLibre alignment (2026-07-21)
+
+- **Why this pass was chosen:** After completing the full MapLibre migration (Passes 446-451), the master context and map docs still referenced Leaflet as the map engine. Any future AI agent would receive incorrect architecture guidance.
+- **What changed:**
+  - Updated tech stack: React Leaflet / Leaflet → MapLibre GL JS 5.21.1 + react-map-gl 8.1.0
+  - Updated §5 Map Architecture: ServiceCoverageMap → MapLibreServiceCoverageMap, ShopDirectoryMapPane → MapLibreShopDirectoryMapPane, added MapLibreDashboardMapPreview section, added MapLibre-specific component files
+  - Updated §7 Rule 8: "Leaflet popups are always white" → "MapLibre popups use glass blur styling"
+  - Updated Map Theme System: CARTO Voyager/Dark All/Esri Satellite tiles, mapLibreStyles.ts reference, removed OpenStreetMap reference
+  - Updated §8 Key Files: new MapLibre file paths with correct purposes
+  - Added §15: MapLibre GL JS Migration pass log (Passes 442-451)
+  - Updated map tracker with migration summary
+- **Files touched:** `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Validation:** Docs-only pass. Build: not required.
+- **Impact:** Any future AI agent now receives correct MapLibre architecture guidance instead of stale Leaflet references. Eliminates doc-code mismatch risk for map-related work.
+
+---
+
+## MapLibre GL JS Migration Summary (Passes 442-451)
+
+**Engine:** Leaflet (canvas) → MapLibre GL JS 5.21.1 (WebGL) + react-map-gl 8.1.0
+**Tiles:** OpenStreetMap → CARTO Voyager (light), CARTO Dark All (night), Esri Satellite
+**Result:** 14 Leaflet files deleted (2,021 lines), 7 MapLibre components created, leaflet/react-leaflet/@types/leaflet packages removed
+
+| Component                                  | Purpose                                                   |
+| ------------------------------------------ | --------------------------------------------------------- |
+| `MapLibreServiceCoverageMap.tsx`           | Landing + coverage map with route glow + GPS glow         |
+| `MapLibreShopDirectoryMapPane.tsx`         | Dashboard shop discovery map with GeoJSON sources         |
+| `MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport management for shop directory           |
+| `MapLibreDashboardMapPreview.tsx`          | Lightweight non-interactive preview for dashboard widgets |
+| `MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                         |
+| `MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                               |
+| `MapLibreDiscoveryPlaceLayer.tsx`          | Discovery place circles with category colors              |
+| `mapLibreStyles.ts`                        | StyleSpecification objects for 3 tile modes               |
+
+---
+
 ## Pass 399 — Refactor-governance docs hardening + kickoff prompt packaging (2026-03-28)
 
 - **Why this pass was chosen:** After reconciling concurrent AI implementation updates, the project needed explicit refactor-governance constraints and a reusable kickoff prompt to start the next refactor chat with consistent expectations.

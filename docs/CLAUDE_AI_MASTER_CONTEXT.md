@@ -3,11 +3,12 @@
 > **Single source of truth for any AI agent working on this repo.**
 > All other AI handoff docs defer to this file. Read this first, every session.
 >
-> **Last updated:** 2026-03-29 (Pass 437 — doc system refactor + Passes 433-436 quality/runtime)
+> **Last updated:** 2026-07-21 (Pass 452 — MapLibre migration doc alignment)
 > **Status:** Active master context source of truth
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
-> **Build:** ✅ 0 errors · ~2.1s · 514KB main bundle (index chunk)
-> **TypeScript:** 0 tsc errors (achieved Pass 421, maintained through 437)
+> **Build:** ✅ 0 errors · ~3.1s · MapLibre GL JS WebGL engine
+> **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
+> **TypeScript:** 0 tsc errors (achieved Pass 421, maintained through 452)
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
 > **Production `any` types:** 0 (was 21 — eliminated Passes 433-434; 7 remain in test files only)
 
@@ -29,7 +30,9 @@ Insurer:  Browse shop network → Partner shops → Track claims
 - Tailwind CSS (custom `bd-glass-*` design tokens)
 - Supabase (PostgreSQL, Storage, Edge Functions via Hono)
 - Clerk (identity — auth, user metadata, provider-agnostic website identity)
-- React Leaflet / Leaflet (interactive maps)
+- MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (WebGL maps — Leaflet fully removed Pass 448)
+- CARTO Voyager (light), CARTO Dark All (night), Esri Satellite tile layers
+- OSRM routing, Nominatim search, Web Speech API (British voice navigation)
 - Vercel deployment (auto from `main`)
 
 **Coverage area:** NY metro — Westchester, Rockland, Dutchess, Nassau, Orange, Putnam counties.
@@ -90,11 +93,14 @@ The landing page is a separate surface — it uses inline style conditionals for
 ### Map Theme System (Separate from Appearance Mode)
 
 `MapTheme` = `"light"` | `"dark"` — per-map tile toggle inside `ShopDirectoryScreen`.
+`MapTileMode` = `"roadmap"` | `"night"` | `"satellite"` — per-map tile source in coverage map.
 
-- `"dark"` → CARTO dark tiles + dark glass overlays
-- `"light"` → OpenStreetMap tiles + light glass overlays (white text over map is wrong — overlays adapt)
+- `"dark"` → CARTO Dark All tiles + dark glass overlays
+- `"light"` → CARTO Voyager tiles + light glass overlays
+- `"satellite"` → Esri World Imagery tiles
 - Map theme is stored in `useShopDirectorySession` as `mapTheme` state
-- Leaflet popup backgrounds are always white — popup content always uses dark text (`text-slate-800`)
+- MapLibre popup styling in `theme.css` — `.maplibregl-popup-content` with glass blur, dark mode variants
+- Tile layer definitions: `mapLibreStyles.ts` exports `StyleSpecification` objects per tile mode
 
 ---
 
@@ -182,30 +188,43 @@ The map program has two subsystems:
 Used by: `OperatingRegionsSection`, `CustomerMapWidget`, `CoverageMapDialog`
 
 ```
-ServiceCoverageMap.tsx       ← Leaflet base map, tile mode switcher
-CoverageMapDialog.tsx        ← Full-screen coverage modal (customer widget)
-CoverageMapOverlays.tsx      ← Landing page overlays
-useCoveragePartnerShops.ts   ← Fetches real partner shops from Supabase
-useCoverageNavigationExperience.ts ← Navigation origin management
+MapLibreServiceCoverageMap.tsx       ← MapLibre GL JS base map, tile mode switcher, route glow, GPS glow
+CoverageMapDialog.tsx                ← Full-screen coverage map modal (customer widget)
+CoverageMapOverlays.tsx              ← Landing page overlays
+MapLibrePartnerShopLayer.tsx         ← GeoJSON partner shop circle layer
+MapLibreReportLayer.tsx              ← GeoJSON report marker layer
+MapLibreDiscoveryPlaceLayer.tsx      ← Category-colored discovery place circles
+useCoveragePartnerShops.ts           ← Fetches real partner shops from Supabase
+useCoverageNavigationExperience.ts   ← Navigation origin management
+mapLibreStyles.ts                    ← StyleSpecification objects (roadmap/night/satellite)
 ```
 
 **Theme:** Uses `resolveMapSurfaceTone(tileMode)` → `getMapSurfaceTheme(tone)` from `mapSurfaceTheme.ts`.
+**Tiles:** CARTO Voyager (roadmap), CARTO Dark All (night), Esri Satellite — configured as raster tile StyleSpecifications.
 
-### B. ShopDirectoryMapPane (dashboard Find A Shop)
+### B. MapLibreShopDirectoryMapPane (dashboard Find A Shop)
 
 Used by: `ShopDirectoryScreen` (hybrid + list modes), `ShopDirectoryImmersiveMap` (full-screen map mode)
 
 ```
-ShopDirectoryScreen.tsx              ← Orchestrator (hybrid + list layout)
-  └── ShopDirectoryMapPane.tsx       ← Leaflet map pane (markers, routes, overlays)
-        └── ShopDirectoryMapViewportManager.tsx ← Viewport fit/fly logic
-        └── ShopDirectoryMapOverlays.tsx        ← Floating overlays (intelligence, route, actions)
-ShopDirectoryImmersiveMap.tsx        ← Full-viewport map mode (own top bar + results drawer)
-useShopDirectorySession.ts           ← All session state (search, filter, sort, map, routes)
-shopMapExperience.ts                 ← buildShopMapListings, buildShopRouteOptions, filters
-shopMapData.ts                       ← NY coordinates, suggested origins
-shopMapRouting.ts                    ← Distance, ETA, route building
-directoryAdapters.ts                 ← Supabase shop/insurer → map listing adapters
+ShopDirectoryScreen.tsx                    ← Orchestrator (hybrid + list layout)
+  └── MapLibreShopDirectoryMapPane.tsx     ← MapLibre map pane (GeoJSON sources, route glow, overlays)
+        └── MapLibreShopDirectoryViewportManager.tsx ← useMap() viewport fit/fly logic
+        └── ShopDirectoryMapOverlays.tsx   ← Floating overlays (intelligence, route, actions)
+ShopDirectoryImmersiveMap.tsx              ← Full-viewport map mode (own top bar + results drawer)
+useShopDirectorySession.ts                 ← All session state (search, filter, sort, map, routes)
+shopMapExperience.ts                       ← buildShopMapListings, buildShopRouteOptions, filters
+shopMapData.ts                             ← NY coordinates, suggested origins
+shopMapRouting.ts                          ← Distance, ETA, route building
+directoryAdapters.ts                       ← Supabase shop/insurer → map listing adapters
+```
+
+### C. MapLibreDashboardMapPreview (dashboard widgets)
+
+Used by: `CustomerMapWidget`, `ShopMapWidget`, `InsurerMapWidget`
+
+```
+MapLibreDashboardMapPreview.tsx      ← Lightweight non-interactive preview maps
 ```
 
 **Three view modes:**
@@ -272,7 +291,7 @@ Archive note: The checklist below records the priorities captured during the Pas
 5. **Mobile-first.** Validate 375px before desktop for every UI change.
 6. **Light mode uses `bd-light-surface` for white surfaces.** In `map-dark` mode, text is light on dark glass. In `light` mode, elements with `bd-light-surface` get white backgrounds with dark text. Elements without it retain dark glass + light text (CSS fallback). See "Appearance Mode System" above.
 7. **Map theme (`mapTheme`) is separate from appearance mode.** Components with map surfaces need both.
-8. **Leaflet popups are always white.** Always use dark text inside Leaflet popups.
+8. **MapLibre popups use glass blur styling.** Dark mode popups use dark glass; light popups use white glass. See `theme.css` `.maplibregl-popup-*` rules.
 9. **NY is the coverage area.** No Dallas/TX coordinates anywhere in the codebase.
 10. **Stop and ask** if: deleting >3 files, touching auth/payment/Clerk config, Supabase RLS policies, or build fails after 2 attempts.
 
@@ -280,25 +299,30 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ## 8. Key Files Quick Reference
 
-### Map Program
+### Map Program (MapLibre GL JS — Leaflet fully removed Pass 448)
 
-| File                                                          | Purpose                                         |
-| ------------------------------------------------------------- | ----------------------------------------------- |
-| `src/app/components/shop/ShopDirectoryScreen.tsx`             | Main orchestrator for dashboard shop discovery  |
-| `src/app/components/shop/ShopDirectoryMapPane.tsx`            | Leaflet map pane with theme-aware overlays      |
-| `src/app/components/shop/ShopDirectoryMapOverlays.tsx`        | Floating intelligence + route + action overlays |
-| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`       | Full-viewport immersive map mode                |
-| `src/app/components/shop/ShopDirectoryMapViewportManager.tsx` | Viewport fit/fly-to + tile layers               |
-| `src/app/hooks/useShopDirectorySession.ts`                    | All session state for shop directory            |
-| `src/app/services/intelligence/shopMapExperience.ts`          | Shop listing builder, filters, role highlights  |
-| `src/app/services/intelligence/shopMapData.ts`                | NY shop coordinates + suggested origins         |
-| `src/app/services/intelligence/shopMapRouting.ts`             | Distance/ETA/route computation                  |
-| `src/app/services/intelligence/directoryAdapters.ts`          | Supabase shop/insurer → ShopMapListing adapter  |
-| `src/app/components/maps/ServiceCoverageMap.tsx`              | Landing page map (separate from dashboard)      |
-| `src/app/components/landing/CoverageMapDialog.tsx`            | Full-screen coverage map modal                  |
-| `src/app/components/dashboard/CustomerMapWidget.tsx`          | Customer home map widget                        |
-| `src/app/components/dashboard/ShopMapWidget.tsx`              | Shop home map widget                            |
-| `src/app/components/dashboard/InsurerMapWidget.tsx`           | Insurer home map widget                         |
+| File                                                               | Purpose                                              |
+| ------------------------------------------------------------------ | ---------------------------------------------------- |
+| `src/app/components/shop/ShopDirectoryScreen.tsx`                  | Main orchestrator for dashboard shop discovery       |
+| `src/app/components/maps/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)    |
+| `src/app/components/shop/ShopDirectoryMapOverlays.tsx`             | Floating intelligence + route + action overlays      |
+| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`            | Full-viewport immersive map mode                     |
+| `src/app/components/maps/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                         |
+| `src/app/components/maps/MapLibreServiceCoverageMap.tsx`           | Landing + coverage map (route glow, GPS glow)        |
+| `src/app/components/maps/MapLibreDashboardMapPreview.tsx`          | Lightweight non-interactive dashboard preview maps   |
+| `src/app/components/maps/MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                    |
+| `src/app/components/maps/MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                          |
+| `src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx`          | Category-colored discovery place circles             |
+| `src/app/components/maps/mapLibreStyles.ts`                        | StyleSpecification objects (roadmap/night/satellite) |
+| `src/app/hooks/useShopDirectorySession.ts`                         | All session state for shop directory                 |
+| `src/app/services/intelligence/shopMapExperience.ts`               | Shop listing builder, filters, role highlights       |
+| `src/app/services/intelligence/shopMapData.ts`                     | NY shop coordinates + suggested origins              |
+| `src/app/services/intelligence/shopMapRouting.ts`                  | Distance/ETA/route computation                       |
+| `src/app/services/intelligence/directoryAdapters.ts`               | Supabase shop/insurer → ShopMapListing adapter       |
+| `src/app/components/landing/CoverageMapDialog.tsx`                 | Full-screen coverage map modal                       |
+| `src/app/components/dashboard/CustomerMapWidget.tsx`               | Customer home map widget                             |
+| `src/app/components/dashboard/ShopMapWidget.tsx`                   | Shop home map widget                                 |
+| `src/app/components/dashboard/InsurerMapWidget.tsx`                | Insurer home map widget                              |
 
 ### Core Shell
 
@@ -437,6 +461,35 @@ Major milestones in this phase:
 | 435     | Runtime safety: submitBid, Promise.allSettled, useMemo | ✅ Done |
 | 436     | Wire ShopProfileModal 3 unlinked inputs                | ✅ Done |
 | 437     | Doc system refactor (14 archived, governance rewrite)  | ✅ Done |
+
+---
+
+## 15. MapLibre GL JS Migration (Passes 442–451)
+
+Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL). Leaflet fully removed.
+
+| Pass | Title                                                  | Status  |
+| ---- | ------------------------------------------------------ | ------- |
+| 442  | Map + Dashboard security hardening                     | ✅ Done |
+| 443  | Runtime safety — .charAt/.split guards                 | ✅ Done |
+| 444  | Map tile upgrade — OSM → CARTO Voyager                 | ✅ Done |
+| 445  | Type safety — remove `as any` cast                     | ✅ Done |
+| 446  | MapLibre Phase 1 — Core coverage map engine swap       | ✅ Done |
+| 447  | ShopDirectory + Dashboard MapLibre migration           | ✅ Done |
+| 448  | Remove Leaflet entirely — 14 files, 2021 lines deleted | ✅ Done |
+| 449  | MapLibre popup + attribution CSS (glass blur)          | ✅ Done |
+| 450  | MapLibre code fixes (audit findings)                   | ✅ Done |
+| 451  | Route line glow + GPS position glow effects            | ✅ Done |
+
+**MapLibre architecture:**
+
+- 7 MapLibre components in `src/app/components/maps/`
+- `mapLibreStyles.ts` — tile StyleSpecifications (raster tile sources)
+- GeoJSON Source + Layer approach for all markers (data-driven paint expressions)
+- `useMap()` imperative API for viewport management
+- Route glow: `line-blur` paint property for premium Apple Maps-like effect
+- GPS glow: `circle-blur` paint property for location pulse effect
+- Popups/attribution: CSS glass blur styling in `theme.css`
 
 ---
 
