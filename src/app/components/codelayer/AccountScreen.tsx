@@ -98,8 +98,8 @@ export default function AccountScreen({
   const [editableName, setEditableName] = useState(userName);
   const [editableEmail, setEditableEmail] = useState(userEmail);
   const [editablePhone, setEditablePhone] = useState(formatPhoneNumber(userPhone));
-  const [shopName, setShopName] = useState("Express Auto Body");
-  const [companyName, setCompanyName] = useState("SafeDrive Insurance");
+  const [shopName, setShopName] = useState("");
+  const [companyName, setCompanyName] = useState("");
 
   // User info
   const userInfo = {
@@ -328,7 +328,7 @@ export default function AccountScreen({
             onOpenHelp={() => setShowHelp(true)}
             onOpenSmokeTest={onOpenSmokeTest}
             onOpenAdminPanel={() => setShowAdminPanel(true)}
-            onOpenDeleteAccount={() => setShowDeleteAccount(true)}
+            onOpenDeleteAccount={isTestAccount ? undefined : () => setShowDeleteAccount(true)}
             onLogout={handleLogout}
             onViewVehicles={onViewVehicles}
           />

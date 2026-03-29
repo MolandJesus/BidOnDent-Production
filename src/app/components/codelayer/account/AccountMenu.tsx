@@ -22,7 +22,7 @@ type AccountMenuProps = {
   onOpenHelp: () => void;
   onOpenSmokeTest?: () => void;
   onOpenAdminPanel?: () => void;
-  onOpenDeleteAccount: () => void;
+  onOpenDeleteAccount?: () => void;
   onLogout: () => void;
   onViewVehicles?: () => void;
 };
@@ -181,8 +181,9 @@ export default function AccountMenu({
         )}
 
         <button
-          className={`${rowBaseClass} ${isLight ? "hover:bg-rose-50/80 text-rose-600" : "hover:bg-rose-400/12 text-rose-300"}`}
+          className={`${rowBaseClass} ${onOpenDeleteAccount ? (isLight ? "hover:bg-rose-50/80 text-rose-600" : "hover:bg-rose-400/12 text-rose-300") : "opacity-40 cursor-not-allowed"}`}
           onClick={onOpenDeleteAccount}
+          disabled={!onOpenDeleteAccount}
         >
           <div className="flex items-center">
             <span
