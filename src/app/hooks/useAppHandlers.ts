@@ -106,8 +106,7 @@ export function useAppHandlers({
 
     const report = userData.reports.find((entry) => entry.id === reportId);
     if (!report) {
-      if (import.meta.env.DEV) console.error("Report not found:", reportId);
-      return;
+      throw new Error(`Report not found: ${reportId}`);
     }
 
     const vehicleInfo =

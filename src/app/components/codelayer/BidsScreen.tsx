@@ -197,12 +197,15 @@ export default function BidsScreen({
     );
   }
 
-  const lowestPrice = Math.min(...liveBids.map((bid) => bid.price));
-  const averagePrice = Math.round(
-    liveBids.reduce((sum, bid) => sum + bid.price, 0) / Math.max(1, liveBids.length)
+  const lowestPrice = useMemo(() => Math.min(...liveBids.map((bid) => bid.price)), [liveBids]);
+  const averagePrice = useMemo(
+    () =>
+      Math.round(liveBids.reduce((sum, bid) => sum + bid.price, 0) / Math.max(1, liveBids.length)),
+    [liveBids]
   );
-  const fastestBidDays = Math.min(
-    ...liveBids.map((bid) => Math.max(1, Number(bid.estimatedDays || 0)))
+  const fastestBidDays = useMemo(
+    () => Math.min(...liveBids.map((bid) => Math.max(1, Number(bid.estimatedDays || 0)))),
+    [liveBids]
   );
   const recommendedId = useMemo(() => {
     return [...liveBids].sort((a, b) => b.rating - a.rating + (b.reviews - a.reviews) / 200)[0].id;

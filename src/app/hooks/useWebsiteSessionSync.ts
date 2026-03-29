@@ -38,10 +38,13 @@ export function useWebsiteSessionSync(
 
     const sync = async () => {
       const localMemory = loadWebsiteSessionMemory(identity);
-      const [remoteMemory, remoteRelationships] = await Promise.all([
+      const [memoryResult, relationshipsResult] = await Promise.allSettled([
         fetchWebsiteSessionMemoryFromCloud(identity),
         fetchWebsiteRelationshipCollectionsFromCloud(identity),
       ]);
+      const remoteMemory = memoryResult.status === "fulfilled" ? memoryResult.value : null;
+      const remoteRelationships =
+        relationshipsResult.status === "fulfilled" ? relationshipsResult.value : null;
       const hydratedRemoteMemory = remoteMemory
         ? mergeRelationshipCollectionsIntoSessionMemory(remoteMemory, remoteRelationships)
         : null;
