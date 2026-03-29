@@ -5,6 +5,7 @@ import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
 import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
 import { uploadPhoto } from "../../services/supabaseService";
+import { saveShopBusinessProfile } from "../../services/networkProfiles";
 import { SUPABASE_STORAGE_BUCKETS } from "../../services/supabase/runtime";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import { hasAdminPrivileges } from "../../config/adminConfig";
@@ -18,6 +19,7 @@ import HelpModal from "./account/HelpModal";
 import PaymentModal from "./account/PaymentModal";
 import SettingsModal from "./account/SettingsModal";
 import ShopProfileModal from "./account/ShopProfileModal";
+import type { ShopProfileFormData } from "./account/ShopProfileModal";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 const AdminDashboard = lazy(() => import("../admin/AdminDashboard"));
@@ -216,6 +218,35 @@ export default function AccountScreen({
     setEditablePhone(value);
   };
 
+  const handleSaveShopProfile = async (data: ShopProfileFormData) => {
+    if (!websiteIdentity) {
+      throw new Error("Not signed in");
+    }
+
+    const certs = data.certifications
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    await saveShopBusinessProfile(websiteIdentity, {
+      businessName: data.shopName,
+      businessPhone: data.phone,
+      businessAddress: data.businessAddress,
+      businessHours: data.businessHours || null,
+      certifications: certs,
+      businessCity: "",
+      businessState: "",
+      businessZip: "",
+      specialties: [],
+      acceptsInsuranceClaims: false,
+      offersEstimates: false,
+      insurerPrograms: [],
+      supportedMakes: [],
+      isAcceptingBids: true,
+      isDirectoryVisible: true,
+    });
+  };
+
   const handleCloseDeleteAccount = () => {
     setShowDeleteAccount(false);
     setDeleteConfirmText("");
@@ -398,6 +429,7 @@ export default function AccountScreen({
         editablePhone={editablePhone}
         onShopNameChange={setShopName}
         onPhoneChange={handleShopPhoneChange}
+        onSave={handleSaveShopProfile}
         onClose={() => setShowShopProfile(false)}
         appearanceMode={appearanceMode}
       />
