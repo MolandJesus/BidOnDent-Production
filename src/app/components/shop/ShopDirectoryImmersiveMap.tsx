@@ -263,7 +263,7 @@ export default function ShopDirectoryImmersiveMap({
               selectedRoute={selectedRoute}
               selectedShop={selectedShop}
               usingLiveRoutes={usingLiveRoutes}
-              overlayTopClass="top-28"
+              overlayTopClass={isGuidanceMode ? "top-16" : "top-28"}
             />
             {guidanceOverlay}
             {isGuidanceMode && (
@@ -306,21 +306,26 @@ export default function ShopDirectoryImmersiveMap({
             <ArrowLeft className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </button>
 
-          {/* Map-owned search */}
-          <form className="flex-1" onSubmit={onSearchSubmit}>
-            <div className="relative max-w-lg">
-              <Search
-                className={`pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`}
-              />
-              <input
-                className={`w-full rounded-full border py-2.5 pl-9 pr-4 text-sm shadow-xl outline-none backdrop-blur-md transition-colors sm:py-2.5 ${searchInput}`}
-                onChange={(event) => onSearchQueryChange(event.target.value)}
-                placeholder="Search shops, programs, specialties..."
-                type="text"
-                value={searchQuery}
-              />
-            </div>
-          </form>
+          {/* Map-owned search — hidden during guidance (not actionable while navigating) */}
+          {!isGuidanceMode && (
+            <form className="flex-1" onSubmit={onSearchSubmit}>
+              <div className="relative max-w-lg">
+                <Search
+                  className={`pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`}
+                />
+                <input
+                  className={`w-full rounded-full border py-2.5 pl-9 pr-4 text-sm shadow-xl outline-none backdrop-blur-md transition-colors sm:py-2.5 ${searchInput}`}
+                  onChange={(event) => onSearchQueryChange(event.target.value)}
+                  placeholder="Search shops, programs, specialties..."
+                  type="text"
+                  value={searchQuery}
+                />
+              </div>
+            </form>
+          )}
+
+          {/* Spacer — push controls right during guidance when search is hidden */}
+          {isGuidanceMode && <div className="flex-1" />}
 
           {/* Results drawer toggle */}
           <button
@@ -334,16 +339,18 @@ export default function ShopDirectoryImmersiveMap({
             <span className="hidden sm:inline">{mapListings.length}</span>
           </button>
 
-          {/* Mode switches */}
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-auto sm:gap-2 sm:px-3 sm:text-sm sm:font-medium ${iconBtn}`}
-            onClick={() => onSwitchMode("hybrid")}
-            type="button"
-            aria-label="Switch to split view"
-          >
-            <Layers3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">Split</span>
-          </button>
+          {/* Mode switch — hidden during guidance (full-screen map required) */}
+          {!isGuidanceMode && (
+            <button
+              className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-auto sm:gap-2 sm:px-3 sm:text-sm sm:font-medium ${iconBtn}`}
+              onClick={() => onSwitchMode("hybrid")}
+              type="button"
+              aria-label="Switch to split view"
+            >
+              <Layers3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Split</span>
+            </button>
+          )}
 
           {/* Theme toggle */}
           <button

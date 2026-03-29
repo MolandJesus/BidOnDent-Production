@@ -1,3 +1,9 @@
+### Implementation Note — Pass T531 Immersive Map Guidance Top-Bar Declutter (2026-03-29)
+
+- During guidance mode, the search bar and split-view button are now hidden from the immersive map top bar, reducing mobile control density from 5 items to 3.
+- Overlay position tightened during guidance to reclaim vertical map real estate.
+- Strategic effect: the primary navigation flow now presents a cleaner, more focused HUD on small phones, reducing distraction and improving map visibility during turn-by-turn guidance.
+
 ### Implementation Note — Pass T530 Shop Directory Tablet-Shell Breakpoint Rebalance (2026-03-29)
 
 - Added a dedicated tablet-landscape split breakpoint (`min-[960px]`) to the shop-directory map shell so list/map composition no longer waits for full desktop sizing.

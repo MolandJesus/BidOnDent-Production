@@ -1,3 +1,15 @@
+## Pass T531 — Immersive map guidance-mode top-bar declutter (2026-03-29)
+
+- **Why this pass was chosen:** On small-mobile screens (375px), the immersive map top bar contained 5 controls (Back, Search, Drawer Toggle, Split View, Theme Toggle) at all times. During active guidance, search and split-view are not actionable and consume critical horizontal space, causing visual congestion over the map.
+- **What changed:**
+  - Search bar and Split-view mode-switch button are now hidden during guidance mode (`isGuidanceMode`), reducing the top bar from 5 to 3 controls (Back, Drawer, Theme).
+  - Added a flex spacer during guidance so remaining controls stay right-aligned.
+  - Overlay position (`overlayTopClass`) tightened from `top-28` to `top-16` during guidance since the top-bar visual weight is lower without the search field.
+- **Files touched:** `ShopDirectoryImmersiveMap.tsx`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
 ## Pass T530 — Shop Directory tablet-shell breakpoint rebalance (2026-03-29)
 
 - **Why this pass was chosen:** Shop Directory hybrid shell still switched to split map/list too late and too abruptly. Tablet-landscape users were seeing inconsistent map/list balance between mobile stack and full desktop split.
