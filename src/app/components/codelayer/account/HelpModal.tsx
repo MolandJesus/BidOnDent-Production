@@ -1,4 +1,5 @@
-import { Mail, X } from "lucide-react";
+import { CheckCircle, Mail, X } from "lucide-react";
+import { useState } from "react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type HelpModalProps = {
@@ -15,6 +16,7 @@ export default function HelpModal({
   appearanceMode = "map-dark",
 }: HelpModalProps) {
   const isLight = appearanceMode === "light";
+  const [sent, setSent] = useState(false);
   if (!isOpen) return null;
 
   return (
@@ -99,11 +101,21 @@ export default function HelpModal({
             className="px-4 py-2 text-white rounded"
             style={{ backgroundColor: primaryColor }}
             onClick={() => {
-              onClose();
-              alert("Message sent! We'll get back to you soon.");
+              setSent(true);
+              setTimeout(() => {
+                setSent(false);
+                onClose();
+              }, 1500);
             }}
+            disabled={sent}
           >
-            Send Message
+            {sent ? (
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle className="w-4 h-4" /> Sent!
+              </span>
+            ) : (
+              "Send Message"
+            )}
           </button>
         </div>
       </div>

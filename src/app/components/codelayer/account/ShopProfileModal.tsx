@@ -23,6 +23,7 @@ export default function ShopProfileModal({
   appearanceMode = "map-dark",
 }: ShopProfileModalProps) {
   const isLight = appearanceMode === "light";
+  const [saved, setSaved] = useState(false);
   if (!isOpen) return null;
 
   return (
@@ -116,12 +117,19 @@ export default function ShopProfileModal({
             className="px-4 py-2 text-white rounded flex items-center gap-2"
             style={{ backgroundColor: primaryColor }}
             onClick={() => {
-              onClose();
-              alert("Shop profile updated!");
+              setSaved(true);
+              setTimeout(() => {
+                setSaved(false);
+                onClose();
+              }, 1500);
             }}
+            disabled={saved}
           >
-            <Save className="w-4 h-4" />
-            Save Changes
+            {saved ? (
+              <><CheckCircle className="w-4 h-4" /> Saved!</>
+            ) : (
+              <><Save className="w-4 h-4" /> Save Changes</>
+            )}
           </button>
         </div>
       </div>
