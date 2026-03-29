@@ -11,28 +11,14 @@ const BidsScreen = lazy(() => import("../components/codelayer/BidsScreen"));
 const AccountScreen = lazy(() => import("../components/codelayer/AccountScreen"));
 const ShopRequestsScreen = lazy(() => import("../components/shop/ShopRequestsScreen"));
 const ShopActiveJobsScreen = lazy(() => import("../components/shop/ShopActiveJobsScreen"));
-const LikedShopsScreen = lazy(() => import("../components/shop/LikedShopsScreen"));
-const VehicleProfileScreen = lazy(() => import("../components/shop/VehicleProfileScreen"));
-const ShopDirectoryScreen = lazy(() => import("../components/shop/ShopDirectoryScreen"));
 const InsurerClaimsScreen = lazy(() => import("../components/insurer/InsurerClaimsScreen"));
 const InsurerPartnerShopsScreen = lazy(
   () => import("../components/insurer/InsurerPartnerShopsScreen")
 );
-const InsurerConnectionScreen = lazy(() => import("../components/insurer/InsurerConnectionScreen"));
-const InsurerNewClaimScreen = lazy(() => import("../components/insurer/InsurerNewClaimScreen"));
-const InsuranceCompaniesScreen = lazy(
-  () => import("../components/insurer/InsuranceCompaniesScreen")
-);
-const ReportsListScreen = lazy(() => import("../components/reports/ReportsListScreen"));
-const ReportDetailScreen = lazy(() => import("../components/reports/ReportDetailScreen"));
-const CompetitorAnalysisScreen = lazy(
-  () => import("../components/reports/CompetitorAnalysisScreen")
-);
-const DemoAccountSwitcher = lazy(() => import("../components/demo/DemoAccountSwitcher"));
-const SmokeTestScreen = lazy(() => import("../components/demo/SmokeTestScreen"));
 
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import type { DashboardRouterProps } from "./dashboard-router-types";
+import DashboardSecondaryViews from "./DashboardSecondaryViews";
 
 const screenTransition = {
   initial: { opacity: 0, x: -20 },
@@ -335,222 +321,28 @@ export default function DashboardRouter({
               </motion.div>
             )}
 
-            {/* Reports List Screen */}
-            {viewMode === "reports-list" && (
-              <motion.div key="reports-list" {...screenTransition}>
-                <ReportsListScreen
-                  reports={reports.map((report) => ({
-                    ...report,
-                    photos: photoStorage[report.id] || report.photos || [],
-                  }))}
-                  reportsLoading={reportsLoading ?? false}
-                  reportsError={reportsError ?? null}
-                  onBack={() => onViewModeChange("dashboard")}
-                  onSelectReport={(reportId) => {
-                    onSelectReport(String(reportId));
-                    onViewModeChange("report-detail");
-                  }}
-                  primaryColor={primaryColor}
-                  appearanceMode={appearanceMode}
-                />
-              </motion.div>
-            )}
-
-            {/* Report Detail Screen */}
-            {viewMode === "report-detail" && selectedReportId && (
-              <motion.div key="report-detail" {...screenTransition}>
-                {reports.find((r) => r.id === selectedReportId) ? (
-                  <ReportDetailScreen
-                    report={{
-                      ...reports.find((r) => r.id === selectedReportId)!,
-                      photos:
-                        photoStorage[selectedReportId] ||
-                        reports.find((r) => r.id === selectedReportId)?.photos ||
-                        [],
-                    }}
-                    onBack={() => onViewModeChange("reports-list")}
-                    onViewAllBids={() => {
-                      onTabChange("bids");
-                      onViewModeChange("dashboard");
-                    }}
-                    primaryColor={primaryColor}
-                    appearanceMode={appearanceMode}
-                  />
-                ) : (
-                  <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
-                    <p className="text-slate-600">Report not found.</p>
-                    <button
-                      onClick={() => onViewModeChange("reports-list")}
-                      className="mt-4 px-4 py-2 rounded-xl text-white font-medium"
-                      style={{ background: primaryColor }}
-                    >
-                      Back to Reports
-                    </button>
-                  </div>
-                )}
-              </motion.div>
-            )}
-
-            {viewMode === "report-detail" && !selectedReportId && (
-              <motion.div key="report-detail-missing" {...screenTransition}>
-                <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
-                  <p className="text-slate-600">No report selected.</p>
-                  <button
-                    onClick={() => onViewModeChange("reports-list")}
-                    className="mt-4 px-4 py-2 rounded-xl text-white font-medium"
-                    style={{ background: primaryColor }}
-                  >
-                    Back to Reports
-                  </button>
-                </div>
-              </motion.div>
-            )}
-
-            {viewMode === "smoke-test" && (
-              <motion.div key="smoke-test" {...screenTransition}>
-                <SmokeTestScreen primaryColor={primaryColor} />
-              </motion.div>
-            )}
-
-            {/* Insurer Connect Screen */}
-            {viewMode === "insurer-connect" && (
-              <motion.div key="insurer-connect" {...screenTransition}>
-                <InsurerConnectionScreen
-                  onBack={() => onViewModeChange("dashboard")}
-                  primaryColor={primaryColor}
-                  secondaryColor={secondaryColor}
-                  identity={websiteIdentity}
-                  userType={userType}
-                  reports={reports}
-                  appearanceMode={appearanceMode}
-                />
-              </motion.div>
-            )}
-
-            {/* Liked Shops Screen */}
-            {viewMode === "liked-shops" && (
-              <motion.div key="liked-shops" {...screenTransition}>
-                <LikedShopsScreen
-                  onBack={() => onViewModeChange("dashboard")}
-                  onOpenMap={() => onViewModeChange("shop-directory")}
-                  primaryColor={primaryColor}
-                  secondaryColor={secondaryColor}
-                  identity={websiteIdentity}
-                  appearanceMode={appearanceMode}
-                />
-              </motion.div>
-            )}
-
-            {/* Vehicles Screen */}
-            {viewMode === "vehicles" && (
-              <motion.div key="vehicles" {...screenTransition}>
-                <VehicleProfileScreen
-                  vehicles={vehicles}
-                  onBack={() => {
-                    onTabChange("account");
-                    onViewModeChange("dashboard");
-                  }}
-                  primaryColor={primaryColor}
-                  onSaveVehicles={onSaveVehicles}
-                  appearanceMode={appearanceMode}
-                />
-              </motion.div>
-            )}
-
-            {/* Shop Directory Screen */}
-            {viewMode === "shop-directory" && (
-              <motion.div key="shop-directory" {...screenTransition}>
-                <ShopDirectoryScreen
-                  onBack={() => onViewModeChange("dashboard")}
-                  onOpenRelatedScreen={() => {
-                    if (userType === "shop") {
-                      onViewModeChange("competitor-analysis");
-                      return;
-                    }
-
-                    if (userType === "insurer") {
-                      onTabChange("shops");
-                      onViewModeChange("dashboard");
-                      return;
-                    }
-
-                    onViewModeChange("liked-shops");
-                  }}
-                  appearanceMode={appearanceMode}
-                  primaryColor={primaryColor}
-                  secondaryColor={secondaryColor}
-                  identity={websiteIdentity}
-                  userType={userType}
-                  userInfo={userInfo}
-                  vehicles={vehicles}
-                  reports={reports}
-                />
-              </motion.div>
-            )}
-
-            {/* Insurer New Claim Screen */}
-            {viewMode === "new-claim" && userType === "insurer" && (
-              <motion.div key="new-claim" {...screenTransition}>
-                <InsurerNewClaimScreen
-                  primaryColor={primaryColor}
-                  appearanceMode={appearanceMode}
-                  onBack={() => onViewModeChange("dashboard")}
-                  onCreateClaim={(claimData) => {
-                    console.info("[BidOnDent] New claim created:", claimData);
-                    onTabChange("claims");
-                    onViewModeChange("dashboard");
-                  }}
-                />
-              </motion.div>
-            )}
-
-            {/* Insurance Companies Screen */}
-            {viewMode === "insurance-companies" && (
-              <motion.div key="insurance-companies" {...screenTransition}>
-                <InsuranceCompaniesScreen
-                  onBack={() => onViewModeChange("dashboard")}
-                  primaryColor={primaryColor}
-                  secondaryColor={secondaryColor}
-                  userType={userType}
-                />
-              </motion.div>
-            )}
-
-            {/* Competitor Analysis Screen */}
-            {viewMode === "competitor-analysis" && (
-              <motion.div key="competitor-analysis" {...screenTransition}>
-                <CompetitorAnalysisScreen
-                  onBack={() => onViewModeChange("dashboard")}
-                  onOpenMap={() => onViewModeChange("shop-directory")}
-                  primaryColor={primaryColor}
-                  secondaryColor={secondaryColor}
-                  identity={websiteIdentity}
-                  appearanceMode={appearanceMode}
-                />
-              </motion.div>
-            )}
-
-            {/* Demo Account Switcher */}
-            {viewMode === "demo-switcher" && (
-              <motion.div key="demo-switcher" {...screenTransition}>
-                <DemoAccountSwitcher
-                  currentAccountType={userType}
-                  onSelectAccountType={(type) => {
-                    if (onEnableDemoMode) {
-                      onEnableDemoMode(type);
-                    }
-                  }}
-                  onExitDemo={() => {
-                    if (onExitDemoMode) {
-                      onExitDemoMode();
-                    } else {
-                      onViewModeChange("dashboard");
-                    }
-                  }}
-                  primaryColor={primaryColor}
-                />
-              </motion.div>
-            )}
+            {/* Secondary / overlay views */}
+            <DashboardSecondaryViews
+              viewMode={viewMode}
+              userType={userType}
+              userInfo={userInfo}
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+              appearanceMode={appearanceMode}
+              reports={reports}
+              photoStorage={photoStorage}
+              reportsLoading={reportsLoading}
+              reportsError={reportsError}
+              vehicles={vehicles}
+              selectedReportId={selectedReportId}
+              websiteIdentity={websiteIdentity}
+              onSelectReport={onSelectReport}
+              onViewModeChange={onViewModeChange}
+              onTabChange={onTabChange}
+              onSaveVehicles={onSaveVehicles}
+              onEnableDemoMode={onEnableDemoMode}
+              onExitDemoMode={onExitDemoMode}
+            />
 
             {!hasRouteMatch && (
               <motion.div key="route-fallback" {...screenTransition}>
