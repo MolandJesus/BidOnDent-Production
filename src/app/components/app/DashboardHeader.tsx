@@ -226,7 +226,7 @@ export default function DashboardHeader({
                     background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                   }}
                 >
-                  {userProfile.name.charAt(0).toUpperCase()}
+                  {(userProfile.name || "U").charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="hidden md:block text-left pr-1">

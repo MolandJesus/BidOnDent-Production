@@ -264,7 +264,7 @@ export default function DashboardSidebar({
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               }}
             >
-              {userProfile.name.charAt(0).toUpperCase()}
+              {(userProfile.name || "U").charAt(0).toUpperCase()}
             </div>
           )}
           <div className="text-left min-w-0 flex-1">

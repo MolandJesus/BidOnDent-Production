@@ -258,7 +258,7 @@ export default function InsurerNewClaimScreen({
                     type="button"
                   >
                     <Plus className="w-5 h-5" />
-                    Create Claim for {customer.name.split(" ")[0]}
+                    Create Claim for {(customer.name || "Customer").split(" ")[0]}
                     <ChevronRight className="w-5 h-5" />
                   </button>
                 </div>
