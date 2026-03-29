@@ -41,7 +41,7 @@ export default function MissingReportState({
           <motion.div
             animate={{ x: [0, -7, 7, -5, 5, 0] }}
             transition={{ duration: 0.7, repeat: Infinity, repeatDelay: 3.6 }}
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-500/100/10 text-blue-600 shadow-sm"
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-500/10 text-blue-600 shadow-sm"
           >
             <AlertCircle className="h-7 w-7" />
           </motion.div>
