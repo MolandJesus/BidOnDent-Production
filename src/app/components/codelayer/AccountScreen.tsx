@@ -80,6 +80,7 @@ export default function AccountScreen({
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isAdminUser = hasAdminPrivileges(userEmail);
@@ -114,6 +115,7 @@ export default function AccountScreen({
   const persistProfileImage = async (file: File | Blob) => {
     try {
       setIsSaving(true);
+      setImageError(null);
 
       if (import.meta.env.DEV) {
         console.log(
@@ -157,7 +159,7 @@ export default function AccountScreen({
       setTimeout(() => setSaveSuccess(false), 2000);
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error processing image:", error);
-      alert(
+      setImageError(
         `Failed to upload image: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`
       );
     } finally {
@@ -304,6 +306,8 @@ export default function AccountScreen({
           appearanceMode={appearanceMode}
           onProfileImageClick={handleProfileImageClick}
         />
+
+        {imageError && <p className="text-sm text-rose-500 text-center -mt-3">{imageError}</p>}
 
         <motion.div
           initial={{ opacity: 0, y: 8 }}
