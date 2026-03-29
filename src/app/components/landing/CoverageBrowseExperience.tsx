@@ -333,7 +333,7 @@ export default function CoverageBrowseExperience({
         minute: "2-digit",
       })
     : "--:--";
-  const isDesktop = useMediaQuery("(min-width: 1280px)");
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   return (
     <div className="relative overflow-hidden rounded-2xl border-0 bg-transparent shadow-none">
@@ -349,7 +349,7 @@ export default function CoverageBrowseExperience({
           radiusMeters={radiusMeters}
           radiusMiles={radiusMiles}
           regionCount={regionCount}
-          mapHeightClassName="h-[100dvh] xl:h-[82vh] min-h-[360px] xl:min-h-[640px]"
+          mapHeightClassName="h-[100dvh] lg:h-[84vh] min-h-[360px] lg:min-h-[620px]"
           immersiveFullscreen
           showSurfaceChrome={false}
           selectedShopId={selectedShopId}
@@ -389,7 +389,7 @@ export default function CoverageBrowseExperience({
         />
 
         {isDesktop ? (
-          <div className="pointer-events-none absolute inset-y-6 left-6 z-[610] hidden w-[380px] xl:block 2xl:left-8 2xl:w-[410px]">
+          <div className="pointer-events-none absolute inset-y-6 left-4 z-[610] hidden w-[340px] lg:block xl:left-6 xl:w-[380px] 2xl:left-8 2xl:w-[410px]">
             <div
               className={cn(
                 "pointer-events-auto h-full overflow-hidden rounded-[1.5rem] border backdrop-blur-2xl",
@@ -416,7 +416,7 @@ export default function CoverageBrowseExperience({
         ) : null}
 
         <CoverageBrowseMapOverlays
-          className="hidden xl:contents"
+          className="hidden lg:contents"
           theme={theme}
           tileMode={tileMode}
           nextInstruction={navigation.nextStep?.instruction ?? null}

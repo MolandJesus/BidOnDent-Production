@@ -1,3 +1,16 @@
+## Pass T529 — Coverage map tablet breakpoints (2026-03-29)
+
+- **Why this pass was chosen:** Coverage map browse/navigation was still waiting until `xl` to switch to desktop-style sidebar overlays. On tablets (`lg`, 1024-class), users were getting phone-style behavior with oversized full-height map and delayed sidebar/map composition.
+- **What changed:**
+  - Promoted desktop coverage-sidebar breakpoint from `xl` to `lg` for command-center docking and map overlay presentation.
+  - Tuned coverage map heights for browse + active navigation (`lg:h-[84vh]`) so tablets no longer run full-viewport phone geometry by default.
+  - Rebalanced left command-center panel sizing/position for `lg` screens and kept `xl/2xl` refinement.
+  - Added `md/lg` padding transitions in active navigation layout for less cramped controls on tablet.
+- **Files touched:** `CoverageBrowseExperience.tsx`, `CoverageMapDialog.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0.
+
+---
+
 ## Pass T528 — Mobile full-screen map scroll recovery + pane height rebalance (2026-03-29)
 
 - **Why this pass was chosen:** Mobile full-screen map flows felt trapped. Users could not reliably browse map sections in coverage mode, and the shop-directory hybrid map pane consumed too much height on phones/tablets, starving list/search content.

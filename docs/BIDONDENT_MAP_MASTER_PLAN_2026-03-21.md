@@ -1,3 +1,9 @@
+### Implementation Note — Pass T529 Coverage Map Tablet Breakpoint Upgrade (2026-03-29)
+
+- Promoted coverage command-center desktop behavior from `xl` to `lg` so 1024-class tablet screens now receive sidebar + map composition instead of phone-style bottom-sheet-only behavior.
+- Tuned browse and active-navigation map height strategy to `lg` thresholds (`84vh`) with intermediate spacing/padding transitions for cleaner control density on tablet.
+- Strategic effect: dashboard coverage map now scales through mobile -> tablet -> desktop tiers with less breakpoint shock, improving map section access and readability on both iPad-class and desktop screens.
+
 ### Implementation Note — Pass T526-T528 Dashboard Map Stability + Mobile Guidance Access (2026-03-29)
 
 - **T526**: Stabilized HomeScreen map shell by replacing fixed hero positioning + hard-coded content offset with sticky flow layout so dashboard map surfaces no longer break scroll/layering on mobile and desktop.

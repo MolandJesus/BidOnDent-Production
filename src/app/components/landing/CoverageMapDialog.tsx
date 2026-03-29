@@ -301,7 +301,7 @@ export default function CoverageMapDialog({
     }
 
     return (
-      <div className="p-0 xl:p-4">
+      <div className="p-0 md:p-3 lg:p-4">
         <div className="relative">
           {/* Exit navigation — always-reachable back button */}
           <button
@@ -328,7 +328,7 @@ export default function CoverageMapDialog({
             radiusMeters={radiusMeters}
             radiusMiles={radiusMiles}
             regionCount={regionCount}
-            mapHeightClassName="h-[100dvh] xl:h-[82vh] min-h-[400px] xl:min-h-[680px]"
+            mapHeightClassName="h-[100dvh] lg:h-[84vh] min-h-[400px] lg:min-h-[660px]"
             immersiveFullscreen
             presentationMode="navigation"
             showSurfaceChrome={false}
@@ -431,7 +431,7 @@ export default function CoverageMapDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          "max-w-[100vw] overflow-hidden rounded-2xl p-0 sm:max-w-[calc(100vw-2rem)] lg:max-w-[min(1380px,calc(100vw-2rem))] [&>button:last-child]:hidden",
+          "max-w-[100vw] overflow-hidden rounded-2xl p-0 sm:max-w-[calc(100vw-2rem)] lg:max-w-[min(1360px,calc(100vw-2rem))] [&>button:last-child]:hidden",
           theme.shellClassName,
           tone === "light" ? "text-slate-950" : "text-white"
         )}
