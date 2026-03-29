@@ -249,6 +249,7 @@ export default function DashboardRouter({
                 <ShopActiveJobsScreen
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
+                  isSeedData={marketplaceReports.length === 0}
                   appearanceMode={appearanceMode}
                 />
               </motion.div>
@@ -261,6 +262,7 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
                   reportsLoading={marketplaceLoading}
+                  isSeedData={marketplaceReports.length === 0}
                   appearanceMode={appearanceMode}
                   onApproveClaim={(claimId, amount) => {
                     console.info("[BidOnDent] Claim approved:", { claimId, amount });

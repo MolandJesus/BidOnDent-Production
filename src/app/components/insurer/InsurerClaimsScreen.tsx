@@ -9,6 +9,7 @@ type InsurerClaimsScreenProps = {
   primaryColor?: string;
   reports?: any[];
   reportsLoading?: boolean;
+  isSeedData?: boolean;
   onApproveClaim?: (claimId: number, amount: number) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -17,6 +18,7 @@ export default function InsurerClaimsScreen({
   primaryColor = "#003d82",
   reports = [],
   reportsLoading = false,
+  isSeedData = false,
   onApproveClaim,
   appearanceMode = "map-dark",
 }: InsurerClaimsScreenProps) {
@@ -138,6 +140,24 @@ export default function InsurerClaimsScreen({
           </div>
         </div>
       </div>
+
+      {/* Demo Data Banner */}
+      {isSeedData && !reportsLoading && (
+        <div className="mx-4 mt-4">
+          <div
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium ${
+              isLight
+                ? "bg-amber-50 border border-amber-200/60 text-amber-800"
+                : "bg-amber-500/10 border border-amber-400/20 text-amber-300"
+            }`}
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>
+              Showing demo claims — live claims will appear when damage reports are filed.
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Claims List */}
       <div className="px-4 py-4 space-y-4">

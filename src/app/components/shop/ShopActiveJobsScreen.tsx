@@ -7,6 +7,7 @@ import ShopActiveJobDetailModal from "./ShopActiveJobDetailModal";
 type ShopActiveJobsScreenProps = {
   primaryColor?: string;
   reports?: any[];
+  isSeedData?: boolean;
   onUpdateJobStatus?: (jobId: number, status: string) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -14,6 +15,7 @@ type ShopActiveJobsScreenProps = {
 export default function ShopActiveJobsScreen({
   primaryColor = "#003d82",
   reports = [],
+  isSeedData = false,
   onUpdateJobStatus,
   appearanceMode = "map-dark",
 }: ShopActiveJobsScreenProps) {
@@ -167,6 +169,22 @@ export default function ShopActiveJobsScreen({
           </div>
         </div>
       </div>
+
+      {/* Demo Data Banner */}
+      {isSeedData && (
+        <div className="mx-4 mt-4">
+          <div
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium ${
+              isLight
+                ? "bg-amber-50 border border-amber-200/60 text-amber-800"
+                : "bg-amber-500/10 border border-amber-400/20 text-amber-300"
+            }`}
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>Showing demo jobs — active jobs will appear when bids are accepted.</span>
+          </div>
+        </div>
+      )}
 
       {/* Jobs List */}
       <div className="px-4 py-4 space-y-4">
