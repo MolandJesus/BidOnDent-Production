@@ -81,7 +81,7 @@ export default function DashboardHeader({
 
   return (
     <header
-      className={`sticky top-0 z-40 rounded-none border-0 border-b ${
+      className={`sticky top-0 z-40 rounded-b-2xl border-0 border-b ${
         isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.12]"
       }`}
       style={{
