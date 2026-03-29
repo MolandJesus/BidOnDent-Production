@@ -13,7 +13,7 @@ import { haversineMiles } from "../../services/supabase/map";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import CoverageMapDialog from "../landing/CoverageMapDialog";
 import { countyCenters, defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
-import DashboardMapPreview from "./DashboardMapPreview";
+import DashboardMapPreview from "./MapLibreDashboardMapPreview";
 import type {
   CoverageNearbyShop,
   CoveragePartnerShop,

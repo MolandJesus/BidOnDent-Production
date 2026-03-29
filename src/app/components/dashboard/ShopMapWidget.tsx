@@ -2,7 +2,7 @@ import { MapPinned, Navigation, Wrench } from "lucide-react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
 import { defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
-import DashboardMapPreview from "./DashboardMapPreview";
+import DashboardMapPreview from "./MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ShopMapWidgetProps = {

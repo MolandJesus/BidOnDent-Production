@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { ArrowLeft, Layers3, List, MapPin, PanelLeftClose, Search, SunMoon } from "lucide-react";
-import ShopDirectoryMapPane from "./ShopDirectoryMapPane";
+import ShopDirectoryMapPane from "./MapLibreShopDirectoryMapPane";
 import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
 import ShopDirectoryResultCard from "./ShopDirectoryResultCard";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";

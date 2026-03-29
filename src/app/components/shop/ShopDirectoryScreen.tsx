@@ -1,6 +1,6 @@
 import { useEffect, type FormEvent } from "react";
 import { Briefcase, Car, Shield } from "lucide-react";
-import ShopDirectoryMapPane from "./ShopDirectoryMapPane";
+import ShopDirectoryMapPane from "./MapLibreShopDirectoryMapPane";
 import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
 import ShopDirectoryImmersiveMap from "./ShopDirectoryImmersiveMap";
 import ShopDirectoryListBody from "./ShopDirectoryListBody";
