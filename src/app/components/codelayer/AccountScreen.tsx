@@ -81,6 +81,7 @@ export default function AccountScreen({
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [imageError, setImageError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isAdminUser = hasAdminPrivileges(userEmail);
@@ -242,14 +243,16 @@ export default function AccountScreen({
   };
 
   const handleDeleteAccount = async () => {
+    setDeleteError(null);
+
     if (deleteConfirmText.toLowerCase() !== "delete") {
-      alert('Please type "DELETE" to confirm account deletion');
+      setDeleteError('Please type "DELETE" to confirm account deletion');
       return;
     }
 
     // Check if test account
     if (isTestAccount) {
-      alert("This account type cannot be deleted through this method");
+      setDeleteError("This account type cannot be deleted through this method");
       setDeleteConfirmText(""); // Reset confirmation text
       return;
     }
@@ -265,7 +268,7 @@ export default function AccountScreen({
       setShowDeleteAccount(false);
     } catch (error) {
       if (import.meta.env.DEV) console.error("❌ Error deleting account:", error);
-      alert(`Error: ${error instanceof Error ? error.message : "Failed to delete account"}`);
+      setDeleteError(error instanceof Error ? error.message : "Failed to delete account");
     } finally {
       setIsDeleting(false);
     }
@@ -397,6 +400,7 @@ export default function AccountScreen({
         isOpen={showDeleteAccount}
         isDeleting={isDeleting}
         deleteConfirmText={deleteConfirmText}
+        error={deleteError}
         onDeleteConfirmTextChange={setDeleteConfirmText}
         onClose={handleCloseDeleteAccount}
         onDelete={handleDeleteAccount}

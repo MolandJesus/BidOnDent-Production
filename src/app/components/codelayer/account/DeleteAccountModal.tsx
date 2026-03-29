@@ -5,6 +5,7 @@ type DeleteAccountModalProps = {
   isOpen: boolean;
   isDeleting: boolean;
   deleteConfirmText: string;
+  error?: string | null;
   onDeleteConfirmTextChange: (value: string) => void;
   onClose: () => void;
   onDelete: () => void;
@@ -15,6 +16,7 @@ export default function DeleteAccountModal({
   isOpen,
   isDeleting,
   deleteConfirmText,
+  error,
   onDeleteConfirmTextChange,
   onClose,
   onDelete,
@@ -82,6 +84,8 @@ export default function DeleteAccountModal({
             />
           </div>
         </div>
+
+        {error && <p className="text-sm text-rose-500 text-center mt-3">{error}</p>}
 
         <div className="mt-6 flex gap-3">
           <button

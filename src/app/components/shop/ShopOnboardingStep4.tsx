@@ -6,6 +6,7 @@ type ShopOnboardingStep4Props = {
   formData: ShopOnboardingFormData;
   primaryColor: string;
   isSubmitting: boolean;
+  submitError?: string | null;
   onUpdate: (data: ShopOnboardingFormData) => void;
   onBack: () => void;
   onComplete: () => void;
@@ -15,6 +16,7 @@ export default function ShopOnboardingStep4({
   formData,
   primaryColor,
   isSubmitting,
+  submitError,
   onUpdate,
   onBack,
   onComplete,
@@ -61,6 +63,8 @@ export default function ShopOnboardingStep4({
           />
         </label>
       </div>
+
+      {submitError && <p className="text-sm text-rose-600 text-center mt-2">{submitError}</p>}
 
       <div className="flex gap-3 mt-6">
         <motion.button

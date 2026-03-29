@@ -23,6 +23,7 @@ export default function VehicleProfileScreen({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [formData, setFormData] = useState<{
     year: string;
     make: string;
@@ -63,9 +64,10 @@ export default function VehicleProfileScreen({
 
   const handleSave = () => {
     if (!formData.year || !formData.make || !formData.model) {
-      alert("Please fill in required fields: Year, Make, and Model");
+      setFormError("Please fill in required fields: Year, Make, and Model");
       return;
     }
+    setFormError(null);
 
     let updatedVehicles;
     if (editingId || editingIndex !== null) {
@@ -235,6 +237,8 @@ export default function VehicleProfileScreen({
                   />
                 </div>
               </div>
+
+              {formError && <p className="text-sm text-rose-500 text-center">{formError}</p>}
 
               <div className="flex gap-3 pt-2">
                 <button

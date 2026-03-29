@@ -18,6 +18,7 @@ export default function ShopOnboarding({
 }: ShopOnboardingProps) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState<ShopOnboardingFormData>({
     shopName: "",
     address: "",
@@ -39,11 +40,12 @@ export default function ShopOnboarding({
   const handleComplete = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       await onComplete(formData);
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error completing shop onboarding:", error);
-      window.alert("We couldn't save the shop profile yet. Please try again.");
+      setSubmitError("We couldn't save the shop profile yet. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -107,6 +109,7 @@ export default function ShopOnboarding({
             formData={formData}
             primaryColor={primaryColor}
             isSubmitting={isSubmitting}
+            submitError={submitError}
             onUpdate={setFormData}
             onBack={handleBack}
             onComplete={handleComplete}

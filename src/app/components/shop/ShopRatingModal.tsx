@@ -30,12 +30,14 @@ export default function ShopRatingModal({
     timeliness: 0,
     value: 0,
   });
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleSubmit = () => {
     if (rating === 0) {
-      alert("Please select an overall rating");
+      setValidationError("Please select an overall rating");
       return;
     }
+    setValidationError(null);
     onSubmit(rating, review, category);
   };
 
@@ -172,6 +174,10 @@ export default function ShopRatingModal({
               placeholder="Share your experience with this shop..."
             />
           </div>
+
+          {validationError && (
+            <p className="text-sm text-rose-500 text-center">{validationError}</p>
+          )}
 
           {/* Submit Buttons */}
           <div className="flex gap-3">
