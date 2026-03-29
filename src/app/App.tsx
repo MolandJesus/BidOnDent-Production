@@ -115,7 +115,7 @@ function AppContent() {
         providerUserId: user?.id,
         email: userProfile.email,
         displayName: userProfile.name || user?.fullName || "",
-        sessionHint: String((user as any)?.lastSignInAt || ""),
+        sessionHint: user?.lastSignInAt ? String(user.lastSignInAt) : "",
       })
     : null;
   const isWebsiteSessionHydrated = useWebsiteSessionSync(websiteIdentity, userProfile?.user_type);
