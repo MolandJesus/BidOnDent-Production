@@ -81,12 +81,31 @@ export default function MapLibreShopDirectoryMapPane({
     shop: ShopMapListing;
   } | null>(null);
 
-  /* Close popup when selection changes externally (e.g. sidebar click) */
+  /* Keep popup aligned with selected shop, regardless of map/list origin */
   useEffect(() => {
-    if (shopPopup && shopPopup.shop.id !== selectedShopId) {
+    if (selectedShopId == null) {
       setShopPopup(null);
+      return;
     }
-  }, [selectedShopId, shopPopup]);
+
+    const selected = shops.find((shop) => shop.id === selectedShopId);
+    if (!selected) {
+      setShopPopup(null);
+      return;
+    }
+
+    setShopPopup((current) => {
+      if (current?.shop.id === selected.id) {
+        return current;
+      }
+
+      return {
+        lng: selected.mapResult.coordinates.longitude,
+        lat: selected.mapResult.coordinates.latitude,
+        shop: selected,
+      };
+    });
+  }, [selectedShopId, shops]);
 
   const selectedShop = shops.find((s) => s.id === selectedShopId) || shops[0] || null;
   const selectedRoute =
