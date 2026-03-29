@@ -82,9 +82,23 @@ export default function ShopDirectoryMapLayers({
             paint={
               {
                 "line-color": ["get", "accentColor"],
-                "line-width": 20,
-                "line-opacity": 0.2,
-                "line-blur": 12,
+                "line-width": 22,
+                "line-opacity": 0.18,
+                "line-blur": 14,
+              } as Record<string, unknown>
+            }
+          />
+          {/* White outline — sits between glow and inner core */}
+          <Layer
+            id="route-selected-outline"
+            type="line"
+            filter={["==", ["get", "isSelected"], 1]}
+            layout={{ "line-cap": "round", "line-join": "round" }}
+            paint={
+              {
+                "line-color": isDark ? "#e0f2fe" : "#ffffff",
+                "line-width": 11,
+                "line-opacity": isDark ? 0.88 : 0.92,
               } as Record<string, unknown>
             }
           />
