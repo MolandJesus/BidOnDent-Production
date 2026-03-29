@@ -1,9 +1,9 @@
-import Map, { Source, Layer, Popup } from "react-map-gl/maplibre";
+import Map, { Source, Layer } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useCallback, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { mapLibreStyles } from "../maps/mapLibreStyles";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
-import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
+import type { MapLayerMouseEvent, ViewState } from "react-map-gl/maplibre";
 
 type MapLibreDashboardMapPreviewProps = {
   shops: CoveragePartnerShop[];
@@ -24,7 +24,17 @@ export default function MapLibreDashboardMapPreview({
 }: MapLibreDashboardMapPreviewProps) {
   const mapId = useId();
   const mapStyle = isLight ? mapLibreStyles.roadmap : mapLibreStyles.night;
-  const [hoveredShop, setHoveredShop] = useState<CoveragePartnerShop | null>(null);
+
+  /* Controlled viewport — responds when parent changes center/zoom */
+  const [viewState, setViewState] = useState<Pick<ViewState, "longitude" | "latitude" | "zoom">>({
+    longitude: center[1],
+    latitude: center[0],
+    zoom,
+  });
+
+  useEffect(() => {
+    setViewState({ longitude: center[1], latitude: center[0], zoom });
+  }, [center, zoom]);
 
   const geojson = useMemo(
     () => ({
@@ -57,7 +67,8 @@ export default function MapLibreDashboardMapPreview({
     <div className="relative w-full h-full rounded-xl overflow-hidden cursor-pointer">
       <Map
         id={`dashboard-preview-${mapId}`}
-        initialViewState={{ longitude: center[1], latitude: center[0], zoom }}
+        {...viewState}
+        onMove={(e) => setViewState(e.viewState)}
         style={{ width: "100%", height: "100%" }}
         mapStyle={mapStyle}
         attributionControl={false}

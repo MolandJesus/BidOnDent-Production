@@ -147,7 +147,7 @@ export default function CustomerMapWidget({
           <DashboardMapPreview
             shops={partnerShops}
             center={mapCenter}
-            zoom={9}
+            zoom={mapZoom}
             isLight={isLight}
             onShopClick={(shop) => {
               handleSelectShop(shop, { centerMap: true });
