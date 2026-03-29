@@ -100,17 +100,17 @@ export default function MapLibreShopDirectoryMapPane({
 
   /* ── Popup theme tokens ───────────────────────────────────────────── */
   const popupTitle = isDark ? "text-slate-100" : "text-slate-800";
-  const popupSub = isDark ? "text-slate-300" : "text-slate-500";
+  const popupSub = isDark ? "text-slate-200" : "text-slate-500";
   const popupScoreCard = isDark
-    ? "border-white/12 bg-slate-800/60 text-slate-300"
+    ? "border-white/22 bg-slate-900/72 text-slate-200"
     : "border-slate-200 bg-slate-50 text-slate-500";
   const popupScoreValue = isDark ? "text-white" : "text-slate-800";
   const popupCarrierCard = isDark
-    ? "border-emerald-400/20 bg-emerald-900/30 text-emerald-300"
+    ? "border-emerald-300/35 bg-emerald-900/42 text-emerald-200"
     : "border-emerald-200 bg-emerald-50 text-emerald-600";
   const popupCarrierValue = isDark ? "text-emerald-200" : "text-emerald-800";
   const popupCta = isDark
-    ? "border-blue-400/35 bg-blue-500/20 text-white hover:bg-blue-500/30"
+    ? "border-blue-300/55 bg-blue-600/42 text-white hover:bg-blue-600/55"
     : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100";
 
   /* ── GeoJSON data ─────────────────────────────────────────────────── */

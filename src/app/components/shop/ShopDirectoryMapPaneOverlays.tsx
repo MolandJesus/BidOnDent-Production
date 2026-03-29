@@ -36,25 +36,25 @@ type SearchPillsProps = {
 function useOverlayTokens(isDark: boolean) {
   return {
     badgeCard: isDark
-      ? "border-white/15 bg-slate-950/70 text-white shadow-xl backdrop-blur"
+      ? "border-white/22 bg-slate-950/82 text-white shadow-xl backdrop-blur"
       : "border-black/8 bg-white/85 text-slate-800 shadow-xl backdrop-blur",
-    badgeLabel: isDark ? "text-white/65" : "text-slate-500",
+    badgeLabel: isDark ? "text-white/78" : "text-slate-500",
     badgeValue: isDark ? "text-white/95" : "text-slate-800",
     topGradient: isDark
-      ? "bg-gradient-to-b from-slate-950/50 via-slate-950/12 to-transparent"
+      ? "bg-gradient-to-b from-slate-950/64 via-slate-950/20 to-transparent"
       : "bg-gradient-to-b from-black/18 via-black/5 to-transparent",
     bottomGradient: isDark
-      ? "bg-gradient-to-t from-slate-950/75 via-slate-950/22 to-transparent"
+      ? "bg-gradient-to-t from-slate-950/84 via-slate-950/30 to-transparent"
       : "bg-gradient-to-t from-black/22 via-black/8 to-transparent",
     shopCardCls: isDark
-      ? "border-white/15 bg-slate-950/92 text-white shadow-2xl backdrop-blur-xl"
+      ? "border-white/24 bg-slate-950/94 text-white shadow-2xl backdrop-blur-xl"
       : "border-black/8 bg-white/94 text-slate-800 shadow-2xl backdrop-blur-xl",
-    shopCardSecondary: isDark ? "text-slate-300/80" : "text-slate-500",
-    shopCardMeta: isDark ? "text-slate-400" : "text-slate-500",
-    shopCardScore: isDark ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-800",
-    shopCardScoreLabel: isDark ? "text-white/65" : "text-slate-500",
+    shopCardSecondary: isDark ? "text-slate-200/92" : "text-slate-500",
+    shopCardMeta: isDark ? "text-slate-200/78" : "text-slate-500",
+    shopCardScore: isDark ? "bg-slate-900/92 text-white" : "bg-slate-100 text-slate-800",
+    shopCardScoreLabel: isDark ? "text-white/78" : "text-slate-500",
     legendCard: isDark
-      ? "border-white/15 bg-slate-950/70 text-white/80 shadow-xl backdrop-blur"
+      ? "border-white/24 bg-slate-950/82 text-white/95 shadow-xl backdrop-blur"
       : "border-black/8 bg-white/85 text-slate-600 shadow-xl backdrop-blur",
   };
 }
@@ -215,7 +215,7 @@ export function MapPaneSearchPills({
           onClick={onSearchInArea}
           className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
             isDark
-              ? "border-white/20 bg-slate-950/80 text-white hover:bg-slate-950/95"
+              ? "border-white/30 bg-slate-900/88 text-white hover:bg-slate-900/96"
               : "border-black/10 bg-white/90 text-slate-800 hover:bg-white"
           }`}
         >
@@ -237,7 +237,7 @@ export function MapPaneSearchPills({
           }}
           className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
             isDark
-              ? "border-blue-400/40 bg-blue-600/30 text-white hover:bg-blue-600/45"
+              ? "border-blue-300/55 bg-blue-600/42 text-white hover:bg-blue-600/55"
               : "border-blue-400/40 bg-blue-100 text-blue-700 hover:bg-blue-200"
           }`}
         >
