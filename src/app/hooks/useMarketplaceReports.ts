@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { getAllDamageReports } from "../services/supabase/reports";
 import { transformSupabaseReport } from "./userDataUtils";
+import type { DamageReport } from "../types";
 
 /**
  * Fetches all damage reports from Supabase for marketplace views
  * (shop requests, insurer claims). Falls back to empty array on failure.
  */
 export function useMarketplaceReports(userType: string) {
-  const [marketplaceReports, setMarketplaceReports] = useState<any[]>([]);
+  const [marketplaceReports, setMarketplaceReports] = useState<DamageReport[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

@@ -76,7 +76,7 @@ export default function BidsScreen({
     if (alreadyAccepted && acceptedBidId !== alreadyAccepted.id) {
       setAcceptedBidId(alreadyAccepted.id);
     }
-  }, [liveBids]);
+  }, [liveBids, acceptedBidId]);
 
   const selectedReport = useMemo(() => {
     if (liveBids.length === 0) {
