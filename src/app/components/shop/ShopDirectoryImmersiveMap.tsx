@@ -166,15 +166,17 @@ export default function ShopDirectoryImmersiveMap({
             selectedOrigin={selectedOrigin}
             selectedRoute={selectedRoute}
             selectedShop={selectedShop}
+            overlayTopClass="top-28"
           />
         </ShopDirectoryMapPane>
       </div>
 
       {/* Floating top bar */}
       <div
-        className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-4 pb-8 pt-4`}
+        className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-3 pb-8 sm:px-4`}
+        style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0.75rem))" }}
       >
-        <div className="pointer-events-auto flex items-center gap-3">
+        <div className="pointer-events-auto flex items-center gap-2 sm:gap-3">
           {/* Back */}
           <button
             className={`flex h-11 w-11 items-center justify-center rounded-full border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
@@ -213,9 +215,9 @@ export default function ShopDirectoryImmersiveMap({
             <span className="hidden sm:inline">{mapListings.length}</span>
           </button>
 
-          {/* Mode switches */}
+          {/* Mode switches — hidden on small mobile to save space */}
           <button
-            className={`flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
+            className={`hidden sm:flex h-11 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
             onClick={() => onSwitchMode("hybrid")}
             type="button"
             aria-label="Switch to split view"

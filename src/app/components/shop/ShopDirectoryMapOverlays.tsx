@@ -38,6 +38,8 @@ type ShopDirectoryMapOverlaysProps = {
   onStartNavigation?: () => void;
   /** Label for the navigation CTA (e.g. "Directions (Google Maps)") */
   directionsLabel?: string;
+  /** Override top position class for floating overlays (default: "top-20") */
+  overlayTopClass?: string;
 };
 
 export default function ShopDirectoryMapOverlays({
@@ -55,6 +57,7 @@ export default function ShopDirectoryMapOverlays({
   mapTheme = "dark",
   onStartNavigation,
   directionsLabel,
+  overlayTopClass = "top-20",
 }: ShopDirectoryMapOverlaysProps) {
   const [routeExpanded, setRouteExpanded] = useState(false);
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
@@ -108,14 +111,16 @@ export default function ShopDirectoryMapOverlays({
     <>
       {/* Deviation prompt — top center floating */}
       {showDeviation && deviationPrompt && (
-        <div className="pointer-events-auto absolute inset-x-0 top-20 z-[520] flex justify-center px-4">
+        <div
+          className={`pointer-events-auto absolute inset-x-0 ${overlayTopClass} z-[520] flex justify-center px-4`}
+        >
           {deviationPrompt}
         </div>
       )}
 
       {/* Intelligence chip — top-left, below header badges */}
       {showIntelligence && (
-        <div className="pointer-events-auto absolute left-4 top-20 z-[510] max-w-xs">
+        <div className={`pointer-events-auto absolute left-4 ${overlayTopClass} z-[510] max-w-xs`}>
           <button
             className={`flex min-h-[44px] items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-semibold transition-colors ${glassChip}`}
             onClick={() => setIntelligenceExpanded((v) => !v)}
