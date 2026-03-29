@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** March 28, 2026 (Pass 432 — comprehensive doc sync)
+**Last updated:** March 29, 2026 (Pass 437 — doc system refactor)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -24,9 +24,9 @@ This document replaces the older generic audit checklist with a repo-specific vi
 
 Use this together with:
 
-- `docs/PHASE_1_PLATFORM_ARCHITECTURE_AUDIT_2026-03-20.md`
-- `docs/PLATFORM_REFACTOR_BACKLOG_2026-03-20.md`
-- `docs/PRODUCTION_READINESS_AUDIT_2026-03-20.md`
+- `docs/CLAUDE_AI_MASTER_CONTEXT.md`
+- `docs/BIDONDENT_PRODUCT_BRAIN.md`
+- `docs/MAP_EXPERIENCE_ARCHITECTURE.md`
 
 ## Current Architecture Snapshot
 
@@ -92,8 +92,12 @@ The repository is mostly under the active 500-line hard cap:
 - `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (Pass 9, updated Pass 10, 187 lines): floating in-map overlay layer. Renders intelligence chip (top-left, expandable), route preview card (bottom-left, expandable turn list), and deviation prompt slot (top-center). Added `navigationMode` prop (`browse | route-preview | guidance`) gating overlay visibility by navigation state.
 - `src/app/components/shop/ShopDirectoryMapPane.tsx` (Pass 9, updated Pass 10, 447 lines): Leaflet map surface container. `children` prop for overlay injection. Added `suppressHeader` prop to hide built-in top gradient badges in immersive mode.
 - **Passes 400-407 (2026-03-28):** Refactored 8 remaining oversized files. All `src/` files are now confirmed under the 500-line hard cap.
-- **Pass 421 (2026-03-28):** Zero TypeScript errors (`tsc --noEmit` clean). Maintained through Pass 431.
+- **Pass 421 (2026-03-28):** Zero TypeScript errors (`tsc --noEmit` clean). Maintained through Pass 437.
 - **Pass 430 (2026-03-28):** Image assets reduced 53.6MB → 22.9MB (57%) via PNG→JPEG conversion. 3 dead image imports removed.
+- **Passes 433-434 (2026-03-29):** Zero production `any` types (was 21). Hooks/services: 14→0 across 10 files. Component helpers/type defs: 8→0 across 5 files. Only 7 `as any` assertions remain in test files.
+- **Pass 435 (2026-03-29):** Runtime safety: submitBid throws on missing report, Promise.allSettled for session sync, useMemo for BidsScreen calculations.
+- **Pass 436 (2026-03-29):** ShopProfileModal 3 unlinked inputs wired to local state + Supabase save via `saveShopBusinessProfile` edge function.
+- **Pass 437 (2026-03-29):** Documentation system refactor — 14 historical docs archived to `/docs/archive/`, governance index rewritten.
 - The largest active screen/router files that are next best split targets:
   - `src/app/routers/DashboardRouterScreens.tsx`
   - `src/app/components/dashboard/ProfileDropdown.tsx`
@@ -111,6 +115,7 @@ The repository is mostly under the active 500-line hard cap:
 - **Pass 109–110 (2026-03-23):** Error observability is now a clean three-tier architecture. `src/app/services/errorReporting.ts` is the single adapter for all capture calls. `src/app/services/sentryInit.ts` owns Sentry lifecycle. All error boundaries (GlobalErrorBoundary, NavigationErrorBoundary, ImageErrorBoundary) route through `errorReporting.ts` — Sentry is decoupled and swappable. Activate by setting `VITE_SENTRY_DSN` in `.env`.
 - **Passes 417-424 (2026-03-28):** All user-facing `alert()` calls eliminated across the codebase, replaced with inline error/success feedback in every modal and screen.
 - **Passes 425-428 (2026-03-28):** Runtime safety hardened — bid submission error propagation (425), business profile fetch race condition fix via version counter (426), autosave race fix (427), AccountScreen async try-catch/finally safety (428).
+- **Passes 433-436 (2026-03-29):** Type safety sweep eliminated all production `any` types. Session sync resilience via Promise.allSettled. ShopProfileModal fully wired to Supabase save. Zero dead/unlinked form fields remain in account screens.
 
 ## What Is Still Structurally Weak
 

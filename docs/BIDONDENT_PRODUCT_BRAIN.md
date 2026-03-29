@@ -23,7 +23,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # BidOnDent Product Brain
 
-Last updated: March 28, 2026 (Pass 432 — comprehensive doc sync)
+Last updated: March 29, 2026 (Pass 437 — doc system refactor)
 Status: Active strategic reference
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
@@ -1269,6 +1269,8 @@ Shop request cards are sample data with numeric IDs, while bid routing/lookup lo
 
 **Pass 425 fix (2026-03-28):** Bid submission now properly propagates errors from `useAppHandlers` through `ShopRequestsScreen` to `ShopBidModal` with inline error display and loading states. The UI is honest about submission success/failure.
 
+**Pass 435 fix (2026-03-29):** `submitBid` now throws on missing report instead of silently returning. Callers can catch and display errors. `useWebsiteSessionSync` uses `Promise.allSettled` so one failing cloud fetch doesn't kill session hydration.
+
 **Remaining risk:** The data path between sample shop requests and real persisted bids is not fully end-to-end trustworthy.
 
 Effect:
@@ -1295,17 +1297,21 @@ Effect:
 
 ## How To Work On This Repo Without Making It Messier
 
-### Current Build & Quality Health (as of Pass 432)
+### Current Build & Quality Health (as of Pass 437)
 
 - **Build:** 0 errors, ~2.1s (Vite 6.4.1)
 - **TypeScript:** 0 `tsc` errors (clean since Pass 421)
+- **Production `any` types:** ZERO (was 21; eliminated Passes 433-434; 7 remain in test files only)
 - **Bundle:** 514KB index chunk (down from 783KB)
 - **Images:** 22.9MB total (down from 53.6MB — 57% reduction via JPEG conversion)
 - **User-facing alerts:** ZERO remaining (all replaced with inline feedback)
 - **File sizes:** All src files under 500-line hard cap (8 oversized files refactored in Passes 400-407)
 - **Race conditions:** Fixed in useBusinessProfile (426) and useUserData autosave (427)
-- **Async safety:** All critical handlers have try-catch/finally (Pass 428)
+- **Session sync:** Promise.allSettled for resilient cloud hydration (435)
+- **Async safety:** All critical handlers have try-catch/finally (Pass 428); submitBid throws on missing report (435)
 - **Tests:** 33 unit tests via Vitest + CI pipeline (Pass 324/327)
+- **ShopProfileModal:** All 5 form fields wired to Supabase save (436)
+- **Documentation:** 14 historical docs archived, governance index rewritten (437)
 - **Full sweep log:** See `docs/CLAUDE_AI_MASTER_CONTEXT.md` Section 14
 
 If adding or changing a feature:

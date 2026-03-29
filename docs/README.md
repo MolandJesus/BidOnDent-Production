@@ -1,69 +1,97 @@
-# Documentation Index
+# BidOnDent Documentation System
 
-**Last updated:** March 28, 2026
+**Last updated:** March 29, 2026 — Pass 437 (Doc System Refactor)
 **Status:** Active documentation governance index
 
-Start here first:
+---
 
-- `CLAUDE_AI_MASTER_CONTEXT.md` — single source of truth for AI execution context
+## Start Here
 
-This folder is a governed documentation system. Keep docs:
+Read **`CLAUDE_AI_MASTER_CONTEXT.md`** before every session. It is the single source of truth for product context, architecture, design system, current state, and next priorities.
 
-- accurate to current code reality
-- useful for active delivery and onboarding
-- intentionally non-duplicative
+---
 
-## Source Of Truth Documents
+## Active Documents (17 files)
 
-### Master AI context
+### Core — Product & Architecture Truth
 
-- `CLAUDE_AI_MASTER_CONTEXT.md` — product, architecture, map program, current state, and hard rules
+| Document                         | Purpose                                                                                                       |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `CLAUDE_AI_MASTER_CONTEXT.md`    | **Master context.** Product, architecture, map program, design system, current state, hard rules. Read first. |
+| `BIDONDENT_PRODUCT_BRAIN.md`     | **Product handbook.** Quick Cards, upgrade checklists, design system deep-dive, execution bridge.             |
+| `CODE_ORGANIZATION_AUDIT.md`     | **Architecture snapshot.** File structure, weak seams, safe boundaries, size governance.                      |
+| `MOLANDJEUS_DESIGN_DECISIONS.md` | **Design philosophy.** Breathing room rule, information hierarchy, glass system, page-by-page audit.          |
 
-### Onboarding and auth/setup
+### Map System
 
-- `GETTING_STARTED.md` — local setup and first-run flow
-- `SUPABASE_SETUP_GUIDE.md` — Supabase setup, storage contract, edge deploy, and auth/data ownership boundaries
-- `GOOGLE_OAUTH_SETUP.md` — Clerk + Google OAuth provider setup
+| Document                                  | Purpose                                                                                 |
+| ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` | **Map strategy & law.** Map-as-product, blue system, day/night vision, non-negotiables. |
+| `BIDONDENT_MAP_TRACKER_2026-03-21.md`     | **Map execution tracker.** Pass-level delivery reality, verification, known risks.      |
+| `MAP_EXPERIENCE_ARCHITECTURE.md`          | **Map implementation.** Key files, component hierarchy, persistence architecture.       |
 
-### Architecture and delivery governance
+### Execution & Planning
 
-- `PHASE_1_PLATFORM_ARCHITECTURE_AUDIT_2026-03-20.md` — architecture baseline findings
-- `PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` — architecture recommendation baseline
-- `CODE_ORGANIZATION_AUDIT.md` — modularity and code ownership guidance
-- `PLATFORM_REFACTOR_BACKLOG_2026-03-20.md` — implementation backlog
-- `PRODUCTION_READINESS_AUDIT_2026-03-20.md` — production constraints and readiness
-- `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` — pre-refactor baseline across account/page/map/mobile/desktop/docs
-- `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md` — explicit route/account/page verification matrix
+| Document                                   | Purpose                                                                |
+| ------------------------------------------ | ---------------------------------------------------------------------- |
+| `BIDONDENT_FINISHING_MASTER_PLAN.md`       | **Execution policy.** What remains, priority order, validation gates.  |
+| `MCP_PLUGIN_INTEGRATION_PLAN.md`           | **MCP adoption.** Plugin assessment, phased rollout plan.              |
+| `AI_REFACTOR_KICKOFF_PROMPT_2026-03-28.md` | **Reusable AI kickoff.** Entry-point prompt for new AI/refactor chats. |
 
-### Map system governance
+### Setup & Onboarding
 
-- `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — strategic map architecture and non-negotiables
-- `BIDONDENT_MAP_TRACKER_2026-03-21.md` — pass-level map execution tracker
+| Document                  | Purpose                                                                                |
+| ------------------------- | -------------------------------------------------------------------------------------- |
+| `GETTING_STARTED.md`      | **Local setup.** Prerequisites, first run, data persistence notes.                     |
+| `SUPABASE_SETUP_GUIDE.md` | **Backend setup.** Supabase project, edge functions, storage contract, auth ownership. |
+| `GOOGLE_OAUTH_SETUP.md`   | **Auth setup.** Clerk + Google OAuth configuration.                                    |
 
-### Planning and roadmap
+### Validation
 
-- `BIDONDENT_FINISHING_MASTER_PLAN.md` — finishing priorities and validation gates
-- `MCP_PLUGIN_INTEGRATION_PLAN.md` — MCP adoption roadmap
-- `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md` — historical pass archive (not the active execution tracker)
+| Document                                                 | Purpose                                                                            |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md`          | **Baseline.** Account-type coverage, route availability, mobile/desktop readiness. |
+| `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md` | **QA matrix.** Route/account/page verification checklist.                          |
 
-### Supporting references
+### Legal
 
-- `BIDONDENT_PRODUCT_BRAIN.md`
-- `MAP_EXPERIENCE_ARCHITECTURE.md`
-- `BIDONDENT_HORIZON_MIGRATION.md`
-- `MOLANDJEUS_DESIGN_DECISIONS.md`
-- `ATTRIBUTIONS.md`
+| Document          | Purpose                                         |
+| ----------------- | ----------------------------------------------- |
+| `ATTRIBUTIONS.md` | **Licenses.** shadcn/ui (MIT), Unsplash photos. |
+
+---
+
+## Archive (`/docs/archive/`)
+
+Historical documents preserved for reference. Not actively maintained.
+
+| Document                                            | Why Archived                                       |
+| --------------------------------------------------- | -------------------------------------------------- |
+| `BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`             | Superseded by Finishing Master Plan + Map Tracker  |
+| `COMPREHENSIVE_SPRINT_REPORT_PASSES_1_40.md`        | Historical pass archive (Passes 1–40)              |
+| `PRODUCTION_READINESS_AUDIT_2026-03-20.md`          | Superseded by Pre-Refactor Baseline                |
+| `PHASE_1_PLATFORM_ARCHITECTURE_AUDIT_2026-03-20.md` | Superseded by Code Organization Audit              |
+| `PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md`     | Superseded by actual implementation                |
+| `PLATFORM_REFACTOR_BACKLOG_2026-03-20.md`           | Retired — items completed or absorbed              |
+| `BIDONDENT_HORIZON_MIGRATION.md`                    | Completed branch migration record                  |
+| `AI_HANDOFF_PROMPT.md`                              | Superseded by Master Context                       |
+| `AI_BACKEND_TASK_PROMPT.md`                         | One-off agent coordination, superseded             |
+| `AI_DASHBOARD_WORK_PROMPT.md`                       | One-off agent coordination, superseded             |
+| `AI_DESIGN_HANDOFF_PROMPT.md`                       | One-off agent coordination, superseded             |
+| `AI_LIQUID_GLASS_HANDOFF_PROMPT.md`                 | Completed sprint, all passes done                  |
+| `DUAL_AI_COORDINATION_PROMPT.md`                    | Dual-agent experiment ended                        |
+| `CHATGPT_AUTOPILOT_STRATEGY_QUESTIONS.md`           | External strategy poll, answered by implementation |
+
+---
 
 ## Documentation Rules
 
-1. Do not maintain duplicate status trackers for the same domain.
-2. Keep strategic decisions in master docs and implementation details in trackers.
-3. If docs and code disagree, document the mismatch and reconcile quickly.
-4. Every map-related implementation change must update both:
-   - `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
-   - `BIDONDENT_MAP_TRACKER_2026-03-21.md`
-5. Supabase is source of truth; local storage is cache/recovery only and must not override cloud truth.
-6. All docs must include clear `Last updated` and `Status` markers.
+1. **Code > Docs.** If docs disagree with code, docs are wrong. Fix docs.
+2. **One concept = one home.** No duplicate status trackers for the same domain.
+3. **Every doc must have** `Last updated` and `Status` markers.
+4. **Map changes** must update both `BIDONDENT_MAP_MASTER_PLAN` and `BIDONDENT_MAP_TRACKER`.
+5. **Supabase = source of truth.** localStorage is cache/recovery only.
+6. Docs should be useful for **active delivery and onboarding** — not preserved out of habit.
 
 ## Parallel AI Documentation Protocol
 
@@ -75,12 +103,10 @@ When another AI is concurrently working on security or backend tracks:
 4. If two passes collide on numbering, preserve both entries and flag normalization as a dedicated docs pass.
 5. Treat `CLAUDE_AI_MASTER_CONTEXT.md` + `BIDONDENT_MAP_TRACKER_2026-03-21.md` as merge anchors.
 
-## Retired/Removed Docs
+## Previously Retired (Pre-Archive)
 
-Removed from active set due to duplication/supersession:
+These were removed before the archive system existed:
 
 - `BIDONDENT_NAVIGATION_REBUILD_MASTER_PLAN_2026-03-20.md`
 - `JEFFREY_REQUEST_IMPLEMENTATION_PLAN.md`
 - `PROJECT_STATUS.md`
-
-If historical details are needed, migrate relevant facts into active source-of-truth docs instead of restoring retired files.

@@ -3,12 +3,13 @@
 > **Single source of truth for any AI agent working on this repo.**
 > All other AI handoff docs defer to this file. Read this first, every session.
 >
-> **Last updated:** 2026-03-28 (Pass 432 — comprehensive doc sync)
+> **Last updated:** 2026-03-29 (Pass 437 — doc system refactor + Passes 433-436 quality/runtime)
 > **Status:** Active master context source of truth
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~2.1s · 514KB main bundle (index chunk)
-> **TypeScript:** 0 tsc errors (achieved Pass 421, maintained through 431)
+> **TypeScript:** 0 tsc errors (achieved Pass 421, maintained through 437)
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
+> **Production `any` types:** 0 (was 21 — eliminated Passes 433-434; 7 remain in test files only)
 
 ---
 
@@ -371,64 +372,71 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ## 13. Docs That Reference This File
 
-All other AI docs in this repo point to this file as the master context. The following are historical/specialized and should be consulted for deep context on specific areas:
+All other AI docs in this repo point to this file as the master context. See `docs/README.md` for the full governed documentation index.
 
 | Doc                                            | Use When                                     |
 | ---------------------------------------------- | -------------------------------------------- |
-| `docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md`   | Need archived pass history context           |
+| `docs/README.md`                               | Need the full documentation governance index |
 | `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`      | Need the product completion roadmap          |
 | `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` | Need map design law and strategic intent     |
 | `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`     | Need map delivery reality tracker            |
 | `docs/BIDONDENT_PRODUCT_BRAIN.md`              | Need full product strategy framework         |
+| `docs/CODE_ORGANIZATION_AUDIT.md`              | Need architecture snapshot + weak seams      |
+| `docs/MOLANDJEUS_DESIGN_DECISIONS.md`          | Need design philosophy + page audit          |
 | `.github/copilot-instructions.md`              | Need architecture rules + pass output format |
 | `docs/GETTING_STARTED.md`                      | New developer environment setup              |
 | `docs/SUPABASE_SETUP_GUIDE.md`                 | Supabase project configuration               |
 
-**Retired (superseded by this doc):**
+**Archived docs** (moved to `/docs/archive/` in Pass 437):
 
-- `docs/AI_HANDOFF_PROMPT.md` — replaced by this file
-- `docs/AI_DESIGN_HANDOFF_PROMPT.md` — replaced by this file
-- `docs/AI_LIQUID_GLASS_HANDOFF_PROMPT.md` — work is complete (passes 236-242 done)
-- `docs/AI_DASHBOARD_WORK_PROMPT.md` — replaced by this file
-- `docs/AI_BACKEND_TASK_PROMPT.md` — replaced by this file
-- `docs/DUAL_AI_COORDINATION_PROMPT.md` — no longer running dual agents
+14 historical and superseded documents archived. See `docs/README.md` for full archive manifest.
 
 ---
 
 ---
 
-## 14. Quality & Reliability Sweep (Passes 400–431)
+## 14. Quality & Reliability Sweep (Passes 400–437)
 
 Major milestones in this phase:
 
 - **All user-facing `alert()` calls eliminated** — replaced with inline error/success feedback
-- **Zero tsc errors** — achieved in Pass 421, maintained through 431
+- **Zero tsc errors** — achieved in Pass 421, maintained through 437
+- **Zero production `any` types** — was 21, eliminated Passes 433-434 (7 remain in test files only)
 - **57% image size reduction** — PNG→JPEG conversion (53.6MB → 22.9MB)
 - **Race conditions fixed** — useBusinessProfile fetch (426), useUserData autosave (427)
-- **Error propagation hardened** — bid submission (425), profile save (428)
+- **Error propagation hardened** — bid submission (425), profile save (428), submitBid throw-on-missing (435)
 - **8 oversized files refactored** — all src files now under 500 lines (Passes 400-407)
 - **3 dead code items removed** — accountDeletion.ts (419), 3 unused image imports (430)
+- **Session sync resilience** — Promise.allSettled for cloud fetches (435)
+- **ShopProfileModal fully wired** — all 5 form fields save to Supabase via edge function (436)
+- **Doc system refactored** — 14 historical docs archived, governance index rewritten (437)
 
-| Pass    | Title                                        | Status  |
-| ------- | -------------------------------------------- | ------- |
-| 400-407 | Refactor 8 oversized files (all < 500 lines) | ✅ Done |
-| 408     | Sidebar scroll + SettingsModal dark mode     | ✅ Done |
-| 409-416 | Product quality sweep                        | ✅ Done |
-| 417     | HelpModal + ShopProfileModal alert→inline    | ✅ Done |
-| 418     | Fix ShopProfileModal imports + demo data     | ✅ Done |
-| 419     | Remove dead accountDeletion.ts               | ✅ Done |
-| 420     | Business inquiry form validation             | ✅ Done |
-| 421     | Fix TypeScript type errors (3 → 0)           | ✅ Done |
-| 422     | AccountScreen image upload error inline      | ✅ Done |
-| 423     | PaymentModal coming soon placeholder         | ✅ Done |
-| 424     | All remaining user-facing alerts             | ✅ Done |
-| 425     | Bid submission error propagation + loading   | ✅ Done |
-| 426     | Business profile fetch race condition fix    | ✅ Done |
-| 427     | Autosave race in useUserData                 | ✅ Done |
-| 428     | AccountScreen async error safety             | ✅ Done |
-| 429     | Master context doc sync                      | ✅ Done |
-| 430     | PNG→JPEG image optimization (57% reduction)  | ✅ Done |
-| 431     | BidsScreen useEffect deps + type fix         | ✅ Done |
+| Pass    | Title                                                  | Status  |
+| ------- | ------------------------------------------------------ | ------- |
+| 400-407 | Refactor 8 oversized files (all < 500 lines)           | ✅ Done |
+| 408     | Sidebar scroll + SettingsModal dark mode               | ✅ Done |
+| 409-416 | Product quality sweep                                  | ✅ Done |
+| 417     | HelpModal + ShopProfileModal alert→inline              | ✅ Done |
+| 418     | Fix ShopProfileModal imports + demo data               | ✅ Done |
+| 419     | Remove dead accountDeletion.ts                         | ✅ Done |
+| 420     | Business inquiry form validation                       | ✅ Done |
+| 421     | Fix TypeScript type errors (3 → 0)                     | ✅ Done |
+| 422     | AccountScreen image upload error inline                | ✅ Done |
+| 423     | PaymentModal coming soon placeholder                   | ✅ Done |
+| 424     | All remaining user-facing alerts                       | ✅ Done |
+| 425     | Bid submission error propagation + loading             | ✅ Done |
+| 426     | Business profile fetch race condition fix              | ✅ Done |
+| 427     | Autosave race in useUserData                           | ✅ Done |
+| 428     | AccountScreen async error safety                       | ✅ Done |
+| 429     | Master context doc sync                                | ✅ Done |
+| 430     | PNG→JPEG image optimization (57% reduction)            | ✅ Done |
+| 431     | BidsScreen useEffect deps + type fix                   | ✅ Done |
+| 432     | Comprehensive doc sync (4 docs)                        | ✅ Done |
+| 433     | Eliminate `any` from hooks/services (14→0)             | ✅ Done |
+| 434     | Eliminate `any` from components/types (8→0)            | ✅ Done |
+| 435     | Runtime safety: submitBid, Promise.allSettled, useMemo | ✅ Done |
+| 436     | Wire ShopProfileModal 3 unlinked inputs                | ✅ Done |
+| 437     | Doc system refactor (14 archived, governance rewrite)  | ✅ Done |
 
 ---
 
