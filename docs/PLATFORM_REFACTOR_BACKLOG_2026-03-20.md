@@ -1,7 +1,19 @@
 # Platform Refactor Backlog - March 20, 2026
 
-Last updated: March 21, 2026
-Status: Active implementation backlog
+> **⚠️ HISTORICAL — SUPERSEDED (March 28, 2026)**
+>
+> This backlog was the active implementation tracker from March 20–21, 2026.
+> It has been **superseded** by:
+>
+> - `docs/BIDONDENT_FINISHING_MASTER_PLAN.md` — active execution plan
+> - `docs/CLAUDE_AI_MASTER_CONTEXT.md` — master context and tech debt tracking
+> - `docs/CODE_ORGANIZATION_AUDIT.md` — active code structure audit
+>
+> Most items below have been completed or absorbed into the documents above.
+> Do NOT use this file for active planning.
+
+Last updated: March 28, 2026
+Status: **RETIRED** — preserved for historical reference
 
 ## Purpose
 

@@ -3,10 +3,12 @@
 > **Single source of truth for any AI agent working on this repo.**
 > All other AI handoff docs defer to this file. Read this first, every session.
 >
-> **Last updated:** 2026-03-28 (Pass 429 — master context doc sync)
+> **Last updated:** 2026-03-28 (Pass 432 — comprehensive doc sync)
 > **Status:** Active master context source of truth
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
-> **Build:** ✅ 0 errors · ~2.09s · 514KB main bundle (index chunk)
+> **Build:** ✅ 0 errors · ~2.1s · 514KB main bundle (index chunk)
+> **TypeScript:** 0 tsc errors (achieved Pass 421, maintained through 431)
+> **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
 
 ---
 
@@ -331,14 +333,14 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ## 10. Known Technical Debt
 
-| Issue                                                     | Severity | Notes                                                                         |
-| --------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
-| Supabase RLS `USING(true)` on 4 tables                    | HIGH     | Production security gap — requires migration, ask before touching             |
-| 2–14MB PNG assets in dist/assets                          | MEDIUM   | Need WebP conversion — major load-time impact                                 |
-| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                     |
-| ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR             |
-| ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections             |
-| ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting) |
+| Issue                                                     | Severity | Notes                                                                              |
+| --------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
+| Supabase RLS `USING(true)` on 4 tables                    | HIGH     | Production security gap — requires migration, ask before touching                  |
+| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                          |
+| ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR                  |
+| ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections                  |
+| ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting)      |
+| ~~2–14MB PNG assets~~                                     | ✅ DONE  | Pass 430 — JPEG conversion: 53.6MB → 22.9MB (57% reduction); 3 dead images removed |
 
 ---
 
@@ -395,24 +397,38 @@ All other AI docs in this repo point to this file as the master context. The fol
 
 ---
 
-## 14. Quality Sweep Log (Passes 417–428)
+## 14. Quality & Reliability Sweep (Passes 400–431)
 
-All user-facing `alert()` calls eliminated. Runtime safety hardened. See git log for full details.
+Major milestones in this phase:
 
-| Pass | Title                                      | Status  |
-| ---- | ------------------------------------------ | ------- |
-| 417  | HelpModal + ShopProfileModal alert→inline  | ✅ Done |
-| 418  | Fix ShopProfileModal imports + demo data   | ✅ Done |
-| 419  | Remove dead accountDeletion.ts             | ✅ Done |
-| 420  | Business inquiry form validation           | ✅ Done |
-| 421  | Fix TypeScript type errors (3 → 0)         | ✅ Done |
-| 422  | AccountScreen image upload error inline    | ✅ Done |
-| 423  | PaymentModal coming soon placeholder       | ✅ Done |
-| 424  | All remaining user-facing alerts           | ✅ Done |
-| 425  | Bid submission error propagation + loading | ✅ Done |
-| 426  | Business profile fetch race condition fix  | ✅ Done |
-| 427  | Autosave race in useUserData               | ✅ Done |
-| 428  | AccountScreen async error safety           | ✅ Done |
+- **All user-facing `alert()` calls eliminated** — replaced with inline error/success feedback
+- **Zero tsc errors** — achieved in Pass 421, maintained through 431
+- **57% image size reduction** — PNG→JPEG conversion (53.6MB → 22.9MB)
+- **Race conditions fixed** — useBusinessProfile fetch (426), useUserData autosave (427)
+- **Error propagation hardened** — bid submission (425), profile save (428)
+- **8 oversized files refactored** — all src files now under 500 lines (Passes 400-407)
+- **3 dead code items removed** — accountDeletion.ts (419), 3 unused image imports (430)
+
+| Pass    | Title                                        | Status  |
+| ------- | -------------------------------------------- | ------- |
+| 400-407 | Refactor 8 oversized files (all < 500 lines) | ✅ Done |
+| 408     | Sidebar scroll + SettingsModal dark mode     | ✅ Done |
+| 409-416 | Product quality sweep                        | ✅ Done |
+| 417     | HelpModal + ShopProfileModal alert→inline    | ✅ Done |
+| 418     | Fix ShopProfileModal imports + demo data     | ✅ Done |
+| 419     | Remove dead accountDeletion.ts               | ✅ Done |
+| 420     | Business inquiry form validation             | ✅ Done |
+| 421     | Fix TypeScript type errors (3 → 0)           | ✅ Done |
+| 422     | AccountScreen image upload error inline      | ✅ Done |
+| 423     | PaymentModal coming soon placeholder         | ✅ Done |
+| 424     | All remaining user-facing alerts             | ✅ Done |
+| 425     | Bid submission error propagation + loading   | ✅ Done |
+| 426     | Business profile fetch race condition fix    | ✅ Done |
+| 427     | Autosave race in useUserData                 | ✅ Done |
+| 428     | AccountScreen async error safety             | ✅ Done |
+| 429     | Master context doc sync                      | ✅ Done |
+| 430     | PNG→JPEG image optimization (57% reduction)  | ✅ Done |
+| 431     | BidsScreen useEffect deps + type fix         | ✅ Done |
 
 ---
 

@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** March 28, 2026
+**Last updated:** March 28, 2026 (Pass 432 — comprehensive doc sync)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -91,6 +91,9 @@ The repository is mostly under the active 500-line hard cap:
 - `src/app/components/shop/ShopDirectoryImmersiveMap.tsx` (Pass 10, 253 lines): full-viewport immersive map experience. `fixed inset-0 z-40` container. Floating glass top bar (back + search + drawer toggle + mode switch + theme). Collapsible left-side results drawer with compact result cards. Renders `ShopDirectoryMapPane` + `ShopDirectoryMapOverlays` at full viewport.
 - `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (Pass 9, updated Pass 10, 187 lines): floating in-map overlay layer. Renders intelligence chip (top-left, expandable), route preview card (bottom-left, expandable turn list), and deviation prompt slot (top-center). Added `navigationMode` prop (`browse | route-preview | guidance`) gating overlay visibility by navigation state.
 - `src/app/components/shop/ShopDirectoryMapPane.tsx` (Pass 9, updated Pass 10, 447 lines): Leaflet map surface container. `children` prop for overlay injection. Added `suppressHeader` prop to hide built-in top gradient badges in immersive mode.
+- **Passes 400-407 (2026-03-28):** Refactored 8 remaining oversized files. All `src/` files are now confirmed under the 500-line hard cap.
+- **Pass 421 (2026-03-28):** Zero TypeScript errors (`tsc --noEmit` clean). Maintained through Pass 431.
+- **Pass 430 (2026-03-28):** Image assets reduced 53.6MB → 22.9MB (57%) via PNG→JPEG conversion. 3 dead image imports removed.
 - The largest active screen/router files that are next best split targets:
   - `src/app/routers/DashboardRouterScreens.tsx`
   - `src/app/components/dashboard/ProfileDropdown.tsx`
@@ -106,6 +109,8 @@ The repository is mostly under the active 500-line hard cap:
 - Backend schema bootstrapping is split across focused SQL modules instead of one oversized file.
 - The notification bell now has a dedicated component instead of being a dead icon.
 - **Pass 109–110 (2026-03-23):** Error observability is now a clean three-tier architecture. `src/app/services/errorReporting.ts` is the single adapter for all capture calls. `src/app/services/sentryInit.ts` owns Sentry lifecycle. All error boundaries (GlobalErrorBoundary, NavigationErrorBoundary, ImageErrorBoundary) route through `errorReporting.ts` — Sentry is decoupled and swappable. Activate by setting `VITE_SENTRY_DSN` in `.env`.
+- **Passes 417-424 (2026-03-28):** All user-facing `alert()` calls eliminated across the codebase, replaced with inline error/success feedback in every modal and screen.
+- **Passes 425-428 (2026-03-28):** Runtime safety hardened — bid submission error propagation (425), business profile fetch race condition fix via version counter (426), autosave race fix (427), AccountScreen async try-catch/finally safety (428).
 
 ## What Is Still Structurally Weak
 
@@ -119,6 +124,7 @@ The repository is mostly under the active 500-line hard cap:
   - bid extraction
   - vehicle persistence
 - This is workable today, but it is not the right long-term seam for a map/navigation platform.
+- **Pass 427 fix (2026-03-28):** Autosave race condition resolved — `isSavingRef` guard moved inside setTimeout callback to prevent lost saves during active operations.
 
 ### 2. Routing is stateful but loosely typed
 
@@ -348,3 +354,4 @@ If a future pass introduces a reusable pattern from these exceptions, extract it
 - Feature work must not outpace design-system and architecture clarity.
 - The project is in a "design system correction + platform refinement" phase, not random feature expansion.
 - Governance docs (this file, Product Brain, Map Tracker, MOLANDJEUS) should be updated with every meaningful pass.
+- **Quality sweep (Passes 400-431)** delivered: all files < 500 lines, zero tsc errors, zero user-facing alerts, race conditions fixed, 57% image size reduction. See `docs/CLAUDE_AI_MASTER_CONTEXT.md` Section 14 for the full sweep log.

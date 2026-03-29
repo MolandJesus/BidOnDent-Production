@@ -23,7 +23,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # BidOnDent Product Brain
 
-Last updated: March 28, 2026
+Last updated: March 28, 2026 (Pass 432 — comprehensive doc sync)
 Status: Active strategic reference
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
@@ -1263,13 +1263,17 @@ Effect:
 
 - report selection/detail behavior is fragile when real Supabase IDs are involved
 
-### 5. Shop request bidding is not fully coherent
+### 5. Shop request bidding is partially coherent
 
 Shop request cards are sample data with numeric IDs, while bid routing/lookup logic depends on the app report collection.
 
+**Pass 425 fix (2026-03-28):** Bid submission now properly propagates errors from `useAppHandlers` through `ShopRequestsScreen` to `ShopBidModal` with inline error display and loading states. The UI is honest about submission success/failure.
+
+**Remaining risk:** The data path between sample shop requests and real persisted bids is not fully end-to-end trustworthy.
+
 Effect:
 
-- the UI suggests a live bid workflow, but the current data path is not fully trustworthy
+- the UI now shows real submission feedback, but the underlying data path still mixes sample and real data
 
 ### 6. Landing/footer/code drift
 
@@ -1279,19 +1283,30 @@ Effect:
 
 - product intent is broader than the current checked-in landing composition
 
-### 7. No real automated test baseline
+### 7. Automated test baseline exists but is minimal
 
-The repo currently leans on:
-
-- manual validation
-- in-app smoke checklist
-- ad hoc devtools
+**Pass 324 (2026-03-28):** Vitest + 33 unit tests covering formatters, routing, collections. CI pipeline in GitHub Actions (format → test → build).
 
 Effect:
 
-- regressions can hide in role-specific flows
+- basic regression protection exists for utility logic
+- role-specific UI flows and integration paths remain manually validated
+- test coverage should expand as core workflows stabilize
 
 ## How To Work On This Repo Without Making It Messier
+
+### Current Build & Quality Health (as of Pass 432)
+
+- **Build:** 0 errors, ~2.1s (Vite 6.4.1)
+- **TypeScript:** 0 `tsc` errors (clean since Pass 421)
+- **Bundle:** 514KB index chunk (down from 783KB)
+- **Images:** 22.9MB total (down from 53.6MB — 57% reduction via JPEG conversion)
+- **User-facing alerts:** ZERO remaining (all replaced with inline feedback)
+- **File sizes:** All src files under 500-line hard cap (8 oversized files refactored in Passes 400-407)
+- **Race conditions:** Fixed in useBusinessProfile (426) and useUserData autosave (427)
+- **Async safety:** All critical handlers have try-catch/finally (Pass 428)
+- **Tests:** 33 unit tests via Vitest + CI pipeline (Pass 324/327)
+- **Full sweep log:** See `docs/CLAUDE_AI_MASTER_CONTEXT.md` Section 14
 
 If adding or changing a feature:
 
