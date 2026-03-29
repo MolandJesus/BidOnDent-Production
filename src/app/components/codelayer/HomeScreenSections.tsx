@@ -179,13 +179,15 @@ export function HomeReportsList({
         >
           {listHeader}
         </h2>
-        <button
-          onClick={onViewAll}
-          className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700 hover:bg-blue-50" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
-        >
-          View All
-          <ArrowRight className="w-4 h-4" />
-        </button>
+        {onViewAll && (
+          <button
+            onClick={onViewAll}
+            className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700 hover:bg-blue-50" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
+          >
+            View All
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {sortedReports.length === 0 && (
