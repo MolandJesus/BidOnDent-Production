@@ -22,6 +22,7 @@ import {
   saveVehicle,
   saveDamageReport,
 } from "../services/supabaseService";
+import type { Profile, DamageReport as SupabaseDamageReport } from "../services/supabase/types";
 import { getMyBids } from "../services/supabase/bids";
 import { getNotificationsByUserType } from "../constants";
 import {
@@ -57,7 +58,7 @@ export type HydrationResult = {
  * Returns all data as a structured result — caller handles state setting.
  */
 export async function hydrateFromCloudProfile(
-  profileData: any,
+  profileData: Profile,
   clerkUserId: string
 ): Promise<HydrationResult> {
   const userInfo: UserInfo = {
@@ -88,7 +89,7 @@ export async function hydrateFromCloudProfile(
   if (Array.isArray(reportsData)) {
     reports = reportsData.map(transformSupabaseReport) as unknown as DamageReport[];
     reportsError = null;
-    reportsData.forEach((report: any) => {
+    reportsData.forEach((report: SupabaseDamageReport) => {
       if (report.photo_urls && Array.isArray(report.photo_urls)) {
         photoStorage[report.id || ""] = report.photo_urls;
       }
@@ -149,12 +150,15 @@ export async function hydrateFromCloudProfile(
     redirectInfo,
     notifications,
     hasSeenPhotoGuide: false,
-    photoStorage: validReports.reduce((acc: Record<string, string[]>, report: any) => {
-      if (report?.id && Array.isArray(report.photo_urls)) {
-        acc[report.id] = report.photo_urls;
-      }
-      return acc;
-    }, {}),
+    photoStorage: validReports.reduce(
+      (acc: Record<string, string[]>, report: SupabaseDamageReport) => {
+        if (report?.id && Array.isArray(report.photo_urls)) {
+          acc[report.id] = report.photo_urls;
+        }
+        return acc;
+      },
+      {}
+    ),
   };
 
   return {

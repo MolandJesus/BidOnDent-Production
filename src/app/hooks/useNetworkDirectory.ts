@@ -26,9 +26,13 @@ export function useNetworkDirectory() {
         if (isMounted) {
           setInventory(nextInventory);
         }
-      } catch (inventoryError: any) {
+      } catch (inventoryError: unknown) {
         if (isMounted) {
-          setError(inventoryError?.message || "Unable to load directory inventory");
+          setError(
+            inventoryError instanceof Error
+              ? inventoryError.message
+              : "Unable to load directory inventory"
+          );
         }
       } finally {
         if (isMounted) {

@@ -244,7 +244,8 @@ export function isCloudImageUrl(imageUrl?: string): boolean {
   return Boolean(imageUrl && (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")));
 }
 
-export function createSupabaseReportPayload(report: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts both frontend and Supabase report shapes
+export function createSupabaseReportPayload(report: Record<string, any>) {
   const vehicleInfo = report.vehicle || report.vehicleInfo || {};
 
   return {

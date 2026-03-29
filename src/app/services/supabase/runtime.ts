@@ -190,11 +190,12 @@ export async function parseSupabaseEdgeResponse<T>(response: Response): Promise<
   const payload = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    const errorPayload = payload as Record<string, unknown>;
     const message =
-      (payload as any)?.error ||
-      (payload as any)?.message ||
+      (typeof errorPayload?.error === 'string' ? errorPayload.error : undefined) ||
+      (typeof errorPayload?.message === 'string' ? errorPayload.message : undefined) ||
       `Supabase request failed with status ${response.status}`;
-    const code = (payload as any)?.code as EdgeErrorCode | undefined;
+    const code = errorPayload?.code as EdgeErrorCode | undefined;
     throw new EdgeFunctionError(message, response.status, code);
   }
 

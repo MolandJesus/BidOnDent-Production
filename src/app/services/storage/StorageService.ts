@@ -59,7 +59,7 @@ class StorageService {
   private getProviderType(): StorageProviderType {
     // Check environment variable (would be set in deployment)
     if (typeof window !== "undefined") {
-      const envProvider = (window as any).__STORAGE_PROVIDER__;
+      const envProvider = (window as unknown as Record<string, unknown>).__STORAGE_PROVIDER__;
       if (envProvider) {
         return envProvider as StorageProviderType;
       }

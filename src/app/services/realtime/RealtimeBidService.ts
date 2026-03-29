@@ -279,7 +279,8 @@ class RealtimeBidService {
   /**
    * Transform database bid to app format
    */
-  private transformBidFromDb(dbBid: any): Bid {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase realtime payload shape varies
+  private transformBidFromDb(dbBid: Record<string, any>): Bid {
     return {
       id: dbBid.id,
       shopId: dbBid.clerk_shop_user_id || dbBid.shop_id || dbBid.shop_user_id || dbBid.user_id,

@@ -2,7 +2,7 @@
  * ============================================================================
  * STORAGE ABSTRACTION LAYER - CLOUD PROVIDER AGNOSTIC
  * ============================================================================
- * 
+ *
  * This abstraction allows switching between cloud storage providers without
  * changing application code. Supports:
  * - Supabase Storage (current)
@@ -10,7 +10,7 @@
  * - Cloudflare R2
  * - Google Cloud Storage
  * - Azure Blob Storage
- * 
+ *
  * To switch providers, simply change STORAGE_PROVIDER environment variable.
  * ============================================================================
  */
@@ -109,26 +109,26 @@ export interface IStorageProvider {
 /**
  * Storage Provider Types
  */
-export type StorageProviderType = 
-  | 'supabase' 
-  | 'aws-s3' 
-  | 'cloudflare-r2' 
-  | 'gcp-storage'
-  | 'azure-blob';
+export type StorageProviderType =
+  | "supabase"
+  | "aws-s3"
+  | "cloudflare-r2"
+  | "gcp-storage"
+  | "azure-blob";
 
 /**
  * Configuration for each provider
  */
 export interface StorageConfig {
   provider: StorageProviderType;
-  
+
   // Supabase
   supabase?: {
     projectId: string;
     anonKey: string;
     serviceRoleKey?: string;
   };
-  
+
   // AWS S3
   aws?: {
     accessKeyId: string;
@@ -136,7 +136,7 @@ export interface StorageConfig {
     region: string;
     endpoint?: string; // For S3-compatible services
   };
-  
+
   // Cloudflare R2
   cloudflare?: {
     accountId: string;
@@ -144,14 +144,14 @@ export interface StorageConfig {
     secretAccessKey: string;
     endpoint?: string;
   };
-  
+
   // Google Cloud Storage
   gcp?: {
     projectId: string;
     keyFilename?: string;
-    credentials?: any;
+    credentials?: Record<string, unknown>;
   };
-  
+
   // Azure Blob Storage
   azure?: {
     accountName: string;

@@ -1,6 +1,14 @@
 import { STORAGE_KEYS } from "../constants";
-import type { DamageReport as FrontendReport, Vehicle as FrontendVehicle, Bid as FrontendBid } from "../types";
-import type { DamageReport as SupabaseReport, Vehicle as SupabaseVehicle, Bid as SupabaseBid } from "../services/supabase/types";
+import type {
+  DamageReport as FrontendReport,
+  Vehicle as FrontendVehicle,
+  Bid as FrontendBid,
+} from "../types";
+import type {
+  DamageReport as SupabaseReport,
+  Vehicle as SupabaseVehicle,
+  Bid as SupabaseBid,
+} from "../services/supabase/types";
 
 /** Convert a Supabase Vehicle to a frontend Vehicle. */
 export function toFrontendVehicle(v: SupabaseVehicle): FrontendVehicle {
@@ -113,7 +121,8 @@ export const transformSupabaseReport = (report: SupabaseReport) => ({
   bidsCount: 0,
 });
 
-export const buildSupabaseReportPayload = (report: any) => ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts both frontend and Supabase report shapes
+export const buildSupabaseReportPayload = (report: Record<string, any>) => ({
   ...(isUuidLike(report.id) ? { id: report.id } : {}),
   vehicle_make: report.vehicle?.make || report.vehicle_make || "",
   vehicle_model: report.vehicle?.model || report.vehicle_model || "",

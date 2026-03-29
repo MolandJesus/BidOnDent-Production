@@ -115,22 +115,18 @@ export function useAppHandlers({
       "Vehicle";
 
     // Build bid object for Supabase
-    const bid = {
+    const bid: import("../services/supabase/types").Bid = {
       damage_report_id: reportId,
       shop_name: userData.userInfo.name || "Shop Name",
       shop_email: userData.userInfo.email,
       amount: bidAmount,
       estimated_days: estimatedDays ?? 0,
       description: description || "",
-      notes: undefined,
       status: "pending",
-      shop_rating: undefined,
-      shop_reviews: undefined,
-      shop_distance: undefined,
     };
 
     try {
-      const savedBid = await submitBidToSupabase(bid as any, userId);
+      const savedBid = await submitBidToSupabase(bid, userId);
       if (savedBid) {
         userData.setBids((prev) => [...prev, toFrontendBid(savedBid)]);
         addActivity(

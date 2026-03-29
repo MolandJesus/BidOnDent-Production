@@ -356,7 +356,11 @@ export function useUserData(
   // MANUAL SAVE FUNCTIONS (with cloud-first approach)
   // ============================================================================
 
-  const saveUserProfile = async (profileData: any) => {
+  const saveUserProfile = async (profileData: {
+    name?: string;
+    phone?: string;
+    profileImage?: string;
+  }) => {
     if (!userInfo.email || !redirectInfo) return false;
     return saveProfileToCloud({
       email: userInfo.email,
