@@ -1,12 +1,4 @@
-import {
-  useDeferredValue,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FormEvent,
-} from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import type { ShopSortOption, WebsiteIdentity } from "../services/auth/websiteIdentity";
 import {
   loadWebsiteSessionMemory,
@@ -25,14 +17,9 @@ import {
   getRoleCollectionKey,
   getRoleCollectionTitle,
   getSuggestedSearchOrigins,
-  toggleRoleCollectionShopId,
-  type ShopMapListing,
 } from "../services/intelligence/shopMapExperience";
 import { convertPartnerShopsToProfiles } from "../services/intelligence/directoryAdapters";
-import {
-  getNavigationProviderLabel,
-  openDirections,
-} from "../services/navigation/externalNavigation";
+import { getNavigationProviderLabel } from "../services/navigation/externalNavigation";
 import { loadNavigationSession } from "../services/navigation/navigationSession";
 import type {
   Coordinates,
@@ -45,13 +32,9 @@ import type {
 } from "../types/mapDomain";
 import { useCoveragePartnerShops } from "./useCoveragePartnerShops";
 import { useNetworkDirectory } from "./useNetworkDirectory";
+import { useShopDirectoryHandlers } from "./useShopDirectoryHandlers";
 import { useUserGeolocation } from "./useUserGeolocation";
-import {
-  buildRecentSearches,
-  buildSavedPlace,
-  getContextChips,
-  slugify,
-} from "./shopDirectorySessionUtils";
+import { getContextChips, slugify } from "./shopDirectorySessionUtils";
 
 type UseShopDirectorySessionArgs = {
   identity?: WebsiteIdentity | null;
@@ -74,7 +57,6 @@ export function useShopDirectorySession({
   const { inventory } = useNetworkDirectory();
   const { partnerShops } = useCoveragePartnerShops();
   const geolocation = useUserGeolocation();
-  const pendingMyLocationRef = useRef(false);
   const savedMemory = loadWebsiteSessionMemory(identity);
   const suggestedOrigins = getSuggestedSearchOrigins();
 
@@ -353,135 +335,24 @@ export function useShopDirectorySession({
     sortBy,
   ]);
 
-  // ── Handlers ──
-  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setRecentSearches((currentSearches) =>
-      buildRecentSearches(currentSearches, searchQuery, selectedOrigin, mapListings.length)
-    );
-  };
-
-  const handleSelectOrigin = (origin: Place) => {
-    setSelectedOrigin(origin);
-    setSavedPlaces((currentPlaces) =>
-      currentPlaces.map((place) =>
-        place.id === `saved-place-${origin.placeId || slugify(origin.name)}`
-          ? { ...place, lastUsedAt: new Date().toISOString() }
-          : place
-      )
-    );
-  };
-
-  const handleSaveOrigin = () => {
-    if (!selectedOrigin) {
-      return;
-    }
-
-    const nextPlace = buildSavedPlace(selectedOrigin);
-    setSavedPlaces((currentPlaces) => {
-      const existingPlace = currentPlaces.find((place) => place.id === nextPlace.id);
-      if (existingPlace) {
-        return currentPlaces.map((place) =>
-          place.id === nextPlace.id
-            ? { ...place, lastUsedAt: new Date().toISOString(), isFavorite: true }
-            : place
-        );
-      }
-
-      return [nextPlace, ...currentPlaces].slice(0, 6);
-    });
-  };
-
-  const handleToggleRoleCollection = (shopId: number) => {
-    setSelectedShopId(shopId);
-
-    if (roleCollectionKey === "shopWatchlistIds") {
-      setShopWatchlistIds((currentIds) => toggleRoleCollectionShopId(currentIds, shopId));
-      return;
-    }
-
-    if (roleCollectionKey === "insurerShortlistIds") {
-      setInsurerShortlistIds((currentIds) => toggleRoleCollectionShopId(currentIds, shopId));
-      return;
-    }
-
-    setCustomerSavedShopIds((currentIds) => toggleRoleCollectionShopId(currentIds, shopId));
-  };
-
-  const handleOpenShopDirections = (shop: ShopMapListing) => {
-    const provider = loadNavigationSession()?.provider || "google";
-
-    openDirections({
-      provider,
-      destination: {
-        id: String(shop.id),
-        name: shop.name,
-        lat: shop.mapResult.coordinates.latitude,
-        lng: shop.mapResult.coordinates.longitude,
-        addressLine: `${shop.mapResult.address}, ${shop.mapResult.city}, ${shop.mapResult.state} ${shop.mapResult.zipCode}`,
-      },
-      origin: selectedOrigin
-        ? {
-            label: selectedOrigin.name,
-            lat: selectedOrigin.latitude,
-            lng: selectedOrigin.longitude,
-            source: "address",
-          }
-        : undefined,
-    });
-  };
-
-  const handleToggleTheme = () => {
-    setMapTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
-  };
-
-  const handleSearchInArea = () => {
-    setSearchWithinViewport(true);
-  };
-
-  const handleClearAreaSearch = () => {
-    setSearchWithinViewport(false);
-  };
-
-  const handleUseMyLocation = useCallback(() => {
-    if (geolocation.coords) {
-      const myPlace: Place = {
-        name: "My Location",
-        address: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        latitude: geolocation.coords.latitude,
-        longitude: geolocation.coords.longitude,
-        placeId: "user-geolocation",
-      };
-      setSelectedOrigin(myPlace);
-      setMapCenter(geolocation.coords);
-      pendingMyLocationRef.current = false;
-      return;
-    }
-    pendingMyLocationRef.current = true;
-    geolocation.requestLocation();
-  }, [geolocation]);
-
-  // Resolve pending "My Location" request when coords arrive
-  useEffect(() => {
-    if (!pendingMyLocationRef.current || !geolocation.coords) return;
-    pendingMyLocationRef.current = false;
-
-    const myPlace: Place = {
-      name: "My Location",
-      address: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      latitude: geolocation.coords.latitude,
-      longitude: geolocation.coords.longitude,
-      placeId: "user-geolocation",
-    };
-    setSelectedOrigin(myPlace);
-    setMapCenter(geolocation.coords);
-  }, [geolocation.coords]);
+  // ── Handlers (extracted) ──
+  const handlers = useShopDirectoryHandlers({
+    searchQuery,
+    selectedOrigin,
+    mapListingsLength: mapListings.length,
+    roleCollectionKey,
+    setSelectedShopId,
+    setSelectedOrigin,
+    setSavedPlaces,
+    setRecentSearches,
+    setCustomerSavedShopIds,
+    setShopWatchlistIds,
+    setInsurerShortlistIds,
+    setMapTheme,
+    setMapCenter,
+    setSearchWithinViewport,
+    geolocation,
+  });
 
   return {
     // State
@@ -534,15 +405,7 @@ export function useShopDirectorySession({
     isImmersive,
     currentOriginIsSaved,
     // Handlers
-    handleSearchSubmit,
-    handleSelectOrigin,
-    handleSaveOrigin,
-    handleToggleRoleCollection,
-    handleOpenShopDirections,
-    handleToggleTheme,
-    handleSearchInArea,
-    handleClearAreaSearch,
-    handleUseMyLocation,
+    ...handlers,
     // Geolocation
     userGeolocation: geolocation,
   };
