@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import {
   fetchInsurerBusinessProfile,
@@ -6,10 +6,7 @@ import {
   saveInsurerBusinessProfile,
   saveShopBusinessProfile,
 } from "../services/networkProfiles";
-import type {
-  InsurerBusinessProfile,
-  ShopBusinessProfile,
-} from "../types/networkProfiles";
+import type { InsurerBusinessProfile, ShopBusinessProfile } from "../types/networkProfiles";
 
 type AccountType = "customer" | "shop" | "insurer";
 
@@ -34,8 +31,9 @@ export function useBusinessProfile(
   >(null);
   const [isLoading, setIsLoading] = useState(accountType === "shop" || accountType === "insurer");
   const [error, setError] = useState<string | null>(null);
+  const fetchVersion = useRef(0);
 
-  const refreshProfile = async () => {
+  const refreshProfile = useCallback(async () => {
     if (!identity || accountType === "customer" || !accountType) {
       setBusinessProfile(null);
       setError(null);
@@ -43,6 +41,7 @@ export function useBusinessProfile(
       return;
     }
 
+    const version = ++fetchVersion.current;
     setIsLoading(true);
     setError(null);
 
@@ -51,17 +50,25 @@ export function useBusinessProfile(
         accountType === "shop"
           ? await fetchShopBusinessProfile(identity)
           : await fetchInsurerBusinessProfile(identity);
-      setBusinessProfile(profile);
+      if (version === fetchVersion.current) {
+        setBusinessProfile(profile);
+      }
     } catch (profileError: unknown) {
-      setError(profileError instanceof Error ? profileError.message : "Unable to load business profile");
+      if (version === fetchVersion.current) {
+        setError(
+          profileError instanceof Error ? profileError.message : "Unable to load business profile"
+        );
+      }
     } finally {
-      setIsLoading(false);
+      if (version === fetchVersion.current) {
+        setIsLoading(false);
+      }
     }
-  };
+  }, [accountType, identity]);
 
   useEffect(() => {
     void refreshProfile();
-  }, [accountType, identity?.websiteUserKey]);
+  }, [refreshProfile]);
 
   const saveProfile = async (
     profile:
