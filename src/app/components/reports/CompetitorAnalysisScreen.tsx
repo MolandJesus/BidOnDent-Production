@@ -37,10 +37,12 @@ interface CompetitorAnalysisScreenProps {
 type SortMode = "rating" | "jobs" | "distance";
 
 function deriveMonthlyJobs(reviewCount: number, completionRate: number, capacityBand: string) {
+  const safeReviews = reviewCount || 0;
+  const safeRate = completionRate || 90;
   const capacityBoost =
     capacityBand === "high-capacity" ? 34 : capacityBand === "balanced" ? 18 : 8;
 
-  return Math.max(24, Math.round(reviewCount * 0.42 + completionRate * 0.38 + capacityBoost));
+  return Math.max(24, Math.round(safeReviews * 0.42 + safeRate * 0.38 + capacityBoost));
 }
 
 function deriveAverageRepairDays(
@@ -48,18 +50,22 @@ function deriveAverageRepairDays(
   responseTimeHours: number,
   capacityBand: string
 ) {
+  const safeRate = completionRate || 90;
+  const safeHours = responseTimeHours || 4;
   const capacityDelta =
     capacityBand === "boutique" ? 0.8 : capacityBand === "high-capacity" ? -0.5 : 0;
-  const days = 4.2 - (completionRate - 90) * 0.05 + responseTimeHours * 0.08 + capacityDelta;
+  const days = 4.2 - (safeRate - 90) * 0.05 + safeHours * 0.08 + capacityDelta;
   return `${Math.max(2.2, Math.round(days * 10) / 10).toFixed(1)} days`;
 }
 
 function deriveTrendingState(recommendationScore: number, completionRate: number) {
-  if (recommendationScore >= 90 || completionRate >= 98) {
+  const safeScore = recommendationScore || 0;
+  const safeRate = completionRate || 90;
+  if (safeScore >= 90 || safeRate >= 98) {
     return "up";
   }
 
-  if (completionRate <= 93) {
+  if (safeRate <= 93) {
     return "down";
   }
 
@@ -197,7 +203,7 @@ export default function CompetitorAnalysisScreen({
       </div>
 
       <div
-        className={`border-b bd-glass-panel px-4 py-4${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
+        className={`border-b bd-glass-panel px-4 py-4 ${isLight ? "bd-light-surface border-slate-200/60" : "border-white/30"}`}
       >
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div className="text-center">
@@ -220,7 +226,11 @@ export default function CompetitorAnalysisScreen({
           </div>
         </div>
 
-        <div className="mt-4 rounded-2xl bg-blue-500/100/10 p-3">
+        <p className={`mt-3 text-[11px] italic ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+          Market data is estimated from directory metrics and may not reflect actual volumes.
+        </p>
+
+        <div className="mt-3 rounded-2xl bg-blue-500/10 p-3">
           <div className="flex items-center justify-between">
             <span
               className={`text-sm font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}
@@ -252,7 +262,7 @@ export default function CompetitorAnalysisScreen({
       </div>
 
       <div
-        className={`border-b bd-glass-panel px-4 py-3${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
+        className={`border-b bd-glass-panel px-4 py-3 ${isLight ? "bd-light-surface border-slate-200/60" : "border-white/30"}`}
       >
         <div className="flex gap-2 overflow-x-auto">
           <button
@@ -303,7 +313,7 @@ export default function CompetitorAnalysisScreen({
                     </h3>
                     {shop.topPick && <CheckCircle className="h-4 w-4 text-blue-500" />}
                     {shop.watched && (
-                      <span className="rounded-full bg-blue-500/100/10 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-400">
+                      <span className="rounded-full bg-blue-500/10 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-400">
                         Watched
                       </span>
                     )}
@@ -345,11 +355,11 @@ export default function CompetitorAnalysisScreen({
                 <div className="flex items-center gap-2">
                   <Wrench className="h-4 w-4 text-slate-400" />
                   <div>
-                    <p className="text-xs text-slate-500">Monthly Jobs</p>
+                    <p className="text-xs text-slate-500">Est. Monthly Jobs</p>
                     <p
                       className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}
                     >
-                      {shop.monthlyJobs}
+                      ~{shop.monthlyJobs}
                     </p>
                   </div>
                 </div>
@@ -367,11 +377,11 @@ export default function CompetitorAnalysisScreen({
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-slate-400" />
                   <div>
-                    <p className="text-xs text-slate-500">Avg Time</p>
+                    <p className="text-xs text-slate-500">Est. Avg Time</p>
                     <p
                       className={`text-sm font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}
                     >
-                      {shop.averageRepairTime}
+                      ~{shop.averageRepairTime}
                     </p>
                   </div>
                 </div>
@@ -394,7 +404,7 @@ export default function CompetitorAnalysisScreen({
                   {shop.specialties.map((specialty) => (
                     <span
                       key={specialty}
-                      className="rounded bg-blue-500/100/10 px-2 py-1 text-xs font-medium text-blue-400"
+                      className="rounded bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-400"
                     >
                       {specialty}
                     </span>
