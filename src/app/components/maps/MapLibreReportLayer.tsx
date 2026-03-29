@@ -111,25 +111,29 @@ export default function MapLibreReportLayer({ mapTheme = "dark" }: MapLibreRepor
           }}
         />
       </Source>
-      {selectedReport ? (
-        <Popup
-          longitude={
-            reportsWithCoordinates.find((r) => r.report.id === selectedReport.id)?.coords.lng ?? 0
-          }
-          latitude={
-            reportsWithCoordinates.find((r) => r.report.id === selectedReport.id)?.coords.lat ?? 0
-          }
-          closeOnClick={false}
-          onClose={() => {
-            setSelectedReport(null);
-            setDrawerOpen(false);
-          }}
-          anchor="bottom"
-          offset={16}
-        >
-          <div className="text-sm font-semibold">Damage Report</div>
-        </Popup>
-      ) : null}
+      {selectedReport
+        ? (() => {
+            const popupCoords = reportsWithCoordinates.find(
+              (r) => r.report.id === selectedReport.id
+            )?.coords;
+            if (!popupCoords) return null;
+            return (
+              <Popup
+                longitude={popupCoords.lng}
+                latitude={popupCoords.lat}
+                closeOnClick={false}
+                onClose={() => {
+                  setSelectedReport(null);
+                  setDrawerOpen(false);
+                }}
+                anchor="bottom"
+                offset={16}
+              >
+                <div className="text-sm font-semibold">Damage Report</div>
+              </Popup>
+            );
+          })()
+        : null}
       <ReportDetailDrawer
         open={drawerOpen}
         onOpenChange={handleDrawerChange}

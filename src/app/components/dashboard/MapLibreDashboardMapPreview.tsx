@@ -1,6 +1,6 @@
-import Map, { Source, Layer, Popup, useMap } from "react-map-gl/maplibre";
+import Map, { Source, Layer, Popup } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import { mapLibreStyles } from "../maps/mapLibreStyles";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
@@ -22,6 +22,7 @@ export default function MapLibreDashboardMapPreview({
   onShopClick,
   onMapClick,
 }: MapLibreDashboardMapPreviewProps) {
+  const mapId = useId();
   const mapStyle = isLight ? mapLibreStyles.roadmap : mapLibreStyles.night;
   const [hoveredShop, setHoveredShop] = useState<CoveragePartnerShop | null>(null);
 
@@ -55,6 +56,7 @@ export default function MapLibreDashboardMapPreview({
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden cursor-pointer">
       <Map
+        id={`dashboard-preview-${mapId}`}
         initialViewState={{ longitude: center[1], latitude: center[0], zoom }}
         style={{ width: "100%", height: "100%" }}
         mapStyle={mapStyle}

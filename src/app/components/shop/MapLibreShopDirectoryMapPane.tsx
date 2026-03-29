@@ -216,7 +216,7 @@ export default function MapLibreShopDirectoryMapPane({
   );
 
   /* ── Interaction ──────────────────────────────────────────────────── */
-  const interactiveLayerIds = useMemo(() => [SHOP_LAYER], []);
+  const interactiveLayerIds = [SHOP_LAYER];
 
   const handleMapClick = useCallback(
     (e: MapLayerMouseEvent) => {
