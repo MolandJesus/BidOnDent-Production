@@ -16,6 +16,7 @@ export default function InsurerOnboarding({
 }: InsurerOnboardingProps) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     companyName: "",
     licenseNumber: "",
@@ -62,12 +63,13 @@ export default function InsurerOnboarding({
     }
 
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
       await onComplete(formData);
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error completing insurer onboarding:", error);
-      window.alert("We couldn't save the insurer profile yet. Please try again.");
+      setSubmitError("We couldn't save the insurer profile yet. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -403,6 +405,7 @@ export default function InsurerOnboarding({
                 <Check className="w-5 h-5 ml-2" />
               </motion.button>
             </div>
+            {submitError && <p className="text-sm text-rose-600 text-center mt-3">{submitError}</p>}
           </div>
         )}
       </div>
