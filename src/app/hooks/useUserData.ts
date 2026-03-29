@@ -12,29 +12,18 @@ import type {
   Bid,
   Activity,
 } from "../types";
-import {
-  getProfile,
-  getVehicles,
-  getDamageReports,
-  saveProfile,
-  saveVehicle,
-  saveDamageReport,
-} from "../services/supabaseService";
-import { getMyBids } from "../services/supabase/bids";
+import { getProfile, saveProfile, saveVehicle } from "../services/supabaseService";
 import { saveProfileToCloud, saveVehiclesToCloud, saveReportsToCloud } from "./userDataActions";
 import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
 import {
-  isUuidLike,
   normalizeEmail,
   getUserCacheKey,
   getLastActiveCacheKey,
   buildPhotoStorageFromReports,
-  transformSupabaseReport,
-  buildSupabaseReportPayload,
-  toFrontendVehicle,
   toSupabaseVehicle,
-  toFrontendBid,
+  buildSupabaseReportPayload,
 } from "./userDataUtils";
+import { hydrateFromCloudProfile, migrateLocalToCloud } from "./useUserDataLoader";
 
 export function useUserData(
   clerkUserId?: string,
@@ -66,6 +55,41 @@ export function useUserData(
   // ============================================================================
   // CLOUD-FIRST DATA LOADING
   // ============================================================================
+
+  /** Apply a HydrationResult to state + refs */
+  const applyHydration = (
+    result: import("./useUserDataLoader").HydrationResult,
+    cacheKey: string
+  ) => {
+    setUserInfo(result.userInfo);
+    setUserPhone(result.userPhone);
+    setRedirectInfo(result.redirectInfo);
+    setNotifications(result.notifications);
+    setVehicles(result.vehicles);
+    setReports(result.reports);
+    setReportsError(result.reportsError);
+    setReportsLoading(false);
+    setBids(result.bids);
+    setPhotoStorage(result.photoStorage);
+
+    lastSavedProfileSignatureRef.current = result.signatures.profile;
+    lastSavedVehiclesSignatureRef.current = result.signatures.vehicles;
+    lastSavedReportsSignatureRef.current = result.signatures.reports;
+    vehicleSignaturesRef.current = result.signatures.vehicleMap;
+    reportSignaturesRef.current = result.signatures.reportMap;
+
+    try {
+      localStorage.setItem(cacheKey, JSON.stringify(result.cachePayload));
+      localStorage.setItem(
+        STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
+        websiteUserKey || normalizeEmail(result.userInfo.email)
+      );
+      if (import.meta.env.DEV) console.log("Cache updated with fresh Supabase data");
+    } catch {
+      // Graceful: quota exceeded or private mode — Supabase is source of truth
+    }
+  };
+
   useEffect(() => {
     const loadUserData = async () => {
       // Step 1: Load from localStorage CACHE for instant UI (optional)
@@ -144,226 +168,34 @@ export function useUserData(
           localStorage.removeItem(STORAGE_KEYS.USER_DATA);
         }
 
-        const hydrateFromSupabaseProfile = async (profileData: any) => {
-          if (import.meta.env.DEV) console.log("Profile loaded from Supabase:", profileData);
-
-          setUserInfo({
-            name: profileData.name,
-            email: profileData.email,
-            profileImage: profileData.profile_image_url || "",
-          });
-          setUserPhone(profileData.phone || "");
-          setRedirectInfo({
-            type: profileData.account_type,
-            email: profileData.email,
-          });
-          setNotifications(getNotificationsByUserType(profileData.account_type));
-
-          const vehiclesData = await getVehicles(clerkUserId);
-          const frontendVehicles = vehiclesData.map(toFrontendVehicle);
-          setVehicles(frontendVehicles);
-          if (import.meta.env.DEV) {
-            console.log(`Loaded ${vehiclesData.length} vehicles from Supabase`);
-          }
-
-          setReportsLoading(true);
-          setReportsError(null);
-          const reportsData = await getDamageReports(clerkUserId);
-
-          let transformedReports: DamageReport[] = [];
-          let validReports: any[] = [];
-
-          if (Array.isArray(reportsData)) {
-            validReports = reportsData;
-            transformedReports = reportsData.map(transformSupabaseReport) as unknown as DamageReport[];
-            setReports(transformedReports);
-            setReportsError(null);
-
-            const photoStorageData: Record<string, string[]> = {};
-            reportsData.forEach((report: any) => {
-              if (report.photo_urls && Array.isArray(report.photo_urls)) {
-                photoStorageData[report.id || ""] = report.photo_urls;
-              }
-            });
-            setPhotoStorage(photoStorageData);
-            if (import.meta.env.DEV) {
-              console.log(`[DEV] Loaded ${transformedReports.length} reports from Supabase`);
-            }
-          } else if (reportsData && reportsData.error) {
-            setReports([]);
-            setReportsError(reportsData.error);
-            if (import.meta.env.DEV) {
-              console.error(`[DEV] Reports error:`, reportsData.error);
-            }
-          } else {
-            setReports([]);
-            setReportsError("unknown-error");
-            if (import.meta.env.DEV) {
-              console.error(`[DEV] Unknown reports error:`, reportsData);
-            }
-          }
-          setReportsLoading(false);
-
-          const bidsData = await getMyBids(clerkUserId);
-          const transformedBids = bidsData.map(toFrontendBid);
-          setBids(transformedBids);
-          if (import.meta.env.DEV) {
-            console.log(`[DEV] Loaded ${transformedBids.length} bids from Supabase`);
-          }
-
-          const profileSignature = JSON.stringify({
-            email: profileData.email,
-            name: profileData.name,
-            phone: profileData.phone || "",
-            profileImage: profileData.profile_image_url || "",
-            accountType: profileData.account_type,
-          });
-          lastSavedProfileSignatureRef.current = profileSignature;
-          lastSavedVehiclesSignatureRef.current = JSON.stringify(frontendVehicles);
-          lastSavedReportsSignatureRef.current = JSON.stringify(transformedReports);
-
-          vehicleSignaturesRef.current = {};
-          for (const vehicle of frontendVehicles) {
-            if (vehicle.id) {
-              vehicleSignaturesRef.current[vehicle.id] = JSON.stringify(vehicle);
-            }
-          }
-
-          reportSignaturesRef.current = {};
-          for (const report of transformedReports) {
-            if (report.id) {
-              reportSignaturesRef.current[report.id] = JSON.stringify(report);
-            }
-          }
-
-          const freshUserData: UserData = {
-            userInfo: {
-              name: profileData.name,
-              email: profileData.email,
-              profileImage: profileData.profile_image_url || "",
-            },
-            vehicles: frontendVehicles,
-            reports: validReports.map(transformSupabaseReport) as unknown as DamageReport[],
-            bids: transformedBids,
-            userPhone: profileData.phone || "",
-            redirectInfo: {
-              type: profileData.account_type,
-              email: profileData.email,
-            },
-            notifications: getNotificationsByUserType(profileData.account_type),
-            hasSeenPhotoGuide: false,
-            photoStorage: validReports.reduce((acc: Record<string, string[]>, report: any) => {
-              if (report?.id && Array.isArray(report.photo_urls)) {
-                acc[report.id] = report.photo_urls;
-              }
-              return acc;
-            }, {}),
-          };
-
-          try {
-            localStorage.setItem(userCacheKey, JSON.stringify(freshUserData));
-            localStorage.setItem(
-              STORAGE_KEYS.USER_DATA_LAST_ACTIVE,
-              websiteUserKey || normalizeEmail(email)
-            );
-            if (import.meta.env.DEV) {
-              console.log("Cache updated with fresh Supabase data");
-            }
-          } catch {
-            // Graceful: quota exceeded or private mode — Supabase is source of truth
-          }
-        };
-
         if (import.meta.env.DEV)
           console.log("[DEBUG] useUserData: Calling getProfile", {
             clerkUserId,
             email,
             websiteUserKey,
           });
-        const profileData = await getProfile({
-          clerkUserId,
-          email,
-          websiteUserKey,
-        });
+        const profileData = await getProfile({ clerkUserId, email, websiteUserKey });
         if (import.meta.env.DEV) console.log("[DEBUG] useUserData: getProfile result", profileData);
 
         if (profileData) {
-          await hydrateFromSupabaseProfile(profileData);
+          if (import.meta.env.DEV) console.log("Profile loaded from Supabase:", profileData);
+          setReportsLoading(true);
+          setReportsError(null);
+          const result = await hydrateFromCloudProfile(profileData, clerkUserId);
+          applyHydration(result, userCacheKey);
         } else {
           if (import.meta.env.DEV)
             console.log("No profile found in Supabase - new user or needs migration");
 
           if (cachedData) {
-            let userData: UserData;
-            try {
-              userData = JSON.parse(cachedData);
-            } catch {
-              userData = {} as UserData;
-            }
-            if (userData?.userInfo?.email === email && userData.redirectInfo) {
-              if (import.meta.env.DEV) console.log("Migrating cached data to Supabase...");
-
-              const profileSaved = await saveProfile(
-                {
-                  email: email,
-                  name: userData.userInfo.name,
-                  phone: userData.userPhone || "",
-                  profile_image_url: undefined,
-                  account_type: userData.redirectInfo.type,
-                },
-                {
-                  clerkUserId,
-                  email,
-                  websiteUserKey,
-                }
-              );
-
-              if (!profileSaved) {
-                if (import.meta.env.DEV) {
-                  console.warn("Cached profile migration did not complete; skipping hard reload.");
-                }
-                setReportsLoading(false);
-                return;
-              }
-
-              if (userData.vehicles && userData.vehicles.length > 0) {
-                for (const vehicle of userData.vehicles) {
-                  await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
-                }
-                if (import.meta.env.DEV) console.log("Migrated vehicles to Supabase");
-              }
-
-              if (userData.reports && userData.reports.length > 0) {
-                for (const report of userData.reports) {
-                  await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
-                }
-                if (import.meta.env.DEV) console.log("Migrated reports to Supabase");
-              }
-
-              lastSavedProfileSignatureRef.current = JSON.stringify({
-                email,
-                name: userData.userInfo.name,
-                phone: userData.userPhone || "",
-                profileImage: "",
-                accountType: userData.redirectInfo.type,
-              });
-              lastSavedVehiclesSignatureRef.current = JSON.stringify(userData.vehicles || []);
-              lastSavedReportsSignatureRef.current = JSON.stringify(userData.reports || []);
-
-              const refreshedProfile = await getProfile({
-                clerkUserId,
-                email,
-                websiteUserKey,
-              });
-
-              if (refreshedProfile) {
-                if (import.meta.env.DEV) {
-                  console.log("Migration complete - hydrated fresh Supabase data without reload");
-                }
-                await hydrateFromSupabaseProfile(refreshedProfile);
-              } else if (import.meta.env.DEV) {
-                console.warn("Migration saved data but profile refresh was not yet available");
-              }
+            const migrationResult = await migrateLocalToCloud(
+              cachedData,
+              email,
+              clerkUserId,
+              websiteUserKey
+            );
+            if (migrationResult) {
+              applyHydration(migrationResult, userCacheKey);
             }
           }
           setReportsLoading(false);
