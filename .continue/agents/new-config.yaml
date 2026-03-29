@@ -30,6 +30,6 @@ mcpServers:
       - -y
       - tavily-mcp@latest
     env:
-      TAVILY_API_KEY: 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
+      TAVILY_API_KEY: ${TAVILY_API_KEY} # Set via shell environment — never hardcode
       # Optional defaults to keep results small/fast
       DEFAULT_PARAMETERS: '{"search_depth":"basic","max_results":5}'

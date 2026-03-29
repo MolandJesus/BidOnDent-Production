@@ -4,6 +4,9 @@ import { clearPersistedState, readPersistedState, writePersistedState } from "./
 export const NAVIGATION_PARKED_CAR_STORAGE_KEY = "bidondent_navigation_parked_car";
 const navigationParkedCarStorageVersion = 2;
 
+/** Auto-expire parked car location after 24 hours to limit GPS data persistence. */
+const PARKED_CAR_TTL_MS = 24 * 60 * 60 * 1000;
+
 type SaveParkedCarArgs = {
   coordinate: NavigationCoordinate;
   accuracyMeters?: number | null;
@@ -85,7 +88,7 @@ function toValidatedParkedCarLocation(raw: unknown): NavigationParkedCarLocation
 }
 
 export function loadParkedCarLocation(): NavigationParkedCarLocation | null {
-  return readPersistedState<NavigationParkedCarLocation | null>({
+  const location = readPersistedState<NavigationParkedCarLocation | null>({
     storageKey: NAVIGATION_PARKED_CAR_STORAGE_KEY,
     storageVersion: navigationParkedCarStorageVersion,
     fallback: null,
@@ -100,6 +103,18 @@ export function loadParkedCarLocation(): NavigationParkedCarLocation | null {
     },
     migrateLegacy: (legacyValue) => toValidatedParkedCarLocation(legacyValue),
   });
+
+  // Auto-expire stale entries to limit GPS data persistence.
+  if (location?.savedAt) {
+    const ageMs = Date.now() - Date.parse(location.savedAt);
+
+    if (ageMs > PARKED_CAR_TTL_MS) {
+      clearParkedCarLocation();
+      return null;
+    }
+  }
+
+  return location;
 }
 
 export function saveParkedCarLocation({

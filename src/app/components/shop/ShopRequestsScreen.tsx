@@ -54,8 +54,8 @@ export default function ShopRequestsScreen({
     return {
       id: String(report?.id ?? `request-${index}`),
       customerName: "Customer",
-      customerEmail: report?.customer_email || "Contact via BidOnDent",
-      customerPhone: report?.customer_phone || "Via platform",
+      customerEmail: "Contact via BidOnDent",
+      customerPhone: "Via platform",
       vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
       damageType: report?.damageArea || report?.damageType || "Damage report",
       description: report?.description || "No description provided yet.",

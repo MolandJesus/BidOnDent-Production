@@ -196,20 +196,20 @@ export default function ShopRequestCard({
       {/* Contact Info */}
       <div className={`p-4 border-t ${isLight ? "border-slate-200/60" : "border-blue-300/15"}`}>
         <div className="grid grid-cols-2 gap-3 mb-3">
-          <a
-            href={`tel:${request.customerPhone}`}
-            className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
+          <span
+            className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
+            title="Contact info available after bid accepted"
           >
             <Phone className="w-4 h-4" />
             Call
-          </a>
-          <a
-            href={`mailto:${request.customerEmail}`}
-            className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
+          </span>
+          <span
+            className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
+            title="Contact info available after bid accepted"
           >
             <Mail className="w-4 h-4" />
             Email
-          </a>
+          </span>
         </div>
 
         <button
