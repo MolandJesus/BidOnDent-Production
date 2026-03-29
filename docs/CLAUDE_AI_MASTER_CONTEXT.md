@@ -3,10 +3,10 @@
 > **Single source of truth for any AI agent working on this repo.**
 > All other AI handoff docs defer to this file. Read this first, every session.
 >
-> **Last updated:** 2026-03-28 (Pass 398 — concurrent AI security-track reconciliation)
+> **Last updated:** 2026-03-28 (Pass 429 — master context doc sync)
 > **Status:** Active master context source of truth
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
-> **Build:** ✅ 0 errors · ~2.01s · 786KB main bundle
+> **Build:** ✅ 0 errors · ~2.09s · 514KB main bundle (index chunk)
 
 ---
 
@@ -331,14 +331,14 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ## 10. Known Technical Debt
 
-| Issue                                                     | Severity | Notes                                     |
-| --------------------------------------------------------- | -------- | ----------------------------------------- |
-| Supabase RLS `USING(true)` on 4 tables                    | HIGH     | Production security gap                   |
-| No CI/CD pipeline                                         | HIGH     | Manual deploys only                       |
-| No test coverage                                          | HIGH     | Zero automated tests                      |
-| Bundle 783KB                                              | MEDIUM   | Already split; needs further lazy loading |
-| 2–14MB PNG assets                                         | MEDIUM   | Need WebP conversion                      |
-| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                 |
+| Issue                                                     | Severity | Notes                                                                          |
+| --------------------------------------------------------- | -------- | ------------------------------------------------------------------------------ |
+| Supabase RLS `USING(true)` on 4 tables                    | HIGH     | Production security gap — requires migration, ask before touching              |
+| 2–14MB PNG assets in dist/assets                          | MEDIUM   | Need WebP conversion — major load-time impact                                 |
+| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                      |
+| ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR              |
+| ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections              |
+| ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting)  |
 
 ---
 
@@ -390,6 +390,29 @@ All other AI docs in this repo point to this file as the master context. The fol
 - `docs/AI_DASHBOARD_WORK_PROMPT.md` — replaced by this file
 - `docs/AI_BACKEND_TASK_PROMPT.md` — replaced by this file
 - `docs/DUAL_AI_COORDINATION_PROMPT.md` — no longer running dual agents
+
+---
+
+---
+
+## 14. Quality Sweep Log (Passes 417–428)
+
+All user-facing `alert()` calls eliminated. Runtime safety hardened. See git log for full details.
+
+| Pass | Title | Status |
+|------|-------|--------|
+| 417 | HelpModal + ShopProfileModal alert→inline | ✅ Done |
+| 418 | Fix ShopProfileModal imports + demo data | ✅ Done |
+| 419 | Remove dead accountDeletion.ts | ✅ Done |
+| 420 | Business inquiry form validation | ✅ Done |
+| 421 | Fix TypeScript type errors (3 → 0) | ✅ Done |
+| 422 | AccountScreen image upload error inline | ✅ Done |
+| 423 | PaymentModal coming soon placeholder | ✅ Done |
+| 424 | All remaining user-facing alerts | ✅ Done |
+| 425 | Bid submission error propagation + loading | ✅ Done |
+| 426 | Business profile fetch race condition fix | ✅ Done |
+| 427 | Autosave race in useUserData | ✅ Done |
+| 428 | AccountScreen async error safety | ✅ Done |
 
 ---
 
