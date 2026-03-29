@@ -273,6 +273,7 @@ export default function ShopDirectoryImmersiveMap({
                   turnListOpen={turnListOpen}
                   voiceControlsOpen={false}
                   showVoiceControl={false}
+                  className="bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_20rem)]"
                   onToggleTurnList={() => setTurnListOpen((c) => !c)}
                   onToggleVoiceControls={() => {}}
                   onRecenter={() => onRecenterNavigation?.()}

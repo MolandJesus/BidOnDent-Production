@@ -1,3 +1,15 @@
+## Pass T532 — Fix guidance card + action rail overlap on mobile (2026-03-29)
+
+- **Why this pass was chosen:** During guidance mode on small phones (375px), the NavigationActionRail (bottom: ~140px) sat directly on top of the ShopDirectoryGuidanceCard (bottom: ~56px, ~250px tall). The two controls were vertically overlapping, making both hard to interact with.
+- **What changed:**
+  - Added optional `className` prop to NavigationActionRail so callers can override outer positioning.
+  - ShopDirectoryImmersiveMap now passes a raised bottom offset (`20rem`) to the action rail, clearing the guidance card on all phone sizes.
+  - On sm+ screens, the rail already moves to the right-side vertical position, so no change needed there.
+- **Files touched:** `NavigationActionRail.tsx`, `ShopDirectoryImmersiveMap.tsx`
+- **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
 ## Pass T531 — Immersive map guidance-mode top-bar declutter (2026-03-29)
 
 - **Why this pass was chosen:** On small-mobile screens (375px), the immersive map top bar contained 5 controls (Back, Search, Drawer Toggle, Split View, Theme Toggle) at all times. During active guidance, search and split-view are not actionable and consume critical horizontal space, causing visual congestion over the map.

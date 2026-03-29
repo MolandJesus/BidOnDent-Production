@@ -7,6 +7,7 @@ type NavigationActionRailProps = {
   turnListOpen: boolean;
   voiceControlsOpen: boolean;
   showVoiceControl?: boolean;
+  className?: string;
   onToggleTurnList: () => void;
   onToggleVoiceControls: () => void;
   onRecenter: () => void;
@@ -29,6 +30,7 @@ export default function NavigationActionRail({
   turnListOpen,
   voiceControlsOpen,
   showVoiceControl = true,
+  className,
   onToggleTurnList,
   onToggleVoiceControls,
   onRecenter,
@@ -39,7 +41,12 @@ export default function NavigationActionRail({
       : "border-white/15 bg-[linear-gradient(180deg,rgba(15,23,42,0.78),rgba(30,41,59,0.64))]";
 
   return (
-    <div className="pointer-events-none absolute bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_8rem)] left-1/2 z-[560] -translate-x-1/2 map-ui-enter sm:left-auto sm:right-4 sm:top-1/2 sm:bottom-auto sm:translate-x-0 sm:-translate-y-1/2">
+    <div
+      className={cn(
+        "pointer-events-none absolute bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_8rem)] left-1/2 z-[560] -translate-x-1/2 map-ui-enter sm:left-auto sm:right-4 sm:top-1/2 sm:bottom-auto sm:translate-x-0 sm:-translate-y-1/2",
+        className
+      )}
+    >
       <div
         className={cn(
           "map-liquid-rail pointer-events-auto relative flex flex-row gap-2 overflow-hidden rounded-[1.4rem] border p-1.5 backdrop-blur-2xl sm:flex-col sm:gap-2.5 sm:rounded-[1.7rem] sm:p-2",

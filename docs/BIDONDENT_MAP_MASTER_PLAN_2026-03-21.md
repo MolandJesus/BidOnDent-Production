@@ -1,3 +1,9 @@
+### Implementation Note — Pass T532 Guidance Card + Action Rail Overlap Fix (2026-03-29)
+
+- NavigationActionRail now accepts an optional `className` prop for position override, keeping the shared component flexible.
+- In the immersive map guidance context, the rail's mobile bottom offset is raised from `8rem` to `20rem`, clearing the guidance card (~250px tall) with breathing room.
+- Strategic effect: mobile turn-by-turn guidance now has a clean, non-overlapping HUD with guidance card at bottom and action rail above it, matching Apple Maps-style layered control hierarchy.
+
 ### Implementation Note — Pass T531 Immersive Map Guidance Top-Bar Declutter (2026-03-29)
 
 - During guidance mode, the search bar and split-view button are now hidden from the immersive map top bar, reducing mobile control density from 5 items to 3.
