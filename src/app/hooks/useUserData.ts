@@ -262,11 +262,12 @@ export function useUserData(
   // CLOUD SYNC (auto-save to Supabase with debounce)
   // ============================================================================
   useEffect(() => {
-    if (!userInfo.email || !redirectInfo || isSavingRef.current || isLoadingFromCloudRef.current) {
+    if (!userInfo.email || !redirectInfo || isLoadingFromCloudRef.current) {
       return;
     }
 
     const timeoutId = setTimeout(async () => {
+      if (isSavingRef.current) return;
       isSavingRef.current = true;
 
       try {
