@@ -3,6 +3,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Layer, Map, Popup, Source } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
+import { Compass } from "lucide-react";
 
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
@@ -116,6 +117,9 @@ export default function MapLibreShopDirectoryMapPane({
     ? "border-emerald-400/20 bg-emerald-900/30 text-emerald-300"
     : "border-emerald-200 bg-emerald-50 text-emerald-600";
   const popupCarrierValue = isDark ? "text-emerald-200" : "text-emerald-800";
+  const popupCta = isDark
+    ? "border-blue-400/35 bg-blue-500/20 text-white hover:bg-blue-500/30"
+    : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100";
 
   /* ── GeoJSON data ─────────────────────────────────────────────────── */
   const shopsGeoJson = useMemo(
@@ -465,6 +469,16 @@ export default function MapLibreShopDirectoryMapPane({
                   </p>
                 </div>
               </div>
+              {onOpenShopDirections && (
+                <button
+                  type="button"
+                  onClick={() => onOpenShopDirections(shopPopup.shop)}
+                  className={`inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${popupCta}`}
+                >
+                  <Compass className="h-3.5 w-3.5" />
+                  {directionsActionLabel || "Directions"}
+                </button>
+              )}
             </div>
           </Popup>
         )}
