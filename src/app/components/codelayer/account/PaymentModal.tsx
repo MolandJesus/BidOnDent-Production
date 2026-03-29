@@ -33,45 +33,18 @@ export default function PaymentModal({
         </div>
         <div className="space-y-4">
           <div
-            className={`border rounded-lg p-4 ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-slate-700/30"}`}
+            className={`border rounded-lg p-4 text-center ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-slate-700/30"}`}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CreditCard className="w-6 h-6 text-slate-400" />
-                <div>
-                  <p className="font-medium">•••• •••• •••• 4242</p>
-                  <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-                    Expires 12/25
-                  </p>
-                </div>
-              </div>
-              <button className="text-sm text-blue-600 hover:underline">Remove</button>
-            </div>
+            <CreditCard
+              className={`w-8 h-8 mx-auto mb-2 ${isLight ? "text-slate-400" : "text-slate-500"}`}
+            />
+            <p className={`font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}>
+              Payment methods coming soon
+            </p>
+            <p className={`text-sm mt-1 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+              Secure payment integration is in development.
+            </p>
           </div>
-
-          <div
-            className={`border rounded-lg p-4 ${isLight ? "bg-slate-50 border-slate-200" : "bg-white/[0.04] border-slate-700/30"}`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CreditCard className="w-6 h-6 text-slate-400" />
-                <div>
-                  <p className="font-medium">•••• •••• •••• 1234</p>
-                  <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-                    Expires 08/26
-                  </p>
-                </div>
-              </div>
-              <button className="text-sm text-blue-600 hover:underline">Remove</button>
-            </div>
-          </div>
-
-          <button
-            className={`bd-glass-control--utility w-full py-3 border-2 border-dashed rounded-lg ${isLight ? "border-slate-300/60" : "border-white/[0.10]/60"}`}
-            onClick={() => alert("Add new payment method clicked!")}
-          >
-            + Add New Payment Method
-          </button>
         </div>
         <div className="mt-6 flex justify-end">
           <button className="bd-glass-control--secondary px-4 py-2" onClick={onClose}>
