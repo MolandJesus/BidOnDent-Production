@@ -331,14 +331,14 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ## 10. Known Technical Debt
 
-| Issue                                                     | Severity | Notes                                                                          |
-| --------------------------------------------------------- | -------- | ------------------------------------------------------------------------------ |
-| Supabase RLS `USING(true)` on 4 tables                    | HIGH     | Production security gap — requires migration, ask before touching              |
+| Issue                                                     | Severity | Notes                                                                         |
+| --------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
+| Supabase RLS `USING(true)` on 4 tables                    | HIGH     | Production security gap — requires migration, ask before touching             |
 | 2–14MB PNG assets in dist/assets                          | MEDIUM   | Need WebP conversion — major load-time impact                                 |
-| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                      |
-| ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR              |
-| ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections              |
-| ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting)  |
+| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                     |
+| ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR             |
+| ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections             |
+| ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting) |
 
 ---
 
@@ -399,20 +399,20 @@ All other AI docs in this repo point to this file as the master context. The fol
 
 All user-facing `alert()` calls eliminated. Runtime safety hardened. See git log for full details.
 
-| Pass | Title | Status |
-|------|-------|--------|
-| 417 | HelpModal + ShopProfileModal alert→inline | ✅ Done |
-| 418 | Fix ShopProfileModal imports + demo data | ✅ Done |
-| 419 | Remove dead accountDeletion.ts | ✅ Done |
-| 420 | Business inquiry form validation | ✅ Done |
-| 421 | Fix TypeScript type errors (3 → 0) | ✅ Done |
-| 422 | AccountScreen image upload error inline | ✅ Done |
-| 423 | PaymentModal coming soon placeholder | ✅ Done |
-| 424 | All remaining user-facing alerts | ✅ Done |
-| 425 | Bid submission error propagation + loading | ✅ Done |
-| 426 | Business profile fetch race condition fix | ✅ Done |
-| 427 | Autosave race in useUserData | ✅ Done |
-| 428 | AccountScreen async error safety | ✅ Done |
+| Pass | Title                                      | Status  |
+| ---- | ------------------------------------------ | ------- |
+| 417  | HelpModal + ShopProfileModal alert→inline  | ✅ Done |
+| 418  | Fix ShopProfileModal imports + demo data   | ✅ Done |
+| 419  | Remove dead accountDeletion.ts             | ✅ Done |
+| 420  | Business inquiry form validation           | ✅ Done |
+| 421  | Fix TypeScript type errors (3 → 0)         | ✅ Done |
+| 422  | AccountScreen image upload error inline    | ✅ Done |
+| 423  | PaymentModal coming soon placeholder       | ✅ Done |
+| 424  | All remaining user-facing alerts           | ✅ Done |
+| 425  | Bid submission error propagation + loading | ✅ Done |
+| 426  | Business profile fetch race condition fix  | ✅ Done |
+| 427  | Autosave race in useUserData               | ✅ Done |
+| 428  | AccountScreen async error safety           | ✅ Done |
 
 ---
 
