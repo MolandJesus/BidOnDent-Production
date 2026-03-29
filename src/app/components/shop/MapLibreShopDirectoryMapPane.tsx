@@ -3,7 +3,6 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Layer, Map, Popup, Source } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
-import { Compass, MapPin, Search, Shield, Sparkles, X } from "lucide-react";
 
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
@@ -17,9 +16,12 @@ import type {
 } from "../../types/mapDomain";
 import { mapLibreStyles } from "../maps/mapLibreStyles";
 import MapLibreReportLayer from "../maps/MapLibreReportLayer";
-import MapLibreShopDirectoryViewportManager, {
-  getRoleLabel,
-} from "./MapLibreShopDirectoryViewportManager";
+import MapLibreShopDirectoryViewportManager from "./MapLibreShopDirectoryViewportManager";
+import {
+  MapPaneHeaderBadges,
+  MapPaneBottomOverlay,
+  MapPaneSearchPills,
+} from "./ShopDirectoryMapPaneOverlays";
 
 /* ── Layer IDs ──────────────────────────────────────────────────────── */
 const SHOP_LAYER = "shop-dir-circles";
@@ -103,28 +105,7 @@ export default function MapLibreShopDirectoryMapPane({
     shops.map((s) => s.id).join(","),
   ].join(":");
 
-  /* ── Theme tokens ─────────────────────────────────────────────────── */
-  const badgeCard = isDark
-    ? "border-white/15 bg-slate-950/70 text-white shadow-xl backdrop-blur"
-    : "border-black/8 bg-white/85 text-slate-800 shadow-xl backdrop-blur";
-  const badgeLabel = isDark ? "text-white/65" : "text-slate-500";
-  const badgeValue = isDark ? "text-white/95" : "text-slate-800";
-  const topGradient = isDark
-    ? "bg-gradient-to-b from-slate-950/50 via-slate-950/12 to-transparent"
-    : "bg-gradient-to-b from-black/18 via-black/5 to-transparent";
-  const bottomGradient = isDark
-    ? "bg-gradient-to-t from-slate-950/75 via-slate-950/22 to-transparent"
-    : "bg-gradient-to-t from-black/22 via-black/8 to-transparent";
-  const shopCardCls = isDark
-    ? "border-white/15 bg-slate-950/92 text-white shadow-2xl backdrop-blur-xl"
-    : "border-black/8 bg-white/94 text-slate-800 shadow-2xl backdrop-blur-xl";
-  const shopCardSecondary = isDark ? "text-slate-300/80" : "text-slate-500";
-  const shopCardMeta = isDark ? "text-slate-400" : "text-slate-500";
-  const shopCardScore = isDark ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-800";
-  const shopCardScoreLabel = isDark ? "text-white/65" : "text-slate-500";
-  const legendCard = isDark
-    ? "border-white/15 bg-slate-950/70 text-white/80 shadow-xl backdrop-blur"
-    : "border-black/8 bg-white/85 text-slate-600 shadow-xl backdrop-blur";
+  /* ── Popup theme tokens ───────────────────────────────────────────── */
   const popupTitle = isDark ? "text-slate-100" : "text-slate-800";
   const popupSub = isDark ? "text-slate-300" : "text-slate-500";
   const popupScoreCard = isDark
@@ -258,30 +239,12 @@ export default function MapLibreShopDirectoryMapPane({
     >
       {/* ── Header badges ── */}
       {!suppressHeader && (
-        <div
-          className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${topGradient} px-3 py-3 sm:px-5 sm:py-4`}
-        >
-          <div className="flex flex-wrap items-start justify-between gap-2">
-            <div className={`rounded-xl border px-3 py-2 ${badgeCard}`}>
-              <div
-                className={`flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] ${badgeLabel}`}
-              >
-                <Sparkles className="h-3 w-3" />
-                {getRoleLabel(userType)}
-              </div>
-              <p className={`mt-0.5 text-xs font-medium ${badgeValue}`}>
-                {selectedOrigin
-                  ? `Centered on ${selectedOrigin.name}`
-                  : "Exploring the service area"}
-              </p>
-            </div>
-
-            <div className={`rounded-xl border px-3 py-2 text-right ${badgeCard}`}>
-              <p className={`text-[10px] uppercase tracking-[0.2em] ${badgeLabel}`}>Shops</p>
-              <p className={`text-lg font-semibold leading-tight ${badgeValue}`}>{shops.length}</p>
-            </div>
-          </div>
-        </div>
+        <MapPaneHeaderBadges
+          isDark={isDark}
+          userType={userType}
+          selectedOrigin={selectedOrigin}
+          shopCount={shops.length}
+        />
       )}
 
       {/* ── MapLibre GL map ── */}
@@ -508,138 +471,23 @@ export default function MapLibreShopDirectoryMapPane({
       </Map>
 
       {/* ── Bottom gradient overlay: selected shop card + legend ── */}
-      <div
-        className={`pointer-events-none absolute inset-x-0 bottom-0 z-[500] ${bottomGradient} px-5 pb-5 pt-16`}
-      >
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          {selectedShop && (
-            <div className={`max-w-md rounded-[24px] border p-4 ${shopCardCls}`}>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className={`text-xs uppercase tracking-[0.2em] ${shopCardMeta}`}>
-                    Selected shop
-                  </p>
-                  <h3
-                    className={`mt-1 text-lg font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
-                  >
-                    {selectedShop.name}
-                  </h3>
-                </div>
-                <div className={`rounded-2xl px-3 py-2 text-center ${shopCardScore}`}>
-                  <p className={`text-[11px] uppercase tracking-[0.18em] ${shopCardScoreLabel}`}>
-                    AI Fit
-                  </p>
-                  <p className="text-lg font-semibold">{selectedShop.recommendationScore}%</p>
-                </div>
-              </div>
+      <MapPaneBottomOverlay
+        isDark={isDark}
+        selectedShop={selectedShop}
+        selectedRoute={selectedRoute}
+        onOpenShopDirections={onOpenShopDirections}
+        directionsActionLabel={directionsActionLabel}
+      />
 
-              <div
-                className={`mt-3 flex flex-wrap items-center gap-3 text-sm ${shopCardSecondary}`}
-              >
-                <span className="inline-flex items-center gap-1.5">
-                  <MapPin className={`h-4 w-4 ${shopCardMeta}`} />
-                  {selectedShop.mapDistanceLabel}
-                </span>
-                {selectedRoute && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <Sparkles className={`h-4 w-4 ${shopCardMeta}`} />
-                    {selectedRoute.label} • {selectedRoute.estimatedDurationMinutes} min
-                  </span>
-                )}
-                <span className="inline-flex items-center gap-1.5">
-                  <Shield className={`h-4 w-4 ${shopCardMeta}`} />
-                  {selectedShop.insuranceCompatibilityScore}% carrier fit
-                </span>
-              </div>
-
-              <p className={`mt-3 text-sm leading-6 ${shopCardSecondary}`}>
-                {selectedShop.aiSummary}
-              </p>
-
-              {onOpenShopDirections && (
-                <button
-                  type="button"
-                  onClick={() => onOpenShopDirections(selectedShop)}
-                  className={`pointer-events-auto mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
-                    isDark
-                      ? "border-blue-400/35 bg-blue-500/20 text-white hover:bg-blue-500/30"
-                      : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100"
-                  }`}
-                >
-                  <Compass className="h-3.5 w-3.5" />
-                  {directionsActionLabel || "Directions"}
-                </button>
-              )}
-            </div>
-          )}
-
-          <div
-            className={`hidden rounded-xl border px-3 py-2 text-[11px] shadow-lg sm:block ${legendCard}`}
-          >
-            <p className={`font-semibold ${isDark ? "text-white" : "text-slate-700"}`}>Legend</p>
-            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-              <span className="inline-flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
-                Origin
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-blue-600" />
-                Selected
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-slate-900" />
-                Top
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span
-                  className="inline-block h-2.5 w-4 rounded border border-current opacity-50"
-                  style={{ borderStyle: "dashed" }}
-                />
-                Routes
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Search in this area pill */}
-      {onSearchInArea && hasPanned && !searchWithinViewport && (
-        <div className="pointer-events-auto absolute inset-x-0 top-3 z-[600] flex justify-center">
-          <button
-            type="button"
-            onClick={onSearchInArea}
-            className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
-              isDark
-                ? "border-white/20 bg-slate-950/80 text-white hover:bg-slate-950/95"
-                : "border-black/10 bg-white/90 text-slate-800 hover:bg-white"
-            }`}
-          >
-            <Search className="h-3 w-3" />
-            Search this area
-          </button>
-        </div>
-      )}
-
-      {/* Clear area search pill */}
-      {onClearAreaSearch && searchWithinViewport && (
-        <div className="pointer-events-auto absolute inset-x-0 top-3 z-[600] flex justify-center">
-          <button
-            type="button"
-            onClick={() => {
-              onClearAreaSearch();
-              setHasPanned(false);
-            }}
-            className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
-              isDark
-                ? "border-blue-400/40 bg-blue-600/30 text-white hover:bg-blue-600/45"
-                : "border-blue-400/40 bg-blue-100 text-blue-700 hover:bg-blue-200"
-            }`}
-          >
-            <X className="h-3 w-3" />
-            Area active
-          </button>
-        </div>
-      )}
+      {/* Search area pills */}
+      <MapPaneSearchPills
+        isDark={isDark}
+        hasPanned={hasPanned}
+        searchWithinViewport={searchWithinViewport}
+        onSearchInArea={onSearchInArea}
+        onClearAreaSearch={onClearAreaSearch}
+        onClearPan={() => setHasPanned(false)}
+      />
 
       {/* Floating overlay children (route preview, intelligence, deviation prompt) */}
       {children}
