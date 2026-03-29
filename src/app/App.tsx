@@ -1,5 +1,5 @@
 import { ClerkProvider, useUser, useClerk, useAuth as useClerkAuth } from "@clerk/clerk-react";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
@@ -31,11 +31,13 @@ import {
 
 // Import helpers
 import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
-import type { ShopOnboardingFormData, InsurerOnboardingFormData, ViewMode } from "./types";
+import { completeShopOnboarding, completeInsurerOnboarding } from "./utils/onboardingHandlers";
+import type { ViewMode } from "./types";
 import type { DashboardAppearanceMode } from "./routers/dashboard-router-types";
 
 // Import components
 import AppLoading from "./components/app/AppLoading";
+import { AuthConfigFallback, useHashPage } from "./components/app/AppShell";
 import DashboardLayout from "./components/app/DashboardLayout";
 import LandingPageLayout from "./components/app/LandingPageLayout";
 import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector";
@@ -58,53 +60,6 @@ const hasValidClerkPublishableKey =
 
 if (!hasValidClerkPublishableKey && import.meta.env.DEV) {
   console.error("Missing or invalid Clerk publishable key in utils/clerk/info.tsx");
-}
-
-function AuthConfigFallback() {
-  return (
-    <div className="min-h-screen bg-[#0b172f] px-6 py-16 text-slate-200">
-      <div className="mx-auto max-w-2xl rounded-2xl border border-blue-300/15 bg-white/[0.04] p-8 shadow-sm">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-100">App setup required</h1>
-        <p className="mt-3 text-sm leading-6 text-blue-100/70">
-          The app could not initialize authentication because the Clerk publishable key is missing
-          or invalid.
-        </p>
-        <ol className="mt-6 list-decimal space-y-2 pl-5 text-sm text-blue-100/70">
-          <li>Open utils/clerk/info.tsx</li>
-          <li>Set clerkPublishableKey to your Clerk pk_test or pk_live value</li>
-          <li>Refresh the browser</li>
-        </ol>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================================
-// HASH PAGE ROUTING — standalone pages (legal, about, partnership)
-// ============================================================================
-const HASH_PAGES = ["about", "privacy-policy", "terms-of-service", "insurer-partnership"] as const;
-type HashPage = (typeof HASH_PAGES)[number];
-
-function parseHashPage(hash: string): HashPage | null {
-  const path = hash.replace(/^#\/?/, "");
-  return HASH_PAGES.includes(path as HashPage) ? (path as HashPage) : null;
-}
-
-function useHashPage() {
-  const [page, setPage] = useState<HashPage | null>(() => parseHashPage(window.location.hash));
-
-  useEffect(() => {
-    const onHashChange = () => setPage(parseHashPage(window.location.hash));
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, []);
-
-  const clearPage = useCallback(() => {
-    setPage(null);
-    history.replaceState(null, "", window.location.pathname + window.location.search);
-  }, []);
-
-  return { hashPage: page, clearHashPage: clearPage };
 }
 
 const APPEARANCE_STORAGE_KEY = "bidondent.appearance-mode";
@@ -299,71 +254,18 @@ function AppContent() {
     !businessProfileError &&
     !businessProfile;
 
-  const handleShopOnboardingComplete = async (data: ShopOnboardingFormData) => {
-    if (!websiteIdentity || !userProfile) {
-      return;
-    }
-
-    await saveBusinessProfile({
-      aboutSummary: `${data.shopName} is now part of the BidOnDent network for ${data.city}, ${data.state}.`,
-      acceptsInsuranceClaims: !!data.insurance,
-      averageRating: 4.7,
-      averageTicketValue: data.specialties?.includes("Luxury Vehicles") ? 1050 : 890,
-      businessAddress: data.address,
-      businessCity: data.city,
-      businessHours: data.hours,
-      businessName: data.shopName,
-      businessPhone: data.phone,
-      businessState: data.state,
-      businessZip: data.zip,
-      certifications: data.certifications || [],
-      completionRate: 95,
-      insurerPrograms: data.insurance ? ["Progressive", "State Farm"] : [],
-      isAcceptingBids: true,
-      isDirectoryVisible: true,
-      offersEstimates: !!data.estimates,
-      profileImageUrl: null,
-      responseTimeHours: 3,
-      specialties: data.specialties || [],
-      supportedMakes: [],
-      totalReviews: 0,
-      website: data.website || null,
-    });
+  const handleShopOnboardingComplete = async (
+    data: Parameters<typeof completeShopOnboarding>[0]
+  ) => {
+    if (!websiteIdentity || !userProfile) return;
+    await completeShopOnboarding(data, saveBusinessProfile);
   };
 
-  const handleInsurerOnboardingComplete = async (data: InsurerOnboardingFormData) => {
-    if (!websiteIdentity || !userProfile) {
-      return;
-    }
-
-    await saveBusinessProfile({
-      accountConnectionNotes: [
-        "Provider-agnostic insurer profile created from onboarding",
-        data.autoApproval
-          ? "Auto-approval is enabled for qualified claims"
-          : "Manual review stays in place for higher-touch claims",
-      ],
-      autoApproval: !!data.autoApproval,
-      benefits: ["Claims routing", "Repair-network coordination"],
-      claimTypes: data.claimTypes || [],
-      companyAddress: data.address,
-      companyCity: data.city,
-      companyName: data.companyName,
-      companyPhone: data.phone,
-      companyState: data.state,
-      companyZip: data.zip,
-      description: `${data.companyName} is now available in the BidOnDent insurer directory.`,
-      digitalClaimsExperience: data.autoApproval ? "excellent" : "strong",
-      isDirectoryVisible: true,
-      licenseNumber: data.licenseNumber,
-      licenseState: data.state,
-      maxClaimAmount: data.maxClaimAmount ? Number(data.maxClaimAmount) : null,
-      popular: false,
-      preferredShops: !!data.preferredShops,
-      profileImageUrl: null,
-      repairProgramFocus: data.claimTypes || [],
-      website: data.website || null,
-    });
+  const handleInsurerOnboardingComplete = async (
+    data: Parameters<typeof completeInsurerOnboarding>[0]
+  ) => {
+    if (!websiteIdentity || !userProfile) return;
+    await completeInsurerOnboarding(data, saveBusinessProfile);
   };
 
   const renderLandingPage = (isLoggedIn: boolean) => (
