@@ -177,13 +177,6 @@ export function useAppHandlers({
       }
     } catch (error) {
       if (import.meta.env.DEV) console.error("Error submitting report:", error);
-      userData.setReports((previous) => [...previous, report]);
-      if (report.id && Array.isArray(report.photos)) {
-        userData.setPhotoStorage((previous: Record<string, string[]>) => ({
-          ...previous,
-          [report.id]: report.photos,
-        }));
-      }
       throw error;
     }
   };
