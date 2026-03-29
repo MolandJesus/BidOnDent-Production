@@ -142,7 +142,7 @@ export default function LandingPageHeader({
             type="button"
             onClick={() => setMobileMenuOpen((v) => !v)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            className={`md:hidden p-2 rounded-xl transition-colors ${isLightAppearance ? "text-slate-600 hover:bg-slate-900/[0.04]" : "text-blue-200/80 hover:bg-white/10"}`}
+            className={`md:hidden h-11 w-11 flex items-center justify-center rounded-xl transition-colors ${isLightAppearance ? "text-slate-600 hover:bg-slate-900/[0.04]" : "text-blue-200/80 hover:bg-white/10"}`}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>

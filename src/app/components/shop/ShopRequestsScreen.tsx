@@ -9,6 +9,7 @@ type ShopRequestsScreenProps = {
   primaryColor?: string;
   reports?: any[];
   reportsLoading?: boolean;
+  isSeedData?: boolean;
   onSubmitBid?: (
     requestId: string,
     bidAmount: number,
@@ -22,6 +23,7 @@ export default function ShopRequestsScreen({
   primaryColor = "#003d82",
   reports = [],
   reportsLoading = false,
+  isSeedData = false,
   onSubmitBid,
   appearanceMode = "map-dark",
 }: ShopRequestsScreenProps) {
@@ -194,6 +196,25 @@ export default function ShopRequestsScreen({
           </div>
         </div>
       </div>
+
+      {/* Demo Data Banner */}
+      {isSeedData && !reportsLoading && (
+        <div className="mx-4 mt-4">
+          <div
+            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium ${
+              isLight
+                ? "bg-amber-50 border border-amber-200/60 text-amber-800"
+                : "bg-amber-500/10 border border-amber-400/20 text-amber-300"
+            }`}
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>
+              Showing demo requests — live marketplace data will appear when customers submit
+              reports.
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Requests List */}
       <div className="px-4 py-4 space-y-4">

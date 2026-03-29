@@ -234,6 +234,7 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   reports={shopInsurerReports}
                   reportsLoading={marketplaceLoading}
+                  isSeedData={marketplaceReports.length === 0}
                   appearanceMode={appearanceMode}
                   onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
                     onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
