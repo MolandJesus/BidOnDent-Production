@@ -2,10 +2,7 @@
 // Service for Supabase-backed navigation session sync
 // with localStorage fallback + background retry
 
-import {
-  requestSupabaseEdge,
-  SUPABASE_EDGE_ROUTES,
-} from "../supabase/runtime";
+import { requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "../supabase/runtime";
 import type { NavigationSession } from "../../features/navigation/sessionTypes";
 
 const LS_PREFIX = "bidondent_nav_session_";
@@ -93,7 +90,8 @@ if (typeof window !== "undefined") {
   // Resume retries immediately when network connectivity is restored
   window.addEventListener("online", () => {
     if (pendingWrites.length > 0) {
-      console.info("[NavigationSession] Network restored — resuming pending writes");
+      if (import.meta.env.DEV)
+        console.info("[NavigationSession] Network restored — resuming pending writes");
       scheduleRetry();
     }
   });

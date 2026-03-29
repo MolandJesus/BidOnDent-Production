@@ -12,6 +12,11 @@ export default defineConfig({
   ],
   server: {
     host: true, // Bind to 0.0.0.0 — allows LAN access from iPhone Safari
+    headers: {
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+    },
   },
   resolve: {
     alias: {

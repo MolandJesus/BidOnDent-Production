@@ -2,13 +2,13 @@
  * ============================================================================
  * 🔐 ADMIN & TEST ACCOUNT CONFIGURATION
  * ============================================================================
- * 
+ *
  * This file centralizes all admin and test account functionality for Bidondent.
- * 
+ *
  * 🚨 PRODUCTION REMOVAL INSTRUCTIONS:
  * ----------------------------------------------------------------------------
  * To remove admin features for production deployment:
- * 
+ *
  * 1. DELETE this entire file: /src/app/config/adminConfig.ts
  * 2. DELETE /src/app/components/admin/AdminDashboard.tsx
  * 3. REMOVE admin-related imports from:
@@ -17,7 +17,7 @@
  * 4. REMOVE the admin tab from ADMIN_NAV_TABS in /src/app/constants.ts
  * 5. REMOVE admin server routes from /supabase/functions/server/index.tsx
  * 6. SEARCH for "adminConfig" across the codebase and remove related code
- * 
+ *
  * ============================================================================
  */
 
@@ -25,7 +25,7 @@
  * Main admin account email (Figma Make Development Version)
  * NOTE: Use Bidondent@gmail.com as the main admin account
  */
-export const ADMIN_EMAIL = 'bidondent@gmail.com';
+export const ADMIN_EMAIL = "bidondent@gmail.com";
 
 /**
  * Admin password (for reference - stored in Clerk)
@@ -39,35 +39,35 @@ export const ADMIN_EMAIL = 'bidondent@gmail.com';
  */
 export const TEST_ACCOUNTS = [
   {
-    email: 'figmaadmin+shop@bidondent.com',
-    type: 'shop' as const,
-    label: 'Test Shop Account',
-    description: 'Auto repair shop testing account'
+    email: "figmaadmin+shop@bidondent.com",
+    type: "shop" as const,
+    label: "Test Shop Account",
+    description: "Auto repair shop testing account",
   },
   {
-    email: 'figmaadmin+insurer@bidondent.com',
-    type: 'insurer' as const,
-    label: 'Test Insurer Account',
-    description: 'Insurance company testing account'
+    email: "figmaadmin+insurer@bidondent.com",
+    type: "insurer" as const,
+    label: "Test Insurer Account",
+    description: "Insurance company testing account",
   },
   {
-    email: 'figmaadmin+customer@bidondent.com',
-    type: 'customer' as const,
-    label: 'Test Customer Account',
-    description: 'Customer testing account'
-  }
+    email: "figmaadmin+customer@bidondent.com",
+    type: "customer" as const,
+    label: "Test Customer Account",
+    description: "Customer testing account",
+  },
 ];
 
 /**
  * All test account emails (for easy lookup)
  */
-export const TEST_ACCOUNT_EMAILS = TEST_ACCOUNTS.map(acc => acc.email.toLowerCase());
+export const TEST_ACCOUNT_EMAILS = TEST_ACCOUNTS.map((acc) => acc.email.toLowerCase());
 
 /**
  * Admin password for switching accounts (dev/test only)
- * In production, this would be removed entirely
+ * Tree-shaken from production builds via DEV guard
  */
-export const ADMIN_SWITCH_PASSWORD = 'admin123';
+export const ADMIN_SWITCH_PASSWORD: string = import.meta.env.DEV ? "admin123" : "";
 
 /**
  * Check if the given email is the main admin account
@@ -107,9 +107,7 @@ export function hasAdminPrivileges(email: string | undefined): boolean {
  */
 export function getTestAccountInfo(email: string | undefined) {
   if (!email) return undefined;
-  return TEST_ACCOUNTS.find(
-    account => account.email.toLowerCase() === email.toLowerCase()
-  );
+  return TEST_ACCOUNTS.find((account) => account.email.toLowerCase() === email.toLowerCase());
 }
 
 /**

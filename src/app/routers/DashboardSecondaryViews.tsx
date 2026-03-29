@@ -240,7 +240,7 @@ export default function DashboardSecondaryViews({
             appearanceMode={appearanceMode}
             onBack={() => onViewModeChange("dashboard")}
             onCreateClaim={(claimData) => {
-              console.info("[BidOnDent] New claim created:", claimData);
+              if (import.meta.env.DEV) console.info("[BidOnDent] New claim created:", claimData);
               onTabChange("claims");
               onViewModeChange("dashboard");
             }}

@@ -265,7 +265,8 @@ export default function DashboardRouter({
                   isSeedData={marketplaceReports.length === 0}
                   appearanceMode={appearanceMode}
                   onApproveClaim={(claimId, amount) => {
-                    console.info("[BidOnDent] Claim approved:", { claimId, amount });
+                    if (import.meta.env.DEV)
+                      console.info("[BidOnDent] Claim approved:", { claimId, amount });
                   }}
                 />
               </motion.div>
