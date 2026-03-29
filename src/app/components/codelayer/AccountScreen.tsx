@@ -176,7 +176,11 @@ export default function AccountScreen({
       const target = e.target as HTMLInputElement;
       const file = target.files?.[0];
       if (file) {
-        await persistProfileImage(file);
+        try {
+          await persistProfileImage(file);
+        } catch {
+          // persistProfileImage handles its own error state
+        }
       }
     };
     input.click();
@@ -189,7 +193,11 @@ export default function AccountScreen({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      await persistProfileImage(file);
+      try {
+        await persistProfileImage(file);
+      } catch {
+        // persistProfileImage handles its own error state
+      }
     }
   };
 
@@ -217,23 +225,28 @@ export default function AccountScreen({
     setIsSaving(true);
     setSaveSuccess(false);
 
-    if (onSaveProfile) {
-      await onSaveProfile({
-        name: editableName,
-        email: editableEmail,
-        phone: unformatPhoneNumber(editablePhone),
-        profileImage: profileImage || undefined,
-      });
+    try {
+      if (onSaveProfile) {
+        await onSaveProfile({
+          name: editableName,
+          email: editableEmail,
+          phone: unformatPhoneNumber(editablePhone),
+          profileImage: profileImage || undefined,
+        });
+      }
+
+      setSaveSuccess(true);
+      setShowEditProfile(false);
+
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 3000);
+    } catch {
+      // Save failed — isSaving will be cleared in finally
+    } finally {
+      setIsSaving(false);
     }
-
-    setIsSaving(false);
-    setSaveSuccess(true);
-    setShowEditProfile(false);
-
-    // Hide success message after 3 seconds
-    setTimeout(() => {
-      setSaveSuccess(false);
-    }, 3000);
   };
 
   const handleLogout = () => {
