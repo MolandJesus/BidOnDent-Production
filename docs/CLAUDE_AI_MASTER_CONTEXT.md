@@ -3,12 +3,12 @@
 > **Single source of truth for any AI agent working on this repo.**
 > All other AI handoff docs defer to this file. Read this first, every session.
 >
-> **Last updated:** 2026-07-21 (Pass 452 — MapLibre migration doc alignment)
+> **Last updated:** 2026-03-29 (MapLibre stabilization + doc sync)
 > **Status:** Active master context source of truth
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.1s · MapLibre GL JS WebGL engine
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
-> **TypeScript:** 0 tsc errors (achieved Pass 421, maintained through 452)
+> **TypeScript:** 0 tsc errors (re-verified 2026-03-29 during MapLibre stabilization)
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
 > **Production `any` types:** 0 (was 21 — eliminated Passes 433-434; 7 remain in test files only)
 
@@ -194,6 +194,8 @@ CoverageMapOverlays.tsx              ← Landing page overlays
 MapLibrePartnerShopLayer.tsx         ← GeoJSON partner shop circle layer
 MapLibreReportLayer.tsx              ← GeoJSON report marker layer
 MapLibreDiscoveryPlaceLayer.tsx      ← Category-colored discovery place circles
+mapLibreControllers.tsx              ← Shared viewport/follow/route-fit controllers
+mapLibreHelpers.ts                   ← Shared geometry helpers
 useCoveragePartnerShops.ts           ← Fetches real partner shops from Supabase
 useCoverageNavigationExperience.ts   ← Navigation origin management
 mapLibreStyles.ts                    ← StyleSpecification objects (roadmap/night/satellite)
@@ -224,7 +226,7 @@ directoryAdapters.ts                       ← Supabase shop/insurer → map lis
 Used by: `CustomerMapWidget`, `ShopMapWidget`, `InsurerMapWidget`
 
 ```
-MapLibreDashboardMapPreview.tsx      ← Lightweight non-interactive preview maps
+MapLibreDashboardMapPreview.tsx      ← Lightweight click-through preview maps
 ```
 
 **Three view modes:**
@@ -304,15 +306,17 @@ Archive note: The checklist below records the priorities captured during the Pas
 | File                                                               | Purpose                                              |
 | ------------------------------------------------------------------ | ---------------------------------------------------- |
 | `src/app/components/shop/ShopDirectoryScreen.tsx`                  | Main orchestrator for dashboard shop discovery       |
-| `src/app/components/maps/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)    |
+| `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)    |
 | `src/app/components/shop/ShopDirectoryMapOverlays.tsx`             | Floating intelligence + route + action overlays      |
 | `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`            | Full-viewport immersive map mode                     |
-| `src/app/components/maps/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                         |
+| `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                         |
 | `src/app/components/maps/MapLibreServiceCoverageMap.tsx`           | Landing + coverage map (route glow, GPS glow)        |
-| `src/app/components/maps/MapLibreDashboardMapPreview.tsx`          | Lightweight non-interactive dashboard preview maps   |
+| `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`     | Lightweight click-through dashboard preview maps     |
 | `src/app/components/maps/MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                    |
 | `src/app/components/maps/MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                          |
 | `src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx`          | Category-colored discovery place circles             |
+| `src/app/components/maps/mapLibreControllers.tsx`                  | Shared MapLibre viewport/follow/route-fit controllers |
+| `src/app/components/maps/mapLibreHelpers.ts`                       | Shared geometry helpers for coverage map rendering   |
 | `src/app/components/maps/mapLibreStyles.ts`                        | StyleSpecification objects (roadmap/night/satellite) |
 | `src/app/hooks/useShopDirectorySession.ts`                         | All session state for shop directory                 |
 | `src/app/services/intelligence/shopMapExperience.ts`               | Shop listing builder, filters, role highlights       |
@@ -464,7 +468,7 @@ Major milestones in this phase:
 
 ---
 
-## 15. MapLibre GL JS Migration (Passes 442–451)
+## 15. MapLibre GL JS Migration (Passes 442–457)
 
 Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL). Leaflet fully removed.
 
@@ -480,11 +484,20 @@ Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL). Leaflet fu
 | 449  | MapLibre popup + attribution CSS (glass blur)          | ✅ Done |
 | 450  | MapLibre code fixes (audit findings)                   | ✅ Done |
 | 451  | Route line glow + GPS position glow effects            | ✅ Done |
+| 452  | Master context + map docs MapLibre alignment           | ✅ Done |
+| 453  | Dashboard preview click + popup-selection sync         | ✅ Done |
+| 454  | Extract shared MapLibre controllers + helpers          | ✅ Done |
+| 455  | Dashboard preview controlled viewport fix              | ✅ Done |
+| 456  | Remove dead ServiceCoverageMap popup code              | ✅ Done |
+| 457  | Fix ShopDirectory `attributionControl` typing          | ✅ Done |
 
 **MapLibre architecture:**
 
 - 7 MapLibre components in `src/app/components/maps/`
+- Shared dashboard/shop map surfaces now live across `components/maps/`, `components/shop/`, and `components/dashboard/`
 - `mapLibreStyles.ts` — tile StyleSpecifications (raster tile sources)
+- `mapLibreControllers.tsx` — reusable `useMap()` camera controllers
+- `mapLibreHelpers.ts` — shared geometry helper extraction
 - GeoJSON Source + Layer approach for all markers (data-driven paint expressions)
 - `useMap()` imperative API for viewport management
 - Route glow: `line-blur` paint property for premium Apple Maps-like effect

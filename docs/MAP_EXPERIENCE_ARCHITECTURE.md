@@ -1,6 +1,6 @@
 # BidOnDent Map Experience Architecture
 
-Last updated: March 21, 2026
+Last updated: March 29, 2026
 Status: Active architecture reference
 
 This document records the actual checked-in shape of the BidOnDent map/search experience after the map-first rebuild work that preserved the newer identity/session/intelligence plumbing.
@@ -13,7 +13,7 @@ This document records the actual checked-in shape of the BidOnDent map/search ex
 - `marketIntelligence.ts` remains the seeded recommendation engine for shops and insurers.
 - Provider-agnostic business profile persistence now exists for shop and insurer accounts.
 - `ShopDirectoryScreen.tsx` is now a dedicated map-first shell instead of only a stretched recommendation card list.
-- A real map library is now installed: `leaflet@1.9.4` with `react-leaflet@4.2.1`.
+- The active renderer is `maplibre-gl@5.21.1` with `react-map-gl@8.1.0`.
 - The desktop experience uses one rounded clipped shell with a stable left rail + right map pane.
 - The mobile-safe path remains list-forward, with the same shared intelligence and memory behind it.
 
@@ -21,8 +21,16 @@ This document records the actual checked-in shape of the BidOnDent map/search ex
 
 - `src/app/components/shop/ShopDirectoryScreen.tsx`
   Map-first orchestration screen. Owns search, view mode, theme, origin, recent searches, saved places, and result selection.
-- `src/app/components/shop/ShopDirectoryMapPane.tsx`
-  Leaflet pane with explicit sizing, selected/origin markers, and viewport persistence.
+- `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`
+  MapLibre pane with GeoJSON sources/layers, route glow, selected/origin markers, and popup-driven selection.
+- `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx`
+  Shop-directory viewport orchestration for fit/fly/broadcast behavior.
+- `src/app/components/maps/MapLibreServiceCoverageMap.tsx`
+  Coverage-map renderer for landing and dashboard flows.
+- `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`
+  Compact click-through dashboard preview surface.
+- `src/app/components/maps/mapLibreControllers.tsx`
+  Shared viewport, follow-location, and route-fit controllers used by the coverage map.
 - `src/app/components/shop/LikedShopsScreen.tsx`
   Customer saved-shop view, now reading the same map session collection.
 - `src/app/components/reports/CompetitorAnalysisScreen.tsx`
@@ -182,8 +190,8 @@ The current map layer is now hybrid:
 - One outer rounded shell with `overflow-hidden`
 - Stable split layout with explicit min-width/min-height handling
 - No nested `100vw` or `100vh` inside the framed shell
-- Explicit map height so Leaflet stays inside the pane
-- `invalidateSize()` after mount / result-layout changes
+- Explicit map height so the MapLibre canvas stays inside the pane
+- Shared `useMap()` camera controllers handle fit/fly/follow behavior after mount and route changes
 - Persisted map center and zoom on interaction end
 
 ## Known Gaps / Next Slices
@@ -192,10 +200,10 @@ The current map layer is now hybrid:
 - Live profile markers still use approximate city-anchored placement until a real geocoder/polygon service is added
 - Saved shops, watchlists, shortlists, and insurer connections now mirror into durable relationship rows, but they are still generic relationship entities rather than fully normalized domain-specific business tables
 - No marker clustering library yet, even though map session has future-facing cluster preferences
-- No route planning or travel-time layer yet
+- Route preview and external-directions launch exist, but not every shop-search surface has first-class in-app guidance
 - No true insurer network-contract workflow yet beyond shortlist and directory persistence
 - Turn-by-turn phrasing needs continued expansion and QA toward 1,000+ scenario-sensitive responses while keeping instructions concise and safe
-- Not every shop-search surface has a direct route-launch action yet (must be universal, with deterministic placeholder coordinates for manual/fake entries until full geocoding lands)
+- Live directory entries still need universal route-launch actions and real geocoding before the map can be treated as fully operational
 
 ## Recommended Next Expansion Path
 

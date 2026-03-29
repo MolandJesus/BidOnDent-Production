@@ -1,4 +1,19 @@
-## Pass 452 — Master context + map docs MapLibre alignment (2026-07-21)
+## Pass 458 — MapLibre stabilization + doc truth sync (2026-03-29)
+
+- **Why this pass was chosen:** After the renderer migration, the active docs still mixed Leaflet-era descriptions with new MapLibre files, and editor diagnostics were being inflated by a stale map import plus mixed `DamageReport` shapes.
+- **What changed:**
+  - Restored zero-error typecheck by aligning shared `DamageReport` typing, report adapters, and seed report shapes.
+  - Replaced the deleted `mapTileLayers` dependency with `mapLibreTileLabels`.
+  - Tightened the shop-directory map cursor so the pointer appears only when hovering actual shop markers.
+  - Updated active docs to the real checked-in MapLibre file paths, controller/helper extractions, and click-enabled dashboard preview behavior.
+  - Added MapLibre-related spell-check dictionary entries so editor noise stays down on map files and docs.
+- **Files touched:** `src/app/types/index.ts`, `src/app/hooks/userDataUtils.ts`, `src/app/constants/index.ts`, `src/app/components/dashboard/DashboardCoveragePanel.tsx`, `src/app/components/insurer/insurerClaimsUtils.ts`, `src/app/components/maps/mapLibreControllers.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `cspell.json`, `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/MAP_EXPERIENCE_ARCHITECTURE.md`, `docs/CODE_ORGANIZATION_AUDIT.md`, `docs/BIDONDENT_PRODUCT_BRAIN.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Validation:** `npx tsc --noEmit`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** The active map docs now match the checked-in MapLibre architecture, and the editor/build baseline is quiet again without changing the broader map product direction.
+
+---
+
+## Pass 452 — Master context + map docs MapLibre alignment (2026-03-29)
 
 - **Why this pass was chosen:** After completing the full MapLibre migration (Passes 446-451), the master context and map docs still referenced Leaflet as the map engine. Any future AI agent would receive incorrect architecture guidance.
 - **What changed:**
@@ -26,7 +41,7 @@
 | `MapLibreServiceCoverageMap.tsx`           | Landing + coverage map with route glow + GPS glow         |
 | `MapLibreShopDirectoryMapPane.tsx`         | Dashboard shop discovery map with GeoJSON sources         |
 | `MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport management for shop directory           |
-| `MapLibreDashboardMapPreview.tsx`          | Lightweight non-interactive preview for dashboard widgets |
+| `MapLibreDashboardMapPreview.tsx`          | Lightweight click-through preview for dashboard widgets   |
 | `MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                         |
 | `MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                               |
 | `MapLibreDiscoveryPlaceLayer.tsx`          | Discovery place circles with category colors              |

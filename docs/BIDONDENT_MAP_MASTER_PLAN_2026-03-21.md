@@ -595,7 +595,7 @@ The themes above (1–6) capture a historical strategic snapshot from the 2026-0
 
 ### Future Theme C: Provider evolution
 
-**1. Current State:** Leaflet (rendering) + OSRM public (routing) + Nominatim (geocoding) + Overpass (speed limits). All free-tier, all functional at current scale. No rate limit issues observed.
+**1. Current State:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (rendering) + OSRM public (routing) + Nominatim (geocoding) + Overpass (speed limits). The renderer migration is complete, and the stack remains free-tier and functional at current scale.
 
 **2. Productizing Stage:** No provider changes needed. Focus on reliability within the current stack (error handling, fallbacks, graceful degradation). Document the browser compatibility matrix.
 
@@ -610,7 +610,7 @@ The themes above (1–6) capture a historical strategic snapshot from the 2026-0
 
 **4. Technical Prerequisites:** Provider abstraction layer (build when first migration is justified, not before). Self-hosted alternatives evaluated before commercial APIs. Budget approval for per-request costs.
 
-**5. UI/UX Evolution Path:** (1) Now → Leaflet tiles with OpenStreetMap. (2) After vector tile migration → smoother zoom, rotatable maps, 3D terrain. (3) After traffic integration → real-time congestion overlay on routes. No visual change should be user-breaking.
+**5. UI/UX Evolution Path:** (1) Now → MapLibre with CARTO/Esri raster styles. (2) After vector tile migration → smoother zoom, rotatable maps, 3D terrain. (3) After traffic integration → real-time congestion overlay on routes. No visual change should be user-breaking.
 
 **6. Non-goals:** Do not migrate providers for aesthetic reasons. Do not build the provider abstraction layer preemptively. Do not commit to commercial providers without usage data justifying the cost.
 
@@ -644,7 +644,7 @@ The themes above (1–6) capture a historical strategic snapshot from the 2026-0
 
 ### Future Theme F: Globe / world mode honesty
 
-**1. Current State:** Leaflet renders flat 2D Mercator tiles. There is no globe, 3D terrain, or world-mode rendering. Attempting to fake globe behavior with Leaflet CSS transforms would create a fragile, misleading experience.
+**1. Current State:** MapLibre currently renders flat raster styles in 2D mode. There is no globe, 3D terrain, or world-mode rendering enabled in the checked-in build, and attempting to fake it with ornamental transforms would create a misleading experience.
 
 **2. Productizing Stage:** No globe mode. Focus on polishing the 2D map experience — smooth tile transitions, proper zoom constraints, attribution clarity, and high-quality tile sources.
 
@@ -661,7 +661,7 @@ The themes above (1–6) capture a historical strategic snapshot from the 2026-0
 
 **5. UI/UX Evolution Path:** (1) Now → flat 2D tiles, no globe. (2) After vector tiles (MapLibre) → smooth vector rendering, rotation, pitch. (3) After globe → seamless zoom from world view to street level. No forced transitions — users who prefer flat 2D should always have that option.
 
-**6. Non-goals:** Do not fake globe with CSS transforms on Leaflet. Do not add 3D terrain before the core navigation experience is production-grade. Do not commit to Mapbox GL pricing without usage data. Do not present globe mode as "coming soon" until a renderer migration is underway.
+**6. Non-goals:** Do not fake globe with CSS transforms or decorative pitch hacks. Do not add 3D terrain before the core navigation experience is production-grade. Do not commit to Mapbox GL pricing without usage data. Do not present globe mode as "coming soon" until the vector-style migration is actually underway.
 
 ## Definition Of Done For Any Map Change
 

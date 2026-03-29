@@ -104,23 +104,20 @@ export function MapPaneBottomOverlay({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 bottom-0 z-[500] ${t.bottomGradient} px-5 pb-5 pt-16`}
+      className={`pointer-events-none absolute inset-x-0 bottom-0 z-[500] ${t.bottomGradient} px-3 pb-3 pt-10 sm:px-5 sm:pb-5 sm:pt-16`}
     >
       <div className="flex flex-wrap items-end justify-between gap-3">
         {selectedShop && (
-          <div className={`max-w-md rounded-[24px] border p-4 ${t.shopCardCls}`}>
+          <div className={`max-w-md rounded-[24px] border p-3 sm:p-4 ${t.shopCardCls}`}>
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className={`text-xs uppercase tracking-[0.2em] ${t.shopCardMeta}`}>
-                  Selected shop
-                </p>
+              <div className="min-w-0 flex-1">
                 <h3
-                  className={`mt-1 text-lg font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
+                  className={`truncate text-base font-semibold sm:text-lg ${isDark ? "text-white" : "text-slate-800"}`}
                 >
                   {selectedShop.name}
                 </h3>
               </div>
-              <div className={`rounded-2xl px-3 py-2 text-center ${t.shopCardScore}`}>
+              <div className={`shrink-0 rounded-2xl px-3 py-2 text-center ${t.shopCardScore}`}>
                 <p className={`text-[11px] uppercase tracking-[0.18em] ${t.shopCardScoreLabel}`}>
                   AI Fit
                 </p>
@@ -129,7 +126,7 @@ export function MapPaneBottomOverlay({
             </div>
 
             <div
-              className={`mt-3 flex flex-wrap items-center gap-3 text-sm ${t.shopCardSecondary}`}
+              className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${t.shopCardSecondary}`}
             >
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className={`h-4 w-4 ${t.shopCardMeta}`} />
@@ -138,16 +135,16 @@ export function MapPaneBottomOverlay({
               {selectedRoute && (
                 <span className="inline-flex items-center gap-1.5">
                   <Sparkles className={`h-4 w-4 ${t.shopCardMeta}`} />
-                  {selectedRoute.label} • {selectedRoute.estimatedDurationMinutes} min
+                  {selectedRoute.estimatedDurationMinutes} min
                 </span>
               )}
               <span className="inline-flex items-center gap-1.5">
                 <Shield className={`h-4 w-4 ${t.shopCardMeta}`} />
-                {selectedShop.insuranceCompatibilityScore}% carrier fit
+                {selectedShop.insuranceCompatibilityScore}% carrier
               </span>
             </div>
 
-            <p className={`mt-3 text-sm leading-6 ${t.shopCardSecondary}`}>
+            <p className={`mt-2 hidden text-sm leading-6 sm:block ${t.shopCardSecondary}`}>
               {selectedShop.aiSummary}
             </p>
 
@@ -155,7 +152,7 @@ export function MapPaneBottomOverlay({
               <button
                 type="button"
                 onClick={() => onOpenShopDirections(selectedShop)}
-                className={`pointer-events-auto mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${
+                className={`pointer-events-auto mt-2 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors sm:mt-3 ${
                   isDark
                     ? "border-blue-400/35 bg-blue-500/20 text-white hover:bg-blue-500/30"
                     : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100"
@@ -169,10 +166,9 @@ export function MapPaneBottomOverlay({
         )}
 
         <div
-          className={`hidden rounded-xl border px-3 py-2 text-[11px] shadow-lg sm:block ${t.legendCard}`}
+          className={`rounded-xl border px-2.5 py-1.5 text-[10px] shadow-lg sm:px-3 sm:py-2 sm:text-[11px] ${t.legendCard}`}
         >
-          <p className={`font-semibold ${isDark ? "text-white" : "text-slate-700"}`}>Legend</p>
-          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <span className="inline-flex items-center gap-1">
               <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
               Origin

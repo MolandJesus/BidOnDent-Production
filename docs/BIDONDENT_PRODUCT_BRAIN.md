@@ -103,7 +103,7 @@ These cards are the **primary entry point** for future work. Read one card, unde
 
 ### CARD: Provider Evolution
 
-- **STATE:** Stable. Leaflet + OSRM + Nominatim + Overpass all free-tier, functional. No rate limit issues.
+- **STATE:** Stable. MapLibre GL JS + react-map-gl + OSRM + Nominatim + Overpass are all live and functional. No rate-limit or renderer-blocking issues observed.
 - **NEXT MOVE:** No provider changes needed. Focus on reliability within the current stack.
 - **TOUCHES:** Nothing — this card exists to prevent unnecessary work.
 - **DO NOT:** Migrate providers for aesthetic reasons. Build a provider abstraction layer before it's needed.
@@ -222,7 +222,8 @@ The repo now has a real first-pass map foundation. Important facts:
 - `src/app/services/intelligence/shopMapExperience.ts` now adds seeded geo metadata, suggested origins, and role-aware map framing.
 - provider-agnostic shop and insurer business profiles now persist through edge routes keyed by `website_user_key`.
 - `src/app/components/shop/ShopDirectoryScreen.tsx` is now a dedicated map-first shell, not just the old list screen stretched wider.
-- `src/app/components/shop/ShopDirectoryMapPane.tsx` uses Leaflet/React Leaflet for the actual interactive map.
+- `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx` is the active dashboard shop-discovery map surface.
+- `src/app/components/maps/MapLibreServiceCoverageMap.tsx` is the active coverage-map renderer for landing and dashboard flows.
 - `src/app/types/mapDomain.ts` is the shared domain type layer for map/search/origin/place/session state.
 - customer saved shops, shop competitor watchlists, and insurer shortlists now persist inside shared map session memory and feed their related screens.
 - that website memory now also has a cloud-backed provider-agnostic sync path through `website_preferences`, not only browser storage.
@@ -1396,8 +1397,8 @@ This section exists so that any agent, human, or cross-reference doc can quickly
 | Voice navigation (TTS)         | `SpeechSynthesisUtterance`, voice personas, volume presets                               | Web Speech API                           |
 | Address search + suggestions   | Nominatim geocoder with caching, predictive dropdown                                     | Nominatim (OSM)                          |
 | Navigation session persistence | localStorage v2 with route/origin/destination/provider                                   | Browser localStorage                     |
-| Dashboard map widget           | `DashboardCoveragePanel.tsx` renders `CoverageMapDialog` with full navigation experience | Leaflet + React-Leaflet                  |
-| Map tile rendering             | OSM raster tiles, midnight variant, satellite (Esri)                                     | OpenStreetMap / Esri                     |
+| Dashboard map widget           | `DashboardCoveragePanel.tsx` renders `CoverageMapDialog` with full navigation experience | MapLibre GL JS + react-map-gl            |
+| Map tile rendering             | CARTO Voyager, CARTO Dark All, Esri Satellite                                            | CARTO / Esri via MapLibre styles         |
 
 ### Known Gaps
 
@@ -1405,7 +1406,7 @@ This section exists so that any agent, human, or cross-reference doc can quickly
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Cloud sync for navigation sessions | All persistence is localStorage-only — no Supabase sync. Risk of data loss on device change.                        |
 | Route provider label               | Code uses `"osrm-public"` but historically was mislabeled as `"osrm-demo"` — the engine calls real production OSRM. |
-| Globe rendering                    | No 3D globe — Leaflet is 2D only. Would require provider migration (Mapbox GL / MapLibre GL).                       |
+| Globe rendering                    | No 3D globe enabled today. Current MapLibre build uses flat raster styles; globe would require a vector-style upgrade. |
 | Premium TTS voices                 | Current voices are browser-default. No paid TTS (e.g., Google Cloud TTS, ElevenLabs).                               |
 
 ### Cross-Document Awareness
@@ -1435,7 +1436,7 @@ These features are in the production bundle with real provider backing. They wor
 | Address search + predictive suggestions | Nominatim with caching                           |
 | Navigation session persistence          | localStorage v2, versioned envelopes             |
 | Dashboard embedded map                  | CoverageMapDialog inline on dashboard            |
-| Coverage map (embedded + fullscreen)    | Leaflet + React-Leaflet, three tile layers       |
+| Coverage map (embedded + fullscreen)    | MapLibre GL JS + react-map-gl, three raster tile styles |
 | Royal-blue glass map controls           | theme.css + mapSurfaceTheme.ts                   |
 | In-map command pod + overlays           | CoverageBrowseExperience.tsx                     |
 | Provider health telemetry               | Diagnostics checks, trust state UI               |
@@ -1777,7 +1778,7 @@ Navigation becomes a differentiated product feature, not just a utility.
 
 ### Provider Evolution Decision Framework
 
-The current stack (Leaflet + OSRM + Nominatim + Overpass) is free, real, and functional. Migration criteria:
+The current stack (MapLibre GL JS + OSRM + Nominatim + Overpass) is free, real, and functional. Migration criteria:
 
 | Trigger                | Example                                     | Action                                         |
 | ---------------------- | ------------------------------------------- | ---------------------------------------------- |

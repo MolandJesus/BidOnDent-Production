@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** March 29, 2026 (Pass 437 — doc system refactor)
+**Last updated:** March 29, 2026 (MapLibre stabilization + doc sync)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -64,7 +64,7 @@ Use this together with:
 - `src/app/components/landing/`
   public marketing and coverage/discovery UI
 - `src/app/components/maps/`
-  current Leaflet-based coverage map primitives
+  MapLibre-based coverage/navigation primitives and shared map controllers
 - `src/app/components/dashboard/`
   shared dashboard shell widgets like header, nav, coverage panel, notification center
 - `src/app/components/codelayer/`
@@ -90,9 +90,11 @@ The repository is mostly under the active 500-line hard cap:
 - `src/app/components/shop/ShopDirectorySearchPanel.tsx` (**new, Pass 11**, 276 lines): search form, origin selector, suggested origins, save origin button, view mode toggle, sort select, rating filter, theme toggle, role-specific panel.
 - `src/app/components/shop/ShopDirectoryImmersiveMap.tsx` (Pass 10, 253 lines): full-viewport immersive map experience. `fixed inset-0 z-40` container. Floating glass top bar (back + search + drawer toggle + mode switch + theme). Collapsible left-side results drawer with compact result cards. Renders `ShopDirectoryMapPane` + `ShopDirectoryMapOverlays` at full viewport.
 - `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (Pass 9, updated Pass 10, 187 lines): floating in-map overlay layer. Renders intelligence chip (top-left, expandable), route preview card (bottom-left, expandable turn list), and deviation prompt slot (top-center). Added `navigationMode` prop (`browse | route-preview | guidance`) gating overlay visibility by navigation state.
-- `src/app/components/shop/ShopDirectoryMapPane.tsx` (Pass 9, updated Pass 10, 447 lines): Leaflet map surface container. `children` prop for overlay injection. Added `suppressHeader` prop to hide built-in top gradient badges in immersive mode.
+- `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx` (MapLibre migration + stabilization, 517 lines): dashboard shop-discovery map surface with GeoJSON sources/layers, route glow, selected-shop popup, and overlay slots. Slightly above the 500-line hard cap after migration and a future extraction candidate.
+- `src/app/components/maps/MapLibreServiceCoverageMap.tsx` (MapLibre migration + stabilization, 620 lines): coverage-map renderer with route glow, GPS glow, discovery/report/shop layers, and shared controller hookups. Still above the 500-line hard cap and the largest remaining map extraction target.
+- `src/app/components/maps/mapLibreControllers.tsx` (115 lines): extracted shared camera controllers for viewport, follow-location, and route-fit behavior.
 - **Passes 400-407 (2026-03-28):** Refactored 8 remaining oversized files. All `src/` files are now confirmed under the 500-line hard cap.
-- **Pass 421 (2026-03-28):** Zero TypeScript errors (`tsc --noEmit` clean). Maintained through Pass 437.
+- **March 29, 2026 map stabilization:** Zero TypeScript errors restored and re-verified with `npx tsc --noEmit` after the MapLibre migration follow-up fixes.
 - **Pass 430 (2026-03-28):** Image assets reduced 53.6MB → 22.9MB (57%) via PNG→JPEG conversion. 3 dead image imports removed.
 - **Passes 433-434 (2026-03-29):** Zero production `any` types (was 21). Hooks/services: 14→0 across 10 files. Component helpers/type defs: 8→0 across 5 files. Only 7 `as any` assertions remain in test files.
 - **Pass 435 (2026-03-29):** Runtime safety: submitBid throws on missing report, Promise.allSettled for session sync, useMemo for BidsScreen calculations.
