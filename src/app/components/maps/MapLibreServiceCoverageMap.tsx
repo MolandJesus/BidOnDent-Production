@@ -267,6 +267,21 @@ export default function MapLibreServiceCoverageMap({
     };
   }, [activeSearchTarget]);
 
+  /* --- radius edge label point (east edge of radius circle) --- */
+  const radiusLabelGeoJSON = useMemo(() => {
+    if (!activeSearchTarget || !radiusMiles) return null;
+    const latRad = (activeSearchTarget.lat * Math.PI) / 180;
+    const lngOffset = radiusMeters / (111320 * Math.cos(latRad));
+    return {
+      type: "Feature" as const,
+      geometry: {
+        type: "Point" as const,
+        coordinates: [activeSearchTarget.lng + lngOffset, activeSearchTarget.lat],
+      },
+      properties: { label: `${radiusMiles} mi` },
+    };
+  }, [activeSearchTarget, radiusMeters, radiusMiles]);
+
   const interactiveLayerIds = useMemo(() => {
     const ids = [PARTNER_SHOPS_LAYER_ID];
     if (!isNavigationPresentation) {
@@ -461,6 +476,30 @@ export default function MapLibreServiceCoverageMap({
                   "circle-stroke-width": 2,
                 }}
               />
+              <Layer
+                id="counties-label"
+                type="symbol"
+                minzoom={8}
+                layout={
+                  {
+                    "text-field": ["get", "name"],
+                    "text-size": ["interpolate", ["linear"], ["zoom"], 8, 9, 12, 11],
+                    "text-offset": [0, 1.6],
+                    "text-anchor": "top",
+                    "text-max-width": 8,
+                    "text-allow-overlap": false,
+                    "text-optional": true,
+                  } as Record<string, unknown>
+                }
+                paint={
+                  {
+                    "text-color": tone === "light" ? "#1e40af" : "#93c5fd",
+                    "text-halo-color": tone === "light" ? "#ffffff" : "#0f172a",
+                    "text-halo-width": 1.5,
+                    "text-opacity": 0.85,
+                  } as Record<string, unknown>
+                }
+              />
             </Source>
           ) : null}
 
@@ -580,6 +619,30 @@ export default function MapLibreServiceCoverageMap({
                       "circle-stroke-color": "#f8fafc",
                       "circle-stroke-width": 1,
                     }}
+                  />
+                </Source>
+              ) : null}
+              {radiusLabelGeoJSON ? (
+                <Source id="radius-label" type="geojson" data={radiusLabelGeoJSON}>
+                  <Layer
+                    id="radius-label-text"
+                    type="symbol"
+                    layout={
+                      {
+                        "text-field": ["get", "label"],
+                        "text-size": 11,
+                        "text-anchor": "left",
+                        "text-offset": [0.5, 0],
+                        "text-allow-overlap": true,
+                      } as Record<string, unknown>
+                    }
+                    paint={
+                      {
+                        "text-color": tone === "light" ? "#0891b2" : "#67e8f9",
+                        "text-halo-color": tone === "light" ? "#ffffff" : "#0f172a",
+                        "text-halo-width": 1.5,
+                      } as Record<string, unknown>
+                    }
                   />
                 </Source>
               ) : null}
