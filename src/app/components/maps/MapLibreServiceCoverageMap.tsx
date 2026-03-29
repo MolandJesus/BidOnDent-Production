@@ -643,6 +643,18 @@ export default function MapLibreServiceCoverageMap({
           {/* GPS current position dot */}
           {gpsPointGeoJSON ? (
             <Source id="gps-position" type="geojson" data={gpsPointGeoJSON}>
+              {/* Outer glow ring */}
+              <Layer
+                id="gps-glow"
+                type="circle"
+                paint={{
+                  "circle-radius": isNavigationPresentation ? 28 : 24,
+                  "circle-color": tone === "light" ? "#0ea5e9" : "#22d3ee",
+                  "circle-opacity": 0.12,
+                  "circle-blur": 1,
+                }}
+              />
+              {/* Main dot */}
               <Layer
                 id="gps-dot"
                 type="circle"
