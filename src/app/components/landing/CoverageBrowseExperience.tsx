@@ -13,7 +13,7 @@ import {
 } from "../../services/navigation/externalNavigation";
 import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
-import ServiceCoverageMap from "../maps/ServiceCoverageMap";
+import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
 import CoverageCommandCenterSidebar from "../maps/command-center/CoverageCommandCenterSidebar";
 import type { ExternalNavigationSession } from "../../types/navigation";
 import type {

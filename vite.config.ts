@@ -45,6 +45,13 @@ export default defineConfig({
             id.includes("/node_modules/leaflet/") ||
             id.includes("/node_modules/react-leaflet/")
           ) {
+            return "vendor-map-leaflet";
+          }
+
+          if (
+            id.includes("/node_modules/maplibre-gl/") ||
+            id.includes("/node_modules/react-map-gl/")
+          ) {
             return "vendor-map";
           }
 

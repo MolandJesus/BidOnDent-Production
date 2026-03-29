@@ -3,7 +3,7 @@ import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 import { useOperatingRegionsCoverage } from "../../hooks/useOperatingRegionsCoverage";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import type { MapSurfaceTone } from "../maps/serviceCoverageMapTypes";
-import ServiceCoverageMap from "../maps/ServiceCoverageMap";
+import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
 import CoverageMapDialog from "./CoverageMapDialog";
 import CoverageNearestShops from "./CoverageNearestShops";
 import CoverageSearchPanel from "./CoverageSearchPanel";

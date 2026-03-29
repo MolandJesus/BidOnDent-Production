@@ -6,7 +6,7 @@ import type { CoverageNavigationExperience } from "../../hooks/useCoverageNaviga
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
 import { shareNavigationEta } from "../../services/navigation/shareEta";
 import { X } from "lucide-react";
-import ServiceCoverageMap from "../maps/ServiceCoverageMap";
+import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
 import NavigationActionRail from "../maps/navigation/NavigationActionRail";
 import NavigationActiveManeuverCard from "../maps/navigation/NavigationActiveManeuverCard";
 import NavigationActiveSpeedPanel from "../maps/navigation/NavigationActiveSpeedPanel";
