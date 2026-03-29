@@ -52,6 +52,22 @@ export function formatZipCode(value: string): string {
 }
 
 export function validateShopForm(shopForm: ShopForm): string | null {
+  if (!shopForm.shopName.trim()) {
+    return "Please enter your shop name.";
+  }
+  if (!shopForm.contactPerson.trim()) {
+    return "Please enter a contact person.";
+  }
+  if (!shopForm.address.trim()) {
+    return "Please enter your business address.";
+  }
+  if (!shopForm.city.trim()) {
+    return "Please enter your city.";
+  }
+  if (!shopForm.state.trim()) {
+    return "Please enter your state.";
+  }
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(shopForm.email)) {
     return "Please enter a valid email address.";
@@ -82,6 +98,13 @@ export function validateShopForm(shopForm: ShopForm): string | null {
 }
 
 export function validateInsurerForm(insurerForm: InsurerForm): string | null {
+  if (!insurerForm.companyName.trim()) {
+    return "Please enter your company name.";
+  }
+  if (!insurerForm.contactPerson.trim()) {
+    return "Please enter a contact person.";
+  }
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(insurerForm.email)) {
     return "Please enter a valid email address.";
