@@ -540,6 +540,18 @@ export default function MapLibreServiceCoverageMap({
                 routeFitKey={routeFitKey}
               />
               <Source id="route" type="geojson" data={routeGeoJSON}>
+                {/* Route glow (MapLibre-native blur effect) */}
+                <Layer
+                  id="route-glow"
+                  type="line"
+                  paint={{
+                    "line-color": tone === "light" ? "#3b82f6" : "#38bdf8",
+                    "line-opacity": isNavigationPresentation ? 0.28 : 0.22,
+                    "line-width": isNavigationPresentation ? 26 : 22,
+                    "line-blur": isNavigationPresentation ? 14 : 12,
+                  }}
+                  layout={{ "line-cap": "round", "line-join": "round" }}
+                />
                 <Layer
                   id="route-outline"
                   type="line"

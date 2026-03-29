@@ -330,6 +330,21 @@ export default function MapLibreShopDirectoryMapPane({
                 } as Record<string, unknown>
               }
             />
+            {/* Selected route glow (MapLibre-native blur) */}
+            <Layer
+              id="route-selected-glow"
+              type="line"
+              filter={["==", ["get", "isSelected"], 1]}
+              layout={{ "line-cap": "round", "line-join": "round" }}
+              paint={
+                {
+                  "line-color": ["get", "accentColor"],
+                  "line-width": 20,
+                  "line-opacity": 0.2,
+                  "line-blur": 12,
+                } as Record<string, unknown>
+              }
+            />
             {/* Selected route (solid, full opacity) */}
             <Layer
               id={ROUTE_SELECTED_LAYER}
