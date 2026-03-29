@@ -1,0 +1,286 @@
+import { Car, Sparkles } from "lucide-react";
+import { useState, type RefObject } from "react";
+import type { Bid, NavTab, Notification, Vehicle } from "../../types";
+import ProfileDropdown from "../dashboard/ProfileDropdown";
+
+type UserProfile = {
+  name: string;
+  email: string;
+  user_type: string;
+  phone?: string;
+};
+
+type ProfileDropdownData = {
+  userType: "customer" | "shop" | "insurer";
+  reports: any[];
+  vehicles: Vehicle[];
+  bids: Bid[];
+  onNavigate: (destination: string, tab?: string) => void;
+  onLogout: () => void;
+  forwardedRef: RefObject<HTMLDivElement | null>;
+};
+
+type DashboardSidebarProps = {
+  isLightAppearance: boolean;
+  primaryColor: string;
+  secondaryColor: string;
+  currentNavTabs: NavTab[];
+  currentTab: string;
+  viewMode: string;
+  onLogoClick: () => void;
+  onTabClick: (tabId: string) => void;
+  onOpenDemoMode?: () => void;
+  profileDropdownData?: ProfileDropdownData;
+  userProfile: UserProfile;
+  userImageUrl: string;
+  notifications: Notification[];
+  notificationSyncActive: boolean;
+  reports: any[];
+  vehicles: Vehicle[];
+  bids: Bid[];
+  onDismissTopProfile: () => void;
+};
+
+export default function DashboardSidebar({
+  isLightAppearance,
+  primaryColor,
+  secondaryColor,
+  currentNavTabs,
+  currentTab,
+  viewMode,
+  onLogoClick,
+  onTabClick,
+  onOpenDemoMode,
+  profileDropdownData,
+  userProfile,
+  userImageUrl,
+  notifications,
+  notificationSyncActive,
+  reports,
+  vehicles,
+  bids,
+  onDismissTopProfile,
+}: DashboardSidebarProps) {
+  const [showSidebarProfilePanel, setShowSidebarProfilePanel] = useState(false);
+
+  return (
+    <aside
+      className={`hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r ${
+        isLightAppearance ? "bd-light-surface md:border-slate-200/60" : "md:border-blue-400/[0.12]"
+      }`}
+      style={{
+        background: isLightAppearance
+          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 247, 255, 0.95) 100%)"
+          : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%)",
+        backdropFilter: "blur(24px) saturate(1.4)",
+        WebkitBackdropFilter: "blur(24px) saturate(1.4)",
+        boxShadow: isLightAppearance
+          ? "2px 0 24px rgba(15, 23, 42, 0.07)"
+          : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(59, 130, 246, 0.08)",
+      }}
+    >
+      <div
+        className={`px-5 py-5 border-b ${isLightAppearance ? "border-slate-200/70" : "border-blue-400/[0.10]"}`}
+      >
+        <button
+          onClick={onLogoClick}
+          className="flex items-center gap-2.5 cursor-pointer bg-transparent"
+          type="button"
+        >
+          <span
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+              boxShadow:
+                "0 4px 14px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+            }}
+          >
+            <Car className="w-5 h-5 text-white" />
+          </span>
+          <h1 className="text-xl font-bold tracking-tight">
+            <span
+              style={{
+                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Bid
+            </span>
+            <span style={{ color: "#3b82f6" }}>On</span>
+            <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>Dent</span>
+          </h1>
+        </button>
+      </div>
+
+      <nav className="px-3 py-4 space-y-1 flex-1 overflow-y-auto">
+        {currentNavTabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = currentTab === tab.id && viewMode === "dashboard";
+
+          return (
+            <button
+              key={tab.id}
+              onClick={() => onTabClick(tab.id)}
+              className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 relative ${
+                isActive ? "" : "hover:bg-blue-500/[0.06]"
+              }`}
+              type="button"
+              style={
+                isActive
+                  ? {
+                      background: isLightAppearance
+                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%)"
+                        : "linear-gradient(135deg, rgba(37, 99, 235, 0.18) 0%, rgba(59, 130, 246, 0.10) 100%)",
+                      boxShadow: isLightAppearance
+                        ? "inset 0 1px 0 rgba(147, 197, 253, 0.10)"
+                        : "inset 0 1px 0 rgba(147, 197, 253, 0.08)",
+                    }
+                  : {}
+              }
+            >
+              {isActive && (
+                <span
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+                  style={{
+                    background: `linear-gradient(180deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                    boxShadow: "0 0 8px rgba(37, 99, 235, 0.35)",
+                  }}
+                />
+              )}
+              <span
+                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 ${
+                  isActive
+                    ? ""
+                    : isLightAppearance
+                      ? "bg-blue-500/[0.06] group-hover:bg-blue-500/[0.12]"
+                      : "bg-blue-500/[0.08] group-hover:bg-blue-500/[0.14]"
+                }`}
+                style={
+                  isActive
+                    ? {
+                        background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                        boxShadow: "0 2px 8px rgba(37, 99, 235, 0.30)",
+                      }
+                    : {}
+                }
+              >
+                <Icon
+                  className={`w-[18px] h-[18px] transition-colors duration-200 ${
+                    isActive
+                      ? "text-white"
+                      : isLightAppearance
+                        ? "text-blue-600/70 group-hover:text-blue-700"
+                        : "text-blue-200/70 group-hover:text-blue-200"
+                  }`}
+                />
+              </span>
+              <span
+                className={`text-[0.9rem] font-semibold transition-colors duration-200 ${
+                  isActive
+                    ? isLightAppearance
+                      ? "text-blue-700"
+                      : "text-blue-100"
+                    : isLightAppearance
+                      ? "text-slate-600 group-hover:text-slate-800"
+                      : "text-slate-300 group-hover:text-slate-100"
+                }`}
+              >
+                {tab.label}
+              </span>
+              {isActive && <span className="ml-auto text-xs font-medium text-blue-300/50">›</span>}
+            </button>
+          );
+        })}
+        {onOpenDemoMode && (
+          <div
+            className={`pt-2 mt-1 border-t ${isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.08]"}`}
+          >
+            <button
+              onClick={onOpenDemoMode}
+              className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 hover:bg-blue-500/[0.06]`}
+              type="button"
+            >
+              <span className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]">
+                <Sparkles
+                  className={`w-[18px] h-[18px] transition-colors ${isLightAppearance ? "text-purple-500" : "text-purple-300/80"}`}
+                />
+              </span>
+              <span
+                className={`text-[0.9rem] font-semibold transition-colors duration-200 ${isLightAppearance ? "text-slate-600 group-hover:text-slate-800" : "text-slate-300 group-hover:text-slate-100"}`}
+              >
+                Demo Mode
+              </span>
+            </button>
+          </div>
+        )}
+        {showSidebarProfilePanel && profileDropdownData && (
+          <div className="pt-2">
+            <ProfileDropdown
+              userInfo={{
+                name: userProfile.name,
+                email: userProfile.email,
+                profileImage: userImageUrl || "",
+              }}
+              userType={profileDropdownData.userType}
+              notifications={notifications}
+              notificationSyncActive={notificationSyncActive}
+              isOpen={showSidebarProfilePanel}
+              onNavigate={profileDropdownData.onNavigate}
+              onLogout={profileDropdownData.onLogout}
+              forwardedRef={profileDropdownData.forwardedRef}
+              reports={reports}
+              vehicles={vehicles}
+              bids={bids}
+              variant="embedded"
+              isLightAppearance={isLightAppearance}
+            />
+          </div>
+        )}
+      </nav>
+
+      <div
+        className={`p-3 border-t ${isLightAppearance ? "border-slate-200/70" : "border-blue-400/[0.10]"}`}
+      >
+        <button
+          onClick={() => {
+            onDismissTopProfile();
+            setShowSidebarProfilePanel((current) => !current);
+          }}
+          className="group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 hover:bg-blue-500/[0.06]"
+          type="button"
+        >
+          {userImageUrl ? (
+            <img
+              src={userImageUrl}
+              alt="Profile"
+              className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/20"
+            />
+          ) : (
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+              style={{
+                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+              }}
+            >
+              {userProfile.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="text-left min-w-0 flex-1">
+            <p
+              className={`text-sm font-semibold truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            >
+              {userProfile.name}
+            </p>
+            <p
+              className={`text-xs truncate ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`}
+            >
+              {userProfile.email}
+            </p>
+          </div>
+        </button>
+      </div>
+    </aside>
+  );
+}
