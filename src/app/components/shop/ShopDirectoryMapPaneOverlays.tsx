@@ -19,6 +19,8 @@ type BottomOverlayProps = {
   selectedRoute: RouteOption | null;
   onOpenShopDirections?: (shop: ShopMapListing) => void;
   directionsActionLabel?: string;
+  /** When true, hide the shop card (e.g. route preview overlay is showing) — legend only */
+  compact?: boolean;
 };
 
 type SearchPillsProps = {
@@ -99,6 +101,7 @@ export function MapPaneBottomOverlay({
   selectedRoute,
   onOpenShopDirections,
   directionsActionLabel,
+  compact,
 }: BottomOverlayProps) {
   const t = useOverlayTokens(isDark);
 
@@ -107,7 +110,7 @@ export function MapPaneBottomOverlay({
       className={`pointer-events-none absolute inset-x-0 bottom-0 z-[500] ${t.bottomGradient} px-3 pb-3 pt-10 sm:px-5 sm:pb-5 sm:pt-16`}
     >
       <div className="flex flex-wrap items-end justify-between gap-3">
-        {selectedShop && (
+        {selectedShop && !compact && (
           <div className={`max-w-md rounded-[24px] border p-3 sm:p-4 ${t.shopCardCls}`}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">

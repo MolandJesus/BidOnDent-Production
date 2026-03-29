@@ -1,3 +1,17 @@
+## Pass 462 — ShopDirectory layer extraction to restore file-size hygiene (2026-03-29)
+
+- **Why this pass was chosen:** After passes 460-461 added legitimate map polish, `MapLibreShopDirectoryMapPane.tsx` grew back over the repo hard cap. The next safest step was a pure structural extraction that would not change route, popup, or session behavior.
+- **What changed:**
+  - Extracted the bulky `Source`/`Layer` rendering block into `ShopDirectoryMapLayers.tsx`.
+  - Kept `MapLibreShopDirectoryMapPane.tsx` focused on GeoJSON preparation, viewport management, popup state, and click/hover handling.
+  - Reduced `MapLibreShopDirectoryMapPane.tsx` from 581 lines to 365 lines.
+  - Preserved the later shop-marker hierarchy work from passes 460-461 while restoring file-size compliance.
+- **Files touched:** `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `src/app/components/shop/ShopDirectoryMapLayers.tsx`, `cspell.json`, `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/CODE_ORGANIZATION_AUDIT.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Validation:** `npx tsc --noEmit`, `npm run build`, targeted `npx cspell lint ...`
+- **Impact:** The primary shop-directory map surface is back under the hard limit without disturbing the map product loop or the other AI's push flow.
+
+---
+
 ## Pass 458 — MapLibre stabilization + doc truth sync (2026-03-29)
 
 - **Why this pass was chosen:** After the renderer migration, the active docs still mixed Leaflet-era descriptions with new MapLibre files, and editor diagnostics were being inflated by a stale map import plus mixed `DamageReport` shapes.

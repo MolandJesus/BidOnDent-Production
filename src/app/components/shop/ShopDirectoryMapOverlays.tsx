@@ -182,7 +182,7 @@ export default function ShopDirectoryMapOverlays({
 
       {/* Route preview — bottom-left floating card, sits above the shop info bar */}
       {showRoute && (
-        <div className="pointer-events-auto absolute bottom-36 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-32">
+        <div className="pointer-events-auto absolute bottom-16 left-4 z-[510] w-80 max-w-[calc(100vw-2rem)] sm:bottom-20">
           <div className={`rounded-2xl border p-3 shadow-2xl ${glassPanel}`}>
             <div className="flex items-center justify-between">
               <div

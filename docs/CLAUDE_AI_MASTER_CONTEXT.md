@@ -211,6 +211,7 @@ Used by: `ShopDirectoryScreen` (hybrid + list modes), `ShopDirectoryImmersiveMap
 ```
 ShopDirectoryScreen.tsx                    ← Orchestrator (hybrid + list layout)
   └── MapLibreShopDirectoryMapPane.tsx     ← MapLibre map pane (GeoJSON sources, route glow, overlays)
+        └── ShopDirectoryMapLayers.tsx     ← Extracted Source/Layer rendering block for routes + markers
         └── MapLibreShopDirectoryViewportManager.tsx ← useMap() viewport fit/fly logic
         └── ShopDirectoryMapOverlays.tsx   ← Floating overlays (intelligence, route, actions)
 ShopDirectoryImmersiveMap.tsx              ← Full-viewport map mode (own top bar + results drawer)
@@ -307,6 +308,7 @@ Archive note: The checklist below records the priorities captured during the Pas
 | ------------------------------------------------------------------ | ---------------------------------------------------- |
 | `src/app/components/shop/ShopDirectoryScreen.tsx`                  | Main orchestrator for dashboard shop discovery       |
 | `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)    |
+| `src/app/components/shop/ShopDirectoryMapLayers.tsx`               | Extracted Source/Layer rendering for shop directory   |
 | `src/app/components/shop/ShopDirectoryMapOverlays.tsx`             | Floating intelligence + route + action overlays      |
 | `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`            | Full-viewport immersive map mode                     |
 | `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                         |
@@ -490,6 +492,7 @@ Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL). Leaflet fu
 | 455  | Dashboard preview controlled viewport fix              | ✅ Done |
 | 456  | Remove dead ServiceCoverageMap popup code              | ✅ Done |
 | 457  | Fix ShopDirectory `attributionControl` typing          | ✅ Done |
+| 462  | Extract shop directory Source/Layer block              | ✅ Done |
 
 **MapLibre architecture:**
 
