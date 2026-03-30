@@ -227,16 +227,53 @@ export default function ShopDirectoryMapLayers({
 
       {showSavedPlaces && savedPlacesGeoJson.features.length > 0 && (
         <Source id="saved-places-source" type="geojson" data={savedPlacesGeoJson}>
+          {/* ── Saved places glow ring ── */}
+          <Layer
+            id="saved-places-glow"
+            type="circle"
+            paint={{
+              "circle-radius": 12,
+              "circle-color": "#1d4ed8",
+              "circle-opacity": 0.12,
+              "circle-stroke-width": 0,
+            }}
+          />
+          {/* ── Saved places circle ── */}
           <Layer
             id={SAVED_PLACES_LAYER}
             type="circle"
             paint={{
               "circle-radius": 7,
               "circle-color": "#1d4ed8",
-              "circle-opacity": 0.3,
+              "circle-opacity": 0.35,
               "circle-stroke-width": 2,
               "circle-stroke-color": "#1d4ed8",
             }}
+          />
+          {/* ── Saved places label ── */}
+          <Layer
+            id="saved-places-labels"
+            type="symbol"
+            minzoom={10}
+            layout={
+              {
+                "text-field": ["get", "label"],
+                "text-size": ["interpolate", ["linear"], ["zoom"], 10, 9, 14, 11],
+                "text-offset": [0, 1.6],
+                "text-anchor": "top",
+                "text-max-width": 10,
+                "text-allow-overlap": false,
+                "text-optional": true,
+              } as Record<string, unknown>
+            }
+            paint={
+              {
+                "text-color": isDark ? "#93c5fd" : "#1e40af",
+                "text-halo-color": isDark ? "#0f172a" : "#ffffff",
+                "text-halo-width": 1.5,
+                "text-opacity": 0.8,
+              } as Record<string, unknown>
+            }
           />
         </Source>
       )}
@@ -370,7 +407,15 @@ export default function ShopDirectoryMapLayers({
             filter={["!", ["has", "point_count"]]}
             layout={
               {
-                "text-field": ["get", "name"],
+                "text-field": [
+                  "format",
+                  ["get", "name"],
+                  { "font-scale": 1.0 },
+                  "\n",
+                  {},
+                  ["concat", "AI ", ["to-string", ["get", "recommendationScore"]], "%"],
+                  { "font-scale": 0.8 },
+                ],
                 "text-size": ["interpolate", ["linear"], ["zoom"], 12, 10, 15, 13],
                 "text-offset": [0, 1.8],
                 "text-anchor": "top",
