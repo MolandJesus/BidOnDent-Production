@@ -1,3 +1,15 @@
+## Pass T585 — Saved places toggle UI (2026-03-30)
+
+- **Why this pass was chosen:** Saved places render unconditionally at 30% opacity with no user control. Users had no way to show/hide them, and the legend didn't even acknowledge their existence.
+- **What changed:**
+  - Added `showSavedPlaces` state in MapPane, passed to layers for conditional render.
+  - Added clickable "Saved" toggle item to the map legend with visual on/off feedback (opacity dim when off).
+  - Saved places layer now hides completely when toggled off.
+- **Files touched:** `ShopDirectoryMapLayers.tsx`, `ShopDirectoryMapPaneOverlays.tsx`, `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 2.96s. Diagnostics: 0 new. Spellcheck: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (saved places not toggleable, not in legend)
+- **What this unlocks:** Users can declutter the map by hiding saved places. Legend now covers all 6 layer types.
+
 ## Pass T584 — Map legend reports indicator (2026-03-30)
 
 - **Why this pass was chosen:** The map legend showed Origin, Selected, Top pick, and Routes — but had no indicator for report markers. Users seeing amber dots on the map had no reference for what they represented.

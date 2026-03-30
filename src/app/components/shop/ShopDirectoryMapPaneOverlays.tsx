@@ -43,6 +43,8 @@ type BottomOverlayProps = {
   isLoadingRoute?: boolean;
   /** When true, hide the shop card (e.g. route preview overlay is showing) — legend only */
   compact?: boolean;
+  showSavedPlaces?: boolean;
+  onToggleSavedPlaces?: () => void;
 };
 
 type SearchPillsProps = {
@@ -140,6 +142,8 @@ export function MapPaneBottomOverlay({
   routeError = "",
   isLoadingRoute = false,
   compact,
+  showSavedPlaces,
+  onToggleSavedPlaces,
 }: BottomOverlayProps) {
   const t = useOverlayTokens(isDark);
   const sessionBadgeClass = hasArrived
@@ -343,6 +347,19 @@ export function MapPaneBottomOverlay({
               <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
               Reports
             </span>
+            {onToggleSavedPlaces && (
+              <button
+                type="button"
+                onClick={onToggleSavedPlaces}
+                className={`inline-flex items-center gap-1 rounded px-1 -mx-1 transition-opacity ${
+                  showSavedPlaces ? "opacity-100" : "opacity-40"
+                }`}
+                title={showSavedPlaces ? "Hide saved places" : "Show saved places"}
+              >
+                <span className="inline-block h-2 w-2 rounded-full bg-blue-600 opacity-40" />
+                Saved
+              </button>
+            )}
             <span className="inline-flex items-center gap-1">
               <span
                 className="inline-block h-2.5 w-4 rounded border border-current opacity-50"

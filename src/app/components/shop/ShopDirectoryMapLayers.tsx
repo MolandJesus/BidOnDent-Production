@@ -52,6 +52,7 @@ type ShopDirectoryMapLayersProps = {
   userCoordsGeoJson: PointFeature | null;
   savedPlacesGeoJson: PointFeatureCollection;
   shopsGeoJson: PointFeatureCollection;
+  showSavedPlaces?: boolean;
   navigationSteps?: NavigationRouteStep[];
   currentStepIndex?: number;
   isGuidanceActive?: boolean;
@@ -65,6 +66,7 @@ export default function ShopDirectoryMapLayers({
   userCoordsGeoJson,
   savedPlacesGeoJson,
   shopsGeoJson,
+  showSavedPlaces = true,
   navigationSteps = [],
   currentStepIndex = 0,
   isGuidanceActive = false,
@@ -221,7 +223,7 @@ export default function ShopDirectoryMapLayers({
         </Source>
       )}
 
-      {savedPlacesGeoJson.features.length > 0 && (
+      {showSavedPlaces && savedPlacesGeoJson.features.length > 0 && (
         <Source id="saved-places-source" type="geojson" data={savedPlacesGeoJson}>
           <Layer
             id={SAVED_PLACES_LAYER}

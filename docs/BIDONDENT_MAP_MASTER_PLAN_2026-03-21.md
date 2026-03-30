@@ -1,3 +1,8 @@
+### Implementation Note — Pass T585 Saved Places Toggle UI (2026-03-30)
+
+- Added `showSavedPlaces` state with clickable legend toggle and conditional rendering in the layers component.
+- Strategic effect: **The map now gives users control over layer visibility.** This is the first interactive legend item — a pattern that can extend to reports, routes, and other layers. Saved places were previously always-on noise; now users choose whether to see them.
+
 ### Implementation Note — Pass T584 Map Legend Reports Indicator (2026-03-30)
 
 - Added amber "Reports" dot to the map legend so users can identify report markers.

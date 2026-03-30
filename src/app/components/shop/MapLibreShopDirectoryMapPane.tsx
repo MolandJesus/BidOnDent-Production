@@ -115,6 +115,7 @@ export default function MapLibreShopDirectoryMapPane({
 }: ShopDirectoryMapPaneProps) {
   const [hasPanned, setHasPanned] = useState(false);
   const [cursor, setCursor] = useState("");
+  const [showSavedPlaces, setShowSavedPlaces] = useState(true);
   const [shopPopup, setShopPopup] = useState<{
     lng: number;
     lat: number;
@@ -448,6 +449,7 @@ export default function MapLibreShopDirectoryMapPane({
             userCoordsGeoJson={userCoordsGeoJson}
             savedPlacesGeoJson={savedPlacesGeoJson}
             shopsGeoJson={shopsGeoJson}
+            showSavedPlaces={showSavedPlaces}
             navigationSteps={navigationSteps}
             currentStepIndex={currentStepIndex}
             isGuidanceActive={navigationMode === "guidance"}
@@ -506,6 +508,8 @@ export default function MapLibreShopDirectoryMapPane({
         routeError={routeError}
         usingLiveRoutes={usingLiveRoutes}
         compact={Boolean(children && selectedRoute)}
+        showSavedPlaces={showSavedPlaces}
+        onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
       />
 
       {/* Search area pills */}
