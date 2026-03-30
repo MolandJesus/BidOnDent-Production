@@ -1,3 +1,8 @@
+### Implementation Note — Pass T583 Map Zoom and Scale Controls (2026-03-30)
+
+- Added `NavigationControl` (zoom +/−) and `ScaleControl` (imperial, bottom-left) to the shop directory map.
+- Strategic effect: **The map now has standard cartographic affordances.** Zoom buttons help touchpad/desktop users, and the scale bar anchors spatial understanding. These are expected controls for any production mapping surface.
+
 ### Implementation Note — Pass T582 Report Label Layer (2026-03-30)
 
 - Added vehicle-info text labels for unclustered report markers at zoom 13+.

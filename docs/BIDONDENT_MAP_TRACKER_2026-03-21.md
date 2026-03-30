@@ -1,3 +1,14 @@
+## Pass T583 — Map zoom and scale controls (2026-03-30)
+
+- **Why this pass was chosen:** The shop directory map had no visible zoom controls or scale indicator. Users on touchpads, desktop mice, or unfamiliar devices had no obvious way to zoom, and there was no distance reference for the current viewport.
+- **What changed:**
+  - Added `NavigationControl` (zoom +/− buttons) at bottom-right, compass disabled for cleaner UI.
+  - Added `ScaleControl` at bottom-left showing imperial units, max width 120px.
+- **Files touched:** `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0 new. Spellcheck: 0 new.
+- **Problem taxonomy:** P4-UX:2/2/0 (no zoom controls + no scale indicator)
+- **What this unlocks:** Standard map affordances. Users can zoom without gestures, and distance scale provides spatial context.
+
 ## Pass T582 — Report label layer at high zoom (2026-03-30)
 
 - **Why this pass was chosen:** Shop markers had text labels at zoom 12+, but report markers had no labels at any zoom. When zoomed in, report dots were anonymous amber circles with no vehicle context until clicked.

@@ -1,7 +1,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Map } from "react-map-gl/maplibre";
+import { Map, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
@@ -420,6 +420,10 @@ export default function MapLibreShopDirectoryMapPane({
           onMouseLeave={() => setCursor("")}
           attributionControl={{ compact: true }}
         >
+          {/* Standard map controls */}
+          <NavigationControl position="bottom-right" showCompass={false} />
+          <ScaleControl position="bottom-left" maxWidth={120} unit="imperial" />
+
           {/* Viewport management (fit, fly, broadcast) */}
           <MapLibreShopDirectoryViewportManager
             fitSignature={fitSignature}
