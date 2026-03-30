@@ -83,6 +83,9 @@ type ShopDirectoryImmersiveMapProps = {
   onVoiceVolumePresetChange?: (preset: NavigationVoiceVolumePreset) => void;
   onRetryGps?: () => void;
   onRetryRoute?: () => void;
+  searchWithinViewport?: boolean;
+  onSearchInArea?: () => void;
+  onClearAreaSearch?: () => void;
 
   onSearchQueryChange: (query: string) => void;
   onSearchSubmit: (event: FormEvent) => void;
@@ -155,6 +158,9 @@ export default function ShopDirectoryImmersiveMap({
   onVoiceVolumePresetChange,
   onRetryGps,
   onRetryRoute,
+  searchWithinViewport = false,
+  onSearchInArea,
+  onClearAreaSearch,
   onSearchQueryChange,
   onSearchSubmit,
   onSelectShop,
@@ -250,6 +256,10 @@ export default function ShopDirectoryImmersiveMap({
           navigationSessionStatus={navigationSessionStatus}
           navigationSessionDestinationId={navigationSessionDestinationId}
           directionsActionLabel={directionsActionLabel}
+          searchWithinViewport={searchWithinViewport}
+          preserveViewport={searchWithinViewport}
+          onSearchInArea={onSearchInArea}
+          onClearAreaSearch={onClearAreaSearch}
           hasArrived={hasArrived}
           isLoadingRoute={isLoadingRoute}
           remainingDistanceLabel={remainingDistanceLabel}

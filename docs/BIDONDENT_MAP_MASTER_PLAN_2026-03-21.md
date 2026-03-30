@@ -1,3 +1,8 @@
+### Implementation Note — Pass T579 Wire Viewport Search to Immersive Map (2026-03-30)
+
+- Wired `searchWithinViewport`, `onSearchInArea`, `onClearAreaSearch` through the immersive map component to `MapLibreShopDirectoryMapPane`.
+- Strategic effect: **"Search this area" now works identically in both immersive and hybrid map modes.** This completes the viewport-based discovery loop so users can pan and explore shops in any area, regardless of which map layout they're using.
+
 ### Implementation Note — Pass T578 Shop Marker Clustering (2026-03-30)
 
 - Enabled MapLibre native clustering on the shop GeoJSON source with `clusterMaxZoom: 14` and `clusterRadius: 50`.

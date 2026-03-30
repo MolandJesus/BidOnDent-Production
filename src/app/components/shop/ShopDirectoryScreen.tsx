@@ -186,6 +186,9 @@ export default function ShopDirectoryScreen({
           onVoiceVolumePresetChange={nav.onVoiceVolumePresetChange}
           onRetryGps={nav.onRetryGps}
           onRetryRoute={nav.onRetryRoute}
+          searchWithinViewport={session.searchWithinViewport}
+          onSearchInArea={session.handleSearchInArea}
+          onClearAreaSearch={session.handleClearAreaSearch}
         />
       </NavigationErrorBoundary>
     );

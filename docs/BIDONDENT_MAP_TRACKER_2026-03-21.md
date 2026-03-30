@@ -1,3 +1,15 @@
+## Pass T579 — Wire viewport search to immersive map (2026-03-30)
+
+- **Why this pass was chosen:** The "Search this area" button and viewport-based shop filtering existed in hybrid/list mode but were not wired to the immersive full-screen map. Users who panned in immersive mode had no way to trigger area-based search.
+- **What changed:**
+  - Added `searchWithinViewport`, `onSearchInArea`, `onClearAreaSearch` props to `ShopDirectoryImmersiveMap` type and destructuring.
+  - Passed these props through to `MapLibreShopDirectoryMapPane` inside immersive mode, along with `preserveViewport`.
+  - Wired `session.searchWithinViewport`, `session.handleSearchInArea`, `session.handleClearAreaSearch` from `ShopDirectoryScreen` into the immersive map render path.
+- **Files touched:** `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0 new. Spellcheck: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (viewport search missing from immersive mode)
+- **What this unlocks:** "Search this area" now works in both map modes. Immersive users can pan and discover shops in new areas.
+
 ## Pass T578 — Shop marker clustering (2026-03-30)
 
 - **Why this pass was chosen:** Every shop rendered as an individual marker at all zoom levels, causing visual clutter and overlapping pins in dense areas. This was the single highest-impact map usability gap (P1-UX) — critical for any metro area with more than a few shops.
