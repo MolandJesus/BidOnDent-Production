@@ -31,6 +31,9 @@ type ShopDirectoryListBodyProps = {
     followingInstruction: string | null;
     navigationSessionStatus: NavigationSessionStatus;
     sessionActiveSeconds: number;
+    onPauseNavigation?: () => void;
+    onResumeNavigation?: () => void;
+    onEndNavigation?: () => void;
   };
   userType: MarketUserType;
   primaryColor: string;
@@ -96,6 +99,9 @@ export default function ShopDirectoryListBody({
           selectedRoute={routePanel.selectedRoute}
           selectedShop={session.selectedShop}
           sessionActiveSeconds={routePanel.sessionActiveSeconds}
+          onPauseNavigation={routePanel.onPauseNavigation}
+          onResumeNavigation={routePanel.onResumeNavigation}
+          onEndNavigation={routePanel.onEndNavigation}
           usingLiveRoutes={routePanel.usingLiveRoutes}
         />
       )}

@@ -1,3 +1,9 @@
+### Implementation Note — Pass T576 List-Mode Navigation Control Buttons (2026-03-30)
+
+- Added Pause/Resume + End navigation buttons to `ShopDirectoryRoutePanel` for active guidance sessions.
+- Wired handlers through the `routePanel` data path so list-mode users can control navigation without entering immersive mode.
+- Strategic effect: **List-mode navigation now has full session control parity with the immersive guidance card.** Users are never trapped in a navigation session without visible controls, regardless of which layout they're using.
+
 ### Implementation Note — Pass T575 List-Mode Guidance Duration Parity (2026-03-30)
 
 - Wired `sessionActiveSeconds` through the `routePanel` data path so the sidebar route panel displays live trip duration during guidance and at arrival.

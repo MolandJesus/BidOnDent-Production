@@ -306,6 +306,22 @@ export function useShopDirectoryNavigation({
       : null,
     navigationSessionStatus: navSession.session.status,
     sessionActiveSeconds: navSession.session.activeSeconds,
+    onPauseNavigation: liveNavigationForSelectedShop ? () => navSession.pause("user") : undefined,
+    onResumeNavigation: liveNavigationForSelectedShop ? navSession.resume : undefined,
+    onEndNavigation: liveNavigationForSelectedShop
+      ? () => {
+          const wasArrived = shopGuidancePreview.hasArrived;
+          navSession.end();
+          if (!wasArrived) {
+            notifications.showToast({
+              message: "Route ended.",
+              variant: "info",
+              durationMs: 2400,
+              deepLink: null,
+            });
+          }
+        }
+      : undefined,
   };
 
   const navigationMode: "browse" | "route-preview" | "guidance" =

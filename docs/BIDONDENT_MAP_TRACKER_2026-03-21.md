@@ -1,3 +1,16 @@
+## Pass T576 — List-mode navigation control buttons (2026-03-30)
+
+- **Why this pass was chosen:** Users navigating in the sidebar/list layout had no way to pause, resume, or end navigation without switching to immersive map mode. The route panel showed live guidance data but lacked any session control actions.
+- **What changed:**
+  - Added `onPauseNavigation`, `onResumeNavigation`, and `onEndNavigation` props to `ShopDirectoryRoutePanel`.
+  - Wired through `routePanel` object in `useShopDirectoryNavigation` and `ShopDirectoryListBody`.
+  - Route panel now shows Pause/Resume + End buttons during active guidance (hidden in preview and arrival states).
+  - End action includes the `wasArrived` check to suppress duplicate toast on natural arrival.
+- **Files touched:** `src/app/components/shop/ShopDirectoryRoutePanel.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/hooks/useShopDirectoryNavigation.ts`
+- **Validation:** Build: 0 errors, 2.94s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (list-mode guidance had no navigation session controls)
+- **What this unlocks:** List-mode navigation is now fully controllable without switching to immersive map mode.
+
 ## Pass T575 — List-mode guidance duration parity (2026-03-30)
 
 - **Why this pass was chosen:** The sidebar route panel (list/hybrid layout) showed a basic "Source" stat during guidance and arrival. Unlike the immersive guidance card (enhanced in T574), it had no trip duration display — leaving list-mode users with less trip insight.
