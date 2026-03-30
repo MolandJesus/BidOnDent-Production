@@ -300,7 +300,7 @@ export default function MapLibreReportLayer({
           filter={["!", ["has", "point_count"]]}
           paint={
             {
-              "circle-radius": 12,
+              "circle-radius": 11,
               "circle-color": [
                 "match",
                 ["get", "status"],
@@ -331,6 +331,22 @@ export default function MapLibreReportLayer({
               ],
             } as Record<string, unknown>
           }
+        />
+        {/* ── Report inner icon (unclustered) ── */}
+        <Layer
+          id="report-markers-icon"
+          type="symbol"
+          filter={["!", ["has", "point_count"]]}
+          layout={{
+            "text-field": "⚠",
+            "text-size": 10,
+            "text-allow-overlap": true,
+            "text-ignore-placement": true,
+          }}
+          paint={{
+            "text-color": isDark ? "#451a03" : "#ffffff",
+            "text-opacity": 0.9,
+          }}
         />
         {/* ── Report labels at high zoom (unclustered) ── */}
         <Layer

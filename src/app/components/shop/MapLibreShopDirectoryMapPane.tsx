@@ -127,6 +127,7 @@ export default function MapLibreShopDirectoryMapPane({
   const [showRoutes, setShowRoutes] = useState(true);
   const [reportCount, setReportCount] = useState<number | null>(null);
   const [tileMode, setTileMode] = useState<MapTileMode>(mapTheme === "dark" ? "night" : "roadmap");
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [shopPopup, setShopPopup] = useState<{
     lng: number;
     lat: number;
@@ -442,11 +443,17 @@ export default function MapLibreShopDirectoryMapPane({
           onClick={handleMapClick}
           onMouseMove={handleMapMouseMove}
           onMouseLeave={() => setCursor("")}
+          onLoad={() => setMapLoaded(true)}
           attributionControl={{ compact: true }}
         >
           {/* Standard map controls */}
           <FullscreenControl position="top-right" />
-          <GeolocateControl position="bottom-right" trackUserLocation showAccuracyCircle={false} />
+          <GeolocateControl
+            position="bottom-right"
+            trackUserLocation
+            showUserHeading
+            showAccuracyCircle={false}
+          />
           <NavigationControl position="bottom-right" showCompass={navigationMode === "guidance"} />
           <ScaleControl position="bottom-left" maxWidth={120} unit="imperial" />
 
@@ -522,6 +529,32 @@ export default function MapLibreShopDirectoryMapPane({
           )}
         </Map>
       </NavigationErrorBoundary>
+
+      {/* ── Map loading skeleton ── */}
+      {!mapLoaded && (
+        <div className="absolute inset-0 z-[600] flex items-center justify-center bg-slate-950 transition-opacity">
+          <div className="flex flex-col items-center gap-3">
+            <svg className="h-8 w-8 animate-spin text-blue-400" viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                className="opacity-20"
+              />
+              <path
+                d="M12 2a10 10 0 0 1 10 10"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+            <p className="text-xs font-medium text-white/60">Loading map…</p>
+          </div>
+        </div>
+      )}
 
       {/* ── Map style picker ── */}
       <div className="pointer-events-none absolute left-2 top-16 z-[520] sm:left-3 sm:top-20">
