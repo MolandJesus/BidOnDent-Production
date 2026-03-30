@@ -1,3 +1,16 @@
+## Pass T577 — Route error recovery with retry action (2026-03-30)
+
+- **Why this pass was chosen:** When OSRM route fetching failed during active guidance, the guidance card showed a passive warning banner but had no direct retry action. Users had no way to trigger a fresh route attempt without restarting navigation entirely.
+- **What changed:**
+  - Added `onRetryRoute` prop to `ShopDirectoryGuidanceCard`, wired through `ShopDirectoryMapOverlays` and `ShopDirectoryImmersiveMap`.
+  - Route error banner now includes a "Retry Route" button that calls `refreshRoutePreview()`.
+  - Exposed `onRetryRoute` from `useShopDirectoryNavigation`, backed by `shopGuidancePreview.refreshRoutePreview()`.
+  - Wired through both immersive and hybrid map paths in `ShopDirectoryScreen`.
+- **Files touched:** `src/app/components/shop/ShopDirectoryGuidanceCard.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/hooks/useShopDirectoryNavigation.ts`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P2-DATA:1/1/0 (route fetch failure during active guidance had no user recovery path)
+- **What this unlocks:** Users can now self-recover from OSRM failures during live navigation without restarting the entire session.
+
 ## Pass T576 — List-mode navigation control buttons (2026-03-30)
 
 - **Why this pass was chosen:** Users navigating in the sidebar/list layout had no way to pause, resume, or end navigation without switching to immersive map mode. The route panel showed live guidance data but lacked any session control actions.

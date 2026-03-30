@@ -1,3 +1,9 @@
+### Implementation Note — Pass T577 Route Error Recovery with Retry Action (2026-03-30)
+
+- Added `onRetryRoute` callback through the full overlay chain, backed by `shopGuidancePreview.refreshRoutePreview()`.
+- Route error banner in the guidance card now includes a "Retry Route" button matching the GPS recovery pattern from T573.
+- Strategic effect: **Live navigation now treats route-fetch failure as a recoverable state, not a dead end.** Users can reattempt route computation without ending and restarting navigation. This pairs with the GPS recovery action (T573) to give the guidance HUD a consistent recovery vocabulary across both connectivity and location degradation.
+
 ### Implementation Note — Pass T576 List-Mode Navigation Control Buttons (2026-03-30)
 
 - Added Pause/Resume + End navigation buttons to `ShopDirectoryRoutePanel` for active guidance sessions.

@@ -50,6 +50,7 @@ type ShopDirectoryMapOverlaysProps = {
   gpsStatus?: GpsStatus;
   gpsError?: string;
   onRetryGps?: () => void;
+  onRetryRoute?: () => void;
 };
 
 export default function ShopDirectoryMapOverlays({
@@ -89,6 +90,7 @@ export default function ShopDirectoryMapOverlays({
   gpsStatus,
   gpsError,
   onRetryGps,
+  onRetryRoute,
 }: ShopDirectoryMapOverlaysProps) {
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
   const isDark = mapTheme === "dark";
@@ -246,6 +248,7 @@ export default function ShopDirectoryMapOverlays({
           gpsStatus={gpsStatus}
           gpsError={gpsError}
           onRetryGps={onRetryGps}
+          onRetryRoute={onRetryRoute}
           onPauseNavigation={onPauseNavigation}
           onResumeNavigation={onResumeNavigation}
           onEndNavigation={onEndNavigation}

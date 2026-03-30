@@ -185,6 +185,7 @@ export default function ShopDirectoryScreen({
           onVoiceModeChange={nav.onVoiceModeChange}
           onVoiceVolumePresetChange={nav.onVoiceVolumePresetChange}
           onRetryGps={nav.onRetryGps}
+          onRetryRoute={nav.onRetryRoute}
         />
       </NavigationErrorBoundary>
     );
@@ -401,6 +402,7 @@ export default function ShopDirectoryScreen({
                       gpsError={nav.gpsError}
                       speedLimitMph={nav.speedLimitMph}
                       onRetryGps={nav.onRetryGps}
+                      onRetryRoute={nav.onRetryRoute}
                     />
                     {renderGuidanceOverlay("top-4 sm:top-5")}
                   </>
