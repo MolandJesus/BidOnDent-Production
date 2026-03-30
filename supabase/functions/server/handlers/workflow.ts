@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { requireClerkSession } from "../utils/authz.ts";
+import { requireClerkSession, requireMarketplaceContext } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (
@@ -172,5 +172,81 @@ export async function updateJobAssignmentStatus(
     });
   } catch (error) {
     return respond({ error: sanitizeErrorMessage(error) }, getWorkflowErrorStatus(error));
+  }
+}
+
+const VALID_CLAIM_DECISIONS = new Set(["approved", "denied"]);
+
+export async function updateClaimDecision(
+  req: Request,
+  supabase: SupabaseClient,
+  respond: RespondFunction
+): Promise<Response> {
+  try {
+    const { session } = await requireMarketplaceContext(req, supabase);
+
+    let body: Record<string, unknown> = {};
+    try {
+      body = await req.json();
+    } catch {
+      return respond({ error: "Invalid JSON in request body" }, 400);
+    }
+
+    const reportId = getString(body.reportId);
+    const decision = getString(body.decision);
+    const approvedAmount =
+      typeof body.approvedAmount === "number" ? body.approvedAmount : null;
+    const denialReason = getString(body.denialReason) || null;
+
+    if (!reportId || !VALID_CLAIM_DECISIONS.has(decision)) {
+      return respond({ error: "Missing reportId or invalid decision (approved|denied)" }, 400);
+    }
+
+    if (decision === "approved" && (approvedAmount === null || approvedAmount <= 0)) {
+      return respond({ error: "Approved amount must be a positive number" }, 400);
+    }
+
+    if (decision === "denied" && !denialReason) {
+      return respond({ error: "Denial reason is required" }, 400);
+    }
+
+    const clerkUserId = session.sub ?? session.user_id ?? "";
+
+    const payload: Record<string, unknown> = {
+      claim_status: decision,
+      claim_decision_date: new Date().toISOString(),
+      claim_decided_by: clerkUserId,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (decision === "approved") {
+      payload.approved_amount = approvedAmount;
+      payload.denial_reason = null;
+    } else {
+      payload.denial_reason = denialReason;
+      payload.approved_amount = null;
+    }
+
+    const { data, error } = await supabase
+      .from("damage_reports")
+      .update(payload)
+      .eq("id", reportId)
+      .select("id, claim_status, approved_amount, denial_reason, claim_decision_date")
+      .single();
+
+    if (error) {
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    return respond({
+      claimDecision: data || null,
+      success: true,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    const status = message.includes("Marketplace access required")
+      ? 403
+      : getWorkflowErrorStatus(error);
+    return respond({ error: sanitizeErrorMessage(error) }, status);
   }
 }

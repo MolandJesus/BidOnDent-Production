@@ -28,7 +28,8 @@ export function formatDate(value?: string): string {
 export function formatStatus(status?: string): string {
   if (!status) return "Unknown";
   if (status === "pending") return "Pending Bids";
-  if (status === "in-review" || status === "active") return "Reviewing Bids";
+  if (status === "in-review") return "Reviewing Bids";
+  if (status === "active") return "In Repair";
   if (status === "completed" || status === "resolved") return "Completed";
   return status.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 }

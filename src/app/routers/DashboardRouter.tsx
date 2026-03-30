@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { ScreenErrorBoundary } from "../components/ScreenErrorBoundary";
 import { useBidsForReport } from "../hooks/useBidsForReport";
 import { useMarketplaceReports } from "../hooks/useMarketplaceReports";
@@ -17,6 +17,8 @@ const InsurerPartnerShopsScreen = lazy(
 );
 
 import { SEED_DAMAGE_REPORTS } from "../constants";
+import { getShopSubmittedBids } from "../services/supabase/bids";
+import { updateClaimDecision } from "../services/supabase/reports";
 import type { DamageReport } from "../types";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import DashboardSecondaryViews from "./DashboardSecondaryViews";
@@ -64,6 +66,8 @@ export default function DashboardRouter({
   onExitDemoMode,
   onAcceptBid,
   onRejectBid,
+  onUpdateJobStatus,
+  onConfirmCompletion,
   onProfileUpdate,
   onDeleteAccount,
   onSaveVehicles,
@@ -87,7 +91,11 @@ export default function DashboardRouter({
   const { bids: liveBids } = useBidsForReport(bidsReportId);
 
   // Fetch all reports from Supabase for shop/insurer marketplace views
-  const { marketplaceReports, loading: marketplaceLoading } = useMarketplaceReports(userType);
+  const {
+    marketplaceReports,
+    loading: marketplaceLoading,
+    refetch: refetchMarketplace,
+  } = useMarketplaceReports(userType);
   const enrichedUserReports = reports.map((report) => ({
     ...report,
     photos:
@@ -149,6 +157,26 @@ export default function DashboardRouter({
   const usingSeedFallback = liveMarketplaceReports.length === 0;
   const shopInsurerReports = usingSeedFallback ? SEED_DAMAGE_REPORTS : liveMarketplaceReports;
   const shopInsurerReportsLoading = marketplaceLoading && liveMarketplaceReports.length === 0;
+
+  // Pre-load shop's existing bids so ShopRequestsScreen knows which reports already have bids
+  const [shopBidReportIds, setShopBidReportIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (userType !== "shop" || !websiteIdentity?.providerUserId) return;
+    let cancelled = false;
+    getShopSubmittedBids(websiteIdentity.providerUserId).then((bids) => {
+      if (!cancelled) {
+        const ids = new Set(
+          bids.map((b) => b.damage_report_id || b.report_id || "").filter(Boolean)
+        );
+        setShopBidReportIds(ids);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [userType, websiteIdentity?.providerUserId]);
+
+  const shopBidReportIdsArray = useMemo(() => Array.from(shopBidReportIds), [shopBidReportIds]);
 
   // Scroll to top whenever view changes
   useEffect(() => {
@@ -276,6 +304,7 @@ export default function DashboardRouter({
                   onAcceptBid={onAcceptBid}
                   onRejectBid={onRejectBid}
                   onStartReport={() => onTabChange("report")}
+                  onViewShopDirectory={() => onViewModeChange("shop-directory")}
                   onBack={() => {
                     onTabChange("home");
                     onViewModeChange("dashboard");
@@ -292,6 +321,7 @@ export default function DashboardRouter({
                   reports={shopInsurerReports}
                   reportsLoading={shopInsurerReportsLoading}
                   isSeedData={usingSeedFallback}
+                  existingBidReportIds={shopBidReportIdsArray}
                   appearanceMode={appearanceMode}
                   onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
                     onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
@@ -308,6 +338,7 @@ export default function DashboardRouter({
                   reports={shopInsurerReports}
                   isSeedData={usingSeedFallback}
                   appearanceMode={appearanceMode}
+                  onUpdateJobStatus={onUpdateJobStatus}
                 />
               </motion.div>
             )}
@@ -321,9 +352,25 @@ export default function DashboardRouter({
                   reportsLoading={shopInsurerReportsLoading}
                   isSeedData={usingSeedFallback}
                   appearanceMode={appearanceMode}
-                  onApproveClaim={(claimId, amount) => {
+                  onApproveClaim={async (claimId, amount) => {
+                    const ok = await updateClaimDecision(claimId, "approved", {
+                      approvedAmount: amount,
+                    });
+                    if (ok) refetchMarketplace();
                     if (import.meta.env.DEV)
-                      console.info("[BidOnDent] Claim approved:", { claimId, amount });
+                      console.info("[BidOnDent] Claim approved:", {
+                        claimId,
+                        amount,
+                        persisted: ok,
+                      });
+                  }}
+                  onDenyClaim={async (claimId, reason) => {
+                    const ok = await updateClaimDecision(claimId, "denied", {
+                      denialReason: reason,
+                    });
+                    if (ok) refetchMarketplace();
+                    if (import.meta.env.DEV)
+                      console.info("[BidOnDent] Claim denied:", { claimId, reason, persisted: ok });
                   }}
                 />
               </motion.div>
@@ -403,6 +450,7 @@ export default function DashboardRouter({
               onSaveVehicles={onSaveVehicles}
               onEnableDemoMode={onEnableDemoMode}
               onExitDemoMode={onExitDemoMode}
+              onConfirmCompletion={onConfirmCompletion}
             />
 
             {!hasRouteMatch && (

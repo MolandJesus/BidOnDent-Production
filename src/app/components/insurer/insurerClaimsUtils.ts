@@ -33,8 +33,9 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
     const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
     const rawStatus = String(report?.status ?? "pending").toLowerCase();
-    const status =
+    const inferredStatus =
       rawStatus === "completed" ? "approved" : rawStatus === "in-review" ? "reviewing" : "pending";
+    const status = report?.claimStatus || inferredStatus;
     const reportPhotos = Array.isArray(report?.photos) ? report.photos.filter(Boolean) : [];
     const inferredBidAmount =
       Number(report?.bidAmount) ||
@@ -81,9 +82,13 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
       photoCount: reportPhotos.length,
       photos: reportPhotos,
       previewPhoto: reportPhotos[0] ?? null,
-      description: report?.damageDescription || report?.description || "Claim details pending review.",
+      description:
+        report?.damageDescription || report?.description || "Claim details pending review.",
       shopAssigned: null,
-      approvedAmount: status === "approved" ? inferredBidAmount : undefined,
+      approvedAmount:
+        report?.approvedAmount ?? (status === "approved" ? inferredBidAmount : undefined),
+      denialReason: report?.denialReason || undefined,
+      approvalDate: report?.claimDecisionDate || undefined,
       shopBids: bidSummaries,
     };
   });

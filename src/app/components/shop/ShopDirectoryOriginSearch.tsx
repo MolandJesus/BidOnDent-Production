@@ -1,9 +1,6 @@
 import { MapPin, Navigation2, Plus, Search } from "lucide-react";
 
-import type {
-  NavigationAddressResult,
-  NavigationAddressSuggestion,
-} from "../../types/navigation";
+import type { NavigationAddressResult, NavigationAddressSuggestion } from "../../types/navigation";
 import type { Place } from "../../types/mapDomain";
 
 type ShopDirectoryOriginSearchProps = {
@@ -50,6 +47,15 @@ export default function ShopDirectoryOriginSearch({
   onUseMyLocation,
 }: ShopDirectoryOriginSearchProps) {
   const originCandidates = originSearchResults.length > 0 ? originSearchResults : originSuggestions;
+  const quickSuggestedOrigins = suggestedOrigins.slice(0, 4);
+  const selectedOriginKey = selectedOrigin?.placeId || selectedOrigin?.name || "";
+  const selectedAlreadyVisible = quickSuggestedOrigins.some(
+    (origin) => (origin.placeId || origin.name) === selectedOriginKey
+  );
+  const visibleSuggestedOrigins =
+    selectedOrigin && !selectedAlreadyVisible
+      ? [...quickSuggestedOrigins, selectedOrigin]
+      : quickSuggestedOrigins;
 
   return (
     <div className="space-y-2">
@@ -64,7 +70,7 @@ export default function ShopDirectoryOriginSearch({
         </div>
         {selectedOrigin && (
           <button
-            className={`min-h-[44px] rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+            className={`min-h-[36px] rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors ${
               isLight
                 ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
                 : "text-slate-400 hover:text-slate-200"
@@ -97,7 +103,7 @@ export default function ShopDirectoryOriginSearch({
           />
         </div>
         <button
-          className={`min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+          className={`min-h-[36px] rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
             isLight
               ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
               : "border-white/[0.10] bg-white/[0.04] text-slate-200 hover:bg-white/[0.08]"
@@ -156,10 +162,10 @@ export default function ShopDirectoryOriginSearch({
         </div>
       )}
 
-      <div className="flex gap-1.5 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
+      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
         {onUseMyLocation && (
           <button
-            className={`shrink-0 inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+            className={`shrink-0 inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
               selectedOrigin?.placeId === "user-geolocation"
                 ? isLight
                   ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
@@ -176,14 +182,14 @@ export default function ShopDirectoryOriginSearch({
             {isLocating ? "Locating..." : "My Location"}
           </button>
         )}
-        {suggestedOrigins.map((origin) => {
+        {visibleSuggestedOrigins.map((origin) => {
           const isActive =
             (selectedOrigin?.placeId || selectedOrigin?.name) === (origin.placeId || origin.name);
 
           return (
             <button
               key={origin.placeId || origin.name}
-              className={`shrink-0 min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+              className={`shrink-0 min-h-[36px] rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 isActive
                   ? isLight
                     ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
@@ -209,7 +215,7 @@ export default function ShopDirectoryOriginSearch({
 
       <div className="flex flex-wrap items-center gap-1.5">
         <button
-          className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+          className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
             selectedOrigin
               ? isLight
                 ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"

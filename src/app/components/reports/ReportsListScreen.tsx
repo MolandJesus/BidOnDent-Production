@@ -1,6 +1,21 @@
-import { useState } from "react";
-import { ArrowLeft, Clock, DollarSign, ChevronRight, ZoomIn, X, ChevronLeft } from "lucide-react";
+import { useMemo, useState } from "react";
+import { motion } from "motion/react";
+import {
+  ArrowLeft,
+  Clock,
+  DollarSign,
+  ChevronRight,
+  ZoomIn,
+  X,
+  ChevronLeft,
+  MapPin,
+  Wrench,
+} from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
+import { zipToCoordinates } from "../../services/supabase/map";
+import { defaultCoverageCenter } from "../landing/coverageData";
+import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
+import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
 
@@ -12,6 +27,7 @@ type ReportsListScreenProps = {
   onSelectReport: (reportId: string) => void;
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
+  onStartReport?: () => void;
 };
 
 export default function ReportsListScreen({
@@ -22,6 +38,7 @@ export default function ReportsListScreen({
   onSelectReport,
   primaryColor = "#003d82",
   appearanceMode = "map-dark",
+  onStartReport,
 }: ReportsListScreenProps) {
   const isLight = appearanceMode === "light";
   const [filter, setFilter] = useState("all"); // all, pending, active, completed
@@ -31,10 +48,45 @@ export default function ReportsListScreen({
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
+  // Report location pins for overview map
+  const reportMapPins = useMemo<ReportPin[]>(() => {
+    if (!Array.isArray(reports)) return [];
+    return reports
+      .map((report) => {
+        const zipCode = report?.zipCode || report?.zip_code || "";
+        const coords = zipCode ? zipToCoordinates(zipCode) : null;
+        if (!coords) return null;
+
+        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+        const label = [vehicleData.year, vehicleData.make, vehicleData.model]
+          .filter(Boolean)
+          .join(" ");
+
+        return {
+          id: String(report.id),
+          lat: coords.lat,
+          lng: coords.lng,
+          label: label || report?.damageArea || "Damage report",
+        };
+      })
+      .filter((pin): pin is ReportPin => pin !== null);
+  }, [reports]);
+
+  const reportMapCenter = useMemo<[number, number]>(() => {
+    if (reportMapPins.length > 0) {
+      return [reportMapPins[0].lat, reportMapPins[0].lng];
+    }
+    return defaultCoverageCenter;
+  }, [reportMapPins]);
+
   // Support for error/empty/loading states
   const filteredReports = Array.isArray(reports)
     ? reports.filter((report) => {
         if (filter === "all") return true;
+        if (filter === "pending")
+          return report.status === "pending" || report.status === "in-review";
+        if (filter === "completed")
+          return report.status === "completed" || report.status === "resolved";
         return report.status === filter;
       })
     : [];
@@ -84,6 +136,95 @@ export default function ReportsListScreen({
         </div>
       </div>
 
+      {/* Reports Overview Map */}
+      {!reportsLoading && filteredReports.length > 0 && (
+        <div className="px-4 pt-4">
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, delay: 0.06 }}
+            className="bd-glass-card overflow-hidden"
+            style={{
+              background: isLight
+                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
+                : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
+              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
+            }}
+          >
+            <div className="p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2
+                    className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                  >
+                    Report locations
+                  </h2>
+                  <p
+                    className={`mt-0.5 text-xs ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
+                  >
+                    All your submitted damage reports on the map.
+                  </p>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                    isLight
+                      ? "bg-amber-50 text-amber-700 border border-amber-200/60"
+                      : "bg-amber-400/14 text-amber-200 border border-amber-300/20"
+                  }`}
+                >
+                  {reportMapPins.length}/{filteredReports.length} mapped
+                </span>
+              </div>
+            </div>
+
+            {reportMapPins.length > 0 ? (
+              <>
+                <div className="h-[180px] md:h-[200px]">
+                  <DashboardMapPreview
+                    shops={[]}
+                    reportPins={reportMapPins}
+                    center={reportMapCenter}
+                    zoom={10}
+                    isLight={isLight}
+                    onReportPinClick={(pin) => {
+                      if (pin.id) {
+                        onSelectReport(pin.id);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-2 p-3">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                      isLight ? "bg-amber-100 text-amber-700" : "bg-amber-500/20 text-amber-200"
+                    }`}
+                  >
+                    <span className="h-2 w-2 rounded-full bg-amber-400" />
+                    Damage report
+                  </span>
+                  <span
+                    className={`text-[11px] ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
+                  >
+                    Tap a pin to view that report.
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div
+                className={`mx-3 mb-3 flex items-start gap-2 rounded-xl border border-dashed px-3 py-2.5 text-xs ${
+                  isLight ? "border-slate-300/70 text-slate-600" : "border-white/20 text-slate-300"
+                }`}
+              >
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>
+                  No report locations available. Reports with ZIP codes will appear on this map.
+                </span>
+              </div>
+            )}
+          </motion.section>
+        </div>
+      )}
+
       {/* Reports List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
@@ -102,7 +243,26 @@ export default function ReportsListScreen({
           <div
             className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
           >
-            <p className={isLight ? "text-slate-500" : "text-slate-400"}>No reports yet</p>
+            <MapPin
+              className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
+            />
+            <p className={isLight ? "text-slate-900" : "text-slate-100"}>No reports yet</p>
+            <p className={`text-sm mt-1 ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
+              Submit a damage report to start getting bids from local shops.
+            </p>
+            {onStartReport && (
+              <button
+                type="button"
+                onClick={onStartReport}
+                className={`mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors min-h-[44px] ${
+                  isLight
+                    ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
+                    : "bg-blue-500/90 text-white hover:bg-blue-400/90 active:bg-blue-600/90"
+                }`}
+              >
+                Start New Report
+              </button>
+            )}
           </div>
         ) : (
           filteredReports.map((report) => {
@@ -155,7 +315,8 @@ export default function ReportsListScreen({
                           {report.vehicle?.model || report.vehicleInfo?.model}
                         </h3>
                         <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-                          Damage to {report.damageArea || report.damageAreas?.[0] || "reported area"}
+                          Damage to{" "}
+                          {report.damageArea || report.damageAreas?.[0] || "reported area"}
                         </p>
                       </div>
                       <span
@@ -163,11 +324,21 @@ export default function ReportsListScreen({
                           report.status === "pending"
                             ? "bg-sky-100 text-sky-700"
                             : report.status === "active"
-                              ? "bg-blue-100 text-blue-400"
-                              : "bg-indigo-100 text-indigo-700"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : report.status === "completed"
+                                ? "bg-violet-100 text-violet-700"
+                                : report.status === "resolved"
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-indigo-100 text-indigo-700"
                         }`}
                       >
-                        {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
+                        {report.status === "active"
+                          ? "In Repair"
+                          : report.status === "completed"
+                            ? "Repair Done"
+                            : report.status === "resolved"
+                              ? "Confirmed"
+                              : report.status.charAt(0).toUpperCase() + report.status.slice(1)}
                       </span>
                     </div>
 
@@ -196,7 +367,24 @@ export default function ReportsListScreen({
                     </div>
 
                     {/* Bids Info */}
-                    {bidsCount > 0 && (
+                    {(report.status === "active" ||
+                      report.status === "completed" ||
+                      report.status === "resolved") &&
+                    report.bids?.find((b) => b.status === "accepted") ? (
+                      <div
+                        className={`flex items-center gap-2 pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
+                      >
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15">
+                          <Wrench className="h-3.5 w-3.5 text-emerald-500" />
+                        </div>
+                        <span
+                          className={`text-sm font-semibold ${isLight ? "text-emerald-700" : "text-emerald-400"}`}
+                        >
+                          {report.bids!.find((b) => b.status === "accepted")!.shopName}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
+                      </div>
+                    ) : bidsCount > 0 ? (
                       <div
                         className={`flex items-center gap-2 pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
                       >
@@ -218,10 +406,7 @@ export default function ReportsListScreen({
                         </span>
                         <ChevronRight className="w-4 h-4 text-gray-400 ml-auto" />
                       </div>
-                    )}
-
-                    {/* No bids yet */}
-                    {report.bidsCount === 0 && (
+                    ) : (
                       <div
                         className={`pt-2 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
                       >

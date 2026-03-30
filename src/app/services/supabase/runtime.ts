@@ -49,6 +49,7 @@ export const SUPABASE_EDGE_ROUTES = {
     trackLogin: "/track-login",
   },
   bids: "/bids",
+  claimDecision: "/claim-decision",
   cleanupOldReports: "/cleanup-old-reports",
   deletePhoto: "/delete-photo",
   deleteVehicle: "/delete-vehicle",

@@ -106,7 +106,7 @@ export default function HowItWorksSection({
         style={{ animationDelay: "1s" }}
       >
         <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-9 h-9 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 20px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.6)"

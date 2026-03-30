@@ -1,8 +1,14 @@
-import { useState } from "react";
-import { Search, AlertCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { motion } from "motion/react";
+import { Search, AlertCircle, MapPin } from "lucide-react";
+import { zipToCoordinates } from "../../services/supabase/map";
+import { defaultCoverageCenter } from "../landing/coverageData";
+import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
+import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import { transformReportsToClaims, type ClaimData } from "./insurerClaimsUtils";
 import InsurerClaimCard from "./InsurerClaimCard";
 import InsurerClaimApprovalModal from "./InsurerClaimApprovalModal";
+import InsurerClaimDenialModal from "./InsurerClaimDenialModal";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
 
@@ -12,6 +18,7 @@ type InsurerClaimsScreenProps = {
   reportsLoading?: boolean;
   isSeedData?: boolean;
   onApproveClaim?: (claimId: string, amount: number) => void;
+  onDenyClaim?: (claimId: string, reason: string) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
 
@@ -21,6 +28,7 @@ export default function InsurerClaimsScreen({
   reportsLoading = false,
   isSeedData = false,
   onApproveClaim,
+  onDenyClaim,
   appearanceMode = "map-dark",
 }: InsurerClaimsScreenProps) {
   const isLight = appearanceMode === "light";
@@ -31,6 +39,7 @@ export default function InsurerClaimsScreen({
   const [selectedClaim, setSelectedClaim] = useState<ClaimData | null>(null);
   const [approvalAmount, setApprovalAmount] = useState("");
   const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [showDenialModal, setShowDenialModal] = useState(false);
 
   // DEPRECATED: Sample claims data removed - component now expects live data from Supabase
   // If no data is provided, shows empty state instead
@@ -38,6 +47,36 @@ export default function InsurerClaimsScreen({
   const liveClaims = transformReportsToClaims(reports);
 
   const claimsSource = liveClaims.length > 0 ? liveClaims : [];
+
+  // Map pins for claim locations
+  const claimPins = useMemo<ReportPin[]>(() => {
+    return (reports || [])
+      .map((report) => {
+        const zipCode = report?.zipCode || report?.zip_code || "";
+        const coords = zipCode ? zipToCoordinates(zipCode) : null;
+        if (!coords) return null;
+
+        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+        const label = [vehicleData.year, vehicleData.make, vehicleData.model]
+          .filter(Boolean)
+          .join(" ");
+
+        return {
+          id: String(report.id),
+          lat: coords.lat,
+          lng: coords.lng,
+          label: label || report?.damageArea || "Insurance claim",
+        };
+      })
+      .filter((pin): pin is ReportPin => pin !== null);
+  }, [reports]);
+
+  const claimMapCenter = useMemo<[number, number]>(() => {
+    if (claimPins.length > 0) {
+      return [claimPins[0].lat, claimPins[0].lng];
+    }
+    return defaultCoverageCenter;
+  }, [claimPins]);
 
   const filteredClaims = claimsSource.filter((claim) => {
     const matchesSearch =
@@ -60,6 +99,19 @@ export default function InsurerClaimsScreen({
       onApproveClaim?.(selectedClaim.id, parseFloat(approvalAmount));
       setShowApprovalModal(false);
       setApprovalAmount("");
+      setSelectedClaim(null);
+    }
+  };
+
+  const handleOpenDenial = (claim: ClaimData) => {
+    setSelectedClaim(claim);
+    setShowDenialModal(true);
+  };
+
+  const handleDenyClaim = (reason: string) => {
+    if (selectedClaim) {
+      onDenyClaim?.(selectedClaim.id, reason);
+      setShowDenialModal(false);
       setSelectedClaim(null);
     }
   };
@@ -161,6 +213,85 @@ export default function InsurerClaimsScreen({
         </div>
       )}
 
+      {/* Claim Geography Map */}
+      {!reportsLoading && claimsSource.length > 0 && (
+        <div className="px-4 pt-4">
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, delay: 0.08 }}
+            className="bd-glass-card overflow-hidden"
+            style={{
+              background: isLight
+                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
+                : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
+              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
+            }}
+          >
+            <div className="p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2
+                    className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                  >
+                    Claim locations
+                  </h2>
+                  <p
+                    className={`mt-0.5 text-xs ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
+                  >
+                    Geographic distribution of active insurance claims.
+                  </p>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                    isLight
+                      ? "bg-amber-50 text-amber-700 border border-amber-200/60"
+                      : "bg-amber-400/14 text-amber-200 border border-amber-300/20"
+                  }`}
+                >
+                  {claimPins.length}/{claimsSource.length} mapped
+                </span>
+              </div>
+            </div>
+
+            {claimPins.length > 0 ? (
+              <>
+                <div className="h-[200px] md:h-[220px]">
+                  <DashboardMapPreview
+                    shops={[]}
+                    reportPins={claimPins}
+                    center={claimMapCenter}
+                    zoom={10}
+                    isLight={isLight}
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-2 p-3">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                      isLight ? "bg-amber-100 text-amber-700" : "bg-amber-500/20 text-amber-200"
+                    }`}
+                  >
+                    <span className="h-2 w-2 rounded-full bg-amber-400" />
+                    Insurance claim
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div
+                className={`mx-3 mb-3 flex items-start gap-2 rounded-xl border border-dashed px-3 py-2.5 text-xs ${
+                  isLight ? "border-slate-300/70 text-slate-600" : "border-white/20 text-slate-300"
+                }`}
+              >
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>
+                  No claim locations available. Claims with ZIP codes will appear on this map.
+                </span>
+              </div>
+            )}
+          </motion.section>
+        </div>
+      )}
+
       {/* Claims List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
@@ -207,6 +338,7 @@ export default function InsurerClaimsScreen({
               primaryColor={primaryColor}
               appearanceMode={appearanceMode}
               onOpenApproval={handleOpenApproval}
+              onOpenDenial={handleOpenDenial}
             />
           ))
         )}
@@ -223,6 +355,19 @@ export default function InsurerClaimsScreen({
           onCancel={() => {
             setShowApprovalModal(false);
             setApprovalAmount("");
+            setSelectedClaim(null);
+          }}
+        />
+      )}
+
+      {showDenialModal && selectedClaim && (
+        <InsurerClaimDenialModal
+          selectedClaim={selectedClaim}
+          primaryColor={primaryColor}
+          onDeny={handleDenyClaim}
+          appearanceMode={appearanceMode}
+          onCancel={() => {
+            setShowDenialModal(false);
             setSelectedClaim(null);
           }}
         />

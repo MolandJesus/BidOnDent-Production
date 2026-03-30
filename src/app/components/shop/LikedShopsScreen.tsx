@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Heart, MapPin, Phone, Search, Shield, Star } from "lucide-react";
+import { motion } from "motion/react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
+import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
+import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import {
@@ -9,6 +12,7 @@ import {
 } from "../../services/auth/websiteIdentity";
 import { buildShopMapListings } from "../../services/intelligence/shopMapExperience";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
+import { defaultCoverageCenter } from "../landing/coverageData";
 
 type LikedShopsScreenProps = {
   onBack: () => void;
@@ -78,6 +82,30 @@ export default function LikedShopsScreen({
     );
   });
 
+  const shopPins: CoveragePartnerShop[] = useMemo(
+    () =>
+      filteredListings
+        .filter((s) => s.mapResult?.coordinates?.latitude && s.mapResult?.coordinates?.longitude)
+        .map((s) => ({
+          id: String(s.id),
+          name: s.name,
+          countyLabel: s.serviceArea || "",
+          lat: s.mapResult.coordinates.latitude,
+          lng: s.mapResult.coordinates.longitude,
+          label: s.name,
+          specialties: s.specialties.slice(0, 3),
+          rating: s.rating,
+        })),
+    [filteredListings]
+  );
+
+  const shopMapCenter: [number, number] = useMemo(() => {
+    if (shopPins.length > 0) return [shopPins[0].lat, shopPins[0].lng];
+    return defaultCoverageCenter;
+  }, [shopPins]);
+
+  const [focusedShopId, setFocusedShopId] = useState<string | null>(null);
+
   const handleUnlike = (shopId: number) => {
     setSavedShopIds((currentIds) => currentIds.filter((id) => id !== shopId));
   };
@@ -135,6 +163,68 @@ export default function LikedShopsScreen({
       </div>
 
       <div className="px-4 py-4">
+        {/* ── Saved shops geography map ── */}
+        {savedListings.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className={`mb-4 overflow-hidden rounded-[28px] ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+          >
+            <div className="flex items-center justify-between px-4 pt-3 pb-1">
+              <h3
+                className={`text-sm font-semibold ${isLight ? "text-slate-700" : "text-slate-200"}`}
+              >
+                <MapPin className="mr-1.5 inline-block h-4 w-4 align-[-2px] text-blue-400" />
+                Saved shop locations
+              </h3>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-400/15 text-blue-200"}`}
+              >
+                {shopPins.length} / {savedListings.length} mapped
+              </span>
+            </div>
+
+            <div className="px-3 pb-3 pt-1">
+              {shopPins.length > 0 ? (
+                <div
+                  className="overflow-hidden rounded-2xl"
+                  style={{ height: window.innerWidth < 640 ? 200 : 220 }}
+                >
+                  <DashboardMapPreview
+                    shops={shopPins}
+                    reportPins={[]}
+                    center={shopMapCenter}
+                    zoom={9}
+                    isLight={isLight}
+                    onShopClick={(shop) => setFocusedShopId(shop.id ?? null)}
+                  />
+                </div>
+              ) : (
+                <div
+                  className={`flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-6 ${isLight ? "border-slate-200 text-slate-400" : "border-white/10 text-slate-400/60"}`}
+                >
+                  <MapPin className="h-5 w-5" />
+                  <span className="text-sm">No saved shops with resolvable coordinates</span>
+                </div>
+              )}
+            </div>
+
+            {shopPins.length > 0 && (
+              <div
+                className={`flex items-center gap-3 border-t px-4 py-2 text-xs ${isLight ? "border-slate-100 text-slate-500" : "border-white/5 text-slate-400/60"}`}
+              >
+                <span className="inline-flex items-center gap-1">
+                  <span className="h-2 w-2 rounded-full bg-blue-500" />
+                  Saved shops
+                </span>
+                <span className={isLight ? "text-slate-400" : "text-slate-500"}>
+                  Tap a pin to highlight below
+                </span>
+              </div>
+            )}
+          </motion.section>
+        )}
         {savedListings.length === 0 ? (
           <div
             className={`rounded-[28px] p-5 sm:p-8 text-center ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
@@ -168,7 +258,9 @@ export default function LikedShopsScreen({
             {filteredListings.map((shop) => (
               <article
                 key={shop.id}
-                className={`overflow-hidden rounded-[28px] ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+                className={`overflow-hidden rounded-[28px] transition-shadow ${
+                  focusedShopId === String(shop.id) ? "ring-2 ring-blue-400/60 shadow-lg" : ""
+                } ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
               >
                 <div className="flex flex-col gap-4 p-4 md:flex-row md:p-5">
                   <div

@@ -63,6 +63,10 @@ export default function DashboardHeader({
   const notificationCenterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!showNotifications && !showTopProfileMenu) {
+      return;
+    }
+
     const onDocumentClick = (event: MouseEvent) => {
       if (topProfileMenuRef.current && !topProfileMenuRef.current.contains(event.target as Node)) {
         setShowTopProfileMenu(false);
@@ -75,13 +79,42 @@ export default function DashboardHeader({
       }
     };
 
+    const onDocumentKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowTopProfileMenu(false);
+        setShowNotifications(false);
+      }
+    };
+
     document.addEventListener("mousedown", onDocumentClick);
-    return () => document.removeEventListener("mousedown", onDocumentClick);
-  }, []);
+    document.addEventListener("keydown", onDocumentKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onDocumentClick);
+      document.removeEventListener("keydown", onDocumentKeyDown);
+    };
+  }, [showNotifications, showTopProfileMenu]);
+
+  useEffect(() => {
+    if (
+      !showNotifications ||
+      typeof document === "undefined" ||
+      typeof window === "undefined" ||
+      !window.matchMedia("(max-width: 767px)").matches
+    ) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [showNotifications]);
 
   return (
     <header
-      className={`sticky top-0 z-40 rounded-b-2xl border-0 border-b ${
+      className={`sticky top-0 z-40 mx-2 mt-2 md:mx-3 md:mt-3 rounded-3xl md:rounded-[2rem] border ${
         isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.12]"
       }`}
       style={{
@@ -98,11 +131,12 @@ export default function DashboardHeader({
       <div className="px-4 md:px-8 py-2.5 md:py-3.5 flex items-center justify-between gap-3">
         <button
           onClick={onLogoClick}
+          aria-label="Open dashboard home"
           className="md:hidden flex items-center gap-2 cursor-pointer"
           type="button"
         >
           <span
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
+            className="w-9 h-9 rounded-[1rem] flex items-center justify-center text-white"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               boxShadow: "0 3px 10px rgba(37, 99, 235, 0.30)",
@@ -140,21 +174,38 @@ export default function DashboardHeader({
               onClick={onOpenDemoMode}
               className="md:hidden w-10 h-10 rounded-xl bd-glass-control--secondary flex items-center justify-center"
               aria-label="Open demo mode"
+              type="button"
             >
               <Sparkles className="w-5 h-5 text-blue-600" />
             </button>
           )}
           <div
-            className={`hidden lg:flex items-center gap-2 px-3 py-2 min-w-[260px] rounded-xl border transition-colors ${isLightAppearance ? "border-slate-200/80 bg-slate-50/80 hover:bg-white/90" : "bd-glass-control--utility"}`}
+            aria-label="Dashboard search is coming soon"
+            className={`hidden lg:flex items-center justify-between gap-3 px-3 py-2 min-w-[260px] rounded-xl border ${isLightAppearance ? "border-slate-200/80 bg-slate-50/80" : "bd-glass-control--utility"}`}
+            role="note"
           >
-            <Search
-              className={`w-4 h-4 ${isLightAppearance ? "text-slate-400" : "text-blue-200/70"}`}
-            />
-            <input
-              className={`bg-transparent text-sm w-full outline-none ${isLightAppearance ? "placeholder:text-slate-400 text-slate-700" : "placeholder:text-blue-200/60 text-slate-100"}`}
-              placeholder="Search..."
-              aria-label="Search"
-            />
+            <div className="flex min-w-0 items-center gap-2">
+              <Search
+                className={`w-4 h-4 shrink-0 ${isLightAppearance ? "text-slate-400" : "text-blue-200/70"}`}
+              />
+              <div className="min-w-0">
+                <p
+                  className={`truncate text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-slate-100"}`}
+                >
+                  Global search
+                </p>
+                <p
+                  className={`truncate text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-200/60"}`}
+                >
+                  Coming soon
+                </p>
+              </div>
+            </div>
+            <span
+              className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${isLightAppearance ? "bg-white text-slate-500 ring-1 ring-slate-200" : "bg-white/10 text-blue-100/70"}`}
+            >
+              Soon
+            </span>
           </div>
 
           <div className="relative" ref={notificationCenterRef}>
@@ -165,8 +216,16 @@ export default function DashboardHeader({
                 setShowTopProfileMenu(false);
               }}
               className={`relative w-11 h-11 rounded-full flex items-center justify-center transition-colors ${isLightAppearance ? "border border-slate-200/80 bg-white/70 hover:bg-white/90" : "bd-glass-control--utility"}`}
-              aria-label="Open notifications"
+              aria-label={
+                showNotifications
+                  ? "Close notifications"
+                  : unreadCount > 0
+                    ? `Open notifications, ${unreadCount} unread`
+                    : "Open notifications"
+              }
+              aria-controls="dashboard-notification-center"
               aria-expanded={showNotifications}
+              aria-haspopup="dialog"
             >
               <Bell
                 className={`w-5 h-5 ${isLightAppearance ? "text-slate-600" : "text-slate-100"}`}
@@ -208,10 +267,12 @@ export default function DashboardHeader({
                 setShowTopProfileMenu((current) => !current);
                 setShowNotifications(false);
               }}
+              aria-controls="dashboard-user-profile-menu"
               aria-expanded={showTopProfileMenu}
               aria-haspopup="menu"
-              aria-label="User profile menu"
+              aria-label={showTopProfileMenu ? "Close user profile menu" : "Open user profile menu"}
               className="flex items-center gap-2 p-1 md:pl-1.5 md:pr-2 md:py-1.5 rounded-full hover:bg-blue-500/10 transition-colors"
+              type="button"
             >
               {userImageUrl ? (
                 <img
@@ -245,6 +306,7 @@ export default function DashboardHeader({
 
             {showTopProfileMenu && profileDropdownData && (
               <div
+                id="dashboard-user-profile-menu"
                 role="menu"
                 aria-label="User profile menu"
                 className={`absolute right-0 mt-2 w-60 z-50 overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl ${isLightAppearance ? "bg-white/97 border-slate-200/70 shadow-slate-200/50" : "bd-glass-floating"}`}
@@ -270,6 +332,7 @@ export default function DashboardHeader({
                     setShowTopProfileMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${isLightAppearance ? "text-slate-700 hover:bg-blue-50" : "text-slate-200 hover:bg-blue-500/10"}`}
+                  type="button"
                 >
                   <Home className="w-4 h-4 opacity-70" />
                   Dashboard
@@ -281,9 +344,10 @@ export default function DashboardHeader({
                     onOpenSettings();
                   }}
                   className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${isLightAppearance ? "text-slate-700 hover:bg-blue-50" : "text-slate-200 hover:bg-blue-500/10"}`}
+                  type="button"
                 >
                   <Settings className="w-4 h-4 opacity-60" />
-                  Site Settings
+                  Appearance Settings
                 </button>
                 <button
                   role="menuitem"
@@ -292,6 +356,7 @@ export default function DashboardHeader({
                     setShowTopProfileMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 ${isLightAppearance ? "text-slate-700 hover:bg-blue-50" : "text-slate-200 hover:bg-blue-500/10"}`}
+                  type="button"
                 >
                   <User className="w-4 h-4 opacity-70" />
                   Account Settings
@@ -303,6 +368,7 @@ export default function DashboardHeader({
                     setShowTopProfileMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center gap-2.5 text-rose-500 hover:bg-rose-50/80 border-t ${isLightAppearance ? "border-slate-200/60 hover:bg-rose-50" : "border-blue-400/15 hover:bg-rose-500/10 text-rose-400"}`}
+                  type="button"
                 >
                   <LogOut className="w-4 h-4 opacity-70" />
                   Log Out

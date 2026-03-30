@@ -1,4 +1,8 @@
-import type { WebsiteIdentity, WebsiteSessionMemory } from "./websiteIdentity";
+import {
+  sanitizeWebsiteSessionMemory,
+  type WebsiteIdentity,
+  type WebsiteSessionMemory,
+} from "./websiteIdentity";
 import {
   buildSupabaseEdgeHeadersAsync,
   buildSupabaseFunctionUrl,
@@ -19,6 +23,10 @@ const pendingSyncTimers = new Map<string, number>();
 
 async function buildHeaders() {
   return await buildSupabaseEdgeHeadersAsync();
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
 }
 
 async function withTimeout<T>(promise: Promise<T>, timeoutMs = SYNC_TIMEOUT_MS): Promise<T> {
@@ -59,8 +67,13 @@ export async function fetchWebsiteSessionMemoryFromCloud(identity: WebsiteIdenti
       throw new Error(`Failed to fetch website preferences: ${response.status}`);
     }
 
-    const payload = await response.json();
-    return payload?.preferences?.session_memory || null;
+    const payload: unknown = await response.json();
+    const payloadRecord = isRecord(payload) ? payload : null;
+    const preferences =
+      payloadRecord && isRecord(payloadRecord.preferences) ? payloadRecord.preferences : null;
+    const sessionMemory = preferences?.session_memory;
+
+    return sessionMemory ? sanitizeWebsiteSessionMemory(sessionMemory) : null;
   } catch (error) {
     if (import.meta.env.DEV) console.error("Error fetching website preferences from cloud:", error);
     return null;

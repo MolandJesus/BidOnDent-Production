@@ -11,9 +11,13 @@ const LAYER_ID = "report-markers-circle";
 
 type MapLibreReportLayerProps = {
   mapTheme?: MapTheme;
+  onViewReportDetail?: (reportId: string) => void;
 };
 
-export default function MapLibreReportLayer({ mapTheme = "dark" }: MapLibreReportLayerProps) {
+export default function MapLibreReportLayer({
+  mapTheme = "dark",
+  onViewReportDetail,
+}: MapLibreReportLayerProps) {
   const isDark = mapTheme === "dark";
   const [reports, setReports] = useState<DamageReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<DamageReport | null>(null);
@@ -104,10 +108,10 @@ export default function MapLibreReportLayer({ mapTheme = "dark" }: MapLibreRepor
           type="circle"
           paint={{
             "circle-radius": 12,
-            "circle-color": isDark ? "#2563eb" : "#1d4ed8",
-            "circle-opacity": isDark ? 0.92 : 0.85,
+            "circle-color": isDark ? "#f59e0b" : "#d97706",
+            "circle-opacity": isDark ? 0.92 : 0.88,
             "circle-stroke-width": 2.5,
-            "circle-stroke-color": isDark ? "#93c5fd" : "#1e40af",
+            "circle-stroke-color": isDark ? "#fcd34d" : "#92400e",
           }}
         />
       </Source>
@@ -139,6 +143,7 @@ export default function MapLibreReportLayer({ mapTheme = "dark" }: MapLibreRepor
         onOpenChange={handleDrawerChange}
         report={selectedReport}
         mapTheme={mapTheme}
+        onViewReportDetail={onViewReportDetail}
       />
     </>
   );

@@ -109,109 +109,124 @@ export default function NavigationSavedPlacesPanel({
   const theme = getMapSurfaceTheme(tone, true);
 
   return (
-    <div className={cn("space-y-4 rounded-[1.75rem] p-4", theme.panelStrongClassName)}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <div className={theme.eyebrowClassName}>Saved Places</div>
-          <div className={cn("mt-3 text-base font-semibold", theme.titleClassName)}>
-            Origin shortcuts and parked car
-          </div>
-          <div className={cn("mt-1 text-sm", theme.secondaryTextClassName)}>
-            Keep favorite locations handy and save where the car is parked.
-          </div>
+    <div className={cn("space-y-3 rounded-[1.75rem] p-3", theme.panelStrongClassName)}>
+      <div>
+        <div className={theme.eyebrowClassName}>Saved Places</div>
+        <div className={cn("mt-1.5 text-sm", theme.secondaryTextClassName)}>
+          Save favorite locations and mark where the car is parked.
         </div>
       </div>
 
-      <div className={cn("p-4", theme.panelClassName)}>
+      <div className={cn("p-3", theme.panelClassName)}>
         <div className={theme.metricLabelClassName}>Save current origin</div>
-        <div className={cn("mt-2 text-sm font-semibold", theme.titleClassName)}>
+        <div className={cn("mt-1.5 truncate text-sm font-semibold", theme.titleClassName)}>
           {activeOriginLabel}
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-2.5 grid grid-cols-3 gap-1.5">
           <button
             type="button"
             disabled={!activeOriginTarget}
             onClick={() => onSaveCurrentOrigin("home")}
-            className={cn(theme.secondaryButtonClassName, "disabled:opacity-50")}
+            className={cn(
+              theme.compactButtonClassName,
+              "flex-col !gap-1 !px-2 !py-2.5 disabled:opacity-50"
+            )}
           >
             <Home className="h-4 w-4" />
-            Save Home
+            <span>Home</span>
           </button>
           <button
             type="button"
             disabled={!activeOriginTarget}
             onClick={() => onSaveCurrentOrigin("work")}
-            className={cn(theme.secondaryButtonClassName, "disabled:opacity-50")}
+            className={cn(
+              theme.compactButtonClassName,
+              "flex-col !gap-1 !px-2 !py-2.5 disabled:opacity-50"
+            )}
           >
             <BriefcaseBusiness className="h-4 w-4" />
-            Save Work
+            <span>Work</span>
           </button>
           <button
             type="button"
             disabled={!activeOriginTarget}
             onClick={() => onSaveCurrentOrigin("saved")}
-            className={cn(theme.primaryButtonClassName, "disabled:opacity-50")}
+            className={cn(
+              theme.compactButtonClassName,
+              "flex-col !gap-1 !px-2 !py-2.5 disabled:opacity-50",
+              tone === "light"
+                ? "!border-sky-200/60 !bg-sky-50/80 !text-sky-700"
+                : "!border-cyan-400/20 !bg-cyan-500/10 !text-cyan-200"
+            )}
           >
             <Star className="h-4 w-4" />
-            Save Place
+            <span>Place</span>
           </button>
         </div>
       </div>
 
-      <div className={cn("p-4", theme.accentPanelClassName)}>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
+      <div className={cn("p-3", theme.accentPanelClassName)}>
+        <div className="flex items-start gap-3">
+          <div
+            className={cn(
+              "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+              tone === "light" ? "bg-blue-100 text-blue-600" : "bg-blue-400/12 text-blue-300"
+            )}
+          >
+            <CarFront className="h-4 w-4" />
+          </div>
+          <div className="min-w-0 flex-1">
             <div className={theme.metricLabelClassName}>Parked car</div>
-            <div className={cn("mt-2 text-sm font-semibold", theme.titleClassName)}>
-              {parkedCar?.roadName || parkedCar?.label || "No parked car saved yet"}
+            <div className={cn("mt-1 truncate text-sm font-semibold", theme.titleClassName)}>
+              {parkedCar?.roadName || parkedCar?.label || "Not saved yet"}
             </div>
-            <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+            <div className={cn("mt-0.5 text-xs", theme.secondaryTextClassName)}>
               {parkedCar
                 ? `Saved ${new Date(parkedCar.savedAt).toLocaleTimeString([], {
                     hour: "numeric",
                     minute: "2-digit",
                   })}`
-                : "Save the current live location to mark where the car is parked."}
+                : "Mark where the car is parked using live GPS."}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              disabled={!currentPositionAvailable}
-              onClick={onSaveParkedCar}
-              className={cn(theme.primaryButtonClassName, "disabled:opacity-50")}
-            >
-              <CarFront className="h-4 w-4" />
-              Save Parked Car
-            </button>
-            {parkedCar ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => onUseSavedLocation(parkedCarToTarget(parkedCar))}
-                  className={theme.secondaryButtonClassName}
-                >
-                  <LocateFixed className="h-4 w-4" />
-                  Use as Origin
-                </button>
-                <button
-                  type="button"
-                  onClick={onClearParkedCar}
-                  className={theme.secondaryButtonClassName}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Clear
-                </button>
-              </>
-            ) : null}
-          </div>
+        </div>
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          <button
+            type="button"
+            disabled={!currentPositionAvailable}
+            onClick={onSaveParkedCar}
+            className={cn(theme.compactButtonClassName, "disabled:opacity-50")}
+          >
+            <CarFront className="h-3.5 w-3.5" />
+            {parkedCar ? "Update" : "Save"}
+          </button>
+          {parkedCar ? (
+            <>
+              <button
+                type="button"
+                onClick={() => onUseSavedLocation(parkedCarToTarget(parkedCar))}
+                className={theme.compactButtonClassName}
+              >
+                <LocateFixed className="h-3.5 w-3.5" />
+                Use as Origin
+              </button>
+              <button
+                type="button"
+                onClick={onClearParkedCar}
+                className={theme.compactButtonClassName}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Clear
+              </button>
+            </>
+          ) : null}
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1">
-        <div className={cn("p-4", theme.panelClassName)}>
+      <div className="space-y-3">
+        <div className={cn("p-3", theme.panelClassName)}>
           <div className={theme.metricLabelClassName}>Pinned places</div>
-          <div className="mt-3 space-y-2">
+          <div className="mt-2.5 space-y-1.5">
             {pinnedLocations.length === 0 ? (
               <div className={cn("text-sm", theme.secondaryTextClassName)}>
                 Save Home, Work, or custom places from the current origin.
@@ -222,51 +237,50 @@ export default function NavigationSavedPlacesPanel({
 
                 return (
                   <div key={location.id} className={theme.listCardClassName}>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={cn(
-                            "inline-flex h-10 w-10 items-center justify-center rounded-full",
-                            tone === "light"
-                              ? "bg-sky-100 text-sky-700"
-                              : "bg-cyan-400/12 text-cyan-200"
-                          )}
-                        >
-                          <Icon className="h-4 w-4" />
-                        </div>
-                        <div>
-                          <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-                            {location.label}
-                          </div>
-                          <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                            {location.subtitle || categoryLabel(location.category)}
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => onDeleteSavedLocation(location.id)}
+                    <div className="flex items-center gap-3">
+                      <div
                         className={cn(
-                          "inline-flex h-8 w-8 items-center justify-center rounded-full",
+                          "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                           tone === "light"
-                            ? "text-slate-400 hover:bg-white/40"
-                            : "text-slate-400 hover:bg-white/10"
+                            ? "bg-sky-100 text-sky-700"
+                            : "bg-cyan-400/12 text-cyan-200"
                         )}
                       >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={() => onUseSavedLocation(locationToTarget(location), location.id)}
-                        className={theme.primaryButtonClassName}
-                      >
-                        <MapPinned className="h-4 w-4" />
-                        Use as Origin
-                      </button>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className={cn("truncate text-sm font-semibold", theme.titleClassName)}>
+                          {location.label}
+                        </div>
+                        <div className={cn("text-xs", theme.secondaryTextClassName)}>
+                          {location.subtitle || categoryLabel(location.category)}
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 gap-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onUseSavedLocation(locationToTarget(location), location.id)
+                          }
+                          className={cn(theme.compactIconButtonClassName)}
+                          title="Use as origin"
+                        >
+                          <MapPinned className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onDeleteSavedLocation(location.id)}
+                          className={cn(
+                            "inline-flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200",
+                            tone === "light"
+                              ? "text-slate-400 hover:bg-rose-50 hover:text-rose-500"
+                              : "text-slate-400 hover:bg-rose-500/10 hover:text-rose-400"
+                          )}
+                          title="Delete"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -275,12 +289,12 @@ export default function NavigationSavedPlacesPanel({
           </div>
         </div>
 
-        <div className={cn("p-4", theme.panelClassName)}>
+        <div className={cn("p-3", theme.panelClassName)}>
           <div className={theme.metricLabelClassName}>Recent places</div>
-          <div className="mt-3 space-y-2">
+          <div className="mt-2.5 space-y-1.5">
             {recentLocations.length === 0 ? (
               <div className={cn("text-sm", theme.secondaryTextClassName)}>
-                Recent destinations and origins will appear here after use.
+                Recent destinations will appear here after use.
               </div>
             ) : (
               recentLocations.map((location) => {
@@ -293,10 +307,10 @@ export default function NavigationSavedPlacesPanel({
                     onClick={() => onUseSavedLocation(locationToTarget(location), location.id)}
                     className={cn("w-full text-left", theme.listCardClassName)}
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-center gap-3">
                       <div
                         className={cn(
-                          "inline-flex h-10 w-10 items-center justify-center rounded-full",
+                          "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                           tone === "light"
                             ? "bg-slate-100 text-slate-700"
                             : "bg-white/8 text-slate-100"
@@ -304,11 +318,11 @@ export default function NavigationSavedPlacesPanel({
                       >
                         <Icon className="h-4 w-4" />
                       </div>
-                      <div>
-                        <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+                      <div className="min-w-0 flex-1">
+                        <div className={cn("truncate text-sm font-semibold", theme.titleClassName)}>
                           {location.label}
                         </div>
-                        <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
+                        <div className={cn("text-xs", theme.secondaryTextClassName)}>
                           {location.subtitle || "Recent place"}
                         </div>
                       </div>

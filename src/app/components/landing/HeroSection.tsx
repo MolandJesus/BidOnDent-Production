@@ -134,7 +134,7 @@ export default function HeroSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-10 h-10 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-white/50 border border-blue-300/30 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-11 h-11 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-white/50 border border-blue-300/30 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 24px rgba(59,130,246,0.14), inset 0 1px 0 rgba(255,255,255,0.6)"

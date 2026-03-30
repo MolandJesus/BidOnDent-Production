@@ -1,6 +1,7 @@
 // Account Type Migration Modal - One-time prompt for existing users
 import { motion } from "motion/react";
 import { Car, Wrench, Shield, AlertCircle } from "lucide-react";
+import { useEffect } from "react";
 
 interface AccountTypeMigrationModalProps {
   show: boolean;
@@ -17,11 +18,38 @@ export default function AccountTypeMigrationModal({
   onSelectAccountType,
   onClose,
 }: AccountTypeMigrationModalProps) {
+  useEffect(() => {
+    if (!show || typeof document === "undefined") {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [show, onClose]);
+
   if (!show) return null;
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) {
+          onClose();
+        }
+      }}
       style={{
         backgroundImage:
           "linear-gradient(135deg, rgba(0, 61, 130, 0.95) 0%, rgba(0, 93, 166, 0.95) 100%)",
@@ -30,7 +58,11 @@ export default function AccountTypeMigrationModal({
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
+        aria-labelledby="account-type-migration-title"
+        aria-modal="true"
         className="bd-glass-floating rounded-lg max-w-lg w-full p-6"
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
       >
         {/* Header */}
         <div className="flex items-start gap-3 mb-6">
@@ -41,7 +73,9 @@ export default function AccountTypeMigrationModal({
             <AlertCircle className="w-6 h-6" style={{ color: primaryColor }} />
           </div>
           <div className="flex-1">
-            <h3 className="text-2xl font-bold mb-1">Account Type Required</h3>
+            <h3 className="text-2xl font-bold mb-1" id="account-type-migration-title">
+              Account Type Required
+            </h3>
             <p className="text-slate-400 text-sm">
               We need to know what type of account this is. This will be permanent.
             </p>
@@ -62,6 +96,7 @@ export default function AccountTypeMigrationModal({
             onClick={() => onSelectAccountType("customer")}
             className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-400/20/40 transition-all text-left flex items-center gap-3"
             style={{ borderColor: primaryColor }}
+            type="button"
             whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
             whileTap={{ scale: 0.98 }}
           >
@@ -81,6 +116,7 @@ export default function AccountTypeMigrationModal({
             onClick={() => onSelectAccountType("shop")}
             className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-400/20/40 transition-all text-left flex items-center gap-3"
             style={{ borderColor: primaryColor }}
+            type="button"
             whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
             whileTap={{ scale: 0.98 }}
           >
@@ -102,6 +138,7 @@ export default function AccountTypeMigrationModal({
             onClick={() => onSelectAccountType("insurer")}
             className="bd-glass-card w-full py-4 px-4 border-2 border-transparent font-medium hover:border-blue-400/20/40 transition-all text-left flex items-center gap-3"
             style={{ borderColor: primaryColor }}
+            type="button"
             whileHover={{ scale: 1.02, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
             whileTap={{ scale: 0.98 }}
           >

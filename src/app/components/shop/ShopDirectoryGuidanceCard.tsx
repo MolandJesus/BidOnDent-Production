@@ -1,7 +1,22 @@
-import { LoaderCircle, LocateFixed, Pause, Play, Route, Square, TriangleAlert } from "lucide-react";
+import {
+  ArrowUp,
+  CheckCircle2,
+  LoaderCircle,
+  LocateFixed,
+  Pause,
+  Phone,
+  Play,
+  Route,
+  Signal,
+  SignalLow,
+  SignalZero,
+  Square,
+  TriangleAlert,
+} from "lucide-react";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
+import type { GpsStatus } from "../../hooks/useNavigationGpsTracking";
 import type { Place, RouteOption } from "../../types/mapDomain";
 
 type ShopDirectoryGuidanceCardProps = {
@@ -21,6 +36,11 @@ type ShopDirectoryGuidanceCardProps = {
   distanceLabel: string;
   etaLabel: string;
   isDark: boolean;
+  currentSpeedMph?: number | null;
+  speedLimitMph?: number | null;
+  gpsStatus?: GpsStatus;
+  nextInstruction?: string | null;
+  followingInstruction?: string | null;
   onPauseNavigation?: () => void;
   onResumeNavigation?: () => void;
   onEndNavigation?: () => void;
@@ -51,6 +71,11 @@ export default function ShopDirectoryGuidanceCard({
   distanceLabel,
   etaLabel,
   isDark,
+  currentSpeedMph,
+  speedLimitMph,
+  gpsStatus = "active",
+  nextInstruction,
+  followingInstruction,
   onPauseNavigation,
   onResumeNavigation,
   onEndNavigation,
@@ -96,6 +121,28 @@ export default function ShopDirectoryGuidanceCard({
   const activeSessionBadge = isDark
     ? "border-emerald-400/35 bg-emerald-400/14 text-emerald-100"
     : "border-emerald-200 bg-emerald-50 text-emerald-700";
+
+  const GpsIcon = gpsStatus === "active" ? Signal : gpsStatus === "stale" ? SignalLow : SignalZero;
+  const gpsBadge =
+    gpsStatus === "active"
+      ? isDark
+        ? "border-emerald-400/30 bg-emerald-400/12 text-emerald-100"
+        : "border-emerald-200 bg-emerald-50 text-emerald-700"
+      : gpsStatus === "stale"
+        ? isDark
+          ? "border-amber-400/30 bg-amber-400/12 text-amber-100"
+          : "border-amber-200 bg-amber-50 text-amber-700"
+        : isDark
+          ? "border-red-400/30 bg-red-400/12 text-red-100"
+          : "border-red-200 bg-red-50 text-red-700";
+  const gpsLabel =
+    gpsStatus === "active"
+      ? "GPS"
+      : gpsStatus === "stale"
+        ? "GPS weak"
+        : gpsStatus === "denied"
+          ? "GPS denied"
+          : "GPS lost";
 
   return (
     <div
@@ -151,14 +198,67 @@ export default function ShopDirectoryGuidanceCard({
               Refreshing
             </span>
           ) : null}
+          {!hasArrived && (
+            <span
+              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${gpsBadge}`}
+            >
+              <GpsIcon className="h-3 w-3" />
+              {gpsLabel}
+            </span>
+          )}
         </div>
 
-        {hasArrived ? (
-          <p
-            className={`mt-2 text-xs font-medium leading-5 ${isDark ? "text-emerald-200/90" : "text-emerald-700"}`}
+        {/* Turn-by-turn instruction */}
+        {!hasArrived && nextInstruction ? (
+          <div
+            className={`mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 ${
+              isDark ? "border-blue-400/20 bg-blue-400/10" : "border-blue-200 bg-blue-50"
+            }`}
           >
-            You've arrived at {selectedShop.name}.
-          </p>
+            <ArrowUp
+              className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${isDark ? "text-blue-300" : "text-blue-600"}`}
+            />
+            <div className="min-w-0 flex-1">
+              <p
+                className={`text-xs font-semibold leading-5 ${isDark ? "text-blue-100" : "text-blue-800"}`}
+              >
+                {nextInstruction}
+              </p>
+              {followingInstruction ? (
+                <p
+                  className={`mt-0.5 text-[11px] leading-4 ${isDark ? "text-blue-200/60" : "text-blue-600/70"}`}
+                >
+                  Then: {followingInstruction}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+
+        {hasArrived ? (
+          <div
+            className={`mt-2 flex items-start gap-2.5 rounded-xl border px-3 py-2.5 ${
+              isDark
+                ? "border-emerald-400/25 bg-emerald-400/10"
+                : "border-emerald-200 bg-emerald-50"
+            }`}
+          >
+            <CheckCircle2
+              className={`mt-0.5 h-4 w-4 shrink-0 ${isDark ? "text-emerald-300" : "text-emerald-600"}`}
+            />
+            <div className="min-w-0 flex-1">
+              <p
+                className={`text-xs font-semibold leading-5 ${isDark ? "text-emerald-100" : "text-emerald-800"}`}
+              >
+                You've arrived at {selectedShop.name}
+              </p>
+              <p
+                className={`mt-0.5 text-[11px] leading-4 ${isDark ? "text-emerald-200/60" : "text-emerald-600/70"}`}
+              >
+                Trip duration: {formatActiveDuration(sessionActiveSeconds)}
+              </p>
+            </div>
+          </div>
         ) : routeSummary.description ? (
           <p className={`mt-2 text-xs leading-5 ${isDark ? "text-white/80" : "text-slate-700"}`}>
             {routeSummary.description}
@@ -180,22 +280,9 @@ export default function ShopDirectoryGuidanceCard({
           </div>
         ) : null}
 
-        {hasArrived ? (
-          <div className={`mt-3 border-t pt-3 ${divider}`}>
-            <div className={`rounded-xl border px-3 py-2.5 text-center ${glassChip}`}>
-              <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>
-                Trip duration
-              </p>
-              <p
-                className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
-              >
-                {formatActiveDuration(sessionActiveSeconds)}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className={`mt-3 grid grid-cols-3 gap-2 border-t pt-3 ${divider}`}>
-            <div className={`rounded-xl border px-2.5 py-2 text-center ${glassChip}`}>
+        {hasArrived ? null : (
+          <div className={`mt-3 grid grid-cols-4 gap-1.5 border-t pt-3 ${divider}`}>
+            <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
               <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>Active</p>
               <p
                 className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
@@ -203,7 +290,29 @@ export default function ShopDirectoryGuidanceCard({
                 {formatActiveDuration(sessionActiveSeconds)}
               </p>
             </div>
-            <div className={`rounded-xl border px-2.5 py-2 text-center ${glassChip}`}>
+            <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
+              <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>Speed</p>
+              <p
+                className={`mt-1 text-sm font-semibold ${
+                  speedLimitMph != null &&
+                  currentSpeedMph != null &&
+                  currentSpeedMph > speedLimitMph + 3
+                    ? "text-red-400"
+                    : isDark
+                      ? "text-white"
+                      : "text-slate-800"
+                }`}
+              >
+                {currentSpeedMph != null && currentSpeedMph >= 1
+                  ? `${Math.round(currentSpeedMph)}`
+                  : "—"}
+                <span className={`ml-0.5 text-[10px] font-normal ${secondaryText}`}>mph</span>
+              </p>
+              {speedLimitMph != null ? (
+                <p className={`mt-0.5 text-[9px] ${secondaryText}`}>Limit {speedLimitMph}</p>
+              ) : null}
+            </div>
+            <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
               <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>ETA</p>
               <p
                 className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
@@ -211,7 +320,7 @@ export default function ShopDirectoryGuidanceCard({
                 {remainingEtaLabel || etaLabel || `${selectedRoute.estimatedDurationMinutes}m`}
               </p>
             </div>
-            <div className={`rounded-xl border px-2.5 py-2 text-center ${glassChip}`}>
+            <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
               <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>Distance</p>
               <p
                 className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
@@ -223,15 +332,28 @@ export default function ShopDirectoryGuidanceCard({
         )}
 
         {hasArrived ? (
-          <div className="mt-3">
-            <button
-              className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[1rem] bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 active:bg-emerald-800"
-              onClick={onEndNavigation}
-              type="button"
-            >
-              <Square className="h-4 w-4" />
-              Done
-            </button>
+          <div className={`mt-3 border-t pt-3 ${divider}`}>
+            <div className="grid grid-cols-2 gap-2">
+              {selectedShop.mapResult?.phone ? (
+                <a
+                  className="flex min-h-[44px] items-center justify-center gap-2 rounded-[1rem] bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
+                  href={`tel:${selectedShop.mapResult.phone}`}
+                >
+                  <Phone className="h-4 w-4" />
+                  Call Shop
+                </a>
+              ) : null}
+              <button
+                className={`flex min-h-[44px] items-center justify-center gap-2 rounded-[1rem] bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 active:bg-emerald-800 ${
+                  selectedShop.mapResult?.phone ? "" : "col-span-2"
+                }`}
+                onClick={onEndNavigation}
+                type="button"
+              >
+                <Square className="h-4 w-4" />
+                Done
+              </button>
+            </div>
           </div>
         ) : (
           <div className="mt-3 grid grid-cols-3 gap-2">

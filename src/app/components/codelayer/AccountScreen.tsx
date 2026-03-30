@@ -1,4 +1,4 @@
-import { useState, useRef, lazy, Suspense } from "react";
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft } from "lucide-react";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
@@ -87,6 +87,28 @@ export default function AccountScreen({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isAdminUser = hasAdminPrivileges(userEmail);
+
+  useEffect(() => {
+    if (!showAdminPanel || typeof document === "undefined") {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowAdminPanel(false);
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [showAdminPanel]);
 
   // REMOVED: Supabase session checking - we now use Clerk for authentication
   // The session check was causing automatic logout when switching to account tab
@@ -215,7 +237,7 @@ export default function AccountScreen({
   };
 
   const handleShopPhoneChange = (value: string) => {
-    setEditablePhone(value);
+    setEditablePhone(formatPhoneNumber(value));
   };
 
   const handleSaveShopProfile = async (data: ShopProfileFormData) => {
@@ -461,6 +483,9 @@ export default function AccountScreen({
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
             className="fixed inset-0 z-50 overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Admin panel"
             style={{
               background: "linear-gradient(180deg, #0b1220 0%, #0a1328 50%, #091020 100%)",
             }}
@@ -472,6 +497,8 @@ export default function AccountScreen({
               <button
                 onClick={() => setShowAdminPanel(false)}
                 className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-400/10 hover:bg-blue-400/20 transition-colors border border-blue-300/15"
+                type="button"
+                aria-label="Close admin panel"
               >
                 <ArrowLeft className="w-5 h-5 text-blue-100" />
               </button>

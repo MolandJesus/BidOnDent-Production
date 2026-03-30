@@ -7,6 +7,37 @@ import { supabase } from "../../services/supabaseService";
 
 type SetState<T> = (value: T | ((prev: T) => T)) => void;
 
+type AdminActionResult = {
+  success?: boolean;
+  created?: boolean;
+  userId?: string;
+  accountType?: string;
+  error?: string;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function toAdminActionResult(value: unknown): AdminActionResult {
+  if (!isRecord(value)) {
+    return {};
+  }
+
+  return {
+    ...(typeof value.success === "boolean" ? { success: value.success } : {}),
+    ...(typeof value.created === "boolean" ? { created: value.created } : {}),
+    ...(typeof value.userId === "string" ? { userId: value.userId } : {}),
+    ...(typeof value.accountType === "string" ? { accountType: value.accountType } : {}),
+    ...(typeof value.error === "string" ? { error: value.error } : {}),
+  };
+}
+
+async function readAdminActionResult(response: Response) {
+  const payload: unknown = await response.json();
+  return toAdminActionResult(payload);
+}
+
 export async function deleteAccountAction(params: {
   email: string;
   adminEmail: string;
@@ -15,12 +46,18 @@ export async function deleteAccountAction(params: {
   checkAccountStatus: (email: string) => Promise<void>;
   loadCustomAccounts: () => Promise<void>;
 }) {
-  const { email, adminEmail, setIsLoading, setOperationStatus, checkAccountStatus, loadCustomAccounts } =
-    params;
+  const {
+    email,
+    adminEmail,
+    setIsLoading,
+    setOperationStatus,
+    checkAccountStatus,
+    loadCustomAccounts,
+  } = params;
 
   if (
     !window.confirm(
-      `⚠️ Are you sure you want to delete ${email}?\n\nThis will permanently delete:\n- Auth user account\n- Database profile\n- All associated data\n\nThis action cannot be undone!\n\nContinue?`
+      `⚠️ Are you sure you want to delete ${email}?\n\nThis will permanently delete:\n- Auth user account\n- Database profile\n\nOther user-linked data may require separate cleanup.\n\nThis action cannot be undone!\n\nContinue?`
     )
   ) {
     return;
@@ -30,23 +67,22 @@ export async function deleteAccountAction(params: {
   setOperationStatus(`Deleting ${email}...`);
 
   try {
-    const response = await fetch(
-      buildSupabaseFunctionUrl("/admin/delete-user"),
-      {
-        method: "POST",
-        headers: await buildSupabaseEdgeHeadersAsync(),
-        body: JSON.stringify({ email, adminEmail }),
-      }
-    );
+    const response = await fetch(buildSupabaseFunctionUrl("/admin/delete-user"), {
+      method: "POST",
+      headers: await buildSupabaseEdgeHeadersAsync(),
+      body: JSON.stringify({ email, adminEmail }),
+    });
 
-    const result = await response.json();
+    const result = await readAdminActionResult(response);
 
     if (!response.ok || !result.success) {
       setOperationStatus(`❌ Error: ${result.error || "Unknown error"}`);
       return;
     }
 
-    setOperationStatus(`✅ Successfully deleted ${email}\n\nBoth auth and profile have been removed.`);
+    setOperationStatus(
+      `✅ Successfully deleted ${email}\n\nThe auth user and profile have been removed.`
+    );
     await checkAccountStatus(email);
     await loadCustomAccounts();
   } catch (error) {
@@ -85,22 +121,19 @@ export async function createAccountAction(params: {
 
   try {
     const accountInfo = TEST_ACCOUNTS.find((a) => a.email === email);
-    const response = await fetch(
-      buildSupabaseFunctionUrl("/admin/create-user"),
-      {
-        method: "POST",
-        headers: await buildSupabaseEdgeHeadersAsync(),
-        body: JSON.stringify({
-          email,
-          password,
-          name: accountInfo?.label || "Test Account",
-          account_type: accountType,
-          adminEmail,
-        }),
-      }
-    );
+    const response = await fetch(buildSupabaseFunctionUrl("/admin/create-user"), {
+      method: "POST",
+      headers: await buildSupabaseEdgeHeadersAsync(),
+      body: JSON.stringify({
+        email,
+        password,
+        name: accountInfo?.label || "Test Account",
+        account_type: accountType,
+        adminEmail,
+      }),
+    });
 
-    const result = await response.json();
+    const result = await readAdminActionResult(response);
 
     if (!response.ok || (!result.success && !result.created)) {
       const errorMsg = `❌ Error: ${result.error || "Unknown error"}\\n\\nResponse: ${JSON.stringify(result, null, 2)}`;
@@ -182,22 +215,19 @@ export async function createCustomAccountAction(params: {
     const accountType = newAccountType;
     const name = newAccountName || "Test Account";
 
-    const response = await fetch(
-      buildSupabaseFunctionUrl("/admin/create-user"),
-      {
-        method: "POST",
-        headers: await buildSupabaseEdgeHeadersAsync(),
-        body: JSON.stringify({
-          email,
-          password,
-          name,
-          account_type: accountType,
-          adminEmail,
-        }),
-      }
-    );
+    const response = await fetch(buildSupabaseFunctionUrl("/admin/create-user"), {
+      method: "POST",
+      headers: await buildSupabaseEdgeHeadersAsync(),
+      body: JSON.stringify({
+        email,
+        password,
+        name,
+        account_type: accountType,
+        adminEmail,
+      }),
+    });
 
-    const result = await response.json();
+    const result = await readAdminActionResult(response);
 
     if (!response.ok || !result.success) {
       setOperationStatus(`❌ Error: ${result.error || "Unknown error"}`);
@@ -299,20 +329,17 @@ export async function manageAdminStatusAction(params: {
   setAdminManagementStatus(`Managing admin status for ${targetAdminEmail}...`);
 
   try {
-    const response = await fetch(
-      buildSupabaseFunctionUrl("/admin/manage-admin"),
-      {
-        method: "POST",
-        headers: await buildSupabaseEdgeHeadersAsync(),
-        body: JSON.stringify({
-          email: targetAdminEmail,
-          promote,
-          adminEmail,
-        }),
-      }
-    );
+    const response = await fetch(buildSupabaseFunctionUrl("/admin/manage-admin"), {
+      method: "POST",
+      headers: await buildSupabaseEdgeHeadersAsync(),
+      body: JSON.stringify({
+        email: targetAdminEmail,
+        promote,
+        adminEmail,
+      }),
+    });
 
-    const result = await response.json();
+    const result = await readAdminActionResult(response);
 
     if (!response.ok || !result.success) {
       setAdminManagementStatus(`❌ Error: ${result.error || "Unknown error"}`);
@@ -326,7 +353,9 @@ export async function manageAdminStatusAction(params: {
     setTargetAdminEmail("");
     setIsManagingAdmin(false);
   } catch (error) {
-    setAdminManagementStatus(`❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`);
+    setAdminManagementStatus(
+      `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`
+    );
     setIsManagingAdmin(false);
   } finally {
     setIsManagingAdmin(false);

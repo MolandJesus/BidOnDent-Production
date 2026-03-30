@@ -568,6 +568,10 @@ function sanitizeMemory(memory?: unknown): WebsiteSessionMemory {
   };
 }
 
+export function sanitizeWebsiteSessionMemory(memory?: unknown): WebsiteSessionMemory {
+  return sanitizeMemory(memory);
+}
+
 export function buildWebsiteIdentity({
   provider = "anonymous",
   providerUserId,
@@ -626,7 +630,7 @@ export function replaceWebsiteSessionMemory(
   identity: WebsiteIdentity | null | undefined,
   nextMemory: WebsiteSessionMemory
 ) {
-  return persistWebsiteSessionMemory(identity, sanitizeMemory(nextMemory));
+  return persistWebsiteSessionMemory(identity, sanitizeWebsiteSessionMemory(nextMemory));
 }
 
 export function updateWebsiteSessionMemory(

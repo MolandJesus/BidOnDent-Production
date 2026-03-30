@@ -1,6 +1,8 @@
 import { Camera, Mail, Phone, Save, User as UserIcon, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import type { RefObject } from "react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
+import { unformatPhoneNumber } from "../../../utils/formatters";
 
 type EditProfileModalProps = {
   isOpen: boolean;
@@ -42,25 +44,80 @@ export default function EditProfileModal({
   appearanceMode = "map-dark",
 }: EditProfileModalProps) {
   const isLight = appearanceMode === "light";
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const phoneDigits = unformatPhoneNumber(editablePhone);
+  const validation = useMemo(() => {
+    const errors: Record<string, string> = {};
+    if (!editableName.trim()) errors.name = "Name is required";
+    if (phoneDigits.length > 0 && phoneDigits.length < 10)
+      errors.phone = "Phone number must be at least 10 digits";
+    return errors;
+  }, [editableName, phoneDigits]);
+
+  const isFormValid = !validation.name;
+
+  useEffect(() => {
+    if (!isOpen) setTouched({});
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || typeof document === "undefined") {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isSaving) {
+        onCancel();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, isSaving, onCancel]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onMouseDown={(event) => {
+        if (!isSaving && event.target === event.currentTarget) {
+          onCancel();
+        }
+      }}
+    >
       <div
+        aria-labelledby="edit-profile-modal-title"
+        aria-modal="true"
         className={`bd-glass-floating rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto${isLight ? " bd-light-surface" : ""}`}
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
       >
         {/* Header */}
         <div
           className={`sticky top-0 backdrop-blur-sm border-b px-6 py-4 rounded-t-2xl z-10 ${isLight ? "bg-white/95 border-slate-200/60" : "bg-slate-900/80 border-white/[0.08]"}`}
         >
           <div className="flex justify-between items-center">
-            <h2 className={`font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+            <h2
+              className={`font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+              id="edit-profile-modal-title"
+            >
               Edit Profile
             </h2>
             <button
+              aria-label="Close edit profile"
               className={`transition-colors p-1 rounded-full ${isLight ? "text-slate-500 hover:text-slate-700 hover:bg-slate-100" : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.06]"}`}
               onClick={onCancel}
               disabled={isSaving}
+              type="button"
             >
               <X className="w-6 h-6" />
             </button>
@@ -121,10 +178,14 @@ export default function EditProfileModal({
                   type="text"
                   value={editableName}
                   onChange={(e) => onChangeName(e.target.value)}
-                  className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+                  onBlur={() => setTouched((p) => ({ ...p, name: true }))}
+                  className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${touched.name && validation.name ? "border-rose-400" : isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
                   placeholder="Enter your name"
                 />
               </div>
+              {touched.name && validation.name && (
+                <p className="mt-1 text-xs text-rose-400">{validation.name}</p>
+              )}
             </div>
 
             {/* Email Field */}
@@ -167,11 +228,15 @@ export default function EditProfileModal({
                   type="tel"
                   value={editablePhone}
                   onChange={(e) => onChangePhone(e.target.value)}
+                  onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
                   placeholder="Phone number"
                   maxLength={14}
-                  className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+                  className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${touched.phone && validation.phone ? "border-rose-400" : isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
                 />
               </div>
+              {touched.phone && validation.phone && (
+                <p className="mt-1 text-xs text-rose-400">{validation.phone}</p>
+              )}
             </div>
           </div>
         </div>
@@ -193,7 +258,7 @@ export default function EditProfileModal({
             className="flex-1 px-4 py-2.5 rounded-lg font-medium text-white flex items-center justify-center disabled:opacity-50 transition-all shadow-md hover:shadow-lg text-sm"
             style={{ backgroundColor: primaryColor }}
             onClick={onSave}
-            disabled={isSaving}
+            disabled={isSaving || !isFormValid}
           >
             {isSaving ? (
               <>

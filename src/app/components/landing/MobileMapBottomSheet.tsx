@@ -91,7 +91,7 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
                 type="button"
                 onClick={collapseToMap}
                 className={cn(
-                  "flex min-h-[42px] items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold",
+                  "flex min-h-[44px] items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-semibold",
                   "bg-sky-500/12 text-sky-300 active:bg-sky-500/20",
                   "border border-sky-400/15",
                   "transition-colors duration-150"

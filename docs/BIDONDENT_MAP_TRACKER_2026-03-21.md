@@ -1,3 +1,405 @@
+## Pass T571 — Bid-sent status on shop request cards (2026-03-30)
+
+- **Why this pass was chosen:** After a shop submitted a bid on a request, the request card still showed "Submit Bid" button — no visual feedback that the bid had been sent. Shops could accidentally try to submit duplicate bids, and had no at-a-glance awareness of which requests they'd already bid on.
+- **What changed:**
+  - Added `submittedBidIds` Set state to ShopRequestsScreen — populated on successful bid submission.
+  - Added `hasBid?: boolean` prop to ShopRequestCard.
+  - When `hasBid=true`, shows violet "Bid Sent — Awaiting Response" badge instead of "Submit Bid" button.
+  - Visual hierarchy: accepted=emerald, bid-sent=violet, new=blue gradient CTA.
+- **Files touched:** `ShopRequestsScreen.tsx`, `ShopRequestCard.tsx`
+- **Validation:** Build: 0 errors, 3.14s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (no bid-sent feedback on request cards)
+- **What this unlocks:** Shops now have clear at-a-glance bid status on request cards. Prevents duplicate bid submission attempts and completes the shop-side bid feedback loop (T567 toast + T571 card state).
+
+## Pass T570 — Completed/resolved visual consistency (2026-03-30)
+
+- **Why this pass was chosen:** "Completed" and "resolved" reports used the same fallback indigo badge or identical emerald as "active" — there was no visual distinction between a repair in progress, a shop-claimed completion, and a customer-confirmed completion.
+- **What changed:**
+  - ReportDetailScreen badge: "completed" → violet "Repair Done", "resolved" → emerald "Confirmed", "active" unchanged emerald "In Repair".
+  - ReportsListScreen badge: same violet/emerald distinction.
+  - homeScreenData.ts: "completed" → violet styling (dark: `bg-violet-400/15 text-violet-300`, light: `bg-violet-50 text-violet-700`). "Resolved" stays emerald.
+  - Visual hierarchy: pending=sky, in-review=blue, active=emerald, completed=violet, resolved=emerald.
+- **Files touched:** `ReportDetailScreen.tsx`, `ReportsListScreen.tsx`, `homeScreenData.ts`
+- **Validation:** Build: 0 errors, 3.11s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (completion states were visually indistinct)
+- **What this unlocks:** Each report status now has distinct visual identity. Users can tell at a glance: in-repair (emerald) vs repair-done-pending-confirmation (violet) vs fully-confirmed (emerald "Confirmed").
+
+## Pass T569 — Report completion confirmation flow (2026-03-30)
+
+- **Why this pass was chosen:** The core product loop had no close — shops could mark jobs "completed" but customers had no acknowledgment UI, no celebration, and no way to confirm the repair was done. The "completed" status was entirely passive on the customer side.
+- **What changed:**
+  - Added `CheckCircle2` import and "Repair Complete" confirmation card to `ReportDetailScreen` — shows when `status === "completed"`, displays shop name + final amount, prominent "Confirm Repair Complete" button.
+  - Added `onConfirmCompletion?: (reportId: string) => void` prop through the full chain: `ReportDetailScreen` → `DashboardSecondaryViews` → `DashboardRouter` → `buildDashboardRouterProps`.
+  - Handler calls `updateReportStatus(reportId, "resolved")` in Supabase and updates local state. "Resolved" = customer-confirmed completion.
+  - Added `onConfirmCompletion` to `DashboardRouterProps` type.
+- **Files touched:** `ReportDetailScreen.tsx`, `DashboardSecondaryViews.tsx`, `DashboardRouter.tsx`, `dashboard-router-types.ts`, `buildDashboardRouterProps.ts`
+- **Validation:** Build: 0 errors, 3.11s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (core product loop had no customer-side close)
+- **What this unlocks:** The complete core product loop now has a close: Report → Bid → Accept → Repair → Shop Marks Complete → Customer Confirms → Resolved. The "resolved" status can differentiate confirmed-completed from pending-review-of-completion.
+
+## Pass T568 — Wire job status update persistence (2026-03-30)
+
+- **Why this pass was chosen:** Shop job status updates (in-progress, awaiting-parts, completed) were local-state only — the `onUpdateJobStatus` prop was never passed to `ShopActiveJobsScreen`, no handler existed, and bid acceptance never created a `job_assignments` record. This is a P2-DATA issue: the core product loop's persistence was broken for repair progress.
+- **What changed:**
+  - Added `assignmentId?: string` to `DamageReport` type.
+  - Added `onUpdateJobStatus` to `DashboardRouterProps` type.
+  - In `onAcceptBid` (buildDashboardRouterProps): after accepting bid + updating report status, now calls `createJobAssignment` to create a `job_assignments` record in Supabase. Stores returned `assignmentId` in local report state.
+  - Added `onUpdateJobStatus` handler in props builder: maps report ID → local `assignmentId` → calls `updateJobAssignmentStatus` service. Converts kebab-case (UI) to snake_case (backend).
+  - Wired prop through `DashboardRouter` → `ShopActiveJobsScreen`.
+- **Files touched:** `types/index.ts`, `dashboard-router-types.ts`, `buildDashboardRouterProps.ts`, `DashboardRouter.tsx`
+- **Validation:** Build: 0 errors, 3.13s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P2-DATA:1/1/0 (job status updates had no backend persistence)
+- **What this unlocks:** Shop status changes now persist to Supabase via `job_assignments` table. Customer-side `repairStatus` can now be sourced from backend data. Foundation for real-time repair progress tracking.
+
+## Pass T567 — Bid submission success feedback (2026-03-30)
+
+- **Why this pass was chosen:** The shop bid submission flow was functionally complete (form → Supabase → backend), but after successful submission the modal closed silently with zero confirmation. The core marketplace action had no user feedback — undermining trust.
+- **What changed:**
+  - Added `useNotifications()` hook to `ShopRequestsScreen`.
+  - After successful bid submission, pushes a toast notification: "Bid Submitted — $X bid sent for [vehicle]" with category "bid" and deep link.
+  - Toast appears before form clears, giving the shop visual confirmation their bid went through.
+- **Files touched:** `ShopRequestsScreen.tsx`
+- **Validation:** Build: 0 errors, 3.13s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (core marketplace action had no success feedback)
+- **What this unlocks:** Shop users now get immediate confirmation when bids are submitted. Notification also appears in bell icon via the T565 bridge.
+
+## Pass T566 — Active repair prominence on dashboard home (2026-03-30)
+
+- **Why this pass was chosen:** The customer dashboard home screen showed "Reviewing Bids" for active repairs (wrong label), used the same blue badge color as in-review reports, and didn't show the accepted shop name or bid amount. The most important customer state (waiting for repair) was invisible on the primary landing screen.
+- **What changed:**
+  - Fixed `formatStatus("active")` → "In Repair" (was incorrectly "Reviewing Bids").
+  - Changed active status badge color to emerald (was blue, same as in-review).
+  - Home report cards now show accepted shop name + bid amount for active repairs instead of generic "X bids received".
+  - Wrench icon with emerald text for active repair info.
+- **Files touched:** `home-helpers.ts`, `homeScreenData.ts`, `HomeScreenSections.tsx`
+- **Validation:** Build: 0 errors, 3.13s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (active repair state invisible on dashboard home)
+- **What this unlocks:** Customer's most critical state is now prominent on landing. Correct label + color + shop info at glance level.
+
+## Pass T565 — Bridge event stream to NotificationCenter bell (2026-03-30)
+
+- **Why this pass was chosen:** T564 wired bid/status action notifications to the event stream (toast overlay), but the NotificationCenter bell icon still showed empty/stale data — the two notification systems were disconnected. The bell icon is the primary persistent notification surface.
+- **What changed:**
+  - In `DashboardLayout`, imported `useNotifications()` from event stream context.
+  - Created bridge: converts `NotificationEvent[]` to legacy `Notification[]` format, merges with Supabase-sourced notifications, passes merged list to `DashboardHeader` and `DashboardSidebar`.
+  - Wrapped mark-read callbacks: event stream IDs (`notify-*`) route to `eventStream.markRead()`, legacy IDs route to `onMarkNotificationRead()`.
+  - `Mark all read` calls both systems.
+  - Unread count now reflects both event stream and legacy notifications.
+- **Files touched:** `DashboardLayout.tsx`
+- **Validation:** Build: 0 errors, 2.96s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P1-RUNTIME:1/1/0 (bell icon disconnected from real-time action events)
+- **What this unlocks:** Bell icon now shows real-time bid acceptance and job status notifications with accurate unread count. Foundation for Supabase-persisted cross-user notifications.
+
+## Pass T564 — Wire action feedback notifications (2026-03-30)
+
+- **Why this pass was chosen:** The marketplace was silent — no feedback when key actions occurred. The notification event stream existed (useNotificationEvents, toast overlay, NotificationCenter UI) but was only used for navigation toasts. Bid acceptance and job status updates produced no user feedback.
+- **What changed:**
+  - Wired `useNotifications().push()` in `BidsScreen` — when customer accepts a bid, pushes a "bid" category notification with shop name, price, and deep link. Auto-triggers toast ("bid" is in TOAST_CATEGORIES).
+  - Wired `useNotifications().push()` in `ShopActiveJobsScreen` — when shop updates job status, pushes a "shop" category notification with status label. "completed" status triggers high-priority toast.
+  - Both use the in-memory event stream; Supabase persistence is a future pass.
+- **Files touched:** `BidsScreen.tsx`, `ShopActiveJobsScreen.tsx`
+- **Validation:** Build: 0 errors, 2.96s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P1-RUNTIME:1/1/0 (marketplace actions produced no user feedback)
+- **What this unlocks:** Users now get immediate toast + feed notifications for key marketplace actions. Foundation for cross-user notifications via Supabase persistence.
+
+## Pass T563 — Customer-visible repair progress (2026-03-30)
+
+- **Why this pass was chosen:** T562 gave shops status-update buttons, but the customer side had no visibility into repair progress. The lifecycle timeline was stuck at "Repair Scheduled" even when a shop marked a job as in-progress or completed. This closes the visibility loop.
+- **What changed:**
+  - Added `repairStatus?: string` to `DamageReport` type for future backend wiring.
+  - Enhanced `customerLifecycle(status, repairStatus?)` — when `repairStatus` is provided, step 4 label and description update dynamically: "Repair In Progress", "Awaiting Parts", or "Repair Finished".
+  - Added "Active Repair" info card to `ReportDetailScreen` when status is `"active"` and an accepted bid exists — shows shop name, accepted bid amount, and estimated timeline in emerald styling.
+  - Updated `ReportsListScreen` status badge: "Active" → "In Repair" (emerald), accepted shop name replaces generic bids count, and all three states (accepted / bids / no bids) are unified in a single ternary.
+- **Files touched:** `types/index.ts`, `lifecycle-presets.ts`, `ReportDetailScreen.tsx`, `ReportsListScreen.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (customer had no visibility into shop-side repair progress)
+- **What this unlocks:** Customer can now see accepted shop info and repair lifecycle progress. Ready for real-time status wiring when job_assignments data flows to customer views.
+
+## Pass T562 — Job status update buttons in detail modal (2026-03-30)
+
+- **Why this pass was chosen:** After T559–T561 completed two-sided bid acceptance, shops had no way to advance jobs through the repair lifecycle. The detail modal showed a lifecycle timeline but had no action buttons to move status forward.
+- **What changed:**
+  - Added "Start Repair", "Awaiting Parts", and "Mark Completed" action buttons to `ShopActiveJobDetailModal`. Buttons are contextual — only show transitions valid for current status.
+  - Added `onUpdateStatus` prop to modal; wired through `ShopActiveJobsScreen` with local `statusOverrides` state for immediate UI feedback.
+  - Status changes update the selected job in the modal, the job list, and call the existing `onUpdateJobStatus` callback for persistence.
+  - 44px touch targets, appearance-aware (dark/light) styling.
+- **Files touched:** `ShopActiveJobDetailModal.tsx`, `ShopActiveJobsScreen.tsx`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (shops couldn't advance job status through repair lifecycle)
+- **What this unlocks:** Shops can now track repair progress (pending → in-progress → awaiting-parts → completed). Foundation for customer-visible progress updates and completion confirmation.
+
+## Pass T561 — Contact unlock on bid acceptance (2026-03-30)
+
+- **Why this pass was chosen:** After T559–T560 gave both sides visual bid-accepted signals, the Call/Email buttons on ShopRequestCard remained permanently disabled. The shop had no way to contact the customer — the single most important post-acceptance action.
+- **What changed:**
+  - Contact buttons (`Call` / `Email`) on `ShopRequestCard` now conditionally unlock when `request.status === "accepted"`.
+  - Accepted state: `<a href="tel:...">` and `<a href="mailto:...">` with emerald styling, proper 44px touch targets, hover feedback.
+  - Non-accepted state: disabled `<span>` elements with tooltip "Contact info available after bid accepted" (unchanged).
+- **Files touched:** `ShopRequestCard.tsx`
+- **Validation:** Build: 0 errors, 3.04s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (shop contact locked even after acceptance)
+- **What this unlocks:** Real marketplace communication. Shops can now call/email customers after winning a bid. Completes the post-acceptance action chain: T559 (customer sees confirmation) → T560 (shop sees accepted badge) → T561 (shop can contact customer).
+
+## Pass T560 — Shop-side bid accepted visual signal (2026-03-30)
+
+- **Why this pass was chosen:** After a customer accepts a bid, the shop had zero visual feedback — request cards showed no "accepted" state, the Submit Bid button remained active, and ShopActiveJobsScreen didn't recognize accepted reports. This completes two-sided transactional closure for the core product loop.
+- **What changed:**
+  - Added `"accepted"` status to `ShopRequestCard` with emerald green badge and `BadgeCheck` icon. Submit Bid button becomes "Bid Accepted — Job Active" state indicator when status is accepted.
+  - Updated `ShopRequestsScreen` to map `"active"` report status → `"accepted"` normalized status. Added "Accepted" filter tab alongside New/Bidding/Closed.
+  - Updated `ShopActiveJobsScreen` to map `"active"` report status → `"in-progress"` job status so accepted jobs appear with correct blue badge instead of falling through to pending.
+- **Files touched:** `ShopRequestCard.tsx`, `ShopRequestsScreen.tsx`, `ShopActiveJobsScreen.tsx`
+- **Validation:** Build: 0 errors, 3.07s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (shops lacked any visual signal of bid acceptance)
+- **What this unlocks:** Two-sided transactional closure. Combined with T559 (customer confirmation sheet), both sides of the marketplace now get clear feedback when a bid is accepted.
+
+## Pass T559 — Bid Accepted Confirmation Sheet (2026-03-29)
+
+- **Why this pass was chosen:** After accepting a bid, the customer was silently navigated to the shop directory with no transactional closure — no celebration, no summary, no clear next-step CTA. This is the highest-impact gap in the core report→map→shop→action loop.
+- **What changed:**
+  - Created `AcceptedBidConfirmationSheet.tsx` — a mobile-first bottom sheet overlay that appears after bid acceptance.
+  - Sheet shows: success badge, shop name, confirmed price + timeframe, mini-map preview (if shop has coordinates), and two CTAs: "View Shop on Map" (navigates to shop directory) / "Stay on Bids" (dismisses).
+  - Added `skipNavigation?: boolean` to `onAcceptBid` details type so the handler persists the acceptance in Supabase without auto-navigating.
+  - Wired `onViewShopDirectory` prop through `DashboardRouter` → `BidsScreen` for deferred navigation.
+  - Glass-card dark/light mode styling, spring animation entrance, backdrop blur.
+- **Files touched:** `AcceptedBidConfirmationSheet.tsx` (new), `BidsScreen.tsx`, `DashboardRouter.tsx`, `dashboard-router-types.ts`, `buildDashboardRouterProps.ts`
+- **Validation:** Build: 0 errors, 3.02s, 2775 modules. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (bid acceptance lacked transactional closure and user guidance)
+- **What this unlocks:** Customers now get a clear confirmation moment after their most important action. Foundation for post-acceptance lifecycle guidance (next-steps, scheduling, directions). Strengthens report→map→shop→action loop closure.
+
+## Pass T558 — Insurer partner network distribution map (2026-03-29)
+
+- **Why this pass was chosen:** Last screen without an embedded map panel. InsurerPartnerShopsScreen showed partner shops as a flat list with no geographic distribution view — insurers couldn't visualize network coverage gaps.
+- **What changed:**
+  - Added a partner-network distribution map panel to `InsurerPartnerShopsScreen` with `DashboardMapPreview` showing partner shop locations as blue pins.
+  - Converts each mapped shop's `mapResult.coordinates` to `CoveragePartnerShop` format. Pin-tap highlights the matching `InsurerPartnerShopCard` via `focused` prop.
+  - Badge shows mapped/total count. Map respects search filter + status filter.
+  - Added `focused?: boolean` prop to `InsurerPartnerShopCard` with blue ring highlight.
+- **Files touched:** `InsurerPartnerShopsScreen.tsx`, `InsurerPartnerShopCard.tsx`
+- **Validation:** Build: 0 errors, 3.09s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (partner shops lacked geographic network visualization)
+- **What this unlocks:** Completes the "every screen has spatial context" initiative. All primary screens across all three roles now have embedded map panels with auto-fit-bounds and pin tooltips.
+
+## Pass T557 — Pin tooltip on embedded map previews (2026-03-29)
+
+- **Why this pass was chosen:** Tapping a pin on any embedded map panel only highlighted the corresponding card below — on mobile, the card could be scrolled off-screen, giving no immediate feedback. A tooltip label directly on the pin provides instant spatial context.
+- **What changed:**
+  - Added a `Popup` (react-map-gl/maplibre) to `MapLibreDashboardMapPreview` that appears when a shop or report pin is tapped.
+  - Tooltip shows the shop name or report label in a compact glass pill (12px semibold, backdrop-blur, appearance-aware colors).
+  - Tapping empty map space dismisses the tooltip.
+  - Added `.bd-map-tooltip` CSS override in `theme.css` to strip default MapLibre popup chrome (padding, border, shadow, tip arrow).
+- **Files touched:** `MapLibreDashboardMapPreview.tsx`, `theme.css`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0. Spellcheck: 0 (in touched lines).
+- **Problem taxonomy:** P4-UX:1/1/0 (pin taps lacked immediate visual feedback on the map itself)
+- **What this unlocks:** All 9+ embedded map panels now show contextual tooltips on pin tap, improving mobile discoverability and reducing cognitive load.
+
+## Pass T556 — DashboardMapPreview auto-fit-bounds (2026-03-29)
+
+- **Why this pass was chosen:** All embedded map panels used a fixed center + zoom, meaning maps with multiple spread-out pins might miss outlier pins. Auto-fitting bounds makes every map preview automatically zoom to show all markers.
+- **What changed:**
+  - Added `allPoints` + `fittedView` computation to `MapLibreDashboardMapPreview`.
+  - When 2+ combined pins exist (shops + reportPins), the component computes a bounding box, derives center (midpoint) and zoom (log2 scale from geographic span), and overrides parent’s center/zoom.
+  - Falls back to parent-provided center/zoom when 0–1 pins.
+  - Zoom clamped between 3–14 with a minimum span of 0.005° to prevent extreme zoom.
+- **Files touched:** `MapLibreDashboardMapPreview.tsx`
+- **Validation:** Build: 0 errors, 3.04s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (multi-pin maps did not auto-frame their content)
+- **What this unlocks:** All 9+ screens using DashboardMapPreview immediately benefit from smarter framing. Foundation for more advanced map behaviors (clustering, density heatmaps).
+
+## Pass T555 — Competitor density map with pin-to-card focus (2026-03-29)
+
+- **Why this pass was chosen:** CompetitorAnalysisScreen showed competitor shops as a flat sorted list with no spatial awareness — shops couldn't visualize geographic competitive density.
+- **What changed:**
+  - Added a competitor-density map panel to `CompetitorAnalysisScreen` with `DashboardMapPreview` showing all competitor shop locations as blue pins.
+  - Converts each competitor's `mapResult.coordinates` to `CoveragePartnerShop` format.
+  - Pin-tap sets `focusedCompetitorId` which applies a blue ring highlight to the matching card below.
+  - Badge shows mapped/total count. Map respects search filter — only filtered competitors appear.
+- **Files touched:** `CompetitorAnalysisScreen.tsx`
+- **Validation:** Build: 0 errors, 3.04s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (competitor analysis lacked geographic density visualization)
+- **What this unlocks:** Shops can now see competitive density on a map, enabling spatial market awareness and service area strategy.
+
+## Pass T554 — Saved shops geography map with pin-to-card focus (2026-03-29)
+
+- **Why this pass was chosen:** LikedShopsScreen showed saved shops as a flat list with no spatial context — customers couldn't visualize where their saved shops are located relative to each other.
+- **What changed:**
+  - Added a saved-shops geography map panel to `LikedShopsScreen` with `DashboardMapPreview` showing saved shop locations as blue pins.
+  - Converts each saved shop's `mapResult.coordinates` to `CoveragePartnerShop` format for the map's `shops` prop.
+  - Pin-tap sets `focusedShopId` which applies a blue ring highlight to the matching card below.
+  - Badge shows mapped/total count. Empty-state messaging when no shops have resolvable coordinates.
+  - Map respects search filter — only filtered shops appear as pins.
+- **Files touched:** `LikedShopsScreen.tsx`
+- **Validation:** Build: 0 errors, 3.18s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (saved shops lacked spatial context for distance comparison)
+- **What this unlocks:** Customers can now evaluate saved shop proximity and make spatial comparisons before requesting bids.
+
+## Pass T553 — Insurer claims geography map (2026-03-29)
+
+- **Why this pass was chosen:** InsurerClaimsScreen had zero map context — insurers saw claims as a flat card list with no spatial awareness. Claims density and geographic distribution were invisible.
+- **What changed:**
+  - Added a claim-geography map panel to `InsurerClaimsScreen` with `DashboardMapPreview` showing claim locations as amber pins.
+  - Converts each claim's report ZIP code via `zipToCoordinates`. Badge shows mapped/total count.
+  - Empty-state messaging when no claims have resolvable coordinates.
+- **Files touched:** `InsurerClaimsScreen.tsx`
+- **Validation:** Build: 0 errors, 3.02s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (insurer claims lacked geographic distribution context)
+- **What this unlocks:** Insurers can now evaluate claim density and geographic spread, enabling network-aware decisions about partner shop coverage gaps.
+
+## Pass T552 — Shop active jobs geography map (2026-03-29)
+
+- **Why this pass was chosen:** ShopActiveJobsScreen had zero map context — shops saw active jobs as a flat card list with no spatial awareness for service route planning.
+- **What changed:**
+  - Added a job-geography map panel to `ShopActiveJobsScreen` with `DashboardMapPreview` showing active job locations as amber pins.
+  - Converts each job's report ZIP code via `zipToCoordinates`. Badge shows mapped/total count.
+  - Empty-state messaging when no jobs have resolvable coordinates.
+- **Files touched:** `ShopActiveJobsScreen.tsx`
+- **Validation:** Build: 0 errors, 3.02s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (shop jobs lacked spatial context for service planning)
+- **What this unlocks:** Shops can now see where their active repair jobs are located for service route planning and workload geographic awareness.
+
+## Pass T551 — Reports list overview map (2026-03-29)
+
+- **Why this pass was chosen:** Customer "My Reports" screen was a flat card list with no spatial context. Customers couldn't see all their submitted report locations at a glance to understand geographic spread or track report density.
+- **What changed:**
+  - Added a reports-overview map panel to `ReportsListScreen` with `DashboardMapPreview` showing all report locations as amber pins.
+  - Converts each report's ZIP code via `zipToCoordinates` to render spatial positions.
+  - Pin click navigates directly to the individual report detail screen via `onSelectReport`.
+  - Badge shows `mapped/total` count. Empty-state messaging when no reports have resolvable coordinates.
+  - Panel only renders when reports exist and loading is complete.
+- **Files touched:** `ReportsListScreen.tsx`
+- **Validation:** Build: 0 errors, 3.02s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (reports list lacked bird's-eye spatial context)
+- **What this unlocks:** Customers now have a visual map overview of all their submitted reports, enabling spatial awareness before drilling into individual report details.
+
+## Pass T550 — Report wizard location map preview (2026-03-29)
+
+- **Why this pass was chosen:** Customers enter a ZIP code during report creation (Step 3: Service Location) but never see where their request will appear on the map. No spatial feedback = reduced trust + increased bad-location submissions.
+- **What changed:**
+  - Added a `DashboardMapPreview` mini-map to `StepServiceLocation` that renders when a valid 5-digit ZIP resolves via `zipToCoordinates`.
+  - Single amber report pin shows the resolved location with caption: "Shops will see your request at this location on the map."
+  - Map appears inline between the address input and the privacy info box, fitting naturally in the form flow.
+  - Preview is 140px (160px desktop) tall with rounded corners and appearance-mode-aware footer.
+- **Files touched:** `StepServiceLocation.tsx`
+- **Validation:** Build: 0 errors, 3.04s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (report wizard lacked spatial confirmation of entered location)
+- **What this unlocks:** Customers now receive immediate visual feedback about where their damage report will appear in the shop marketplace, building trust and reducing location errors.
+
+## Pass T549 — Request geography map in shop requests flow (2026-03-29)
+
+- **Why this pass was chosen:** ShopRequestsScreen had zero map context — shops saw incoming repair requests as a flat card list with text-only location labels. The core loop "Shop: See report map" was broken at the spatial step.
+- **What changed:**
+  - Added a request-geography map panel to `ShopRequestsScreen` with embedded `DashboardMapPreview` showing incoming request locations as amber report pins.
+  - Converts each request's ZIP code via `zipToCoordinates` to render spatial positions on the map.
+  - Added click-to-focus behavior: tapping a request pin on the map highlights the corresponding request card in the list below.
+  - Added `focused` prop with amber ring highlight to `ShopRequestCard` for map-driven selection feedback.
+  - Badge shows `mapped/total` count; empty-state messaging when no requests have resolvable coordinates.
+- **Files touched:** `ShopRequestsScreen.tsx`, `ShopRequestCard.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (shop requests lacked spatial context in core report → map → shop loop)
+- **What this unlocks:** Shops can now evaluate incoming repair request proximity and density on a map alongside the request cards, closing the "see report map" step for the shop side of the product loop.
+
+## Pass T548 — Accepted-bid route handoff into Shop Directory map (2026-03-29)
+
+- **Why this pass was chosen:** Bid acceptance completed status updates but left users in the bids list with no immediate map/action transition. The core loop needed a direct acceptance -> map handoff.
+- **What changed:**
+  - Enhanced `onAcceptBid` in dashboard router props to persist accepted-shop context into website map/session memory.
+  - On accept, session now stores: shop-directory query (`shopName`), map mode (`map`), and report-origin context (`lastSearchOrigin` + `lastMapCenter`) when report ZIP resolves to coordinates.
+  - Added automatic navigation to `shop-directory` after successful acceptance, moving users straight into the map action surface.
+  - Aligned router type for `onAcceptBid` details to include optional `reportId` used by current flow.
+- **Files touched:** `buildDashboardRouterProps.ts`, `dashboard-router-types.ts`
+- **Validation:** Build: 0 errors. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (accepted-bid flow lacked immediate map action transition)
+- **What this unlocks:** Acceptance now directly advances users from decision to map execution context with preserved origin/search state.
+
+## Pass T547 — Bid geography comparison map in customer bids flow (2026-03-29)
+
+- **Why this pass was chosen:** After T546, report pins were visible on dashboard maps, but the decision step (bid comparison) still lacked spatial context. Customers could compare price/timeline but not shop geography relative to their report.
+- **What changed:**
+  - Added a new bid-geography panel to `BidsScreen` with an embedded `DashboardMapPreview`.
+  - Mapped bidding shops with coordinates to blue map pins and mapped the selected report ZIP to an amber report pin.
+  - Added click-to-focus behavior: tapping a shop pin on the map now highlights that bid card in the comparison list.
+  - Added explicit mapped coverage indicator (`mapped/total`) and empty-state messaging when bids do not include coordinates.
+- **Files touched:** `BidsScreen.tsx`
+- **Validation:** Build: 0 errors. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (bid comparison lacked map context in core report → map → shop decision loop)
+- **What this unlocks:** Customers can now evaluate bids by price, timing, and location in one surface before accepting.
+
+## Pass T546 — Report/request/claim pins on all dashboard home maps (2026-03-29)
+
+- **Why this pass was chosen:** The core product loop (report → map → shop → action) was broken at the visibility step: submitted reports/requests/claims had no spatial representation on ANY dashboard home map. The map showed shops/network but not the data that drives the marketplace.
+- **What changed:**
+  - `MapLibreDashboardMapPreview`: Added `reportPins` prop with second GeoJSON source/layer (amber circles at 8px radius, distinct from blue shop circles at 7px). Added `onReportPinClick` callback. Updated `interactiveLayerIds` to include report layer when pins present.
+  - `CustomerMapWidget`: Added `reports` prop. Converts `DamageReport[]` to `ReportPin[]` via `zipToCoordinates()`. Badge shows report count alongside shop count (e.g., "3 shops · 2 reports").
+  - `ShopMapWidget`: Already had `reports` prop. Added `reportPins` computation (label = damage area/type). Passes to `DashboardMapPreview`. Shops now see WHERE incoming requests are geographically.
+  - `InsurerMapWidget`: Already had `reports` prop. Added `reportPins` computation (label = claim number/damage type). Passes to `DashboardMapPreview`. Insurers now see claim density on their network map.
+  - `HomeScreen`: Wired `reports` to `CustomerMapWidget` (was already passed to Shop/Insurer widgets).
+- **Files touched:** `MapLibreDashboardMapPreview.tsx`, `CustomerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerMapWidget.tsx`, `HomeScreen.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0.
+- **Problem taxonomy:** P2-DATA:3/3/0 (report-to-map data paths disconnected for all 3 roles)
+- **What this unlocks:** All 3 roles now see reports/requests/claims as amber pins on their dashboard home map alongside blue shop pins. The spatial feedback loop is closed for the dashboard surface. Next: report detail screen map context, bid comparison map view.
+
+## Pass T545 — Dashboard Home Map Widget Design Polish (2026-03-29)
+
+- **Why this pass was chosen:** Last of 6 map surfaces to receive systematic design polish. The dashboard home widget's empty state, error state, and zero-data badge needed improvement to match the quality bar set by T540-T543.
+- **What changed:**
+  - Badge text: shows "Nearby shops" when zero results instead of "0 shops near you".
+  - Error state: added Store icon for visual weight, consistent with other panels.
+  - Empty state: redesigned from plain text paragraph to centered illustration-style layout (Store icon + heading + subtext) matching the Shops tab empty state pattern.
+- **Files touched:** `CustomerMapWidget.tsx`
+- **Validation:** Build: 0 errors, 3.07s. Diagnostics: 0. Spellcheck: 0.
+
+## Passes T540–T544 — Fullscreen Tab & Shop Directory Design Polish (2026-03-29)
+
+- **Why these passes were chosen:** All fullscreen coverage-map sidebar tabs (Search, Explore, Saved, Shops) had excessive padding, oversized headings, and wasted vertical space. Systematic page-by-page polish pass to bring all 6 map surfaces to a consistent, compact, mobile-first design quality bar.
+- **What changed:**
+  - **T540 Search tab:** PlannerAddressSearch — Navigation2 icon + GPS/Manual badge pill on origin card; friendlier search label and helper text; taller input. PlannerRoutePreview — Route icon + horizontal layout; contextual guidance text (3 states); inline route metrics.
+  - **T541 Explore tab:** NavigationBrowseDiscoveryPanel — removed large heading; inline stats badge; full-width segmented control; compact shop cards with inline icon buttons; compact guide cards with horizontal layout.
+  - **T542 Saved tab:** NavigationSavedPlacesPanel — 3-column grid save buttons (Home/Work/Place); icon+text parked car section; inline action buttons on pinned cards; compact recent places.
+  - **T543 Shops tab:** CoverageNearestShops — tighter header with badge-style radius indicator; centered illustration empty state with MapPinned icon.
+  - **T544 Shop directory:** Already polished in T537 — confirmed no further changes needed.
+- **Files touched:** `PlannerAddressSearch.tsx`, `PlannerRoutePreview.tsx`, `NavigationBrowseDiscoveryPanel.tsx`, `NavigationSavedPlacesPanel.tsx`, `CoverageNearestShops.tsx`
+- **Validation:** Build: 0 errors, 3.01s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:12/12/0 — visual density and consistency across all tab panels.
+- **What this unlocks:** All 6 map surfaces at consistent design quality. Ready for functional wiring, data integration, and product loop completion.
+
+## Pass T539 — Backend status visibility for shop-directory map data (2026-03-29)
+
+- **Why this pass was chosen:** With demo fallback now gated, map users needed explicit UI feedback when live partner-shop data fetch fails; otherwise failure states look like empty inventories and reduce trust.
+- **What changed:**
+  - Extended `useShopDirectorySession` to expose `coverageFetchError` from partner-shop backend fetch path.
+  - Added a live-data warning banner in `ShopDirectoryScreen` that appears when backend shop fetch fails and demo fallback is not active.
+  - Preserved existing demo fallback banner logic so users can clearly distinguish demo data from live backend outages.
+- **Files touched:** `useShopDirectorySession.ts`, `ShopDirectoryScreen.tsx`
+- **Validation:** Build: 0 errors, 3.54s. Diagnostics: 0. Spellcheck: 0.
+
+---
+
+## Pass T538 — Fullscreen diagnostics cleanup + dashboard control density refinement (2026-03-29)
+
+- **Why this pass was chosen:** Fullscreen map surfaces were exposing noisy raw provider errors (e.g., aborted fetch text) and diagnostics panels by default in dev flows, while dashboard control chips remained visually dense and over-extended in the origin list.
+- **What changed:**
+  - Provider health now ignores aborted/canceled request errors so expected request churn does not degrade diagnostics trust scoring.
+  - Persisted provider-health sanitization now drops aborted/canceled failure events, cleaning historical noise from diagnostics snapshots.
+  - Fullscreen diagnostics text now humanizes abort-style errors to `Request interrupted` instead of leaking raw fetch noise.
+  - Coverage fullscreen planner diagnostics visibility now requires explicit opt-in (`VITE_SHOW_MAP_DIAGNOSTICS=true`) instead of always showing in dev.
+  - Dashboard shop-directory control panel polish: top action button updated to stronger search CTA styling and origin quick-picks limited to a focused set so the map panel no longer grows with long city-chip lists.
+- **Files touched:** `providerHealth.ts`, `PlannerDiagnosticsPanel.tsx`, `CoverageBrowseSidebarContent.tsx`, `ShopDirectorySearchPanel.tsx`, `ShopDirectoryOriginSearch.tsx`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0. Spellcheck: 0.
+
+---
+
+## Pass T537 — Full-screen map control redesign + backend-first fallback hardening (2026-03-29)
+
+- **Why this pass was chosen:** The shop-directory map control cluster still felt visually noisy (pill-heavy controls), and map data paths could silently drop into demo fallback when live partner-shop fetch returned empty. This reduced trust in full-screen map behavior.
+- **What changed:**
+  - Redesigned `ShopDirectorySearchPanel` control section with a new layout: card-based 3-column view mode selector + framed filter grid, replacing the prior pill-heavy flow.
+  - Upgraded button visual language (rounded-xl control tiles, stronger active state contrast, grouped sections) for cleaner readability in full-screen map contexts.
+  - Hardened map data source behavior in `useCoveragePartnerShops`: demo fallback now requires explicit `VITE_ENABLE_MAP_DEMO_FALLBACK=true` opt-in instead of silently activating via global demo mode.
+  - Revalidated full-screen map files (`ShopDirectoryScreen`, `ShopDirectoryImmersiveMap`) and map control files with zero diagnostics.
+- **Files touched:** `ShopDirectorySearchPanel.tsx`, `useCoveragePartnerShops.ts`
+- **Validation:** Build: 0 errors, 3.01s. Diagnostics: 0. Spellcheck: 0.
+
+---
+
 ## Pass T532 — Fix guidance card + action rail overlap on mobile (2026-03-29)
 
 - **Why this pass was chosen:** During guidance mode on small phones (375px), the NavigationActionRail (bottom: ~140px) sat directly on top of the ShopDirectoryGuidanceCard (bottom: ~56px, ~250px tall). The two controls were vertically overlapping, making both hard to interact with.
@@ -79,6 +481,411 @@
   - Removed hard-coded 420px content offset and normalized spacing/padding for mobile + desktop.
 - **Files touched:** `HomeScreen.tsx`
 - **Validation:** Build: 0 errors, 3.03s. Diagnostics: 0.
+
+---
+
+## Support Pass T557-S — Account modal close controls now announce themselves explicitly (2026-03-30)
+
+- **Why this pass was chosen:** The shared account overlays were already behaviorally hardened, but several of their top-right close controls were still icon-only buttons without explicit labels. That left a small but real accessibility gap across some of the most reused settings/help/account dialogs.
+- **What changed:**
+  - Added explicit close labels to the icon-only dismiss controls in `src/app/components/codelayer/account/SettingsModal.tsx`, `src/app/components/codelayer/account/HelpModal.tsx`, `src/app/components/codelayer/account/PaymentModal.tsx`, `src/app/components/codelayer/account/ShopProfileModal.tsx`, `src/app/components/codelayer/account/DeleteAccountModal.tsx`, and `src/app/components/codelayer/account/EditProfileModal.tsx`.
+  - Kept the change scoped to shared account overlays only, with no functional behavior changes and no drift into the lead AI's active map/report lane.
+- **Files touched:** `src/app/components/codelayer/account/SettingsModal.tsx`, `src/app/components/codelayer/account/HelpModal.tsx`, `src/app/components/codelayer/account/PaymentModal.tsx`, `src/app/components/codelayer/account/ShopProfileModal.tsx`, `src/app/components/codelayer/account/DeleteAccountModal.tsx`, `src/app/components/codelayer/account/EditProfileModal.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/codelayer/account/SettingsModal.tsx src/app/components/codelayer/account/HelpModal.tsx src/app/components/codelayer/account/PaymentModal.tsx src/app/components/codelayer/account/ShopProfileModal.tsx src/app/components/codelayer/account/DeleteAccountModal.tsx src/app/components/codelayer/account/EditProfileModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** The shared account overlay family now exposes its primary dismissal action consistently and explicitly, which keeps the shell more understandable without touching product execution surfaces.
+
+---
+
+## Support Pass T556-S — Shared shell triggers now announce purpose and state more explicitly (2026-03-30)
+
+- **Why this pass was chosen:** The landing/dashboard shell was visually stable, but a few of its most reused triggers still relied on surrounding context instead of exposing their job directly. Logo buttons, notification/profile toggles, and the account quick-actions panel all benefited from one more explicit-label pass.
+- **What changed:**
+  - Updated `src/app/components/landing/LandingPageHeader.tsx` so the landing logo announces `Back to top`, the desktop nav exposes a `Primary navigation` label, the dashboard shortcut announces itself, and the profile trigger now reflects open/close state.
+  - Updated `src/app/components/app/DashboardHeader.tsx` so the mobile logo announces dashboard-home intent, the notification bell now includes unread-count context in its accessible label, and the profile trigger reflects open/close state.
+  - Updated `src/app/components/app/DashboardSidebar.tsx` and `src/app/components/codelayer/account/AccountMenu.tsx` so the sidebar itself is labeled as a landmark, the desktop logo trigger announces dashboard-home intent, and the account action cluster is explicitly named.
+- **Files touched:** `src/app/components/landing/LandingPageHeader.tsx`, `src/app/components/app/DashboardHeader.tsx`, `src/app/components/app/DashboardSidebar.tsx`, `src/app/components/codelayer/account/AccountMenu.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/landing/LandingPageHeader.tsx src/app/components/app/DashboardHeader.tsx src/app/components/app/DashboardSidebar.tsx src/app/components/codelayer/account/AccountMenu.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** The shared site/dashboard chrome now exposes intent and state more directly without drifting into the lead AI's active map/report/product lane.
+
+---
+
+## Support Pass T555-S — Dashboard sidebar now exposes navigation state more explicitly (2026-03-30)
+
+- **Why this pass was chosen:** The dashboard sidebar already looked stable, but its navigation state was still mostly visual. That meant assistive-tech users did not get the same clarity about which destination was active or which container was the primary dashboard nav.
+- **What changed:**
+  - Updated `src/app/components/app/DashboardSidebar.tsx` so the sidebar `<nav>` now has an explicit `Dashboard navigation` label.
+  - Added `aria-current="page"` to the active tab button and hid purely decorative active markers from assistive tech.
+  - Added an explicit label to the demo-mode trigger so it reads more clearly as an action, not just another icon row.
+- **Files touched:** `src/app/components/app/DashboardSidebar.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/app/DashboardSidebar.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared dashboard navigation now communicates active state more clearly without drifting into the lead AI’s map/report implementation lane.
+
+---
+
+## Support Pass T554-S — Sidebar profile disclosure and loading recovery now expose clearer state (2026-03-30)
+
+- **Why this pass was chosen:** Two shared shell paths were still slightly looser than the rest of the hardening work: the sidebar account trigger did not expose its expanded/collapsed relationship, and the global loading screen did not announce itself as a live status surface or declare its reload action explicitly.
+- **What changed:**
+  - Updated `src/app/components/app/DashboardSidebar.tsx` so the bottom profile trigger now exposes `aria-expanded`, `aria-controls`, and a clearer open/close label for the embedded profile panel.
+  - Updated `src/app/components/app/AppLoading.tsx` so the loading shell now exposes `role="status"`, `aria-live`, `aria-busy`, hides the decorative spinner from assistive tech, and gives the recovery reload control an explicit button type.
+- **Files touched:** `src/app/components/app/DashboardSidebar.tsx`, `src/app/components/app/AppLoading.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/app/DashboardSidebar.tsx src/app/components/app/AppLoading.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Another pair of shared shell surfaces now describe their live state more clearly and behave more predictably without touching the lead AI’s active product lane.
+
+---
+
+## Support Pass T553-S — Header menu triggers now expose their menu relationships explicitly (2026-03-30)
+
+- **Why this pass was chosen:** The shared landing and dashboard headers already had working mobile/profile menus, but the trigger buttons still did not consistently declare which panel they controlled. That is a small but worthwhile shell-semantics gap in two highly reused top-level surfaces.
+- **What changed:**
+  - Updated `src/app/components/landing/LandingPageHeader.tsx` so the mobile-menu toggle and profile-menu trigger now expose `aria-controls`, and the mobile navigation panel and profile menu now have stable IDs/labels.
+  - Updated `src/app/components/app/DashboardHeader.tsx` so the profile-menu trigger now points at the rendered menu via `aria-controls`.
+- **Files touched:** `src/app/components/landing/LandingPageHeader.tsx`, `src/app/components/app/DashboardHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/landing/LandingPageHeader.tsx src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** The shared top-level navigation chrome is more explicit and assistive-tech-friendly without touching the lead AI’s active product lane.
+
+---
+
+## Support Pass T552-S — Profile dropdown notification state copy and button semantics tightened (2026-03-30)
+
+- **Why this pass was chosen:** The shared profile dropdown still used a stronger-than-real `Synced` label for notification refresh state, and several navigation actions were still relying on implicit button behavior. That made this shared shell path slightly less honest and less predictable than the other hardened account surfaces.
+- **What changed:**
+  - Updated `src/app/components/dashboard/ProfileDropdown.tsx` so the notification refresh state now reads `Refresh on` / `Refresh paused` instead of `Synced` / `Paused`.
+  - Added explicit `type=\"button\"` to the remaining profile-dropdown navigation and logout actions.
+  - Added a lightweight `region` label to the dropdown container so the shared panel announces itself more clearly to assistive tech.
+- **Files touched:** `src/app/components/dashboard/ProfileDropdown.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/dashboard/ProfileDropdown.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** The shared account/profile shell now uses more truthful notification-refresh language and more reliable button behavior without stepping into the lead AI’s active map/report lane.
+
+---
+
+## Support Pass T551-S — Notification center now behaves like a real overlay on mobile (2026-03-30)
+
+- **Why this pass was chosen:** The shared notification center already supported outside-click and `Escape` dismissal, but on mobile it behaves like a fixed overlay without its own close affordance or dialog semantics. That left keyboard and small-screen users with a softer interaction model than the rest of the hardened shared shell.
+- **What changed:**
+  - Updated `src/app/components/dashboard/NotificationCenter.tsx` to focus itself on open, expose `role="dialog"` / `aria-label`, and add an explicit close button in the header.
+  - Updated `src/app/components/app/DashboardHeader.tsx` so the bell trigger now declares `aria-haspopup="dialog"` and points at the notification panel with `aria-controls`.
+- **Files touched:** `src/app/components/dashboard/NotificationCenter.tsx`, `src/app/components/app/DashboardHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/dashboard/NotificationCenter.tsx src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Another shared shell overlay now matches the repo’s hardened modal standard more closely, improving small-screen usability without drifting into the lead AI’s active map/report work.
+
+---
+
+## Support Pass T550-S — Shared map typing and notification compatibility fixes restored a clean terminal build (2026-03-30)
+
+- **Why this pass was chosen:** After the shared-shell hardening passes, the remaining reproducible terminal noise was a small cluster of compatibility mismatches spread across shared preview typing and two in-motion product files. The value was real: get `tsc` back to clean without broad refactors or product-lane rewrites.
+- **What changed:**
+  - Tightened `ReportPin` in `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx` so downstream map-panel builders now match the shared preview contract.
+  - Corrected `latitude` / `longitude` reads in `src/app/components/insurer/InsurerPartnerShopsScreen.tsx` and `src/app/components/reports/CompetitorAnalysisScreen.tsx` so those map panels consume the current coordinate shape.
+  - Normalized the notification event shape in `src/app/components/shop/ShopRequestsScreen.tsx` and added the missing optional `shopId` field to the local accept-bid details type in `src/app/utils/buildDashboardRouterProps.ts`.
+- **Files touched:** `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`, `src/app/components/insurer/InsurerPartnerShopsScreen.tsx`, `src/app/components/reports/CompetitorAnalysisScreen.tsx`, `src/app/components/shop/ShopRequestsScreen.tsx`, `src/app/utils/buildDashboardRouterProps.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npx tsc --noEmit --pretty false`, `npm run build`, `npx prettier --check src/app/components/dashboard/MapLibreDashboardMapPreview.tsx src/app/components/insurer/InsurerPartnerShopsScreen.tsx src/app/components/reports/CompetitorAnalysisScreen.tsx src/app/components/shop/ShopRequestsScreen.tsx src/app/utils/buildDashboardRouterProps.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** The repo is back to a clean reproducible terminal build/typecheck state, and the cleanup stayed tightly scoped to compatibility fixes rather than competing with the lead AI’s active product lane.
+
+---
+
+## Support Pass T549-S — Shared theme contrast tokens tightened to resolve VS Code accessibility warnings (2026-03-30)
+
+- **Why this pass was chosen:** VS Code was surfacing a concentrated Sonar contrast-warning cluster in `src/styles/theme.css` around shared glass-control, badge, and popup-close states. Because those warnings lived in the common theme layer, fixing them here improved accessibility without colliding with the lead AI’s active product logic lane.
+- **What changed:**
+  - Tightened the shared `bd-glass-control` ramps so the default, hover, and active states no longer rely on pale/translucent blue stops behind light text.
+  - Hardened `bd-glass-control--secondary` and dark popup-close hover states with darker, higher-contrast blue/slate backgrounds.
+  - Rebalanced light-mode `bd-glass-badge`, `bd-glass-control--secondary`, `bd-glass-control--utility`, and `bd-light-surface` control variants to use more opaque light fills with darker blue/slate foregrounds.
+- **Files touched:** `src/styles/theme.css`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx prettier --check src/styles/theme.css docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`, `buildDashboardRouterProps.ts`)
+- **Impact:** The shared theme layer now uses safer accessibility defaults in the exact area where VS Code was reporting contrast problems, without drifting into the lead AI’s active map rollout.
+
+---
+
+## Support Pass T546-S — Auth views no longer expose fake Google and Apple sign-in actions (2026-03-30)
+
+- **Why this pass was chosen:** The login and signup views still rendered `Google` and `Apple` buttons even though the current auth shell has no provider wiring for those paths. Those buttons were just reusing the regular email login/signup callbacks, which is misleading product behavior.
+- **What changed:**
+  - Updated `src/app/components/auth/LoginLoginView.tsx` to remove the fake social-login buttons and replace them with honest guidance that email/password is the active path today.
+  - Updated `src/app/components/auth/LoginSignupView.tsx` the same way, replacing the fake social sign-up controls with explicit `coming soon` messaging.
+- **Files touched:** `src/app/components/auth/LoginLoginView.tsx`, `src/app/components/auth/LoginSignupView.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`, `buildDashboardRouterProps.ts`), `npx prettier --check src/app/components/auth/LoginLoginView.tsx src/app/components/auth/LoginSignupView.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/auth/LoginLoginView.tsx src/app/components/auth/LoginSignupView.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared auth now stops pretending provider-based sign-in is live when the current product only supports the email/password path.
+
+---
+
+## Support Pass T547-S — Account save feedback and admin overlay now match real guarantees and modal standards (2026-03-30)
+
+- **Why this pass was chosen:** The shared account save overlays still implied stronger cloud-sync certainty than the current shell proves, and the full-screen admin panel in `AccountScreen` had not been brought up to the same keyboard/scroll standard as the other hardened overlays.
+- **What changed:**
+  - Updated `src/app/components/codelayer/account/AccountOverlays.tsx` so the profile-save loading/success states use softer, truthful copy (`Saving profile photo`, `Changes saved for this profile`) and expose status semantics for assistive tech.
+  - Updated `src/app/components/codelayer/AccountScreen.tsx` so the full-screen admin panel now locks body scroll while open, dismisses on `Escape`, and exposes dialog semantics instead of behaving like an unmanaged full-screen layer.
+  - Updated `src/app/components/codelayer/account/AccountInfoCard.tsx` so the edit affordance uses explicit button semantics and an accessible label.
+- **Files touched:** `src/app/components/codelayer/account/AccountOverlays.tsx`, `src/app/components/codelayer/AccountScreen.tsx`, `src/app/components/codelayer/account/AccountInfoCard.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`, `buildDashboardRouterProps.ts`), `npx prettier --check src/app/components/codelayer/AccountScreen.tsx src/app/components/codelayer/account/AccountOverlays.tsx src/app/components/codelayer/account/AccountInfoCard.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/AccountScreen.tsx src/app/components/codelayer/account/AccountOverlays.tsx src/app/components/codelayer/account/AccountInfoCard.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared account feedback now describes its real save scope more honestly, and the admin/account shell behaves more consistently without touching the lead AI’s active map rollout.
+
+---
+
+## Support Pass T548-S — Account hero no longer implies live sync certainty (2026-03-30)
+
+- **Why this pass was chosen:** The top account hero still carried a static `Synced` badge and sync-language helper copy even though the shared account shell does not guarantee a live sync state on every render. That was another small but visible honesty gap in the shared shell.
+- **What changed:**
+  - Updated `src/app/components/codelayer/account/AccountHeader.tsx` so the hero badge now reads `Profile` instead of `Synced`.
+  - Replaced the helper copy with a more accurate profile-management description and added explicit button semantics to the profile-photo action.
+- **Files touched:** `src/app/components/codelayer/account/AccountHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx prettier --check src/app/components/codelayer/account/AccountHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/account/AccountHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared account chrome now describes the profile area more honestly without drifting into the lead AI’s active map and workflow files.
+
+---
+
+## Support Pass T545-S — Auth view actions now use explicit button types (2026-03-30)
+
+- **Why this pass was chosen:** The shared login/signup view components still relied on browser-default button behavior for several primary and secondary actions. That is a small but real reliability seam if those auth views are ever embedded inside a form wrapper or refactored into one later.
+- **What changed:**
+  - Added explicit `type="button"` to the remaining action buttons in `src/app/components/auth/LoginMainView.tsx`, `src/app/components/auth/LoginLoginView.tsx`, and `src/app/components/auth/LoginSignupView.tsx`.
+  - Covered role-selection actions, primary submit-style actions, social-login placeholders, and view-switch links so the auth shell no longer depends on implicit button defaults.
+- **Files touched:** `src/app/components/auth/LoginMainView.tsx`, `src/app/components/auth/LoginLoginView.tsx`, `src/app/components/auth/LoginSignupView.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`, `buildDashboardRouterProps.ts`), `npx prettier --check src/app/components/auth/LoginMainView.tsx src/app/components/auth/LoginLoginView.tsx src/app/components/auth/LoginSignupView.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/auth/LoginMainView.tsx src/app/components/auth/LoginLoginView.tsx src/app/components/auth/LoginSignupView.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared auth actions now behave more predictably if their surrounding layout changes, without touching the lead AI’s active map rollout.
+
+---
+
+## Support Pass T544-S — Auth overlays now match the shared modal behavior standard (2026-03-30)
+
+- **Why this pass was chosen:** The login and account-type migration overlays were still behind the shared shell standard. They lacked dialog semantics, backdrop click dismissal, `Escape` dismissal, and body-scroll locking, which made auth flows feel less polished than the hardened account overlays.
+- **What changed:**
+  - Updated `src/app/components/auth/LoginModal.tsx` to lock body scroll while open, dismiss on backdrop click and `Escape`, expose dialog semantics, and use an explicit `type="button"` on the close control.
+  - Updated `src/app/components/auth/AccountTypeMigrationModal.tsx` to use the same overlay behavior and added explicit button types to the role-selection actions.
+- **Files touched:** `src/app/components/auth/LoginModal.tsx`, `src/app/components/auth/AccountTypeMigrationModal.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`, `buildDashboardRouterProps.ts`), `npx prettier --check src/app/components/auth/LoginModal.tsx src/app/components/auth/AccountTypeMigrationModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/auth/LoginModal.tsx src/app/components/auth/AccountTypeMigrationModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared auth overlays now behave consistently with the hardened account/site modal system without touching the lead AI’s active map rollout.
+
+---
+
+## Support Pass T543-S — Account profile and deletion overlays now follow the shared modal behavior standard (2026-03-30)
+
+- **Why this pass was chosen:** After hardening settings, payment, and help overlays, the remaining account dialogs still behaved inconsistently. `EditProfileModal`, `ShopProfileModal`, and `DeleteAccountModal` did not all support backdrop click, `Escape`, or body-scroll locking, and the shop-profile overlay could reopen with stale local form state.
+- **What changed:**
+  - Updated `src/app/components/codelayer/account/EditProfileModal.tsx`, `src/app/components/codelayer/account/ShopProfileModal.tsx`, and `src/app/components/codelayer/account/DeleteAccountModal.tsx` to expose dialog semantics, lock body scroll while open, and dismiss on backdrop click / `Escape` when not blocked by save or delete work.
+  - Added explicit `type="button"` to the remaining action buttons inside those overlays.
+  - Updated `ShopProfileModal` to reset saved/error state and reload its local address, hours, and certifications fields from the latest props whenever the modal opens, preventing stale reopen state.
+- **Files touched:** `src/app/components/codelayer/account/EditProfileModal.tsx`, `src/app/components/codelayer/account/ShopProfileModal.tsx`, `src/app/components/codelayer/account/DeleteAccountModal.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/codelayer/account/EditProfileModal.tsx src/app/components/codelayer/account/ShopProfileModal.tsx src/app/components/codelayer/account/DeleteAccountModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/account/EditProfileModal.tsx src/app/components/codelayer/account/ShopProfileModal.tsx src/app/components/codelayer/account/DeleteAccountModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared account overlays now behave more predictably across light/dark mode and no longer reopen with stale shop-profile form state.
+
+---
+
+## Support Pass T542-S — Help modal now uses real support actions instead of dead controls (2026-03-30)
+
+- **Why this pass was chosen:** The shared help modal still had dead FAQ buttons and a fake in-app `Send Message` action that only played success UI locally. That created one more trust gap in the shared account shell outside the lead AI's active map rollout.
+- **What changed:**
+  - Updated `src/app/components/codelayer/account/HelpModal.tsx` so FAQ topics are now presented honestly as static support topics instead of clickable no-op buttons.
+  - Replaced the fake in-app send action with a real `mailto:` draft flow, renamed the composer section to `Draft a support email`, and added helper copy that explains the current support path.
+  - Added dialog semantics, backdrop click dismissal, `Escape` dismissal, and body-scroll locking so the help modal now behaves like the other hardened shared overlays.
+- **Files touched:** `src/app/components/codelayer/account/HelpModal.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/codelayer/account/HelpModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/account/HelpModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared account help now exposes a real support action and no longer suggests in-app support tooling that the current product does not actually have.
+
+---
+
+## Support Pass T541-S — Account payment path now matches its real readiness and modal behavior (2026-03-30)
+
+- **Why this pass was chosen:** The shared account shell still exposed `Payment Methods` like a live settings surface even though the current modal is only a preview, and that modal lacked the same backdrop, `Escape`, and scroll-lock handling already used by the shared appearance settings flow.
+- **What changed:**
+  - Updated `src/app/components/codelayer/account/AccountMenu.tsx` so the shared account entry now reads `Payment Preview` instead of implying live payment-method management.
+  - Updated `src/app/components/codelayer/account/PaymentModal.tsx` to use more honest billing-preview copy, add dialog semantics, close on backdrop click, close on `Escape`, and lock body scroll while open.
+- **Files touched:** `src/app/components/codelayer/account/AccountMenu.tsx`, `src/app/components/codelayer/account/PaymentModal.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/codelayer/account/AccountMenu.tsx src/app/components/codelayer/account/PaymentModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/account/AccountMenu.tsx src/app/components/codelayer/account/PaymentModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared account settings now describe the payment path more honestly and keep another account overlay aligned with the shell’s standard modal behavior.
+
+---
+
+## Support Pass T540-S — Shared shell controls now describe their real save and readiness scope (2026-03-30)
+
+- **Why this pass was chosen:** The shared settings surfaces still looked broader than the code path they actually save today, and the dashboard header still rendered a live-looking search box with no implementation behind it. That left two more honesty gaps in the site/dashboard shell outside the lead AI's active map rollout.
+- **What changed:**
+  - Updated `src/app/components/codelayer/account/SettingsModal.tsx` title to `Appearance Settings` so the modal name matches the only preference path currently wired to persist.
+  - Updated `src/app/components/codelayer/account/AccountMenu.tsx`, `src/app/components/landing/LandingPageHeader.tsx`, and existing shared menu labels so appearance-only entry points now read consistently instead of implying broader saved account settings.
+  - Replaced the faux dashboard-header search input in `src/app/components/app/DashboardHeader.tsx` with an explicit `Global search` preview card marked `Coming soon`, removing a fake interactive control from the shared shell.
+- **Files touched:** `src/app/components/codelayer/account/SettingsModal.tsx`, `src/app/components/codelayer/account/AccountMenu.tsx`, `src/app/components/landing/LandingPageHeader.tsx`, `src/app/components/app/DashboardHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/codelayer/account/SettingsModal.tsx src/app/components/codelayer/account/AccountMenu.tsx src/app/components/landing/LandingPageHeader.tsx src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/account/SettingsModal.tsx src/app/components/codelayer/account/AccountMenu.tsx src/app/components/landing/LandingPageHeader.tsx src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared dashboard/site chrome now states its real save scope more honestly and no longer exposes a fake live search field while the feature is still unwired.
+
+---
+
+## Support Pass T539-S — Shared profile dropdown notifications now use theme-aware helper text and button semantics (2026-03-30)
+
+- **Why this pass was chosen:** The shared profile dropdown still used hardcoded gray helper text inside its notification empty state and rendered notification rows as clickable `div`s instead of buttons. That left one more light/dark mismatch and weak keyboard semantics in a common dashboard/site shell component.
+- **What changed:**
+  - Updated `src/app/components/dashboard/ProfileDropdown.tsx` so empty-state helper copy now follows the active appearance mode.
+  - Converted notification rows from clickable `div`s to `button` elements so they behave more predictably for keyboard and assistive-tech interaction.
+- **Files touched:** `src/app/components/dashboard/ProfileDropdown.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `InsurerPartnerShopsScreen.tsx`, `CompetitorAnalysisScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/dashboard/ProfileDropdown.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/dashboard/ProfileDropdown.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared dashboard/site profile menus now stay more consistent across light/dark mode and expose better interaction semantics without touching the lead AI's active map rollout files.
+
+---
+
+## Support Pass T538-S — Mobile site/dashboard overlays now lock background scroll while open (2026-03-30)
+
+- **Why this pass was chosen:** After T536-S and T537-S, the shared landing mobile menu and dashboard mobile notification overlay still allowed the page behind them to scroll. That made both shells feel unfinished on touch devices even though the menus themselves rendered correctly.
+- **What changed:**
+  - Updated `src/app/components/landing/LandingPageHeader.tsx` so the mobile site menu now locks body scroll while open.
+  - Updated `src/app/components/app/DashboardHeader.tsx` so the mobile notification overlay also locks body scroll while open.
+- **Files touched:** `src/app/components/landing/LandingPageHeader.tsx`, `src/app/components/app/DashboardHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/landing/LandingPageHeader.tsx src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/landing/LandingPageHeader.tsx src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared site/dashboard overlays now behave more like true mobile layers instead of leaving the underlying page scrollable behind them.
+
+---
+
+## Support Pass T537-S — Dashboard header menus now dismiss on Escape and only attach listeners while open (2026-03-29)
+
+- **Why this pass was chosen:** The shared dashboard header left global document listeners attached even when its popovers were closed, and the top profile/notification menus had no keyboard dismissal path. That was a small but real dashboard-shell reliability bug outside the lead AI's active map lane.
+- **What changed:**
+  - Updated `src/app/components/app/DashboardHeader.tsx` so document-level click/keyboard listeners only attach while the top profile or notification menu is open.
+  - Added `Escape` dismissal for the dashboard header's profile and notification menus.
+- **Files touched:** `src/app/components/app/DashboardHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/app/DashboardHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared dashboard shell controls now dismiss more predictably without touching the lead AI's active route, bid, or map-pin implementation work.
+
+---
+
+## Support Pass T536-S — Site settings modal and landing header mobile menu now dismiss more reliably (2026-03-29)
+
+- **Why this pass was chosen:** The shared settings modal had no backdrop click or `Escape` dismissal and left background scroll active, while the landing-page mobile header menu could remain open behind auth/settings actions. That created small but real site/dashboard-shell interaction bugs outside the lead AI's product lane.
+- **What changed:**
+  - Updated `src/app/components/codelayer/account/SettingsModal.tsx` to lock body scroll while open, close on backdrop click, close on `Escape`, and expose dialog semantics more explicitly.
+  - Updated `src/app/components/landing/LandingPageHeader.tsx` so mobile/profile menus dismiss on outside click and `Escape`, and mobile auth/settings actions close the sheet before continuing.
+- **Files touched:** `src/app/components/codelayer/account/SettingsModal.tsx`, `src/app/components/landing/LandingPageHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion map/product files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `InsurerClaimsScreen.tsx`, `ReportsListScreen.tsx`, `ShopActiveJobsScreen.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/components/codelayer/account/SettingsModal.tsx src/app/components/landing/LandingPageHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/codelayer/account/SettingsModal.tsx src/app/components/landing/LandingPageHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Shared site/dashboard shell overlays now behave more consistently without touching the lead AI's active map execution and map-context screens.
+
+---
+
+## Support Pass T535-S — Dashboard/site appearance mode now uses a true light shell and reactive auth theme state (2026-03-29)
+
+- **Why this pass was chosen:** The shared dashboard light shell was still using dark atmosphere/background tokens, and the Clerk account-setup screen only read appearance mode once from the document. That left light mode visually inconsistent across dashboard/auth surfaces even though the saved appearance state itself was valid.
+- **What changed:**
+  - Corrected the shared light-surface tokens in `src/app/theme/globalSurfaceTheme.ts` and the dashboard light atmosphere layers in `src/app/components/app/DashboardAtmosphere.tsx` so light mode now renders a real light shell instead of a dark base.
+  - Added `src/app/hooks/useDocumentAppearanceMode.ts` and wired `ClerkAccountTypeSelector.tsx` to react to live `data-appearance-mode` changes instead of snapshotting once at mount.
+  - Updated `SettingsModal.tsx` so the modal previews and styles itself from the currently selected appearance option, not the stale persisted mode.
+- **Files touched:** `src/app/theme/globalSurfaceTheme.ts`, `src/app/components/app/DashboardAtmosphere.tsx`, `src/app/hooks/useDocumentAppearanceMode.ts`, `src/app/components/auth/ClerkAccountTypeSelector.tsx`, `src/app/components/codelayer/account/SettingsModal.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion dashboard/widget files: `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, `ShopMapWidget.tsx`, `ShopRequestsScreen.tsx`), `npx prettier --check src/app/theme/globalSurfaceTheme.ts src/app/components/app/DashboardAtmosphere.tsx src/app/hooks/useDocumentAppearanceMode.ts src/app/components/auth/ClerkAccountTypeSelector.tsx src/app/components/codelayer/account/SettingsModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/theme/globalSurfaceTheme.ts src/app/components/app/DashboardAtmosphere.tsx src/app/hooks/useDocumentAppearanceMode.ts src/app/components/auth/ClerkAccountTypeSelector.tsx src/app/components/codelayer/account/SettingsModal.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md --no-progress`
+- **Impact:** Dashboard/site appearance mode now behaves more honestly and consistently across the shared shell, auth setup, and settings preview without touching the lead AI's active bid/map execution lane.
+
+---
+
+## Support Pass T534-S — Admin health, existence, and batch-delete responses now normalize top-level shape (2026-03-29)
+
+- **Why this pass was chosen:** After T533-S, the admin service still trusted a few remaining top-level edge response shapes for health checks, admin-account existence checks, and bulk-delete results. Those values drive operator-facing status panels and batch-delete messaging, so malformed scalars or error rows were still worth hardening.
+- **What changed:**
+  - Added top-level response sanitizers in `src/app/services/supabase/admin.ts` for edge-health payloads, admin-existence checks, and bulk-delete results.
+  - Normalized `status`, `exists`, `totalUsers`, `deleted`, `requested`, and per-user bulk-delete errors before the admin UI consumes them.
+- **Files touched:** `src/app/services/supabase/admin.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion dashboard-widget errors in `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, and `ShopMapWidget.tsx`), `npx prettier --check src/app/services/supabase/admin.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/services/supabase/admin.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Admin operator flows now distrust malformed top-level edge payloads in the remaining health/check/delete paths instead of assuming those scalar fields are always well formed.
+
+---
+
+## Support Pass T533-S — Admin list responses now filter malformed records before reuse (2026-03-29)
+
+- **Why this pass was chosen:** The admin list endpoints were still trusting raw `users` and `profiles` arrays from edge responses once the top-level payload arrived. That left one more low-conflict admin trust seam where malformed records could leak into operator-facing tables.
+- **What changed:**
+  - Added record-shape sanitizers in `src/app/services/supabase/admin.ts` for admin user rows, user metadata, and admin profile summaries.
+  - Updated `listAdminUsers()` and `listAdminProfiles()` to filter out malformed remote records before the admin UI reuses them.
+- **Files touched:** `src/app/services/supabase/admin.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion dashboard-widget errors in `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, and `ShopMapWidget.tsx`), `npx prettier --check src/app/services/supabase/admin.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/services/supabase/admin.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Admin-only list views now distrust malformed edge records instead of passing raw remote arrays straight into operator-facing state.
+
+---
+
+## Support Pass T532-S — Admin delete service contract no longer advertises phantom cleanup fields (2026-03-29)
+
+- **Why this pass was chosen:** The admin delete service type still claimed a `deleted` breakdown (`auth`, `profile`, `kv_data`) that the current edge handler does not return. The temporary delete utility was then surfacing that phantom structure as if the app had verified detailed cleanup results.
+- **What changed:**
+  - Tightened `services/supabase/admin.ts` so `deleteAdminUser()` now matches the actual handler response shape instead of advertising unsupported `deleted.*` fields.
+  - Updated `DeleteUserUtility.tsx` to describe delete success more honestly and to stop implying verified KV/profile cleanup details that the current handler does not provide.
+- **Files touched:** `src/app/services/supabase/admin.ts`, `src/app/components/admin/DeleteUserUtility.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false` (currently blocked by unrelated in-motion dashboard-widget errors in `CustomerMapWidget.tsx`, `InsurerMapWidget.tsx`, and `ShopMapWidget.tsx`), `npx prettier --check src/app/services/supabase/admin.ts src/app/components/admin/DeleteUserUtility.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/services/supabase/admin.ts src/app/components/admin/DeleteUserUtility.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Admin-only delete tooling now matches the backend contract more honestly instead of presenting cleanup detail the current handler does not actually return.
+
+---
+
+## Support Pass T531-S — Admin delete copy now matches actual handler scope (2026-03-29)
+
+- **Why this pass was chosen:** The admin dashboard delete flows told operators that deleting a user would remove "all associated data," but the current edge handler only guarantees deletion of the auth user and the profile row. That wording was overstating cleanup scope in an operator-facing admin path.
+- **What changed:**
+  - Tightened the delete confirmation and success copy in `admin-dashboard-user-actions.ts`.
+  - Made the matching delete copy in `useAdminActions.ts` consistent with the same auth-plus-profile-only guarantee.
+- **Files touched:** `src/app/components/admin/admin-dashboard-user-actions.ts`, `src/app/components/admin/useAdminActions.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/admin/admin-dashboard-user-actions.ts src/app/components/admin/useAdminActions.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/admin/admin-dashboard-user-actions.ts src/app/components/admin/useAdminActions.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Admin operators now get a more honest deletion contract instead of UI copy that implied broader cleanup than the current handler actually performs.
+
+---
+
+## Support Pass T530-S — Map master-plan status line now avoids overstating scope (2026-03-29)
+
+- **Why this pass was chosen:** The active map master plan still labeled itself an "Active strategic source of truth," which was stronger than the repo's current docs model and inconsistent with the newer first-read/startup-path language.
+- **What changed:** Tightened the status marker in `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` from "Active strategic source of truth" to "Active strategic reference."
+- **Files touched:** `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `npx cspell lint docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+- **Impact:** The active docs now describe the map plan more honestly as strategic reference material instead of implying it is the repo's only truth surface.
+
+---
+
+## Support Pass T529-S — Master-context wording now matches the real startup path (2026-03-29)
+
+- **Why this pass was chosen:** `CLAUDE_AI_MASTER_CONTEXT.md` still called itself the "single source of truth," which had become too absolute after the repo standardized on a README-led startup path plus task-specific active docs. That wording could push future AI sessions toward over-trusting one context doc instead of the full operating chain.
+- **What changed:**
+  - Tightened `CLAUDE_AI_MASTER_CONTEXT.md` so it now describes itself as the primary first-read master context, not the sole truth source.
+  - Aligned `docs/README.md` startup wording with that same first-read master-context framing.
+- **Files touched:** `docs/CLAUDE_AI_MASTER_CONTEXT.md`, `docs/README.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check docs/CLAUDE_AI_MASTER_CONTEXT.md docs/README.md docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint docs/CLAUDE_AI_MASTER_CONTEXT.md docs/README.md docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Future AI sessions now get a more honest startup contract: read the master context first, then follow the current docs operating path instead of assuming one file is the entire truth surface.
+
+---
+
+## Support Pass T528-S — Cached user-data arrays now filter malformed records before reuse (2026-03-29)
+
+- **Why this pass was chosen:** Cached user-data parsing already required a sane top-level object, but `vehicles`, `reports`, `bids`, `notifications`, and `activities` were still accepted as raw arrays once that top-level shape passed. That left one more browser-cache seam where malformed nested records could still hydrate UI state or leak into the local-to-cloud migration path.
+- **What changed:**
+  - Hardened `useUserDataHelpers.ts` with runtime validators for cached vehicles, reports, bids, notifications, and activities.
+  - Updated `parseCachedUserData()` so those nested collections are filtered by expected record shape before the cache is reused for instant UI hydration or migration.
+- **Files touched:** `src/app/hooks/useUserDataHelpers.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/hooks/useUserDataHelpers.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/hooks/useUserDataHelpers.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Browser-cached user data now treats malformed nested records as untrusted input instead of reusing them during cache hydration or cache-assisted cloud migration.
+
+---
+
+## Support Pass T527-S — Admin edge-action responses now validate object shape (2026-03-29)
+
+- **Why this pass was chosen:** The admin dashboard's create/delete/manage-account helpers were still treating every edge-function JSON response as if it were a plain object with `success`, `created`, `userId`, and `error` fields. That left an isolated admin-only trust seam too optimistic about malformed or unexpected response payloads.
+- **What changed:**
+  - Hardened `admin-dashboard-user-actions.ts` with a small response normalizer so admin actions now coerce edge JSON into a known object shape before reading success/error fields.
+  - Updated delete/create/custom-create/manage-admin flows to reuse that normalized response path instead of reading raw `response.json()` output directly.
+- **Files touched:** `src/app/components/admin/admin-dashboard-user-actions.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/components/admin/admin-dashboard-user-actions.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/components/admin/admin-dashboard-user-actions.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Admin-only edge actions now treat one more remote payload as untrusted input without touching the lead AI's active map and immersive overlay files.
+
+---
+
+## Support Pass T526-S — Website preference sync now reuses the session-memory sanitizer (2026-03-29)
+
+- **Why this pass was chosen:** Website relationship sync was now validating remote payload shape, but the sibling cloud-preferences fetch path still returned raw `session_memory` JSON without routing it through the same sanitizer used for browser-hydrated website memory. That left one more low-conflict remote trust seam inconsistent with the local storage boundary.
+- **What changed:**
+  - Exported the existing website-session sanitizer from `websiteIdentity.ts` so cloud hydration can reuse the same normalization logic as browser-local hydration.
+  - Hardened `websitePreferencesSync.ts` so cloud fetch now checks payload and nested `preferences` object shape before reading `session_memory`, then sanitizes that remote payload before returning it.
+  - Tightened two support-adjacent UI strings so they no longer overstate storage/sync guarantees with the word `securely`.
+- **Files touched:** `src/app/services/auth/websiteIdentity.ts`, `src/app/services/auth/websitePreferencesSync.ts`, `src/app/components/codelayer/report/StepPhotos.tsx`, `src/app/components/codelayer/account/AccountHeader.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/services/auth/websiteIdentity.ts src/app/services/auth/websitePreferencesSync.ts src/app/components/codelayer/report/StepPhotos.tsx src/app/components/codelayer/account/AccountHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/services/auth/websiteIdentity.ts src/app/services/auth/websitePreferencesSync.ts src/app/components/codelayer/report/StepPhotos.tsx src/app/components/codelayer/account/AccountHeader.tsx docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Website preference sync now treats remote session-memory payloads as untrusted input and keeps honesty slightly higher in adjacent UI copy, without colliding with the lead AI's active map overlay work.
+
+---
+
+## Support Pass T525-S — Website relationship sync now validates cloud timestamp shape (2026-03-29)
+
+- **Why this pass was chosen:** Website relationship sync already normalized relationship ID collections, but the cloud fetch path still trusted remote payload shape and `updatedAt` too loosely. That left one more low-conflict trust seam where malformed sync payloads could drift back into session memory.
+- **What changed:**
+  - Hardened `websiteRelationshipsSync.ts` so cloud sync now checks that the response payload and nested `collections` field are object-shaped before reading from them.
+  - Tightened `updatedAt` handling so only parseable timestamp strings survive extraction, fetch hydration, and merge-back into session memory.
+- **Files touched:** `src/app/services/auth/websiteRelationshipsSync.ts`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Validation:** `npm run build`, `npx tsc --noEmit --pretty false`, `npx prettier --check src/app/services/auth/websiteRelationshipsSync.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `npx cspell lint src/app/services/auth/websiteRelationshipsSync.ts docs/BIDONDENT_MAP_TRACKER_2026-03-21.md docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
+- **Impact:** Cloud relationship sync now treats one more remote support payload as untrusted input without touching the lead AI's active overlay and shop-navigation files.
 
 ---
 

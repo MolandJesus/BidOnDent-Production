@@ -51,7 +51,7 @@ export default function ShopDirectoryHero({
       >
         <div className="flex items-center gap-2">
           <button
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors ${
+            className={`inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border px-2.5 transition-colors ${
               isLight
                 ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
                 : "bd-glass-control text-slate-100"
@@ -60,6 +60,7 @@ export default function ShopDirectoryHero({
             type="button"
           >
             <ArrowLeft className="h-4 w-4" />
+            <span className="text-xs font-medium">Back</span>
           </button>
           <span
             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${accentClasses}`}

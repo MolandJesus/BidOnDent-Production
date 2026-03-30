@@ -36,6 +36,31 @@ const providers: NavigationProviderHealthId[] = [
   "nominatim-search",
 ];
 
+function isAbortLikeErrorMessage(message: string | undefined) {
+  if (!message) {
+    return false;
+  }
+
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("abort") ||
+    normalized.includes("aborted") ||
+    normalized.includes("cancelled") ||
+    normalized.includes("canceled")
+  );
+}
+
+function isAbortLikeError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const candidate = error as { name?: unknown; message?: unknown };
+  const name = typeof candidate.name === "string" ? candidate.name.toLowerCase() : "";
+  const message = typeof candidate.message === "string" ? candidate.message : "";
+  return name.includes("abort") || isAbortLikeErrorMessage(message);
+}
+
 function isProvider(value: unknown): value is NavigationProviderHealthId {
   return typeof value === "string" && providers.includes(value as NavigationProviderHealthId);
 }
@@ -87,12 +112,20 @@ function toValidatedProviderHealthEvent(raw: unknown): ProviderHealthEvent | nul
     return null;
   }
 
+  const errorMessage = typeof candidate.errorMessage === "string" ? candidate.errorMessage : null;
+
+  // Aborted/canceled requests are expected during map interaction churn and should not
+  // degrade provider health diagnostics or pollute persisted error telemetry.
+  if (candidate.ok === false && isAbortLikeErrorMessage(errorMessage || undefined)) {
+    return null;
+  }
+
   return {
     provider,
     ok: candidate.ok,
     latencyMs,
     timestamp,
-    errorMessage: typeof candidate.errorMessage === "string" ? candidate.errorMessage : undefined,
+    errorMessage: errorMessage || undefined,
   };
 }
 
@@ -170,6 +203,10 @@ export async function runWithProviderHealth<T>(
     });
     return result;
   } catch (error) {
+    if (isAbortLikeError(error)) {
+      throw error;
+    }
+
     recordProviderHealthEvent({
       provider,
       ok: false,

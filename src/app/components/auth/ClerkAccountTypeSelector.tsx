@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { Car, Wrench, Shield } from "lucide-react";
 import { updateUserMetadata } from "../../services/clerkService";
+import { useDocumentAppearanceMode } from "../../hooks/useDocumentAppearanceMode";
 import type { UserType } from "../../services/clerkService";
 
 export default function ClerkAccountTypeSelector() {
@@ -12,7 +13,8 @@ export default function ClerkAccountTypeSelector() {
   const [isLoading, setIsLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const isLight = document.documentElement.getAttribute("data-appearance-mode") === "light";
+  const appearanceMode = useDocumentAppearanceMode();
+  const isLight = appearanceMode === "light";
 
   const handleComplete = async () => {
     if (!user || !name.trim()) return;

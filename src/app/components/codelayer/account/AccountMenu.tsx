@@ -55,6 +55,7 @@ export default function AccountMenu({
 
   return (
     <motion.section
+      aria-label="Account quick actions"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.1 }}
@@ -78,34 +79,34 @@ export default function AccountMenu({
         }}
       />
       <div className="space-y-1.5">
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenSettings}>
+        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenSettings} type="button">
           <div className="flex items-center">
             <span
-              className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${iconBox}`}
+              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
             >
               <Settings className="w-5 h-5" />
             </span>
-            <span className={`font-medium ${labelColor}`}>Settings</span>
+            <span className={`font-medium ${labelColor}`}>Appearance Settings</span>
           </div>
           <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
         </button>
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenPayment}>
+        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenPayment} type="button">
           <div className="flex items-center">
             <span
-              className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${iconBox}`}
+              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
             >
               <CreditCard className="w-5 h-5" />
             </span>
-            <span className={`font-medium ${labelColor}`}>Payment Methods</span>
+            <span className={`font-medium ${labelColor}`}>Payment Preview</span>
           </div>
           <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
         </button>
 
         {userType === "customer" && (
-          <button className={`${rowBaseClass} ${rowHover}`} onClick={onViewVehicles}>
+          <button className={`${rowBaseClass} ${rowHover}`} onClick={onViewVehicles} type="button">
             <div className="flex items-center">
               <span
-                className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${iconBox}`}
+                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
               >
                 <CarIcon className="w-5 h-5" />
               </span>
@@ -116,10 +117,14 @@ export default function AccountMenu({
         )}
 
         {userType === "shop" && (
-          <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenShopProfile}>
+          <button
+            className={`${rowBaseClass} ${rowHover}`}
+            onClick={onOpenShopProfile}
+            type="button"
+          >
             <div className="flex items-center">
               <span
-                className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${iconBox}`}
+                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
               >
                 <Settings className="w-5 h-5" />
               </span>
@@ -129,10 +134,10 @@ export default function AccountMenu({
           </button>
         )}
 
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenHelp}>
+        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenHelp} type="button">
           <div className="flex items-center">
             <span
-              className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${iconBox}`}
+              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
             >
               <HelpCircle className="w-5 h-5" />
             </span>
@@ -145,10 +150,11 @@ export default function AccountMenu({
           <button
             className={`${rowBaseClass} ${isLight ? "hover:bg-indigo-50/80" : "hover:bg-indigo-400/12"}`}
             onClick={onOpenAdminPanel}
+            type="button"
           >
             <div className="flex items-center">
               <span
-                className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${
+                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${
                   isLight
                     ? "bg-indigo-50 text-indigo-600 border-indigo-200/30"
                     : "bg-indigo-400/15 text-indigo-200 border-indigo-300/25"
@@ -167,10 +173,10 @@ export default function AccountMenu({
         )}
 
         {import.meta.env.DEV && onOpenSmokeTest && (
-          <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenSmokeTest}>
+          <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenSmokeTest} type="button">
             <div className="flex items-center">
               <span
-                className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${iconBox}`}
+                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
               >
                 <CheckSquare className="w-5 h-5" />
               </span>
@@ -184,10 +190,11 @@ export default function AccountMenu({
           className={`${rowBaseClass} ${onOpenDeleteAccount ? (isLight ? "hover:bg-rose-50/80 text-rose-600" : "hover:bg-rose-400/12 text-rose-300") : "opacity-40 cursor-not-allowed"}`}
           onClick={onOpenDeleteAccount}
           disabled={!onOpenDeleteAccount}
+          type="button"
         >
           <div className="flex items-center">
             <span
-              className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${
+              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${
                 isLight
                   ? "bg-rose-50 text-rose-500 border-rose-200/30"
                   : "bg-rose-400/12 text-rose-300 border-rose-300/25"
@@ -201,10 +208,10 @@ export default function AccountMenu({
           </div>
         </button>
 
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onLogout}>
+        <button className={`${rowBaseClass} ${rowHover}`} onClick={onLogout} type="button">
           <div className="flex items-center">
             <span
-              className={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 border ${iconBox}`}
+              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
             >
               <LogOut className="w-5 h-5" />
             </span>

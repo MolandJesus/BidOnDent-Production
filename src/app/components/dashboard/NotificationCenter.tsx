@@ -1,4 +1,5 @@
-import { Bell, Radio, Sparkles } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Bell, Radio, Sparkles, X } from "lucide-react";
 import type { Notification } from "../../types";
 import { getNotificationDestination, getNotificationVisual } from "./notification-utils";
 
@@ -27,6 +28,14 @@ export default function NotificationCenter({
   onMarkNotificationRead,
   onMarkAllRead,
 }: NotificationCenterProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      panelRef.current?.focus();
+    }
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }
@@ -52,7 +61,12 @@ export default function NotificationCenter({
 
   return (
     <div
+      id="dashboard-notification-center"
+      ref={panelRef}
       className={`absolute right-0 mt-2 w-[min(24rem,calc(100vw-1rem))] overflow-hidden rounded-2xl bd-glass-floating z-[70] max-md:fixed max-md:left-2 max-md:right-2 max-md:w-auto max-md:mt-0 max-md:top-[calc(env(safe-area-inset-top)+3.9rem)]${isLightAppearance ? " bd-light-surface" : ""}`}
+      aria-label="Notification center"
+      role="dialog"
+      tabIndex={-1}
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(241,245,249,0.95) 100%)"
@@ -96,23 +110,38 @@ export default function NotificationCenter({
             </p>
           </div>
 
-          <div
-            className={`rounded-xl border backdrop-blur-sm px-2.5 py-1.5 text-right ${
-              isLightAppearance
-                ? "border-slate-200/60 bg-white/70"
-                : "border-blue-300/25 bg-slate-800/40"
-            }`}
-          >
+          <div className="flex items-start gap-2">
             <div
-              className={`text-xs uppercase tracking-[0.24em] ${isLightAppearance ? "text-slate-400" : "text-blue-300/60"}`}
+              className={`rounded-xl border backdrop-blur-sm px-2.5 py-1.5 text-right ${
+                isLightAppearance
+                  ? "border-slate-200/60 bg-white/70"
+                  : "border-blue-300/25 bg-slate-800/40"
+              }`}
             >
-              Unread
+              <div
+                className={`text-xs uppercase tracking-[0.24em] ${isLightAppearance ? "text-slate-400" : "text-blue-300/60"}`}
+              >
+                Unread
+              </div>
+              <div
+                className={`mt-0.5 text-xl font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+              >
+                {unreadCount}
+              </div>
             </div>
-            <div
-              className={`mt-0.5 text-xl font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+
+            <button
+              type="button"
+              onClick={onClose}
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition ${
+                isLightAppearance
+                  ? "border-slate-200/60 bg-white/70 text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                  : "border-blue-300/25 bg-slate-800/40 text-slate-300 hover:border-blue-400/50 hover:text-slate-100"
+              }`}
+              aria-label="Close notifications"
             >
-              {unreadCount}
-            </div>
+              <X className="h-4 w-4" />
+            </button>
           </div>
         </div>
 

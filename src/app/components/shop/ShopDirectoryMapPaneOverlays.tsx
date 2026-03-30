@@ -98,24 +98,24 @@ export function MapPaneHeaderBadges({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-3 py-3 sm:px-5 sm:py-4`}
+      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-2.5 py-2 sm:px-4 sm:py-3`}
     >
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div className={`rounded-xl border px-3 py-2 ${t.badgeCard}`}>
+      <div className="flex flex-wrap items-start justify-between gap-1.5">
+        <div className={`rounded-lg border px-2 py-1.5 ${t.badgeCard}`}>
           <div
-            className={`flex items-center gap-1.5 text-[10px] uppercase tracking-[0.2em] ${t.badgeLabel}`}
+            className={`flex items-center gap-1 text-[9px] uppercase tracking-[0.2em] ${t.badgeLabel}`}
           >
-            <Sparkles className="h-3 w-3" />
+            <Sparkles className="h-2.5 w-2.5" />
             {getRoleLabel(userType)}
           </div>
-          <p className={`mt-0.5 text-xs font-medium ${t.badgeValue}`}>
+          <p className={`mt-0.5 text-[11px] font-medium ${t.badgeValue}`}>
             {selectedOrigin ? `Centered on ${selectedOrigin.name}` : "Exploring the service area"}
           </p>
         </div>
 
-        <div className={`rounded-xl border px-3 py-2 text-right ${t.badgeCard}`}>
-          <p className={`text-[10px] uppercase tracking-[0.2em] ${t.badgeLabel}`}>Shops</p>
-          <p className={`text-lg font-semibold leading-tight ${t.badgeValue}`}>{shopCount}</p>
+        <div className={`rounded-lg border px-2 py-1.5 text-right ${t.badgeCard}`}>
+          <p className={`text-[9px] uppercase tracking-[0.2em] ${t.badgeLabel}`}>Shops</p>
+          <p className={`text-base font-semibold leading-tight ${t.badgeValue}`}>{shopCount}</p>
         </div>
       </div>
     </div>
@@ -198,7 +198,7 @@ export function MapPaneBottomOverlay({
         className={`flex flex-wrap items-end ${compact ? "justify-end" : "justify-between"} gap-3`}
       >
         {selectedShop && !compact && (
-          <div className={`max-w-md rounded-[24px] border p-3 sm:p-4 ${t.shopCardCls}`}>
+          <div className={`max-w-md rounded-2xl border p-2.5 sm:p-3 ${t.shopCardCls}`}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h3
@@ -216,11 +216,11 @@ export function MapPaneBottomOverlay({
                   </p>
                 ) : null}
               </div>
-              <div className={`shrink-0 rounded-2xl px-3 py-2 text-center ${t.shopCardScore}`}>
-                <p className={`text-[11px] uppercase tracking-[0.18em] ${t.shopCardScoreLabel}`}>
+              <div className={`shrink-0 rounded-xl px-2 py-1.5 text-center ${t.shopCardScore}`}>
+                <p className={`text-[10px] uppercase tracking-[0.18em] ${t.shopCardScoreLabel}`}>
                   AI Fit
                 </p>
-                <p className="text-lg font-semibold">{selectedShop.recommendationScore}%</p>
+                <p className="text-base font-semibold">{selectedShop.recommendationScore}%</p>
               </div>
             </div>
 
@@ -311,7 +311,7 @@ export function MapPaneBottomOverlay({
 
                   onOpenShopDirections(selectedShop);
                 }}
-                className={`pointer-events-auto mt-2 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors sm:mt-3 ${t.shopCardCta}`}
+                className={`pointer-events-auto mt-2 inline-flex min-h-[36px] w-full items-center justify-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-semibold transition-colors ${t.shopCardCta}`}
               >
                 <Compass className="h-3.5 w-3.5" />
                 {hasArrived
@@ -368,7 +368,7 @@ export function MapPaneSearchPills({
         <button
           type="button"
           onClick={onSearchInArea}
-          className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
+          className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-xl backdrop-blur-md transition-colors ${
             isDark
               ? "border-white/30 bg-slate-900/88 text-white hover:bg-slate-900/96"
               : "border-black/10 bg-white/90 text-slate-800 hover:bg-white"
@@ -390,7 +390,7 @@ export function MapPaneSearchPills({
             onClearAreaSearch();
             onClearPan();
           }}
-          className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold shadow-xl backdrop-blur-md transition-colors ${
+          className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-xl backdrop-blur-md transition-colors ${
             isDark
               ? "border-blue-300/55 bg-blue-600/42 text-white hover:bg-blue-600/55"
               : "border-blue-400/40 bg-blue-100 text-blue-700 hover:bg-blue-200"

@@ -49,6 +49,11 @@ export interface DamageReport {
   preferred_contact?: string;
   additional_notes?: string;
   status?: string;
+  claim_status?: string;
+  approved_amount?: number;
+  denial_reason?: string;
+  claim_decision_date?: string;
+  claim_decided_by?: string;
   created_at?: string;
   updated_at?: string;
 }

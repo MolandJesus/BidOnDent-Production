@@ -1,4 +1,5 @@
 import { AlertCircle, Trash2, X } from "lucide-react";
+import { useEffect } from "react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type DeleteAccountModalProps = {
@@ -23,26 +24,65 @@ export default function DeleteAccountModal({
   appearanceMode = "map-dark",
 }: DeleteAccountModalProps) {
   const isLight = appearanceMode === "light";
+
+  useEffect(() => {
+    if (!isOpen || typeof document === "undefined") {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !isDeleting) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, isDeleting, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onMouseDown={(event) => {
+        if (!isDeleting && event.target === event.currentTarget) {
+          onClose();
+        }
+      }}
+    >
       <div
+        aria-labelledby="delete-account-modal-title"
+        aria-modal="true"
         className={`bd-glass-floating p-5 sm:p-6 rounded-lg max-w-md w-full${isLight ? " bd-light-surface" : ""}`}
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
               <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
-            <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+            <h2
+              className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+              id="delete-account-modal-title"
+            >
               Delete Account?
             </h2>
           </div>
           <button
+            aria-label="Close delete account dialog"
             className={`transition-colors ${isLight ? "text-slate-500 hover:text-slate-700" : "text-slate-400 hover:text-slate-300"}`}
             onClick={onClose}
             disabled={isDeleting}
+            type="button"
           >
             <X className="w-5 h-5" />
           </button>
@@ -92,6 +132,7 @@ export default function DeleteAccountModal({
             className="bd-glass-control--secondary flex-1 px-4 py-2"
             onClick={onClose}
             disabled={isDeleting}
+            type="button"
           >
             Cancel
           </button>
@@ -99,6 +140,7 @@ export default function DeleteAccountModal({
             className="bd-glass-control--destructive flex-1 px-4 py-2 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={onDelete}
             disabled={isDeleting || deleteConfirmText.toLowerCase() !== "delete"}
+            type="button"
           >
             {isDeleting ? (
               <>

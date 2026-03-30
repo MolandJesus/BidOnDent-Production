@@ -9,6 +9,7 @@ import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
+import type { NavigationRouteStep } from "../../types/navigation";
 import {
   getShopRouteActionLabel,
   shouldUseShopNavigationAction,
@@ -53,6 +54,7 @@ type ShopDirectoryMapPaneProps = {
   onSearchInArea?: () => void;
   onClearAreaSearch?: () => void;
   userCoords?: Coordinates | null;
+  userHeadingDegrees?: number | null;
   followCurrentPosition?: boolean;
   followCurrentPositionRevision?: number;
   onOpenShopDirections?: (shop: ShopMapListing) => void;
@@ -66,6 +68,10 @@ type ShopDirectoryMapPaneProps = {
   usingLiveRoutes?: boolean;
   routeError?: string;
   isLoadingRoute?: boolean;
+  onViewReportDetail?: (reportId: string) => void;
+  navigationSteps?: NavigationRouteStep[];
+  currentStepIndex?: number;
+  navigationMode?: "browse" | "route-preview" | "guidance";
 };
 
 export default function MapLibreShopDirectoryMapPane({
@@ -88,6 +94,7 @@ export default function MapLibreShopDirectoryMapPane({
   onSearchInArea,
   onClearAreaSearch,
   userCoords,
+  userHeadingDegrees,
   followCurrentPosition = false,
   followCurrentPositionRevision = 0,
   onOpenShopDirections,
@@ -101,6 +108,10 @@ export default function MapLibreShopDirectoryMapPane({
   usingLiveRoutes = false,
   routeError = "",
   isLoadingRoute = false,
+  onViewReportDetail,
+  navigationSteps = [],
+  currentStepIndex = 0,
+  navigationMode = "browse",
 }: ShopDirectoryMapPaneProps) {
   const [hasPanned, setHasPanned] = useState(false);
   const [cursor, setCursor] = useState("");
@@ -198,28 +209,79 @@ export default function MapLibreShopDirectoryMapPane({
     [shops, selectedShopId]
   );
 
-  const routesGeoJson = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: routeOptions.map((route) => ({
-        type: "Feature" as const,
-        geometry: {
-          type: "LineString" as const,
-          coordinates: route.polyline.map((p) => [p.longitude, p.latitude]),
+  const routesGeoJson = useMemo(() => {
+    const isGuidance = navigationMode === "guidance";
+    const features = routeOptions.flatMap((route) => {
+      const coords = route.polyline.map((p) => [p.longitude, p.latitude] as [number, number]);
+      const isSelected = route.id === selectedRoute?.id;
+      const baseProps = {
+        id: route.id,
+        accentColor: route.accentColor,
+        isSelected: isSelected ? 1 : 0,
+        label: route.label,
+        totalDistanceLabel: route.totalDistanceLabel,
+        estimatedDurationMinutes: route.estimatedDurationMinutes,
+        trafficLabel: route.trafficLabel,
+        isGuidanceActive: isGuidance && isSelected ? 1 : 0,
+        isTravelled: 0,
+      };
+
+      // During guidance, split selected route into travelled + remaining
+      if (isGuidance && isSelected && userCoords && coords.length > 1) {
+        const userLng = userCoords.longitude;
+        const userLat = userCoords.latitude;
+        let closestIdx = 0;
+        let closestDist = Infinity;
+        for (let i = 0; i < coords.length; i++) {
+          const dx = coords[i][0] - userLng;
+          const dy = coords[i][1] - userLat;
+          const d = dx * dx + dy * dy;
+          if (d < closestDist) {
+            closestDist = d;
+            closestIdx = i;
+          }
+        }
+
+        const travelledCoords = coords.slice(0, closestIdx + 1);
+        const remainingCoords = coords.slice(closestIdx);
+
+        const result: Array<GeoJSON.Feature<GeoJSON.LineString>> = [];
+        if (travelledCoords.length >= 2) {
+          result.push({
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: travelledCoords },
+            properties: { ...baseProps, isTravelled: 1 },
+          });
+        }
+        if (remainingCoords.length >= 2) {
+          result.push({
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: remainingCoords },
+            properties: { ...baseProps, isTravelled: 0 },
+          });
+        }
+        return result.length > 0
+          ? result
+          : [
+              {
+                type: "Feature" as const,
+                geometry: { type: "LineString" as const, coordinates: coords },
+                properties: baseProps,
+              },
+            ];
+      }
+
+      return [
+        {
+          type: "Feature" as const,
+          geometry: { type: "LineString" as const, coordinates: coords },
+          properties: baseProps,
         },
-        properties: {
-          id: route.id,
-          accentColor: route.accentColor,
-          isSelected: route.id === selectedRoute?.id ? 1 : 0,
-          label: route.label,
-          totalDistanceLabel: route.totalDistanceLabel,
-          estimatedDurationMinutes: route.estimatedDurationMinutes,
-          trafficLabel: route.trafficLabel,
-        },
-      })),
-    }),
-    [routeOptions, selectedRoute]
-  );
+      ];
+    });
+
+    return { type: "FeatureCollection" as const, features };
+  }, [routeOptions, selectedRoute, navigationMode, userCoords]);
 
   const originGeoJson = useMemo(() => {
     if (!selectedOrigin) return null;
@@ -347,7 +409,7 @@ export default function MapLibreShopDirectoryMapPane({
           />
 
           {/* Report markers (Supabase-fetched) */}
-          <MapLibreReportLayer mapTheme={mapTheme} />
+          <MapLibreReportLayer mapTheme={mapTheme} onViewReportDetail={onViewReportDetail} />
 
           <ShopDirectoryMapLayers
             isDark={isDark}
@@ -357,6 +419,9 @@ export default function MapLibreShopDirectoryMapPane({
             userCoordsGeoJson={userCoordsGeoJson}
             savedPlacesGeoJson={savedPlacesGeoJson}
             shopsGeoJson={shopsGeoJson}
+            navigationSteps={navigationSteps}
+            currentStepIndex={currentStepIndex}
+            isGuidanceActive={navigationMode === "guidance"}
           />
 
           <MapLibreFollowLocationController
@@ -365,6 +430,8 @@ export default function MapLibreShopDirectoryMapPane({
               userCoords ? ([userCoords.latitude, userCoords.longitude] as [number, number]) : null
             }
             revision={followCurrentPositionRevision}
+            guidanceMode={navigationMode === "guidance"}
+            bearing={userHeadingDegrees}
           />
 
           {/* ── Shop popup ── */}

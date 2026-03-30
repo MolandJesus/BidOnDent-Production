@@ -1,9 +1,12 @@
 import { MapPinned, Navigation, Wrench } from "lucide-react";
+import { useMemo } from "react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
 import type { DamageReport } from "../../types";
+import { zipToCoordinates } from "../../services/supabase/map";
 import { defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
+import type { ReportPin } from "./MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ShopMapWidgetProps = {
@@ -27,6 +30,20 @@ export default function ShopMapWidget({
 }: ShopMapWidgetProps) {
   const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
   const isLight = appearanceMode === "light";
+
+  /** Convert incoming damage reports to map pins via ZIP→coordinate lookup */
+  const reportPins = useMemo<ReportPin[]>(() => {
+    return reports
+      .map((r) => {
+        const zip = r.zip_code || r.zipCode;
+        const coords = zipToCoordinates(zip);
+        if (!coords) return null;
+        const label =
+          r.damageArea || r.damageType || r.damageDescription || r.description || "Request";
+        return { id: r.id, lat: coords.lat, lng: coords.lng, label };
+      })
+      .filter((pin): pin is ReportPin => pin !== null);
+  }, [reports]);
   const liveRequestCount = reports.filter((report) =>
     ["pending", "in-review", "active"].includes(String(report.status))
   ).length;
@@ -52,6 +69,7 @@ export default function ShopMapWidget({
       <div className="relative h-[180px] md:h-[200px]">
         <DashboardMapPreview
           shops={partnerShops}
+          reportPins={reportPins}
           center={defaultCoverageCenter}
           zoom={9}
           isLight={isLight}
@@ -163,7 +181,9 @@ export default function ShopMapWidget({
                 ? `${liveRequestCount} live request${liveRequestCount === 1 ? "" : "s"} in your queue`
                 : "Waiting for live repair requests"}
             </p>
-            <p className={`truncate text-[11px] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}>
+            <p
+              className={`truncate text-[11px] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
               {liveRequestCount > 0
                 ? `Newest intake: ${newestRequestLabel}`
                 : "New customer requests will appear here as soon as they land."}

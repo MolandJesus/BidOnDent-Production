@@ -21,6 +21,7 @@ type InsurerClaimCardProps = {
   claim: ClaimData;
   primaryColor: string;
   onOpenApproval: (claim: ClaimData) => void;
+  onOpenDenial?: (claim: ClaimData) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
 
@@ -43,6 +44,7 @@ export default function InsurerClaimCard({
   claim,
   primaryColor,
   onOpenApproval,
+  onOpenDenial,
   appearanceMode = "map-dark",
 }: InsurerClaimCardProps) {
   const isLight = appearanceMode === "light";
@@ -333,15 +335,28 @@ export default function InsurerClaimCard({
         </div>
 
         {claim.status === "pending" && (
-          <button
-            onClick={() => onOpenApproval(claim)}
-            className="w-full py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
-          >
-            <CheckCircle className="w-5 h-5" />
-            Review & Approve
-            <ChevronRight className="w-5 h-5" />
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => onOpenDenial?.(claim)}
+              className={`flex-1 py-3 min-h-[44px] rounded-xl font-semibold flex items-center justify-center gap-2 transition-colors ${
+                isLight
+                  ? "text-rose-600 bg-rose-50 border border-rose-200 hover:bg-rose-100"
+                  : "text-rose-300 bg-rose-500/15 border border-rose-400/30 hover:bg-rose-500/25"
+              }`}
+            >
+              <XCircle className="w-5 h-5" />
+              Deny
+            </button>
+            <button
+              onClick={() => onOpenApproval(claim)}
+              className="flex-[2] py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+              style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
+            >
+              <CheckCircle className="w-5 h-5" />
+              Review & Approve
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
         )}
 
         {claim.status === "approved" && (

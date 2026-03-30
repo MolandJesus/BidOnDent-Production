@@ -1,6 +1,12 @@
-import { useState } from "react";
-import { Search, AlertCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { motion } from "motion/react";
+import { Search, AlertCircle, MapPin } from "lucide-react";
+import { zipToCoordinates } from "../../services/supabase/map";
+import { defaultCoverageCenter } from "../landing/coverageData";
+import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
+import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import { useNotifications } from "../../features/notifications/NotificationContext";
 import ShopActiveJobCard, { type ActiveJob } from "./ShopActiveJobCard";
 import ShopActiveJobDetailModal from "./ShopActiveJobDetailModal";
 
@@ -19,12 +25,14 @@ export default function ShopActiveJobsScreen({
   onUpdateJobStatus,
   appearanceMode = "map-dark",
 }: ShopActiveJobsScreenProps) {
+  const notifications = useNotifications();
   const isLight = appearanceMode === "light";
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<
     "all" | "pending" | "in-progress" | "awaiting-parts" | "completed"
   >("all");
   const [selectedJob, setSelectedJob] = useState<ActiveJob | null>(null);
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, string>>({});
 
   const buildTasks = (status: string) => {
     if (status === "completed") {
@@ -50,40 +58,84 @@ export default function ShopActiveJobsScreen({
     ];
   };
 
-  const liveJobs = reports.map((report: any, index: number) => {
-    const rawStatus = String(report?.status ?? "pending").toLowerCase();
-    const status =
-      rawStatus === "completed"
-        ? "completed"
-        : rawStatus === "in-review"
-          ? "in-progress"
-          : "pending";
-    const vehicleData = report?.vehicle || report?.vehicleInfo || {};
-    const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
-    const bidAmount = Number(report?.bidAmount) || 0;
-    const progress = status === "completed" ? 100 : status === "in-progress" ? 60 : 20;
+  const liveJobs = reports
+    .map((report: any, index: number) => {
+      const rawStatus = String(report?.status ?? "pending").toLowerCase();
+      const status =
+        rawStatus === "completed"
+          ? "completed"
+          : rawStatus === "in-review" || rawStatus === "active"
+            ? "in-progress"
+            : "pending";
+      const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+      const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
+      const bidAmount = Number(report?.bidAmount) || 0;
+      const progress = status === "completed" ? 100 : status === "in-progress" ? 60 : 20;
 
-    return {
-      id: String(report?.id ?? `job-${index}`),
-      customerName: "Customer",
-      customerEmail: report?.customer_email || "Contact via BidOnDent",
-      customerPhone: report?.customer_phone || "Via platform",
-      vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
-      damageType: report?.damageArea || report?.damageType || "Repair request",
-      bidAmount,
-      startDate: report?.submittedAt
-        ? new Date(report.submittedAt).toLocaleDateString()
-        : "Pending",
-      estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
-      status,
-      progress,
-      tasks: buildTasks(status),
-      insuranceClaim: false,
-      insuranceCompany: "N/A",
-      claimNumber: "N/A",
-      notes: report?.description || "Repair request received and queued.",
-    };
-  });
+      return {
+        id: String(report?.id ?? `job-${index}`),
+        customerName: "Customer",
+        customerEmail: report?.customer_email || "Contact via BidOnDent",
+        customerPhone: report?.customer_phone || "Via platform",
+        vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
+        damageType: report?.damageArea || report?.damageType || "Repair request",
+        bidAmount,
+        startDate: report?.submittedAt
+          ? new Date(report.submittedAt).toLocaleDateString()
+          : "Pending",
+        estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
+        status,
+        progress,
+        tasks: buildTasks(status),
+        insuranceClaim: false,
+        insuranceCompany: "N/A",
+        claimNumber: "N/A",
+        notes: report?.description || "Repair request received and queued.",
+      };
+    })
+    .map((job) => {
+      const override = statusOverrides[job.id];
+      if (!override) return job;
+      const progress =
+        override === "completed"
+          ? 100
+          : override === "in-progress"
+            ? 60
+            : override === "awaiting-parts"
+              ? 45
+              : 20;
+      return { ...job, status: override, progress, tasks: buildTasks(override) };
+    });
+
+  // Map pins for active job locations
+  const jobPins = useMemo<ReportPin[]>(() => {
+    return (reports || [])
+      .map((report: any) => {
+        const zipCode = report?.zipCode || report?.zip_code || "";
+        const coords = zipCode ? zipToCoordinates(zipCode) : null;
+        if (!coords) return null;
+
+        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+        const label = [vehicleData.year, vehicleData.make, vehicleData.model]
+          .filter(Boolean)
+          .join(" ");
+
+        return {
+          id: String(report?.id ?? ""),
+          lat: coords.lat,
+          lng: coords.lng,
+          label: label || report?.damageArea || "Active job",
+        };
+      })
+      .filter((pin): pin is ReportPin => pin !== null);
+  }, [reports]);
+
+  const jobMapCenter = useMemo<[number, number]>(() => {
+    if (jobPins.length > 0) {
+      return [jobPins[0].lat, jobPins[0].lng];
+    }
+    return defaultCoverageCenter;
+  }, [jobPins]);
 
   const filteredJobs = liveJobs.filter((job) => {
     const matchesSearch =
@@ -189,6 +241,85 @@ export default function ShopActiveJobsScreen({
         </div>
       )}
 
+      {/* Job Geography Map */}
+      {liveJobs.length > 0 && (
+        <div className="px-4 pt-4">
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, delay: 0.08 }}
+            className="bd-glass-card overflow-hidden"
+            style={{
+              background: isLight
+                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
+                : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
+              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
+            }}
+          >
+            <div className="p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2
+                    className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                  >
+                    Job locations
+                  </h2>
+                  <p
+                    className={`mt-0.5 text-xs ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
+                  >
+                    See where your active repair jobs are located.
+                  </p>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                    isLight
+                      ? "bg-blue-50 text-blue-700 border border-blue-200/60"
+                      : "bg-blue-400/14 text-blue-200 border border-blue-300/20"
+                  }`}
+                >
+                  {jobPins.length}/{liveJobs.length} mapped
+                </span>
+              </div>
+            </div>
+
+            {jobPins.length > 0 ? (
+              <>
+                <div className="h-[200px] md:h-[220px]">
+                  <DashboardMapPreview
+                    shops={[]}
+                    reportPins={jobPins}
+                    center={jobMapCenter}
+                    zoom={10}
+                    isLight={isLight}
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-2 p-3">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                      isLight ? "bg-amber-100 text-amber-700" : "bg-amber-500/20 text-amber-200"
+                    }`}
+                  >
+                    <span className="h-2 w-2 rounded-full bg-amber-400" />
+                    Active job
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div
+                className={`mx-3 mb-3 flex items-start gap-2 rounded-xl border border-dashed px-3 py-2.5 text-xs ${
+                  isLight ? "border-slate-300/70 text-slate-600" : "border-white/20 text-slate-300"
+                }`}
+              >
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>
+                  No job locations available yet. Jobs with ZIP codes will appear on this map.
+                </span>
+              </div>
+            )}
+          </motion.section>
+        </div>
+      )}
+
       {/* Jobs List */}
       <div className="px-4 py-4 space-y-4">
         {filteredJobs.length === 0 ? (
@@ -231,6 +362,35 @@ export default function ShopActiveJobsScreen({
           isLight={isLight}
           appearanceMode={appearanceMode}
           onClose={() => setSelectedJob(null)}
+          onUpdateStatus={(jobId, newStatus) => {
+            setStatusOverrides((prev) => ({ ...prev, [jobId]: newStatus }));
+            const progress =
+              newStatus === "completed"
+                ? 100
+                : newStatus === "in-progress"
+                  ? 60
+                  : newStatus === "awaiting-parts"
+                    ? 45
+                    : 20;
+            setSelectedJob((prev) =>
+              prev ? { ...prev, status: newStatus, progress, tasks: buildTasks(newStatus) } : null
+            );
+            onUpdateJobStatus?.(Number(jobId), newStatus);
+            const statusLabels: Record<string, string> = {
+              "in-progress": "Repair started",
+              "awaiting-parts": "Awaiting parts",
+              completed: "Repair completed",
+            };
+            notifications.push({
+              category: "shop",
+              title: statusLabels[newStatus] || `Status: ${newStatus}`,
+              body: `Job #${jobId} updated to ${newStatus.replace(/-/g, " ")}.`,
+              payload: { jobId, newStatus },
+              userId: "",
+              deepLink: null,
+              priority: newStatus === "completed" ? "high" : "normal",
+            });
+          }}
         />
       )}
     </div>

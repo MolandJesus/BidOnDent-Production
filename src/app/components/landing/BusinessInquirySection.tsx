@@ -156,7 +156,7 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-200/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-10 h-10 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-200/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 22px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.6)"
@@ -243,7 +243,7 @@ export default function BusinessInquirySection({
                   className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/50 bg-white/35 hover:bg-white/55 hover:border-blue-200/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
                   <div
-                    className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-blue-600" : "bg-[#003d82]"}`}
+                    className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-blue-600" : "bg-[#003d82]"}`}
                   >
                     <Building2 className="w-6 h-6 text-white" />
                   </div>
@@ -274,7 +274,7 @@ export default function BusinessInquirySection({
                   className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/50 bg-white/35 hover:bg-white/55 hover:border-blue-200/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
                   <div
-                    className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-indigo-600" : "bg-[#1e3a5f]"}`}
+                    className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-indigo-600" : "bg-[#1e3a5f]"}`}
                   >
                     <Shield className="w-6 h-6 text-white" />
                   </div>

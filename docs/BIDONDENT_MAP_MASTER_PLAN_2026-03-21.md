@@ -1,3 +1,162 @@
+### Implementation Note — Pass T571 Bid-Sent Status on Request Cards (2026-03-30)
+
+- Added `hasBid` prop to ShopRequestCard + `submittedBidIds` Set in ShopRequestsScreen. After successful bid submission, the request card switches from "Submit Bid" button to violet "Bid Sent — Awaiting Response" badge.
+- Strategic effect: **The shop bid feedback loop is complete.** T567 provides toast confirmation, T571 provides persistent card-level status. Shops can now see at-a-glance which requests they've bid on without opening each card. Prevents duplicate bid attempts.
+
+### Implementation Note — Pass T570 Completed/Resolved Visual Consistency (2026-03-30)
+
+- Distinguished "completed" (violet = shop-claimed done) from "resolved" (emerald = customer-confirmed) across ReportDetailScreen, ReportsListScreen, and homeScreenData. Active repairs remain emerald "In Repair".
+- Strategic effect: **Every report status is now visually unique.** The status progression is now visible at a glance: sky (pending) → blue (reviewing) → emerald (in repair) → violet (repair done) → emerald (confirmed). Combined with T569 (completion confirmation), the full lifecycle is both functional AND visually clear.
+
+### Implementation Note — Pass T569 Report Completion Confirmation (2026-03-30)
+
+- Added customer-side completion confirmation card in `ReportDetailScreen`. When shop marks repair "completed", customer sees a prominent card with shop info and a "Confirm Repair Complete" button that transitions status to "resolved" via Supabase.
+- Strategic effect: **The core product loop is now fully closed.** Report → Bid → Accept → Repair → Complete → Customer Confirm → Resolved. "Resolved" status distinguishes confirmed-done from shop-claimed-done. This is the final transactional step in the marketplace flow.
+
+### Implementation Note — Pass T568 Job Status Persistence Wiring (2026-03-30)
+
+- Wired complete chain: `ShopActiveJobsScreen` → `DashboardRouter` → `buildDashboardRouterProps` → `updateJobAssignmentStatus` (service) → edge function → `job_assignments` table. Bid acceptance now calls `createJobAssignment` to create the record. Status updates map kebab-case (UI) to snake_case (backend).
+- Strategic effect: **The core product loop now persists repair progress to backend.** Shop status updates (scheduled → in_progress → awaiting_parts → completed) are no longer local-only. This is the prerequisite for customer-side real-time repair tracking (reading `job_assignments.status` back to the customer view).
+
+### Implementation Note — Pass T567 Bid Submission Success Feedback (2026-03-30)
+
+- Added toast notification to `ShopRequestsScreen` after successful bid submission via `useNotifications().push()`. Shows "$X bid sent for [vehicle]" with category "bid" and deep link.
+- Strategic effect: **The core marketplace action (shop submitting a bid) now has visual confirmation.** Combined with T564 (bid acceptance feedback) and T565 (notification bridge to bell), every major marketplace action now produces feedback: bid submission → toast, bid acceptance → toast + bell, job status update → toast + bell. The marketplace silence problem is eliminated for same-session events.
+
+### Implementation Note — Pass T566 Active Repair Prominence on Home (2026-03-30)
+
+- Fixed `formatStatus("active")` from "Reviewing Bids" to "In Repair". Changed active badge from blue to emerald. Home report cards show accepted shop name + bid amount for active repairs.
+- Strategic effect: **Dashboard home now surfaces the critical customer state.** Combined with T563 (repair lifecycle in detail view) and T559 (acceptance confirmation), the customer experience for active repairs is now coherent from home → report list → report detail. All displays show consistent emerald styling and correct "In Repair" terminology.
+
+### Implementation Note — Pass T565 Notification Bridge (2026-03-30)
+
+- Bridged in-memory event stream (`useNotificationEvents`) to the legacy `Notification[]` feed powering the bell icon. `DashboardLayout` converts events to legacy format, merges with Supabase-sourced notifications, and routes mark-read callbacks to the correct system.
+- Strategic effect: **Notification bell is no longer dead.** All marketplace action events (bid acceptance, job status) now appear in both the toast overlay AND the persistent bell icon feed. Unread badge count is accurate. Combined with T564, the marketplace feedback loop is now functional for same-session events. Cross-user persistence (Supabase) is the next notification milestone.
+
+### Implementation Note — Pass T564 Action Feedback Notifications (2026-03-30)
+
+- Wired `useNotifications().push()` in `BidsScreen` (bid accepted → toast + feed event) and `ShopActiveJobsScreen` (job status update → toast + feed event).
+- Uses existing in-memory notification event stream; "bid" category auto-triggers toast overlay. "completed" status uses high priority.
+- Strategic effect: **Marketplace is no longer silent.** Key transactional actions now produce immediate visual feedback. Combined with T559–T563, the full post-acceptance chain now has action → confirmation → notification. Foundation for Supabase-persisted cross-user notifications.
+
+### Implementation Note — Pass T563 Customer-Visible Repair Progress (2026-03-30)
+
+- Enhanced `customerLifecycle()` to accept optional `repairStatus` parameter — when provided, step 4 dynamically shows "Repair In Progress", "Awaiting Parts", or "Repair Finished" with matching descriptions.
+- Added `repairStatus?: string` to `DamageReport` type for future backend wiring.
+- Added "Active Repair" card to `ReportDetailScreen` — shows accepted shop name, bid amount, and timeline when report is active.
+- Updated `ReportsListScreen` — "Active" badge becomes emerald "In Repair", accepted shop name shows instead of generic bids count.
+- Strategic effect: **Closes the customer↔shop visibility loop.** Combined with T562 (shop status buttons), status changes now have a display path on both sides of the marketplace. Foundation for real-time wiring via job_assignments data.
+
+### Implementation Note — Pass T562 Job Status Update Buttons (2026-03-30)
+
+- Added contextual status-update action buttons to `ShopActiveJobDetailModal` (Start Repair / Awaiting Parts / Mark Completed).
+- Local `statusOverrides` state in `ShopActiveJobsScreen` provides immediate feedback; updates propagate to detail modal and job cards.
+- Strategic effect: **Enables repair lifecycle tracking.** Shops can now move jobs from pending → in-progress → awaiting-parts → completed. Combined with T559–T561, the full post-acceptance workflow is now functional: acceptance → contact → status tracking. Foundation for customer-facing progress visibility.
+
+### Implementation Note — Pass T561 Contact Unlock on Bid Acceptance (2026-03-30)
+
+- Unlocked Call/Email contact buttons on `ShopRequestCard` when bid status is `"accepted"` — `<a href="tel:">` and `<a href="mailto:">` with emerald styling.
+- Strategic effect: **Completes the post-acceptance action chain.** T559 (customer confirmation) → T560 (shop visual signal) → T561 (shop contacts customer). The marketplace now supports real communication flow after a bid is accepted. Foundation for scheduling, job coordination, and status tracking.
+
+### Implementation Note — Pass T560 Shop-Side Bid Accepted Signal (2026-03-30)
+
+- Added `"accepted"` status to `ShopRequestCard` (emerald badge + "Bid Accepted — Job Active" state indicator replacing Submit Bid button).
+- Updated `ShopRequestsScreen` and `ShopActiveJobsScreen` to recognize `"active"` report status as accepted/in-progress.
+- Strategic effect: **Completes two-sided transactional closure.** Combined with T559 (customer confirmation sheet), both parties in the marketplace now have clear visual feedback when a bid is accepted. Foundation for shop-side contact unlock and scheduling.
+
+### Implementation Note — Pass T559 Bid Accepted Confirmation Sheet (2026-03-29)
+
+- Created `AcceptedBidConfirmationSheet` — mobile-first bottom sheet overlay shown after bid acceptance with shop details, mini-map preview, and "View Shop on Map" / "Stay on Bids" CTAs.
+- Added `skipNavigation` flag to `onAcceptBid` to allow deferred navigation after Supabase persistence.
+- Strategic effect: **Closes the biggest gap in the core product loop.** Bid acceptance is the customer's most important action; now it has proper transactional closure instead of a silent redirect. Foundation for post-acceptance lifecycle (scheduling, directions, next-steps guidance).
+
+### Implementation Note — Pass T558 Insurer Partner Network Distribution Map (2026-03-29)
+
+- Added partner-network distribution map panel to `InsurerPartnerShopsScreen` with pin-to-card focus linking.
+- Strategic effect: **Completes the "every screen has spatial context" initiative.** All primary screens across all three roles (customer, shop, insurer) now have embedded map panels with auto-fit-bounds (T556) and pin tooltips (T557). The map-first product vision is now fully deployed to every surface.
+
+### Implementation Note — Pass T557 Pin Tooltip for Embedded Maps (2026-03-29)
+
+- Added a `Popup`-based tooltip to `DashboardMapPreview` that shows shop name or report label when a pin is tapped.
+- Added `.bd-map-tooltip` CSS class to strip default MapLibre popup chrome for a minimal glass-pill appearance.
+- Strategic effect: One change improves all 9+ embedded map panels. Pin taps now give immediate in-map feedback, critical for mobile where the linked card may be off-screen.
+
+### Implementation Note — Pass T556 Auto-Fit-Bounds for Embedded Maps (2026-03-29)
+
+- Added automatic bounding-box zoom to `DashboardMapPreview` so all pin-based map panels auto-frame their content when 2+ pins are present.
+- Strategic effect: One change improves all 9+ embedded map panels simultaneously. Maps now always show the full geographic spread of their data, eliminating the common problem of outlier pins being off-screen.
+
+### Implementation Note — Pass T555 Competitor Density Map (2026-03-29)
+
+- Added competitor-density geography map panel to `CompetitorAnalysisScreen` using `CoveragePartnerShop[]` pins (blue) with pin-to-card focus linking.
+- Strategic effect: Completes the "every screen has spatial context" initiative — all primary screens across all three roles (customer, shop, insurer) now have embedded map panels.
+
+### Implementation Note — Pass T554 Saved Shops Geography Map (2026-03-29)
+
+- Added saved-shops geography map panel to `LikedShopsScreen` using `CoveragePartnerShop[]` pins (blue) with pin-to-card focus linking.
+- Strategic effect: Customers now have spatial awareness of their shortlisted shops, enabling distance-informed bid strategy and followup decisions.
+
+### Implementation Note — Pass T553 Insurer Claims Geography Map (2026-03-29)
+
+- Added a claim-geography map panel to `InsurerClaimsScreen` so insurers see claim locations on an interactive map alongside their claims list.
+- Strategic effect: completes the third role's (insurer) spatial awareness loop, enabling geographic claim density analysis and partner shop coverage gap identification.
+
+### Implementation Note — Pass T552 Shop Active Jobs Geography Map (2026-03-29)
+
+- Added a job-geography map panel to `ShopActiveJobsScreen` so shops see active job locations for service route planning.
+- Strategic effect: closes the shop-side spatial gap for active work, enabling geographic awareness of repair job distribution.
+
+### Implementation Note — Pass T551 Reports List Overview Map (2026-03-29)
+
+- Added a reports-overview map panel to `ReportsListScreen` so customers see all their submitted damage reports as amber pins on a single interactive map.
+- Clicking a report pin navigates directly to the individual report detail screen, connecting spatial overview to detail drill-down.
+- Strategic effect: completes the customer-side spatial feedback loop by providing a bird's-eye view of all active/pending/completed reports, reinforcing the map-first product identity.
+
+### Implementation Note — Pass T550 Report Wizard Location Map Preview (2026-03-29)
+
+- Added a mini-map preview to `StepServiceLocation` (report creation Step 3) so customers see exactly where their request will appear on the shop marketplace map.
+- ZIP codes are resolved via `zipToCoordinates` and rendered as an amber pin on `DashboardMapPreview`. The preview only appears when a valid 5-digit ZIP resolves to known coordinates.
+- Strategic effect: closes the spatial feedback gap during report creation, building customer trust at the earliest entry point of the core product loop (report → map → shop → action).
+
+### Implementation Note — Pass T549 Request Geography Map in Shop Requests Flow (2026-03-29)
+
+- Added a request-geography map panel to `ShopRequestsScreen` so shops now see incoming repair request locations on an interactive map alongside the request card list.
+- Request ZIP codes are resolved to coordinates via `zipToCoordinates` and rendered as amber pins on `DashboardMapPreview`.
+- Pin-to-card focus wiring: tapping a request pin highlights the corresponding card with an amber ring, connecting spatial awareness to the bidding decision.
+- Strategic effect: closes the "Shop sees report map" gap in the core loop, giving shops spatial context for evaluating which requests to bid on based on proximity and density.
+
+### Implementation Note — Pass T548 Accepted-Bid Route Handoff to Shop Directory (2026-03-29)
+
+- Customer bid acceptance now writes accepted-shop execution context into website session memory before transition: shop query, map view mode, and report-origin context (when ZIP coordinates are available).
+- After successful acceptance persistence, router flow now navigates directly into `shop-directory` so users immediately enter the map action surface.
+- Strategic effect: closes the acceptance-step gap in the map-first loop by turning bid acceptance into an immediate map execution handoff instead of a dead-end status change.
+
+### Implementation Note — Pass T547 Bid Geography Comparison in Customer Bid Flow (2026-03-29)
+
+- Added a dedicated map-comparison panel to customer `BidsScreen` so bid decisions now include spatial context, not just price/timeline cards.
+- Bidding shops with coordinates render as interactive map pins; the active report location renders as a report pin when ZIP coordinates are available.
+- Selecting a shop pin now focuses the corresponding bid card, linking map interaction directly to acceptance workflow.
+- Strategic effect: strengthens the core map-first loop at the decision step (`report -> map -> shop -> action`) by bringing map context directly into bid comparison.
+
+### Implementation Note — Pass T539 Backend Status Visibility for Shop-Directory Map Data (2026-03-29)
+
+- Shop-directory session state now surfaces partner-shop backend fetch errors (`coverageFetchError`) to rendering layers.
+- Shop-directory shell now renders an explicit live-data warning banner when backend partner-shop fetch fails and demo fallback is disabled.
+- Strategic effect: map users can distinguish true no-results states from backend availability failures, improving trust in map search outcomes.
+
+### Implementation Note — Pass T538 Fullscreen Diagnostics Noise Cleanup + Control Density Refinement (2026-03-29)
+
+- Provider-health telemetry now treats abort/cancel request churn as non-failure signal and strips abort-style noise from persisted diagnostics history.
+- Fullscreen coverage planner diagnostics are no longer always surfaced in dev; they now require explicit environment opt-in.
+- Dashboard shop-directory control density was reduced by tightening CTA styling and limiting origin quick-pick chip volume so the command panel stays map-first.
+- Strategic effect: fullscreen map experiences now feel cleaner and less error-noisy while preserving diagnostics tooling behind an explicit debug gate.
+
+### Implementation Note — Pass T537 Full-Screen Controls Redesign + Backend-First Partner-Shop Loading (2026-03-29)
+
+- Refactored the shop-directory full-screen control section to a clearer grouped layout (framed view-mode selector + framed filter grid) with stronger active-state affordance and reduced pill clutter.
+- Enforced backend-first behavior for coverage partner shops by requiring explicit env opt-in (`VITE_ENABLE_MAP_DEMO_FALLBACK=true`) before any demo fallback can render map shops.
+- Strategic effect: improves map UI clarity in the primary full-screen surface and reduces risk of silent demo-data masking when live backend data is unavailable.
+
 ### Implementation Note — Pass T532 Guidance Card + Action Rail Overlap Fix (2026-03-29)
 
 - NavigationActionRail now accepts an optional `className` prop for position override, keeping the shared component flexible.
@@ -28,6 +187,173 @@
 - **T527**: Added mobile turn-by-turn access in immersive shop map guidance: action rail + turn-list sheet now render in guidance mode, and route step data is fully wired from navigation hook to immersive UI.
 - **T528**: Rebalanced mobile map browse ergonomics by opening coverage bottom sheet at a usable half snap and reducing hybrid shop-map pane height on mobile/tablet to restore scrollable access to map sections.
 - Strategic effect: dashboard map experiences now preserve map-first immersion without trapping mobile users; turn-by-turn guidance remains reachable in full-screen mode and section browsing works across both phone and desktop layouts.
+
+### Implementation Note — Support Pass T546-S (2026-03-30)
+
+- Removed fake `Google` and `Apple` auth actions from the login and signup views and replaced them with honest `coming soon` guidance for social providers.
+- Strategic effect: keeps the shared auth shell truthful about what login paths are actually live without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T551-S (2026-03-30)
+
+- Brought the shared notification center closer to the hardened overlay standard with dialog semantics, focus-on-open, and an explicit close affordance for the mobile fixed-panel presentation.
+- Strategic effect: improves dashboard shell usability and accessibility in a shared control surface without drifting into the lead AI's active map/report rollout.
+
+### Implementation Note — Support Pass T552-S (2026-03-30)
+
+- Reframed the shared profile dropdown's notification state from `Synced` to `Refresh on`, added explicit button semantics to the remaining dropdown actions, and gave the panel a clearer region label.
+- Strategic effect: keeps another shared dashboard/account surface honest and interaction-safe without drifting into the lead AI's active map/report rollout.
+
+### Implementation Note — Support Pass T553-S (2026-03-30)
+
+- Added explicit trigger-to-panel wiring (`aria-controls`) for the shared landing and dashboard header menus, plus stable labels/IDs for the mobile navigation and landing profile menu surfaces.
+- Strategic effect: strengthens the shared site/dashboard navigation shell with clearer semantics while staying outside the lead AI's active product rollout.
+
+### Implementation Note — Support Pass T554-S (2026-03-30)
+
+- Tightened the dashboard sidebar account trigger into a clearer disclosure control and upgraded the global loading shell to announce itself as a live status surface with an explicit recovery action.
+- Strategic effect: keeps shared shell state changes and recovery paths more legible without drifting into the lead AI's active product rollout.
+
+### Implementation Note — Support Pass T557-S (2026-03-30)
+
+- Added explicit accessible close labels to the shared account modal family so the primary dismissal action is no longer icon-only in settings/help/payment/profile/account overlays.
+- Strategic effect: keeps the shared account shell more explicit and consistent for assistive-tech users without drifting into the lead AI's active product rollout.
+
+### Implementation Note — Support Pass T556-S (2026-03-30)
+
+- Tightened shared shell trigger semantics so landing/dashboard logo buttons, notification/profile toggles, and the account quick-actions surface now announce purpose and state more explicitly.
+- Strategic effect: keeps the shared site/dashboard chrome clearer for assistive-tech and keyboard users without drifting into the lead AI's active product rollout.
+
+### Implementation Note — Support Pass T555-S (2026-03-30)
+
+- Added explicit navigation labeling and active-state semantics to the dashboard sidebar so its current-location cues are no longer visual-only.
+- Strategic effect: strengthens shared dashboard navigation clarity without drifting into the lead AI's active product rollout.
+
+### Implementation Note — Support Pass T550-S (2026-03-30)
+
+- Restored clean terminal compatibility by tightening the shared `ReportPin` contract, aligning two map-panel screens with the current `latitude` / `longitude` coordinate shape, and normalizing the shop-request notification event payload.
+- Strategic effect: keeps the repo back in a reproducible buildable state while staying in the support lane and avoiding broader rewrites inside the lead AI's active product rollout.
+
+### Implementation Note — Support Pass T549-S (2026-03-30)
+
+- Tightened the shared `theme.css` contrast tokens behind glass controls, light-mode badges, and popup-close hover states to address the active VS Code accessibility warning cluster.
+- Strategic effect: improves shared shell accessibility and reduces editor noise in the common theme layer without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T547-S (2026-03-30)
+
+- Softened account save feedback in `AccountOverlays` so the shared shell no longer overstates cloud-sync certainty when surfacing profile-save status.
+- Brought the full-screen `AccountScreen` admin panel up to the shared overlay standard with `Escape` dismissal, body-scroll locking, and dialog semantics.
+- Strategic effect: keeps another shared account/admin shell path honest and behaviorally aligned without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T548-S (2026-03-30)
+
+- Reframed the account hero away from a static `Synced` promise toward a more truthful `Profile` identity badge and profile-management helper copy.
+- Added explicit button semantics to the profile-photo action in `AccountHeader`.
+- Strategic effect: keeps the top account shell aligned with the broader honesty sweep without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T545-S (2026-03-30)
+
+- Added explicit `type="button"` to the remaining login/signup view actions so the shared auth shell no longer depends on browser-default button behavior.
+- Strategic effect: closes a small but real auth-form reliability seam without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T544-S (2026-03-30)
+
+- Brought `LoginModal` and `AccountTypeMigrationModal` up to the shared modal standard with dialog semantics, backdrop / `Escape` dismissal, body-scroll locking, and explicit button types.
+- Strategic effect: keeps auth overlays behaviorally aligned with the rest of the hardened site/account shell without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T543-S (2026-03-30)
+
+- Brought `EditProfileModal`, `ShopProfileModal`, and `DeleteAccountModal` up to the shared modal standard with dialog semantics, backdrop / `Escape` dismissal, and body-scroll locking.
+- Reset `ShopProfileModal` local form state from the latest props whenever it opens so old values and saved/error state do not leak across sessions.
+- Strategic effect: improves shared account-shell reliability and consistency without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T542-S (2026-03-30)
+
+- Replaced dead FAQ buttons and the fake in-app help send flow with honest static support topics plus a real email-draft action in `HelpModal`.
+- Hardened the help overlay with backdrop click, `Escape`, dialog semantics, and body-scroll locking to match the shared modal behavior standard.
+- Strategic effect: keeps another shared account-support path truthful and functional without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T541-S (2026-03-30)
+
+- Tightened the shared account payment entry so it now reads `Payment Preview`, matching the fact that billing tools are not wired yet.
+- Hardened `PaymentModal` with honest preview copy plus backdrop click, `Escape`, dialog semantics, and body-scroll locking.
+- Strategic effect: keeps another shared account-shell path truthful and behaviorally consistent without touching the lead AI's active map rollout.
+
+### Implementation Note — Support Pass T540-S (2026-03-30)
+
+- Narrowed the shared settings entry points and modal title to `Appearance Settings` so site/dashboard/account shells no longer imply broader saved settings than the current code path actually persists.
+- Replaced the dashboard header's faux search input with an explicit `Global search` coming-soon preview card.
+- Strategic effect: keeps shared shell controls honest about what is live today without colliding with the lead AI's active map-context rollout.
+
+### Implementation Note — Support Pass T539-S (2026-03-30)
+
+- Tightened the shared profile dropdown so notification empty-state copy now respects the active appearance mode and notification rows use button semantics instead of clickable `div`s.
+- Strategic effect: improves shared dashboard/site shell consistency and interaction quality without touching the lead AI's active map-context rollout files.
+
+### Implementation Note — Support Pass T538-S (2026-03-30)
+
+- Tightened the shared landing and dashboard mobile overlay shells so the underlying page no longer scrolls behind the mobile site menu or mobile notification overlay while those layers are open.
+- Strategic effect: improves mobile shell polish and reduces interaction drift without touching the lead AI's active map-pin rollout and route-context files.
+
+### Implementation Note — Support Pass T537-S (2026-03-29)
+
+- Tightened the shared dashboard header so top-shell menus now dismiss on `Escape` and only register global listeners while open.
+- Strategic effect: improves shared dashboard-shell stability without touching the lead AI's active map-pin and route-execution work.
+
+### Implementation Note — Support Pass T536-S (2026-03-29)
+
+- Hardened the shared settings modal and landing header mobile shell so overlays now close on backdrop or `Escape`, lock background scroll while open, and clear stale mobile menu state before auth/settings actions continue.
+- Strategic effect: improves shared site/dashboard shell reliability without colliding with the lead AI's active map-product loop.
+
+### Implementation Note — Support Pass T535-S (2026-03-29)
+
+- Corrected the shared light-appearance shell so dashboard light mode now uses true light atmosphere/background tokens, and the Clerk setup/settings path now reacts to live appearance changes instead of styling from stale state.
+- Strategic effect: improves dashboard/site light-mode consistency and preview accuracy without touching the lead AI's active bid-map handoff or immersive map surfaces.
+
+### Implementation Note — Support Pass T534-S (2026-03-29)
+
+- Hardened the remaining admin top-level health/check/delete response paths so edge-health status, admin-existence checks, and batch-delete summaries now normalize scalar fields and filter malformed per-user error rows before operator-facing UI consumes them.
+- Strategic effect: reduces another isolated admin trust seam without touching the lead AI's active bids, map, or immersive shop execution surfaces.
+
+### Implementation Note — Support Pass T533-S (2026-03-29)
+
+- Hardened admin list-response handling so `listAdminUsers()` and `listAdminProfiles()` now sanitize remote records and discard malformed entries before they reach operator-facing UI state.
+- Strategic effect: reduces one more low-conflict admin trust seam without touching the lead AI's active bids, map, or immersive shop finishing surfaces.
+
+### Implementation Note — Support Pass T532-S (2026-03-29)
+
+- Tightened the admin delete service contract and temporary delete utility so operator-facing deletion results no longer imply cleanup fields the current backend handler does not actually return.
+- Strategic effect: keeps admin support tooling honest about its true backend contract without touching the lead AI's active map/product surfaces.
+
+### Implementation Note — Support Pass T531-S (2026-03-29)
+
+- Tightened admin delete messaging so operator-facing copy now states the current handler guarantee honestly: auth user plus profile removal, with other linked cleanup potentially separate.
+- Strategic effect: keeps admin operating language aligned with the real backend behavior without touching the lead AI's active map/product finishing surfaces.
+
+### Implementation Note — Support Pass T529-S (2026-03-29)
+
+- Tightened master-context wording so the docs system now honestly describes `CLAUDE_AI_MASTER_CONTEXT.md` as the primary first-read context instead of the sole truth source.
+- Strategic effect: future AI sessions are slightly less likely to over-trust one context file and more likely to follow the full startup path, without touching the lead AI's active product-finishing surfaces.
+
+### Implementation Note — Support Pass T528-S (2026-03-29)
+
+- Hardened cached user-data parsing so nested vehicle, report, bid, notification, and activity arrays are now filtered by expected runtime shape before the cache is reused.
+- Strategic effect: reduces one more browser-cache trust seam in the shared user-data layer without touching the lead AI's active immersive-map and shop overlay files.
+
+### Implementation Note — Support Pass T527-S (2026-03-29)
+
+- Hardened admin edge-action helpers so account creation, deletion, and admin-role management now normalize response JSON into a known object shape before reading success or error fields.
+- Strategic effect: reduces one more isolated support/admin trust seam without colliding with the lead AI's active immersive-map and routing-overlay work.
+
+### Implementation Note — Support Pass T526-S (2026-03-29)
+
+- Hardened website preference cloud hydration so remote `session_memory` payloads now need a sane object shape and reuse the same session-memory sanitizer as browser-local hydration before the app accepts them.
+- Tightened two support-adjacent UI strings so upload/sync copy no longer overstates guarantees with `securely`.
+- Strategic effect: keeps the website support layer's remote and local trust boundaries aligned while preserving honest wording outside the lead AI's active map overlay lane.
+
+### Implementation Note — Support Pass T525-S (2026-03-29)
+
+- Hardened website relationship cloud sync so remote payloads now need a sane object shape and parseable timestamp before their collections are merged back into website session memory.
+- Strategic effect: reduces one more low-conflict trust seam in the website support layer without colliding with the lead AI's active immersive-map overlay cleanup.
 
 ### Implementation Note — Support Pass T524-S (2026-03-29)
 
@@ -690,7 +1016,7 @@ All of the above is **future direction** and not yet implemented unless otherwis
 
 Last updated: March 23, 2026  
 Owner: Product + Engineering  
-Status: Active strategic source of truth
+Status: Active strategic reference
 
 ## Companion Documents
 
@@ -964,6 +1290,23 @@ The themes above (1–6) capture a historical strategic snapshot from the 2026-0
 **Files touched:** src/app/components/codelayer/HomeScreen.tsx, src/app/components/maps/MapReportMarkers.tsx, src/app/components/dashboard/DashboardHeader.tsx
 
 **Validation:** Build 1.81s, 0 errors. Diagnostics: 0. Spellcheck: 0.
+
+---
+
+## Passes T540–T545 — Systematic Map Surface Design Polish (2026-03-29)
+
+**Status:** Complete
+
+**Summary:**
+
+- All 6 map program surfaces (4 fullscreen tabs + dashboard shop directory + dashboard home widget) brought to a consistent, compact, mobile-first design quality bar.
+- Fullscreen tabs: tighter spacing (p-3), inline icon action buttons, centered illustration empty states, compact card layouts, badge-style indicators.
+- Dashboard widget: friendlier empty/error states, contextual badge text.
+- No functional logic changes — purely visual/layout improvements.
+
+**Files touched:** PlannerAddressSearch.tsx, PlannerRoutePreview.tsx, NavigationBrowseDiscoveryPanel.tsx, NavigationSavedPlacesPanel.tsx, CoverageNearestShops.tsx, CustomerMapWidget.tsx
+
+**Validation:** Build: 0 errors, 3.07s. Diagnostics: 0. Spellcheck: 0.
 
 ---
 

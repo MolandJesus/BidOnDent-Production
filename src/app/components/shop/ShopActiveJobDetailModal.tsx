@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { PlayCircle, Package, CheckCircle2, X } from "lucide-react";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { shopLifecycle } from "../workflow/lifecycle-presets";
 import { formatStatus, type ActiveJob } from "./ShopActiveJobCard";
@@ -9,6 +9,7 @@ type ShopActiveJobDetailModalProps = {
   isLight: boolean;
   appearanceMode: DashboardAppearanceMode;
   onClose: () => void;
+  onUpdateStatus?: (jobId: string, status: string) => void;
 };
 
 export default function ShopActiveJobDetailModal({
@@ -16,6 +17,7 @@ export default function ShopActiveJobDetailModal({
   isLight,
   appearanceMode,
   onClose,
+  onUpdateStatus,
 }: ShopActiveJobDetailModalProps) {
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
@@ -131,6 +133,57 @@ export default function ShopActiveJobDetailModal({
               compact
               appearanceMode={appearanceMode}
             />
+
+            {/* Status update actions */}
+            {onUpdateStatus && job.status !== "completed" && (
+              <div className="space-y-2">
+                <h3
+                  className={`font-semibold text-sm ${isLight ? "text-slate-700" : "text-blue-100/80"}`}
+                >
+                  Update Status
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {job.status === "pending" && (
+                    <button
+                      onClick={() => onUpdateStatus(job.id, "in-progress")}
+                      className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
+                      style={{
+                        background: "linear-gradient(135deg, #003d82 0%, #0f8fd7 100%)",
+                      }}
+                    >
+                      <PlayCircle className="w-4 h-4" />
+                      Start Repair
+                    </button>
+                  )}
+                  {(job.status === "pending" || job.status === "in-progress") && (
+                    <button
+                      onClick={() => onUpdateStatus(job.id, "awaiting-parts")}
+                      className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${
+                        isLight
+                          ? "text-orange-700 bg-orange-50 border border-orange-200 hover:bg-orange-100"
+                          : "text-orange-300 bg-orange-500/15 border border-orange-400/25 hover:bg-orange-500/25"
+                      }`}
+                    >
+                      <Package className="w-4 h-4" />
+                      Awaiting Parts
+                    </button>
+                  )}
+                  {job.status !== "pending" && (
+                    <button
+                      onClick={() => onUpdateStatus(job.id, "completed")}
+                      className={`flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${
+                        isLight
+                          ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100"
+                          : "text-emerald-300 bg-emerald-500/15 border border-emerald-400/25 hover:bg-emerald-500/25"
+                      }`}
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      Mark Completed
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
 
             <button
               onClick={onClose}

@@ -301,7 +301,7 @@ export default function CoverageMapDialog({
     }
 
     return (
-      <div className="p-0 md:p-3 lg:p-4">
+      <div className="p-3 md:p-3 lg:p-4">
         <div className="relative">
           {/* Exit navigation — always-reachable back button */}
           <button

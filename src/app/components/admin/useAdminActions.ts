@@ -114,7 +114,7 @@ export function useAdminActions(adminEmail: string) {
   const deleteAccount = async (email: string) => {
     if (
       !confirm(
-        `⚠️ Are you sure you want to delete ${email}?\n\nThis will permanently delete:\n- Auth user account\n- Database profile\n- All associated data\n\nThis action cannot be undone!\n\nContinue?`
+        `⚠️ Are you sure you want to delete ${email}?\n\nThis will permanently delete:\n- Auth user account\n- Database profile\n\nOther user-linked data may require separate cleanup.\n\nThis action cannot be undone!\n\nContinue?`
       )
     ) {
       return;
@@ -132,7 +132,7 @@ export function useAdminActions(adminEmail: string) {
       } else {
         if (import.meta.env.DEV) console.log("✅ Account deleted successfully");
         setOperationStatus(
-          `✅ Successfully deleted ${email}\n\nBoth auth and profile have been removed.`
+          `✅ Successfully deleted ${email}\n\nThe auth user and profile have been removed.`
         );
         await checkAccountStatus(email);
         await loadCustomAccounts();

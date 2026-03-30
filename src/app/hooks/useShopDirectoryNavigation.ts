@@ -7,7 +7,7 @@
  * - useShopDirectorySession = search/filter/map state
  * - useShopDirectoryNavigation = navigation lifecycle + guidance + route intelligence
  */
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   CoveragePartnerShop,
   CoverageSearchTarget,
@@ -24,7 +24,14 @@ import {
   useNavigationToastBridge,
   useNavigationVoiceAlerts,
 } from "../features/navigation";
-import { loadNavigationGuidanceSettings } from "../services/navigation/navigationPreferences";
+import {
+  loadNavigationGuidanceSettings,
+  saveNavigationGuidanceSettings,
+} from "../services/navigation/navigationPreferences";
+import {
+  getPreferredVoiceLabel,
+  supportsVoiceGuidance,
+} from "../services/navigation/voiceGuidance";
 import { useNotifications } from "../features/notifications";
 import { getShopRouteActionLabel } from "./shopDirectorySessionUtils";
 import { useNavigationGpsTracking } from "./useNavigationGpsTracking";
@@ -99,7 +106,26 @@ export function useShopDirectoryNavigation({
   const intelligence = useNavigationIntelligence();
   const navSession = useNavigationSession(identity?.providerUserId ?? undefined);
   const reroute = useNavigationReroute(intelligence.latestEvent);
-  const [guidanceSettings] = useState(() => loadNavigationGuidanceSettings());
+  const [guidanceSettings, setGuidanceSettings] = useState(() => loadNavigationGuidanceSettings());
+
+  const handleVoiceModeChange = useCallback((voiceMode: typeof guidanceSettings.voiceMode) => {
+    setGuidanceSettings((prev) => {
+      const next = { ...prev, voiceMode };
+      saveNavigationGuidanceSettings(next);
+      return next;
+    });
+  }, []);
+
+  const handleVoiceVolumePresetChange = useCallback(
+    (voiceVolumePreset: typeof guidanceSettings.voiceVolumePreset) => {
+      setGuidanceSettings((prev) => {
+        const next = { ...prev, voiceVolumePreset };
+        saveNavigationGuidanceSettings(next);
+        return next;
+      });
+    },
+    []
+  );
 
   const shopNavigationGps = useNavigationGpsTracking({
     gpsTrackingEnabled: guidanceSettings.gpsTrackingEnabled,
@@ -218,7 +244,7 @@ export function useShopDirectoryNavigation({
         })
       : session.routeSummary;
 
-  const remainingDurationSeconds = shopGuidancePreview.routePreview
+  const staticRemainingDurationSeconds = shopGuidancePreview.routePreview
     ? shopGuidancePreview.hasArrived
       ? 0
       : shopGuidancePreview.routePreview.steps
@@ -234,6 +260,16 @@ export function useShopDirectoryNavigation({
           .reduce((total, step) => total + step.distanceMeters, 0) ||
         shopGuidancePreview.routePreview.distanceMeters
     : 0;
+
+  // Adapt ETA based on actual speed: blend speed-based ETA with static when user is moving
+  const currentSpeedMph = shopNavigationGps.currentSpeedMph;
+  const remainingDurationSeconds = (() => {
+    if (!currentSpeedMph || currentSpeedMph < 3 || remainingDistanceMeters <= 0)
+      return staticRemainingDurationSeconds;
+    const speedBasedSeconds = (remainingDistanceMeters / 1609.34 / currentSpeedMph) * 3600;
+    // Blend 70% speed-based + 30% static for stability (avoids wild swings)
+    return Math.round(speedBasedSeconds * 0.7 + staticRemainingDurationSeconds * 0.3);
+  })();
 
   const liveRemainingEtaLabel = hasArrivedForSelectedShop
     ? "Arrived"
@@ -484,10 +520,8 @@ export function useShopDirectoryNavigation({
     ? () => {
         const request = reroute.requestReroute(session.selectedRouteId);
         if (request) {
-          const alternateRoute = session.routeOptions.find((r) => r.id !== session.selectedRouteId);
-          if (alternateRoute) {
-            session.setSelectedRouteId(alternateRoute.id);
-          }
+          // Force a fresh route calculation from the user's current GPS position
+          shopGuidancePreview.refreshRoutePreview();
           reroute.confirmReroute();
         }
       }
@@ -505,6 +539,7 @@ export function useShopDirectoryNavigation({
     sessionDestinationLabel: navSession.session.destination?.label ?? null,
 
     shopMapUserCoords,
+    userHeadingDegrees: shopNavigationGps.currentHeadingDegrees,
     followCurrentPositionRevision,
 
     mapRouteOptions,
@@ -542,5 +577,19 @@ export function useShopDirectoryNavigation({
     onPauseNavigation: () => navSession.pause("user"),
     onResumeNavigation: navSession.resume,
     onRecenterNavigation: () => setFollowCurrentPositionRevision((current) => current + 1),
+
+    currentSpeedMph: liveNavigationForSelectedShop ? shopNavigationGps.currentSpeedMph : null,
+    speedLimitMph: liveNavigationForSelectedShop
+      ? (shopNavigationGps.speedLimitSnapshot?.speedLimitMph ?? null)
+      : null,
+    gpsStatus: liveNavigationForSelectedShop ? shopNavigationGps.gpsStatus : ("active" as const),
+    gpsError: liveNavigationForSelectedShop ? shopNavigationGps.gpsError : "",
+
+    voiceMode: guidanceSettings.voiceMode,
+    voiceVolumePreset: guidanceSettings.voiceVolumePreset,
+    preferredVoiceLabel: getPreferredVoiceLabel(guidanceSettings.voicePersona),
+    voiceGuidanceSupported: supportsVoiceGuidance(),
+    onVoiceModeChange: handleVoiceModeChange,
+    onVoiceVolumePresetChange: handleVoiceVolumePresetChange,
   };
 }

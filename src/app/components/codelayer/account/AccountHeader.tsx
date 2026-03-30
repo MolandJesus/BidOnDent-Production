@@ -1,4 +1,4 @@
-import { Camera, Cloud, User as UserIcon } from "lucide-react";
+import { Camera, User as UserIcon } from "lucide-react";
 import { ImageWithFallback } from "../../figma/ImageWithFallback";
 import { motion } from "motion/react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
@@ -109,6 +109,8 @@ export default function AccountHeader({
               isLight ? "bg-blue-500" : "bg-blue-600"
             }`}
             onClick={onProfileImageClick}
+            type="button"
+            aria-label="Update profile photo"
           >
             <Camera className="w-4 h-4 text-white" />
           </button>
@@ -122,13 +124,13 @@ export default function AccountHeader({
                 isLight ? "bg-blue-50 border-blue-200/40 text-blue-600" : "bd-glass-badge"
               }`}
             >
-              <Cloud className="w-3 h-3" />
-              <span>Synced</span>
+              <UserIcon className="w-3 h-3" />
+              <span>Profile</span>
             </div>
           </div>
           <p className={isLight ? "text-slate-600" : "text-white/85"}>{subtitle}</p>
           <p className={`text-xs mt-1 ${isLight ? "text-slate-500" : "text-white/70"}`}>
-            Your profile and preferences are securely synced.
+            Manage your profile details and appearance settings here.
           </p>
         </div>
       </div>

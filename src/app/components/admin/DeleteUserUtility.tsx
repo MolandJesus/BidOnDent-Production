@@ -37,7 +37,7 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
 
       if (data.success) {
         setStatus(
-          `✅ Success! ${data.message}\n\nDeleted:\n- Auth user: ${data.deleted?.auth ? "Yes" : "No"}\n- Profile: ${data.deleted?.profile ? "Yes" : "Yes (or didn't exist)"}\n- KV data: ${data.deleted?.kv_data ? "Yes" : "Yes (or didn't exist)"}\n\nYou can now create a new insurer account with this email.`
+          `✅ Success! ${data.message || "Delete request completed."}\n\nThe auth user was removed. Profile cleanup was also requested, but other linked cleanup may still require verification.\n\nYou can now verify whether a new insurer account can be created with this email.`
         );
       } else {
         setStatus(`❌ Error: ${data.error || "Failed to delete user"}`);
@@ -84,11 +84,11 @@ export default function DeleteUserUtility({ userEmail }: { userEmail: string }) 
       )}
 
       <div className="mt-4 text-xs text-slate-400">
-        <p className="mb-2">This will permanently delete:</p>
+        <p className="mb-2">This tool currently removes or requests cleanup for:</p>
         <ul className="list-disc pl-5 space-y-1">
           <li>User from Supabase Auth</li>
-          <li>Profile from database</li>
-          <li>All KV store data (profile, vehicles, reports)</li>
+          <li>Profile from the database</li>
+          <li>Other linked data may require separate cleanup verification</li>
         </ul>
       </div>
     </div>

@@ -37,16 +37,16 @@ export const toneClasses: Record<StatItem["tone"], string> = {
 export const statusClasses: Record<string, string> = {
   pending: "bg-amber-400/15 text-amber-300",
   "in-review": "bg-blue-400/15 text-blue-200",
-  active: "bg-blue-400/15 text-blue-200",
-  completed: "bg-emerald-400/15 text-emerald-300",
+  active: "bg-emerald-400/15 text-emerald-300",
+  completed: "bg-violet-400/15 text-violet-300",
   resolved: "bg-emerald-400/15 text-emerald-300",
 };
 
 export const statusClassesLight: Record<string, string> = {
   pending: "bg-amber-50 text-amber-700 border border-amber-200/60",
   "in-review": "bg-blue-50 text-blue-700 border border-blue-200/60",
-  active: "bg-blue-50 text-blue-700 border border-blue-200/60",
-  completed: "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
+  active: "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
+  completed: "bg-violet-50 text-violet-700 border border-violet-200/60",
   resolved: "bg-emerald-50 text-emerald-700 border border-emerald-200/60",
 };
 

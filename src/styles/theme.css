@@ -23,8 +23,8 @@ body {
   padding: 0.45em 1.25em;
   font-weight: 500;
   font-size: 0.88rem;
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.18) 0%, rgba(37, 99, 235, 0.12) 100%);
-  color: #93c5fd;
+  background: linear-gradient(180deg, rgba(30, 64, 175, 0.88) 0%, rgba(29, 78, 216, 0.8) 100%);
+  color: #eff6ff;
   box-shadow: 0 1.5px 6px rgba(4, 10, 24, 0.12);
   position: relative;
   overflow: hidden;
@@ -36,15 +36,15 @@ body {
 }
 
 .bd-glass-control--secondary:hover {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.18) 100%);
-  color: #bfdbfe;
+  background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 100%);
+  color: #ffffff;
   box-shadow: 0 3px 10px rgba(4, 10, 24, 0.18);
   transform: translateY(-1px) scale(1.01);
 }
 
 .bd-glass-control--secondary:active {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.22) 0%, rgba(37, 99, 235, 0.15) 100%);
-  color: #bfdbfe;
+  background: linear-gradient(180deg, #172554 0%, #1e40af 100%);
+  color: #ffffff;
   box-shadow: 0 1px 3px rgba(4, 10, 24, 0.1);
   transform: scale(0.98);
 }
@@ -65,15 +65,15 @@ body {
 }
 
 .bd-glass-control--utility:hover {
-  background: rgba(59, 130, 246, 0.1);
-  color: #e2e8f0;
+  background: rgba(30, 64, 175, 0.82);
+  color: #f8fafc;
   box-shadow: none;
   transform: translateY(-1px) scale(1.01);
 }
 
 .bd-glass-control--utility:active {
-  background: rgba(59, 130, 246, 0.15);
-  color: #e2e8f0;
+  background: rgba(29, 78, 216, 0.88);
+  color: #ffffff;
   box-shadow: none;
   transform: scale(0.98);
 }
@@ -116,7 +116,7 @@ body {
     padding: 0.75em 2.2em;
     font-weight: 600;
     font-size: 1.08rem;
-    background: linear-gradient(180deg, #0a1747 0%, #1e3a8a 60%, #2563eb 90%, #e0e7ef 100%);
+    background: linear-gradient(180deg, #0a1747 0%, #1e3a8a 55%, #2563eb 100%);
     color: #fff;
     box-shadow:
       0 2px 8px rgba(30, 58, 138, 0.07),
@@ -425,8 +425,8 @@ body {
   }
 
   [data-map-theme="dark"] .maplibregl-popup-close-button:hover {
-    background: rgba(148, 163, 184, 0.18);
-    color: rgb(241 245 249);
+    background: rgba(51, 65, 85, 0.9);
+    color: rgb(255 255 255);
   }
 
   /* Dark mode popups (coverage map) */
@@ -439,6 +439,19 @@ body {
 
   .coverage-map-surface[data-map-tone="dark"] .maplibregl-popup-tip {
     border-top-color: rgba(15, 23, 42, 0.9);
+  }
+
+  /* Minimal tooltip for embedded dashboard map previews */
+  .bd-map-tooltip .maplibregl-popup-content {
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .bd-map-tooltip .maplibregl-popup-tip {
+    display: none;
   }
 
   /* MapLibre attribution styling */
@@ -709,13 +722,7 @@ body {
   padding: 0.45em 1.35em;
   font-weight: 600;
   font-size: 0.88rem;
-  background: linear-gradient(
-    180deg,
-    rgba(30, 64, 175, 0.98) 0%,
-    rgba(37, 99, 235, 0.98) 60%,
-    rgba(59, 130, 246, 0.96) 90%,
-    rgba(240, 248, 255, 0.9) 100%
-  );
+  background: linear-gradient(180deg, #0f1f5c 0%, #1e3a8a 62%, #1d4ed8 100%);
   color: #fff;
   box-shadow:
     0 2px 8px rgba(30, 58, 138, 0.07),
@@ -743,29 +750,17 @@ body {
 }
 
 .bd-glass-control:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(59, 130, 246, 0.98) 0%,
-    rgba(147, 197, 253, 0.98) 55%,
-    rgba(240, 248, 255, 0.98) 90%,
-    rgba(37, 99, 235, 0.98) 100%
-  );
-  color: #0f172a;
+  background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 58%, #1e40af 100%);
+  color: #f8fafc;
   box-shadow:
     0 6px 18px rgba(30, 58, 138, 0.13),
     0 1.5px 0.5px 0 rgba(255, 255, 255, 0.18) inset;
-  filter: brightness(1.04);
+  filter: none;
 }
 
 .bd-glass-control:active {
-  background: linear-gradient(
-    180deg,
-    rgba(30, 64, 175, 0.98) 0%,
-    rgba(37, 99, 235, 0.98) 60%,
-    rgba(59, 130, 246, 0.96) 90%,
-    rgba(240, 248, 255, 0.9) 100%
-  );
-  color: #0f172a;
+  background: linear-gradient(180deg, #172554 0%, #1e3a8a 62%, #1e40af 100%);
+  color: #eff6ff;
   box-shadow:
     0 1px 4px rgba(30, 58, 138, 0.08),
     0 0.5px 0.5px 0 rgba(255, 255, 255, 0.12) inset;
@@ -776,6 +771,7 @@ body {
 .bd-glass-floating {
   border: 1px solid rgba(191, 219, 254, 0.5);
   background: linear-gradient(180deg, rgba(248, 252, 255, 0.94) 0%, rgba(240, 248, 255, 0.88) 100%);
+  color: #0f172a;
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   border-radius: var(--bd-radius-panel);
@@ -1060,8 +1056,8 @@ body {
 /* Frosted badge — warm pill */
 [data-appearance-mode="light"] .bd-glass-badge {
   border-color: rgba(140, 180, 235, 0.2);
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.14) 0%, rgba(37, 99, 235, 0.09) 100%);
-  color: #93c5fd;
+  background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e3a8a;
   box-shadow:
     0 0 8px rgba(59, 130, 246, 0.08),
     0 0 4px rgba(255, 191, 105, 0.03),
@@ -1071,12 +1067,7 @@ body {
 /* Frosted control button — warm highlight */
 [data-appearance-mode="light"] .bd-glass-control {
   border: none;
-  background: linear-gradient(
-    180deg,
-    rgba(37, 99, 235, 0.28) 0%,
-    rgba(25, 55, 100, 0.8) 60%,
-    rgba(37, 99, 235, 0.18) 100%
-  );
+  background: linear-gradient(180deg, #0f1f5c 0%, #1e3a8a 60%, #1d4ed8 100%);
   color: #fff;
   box-shadow:
     0 2px 8px rgba(4, 10, 24, 0.2),
@@ -1085,30 +1076,18 @@ body {
 }
 
 [data-appearance-mode="light"] .bd-glass-control:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(59, 130, 246, 0.9) 0%,
-    rgba(147, 197, 253, 0.95) 55%,
-    rgba(240, 248, 255, 0.95) 80%,
-    rgba(37, 99, 235, 0.8) 100%
-  );
-  color: #fff;
+  background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 58%, #1e40af 100%);
+  color: #f8fafc;
   box-shadow:
     0 6px 18px rgba(37, 99, 235, 0.16),
     0 0 20px rgba(59, 130, 246, 0.12),
     0 1.5px 0.5px 0 rgba(255, 255, 255, 0.1) inset;
-  filter: brightness(1.06);
+  filter: none;
 }
 
 [data-appearance-mode="light"] .bd-glass-control:active {
-  background: linear-gradient(
-    180deg,
-    rgba(37, 99, 235, 0.88) 0%,
-    rgba(59, 130, 246, 0.88) 55%,
-    rgba(240, 248, 255, 0.85) 80%,
-    rgba(37, 99, 235, 0.65) 100%
-  );
-  color: #fff;
+  background: linear-gradient(180deg, #172554 0%, #1e3a8a 58%, #1e40af 100%);
+  color: #eff6ff;
   box-shadow:
     0 1px 4px rgba(37, 99, 235, 0.12),
     0 0.5px 0.5px 0 rgba(255, 255, 255, 0.06) inset;
@@ -1118,16 +1097,16 @@ body {
 
 /* Frosted secondary control — warm translucent blue */
 [data-appearance-mode="light"] .bd-glass-control--secondary {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.22) 0%, rgba(37, 99, 235, 0.14) 100%);
-  color: #bfdbfe;
+  background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #172554;
   box-shadow:
     0 1.5px 6px rgba(4, 10, 24, 0.14),
     0 0 8px rgba(59, 130, 246, 0.06);
 }
 
 [data-appearance-mode="light"] .bd-glass-control--secondary:hover {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.22) 100%);
-  color: #dbeafe;
+  background: linear-gradient(180deg, #bfdbfe 0%, #93c5fd 100%);
+  color: #0f172a;
   box-shadow:
     0 3px 10px rgba(4, 10, 24, 0.2),
     0 0 12px rgba(59, 130, 246, 0.08);
@@ -1135,29 +1114,29 @@ body {
 
 /* Frosted utility control — warm transparent */
 [data-appearance-mode="light"] .bd-glass-control--utility {
-  color: #a5b4c8;
+  color: #334155;
 }
 
 [data-appearance-mode="light"] .bd-glass-control--utility:hover {
-  background: rgba(59, 130, 246, 0.12);
-  color: #e8edf4;
+  background: #cfe1ff;
+  color: #0f172a;
 }
 
 [data-appearance-mode="light"] .bd-glass-control--utility:active {
-  background: rgba(59, 130, 246, 0.18);
-  color: #e8edf4;
+  background: #bfd4ff;
+  color: #0f172a;
 }
 
 /* ── Controls inside bd-light-surface ── */
 /* When glass controls live inside a white surface, swap to dark-on-light colours. */
 [data-appearance-mode="light"] .bd-light-surface .bd-glass-control--secondary {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.06) 100%);
-  color: #1e40af;
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  color: #172554;
 }
 
 [data-appearance-mode="light"] .bd-light-surface .bd-glass-control--secondary:hover {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.16) 0%, rgba(37, 99, 235, 0.1) 100%);
-  color: #1e3a8a;
+  background: linear-gradient(180deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #0f172a;
 }
 
 [data-appearance-mode="light"] .bd-light-surface .bd-glass-control--utility {
@@ -1165,19 +1144,20 @@ body {
 }
 
 [data-appearance-mode="light"] .bd-light-surface .bd-glass-control--utility:hover {
-  background: rgba(59, 130, 246, 0.08);
-  color: #1e293b;
+  background: rgba(59, 130, 246, 0.14);
+  color: #0f172a;
 }
 
 [data-appearance-mode="light"] .bd-light-surface .bd-glass-control--utility:active {
-  background: rgba(59, 130, 246, 0.12);
-  color: #1e293b;
+  background: rgba(59, 130, 246, 0.2);
+  color: #0f172a;
 }
 
 /* Frosted floating — elevated warm glass */
 [data-appearance-mode="light"] .bd-glass-floating {
   border-color: rgba(150, 190, 240, 0.18);
   background: linear-gradient(180deg, rgba(18, 36, 65, 0.94) 0%, rgba(14, 28, 50, 0.9) 100%);
+  color: #eff6ff;
   box-shadow:
     0 24px 56px rgba(4, 10, 24, 0.4),
     0 4px 12px rgba(4, 10, 24, 0.22),

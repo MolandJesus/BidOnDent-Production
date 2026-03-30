@@ -33,8 +33,16 @@ async function buildHeaders() {
   return await buildSupabaseEdgeHeadersAsync();
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
 function isValidRelationshipId(value: number) {
   return Number.isInteger(value) && value > 0;
+}
+
+function toOptionalTimestampString(value: unknown) {
+  return typeof value === "string" && Number.isFinite(Date.parse(value)) ? value : null;
 }
 
 function toNumericCollection(values: unknown) {
@@ -55,7 +63,7 @@ export function extractRelationshipCollections(
     customerSavedShopIds: toNumericCollection(sessionMemory.mapSession?.customerSavedShopIds),
     insurerShortlistIds: toNumericCollection(sessionMemory.mapSession?.insurerShortlistIds),
     shopWatchlistIds: toNumericCollection(sessionMemory.mapSession?.shopWatchlistIds),
-    updatedAt: sessionMemory.updatedAt,
+    updatedAt: toOptionalTimestampString(sessionMemory.updatedAt),
   };
 }
 
@@ -115,15 +123,17 @@ export async function fetchWebsiteRelationshipCollectionsFromCloud(identity: Web
       throw new Error(`Failed to fetch website relationships: ${response.status}`);
     }
 
-    const payload = await response.json();
-    const collections = payload?.collections || {};
+    const payload: unknown = await response.json();
+    const payloadRecord = isRecord(payload) ? payload : null;
+    const collections =
+      payloadRecord && isRecord(payloadRecord.collections) ? payloadRecord.collections : {};
 
     const nextCollections = {
       connectedInsurerIds: toNumericCollection(collections.connectedInsurerIds),
       customerSavedShopIds: toNumericCollection(collections.customerSavedShopIds),
       insurerShortlistIds: toNumericCollection(collections.insurerShortlistIds),
       shopWatchlistIds: toNumericCollection(collections.shopWatchlistIds),
-      updatedAt: payload?.updatedAt || null,
+      updatedAt: toOptionalTimestampString(payloadRecord?.updatedAt),
     } satisfies WebsiteRelationshipCollections;
 
     savedCollectionSignatures.set(
@@ -146,9 +156,11 @@ export function mergeRelationshipCollectionsIntoSessionMemory(
     return sessionMemory;
   }
 
+  const normalizedUpdatedAt = toOptionalTimestampString(collections.updatedAt);
+
   return {
     ...sessionMemory,
-    updatedAt: collections.updatedAt || sessionMemory.updatedAt,
+    updatedAt: normalizedUpdatedAt || sessionMemory.updatedAt,
     insuranceConnection: {
       ...sessionMemory.insuranceConnection,
       connectedInsurerIds: collections.connectedInsurerIds,
@@ -160,7 +172,7 @@ export function mergeRelationshipCollectionsIntoSessionMemory(
           insurerShortlistIds: collections.insurerShortlistIds,
           shopWatchlistIds: collections.shopWatchlistIds,
           updatedAt:
-            collections.updatedAt || sessionMemory.mapSession.updatedAt || sessionMemory.updatedAt,
+            normalizedUpdatedAt || sessionMemory.mapSession.updatedAt || sessionMemory.updatedAt,
         }
       : undefined,
   };

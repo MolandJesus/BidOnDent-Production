@@ -1,6 +1,7 @@
 // Login and Signup Modal Component
 import { motion } from "motion/react";
 import { X } from "lucide-react";
+import { useEffect } from "react";
 import type { LoginView } from "../../types";
 import { LoginMainView } from "./LoginMainView";
 import { LoginSignupView } from "./LoginSignupView";
@@ -55,11 +56,38 @@ export default function LoginModal({
   onSignup,
   onLogin,
 }: LoginModalProps) {
+  useEffect(() => {
+    if (!show || typeof document === "undefined") {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [show, onClose]);
+
   if (!show) return null;
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) {
+          onClose();
+        }
+      }}
       style={{
         backgroundImage:
           'linear-gradient(135deg, rgba(0, 61, 130, 0.95) 0%, rgba(0, 93, 166, 0.95) 100%), url("https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1920")',
@@ -70,15 +98,19 @@ export default function LoginModal({
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
+        aria-labelledby="login-modal-title"
+        aria-modal="true"
         className="bd-glass-floating rounded-lg max-w-md w-full p-5 sm:p-6"
+        onMouseDown={(event) => event.stopPropagation()}
+        role="dialog"
       >
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold">
+          <h3 className="text-2xl font-bold" id="login-modal-title">
             {loginView === "main" && "Welcome"}
             {loginView === "signup" && "Create Account"}
             {loginView === "login" && "Log In"}
           </h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-300">
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-300" type="button">
             <X className="w-6 h-6" />
           </button>
         </div>

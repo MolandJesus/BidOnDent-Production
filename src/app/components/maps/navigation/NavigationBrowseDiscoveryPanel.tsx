@@ -6,7 +6,6 @@ import {
   Navigation,
   ShieldCheck,
   Sparkles,
-  Star,
   Wrench,
 } from "lucide-react";
 import { cn } from "../../ui/utils";
@@ -149,61 +148,55 @@ export default function NavigationBrowseDiscoveryPanel({
   ].filter((guide): guide is GuideCard => Boolean(guide));
 
   return (
-    <div className={cn("space-y-4 rounded-[1.75rem] p-4", theme.panelStrongClassName)}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+    <div className={cn("space-y-3 rounded-[1.75rem] p-3", theme.panelStrongClassName)}>
+      <div>
+        <div className="flex items-center justify-between gap-3">
           <div className={theme.eyebrowClassName}>Explore Nearby</div>
-          <div className={cn("mt-3 text-base font-semibold", theme.titleClassName)}>
-            BidOnDent market browse
-          </div>
-          <div className={cn("mt-1 text-sm", theme.secondaryTextClassName)}>
-            {activeSearchTarget
-              ? `Live browse results around ${activeSearchTarget.label}`
-              : "Search or use GPS to unlock nearby partner shops and real places."}
-          </div>
+          {activeSearchTarget ? (
+            <div
+              className={cn(
+                "flex items-center gap-2 text-[10px] font-semibold",
+                theme.secondaryTextClassName
+              )}
+            >
+              <span>{nearbyShops.length} shops</span>
+              <span className="opacity-40">·</span>
+              <span>{discoveryPlaces.length} places</span>
+            </div>
+          ) : null}
         </div>
-        {activeSearchTarget ? (
-          <div
-            className={cn("flex flex-wrap gap-3 text-xs font-medium", theme.secondaryTextClassName)}
-          >
-            <span>{nearbyShops.length} partner shops</span>
-            <span>{discoveryPlaces.length} live places</span>
-          </div>
-        ) : null}
+        <div className={cn("mt-1.5 text-sm", theme.secondaryTextClassName)}>
+          {activeSearchTarget
+            ? `Browsing around ${activeSearchTarget.label}`
+            : "Search or enable GPS to discover nearby partner shops and places."}
+        </div>
       </div>
 
-      <div className={cn("p-4", theme.panelClassName)}>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div className={theme.metricLabelClassName}>Experience lens</div>
-            <div className={cn("mt-2 text-sm", theme.secondaryTextClassName)}>
-              {roleSummary(discoveryRole)}
-            </div>
-            {defaultDiscoveryRole && defaultDiscoveryRole === discoveryRole ? (
-              <div className="mt-3">
-                <span className={theme.softBadgeClassName}>
-                  Synced to your {defaultDiscoveryRole} account
-                </span>
-              </div>
-            ) : null}
-          </div>
-          <div className={theme.segmentedClassName}>
-            {discoveryRoleOptions.map(({ id, label, Icon }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => onDiscoveryRoleChange(id)}
-                className={
-                  discoveryRole === id
-                    ? theme.activeSegmentClassName
-                    : theme.inactiveSegmentClassName
-                }
-              >
-                <Icon className="h-4 w-4" />
-                {label}
-              </button>
-            ))}
-          </div>
+      <div className={cn("space-y-2.5 p-3", theme.panelClassName)}>
+        <div className="flex items-center justify-between gap-2">
+          <div className={theme.metricLabelClassName}>Experience lens</div>
+          {defaultDiscoveryRole && defaultDiscoveryRole === discoveryRole ? (
+            <span className={theme.softBadgeClassName}>Synced to {defaultDiscoveryRole}</span>
+          ) : null}
+        </div>
+        <div className={theme.segmentedClassName}>
+          {discoveryRoleOptions.map(({ id, label, Icon }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onDiscoveryRoleChange(id)}
+              className={cn(
+                "flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-2.5 min-h-[44px] text-xs font-semibold transition-all duration-200",
+                discoveryRole === id ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
+              )}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className={cn("text-xs leading-relaxed", theme.secondaryTextClassName)}>
+          {roleSummary(discoveryRole)}
         </div>
       </div>
 
@@ -215,11 +208,24 @@ export default function NavigationBrowseDiscoveryPanel({
           BidOnDent partner shops
         </div>
         {nearbyShops.length === 0 ? (
-          <div className={cn("p-4 text-sm", theme.panelClassName)}>
-            Nearby partner shops will appear here once a ZIP or live GPS origin is active.
+          <div
+            className={cn(
+              "flex items-center gap-3 rounded-[1rem] p-3 text-sm",
+              theme.panelClassName
+            )}
+          >
+            <Compass
+              className={cn(
+                "h-5 w-5 shrink-0",
+                tone === "light" ? "text-sky-400" : "text-cyan-400/60"
+              )}
+            />
+            <span className={theme.secondaryTextClassName}>
+              Partner shops appear here once a ZIP or GPS origin is active.
+            </span>
           </div>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-2">
             {nearbyShops.slice(0, 4).map((shop) => (
               <div
                 key={shop.id || shop.name}
@@ -229,38 +235,44 @@ export default function NavigationBrowseDiscoveryPanel({
                     : theme.listCardClassName
                 }
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="text-left">
-                    <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+                <div className="flex items-center gap-3">
+                  <div
+                    className={cn(
+                      "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                      tone === "light" ? "bg-sky-100 text-sky-600" : "bg-cyan-400/12 text-cyan-300"
+                    )}
+                  >
+                    <MapPinned className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className={cn("truncate text-sm font-semibold", theme.titleClassName)}>
                       {shop.name}
                     </div>
-                    <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                      {shop.distanceMiles.toFixed(1)} miles
+                    <div className={cn("text-xs", theme.secondaryTextClassName)}>
+                      {shop.distanceMiles.toFixed(1)} mi
                       {formatApproximateDriveWindow(shop.distanceMiles)
-                        ? ` • ${formatApproximateDriveWindow(shop.distanceMiles)}`
+                        ? ` · ${formatApproximateDriveWindow(shop.distanceMiles)}`
                         : ""}
                     </div>
                   </div>
-                  <MapPinned className="mt-1 h-4 w-4 shrink-0" />
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    onClick={() => onSelectShop(shop)}
-                    className={theme.secondaryButtonClassName}
-                  >
-                    <MapPinned className="h-4 w-4" />
-                    Preview
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onOpenShopDirections(shop)}
-                    className={theme.primaryButtonClassName}
-                  >
-                    <Navigation className="h-4 w-4" />
-                    Start Route
-                  </button>
+                  <div className="flex shrink-0 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => onSelectShop(shop)}
+                      className={cn(theme.compactIconButtonClassName)}
+                      title="Preview on map"
+                    >
+                      <MapPinned className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onOpenShopDirections(shop)}
+                      className={cn(theme.compactIconButtonClassName)}
+                      title="Start route"
+                    >
+                      <Navigation className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -300,46 +312,44 @@ export default function NavigationBrowseDiscoveryPanel({
             <Sparkles className="h-4 w-4" />
             BidOnDent guides
           </div>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1">
+          <div className="grid gap-2">
             {guides.map((guide) => (
               <div
                 key={guide.id}
                 className={cn(
-                  "overflow-hidden rounded-[1.7rem] border p-0 text-left shadow-[0_20px_44px_rgba(15,23,42,0.16)] transition hover:-translate-y-0.5",
+                  "overflow-hidden rounded-[1.25rem] border text-left shadow-[0_14px_32px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5",
                   tone === "light" ? "border-white/80" : "border-white/10"
                 )}
               >
-                <div className={cn("px-5 py-5", guide.accentClassName)}>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-sm font-semibold uppercase tracking-[0.18em] opacity-70">
+                <div className={cn("px-4 py-3", guide.accentClassName)}>
+                  <div className="flex items-center gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.18em] opacity-60">
                         {guide.title}
                       </div>
-                      <div className="mt-4 text-2xl font-semibold leading-tight tracking-[-0.03em]">
+                      <div className="mt-1 truncate text-base font-semibold leading-tight tracking-[-0.02em]">
                         {guide.subtitle}
                       </div>
-                      <div className="mt-2 text-sm opacity-80">{guide.detail}</div>
+                      <div className="mt-0.5 text-xs opacity-75">{guide.detail}</div>
                     </div>
-                    <Star className="h-5 w-5 shrink-0 opacity-80" />
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => onSelectShop(guide.shop)}
-                      className={theme.secondaryButtonClassName}
-                    >
-                      <MapPinned className="h-4 w-4" />
-                      Preview
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onOpenShopDirections(guide.shop)}
-                      className={theme.primaryButtonClassName}
-                    >
-                      <Navigation className="h-4 w-4" />
-                      Start Route
-                    </button>
+                    <div className="flex shrink-0 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => onSelectShop(guide.shop)}
+                        className={cn(theme.compactIconButtonClassName)}
+                        title="Preview on map"
+                      >
+                        <MapPinned className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onOpenShopDirections(guide.shop)}
+                        className={cn(theme.compactIconButtonClassName)}
+                        title="Start route"
+                      >
+                        <Navigation className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

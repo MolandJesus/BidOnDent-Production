@@ -49,6 +49,12 @@ export interface DamageReport {
   bidsCount?: number;
   vehicle?: { year?: string; make?: string; model?: string; vin?: string };
   bids?: Bid[];
+  repairStatus?: string;
+  assignmentId?: string;
+  claimStatus?: string;
+  approvedAmount?: number;
+  denialReason?: string;
+  claimDecisionDate?: string;
 }
 
 export interface Bid {

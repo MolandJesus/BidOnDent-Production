@@ -156,6 +156,7 @@ export default function ReportScreen({
             <StepComplete
               primaryColor={primaryColor}
               appearanceMode={appearanceMode}
+              photoUploadWarning={form.photoUploadWarning}
               onViewReports={handleViewReports}
               onBackToDashboard={handleBackToDashboard}
               onFindShops={onViewShops ? handleViewShops : undefined}

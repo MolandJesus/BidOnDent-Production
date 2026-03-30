@@ -30,6 +30,24 @@ function providerLabel(provider: string) {
   return "Speed";
 }
 
+function humanizeProviderErrorMessage(message: string | null | undefined) {
+  if (!message) {
+    return "No recent provider errors";
+  }
+
+  const normalized = message.toLowerCase();
+  if (
+    normalized.includes("abort") ||
+    normalized.includes("aborted") ||
+    normalized.includes("cancelled") ||
+    normalized.includes("canceled")
+  ) {
+    return "Request interrupted";
+  }
+
+  return message;
+}
+
 function diagnosticsDriverLabel(driver: "none" | "provider" | "performance" | "balanced") {
   if (driver === "provider") {
     return "Provider reliability";
@@ -306,7 +324,7 @@ export default function PlannerDiagnosticsPanel({
                   Last check: {formatAgeLabel(status.lastCheckedAgeMs)}
                 </div>
                 <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                  {status.lastErrorMessage || "No recent provider errors"}
+                  {humanizeProviderErrorMessage(status.lastErrorMessage)}
                 </div>
               </div>
             );

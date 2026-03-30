@@ -119,7 +119,7 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-10 h-10 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 22px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.6)"

@@ -69,6 +69,8 @@ export default function AccountInfoCard({
         <button
           className={`${isLightAppearance ? "text-blue-600 hover:text-blue-700" : "text-blue-300 hover:text-blue-200"} transition-colors`}
           onClick={onEditProfile}
+          type="button"
+          aria-label="Edit account information"
         >
           <Edit className="w-5 h-5" />
         </button>

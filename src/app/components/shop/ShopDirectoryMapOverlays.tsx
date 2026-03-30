@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
+import type { GpsStatus } from "../../hooks/useNavigationGpsTracking";
 import type { MapTheme, Place, RouteOption } from "../../types/mapDomain";
 import {
   computeETA,
@@ -42,6 +43,11 @@ type ShopDirectoryMapOverlaysProps = {
   onDismissRoutePreview?: () => void;
   directionsLabel?: string;
   overlayTopClass?: string;
+  nextInstruction?: string | null;
+  followingInstruction?: string | null;
+  currentSpeedMph?: number | null;
+  speedLimitMph?: number | null;
+  gpsStatus?: GpsStatus;
 };
 
 export default function ShopDirectoryMapOverlays({
@@ -74,6 +80,11 @@ export default function ShopDirectoryMapOverlays({
   onDismissRoutePreview,
   directionsLabel,
   overlayTopClass = "top-20",
+  nextInstruction,
+  followingInstruction,
+  currentSpeedMph,
+  speedLimitMph,
+  gpsStatus,
 }: ShopDirectoryMapOverlaysProps) {
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
   const isDark = mapTheme === "dark";
@@ -126,16 +137,16 @@ export default function ShopDirectoryMapOverlays({
       {showIntelligence && (
         <div className={`pointer-events-auto absolute left-4 ${overlayTopClass} z-[510] max-w-xs`}>
           <button
-            className={`flex min-h-[44px] items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-semibold transition-colors ${glassChip}`}
+            className={`flex min-h-[32px] items-center gap-1.5 rounded-xl border px-2.5 py-1 text-[11px] font-semibold transition-colors ${glassChip}`}
             onClick={() => setIntelligenceExpanded((value) => !value)}
             type="button"
           >
-            <Sparkles className="h-3.5 w-3.5 text-blue-400" />
+            <Sparkles className="h-3 w-3 text-blue-400" />
             {intelligenceTitle}
             {intelligenceExpanded ? (
-              <ChevronUp className="h-3.5 w-3.5" />
+              <ChevronUp className="h-3 w-3" />
             ) : (
-              <ChevronDown className="h-3.5 w-3.5" />
+              <ChevronDown className="h-3 w-3" />
             )}
           </button>
 
@@ -224,6 +235,10 @@ export default function ShopDirectoryMapOverlays({
           distanceLabel={distanceLabel}
           etaLabel={etaLabel}
           isDark={isDark}
+          nextInstruction={nextInstruction}
+          followingInstruction={followingInstruction}
+          currentSpeedMph={currentSpeedMph}
+          gpsStatus={gpsStatus}
           onPauseNavigation={onPauseNavigation}
           onResumeNavigation={onResumeNavigation}
           onEndNavigation={onEndNavigation}

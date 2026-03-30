@@ -1,9 +1,12 @@
 import { Building2, MapPinned, Navigation } from "lucide-react";
+import { useMemo } from "react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
 import type { DamageReport } from "../../types";
+import { zipToCoordinates } from "../../services/supabase/map";
 import { defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
+import type { ReportPin } from "./MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type InsurerMapWidgetProps = {
@@ -27,6 +30,19 @@ export default function InsurerMapWidget({
 }: InsurerMapWidgetProps) {
   const isLight = appearanceMode === "light";
   const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
+
+  /** Convert claims/reports to map pins via ZIP→coordinate lookup */
+  const reportPins = useMemo<ReportPin[]>(() => {
+    return reports
+      .map((r) => {
+        const zip = r.zip_code || r.zipCode;
+        const coords = zipToCoordinates(zip);
+        if (!coords) return null;
+        const label = r.claimNumber || r.damageType || "Claim";
+        return { id: r.id, lat: coords.lat, lng: coords.lng, label };
+      })
+      .filter((pin): pin is ReportPin => pin !== null);
+  }, [reports]);
   const pendingClaimCount = reports.filter((report) =>
     ["pending", "in-review"].includes(String(report.status))
   ).length;
@@ -53,6 +69,7 @@ export default function InsurerMapWidget({
       <div className="relative h-[180px] md:h-[200px]">
         <DashboardMapPreview
           shops={partnerShops}
+          reportPins={reportPins}
           center={defaultCoverageCenter}
           zoom={9}
           isLight={isLight}
@@ -182,7 +199,9 @@ export default function InsurerMapWidget({
                 ? `${pendingClaimCount} live claim${pendingClaimCount === 1 ? "" : "s"} awaiting review`
                 : "No pending live claims right now"}
             </p>
-            <p className={`truncate text-[11px] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}>
+            <p
+              className={`truncate text-[11px] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
+            >
               {photoBackedClaimCount > 0
                 ? `${photoBackedClaimCount} claim${photoBackedClaimCount === 1 ? "" : "s"} include photo evidence`
                 : "New filed claims with photos will show up here automatically."}

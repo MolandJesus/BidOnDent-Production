@@ -1,4 +1,4 @@
-import { ExternalLink, LocateFixed, Navigation, Star } from "lucide-react";
+import { ExternalLink, LocateFixed, MapPinned, Navigation, Star } from "lucide-react";
 import { cn } from "../ui/utils";
 import { formatApproximateDriveWindow } from "../maps/mapRoutePresentation";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
@@ -34,43 +34,53 @@ export default function CoverageNearestShops({
   const theme = getMapSurfaceTheme(tone, true);
 
   return (
-    <div className={className || cn("p-4", theme.panelStrongClassName)}>
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+    <div className={className || cn("p-3", theme.panelStrongClassName)}>
+      <div className="flex items-center justify-between gap-3">
         <div>
-          <h5 className={cn("font-semibold", theme.titleClassName)}>Nearest Partner Shops</h5>
-          <p className={cn("mt-1 text-sm", theme.secondaryTextClassName)}>
+          <h5 className={cn("text-sm font-semibold", theme.titleClassName)}>
+            Nearest Partner Shops
+          </h5>
+          <p className={cn("mt-0.5 text-xs", theme.secondaryTextClassName)}>
             {activeSearchTarget
-              ? `Route from ${activeSearchTarget.label}`
-              : "Search by ZIP, home, or store address to view the closest partner shops."}
+              ? `From ${activeSearchTarget.label}`
+              : "Search by ZIP or address to find nearby shops."}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col items-end gap-0.5">
           {activeSearchTarget ? (
-            <span className={cn("text-xs font-medium", theme.secondaryTextClassName)}>
-              {radiusMiles}-mile search window
+            <span
+              className={cn(
+                "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                theme.softBadgeClassName
+              )}
+            >
+              {radiusMiles} mi
             </span>
           ) : null}
           {isLoadingShops ? (
-            <span className={cn("text-xs", theme.secondaryTextClassName)}>
-              Loading live partner data...
-            </span>
+            <span className={cn("text-[10px]", theme.secondaryTextClassName)}>Loading…</span>
           ) : null}
         </div>
       </div>
 
       {!activeSearchTarget ? null : nearbyShops.length === 0 ? (
-        <p
+        <div
           className={cn(
-            "mt-4 rounded-[1rem] border px-4 py-3 text-sm",
-            tone === "light"
-              ? "border-amber-200 bg-amber-50 text-amber-900"
-              : "border-amber-300/20 bg-amber-500/10 text-amber-200"
+            "mt-3 flex flex-col items-center gap-2 rounded-[1.25rem] border px-4 py-6 text-center",
+            tone === "light" ? "border-slate-200/60 bg-slate-50/60" : "border-white/8 bg-white/4"
           )}
         >
-          No partner shops were found within {radiusMiles} miles. Expand the search radius or route
-          the request for manual partner assignment.
-        </p>
+          <MapPinned
+            className={cn("h-8 w-8", tone === "light" ? "text-slate-300" : "text-slate-500")}
+          />
+          <div className={cn("text-sm font-medium", theme.titleClassName)}>
+            No shops within {radiusMiles} miles
+          </div>
+          <div className={cn("text-xs leading-relaxed", theme.secondaryTextClassName)}>
+            Try expanding your search radius or searching a different area.
+          </div>
+        </div>
       ) : (
         <div className="mt-3 sm:mt-4 grid gap-2.5 sm:gap-3 md:grid-cols-2">
           {nearbyShops.map((shop) => (

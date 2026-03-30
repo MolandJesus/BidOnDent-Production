@@ -1,8 +1,9 @@
-import { useState, type RefObject } from "react";
+import { useMemo, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Bid, NavTab, Notification, Vehicle } from "../../types";
 import { getGlobalSurfaceTheme } from "../../theme/globalSurfaceTheme";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import { useNotifications } from "../../features/notifications/NotificationContext";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
 import SettingsModal from "../codelayer/account/SettingsModal";
 import DashboardAtmosphere from "./DashboardAtmosphere";
@@ -82,8 +83,57 @@ export default function DashboardLayout({
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const isLightAppearance = appearanceMode === "light";
   const surfaceTheme = getGlobalSurfaceTheme(isLightAppearance ? "light" : "map-dark");
-  const unreadCount = notifications.filter((n) => !n.read).length;
   const activeTabLabel = currentNavTabs.find((tab) => tab.id === currentTab)?.label ?? "Dashboard";
+
+  // Bridge event-stream notifications into the legacy Notification[] feed
+  const eventStream = useNotifications();
+  const categoryToType: Record<string, Notification["type"]> = {
+    bid: "bid",
+    shop: "repair_request",
+    report: "update",
+    system: "message",
+    navigation: "update",
+    reroute: "update",
+    insurer: "claim",
+  };
+  const mergedNotifications = useMemo<Notification[]>(() => {
+    const bridged: Notification[] = eventStream.events.map((e) => ({
+      id: e.id,
+      type: categoryToType[e.category] || "update",
+      message: `${e.title} \u2014 ${e.body}`,
+      time: "Just now",
+      read: e.read,
+      createdAt: e.createdAt,
+    }));
+    return [...bridged, ...notifications];
+  }, [eventStream.events, notifications]);
+
+  const unreadCount = mergedNotifications.filter((n) => !n.read).length;
+
+  const handleMarkRead = (id: string | number) => {
+    if (typeof id === "string" && id.startsWith("notify-")) {
+      eventStream.markRead(id);
+    } else {
+      onMarkNotificationRead(id);
+    }
+  };
+
+  const handleMarkAllRead = () => {
+    eventStream.markAllRead();
+    onMarkAllNotificationsRead();
+  };
+
+  // Compute badge counts for mobile bottom nav
+  const tabBadgeCounts = useMemo<Record<string, number>>(() => {
+    const counts: Record<string, number> = {};
+    const role = userProfile.user_type;
+    if (role === "customer") {
+      const pendingBids = bids.filter((b) => b.status === "pending").length;
+      if (pendingBids > 0) counts["bids"] = pendingBids;
+    }
+    if (unreadCount > 0) counts["notifications"] = unreadCount;
+    return counts;
+  }, [bids, userProfile.user_type, unreadCount]);
 
   return (
     <div
@@ -110,7 +160,7 @@ export default function DashboardLayout({
           profileDropdownData={profileDropdownData}
           userProfile={userProfile}
           userImageUrl={userImageUrl}
-          notifications={notifications}
+          notifications={mergedNotifications}
           notificationSyncActive={notificationSyncActive}
           reports={reports}
           vehicles={vehicles}
@@ -128,13 +178,13 @@ export default function DashboardLayout({
             onOpenDemoMode={onOpenDemoMode}
             userProfile={userProfile}
             userImageUrl={userImageUrl}
-            notifications={notifications}
+            notifications={mergedNotifications}
             notificationSyncActive={notificationSyncActive}
             reports={reports}
             profileDropdownData={profileDropdownData}
             unreadCount={unreadCount}
-            onMarkNotificationRead={onMarkNotificationRead}
-            onMarkAllNotificationsRead={onMarkAllNotificationsRead}
+            onMarkNotificationRead={handleMarkRead}
+            onMarkAllNotificationsRead={handleMarkAllRead}
             onOpenSettings={() => setShowSettingsModal(true)}
           />
 
@@ -158,6 +208,7 @@ export default function DashboardLayout({
         tabs={currentNavTabs}
         currentTab={currentTab}
         viewMode={viewMode}
+        badgeCounts={tabBadgeCounts}
         onTabClick={(tabId) => onMobileMenuTabClick(tabId)}
       />
 

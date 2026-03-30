@@ -99,20 +99,20 @@ export default function ShopDirectoryListBody({
       )}
 
       {session.roleCollectionListings.length > 0 && (
-        <div className="mb-5">
+        <div className="mb-3">
           <div className={sectionLabelClass}>
-            <Bookmark className="h-4 w-4" />
+            <Bookmark className="h-3.5 w-3.5" />
             {session.roleCollectionTitle}
           </div>
-          <div className="mt-3 space-y-3">
-            {session.roleCollectionListings.map((shop) => (
+          <div className="mt-2 space-y-2">
+            {session.roleCollectionListings.slice(0, 3).map((shop) => (
               <button
                 key={`collection-${shop.id}`}
                 className={`w-full ${
                   isLight
-                    ? "bg-white/80 border border-slate-200/60 rounded-2xl hover:border-blue-300/60"
+                    ? "bg-white/80 border border-slate-200/60 rounded-xl hover:border-blue-300/60"
                     : "bd-glass-card hover:border-white/[0.20]"
-                } px-4 py-3 text-left transition-colors`}
+                } px-3 py-2 text-left transition-colors`}
                 onClick={() => session.setSelectedShopId(shop.id)}
                 type="button"
               >
@@ -155,13 +155,13 @@ export default function ShopDirectoryListBody({
       )}
 
       {session.savedPlaces.length > 0 && (
-        <div className="mb-4 sm:mb-5">
+        <div className="mb-3">
           <div className={sectionLabelClass}>
-            <Bookmark className="h-4 w-4" />
+            <Bookmark className="h-3.5 w-3.5" />
             Saved places
           </div>
-          <div className="mt-2.5 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
-            {session.savedPlaces.map((place) => (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {session.savedPlaces.slice(0, 3).map((place) => (
               <button
                 key={place.id}
                 className={`rounded-xl sm:rounded-2xl border px-2.5 py-1.5 sm:px-3 sm:py-2 text-left text-xs sm:text-sm transition-colors ${
@@ -185,13 +185,13 @@ export default function ShopDirectoryListBody({
       )}
 
       {session.recentSearches.length > 0 && (
-        <div className="mb-4 sm:mb-5">
+        <div className="mb-3">
           <div className={sectionLabelClass}>
-            <Search className="h-4 w-4" />
+            <Search className="h-3.5 w-3.5" />
             Recent searches
           </div>
-          <div className="mt-2.5 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
-            {session.recentSearches.map((search) => (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {session.recentSearches.slice(0, 3).map((search) => (
               <button
                 key={`${search.query}-${search.timestamp}`}
                 className={`rounded-xl sm:rounded-2xl border px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm transition-colors ${
@@ -273,7 +273,7 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      <div className="mt-4 space-y-4">
+      <div className="mt-3 space-y-3">
         {session.mapListings.map((shop) => {
           const roleCollectionAction = getRoleCollectionActionLabels(
             userType,

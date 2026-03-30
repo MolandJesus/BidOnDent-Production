@@ -59,11 +59,16 @@ export interface DashboardRouterProps {
   onLogout: () => void | Promise<void>;
   onAcceptBid?: (details: {
     bidId: string;
+    shopId?: string;
     shopName: string;
     price: number;
     timeframe: string;
+    reportId?: string;
+    skipNavigation?: boolean;
   }) => void;
   onRejectBid?: (details: { bidId: string; shopName: string }) => void;
+  onUpdateJobStatus?: (jobId: number, status: string) => void;
+  onConfirmCompletion?: (reportId: string) => void;
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: DashboardUserType) => void;
   onExitDemoMode?: () => void;

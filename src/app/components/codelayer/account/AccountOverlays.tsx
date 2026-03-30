@@ -19,7 +19,12 @@ export default function AccountOverlays({
     <>
       {/* Loading Overlay for Image Upload */}
       {isSaving && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        >
           <div
             className={`bd-glass-floating rounded-lg p-6 flex flex-col items-center${isLight ? " bd-light-surface" : ""}`}
           >
@@ -45,10 +50,10 @@ export default function AccountOverlays({
               ></path>
             </svg>
             <p className={`font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}>
-              Uploading image...
+              Saving profile photo...
             </p>
             <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-              Compressing and saving to cloud
+              Preparing and saving your latest update
             </p>
           </div>
         </div>
@@ -58,6 +63,8 @@ export default function AccountOverlays({
       {saveSuccess && (
         <div
           className={`fixed top-20 right-4 bd-glass-card border-l-4 px-4 py-3 rounded shadow-lg z-50 flex items-center gap-3 animate-slide-in-right${isLight ? " bd-light-surface" : ""}`}
+          role="status"
+          aria-live="polite"
           style={{ borderColor: primaryColor }}
         >
           <div
@@ -81,10 +88,10 @@ export default function AccountOverlays({
           </div>
           <div className="flex-1">
             <p className={`font-medium ${isLight ? "text-slate-900" : "text-slate-100"}`}>
-              Profile Saved
+              Profile updated
             </p>
             <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-              Changes synced to cloud
+              Changes saved for this profile
             </p>
           </div>
         </div>

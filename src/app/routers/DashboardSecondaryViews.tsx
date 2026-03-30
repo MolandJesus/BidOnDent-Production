@@ -54,6 +54,7 @@ type Props = Pick<
   | "onSaveVehicles"
   | "onEnableDemoMode"
   | "onExitDemoMode"
+  | "onConfirmCompletion"
 >;
 
 export default function DashboardSecondaryViews({
@@ -76,6 +77,7 @@ export default function DashboardSecondaryViews({
   onSaveVehicles,
   onEnableDemoMode,
   onExitDemoMode,
+  onConfirmCompletion,
 }: Props) {
   return (
     <>
@@ -96,6 +98,7 @@ export default function DashboardSecondaryViews({
             }}
             primaryColor={primaryColor}
             appearanceMode={appearanceMode}
+            onStartReport={() => onTabChange("report")}
           />
         </motion.div>
       )}
@@ -118,6 +121,7 @@ export default function DashboardSecondaryViews({
                 onViewModeChange("dashboard");
               }}
               onFindShops={() => onViewModeChange("shop-directory")}
+              onConfirmCompletion={onConfirmCompletion}
               primaryColor={primaryColor}
               appearanceMode={appearanceMode}
             />
@@ -229,6 +233,10 @@ export default function DashboardSecondaryViews({
             userInfo={userInfo}
             vehicles={vehicles}
             reports={reports}
+            onViewReportDetail={(reportId) => {
+              onSelectReport(reportId);
+              onViewModeChange("report-detail");
+            }}
           />
         </motion.div>
       )}

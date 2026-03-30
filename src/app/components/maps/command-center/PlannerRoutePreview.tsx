@@ -5,7 +5,7 @@
  * All state and orchestration remain in the parent shell.
  */
 
-import { Navigation, RefreshCcw } from "lucide-react";
+import { Navigation, RefreshCcw, Route } from "lucide-react";
 import { cn } from "../../ui/utils";
 import { formatApproximateDriveWindow, formatDistanceMiles } from "../mapRoutePresentation";
 import type { MapSurfaceTheme, MapSurfaceTone } from "../serviceCoverageMapTypes";
@@ -239,20 +239,47 @@ export default function PlannerRoutePreview({
       ) : (
         <div
           className={cn(
-            "map-liquid-panel map-ui-enter map-ui-enter-delay-3 p-3",
+            "map-liquid-panel map-ui-enter map-ui-enter-delay-3 p-4",
             theme.accentPanelClassName
           )}
         >
-          <div className={theme.metricLabelClassName}>Your route</div>
-          <div className={cn("mt-0.5 text-sm font-semibold", theme.titleClassName)}>
-            {selectedShop ? selectedShop.name : "Choose a destination"}
+          <div className="flex items-start gap-3">
+            <div
+              className={cn(
+                "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+                tone === "light" ? "bg-blue-100 text-blue-600" : "bg-blue-400/12 text-blue-300"
+              )}
+            >
+              <Route className="h-4 w-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className={theme.metricLabelClassName}>Your route</div>
+              <div className={cn("mt-0.5 text-sm font-semibold", theme.titleClassName)}>
+                {selectedShop ? selectedShop.name : "Choose a destination"}
+              </div>
+              <div className={cn("mt-1 text-xs leading-relaxed", theme.secondaryTextClassName)}>
+                {routePreview
+                  ? "Route preview is ready. Tap Start Route when you\u2019re set."
+                  : selectedShop
+                    ? "Provide GPS location or search an address to build a route."
+                    : "Select a shop from the Shops tab, then search an origin address."}
+              </div>
+            </div>
           </div>
-          <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-            {routePreview
-              ? "Preview is ready. Start route when you are set."
-              : "Address + destination will auto-build a route preview."}
-          </div>
-          <div className="mt-2 flex flex-wrap gap-2">
+          {routePreview && routeDistanceMiles !== null ? (
+            <div className="mt-3 flex flex-wrap gap-3">
+              <div className={cn("text-xs font-medium", theme.secondaryTextClassName)}>
+                {formatDistanceMiles(routeDistanceMiles)}
+              </div>
+              {routeDurationMinutes !== null ? (
+                <div className={cn("text-xs font-medium", theme.secondaryTextClassName)}>
+                  {formatApproximateDriveWindow(routeDistanceMiles) ||
+                    `${Math.round(routeDurationMinutes)} min`}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+          <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={onStartNavigation}

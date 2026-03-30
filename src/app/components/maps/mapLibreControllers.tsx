@@ -32,22 +32,41 @@ export function MapLibreViewportController({
 
 /**
  * Keeps the camera following a GPS position when enabled.
- * Debounces tiny movements (< 18 m).
+ * In guidance mode, uses a higher zoom and tighter debounce for turn-by-turn.
+ * Debounces tiny movements (< threshold m).
  */
 export function MapLibreFollowLocationController({
   enabled,
   currentPosition,
   minimumZoom = 15.5,
   revision = 0,
+  guidanceMode = false,
+  bearing,
 }: {
   enabled: boolean;
   currentPosition: [number, number] | null | undefined;
   minimumZoom?: number;
   revision?: number;
+  guidanceMode?: boolean;
+  /** Compass bearing (0-360°) for map heading rotation during guidance. */
+  bearing?: number | null;
 }) {
   const { current: map } = useMap();
   const lastPositionRef = useRef<[number, number] | null>(null);
   const lastRevisionRef = useRef(revision);
+  const wasGuidanceModeRef = useRef(guidanceMode);
+
+  const effectiveMinZoom = guidanceMode ? Math.max(minimumZoom, 16.5) : minimumZoom;
+  const debounceMeters = guidanceMode ? 8 : 18;
+  const flyDuration = guidanceMode ? 600 : 850;
+
+  // Reset bearing/pitch immediately when leaving guidance mode
+  useEffect(() => {
+    if (wasGuidanceModeRef.current && !guidanceMode && map) {
+      map.flyTo({ bearing: 0, pitch: 0, duration: 800 });
+    }
+    wasGuidanceModeRef.current = guidanceMode;
+  }, [guidanceMode, map]);
 
   useEffect(() => {
     if (!enabled || !currentPosition || !map) return;
@@ -59,18 +78,40 @@ export function MapLibreFollowLocationController({
       const deltaLat = currentPosition[0] - last[0];
       const deltaLng = currentPosition[1] - last[1];
       const dist = Math.sqrt(deltaLat * deltaLat + deltaLng * deltaLng) * 111320;
-      if (dist < 18) return;
+      if (dist < debounceMeters) return;
     }
 
-    map.flyTo({
+    const flyOptions: Parameters<typeof map.flyTo>[0] = {
       center: [currentPosition[1], currentPosition[0]],
-      zoom: Math.max(map.getZoom(), minimumZoom),
-      duration: 850,
-    });
+      zoom: Math.max(map.getZoom(), effectiveMinZoom),
+      duration: flyDuration,
+    };
+
+    // Apply bearing rotation in guidance mode
+    if (guidanceMode && typeof bearing === "number" && Number.isFinite(bearing)) {
+      flyOptions.bearing = bearing;
+      flyOptions.pitch = 45;
+    } else if (!guidanceMode) {
+      // Reset to north-up when leaving guidance
+      flyOptions.bearing = 0;
+      flyOptions.pitch = 0;
+    }
+
+    map.flyTo(flyOptions);
 
     lastPositionRef.current = currentPosition;
     lastRevisionRef.current = revision;
-  }, [enabled, currentPosition, map, minimumZoom, revision]);
+  }, [
+    enabled,
+    currentPosition,
+    map,
+    effectiveMinZoom,
+    revision,
+    debounceMeters,
+    flyDuration,
+    bearing,
+    guidanceMode,
+  ]);
 
   return null;
 }

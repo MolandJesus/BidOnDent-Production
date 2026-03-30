@@ -1,10 +1,10 @@
 # BidOnDent — Master AI Context
 
-> **Single source of truth for any AI agent working on this repo.**
-> All other AI handoff docs defer to this file. Read this first, every session.
+> **Primary first-read master context for any AI agent working on this repo.**
+> Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
 > **Last updated:** 2026-03-29 (Map program passes 478-483 sync)
-> **Status:** Active master context source of truth
+> **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.1s · MapLibre GL JS WebGL engine
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
@@ -520,15 +520,15 @@ Complete engine swap from Leaflet (canvas) to MapLibre GL JS (WebGL), followed b
 | 472  | Coverage control polish: icons + glass backgrounds           | ✅ Done |
 | 473  | Coverage tabs in-app routing handoff                         | ✅ Done |
 | 474  | Coverage landing/dashboard in-app navigation default         | ✅ Done |
-| 475  | Insurer mapped partner shops → BidOnDent Maps               | ✅ Done |
-| 476  | Coverage browse origin lock + landing command-bar cleanup   | ✅ Done |
-| 477  | Demote external export in active navigation sheet           | ✅ Done |
-| 478  | Public coverage nationwide address-origin search            | ✅ Done |
-| 479  | Fullscreen light-theme + mobile navigation chrome cleanup   | ✅ Done |
-| 480  | Live dashboard/shop/insurer report feed + photo cards       | ✅ Done |
-| 481  | Mobile map scroll + smart-shop menu cleanup                 | ✅ Done |
-| 482  | Compact mobile shop-card cleanup + dashboard CTA clarity    | ✅ Done |
-| 483  | Route-preview panel light/mobile cleanup                    | ✅ Done |
+| 475  | Insurer mapped partner shops → BidOnDent Maps                | ✅ Done |
+| 476  | Coverage browse origin lock + landing command-bar cleanup    | ✅ Done |
+| 477  | Demote external export in active navigation sheet            | ✅ Done |
+| 478  | Public coverage nationwide address-origin search             | ✅ Done |
+| 479  | Fullscreen light-theme + mobile navigation chrome cleanup    | ✅ Done |
+| 480  | Live dashboard/shop/insurer report feed + photo cards        | ✅ Done |
+| 481  | Mobile map scroll + smart-shop menu cleanup                  | ✅ Done |
+| 482  | Compact mobile shop-card cleanup + dashboard CTA clarity     | ✅ Done |
+| 483  | Route-preview panel light/mobile cleanup                     | ✅ Done |
 
 **MapLibre architecture:**
 

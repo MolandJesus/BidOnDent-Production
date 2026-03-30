@@ -180,6 +180,10 @@ export const transformSupabaseReport = (report: SupabaseReport): FrontendReport 
     createdAt,
     submittedAt: createdAt,
     bidsCount: 0,
+    claimStatus: report.claim_status || undefined,
+    approvedAmount: report.approved_amount ?? undefined,
+    denialReason: report.denial_reason || undefined,
+    claimDecisionDate: report.claim_decision_date || undefined,
   };
 };
 

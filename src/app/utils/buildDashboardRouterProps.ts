@@ -1,5 +1,6 @@
 import type { UserProfile } from "../services/clerkService";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
+import { updateWebsiteSessionMemory } from "../services/auth/websiteIdentity";
 import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
 import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
@@ -7,6 +8,8 @@ import type { ViewMode, DamageReport, Vehicle, Bid } from "../types";
 import { deleteVehicle } from "../services/supabaseService";
 import { getBidsForReport, updateBidStatus } from "../services/supabase/bids";
 import { updateReportStatus } from "../services/supabase/reports";
+import { createJobAssignment, updateJobAssignmentStatus } from "../services/supabase/workflow";
+import { zipToCoordinates } from "../services/supabase/map";
 
 type NavigationState = ReturnType<typeof useNavigation>;
 type UserDataState = ReturnType<typeof useUserData>;
@@ -156,16 +159,19 @@ export function buildDashboardRouterProps({
     },
     onAcceptBid: async (details: {
       bidId: string;
+      shopId?: string;
       shopName: string;
       price: number;
       timeframe: string;
       reportId?: string;
+      skipNavigation?: boolean;
     }) => {
       try {
         const clerkId = userProfile?.id;
         const acceptedBid = await updateBidStatus(details.bidId, "accepted", clerkId);
         if (!acceptedBid) {
-          if (import.meta.env.DEV) console.error("Failed to accept bid in Supabase:", details.bidId);
+          if (import.meta.env.DEV)
+            console.error("Failed to accept bid in Supabase:", details.bidId);
           return;
         }
 
@@ -192,7 +198,8 @@ export function buildDashboardRouterProps({
                   console.error("Competing bid reject was not persisted:", competing.id);
                 }
               } catch (rejectErr) {
-                if (import.meta.env.DEV) console.error("Failed to reject competing bid:", competing.id, rejectErr);
+                if (import.meta.env.DEV)
+                  console.error("Failed to reject competing bid:", competing.id, rejectErr);
               }
             }
           } catch (fetchErr) {
@@ -204,6 +211,70 @@ export function buildDashboardRouterProps({
         userData.setBids(
           userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "accepted" } : b))
         );
+
+        // Create job assignment in Supabase so shop can track repair status
+        if (reportId) {
+          try {
+            const assignment = await createJobAssignment({
+              damage_report_id: reportId.toString(),
+              customer_user_id: userProfile?.id || "",
+              shop_user_id: details.shopId || "",
+              bid_id: details.bidId,
+              status: "scheduled",
+            });
+            if (assignment?.id) {
+              userData.setReports(
+                userData.reports.map((r) =>
+                  String(r.id) === String(reportId) ? { ...r, assignmentId: assignment.id } : r
+                )
+              );
+            }
+          } catch (assignErr) {
+            if (import.meta.env.DEV) console.error("Failed to create job assignment:", assignErr);
+          }
+        }
+
+        // Route handoff: move customer straight into map flow with accepted-shop context.
+        const acceptedReport = reportId
+          ? userData.reports.find((report) => String(report.id) === String(reportId))
+          : null;
+        const acceptedReportZip = acceptedReport?.zip_code || acceptedReport?.zipCode || "";
+        const acceptedOriginCoords = acceptedReportZip ? zipToCoordinates(acceptedReportZip) : null;
+
+        updateWebsiteSessionMemory(
+          websiteIdentity,
+          {
+            shopDirectory: {
+              searchQuery: details.shopName,
+            },
+            mapSession: {
+              mapViewMode: "map",
+              ...(acceptedOriginCoords
+                ? {
+                    lastSearchOrigin: {
+                      name: acceptedReport?.address || acceptedReport?.city || "Accepted report",
+                      address: acceptedReport?.address || "",
+                      city: acceptedReport?.city || "",
+                      state: acceptedReport?.state || "",
+                      zipCode: acceptedReportZip,
+                      latitude: acceptedOriginCoords.lat,
+                      longitude: acceptedOriginCoords.lng,
+                      placeId: `accepted-report-${String(reportId || details.bidId)}`,
+                    },
+                    lastMapCenter: {
+                      latitude: acceptedOriginCoords.lat,
+                      longitude: acceptedOriginCoords.lng,
+                    },
+                  }
+                : {}),
+            },
+          },
+          { accountType: "customer" }
+        );
+
+        if (!details.skipNavigation) {
+          navigation.setViewMode("shop-directory");
+        }
       } catch (err) {
         if (import.meta.env.DEV) console.error("Failed to accept bid:", err);
       }
@@ -212,7 +283,8 @@ export function buildDashboardRouterProps({
       try {
         const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
         if (!rejectedBid) {
-          if (import.meta.env.DEV) console.error("Failed to reject bid in Supabase:", details.bidId);
+          if (import.meta.env.DEV)
+            console.error("Failed to reject bid in Supabase:", details.bidId);
           return;
         }
         // Update local bids state so UI reflects the change immediately
@@ -236,9 +308,10 @@ export function buildDashboardRouterProps({
         const clerkUserId = userProfile.id;
         for (const removed of removedVehicles) {
           if (removed.id) {
-            deleteVehicle(removed.id, clerkUserId).catch((err) =>
-              { if (import.meta.env.DEV) console.error("Failed to delete vehicle from Supabase:", err); }
-            );
+            deleteVehicle(removed.id, clerkUserId).catch((err) => {
+              if (import.meta.env.DEV)
+                console.error("Failed to delete vehicle from Supabase:", err);
+            });
           }
         }
       }
@@ -259,5 +332,49 @@ export function buildDashboardRouterProps({
       userData.setHasSeenPhotoGuide(true);
     },
     onReportSubmit,
+    onUpdateJobStatus: async (jobId: number, status: string) => {
+      // Map kebab-case (UI) to snake_case (backend)
+      const statusMap: Record<
+        string,
+        "scheduled" | "in_progress" | "awaiting_parts" | "completed" | "cancelled"
+      > = {
+        "in-progress": "in_progress",
+        "awaiting-parts": "awaiting_parts",
+        completed: "completed",
+        cancelled: "cancelled",
+        scheduled: "scheduled",
+      };
+      const backendStatus = statusMap[status] || "in_progress";
+
+      // Find assignment ID from local report state
+      const report = userData.reports.find((r) => String(r.id) === String(jobId));
+      const assignmentId = report?.assignmentId;
+      if (!assignmentId) {
+        if (import.meta.env.DEV)
+          console.warn("No assignmentId found for report", jobId, "— status update is local-only");
+        return;
+      }
+
+      try {
+        await updateJobAssignmentStatus(assignmentId, backendStatus);
+      } catch (err) {
+        if (import.meta.env.DEV) console.error("Failed to update job status:", err);
+      }
+    },
+    onConfirmCompletion: async (reportId: string) => {
+      try {
+        const clerkId = userProfile?.id;
+        if (clerkId) {
+          await updateReportStatus(reportId, "resolved", clerkId);
+        }
+        userData.setReports(
+          userData.reports.map((r) =>
+            String(r.id) === String(reportId) ? { ...r, status: "resolved" as const } : r
+          )
+        );
+      } catch (err) {
+        if (import.meta.env.DEV) console.error("Failed to confirm completion:", err);
+      }
+    },
   };
 }

@@ -76,7 +76,7 @@ export default function StepPhotos({
               {uploadProgress}
             </p>
             <p className={`text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-300/70"}`}>
-              Photos are being saved securely...
+              Photos are being saved...
             </p>
           </div>
         </div>

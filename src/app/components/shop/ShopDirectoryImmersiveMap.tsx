@@ -6,11 +6,14 @@ import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
 import ShopDirectoryResultCard from "./ShopDirectoryResultCard";
 import NavigationActionRail from "../maps/navigation/NavigationActionRail";
 import NavigationTurnListSheet from "../maps/navigation/NavigationTurnListSheet";
+import NavigationVoiceControlsSheet from "../maps/navigation/NavigationVoiceControlsSheet";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
+import type { GpsStatus } from "../../hooks/useNavigationGpsTracking";
 import type { NavigationRouteStep } from "../../types/navigation";
+import type { NavigationVoiceMode, NavigationVoiceVolumePreset } from "../../types/navigation";
 import {
   getShopRouteActionLabel,
   shouldUseShopNavigationAction,
@@ -66,6 +69,17 @@ type ShopDirectoryImmersiveMapProps = {
   navigationMode: "browse" | "route-preview" | "guidance";
   routeSteps?: NavigationRouteStep[];
   currentStepIndex?: number;
+  nextInstruction?: string | null;
+  currentSpeedMph?: number | null;
+  speedLimitMph?: number | null;
+  gpsStatus?: GpsStatus;
+  followingInstruction?: string | null;
+  voiceMode?: NavigationVoiceMode;
+  voiceVolumePreset?: NavigationVoiceVolumePreset;
+  preferredVoiceLabel?: string | null;
+  voiceGuidanceSupported?: boolean;
+  onVoiceModeChange?: (mode: NavigationVoiceMode) => void;
+  onVoiceVolumePresetChange?: (preset: NavigationVoiceVolumePreset) => void;
 
   onSearchQueryChange: (query: string) => void;
   onSearchSubmit: (event: FormEvent) => void;
@@ -85,6 +99,8 @@ type ShopDirectoryImmersiveMapProps = {
   onSwitchMode: (mode: MapViewMode) => void;
   onBack: () => void;
   userCoords?: Coordinates | null;
+  userHeadingDegrees?: number | null;
+  onViewReportDetail?: (reportId: string) => void;
 };
 
 export default function ShopDirectoryImmersiveMap({
@@ -122,6 +138,17 @@ export default function ShopDirectoryImmersiveMap({
   navigationMode,
   routeSteps = [],
   currentStepIndex = 0,
+  nextInstruction,
+  currentSpeedMph,
+  speedLimitMph,
+  gpsStatus,
+  followingInstruction,
+  voiceMode = "alerts-only",
+  voiceVolumePreset = "normal",
+  preferredVoiceLabel = null,
+  voiceGuidanceSupported = true,
+  onVoiceModeChange,
+  onVoiceVolumePresetChange,
   onSearchQueryChange,
   onSearchSubmit,
   onSelectShop,
@@ -140,9 +167,12 @@ export default function ShopDirectoryImmersiveMap({
   onSwitchMode,
   onBack,
   userCoords,
+  userHeadingDegrees,
+  onViewReportDetail,
 }: ShopDirectoryImmersiveMapProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [turnListOpen, setTurnListOpen] = useState(false);
+  const [voiceControlsOpen, setVoiceControlsOpen] = useState(false);
   const isDark = mapTheme === "dark";
   const isGuidanceMode = navigationMode === "guidance";
 
@@ -150,7 +180,10 @@ export default function ShopDirectoryImmersiveMap({
     if (!isGuidanceMode && turnListOpen) {
       setTurnListOpen(false);
     }
-  }, [isGuidanceMode, turnListOpen]);
+    if (!isGuidanceMode && voiceControlsOpen) {
+      setVoiceControlsOpen(false);
+    }
+  }, [isGuidanceMode, turnListOpen, voiceControlsOpen]);
 
   const getDefaultCenter = (): Coordinates => ({ latitude: 40.7128, longitude: -74.006 });
 
@@ -202,6 +235,7 @@ export default function ShopDirectoryImmersiveMap({
           shops={mapListings}
           suppressHeader
           userCoords={userCoords}
+          userHeadingDegrees={userHeadingDegrees}
           userType={userType}
           followCurrentPosition={followCurrentPosition}
           followCurrentPositionRevision={followCurrentPositionRevision}
@@ -216,6 +250,10 @@ export default function ShopDirectoryImmersiveMap({
           remainingEtaLabel={remainingEtaLabel}
           routeError={routeError}
           usingLiveRoutes={usingLiveRoutes}
+          onViewReportDetail={onViewReportDetail}
+          navigationSteps={routeSteps}
+          currentStepIndex={currentStepIndex}
+          navigationMode={navigationMode}
         >
           <>
             <ShopDirectoryMapOverlays
@@ -264,6 +302,11 @@ export default function ShopDirectoryImmersiveMap({
               selectedShop={selectedShop}
               usingLiveRoutes={usingLiveRoutes}
               overlayTopClass={isGuidanceMode ? "top-16" : "top-28"}
+              nextInstruction={nextInstruction}
+              followingInstruction={followingInstruction}
+              currentSpeedMph={currentSpeedMph}
+              gpsStatus={gpsStatus}
+              speedLimitMph={speedLimitMph}
             />
             {guidanceOverlay}
             {isGuidanceMode && (
@@ -271,11 +314,11 @@ export default function ShopDirectoryImmersiveMap({
                 <NavigationActionRail
                   tone={mapTheme}
                   turnListOpen={turnListOpen}
-                  voiceControlsOpen={false}
-                  showVoiceControl={false}
+                  voiceControlsOpen={voiceControlsOpen}
+                  showVoiceControl
                   className="bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_20rem)]"
                   onToggleTurnList={() => setTurnListOpen((c) => !c)}
-                  onToggleVoiceControls={() => {}}
+                  onToggleVoiceControls={() => setVoiceControlsOpen((c) => !c)}
                   onRecenter={() => onRecenterNavigation?.()}
                 />
                 <NavigationTurnListSheet
@@ -284,6 +327,17 @@ export default function ShopDirectoryImmersiveMap({
                   steps={routeSteps}
                   currentStepIndex={currentStepIndex}
                   onClose={() => setTurnListOpen(false)}
+                />
+                <NavigationVoiceControlsSheet
+                  tone={mapTheme}
+                  open={voiceControlsOpen}
+                  voiceMode={voiceMode}
+                  voiceVolumePreset={voiceVolumePreset}
+                  preferredVoiceLabel={preferredVoiceLabel}
+                  voiceGuidanceSupported={voiceGuidanceSupported}
+                  onVoiceModeChange={(mode) => onVoiceModeChange?.(mode)}
+                  onVoiceVolumePresetChange={(preset) => onVoiceVolumePresetChange?.(preset)}
+                  onClose={() => setVoiceControlsOpen(false)}
                 />
               </>
             )}

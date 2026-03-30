@@ -60,7 +60,11 @@ export function useShopDirectorySession({
   reports,
 }: UseShopDirectorySessionArgs) {
   const { inventory } = useNetworkDirectory();
-  const { partnerShops, usingDemoFallback } = useCoveragePartnerShops();
+  const {
+    partnerShops,
+    usingDemoFallback,
+    fetchError: coverageFetchError,
+  } = useCoveragePartnerShops();
   const geolocation = useUserGeolocation();
   const originSearch = useNavigationAddressSearch();
   const savedMemory = loadWebsiteSessionMemory(identity);
@@ -479,5 +483,6 @@ export function useShopDirectorySession({
     userGeolocation: geolocation,
     // Data source
     usingDemoFallback,
+    coverageFetchError,
   };
 }

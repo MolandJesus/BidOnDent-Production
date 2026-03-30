@@ -1,40 +1,80 @@
-import Map, { Source, Layer } from "react-map-gl/maplibre";
+import Map, { Source, Layer, Popup } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { mapLibreStyles } from "../maps/mapLibreStyles";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { MapLayerMouseEvent, ViewState } from "react-map-gl/maplibre";
 
+export type ReportPin = { id: string; lat: number; lng: number; label: string };
+
 type MapLibreDashboardMapPreviewProps = {
   shops: CoveragePartnerShop[];
+  reportPins?: ReportPin[];
   center: [number, number];
   zoom: number;
   isLight: boolean;
   onShopClick?: (shop: CoveragePartnerShop) => void;
+  onReportPinClick?: (pin: ReportPin) => void;
   onMapClick?: () => void;
 };
 
 export default function MapLibreDashboardMapPreview({
   shops,
+  reportPins = [],
   center,
   zoom,
   isLight,
   onShopClick,
+  onReportPinClick,
   onMapClick,
 }: MapLibreDashboardMapPreviewProps) {
   const mapId = useId();
   const mapStyle = isLight ? mapLibreStyles.roadmap : mapLibreStyles.night;
 
+  /* ── Auto-fit: compute center+zoom from all pins when 2+ exist ── */
+  const allPoints = useMemo(() => {
+    const pts: { lat: number; lng: number }[] = [];
+    shops.forEach((s) => pts.push({ lat: s.lat, lng: s.lng }));
+    reportPins.forEach((p) => pts.push({ lat: p.lat, lng: p.lng }));
+    return pts;
+  }, [shops, reportPins]);
+
+  const fittedView = useMemo(() => {
+    if (allPoints.length < 2) return null;
+    let minLat = Infinity,
+      maxLat = -Infinity,
+      minLng = Infinity,
+      maxLng = -Infinity;
+    for (const p of allPoints) {
+      if (p.lat < minLat) minLat = p.lat;
+      if (p.lat > maxLat) maxLat = p.lat;
+      if (p.lng < minLng) minLng = p.lng;
+      if (p.lng > maxLng) maxLng = p.lng;
+    }
+    const cLat = (minLat + maxLat) / 2;
+    const cLng = (minLng + maxLng) / 2;
+    const latSpan = Math.max(maxLat - minLat, 0.005);
+    const lngSpan = Math.max(maxLng - minLng, 0.005);
+    const span = Math.max(latSpan, lngSpan);
+    // Approximate zoom from geographic span (log2 scale with padding)
+    const z = Math.min(14, Math.max(3, Math.floor(8.5 - Math.log2(span))));
+    return { latitude: cLat, longitude: cLng, zoom: z };
+  }, [allPoints]);
+
   /* Controlled viewport — responds when parent changes center/zoom */
   const [viewState, setViewState] = useState<Pick<ViewState, "longitude" | "latitude" | "zoom">>({
-    longitude: center[1],
-    latitude: center[0],
-    zoom,
+    longitude: fittedView?.longitude ?? center[1],
+    latitude: fittedView?.latitude ?? center[0],
+    zoom: fittedView?.zoom ?? zoom,
   });
 
   useEffect(() => {
-    setViewState({ longitude: center[1], latitude: center[0], zoom });
-  }, [center, zoom]);
+    if (fittedView) {
+      setViewState(fittedView);
+    } else {
+      setViewState({ longitude: center[1], latitude: center[0], zoom });
+    }
+  }, [center, zoom, fittedView]);
 
   const geojson = useMemo(
     () => ({
@@ -48,19 +88,49 @@ export default function MapLibreDashboardMapPreview({
     [shops]
   );
 
+  const reportGeojson = useMemo(
+    () => ({
+      type: "FeatureCollection" as const,
+      features: reportPins.map((pin) => ({
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [pin.lng, pin.lat] },
+        properties: { id: pin.id, label: pin.label || "" },
+      })),
+    }),
+    [reportPins]
+  );
+
+  const [tooltip, setTooltip] = useState<{
+    lat: number;
+    lng: number;
+    label: string;
+  } | null>(null);
+
   const handleMapClick = useCallback(
     (e: MapLayerMouseEvent) => {
       if (e.features?.length) {
+        const layerId = e.features[0].layer?.id;
+        if (layerId === "dashboard-reports-circle") {
+          const pinId = e.features[0].properties?.id as string;
+          const pin = reportPins.find((p) => p.id === pinId);
+          if (pin) {
+            setTooltip({ lat: pin.lat, lng: pin.lng, label: pin.label || "Report" });
+            onReportPinClick?.(pin);
+            return;
+          }
+        }
         const shopId = e.features[0].properties?.id as string;
         const shop = shops.find((s) => `${s.id || s.name}` === shopId);
         if (shop) {
+          setTooltip({ lat: shop.lat, lng: shop.lng, label: shop.name });
           onShopClick?.(shop);
           return;
         }
       }
+      setTooltip(null);
       onMapClick?.();
     },
-    [shops, onShopClick, onMapClick]
+    [shops, reportPins, onShopClick, onReportPinClick, onMapClick]
   );
 
   return (
@@ -78,7 +148,10 @@ export default function MapLibreDashboardMapPreview({
         doubleClickZoom={false}
         touchZoomRotate={false}
         keyboard={false}
-        interactiveLayerIds={["dashboard-shops-circle"]}
+        interactiveLayerIds={[
+          "dashboard-shops-circle",
+          ...(reportPins.length > 0 ? ["dashboard-reports-circle"] : []),
+        ]}
         onClick={handleMapClick}
       >
         <Source id="dashboard-shops" type="geojson" data={geojson}>
@@ -94,6 +167,54 @@ export default function MapLibreDashboardMapPreview({
             }}
           />
         </Source>
+
+        {reportPins.length > 0 && (
+          <Source id="dashboard-reports" type="geojson" data={reportGeojson}>
+            <Layer
+              id="dashboard-reports-circle"
+              type="circle"
+              paint={{
+                "circle-radius": 8,
+                "circle-color": "#f59e0b",
+                "circle-stroke-color": "#fbbf24",
+                "circle-stroke-width": 2.5,
+                "circle-opacity": 0.9,
+              }}
+            />
+          </Source>
+        )}
+
+        {tooltip && (
+          <Popup
+            longitude={tooltip.lng}
+            latitude={tooltip.lat}
+            anchor="bottom"
+            closeButton={false}
+            closeOnClick={false}
+            offset={12}
+            className="bd-map-tooltip"
+          >
+            <span
+              style={{
+                display: "block",
+                maxWidth: 180,
+                padding: "4px 10px",
+                fontSize: 12,
+                fontWeight: 600,
+                lineHeight: 1.3,
+                color: isLight ? "#1e293b" : "#f1f5f9",
+                background: isLight ? "rgba(255,255,255,0.92)" : "rgba(15,23,42,0.92)",
+                borderRadius: 8,
+                backdropFilter: "blur(8px)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {tooltip.label}
+            </span>
+          </Popup>
+        )}
       </Map>
 
       {/* Subtle vignette overlay to blend edges */}

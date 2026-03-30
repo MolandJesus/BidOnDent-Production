@@ -40,6 +40,7 @@ export function useReportForm({
   const [showSaveIndicator, setShowSaveIndicator] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [photoUploadWarning, setPhotoUploadWarning] = useState<string | null>(null);
   const saveIndicatorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -190,6 +191,7 @@ export function useReportForm({
   const handleSubmitReport = async () => {
     setIsSubmitting(true);
     setSubmitError(null);
+    setPhotoUploadWarning(null);
     try {
       let finalPhotos = photos;
       const pendingBase64 = photos.filter(isBase64Photo);
@@ -207,6 +209,20 @@ export function useReportForm({
       const failedCount = finalPhotos.length - uploadedPhotos.length;
       if (failedCount > 0 && import.meta.env.DEV) {
         console.warn(`${failedCount} photo(s) could not be uploaded and will be excluded`);
+      }
+
+      if (failedCount > 0 && uploadedPhotos.length === 0) {
+        setSubmitError(
+          `All ${failedCount} photo(s) failed to upload. Please check your connection and try adding photos again.`
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (failedCount > 0) {
+        setPhotoUploadWarning(
+          `${failedCount} of ${finalPhotos.length} photo(s) could not be uploaded and were excluded from your report.`
+        );
       }
 
       if (onReportSubmit) {
@@ -266,6 +282,7 @@ export function useReportForm({
     showSaveIndicator,
     isSubmitting,
     submitError,
+    photoUploadWarning,
     fileInputRef,
     cameraInputRef,
     setVehicle,

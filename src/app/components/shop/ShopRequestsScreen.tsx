@@ -1,6 +1,12 @@
-import { useState } from "react";
-import { Search, AlertCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { motion } from "motion/react";
+import { Search, AlertCircle, MapPin } from "lucide-react";
 import { logWorkflowEvent } from "../../services/supabaseService";
+import { useNotifications } from "../../features/notifications/NotificationContext";
+import { zipToCoordinates } from "../../services/supabase/map";
+import { defaultCoverageCenter } from "../landing/coverageData";
+import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
+import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
 import ShopRequestCard, { type RepairRequest } from "./ShopRequestCard";
@@ -11,6 +17,7 @@ type ShopRequestsScreenProps = {
   reports?: DamageReport[];
   reportsLoading?: boolean;
   isSeedData?: boolean;
+  existingBidReportIds?: string[];
   onSubmitBid?: (
     requestId: string,
     bidAmount: number,
@@ -25,12 +32,16 @@ export default function ShopRequestsScreen({
   reports = [],
   reportsLoading = false,
   isSeedData = false,
+  existingBidReportIds = [],
   onSubmitBid,
   appearanceMode = "map-dark",
 }: ShopRequestsScreenProps) {
   const isLight = appearanceMode === "light";
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "new" | "bidding" | "closed">("all");
+  const notifications = useNotifications();
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "new" | "bidding" | "accepted" | "closed"
+  >("all");
   const [selectedRequest, setSelectedRequest] = useState<RepairRequest | null>(null);
   const [bidAmount, setBidAmount] = useState("");
   const [estimatedDays, setEstimatedDays] = useState("");
@@ -38,13 +49,31 @@ export default function ShopRequestsScreen({
   const [showBidModal, setShowBidModal] = useState(false);
   const [bidError, setBidError] = useState<string | null>(null);
   const [isSubmittingBid, setIsSubmittingBid] = useState(false);
+  const [submittedBidIds, setSubmittedBidIds] = useState<Set<string>>(new Set());
+
+  // Pre-populate from Supabase-loaded bids
+  useEffect(() => {
+    if (existingBidReportIds.length > 0) {
+      setSubmittedBidIds((prev) => {
+        const next = new Set(prev);
+        for (const id of existingBidReportIds) next.add(id);
+        return next.size === prev.size ? prev : next;
+      });
+    }
+  }, [existingBidReportIds]);
 
   const liveRequests = reports.map((report, index): RepairRequest => {
     const vehicleData = report?.vehicle || report?.vehicleInfo || {};
     const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
     const status = String(report?.status ?? "pending").toLowerCase();
     const normalizedStatus =
-      status === "pending" ? "new" : status === "in-review" ? "bidding" : "closed";
+      status === "pending"
+        ? "new"
+        : status === "in-review"
+          ? "bidding"
+          : status === "active"
+            ? "accepted"
+            : "closed";
     const bidCount = Number(report?.bidsCount) || 0;
     const reportPhotos = Array.isArray(report?.photos) ? report.photos.filter(Boolean) : [];
 
@@ -81,6 +110,38 @@ export default function ShopRequestsScreen({
       bidCount,
     };
   });
+
+  // Map pins for incoming request locations
+  const requestPins = useMemo<ReportPin[]>(() => {
+    return reports
+      .map((report) => {
+        const zipCode = report?.zipCode || report?.zip_code || "";
+        const coords = zipCode ? zipToCoordinates(zipCode) : null;
+        if (!coords) return null;
+
+        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+        const label = [vehicleData.year, vehicleData.make, vehicleData.model]
+          .filter(Boolean)
+          .join(" ");
+
+        return {
+          id: String(report.id),
+          lat: coords.lat,
+          lng: coords.lng,
+          label: label || report?.damageArea || "Repair request",
+        };
+      })
+      .filter((pin): pin is ReportPin => pin !== null);
+  }, [reports]);
+
+  const requestMapCenter = useMemo<[number, number]>(() => {
+    if (requestPins.length > 0) {
+      return [requestPins[0].lat, requestPins[0].lng];
+    }
+    return defaultCoverageCenter;
+  }, [requestPins]);
+
+  const [focusedRequestId, setFocusedRequestId] = useState<string | null>(null);
 
   const filteredRequests = liveRequests
     .filter((req) => {
@@ -125,6 +186,16 @@ export default function ShopRequestsScreen({
           days,
           bidDescription.trim() || "Repair bid submitted via BidOnDent"
         );
+        notifications.push({
+          title: "Bid Submitted",
+          body: `$${parseFloat(bidAmount).toLocaleString()} bid sent for ${selectedRequest.vehicle}.`,
+          category: "bid",
+          payload: { reportId: String(selectedRequest.id), bidAmount: parseFloat(bidAmount) },
+          priority: "normal",
+          userId: "",
+          deepLink: { screen: "bid", bidId: String(selectedRequest.id) },
+        });
+        setSubmittedBidIds((prev) => new Set(prev).add(String(selectedRequest.id)));
         setShowBidModal(false);
         setBidAmount("");
         setEstimatedDays("");
@@ -183,8 +254,9 @@ export default function ShopRequestsScreen({
                   { id: "all", label: "All Requests" },
                   { id: "new", label: "New" },
                   { id: "bidding", label: "Bidding" },
+                  { id: "accepted", label: "Accepted" },
                   { id: "closed", label: "Closed" },
-                ] as { id: "all" | "new" | "bidding" | "closed"; label: string }[]
+                ] as { id: "all" | "new" | "bidding" | "accepted" | "closed"; label: string }[]
               ).map((filter) => (
                 <button
                   key={filter.id}
@@ -220,6 +292,96 @@ export default function ShopRequestsScreen({
               customers submit reports in your area.
             </span>
           </div>
+        </div>
+      )}
+
+      {/* Request Geography Map */}
+      {!reportsLoading && liveRequests.length > 0 && (
+        <div className="px-4 pt-4">
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, delay: 0.08 }}
+            className="bd-glass-card overflow-hidden"
+            style={{
+              background: isLight
+                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
+                : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
+              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
+            }}
+          >
+            <div className="p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2
+                    className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                  >
+                    Request locations
+                  </h2>
+                  <p
+                    className={`mt-0.5 text-xs ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
+                  >
+                    See where incoming repair requests are in your area.
+                  </p>
+                </div>
+                <span
+                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                    isLight
+                      ? "bg-amber-50 text-amber-700 border border-amber-200/60"
+                      : "bg-amber-400/14 text-amber-200 border border-amber-300/20"
+                  }`}
+                >
+                  {requestPins.length}/{liveRequests.length} mapped
+                </span>
+              </div>
+            </div>
+
+            {requestPins.length > 0 ? (
+              <>
+                <div className="h-[200px] md:h-[220px]">
+                  <DashboardMapPreview
+                    shops={[]}
+                    reportPins={requestPins}
+                    center={requestMapCenter}
+                    zoom={10}
+                    isLight={isLight}
+                    onReportPinClick={(pin) => {
+                      if (pin.id) {
+                        setFocusedRequestId(pin.id);
+                      }
+                    }}
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-2 p-3">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                      isLight ? "bg-amber-100 text-amber-700" : "bg-amber-500/20 text-amber-200"
+                    }`}
+                  >
+                    <span className="h-2 w-2 rounded-full bg-amber-400" />
+                    Repair request
+                  </span>
+                  <span
+                    className={`text-[11px] ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
+                  >
+                    Tap a pin to focus that request card below.
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div
+                className={`mx-3 mb-3 flex items-start gap-2 rounded-xl border border-dashed px-3 py-2.5 text-xs ${
+                  isLight ? "border-slate-300/70 text-slate-600" : "border-white/20 text-slate-300"
+                }`}
+              >
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>
+                  No request locations available yet. Requests with ZIP codes will appear on this
+                  map as customers include location data.
+                </span>
+              </div>
+            )}
+          </motion.section>
         </div>
       )}
 
@@ -270,6 +432,8 @@ export default function ShopRequestsScreen({
               request={request}
               isLight={isLight}
               primaryColor={primaryColor}
+              focused={focusedRequestId === request.id}
+              hasBid={submittedBidIds.has(request.id)}
               onSubmitBid={(req) => {
                 setSelectedRequest(req);
                 setShowBidModal(true);

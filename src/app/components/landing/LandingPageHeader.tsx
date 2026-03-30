@@ -29,6 +29,7 @@ export default function LandingPageHeader({
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const { signOut, openUserProfile } = useClerk();
   const { user } = useUser();
@@ -42,21 +43,50 @@ export default function LandingPageHeader({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close profile menu on outside click
+  useEffect(() => {
+    if (!mobileMenuOpen || typeof document === "undefined") {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileMenuOpen]);
+
+  // Close profile and mobile menus on outside click / escape.
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) {
         setShowProfileMenu(false);
       }
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setMobileMenuOpen(false);
+      }
     };
-    if (showProfileMenu) {
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShowProfileMenu(false);
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (showProfileMenu || mobileMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
     }
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showProfileMenu]);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen, showProfileMenu]);
 
   return (
     <header
+      ref={headerRef}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? isLightAppearance
@@ -77,10 +107,12 @@ export default function LandingPageHeader({
       <div className="container mx-auto px-4 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between max-w-7xl">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Back to top"
           className={`flex items-center gap-2.5 py-2 px-2 rounded-xl cursor-pointer transition-colors duration-200 ${isLightAppearance ? "hover:bg-slate-900/[0.04] active:bg-slate-900/[0.08]" : "hover:bg-white/5 active:bg-white/10"}`}
+          type="button"
         >
           <span
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white"
+            className="w-10 h-10 rounded-[1rem] flex items-center justify-center text-white"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               boxShadow: "0 2px 12px rgba(37, 99, 235, 0.25), 0 0 20px rgba(59, 130, 246, 0.08)",
@@ -105,7 +137,7 @@ export default function LandingPageHeader({
         </button>
 
         {/* Navigation Links - Hidden on mobile */}
-        <nav className="hidden md:flex items-center space-x-1">
+        <nav aria-label="Primary navigation" className="hidden md:flex items-center space-x-1">
           <button
             onClick={() =>
               document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })
@@ -141,6 +173,8 @@ export default function LandingPageHeader({
           <button
             type="button"
             onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-controls="landing-mobile-navigation"
+            aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             className={`md:hidden h-11 w-11 flex items-center justify-center rounded-xl transition-colors ${isLightAppearance ? "text-slate-600 hover:bg-slate-900/[0.04]" : "text-blue-200/80 hover:bg-white/10"}`}
           >
@@ -153,6 +187,7 @@ export default function LandingPageHeader({
               {showLandingPage && (
                 <button
                   onClick={onViewDashboard}
+                  aria-label="Open dashboard"
                   className={`inline-flex min-h-[40px] items-center gap-2 font-medium px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border backdrop-blur-md transition-all ${isLightAppearance ? "border-slate-200/55 bg-white/65 text-slate-700 hover:bg-white/80 shadow-[0_8px_18px_rgba(15,23,42,0.08)]" : "border-blue-300/28 bg-[linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))] text-blue-100 hover:bg-[linear-gradient(180deg,rgba(59,130,246,0.28),rgba(15,23,42,0.78))] shadow-[0_10px_22px_rgba(2,6,23,0.32)]"}`}
                   type="button"
                 >
@@ -172,9 +207,12 @@ export default function LandingPageHeader({
               <div className="relative" ref={profileMenuRef}>
                 <button
                   onClick={() => setShowProfileMenu((v) => !v)}
+                  aria-controls="landing-user-profile-menu"
                   aria-expanded={showProfileMenu}
                   aria-haspopup="menu"
-                  aria-label="User profile menu"
+                  aria-label={
+                    showProfileMenu ? "Close user profile menu" : "Open user profile menu"
+                  }
                   className={`flex items-center gap-2 px-1.5 py-1.5 rounded-xl transition-colors ${isLightAppearance ? "hover:bg-slate-900/[0.04]" : "hover:bg-white/10"}`}
                   type="button"
                 >
@@ -198,6 +236,7 @@ export default function LandingPageHeader({
 
                 {showProfileMenu && (
                   <div
+                    id="landing-user-profile-menu"
                     role="menu"
                     aria-label="User profile menu"
                     className={`absolute right-0 mt-2 w-56 rounded-xl border backdrop-blur-xl shadow-lg z-50 overflow-hidden ${isLightAppearance ? "bg-white/90 border-slate-200/40 shadow-black/10" : "bg-[#0c1929]/95 border-blue-400/20 shadow-black/30"}`}
@@ -220,9 +259,11 @@ export default function LandingPageHeader({
                       role="menuitem"
                       onClick={() => {
                         onViewDashboard();
+                        setMobileMenuOpen(false);
                         setShowProfileMenu(false);
                       }}
                       className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60" : "text-slate-200 hover:bg-white/8"}`}
+                      type="button"
                     >
                       <Home className="w-4 h-4 opacity-60" />
                       Dashboard
@@ -230,21 +271,25 @@ export default function LandingPageHeader({
                     <button
                       role="menuitem"
                       onClick={() => {
+                        setMobileMenuOpen(false);
                         setShowProfileMenu(false);
                         setShowSettingsModal(true);
                       }}
                       className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60" : "text-slate-200 hover:bg-white/8"}`}
+                      type="button"
                     >
                       <Settings className="w-4 h-4 opacity-60" />
-                      Site Settings
+                      Appearance Settings
                     </button>
                     <button
                       role="menuitem"
                       onClick={() => {
+                        setMobileMenuOpen(false);
                         setShowProfileMenu(false);
                         openUserProfile();
                       }}
                       className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60" : "text-slate-200 hover:bg-white/8"}`}
+                      type="button"
                     >
                       <User className="w-4 h-4 opacity-60" />
                       Manage Account
@@ -252,10 +297,12 @@ export default function LandingPageHeader({
                     <button
                       role="menuitem"
                       onClick={() => {
+                        setMobileMenuOpen(false);
                         setShowProfileMenu(false);
                         signOut({ redirectUrl: "/" });
                       }}
                       className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors border-t ${isLightAppearance ? "text-rose-600 hover:bg-rose-50/60 border-slate-200/40" : "text-rose-400 hover:bg-rose-500/10 border-blue-400/15"}`}
+                      type="button"
                     >
                       <LogOut className="w-4 h-4 opacity-60" />
                       Sign Out
@@ -296,7 +343,10 @@ export default function LandingPageHeader({
 
       {/* Mobile navigation panel */}
       <div
+        id="landing-mobile-navigation"
+        aria-label="Mobile navigation"
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileMenuOpen ? "max-h-80 opacity-100 border-t" : "max-h-0 opacity-0 border-t-0"} ${isLightAppearance ? "border-slate-200/40" : "border-blue-400/15"}`}
+        role="region"
         style={{
           background: isLightAppearance ? "rgba(245, 247, 251, 0.94)" : "rgba(10, 22, 38, 0.97)",
         }}
@@ -336,6 +386,7 @@ export default function LandingPageHeader({
             >
               <SignInButton mode="modal">
                 <button
+                  onClick={() => setMobileMenuOpen(false)}
                   type="button"
                   className={`flex-1 text-center font-medium text-sm px-4 py-2.5 rounded-xl border transition-colors ${isLightAppearance ? "border-slate-200/50 bg-white/50 text-slate-700 hover:bg-white/70" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
                 >
@@ -344,6 +395,7 @@ export default function LandingPageHeader({
               </SignInButton>
               <SignUpButton mode="modal">
                 <button
+                  onClick={() => setMobileMenuOpen(false)}
                   type="button"
                   className="flex-1 text-center font-semibold text-sm text-white rounded-xl px-4 py-2.5 transition-all hover:brightness-110"
                   style={{
@@ -358,7 +410,7 @@ export default function LandingPageHeader({
         </div>
       </div>
 
-      {/* Site Settings Modal */}
+      {/* Appearance Settings Modal */}
       {onAppearanceModeChange && (
         <SettingsModal
           isOpen={showSettingsModal}

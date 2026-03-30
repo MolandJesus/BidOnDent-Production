@@ -78,6 +78,21 @@ export async function getMyBids(clerkUserId?: string): Promise<Bid[]> {
   }
 }
 
+export async function getShopSubmittedBids(clerkUserId?: string): Promise<Bid[]> {
+  if (!clerkUserId) return [];
+
+  try {
+    const data = await requestSupabaseEdge<{ bids: Bid[] }>(
+      `${SUPABASE_EDGE_ROUTES.bids}?clerkUserId=${encodeURIComponent(clerkUserId)}`,
+      { method: "GET" }
+    );
+    return data.bids ?? [];
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("Error in getShopSubmittedBids:", error);
+    return [];
+  }
+}
+
 export async function deleteBid(bidId: string, clerkUserId?: string): Promise<boolean> {
   if (!clerkUserId) {
     return false;

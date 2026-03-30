@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { ArrowLeft, Clock, MapPin, Search, Star } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowLeft, CheckCircle2, Clock, MapPin, Search, Star, Wrench } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { customerLifecycle } from "../workflow/lifecycle-presets";
 import { LANDING_PAGE_IMAGES } from "../../constants";
+import { zipToCoordinates } from "../../services/supabase/map";
+import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
+import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
 
@@ -19,6 +22,7 @@ type ReportDetailScreenProps = {
   onBack: () => void;
   onViewAllBids?: () => void;
   onFindShops?: () => void;
+  onConfirmCompletion?: (reportId: string) => void;
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -28,6 +32,7 @@ export default function ReportDetailScreen({
   onBack,
   onViewAllBids,
   onFindShops,
+  onConfirmCompletion,
   primaryColor = "#003d82",
   appearanceMode = "map-dark",
 }: ReportDetailScreenProps) {
@@ -48,6 +53,12 @@ export default function ReportDetailScreen({
   const description = report.description || "No description provided";
   const submittedAt = report.submittedAt || new Date().toISOString();
 
+  // Detect accepted bid for active-repair card
+  const acceptedBid = useMemo(
+    () => (report.bids || []).find((b) => b.status === "accepted"),
+    [report.bids]
+  );
+
   const interestedShops = (report.bids || []).map((bid) => ({
     id: bid.id,
     name: bid.shopName || "Auto Shop",
@@ -63,6 +74,37 @@ export default function ReportDetailScreen({
     shopLatitude: bid.shopLatitude ?? null,
     shopLongitude: bid.shopLongitude ?? null,
   }));
+
+  /** Report location from ZIP code for the mini-map */
+  const reportCoords = useMemo(
+    () => zipToCoordinates(report.zip_code || report.zipCode),
+    [report.zip_code, report.zipCode]
+  );
+
+  /** Report pin for the map */
+  const reportPins = useMemo<ReportPin[]>(() => {
+    if (!reportCoords) return [];
+    const label = `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`.trim() || "Report";
+    return [{ id: report.id, lat: reportCoords.lat, lng: reportCoords.lng, label }];
+  }, [reportCoords, report.id, vehicleInfo]);
+
+  /** Bidding shops as "shop" pins — only those with valid coordinates */
+  const shopPinsFromBids = useMemo(() => {
+    return interestedShops
+      .filter((s) => s.shopLatitude != null && s.shopLongitude != null)
+      .map((s) => ({
+        id: s.id,
+        name: s.name,
+        label: s.name,
+        lat: s.shopLatitude as number,
+        lng: s.shopLongitude as number,
+        rating: s.rating,
+        addressLine: s.distance,
+        countyLabel: "",
+        specialties: [] as string[],
+        dataMode: "live" as const,
+      }));
+  }, [interestedShops]);
 
   return (
     <div className="min-h-screen pb-20">
@@ -92,12 +134,26 @@ export default function ReportDetailScreen({
                   ? "bg-sky-100 text-sky-700"
                   : status === "active"
                     ? isLight
-                      ? "bg-blue-50 text-blue-700"
-                      : "bg-blue-400/15 text-blue-200"
-                    : "bg-indigo-100 text-indigo-700"
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "bg-emerald-400/15 text-emerald-300"
+                    : status === "completed"
+                      ? isLight
+                        ? "bg-violet-50 text-violet-700"
+                        : "bg-violet-400/15 text-violet-300"
+                      : status === "resolved"
+                        ? isLight
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-emerald-400/15 text-emerald-300"
+                        : "bg-indigo-100 text-indigo-700"
               }`}
             >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
+              {status === "active"
+                ? "In Repair"
+                : status === "completed"
+                  ? "Repair Done"
+                  : status === "resolved"
+                    ? "Confirmed"
+                    : status.charAt(0).toUpperCase() + status.slice(1)}
             </span>
           </div>
         </div>
@@ -194,10 +250,130 @@ export default function ReportDetailScreen({
           </div>
         </div>
 
+        {/* Report Location Map */}
+        {reportCoords && (
+          <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
+            <div className="p-3 sm:p-4">
+              <h2 className="font-bold text-lg mb-2">Report Location</h2>
+              <p className={`text-sm mb-3 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                {report.address || report.city
+                  ? [report.address, report.city, report.state].filter(Boolean).join(", ")
+                  : `ZIP ${report.zip_code || report.zipCode || "area"}`}
+                {shopPinsFromBids.length > 0 &&
+                  ` · ${shopPinsFromBids.length} shop${shopPinsFromBids.length > 1 ? "s" : ""} bidding`}
+              </p>
+            </div>
+            <div className="h-[180px] md:h-[200px]">
+              <DashboardMapPreview
+                shops={shopPinsFromBids}
+                reportPins={reportPins}
+                center={[reportCoords.lat, reportCoords.lng]}
+                zoom={11}
+                isLight={isLight}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Active Repair Card — shown when a bid has been accepted */}
+        {status === "active" && acceptedBid && (
+          <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
+            <div className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/15">
+                  <Wrench className="h-4.5 w-4.5 text-emerald-400" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-base">Active Repair</h2>
+                  <p className={`text-xs ${isLight ? "text-emerald-700" : "text-emerald-400"}`}>
+                    Bid accepted — repair in progress
+                  </p>
+                </div>
+              </div>
+              <div
+                className={`rounded-xl p-3 space-y-2 ${isLight ? "bg-emerald-50/60" : "bg-emerald-500/[0.08]"}`}
+              >
+                <div className="flex justify-between items-center">
+                  <span className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300"}`}>
+                    Shop
+                  </span>
+                  <span className="font-semibold text-sm">{acceptedBid.shopName}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300"}`}>
+                    Accepted Bid
+                  </span>
+                  <span className="font-semibold text-sm">
+                    ${acceptedBid.amount.toLocaleString()}
+                  </span>
+                </div>
+                {acceptedBid.estimatedDays > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300"}`}>
+                      Est. Timeline
+                    </span>
+                    <span className="font-semibold text-sm">
+                      {acceptedBid.estimatedDays}–{acceptedBid.estimatedDays + 1} days
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Repair Complete Card — shown when shop marks job completed */}
+        {status === "completed" && (
+          <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
+            <div className="p-3 sm:p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/15">
+                  <CheckCircle2 className="h-4.5 w-4.5 text-emerald-400" />
+                </div>
+                <div>
+                  <h2 className="font-bold text-base">Repair Complete</h2>
+                  <p className={`text-xs ${isLight ? "text-emerald-700" : "text-emerald-400"}`}>
+                    The shop has marked this repair as finished
+                  </p>
+                </div>
+              </div>
+              {acceptedBid && (
+                <div
+                  className={`rounded-xl p-3 space-y-2 mb-3 ${isLight ? "bg-emerald-50/60" : "bg-emerald-500/[0.08]"}`}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300"}`}>
+                      Shop
+                    </span>
+                    <span className="font-semibold text-sm">{acceptedBid.shopName}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300"}`}>
+                      Final Amount
+                    </span>
+                    <span className="font-semibold text-sm">
+                      ${acceptedBid.amount.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              )}
+              {onConfirmCompletion && (
+                <button
+                  onClick={() => onConfirmCompletion(String(report.id))}
+                  className="w-full py-3 min-h-[44px] rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  Confirm Repair Complete
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         <RepairLifecycleTimeline
           title="Repair Progress"
           subtitle="Track where your request is in the repair journey"
-          steps={customerLifecycle(status)}
+          steps={customerLifecycle(status, report.repairStatus)}
           appearanceMode={appearanceMode}
         />
 

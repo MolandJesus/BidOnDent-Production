@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { ChevronDown, Bookmark, Layers3, MapPinOff, Search, SunMoon } from "lucide-react";
+import { ChevronDown, Bookmark, MapPinOff, Search, SunMoon } from "lucide-react";
 import type { ShopSortOption } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { NavigationAddressResult, NavigationAddressSuggestion } from "../../types/navigation";
@@ -132,11 +132,11 @@ export default function ShopDirectorySearchPanel({
     <div
       className={
         isLight
-          ? "bg-white/95 border-b border-slate-200/60 px-4 py-3 sm:p-5"
-          : "bd-glass-panel px-4 py-3 sm:p-5"
+          ? "bg-white/95 border-b border-slate-200/60 px-3 py-2.5 sm:px-4 sm:py-3"
+          : "bd-glass-panel px-3 py-2.5 sm:px-4 sm:py-3"
       }
     >
-      <form className="space-y-3" onSubmit={onSearchSubmit}>
+      <form className="space-y-2" onSubmit={onSearchSubmit}>
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
           <div className="relative min-w-0">
             <Search
@@ -145,7 +145,7 @@ export default function ShopDirectorySearchPanel({
               }`}
             />
             <input
-              className={`w-full min-w-0 rounded-full border py-2.5 pl-9 pr-3 text-sm outline-none transition-colors ${
+              className={`w-full min-w-0 rounded-full border py-2 pl-9 pr-3 text-xs outline-none transition-colors ${
                 isLight
                   ? "border-slate-200/80 bg-white/80 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-sm"
                   : "bd-glass-control border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
@@ -157,19 +157,20 @@ export default function ShopDirectorySearchPanel({
             />
           </div>
           <button
-            className="min-h-[44px] rounded-full px-4 py-2 text-sm font-semibold text-white"
+            className="inline-flex min-h-[36px] items-center justify-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)",
             }}
             type="submit"
           >
-            Update
+            <Search className="h-3.5 w-3.5" />
+            Search
           </button>
         </div>
 
-        <div className="grid gap-3 xl:grid-cols-2">
-          <div className="space-y-2">
+        <div className="grid gap-2 xl:grid-cols-2">
+          <div className="space-y-1.5">
             <ShopDirectoryOriginSearch
               currentOriginIsSaved={currentOriginIsSaved}
               isLight={isLight}
@@ -193,28 +194,23 @@ export default function ShopDirectorySearchPanel({
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div
-              className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] ${
-                isLight ? "text-blue-600/70" : "text-blue-200/50"
+              className={`inline-flex w-full rounded-xl border p-0.5 ${
+                isLight ? "border-slate-200/80 bg-white/75" : "border-white/[0.10] bg-white/[0.04]"
               }`}
             >
-              <Layers3 className="h-3.5 w-3.5" />
-              View & Sort
-            </div>
-
-            <div className="flex flex-wrap gap-1.5">
               {VIEW_MODE_OPTIONS.map((option) => (
                 <button
                   key={option.value}
-                  className={`min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`min-h-[32px] flex-1 rounded-lg px-2 py-1 text-xs font-semibold transition-colors ${
                     mapViewMode === option.value
                       ? isLight
-                        ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
-                        : "border-blue-400/60 bg-blue-500/20 text-white"
+                        ? "bg-blue-50 text-blue-700 shadow-sm"
+                        : "bg-blue-500/18 text-white"
                       : isLight
-                        ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
-                        : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
+                        ? "text-slate-500 hover:text-slate-700"
+                        : "text-slate-400 hover:text-slate-200"
                   }`}
                   onClick={() => onViewModeChange(option.value)}
                   type="button"
@@ -227,29 +223,32 @@ export default function ShopDirectorySearchPanel({
             <button
               type="button"
               onClick={() => setMobileFiltersOpen((current) => !current)}
-              className={`sm:hidden flex min-h-[44px] w-full items-center justify-between rounded-2xl border px-3 py-2.5 text-left text-sm transition-colors ${
+              className={`sm:hidden flex min-h-[36px] w-full items-center justify-between rounded-xl border px-2.5 py-1.5 text-left text-xs transition-colors ${
                 isLight
                   ? "border-slate-200 bg-white text-slate-700 shadow-sm"
                   : "border-white/[0.10] bg-white/[0.04] text-slate-200"
               }`}
             >
               <span className="min-w-0">
-                <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] opacity-70">
-                  Sort & filters
-                </span>
-                <span className="mt-0.5 block truncate text-sm">{mobileFilterSummary}</span>
+                <span className="block truncate">{mobileFilterSummary}</span>
               </span>
               <ChevronDown
-                className={`h-4 w-4 shrink-0 transition-transform ${mobileFiltersOpen ? "rotate-180" : ""}`}
+                className={`h-3.5 w-3.5 shrink-0 transition-transform ${mobileFiltersOpen ? "rotate-180" : ""}`}
               />
             </button>
 
-            <div className={mobileFiltersOpen ? "space-y-2" : "hidden space-y-2 sm:block"}>
-              <div className="grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:gap-1.5">
+            <div className={mobileFiltersOpen ? "" : "hidden sm:block"}>
+              <div
+                className={`flex flex-wrap gap-1.5 rounded-xl border p-1.5 ${
+                  isLight
+                    ? "border-slate-200/80 bg-white/75"
+                    : "border-white/[0.10] bg-white/[0.04]"
+                }`}
+              >
                 <select
-                  className={`col-span-2 min-h-[44px] rounded-full border px-3 py-2 text-sm outline-none sm:col-span-1 ${
+                  className={`min-h-[32px] flex-1 min-w-[120px] rounded-lg border px-2.5 py-1 text-xs outline-none ${
                     isLight
-                      ? "border-slate-200/80 bg-white text-slate-800 shadow-sm"
+                      ? "border-slate-200/80 bg-white text-slate-800"
                       : "border-white/[0.12] bg-white/[0.06] text-slate-200"
                   }`}
                   onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
@@ -263,37 +262,37 @@ export default function ShopDirectorySearchPanel({
                 </select>
 
                 <button
-                  className={`min-h-[44px] rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`min-h-[32px] rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${
                     filterRating === 4.5
                       ? isLight
-                        ? "border-amber-400/60 bg-amber-50 text-amber-700 shadow-sm"
+                        ? "border-amber-400/60 bg-amber-50 text-amber-700"
                         : "border-amber-400/40 bg-amber-400/15 text-amber-300"
                       : isLight
-                        ? "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50 shadow-sm"
+                        ? "border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:bg-amber-50"
                         : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
                   onClick={() => onFilterRatingChange(filterRating === 4.5 ? 0 : 4.5)}
                   type="button"
                 >
-                  4.5+ only
+                  4.5+
                 </button>
 
                 <button
-                  className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                  className={`inline-flex min-h-[32px] items-center justify-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${
                     isLight
-                      ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 shadow-sm"
+                      ? "border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50"
                       : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"
                   }`}
                   onClick={onToggleTheme}
                   type="button"
                 >
                   <SunMoon className="h-3 w-3" />
-                  Tiles: {mapTheme === "light" ? "Dark" : "Light"}
+                  {mapTheme === "light" ? "Dark" : "Light"}
                 </button>
 
                 {searchWithinViewport && onClearAreaSearch && (
                   <button
-                    className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${
+                    className={`inline-flex min-h-[32px] items-center justify-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${
                       isLight
                         ? "border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100"
                         : "border-blue-400/40 bg-blue-500/15 text-blue-200 hover:bg-blue-500/25"
@@ -302,7 +301,7 @@ export default function ShopDirectorySearchPanel({
                     type="button"
                   >
                     <MapPinOff className="h-3 w-3" />
-                    Area active
+                    Area
                   </button>
                 )}
               </div>
@@ -365,7 +364,7 @@ export default function ShopDirectorySearchPanel({
           </p>
           {onOpenRelatedScreen && (
             <button
-              className={`mt-3 min-h-[44px] rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${
+              className={`mt-2 min-h-[36px] rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 isLight
                   ? "border-slate-200 bg-white text-slate-700 hover:border-blue-300 hover:bg-blue-50"
                   : "border-white/[0.10] bg-white/[0.04] text-slate-300 hover:bg-white/[0.08]"

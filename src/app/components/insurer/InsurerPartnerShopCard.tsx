@@ -36,6 +36,7 @@ type InsurerPartnerShopCardProps = {
   onDirections: (entry: MappedPartnerShop) => void;
   onToggleShortlist: (updater: (ids: number[]) => number[]) => void;
   appearanceMode?: DashboardAppearanceMode;
+  focused?: boolean;
 };
 
 export type { MappedPartnerShop };
@@ -46,6 +47,7 @@ export default function InsurerPartnerShopCard({
   onDirections,
   onToggleShortlist,
   appearanceMode = "map-dark",
+  focused,
 }: InsurerPartnerShopCardProps) {
   const isLight = appearanceMode === "light";
   const statusColorMap: Record<string, string> = {
@@ -57,7 +59,7 @@ export default function InsurerPartnerShopCard({
 
   return (
     <article
-      className={`overflow-hidden rounded-[26px] bd-glass-card${isLight ? " bd-light-surface" : ""}`}
+      className={`overflow-hidden rounded-[26px] bd-glass-card transition-shadow${focused ? " ring-2 ring-blue-400/60 shadow-lg" : ""}${isLight ? " bd-light-surface" : ""}`}
     >
       <div className="relative h-44 w-full overflow-hidden bg-white/[0.08]">
         <img

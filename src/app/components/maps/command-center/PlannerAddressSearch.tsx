@@ -6,7 +6,7 @@
  */
 
 import { type FormEvent } from "react";
-import { MapPin, Search } from "lucide-react";
+import { MapPin, Navigation2, Search } from "lucide-react";
 import { cn } from "../../ui/utils";
 import type { MapSurfaceTheme, MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type {
@@ -56,17 +56,34 @@ export default function PlannerAddressSearch({
     <>
       <div
         className={cn(
-          "map-liquid-card map-ui-enter map-ui-enter-delay-1 flex items-center justify-between gap-2 p-3",
+          "map-liquid-card map-ui-enter map-ui-enter-delay-1 flex items-center gap-3 p-3",
           theme.panelClassName
         )}
       >
+        <div
+          className={cn(
+            "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+            tone === "light" ? "bg-sky-100 text-sky-600" : "bg-cyan-400/12 text-cyan-300"
+          )}
+        >
+          <Navigation2 className="h-4 w-4" />
+        </div>
         <div className="min-w-0 flex-1">
           <div className={theme.metricLabelClassName}>Your location</div>
           <div className={cn("mt-0.5 truncate text-sm font-semibold", theme.titleClassName)}>
             {selectedAddressResult?.primaryLabel || activeOriginLabel}
           </div>
         </div>
-        <div className={cn("shrink-0 text-xs", theme.secondaryTextClassName)}>
+        <div
+          className={cn(
+            "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+            gpsTrackingEnabled
+              ? tone === "light"
+                ? "bg-emerald-100 text-emerald-700"
+                : "bg-emerald-500/15 text-emerald-300"
+              : theme.softBadgeClassName
+          )}
+        >
           {gpsTrackingEnabled ? "GPS" : "Manual"}
         </div>
       </div>
@@ -83,16 +100,16 @@ export default function PlannerAddressSearch({
             htmlFor="planner-address-search"
             className={cn("mb-1.5 block text-xs font-semibold", theme.titleClassName)}
           >
-            Search any U.S. house or store address
+            Search address or place
           </label>
           <div className="flex gap-1.5">
             <input
               id="planner-address-search"
               value={addressQuery}
               onChange={(event) => onAddressQueryChange(event.target.value)}
-              placeholder="1600 Amphitheatre Pkwy, Mountain View..."
+              placeholder="Enter address, ZIP, or place name…"
               className={cn(
-                "h-9 flex-1 rounded-[0.875rem] border px-3 text-sm outline-none transition",
+                "h-11 flex-1 rounded-[0.875rem] border px-3 text-sm outline-none transition",
                 tone === "light"
                   ? "border-white/80 bg-white/80 text-slate-900 placeholder:text-slate-400 focus:border-sky-300"
                   : "border-white/12 bg-slate-900/78 text-white placeholder:text-slate-400 focus:border-cyan-400/40"
@@ -112,7 +129,7 @@ export default function PlannerAddressSearch({
           </div>
 
           <p className={cn("mt-1 text-[10px]", theme.secondaryTextClassName)}>
-            Nominatim search spans U.S. addresses nationwide.
+            Searches U.S. addresses and points of interest.
           </p>
 
           {addressSuggestions.length > 0 && !selectedAddressResult && !addressResults.length ? (

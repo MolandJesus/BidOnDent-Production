@@ -192,20 +192,21 @@ export default function ShopDirectoryResultCard({
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               <button
-                className="col-span-2 min-h-[44px] rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg"
+                className="col-span-2 min-h-[40px] rounded-xl px-3 py-2 text-xs font-semibold text-white shadow-lg"
                 onClick={onDirectionsAction}
                 style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, #147dd6 100%)` }}
                 type="button"
+                aria-label={`${directionsActionLabel} to ${shop.name}`}
               >
-                <span className="inline-flex items-center gap-2">
-                  <Compass className="h-4 w-4" />
+                <span className="inline-flex items-center gap-1.5">
+                  <Compass className="h-3.5 w-3.5" />
                   {directionsActionLabel}
                 </span>
               </button>
               <button
-                className={`min-h-[44px] rounded-2xl border px-3 py-2.5 text-sm font-medium transition-colors ${
+                className={`min-h-[36px] rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                   isLight
                     ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
                     : "bd-glass-control text-slate-100"
@@ -213,13 +214,13 @@ export default function ShopDirectoryResultCard({
                 onClick={onSecondaryAction}
                 type="button"
               >
-                <span className="inline-flex items-center justify-center gap-1.5">
+                <span className="inline-flex items-center justify-center gap-1">
                   {secondaryActionLabel}
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-3.5 w-3.5" />
                 </span>
               </button>
               <button
-                className={`min-h-[44px] rounded-2xl border px-3 py-2.5 text-sm font-medium transition-colors ${
+                className={`min-h-[36px] rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-colors ${
                   isLight
                     ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
                     : "bd-glass-control text-slate-100"
@@ -424,43 +425,46 @@ export default function ShopDirectoryResultCard({
               ))}
             </div>
 
-            <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex flex-col gap-2">
               <button
-                className={`flex-1 min-h-[44px] rounded-2xl border px-4 py-3 text-sm font-medium transition-colors ${
-                  isLight
-                    ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
-                    : "bd-glass-control text-slate-100"
-                }`}
-                onClick={onPrimaryAction}
-                type="button"
-              >
-                {primaryActionLabel}
-              </button>
-              <button
-                className="flex-1 min-h-[44px] rounded-2xl px-4 py-3 text-sm font-medium text-white shadow-lg"
+                className="min-h-[44px] rounded-2xl px-4 py-3 text-sm font-medium text-white shadow-lg"
                 onClick={onSecondaryAction}
                 style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, #147dd6 100%)` }}
                 type="button"
               >
-                <span className="inline-flex items-center gap-2">
+                <span className="inline-flex items-center justify-center gap-2">
                   {secondaryActionLabel}
                   <ChevronRight className="h-4 w-4" />
                 </span>
               </button>
-              <button
-                className={`flex-1 min-h-[44px] rounded-2xl border px-4 py-3 text-sm font-medium transition-colors ${
-                  isLight
-                    ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
-                    : "bd-glass-control text-slate-100"
-                }`}
-                onClick={onDirectionsAction}
-                type="button"
-              >
-                <span className="inline-flex items-center gap-2">
-                  <Compass className="h-4 w-4" />
-                  {directionsActionLabel}
-                </span>
-              </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  className={`min-h-[40px] rounded-xl border px-3 py-2 text-xs font-medium transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
+                      : "bd-glass-control text-slate-100"
+                  }`}
+                  onClick={onPrimaryAction}
+                  type="button"
+                >
+                  {primaryActionLabel}
+                </button>
+                <button
+                  className={`min-h-[40px] rounded-xl border px-3 py-2 text-xs font-medium transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
+                      : "bd-glass-control text-slate-100"
+                  }`}
+                  onClick={onDirectionsAction}
+                  type="button"
+                  aria-label={`${directionsActionLabel} to ${shop.name}`}
+                >
+                  <span className="inline-flex items-center justify-center gap-1.5">
+                    <Compass className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{directionsActionLabel}</span>
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ type ReportDetailDrawerProps = {
   onOpenChange: (open: boolean) => void;
   report: DamageReport | null;
   mapTheme?: MapTheme;
+  onViewReportDetail?: (reportId: string) => void;
 };
 
 export function ReportDetailDrawer({
@@ -23,6 +24,7 @@ export function ReportDetailDrawer({
   onOpenChange,
   report,
   mapTheme = "dark",
+  onViewReportDetail,
 }: ReportDetailDrawerProps) {
   if (!report) return null;
 
@@ -94,6 +96,23 @@ export function ReportDetailDrawer({
               Status: {status}
             </span>
           </div>
+          {onViewReportDetail && report.id && (
+            <button
+              type="button"
+              onClick={() => {
+                onViewReportDetail(report.id!);
+                onOpenChange(false);
+              }}
+              className={cn(
+                "mt-4 w-full rounded-xl py-3 text-sm font-semibold transition-colors min-h-[44px]",
+                isDark
+                  ? "bg-blue-500/90 text-white hover:bg-blue-400/90 active:bg-blue-600/90"
+                  : "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
+              )}
+            >
+              View Full Details
+            </button>
+          )}
         </div>
         <DrawerClose
           className={cn(

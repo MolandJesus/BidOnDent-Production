@@ -1,9 +1,19 @@
-import { ArrowRight, Check, Clock, ListChecks, Map, MessageSquare, Wrench } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Check,
+  Clock,
+  ListChecks,
+  Map,
+  MessageSquare,
+  Wrench,
+} from "lucide-react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type StepCompleteProps = {
   primaryColor: string;
   appearanceMode?: DashboardAppearanceMode;
+  photoUploadWarning?: string | null;
   onViewReports: () => void;
   onBackToDashboard: () => void;
   onFindShops?: () => void;
@@ -12,6 +22,7 @@ type StepCompleteProps = {
 export default function StepComplete({
   primaryColor,
   appearanceMode = "map-dark",
+  photoUploadWarning,
   onViewReports,
   onBackToDashboard,
   onFindShops,
@@ -40,6 +51,18 @@ export default function StepComplete({
         >
           Nice work. Shops in your area can now review your details and send bids.
         </p>
+        {photoUploadWarning && (
+          <div
+            className={`mt-3 mx-auto max-w-md flex items-start gap-2 rounded-xl border px-3.5 py-2.5 text-sm ${
+              isLightAppearance
+                ? "bg-amber-50 border-amber-200/60 text-amber-700"
+                : "bg-amber-500/15 border-amber-400/25 text-amber-200"
+            }`}
+          >
+            <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <span>{photoUploadWarning}</span>
+          </div>
+        )}
       </div>
 
       <div className={`bd-glass-card p-5 mb-8${isLightAppearance ? " bd-light-surface" : ""}`}>

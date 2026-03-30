@@ -10,11 +10,13 @@ import {
 import { markRecentNavigationLocation } from "../../services/navigation/savedLocations";
 import { loadNavigationSession } from "../../services/navigation/navigationSession";
 import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
-import { haversineMiles } from "../../services/supabase/map";
+import { haversineMiles, zipToCoordinates } from "../../services/supabase/map";
 import type { ExternalNavigationSession } from "../../types/navigation";
+import type { DamageReport } from "../../types";
 import CoverageMapDialog from "../landing/CoverageMapDialog";
 import { countyCenters, defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
+import type { ReportPin } from "./MapLibreDashboardMapPreview";
 import type {
   CoverageNearbyShop,
   CoveragePartnerShop,
@@ -26,6 +28,7 @@ type CustomerMapWidgetProps = {
   primaryColor: string;
   secondaryColor: string;
   appearanceMode?: DashboardAppearanceMode;
+  reports?: DamageReport[];
   onViewShops?: () => void;
 };
 
@@ -38,6 +41,7 @@ export default function CustomerMapWidget({
   primaryColor,
   secondaryColor,
   appearanceMode = "map-dark",
+  reports = [],
   onViewShops,
 }: CustomerMapWidgetProps) {
   const isLight = appearanceMode === "light";
@@ -62,6 +66,21 @@ export default function CustomerMapWidget({
       partnerShops.find((s) => `${s.id || s.name}` === selectedShopId) || partnerShops[0] || null,
     [partnerShops, selectedShopId]
   );
+
+  /** Convert customer damage reports to map pins via ZIP→coordinate lookup */
+  const reportPins = useMemo<ReportPin[]>(() => {
+    return reports
+      .map((r) => {
+        const zip = r.zip_code || r.zipCode;
+        const coords = zipToCoordinates(zip);
+        if (!coords) return null;
+        const label = r.vehicleInfo
+          ? `${r.vehicleInfo.year} ${r.vehicleInfo.make} ${r.vehicleInfo.model}`
+          : "Damage report";
+        return { id: r.id, lat: coords.lat, lng: coords.lng, label };
+      })
+      .filter((pin): pin is ReportPin => pin !== null);
+  }, [reports]);
 
   const navigation = useCoverageNavigationExperience({
     selectedShop,
@@ -152,24 +171,19 @@ export default function CustomerMapWidget({
   return (
     <>
       {/* ── Map-backed widget card ── */}
-      <section
-        className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
-        style={
-          isLight
-            ? {
-                borderColor: "rgba(148,163,184,0.30)",
-                boxShadow: "0 14px 30px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.80)",
-              }
-            : {
-                borderColor: "rgba(96,165,250,0.24)",
-                boxShadow: "0 14px 30px rgba(3,10,24,0.38), inset 0 1px 0 rgba(147,197,253,0.12)",
-              }
-        }
-      >
+      <section className="overflow-visible">
         {/* Embedded mini-map */}
-        <div className="relative h-[200px] md:h-[220px]">
+        <div
+          className="relative h-[200px] overflow-hidden rounded-2xl md:h-[220px]"
+          style={{
+            boxShadow: isLight
+              ? "0 10px 26px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.65)"
+              : "0 14px 30px rgba(2,8,24,0.42), inset 0 1px 0 rgba(147,197,253,0.12)",
+          }}
+        >
           <DashboardMapPreview
             shops={partnerShops}
+            reportPins={reportPins}
             center={mapCenter}
             zoom={mapZoom}
             isLight={isLight}
@@ -199,7 +213,13 @@ export default function CustomerMapWidget({
             <span
               className={`text-xs font-semibold ${isLight ? "text-slate-700" : "text-slate-100"}`}
             >
-              {isLoadingShops ? "Finding shops\u2026" : `${displayShops.length} shops near you`}
+              {isLoadingShops
+                ? "Finding shops\u2026"
+                : displayShops.length > 0
+                  ? `${displayShops.length} shops${reportPins.length > 0 ? ` · ${reportPins.length} report${reportPins.length > 1 ? "s" : ""}` : ""}`
+                  : reportPins.length > 0
+                    ? `${reportPins.length} report${reportPins.length > 1 ? "s" : ""}`
+                    : "Nearby shops"}
             </span>
           </div>
 
@@ -221,7 +241,15 @@ export default function CustomerMapWidget({
         </div>
 
         {/* Compact shop summary row below map */}
-        <div className="px-4 py-3 md:px-5">
+        <div
+          className={`relative z-10 mt-2 rounded-2xl border px-4 py-3 md:px-5 ${
+            isLight ? "bg-white/88 border-slate-200/60" : "bg-slate-950/62 border-blue-400/20"
+          }`}
+          style={{
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+          }}
+        >
           {!isLoadingShops && compactShops.length > 0 ? (
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-0.5">
               {compactShops.map((shop) => (
@@ -280,16 +308,27 @@ export default function CustomerMapWidget({
                   : "border-rose-400/30 bg-rose-500/10 text-rose-200"
               }`}
             >
+              <Store
+                className={`h-4 w-4 shrink-0 ${isLight ? "text-rose-400" : "text-rose-400/60"}`}
+              />
               <p className="text-xs">Could not load shops. Check your connection.</p>
             </div>
           ) : !isLoadingShops ? (
-            <p
-              className={`text-center text-sm py-2 ${
-                isLight ? "text-slate-500" : "text-blue-100/75"
-              }`}
-            >
-              No shops found nearby. Open the map to search.
-            </p>
+            <div className="flex flex-col items-center gap-1.5 py-3">
+              <Store className={`h-6 w-6 ${isLight ? "text-slate-300" : "text-blue-300/30"}`} />
+              <p
+                className={`text-center text-sm font-medium ${
+                  isLight ? "text-slate-600" : "text-slate-300"
+                }`}
+              >
+                No nearby shops yet
+              </p>
+              <p
+                className={`text-center text-xs ${isLight ? "text-slate-400" : "text-blue-100/50"}`}
+              >
+                Open the map to search your area.
+              </p>
+            </div>
           ) : null}
 
           {onViewShops && (

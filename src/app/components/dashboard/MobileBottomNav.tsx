@@ -11,6 +11,7 @@ interface MobileBottomNavProps {
   tabs: NavTab[];
   currentTab: string;
   viewMode: string;
+  badgeCounts?: Record<string, number>;
   onTabClick: (tabId: string) => void;
 }
 
@@ -19,6 +20,7 @@ export default function MobileBottomNav({
   tabs,
   currentTab,
   viewMode,
+  badgeCounts,
   onTabClick,
 }: MobileBottomNavProps) {
   const isLightAppearance = appearanceMode === "light";
@@ -93,6 +95,11 @@ export default function MobileBottomNav({
               <Icon
                 className={`w-5 h-5 ${isActive ? (isLightAppearance ? "text-blue-600" : "text-blue-100") : ""}`}
               />
+              {(badgeCounts?.[tab.id] ?? 0) > 0 && (
+                <span className="absolute -top-0.5 right-1 min-w-[16px] h-4 flex items-center justify-center rounded-full bg-rose-500 text-white text-[10px] font-bold px-1 shadow-sm">
+                  {badgeCounts![tab.id] > 9 ? "9+" : badgeCounts![tab.id]}
+                </span>
+              )}
               <span
                 className={`text-[0.7rem] font-medium leading-none ${
                   isActive ? (isLightAppearance ? "text-blue-700" : "text-blue-50") : ""

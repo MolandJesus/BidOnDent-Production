@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   Award,
@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Wrench,
 } from "lucide-react";
+import { motion } from "motion/react";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import {
   loadWebsiteSessionMemory,
@@ -24,6 +25,9 @@ import {
 } from "../../services/intelligence/shopMapExperience";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
+import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
+import { defaultCoverageCenter } from "../landing/coverageData";
 
 interface CompetitorAnalysisScreenProps {
   onBack: () => void;
@@ -167,6 +171,30 @@ export default function CompetitorAnalysisScreen({
   const watchedListings = marketListings.filter((shop) => shop.watched);
   const yourShopJobs = Math.max(96, Math.round(totalJobs * 0.18));
 
+  const competitorPins: CoveragePartnerShop[] = useMemo(
+    () =>
+      marketListings
+        .filter((s) => s.mapResult?.coordinates?.latitude && s.mapResult?.coordinates?.longitude)
+        .map((s) => ({
+          id: String(s.id),
+          name: s.name,
+          countyLabel: s.location,
+          lat: s.mapResult.coordinates.latitude,
+          lng: s.mapResult.coordinates.longitude,
+          label: s.name,
+          specialties: s.specialties.slice(0, 3),
+          rating: s.rating,
+        })),
+    [marketListings]
+  );
+
+  const competitorMapCenter: [number, number] = useMemo(() => {
+    if (competitorPins.length > 0) return [competitorPins[0].lat, competitorPins[0].lng];
+    return defaultCoverageCenter;
+  }, [competitorPins]);
+
+  const [focusedCompetitorId, setFocusedCompetitorId] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen pb-20">
       <div
@@ -261,6 +289,69 @@ export default function CompetitorAnalysisScreen({
         </div>
       </div>
 
+      {/* ── Competitor density map ── */}
+      {marketListings.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className={`mx-4 mt-4 overflow-hidden rounded-[28px] ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+        >
+          <div className="flex items-center justify-between px-4 pt-3 pb-1">
+            <h3
+              className={`text-sm font-semibold ${isLight ? "text-slate-700" : "text-slate-200"}`}
+            >
+              <MapPin className="mr-1.5 inline-block h-4 w-4 align-[-2px] text-blue-400" />
+              Competitor density
+            </h3>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-400/15 text-blue-200"}`}
+            >
+              {competitorPins.length} / {marketListings.length} mapped
+            </span>
+          </div>
+
+          <div className="px-3 pb-3 pt-1">
+            {competitorPins.length > 0 ? (
+              <div
+                className="overflow-hidden rounded-2xl"
+                style={{ height: window.innerWidth < 640 ? 200 : 220 }}
+              >
+                <DashboardMapPreview
+                  shops={competitorPins}
+                  reportPins={[]}
+                  center={competitorMapCenter}
+                  zoom={9}
+                  isLight={isLight}
+                  onShopClick={(shop) => setFocusedCompetitorId(shop.id ?? null)}
+                />
+              </div>
+            ) : (
+              <div
+                className={`flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-6 ${isLight ? "border-slate-200 text-slate-400" : "border-white/10 text-slate-400/60"}`}
+              >
+                <MapPin className="h-5 w-5" />
+                <span className="text-sm">No competitors with resolvable coordinates</span>
+              </div>
+            )}
+          </div>
+
+          {competitorPins.length > 0 && (
+            <div
+              className={`flex items-center gap-3 border-t px-4 py-2 text-xs ${isLight ? "border-slate-100 text-slate-500" : "border-white/5 text-slate-400/60"}`}
+            >
+              <span className="inline-flex items-center gap-1">
+                <span className="h-2 w-2 rounded-full bg-blue-500" />
+                Competitors
+              </span>
+              <span className={isLight ? "text-slate-400" : "text-slate-500"}>
+                Tap a pin to highlight below
+              </span>
+            </div>
+          )}
+        </motion.section>
+      )}
+
       <div
         className={`border-b bd-glass-panel px-4 py-3 ${isLight ? "bd-light-surface border-slate-200/60" : "border-white/30"}`}
       >
@@ -299,7 +390,9 @@ export default function CompetitorAnalysisScreen({
         {marketListings.map((shop, index) => (
           <article
             key={shop.id}
-            className={`bd-glass-card overflow-hidden rounded-[26px] transition-shadow hover:shadow-md${isLight ? " bd-light-surface" : ""}`}
+            className={`bd-glass-card overflow-hidden rounded-[26px] transition-shadow hover:shadow-md${
+              focusedCompetitorId === String(shop.id) ? " ring-2 ring-blue-400/60 shadow-lg" : ""
+            }${isLight ? " bd-light-surface" : ""}`}
           >
             <div
               className={`border-b p-4 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}

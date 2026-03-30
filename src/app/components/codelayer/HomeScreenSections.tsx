@@ -5,6 +5,7 @@ import {
   ChevronRight,
   DollarSign,
   Eye,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
@@ -309,12 +310,25 @@ export function HomeReportsList({
                         <Calendar className="w-4 h-4" />
                         {formatDate(report?.submittedAt)}
                       </span>
-                      {userType !== "insurer" && (
+                      {userType !== "insurer" &&
+                      status === "active" &&
+                      report.bids?.find((b) => b.status === "accepted") ? (
+                        <span
+                          className={`inline-flex items-center gap-1.5 font-medium ${isLightAppearance ? "text-emerald-700" : "text-emerald-400"}`}
+                        >
+                          <Wrench className="w-4 h-4" />
+                          {report.bids!.find((b) => b.status === "accepted")!.shopName}
+                          {" · $"}
+                          {report
+                            .bids!.find((b) => b.status === "accepted")!
+                            .amount.toLocaleString()}
+                        </span>
+                      ) : userType !== "insurer" ? (
                         <span className="inline-flex items-center gap-1.5">
                           <DollarSign className="w-4 h-4" />
                           {Number(report?.bids?.length ?? report?.bidsCount ?? 0)} bids received
                         </span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                   <ChevronRight

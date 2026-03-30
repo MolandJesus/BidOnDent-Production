@@ -96,12 +96,10 @@ export default function ShopDirectoryRoutePreviewCard({
 
   return (
     <div
-      className="pointer-events-auto absolute left-3 z-[510] w-[18rem] max-w-[calc(100vw-1.5rem)] sm:left-4 sm:w-[19rem]"
+      className="pointer-events-auto absolute left-3 z-[510] w-[16rem] max-w-[calc(100vw-1.5rem)] sm:left-4 sm:w-[17rem]"
       style={{ bottom: "max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.4rem))" }}
     >
-      <div
-        className={`rounded-[1.3rem] border p-2.5 shadow-2xl sm:rounded-2xl sm:p-3 ${glassPanel}`}
-      >
+      <div className={`rounded-2xl border p-2 shadow-2xl sm:p-2.5 ${glassPanel}`}>
         <div className="flex items-center justify-between">
           <div
             className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] ${secondaryText}`}
@@ -140,7 +138,7 @@ export default function ShopDirectoryRoutePreviewCard({
             return (
               <button
                 key={route.id}
-                className={`flex min-h-[38px] flex-1 flex-col items-center justify-center rounded-[0.95rem] px-2 py-1.5 text-center text-[11px] transition-colors sm:min-h-[42px] sm:rounded-xl sm:text-xs ${isActive ? activeRoute : inactiveRoute}`}
+                className={`flex min-h-[32px] flex-1 flex-col items-center justify-center rounded-lg px-1.5 py-1 text-center text-[10px] transition-colors sm:min-h-[34px] sm:text-[11px] ${isActive ? activeRoute : inactiveRoute}`}
                 onClick={() => onSelectRoute(route.id)}
                 type="button"
               >
@@ -243,7 +241,7 @@ export default function ShopDirectoryRoutePreviewCard({
 
         {onStartNavigation ? (
           <button
-            className="mt-3 flex min-h-[42px] w-full items-center justify-center gap-2 rounded-[1rem] bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
+            className="mt-2 flex min-h-[36px] w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
             onClick={onStartNavigation}
             type="button"
           >

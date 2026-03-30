@@ -13,6 +13,7 @@ import {
   Mail,
   ChevronRight,
   Star,
+  BadgeCheck,
 } from "lucide-react";
 
 export type RepairRequest = {
@@ -70,6 +71,8 @@ export function getStatusColor(status: string, isLight: boolean) {
         return "bg-blue-100 text-blue-700 border border-blue-300";
       case "bidding":
         return "bg-yellow-100 text-yellow-700 border border-yellow-300";
+      case "accepted":
+        return "bg-emerald-100 text-emerald-700 border border-emerald-300";
       case "closed":
         return "bg-slate-100 text-slate-600 border border-slate-300";
       default:
@@ -81,6 +84,8 @@ export function getStatusColor(status: string, isLight: boolean) {
       return "bg-blue-500/15 text-blue-300 border border-blue-400/25";
     case "bidding":
       return "bg-yellow-500/15 text-yellow-300 border border-yellow-400/25";
+    case "accepted":
+      return "bg-emerald-500/15 text-emerald-300 border border-emerald-400/25";
     case "closed":
       return "bg-slate-500/15 text-slate-300 border border-slate-400/25";
     default:
@@ -92,6 +97,8 @@ type ShopRequestCardProps = {
   request: RepairRequest;
   isLight: boolean;
   primaryColor: string;
+  focused?: boolean;
+  hasBid?: boolean;
   onSubmitBid: (request: RepairRequest) => void;
 };
 
@@ -99,18 +106,20 @@ export default function ShopRequestCard({
   request,
   isLight,
   primaryColor,
+  focused = false,
+  hasBid = false,
   onSubmitBid,
 }: ShopRequestCardProps) {
   return (
     <div
-      className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}
+      className={`bd-glass-card overflow-hidden transition-shadow duration-200${isLight ? " bd-light-surface" : ""}${focused ? " ring-2 ring-amber-400/60" : ""}`}
       style={
         isLight
           ? {}
           : {
               background:
                 "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
-              borderColor: "rgba(96, 165, 250, 0.22)",
+              borderColor: focused ? "rgba(251, 191, 36, 0.50)" : "rgba(96, 165, 250, 0.22)",
             }
       }
     >
@@ -225,33 +234,78 @@ export default function ShopRequestCard({
       {/* Contact Info */}
       <div className={`p-4 border-t ${isLight ? "border-slate-200/60" : "border-blue-300/15"}`}>
         <div className="grid grid-cols-2 gap-3 mb-3">
-          <span
-            className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
-            title="Contact info available after bid accepted"
-          >
-            <Phone className="w-4 h-4" />
-            Call
-          </span>
-          <span
-            className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
-            title="Contact info available after bid accepted"
-          >
-            <Mail className="w-4 h-4" />
-            Email
-          </span>
+          {request.status === "accepted" ? (
+            <>
+              <a
+                href={`tel:${request.customerPhone}`}
+                className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100" : "text-emerald-300 bg-emerald-500/15 border border-emerald-400/25 hover:bg-emerald-500/25"}`}
+              >
+                <Phone className="w-4 h-4" />
+                Call
+              </a>
+              <a
+                href={`mailto:${request.customerEmail}`}
+                className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100" : "text-emerald-300 bg-emerald-500/15 border border-emerald-400/25 hover:bg-emerald-500/25"}`}
+              >
+                <Mail className="w-4 h-4" />
+                Email
+              </a>
+            </>
+          ) : (
+            <>
+              <span
+                className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
+                title="Contact info available after bid accepted"
+              >
+                <Phone className="w-4 h-4" />
+                Call
+              </span>
+              <span
+                className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
+                title="Contact info available after bid accepted"
+              >
+                <Mail className="w-4 h-4" />
+                Email
+              </span>
+            </>
+          )}
         </div>
 
-        <button
-          onClick={() => onSubmitBid(request)}
-          className="w-full py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-          style={{
-            background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-          }}
-        >
-          <DollarSign className="w-5 h-5" />
-          Submit Bid
-          <ChevronRight className="w-5 h-5" />
-        </button>
+        {request.status === "accepted" ? (
+          <div
+            className={`w-full py-3 min-h-[44px] rounded-xl font-semibold flex items-center justify-center gap-2 ${
+              isLight
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                : "bg-emerald-500/15 text-emerald-300 border border-emerald-400/25"
+            }`}
+          >
+            <BadgeCheck className="w-5 h-5" />
+            Bid Accepted — Job Active
+          </div>
+        ) : hasBid ? (
+          <div
+            className={`w-full py-3 min-h-[44px] rounded-xl font-semibold flex items-center justify-center gap-2 ${
+              isLight
+                ? "bg-violet-50 text-violet-700 border border-violet-200"
+                : "bg-violet-500/15 text-violet-300 border border-violet-400/25"
+            }`}
+          >
+            <BadgeCheck className="w-5 h-5" />
+            Bid Sent — Awaiting Response
+          </div>
+        ) : (
+          <button
+            onClick={() => onSubmitBid(request)}
+            className="w-full py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+            }}
+          >
+            <DollarSign className="w-5 h-5" />
+            Submit Bid
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        )}
       </div>
     </div>
   );

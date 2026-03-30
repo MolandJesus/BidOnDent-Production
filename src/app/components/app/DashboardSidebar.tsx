@@ -65,6 +65,7 @@ export default function DashboardSidebar({
 
   return (
     <aside
+      aria-label="Dashboard sidebar"
       className={`hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r ${
         isLightAppearance ? "bd-light-surface md:border-slate-200/60" : "md:border-blue-400/[0.12]"
       }`}
@@ -84,11 +85,12 @@ export default function DashboardSidebar({
       >
         <button
           onClick={onLogoClick}
+          aria-label="Open dashboard home"
           className="flex items-center gap-2.5 cursor-pointer bg-transparent"
           type="button"
         >
           <span
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            className="w-10 h-10 rounded-[1rem] flex items-center justify-center"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               boxShadow:
@@ -114,7 +116,7 @@ export default function DashboardSidebar({
         </button>
       </div>
 
-      <nav className="px-3 py-4 space-y-1 flex-1 overflow-y-auto">
+      <nav aria-label="Dashboard navigation" className="px-3 py-4 space-y-1 flex-1 overflow-y-auto">
         {currentNavTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = currentTab === tab.id && viewMode === "dashboard";
@@ -122,6 +124,7 @@ export default function DashboardSidebar({
           return (
             <button
               key={tab.id}
+              aria-current={isActive ? "page" : undefined}
               onClick={() => onTabClick(tab.id)}
               className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 relative ${
                 isActive ? "" : "hover:bg-blue-500/[0.06]"
@@ -142,6 +145,7 @@ export default function DashboardSidebar({
             >
               {isActive && (
                 <span
+                  aria-hidden="true"
                   className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
                   style={{
                     background: `linear-gradient(180deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
@@ -150,7 +154,7 @@ export default function DashboardSidebar({
                 />
               )}
               <span
-                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 ${
+                className={`w-9 h-9 rounded-[1rem] flex items-center justify-center shrink-0 transition-all duration-200 ${
                   isActive
                     ? ""
                     : isLightAppearance
@@ -189,7 +193,11 @@ export default function DashboardSidebar({
               >
                 {tab.label}
               </span>
-              {isActive && <span className="ml-auto text-xs font-medium text-blue-300/50">›</span>}
+              {isActive && (
+                <span aria-hidden="true" className="ml-auto text-xs font-medium text-blue-300/50">
+                  ›
+                </span>
+              )}
             </button>
           );
         })}
@@ -198,11 +206,12 @@ export default function DashboardSidebar({
             className={`pt-2 mt-1 border-t ${isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.08]"}`}
           >
             <button
+              aria-label="Open demo mode"
               onClick={onOpenDemoMode}
               className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 hover:bg-blue-500/[0.06]`}
               type="button"
             >
-              <span className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200 bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]">
+              <span className="w-9 h-9 rounded-[1rem] flex items-center justify-center shrink-0 transition-all duration-200 bg-purple-500/[0.10] group-hover:bg-purple-500/[0.18]">
                 <Sparkles
                   className={`w-[18px] h-[18px] transition-colors ${isLightAppearance ? "text-purple-500" : "text-purple-300/80"}`}
                 />
@@ -216,7 +225,7 @@ export default function DashboardSidebar({
           </div>
         )}
         {showSidebarProfilePanel && profileDropdownData && (
-          <div className="pt-2">
+          <div className="pt-2" id="dashboard-sidebar-profile-panel">
             <ProfileDropdown
               userInfo={{
                 name: userProfile.name,
@@ -248,6 +257,9 @@ export default function DashboardSidebar({
             onDismissTopProfile();
             setShowSidebarProfilePanel((current) => !current);
           }}
+          aria-controls="dashboard-sidebar-profile-panel"
+          aria-expanded={showSidebarProfilePanel}
+          aria-label={showSidebarProfilePanel ? "Close profile panel" : "Open profile panel"}
           className="group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 hover:bg-blue-500/[0.06]"
           type="button"
         >

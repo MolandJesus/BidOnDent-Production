@@ -52,7 +52,6 @@ export function useCoveragePartnerShops() {
       .catch((error: unknown) => {
         if (!mounted) return;
         const message = error instanceof Error ? error.message : "Failed to load partner shops";
-        if (import.meta.env.DEV) console.error("useCoveragePartnerShops fetch error:", message);
         setFetchError(message);
       })
       .finally(() => {
@@ -66,7 +65,8 @@ export function useCoveragePartnerShops() {
   }, []);
 
   const mappedPartnerShops = useMemo(() => mapPartnerShopRecords(publicShops), [publicShops]);
-  const allowDemoFallback = DEMO_MODE;
+  // Map surfaces are backend-first by default; demo fallback must be explicitly enabled.
+  const allowDemoFallback = DEMO_MODE && import.meta.env.VITE_ENABLE_MAP_DEMO_FALLBACK === "true";
   const usingDemoFallback = mappedPartnerShops.length === 0 && allowDemoFallback;
 
   return {

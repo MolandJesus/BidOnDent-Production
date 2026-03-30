@@ -1,7 +1,8 @@
 import type { LifecycleStep } from "./RepairLifecycleTimeline";
 
-export function customerLifecycle(status: string): LifecycleStep[] {
+export function customerLifecycle(status: string, repairStatus?: string): LifecycleStep[] {
   const normalized = String(status || "pending").toLowerCase();
+  const repair = repairStatus ? String(repairStatus).toLowerCase().replace(/_/g, "-") : undefined;
 
   const stepStates: {
     intake: LifecycleStep["status"];
@@ -37,6 +38,22 @@ export function customerLifecycle(status: string): LifecycleStep[] {
     stepStates.completed = "completed";
   }
 
+  // Granular repair status overrides step 4 when available
+  let repairLabel = "Repair Scheduled";
+  let repairDesc = "Repair is scheduled and in execution.";
+  if (repair === "in-progress") {
+    repairLabel = "Repair In Progress";
+    repairDesc = "Your vehicle is currently being repaired.";
+  } else if (repair === "awaiting-parts") {
+    repairLabel = "Awaiting Parts";
+    repairDesc = "Waiting for replacement parts to arrive.";
+  } else if (repair === "completed") {
+    stepStates.scheduled = "completed";
+    stepStates.completed = "current";
+    repairLabel = "Repair Finished";
+    repairDesc = "All repair work has been completed.";
+  }
+
   return [
     {
       id: "intake",
@@ -58,8 +75,8 @@ export function customerLifecycle(status: string): LifecycleStep[] {
     },
     {
       id: "scheduled",
-      label: "Repair Scheduled",
-      description: "Repair is scheduled and in execution.",
+      label: repairLabel,
+      description: repairDesc,
       status: stepStates.scheduled,
     },
     {
@@ -73,7 +90,14 @@ export function customerLifecycle(status: string): LifecycleStep[] {
 
 export function shopLifecycle(status: string): LifecycleStep[] {
   const normalized = String(status || "pending").toLowerCase();
-  const submitted = ["pending", "reviewing", "quoted", "accepted", "in-progress", "completed"].includes(normalized);
+  const submitted = [
+    "pending",
+    "reviewing",
+    "quoted",
+    "accepted",
+    "in-progress",
+    "completed",
+  ].includes(normalized);
   const awarded = ["accepted", "in-progress", "completed"].includes(normalized);
   const completed = ["completed"].includes(normalized);
 

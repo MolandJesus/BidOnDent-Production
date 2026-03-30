@@ -54,7 +54,7 @@ export default function FooterSection({
               className={`flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex ${isLightAppearance ? "bg-white/50 border border-slate-200/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "bg-white/[0.07] border border-white/[0.1]"}`}
             >
               <span
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
+                className="w-9 h-9 rounded-[1rem] flex items-center justify-center text-white"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                 }}

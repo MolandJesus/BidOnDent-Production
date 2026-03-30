@@ -11,7 +11,7 @@ You do **not** need to read every doc.
 
 Read in this order:
 
-1. `CLAUDE_AI_MASTER_CONTEXT.md` — first-read source of truth for product identity, architecture rules, map system, and active operating constraints.
+1. `CLAUDE_AI_MASTER_CONTEXT.md` — first-read master context for product identity, architecture rules, map system, and active operating constraints.
 2. `BIDONDENT_MAP_TRACKER_2026-03-21.md` — current execution reality, recent passes, known issues, validation notes.
 3. Then choose only the docs that match your task:
    - `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` for map strategy and non-negotiables

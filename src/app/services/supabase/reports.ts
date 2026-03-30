@@ -170,6 +170,29 @@ export async function updateReportStatus(
   }
 }
 
+export async function updateClaimDecision(
+  reportId: string,
+  decision: "approved" | "denied",
+  options: { approvedAmount?: number; denialReason?: string }
+): Promise<boolean> {
+  try {
+    await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimDecision, {
+      method: "POST",
+      body: JSON.stringify({
+        reportId,
+        decision,
+        approvedAmount: options.approvedAmount ?? null,
+        denialReason: options.denialReason ?? null,
+      }),
+    });
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV)
+      console.error("[DEV] Error updating claim decision:", error);
+    return false;
+  }
+}
+
 export async function deleteDamageReport(
   reportId: string,
   clerkUserId?: string

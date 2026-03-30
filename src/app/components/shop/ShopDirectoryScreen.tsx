@@ -36,6 +36,7 @@ type ShopDirectoryScreenProps = {
     damageType?: string;
     description?: string;
   }>;
+  onViewReportDetail?: (reportId: string) => void;
 };
 
 function getRoleIcon(userType: MarketUserType) {
@@ -79,6 +80,7 @@ export default function ShopDirectoryScreen({
   userInfo,
   vehicles = [],
   reports = [],
+  onViewReportDetail,
 }: ShopDirectoryScreenProps) {
   const session = useShopDirectorySession({ identity, userType, vehicles, reports });
   const nav = useShopDirectoryNavigation({ session, identity, userType });
@@ -167,7 +169,20 @@ export default function ShopDirectoryScreen({
           currentStepIndex={nav.currentStepIndex}
           usingLiveRoutes={nav.routePanel.usingLiveRoutes}
           userCoords={nav.shopMapUserCoords}
+          userHeadingDegrees={nav.userHeadingDegrees}
           userType={userType}
+          onViewReportDetail={onViewReportDetail}
+          nextInstruction={nav.routePanel.nextInstruction}
+          followingInstruction={nav.routePanel.followingInstruction}
+          currentSpeedMph={nav.currentSpeedMph}
+          gpsStatus={nav.gpsStatus}
+          speedLimitMph={nav.speedLimitMph}
+          voiceMode={nav.voiceMode}
+          voiceVolumePreset={nav.voiceVolumePreset}
+          preferredVoiceLabel={nav.preferredVoiceLabel}
+          voiceGuidanceSupported={nav.voiceGuidanceSupported}
+          onVoiceModeChange={nav.onVoiceModeChange}
+          onVoiceVolumePresetChange={nav.onVoiceVolumePresetChange}
         />
       </NavigationErrorBoundary>
     );
@@ -205,6 +220,22 @@ export default function ShopDirectoryScreen({
           <span>
             Showing example shop locations. Verified partner shops will appear once your account is
             connected.
+          </span>
+        </div>
+      )}
+
+      {!session.usingDemoFallback && session.coverageFetchError && (
+        <div
+          className={`mx-4 flex items-center gap-2 rounded-lg border px-3 py-2 text-xs ${
+            isLight
+              ? "border-rose-300/60 bg-rose-50 text-rose-700"
+              : "border-rose-400/30 bg-rose-400/10 text-rose-200"
+          }`}
+        >
+          <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
+          <span>
+            Live partner-shop data is temporarily unavailable. Check network or backend status and
+            retry.
           </span>
         </div>
       )}
@@ -307,6 +338,7 @@ export default function ShopDirectoryScreen({
                   shops={session.mapListings}
                   suppressHeader
                   userCoords={nav.shopMapUserCoords}
+                  userHeadingDegrees={nav.userHeadingDegrees}
                   userType={userType}
                   followCurrentPosition={nav.liveNavigationForSelectedShop}
                   followCurrentPositionRevision={nav.followCurrentPositionRevision}
@@ -321,6 +353,10 @@ export default function ShopDirectoryScreen({
                   remainingEtaLabel={nav.liveRemainingEtaLabel}
                   routeError={nav.routePanel.routeError}
                   usingLiveRoutes={nav.routePanel.usingLiveRoutes}
+                  onViewReportDetail={onViewReportDetail}
+                  navigationSteps={nav.routeSteps}
+                  currentStepIndex={nav.currentStepIndex}
+                  navigationMode={nav.navigationMode}
                 >
                   <>
                     <ShopDirectoryMapOverlays
@@ -356,6 +392,11 @@ export default function ShopDirectoryScreen({
                       selectedRoute={nav.mapSelectedRoute}
                       selectedShop={session.selectedShop}
                       usingLiveRoutes={nav.routePanel.usingLiveRoutes}
+                      nextInstruction={nav.routePanel.nextInstruction}
+                      followingInstruction={nav.routePanel.followingInstruction}
+                      currentSpeedMph={nav.currentSpeedMph}
+                      gpsStatus={nav.gpsStatus}
+                      speedLimitMph={nav.speedLimitMph}
                     />
                     {renderGuidanceOverlay("top-4 sm:top-5")}
                   </>

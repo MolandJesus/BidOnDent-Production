@@ -14,8 +14,11 @@ export default function AppLoading({ message = "Loading..." }: AppLoadingProps) 
 
   return (
     <div className="min-h-screen bg-[#0b172f] flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
+      <div className="text-center" aria-busy="true" aria-live="polite" role="status">
+        <div
+          aria-hidden="true"
+          className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"
+        ></div>
         <p className="text-blue-200/70">{message}</p>
         {showRecovery && (
           <div className="mt-6 space-y-2">
@@ -23,6 +26,7 @@ export default function AppLoading({ message = "Loading..." }: AppLoadingProps) 
             <button
               onClick={() => window.location.reload()}
               className="text-sm text-blue-400 underline hover:text-blue-300"
+              type="button"
             >
               Tap to reload
             </button>

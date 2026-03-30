@@ -1,4 +1,8 @@
+import { useMemo } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
+import { zipToCoordinates } from "../../../services/supabase/map";
+import DashboardMapPreview from "../../dashboard/MapLibreDashboardMapPreview";
+import type { ReportPin } from "../../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type StepServiceLocationProps = {
@@ -23,6 +27,29 @@ export default function StepServiceLocation({
   onContinue,
 }: StepServiceLocationProps) {
   const isLightAppearance = appearanceMode === "light";
+
+  const resolvedCoords = useMemo(() => {
+    if (zipCode.length !== 5) return null;
+    return zipToCoordinates(zipCode);
+  }, [zipCode]);
+
+  const previewPin = useMemo<ReportPin[]>(() => {
+    if (!resolvedCoords) return [];
+    return [
+      {
+        id: "report-preview",
+        lat: resolvedCoords.lat,
+        lng: resolvedCoords.lng,
+        label: "Your report location",
+      },
+    ];
+  }, [resolvedCoords]);
+
+  const mapCenter = useMemo<[number, number]>(
+    () => (resolvedCoords ? [resolvedCoords.lat, resolvedCoords.lng] : [41.05, -73.87]),
+    [resolvedCoords]
+  );
+
   return (
     <div
       className={`p-4 sm:p-6 space-y-5 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
@@ -86,6 +113,33 @@ export default function StepServiceLocation({
         </div>
       </div>
 
+      {/* Map preview — shows resolved location when ZIP is valid */}
+      {previewPin.length > 0 && (
+        <div
+          className={`rounded-xl overflow-hidden border ${
+            isLightAppearance ? "border-slate-200/60" : "border-blue-300/15"
+          }`}
+        >
+          <div className="h-[140px] md:h-[160px]">
+            <DashboardMapPreview
+              shops={[]}
+              reportPins={previewPin}
+              center={mapCenter}
+              zoom={11}
+              isLight={isLightAppearance}
+            />
+          </div>
+          <div
+            className={`flex items-center gap-2 px-3 py-2 text-xs ${
+              isLightAppearance ? "bg-slate-50 text-slate-600" : "bg-white/5 text-blue-100/70"
+            }`}
+          >
+            <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" />
+            Shops will see your request at this location on the map.
+          </div>
+        </div>
+      )}
+
       <div
         className={`flex items-start gap-2.5 rounded-xl border px-3.5 py-3 ${isLightAppearance ? "bg-blue-900/15 border-blue-400/12" : "bg-blue-900/20 border-blue-400/15"}`}
       >
@@ -119,6 +173,13 @@ export default function StepServiceLocation({
         </button>
       </div>
 
+      {!zipCode && (
+        <p
+          className={`text-center text-xs leading-relaxed ${isLightAppearance ? "text-amber-600" : "text-amber-300/80"}`}
+        >
+          Without a ZIP code, your report won&apos;t appear on the map and shops may not find it.
+        </p>
+      )}
       <button
         type="button"
         onClick={onContinue}

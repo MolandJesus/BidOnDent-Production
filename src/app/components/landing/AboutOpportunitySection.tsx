@@ -89,7 +89,7 @@ export default function AboutOpportunitySection({
         style={{ animationDelay: "3s" }}
       >
         <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-indigo-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-9 h-9 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-indigo-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
               ? "0 0 20px rgba(99,102,241,0.12), inset 0 1px 0 rgba(255,255,255,0.6)"
@@ -147,7 +147,7 @@ export default function AboutOpportunitySection({
                 }}
               >
                 <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-500/[0.08] border border-blue-300/[0.15]" : "bg-blue-500/[0.08] border border-blue-400/[0.15]"}`}
+                  className={`w-12 h-12 rounded-[1rem] flex items-center justify-center mb-4 shadow-sm ${isLightAppearance ? "bg-blue-500/[0.08] border border-blue-300/[0.15]" : "bg-blue-500/[0.08] border border-blue-400/[0.15]"}`}
                 >
                   <item.icon
                     className={`w-6 h-6 ${isLightAppearance ? "text-blue-500" : "text-blue-300"}`}

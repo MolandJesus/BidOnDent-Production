@@ -26,6 +26,7 @@ type UseNavigationGpsTrackingArgs = {
 
 export type NavigationGpsTrackingResult = {
   currentPosition: NavigationCoordinate | null;
+  currentHeadingDegrees: number | null;
   currentSpeedMph: number | null;
   gpsAccuracyMeters: number | null;
   gpsError: string;
@@ -35,11 +36,24 @@ export type NavigationGpsTrackingResult = {
   speedLimitStatus: SpeedLimitStatus;
 };
 
+/** Calculate bearing (0-360°) from one coordinate to another. */
+function calculateBearing(from: NavigationCoordinate, to: NavigationCoordinate): number {
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const toDeg = (r: number) => (r * 180) / Math.PI;
+  const dLng = toRad(to.lng - from.lng);
+  const lat1 = toRad(from.lat);
+  const lat2 = toRad(to.lat);
+  const y = Math.sin(dLng) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+  return ((toDeg(Math.atan2(y, x)) % 360) + 360) % 360;
+}
+
 export function useNavigationGpsTracking({
   gpsTrackingEnabled,
   speedLimitMonitorEnabled,
 }: UseNavigationGpsTrackingArgs): NavigationGpsTrackingResult {
   const [currentPosition, setCurrentPosition] = useState<NavigationCoordinate | null>(null);
+  const [currentHeadingDegrees, setCurrentHeadingDegrees] = useState<number | null>(null);
   const [currentSpeedMph, setCurrentSpeedMph] = useState<number | null>(null);
   const [gpsAccuracyMeters, setGpsAccuracyMeters] = useState<number | null>(null);
   const [gpsError, setGpsError] = useState("");
@@ -69,6 +83,7 @@ export function useNavigationGpsTracking({
       setGpsError("");
       setGpsStatus("active");
       setCurrentPosition(null);
+      setCurrentHeadingDegrees(null);
       setCurrentSpeedMph(null);
       setGpsAccuracyMeters(null);
       setSpeedLimitSnapshot(null);
@@ -119,6 +134,15 @@ export function useNavigationGpsTracking({
           gpsAccuracyMeters: nextAccuracyMeters,
         });
 
+        // Calculate heading from position delta (only if moving meaningfully)
+        const prev = previousPositionRef.current;
+        if (prev && nextSpeed !== null && nextSpeed > 2) {
+          const dist = haversineMiles(prev, nextPosition);
+          if (dist > 0.003) {
+            setCurrentHeadingDegrees(calculateBearing(prev, nextPosition));
+          }
+        }
+
         previousPositionRef.current = nextPosition;
         previousPositionTimestampRef.current = nextTimestamp;
         previousAcceptedSpeedRef.current = nextSpeed;
@@ -133,6 +157,7 @@ export function useNavigationGpsTracking({
       (error) => {
         previousAcceptedSpeedRef.current = null;
         setCurrentSpeedMph(null);
+        setCurrentHeadingDegrees(null);
         setGpsAccuracyMeters(null);
         if (error.code === 1) {
           setGpsError("Location permission denied. Please allow location access and retry.");
@@ -156,6 +181,7 @@ export function useNavigationGpsTracking({
       if (Date.now() - lastGpsUpdateRef.current > GPS_STALE_THRESHOLD_MS) {
         previousAcceptedSpeedRef.current = null;
         setCurrentSpeedMph(null);
+        setCurrentHeadingDegrees(null);
         setGpsAccuracyMeters(null);
         setGpsStatus("stale");
         // Auto-retry the watch once per stale episode to recover from transient signal drops
@@ -224,6 +250,7 @@ export function useNavigationGpsTracking({
 
   return {
     currentPosition,
+    currentHeadingDegrees,
     currentSpeedMph,
     gpsAccuracyMeters,
     gpsError,
