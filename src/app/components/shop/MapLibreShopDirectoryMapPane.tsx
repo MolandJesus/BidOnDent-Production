@@ -433,6 +433,8 @@ export default function MapLibreShopDirectoryMapPane({
             latitude: initialCenter?.latitude ?? 41.0534,
             zoom: initialZoom ?? 11,
           }}
+          maxBounds={[-180, -75, 180, 85]}
+          maxPitch={tileMode === "satellite" ? 60 : 0}
           mapStyle={mapStyle}
           style={{ width: "100%", height: "100%" }}
           cursor={cursor}

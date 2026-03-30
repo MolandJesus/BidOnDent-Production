@@ -378,11 +378,13 @@ export default function MapLibreReportLayer({
                 offset={16}
               >
                 <div className="min-w-[160px] space-y-1 p-1">
-                  <div className="text-sm font-semibold text-slate-900">
+                  <div
+                    className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-900"}`}
+                  >
                     {selectedReport.vehicle_year} {selectedReport.vehicle_make}{" "}
                     {selectedReport.vehicle_model}
                   </div>
-                  <div className="text-xs text-slate-600">
+                  <div className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                     {selectedReport.damage_type} &middot; {selectedReport.damage_severity}
                   </div>
                   {selectedReport.status && (
@@ -390,11 +392,17 @@ export default function MapLibreReportLayer({
                       className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
                         selectedReport.status === "in-repair" ||
                         selectedReport.status === "approved"
-                          ? "bg-green-100 text-green-700"
+                          ? isDark
+                            ? "bg-green-900/50 text-green-300"
+                            : "bg-green-100 text-green-700"
                           : selectedReport.status === "resolved" ||
                               selectedReport.status === "completed"
-                            ? "bg-slate-100 text-slate-600"
-                            : "bg-amber-100 text-amber-700"
+                            ? isDark
+                              ? "bg-slate-700/50 text-slate-300"
+                              : "bg-slate-100 text-slate-600"
+                            : isDark
+                              ? "bg-amber-900/50 text-amber-300"
+                              : "bg-amber-100 text-amber-700"
                       }`}
                     >
                       {selectedReport.status

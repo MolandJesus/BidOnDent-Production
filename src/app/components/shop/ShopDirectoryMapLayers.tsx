@@ -184,6 +184,17 @@ export default function ShopDirectoryMapLayers({
 
       {originGeoJson && (
         <Source id="origin-source" type="geojson" data={originGeoJson}>
+          {/* ── Origin glow ring ── */}
+          <Layer
+            id="origin-glow"
+            type="circle"
+            paint={{
+              "circle-radius": 18,
+              "circle-color": "#f97316",
+              "circle-opacity": 0.12,
+              "circle-stroke-width": 0,
+            }}
+          />
           <Layer
             id={ORIGIN_LAYER}
             type="circle"
@@ -194,6 +205,30 @@ export default function ShopDirectoryMapLayers({
               "circle-stroke-width": 3,
               "circle-stroke-color": "#fff7ed",
             }}
+          />
+          {/* ── Origin label ── */}
+          <Layer
+            id="origin-label"
+            type="symbol"
+            layout={
+              {
+                "text-field": ["get", "name"],
+                "text-size": 11,
+                "text-offset": [0, -1.8],
+                "text-anchor": "bottom",
+                "text-max-width": 12,
+                "text-allow-overlap": false,
+                "text-optional": true,
+              } as Record<string, unknown>
+            }
+            paint={
+              {
+                "text-color": isDark ? "#fdba74" : "#c2410c",
+                "text-halo-color": isDark ? "#0f172a" : "#ffffff",
+                "text-halo-width": 1.5,
+                "text-opacity": 0.85,
+              } as Record<string, unknown>
+            }
           />
         </Source>
       )}
