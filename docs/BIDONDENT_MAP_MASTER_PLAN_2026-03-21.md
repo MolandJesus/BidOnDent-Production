@@ -1,3 +1,8 @@
+### Implementation Note — Pass T587 Map Empty State Overlay (2026-03-30)
+
+- Added a centered, theme-aware glass overlay when no shops are available on the map pane.
+- Strategic effect: **The map never shows a confusing blank canvas.** Empty state handling is now complete across list, immersive, and map-pane views. Users always know what to do next.
+
 ### Implementation Note — Pass T586 GeolocateControl (2026-03-30)
 
 - Added `GeolocateControl` with user location tracking at bottom-right.

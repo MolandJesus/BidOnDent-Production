@@ -1,3 +1,15 @@
+## Pass T587 — Map empty state overlay (2026-03-30)
+
+- **Why this pass was chosen:** When no shops matched filters, the map showed an empty canvas with a "0" badge but no user-facing message. The list panel had "No shops matched" but the map pane had nothing.
+- **What changed:**
+  - Added centered glass-card overlay: "No shops in this area" + "Try a different location or broaden your filters".
+  - Theme-aware (dark/light), non-blocking (pointer-events-none on container, pointer-events-auto on card).
+  - Only shows when `shops.length === 0`.
+- **Files touched:** `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 2.96s. Diagnostics: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (no empty state on map pane)
+- **What this unlocks:** Users see clear guidance when no shops are visible. No more blank map confusion.
+
 ## Pass T586 — GeolocateControl — My Location button (2026-03-30)
 
 - **Why this pass was chosen:** Users without active navigation had no way to center the map on their current location. Standard mapping apps always offer a "My Location" affordance.

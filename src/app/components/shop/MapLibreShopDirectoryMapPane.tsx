@@ -491,6 +491,24 @@ export default function MapLibreShopDirectoryMapPane({
         </Map>
       </NavigationErrorBoundary>
 
+      {/* ── Empty state overlay ── */}
+      {shops.length === 0 && (
+        <div className="pointer-events-none absolute inset-0 z-[450] flex items-center justify-center">
+          <div
+            className={`pointer-events-auto rounded-2xl border px-5 py-4 text-center shadow-xl backdrop-blur-md ${
+              isDark
+                ? "border-white/20 bg-slate-950/80 text-white"
+                : "border-black/8 bg-white/88 text-slate-700"
+            }`}
+          >
+            <p className="text-sm font-semibold">No shops in this area</p>
+            <p className={`mt-1 text-xs ${isDark ? "text-white/60" : "text-slate-400"}`}>
+              Try a different location or broaden your filters
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* ── Bottom gradient overlay: selected shop card + legend ── */}
       <MapPaneBottomOverlay
         isDark={isDark}
