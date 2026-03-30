@@ -8,6 +8,7 @@ import type { DamageReport } from "../../services/supabase/types";
 import type { MapTheme } from "../../types/mapDomain";
 
 const LAYER_ID = "report-markers-circle";
+const LABEL_LAYER_ID = "report-markers-label";
 const CLUSTER_LAYER_ID = "report-clusters-circle";
 const CLUSTER_COUNT_LAYER_ID = "report-clusters-count";
 
@@ -226,6 +227,32 @@ export default function MapLibreReportLayer({
                 isDark ? "#94a3b8" : "#334155",
                 isDark ? "#fcd34d" : "#92400e",
               ],
+            } as Record<string, unknown>
+          }
+        />
+        {/* ── Report labels at high zoom (unclustered) ── */}
+        <Layer
+          id={LABEL_LAYER_ID}
+          type="symbol"
+          filter={["!", ["has", "point_count"]]}
+          minzoom={13}
+          layout={
+            {
+              "text-field": ["get", "vehicle"],
+              "text-size": ["interpolate", ["linear"], ["zoom"], 13, 9, 16, 12],
+              "text-offset": [0, 1.8],
+              "text-anchor": "top",
+              "text-max-width": 12,
+              "text-allow-overlap": false,
+              "text-optional": true,
+            } as Record<string, unknown>
+          }
+          paint={
+            {
+              "text-color": isDark ? "#fcd34d" : "#92400e",
+              "text-halo-color": isDark ? "#0f172a" : "#ffffff",
+              "text-halo-width": 1.5,
+              "text-opacity": 0.85,
             } as Record<string, unknown>
           }
         />

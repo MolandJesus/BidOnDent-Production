@@ -1,3 +1,8 @@
+### Implementation Note — Pass T582 Report Label Layer (2026-03-30)
+
+- Added vehicle-info text labels for unclustered report markers at zoom 13+.
+- Strategic effect: **Reports now have the same label treatment as shops.** Both data layers are readable at high zoom without clicking. The map achieves visual parity between its two primary marker systems.
+
 ### Implementation Note — Pass T581 Report Marker Status Colors and Rich Popup (2026-03-30)
 
 - Report markers now color by status: amber=pending, green=active-repair, slate=resolved. Theme-aware.

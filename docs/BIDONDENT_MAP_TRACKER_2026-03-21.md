@@ -1,3 +1,16 @@
+## Pass T582 — Report label layer at high zoom (2026-03-30)
+
+- **Why this pass was chosen:** Shop markers had text labels at zoom 12+, but report markers had no labels at any zoom. When zoomed in, report dots were anonymous amber circles with no vehicle context until clicked.
+- **What changed:**
+  - Added `LABEL_LAYER_ID` symbol layer for unclustered reports at minzoom 13.
+  - Labels display vehicle info (year make model) with interpolated text size (9–12 by zoom).
+  - Theme-aware text color (amber on dark, brown on light) with halo for readability.
+  - Labels use `text-allow-overlap: false` and `text-optional: true` to avoid clutter.
+- **Files touched:** `src/app/components/maps/MapLibreReportLayer.tsx`
+- **Validation:** Build: 0 errors, 2.96s. Diagnostics: 0. Spellcheck: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (report markers had no labels at any zoom)
+- **What this unlocks:** Both marker systems now have high-zoom labels. Reports show vehicle identity at a glance without requiring a click.
+
 ## Pass T581 — Report marker status colors and rich popup (2026-03-30)
 
 - **Why this pass was chosen:** All report markers were identical amber circles regardless of status, and the popup showed only "Damage Report" with no actionable info. Users couldn't distinguish pending from in-repair from resolved at a glance.
