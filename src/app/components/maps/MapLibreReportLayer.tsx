@@ -15,11 +15,13 @@ const CLUSTER_COUNT_LAYER_ID = "report-clusters-count";
 type MapLibreReportLayerProps = {
   mapTheme?: MapTheme;
   onViewReportDetail?: (reportId: string) => void;
+  visible?: boolean;
 };
 
 export default function MapLibreReportLayer({
   mapTheme = "dark",
   onViewReportDetail,
+  visible = true,
 }: MapLibreReportLayerProps) {
   const isDark = mapTheme === "dark";
   const [reports, setReports] = useState<DamageReport[]>([]);
@@ -152,6 +154,8 @@ export default function MapLibreReportLayer({
     setDrawerOpen(open);
     if (!open) setSelectedReport(null);
   };
+
+  if (!visible) return null;
 
   return (
     <>

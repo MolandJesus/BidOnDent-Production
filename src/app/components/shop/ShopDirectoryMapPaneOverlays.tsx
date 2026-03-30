@@ -45,6 +45,8 @@ type BottomOverlayProps = {
   compact?: boolean;
   showSavedPlaces?: boolean;
   onToggleSavedPlaces?: () => void;
+  showReports?: boolean;
+  onToggleReports?: () => void;
 };
 
 type SearchPillsProps = {
@@ -144,6 +146,8 @@ export function MapPaneBottomOverlay({
   compact,
   showSavedPlaces,
   onToggleSavedPlaces,
+  showReports,
+  onToggleReports,
 }: BottomOverlayProps) {
   const t = useOverlayTokens(isDark);
   const sessionBadgeClass = hasArrived
@@ -343,10 +347,24 @@ export function MapPaneBottomOverlay({
               <span className={`inline-block h-2.5 w-2.5 rounded-full ${t.topPickDot}`} />
               Top pick
             </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
-              Reports
-            </span>
+            {onToggleReports ? (
+              <button
+                type="button"
+                onClick={onToggleReports}
+                className={`inline-flex items-center gap-1 rounded px-1 -mx-1 transition-opacity ${
+                  showReports ? "opacity-100" : "opacity-40"
+                }`}
+                title={showReports ? "Hide reports" : "Show reports"}
+              >
+                <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
+                Reports
+              </button>
+            ) : (
+              <span className="inline-flex items-center gap-1">
+                <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
+                Reports
+              </span>
+            )}
             {onToggleSavedPlaces && (
               <button
                 type="button"

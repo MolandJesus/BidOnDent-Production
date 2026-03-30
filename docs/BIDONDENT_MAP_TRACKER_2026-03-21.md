@@ -1,3 +1,15 @@
+## Pass T589 — Report layer toggle (2026-03-30)
+
+- **Why this pass was chosen:** Reports layer always rendered with no user control. Following the saved-places toggle pattern from T585, users should be able to hide reports to reduce visual clutter when exploring shops.
+- **What changed:**
+  - Added `visible` prop to `MapLibreReportLayer` with early-return null when hidden.
+  - Made "Reports" legend item clickable with on/off opacity feedback.
+  - Added `showReports` state in MapPane wired to both the layer and the legend toggle.
+- **Files touched:** `MapLibreReportLayer.tsx`, `ShopDirectoryMapPaneOverlays.tsx`, `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 2.97s. Diagnostics: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (reports not toggleable)
+- **What this unlocks:** Two of the three optional layers are now toggleable (saved places + reports). Interactive legend pattern is established.
+
 ## Pass T588 — FullscreenControl button (2026-03-30)
 
 - **Why this pass was chosen:** Desktop users had no way to expand the map pane to full browser viewport. FullscreenControl is a standard map affordance used in Google Maps and Apple Maps.

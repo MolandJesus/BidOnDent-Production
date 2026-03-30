@@ -1,3 +1,8 @@
+### Implementation Note — Pass T589 Report Layer Toggle (2026-03-30)
+
+- Added `visible` prop to `MapLibreReportLayer` and clickable "Reports" toggle in the legend.
+- Strategic effect: **The interactive legend pattern is now established for two layers** (saved places T585, reports T589). Users can declutter the map at will. Route toggle would complete the trifecta.
+
 ### Implementation Note — Pass T588 FullscreenControl (2026-03-30)
 
 - Added `FullscreenControl` at top-right for desktop viewport expansion.

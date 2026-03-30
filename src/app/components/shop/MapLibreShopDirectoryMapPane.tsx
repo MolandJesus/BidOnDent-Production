@@ -116,6 +116,7 @@ export default function MapLibreShopDirectoryMapPane({
   const [hasPanned, setHasPanned] = useState(false);
   const [cursor, setCursor] = useState("");
   const [showSavedPlaces, setShowSavedPlaces] = useState(true);
+  const [showReports, setShowReports] = useState(true);
   const [shopPopup, setShopPopup] = useState<{
     lng: number;
     lat: number;
@@ -441,7 +442,7 @@ export default function MapLibreShopDirectoryMapPane({
           />
 
           {/* Report markers (Supabase-fetched) */}
-          <MapLibreReportLayer mapTheme={mapTheme} onViewReportDetail={onViewReportDetail} />
+          <MapLibreReportLayer mapTheme={mapTheme} onViewReportDetail={onViewReportDetail} visible={showReports} />
 
           <ShopDirectoryMapLayers
             isDark={isDark}
@@ -530,6 +531,8 @@ export default function MapLibreShopDirectoryMapPane({
         compact={Boolean(children && selectedRoute)}
         showSavedPlaces={showSavedPlaces}
         onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
+        showReports={showReports}
+        onToggleReports={() => setShowReports((v) => !v)}
       />
 
       {/* Search area pills */}
