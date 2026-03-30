@@ -3,6 +3,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Map,
+  Popup,
   FullscreenControl,
   GeolocateControl,
   NavigationControl,
@@ -32,7 +33,11 @@ import { mapLibreStyles } from "../maps/mapLibreStyles";
 import type { MapTileMode } from "../maps/serviceCoverageMapTypes";
 import MapLibreReportLayer from "../maps/MapLibreReportLayer";
 import MapLibreShopDirectoryViewportManager from "./MapLibreShopDirectoryViewportManager";
-import ShopDirectoryMapLayers, { SHOP_LAYER, SHOP_CLUSTER_LAYER } from "./ShopDirectoryMapLayers";
+import ShopDirectoryMapLayers, {
+  SHOP_LAYER,
+  SHOP_CLUSTER_LAYER,
+  SAVED_PLACES_LAYER,
+} from "./ShopDirectoryMapLayers";
 import { MapLibreFollowLocationController } from "../maps/mapLibreControllers";
 import {
   MapPaneHeaderBadges,
@@ -145,6 +150,12 @@ export default function MapLibreShopDirectoryMapPane({
     lng: number;
     lat: number;
     shop: ShopMapListing;
+  } | null>(null);
+  const [savedPlacePopup, setSavedPlacePopup] = useState<{
+    lng: number;
+    lat: number;
+    label: string;
+    address?: string;
   } | null>(null);
 
   /* Keep popup aligned with selected shop, regardless of map/list origin */
@@ -361,13 +372,14 @@ export default function MapLibreShopDirectoryMapPane({
   );
 
   /* ── Interaction ──────────────────────────────────────────────────── */
-  const interactiveLayerIds = [SHOP_LAYER, SHOP_CLUSTER_LAYER];
+  const interactiveLayerIds = [SHOP_LAYER, SHOP_CLUSTER_LAYER, SAVED_PLACES_LAYER];
 
   const handleMapClick = useCallback(
     (e: MapLayerMouseEvent) => {
       const feature = e.features?.[0];
       if (!feature) {
         setShopPopup(null);
+        setSavedPlacePopup(null);
         // Deselect shop on empty map tap — only when not actively navigating
         if (navigationSessionStatus === "idle" || navigationSessionStatus === "ended") {
           onSelectShop(null);
@@ -400,6 +412,7 @@ export default function MapLibreShopDirectoryMapPane({
       if (feature.layer?.id === SHOP_LAYER) {
         const shopId = feature.properties?.id;
         if (shopId != null) {
+          setSavedPlacePopup(null);
           onSelectShop(Number(shopId));
           const shop = shops.find((s) => s.id === Number(shopId));
           if (shop) {
@@ -411,13 +424,25 @@ export default function MapLibreShopDirectoryMapPane({
           }
         }
       }
+      if (feature.layer?.id === SAVED_PLACES_LAYER) {
+        const coords = (feature.geometry as GeoJSON.Point).coordinates;
+        setSavedPlacePopup({
+          lng: coords[0],
+          lat: coords[1],
+          label: String(feature.properties?.label || "Saved Place"),
+          address: feature.properties?.address ? String(feature.properties.address) : undefined,
+        });
+      }
     },
     [onSelectShop, shops, navigationSessionStatus]
   );
 
   const handleMapMouseMove = useCallback((e: MapLayerMouseEvent) => {
     const isHoveringInteractive = e.features?.some(
-      (feature) => feature.layer?.id === SHOP_LAYER || feature.layer?.id === SHOP_CLUSTER_LAYER
+      (feature) =>
+        feature.layer?.id === SHOP_LAYER ||
+        feature.layer?.id === SHOP_CLUSTER_LAYER ||
+        feature.layer?.id === SAVED_PLACES_LAYER
     );
     setCursor(isHoveringInteractive ? "pointer" : "");
   }, []);
@@ -546,6 +571,31 @@ export default function MapLibreShopDirectoryMapPane({
               onOpenShopDirections={onOpenShopDirections}
               onStartNavigation={onStartNavigation}
             />
+          )}
+
+          {/* ── Saved place popup ── */}
+          {savedPlacePopup && (
+            <Popup
+              longitude={savedPlacePopup.lng}
+              latitude={savedPlacePopup.lat}
+              anchor="bottom"
+              offset={12}
+              closeOnClick={false}
+              onClose={() => setSavedPlacePopup(null)}
+            >
+              <div className="min-w-[120px] space-y-0.5 p-1">
+                <p
+                  className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}
+                >
+                  {savedPlacePopup.label}
+                </p>
+                {savedPlacePopup.address && (
+                  <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    {savedPlacePopup.address}
+                  </p>
+                )}
+              </div>
+            </Popup>
           )}
         </Map>
       </NavigationErrorBoundary>
