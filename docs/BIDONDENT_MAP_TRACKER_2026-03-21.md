@@ -1,3 +1,15 @@
+## Pass T574 — Trip analytics summary post-arrival (2026-03-30)
+
+- **Why this pass was chosen:** The guidance card arrival state showed only "You've arrived" and a single trip-duration line. Users navigating to a shop had no reflection moment or trip analytics — the arrival felt abrupt and incomplete.
+- **What changed:**
+  - Replaced the sparse arrival banner with a richer trip-summary card containing a 3-column stats grid (Duration, Distance, vs ETA).
+  - Added `formatEtaComparison()` helper that compares actual trip seconds against the original route estimate and shows "On time", "Xm faster", or "Xm slower".
+  - Arrival card retains the emerald success treatment but now uses the same glass-chip stat tiles as the in-drive HUD for visual consistency.
+- **Files touched:** `src/app/components/shop/ShopDirectoryGuidanceCard.tsx`
+- **Validation:** Build: 0 errors, 2.95s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (arrival moment lacked trip-level insight)
+- **What this unlocks:** Post-arrival now gives users a meaningful trip reflection moment. Sets the foundation for trip history and analytics features.
+
 ## Pass T573 — Shop guidance GPS recovery actions (2026-03-30)
 
 - **Why this pass was chosen:** Shop turn-by-turn guidance could show degraded GPS status, but it still gave the driver only passive warning state. When GPS became stale, lost, or denied, the live guidance HUD had no direct recovery action even though the underlying GPS hook already supported retries.

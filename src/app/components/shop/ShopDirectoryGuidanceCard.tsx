@@ -101,6 +101,14 @@ function getGpsRecoveryMessage(gpsStatus: GpsStatus, gpsError: string | undefine
   return "GPS signal stale — no fresh location update in the last 10 seconds.";
 }
 
+function formatEtaComparison(actualSeconds: number, estimatedMinutes: number) {
+  const actualMinutes = Math.round(actualSeconds / 60);
+  const diff = actualMinutes - estimatedMinutes;
+  if (Math.abs(diff) <= 1) return "On time";
+  if (diff > 0) return `${diff}m slower`;
+  return `${Math.abs(diff)}m faster`;
+}
+
 export default function ShopDirectoryGuidanceCard({
   selectedOrigin,
   selectedShop,
@@ -309,26 +317,54 @@ export default function ShopDirectoryGuidanceCard({
 
         {hasArrived ? (
           <div
-            className={`mt-2 flex items-start gap-2.5 rounded-xl border px-3 py-2.5 ${
+            className={`mt-2 rounded-xl border px-3 py-2.5 ${
               isDark
                 ? "border-emerald-400/25 bg-emerald-400/10"
                 : "border-emerald-200 bg-emerald-50"
             }`}
           >
-            <CheckCircle2
-              className={`mt-0.5 h-4 w-4 shrink-0 ${isDark ? "text-emerald-300" : "text-emerald-600"}`}
-            />
-            <div className="min-w-0 flex-1">
+            <div className="flex items-start gap-2.5">
+              <CheckCircle2
+                className={`mt-0.5 h-4 w-4 shrink-0 ${isDark ? "text-emerald-300" : "text-emerald-600"}`}
+              />
               <p
                 className={`text-xs font-semibold leading-5 ${isDark ? "text-emerald-100" : "text-emerald-800"}`}
               >
                 You've arrived at {selectedShop.name}
               </p>
-              <p
-                className={`mt-0.5 text-[11px] leading-4 ${isDark ? "text-emerald-200/60" : "text-emerald-600/70"}`}
-              >
-                Trip duration: {formatActiveDuration(sessionActiveSeconds)}
-              </p>
+            </div>
+            <div className={`mt-2.5 grid grid-cols-3 gap-1.5 border-t pt-2.5 ${divider}`}>
+              <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
+                <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>
+                  Duration
+                </p>
+                <p
+                  className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
+                >
+                  {formatActiveDuration(sessionActiveSeconds)}
+                </p>
+              </div>
+              <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
+                <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>
+                  Distance
+                </p>
+                <p
+                  className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
+                >
+                  {selectedRoute.totalDistanceLabel}
+                </p>
+              </div>
+              <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
+                <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>vs ETA</p>
+                <p
+                  className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
+                >
+                  {formatEtaComparison(
+                    sessionActiveSeconds,
+                    selectedRoute.estimatedDurationMinutes
+                  )}
+                </p>
+              </div>
             </div>
           </div>
         ) : routeSummary.description ? (

@@ -1,3 +1,9 @@
+### Implementation Note — Pass T574 Trip Analytics Summary Post-Arrival (2026-03-30)
+
+- Enhanced the shop guidance card arrival section from a single-line "Trip duration" message to a full trip-summary card with a 3-column stats grid (Duration, Distance, vs ETA).
+- Added `formatEtaComparison()` to surface how the actual trip compared to the original route estimate.
+- Strategic effect: **The arrival moment now provides trip-level analytics instead of a dead-end confirmation.** The stats grid reuses the in-drive glass-chip pattern for visual consistency. This creates a natural hook for future trip history and cloud-synced analytics.
+
 ### Implementation Note — Pass T573 Shop Guidance GPS Recovery Actions (2026-03-30)
 
 - Exposed shop-navigation `retryGps` through the shop map orchestration layer and into the active guidance card.
