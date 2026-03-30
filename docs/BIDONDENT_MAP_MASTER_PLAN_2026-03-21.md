@@ -1,3 +1,8 @@
+### Implementation Note — Pass T592 Legend Touch Targets + Accessibility (2026-03-30)
+
+- All three legend toggle buttons now meet 44px mobile touch target minimum and carry `aria-label` + `aria-pressed` attributes.
+- Strategic effect: **The interactive legend is now fully accessible.** Touch, keyboard, and screen reader users can all toggle map layers confidently. This completes the legend control system started in T585.
+
 ### Implementation Note — Pass T591 Fix routesGeoJson Type Error (2026-03-30)
 
 - Resolved long-standing type mismatch between GeoJSON standard types (`properties: null`) and the strict `LineFeatureCollection` type (`properties: Record<string, unknown>`).

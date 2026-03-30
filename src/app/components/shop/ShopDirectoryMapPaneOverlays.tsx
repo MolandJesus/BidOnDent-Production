@@ -355,7 +355,9 @@ export function MapPaneBottomOverlay({
               <button
                 type="button"
                 onClick={onToggleReports}
-                className={`inline-flex items-center gap-1 rounded px-1 -mx-1 transition-opacity ${
+                aria-label={showReports ? "Hide reports" : "Show reports"}
+                aria-pressed={showReports}
+                className={`inline-flex min-h-[44px] items-center gap-1 rounded px-1.5 -mx-1 transition-opacity ${
                   showReports ? "opacity-100" : "opacity-40"
                 }`}
                 title={showReports ? "Hide reports" : "Show reports"}
@@ -373,7 +375,9 @@ export function MapPaneBottomOverlay({
               <button
                 type="button"
                 onClick={onToggleSavedPlaces}
-                className={`inline-flex items-center gap-1 rounded px-1 -mx-1 transition-opacity ${
+                aria-label={showSavedPlaces ? "Hide saved places" : "Show saved places"}
+                aria-pressed={showSavedPlaces}
+                className={`inline-flex min-h-[44px] items-center gap-1 rounded px-1.5 -mx-1 transition-opacity ${
                   showSavedPlaces ? "opacity-100" : "opacity-40"
                 }`}
                 title={showSavedPlaces ? "Hide saved places" : "Show saved places"}
@@ -386,7 +390,9 @@ export function MapPaneBottomOverlay({
               <button
                 type="button"
                 onClick={onToggleRoutes}
-                className={`inline-flex items-center gap-1 rounded px-1 -mx-1 transition-opacity ${
+                aria-label={showRoutes ? "Hide routes" : "Show routes"}
+                aria-pressed={showRoutes}
+                className={`inline-flex min-h-[44px] items-center gap-1 rounded px-1.5 -mx-1 transition-opacity ${
                   showRoutes ? "opacity-100" : "opacity-40"
                 }`}
                 title={showRoutes ? "Hide routes" : "Show routes"}

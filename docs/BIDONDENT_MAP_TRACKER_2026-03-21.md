@@ -1,3 +1,15 @@
+## Pass T592 — Legend touch targets + accessibility (2026-03-30)
+
+- **Why this pass was chosen:** Legend toggle buttons had ~20px touch targets (below 44px mobile minimum) and no ARIA attributes for screen readers.
+- **What changed:**
+  - Added `min-h-[44px]` to all 3 legend toggle buttons (Reports, Saved, Routes).
+  - Added `aria-label` and `aria-pressed` to each toggle for screen reader support.
+  - Increased horizontal padding from `px-1` to `px-1.5` for more comfortable taps.
+- **Files touched:** `ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** Build: 0 errors, 2.97s. Diagnostics: 0.
+- **Problem taxonomy:** P4-UX:3/3/0 (touch targets), P4-A11Y:3/3/0 (ARIA labels)
+- **What this unlocks:** Legend toggles meet WCAG AA / Apple HIG touch target minimum. Screen readers can announce toggle state.
+
 ## Pass T591 — Fix routesGeoJson type error (2026-03-30)
 
 - **Why this pass was chosen:** Pre-existing type error on `routesGeoJson` prop in MapPane. GeoJSON standard types allow `properties: null` but the `LineFeatureCollection` type required `Record<string, unknown>`. This has appeared in diagnostics across every recent pass.
