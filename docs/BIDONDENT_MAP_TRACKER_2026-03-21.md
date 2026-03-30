@@ -1,3 +1,18 @@
+## Pass T580 — Report marker clustering with click-to-expand (2026-03-30)
+
+- **Why this pass was chosen:** Report markers rendered individually with no clustering, causing overlapping amber dots at low zoom (especially since reports share ZIP centroid positions). This was the natural complement to shop clustering (T578).
+- **What changed:**
+  - Added MapLibre native clustering to the `damage-reports` GeoJSON source (`cluster: true`, `clusterMaxZoom: 14`, `clusterRadius: 45`).
+  - Added cluster circle layer (amber-themed) with density-stepped sizing.
+  - Added cluster count symbol layer.
+  - Filtered existing report marker layer to unclustered points only.
+  - Added cluster click-to-zoom via `getClusterExpansionZoom()`.
+  - Added pointer cursor on hover for both cluster and individual report markers.
+- **Files touched:** `src/app/components/maps/MapLibreReportLayer.tsx`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0. Spellcheck: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (report markers overlapped at low zoom with no clustering)
+- **What this unlocks:** Both map marker systems (shops + reports) now cluster consistently. Reports remain visually distinct (amber) from shops (blue) at all zoom levels.
+
 ## Pass T579 — Wire viewport search to immersive map (2026-03-30)
 
 - **Why this pass was chosen:** The "Search this area" button and viewport-based shop filtering existed in hybrid/list mode but were not wired to the immersive full-screen map. Users who panned in immersive mode had no way to trigger area-based search.

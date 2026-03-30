@@ -1,3 +1,11 @@
+### Implementation Note — Pass T580 Report Marker Clustering (2026-03-30)
+
+- Added MapLibre native clustering to the report GeoJSON source, consistent with the shop clustering pattern from T578.
+- Amber cluster circles are density-stepped (smaller for few reports, larger for many).
+- Clicking a cluster flies to its expansion zoom. Individual markers retain their detail drawer interaction.
+- Added cursor feedback on both clusters and individual markers.
+- Strategic effect: **Both primary map data layers (shops and reports) now cluster consistently.** At city zoom, reports aggregate into readable amber clusters distinct from blue shop clusters. This prevents the visual collision that occurs when multiple reports share the same ZIP centroid and makes the map usable regardless of data density.
+
 ### Implementation Note — Pass T579 Wire Viewport Search to Immersive Map (2026-03-30)
 
 - Wired `searchWithinViewport`, `onSearchInArea`, `onClearAreaSearch` through the immersive map component to `MapLibreShopDirectoryMapPane`.
