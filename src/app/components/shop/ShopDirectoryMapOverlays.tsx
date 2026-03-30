@@ -238,6 +238,7 @@ export default function ShopDirectoryMapOverlays({
           nextInstruction={nextInstruction}
           followingInstruction={followingInstruction}
           currentSpeedMph={currentSpeedMph}
+          speedLimitMph={speedLimitMph}
           gpsStatus={gpsStatus}
           onPauseNavigation={onPauseNavigation}
           onResumeNavigation={onResumeNavigation}

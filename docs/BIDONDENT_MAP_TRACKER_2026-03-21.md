@@ -1,3 +1,15 @@
+## Pass T572 — Shop guidance speed-limit context wiring (2026-03-30)
+
+- **Why this pass was chosen:** The shop-directory guidance card already had a speed-limit slot, but the live `speedLimitMph` value was never passed through the overlay chain. That left turn-by-turn guidance without a reliable posted-limit context even though the Overpass-backed data path already existed.
+- **What changed:**
+  - Passed `speedLimitMph` from `ShopDirectoryMapOverlays` into `ShopDirectoryGuidanceCard`, fixing the broken live-data handoff.
+  - Refined the guidance-card speed tile so it now shows clearer live comparison copy: `Limit 35`, `At limit 35`, `3 below 35`, or `+5 over 35`.
+  - Preserved the existing over-limit tinting so warning color and comparison copy now reinforce each other instead of relying on color alone.
+- **Files touched:** `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/shop/ShopDirectoryGuidanceCard.tsx`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (posted speed-limit context existed in code but was not reaching the active guidance surface)
+- **What this unlocks:** Shop turn-by-turn guidance now exposes the real posted-limit context already being fetched by the GPS/speed-limit monitor, making live navigation feel more trustworthy and complete.
+
 ## Pass T571 — Bid-sent status on shop request cards (2026-03-30)
 
 - **Why this pass was chosen:** After a shop submitted a bid on a request, the request card still showed "Submit Bid" button — no visual feedback that the bid had been sent. Shops could accidentally try to submit duplicate bids, and had no at-a-glance awareness of which requests they'd already bid on.

@@ -1,3 +1,9 @@
+### Implementation Note — Pass T572 Shop Guidance Speed-Limit Context Wiring (2026-03-30)
+
+- Fixed the live-data handoff for shop turn-by-turn guidance by passing `speedLimitMph` through `ShopDirectoryMapOverlays` into `ShopDirectoryGuidanceCard`.
+- Guidance speed tile now communicates the posted-limit relationship directly with comparison copy (`Limit 35`, `At limit 35`, `3 below 35`, `+5 over 35`) instead of relying on number color alone.
+- Strategic effect: **Shop turn-by-turn guidance now surfaces the real road-speed context already available in the navigation stack.** This closes a trust gap in the live guidance HUD without adding new provider complexity or extra navigation chrome.
+
 ### Implementation Note — Pass T571 Bid-Sent Status on Request Cards (2026-03-30)
 
 - Added `hasBid` prop to ShopRequestCard + `submittedBidIds` Set in ShopRequestsScreen. After successful bid submission, the request card switches from "Submit Bid" button to violet "Bid Sent — Awaiting Response" badge.

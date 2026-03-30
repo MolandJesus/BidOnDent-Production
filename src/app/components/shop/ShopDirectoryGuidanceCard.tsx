@@ -54,6 +54,34 @@ function formatActiveDuration(totalSeconds: number) {
   return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 }
 
+function formatSpeedLimitDetail(
+  currentSpeedMph: number | null | undefined,
+  speedLimitMph: number | null | undefined
+) {
+  if (!Number.isFinite(speedLimitMph)) {
+    return null;
+  }
+
+  const roundedLimit = Math.round(Number(speedLimitMph));
+
+  if (!Number.isFinite(currentSpeedMph) || Number(currentSpeedMph) < 1) {
+    return `Limit ${roundedLimit}`;
+  }
+
+  const roundedCurrentSpeed = Math.round(Number(currentSpeedMph));
+  const overageMph = roundedCurrentSpeed - roundedLimit;
+
+  if (overageMph > 0) {
+    return `+${overageMph} over ${roundedLimit}`;
+  }
+
+  if (overageMph >= -2) {
+    return `At limit ${roundedLimit}`;
+  }
+
+  return `${Math.abs(overageMph)} below ${roundedLimit}`;
+}
+
 export default function ShopDirectoryGuidanceCard({
   selectedOrigin,
   selectedShop,
@@ -143,6 +171,11 @@ export default function ShopDirectoryGuidanceCard({
         : gpsStatus === "denied"
           ? "GPS denied"
           : "GPS lost";
+  const speedLimitDetail = formatSpeedLimitDetail(currentSpeedMph, speedLimitMph);
+  const isOverSpeedLimit =
+    Number.isFinite(currentSpeedMph) &&
+    Number.isFinite(speedLimitMph) &&
+    Number(currentSpeedMph) > Number(speedLimitMph) + 3;
 
   return (
     <div
@@ -294,13 +327,7 @@ export default function ShopDirectoryGuidanceCard({
               <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>Speed</p>
               <p
                 className={`mt-1 text-sm font-semibold ${
-                  speedLimitMph != null &&
-                  currentSpeedMph != null &&
-                  currentSpeedMph > speedLimitMph + 3
-                    ? "text-red-400"
-                    : isDark
-                      ? "text-white"
-                      : "text-slate-800"
+                  isOverSpeedLimit ? "text-red-400" : isDark ? "text-white" : "text-slate-800"
                 }`}
               >
                 {currentSpeedMph != null && currentSpeedMph >= 1
@@ -308,8 +335,14 @@ export default function ShopDirectoryGuidanceCard({
                   : "—"}
                 <span className={`ml-0.5 text-[10px] font-normal ${secondaryText}`}>mph</span>
               </p>
-              {speedLimitMph != null ? (
-                <p className={`mt-0.5 text-[9px] ${secondaryText}`}>Limit {speedLimitMph}</p>
+              {speedLimitDetail ? (
+                <p
+                  className={`mt-0.5 text-[9px] ${
+                    isOverSpeedLimit ? (isDark ? "text-red-300" : "text-red-600") : secondaryText
+                  }`}
+                >
+                  {speedLimitDetail}
+                </p>
               ) : null}
             </div>
             <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
