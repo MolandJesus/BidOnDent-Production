@@ -15,20 +15,26 @@ const CLUSTER_COUNT_LAYER_ID = "report-clusters-count";
 type MapLibreReportLayerProps = {
   mapTheme?: MapTheme;
   onViewReportDetail?: (reportId: string) => void;
+  onReportCountChange?: (count: number, loading: boolean) => void;
   visible?: boolean;
 };
 
 export default function MapLibreReportLayer({
   mapTheme = "dark",
   onViewReportDetail,
+  onReportCountChange,
   visible = true,
 }: MapLibreReportLayerProps) {
   const isDark = mapTheme === "dark";
   const [reports, setReports] = useState<DamageReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<DamageReport | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
-  useEffect(() => {
+  const fetchReports = useCallback(() => {
+    setLoading(true);
+    setFetchError(false);
     let isMounted = true;
     getAllDamageReports()
       .then((data) => {
@@ -37,12 +43,25 @@ export default function MapLibreReportLayer({
       })
       .catch(() => {
         if (!isMounted) return;
+        setFetchError(true);
         setReports([]);
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
       });
     return () => {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
+
+  // Notify parent of report count changes
+  useEffect(() => {
+    onReportCountChange?.(reports.length, loading);
+  }, [reports.length, loading, onReportCountChange]);
 
   // Start with ZIP centroids, then refine with precise geocoding
   const [geocodedCoords, setGeocodedCoords] = useState<Map<string, { lat: number; lng: number }>>(
@@ -196,6 +215,48 @@ export default function MapLibreReportLayer({
 
   return (
     <>
+      {/* ── Report data loading / error indicator ── */}
+      {(loading || fetchError) && (
+        <div className="pointer-events-none absolute left-1/2 top-14 z-20 -translate-x-1/2">
+          {loading && (
+            <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-slate-900/80 px-3 py-1.5 text-xs font-medium text-amber-300 shadow-lg backdrop-blur-md">
+              <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  className="opacity-25"
+                />
+                <path
+                  d="M12 2a10 10 0 0 1 10 10"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+              </svg>
+              Loading reports…
+            </div>
+          )}
+          {fetchError && !loading && (
+            <button
+              onClick={fetchReports}
+              className="pointer-events-auto flex items-center gap-2 rounded-full bg-red-900/80 px-3 py-1.5 text-xs font-medium text-red-200 shadow-lg backdrop-blur-md transition-colors hover:bg-red-800/80"
+            >
+              <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Reports failed — tap to retry
+            </button>
+          )}
+        </div>
+      )}
       <Source
         id="damage-reports"
         type="geojson"

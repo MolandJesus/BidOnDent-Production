@@ -47,6 +47,7 @@ type BottomOverlayProps = {
   onToggleSavedPlaces?: () => void;
   showReports?: boolean;
   onToggleReports?: () => void;
+  reportCount?: number | null;
   showRoutes?: boolean;
   onToggleRoutes?: () => void;
 };
@@ -150,6 +151,7 @@ export function MapPaneBottomOverlay({
   onToggleSavedPlaces,
   showReports,
   onToggleReports,
+  reportCount,
   showRoutes,
   onToggleRoutes,
 }: BottomOverlayProps) {
@@ -364,11 +366,17 @@ export function MapPaneBottomOverlay({
               >
                 <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
                 Reports
+                {reportCount != null && (
+                  <span className="ml-0.5 text-[9px] opacity-60">({reportCount})</span>
+                )}
               </button>
             ) : (
               <span className="inline-flex items-center gap-1">
                 <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
                 Reports
+                {reportCount != null && (
+                  <span className="ml-0.5 text-[9px] opacity-60">({reportCount})</span>
+                )}
               </span>
             )}
             {onToggleSavedPlaces && (

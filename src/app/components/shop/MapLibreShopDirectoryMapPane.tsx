@@ -29,6 +29,7 @@ import type {
   SavedPlace,
 } from "../../types/mapDomain";
 import { mapLibreStyles } from "../maps/mapLibreStyles";
+import type { MapTileMode } from "../maps/serviceCoverageMapTypes";
 import MapLibreReportLayer from "../maps/MapLibreReportLayer";
 import MapLibreShopDirectoryViewportManager from "./MapLibreShopDirectoryViewportManager";
 import ShopDirectoryMapLayers, { SHOP_LAYER, SHOP_CLUSTER_LAYER } from "./ShopDirectoryMapLayers";
@@ -124,6 +125,8 @@ export default function MapLibreShopDirectoryMapPane({
   const [showSavedPlaces, setShowSavedPlaces] = useState(true);
   const [showReports, setShowReports] = useState(true);
   const [showRoutes, setShowRoutes] = useState(true);
+  const [reportCount, setReportCount] = useState<number | null>(null);
+  const [tileMode, setTileMode] = useState<MapTileMode>(mapTheme === "dark" ? "night" : "roadmap");
   const [shopPopup, setShopPopup] = useState<{
     lng: number;
     lat: number;
@@ -156,6 +159,13 @@ export default function MapLibreShopDirectoryMapPane({
     });
   }, [selectedShopId, shops]);
 
+  // Sync tile mode when parent theme changes (unless user has explicitly picked satellite)
+  useEffect(() => {
+    setTileMode((prev) =>
+      prev === "satellite" ? prev : mapTheme === "dark" ? "night" : "roadmap"
+    );
+  }, [mapTheme]);
+
   const selectedShop = shops.find((s) => s.id === selectedShopId) || shops[0] || null;
   const selectedRoute =
     routeOptions.find((r) => r.id === selectedRouteId) || routeOptions[0] || null;
@@ -187,8 +197,8 @@ export default function MapLibreShopDirectoryMapPane({
         navigationSessionDestinationId,
       })
     : directionsActionLabel || "Get Directions";
-  const isDark = mapTheme === "dark";
-  const mapStyle = isDark ? mapLibreStyles.night : mapLibreStyles.roadmap;
+  const isDark = tileMode === "night" || tileMode === "satellite";
+  const mapStyle = mapLibreStyles[tileMode];
   const fitSignature = [
     selectedOrigin?.placeId || selectedOrigin?.name || "no-origin",
     shops.map((s) => s.id).join(","),
@@ -457,6 +467,7 @@ export default function MapLibreShopDirectoryMapPane({
           <MapLibreReportLayer
             mapTheme={mapTheme}
             onViewReportDetail={onViewReportDetail}
+            onReportCountChange={(count, loading) => setReportCount(loading ? null : count)}
             visible={showReports}
           />
 
@@ -510,6 +521,36 @@ export default function MapLibreShopDirectoryMapPane({
         </Map>
       </NavigationErrorBoundary>
 
+      {/* ── Map style picker ── */}
+      <div className="pointer-events-none absolute left-2 top-16 z-[520] sm:left-3 sm:top-20">
+        <div
+          className={`pointer-events-auto flex rounded-lg border shadow-lg backdrop-blur-md ${
+            isDark ? "border-white/20 bg-slate-950/80" : "border-black/8 bg-white/90"
+          }`}
+        >
+          {(["roadmap", "night", "satellite"] as const).map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => setTileMode(mode)}
+              className={`px-2.5 py-1.5 text-[10px] font-semibold transition-colors first:rounded-l-lg last:rounded-r-lg ${
+                tileMode === mode
+                  ? isDark
+                    ? "bg-blue-600/50 text-white"
+                    : "bg-blue-100 text-blue-700"
+                  : isDark
+                    ? "text-white/60 hover:text-white/90"
+                    : "text-slate-500 hover:text-slate-800"
+              }`}
+              aria-label={`${mode === "roadmap" ? "Map" : mode === "night" ? "Dark" : "Satellite"} view`}
+              aria-pressed={tileMode === mode}
+            >
+              {mode === "roadmap" ? "Map" : mode === "night" ? "Dark" : "Satellite"}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* ── Empty state overlay ── */}
       {shops.length === 0 && (
         <div className="pointer-events-none absolute inset-0 z-[450] flex items-center justify-center">
@@ -550,6 +591,7 @@ export default function MapLibreShopDirectoryMapPane({
         onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
         showReports={showReports}
         onToggleReports={() => setShowReports((v) => !v)}
+        reportCount={reportCount}
         showRoutes={showRoutes}
         onToggleRoutes={() => setShowRoutes((v) => !v)}
       />
