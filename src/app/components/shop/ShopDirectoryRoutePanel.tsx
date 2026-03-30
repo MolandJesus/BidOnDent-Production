@@ -4,6 +4,13 @@ import type { DashboardAppearanceMode } from "../../routers/dashboard-router-typ
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { Place, RouteOption } from "../../types/mapDomain";
 
+function formatActiveDuration(totalSeconds: number) {
+  if (totalSeconds < 60) return `${totalSeconds}s`;
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
 export interface ShopDirectoryRoutePanelProps {
   routeSummary: { title: string; description: string };
   routeOptions: RouteOption[];
@@ -23,6 +30,7 @@ export interface ShopDirectoryRoutePanelProps {
   currentStepIndex?: number;
   nextInstruction?: string | null;
   followingInstruction?: string | null;
+  sessionActiveSeconds?: number;
 }
 
 export default function ShopDirectoryRoutePanel({
@@ -44,6 +52,7 @@ export default function ShopDirectoryRoutePanel({
   currentStepIndex = 0,
   nextInstruction,
   followingInstruction,
+  sessionActiveSeconds = 0,
 }: ShopDirectoryRoutePanelProps) {
   const isLight = appearanceMode === "light";
   const isGuidanceMode = mode === "guidance";
@@ -295,8 +304,14 @@ export default function ShopDirectoryRoutePanel({
 
             <div className="mt-4 grid gap-2 sm:grid-cols-3">
               <div className={`rounded-2xl border px-3 py-2.5 ${statCardClass}`}>
-                <p className={`text-[11px] uppercase tracking-[0.18em] ${topLabelClass}`}>Source</p>
-                <p className={`mt-1 text-sm font-semibold ${titleClass}`}>{routeSourceLabel}</p>
+                <p className={`text-[11px] uppercase tracking-[0.18em] ${topLabelClass}`}>
+                  {isGuidanceMode || isArrivedMode ? "Duration" : "Source"}
+                </p>
+                <p className={`mt-1 text-sm font-semibold ${titleClass}`}>
+                  {isGuidanceMode || isArrivedMode
+                    ? formatActiveDuration(sessionActiveSeconds)
+                    : routeSourceLabel}
+                </p>
               </div>
               <div className={`rounded-2xl border px-3 py-2.5 ${statCardClass}`}>
                 <p className={`text-[11px] uppercase tracking-[0.18em] ${topLabelClass}`}>ETA</p>

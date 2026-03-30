@@ -30,6 +30,7 @@ type ShopDirectoryListBodyProps = {
     nextInstruction: string | null;
     followingInstruction: string | null;
     navigationSessionStatus: NavigationSessionStatus;
+    sessionActiveSeconds: number;
   };
   userType: MarketUserType;
   primaryColor: string;
@@ -94,6 +95,7 @@ export default function ShopDirectoryListBody({
           selectedOrigin={session.selectedOrigin}
           selectedRoute={routePanel.selectedRoute}
           selectedShop={session.selectedShop}
+          sessionActiveSeconds={routePanel.sessionActiveSeconds}
           usingLiveRoutes={routePanel.usingLiveRoutes}
         />
       )}

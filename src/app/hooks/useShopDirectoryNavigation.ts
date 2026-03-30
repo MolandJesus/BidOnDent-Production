@@ -305,6 +305,7 @@ export function useShopDirectoryNavigation({
       ? (followingStep?.instruction ?? null)
       : null,
     navigationSessionStatus: navSession.session.status,
+    sessionActiveSeconds: navSession.session.activeSeconds,
   };
 
   const navigationMode: "browse" | "route-preview" | "guidance" =

@@ -1,3 +1,16 @@
+## Pass T575 — List-mode guidance duration parity (2026-03-30)
+
+- **Why this pass was chosen:** The sidebar route panel (list/hybrid layout) showed a basic "Source" stat during guidance and arrival. Unlike the immersive guidance card (enhanced in T574), it had no trip duration display — leaving list-mode users with less trip insight.
+- **What changed:**
+  - Added `sessionActiveSeconds` prop to `ShopDirectoryRoutePanel`.
+  - Wired it through `routePanel` object in `useShopDirectoryNavigation` and `ShopDirectoryListBody`.
+  - Route panel stat grid now shows "Duration" with active trip time during guidance and arrival, replacing "Source" which was redundant with the existing badge.
+  - Added `formatActiveDuration()` helper to the route panel.
+- **Files touched:** `src/app/components/shop/ShopDirectoryRoutePanel.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/hooks/useShopDirectoryNavigation.ts`
+- **Validation:** Build: 0 errors, 2.95s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P3-ARCH:1/1/0 (feature parity gap between immersive and list guidance modes)
+- **What this unlocks:** List-mode guidance now has live trip duration, achieving basic metric parity with the immersive guidance card.
+
 ## Pass T574 — Trip analytics summary post-arrival (2026-03-30)
 
 - **Why this pass was chosen:** The guidance card arrival state showed only "You've arrived" and a single trip-duration line. Users navigating to a shop had no reflection moment or trip analytics — the arrival felt abrupt and incomplete.

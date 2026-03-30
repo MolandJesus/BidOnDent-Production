@@ -1,3 +1,9 @@
+### Implementation Note — Pass T575 List-Mode Guidance Duration Parity (2026-03-30)
+
+- Wired `sessionActiveSeconds` through the `routePanel` data path so the sidebar route panel displays live trip duration during guidance and at arrival.
+- Route panel stat grid swaps "Source" for "Duration" in guidance/arrival modes.
+- Strategic effect: **List-mode guidance now shows real trip metrics instead of redundant route-source labels.** This closes the most visible feature parity gap between immersive and sidebar navigation layouts.
+
 ### Implementation Note — Pass T574 Trip Analytics Summary Post-Arrival (2026-03-30)
 
 - Enhanced the shop guidance card arrival section from a single-line "Trip duration" message to a full trip-summary card with a 3-column stats grid (Duration, Distance, vs ETA).
