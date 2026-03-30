@@ -1,7 +1,13 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Map, FullscreenControl, GeolocateControl, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
+import {
+  Map,
+  FullscreenControl,
+  GeolocateControl,
+  NavigationControl,
+  ScaleControl,
+} from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
@@ -117,6 +123,7 @@ export default function MapLibreShopDirectoryMapPane({
   const [cursor, setCursor] = useState("");
   const [showSavedPlaces, setShowSavedPlaces] = useState(true);
   const [showReports, setShowReports] = useState(true);
+  const [showRoutes, setShowRoutes] = useState(true);
   const [shopPopup, setShopPopup] = useState<{
     lng: number;
     lat: number;
@@ -442,7 +449,11 @@ export default function MapLibreShopDirectoryMapPane({
           />
 
           {/* Report markers (Supabase-fetched) */}
-          <MapLibreReportLayer mapTheme={mapTheme} onViewReportDetail={onViewReportDetail} visible={showReports} />
+          <MapLibreReportLayer
+            mapTheme={mapTheme}
+            onViewReportDetail={onViewReportDetail}
+            visible={showReports}
+          />
 
           <ShopDirectoryMapLayers
             isDark={isDark}
@@ -453,6 +464,7 @@ export default function MapLibreShopDirectoryMapPane({
             savedPlacesGeoJson={savedPlacesGeoJson}
             shopsGeoJson={shopsGeoJson}
             showSavedPlaces={showSavedPlaces}
+            showRoutes={showRoutes}
             navigationSteps={navigationSteps}
             currentStepIndex={currentStepIndex}
             isGuidanceActive={navigationMode === "guidance"}
@@ -533,6 +545,8 @@ export default function MapLibreShopDirectoryMapPane({
         onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
         showReports={showReports}
         onToggleReports={() => setShowReports((v) => !v)}
+        showRoutes={showRoutes}
+        onToggleRoutes={() => setShowRoutes((v) => !v)}
       />
 
       {/* Search area pills */}

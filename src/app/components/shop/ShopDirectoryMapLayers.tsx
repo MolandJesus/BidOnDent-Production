@@ -53,6 +53,7 @@ type ShopDirectoryMapLayersProps = {
   savedPlacesGeoJson: PointFeatureCollection;
   shopsGeoJson: PointFeatureCollection;
   showSavedPlaces?: boolean;
+  showRoutes?: boolean;
   navigationSteps?: NavigationRouteStep[];
   currentStepIndex?: number;
   isGuidanceActive?: boolean;
@@ -67,6 +68,7 @@ export default function ShopDirectoryMapLayers({
   savedPlacesGeoJson,
   shopsGeoJson,
   showSavedPlaces = true,
+  showRoutes = true,
   navigationSteps = [],
   currentStepIndex = 0,
   isGuidanceActive = false,
@@ -98,7 +100,7 @@ export default function ShopDirectoryMapLayers({
 
   return (
     <>
-      {hasRoutes && (
+      {(showRoutes || isGuidanceActive) && hasRoutes && (
         <Source id="routes-source" type="geojson" data={routesGeoJson}>
           {/* Hide unselected routes during guidance */}
           <Layer

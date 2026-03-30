@@ -1,3 +1,15 @@
+## Pass T590 — Route layer toggle (2026-03-30)
+
+- **Why this pass was chosen:** Routes layer had no toggle. Completing the interactive legend pattern started in T585 (saved places) and T589 (reports).
+- **What changed:**
+  - Added `showRoutes` prop to `ShopDirectoryMapLayers`, conditioned on `showRoutes || isGuidanceActive` (routes always show during guidance).
+  - Made "Routes" legend item clickable with on/off opacity feedback.
+  - Added `showRoutes` state in MapPane wired to layers + legend toggle.
+- **Files touched:** `ShopDirectoryMapLayers.tsx`, `ShopDirectoryMapPaneOverlays.tsx`, `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 2.94s. Diagnostics: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (routes not toggleable)
+- **What this unlocks:** All three optional layers (saved places, reports, routes) are now toggleable via the interactive legend. Complete layer control.
+
 ## Pass T589 — Report layer toggle (2026-03-30)
 
 - **Why this pass was chosen:** Reports layer always rendered with no user control. Following the saved-places toggle pattern from T585, users should be able to hide reports to reduce visual clutter when exploring shops.

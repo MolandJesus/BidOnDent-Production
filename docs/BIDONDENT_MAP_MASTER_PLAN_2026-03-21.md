@@ -1,3 +1,8 @@
+### Implementation Note — Pass T590 Route Layer Toggle (2026-03-30)
+
+- Added `showRoutes` toggle with guidance-mode override (routes always visible during navigation).
+- Strategic effect: **All three optional map layers are now user-toggleable** via the interactive legend: saved places (T585), reports (T589), routes (T590). The map legend doubles as a layer control — Apple Maps style. Users have full control over visual density.
+
 ### Implementation Note — Pass T589 Report Layer Toggle (2026-03-30)
 
 - Added `visible` prop to `MapLibreReportLayer` and clickable "Reports" toggle in the legend.
