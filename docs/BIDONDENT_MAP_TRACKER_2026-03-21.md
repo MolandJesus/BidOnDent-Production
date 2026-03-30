@@ -1,3 +1,14 @@
+## Pass T586 — GeolocateControl — My Location button (2026-03-30)
+
+- **Why this pass was chosen:** Users without active navigation had no way to center the map on their current location. Standard mapping apps always offer a "My Location" affordance.
+- **What changed:**
+  - Added `GeolocateControl` from react-map-gl at bottom-right, above zoom buttons.
+  - Tracks user location with `trackUserLocation`, no accuracy circle for cleaner UX.
+- **Files touched:** `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 3.01s. Diagnostics: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (no My Location button)
+- **What this unlocks:** Users can instantly find themselves on the map. Standard map affordance now complete: zoom, scale, geolocate.
+
 ## Pass T585 — Saved places toggle UI (2026-03-30)
 
 - **Why this pass was chosen:** Saved places render unconditionally at 30% opacity with no user control. Users had no way to show/hide them, and the legend didn't even acknowledge their existence.

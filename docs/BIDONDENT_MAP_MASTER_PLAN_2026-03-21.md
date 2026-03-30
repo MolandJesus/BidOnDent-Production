@@ -1,3 +1,8 @@
+### Implementation Note — Pass T586 GeolocateControl (2026-03-30)
+
+- Added `GeolocateControl` with user location tracking at bottom-right.
+- Strategic effect: **All three standard map controls are now present** (zoom, scale, geolocate). The map now matches expected cartographic UX. Users can self-locate without needing to start navigation.
+
 ### Implementation Note — Pass T585 Saved Places Toggle UI (2026-03-30)
 
 - Added `showSavedPlaces` state with clickable legend toggle and conditional rendering in the layers component.
