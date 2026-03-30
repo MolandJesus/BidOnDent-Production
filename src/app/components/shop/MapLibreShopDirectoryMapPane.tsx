@@ -1,7 +1,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Map, GeolocateControl, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
+import { Map, FullscreenControl, GeolocateControl, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
@@ -420,6 +420,7 @@ export default function MapLibreShopDirectoryMapPane({
           attributionControl={{ compact: true }}
         >
           {/* Standard map controls */}
+          <FullscreenControl position="top-right" />
           <GeolocateControl position="bottom-right" trackUserLocation showAccuracyCircle={false} />
           <NavigationControl position="bottom-right" showCompass={false} />
           <ScaleControl position="bottom-left" maxWidth={120} unit="imperial" />

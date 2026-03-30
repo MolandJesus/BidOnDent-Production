@@ -1,3 +1,8 @@
+### Implementation Note — Pass T588 FullscreenControl (2026-03-30)
+
+- Added `FullscreenControl` at top-right for desktop viewport expansion.
+- Strategic effect: **All four standard cartographic controls are now present** (fullscreen, geolocate, zoom, scale). The map now has feature parity with professional mapping apps for basic controls.
+
 ### Implementation Note — Pass T587 Map Empty State Overlay (2026-03-30)
 
 - Added a centered, theme-aware glass overlay when no shops are available on the map pane.

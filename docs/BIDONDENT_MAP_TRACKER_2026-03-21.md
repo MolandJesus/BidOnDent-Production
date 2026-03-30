@@ -1,3 +1,14 @@
+## Pass T588 — FullscreenControl button (2026-03-30)
+
+- **Why this pass was chosen:** Desktop users had no way to expand the map pane to full browser viewport. FullscreenControl is a standard map affordance used in Google Maps and Apple Maps.
+- **What changed:**
+  - Added `FullscreenControl` from react-map-gl at top-right.
+  - All four standard map controls now present: fullscreen, geolocate, zoom, scale.
+- **Files touched:** `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 2.92s. Diagnostics: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (no fullscreen mode)
+- **What this unlocks:** Desktop users can maximize the map for focused spatial exploration.
+
 ## Pass T587 — Map empty state overlay (2026-03-30)
 
 - **Why this pass was chosen:** When no shops matched filters, the map showed an empty canvas with a "0" badge but no user-facing message. The list panel had "No shops matched" but the map pane had nothing.
