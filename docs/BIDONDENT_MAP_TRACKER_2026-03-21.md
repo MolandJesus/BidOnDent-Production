@@ -1,3 +1,15 @@
+## Pass T591 — Fix routesGeoJson type error (2026-03-30)
+
+- **Why this pass was chosen:** Pre-existing type error on `routesGeoJson` prop in MapPane. GeoJSON standard types allow `properties: null` but the `LineFeatureCollection` type required `Record<string, unknown>`. This has appeared in diagnostics across every recent pass.
+- **What changed:**
+  - Added explicit `RouteFeature` type alias in the `routesGeoJson` useMemo.
+  - Replaced `Array<GeoJSON.Feature<GeoJSON.LineString>>` with `RouteFeature[]`.
+  - Type error fully resolved — 0 diagnostics on the file for the first time.
+- **Files touched:** `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 2.97s. Diagnostics: **0 total** (first time).
+- **Problem taxonomy:** P0-BUILD:1/1/0 (type error resolved)
+- **What this unlocks:** Clean diagnostics baseline. All future passes start from 0 errors.
+
 ## Pass T590 — Route layer toggle (2026-03-30)
 
 - **Why this pass was chosen:** Routes layer had no toggle. Completing the interactive legend pattern started in T585 (saved places) and T589 (reports).

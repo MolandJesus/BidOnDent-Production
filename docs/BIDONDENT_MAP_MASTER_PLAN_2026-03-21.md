@@ -1,3 +1,8 @@
+### Implementation Note — Pass T591 Fix routesGeoJson Type Error (2026-03-30)
+
+- Resolved long-standing type mismatch between GeoJSON standard types (`properties: null`) and the strict `LineFeatureCollection` type (`properties: Record<string, unknown>`).
+- Strategic effect: **Clean diagnostics baseline achieved.** All map files now report 0 errors. This unblocks strict TypeScript enforcement and CI type-checking.
+
 ### Implementation Note — Pass T590 Route Layer Toggle (2026-03-30)
 
 - Added `showRoutes` toggle with guidance-mode override (routes always visible during navigation).

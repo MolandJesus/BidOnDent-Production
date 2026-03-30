@@ -219,8 +219,13 @@ export default function MapLibreShopDirectoryMapPane({
   );
 
   const routesGeoJson = useMemo(() => {
+    type RouteFeature = {
+      type: "Feature";
+      geometry: { type: "LineString"; coordinates: number[][] };
+      properties: Record<string, unknown>;
+    };
     const isGuidance = navigationMode === "guidance";
-    const features = routeOptions.flatMap((route) => {
+    const features: RouteFeature[] = routeOptions.flatMap((route) => {
       const coords = route.polyline.map((p) => [p.longitude, p.latitude] as [number, number]);
       const isSelected = route.id === selectedRoute?.id;
       const baseProps = {
@@ -254,7 +259,7 @@ export default function MapLibreShopDirectoryMapPane({
         const travelledCoords = coords.slice(0, closestIdx + 1);
         const remainingCoords = coords.slice(closestIdx);
 
-        const result: Array<GeoJSON.Feature<GeoJSON.LineString>> = [];
+        const result: RouteFeature[] = [];
         if (travelledCoords.length >= 2) {
           result.push({
             type: "Feature",
