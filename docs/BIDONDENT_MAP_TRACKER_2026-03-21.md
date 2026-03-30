@@ -1,3 +1,13 @@
+## Pass T584 — Map legend reports indicator (2026-03-30)
+
+- **Why this pass was chosen:** The map legend showed Origin, Selected, Top pick, and Routes — but had no indicator for report markers. Users seeing amber dots on the map had no reference for what they represented.
+- **What changed:**
+  - Added amber "Reports" dot to the map legend between Top pick and Routes.
+- **Files touched:** `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`
+- **Validation:** Build: 0 errors, 2.96s. Diagnostics: 0. Spellcheck: 0 new.
+- **Problem taxonomy:** P4-UX:1/1/0 (legend missing report marker reference)
+- **What this unlocks:** Complete legend for all visible map marker types. Users can identify all dot types at a glance.
+
 ## Pass T583 — Map zoom and scale controls (2026-03-30)
 
 - **Why this pass was chosen:** The shop directory map had no visible zoom controls or scale indicator. Users on touchpads, desktop mice, or unfamiliar devices had no obvious way to zoom, and there was no distance reference for the current viewport.

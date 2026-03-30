@@ -341,9 +341,7 @@ export default function MapLibreShopDirectoryMapPane({
         const clusterId = feature.properties?.cluster_id;
         const mapInstance = (
           e.target as unknown as {
-            getSource: (
-              id: string
-            ) =>
+            getSource: (id: string) =>
               | {
                   getClusterExpansionZoom: (
                     id: number,

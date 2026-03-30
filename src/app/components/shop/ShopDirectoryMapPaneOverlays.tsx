@@ -340,6 +340,10 @@ export function MapPaneBottomOverlay({
               Top pick
             </span>
             <span className="inline-flex items-center gap-1">
+              <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
+              Reports
+            </span>
+            <span className="inline-flex items-center gap-1">
               <span
                 className="inline-block h-2.5 w-4 rounded border border-current opacity-50"
                 style={{ borderStyle: "dashed" }}

@@ -1,3 +1,8 @@
+### Implementation Note — Pass T584 Map Legend Reports Indicator (2026-03-30)
+
+- Added amber "Reports" dot to the map legend so users can identify report markers.
+- Strategic effect: **The legend now covers all visible marker types.** This completes the visual vocabulary of the map — every dot type is labeled.
+
 ### Implementation Note — Pass T583 Map Zoom and Scale Controls (2026-03-30)
 
 - Added `NavigationControl` (zoom +/−) and `ScaleControl` (imperial, bottom-left) to the shop directory map.
