@@ -6,6 +6,7 @@ import {
   Pause,
   Phone,
   Play,
+  RefreshCw,
   Route,
   Signal,
   SignalLow,
@@ -39,8 +40,10 @@ type ShopDirectoryGuidanceCardProps = {
   currentSpeedMph?: number | null;
   speedLimitMph?: number | null;
   gpsStatus?: GpsStatus;
+  gpsError?: string;
   nextInstruction?: string | null;
   followingInstruction?: string | null;
+  onRetryGps?: () => void;
   onPauseNavigation?: () => void;
   onResumeNavigation?: () => void;
   onEndNavigation?: () => void;
@@ -82,6 +85,22 @@ function formatSpeedLimitDetail(
   return `${Math.abs(overageMph)} below ${roundedLimit}`;
 }
 
+function getGpsRecoveryMessage(gpsStatus: GpsStatus, gpsError: string | undefined) {
+  if (gpsError?.trim()) {
+    return gpsError;
+  }
+
+  if (gpsStatus === "denied") {
+    return "Location permission denied. Allow access, then retry GPS.";
+  }
+
+  if (gpsStatus === "lost") {
+    return "GPS signal lost — turn-by-turn position may be outdated.";
+  }
+
+  return "GPS signal stale — no fresh location update in the last 10 seconds.";
+}
+
 export default function ShopDirectoryGuidanceCard({
   selectedOrigin,
   selectedShop,
@@ -102,8 +121,10 @@ export default function ShopDirectoryGuidanceCard({
   currentSpeedMph,
   speedLimitMph,
   gpsStatus = "active",
+  gpsError,
   nextInstruction,
   followingInstruction,
+  onRetryGps,
   onPauseNavigation,
   onResumeNavigation,
   onEndNavigation,
@@ -176,6 +197,24 @@ export default function ShopDirectoryGuidanceCard({
     Number.isFinite(currentSpeedMph) &&
     Number.isFinite(speedLimitMph) &&
     Number(currentSpeedMph) > Number(speedLimitMph) + 3;
+  const showGpsRecovery = !hasArrived && gpsStatus !== "active";
+  const gpsRecoveryMessage = showGpsRecovery ? getGpsRecoveryMessage(gpsStatus, gpsError) : null;
+  const gpsRecoveryPanel =
+    gpsStatus === "stale"
+      ? isDark
+        ? "border-amber-400/20 bg-amber-400/10 text-amber-100"
+        : "border-amber-200 bg-amber-50 text-amber-700"
+      : isDark
+        ? "border-red-400/20 bg-red-500/10 text-red-100"
+        : "border-red-200 bg-red-50 text-red-700";
+  const gpsRecoveryButton =
+    gpsStatus === "stale"
+      ? isDark
+        ? "bg-amber-400/12 text-amber-100 hover:bg-amber-400/18"
+        : "bg-amber-100 text-amber-800 hover:bg-amber-200"
+      : isDark
+        ? "bg-white/10 text-white hover:bg-white/20"
+        : "bg-black/8 text-slate-700 hover:bg-black/12";
 
   return (
     <div
@@ -310,6 +349,27 @@ export default function ShopDirectoryGuidanceCard({
             <p className="leading-5">
               Using estimated route — live directions temporarily unavailable
             </p>
+          </div>
+        ) : null}
+
+        {showGpsRecovery && gpsRecoveryMessage ? (
+          <div
+            className={`mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${gpsRecoveryPanel}`}
+          >
+            <LocateFixed className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <div className="min-w-0 flex-1">
+              <p className="leading-5">{gpsRecoveryMessage}</p>
+              {onRetryGps ? (
+                <button
+                  className={`mt-2 inline-flex min-h-[32px] items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold transition-colors ${gpsRecoveryButton}`}
+                  onClick={onRetryGps}
+                  type="button"
+                >
+                  <RefreshCw className="h-3 w-3" />
+                  Retry GPS
+                </button>
+              ) : null}
+            </div>
           </div>
         ) : null}
 

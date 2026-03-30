@@ -176,6 +176,7 @@ export default function ShopDirectoryScreen({
           followingInstruction={nav.routePanel.followingInstruction}
           currentSpeedMph={nav.currentSpeedMph}
           gpsStatus={nav.gpsStatus}
+          gpsError={nav.gpsError}
           speedLimitMph={nav.speedLimitMph}
           voiceMode={nav.voiceMode}
           voiceVolumePreset={nav.voiceVolumePreset}
@@ -183,6 +184,7 @@ export default function ShopDirectoryScreen({
           voiceGuidanceSupported={nav.voiceGuidanceSupported}
           onVoiceModeChange={nav.onVoiceModeChange}
           onVoiceVolumePresetChange={nav.onVoiceVolumePresetChange}
+          onRetryGps={nav.onRetryGps}
         />
       </NavigationErrorBoundary>
     );
@@ -396,7 +398,9 @@ export default function ShopDirectoryScreen({
                       followingInstruction={nav.routePanel.followingInstruction}
                       currentSpeedMph={nav.currentSpeedMph}
                       gpsStatus={nav.gpsStatus}
+                      gpsError={nav.gpsError}
                       speedLimitMph={nav.speedLimitMph}
+                      onRetryGps={nav.onRetryGps}
                     />
                     {renderGuidanceOverlay("top-4 sm:top-5")}
                   </>

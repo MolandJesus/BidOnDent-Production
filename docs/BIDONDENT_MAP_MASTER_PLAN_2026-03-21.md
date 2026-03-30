@@ -1,3 +1,9 @@
+### Implementation Note — Pass T573 Shop Guidance GPS Recovery Actions (2026-03-30)
+
+- Exposed shop-navigation `retryGps` through the shop map orchestration layer and into the active guidance card.
+- Added a state-aware recovery banner in `ShopDirectoryGuidanceCard` for degraded GPS states (`stale`, `lost`, `denied`) with a direct `Retry GPS` action.
+- Strategic effect: **Shop turn-by-turn guidance now treats GPS degradation as a recoverable live-driving state, not just a passive warning.** This improves trust in the primary map surface without adding new chrome or splitting the navigation experience into separate dialogs.
+
 ### Implementation Note — Pass T572 Shop Guidance Speed-Limit Context Wiring (2026-03-30)
 
 - Fixed the live-data handoff for shop turn-by-turn guidance by passing `speedLimitMph` through `ShopDirectoryMapOverlays` into `ShopDirectoryGuidanceCard`.

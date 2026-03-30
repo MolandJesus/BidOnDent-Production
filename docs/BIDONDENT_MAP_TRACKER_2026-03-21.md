@@ -1,3 +1,15 @@
+## Pass T573 — Shop guidance GPS recovery actions (2026-03-30)
+
+- **Why this pass was chosen:** Shop turn-by-turn guidance could show degraded GPS status, but it still gave the driver only passive warning state. When GPS became stale, lost, or denied, the live guidance HUD had no direct recovery action even though the underlying GPS hook already supported retries.
+- **What changed:**
+  - Exposed `retryGps` through `useShopDirectoryNavigation` as `onRetryGps` for the live shop guidance session.
+  - Wired `gpsError` and `onRetryGps` through `ShopDirectoryScreen` → `ShopDirectoryImmersiveMap` / hybrid map pane → `ShopDirectoryMapOverlays` → `ShopDirectoryGuidanceCard`.
+  - Added a GPS recovery banner to the shop guidance card for `stale`, `lost`, and `denied` states, with state-aware recovery copy and a direct `Retry GPS` action.
+- **Files touched:** `src/app/hooks/useShopDirectoryNavigation.ts`, `src/app/components/shop/ShopDirectoryScreen.tsx`, `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`, `src/app/components/shop/ShopDirectoryMapOverlays.tsx`, `src/app/components/shop/ShopDirectoryGuidanceCard.tsx`
+- **Validation:** Build: 0 errors, 2.97s. Diagnostics: 0. Spellcheck: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (live navigation exposed GPS degradation but not a recovery action)
+- **What this unlocks:** Shop turn-by-turn now has an honest recovery path when on-device GPS degrades, moving the guidance HUD closer to a full real-world navigation lifecycle instead of a read-only status display.
+
 ## Pass T572 — Shop guidance speed-limit context wiring (2026-03-30)
 
 - **Why this pass was chosen:** The shop-directory guidance card already had a speed-limit slot, but the live `speedLimitMph` value was never passed through the overlay chain. That left turn-by-turn guidance without a reliable posted-limit context even though the Overpass-backed data path already existed.

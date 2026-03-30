@@ -584,6 +584,7 @@ export function useShopDirectoryNavigation({
       : null,
     gpsStatus: liveNavigationForSelectedShop ? shopNavigationGps.gpsStatus : ("active" as const),
     gpsError: liveNavigationForSelectedShop ? shopNavigationGps.gpsError : "",
+    onRetryGps: liveNavigationForSelectedShop ? shopNavigationGps.retryGps : undefined,
 
     voiceMode: guidanceSettings.voiceMode,
     voiceVolumePreset: guidanceSettings.voiceVolumePreset,

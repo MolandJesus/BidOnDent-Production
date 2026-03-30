@@ -73,6 +73,7 @@ type ShopDirectoryImmersiveMapProps = {
   currentSpeedMph?: number | null;
   speedLimitMph?: number | null;
   gpsStatus?: GpsStatus;
+  gpsError?: string;
   followingInstruction?: string | null;
   voiceMode?: NavigationVoiceMode;
   voiceVolumePreset?: NavigationVoiceVolumePreset;
@@ -80,6 +81,7 @@ type ShopDirectoryImmersiveMapProps = {
   voiceGuidanceSupported?: boolean;
   onVoiceModeChange?: (mode: NavigationVoiceMode) => void;
   onVoiceVolumePresetChange?: (preset: NavigationVoiceVolumePreset) => void;
+  onRetryGps?: () => void;
 
   onSearchQueryChange: (query: string) => void;
   onSearchSubmit: (event: FormEvent) => void;
@@ -142,6 +144,7 @@ export default function ShopDirectoryImmersiveMap({
   currentSpeedMph,
   speedLimitMph,
   gpsStatus,
+  gpsError,
   followingInstruction,
   voiceMode = "alerts-only",
   voiceVolumePreset = "normal",
@@ -149,6 +152,7 @@ export default function ShopDirectoryImmersiveMap({
   voiceGuidanceSupported = true,
   onVoiceModeChange,
   onVoiceVolumePresetChange,
+  onRetryGps,
   onSearchQueryChange,
   onSearchSubmit,
   onSelectShop,
@@ -306,7 +310,9 @@ export default function ShopDirectoryImmersiveMap({
               followingInstruction={followingInstruction}
               currentSpeedMph={currentSpeedMph}
               gpsStatus={gpsStatus}
+              gpsError={gpsError}
               speedLimitMph={speedLimitMph}
+              onRetryGps={onRetryGps}
             />
             {guidanceOverlay}
             {isGuidanceMode && (

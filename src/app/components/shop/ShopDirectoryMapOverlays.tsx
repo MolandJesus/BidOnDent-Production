@@ -48,6 +48,8 @@ type ShopDirectoryMapOverlaysProps = {
   currentSpeedMph?: number | null;
   speedLimitMph?: number | null;
   gpsStatus?: GpsStatus;
+  gpsError?: string;
+  onRetryGps?: () => void;
 };
 
 export default function ShopDirectoryMapOverlays({
@@ -85,6 +87,8 @@ export default function ShopDirectoryMapOverlays({
   currentSpeedMph,
   speedLimitMph,
   gpsStatus,
+  gpsError,
+  onRetryGps,
 }: ShopDirectoryMapOverlaysProps) {
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
   const isDark = mapTheme === "dark";
@@ -240,6 +244,8 @@ export default function ShopDirectoryMapOverlays({
           currentSpeedMph={currentSpeedMph}
           speedLimitMph={speedLimitMph}
           gpsStatus={gpsStatus}
+          gpsError={gpsError}
+          onRetryGps={onRetryGps}
           onPauseNavigation={onPauseNavigation}
           onResumeNavigation={onResumeNavigation}
           onEndNavigation={onEndNavigation}
