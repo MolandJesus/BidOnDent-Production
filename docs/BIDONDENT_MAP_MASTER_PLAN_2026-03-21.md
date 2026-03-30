@@ -1,3 +1,8 @@
+### Implementation Note — Pass T594 Report Geocoding (2026-03-30)
+
+- Added `geocodeAddress()` utility with Nominatim integration, caching, and rate-limit compliance. `MapLibreReportLayer` now progressively upgrades report positions from ZIP centroids to exact address coordinates.
+- Strategic effect: **Report markers now show at actual damage locations, not ZIP area centroids.** This is foundational for the report→map→shop→action loop — spatial accuracy enables meaningful nearby-shop discovery. The progressive approach gives instant rendering with gradual refinement.
+
 ### Implementation Note — Pass T593 Compass Reset for Navigation Guidance (2026-03-30)
 
 - Compass button now appears on NavigationControl during guidance mode only.

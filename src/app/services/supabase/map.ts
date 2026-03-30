@@ -26,6 +26,60 @@ export function zipToCoordinates(zipCode?: string): Coordinates | null {
   return zipPrefixCenters[zip.slice(0, 3)] || null;
 }
 
+/* ── Address geocoding via Nominatim (cached, rate-limited) ─────────── */
+const geocodeCache = new Map<string, Coordinates | null>();
+let lastGeocodeFetch = 0;
+
+export async function geocodeAddress(parts: {
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+}): Promise<Coordinates | null> {
+  const query = [parts.address, parts.city, parts.state, parts.zip].filter(Boolean).join(", ");
+  if (!query) return null;
+
+  const key = query.toLowerCase();
+  if (geocodeCache.has(key)) return geocodeCache.get(key) ?? null;
+
+  // Respect Nominatim rate limit (1 req/sec)
+  const now = Date.now();
+  const wait = Math.max(0, 1050 - (now - lastGeocodeFetch));
+  if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+  lastGeocodeFetch = Date.now();
+
+  try {
+    const url = new URL("https://nominatim.openstreetmap.org/search");
+    url.searchParams.set("format", "jsonv2");
+    url.searchParams.set("limit", "1");
+    url.searchParams.set("countrycodes", "us");
+    url.searchParams.set("q", query);
+
+    const res = await fetch(url.toString(), {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) {
+      geocodeCache.set(key, null);
+      return null;
+    }
+    const data = (await res.json()) as Array<{ lat: string; lon: string }>;
+    if (!data.length) {
+      geocodeCache.set(key, null);
+      return null;
+    }
+    const coords: Coordinates = { lat: Number(data[0].lat), lng: Number(data[0].lon) };
+    if (!Number.isFinite(coords.lat) || !Number.isFinite(coords.lng)) {
+      geocodeCache.set(key, null);
+      return null;
+    }
+    geocodeCache.set(key, coords);
+    return coords;
+  } catch {
+    geocodeCache.set(key, null);
+    return null;
+  }
+}
+
 export function haversineMiles(from: Coordinates, to: Coordinates): number {
   const earthRadiusMiles = 3958.8;
   const dLat = ((to.lat - from.lat) * Math.PI) / 180;

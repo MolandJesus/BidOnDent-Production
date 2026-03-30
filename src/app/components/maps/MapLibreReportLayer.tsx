@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Source, Layer, Popup, useMap } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { getAllDamageReports } from "../../services/supabase/reports";
-import { zipToCoordinates } from "../../services/supabase/map";
+import { zipToCoordinates, geocodeAddress } from "../../services/supabase/map";
 import { ReportDetailDrawer } from "./ReportDetailDrawer";
 import type { DamageReport } from "../../services/supabase/types";
 import type { MapTheme } from "../../types/mapDomain";
@@ -44,18 +44,55 @@ export default function MapLibreReportLayer({
     };
   }, []);
 
+  // Start with ZIP centroids, then refine with precise geocoding
+  const [geocodedCoords, setGeocodedCoords] = useState<Map<string, { lat: number; lng: number }>>(
+    new Map()
+  );
+
+  useEffect(() => {
+    if (reports.length === 0) return;
+    let cancelled = false;
+
+    (async () => {
+      for (const report of reports) {
+        if (cancelled) break;
+        if (!report.address && !report.city) continue;
+        const coords = await geocodeAddress({
+          address: report.address,
+          city: report.city,
+          state: report.state,
+          zip: report.zip_code,
+        });
+        if (cancelled) break;
+        if (coords && report.id) {
+          setGeocodedCoords((prev) => {
+            const next = new Map(prev);
+            next.set(report.id!, coords);
+            return next;
+          });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [reports]);
+
   const reportsWithCoordinates = useMemo(
     () =>
       reports
         .map((report) => {
-          const coords = zipToCoordinates(report.zip_code);
+          // Prefer geocoded address coordinates, fall back to ZIP centroid
+          const geocoded = report.id ? geocodedCoords.get(report.id) : undefined;
+          const coords = geocoded ?? zipToCoordinates(report.zip_code);
           if (!coords) return null;
           return { report, coords };
         })
         .filter((entry): entry is { report: DamageReport; coords: { lat: number; lng: number } } =>
           Boolean(entry)
         ),
-    [reports]
+    [reports, geocodedCoords]
   );
 
   const geojson = useMemo(

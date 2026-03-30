@@ -1,3 +1,16 @@
+## Pass T594 — Report geocoding — precise address coordinates (2026-03-30)
+
+- **Why this pass was chosen:** Reports were positioned at ZIP code prefix centroids (~10 approximate locations for all of NY). A report at "123 Main St, Yonkers" showed at the 107xx centroid — potentially miles from the actual damage. This breaks the report→map→shop spatial accuracy loop.
+- **What changed:**
+  - Added `geocodeAddress()` utility in `map.ts` using Nominatim with caching and rate-limiting (1 req/sec).
+  - `MapLibreReportLayer` now uses progressive geocoding: renders ZIP centroids instantly, then refines to precise address coordinates as geocoding completes.
+  - Reports with address+city+state get geocoded; reports with only ZIP fall back to centroid.
+  - Cache prevents re-fetching on re-renders.
+- **Files touched:** `src/app/services/supabase/map.ts`, `src/app/components/maps/MapLibreReportLayer.tsx`
+- **Validation:** Build: 0 errors, 3.00s. Diagnostics: 0.
+- **Problem taxonomy:** P2-DATA:1/1/0 (report locations inaccurate)
+- **What this unlocks:** Reports show at actual damage locations. Shops can spatially reason about nearby reports. Foundation for report→nearby-shops discovery.
+
 ## Pass T593 — Compass reset for navigation guidance (2026-03-30)
 
 - **Why this pass was chosen:** During turn-by-turn guidance the map rotates to follow heading but users had no way to reset to north-up. Standard maps apps show a compass button when bearing is rotated.
