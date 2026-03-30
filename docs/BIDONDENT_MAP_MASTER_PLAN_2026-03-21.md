@@ -1,3 +1,8 @@
+### Implementation Note — Pass T593 Compass Reset for Navigation Guidance (2026-03-30)
+
+- Compass button now appears on NavigationControl during guidance mode only.
+- Strategic effect: **Navigation UX is now complete with bearing reset.** The full guidance experience includes: voice, turn list, speed overlay, trip summary, GPS recovery, route retry, duration parity, and now compass reset. All standard navigation affordances are present.
+
 ### Implementation Note — Pass T592 Legend Touch Targets + Accessibility (2026-03-30)
 
 - All three legend toggle buttons now meet 44px mobile touch target minimum and carry `aria-label` + `aria-pressed` attributes.

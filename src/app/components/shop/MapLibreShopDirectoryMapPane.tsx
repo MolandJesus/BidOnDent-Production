@@ -435,7 +435,7 @@ export default function MapLibreShopDirectoryMapPane({
           {/* Standard map controls */}
           <FullscreenControl position="top-right" />
           <GeolocateControl position="bottom-right" trackUserLocation showAccuracyCircle={false} />
-          <NavigationControl position="bottom-right" showCompass={false} />
+          <NavigationControl position="bottom-right" showCompass={navigationMode === "guidance"} />
           <ScaleControl position="bottom-left" maxWidth={120} unit="imperial" />
 
           {/* Viewport management (fit, fly, broadcast) */}

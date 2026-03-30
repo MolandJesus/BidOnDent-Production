@@ -1,3 +1,15 @@
+## Pass T593 — Compass reset for navigation guidance (2026-03-30)
+
+- **Why this pass was chosen:** During turn-by-turn guidance the map rotates to follow heading but users had no way to reset to north-up. Standard maps apps show a compass button when bearing is rotated.
+- **What changed:**
+  - Made `NavigationControl` compass conditional: `showCompass={navigationMode === "guidance"}`.
+  - Compass appears only during active guidance — hidden in browse/preview mode for cleaner UI.
+  - Users can tap compass to reset map bearing to north.
+- **Files touched:** `MapLibreShopDirectoryMapPane.tsx`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0.
+- **Problem taxonomy:** P4-UX:1/1/0 (no bearing reset during guidance)
+- **What this unlocks:** Standard navigation UX. Users can reorient after turns.
+
 ## Pass T592 — Legend touch targets + accessibility (2026-03-30)
 
 - **Why this pass was chosen:** Legend toggle buttons had ~20px touch targets (below 44px mobile minimum) and no ARIA attributes for screen readers.
