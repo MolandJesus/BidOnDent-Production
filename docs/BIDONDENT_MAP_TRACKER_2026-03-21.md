@@ -1,3 +1,19 @@
+## Pass T578 — Shop marker clustering (2026-03-30)
+
+- **Why this pass was chosen:** Every shop rendered as an individual marker at all zoom levels, causing visual clutter and overlapping pins in dense areas. This was the single highest-impact map usability gap (P1-UX) — critical for any metro area with more than a few shops.
+- **What changed:**
+  - Added MapLibre native clustering to the `shops-source` GeoJSON source (`cluster: true`, `clusterMaxZoom: 14`, `clusterRadius: 50`).
+  - Added cluster circle layer (`SHOP_CLUSTER_LAYER`) with size/color stepped by `point_count` — blue → indigo → violet as density increases.
+  - Added cluster count symbol layer showing abbreviated point count.
+  - Filtered existing `SHOP_LAYER`, `SHOP_GLOW_LAYER`, and `SHOP_LABEL_LAYER` to only render unclustered points (`["!", ["has", "point_count"]]`).
+  - Added cluster click-to-zoom: clicking a cluster calls `getClusterExpansionZoom()` and flies to the expansion zoom level (capped at 17).
+  - Updated `interactiveLayerIds` and mouse cursor to include cluster layer.
+  - Added `unclustered`, `travelled`, `Travelled` to `cspell.json`.
+- **Files touched:** `src/app/components/shop/ShopDirectoryMapLayers.tsx`, `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`, `cspell.json`
+- **Validation:** Build: 0 errors, 2.98s. Diagnostics: 0 new (1 pre-existing type narrowing). Spellcheck: 0.
+- **Problem taxonomy:** P1-UX:1/1/0 (shop markers overlapped in dense areas with no clustering)
+- **What this unlocks:** Map is now usable in dense metro areas. Shops cluster at low zoom and expand on click. Foundation for future cluster theming (e.g., color by average rating).
+
 ## Pass T577 — Route error recovery with retry action (2026-03-30)
 
 - **Why this pass was chosen:** When OSRM route fetching failed during active guidance, the guidance card showed a passive warning banner but had no direct retry action. Users had no way to trigger a fresh route attempt without restarting navigation entirely.

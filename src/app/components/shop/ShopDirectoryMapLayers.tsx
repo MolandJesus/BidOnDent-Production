@@ -3,7 +3,9 @@ import { Layer, Source } from "react-map-gl/maplibre";
 import type { NavigationRouteStep } from "../../types/navigation";
 
 export const SHOP_LAYER = "shop-dir-circles";
+export const SHOP_CLUSTER_LAYER = "shop-dir-clusters";
 
+const SHOP_CLUSTER_COUNT_LAYER = "shop-dir-cluster-count";
 const SHOP_GLOW_LAYER = "shop-dir-glow";
 const SHOP_LABEL_LAYER = "shop-dir-labels";
 const ROUTE_SELECTED_LAYER = "route-selected-line";
@@ -236,11 +238,61 @@ export default function ShopDirectoryMapLayers({
       )}
 
       {shopsGeoJson.features.length > 0 && (
-        <Source id="shops-source" type="geojson" data={shopsGeoJson}>
+        <Source
+          id="shops-source"
+          type="geojson"
+          data={shopsGeoJson}
+          cluster={true}
+          clusterMaxZoom={14}
+          clusterRadius={50}
+        >
+          {/* ── Cluster circle ── */}
+          <Layer
+            id={SHOP_CLUSTER_LAYER}
+            type="circle"
+            filter={["has", "point_count"]}
+            paint={
+              {
+                "circle-color": [
+                  "step",
+                  ["get", "point_count"],
+                  isDark ? "#3b82f6" : "#2563eb",
+                  10,
+                  isDark ? "#6366f1" : "#4f46e5",
+                  25,
+                  isDark ? "#8b5cf6" : "#7c3aed",
+                ],
+                "circle-radius": ["step", ["get", "point_count"], 18, 10, 24, 25, 30],
+                "circle-opacity": 0.88,
+                "circle-stroke-width": 3,
+                "circle-stroke-color": isDark ? "#1e3a5f" : "#dbeafe",
+              } as Record<string, unknown>
+            }
+          />
+          {/* ── Cluster count label ── */}
+          <Layer
+            id={SHOP_CLUSTER_COUNT_LAYER}
+            type="symbol"
+            filter={["has", "point_count"]}
+            layout={
+              {
+                "text-field": "{point_count_abbreviated}",
+                "text-size": 13,
+                "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+                "text-allow-overlap": true,
+              } as Record<string, unknown>
+            }
+            paint={
+              {
+                "text-color": "#ffffff",
+              } as Record<string, unknown>
+            }
+          />
+          {/* ── Individual shop glow (unclustered only) ── */}
           <Layer
             id={SHOP_GLOW_LAYER}
             type="circle"
-            filter={["==", ["get", "isSelected"], 1]}
+            filter={["all", ["!", ["has", "point_count"]], ["==", ["get", "isSelected"], 1]]}
             paint={
               {
                 "circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 18, 12, 24, 15, 30],
@@ -253,6 +305,7 @@ export default function ShopDirectoryMapLayers({
           <Layer
             id={SHOP_LAYER}
             type="circle"
+            filter={["!", ["has", "point_count"]]}
             paint={
               {
                 "circle-radius": [
@@ -310,6 +363,7 @@ export default function ShopDirectoryMapLayers({
             id={SHOP_LABEL_LAYER}
             type="symbol"
             minzoom={12}
+            filter={["!", ["has", "point_count"]]}
             layout={
               {
                 "text-field": ["get", "name"],

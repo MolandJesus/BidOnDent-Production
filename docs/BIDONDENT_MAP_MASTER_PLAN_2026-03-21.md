@@ -1,3 +1,12 @@
+### Implementation Note — Pass T578 Shop Marker Clustering (2026-03-30)
+
+- Enabled MapLibre native clustering on the shop GeoJSON source with `clusterMaxZoom: 14` and `clusterRadius: 50`.
+- Cluster circles are color-stepped by density (blue < 10, indigo 10-24, violet 25+) with dark/light theme awareness.
+- Cluster count labels rendered as white text over cluster circles.
+- Existing shop layers (glow, circles, labels) now filtered to unclustered points only.
+- Clicking a cluster expands to its calculated zoom level via `getClusterExpansionZoom()`, capped at 17.
+- Strategic effect: **The map now scales visually to any metro density.** At low zoom, shops aggregate into readable clusters. At high zoom, individual markers appear with full interactivity. This is foundational infrastructure for any shop-dense market — without it, the map was unusable at city-level zoom. Cluster theming (e.g., color by average rating) is now possible as a future enhancement.
+
 ### Implementation Note — Pass T577 Route Error Recovery with Retry Action (2026-03-30)
 
 - Added `onRetryRoute` callback through the full overlay chain, backed by `shopGuidancePreview.refreshRoutePreview()`.

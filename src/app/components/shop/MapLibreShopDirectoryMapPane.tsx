@@ -25,7 +25,7 @@ import type {
 import { mapLibreStyles } from "../maps/mapLibreStyles";
 import MapLibreReportLayer from "../maps/MapLibreReportLayer";
 import MapLibreShopDirectoryViewportManager from "./MapLibreShopDirectoryViewportManager";
-import ShopDirectoryMapLayers, { SHOP_LAYER } from "./ShopDirectoryMapLayers";
+import ShopDirectoryMapLayers, { SHOP_LAYER, SHOP_CLUSTER_LAYER } from "./ShopDirectoryMapLayers";
 import { MapLibreFollowLocationController } from "../maps/mapLibreControllers";
 import {
   MapPaneHeaderBadges,
@@ -323,7 +323,7 @@ export default function MapLibreShopDirectoryMapPane({
   );
 
   /* ── Interaction ──────────────────────────────────────────────────── */
-  const interactiveLayerIds = [SHOP_LAYER];
+  const interactiveLayerIds = [SHOP_LAYER, SHOP_CLUSTER_LAYER];
 
   const handleMapClick = useCallback(
     (e: MapLayerMouseEvent) => {
@@ -333,6 +333,31 @@ export default function MapLibreShopDirectoryMapPane({
         // Deselect shop on empty map tap — only when not actively navigating
         if (navigationSessionStatus === "idle" || navigationSessionStatus === "ended") {
           onSelectShop(null);
+        }
+        return;
+      }
+      // Cluster click → zoom to expand
+      if (feature.layer?.id === SHOP_CLUSTER_LAYER) {
+        const clusterId = feature.properties?.cluster_id;
+        const mapInstance = (
+          e.target as unknown as {
+            getSource: (
+              id: string
+            ) =>
+              | {
+                  getClusterExpansionZoom: (
+                    id: number,
+                    cb: (err: unknown, zoom: number) => void
+                  ) => void;
+                }
+              | undefined;
+          }
+        ).getSource("shops-source");
+        if (mapInstance && clusterId != null) {
+          mapInstance.getClusterExpansionZoom(Number(clusterId), (_err, zoom) => {
+            const coords = (feature.geometry as GeoJSON.Point).coordinates;
+            e.target.flyTo({ center: [coords[0], coords[1]], zoom: Math.min(zoom, 17) });
+          });
         }
         return;
       }
@@ -355,8 +380,10 @@ export default function MapLibreShopDirectoryMapPane({
   );
 
   const handleMapMouseMove = useCallback((e: MapLayerMouseEvent) => {
-    const isHoveringShop = e.features?.some((feature) => feature.layer?.id === SHOP_LAYER);
-    setCursor(isHoveringShop ? "pointer" : "");
+    const isHoveringInteractive = e.features?.some(
+      (feature) => feature.layer?.id === SHOP_LAYER || feature.layer?.id === SHOP_CLUSTER_LAYER
+    );
+    setCursor(isHoveringInteractive ? "pointer" : "");
   }, []);
 
   /* ── Render ───────────────────────────────────────────────────────── */
