@@ -66,6 +66,11 @@ export default function MapLibreReportLayer({
         },
         properties: {
           id: report.id,
+          status: report.status ?? "pending",
+          vehicle: `${report.vehicle_year} ${report.vehicle_make} ${report.vehicle_model}`,
+          damageType: report.damage_type,
+          severity: report.damage_severity,
+          zip: report.zip_code ?? "",
         },
       })),
     }),
@@ -185,18 +190,44 @@ export default function MapLibreReportLayer({
             "text-color": isDark ? "#1c1917" : "#ffffff",
           }}
         />
-        {/* ── Individual report markers (unclustered) ── */}
+        {/* ── Individual report markers (unclustered) — status-colored ── */}
         <Layer
           id={LAYER_ID}
           type="circle"
           filter={["!", ["has", "point_count"]]}
-          paint={{
-            "circle-radius": 12,
-            "circle-color": isDark ? "#f59e0b" : "#d97706",
-            "circle-opacity": isDark ? 0.92 : 0.88,
-            "circle-stroke-width": 2.5,
-            "circle-stroke-color": isDark ? "#fcd34d" : "#92400e",
-          }}
+          paint={
+            {
+              "circle-radius": 12,
+              "circle-color": [
+                "match",
+                ["get", "status"],
+                "in-repair",
+                isDark ? "#22c55e" : "#16a34a",
+                "approved",
+                isDark ? "#22c55e" : "#16a34a",
+                "resolved",
+                isDark ? "#64748b" : "#475569",
+                "completed",
+                isDark ? "#64748b" : "#475569",
+                isDark ? "#f59e0b" : "#d97706",
+              ],
+              "circle-opacity": isDark ? 0.92 : 0.88,
+              "circle-stroke-width": 2.5,
+              "circle-stroke-color": [
+                "match",
+                ["get", "status"],
+                "in-repair",
+                isDark ? "#86efac" : "#15803d",
+                "approved",
+                isDark ? "#86efac" : "#15803d",
+                "resolved",
+                isDark ? "#94a3b8" : "#334155",
+                "completed",
+                isDark ? "#94a3b8" : "#334155",
+                isDark ? "#fcd34d" : "#92400e",
+              ],
+            } as Record<string, unknown>
+          }
         />
       </Source>
       {selectedReport
@@ -217,7 +248,32 @@ export default function MapLibreReportLayer({
                 anchor="bottom"
                 offset={16}
               >
-                <div className="text-sm font-semibold">Damage Report</div>
+                <div className="min-w-[160px] space-y-1 p-1">
+                  <div className="text-sm font-semibold text-slate-900">
+                    {selectedReport.vehicle_year} {selectedReport.vehicle_make}{" "}
+                    {selectedReport.vehicle_model}
+                  </div>
+                  <div className="text-xs text-slate-600">
+                    {selectedReport.damage_type} &middot; {selectedReport.damage_severity}
+                  </div>
+                  {selectedReport.status && (
+                    <span
+                      className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                        selectedReport.status === "in-repair" ||
+                        selectedReport.status === "approved"
+                          ? "bg-green-100 text-green-700"
+                          : selectedReport.status === "resolved" ||
+                              selectedReport.status === "completed"
+                            ? "bg-slate-100 text-slate-600"
+                            : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
+                      {selectedReport.status
+                        .replace(/-/g, " ")
+                        .replace(/\b\w/g, (c) => c.toUpperCase())}
+                    </span>
+                  )}
+                </div>
               </Popup>
             );
           })()

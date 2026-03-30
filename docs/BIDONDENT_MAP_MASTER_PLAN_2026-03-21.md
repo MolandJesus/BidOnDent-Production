@@ -1,3 +1,9 @@
+### Implementation Note — Pass T581 Report Marker Status Colors and Rich Popup (2026-03-30)
+
+- Report markers now color by status: amber=pending, green=active-repair, slate=resolved. Theme-aware.
+- Popup shows vehicle info (year make model), damage type + severity, and a colored status badge.
+- Strategic effect: **Report markers are no longer anonymous dots.** The map now communicates report lifecycle visually, enabling shops and insurers to prioritize at a glance. This is foundational for the report→map→shop→action loop — users can see what needs attention without opening drawers.
+
 ### Implementation Note — Pass T580 Report Marker Clustering (2026-03-30)
 
 - Added MapLibre native clustering to the report GeoJSON source, consistent with the shop clustering pattern from T578.

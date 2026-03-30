@@ -1,3 +1,15 @@
+## Pass T581 — Report marker status colors and rich popup (2026-03-30)
+
+- **Why this pass was chosen:** All report markers were identical amber circles regardless of status, and the popup showed only "Damage Report" with no actionable info. Users couldn't distinguish pending from in-repair from resolved at a glance.
+- **What changed:**
+  - Enriched report GeoJSON features with `status`, `vehicle`, `damageType`, `severity`, and `zip` properties.
+  - Individual report markers now color-code by status: amber (pending/default), green (in-repair/approved), slate (resolved/completed). Both fill and stroke colors respect dark/light theme.
+  - Report popup now shows vehicle info (year make model), damage type + severity, and a status badge with colored background.
+- **Files touched:** `src/app/components/maps/MapLibreReportLayer.tsx`
+- **Validation:** Build: 0 errors, 2.99s. Diagnostics: 0. Spellcheck: 0 new.
+- **Problem taxonomy:** P4-UX:2/2/0 (undifferentiated markers + empty popup)
+- **What this unlocks:** Reports on the map now communicate status at a glance. Shops and insurers can visually distinguish active claims from resolved ones. Popup provides meaningful context before opening the full detail drawer.
+
 ## Pass T580 — Report marker clustering with click-to-expand (2026-03-30)
 
 - **Why this pass was chosen:** Report markers rendered individually with no clustering, causing overlapping amber dots at low zoom (especially since reports share ZIP centroid positions). This was the natural complement to shop clustering (T578).
