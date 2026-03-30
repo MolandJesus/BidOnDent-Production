@@ -128,6 +128,19 @@ export default function MapLibreShopDirectoryMapPane({
   const [reportCount, setReportCount] = useState<number | null>(null);
   const [tileMode, setTileMode] = useState<MapTileMode>(mapTheme === "dark" ? "night" : "roadmap");
   const [mapLoaded, setMapLoaded] = useState(false);
+
+  /* Escape key → deselect shop + close popup */
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && selectedShopId != null) {
+        onSelectShop(null);
+        setShopPopup(null);
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selectedShopId, onSelectShop]);
+
   const [shopPopup, setShopPopup] = useState<{
     lng: number;
     lat: number;
@@ -413,6 +426,8 @@ export default function MapLibreShopDirectoryMapPane({
   return (
     <div
       data-map-theme={mapTheme}
+      role="region"
+      aria-label="Shop directory map"
       className="shop-directory-map relative h-full min-h-[420px] w-full overflow-hidden"
     >
       {/* ── Header badges ── */}
@@ -435,6 +450,8 @@ export default function MapLibreShopDirectoryMapPane({
             zoom: initialZoom ?? 11,
           }}
           maxBounds={[-180, -75, 180, 85]}
+          minZoom={3}
+          maxZoom={18}
           maxPitch={tileMode === "satellite" ? 60 : 0}
           mapStyle={mapStyle}
           style={{ width: "100%", height: "100%" }}
@@ -509,7 +526,10 @@ export default function MapLibreShopDirectoryMapPane({
           {shopPopup && (
             <ShopDirectoryMapPopup
               shopPopup={shopPopup}
-              onClose={() => setShopPopup(null)}
+              onClose={() => {
+                setShopPopup(null);
+                onSelectShop(null);
+              }}
               mapTheme={mapTheme}
               selectedShop={selectedShop}
               selectedOrigin={selectedOrigin}
