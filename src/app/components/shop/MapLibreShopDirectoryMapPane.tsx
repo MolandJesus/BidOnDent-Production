@@ -51,6 +51,12 @@ import {
   buildSavedPlacesGeoJson,
 } from "./shopDirectoryGeoJson";
 import { useShopMapInteraction } from "./useShopMapInteraction";
+import {
+  MapLoadingSkeleton,
+  MapTilePicker,
+  MapEmptyState,
+  GeoErrorToast,
+} from "./ShopDirectoryMapPaneInlineUI";
 
 /* ── Props ──────────────────────────────────────────────────────────── */
 type ShopDirectoryMapPaneProps = {
@@ -139,6 +145,22 @@ export default function MapLibreShopDirectoryMapPane({
   const [reportCount, setReportCount] = useState<number | null>(null);
   const [tileMode, setTileMode] = useState<MapTileMode>(mapTheme === "dark" ? "night" : "roadmap");
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapLoadFailed, setMapLoadFailed] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
+
+  /* Map load timeout — show retry after 12s */
+  useEffect(() => {
+    if (mapLoaded) return;
+    const timer = setTimeout(() => setMapLoadFailed(true), 12_000);
+    return () => clearTimeout(timer);
+  }, [mapLoaded]);
+
+  /* Auto-dismiss geolocation error toast after 4s */
+  useEffect(() => {
+    if (!geoError) return;
+    const timer = setTimeout(() => setGeoError(null), 4_000);
+    return () => clearTimeout(timer);
+  }, [geoError]);
 
   const {
     cursor,
@@ -250,7 +272,11 @@ export default function MapLibreShopDirectoryMapPane({
           onClick={handleMapClick}
           onMouseMove={handleMapMouseMove}
           onMouseLeave={() => setCursor("")}
-          onLoad={() => setMapLoaded(true)}
+          onLoad={() => {
+            setMapLoaded(true);
+            setMapLoadFailed(false);
+          }}
+          onError={() => setMapLoadFailed(true)}
           attributionControl={{ compact: true }}
         >
           {/* Standard map controls */}
@@ -260,6 +286,13 @@ export default function MapLibreShopDirectoryMapPane({
             trackUserLocation
             showUserHeading
             showAccuracyCircle={false}
+            onError={(e) => {
+              if (e?.code === 1) {
+                setGeoError("Location access denied. Enable it in your browser settings.");
+              } else {
+                setGeoError("Unable to determine your location.");
+              }
+            }}
           />
           <NavigationControl position="bottom-right" showCompass={navigationMode === "guidance"} />
           <ScaleControl position="bottom-left" maxWidth={120} unit="imperial" />
@@ -369,79 +402,11 @@ export default function MapLibreShopDirectoryMapPane({
         </Map>
       </NavigationErrorBoundary>
 
-      {/* ── Map loading skeleton ── */}
-      {!mapLoaded && (
-        <div className="absolute inset-0 z-[600] flex items-center justify-center bg-slate-950 transition-opacity">
-          <div className="flex flex-col items-center gap-3">
-            <svg className="h-8 w-8 animate-spin text-blue-400" viewBox="0 0 24 24" fill="none">
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                className="opacity-20"
-              />
-              <path
-                d="M12 2a10 10 0 0 1 10 10"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-            </svg>
-            <p className="text-xs font-medium text-white/60">Loading map…</p>
-          </div>
-        </div>
-      )}
+      <MapLoadingSkeleton mapLoaded={mapLoaded} mapLoadFailed={mapLoadFailed} />
 
-      {/* ── Map style picker ── */}
-      <div className="pointer-events-none absolute left-2 top-16 z-[520] sm:left-3 sm:top-20">
-        <div
-          className={`pointer-events-auto flex rounded-lg border shadow-lg backdrop-blur-md ${
-            isDark ? "border-white/20 bg-slate-950/80" : "border-black/8 bg-white/90"
-          }`}
-        >
-          {(["roadmap", "night", "satellite"] as const).map((mode) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => setTileMode(mode)}
-              className={`px-2.5 py-1.5 text-[10px] font-semibold transition-colors first:rounded-l-lg last:rounded-r-lg ${
-                tileMode === mode
-                  ? isDark
-                    ? "bg-blue-600/50 text-white"
-                    : "bg-blue-100 text-blue-700"
-                  : isDark
-                    ? "text-white/60 hover:text-white/90"
-                    : "text-slate-500 hover:text-slate-800"
-              }`}
-              aria-label={`${mode === "roadmap" ? "Map" : mode === "night" ? "Dark" : "Satellite"} view`}
-              aria-pressed={tileMode === mode}
-            >
-              {mode === "roadmap" ? "Map" : mode === "night" ? "Dark" : "Satellite"}
-            </button>
-          ))}
-        </div>
-      </div>
+      <MapTilePicker isDark={isDark} tileMode={tileMode} setTileMode={setTileMode} />
 
-      {/* ── Empty state overlay ── */}
-      {shops.length === 0 && (
-        <div className="pointer-events-none absolute inset-0 z-[450] flex items-center justify-center">
-          <div
-            className={`pointer-events-auto rounded-2xl border px-5 py-4 text-center shadow-xl backdrop-blur-md ${
-              isDark
-                ? "border-white/20 bg-slate-950/80 text-white"
-                : "border-black/8 bg-white/88 text-slate-700"
-            }`}
-          >
-            <p className="text-sm font-semibold">No shops in this area</p>
-            <p className={`mt-1 text-xs ${isDark ? "text-white/60" : "text-slate-400"}`}>
-              Try a different location or broaden your filters
-            </p>
-          </div>
-        </div>
-      )}
+      <MapEmptyState isDark={isDark} shopCount={shops.length} />
 
       {/* ── Bottom gradient overlay: selected shop card + legend ── */}
       <MapPaneBottomOverlay
@@ -479,6 +444,8 @@ export default function MapLibreShopDirectoryMapPane({
         onClearAreaSearch={onClearAreaSearch}
         onClearPan={() => setHasPanned(false)}
       />
+
+      <GeoErrorToast geoError={geoError} />
 
       {/* Floating overlay children (route preview, intelligence, deviation prompt) */}
       {children}
