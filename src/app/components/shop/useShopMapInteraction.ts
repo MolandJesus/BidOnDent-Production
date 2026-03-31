@@ -6,7 +6,13 @@ import { useCallback, useEffect, useState } from "react";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
-import { SHOP_LAYER, SHOP_CLUSTER_LAYER, SAVED_PLACES_LAYER } from "./ShopDirectoryMapLayers";
+import {
+  SHOP_LAYER,
+  SHOP_CLUSTER_LAYER,
+  SAVED_PLACES_LAYER,
+  ROUTE_SELECTED_LAYER,
+  ROUTE_UNSELECTED_LAYER,
+} from "./ShopDirectoryMapLayers";
 
 export type ShopPopup = {
   lng: number;
@@ -19,6 +25,15 @@ export type SavedPlacePopup = {
   lat: number;
   label: string;
   address?: string;
+};
+
+export type RoutePopup = {
+  lng: number;
+  lat: number;
+  label: string;
+  distance: string;
+  duration: number;
+  traffic: string;
 };
 
 type UseShopMapInteractionOpts = {
@@ -37,6 +52,7 @@ export function useShopMapInteraction({
   const [cursor, setCursor] = useState("");
   const [shopPopup, setShopPopup] = useState<ShopPopup | null>(null);
   const [savedPlacePopup, setSavedPlacePopup] = useState<SavedPlacePopup | null>(null);
+  const [routePopup, setRoutePopup] = useState<RoutePopup | null>(null);
 
   /* Escape key → deselect shop + close popups */
   useEffect(() => {
@@ -47,6 +63,7 @@ export function useShopMapInteraction({
           setShopPopup(null);
         }
         setSavedPlacePopup(null);
+        setRoutePopup(null);
       }
     };
     window.addEventListener("keydown", handleKey);
@@ -80,6 +97,7 @@ export function useShopMapInteraction({
       if (!feature) {
         setShopPopup(null);
         setSavedPlacePopup(null);
+        setRoutePopup(null);
         if (navigationSessionStatus === "idle" || navigationSessionStatus === "ended") {
           onSelectShop(null);
         }
@@ -132,6 +150,19 @@ export function useShopMapInteraction({
           address: feature.properties?.address ? String(feature.properties.address) : undefined,
         });
       }
+      if (
+        feature.layer?.id === ROUTE_SELECTED_LAYER ||
+        feature.layer?.id === ROUTE_UNSELECTED_LAYER
+      ) {
+        setRoutePopup({
+          lng: e.lngLat.lng,
+          lat: e.lngLat.lat,
+          label: String(feature.properties?.label || "Route"),
+          distance: String(feature.properties?.totalDistanceLabel || ""),
+          duration: Number(feature.properties?.estimatedDurationMinutes || 0),
+          traffic: String(feature.properties?.trafficLabel || ""),
+        });
+      }
     },
     [onSelectShop, shops, navigationSessionStatus]
   );
@@ -141,7 +172,9 @@ export function useShopMapInteraction({
       (feature) =>
         feature.layer?.id === SHOP_LAYER ||
         feature.layer?.id === SHOP_CLUSTER_LAYER ||
-        feature.layer?.id === SAVED_PLACES_LAYER
+        feature.layer?.id === SAVED_PLACES_LAYER ||
+        feature.layer?.id === ROUTE_SELECTED_LAYER ||
+        feature.layer?.id === ROUTE_UNSELECTED_LAYER
     );
     setCursor(isHoveringInteractive ? "pointer" : "");
   }, []);
@@ -153,6 +186,8 @@ export function useShopMapInteraction({
     setShopPopup,
     savedPlacePopup,
     setSavedPlacePopup,
+    routePopup,
+    setRoutePopup,
     handleMapClick,
     handleMapMouseMove,
   };

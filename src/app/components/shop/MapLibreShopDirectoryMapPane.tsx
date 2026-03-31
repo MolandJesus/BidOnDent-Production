@@ -36,6 +36,8 @@ import ShopDirectoryMapLayers, {
   SHOP_LAYER,
   SHOP_CLUSTER_LAYER,
   SAVED_PLACES_LAYER,
+  ROUTE_SELECTED_LAYER,
+  ROUTE_UNSELECTED_LAYER,
 } from "./ShopDirectoryMapLayers";
 import { MapLibreFollowLocationController } from "../maps/mapLibreControllers";
 import {
@@ -169,6 +171,8 @@ export default function MapLibreShopDirectoryMapPane({
     setShopPopup,
     savedPlacePopup,
     setSavedPlacePopup,
+    routePopup,
+    setRoutePopup,
     handleMapClick,
     handleMapMouseMove,
   } = useShopMapInteraction({ shops, selectedShopId, onSelectShop, navigationSessionStatus });
@@ -232,7 +236,13 @@ export default function MapLibreShopDirectoryMapPane({
   const savedPlacesGeoJson = useMemo(() => buildSavedPlacesGeoJson(savedPlaces), [savedPlaces]);
 
   /* ── Interaction ──────────────────────────────────────────────────── */
-  const interactiveLayerIds = [SHOP_LAYER, SHOP_CLUSTER_LAYER, SAVED_PLACES_LAYER];
+  const interactiveLayerIds = [
+    SHOP_LAYER,
+    SHOP_CLUSTER_LAYER,
+    SAVED_PLACES_LAYER,
+    ROUTE_SELECTED_LAYER,
+    ROUTE_UNSELECTED_LAYER,
+  ];
 
   /* ── Render ───────────────────────────────────────────────────────── */
   return (
@@ -394,6 +404,35 @@ export default function MapLibreShopDirectoryMapPane({
                 {savedPlacePopup.address && (
                   <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                     {savedPlacePopup.address}
+                  </p>
+                )}
+              </div>
+            </Popup>
+          )}
+
+          {/* ── Route info popup ── */}
+          {routePopup && (
+            <Popup
+              longitude={routePopup.lng}
+              latitude={routePopup.lat}
+              anchor="bottom"
+              offset={16}
+              closeOnClick={false}
+              onClose={() => setRoutePopup(null)}
+            >
+              <div className="min-w-[140px] space-y-0.5 p-1">
+                <p
+                  className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}
+                >
+                  {routePopup.label}
+                </p>
+                <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                  {routePopup.distance}
+                  {routePopup.duration > 0 && ` · ${routePopup.duration} min`}
+                </p>
+                {routePopup.traffic && (
+                  <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                    {routePopup.traffic}
                   </p>
                 )}
               </div>
