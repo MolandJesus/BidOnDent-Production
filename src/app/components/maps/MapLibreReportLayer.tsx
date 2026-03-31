@@ -16,6 +16,7 @@ type MapLibreReportLayerProps = {
   mapTheme?: MapTheme;
   onViewReportDetail?: (reportId: string) => void;
   onReportCountChange?: (count: number, loading: boolean) => void;
+  onFindShopsNear?: (coords: { lat: number; lng: number }) => void;
   visible?: boolean;
 };
 
@@ -23,6 +24,7 @@ export default function MapLibreReportLayer({
   mapTheme = "dark",
   onViewReportDetail,
   onReportCountChange,
+  onFindShopsNear,
   visible = true,
 }: MapLibreReportLayerProps) {
   const isDark = mapTheme === "dark";
@@ -446,8 +448,15 @@ export default function MapLibreReportLayer({
         open={drawerOpen}
         onOpenChange={handleDrawerChange}
         report={selectedReport}
+        reportCoords={
+          selectedReport?.id
+            ? (reportsWithCoordinates.find((r) => r.report.id === selectedReport.id)?.coords ??
+              null)
+            : null
+        }
         mapTheme={mapTheme}
         onViewReportDetail={onViewReportDetail}
+        onFindShopsNear={onFindShopsNear}
       />
     </>
   );

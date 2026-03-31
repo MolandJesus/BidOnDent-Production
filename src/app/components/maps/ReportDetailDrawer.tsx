@@ -15,16 +15,20 @@ type ReportDetailDrawerProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   report: DamageReport | null;
+  reportCoords?: { lat: number; lng: number } | null;
   mapTheme?: MapTheme;
   onViewReportDetail?: (reportId: string) => void;
+  onFindShopsNear?: (coords: { lat: number; lng: number }) => void;
 };
 
 export function ReportDetailDrawer({
   open,
   onOpenChange,
   report,
+  reportCoords,
   mapTheme = "dark",
   onViewReportDetail,
+  onFindShopsNear,
 }: ReportDetailDrawerProps) {
   if (!report) return null;
 
@@ -111,6 +115,23 @@ export function ReportDetailDrawer({
               )}
             >
               View Full Details
+            </button>
+          )}
+          {onFindShopsNear && reportCoords && (
+            <button
+              type="button"
+              onClick={() => {
+                onFindShopsNear(reportCoords);
+                onOpenChange(false);
+              }}
+              className={cn(
+                "mt-2 w-full rounded-xl border py-3 text-sm font-semibold transition-colors min-h-[44px]",
+                isDark
+                  ? "border-blue-400/30 bg-blue-500/20 text-blue-200 hover:bg-blue-500/30"
+                  : "border-blue-300/60 bg-blue-50 text-blue-700 hover:bg-blue-100"
+              )}
+            >
+              Find Shops Nearby
             </button>
           )}
         </div>

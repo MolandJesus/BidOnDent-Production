@@ -155,6 +155,14 @@ export default function ShopDirectoryMapPopup({
           <p className={`text-sm ${popupSub}`}>
             {shopPopup.shop.mapResult.address}, {shopPopup.shop.mapResult.city}
           </p>
+          {shopPopup.shop.rating > 0 && (
+            <p className={`mt-0.5 text-xs ${popupSub}`}>
+              ★ {shopPopup.shop.rating.toFixed(1)}
+              {shopPopup.shop.reviews > 0 && (
+                <span className="ml-1 opacity-70">({shopPopup.shop.reviews})</span>
+              )}
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap gap-1.5">
           {popupHasLiveNavigation ? (

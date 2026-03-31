@@ -134,12 +134,15 @@ export default function MapLibreShopDirectoryMapPane({
   const [tileMode, setTileMode] = useState<MapTileMode>(mapTheme === "dark" ? "night" : "roadmap");
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  /* Escape key → deselect shop + close popup */
+  /* Escape key → deselect shop + close popups */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && selectedShopId != null) {
-        onSelectShop(null);
-        setShopPopup(null);
+      if (e.key === "Escape") {
+        if (selectedShopId != null) {
+          onSelectShop(null);
+          setShopPopup(null);
+        }
+        setSavedPlacePopup(null);
       }
     };
     window.addEventListener("keydown", handleKey);
@@ -519,6 +522,10 @@ export default function MapLibreShopDirectoryMapPane({
             mapTheme={mapTheme}
             onViewReportDetail={onViewReportDetail}
             onReportCountChange={(count, loading) => setReportCount(loading ? null : count)}
+            onFindShopsNear={() => {
+              setHasPanned(true);
+              onSearchInArea?.();
+            }}
             visible={showReports}
           />
 

@@ -7,6 +7,7 @@ import {
   Search,
   Shield,
   Sparkles,
+  Star,
   TriangleAlert,
   X,
 } from "lucide-react";
@@ -287,6 +288,12 @@ export function MapPaneBottomOverlay({
                   {etaLabel}
                 </span>
               ) : null}
+              {selectedShop.rating > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <Star className={`h-3.5 w-3.5 fill-current ${t.shopCardMeta}`} />
+                  {selectedShop.rating.toFixed(1)}
+                </span>
+              )}
               <span className="inline-flex items-center gap-1.5">
                 <Shield className={`h-4 w-4 ${t.shopCardMeta}`} />
                 {selectedShop.insuranceCompatibilityScore}% carrier
