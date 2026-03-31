@@ -1,6 +1,7 @@
 import type { InsuranceCompanyProfile, ShopProfile } from "./marketIntelligence";
+import { ATLANTA_TEST_SHOPS } from "./atlantaTestHubSeed";
 
-export const SHOPS: ShopProfile[] = [
+const CORE_SHOPS: ShopProfile[] = [
   {
     id: 1,
     name: "Express Auto Body",
@@ -249,6 +250,8 @@ export const SHOPS: ShopProfile[] = [
       "Useful specialist for glass, alignment, and finish work paired with collision claims.",
   },
 ];
+
+export const SHOPS: ShopProfile[] = [...CORE_SHOPS, ...ATLANTA_TEST_SHOPS];
 
 export const INSURERS: InsuranceCompanyProfile[] = [
   {

@@ -166,20 +166,24 @@ export default function ShopDirectoryOriginSearch({
         {onUseMyLocation && (
           <button
             className={`shrink-0 inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
-              selectedOrigin?.placeId === "user-geolocation"
+              locationError
                 ? isLight
-                  ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
-                  : "border-blue-400/60 bg-blue-500/20 text-white"
-                : isLight
-                  ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 shadow-sm"
-                  : "border-emerald-400/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+                  ? "border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 shadow-sm"
+                  : "border-amber-400/40 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
+                : selectedOrigin?.placeId === "user-geolocation"
+                  ? isLight
+                    ? "border-blue-400 bg-blue-50 text-blue-700 shadow-sm"
+                    : "border-blue-400/60 bg-blue-500/20 text-white"
+                  : isLight
+                    ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 shadow-sm"
+                    : "border-emerald-400/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
             }`}
             disabled={isLocating}
             onClick={onUseMyLocation}
             type="button"
           >
             <Navigation2 className={`h-3 w-3 ${isLocating ? "animate-pulse" : ""}`} />
-            {isLocating ? "Locating..." : "My Location"}
+            {isLocating ? "Locating..." : locationError ? "Ask Again" : "My Location"}
           </button>
         )}
         {visibleSuggestedOrigins.map((origin) => {
@@ -208,9 +212,22 @@ export default function ShopDirectoryOriginSearch({
       </div>
 
       {(locationError || originSearchError) && (
-        <p className={`text-xs ${isLight ? "text-red-500" : "text-red-400/80"}`}>
-          {locationError || originSearchError}
-        </p>
+        <div className="space-y-1">
+          <p className={`text-xs ${isLight ? "text-red-500" : "text-red-400/80"}`}>
+            {locationError || originSearchError}
+          </p>
+          {locationError && onUseMyLocation && (
+            <button
+              className={`text-[11px] font-medium underline underline-offset-2 ${
+                isLight ? "text-amber-700" : "text-amber-300"
+              }`}
+              onClick={onUseMyLocation}
+              type="button"
+            >
+              Ask for location again
+            </button>
+          )}
+        </div>
       )}
 
       <div className="flex flex-wrap items-center gap-1.5">

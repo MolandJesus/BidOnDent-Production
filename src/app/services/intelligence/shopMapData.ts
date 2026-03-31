@@ -1,4 +1,5 @@
 import type { Coordinates, Place } from "../../types/mapDomain";
+import { ATLANTA_SUGGESTED_ORIGINS, ATLANTA_TEST_SHOP_LOCATIONS } from "./atlantaTestHubSeed";
 
 export type ShopLocationRecord = {
   coordinates: Coordinates;
@@ -73,6 +74,7 @@ const SHOP_LOCATION_DIRECTORY: Record<number, ShopLocationRecord> = {
     state: "NY",
     zipCode: "10591",
   },
+  ...ATLANTA_TEST_SHOP_LOCATIONS,
 };
 
 const SUGGESTED_SEARCH_ORIGINS: Place[] = [
@@ -226,16 +228,7 @@ const SUGGESTED_SEARCH_ORIGINS: Place[] = [
     longitude: -112.074,
     placeId: "phoenix-az",
   },
-  {
-    name: "Atlanta",
-    address: "55 Trinity Ave SW",
-    city: "Atlanta",
-    state: "GA",
-    zipCode: "30303",
-    latitude: 33.749,
-    longitude: -84.388,
-    placeId: "atlanta-ga",
-  },
+  ...ATLANTA_SUGGESTED_ORIGINS,
 ];
 
 export function getLocationForShop(shopId: number): ShopLocationRecord {

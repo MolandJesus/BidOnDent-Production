@@ -8,6 +8,8 @@ type GeolocationState = {
   isLocating: boolean;
   /** Error message if geolocation failed */
   error: string | null;
+  /** Current browser geolocation permission state when detectable */
+  permissionState: PermissionState | "unknown" | "unsupported";
   /** Request browser geolocation (shows permission prompt if needed) */
   requestLocation: () => void;
 };
@@ -68,14 +70,35 @@ function saveCache(coords: Coordinates) {
   }
 }
 
+async function readPermissionState(): Promise<PermissionState | "unknown" | "unsupported"> {
+  if (typeof navigator === "undefined" || !navigator.geolocation) {
+    return "unsupported";
+  }
+
+  if (!navigator.permissions) {
+    return "unknown";
+  }
+
+  try {
+    const status = await navigator.permissions.query({ name: "geolocation" });
+    return status.state;
+  } catch {
+    return "unknown";
+  }
+}
+
 export function useUserGeolocation(): GeolocationState {
   const [coords, setCoords] = useState<Coordinates | null>(loadCached);
   const [isLocating, setIsLocating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [permissionState, setPermissionState] = useState<
+    PermissionState | "unknown" | "unsupported"
+  >(coords ? "granted" : "unknown");
   const requestedRef = useRef(false);
 
   const fetchPosition = useCallback(() => {
     if (!navigator.geolocation) {
+      setPermissionState("unsupported");
       setError("Geolocation is not supported by this browser.");
       return;
     }
@@ -90,14 +113,18 @@ export function useUserGeolocation(): GeolocationState {
           longitude: position.coords.longitude,
         };
         setCoords(result);
+        setPermissionState("granted");
         saveCache(result);
         setIsLocating(false);
       },
       (err) => {
         const message =
           err.code === err.PERMISSION_DENIED
-            ? "Location permission denied. You can select an origin manually."
-            : "Unable to determine your location. Please try again.";
+            ? "Location access is blocked. Enable it in your browser settings, then tap Ask Again."
+            : "Unable to determine your location. Tap Ask Again to retry.";
+        if (err.code === err.PERMISSION_DENIED) {
+          setPermissionState("denied");
+        }
         setError(message);
         setIsLocating(false);
       },
@@ -105,17 +132,59 @@ export function useUserGeolocation(): GeolocationState {
     );
   }, []);
 
-  // On mount, silently probe if permission is already granted
+  // Track permission state and react to browser-level changes.
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setPermissionState("unsupported");
+      return;
+    }
+
+    if (!navigator.permissions) {
+      return;
+    }
+
+    let active = true;
+    let statusRef: PermissionStatus | null = null;
+
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((status) => {
+        if (!active) {
+          return;
+        }
+
+        statusRef = status;
+        setPermissionState(status.state);
+        status.onchange = () => {
+          setPermissionState(status.state);
+          if (status.state === "granted") {
+            fetchPosition();
+          }
+        };
+      })
+      .catch(() => {
+        if (active) {
+          setPermissionState("unknown");
+        }
+      });
+
+    return () => {
+      active = false;
+      if (statusRef) {
+        statusRef.onchange = null;
+      }
+    };
+  }, [fetchPosition]);
+
+  // On mount, silently probe if permission is already granted.
   useEffect(() => {
     if (coords || requestedRef.current) return;
     requestedRef.current = true;
 
-    if (!navigator.permissions) return;
-
-    navigator.permissions
-      .query({ name: "geolocation" })
-      .then((result) => {
-        if (result.state === "granted") {
+    readPermissionState()
+      .then((state) => {
+        setPermissionState(state);
+        if (state === "granted") {
           fetchPosition();
         }
       })
@@ -124,5 +193,26 @@ export function useUserGeolocation(): GeolocationState {
       });
   }, [coords, fetchPosition]);
 
-  return { coords, isLocating, error, requestLocation: fetchPosition };
+  // If the user changes browser permission settings while the tab is unfocused,
+  // refresh state on return and resume the request flow when permission becomes granted.
+  useEffect(() => {
+    const syncOnFocus = () => {
+      void readPermissionState().then((state) => {
+        setPermissionState(state);
+        if (state === "granted" && !coords) {
+          fetchPosition();
+        }
+      });
+    };
+
+    window.addEventListener("focus", syncOnFocus);
+    document.addEventListener("visibilitychange", syncOnFocus);
+
+    return () => {
+      window.removeEventListener("focus", syncOnFocus);
+      document.removeEventListener("visibilitychange", syncOnFocus);
+    };
+  }, [coords, fetchPosition]);
+
+  return { coords, isLocating, error, permissionState, requestLocation: fetchPosition };
 }

@@ -1,3 +1,9 @@
+### Implementation Note — Pass T629 Atlanta QA Hubs + Retryable My-Location Flow (2026-03-30)
+
+- Added 24 fallback QA shop hubs across the Atlanta metro so turn-by-turn guidance can be tested from a real local driving context without waiting on partner-shop data in Georgia.
+- Strengthened the shop-directory geolocation flow so permission state is refreshed on browser focus/visibility return and the origin search explicitly offers an "Ask Again" retry path after failure.
+- Strategic effect: **The map now has a second dense metro test bed for route and guidance QA, and My Location no longer feels single-shot.** This is a QA-only fallback expansion, not a production market coverage change.
+
 ### Implementation Note — Pass T594 Report Geocoding (2026-03-30)
 
 - Added `geocodeAddress()` utility with Nominatim integration, caching, and rate-limit compliance. `MapLibreReportLayer` now progressively upgrades report positions from ZIP centroids to exact address coordinates.

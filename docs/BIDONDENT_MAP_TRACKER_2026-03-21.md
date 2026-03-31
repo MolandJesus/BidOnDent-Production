@@ -1,3 +1,16 @@
+## Pass T629 — Atlanta QA hubs + retryable My Location flow (2026-03-30)
+
+- **Why this pass was chosen:** Turn-by-turn guidance was functionally strong, but fallback shop geography was still almost entirely NY-only. That made real-world local testing in Atlanta impossible. Separately, the shop-directory "My Location" flow degraded into a dead-end after one failed permission attempt.
+- **What changed:**
+  - Added 24 Atlanta-metro fallback shop hubs plus matching map coordinates through a new shared seed module.
+  - Added Atlanta suggested origins for faster manual testing when geolocation is unavailable.
+  - Upgraded `useUserGeolocation` to track permission state, refresh on browser focus/visibility return, and auto-resume when permission becomes granted.
+  - Updated the origin search UI so failed geolocation clearly exposes an "Ask Again" retry action instead of only passive error text.
+- **Files touched:** `src/app/services/intelligence/atlantaTestHubSeed.ts`, `src/app/services/intelligence/marketSeedData.ts`, `src/app/services/intelligence/shopMapData.ts`, `src/app/hooks/useUserGeolocation.ts`, `src/app/components/shop/ShopDirectoryOriginSearch.tsx`
+- **Validation:** Build: 0 errors, 3.11s. Diagnostics: 0. Spellcheck: 0. Mobile/Desktop: not manually verified in-browser this pass.
+- **Problem taxonomy:** P4-UX:1/0/0 (retryable location flow), P7-TECHDEBT:1/1/0 (single-region fallback data blocked local QA)
+- **What this unlocks:** Atlanta-area real-drive QA for in-app navigation and faster permission-recovery testing without waiting on live partner-shop expansion.
+
 ## Pass T594 — Report geocoding — precise address coordinates (2026-03-30)
 
 - **Why this pass was chosen:** Reports were positioned at ZIP code prefix centroids (~10 approximate locations for all of NY). A report at "123 Main St, Yonkers" showed at the 107xx centroid — potentially miles from the actual damage. This breaks the report→map→shop spatial accuracy loop.
