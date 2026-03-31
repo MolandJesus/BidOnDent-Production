@@ -1,6 +1,6 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Map,
   Popup,
@@ -9,7 +9,6 @@ import {
   NavigationControl,
   ScaleControl,
 } from "react-map-gl/maplibre";
-import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
 
@@ -44,6 +43,14 @@ import {
   MapPaneBottomOverlay,
   MapPaneSearchPills,
 } from "./ShopDirectoryMapPaneOverlays";
+import {
+  buildShopsGeoJson,
+  buildRoutesGeoJson,
+  buildOriginGeoJson,
+  buildUserCoordsGeoJson,
+  buildSavedPlacesGeoJson,
+} from "./shopDirectoryGeoJson";
+import { useShopMapInteraction } from "./useShopMapInteraction";
 
 /* ── Props ──────────────────────────────────────────────────────────── */
 type ShopDirectoryMapPaneProps = {
@@ -126,7 +133,6 @@ export default function MapLibreShopDirectoryMapPane({
   navigationMode = "browse",
 }: ShopDirectoryMapPaneProps) {
   const [hasPanned, setHasPanned] = useState(false);
-  const [cursor, setCursor] = useState("");
   const [showSavedPlaces, setShowSavedPlaces] = useState(true);
   const [showReports, setShowReports] = useState(true);
   const [showRoutes, setShowRoutes] = useState(true);
@@ -134,58 +140,16 @@ export default function MapLibreShopDirectoryMapPane({
   const [tileMode, setTileMode] = useState<MapTileMode>(mapTheme === "dark" ? "night" : "roadmap");
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  /* Escape key → deselect shop + close popups */
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        if (selectedShopId != null) {
-          onSelectShop(null);
-          setShopPopup(null);
-        }
-        setSavedPlacePopup(null);
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [selectedShopId, onSelectShop]);
-
-  const [shopPopup, setShopPopup] = useState<{
-    lng: number;
-    lat: number;
-    shop: ShopMapListing;
-  } | null>(null);
-  const [savedPlacePopup, setSavedPlacePopup] = useState<{
-    lng: number;
-    lat: number;
-    label: string;
-    address?: string;
-  } | null>(null);
-
-  /* Keep popup aligned with selected shop, regardless of map/list origin */
-  useEffect(() => {
-    if (selectedShopId == null) {
-      setShopPopup(null);
-      return;
-    }
-
-    const selected = shops.find((shop) => shop.id === selectedShopId);
-    if (!selected) {
-      setShopPopup(null);
-      return;
-    }
-
-    setShopPopup((current) => {
-      if (current?.shop.id === selected.id) {
-        return current;
-      }
-
-      return {
-        lng: selected.mapResult.coordinates.longitude,
-        lat: selected.mapResult.coordinates.latitude,
-        shop: selected,
-      };
-    });
-  }, [selectedShopId, shops]);
+  const {
+    cursor,
+    setCursor,
+    shopPopup,
+    setShopPopup,
+    savedPlacePopup,
+    setSavedPlacePopup,
+    handleMapClick,
+    handleMapMouseMove,
+  } = useShopMapInteraction({ shops, selectedShopId, onSelectShop, navigationSessionStatus });
 
   // Sync tile mode when parent theme changes (unless user has explicitly picked satellite)
   useEffect(() => {
@@ -232,223 +196,21 @@ export default function MapLibreShopDirectoryMapPane({
     shops.map((s) => s.id).join(","),
   ].join(":");
 
-  /* ── GeoJSON data ─────────────────────────────────────────────────── */
+  /* ── GeoJSON data (builders extracted to shopDirectoryGeoJson.ts) ── */
   const shopsGeoJson = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: shops.map((shop) => ({
-        type: "Feature" as const,
-        geometry: {
-          type: "Point" as const,
-          coordinates: [shop.mapResult.coordinates.longitude, shop.mapResult.coordinates.latitude],
-        },
-        properties: {
-          id: shop.id,
-          name: shop.name,
-          address: `${shop.mapResult.address}, ${shop.mapResult.city}`,
-          recommendationScore: shop.recommendationScore,
-          insuranceCompatibilityScore: shop.insuranceCompatibilityScore,
-          isSelected: shop.id === selectedShopId ? 1 : 0,
-          topPick: shop.topPick ? 1 : 0,
-        },
-      })),
-    }),
+    () => buildShopsGeoJson(shops, selectedShopId),
     [shops, selectedShopId]
   );
-
-  const routesGeoJson = useMemo(() => {
-    type RouteFeature = {
-      type: "Feature";
-      geometry: { type: "LineString"; coordinates: number[][] };
-      properties: Record<string, unknown>;
-    };
-    const isGuidance = navigationMode === "guidance";
-    const features: RouteFeature[] = routeOptions.flatMap((route) => {
-      const coords = route.polyline.map((p) => [p.longitude, p.latitude] as [number, number]);
-      const isSelected = route.id === selectedRoute?.id;
-      const baseProps = {
-        id: route.id,
-        accentColor: route.accentColor,
-        isSelected: isSelected ? 1 : 0,
-        label: route.label,
-        totalDistanceLabel: route.totalDistanceLabel,
-        estimatedDurationMinutes: route.estimatedDurationMinutes,
-        trafficLabel: route.trafficLabel,
-        isGuidanceActive: isGuidance && isSelected ? 1 : 0,
-        isTravelled: 0,
-      };
-
-      // During guidance, split selected route into travelled + remaining
-      if (isGuidance && isSelected && userCoords && coords.length > 1) {
-        const userLng = userCoords.longitude;
-        const userLat = userCoords.latitude;
-        let closestIdx = 0;
-        let closestDist = Infinity;
-        for (let i = 0; i < coords.length; i++) {
-          const dx = coords[i][0] - userLng;
-          const dy = coords[i][1] - userLat;
-          const d = dx * dx + dy * dy;
-          if (d < closestDist) {
-            closestDist = d;
-            closestIdx = i;
-          }
-        }
-
-        const travelledCoords = coords.slice(0, closestIdx + 1);
-        const remainingCoords = coords.slice(closestIdx);
-
-        const result: RouteFeature[] = [];
-        if (travelledCoords.length >= 2) {
-          result.push({
-            type: "Feature",
-            geometry: { type: "LineString", coordinates: travelledCoords },
-            properties: { ...baseProps, isTravelled: 1 },
-          });
-        }
-        if (remainingCoords.length >= 2) {
-          result.push({
-            type: "Feature",
-            geometry: { type: "LineString", coordinates: remainingCoords },
-            properties: { ...baseProps, isTravelled: 0 },
-          });
-        }
-        return result.length > 0
-          ? result
-          : [
-              {
-                type: "Feature" as const,
-                geometry: { type: "LineString" as const, coordinates: coords },
-                properties: baseProps,
-              },
-            ];
-      }
-
-      return [
-        {
-          type: "Feature" as const,
-          geometry: { type: "LineString" as const, coordinates: coords },
-          properties: baseProps,
-        },
-      ];
-    });
-
-    return { type: "FeatureCollection" as const, features };
-  }, [routeOptions, selectedRoute, navigationMode, userCoords]);
-
-  const originGeoJson = useMemo(() => {
-    if (!selectedOrigin) return null;
-    return {
-      type: "Feature" as const,
-      geometry: {
-        type: "Point" as const,
-        coordinates: [selectedOrigin.longitude, selectedOrigin.latitude],
-      },
-      properties: { name: selectedOrigin.name, address: selectedOrigin.address },
-    };
-  }, [selectedOrigin]);
-
-  const userCoordsGeoJson = useMemo(() => {
-    if (!userCoords) return null;
-    return {
-      type: "Feature" as const,
-      geometry: {
-        type: "Point" as const,
-        coordinates: [userCoords.longitude, userCoords.latitude],
-      },
-      properties: {},
-    };
-  }, [userCoords]);
-
-  const savedPlacesGeoJson = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: savedPlaces.map((place) => ({
-        type: "Feature" as const,
-        geometry: {
-          type: "Point" as const,
-          coordinates: [place.longitude, place.latitude],
-        },
-        properties: { id: place.id, label: place.label, address: place.address },
-      })),
-    }),
-    [savedPlaces]
+  const routesGeoJson = useMemo(
+    () => buildRoutesGeoJson(routeOptions, selectedRoute, navigationMode, userCoords ?? null),
+    [routeOptions, selectedRoute, navigationMode, userCoords]
   );
+  const originGeoJson = useMemo(() => buildOriginGeoJson(selectedOrigin ?? null), [selectedOrigin]);
+  const userCoordsGeoJson = useMemo(() => buildUserCoordsGeoJson(userCoords ?? null), [userCoords]);
+  const savedPlacesGeoJson = useMemo(() => buildSavedPlacesGeoJson(savedPlaces), [savedPlaces]);
 
   /* ── Interaction ──────────────────────────────────────────────────── */
   const interactiveLayerIds = [SHOP_LAYER, SHOP_CLUSTER_LAYER, SAVED_PLACES_LAYER];
-
-  const handleMapClick = useCallback(
-    (e: MapLayerMouseEvent) => {
-      const feature = e.features?.[0];
-      if (!feature) {
-        setShopPopup(null);
-        setSavedPlacePopup(null);
-        // Deselect shop on empty map tap — only when not actively navigating
-        if (navigationSessionStatus === "idle" || navigationSessionStatus === "ended") {
-          onSelectShop(null);
-        }
-        return;
-      }
-      // Cluster click → zoom to expand
-      if (feature.layer?.id === SHOP_CLUSTER_LAYER) {
-        const clusterId = feature.properties?.cluster_id;
-        const mapInstance = (
-          e.target as unknown as {
-            getSource: (id: string) =>
-              | {
-                  getClusterExpansionZoom: (
-                    id: number,
-                    cb: (err: unknown, zoom: number) => void
-                  ) => void;
-                }
-              | undefined;
-          }
-        ).getSource("shops-source");
-        if (mapInstance && clusterId != null) {
-          mapInstance.getClusterExpansionZoom(Number(clusterId), (_err, zoom) => {
-            const coords = (feature.geometry as GeoJSON.Point).coordinates;
-            e.target.flyTo({ center: [coords[0], coords[1]], zoom: Math.min(zoom, 17) });
-          });
-        }
-        return;
-      }
-      if (feature.layer?.id === SHOP_LAYER) {
-        const shopId = feature.properties?.id;
-        if (shopId != null) {
-          setSavedPlacePopup(null);
-          onSelectShop(Number(shopId));
-          const shop = shops.find((s) => s.id === Number(shopId));
-          if (shop) {
-            setShopPopup({
-              lng: shop.mapResult.coordinates.longitude,
-              lat: shop.mapResult.coordinates.latitude,
-              shop,
-            });
-          }
-        }
-      }
-      if (feature.layer?.id === SAVED_PLACES_LAYER) {
-        const coords = (feature.geometry as GeoJSON.Point).coordinates;
-        setSavedPlacePopup({
-          lng: coords[0],
-          lat: coords[1],
-          label: String(feature.properties?.label || "Saved Place"),
-          address: feature.properties?.address ? String(feature.properties.address) : undefined,
-        });
-      }
-    },
-    [onSelectShop, shops, navigationSessionStatus]
-  );
-
-  const handleMapMouseMove = useCallback((e: MapLayerMouseEvent) => {
-    const isHoveringInteractive = e.features?.some(
-      (feature) =>
-        feature.layer?.id === SHOP_LAYER ||
-        feature.layer?.id === SHOP_CLUSTER_LAYER ||
-        feature.layer?.id === SAVED_PLACES_LAYER
-    );
-    setCursor(isHoveringInteractive ? "pointer" : "");
-  }, []);
 
   /* ── Render ───────────────────────────────────────────────────────── */
   return (
