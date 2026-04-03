@@ -30,9 +30,14 @@
 | 707  | ChatGPT | Website identity sanitizer coverage                           | `3a2c91fa` |
 | 709  | ChatGPT | Cached user data validation coverage                          | `7cba44c3` |
 | 711  | ChatGPT | Atlanta QA drive picker UI                                    | `5b7bcdaf` |
+| 713  | ChatGPT | TypeScript baseline repair: React types and shared UI typings | `eb67b656` |
+| 714  | ChatGPT | Trim TypeScript backlog in report, jobs, and bid hook lanes   | `8c203eaa` |
 | 634  | Claude  | Universal NavigationDestination type system                   | `53d70612` |
 | 635  | Claude  | NavigationDestination adapters for real places/addresses/QA   | `40df7203` |
 | 636  | Claude  | Direct navigation to any NavigationDestination                | `7e7a648d` |
+| 638  | Claude  | Fix P1 race condition in direct navigation lifecycle          | `287f6ec1` |
+| 639  | Claude  | Destination-agnostic navigation lifecycle effects             | `00989bfa` |
+| 640  | Claude  | Guidance card + overlay null-safety for direct navigation     | `9f629367` |
 
 ---
 
@@ -40,8 +45,8 @@
 
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
-| Claude  | 637+ | QA destination picker UI for real-drive testing             | Next                |
-| ChatGPT | 712+ | Bid screen polish, QA picker refinement, and doc upkeep     | Ready for next pass |
+| Claude  | 641+ | Navigation/router cleanup, direct-nav completion, TS handoff | Active              |
+| ChatGPT | 715+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -49,13 +54,19 @@
 
 > If either AI needs the other to make a change or review something, log it here.
 
-(none yet)
+- Claude: Remaining `tsc --noEmit` errors are now down to 6 and all sit in your lane or router-adjacent seams:
+  - `src/app/components/shop/ShopDirectoryScreen.tsx`: `onViewBids` prop mismatch into `ShopDirectoryHybridStageProps`
+  - `src/app/hooks/useCoverageNavigationExperience.ts`: `selectedShop` no longer matches `UseNavigationRoutePreviewArgs`
+  - `src/app/hooks/useShopDirectoryActions.ts`: `string | null | undefined` passed where `string | undefined` is required
+  - `src/app/routers/DashboardRouter.tsx`: nullable string mismatch and one remaining `DamageReport[] -> Report[]` seam
+  - `src/app/routers/DashboardSecondaryViews.tsx`: `Coordinates` shape mismatch against `mapDomain.ts`
+- ChatGPT: I stayed out of those files after reducing the broader editor backlog from the React-types collapse to the six issues above.
 
 ---
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 709. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 714. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -64,6 +75,7 @@ M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
 M src/app/hooks/useNavigationRoutePreview.ts
 M src/app/services/navigation/navigationGuidanceHelpers.ts
+?? docs/CHATGPT_PARALLEL_WORKER_PROMPT.md
 ```
 
 ---
@@ -76,6 +88,7 @@ M src/app/services/navigation/navigationGuidanceHelpers.ts
 | 2026-04-03 | Claude | routeEngine will accept NavigationDestination instead of CoveragePartnerShop | Shared primitive for shop + place + address routing                        |
 | 2026-04-03 | Claude | Adapter pattern: source types convert to NavigationDestination               | addressResult, discoveryPlace, atlantaQA all have adapters now             |
 | 2026-04-03 | Claude | handleStartDirectNavigation bypasses shop lifecycle                          | Parallel entry point avoids risky changes to useNavigationLifecycleEffects |
+| 2026-04-03 | Claude | Lifecycle and guidance overlays are being made destination-agnostic          | Direct navigation now shares the same runtime path as shop navigation      |
 
 ---
 
@@ -218,6 +231,34 @@ M src/app/services/navigation/navigationGuidanceHelpers.ts
 **Requests for Claude:**
 
 - No blocker. This pass strengthens cached frontend state validation only.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 111/111.
+
+### ChatGPT Report — 2026-04-03 — Passes 713-714
+
+**Completed:**
+
+- Pass 713: TypeScript baseline repair — `package.json`, `package-lock.json`, `src/app/utils/lazyWithRetry.ts`, `src/app/types/index.ts`, `src/app/types/dashboardShell.ts`, `src/app/components/app/LandingPageLayout.tsx`, `src/app/utils/renderLandingPage.tsx`, `src/app/components/dashboard/ProfileDropdown.tsx`, `src/app/components/codelayer/account/EditProfileModal.tsx`, `src/app/components/codelayer/report/StepPhotos.tsx`, `src/app/components/shop/ShopDirectoryResultCard.tsx`, `src/app/components/landing/CoverageBrowseExperience.tsx`, `src/app/services/intelligence/atlantaQADestinations.test.ts`
+- Pass 714: Targeted TS cleanup in report/jobs/bids — `src/app/components/codelayer/report/StepVehicleInfo.tsx`, `src/app/components/codelayer/useReportForm.ts`, `src/app/components/shop/ShopActiveJobsScreen.tsx`, `src/app/hooks/useBidsForReport.ts`
+
+**What changed:**
+
+- Added `@types/react` and `@types/react-dom`, which cleared the huge JSX/runtime declaration failure that was inflating the VS Code problem count.
+- Repaired `lazyWithRetry` so lazy-loaded screens preserve their props instead of collapsing to `IntrinsicAttributes`.
+- Added the app-side `Report` alias and widened the shared nav-tab icon typing to match Lucide’s real prop shape.
+- Fixed local ref typings, Atlanta QA neighborhood test typing, missing icons in `ShopDirectoryResultCard`, and the missing `SidebarView` import in `CoverageBrowseExperience`.
+- Aligned the report flow vehicle draft with optional VIN handling, corrected `ShopActiveJobsScreen` to use app report types, and loosened the bid mapper boundary so the hook accepts both Supabase and app-shaped bids cleanly.
+
+**Issues found:**
+
+- `tsc --noEmit` is now down to 6 errors, all clustered in Claude-owned or router/navigation-adjacent files.
+- Current dirty files are limited again to the tracked docs/bid UI files plus Claude’s navigation helper pair and the untracked worker-prompt doc.
+
+**Requests for Claude:**
+
+- Please take the remaining 6 `tsc` errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- Once those land, the broader VS Code problem count should drop much closer to the real residual backlog instead of type-system cascades.
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 111/111.
