@@ -87,15 +87,19 @@ export function useUserDataCloudSync({
 
         if (vehiclesSignature !== lastSavedVehiclesSignatureRef.current) {
           if (vehicles.length > 0) {
-            let savedCount = 0;
-            for (const vehicle of vehicles) {
-              const vid = vehicle.id;
-              const vSig = JSON.stringify(vehicle);
-              if (vid && vSig === vehicleSignaturesRef.current[vid]) continue;
-              await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
-              if (vid) vehicleSignaturesRef.current[vid] = vSig;
-              savedCount++;
-            }
+            const dirtyVehicles = vehicles.filter((v) => {
+              const vid = v.id;
+              return !(vid && JSON.stringify(v) === vehicleSignaturesRef.current[vid]);
+            });
+            const results = await Promise.allSettled(
+              dirtyVehicles.map((vehicle) =>
+                saveVehicle(toSupabaseVehicle(vehicle), clerkUserId).then(() => {
+                  const vid = vehicle.id;
+                  if (vid) vehicleSignaturesRef.current[vid] = JSON.stringify(vehicle);
+                })
+              )
+            );
+            const savedCount = results.filter((r) => r.status === "fulfilled").length;
             if (import.meta.env.DEV && savedCount > 0)
               console.log(`Auto-saved ${savedCount}/${vehicles.length} vehicles to Supabase`);
           }
@@ -104,15 +108,19 @@ export function useUserDataCloudSync({
 
         if (reportsSignature !== lastSavedReportsSignatureRef.current) {
           if (reports.length > 0) {
-            let savedCount = 0;
-            for (const report of reports) {
-              const rid = report.id;
-              const rSig = JSON.stringify(report);
-              if (rid && rSig === reportSignaturesRef.current[rid]) continue;
-              await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
-              if (rid) reportSignaturesRef.current[rid] = rSig;
-              savedCount++;
-            }
+            const dirtyReports = reports.filter((r) => {
+              const rid = r.id;
+              return !(rid && JSON.stringify(r) === reportSignaturesRef.current[rid]);
+            });
+            const results = await Promise.allSettled(
+              dirtyReports.map((report) =>
+                saveDamageReport(buildSupabaseReportPayload(report), clerkUserId).then(() => {
+                  const rid = report.id;
+                  if (rid) reportSignaturesRef.current[rid] = JSON.stringify(report);
+                })
+              )
+            );
+            const savedCount = results.filter((r) => r.status === "fulfilled").length;
             if (import.meta.env.DEV && savedCount > 0)
               console.log(`Auto-saved ${savedCount}/${reports.length} reports to Supabase`);
           }

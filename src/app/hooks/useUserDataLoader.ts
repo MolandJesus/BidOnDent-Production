@@ -74,18 +74,21 @@ export async function hydrateFromCloudProfile(
   };
   const notifications = getNotificationsByUserType(profileData.account_type);
 
-  // Fetch vehicles
-  const vehiclesData = await getVehicles(clerkUserId);
+  // Fetch vehicles, reports, and bids in parallel
+  const [vehiclesData, reportsData, bidsData] = await Promise.all([
+    getVehicles(clerkUserId),
+    getDamageReports(clerkUserId),
+    getMyBids(clerkUserId),
+  ]);
+
   const vehicles = vehiclesData.map(toFrontendVehicle);
   if (import.meta.env.DEV) {
     console.log(`Loaded ${vehiclesData.length} vehicles from Supabase`);
   }
 
-  // Fetch reports
   let reports: DamageReport[] = [];
   let reportsError: string | null = null;
   const photoStorage: Record<string, string[]> = {};
-  const reportsData = await getDamageReports(clerkUserId);
 
   if (Array.isArray(reportsData)) {
     reports = reportsData.map(transformSupabaseReport) as unknown as DamageReport[];
@@ -110,8 +113,6 @@ export async function hydrateFromCloudProfile(
     }
   }
 
-  // Fetch bids
-  const bidsData = await getMyBids(clerkUserId);
   const bids = bidsData.map(toFrontendBid);
   if (import.meta.env.DEV) {
     console.log(`[DEV] Loaded ${bids.length} bids from Supabase`);
