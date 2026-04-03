@@ -10,7 +10,7 @@ import { useNotifications } from "../../features/notifications/NotificationConte
 import ShopActiveJobCard, { type ActiveJob } from "./ShopActiveJobCard";
 import ShopActiveJobDetailModal from "./ShopActiveJobDetailModal";
 
-import type { Report } from "../../../types";
+import type { Report } from "../../types";
 
 type ShopActiveJobsScreenProps = {
   primaryColor?: string;
@@ -77,8 +77,8 @@ export default function ShopActiveJobsScreen({
       return {
         id: String(report?.id ?? `job-${index}`),
         customerName: "Customer",
-        customerEmail: report?.customer_email || "Contact via BidOnDent",
-        customerPhone: report?.customer_phone || "Via platform",
+        customerEmail: report?.customerEmail || "Contact via BidOnDent",
+        customerPhone: report?.customerPhone || "Via platform",
         vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
         damageType: report?.damageArea || report?.damageType || "Repair request",
         bidAmount,

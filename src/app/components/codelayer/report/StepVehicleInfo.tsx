@@ -5,7 +5,7 @@ type Vehicle = {
   make: string;
   model: string;
   year: string;
-  vin: string;
+  vin?: string;
 };
 
 type SavedVehicle = Vehicle & { id: string; licensePlate?: string };
@@ -70,7 +70,7 @@ export default function StepVehicleInfo({
                     make: savedVehicle.make,
                     model: savedVehicle.model,
                     year: savedVehicle.year,
-                    vin: savedVehicle.vin || "",
+                    vin: savedVehicle.vin ?? "",
                   })
                 }
                 className={`bd-report-choice w-full p-3.5 rounded-2xl text-left transition-all ${
@@ -199,7 +199,7 @@ export default function StepVehicleInfo({
             id="vin"
             name="vin"
             type="text"
-            value={vehicle.vin}
+            value={vehicle.vin ?? ""}
             onChange={(e) =>
               onVehicleChange({
                 ...vehicle,

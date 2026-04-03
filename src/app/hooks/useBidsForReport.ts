@@ -5,39 +5,42 @@ import type { Bid } from "../types";
 
 interface MappedBid extends Bid {}
 
+type RawBid = Partial<Bid> & Record<string, unknown>;
+
 /** Maps a raw Bid (from edge function or real-time) to the camelCase shape BidsScreen expects. */
-function mapBid(bid: Record<string, unknown>, reportId: string): MappedBid {
+function mapBid(bid: unknown, reportId: string): MappedBid {
+  const rawBid = bid as RawBid;
   return {
-    id: (bid.id as string) || "",
+    id: rawBid.id || "",
     reportId:
-      (bid.reportId as string) ||
-      (bid.report_id as string) ||
-      (bid.damage_report_id as string) ||
+      rawBid.reportId ||
+      (rawBid.report_id as string) ||
+      (rawBid.damage_report_id as string) ||
       reportId,
     shopId:
-      (bid.shopId as string) ||
-      (bid.shop_id as string) ||
-      (bid.shop_user_id as string) ||
-      (bid.clerk_shop_user_id as string) ||
+      rawBid.shopId ||
+      (rawBid.shop_id as string) ||
+      (rawBid.shop_user_id as string) ||
+      (rawBid.clerk_shop_user_id as string) ||
       "",
-    shopEmail: (bid.shopEmail as string) || (bid.shop_email as string) || "",
-    shopName: (bid.shopName as string) || (bid.shop_name as string) || "Auto Shop",
-    shopRating: Number(bid.shopRating ?? bid.shop_rating ?? 0),
-    shopReviews: Number(bid.shopReviews ?? bid.shop_reviews ?? 0),
-    amount: Number(bid.amount ?? 0),
-    estimatedDays: Number(bid.estimatedDays ?? bid.estimated_days ?? 0),
+    shopEmail: rawBid.shopEmail || (rawBid.shop_email as string) || "",
+    shopName: rawBid.shopName || (rawBid.shop_name as string) || "Auto Shop",
+    shopRating: Number(rawBid.shopRating ?? rawBid.shop_rating ?? 0),
+    shopReviews: Number(rawBid.shopReviews ?? rawBid.shop_reviews ?? 0),
+    amount: Number(rawBid.amount ?? 0),
+    estimatedDays: Number(rawBid.estimatedDays ?? rawBid.estimated_days ?? 0),
     shopDistance:
-      (bid.shopDistance as string) || (bid.shop_distance as string) || "Within service area",
+      rawBid.shopDistance || (rawBid.shop_distance as string) || "Within service area",
     shopLatitude:
-      (bid.shopLatitude as number | undefined) ?? (bid.shop_latitude as number | undefined),
+      rawBid.shopLatitude ?? (rawBid.shop_latitude as number | undefined),
     shopLongitude:
-      (bid.shopLongitude as number | undefined) ?? (bid.shop_longitude as number | undefined),
-    description: (bid.description as string) || "",
+      rawBid.shopLongitude ?? (rawBid.shop_longitude as number | undefined),
+    description: rawBid.description || "",
     status:
-      bid.status === "accepted" || bid.status === "rejected"
-        ? (bid.status as "accepted" | "rejected")
+      rawBid.status === "accepted" || rawBid.status === "rejected"
+        ? rawBid.status
         : "pending",
-    createdAt: (bid.createdAt as string) || (bid.created_at as string) || new Date().toISOString(),
+    createdAt: rawBid.createdAt || (rawBid.created_at as string) || new Date().toISOString(),
   };
 }
 
@@ -94,7 +97,7 @@ export function useBidsForReport(reportId?: string | null) {
       // onNewBid
       (bid: Bid) => {
         if (reportIdRef.current !== reportId) return;
-        const mapped = mapBid(bid as unknown as Record<string, unknown>, reportId);
+        const mapped = mapBid(bid, reportId);
         setBids((prev) => {
           if (prev.some((b) => b.id === mapped.id)) return prev;
           return [...prev, mapped];
@@ -103,7 +106,7 @@ export function useBidsForReport(reportId?: string | null) {
       // onUpdateBid
       (bid: Bid) => {
         if (reportIdRef.current !== reportId) return;
-        const mapped = mapBid(bid as unknown as Record<string, unknown>, reportId);
+        const mapped = mapBid(bid, reportId);
         setBids((prev) => prev.map((b) => (b.id === mapped.id ? mapped : b)));
       },
       // onDeleteBid

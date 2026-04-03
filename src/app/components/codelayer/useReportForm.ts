@@ -31,7 +31,12 @@ export function useReportForm({
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
-  const [vehicle, setVehicle] = useState({ ...DEFAULT_VEHICLE_DRAFT });
+  const [vehicle, setVehicle] = useState<{
+    make: string;
+    model: string;
+    year: string;
+    vin?: string;
+  }>({ ...DEFAULT_VEHICLE_DRAFT });
   const [damageArea, setDamageArea] = useState("front");
   const [zipCode, setZipCode] = useState("");
   const [address, setAddress] = useState("");
@@ -64,7 +69,15 @@ export function useReportForm({
   // Save draft to localStorage whenever any field changes (except on completion)
   useEffect(() => {
     if (step === 6) return;
-    saveReportDraft({ step, vehicle, damageArea, zipCode, address, description, incident });
+    saveReportDraft({
+      step,
+      vehicle: { ...vehicle, vin: vehicle.vin ?? "" },
+      damageArea,
+      zipCode,
+      address,
+      description,
+      incident,
+    });
   }, [step, vehicle, damageArea, zipCode, address, description, incident]);
 
   useEffect(() => {
