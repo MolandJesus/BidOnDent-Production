@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Star,
   BadgeCheck,
+  Zap,
 } from "lucide-react";
 
 export type RepairRequest = {
@@ -102,6 +103,15 @@ type ShopRequestCardProps = {
   onSubmitBid: (request: RepairRequest) => void;
 };
 
+/** Reports submitted within this window are marked "New". */
+const NEW_REPORT_THRESHOLD_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+function isRecentReport(submittedAt: string): boolean {
+  if (!submittedAt) return false;
+  const elapsed = Date.now() - Date.parse(submittedAt);
+  return elapsed >= 0 && elapsed < NEW_REPORT_THRESHOLD_MS;
+}
+
 export default function ShopRequestCard({
   request,
   isLight,
@@ -135,6 +145,18 @@ export default function ShopRequestCard({
             </p>
           </div>
           <div className="flex flex-col items-end gap-1">
+            {isRecentReport(request.submittedAt) && (
+              <span
+                className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-bold animate-pulse ${
+                  isLight
+                    ? "text-amber-700 bg-amber-100 border border-amber-300"
+                    : "text-amber-300 bg-amber-500/20 border border-amber-400/30"
+                }`}
+              >
+                <Zap className="w-3 h-3" />
+                NEW
+              </span>
+            )}
             <span
               className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(request.status, isLight)}`}
             >
