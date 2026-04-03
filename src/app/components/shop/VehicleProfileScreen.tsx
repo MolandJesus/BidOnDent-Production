@@ -206,7 +206,13 @@ export default function VehicleProfileScreen({
                 <input
                   type="text"
                   value={formData.vin}
-                  onChange={(e) => setFormData({ ...formData, vin: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      vin: e.target.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, ""),
+                    })
+                  }
+                  maxLength={17}
                   className={inputClass}
                   placeholder="1HGBH41JXMN109186"
                 />

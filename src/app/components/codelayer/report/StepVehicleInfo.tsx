@@ -220,7 +220,13 @@ export default function StepVehicleInfo({
             name="vin"
             type="text"
             value={vehicle.vin}
-            onChange={(e) => onVehicleChange({ ...vehicle, vin: e.target.value })}
+            onChange={(e) =>
+              onVehicleChange({
+                ...vehicle,
+                vin: e.target.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, ""),
+              })
+            }
+            maxLength={17}
             className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
               isLightAppearance
                 ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
