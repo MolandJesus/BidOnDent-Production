@@ -4,15 +4,12 @@
  * Extracted from useShopDirectoryNavigation to keep it under the 500-line hard limit.
  * All functions are side-effect-free and return derived values from navigation state inputs.
  */
-import type { MarketUserType } from "../services/intelligence/marketIntelligence";
-import type {
-  ShopMapListing,
-  IntelligenceSummary,
-} from "../services/intelligence/shopMapExperience";
+import type { MarketUserType, IntelligenceSummary } from "../services/intelligence/marketIntelligence";
+import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
 import { buildRoleAwareRouteSummary } from "../services/intelligence/shopMapExperience";
 import type { NavigationDestination, RouteOption } from "../types/mapDomain";
 import type { NavigationSessionStatus } from "../features/navigation";
-import type { RoutePreview } from "../services/navigation/routeEngine";
+import type { NavigationRoutePreview } from "../types/navigation";
 import { formatDistanceLabel } from "../services/intelligence/shopMapRouting";
 import { buildLiveRouteOptionsFromPreviews } from "./useShopDirectoryRoutePreview";
 import { getShopRouteActionLabel } from "./shopDirectorySessionUtils";
@@ -64,7 +61,7 @@ export function computeLiveNavigationFlags(params: {
 export function computeRouteDisplayState(params: {
   liveNavigationActive: boolean;
   guidanceSelectedDestination: NavigationDestination | null;
-  routeAlternatives: RoutePreview[];
+  routeAlternatives: NavigationRoutePreview[];
   sessionRouteOptions: RouteOption[];
   sessionSelectedRouteId: string | null;
   selectedShop: ShopMapListing | null;
@@ -131,7 +128,7 @@ export function computeRemainingLabels(params: {
   liveNavigationActive: boolean;
   hasArrived: boolean;
   hasArrivedForDestination: boolean;
-  routePreview: RoutePreview | null;
+  routePreview: NavigationRoutePreview | null;
   currentStepIndex: number;
   currentSpeedMph: number;
 }) {
