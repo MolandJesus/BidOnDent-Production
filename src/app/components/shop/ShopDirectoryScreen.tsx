@@ -5,6 +5,7 @@ import ShopDirectoryHybridStage from "./ShopDirectoryHybridStage";
 import ShopDirectoryListBody from "./ShopDirectoryListBody";
 import ShopDirectoryContextCards from "./ShopDirectoryContextCards";
 import ShopDirectoryHero from "./ShopDirectoryHero";
+import ShopDirectoryQADrivePanel from "./ShopDirectoryQADrivePanel";
 import ShopDirectorySearchPanel from "./ShopDirectorySearchPanel";
 import ShopDirectorySheets from "./ShopDirectorySheets";
 import NavigationActiveManeuverCard from "../maps/navigation/NavigationActiveManeuverCard";
@@ -418,6 +419,11 @@ export default function ShopDirectoryScreen({
         reportCount={reports.length}
         userInfo={userInfo}
         userType={userType}
+      />
+
+      <ShopDirectoryQADrivePanel
+        appearanceMode={appearanceMode}
+        onStartDrive={nav.handleStartDirectNavigation}
       />
 
       <ShopDirectorySheets
