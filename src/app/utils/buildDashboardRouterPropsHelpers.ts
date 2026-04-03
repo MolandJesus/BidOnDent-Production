@@ -30,8 +30,7 @@ export async function handleAcceptBid(
     const clerkId = userProfile?.id;
     const acceptedBid = await updateBidStatus(details.bidId, "accepted", clerkId);
     if (!acceptedBid) {
-      if (import.meta.env.DEV)
-        console.error("Failed to accept bid in Supabase:", details.bidId);
+      if (import.meta.env.DEV) console.error("Failed to accept bid in Supabase:", details.bidId);
       return;
     }
 

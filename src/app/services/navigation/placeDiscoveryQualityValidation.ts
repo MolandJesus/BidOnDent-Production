@@ -43,9 +43,7 @@ function normalizeDiscoveryRole(value: unknown): NavigationDiscoveryRole | null 
 
 // ── Snapshot validation ─────────────────────────────────────────────
 
-export function toValidatedDiscoveryQualitySnapshot(
-  raw: unknown
-): DiscoveryQualitySnapshot | null {
+export function toValidatedDiscoveryQualitySnapshot(raw: unknown): DiscoveryQualitySnapshot | null {
   if (!raw || typeof raw !== "object") {
     return null;
   }

@@ -19,6 +19,7 @@ import {
   sanitizeSavedPlace,
   sanitizeSearchFilters,
   sanitizePositiveInteger,
+  sanitizeViewportBounds,
 } from "./websiteIdentitySanitizerUtils";
 
 export { deepEqual };
