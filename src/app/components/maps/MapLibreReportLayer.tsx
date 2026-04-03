@@ -61,8 +61,13 @@ export default function MapLibreReportLayer({
     const target = reports.find((r) => r.id === focusReportId);
     if (target) {
       setSelectedReport(target);
-      setDrawerOpen(true);
       setFocusHandled(true);
+      // Delay drawer to let MapLibre popup settle before Radix sets aria-hidden
+      const id = setTimeout(() => {
+        if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+        setDrawerOpen(true);
+      }, 150);
+      return () => clearTimeout(id);
     }
   }, [focusReportId, reports, focusHandled]);
 
@@ -102,6 +107,7 @@ export default function MapLibreReportLayer({
       const entry = reportsWithCoordinates.find((r) => r.report.id === String(reportId));
       if (entry) {
         setSelectedReport(entry.report);
+        if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
         setDrawerOpen(true);
       }
     },
@@ -374,7 +380,10 @@ export default function MapLibreReportLayer({
                 setSelectedReport(null);
                 setDrawerOpen(false);
               }}
-              onOpenDrawer={() => setDrawerOpen(true)}
+              onOpenDrawer={() => {
+                if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+                setDrawerOpen(true);
+              }}
             />
           );
         })()}
