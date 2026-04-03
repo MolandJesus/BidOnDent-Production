@@ -10,7 +10,10 @@ import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { RepairRequest } from "./ShopRequestCard";
 import ShopRequestCard from "./ShopRequestCard";
 import ShopBidModal from "./ShopBidModal";
-import { transformReportToRequest, type ShopRequestsScreenProps } from "./shopRequestsScreenHelpers";
+import {
+  transformReportToRequest,
+  type ShopRequestsScreenProps,
+} from "./shopRequestsScreenHelpers";
 
 export default function ShopRequestsScreen({
   primaryColor = "#003d82",

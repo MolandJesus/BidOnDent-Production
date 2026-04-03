@@ -30,9 +30,7 @@ export default function InsurerConnectFormModal({
         <div className="p-4 sm:p-6">
           <div className="flex items-start justify-between gap-3 mb-4">
             <div>
-              <h2
-                className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}
-              >
+              <h2 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
                 Connect {carrier.name}
               </h2>
               <p className={`text-sm mt-1 ${isLight ? "text-slate-600" : "text-slate-400"}`}>

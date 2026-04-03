@@ -12,31 +12,8 @@ import BidsEmptyState from "./BidsEmptyState";
 import BidsSummaryHeader from "./BidsSummaryHeader";
 import BidsGeographyMap from "./BidsGeographyMap";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
-import type { Bid, DamageReport } from "../../types";
-import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import { useNotifications } from "../../features/notifications/NotificationContext";
-
-type BidsScreenProps = {
-  primaryColor?: string;
-  appearanceMode?: DashboardAppearanceMode;
-  onBack?: () => void;
-  onStartReport?: () => void;
-  onViewShopDirectory?: () => void;
-  userType?: "customer" | "shop" | "insurer";
-  bids?: Bid[];
-  reports?: DamageReport[];
-  onAcceptBid?: (details: {
-    bidId: string;
-    shopId?: string;
-    shopName: string;
-    price: number;
-    timeframe: string;
-    reportId?: string;
-  }) => void;
-  onRejectBid?: (details: { bidId: string; shopName: string }) => void;
-};
-
-type FilterType = "all" | "lowest" | "fastest" | "rating";
+import { FILTERS, transformBid, type BidsScreenProps, type FilterType } from "./bidsScreenHelpers";
 
 export default function BidsScreen({
   primaryColor = "#003d82",
@@ -63,27 +40,7 @@ export default function BidsScreen({
   }>({});
 
   const liveBids = useMemo(() => {
-    return (incomingBids || []).map((bid, index) => ({
-      id: bid.id || `bid-${index}`,
-      shopId: bid.shopId,
-      reportId: bid.reportId,
-      shopName: bid.shopName || "Auto Shop",
-      rating: Number(bid.shopRating || 0),
-      reviews: Number(bid.shopReviews || 0),
-      price: Number(bid.amount || 0),
-      estimatedDays: Number(bid.estimatedDays || 0),
-      timeframe: bid.estimatedDays
-        ? `${bid.estimatedDays}-${bid.estimatedDays + 1} days`
-        : "Timeline pending",
-      distance: bid.shopDistance || "Within service area",
-      warranty: "Scope shared after acceptance",
-      description:
-        bid.description || "Bid details will be confirmed with the shop after selection.",
-      image: "",
-      status: bid.status || "pending",
-      shopLatitude: bid.shopLatitude ?? null,
-      shopLongitude: bid.shopLongitude ?? null,
-    }));
+    return (incomingBids || []).map(transformBid);
   }, [incomingBids]);
 
   // Restore acceptedBidId from bid data on mount/update
@@ -234,13 +191,6 @@ export default function BidsScreen({
     setShowRatingModal(false);
   };
 
-  const filters: Array<{ id: FilterType; label: string }> = [
-    { id: "all", label: "All Bids" },
-    { id: "lowest", label: "Lowest Price" },
-    { id: "fastest", label: "Fastest" },
-    { id: "rating", label: "Highest Rated" },
-  ];
-
   return (
     <div className="pb-20 px-4 md:px-6 py-4 md:py-5 space-y-4">
       <BidsSummaryHeader
@@ -266,7 +216,7 @@ export default function BidsScreen({
         }}
       >
         <div className="flex flex-wrap gap-2">
-          {filters.map((item) => (
+          {FILTERS.map((item) => (
             <button
               key={item.id}
               className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
