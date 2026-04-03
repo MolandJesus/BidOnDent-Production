@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 3, 2026 (Pass 566 — Runtime console fix + report UX polish)
+**Last updated:** April 3, 2026 (Pass 567 — Security hardening: credentials, CORS, console leakage)
 **Status:** Active execution tracker
-**Pass count:** 566
+**Pass count:** 567
 **Build:** 0 errors
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -42,6 +42,20 @@
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
 
 ---
+
+## Pass 567 — Security hardening: credentials, CORS, console leakage (2026-04-03)
+
+- **Why this pass was chosen:** Full security audit revealed 3 CRITICAL + 2 HIGH issues. Hardcoded passwords in source control, wildcard CORS, and ungated console warnings in production code.
+- **What changed:**
+  - **Removed hardcoded credentials:** `ADMIN_SWITCH_PASSWORD` ("admin123") now reads from `VITE_ADMIN_SWITCH_PASSWORD` env var. Demo password "demo123" removed from `demoMode.ts`, `DemoLoginHelper.tsx`, `DemoModeBanner.tsx` — centralized to `VITE_DEMO_PASSWORD` env var.
+  - **CORS lockdown:** Edge function `corsHeaders` changed from wildcard `*` to whitelisted origins (bidondent.com, vercel, localhost in dev). Dynamic origin reflection via `getCorsOrigin()`. Restricted allowed headers to `Content-Type, Authorization, x-clerk-user-id`. Removed `Access-Control-Expose-Headers: *`.
+  - **Console leakage:** DEV-gated `console.warn` in `profileImageUpload.ts` (upload timeout/failure) and `MapLibreShopDirectoryViewportManager.tsx` (invalid viewport bounds).
+  - **`.env.example`** updated with new env vars.
+- **Files touched:** `adminConfig.ts`, `demoMode.ts`, `DemoLoginHelper.tsx`, `DemoModeBanner.tsx`, `constants.ts` (edge), `index.ts` (edge), `helpers.ts` (edge), `profileImageUpload.ts`, `MapLibreShopDirectoryViewportManager.tsx`, `.env.example`
+- **Validation:** Build: 3.34s, 0 errors. Diagnostics: 0.
+- **Problem taxonomy:** P0:3-fixed (hardcoded creds, CORS wildcard) P1:0 P2:0 P3:0 P4:2-fixed (console leakage) P5:0 P6:0 P7:0
+- **Security audit also confirmed:** RLS policies properly hardened (migration 012), edge function auth checks robust, `sanitizeErrorMessage()` used consistently in all catch blocks, error boundaries in place at global/screen/navigation/image levels.
+- **Best next pass:** Functional code fixes — connect broken UI flows, fix `any` types in shared type definitions, or `useShopDirectorySession.ts` extraction (at 500-line hard limit).
 
 ## Pass 566 — Runtime console fix + report UX polish (2026-04-03)
 

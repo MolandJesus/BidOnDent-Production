@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-03 (Pass 565 — Structural extraction: `useNavigationLaunch.ts` from `useOperatingRegionsCoverage.ts` (515→436). Fixed duplicate import in `MapLibreServiceCoverageMap.tsx`, type errors in `CustomerEstimateDetailSheet.tsx`.)
+> **Last updated:** 2026-04-03 (Pass 567 — Security hardening: removed hardcoded credentials from source, CORS whitelisted, console leakage fixed. Pass 566 — DrawerOverlay forwardRef, ReportDetailDrawer/ReportLayerPopup UX polish.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.3s · MapLibre GL JS WebGL engine
@@ -423,8 +423,11 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 | Issue                                                     | Severity | Notes                                                                              |
 | --------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
-| Supabase RLS `USING(true)` on 4 tables                    | HIGH     | Production security gap — requires migration, ask before touching                  |
+| ~~Supabase RLS `USING(true)` on 4 tables~~                | ✅ DONE  | Migration 012 hardened all RLS policies (verified Pass 567 audit)                   |
+| ~~Hardcoded admin/demo passwords in source~~              | ✅ DONE  | Pass 567 — moved to `VITE_ADMIN_SWITCH_PASSWORD` / `VITE_DEMO_PASSWORD` env vars   |
+| ~~CORS wildcard `*` on edge functions~~                   | ✅ DONE  | Pass 567 — whitelisted origins, dynamic reflection via `getCorsOrigin()`            |
 | `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                          |
+| `any` types in `src/types/index.ts`                       | LOW      | 2 remaining `any` in shared type defs (line 48, 237)                               |
 | ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR                  |
 | ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections                  |
 | ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting)      |
