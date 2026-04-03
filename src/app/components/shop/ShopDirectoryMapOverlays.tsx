@@ -131,10 +131,11 @@ export default function ShopDirectoryMapOverlays({
     selectedShop && sessionDestinationId === String(selectedShop.id)
   );
   const isArrivedForSelectedShop = hasArrived && selectedShopMatchesSessionDestination;
+  const isActiveSession = sessionStatus === "active" || sessionStatus === "paused";
   const showGuidanceCard =
     hasRoute &&
-    selectedShopMatchesSessionDestination &&
-    (sessionStatus === "active" || sessionStatus === "paused");
+    isActiveSession &&
+    (selectedShopMatchesSessionDestination || (navigationMode === "guidance" && !selectedShop));
   const showIntelligence = navigationMode === "browse" || navigationMode === "route-preview";
   const showRoute = (navigationMode === "browse" || navigationMode === "route-preview") && hasRoute;
   const showDeviation = navigationMode === "route-preview" || navigationMode === "guidance";
@@ -155,7 +156,9 @@ export default function ShopDirectoryMapOverlays({
         >
           <button
             className={`flex items-center gap-1.5 rounded-xl border font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-              isCompactDensity ? "min-h-[34px] px-2.5 py-1.5 text-[10px]" : "min-h-[44px] px-3 py-2 text-[11px]"
+              isCompactDensity
+                ? "min-h-[34px] px-2.5 py-1.5 text-[10px]"
+                : "min-h-[44px] px-3 py-2 text-[11px]"
             } ${glassChip}`}
             onClick={() => setIntelligenceExpanded((value) => !value)}
             onKeyDown={(e) => {
@@ -249,7 +252,7 @@ export default function ShopDirectoryMapOverlays({
         </div>
       )}
 
-      {showGuidanceCard && selectedOrigin && selectedShop && selectedRoute ? (
+      {showGuidanceCard && selectedRoute ? (
         <ShopDirectoryGuidanceCard
           selectedOrigin={selectedOrigin}
           selectedShop={selectedShop}

@@ -75,7 +75,7 @@ export function GuidanceArrivalCelebration({
 /* ── Post-arrival action buttons ────────────────────────────────────── */
 
 type GuidanceArrivalActionsProps = {
-  selectedShop: ShopMapListing;
+  selectedShop: ShopMapListing | null;
   isDark: boolean;
   isCompactDensity: boolean;
   onViewDetails?: (shop: ShopMapListing) => void;
@@ -99,7 +99,7 @@ export function GuidanceArrivalActions({
   return (
     <div className={`mt-3 border-t pt-3 ${divider}`}>
       <div className="grid grid-cols-2 gap-2">
-        {selectedShop.mapResult?.phone ? (
+        {selectedShop?.mapResult?.phone ? (
           <a
             className={`flex items-center justify-center gap-2 rounded-[1rem] bg-blue-600 font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 ${btnSize}`}
             href={`tel:${selectedShop.mapResult.phone}`}
@@ -108,7 +108,7 @@ export function GuidanceArrivalActions({
             Call Shop
           </a>
         ) : null}
-        {onViewDetails ? (
+        {onViewDetails && selectedShop ? (
           <button
             className={`flex items-center justify-center gap-2 rounded-[1rem] bg-blue-600/80 font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 ${btnSize}`}
             onClick={() => onViewDetails(selectedShop)}
@@ -118,7 +118,7 @@ export function GuidanceArrivalActions({
             View Details
           </button>
         ) : null}
-        {onRequestEstimate ? (
+        {onRequestEstimate && selectedShop ? (
           <button
             className={`flex items-center justify-center gap-2 rounded-[1rem] bg-blue-600 font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 ${btnSize}`}
             onClick={() => onRequestEstimate(selectedShop)}

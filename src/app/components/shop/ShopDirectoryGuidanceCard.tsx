@@ -102,7 +102,7 @@ export default function ShopDirectoryGuidanceCard({
               BidOnDent Navigation
             </p>
             <p className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}>
-              {sessionDestinationLabel || selectedShop.name}
+              {sessionDestinationLabel || selectedShop?.name || "Destination"}
             </p>
           </div>
           <span
@@ -118,7 +118,8 @@ export default function ShopDirectoryGuidanceCard({
           className={`mt-2 flex items-center justify-between text-[11px] sm:text-xs ${secondaryText}`}
         >
           <span className="truncate pr-2">
-            {selectedOrigin.name} → {selectedShop.name}
+            {selectedOrigin?.name ?? "Current Location"} →{" "}
+            {selectedShop?.name ?? sessionDestinationLabel ?? "Destination"}
           </span>
           <span
             className={`ml-2 whitespace-nowrap font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
@@ -181,7 +182,7 @@ export default function ShopDirectoryGuidanceCard({
 
         {hasArrived ? (
           <GuidanceArrivalCelebration
-            shopName={selectedShop.name}
+            shopName={selectedShop?.name ?? sessionDestinationLabel ?? "Destination"}
             selectedRoute={selectedRoute}
             sessionActiveSeconds={sessionActiveSeconds}
             isDark={isDark}

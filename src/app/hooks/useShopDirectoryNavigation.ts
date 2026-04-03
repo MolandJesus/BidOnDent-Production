@@ -92,7 +92,9 @@ export function useShopDirectoryNavigation({
             guidanceSettings.gpsTrackingEnabled,
             shopNavigationGps.currentPosition
           )
-        : directDestination && guidanceSettings.gpsTrackingEnabled && shopNavigationGps.currentPosition
+        : directDestination &&
+            guidanceSettings.gpsTrackingEnabled &&
+            shopNavigationGps.currentPosition
           ? {
               lat: shopNavigationGps.currentPosition.lat,
               lng: shopNavigationGps.currentPosition.lng,

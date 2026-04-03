@@ -7,8 +7,8 @@ import type { Place, RouteOption } from "../../types/mapDomain";
 import { formatSpeedLimitDetail, getGpsRecoveryMessage } from "./shopDirectoryGuidanceUtils";
 
 export type ShopDirectoryGuidanceCardProps = {
-  selectedOrigin: Place;
-  selectedShop: ShopMapListing;
+  selectedOrigin: Place | null;
+  selectedShop: ShopMapListing | null;
   selectedRoute: RouteOption;
   sessionStatus: NavigationSessionStatus;
   sessionDestinationLabel?: string | null;
