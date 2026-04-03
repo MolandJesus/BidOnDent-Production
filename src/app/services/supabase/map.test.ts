@@ -1,4 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("./client", () => ({
+  supabase: {
+    from: vi.fn(),
+  },
+}));
 
 import { haversineMiles, resolveShopCoordinates, zipToCoordinates } from "./map";
 import type { PartnerShopMapRecord } from "./types";
