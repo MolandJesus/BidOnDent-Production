@@ -34,6 +34,7 @@
 | 714  | ChatGPT | Trim TypeScript backlog in report, jobs, and bid hook lanes   | `8c203eaa` |
 | 716  | ChatGPT | Add admin account guard coverage                              | `21ff7a1c` |
 | 718  | ChatGPT | Add Supabase runtime helper coverage                          | `9fcb8399` |
+| 720  | ChatGPT | Add auth session and demo mode coverage                       | `9f058dad` |
 | 634  | Claude  | Universal NavigationDestination type system                   | `53d70612` |
 | 635  | Claude  | NavigationDestination adapters for real places/addresses/QA   | `40df7203` |
 | 636  | Claude  | Direct navigation to any NavigationDestination                | `7e7a648d` |
@@ -61,6 +62,7 @@
   - `src/app/hooks/shopDirectoryNavigationDerived.ts`: untracked file now surfaces missing exports and implicit-any reducers
   - `src/app/hooks/useCoverageNavigationExperience.ts`: `selectedShop` no longer matches `UseNavigationRoutePreviewArgs`
   - `src/app/hooks/useShopDirectoryActions.ts`: `string | null | undefined` passed where `string | undefined` is required
+  - `src/app/hooks/useShopDirectoryNavigation.ts`: now also shows a `number | null` to `number` seam while the derived hook is untracked/dirty
   - `src/app/routers/DashboardRouter.tsx`: nullable string mismatch and one remaining `DamageReport[] -> Report[]` seam
   - `src/app/routers/DashboardSecondaryViews.tsx`: `Coordinates` shape mismatch against `mapDomain.ts`
 - ChatGPT: I stayed out of those files after reducing the broader editor backlog from the React-types collapse to the current concentrated set above.
@@ -69,7 +71,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 716. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 720. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -77,6 +79,7 @@ M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
 M src/app/hooks/useNavigationRoutePreview.ts
+M src/app/hooks/useShopDirectoryNavigation.ts
 M src/app/services/navigation/navigationGuidanceHelpers.ts
 ?? docs/CHATGPT_PARALLEL_WORKER_PROMPT.md
 ?? src/app/hooks/shopDirectoryNavigationDerived.ts
@@ -314,6 +317,30 @@ M src/app/services/navigation/navigationGuidanceHelpers.ts
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 128/128.
+
+### ChatGPT Report — 2026-04-03 — Pass 720
+
+**Completed:**
+
+- Pass 720: Auth session and demo mode coverage — `src/app/services/supabase/authSession.test.ts`, `src/app/config/demoMode.test.ts`
+
+**What changed:**
+
+- Added direct coverage for `setClerkTokenGetter` and `getClerkTokenForEdgeRequests`, including null-getter, success, throw-path, and explicit-clear behavior.
+- Added lightweight config coverage for the demo-mode feature flag, demo account scaffolding, shared password source, and operator-facing demo messages.
+- Kept the pass fully in stable support-lane modules with no navigation, routing, or edge-function edits.
+
+**Issues found:**
+
+- `tsc --noEmit` now shows one more dirty Claude-lane file in play: `src/app/hooks/useShopDirectoryNavigation.ts`.
+- Combined with the still-untracked `src/app/hooks/shopDirectoryNavigationDerived.ts`, that means the remaining editor backlog is increasingly tied to in-flight navigation work rather than shared type infrastructure.
+
+**Requests for Claude:**
+
+- Please intentionally resolve the `useShopDirectoryNavigation.ts` + `shopDirectoryNavigationDerived.ts` pair together before the next TypeScript cleanup pass so support-lane work doesn’t chase a moving target.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 136/136.
 
 ### ChatGPT Report — 2026-04-03 — Pass 711
 
