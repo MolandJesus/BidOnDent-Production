@@ -35,10 +35,12 @@ export default function StepPhotos({
 }: StepPhotosProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div
-      className={`px-2 md:px-6 pt-3 pb-24 md:py-4 relative min-h-[80vh] bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
-    >
+    <div className="bd-report-step px-2 md:px-6 pt-4 pb-24 md:py-6 relative min-h-[80vh]">
       {/* Title and instructions - compressed for mobile */}
+      <span className="bd-report-eyebrow mb-3">
+        <Camera className="w-3.5 h-3.5" />
+        Photo evidence
+      </span>
       <h2
         className={`text-xl sm:text-2xl font-bold mb-1 mt-1 ${isLightAppearance ? "text-slate-800" : "text-white/95"}`}
       >
@@ -52,7 +54,7 @@ export default function StepPhotos({
 
       {/* Info block - collapsed on mobile */}
       <div
-        className={`bd-glass-card p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm${isLightAppearance ? " bd-light-surface" : ""}`}
+        className="bd-report-note p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm rounded-2xl"
       >
         <div className="mr-2 sm:mr-3 mt-0.5">
           <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
@@ -64,7 +66,7 @@ export default function StepPhotos({
 
       {uploadingPhoto && (
         <div
-          className={`backdrop-blur-sm rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3 border ${isLightAppearance ? "bg-blue-900/20 border-blue-400/15" : "bg-blue-900/30 border-blue-400/20"}`}
+          className="bd-report-note backdrop-blur-sm rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3"
         >
           <div className="animate-spin">
             <Cloud className={`w-5 h-5 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`} />
@@ -84,7 +86,7 @@ export default function StepPhotos({
 
       {photos.length === 0 && (
         <div
-          className={`mb-4 sm:mb-6 bd-glass-card px-3 py-6 sm:px-4 sm:py-10 text-center${isLightAppearance ? " bd-light-surface" : ""}`}
+          className="bd-report-section mb-4 sm:mb-6 px-3 py-6 sm:px-4 sm:py-10 text-center"
         >
           <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-blue-400/70 mx-auto mb-2" />
           <p
@@ -106,7 +108,7 @@ export default function StepPhotos({
           return (
             <div
               key={`photo-${index}`}
-              className={`relative bd-glass-card p-2.5${isLightAppearance ? " bd-light-surface" : ""}`}
+              className="bd-report-section relative p-2.5"
             >
               <div className="w-full aspect-video bg-white/[0.08] rounded-lg overflow-hidden mb-2">
                 <img
@@ -147,7 +149,7 @@ export default function StepPhotos({
           <button
             type="button"
             onClick={onOpenCamera}
-            className={`py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200${isLightAppearance ? " bd-light-surface" : ""}`}
+            className="bd-report-choice py-3 sm:py-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200"
           >
             <Camera
               className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
@@ -161,7 +163,7 @@ export default function StepPhotos({
           <button
             type="button"
             onClick={onOpenFilePicker}
-            className={`py-3 sm:py-4 bd-glass-card flex flex-col items-center justify-center hover:shadow-md transition-all duration-200${isLightAppearance ? " bd-light-surface" : ""}`}
+            className="bd-report-choice py-3 sm:py-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200"
           >
             <Upload
               className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
@@ -200,17 +202,16 @@ export default function StepPhotos({
           <button
             type="button"
             onClick={onBack}
-            className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors ${isLightAppearance ? "border-slate-200 hover:bg-slate-50 text-slate-600" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+            className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold"
           >
             Back
           </button>
           <button
             type="button"
             onClick={onContinue}
-            className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-              boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)",
             }}
             disabled={photos.length < 1}
           >

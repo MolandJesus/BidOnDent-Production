@@ -8,7 +8,7 @@ type Vehicle = {
   vin: string;
 };
 
-type SavedVehicle = Vehicle & { id: string };
+type SavedVehicle = Vehicle & { id: string; licensePlate?: string };
 
 type StepVehicleInfoProps = {
   primaryColor: string;
@@ -38,10 +38,12 @@ export default function StepVehicleInfo({
   const canContinue = Boolean(normalizedMake && normalizedModel && isValidYear);
 
   return (
-    <div
-      className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
-    >
-      <div className="mb-6">
+    <div className="bd-report-step px-4 md:px-6 py-5 md:py-6">
+      <div className="mb-8">
+        <span className="bd-report-eyebrow mb-3">
+          <Car className="w-3.5 h-3.5" />
+          Vehicle profile
+        </span>
         <h2
           className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
         >
@@ -53,11 +55,7 @@ export default function StepVehicleInfo({
       </div>
 
       {vehicles && vehicles.length > 0 && (
-        <div
-          className={`mb-6 bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} p-4 ${
-            isLightAppearance ? "border-blue-300/15" : "bg-slate-900/40 border-blue-200/20"
-          }`}
-        >
+        <div className="bd-report-section mb-6 p-4 sm:p-5">
           <h3
             className={`text-base font-semibold mb-3 ${isLightAppearance ? "text-slate-700" : "text-blue-100/80"}`}
           >
@@ -75,16 +73,12 @@ export default function StepVehicleInfo({
                     vin: savedVehicle.vin || "",
                   })
                 }
-                className={`w-full p-3 rounded-xl border text-left transition-all ${
+                className={`bd-report-choice w-full p-3.5 rounded-2xl text-left transition-all ${
                   vehicle.make === savedVehicle.make &&
                   vehicle.model === savedVehicle.model &&
                   vehicle.year === savedVehicle.year
-                    ? isLightAppearance
-                      ? "border-blue-400 bg-blue-50"
-                      : "border-blue-400 bg-blue-400/12"
-                    : isLightAppearance
-                      ? "border-slate-200 bg-slate-50/80 hover:border-blue-300/50"
-                      : "border-blue-300/25 bg-slate-800/35 hover:border-blue-300/50"
+                    ? "bd-report-choice--active"
+                    : ""
                 }`}
               >
                 <div
@@ -107,18 +101,10 @@ export default function StepVehicleInfo({
           </div>
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div
-                className={`w-full border-t ${isLightAppearance ? "border-blue-300/15" : "border-gray-300"}`}
-              ></div>
+              <div className="bd-report-divider-line w-full border-t"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span
-                className={`px-2 backdrop-blur-sm rounded ${
-                  isLightAppearance
-                    ? "bg-white text-slate-500 shadow-sm"
-                    : "bg-slate-900/50 text-blue-100/70"
-                }`}
-              >
+              <span className="bd-report-divider-label px-3 py-1 rounded-full backdrop-blur-sm">
                 Or enter details manually
               </span>
             </div>
@@ -142,10 +128,8 @@ export default function StepVehicleInfo({
             type="text"
             value={vehicle.make}
             onChange={(e) => onVehicleChange({ ...vehicle, make: e.target.value })}
-            className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
-              isLightAppearance
-                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
-                : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
+            className={`bd-report-input w-full px-4 py-3 rounded-xl outline-none ${
+              isLightAppearance ? "text-slate-800" : "text-slate-100"
             }`}
             placeholder="Toyota"
           />
@@ -166,10 +150,8 @@ export default function StepVehicleInfo({
             type="text"
             value={vehicle.model}
             onChange={(e) => onVehicleChange({ ...vehicle, model: e.target.value })}
-            className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
-              isLightAppearance
-                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
-                : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
+            className={`bd-report-input w-full px-4 py-3 rounded-xl outline-none ${
+              isLightAppearance ? "text-slate-800" : "text-slate-100"
             }`}
             placeholder="Camry"
           />
@@ -190,10 +172,8 @@ export default function StepVehicleInfo({
             type="text"
             value={vehicle.year}
             onChange={(e) => onVehicleChange({ ...vehicle, year: e.target.value })}
-            className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
-              isLightAppearance
-                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
-                : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
+            className={`bd-report-input w-full px-4 py-3 rounded-xl outline-none ${
+              isLightAppearance ? "text-slate-800" : "text-slate-100"
             }`}
             placeholder="2021"
             inputMode="numeric"
@@ -227,10 +207,8 @@ export default function StepVehicleInfo({
               })
             }
             maxLength={17}
-            className={`w-full px-3.5 py-2.5 border rounded-lg outline-none transition-all ${
-              isLightAppearance
-                ? "border-slate-200 bg-white text-slate-800 focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400"
-                : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
+            className={`bd-report-input w-full px-4 py-3 rounded-xl outline-none ${
+              isLightAppearance ? "text-slate-800" : "text-slate-100"
             }`}
             placeholder="1HGBH41JXMN109186"
           />
@@ -239,10 +217,9 @@ export default function StepVehicleInfo({
 
       <button
         onClick={onContinue}
-        className="w-full py-3 px-4 rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:brightness-110 transition-all"
+        className="bd-report-primary-button w-full py-3 px-4 rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-          boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)",
         }}
         disabled={!canContinue}
       >

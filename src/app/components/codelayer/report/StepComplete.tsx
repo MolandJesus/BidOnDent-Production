@@ -30,10 +30,12 @@ export default function StepComplete({
 }: StepCompleteProps) {
   const isLightAppearance = appearanceMode === "light";
   return (
-    <div
-      className={`px-4 md:px-6 py-6 md:py-8 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
-    >
+    <div className="bd-report-step px-4 md:px-6 py-6 md:py-8">
       <div className="text-center mb-8">
+        <span className="bd-report-eyebrow mb-4">
+          <Check className="w-3.5 h-3.5" />
+          Request ready
+        </span>
         <div
           className="w-16 h-16 rounded-2xl mx-auto flex items-center justify-center mb-4 bg-emerald-500"
           style={{
@@ -66,7 +68,7 @@ export default function StepComplete({
         )}
       </div>
 
-      <div className={`bd-glass-card p-5 mb-8${isLightAppearance ? " bd-light-surface" : ""}`}>
+      <div className="bd-report-section p-5 mb-8">
         <h3
           className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-800" : "text-white/90"}`}
         >
@@ -147,10 +149,9 @@ export default function StepComplete({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
           whileTap={{ scale: 0.97 }}
-          className="w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          className="bd-report-primary-button w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-            boxShadow: "0 4px 20px rgba(37, 99, 235, 0.28), 0 0 32px rgba(59, 130, 246, 0.10)",
           }}
         >
           <Map className="w-4 h-4" />
@@ -160,10 +161,9 @@ export default function StepComplete({
         <button
           type="button"
           onClick={onViewReports}
-          className="w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          className="bd-report-primary-button w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-            boxShadow: "0 4px 20px rgba(37, 99, 235, 0.28), 0 0 32px rgba(59, 130, 246, 0.10)",
           }}
         >
           View My Reports
@@ -175,7 +175,7 @@ export default function StepComplete({
         <button
           type="button"
           onClick={onViewReports}
-          className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors mb-3 inline-flex items-center justify-center gap-2 ${isLightAppearance ? "border-slate-200 hover:bg-slate-50 text-slate-600" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+          className="bd-report-secondary-button w-full py-3 px-4 min-h-[44px] rounded-xl font-semibold mb-3 inline-flex items-center justify-center gap-2"
         >
           View My Reports
           <ArrowRight className="w-4 h-4" />
@@ -185,7 +185,7 @@ export default function StepComplete({
       <button
         type="button"
         onClick={onBackToDashboard}
-        className={`w-full py-3 px-4 min-h-[44px] rounded-xl border font-medium transition-colors ${isLightAppearance ? "border-slate-200 hover:bg-slate-50 text-slate-600" : "border-white/15 hover:bg-white/5 text-white/90"}`}
+        className="bd-report-secondary-button w-full py-3 px-4 min-h-[44px] rounded-xl font-semibold"
       >
         Back to Dashboard
       </button>

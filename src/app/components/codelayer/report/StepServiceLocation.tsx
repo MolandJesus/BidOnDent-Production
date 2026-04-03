@@ -86,10 +86,12 @@ export default function StepServiceLocation({
   );
 
   return (
-    <div
-      className={`p-4 sm:p-6 space-y-5 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
-    >
+    <div className="bd-report-step p-4 sm:p-6 space-y-5">
       <div className="text-center">
+        <span className="bd-report-eyebrow mx-auto mb-3">
+          <MapPin className="w-3.5 h-3.5" />
+          Service radius
+        </span>
         <div
           className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
           style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)` }}
@@ -120,7 +122,9 @@ export default function StepServiceLocation({
             inputMode="numeric"
             value={zipCode}
             onChange={(e) => onZipChange(e.target.value.replace(/\D/g, "").slice(0, 5))}
-            className={`w-full px-3 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-slate-200 text-slate-800 bg-white focus:ring-blue-400/30 focus:border-blue-400" : "border-white/15 text-white bg-white/8 focus:ring-blue-500/30 focus:border-blue-400/50 placeholder:text-blue-200/40"}`}
+            className={`bd-report-input w-full px-4 py-3 rounded-xl focus:outline-none ${
+              isLightAppearance ? "text-slate-800" : "text-white"
+            }`}
             placeholder="e.g. 11201"
             maxLength={5}
           />
@@ -142,7 +146,9 @@ export default function StepServiceLocation({
             type="text"
             value={address}
             onChange={(e) => onAddressChange(e.target.value)}
-            className={`w-full px-3 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-slate-200 text-slate-800 bg-white focus:ring-blue-400/30 focus:border-blue-400" : "border-white/15 text-white bg-white/8 focus:ring-blue-500/30 focus:border-blue-400/50 placeholder:text-blue-200/40"}`}
+            className={`bd-report-input w-full px-4 py-3 rounded-xl focus:outline-none ${
+              isLightAppearance ? "text-slate-800" : "text-white"
+            }`}
             placeholder="e.g. Brooklyn, NY"
           />
         </div>
@@ -150,11 +156,7 @@ export default function StepServiceLocation({
 
       {/* Map preview — shows resolved location when ZIP is valid */}
       {previewPin.length > 0 && (
-        <div
-          className={`rounded-xl overflow-hidden border ${
-            isLightAppearance ? "border-slate-200/60" : "border-blue-300/15"
-          }`}
-        >
+        <div className="bd-report-map-frame rounded-2xl overflow-hidden">
           <div className="h-[140px] md:h-[160px]">
             <DashboardMapPreview
               shops={[]}
@@ -176,7 +178,7 @@ export default function StepServiceLocation({
       )}
 
       <div
-        className={`flex items-start gap-2.5 rounded-xl border px-3.5 py-3 ${isLightAppearance ? "bg-blue-900/15 border-blue-400/12" : "bg-blue-900/20 border-blue-400/15"}`}
+        className="bd-report-note flex items-start gap-2.5 rounded-2xl px-3.5 py-3"
       >
         <MapPin
           className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isLightAppearance ? "text-blue-500" : "text-blue-400"}`}
@@ -193,15 +195,15 @@ export default function StepServiceLocation({
         <button
           type="button"
           onClick={onBack}
-          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold bd-glass-control--secondary"
+          className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold"
         >
           Back
         </button>
         <button
           type="button"
           onClick={onContinue}
-          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center"
-          style={{ backgroundColor: primaryColor }}
+          className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center"
+          style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
         >
           Continue
           <ArrowRight className="w-5 h-5 ml-2" />

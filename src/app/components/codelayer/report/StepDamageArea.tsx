@@ -29,9 +29,11 @@ export default function StepDamageArea({
   const isLightAppearance = appearanceMode === "light";
 
   return (
-    <div
-      className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
-    >
+    <div className="bd-report-step px-4 md:px-6 py-5 md:py-6">
+      <span className="bd-report-eyebrow mb-3">
+        <MapPin className="w-3.5 h-3.5" />
+        Damage zone
+      </span>
       <h2
         className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
       >
@@ -42,7 +44,7 @@ export default function StepDamageArea({
       </p>
 
       <div
-        className={`relative mb-6 bd-glass-card overflow-hidden max-w-md mx-auto md:max-w-sm${isLightAppearance ? " bd-light-surface" : ""}`}
+        className="bd-report-section relative mb-8 overflow-hidden max-w-md mx-auto md:max-w-sm"
       >
         <ImageWithFallback
           src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
@@ -60,18 +62,13 @@ export default function StepDamageArea({
           <button
             type="button"
             key={area.id}
-            className={`py-3 px-3 min-h-[44px] text-sm border rounded-xl font-medium transition-all duration-200 ${
+            className={`bd-report-choice py-3 px-3 min-h-[44px] text-sm rounded-xl font-medium transition-all duration-200 ${
               damageArea === area.id
-                ? isLightAppearance
-                  ? "bg-blue-50 border-blue-400 text-blue-700 ring-1 ring-blue-300/30"
-                  : "bg-blue-400/12 border-blue-400 text-blue-100 ring-1 ring-blue-300/30"
+                ? `bd-report-choice--active ${isLightAppearance ? "text-blue-700" : "text-blue-100"}`
                 : isLightAppearance
-                  ? "bg-slate-50/80 border-slate-200 text-slate-700 hover:border-blue-300/50 hover:bg-blue-50/50"
-                  : "bg-slate-900/20 border-blue-300/20 text-blue-100/85 hover:border-blue-300/40 hover:bg-blue-400/12"
+                  ? "text-slate-700"
+                  : "text-blue-100/85"
             }`}
-            style={
-              damageArea === area.id ? { boxShadow: "0 2px 12px rgba(59, 130, 246, 0.15)" } : {}
-            }
             onClick={() => onSelectDamageArea(area.id)}
           >
             {area.label}
@@ -83,21 +80,16 @@ export default function StepDamageArea({
         <button
           type="button"
           onClick={onBack}
-          className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors ${
-            isLightAppearance
-              ? "border-slate-200 text-slate-600 hover:bg-slate-50"
-              : "border-blue-300/25 text-blue-100 hover:bg-blue-400/12"
-          }`}
+          className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold"
         >
           Back
         </button>
         <button
           type="button"
           onClick={onContinue}
-          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+          className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-            boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)",
           }}
         >
           Continue

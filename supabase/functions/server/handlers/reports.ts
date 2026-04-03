@@ -73,7 +73,7 @@ export async function createReport(
 
     const { data, error } = await supabase
       .from('damage_reports')
-      .insert(buildReportPayload(authenticatedClerkUserId, report))
+      .insert({ ...buildReportPayload(authenticatedClerkUserId, report), status: 'pending' })
       .select()
       .single();
 

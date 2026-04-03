@@ -30,9 +30,11 @@ export default function StepDescription({
   const isDescriptionValid = description.trim().length >= 10;
 
   return (
-    <div
-      className={`px-4 md:px-6 py-4 md:py-4 bd-glass-card rounded-2xl${isLightAppearance ? " bd-light-surface" : ""}`}
-    >
+    <div className="bd-report-step px-4 md:px-6 py-5 md:py-6">
+      <span className="bd-report-eyebrow mb-3">
+        <FileText className="w-3.5 h-3.5" />
+        Final details
+      </span>
       <h2
         className={`text-2xl font-bold mb-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
       >
@@ -56,16 +58,12 @@ export default function StepDescription({
           id="description"
           name="description"
           rows={4}
-          className={`w-full px-3.5 py-2.5 border rounded-xl outline-none transition-all ${
-            isLightAppearance
-              ? "bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40"
-              : "bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
+          className={`bd-report-input w-full px-4 py-3 rounded-xl outline-none ${
+            isLightAppearance ? "text-slate-900" : "text-slate-100"
           } ${
             description.length > 0 && !isDescriptionValid
               ? "border-amber-400"
-              : isLightAppearance
-                ? "border-slate-200"
-                : "border-blue-300/25"
+              : ""
           }`}
           placeholder="Front bumper has a dent on the passenger side and paint scratches near the corner..."
           value={description}
@@ -92,10 +90,8 @@ export default function StepDescription({
           id="incident"
           name="incident"
           rows={3}
-          className={`w-full px-3.5 py-2.5 border rounded-xl outline-none transition-all ${
-            isLightAppearance
-              ? "border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/40"
-              : "border-blue-300/25 bg-slate-900/20 text-slate-100 focus:ring-2 focus:ring-blue-200/40 focus:border-blue-300"
+          className={`bd-report-input w-full px-4 py-3 rounded-xl outline-none ${
+            isLightAppearance ? "text-slate-900" : "text-slate-100"
           }`}
           placeholder="I was backing out in a parking lot and clipped a pole..."
           value={incident}
@@ -123,21 +119,16 @@ export default function StepDescription({
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className={`flex-1 py-3 px-4 min-h-[44px] border rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-            isLightAppearance
-              ? "border-slate-200 text-slate-600 hover:bg-slate-50"
-              : "border-blue-300/25 text-blue-100 hover:bg-blue-400/12"
-          }`}
+          className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Back
         </button>
         <button
           type="button"
           onClick={onContinue}
-          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-medium inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-            boxShadow: "0 4px 20px rgba(37, 99, 235, 0.25), 0 0 28px rgba(59, 130, 246, 0.08)",
           }}
           disabled={!isDescriptionValid || isSubmitting}
         >

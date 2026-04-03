@@ -72,6 +72,16 @@ export async function createBid(
       return respond({ error: "Bid amount cannot be negative" }, 400);
     }
 
+    // Validate the damage report exists
+    const { data: reportExists } = await supabase
+      .from("damage_reports")
+      .select("id")
+      .eq("id", damageReportId)
+      .maybeSingle();
+    if (!reportExists) {
+      return respond({ error: "Damage report not found" }, 404);
+    }
+
     const { data, error } = await supabase
       .from("bids")
       .insert({
@@ -84,7 +94,7 @@ export async function createBid(
         estimated_days: Number(bid?.estimated_days ?? bid?.estimatedDays ?? 0),
         description: bid?.description ?? "",
         notes: bid?.notes ?? null,
-        status: bid?.status ?? "pending",
+        status: "pending",
         shop_rating: bid?.shop_rating ?? null,
         shop_reviews: bid?.shop_reviews ?? null,
         shop_distance: bid?.shop_distance ?? null,
