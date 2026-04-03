@@ -53,9 +53,7 @@ export default function StepPhotos({
       </p>
 
       {/* Info block - collapsed on mobile */}
-      <div
-        className="bd-report-note p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm rounded-2xl"
-      >
+      <div className="bd-report-note p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm rounded-2xl">
         <div className="mr-2 sm:mr-3 mt-0.5">
           <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
         </div>
@@ -65,9 +63,7 @@ export default function StepPhotos({
       </div>
 
       {uploadingPhoto && (
-        <div
-          className="bd-report-note backdrop-blur-sm rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3"
-        >
+        <div className="bd-report-note backdrop-blur-sm rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
           <div className="animate-spin">
             <Cloud className={`w-5 h-5 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`} />
           </div>
@@ -85,9 +81,7 @@ export default function StepPhotos({
       )}
 
       {photos.length === 0 && (
-        <div
-          className="bd-report-section mb-4 sm:mb-6 px-3 py-6 sm:px-4 sm:py-10 text-center"
-        >
+        <div className="bd-report-section mb-4 sm:mb-6 px-3 py-6 sm:px-4 sm:py-10 text-center">
           <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-blue-400/70 mx-auto mb-2" />
           <p
             className={`font-medium text-sm sm:text-base ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
@@ -106,10 +100,7 @@ export default function StepPhotos({
         {photos.map((photo, index) => {
           const isBase64 = photo.startsWith("data:");
           return (
-            <div
-              key={`photo-${index}`}
-              className="bd-report-section relative p-2.5"
-            >
+            <div key={`photo-${index}`} className="bd-report-section relative p-2.5">
               <div className="w-full aspect-video bg-white/[0.08] rounded-lg overflow-hidden mb-2">
                 <img
                   src={photo}

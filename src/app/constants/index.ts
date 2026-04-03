@@ -63,40 +63,10 @@ export const STORAGE_KEYS = {
   KEEP_SIGNED_IN: "bidondent_keep_signed_in",
 };
 
-export function getNotificationsByUserType(userType: "customer" | "shop" | "insurer") {
-  if (userType === "shop") {
-    return [
-      {
-        id: 1,
-        type: "update" as const,
-        message: "New repair request is available in your area.",
-        time: "Just now",
-        read: false,
-      },
-    ];
-  }
-
-  if (userType === "insurer") {
-    return [
-      {
-        id: 1,
-        type: "update" as const,
-        message: "A new claim needs insurer review.",
-        time: "Just now",
-        read: false,
-      },
-    ];
-  }
-
-  return [
-    {
-      id: 1,
-      type: "bid" as const,
-      message: "A shop submitted a new bid to one of your reports.",
-      time: "Just now",
-      read: false,
-    },
-  ];
+export function getNotificationsByUserType(_userType: "customer" | "shop" | "insurer") {
+  // Real notifications will come from Supabase events once persisted.
+  // Returning empty avoids showing fake activity that erodes user trust.
+  return [] as { id: number; type: "bid" | "update" | "message" | "repair_request" | "claim"; message: string; time: string; read: boolean }[];
 }
 
 const seedReportOneTimestamp = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();

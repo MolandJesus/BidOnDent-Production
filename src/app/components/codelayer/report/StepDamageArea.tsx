@@ -43,9 +43,7 @@ export default function StepDamageArea({
         Choose the area that best matches what you see.
       </p>
 
-      <div
-        className="bd-report-section relative mb-8 overflow-hidden max-w-md mx-auto md:max-w-sm"
-      >
+      <div className="bd-report-section relative mb-8 overflow-hidden max-w-md mx-auto md:max-w-sm">
         <ImageWithFallback
           src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
           alt="Car diagram"

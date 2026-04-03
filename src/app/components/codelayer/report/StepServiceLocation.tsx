@@ -177,9 +177,7 @@ export default function StepServiceLocation({
         </div>
       )}
 
-      <div
-        className="bd-report-note flex items-start gap-2.5 rounded-2xl px-3.5 py-3"
-      >
+      <div className="bd-report-note flex items-start gap-2.5 rounded-2xl px-3.5 py-3">
         <MapPin
           className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isLightAppearance ? "text-blue-500" : "text-blue-400"}`}
         />

@@ -60,11 +60,7 @@ export default function StepDescription({
           rows={4}
           className={`bd-report-input w-full px-4 py-3 rounded-xl outline-none ${
             isLightAppearance ? "text-slate-900" : "text-slate-100"
-          } ${
-            description.length > 0 && !isDescriptionValid
-              ? "border-amber-400"
-              : ""
-          }`}
+          } ${description.length > 0 && !isDescriptionValid ? "border-amber-400" : ""}`}
           placeholder="Front bumper has a dent on the passenger side and paint scratches near the corner..."
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}

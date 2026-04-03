@@ -200,7 +200,11 @@ export default function ReportScreen({
         showCancel={form.step < 6}
       />
 
-      <ReportProgress step={reportStep} primaryColor={primaryColor} appearanceMode={appearanceMode} />
+      <ReportProgress
+        step={reportStep}
+        primaryColor={primaryColor}
+        appearanceMode={appearanceMode}
+      />
 
       <div
         className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)] relative"
