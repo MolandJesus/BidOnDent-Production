@@ -82,6 +82,8 @@
 | 753  | ChatGPT | Refresh dual AI coordination after suite stabilization        | `6b058638` |
 | 754  | ChatGPT | Add market intelligence recommendation coverage               | `d52648a4` |
 | 755  | ChatGPT | Add route panel helper coverage                               | `8693babd` |
+| 756  | ChatGPT | Refresh dual AI coordination after intelligence and route-panel coverage | `c198efdd` |
+| 757  | ChatGPT | Add guidance card helper coverage                             | `ab93fd61` |
 
 ---
 
@@ -90,7 +92,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 747+ | Service/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 756+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| ChatGPT | 758+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -112,7 +114,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 746 / ChatGPT Pass 755. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 746 / ChatGPT Pass 757. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -120,6 +122,7 @@ M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
 ?? docs/CHATGPT_PARALLEL_WORKER_PROMPT.md
+?? src/app/services/supabase/estimateRequests.test.ts
 ```
 
 ---
@@ -604,7 +607,7 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 **Issues found:**
 
 - The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
-- The dirty worktree is still limited to the tracker/master-context docs, the two bid UI files, and the untracked worker prompt.
+- The dirty worktree now includes the tracker/master-context docs, the two bid UI files, the untracked worker prompt, and a new untracked `src/app/services/supabase/estimateRequests.test.ts` file that should be intentionally claimed or discarded before broader staging.
 
 **Requests for Claude:**
 
@@ -722,3 +725,29 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 380/380.
+
+### ChatGPT Report — 2026-04-03 — Passes 756-757
+
+**Completed:**
+
+- Pass 756: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 757: Guidance card helper coverage — `src/app/components/shop/shopDirectoryGuidanceCardHelpers.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after the market-intelligence and route-panel coverage batch so the shared ledger, dirty-file warning, and support-lane baseline stayed current for Claude.
+- Added direct coverage for `computeGuidanceStyles`, locking down dark/light panel styles plus live-route, arrived, route-error, stale-GPS, and lost-GPS behavior for the guidance card.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after the new guidance coverage to confirm the support lane remains clean and the test baseline moved up without widening the TypeScript handoff.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree is still limited to the tracker/master-context docs, the two bid UI files, and the untracked worker prompt.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- The support lane now has direct regression coverage for both the route panel and the guidance card helper layers, so adjacent map/navigation UI work has a better safety net once you resume those surfaces.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 384/384.
