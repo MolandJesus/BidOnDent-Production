@@ -52,6 +52,7 @@ const TOAST_CATEGORIES: Set<NotificationCategory> = new Set([
   "navigation",
   "reroute",
   "bid",
+  "report",
   "system",
 ]);
 

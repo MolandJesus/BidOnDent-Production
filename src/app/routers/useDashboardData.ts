@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMarketplaceReports } from "../hooks/useMarketplaceReports";
+import { useShopReportNotifications } from "../hooks/useShopReportNotifications";
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import { getShopSubmittedBids } from "../services/supabase/bids";
 import {
@@ -29,6 +30,9 @@ export function useDashboardData({
     loading: marketplaceLoading,
     refetch: refetchMarketplace,
   } = useMarketplaceReports(userType);
+
+  // Real-time: notify shop users when new reports arrive + auto-refresh list
+  useShopReportNotifications({ userType, onNewReport: refetchMarketplace });
 
   const enrichedUserReports = reports.map((report) => ({
     ...report,
