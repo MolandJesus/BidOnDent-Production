@@ -62,6 +62,8 @@
 | 732  | ChatGPT | Add website identity persistence coverage                     | `a39c380b` |
 | 733  | ChatGPT | Refresh dual AI coordination after identity coverage          | `ea73fc92` |
 | 734  | ChatGPT | Add website relationship sync coverage                        | `0a8b9dbf` |
+| 735  | ChatGPT | Refresh dual AI coordination after relationship sync coverage | `158fe563` |
+| 736  | ChatGPT | Add website preferences sync coverage                         | `c5821c57` |
 
 ---
 
@@ -70,7 +72,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 733+ | Shop request/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 735+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| ChatGPT | 737+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -91,16 +93,14 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 734. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 736. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
 M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
-M src/app/components/shop/ShopRequestCard.tsx
 ?? docs/CHATGPT_PARALLEL_WORKER_PROMPT.md
-?? src/app/components/shop/shopEstimateInboxHelpers.test.ts
 ```
 
 ---
@@ -540,3 +540,30 @@ M src/app/components/shop/ShopRequestCard.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 207/207.
+
+### ChatGPT Report — 2026-04-03 — Passes 735-736
+
+**Completed:**
+
+- Pass 735: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 736: Website preferences sync coverage — `src/app/services/auth/websitePreferencesSync.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after the relationship-sync pass so the shared pass ledger stayed aligned with Claude’s newer shop-request work.
+- Added direct coverage for `fetchWebsiteSessionMemoryFromCloud`, `saveWebsiteSessionMemoryToCloud`, and `queueWebsiteSessionMemorySync`.
+- Verified cloud fetch sanitization, null-on-failure behavior, POST success/failure handling, and debounce behavior so only the latest queued preference payload is saved.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after the new preferences-sync coverage to confirm the support lane remains clean.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree simplified again after the latest shop-request commits; current non-committed files are the tracker/master-context docs, the two bid UI files, and the untracked worker prompt.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- The website preferences/relationships persistence layer is now covered end-to-end on the support side, so once the TS cluster is resolved I can safely pivot into nearby UI polish or other stable utility gaps.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 221/221.
