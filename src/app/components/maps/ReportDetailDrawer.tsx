@@ -53,7 +53,7 @@ export function ReportDetailDrawer({
   const photos: string[] = Array.isArray(report.photo_urls) ? report.photo_urls : [];
   const submittedAt = report.created_at
     ? new Date(report.created_at).toLocaleDateString()
-    : "Unknown";
+    : null;
   const status = report.status || "submitted";
   const damageType = report.damage_type || "";
   const damageSeverity = report.damage_severity || "";
@@ -188,9 +188,11 @@ export function ReportDetailDrawer({
             </div>
           )}
 
-          <p className={cn("text-[11px] mb-3", isDark ? "text-slate-500" : "text-slate-400")}>
-            Submitted {submittedAt}
-          </p>
+          {submittedAt && (
+            <p className={cn("text-[11px] mb-3", isDark ? "text-slate-500" : "text-slate-400")}>
+              Submitted {submittedAt}
+            </p>
+          )}
 
           {onViewReportDetail && report.id && (
             <button

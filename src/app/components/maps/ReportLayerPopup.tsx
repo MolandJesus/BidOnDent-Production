@@ -45,11 +45,15 @@ export default function ReportLayerPopup({
           />
         )}
         <div className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-900"}`}>
-          {report.vehicle_year} {report.vehicle_make} {report.vehicle_model}
+          {[report.vehicle_year, report.vehicle_make, report.vehicle_model]
+            .filter(Boolean)
+            .join(" ") || "Damage Report"}
         </div>
-        <div className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-          {report.damage_type} &middot; {report.damage_severity}
-        </div>
+        {(report.damage_type || report.damage_severity) && (
+          <div className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+            {[report.damage_type, report.damage_severity].filter(Boolean).join(" · ")}
+          </div>
+        )}
         {report.status && (
           <span
             className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
