@@ -21,75 +21,10 @@ import {
   inferAverageTicketValue,
   inferSupportedMakes,
   inferInsurerPrograms,
+  extractVehicleMakes,
+  extractDamageSignals,
+  buildReasons,
 } from "./directoryAdapterUtils";
-
-function extractVehicleMakes(vehicles: DirectoryVehicle[]) {
-  return uniqueStrings(vehicles.map((vehicle) => vehicle.make)).map((make) => make.toLowerCase());
-}
-
-function extractDamageSignals(reports: DirectoryReport[]) {
-  return uniqueStrings(
-    reports.flatMap((report) => [
-      report.damageArea,
-      report.damageType,
-      ...(Array.isArray(report.damageAreas) ? report.damageAreas : []),
-      report.description,
-    ])
-  ).map((signal) => signal.toLowerCase());
-}
-
-function buildReasons(
-  userType: MarketUserType,
-  searchTokens: string[],
-  vehicleMakes: string[],
-  damageSignals: string[],
-  connectedCarrierNames: string[],
-  profile: ShopBusinessProfile,
-  supportedMakes: string[],
-  insurerPrograms: string[]
-) {
-  const reasons: string[] = [];
-  const matchingMakes = vehicleMakes.filter((make) =>
-    supportedMakes.map((supportedMake) => supportedMake.toLowerCase()).includes(make)
-  );
-  const matchingCarriers = connectedCarrierNames.filter((carrierName) =>
-    insurerPrograms.map((program) => program.toLowerCase()).includes(carrierName.toLowerCase())
-  );
-  const capabilityValues = [
-    ...profile.specialties,
-    ...profile.certifications,
-    profile.aboutSummary || "",
-  ]
-    .join(" ")
-    .toLowerCase();
-  const capabilityMatch = damageSignals.find((signal) => capabilityValues.includes(signal));
-
-  if (matchingCarriers.length > 0) {
-    reasons.push(`Already aligned with ${matchingCarriers.slice(0, 2).join(" and ")} workflows`);
-  }
-
-  if (matchingMakes.length > 0) {
-    reasons.push(`Strong fit for ${matchingMakes[0]} repair demand`);
-  }
-
-  if (capabilityMatch) {
-    reasons.push(`Profile coverage matches ${capabilityMatch.replace(/-/g, " ")}`);
-  }
-
-  if (searchTokens.length > 0) {
-    reasons.push("Matches the current directory search");
-  }
-
-  if (userType === "insurer" && profile.acceptsInsuranceClaims) {
-    reasons.push("Already set up for insurer-facing intake");
-  }
-
-  if (reasons.length === 0) {
-    reasons.push("Real profile data is now enriching this directory listing");
-  }
-
-  return reasons.slice(0, 3);
-}
 
 export function getDirectoryShopId(profile: ShopBusinessProfile) {
   return (
