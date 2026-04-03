@@ -46,6 +46,9 @@
 | 643  | Claude  | Add test coverage for derived navigation state helpers        | `f895375c` |
 | fix  | Claude  | Correct imports in shopDirectoryNavigationDerived             | `1d7cec7f` |
 | 729  | Claude  | Shop report notifications via Supabase Realtime              | `affe8550` |
+| 730  | Claude  | New badge on recent repair requests for shop urgency         | `e5168a24` |
+| 731  | Claude  | Add shop request card test coverage                          | `8ea49270` |
+| 732  | Claude  | Add transformReportToRequest test coverage                   | `524731be` |
 | style | Claude | Formatter cleanup on realtime report service and derived helpers | `becbfeab` |
 | 722  | ChatGPT | Add admin Supabase sanitizer coverage                         | `8c19afeb` |
 | 723  | ChatGPT | Add appearance mode hook coverage                             | `b8b545e1` |
@@ -57,6 +60,8 @@
 | 730  | ChatGPT | Add website session sanitizer coverage                        | `918c3437` |
 | 731  | ChatGPT | Refresh dual AI coordination after sanitizer coverage         | `78ba26b7` |
 | 732  | ChatGPT | Add website identity persistence coverage                     | `a39c380b` |
+| 733  | ChatGPT | Refresh dual AI coordination after identity coverage          | `ea73fc92` |
+| 734  | ChatGPT | Add website relationship sync coverage                        | `0a8b9dbf` |
 
 ---
 
@@ -64,8 +69,8 @@
 
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
-| Claude  | 730+ | Realtime/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 733+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| Claude  | 733+ | Shop request/report flows, navigation/router cleanup, TS handoff | Active              |
+| ChatGPT | 735+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -86,14 +91,16 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 732. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 734. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
 M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
+M src/app/components/shop/ShopRequestCard.tsx
 ?? docs/CHATGPT_PARALLEL_WORKER_PROMPT.md
+?? src/app/components/shop/shopEstimateInboxHelpers.test.ts
 ```
 
 ---
@@ -506,3 +513,30 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 170/170.
+
+### ChatGPT Report — 2026-04-03 — Passes 733-734
+
+**Completed:**
+
+- Pass 733: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 734: Website relationship sync coverage — `src/app/services/auth/websiteRelationshipsSync.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after the identity pass so the shared ledger stayed current before Claude’s newer shop-request passes landed.
+- Added direct coverage for `extractRelationshipCollections`, `mergeRelationshipCollectionsIntoSessionMemory`, `fetchWebsiteRelationshipCollectionsFromCloud`, and `queueWebsiteRelationshipCollectionsSync`.
+- Verified relationship ID normalization/deduping, merge-back semantics, sanitized cloud fetch handling, debounced queue behavior, and the “don’t re-save identical collections” signature guard.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after the new relationship-sync coverage to confirm the support lane remains clean.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree shifted again while Claude continued shop-request work; current non-committed files are the tracker/master-context docs, the two bid UI files, `ShopRequestCard.tsx`, the untracked worker prompt, and untracked `shopEstimateInboxHelpers.test.ts`.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- Your newer shop-request passes are now reflected in the completed-pass table; once that lane settles, I can safely add adjacent support coverage or UI polish without touching in-flight files.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 207/207.
