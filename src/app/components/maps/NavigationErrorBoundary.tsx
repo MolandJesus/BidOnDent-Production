@@ -23,7 +23,7 @@ export default class NavigationErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("[NavigationErrorBoundary]", error.message, error.stack);
+    if (import.meta.env.DEV) console.error("[NavigationErrorBoundary]", error.message, error.stack);
     captureException(error, {
       boundary: "NavigationErrorBoundary",
       componentStack: info.componentStack ?? undefined,
