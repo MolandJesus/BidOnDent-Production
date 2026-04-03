@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 3, 2026 (Pass 565 — Structural extraction: useNavigationLaunch.ts from useOperatingRegionsCoverage.ts; build fixes)
+**Last updated:** April 3, 2026 (Pass 566 — Runtime console fix + report UX polish)
 **Status:** Active execution tracker
-**Pass count:** 565
+**Pass count:** 566
 **Build:** 0 errors
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -42,6 +42,18 @@
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
 
 ---
+
+## Pass 566 — Runtime console fix + report UX polish (2026-04-03)
+
+- **Why this pass was chosen:** P1-RUNTIME (console error every drawer open) + P4-UX (user-facing "undefined" text and "Submitted Unknown" on core map surface).
+- **What changed:**
+  - **DrawerOverlay (drawer.tsx):** Wrapped with `React.forwardRef()` to fix Radix SlotClone ref-forwarding console error that fired on every drawer open.
+  - **ReportDetailDrawer:** Changed `submittedAt` fallback from `"Unknown"` to `null` — the "Submitted" line is now conditionally hidden when no `created_at` date exists, eliminating "Submitted Unknown" text.
+  - **ReportLayerPopup:** Added null guards for `vehicle_year`, `vehicle_make`, `vehicle_model`, `damage_type`, `damage_severity` — prevents rendering "undefined" text when report data is incomplete. Falls back to "Damage Report" for missing vehicle info.
+- **Files touched:** `drawer.tsx`, `ReportDetailDrawer.tsx`, `ReportLayerPopup.tsx`
+- **Validation:** Build: 3.26s, 0 errors. Diagnostics: 0.
+- **Problem taxonomy:** P1:1-fixed (forwardRef console error) P4:2-fixed (undefined text, Submitted Unknown)
+- **Best next pass:** `useShopDirectorySession.ts` is at exactly 500 lines (hard limit, 0 headroom) — extraction needed before any additions. Or: shop notification of new reports (P1 marketplace gap).
 
 ## Pass 565 — Structural extraction: useNavigationLaunch (2026-04-03)
 
