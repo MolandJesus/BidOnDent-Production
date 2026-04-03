@@ -23,6 +23,7 @@ import { useMediaQuery } from "../../hooks/useMediaQuery";
 import MobileMapBottomSheet from "./MobileMapBottomSheet";
 import {
   type CoverageBrowseExperienceProps,
+  type SidebarView,
   resolveInitialSidebarView,
 } from "./coverageBrowseExperienceHelpers";
 

@@ -8,8 +8,8 @@ type StepPhotosProps = {
   photos: string[];
   uploadingPhoto: boolean;
   uploadProgress: string;
-  fileInputRef: RefObject<HTMLInputElement | null>;
-  cameraInputRef: RefObject<HTMLInputElement | null>;
+  fileInputRef: RefObject<HTMLInputElement>;
+  cameraInputRef: RefObject<HTMLInputElement>;
   onPhotoUpload: (files: FileList | null) => void;
   onRemovePhoto: (index: number) => void;
   onOpenCamera: () => void;

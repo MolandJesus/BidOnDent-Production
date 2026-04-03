@@ -1,4 +1,4 @@
-import { Clock3, MapPin, Star } from "lucide-react";
+import { ChevronRight, Clock3, Compass, MapPin, Send, Star } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import ShopDirectoryExpandedView from "./ShopDirectoryExpandedView";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";

@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import type { Bid, Notification, Report, Vehicle } from "../../types";
+import type { Bid, Notification, Report, Vehicle } from "./index";
 
 /** Shared profile shape used by DashboardLayout, DashboardSidebar, DashboardHeader, LandingPageLayout */
 export type ProfileDropdownData = {
@@ -10,8 +10,8 @@ export type ProfileDropdownData = {
   vehicles: Vehicle[];
   bids: Bid[];
   onNavigate: (destination: string, tab?: string) => void;
-  onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement | null>;
+  onLogout: () => void | Promise<void>;
+  forwardedRef: RefObject<HTMLDivElement>;
 };
 
 /** Shared user profile shape used by dashboard shell components */

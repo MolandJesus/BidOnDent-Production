@@ -15,6 +15,7 @@ const ATLANTA_QA_KINDS = new Set([
   "pharmacy",
   "park",
 ]);
+const ATLANTA_QA_NEIGHBORHOOD_SET = new Set<string>(ATLANTA_QA_NEIGHBORHOODS);
 
 describe("ATLANTA_QA_DESTINATIONS", () => {
   it("covers all requested Atlanta neighborhoods with three destinations each", () => {
@@ -40,9 +41,7 @@ describe("ATLANTA_QA_DESTINATIONS", () => {
       expect(destination.name.trim().length).toBeGreaterThan(0);
       expect(destination.address.trim().length).toBeGreaterThan(0);
       expect(ATLANTA_QA_KINDS.has(destination.kind)).toBe(true);
-      expect(ATLANTA_QA_NEIGHBORHOODS.includes(destination.neighborhood)).toBe(
-        true,
-      );
+      expect(ATLANTA_QA_NEIGHBORHOOD_SET.has(destination.neighborhood)).toBe(true);
       expect(Number.isFinite(destination.coordinates.lat)).toBe(true);
       expect(Number.isFinite(destination.coordinates.lng)).toBe(true);
       expect(destination.coordinates.lat).toBeGreaterThan(33);

@@ -19,7 +19,7 @@ type EditProfileModalProps = {
   onCancel: () => void;
   onSave: () => void;
   onImageClick: () => void;
-  fileInputRef: RefObject<HTMLInputElement | null>;
+  fileInputRef: RefObject<HTMLInputElement>;
   onImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   appearanceMode?: DashboardAppearanceMode;
 };

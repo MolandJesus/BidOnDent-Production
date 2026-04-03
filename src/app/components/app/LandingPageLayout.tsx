@@ -143,7 +143,7 @@ export default function LandingPageLayout({
         <ProfileDropdown
           userInfo={userInfo}
           userType={profileDropdownData.userType}
-          notifications={profileDropdownData.notifications}
+          notifications={profileDropdownData.notifications ?? []}
           notificationSyncActive={profileDropdownData.notificationSyncActive}
           isOpen={showProfileDropdown}
           onNavigate={profileDropdownData.onNavigate}

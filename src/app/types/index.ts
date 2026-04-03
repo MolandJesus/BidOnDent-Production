@@ -1,3 +1,5 @@
+import type { ComponentType } from "react";
+
 // Type definitions for BidOnDent application
 
 export interface UserInfo {
@@ -58,6 +60,8 @@ export interface DamageReport {
   denialReason?: string;
   claimDecisionDate?: string;
 }
+
+export type Report = DamageReport;
 
 export interface Bid {
   id: string;
@@ -130,7 +134,7 @@ export type LoginView = "main" | "login" | "signup" | "customer" | "shop" | "ins
 export interface NavTab {
   id: string;
   label: string;
-  icon: React.ComponentType<{ className?: string; size?: number }>;
+  icon: ComponentType<{ className?: string; size?: string | number }>;
 }
 
 export interface UserData {

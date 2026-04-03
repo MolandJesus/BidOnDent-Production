@@ -21,7 +21,7 @@ interface LandingPageDeps {
   onViewDashboard: () => void;
   onLogout: () => void;
   onNavigate: (destination: string, tab?: string) => void;
-  profileDropdownRef: React.RefObject<HTMLDivElement | null>;
+  profileDropdownRef: React.RefObject<HTMLDivElement>;
 }
 
 export function renderLandingPage(deps: LandingPageDeps, isLoggedIn: boolean) {

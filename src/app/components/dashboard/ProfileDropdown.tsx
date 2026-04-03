@@ -31,7 +31,7 @@ interface ProfileDropdownProps {
   isOpen: boolean;
   onNavigate: (destination: string, tab?: string) => void;
   onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement | null>;
+  forwardedRef: RefObject<HTMLDivElement>;
   // Account-specific data props
   reports?: Report[];
   vehicles?: { id?: string; make: string; model: string; year: string | number }[];
