@@ -12,6 +12,7 @@ import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
 import { buildRoleAwareRouteSummary } from "../services/intelligence/shopMapExperience";
+import type { NavigationDestination } from "../types/mapDomain";
 import {
   useNavigationIntelligence,
   useNavigationReroute,
@@ -23,6 +24,7 @@ import {
   getPreferredVoiceLabel,
   supportsVoiceGuidance,
 } from "../services/navigation/voiceGuidance";
+import { navigationDestinationToSessionWaypoint } from "../services/navigation/navigationDestinationAdapters";
 import { useNotifications } from "../features/notifications";
 import { getShopRouteActionLabel } from "./shopDirectorySessionUtils";
 import { useNavigationGpsTracking } from "./useNavigationGpsTracking";
@@ -52,6 +54,7 @@ export function useShopDirectoryNavigation({
   userType,
 }: UseShopDirectoryNavigationParams) {
   const [navigationStartRequested, setNavigationStartRequested] = useState<number | null>(null);
+  const [directDestination, setDirectDestination] = useState<NavigationDestination | null>(null);
   const [followCurrentPositionRevision, setFollowCurrentPositionRevision] = useState(0);
   const lastArrivalToastSessionIdRef = useRef<string | null>(null);
 
@@ -76,8 +79,10 @@ export function useShopDirectoryNavigation({
   });
 
   const guidanceSelectedDestination = useMemo(
-    () => (session.selectedShop ? shopToNavigationDestination(session.selectedShop) : null),
-    [session.selectedShop?.id]
+    () =>
+      directDestination ??
+      (session.selectedShop ? shopToNavigationDestination(session.selectedShop) : null),
+    [directDestination, session.selectedShop?.id]
   );
   const guidanceOriginTarget = useMemo(
     () =>
@@ -352,6 +357,71 @@ export function useShopDirectoryNavigation({
     setNavigationStartRequested(shop.id);
   };
 
+  /** Navigate directly to any NavigationDestination (real place, QA seed, address). */
+  const handleStartDirectNavigation = (dest: NavigationDestination) => {
+    if (guidanceSettings.voiceMode !== "muted") {
+      primeVoiceEngine();
+    }
+
+    const isCurrentSessionDestination = navSession.session.destination?.id === dest.id;
+
+    if (navSession.session.status === "paused" && isCurrentSessionDestination) {
+      navSession.resume();
+      notifications.showToast({
+        message: `Navigation resumed to ${dest.name}.`,
+        variant: "info",
+        durationMs: 2400,
+        deepLink: null,
+      });
+      return;
+    }
+
+    if (navSession.session.status === "active" && isCurrentSessionDestination) {
+      return;
+    }
+
+    // Reset any existing session
+    if (navSession.session.status !== "idle") {
+      navSession.reset();
+    }
+
+    // Set direct destination — this drives guidanceSelectedDestination + route preview
+    setDirectDestination(dest);
+
+    // Build origin waypoint from current GPS or selected origin
+    const originWaypoint = shopNavigationGps.currentPosition
+      ? {
+          id: "gps-origin",
+          label: "Current Location",
+          coordinate: shopNavigationGps.currentPosition,
+        }
+      : session.selectedOrigin
+        ? {
+            id: session.selectedOrigin.placeId ?? "origin",
+            label: session.selectedOrigin.name,
+            address: session.selectedOrigin.address,
+            coordinate: {
+              lat: session.selectedOrigin.latitude,
+              lng: session.selectedOrigin.longitude,
+            },
+          }
+        : null;
+
+    // Start the navigation session directly
+    navSession.startPlanning(originWaypoint, navigationDestinationToSessionWaypoint(dest));
+
+    // Immediately activate (skip the shop-lifecycle intermediate step)
+    requestAnimationFrame(() => {
+      navSession.activate();
+      notifications.showToast({
+        message: `Navigation started to ${dest.name}.`,
+        variant: "info",
+        durationMs: 2400,
+        deepLink: null,
+      });
+    });
+  };
+
   const handleReviewRoute = reroute.isEligible
     ? () => {
         const request = reroute.requestReroute(session.selectedRouteId);
@@ -368,6 +438,7 @@ export function useShopDirectoryNavigation({
     liveNavigationForSelectedShop,
     hasArrivedForSelectedShop,
     selectedShopNavigationActionLabel,
+    directDestination,
 
     navigationSessionDestinationId,
     navigationSessionStatus: navSession.session.status,
@@ -398,9 +469,11 @@ export function useShopDirectoryNavigation({
     handleReviewRoute,
 
     handleStartInAppNavigation,
+    handleStartDirectNavigation,
     onEndNavigation: () => {
       const wasArrived = shopGuidancePreview.hasArrived;
       navSession.end();
+      setDirectDestination(null);
       if (!wasArrived) {
         notifications.showToast({
           message: "Route ended.",

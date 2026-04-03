@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   addressResultToNavigationDestination,
   discoveryPlaceToNavigationDestination,
+  navigationDestinationToSessionWaypoint,
   qaDestinationToNavigationDestination,
 } from "./navigationDestinationAdapters";
 
@@ -67,5 +68,23 @@ describe("qaDestinationToNavigationDestination", () => {
     expect(result.lng).toBe(-84.3831);
     expect(result.kind).toBe("qa_seed_destination");
     expect(result.address).toBe("760 Peachtree St NE, Atlanta, GA 30308");
+  });
+});
+
+describe("navigationDestinationToSessionWaypoint", () => {
+  it("converts NavigationDestination to SessionWaypoint", () => {
+    const waypoint = navigationDestinationToSessionWaypoint({
+      id: "atl-qa-mcdonalds-midtown",
+      name: "McDonald's",
+      lat: 33.7726,
+      lng: -84.3831,
+      kind: "qa_seed_destination",
+      address: "760 Peachtree St NE, Atlanta, GA 30308",
+    });
+
+    expect(waypoint.id).toBe("atl-qa-mcdonalds-midtown");
+    expect(waypoint.label).toBe("McDonald's");
+    expect(waypoint.coordinate).toEqual({ lat: 33.7726, lng: -84.3831 });
+    expect(waypoint.address).toBe("760 Peachtree St NE, Atlanta, GA 30308");
   });
 });

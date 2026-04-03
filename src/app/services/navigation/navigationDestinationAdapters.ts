@@ -4,6 +4,7 @@
  */
 import type { NavigationDestination } from "../../types/mapDomain";
 import type { NavigationAddressResult } from "../../types/navigation";
+import type { SessionWaypoint } from "../../features/navigation/sessionTypes";
 import type { NavigationDiscoveryPlace } from "./placeDiscovery";
 import type { AtlantaQADestination } from "../intelligence/atlantaQADestinations";
 
@@ -46,5 +47,17 @@ export function qaDestinationToNavigationDestination(
     lng: dest.coordinates.lng,
     kind: "qa_seed_destination",
     address: dest.address,
+  };
+}
+
+/** Universal NavigationDestination → SessionWaypoint for the navigation session */
+export function navigationDestinationToSessionWaypoint(
+  dest: NavigationDestination
+): SessionWaypoint {
+  return {
+    id: dest.id,
+    label: dest.name,
+    address: dest.address,
+    coordinate: { lat: dest.lat, lng: dest.lng },
   };
 }
