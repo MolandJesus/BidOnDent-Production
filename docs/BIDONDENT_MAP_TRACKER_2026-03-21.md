@@ -1,9 +1,9 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 3, 2026 (Pass 622 — Code cleanliness sweep + dead code removal)
+**Last updated:** April 5, 2026 (Pass 632 — Dashboard Surface System)
 **Status:** Active execution tracker
-**Pass count:** 622
-**Build:** 0 errors (~3.1s)
+**Pass count:** 632
+**Build:** 0 errors (~3.2s)
 **Branch:** BidOnDent-Horizon-Beta
 
 ---
@@ -18,7 +18,7 @@
 - Estimate requests: full Supabase backend lifecycle (customer→shop→respond→accept/decline)
 - Turn-by-turn voice navigation (Web Speech API) with deviation detection and auto-reroute (fully wired via useNavigationReroute → useShopDirectoryNavigation)
 - Report geocoding (Nominatim address + ZIP centroid fallback), bid count badges on map pins
-- Glass design system unified across landing + dashboard
+- Glass design system unified across landing + dashboard (bd-dashboard-* CSS primitives, Pass 632)
 - Cloud-synced saved shops, watchlists, shortlists, website preferences (Supabase `website_relationships` table)
 - Provider-agnostic business profiles (shop + insurer) in Supabase
 - Navigation session cloud persistence (Supabase `navigation_sessions` table)
@@ -46,6 +46,29 @@
 - Shop-area notification system (the missing link for marketplace function)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Passes 625–632 — Bundle Optimization, Hardening, Dashboard Surface System (2026-04-05)
+
+| Pass | Title                           | Key Changes                                                                                                                                       |
+| ---- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 625  | Failing test fix                | Fixed 1 broken test in edge function test suite                                                                                                   |
+| 626  | Bundle optimization             | Index chunk 604KB → 206KB via lazy-loading heavy screens                                                                                          |
+| 627  | Doc drift fixes                 | Master context + tracker alignment                                                                                                                |
+| 628  | Edge function hardening         | Supabase edge function safety improvements                                                                                                        |
+| 629  | Edge function hardening pt 2    | Additional edge function validation                                                                                                               |
+| 630  | Mock notification removal       | Removed synthetic notification data                                                                                                               |
+| 631  | Code cleanup                    | Minor cleanup pass                                                                                                                                |
+| 632  | Dashboard Surface System        | +443 lines CSS primitives in theme.css (bd-dashboard-panel/section/chip/note/button classes with dark/light variants). 22 component migrations, zero logic changes. Co-authored with ChatGPT design pass. |
+
+**Key artifacts created (Pass 632):**
+
+- `bd-dashboard-panel` + variants (`--deep`, `--accent-blue`, `--accent-cyan`, `--accent-indigo`) — Primary surface glass panels with backdrop-filter, pseudo-element highlights
+- `bd-dashboard-section` + variants (same + `--accent-rose`, `--interactive`, `--selected`) — Secondary surface sections
+- `bd-dashboard-chip`, `bd-dashboard-note` (`--deep`), button primitives (`primary`, `secondary`, `ghost`, `filter`) — Utility surfaces
+- Full `[data-appearance-mode="light"]` overrides for all primitives
+- AccountMenu refactored from repetitive JSX to data-driven `renderRow` pattern
 
 ---
 

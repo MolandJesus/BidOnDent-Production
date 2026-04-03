@@ -3,10 +3,10 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-03 (Pass 630 — Passes 625-630: failing test fix, bundle optimization (604→206KB), 10 dead deps removed, lazy-load landing+settings, doc drift fix, edge function hardening (estimate/bid/report validation, status transitions), mock notification removal.)
+> **Last updated:** 2026-04-05 (Pass 632 — Dashboard Surface System: bd-dashboard-* CSS primitives in theme.css, 22-component styling migration, zero logic changes. Co-authored with ChatGPT design pass.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
-> **Build:** ✅ 0 errors · ~3.0s · MapLibre GL JS WebGL engine
+> **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
 > **TypeScript:** 0 tsc errors · 0 VS Code diagnostics
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
