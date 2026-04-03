@@ -1,4 +1,4 @@
-import type { CoveragePartnerShop } from "../../components/maps/serviceCoverageMapTypes";
+import type { NavigationDestination } from "../../types/mapDomain";
 import type {
   NavigationCoordinate,
   NavigationRouteOptions,
@@ -10,7 +10,7 @@ import { type OsrmStep, buildStepInstruction } from "./routeEngineVoiceBuilder";
 
 type RouteEngineArgs = {
   origin: NavigationCoordinate;
-  destination: CoveragePartnerShop;
+  destination: NavigationDestination;
   signal?: AbortSignal;
 };
 

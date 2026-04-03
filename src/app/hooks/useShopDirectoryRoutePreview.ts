@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import type { CoveragePartnerShop } from "../components/maps/serviceCoverageMapTypes";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
 import {
   buildShopRouteOptions,
@@ -10,6 +9,7 @@ import { fetchNavigationRouteOptions } from "../services/navigation/routeEngine"
 import { createTimeoutAbortController } from "../services/navigation/requestTimeout";
 import type { Place, RouteInstruction, RouteOption } from "../types/mapDomain";
 import type { NavigationRoutePreview, NavigationRouteStep } from "../types/navigation";
+import { shopToNavigationDestination } from "./shopDirectoryNavigationUtils";
 
 const LIVE_ROUTE_PRESENTATION = [
   { id: "fastest", label: "Fastest", accentColor: "#2563eb" },
@@ -35,28 +35,6 @@ type UseShopDirectoryRoutePreviewResult = {
   usingLiveRoutes: boolean;
   refreshRoutePreview: () => void;
 };
-
-function toCoveragePartnerShop(shop: ShopMapListing): CoveragePartnerShop {
-  return {
-    id: String(shop.id),
-    name: shop.name,
-    countyLabel: [shop.mapResult.city, shop.mapResult.state].filter(Boolean).join(", "),
-    lat: shop.mapResult.coordinates.latitude,
-    lng: shop.mapResult.coordinates.longitude,
-    label: shop.name,
-    addressLine: [
-      shop.mapResult.address,
-      shop.mapResult.city,
-      shop.mapResult.state,
-      shop.mapResult.zipCode,
-    ]
-      .filter(Boolean)
-      .join(", "),
-    specialties: shop.specialties,
-    rating: shop.rating,
-    distanceMiles: shop.mapDistanceMiles,
-  };
-}
 
 function buildInstructionTitle(step: NavigationRouteStep, destinationName: string) {
   if (step.maneuverType === "arrive") {
@@ -197,7 +175,7 @@ export function useShopDirectoryRoutePreview({
         lat: selectedOrigin.latitude,
         lng: selectedOrigin.longitude,
       },
-      destination: toCoveragePartnerShop(selectedShop),
+      destination: shopToNavigationDestination(selectedShop),
       signal: routeRequest.controller.signal,
     })
       .then((nextRoutes) => {

@@ -40,6 +40,38 @@ export interface Place extends Coordinates {
 export type SearchOrigin = Place | null;
 
 // ============================================================================
+// NAVIGATION DESTINATION (UNIVERSAL — SHOPS, PLACES, ADDRESSES, QA SEEDS)
+// ============================================================================
+
+export type NavigationDestinationKind =
+  | "shop"
+  | "real_place"
+  | "saved_place"
+  | "report_location"
+  | "qa_seed_destination"
+  | "address";
+
+/**
+ * Universal destination target for navigation. Any entity the user can route to.
+ * Consumed by routeEngine, navigationSession, voice guidance, and arrival detection.
+ * Shop-specific flows (bids, estimates) should use the underlying MapShopResult/ShopMapListing
+ * and convert to NavigationDestination only for routing/guidance.
+ */
+export interface NavigationDestination {
+  /** Unique identifier — shop DB id (number→string), place id, or synthetic QA id */
+  id: string;
+  /** Display name shown in route preview, voice guidance, arrival toast */
+  name: string;
+  /** Lat/lng for routing */
+  lat: number;
+  lng: number;
+  /** What kind of destination this is — drives UI treatment and action availability */
+  kind: NavigationDestinationKind;
+  /** Optional display address */
+  address?: string;
+}
+
+// ============================================================================
 // SAVED PLACES (USER FAVORITES / HISTORY)
 // ============================================================================
 

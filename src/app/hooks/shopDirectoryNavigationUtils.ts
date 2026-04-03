@@ -3,6 +3,7 @@ import type {
   CoverageSearchTarget,
 } from "../components/maps/serviceCoverageMapTypes";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
+import type { NavigationDestination } from "../types/mapDomain";
 import type { useShopDirectorySession } from "./useShopDirectorySession";
 
 type ShopDirectorySession = ReturnType<typeof useShopDirectorySession>;
@@ -26,6 +27,25 @@ export function toCoveragePartnerShop(shop: ShopMapListing): CoveragePartnerShop
     specialties: shop.specialties,
     rating: shop.rating,
     distanceMiles: shop.mapDistanceMiles,
+  };
+}
+
+/** Convert a ShopMapListing to the universal NavigationDestination for routing/guidance */
+export function shopToNavigationDestination(shop: ShopMapListing): NavigationDestination {
+  return {
+    id: String(shop.id),
+    name: shop.name,
+    lat: shop.mapResult.coordinates.latitude,
+    lng: shop.mapResult.coordinates.longitude,
+    kind: "shop",
+    address: [
+      shop.mapResult.address,
+      shop.mapResult.city,
+      shop.mapResult.state,
+      shop.mapResult.zipCode,
+    ]
+      .filter(Boolean)
+      .join(", "),
   };
 }
 

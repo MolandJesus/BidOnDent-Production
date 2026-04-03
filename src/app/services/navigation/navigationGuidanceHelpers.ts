@@ -11,7 +11,7 @@ import type {
   NavigationRouteStep,
   NavigationVoiceMode,
 } from "../../types/navigation";
-import type { CoveragePartnerShop } from "../../components/maps/serviceCoverageMapTypes";
+import type { NavigationDestination } from "../../types/mapDomain";
 import { haversineMiles } from "../supabase/map";
 
 const ROUTE_KEY_COORD_PRECISION = 6;
@@ -215,20 +215,20 @@ export function buildOriginKey(target: CoverageSearchTarget | null) {
   return `${target.source}:${toKeyCoordinate(target.lat)},${toKeyCoordinate(target.lng)}`;
 }
 
-export function buildDestinationKey(shop: CoveragePartnerShop | null) {
-  if (!shop) {
+export function buildDestinationKey(destination: NavigationDestination | null) {
+  if (!destination) {
     return null;
   }
 
   const destinationIdentity =
-    normalizeKeyPart(shop.id) ||
-    [shop.name, shop.addressLine, shop.countyLabel]
+    normalizeKeyPart(destination.id) ||
+    [destination.name, destination.address]
       .map(normalizeKeyPart)
       .filter(Boolean)
       .join("|") ||
-    "unknown-shop";
+    "unknown-destination";
 
-  return `${destinationIdentity}:${toKeyCoordinate(shop.lat)},${toKeyCoordinate(shop.lng)}`;
+  return `${destinationIdentity}:${toKeyCoordinate(destination.lat)},${toKeyCoordinate(destination.lng)}`;
 }
 
 /**

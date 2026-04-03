@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import type {
-  CoveragePartnerShop,
   CoverageSearchTarget,
 } from "../components/maps/serviceCoverageMapTypes";
 import { haversineMiles } from "../services/supabase/map";
@@ -13,6 +12,7 @@ import type {
   NavigationVoicePersona,
   NavigationVoiceVolumePreset,
 } from "../types/navigation";
+import type { NavigationDestination } from "../types/mapDomain";
 import { fetchNavigationRouteOptions } from "../services/navigation/routeEngine";
 import { createTimeoutAbortController } from "../services/navigation/requestTimeout";
 import {
@@ -33,7 +33,7 @@ import {
 } from "../services/navigation/voiceGuidance";
 
 export type UseNavigationRoutePreviewArgs = {
-  selectedShop: CoveragePartnerShop | null;
+  selectedDestination: NavigationDestination | null;
   activeOriginTarget: CoverageSearchTarget | null;
   currentPosition: NavigationCoordinate | null;
   currentSpeedMph: number | null;
@@ -58,7 +58,7 @@ export type NavigationRoutePreviewState = {
 };
 
 export function useNavigationRoutePreview({
-  selectedShop,
+  selectedDestination,
   activeOriginTarget,
   currentPosition,
   currentSpeedMph,
@@ -83,7 +83,7 @@ export function useNavigationRoutePreview({
   const spokenStepIdsRef = useRef<Set<string>>(new Set());
 
   const originKey = buildOriginKey(activeOriginTarget);
-  const destinationKey = buildDestinationKey(selectedShop);
+  const destinationKey = buildDestinationKey(selectedDestination);
   const originTracksGps =
     gpsTrackingEnabled && activeOriginTarget?.source === "geolocation" && Boolean(currentPosition);
 
@@ -105,7 +105,7 @@ export function useNavigationRoutePreview({
 
   // Route fetching
   useEffect(() => {
-    if (!selectedShop || !activeOriginTarget || !originKey || !destinationKey) {
+    if (!selectedDestination || !activeOriginTarget || !originKey || !destinationKey) {
       setRoutePreview((prev) => (prev === null ? prev : null));
       setRouteAlternatives((prev) => (prev.length === 0 ? prev : []));
       setRouteError((prev) => (prev === "" ? prev : ""));
@@ -146,7 +146,7 @@ export function useNavigationRoutePreview({
 
     fetchNavigationRouteOptions({
       origin: activeOriginCoordinate,
-      destination: selectedShop,
+      destination: selectedDestination,
       signal: routeRequest.controller.signal,
     })
       .then((nextRoutes: NavigationRouteOptions) => {
@@ -210,7 +210,7 @@ export function useNavigationRoutePreview({
     destinationKey,
     originKey,
     routePreview,
-    selectedShop,
+    selectedDestination,
     selectedRouteIndex,
     gpsTrackingEnabled,
     originTracksGps,

@@ -8,7 +8,6 @@
  * - useShopDirectoryNavigation = navigation lifecycle + guidance + route intelligence
  */
 import { useMemo, useRef, useState } from "react";
-import type { CoveragePartnerShop } from "../components/maps/serviceCoverageMapTypes";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
@@ -33,7 +32,7 @@ import type { useShopDirectorySession } from "./useShopDirectorySession";
 import { formatDistanceLabel } from "../services/intelligence/shopMapRouting";
 import { primeVoiceEngine } from "../services/navigation/voiceSupport";
 import {
-  toCoveragePartnerShop,
+  shopToNavigationDestination,
   buildShopGuidanceOriginTarget,
 } from "./shopDirectoryNavigationUtils";
 import { useNavigationLifecycleEffects } from "./useNavigationLifecycleEffects";
@@ -76,8 +75,8 @@ export function useShopDirectoryNavigation({
     speedLimitMonitorEnabled: guidanceSettings.speedLimitMonitorEnabled,
   });
 
-  const guidanceSelectedShop = useMemo(
-    () => (session.selectedShop ? toCoveragePartnerShop(session.selectedShop) : null),
+  const guidanceSelectedDestination = useMemo(
+    () => (session.selectedShop ? shopToNavigationDestination(session.selectedShop) : null),
     [session.selectedShop?.id]
   );
   const guidanceOriginTarget = useMemo(
@@ -101,8 +100,8 @@ export function useShopDirectoryNavigation({
 
   const navigationSessionDestinationId = navSession.session.destination?.id ?? null;
   const voiceGuidanceEnabled = Boolean(
-    guidanceSelectedShop &&
-      navigationSessionDestinationId === String(guidanceSelectedShop.id) &&
+    guidanceSelectedDestination &&
+      navigationSessionDestinationId === String(guidanceSelectedDestination.id) &&
       navSession.session.status === "active"
   );
   const selectedRouteIndex = Math.max(
@@ -111,7 +110,7 @@ export function useShopDirectoryNavigation({
   );
 
   const shopGuidancePreview = useNavigationRoutePreview({
-    selectedShop: guidanceSelectedShop,
+    selectedDestination: guidanceSelectedDestination,
     activeOriginTarget: guidanceOriginTarget,
     currentPosition: shopNavigationGps.currentPosition,
     currentSpeedMph: shopNavigationGps.currentSpeedMph,
@@ -183,10 +182,10 @@ export function useShopDirectoryNavigation({
     ? null
     : shopGuidancePreview.routePreview?.steps[shopGuidancePreview.currentStepIndex + 1] || null;
 
-  const liveGuidanceRouteOptions = guidanceSelectedShop
+  const liveGuidanceRouteOptions = guidanceSelectedDestination
     ? buildLiveRouteOptionsFromPreviews(
         shopGuidancePreview.routeAlternatives,
-        guidanceSelectedShop.name
+        guidanceSelectedDestination.name
       )
     : [];
 
