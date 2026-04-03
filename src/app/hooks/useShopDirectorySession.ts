@@ -1,20 +1,8 @@
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import type { ShopSortOption, WebsiteIdentity } from "../services/auth/websiteIdentity";
 import { loadWebsiteSessionMemory } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
-import {
-  buildShopIntelligenceSummary,
-  getInsuranceDirectory,
-} from "../services/intelligence/marketIntelligence";
-import {
-  buildRoleAwareMapHighlights,
-  buildRoleAwareRouteSummary,
-  buildShopMapListings,
-  getRoleCollectionKey,
-  getRoleCollectionTitle,
-  getSuggestedSearchOrigins,
-} from "../services/intelligence/shopMapExperience";
-import { convertPartnerShopsToProfiles } from "../services/intelligence/directoryAdapters";
+import { buildRoleAwareRouteSummary } from "../services/intelligence/shopMapExperience";
 import type { NavigationAddressResult, NavigationAddressSuggestion } from "../types/navigation";
 import type {
   Coordinates,
@@ -40,8 +28,8 @@ import {
   buildPlaceFromAddressResult,
   buildPlaceFromAddressSuggestion,
   getContextChips,
-  slugify,
 } from "./shopDirectorySessionUtils";
+import { useShopDirectoryComputedValues } from "./useShopDirectoryComputedValues";
 
 type UseShopDirectorySessionArgs = {
   identity?: WebsiteIdentity | null;
@@ -76,7 +64,6 @@ export function useShopDirectorySession({
   const geolocation = useUserGeolocation();
   const originSearch = useNavigationAddressSearch();
   const savedMemory = loadWebsiteSessionMemory(identity);
-  const suggestedOrigins = getSuggestedSearchOrigins();
 
   const [searchQuery, setSearchQuery] = useState(
     savedMemory.shopDirectory.searchQuery || initialSearchHint || ""
@@ -156,113 +143,42 @@ export function useShopDirectorySession({
     setSessionIntelligenceOpen,
   });
 
-  // ── Computed values ──
-  const allDirectoryShops = useMemo(() => {
-    const partnerProfiles = convertPartnerShopsToProfiles(partnerShops);
-    if (partnerProfiles.length === 0) return inventory.shops;
-    const byName = new Map(inventory.shops.map((s) => [s.businessName.toLowerCase(), s]));
-    const merged = [...inventory.shops];
-    for (const profile of partnerProfiles) {
-      if (!byName.has(profile.businessName.toLowerCase())) {
-        merged.push(profile);
-      }
-    }
-    return merged;
-  }, [inventory.shops, partnerShops]);
-
-  const mapListings = useMemo(
-    () =>
-      buildShopMapListings({
-        connectedInsurerIds,
-        directoryInsurers: inventory.insurers,
-        directoryShops: allDirectoryShops,
-        filterRating,
-        filters: searchWithinViewport ? { searchWithinViewport: true } : undefined,
-        origin: selectedOrigin,
-        reports,
-        searchQuery: deferredSearchQuery,
-        sortBy,
-        userType,
-        vehicles,
-        viewportBounds: mapViewportBounds,
-      }),
-    [
-      allDirectoryShops,
-      connectedInsurerIds,
-      deferredSearchQuery,
-      filterRating,
-      inventory.insurers,
-      mapViewportBounds,
-      reports,
-      searchWithinViewport,
-      selectedOrigin,
-      sortBy,
-      userType,
-      vehicles,
-    ]
-  );
-
-  const exactSearchMatchedShop = useMemo(() => {
-    const normalizedSearchQuery = slugify(searchQuery.trim());
-    if (!normalizedSearchQuery) {
-      return null;
-    }
-
-    return mapListings.find((shop) => slugify(shop.name) === normalizedSearchQuery) || null;
-  }, [mapListings, searchQuery]);
-  const summary = buildShopIntelligenceSummary(mapListings, {
+  // ── Computed values (extracted) ──
+  const computed = useShopDirectoryComputedValues({
+    inventoryShops: inventory.shops,
+    inventoryInsurers: inventory.insurers,
+    partnerShops,
+    searchQuery,
+    deferredSearchQuery,
+    filterRating,
+    sortBy,
+    selectedShopId,
     connectedInsurerIds,
-    reports,
-    searchQuery: deferredSearchQuery,
+    selectedOrigin,
+    savedPlaces,
+    customerSavedShopIds,
+    shopWatchlistIds,
+    insurerShortlistIds,
+    mapViewMode,
+    isMapDark,
+    mapViewportBounds,
+    searchWithinViewport,
     userType,
     vehicles,
-  });
-  const connectedCarrierNames = getInsuranceDirectory(inventory.insurers)
-    .filter((insurer) => connectedInsurerIds.includes(insurer.id))
-    .map((insurer) => insurer.name);
-  const contextChips = getContextChips(vehicles, reports);
-  const roleHighlights = buildRoleAwareMapHighlights({
-    connectedCarrierCount: connectedCarrierNames.length,
-    recommendations: mapListings,
     reports,
-    userType,
   });
-  const collectionUniverse = buildShopMapListings({
-    connectedInsurerIds,
-    directoryInsurers: inventory.insurers,
-    directoryShops: allDirectoryShops,
-    origin: selectedOrigin,
-    reports,
-    searchQuery: "",
-    sortBy: "smart-match",
-    userType,
-    vehicles,
-  });
-  const selectedShop =
-    mapListings.find((shop) => shop.id === selectedShopId) ||
-    exactSearchMatchedShop ||
-    mapListings[0] ||
-    null;
+
+  const { mapListings, exactSearchMatchedShop, selectedShop, roleCollectionKey, suggestedOrigins } =
+    computed;
+
   // Auto-select exact search match when no shop is explicitly selected
-  // (e.g., arriving from bid acceptance with shop name in search query)
   useEffect(() => {
     if (selectedShopId === null && exactSearchMatchedShop) {
       setSelectedShopId(exactSearchMatchedShop.id);
     }
   }, [exactSearchMatchedShop?.id, selectedShopId]);
 
-  const roleCollectionKey = getRoleCollectionKey(userType);
-  const roleCollectionTitle = getRoleCollectionTitle(userType);
-  const roleCollectionIds =
-    roleCollectionKey === "shopWatchlistIds"
-      ? shopWatchlistIds
-      : roleCollectionKey === "insurerShortlistIds"
-        ? insurerShortlistIds
-        : customerSavedShopIds;
-  const roleCollectionListings = collectionUniverse.filter((shop) =>
-    roleCollectionIds.includes(shop.id)
-  );
-
+  // ── Route preview (depends on selectedShop from computed) ──
   const { routeOptions, isLoadingRoutes, routeError, usingLiveRoutes, refreshRoutePreview } =
     useShopDirectoryRoutePreview({
       selectedOrigin,
@@ -278,17 +194,7 @@ export function useShopDirectorySession({
     userType,
   });
 
-  const directionsActionLabel = "Get Directions";
-
-  const showMapPane = mapViewMode !== "list";
-  const isImmersive = mapViewMode === "map";
-
-  const currentOriginIsSaved = selectedOrigin
-    ? savedPlaces.some(
-        (place) =>
-          place.id === `saved-place-${selectedOrigin.placeId || slugify(selectedOrigin.name)}`
-      )
-    : false;
+  const contextChips = getContextChips(vehicles, reports);
 
   const handleSelectOriginSearchResult = (result: NavigationAddressResult) => {
     originSearch.chooseAddressResult(result);
@@ -435,7 +341,6 @@ export function useShopDirectorySession({
     mapViewMode,
     mapTheme,
     isMapDark,
-    resolvedMapTheme: (isMapDark ? "dark" : "light") as "light" | "dark",
     selectedRouteId,
     mapCenter,
     mapZoom,
@@ -458,13 +363,13 @@ export function useShopDirectorySession({
     setSessionIntelligenceOpen,
     // Computed
     mapListings,
-    summary,
-    connectedCarrierNames,
+    summary: computed.summary,
+    connectedCarrierNames: computed.connectedCarrierNames,
     contextChips,
-    roleHighlights,
-    roleCollectionIds,
-    roleCollectionTitle,
-    roleCollectionListings,
+    roleHighlights: computed.roleHighlights,
+    roleCollectionIds: computed.roleCollectionIds,
+    roleCollectionTitle: computed.roleCollectionTitle,
+    roleCollectionListings: computed.roleCollectionListings,
     selectedShop,
     routeOptions,
     selectedRoute,
@@ -473,16 +378,17 @@ export function useShopDirectorySession({
     routeError,
     usingLiveRoutes,
     refreshRoutePreview,
-    directionsActionLabel,
+    directionsActionLabel: computed.directionsActionLabel,
     suggestedOrigins,
     originSearchQuery: originSearch.addressQuery,
     originSearchResults: originSearch.addressResults,
     originSuggestions: originSearch.addressSuggestions,
     isSearchingOrigins: originSearch.isSearchingAddresses,
     originSearchError: originSearch.addressError,
-    showMapPane,
-    isImmersive,
-    currentOriginIsSaved,
+    showMapPane: computed.showMapPane,
+    isImmersive: computed.isImmersive,
+    currentOriginIsSaved: computed.currentOriginIsSaved,
+    resolvedMapTheme: computed.resolvedMapTheme,
     // Handlers
     ...baseHandlers,
     handleSelectOrigin,
