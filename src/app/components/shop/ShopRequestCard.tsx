@@ -104,9 +104,9 @@ type ShopRequestCardProps = {
 };
 
 /** Reports submitted within this window are marked "New". */
-const NEW_REPORT_THRESHOLD_MS = 2 * 60 * 60 * 1000; // 2 hours
+export const NEW_REPORT_THRESHOLD_MS = 2 * 60 * 60 * 1000; // 2 hours
 
-function isRecentReport(submittedAt: string): boolean {
+export function isRecentReport(submittedAt: string): boolean {
   if (!submittedAt) return false;
   const elapsed = Date.now() - Date.parse(submittedAt);
   return elapsed >= 0 && elapsed < NEW_REPORT_THRESHOLD_MS;
