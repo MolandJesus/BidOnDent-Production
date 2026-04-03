@@ -1,6 +1,6 @@
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-import type { Report } from "../../../types";
+import type { DamageReport } from "../../types";
 
 export type AccountScreenProps = {
   userType: string;
@@ -11,7 +11,7 @@ export type AccountScreenProps = {
   userPhone?: string;
   profileImage?: string;
   vehicles?: { id?: string; make: string; model: string; year: string | number }[];
-  reports?: Report[];
+  reports?: DamageReport[];
   websiteIdentity?: WebsiteIdentity | null;
   onDeleteAccount?: () => Promise<void> | void;
   onLogout?: () => Promise<void> | void;
