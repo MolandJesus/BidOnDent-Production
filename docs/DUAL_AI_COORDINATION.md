@@ -55,6 +55,8 @@
 | 727  | ChatGPT | Add shop directory screen utils coverage                      | `4efeac54` |
 | 728  | ChatGPT | Refresh dual AI coordination after shop utility coverage      | `7dd782a7` |
 | 730  | ChatGPT | Add website session sanitizer coverage                        | `918c3437` |
+| 731  | ChatGPT | Refresh dual AI coordination after sanitizer coverage         | `78ba26b7` |
+| 732  | ChatGPT | Add website identity persistence coverage                     | `a39c380b` |
 
 ---
 
@@ -63,7 +65,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 730+ | Realtime/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 731+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| ChatGPT | 733+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -84,7 +86,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 730. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 732. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -478,3 +480,29 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 166/166.
+
+### ChatGPT Report — 2026-04-03 — Passes 731-732
+
+**Completed:**
+
+- Pass 731: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 732: Website identity persistence coverage — `src/app/services/auth/websiteIdentity.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after the sanitizer pass so the shared pass ledger, dirty-file warning, and support-lane baseline stayed current.
+- Added direct coverage for `buildWebsiteIdentity`, `loadWebsiteSessionMemory`, `replaceWebsiteSessionMemory`, and `updateWebsiteSessionMemory`, including normalized-email identity stability, session-id reuse, corrupted-storage sanitization and rewrite, persisted patch merging, and sync-queue fanout.
+- Added an in-memory storage shim inside the test file so the persistence coverage stays deterministic even when Vitest’s environment lacks a full `localStorage/sessionStorage` implementation.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- Dirty files are still limited to the tracker/master-context docs, the two bid UI files, and the untracked worker prompt.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- The website session-memory layer is now covered end-to-end on the support side, so once the TS cluster is resolved I can shift toward nearby UI polish or additional persistence-adjacent utilities without stepping into unstable seams.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 170/170.
