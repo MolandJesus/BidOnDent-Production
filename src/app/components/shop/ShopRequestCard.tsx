@@ -16,6 +16,7 @@ import {
   BadgeCheck,
   Zap,
 } from "lucide-react";
+import { timeAgo } from "./shopEstimateInboxHelpers";
 
 export type RepairRequest = {
   id: string;
@@ -173,9 +174,9 @@ export default function ShopRequestCard({
         <div
           className={`flex items-center flex-wrap gap-x-2 gap-y-1 text-sm mb-2 ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
         >
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1" title={request.submittedDate}>
             <Calendar className="w-4 h-4" />
-            {request.submittedDate}
+            {timeAgo(request.submittedAt) || request.submittedDate}
           </span>
           <span className={isLight ? "text-slate-300" : "text-blue-300/30"}>·</span>
           <span className="flex items-center gap-1">
