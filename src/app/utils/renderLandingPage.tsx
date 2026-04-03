@@ -1,12 +1,7 @@
 import type { ComponentProps } from "react";
 import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
 import type { RedirectInfo, UserInfo } from "../types";
-import {
-  PRIMARY_COLOR,
-  SECONDARY_COLOR,
-  CTA_BUTTON_TEXT,
-  LANDING_PAGE_IMAGES,
-} from "../constants";
+import { PRIMARY_COLOR, SECONDARY_COLOR, CTA_BUTTON_TEXT, LANDING_PAGE_IMAGES } from "../constants";
 import LandingPageLayout from "../components/app/LandingPageLayout";
 
 interface LandingPageDeps {
@@ -88,7 +83,9 @@ export function renderLandingPage(deps: LandingPageDeps, isLoggedIn: boolean) {
       onViewDashboard={onViewDashboard}
       onAppearanceModeChange={setAppearanceMode}
       profileDropdownData={
-        landingProfileDropdownData as ComponentProps<typeof LandingPageLayout>["profileDropdownData"]
+        landingProfileDropdownData as ComponentProps<
+          typeof LandingPageLayout
+        >["profileDropdownData"]
       }
     />
   );
