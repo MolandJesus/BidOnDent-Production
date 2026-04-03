@@ -1,6 +1,6 @@
 # BidOnDent Map Master Plan
 
-**Last updated:** April 2, 2026 (Pass 537)
+**Last updated:** April 3, 2026 (Pass 622)
 **Status:** Strategic law for map program
 
 > Implementation notes archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Per-pass delivery notes belong in the Map Tracker.
@@ -285,4 +285,3 @@ The themes above (1–6) capture a historical strategic snapshot from the 2026-0
 - Keep this master plan stable, strategic, and short-lived only by decision changes.
 - Put granular delivery notes in the tracker.
 - Retire stale map plans instead of keeping parallel "active" master docs.
-

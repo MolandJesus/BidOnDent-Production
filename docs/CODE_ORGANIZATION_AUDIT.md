@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** April 3, 2026 (Pass 565 — Structural extraction: useNavigationLaunch.ts from useOperatingRegionsCoverage.ts (515→436 lines). Build fixes in MapLibreServiceCoverageMap.tsx and CustomerEstimateDetailSheet.tsx.)
+**Last updated:** April 3, 2026 (Pass 622 — Code cleanliness sweep: dead code removed (RealtimeBidExample.tsx), lazyWithRetry utility for all 24 lazy-loaded screens, OWASP security audit passed, VIN input sanitization.)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -83,7 +83,18 @@ Use this together with:
 
 ## File Size Status
 
-The repository is fully under the 500-line hard cap as of Pass 562. A comprehensive extraction sweep (Passes 540–562) decomposed every oversized file into focused hooks and components. Top file: `useShopDirectorySession.ts` at exactly 500 lines.
+The repository is fully under the 500-line hard cap as of Pass 562. A second extraction sweep (Passes 568–608) brought many files further under the 300-line soft limit. The codebase was then hardened through Passes 609–622 (type safety, security, dead code removal, runtime safety).
+
+**Current codebase health (Pass 622):**
+
+- Zero production `any` types (3 intentional `as any` workarounds remain — MapLibre resize patch, CSS custom props, Clerk profile)
+- Zero ungated console statements in production code
+- Zero dead code (orphaned `RealtimeBidExample.tsx` removed Pass 622)
+- OWASP security audit passed (Pass 619): zero XSS, zero injection, proper auth boundaries
+- All 24 lazy-loaded screens use `lazyWithRetry` for chunk-load resilience (Pass 617)
+- VIN input sanitization on both vehicle forms (Pass 619)
+- Photo upload mounted guard for unmount safety (Pass 618)
+- Top file: `useShopDirectorySession.ts` at ~406 lines (was 500, reduced Pass 569)
 
 - `src/app/components/shop/ShopDirectoryScreen.tsx` reduced from 1383 → 979 → 1163 → 478 (Pass 11) → grew back to ~1,003 → **Pass 540: 1003 → 499 lines.** Map interaction handlers extracted to `useShopDirectoryMapActions.ts`, dialog/sheet composition extracted to `ShopDirectoryDialogs.tsx`. Pass 554 compacted further to 494. **✅ Now under 500-line hard cap.**
 - `src/app/hooks/useShopDirectorySession.ts` (**new, Pass 11**, 494 lines): all 18 state variables, session-memory sync, selection effects, search/origin/directions handlers, all computed values (mapListings, summary, contextChips, roleHighlights, routeOptions, etc). Accepts `{ identity, userType, vehicles, reports }`.
@@ -248,11 +259,14 @@ Do not broad-stroke move the whole repo at once. The safest evolution path is:
 
 ### Now
 
-- Keep files under 500 lines while extracting new navigation/map domains.
-- Replace stale generic documentation with repo-specific source-of-truth docs.
+- ~~Keep files under 500 lines while extracting new navigation/map domains.~~ — Delivered (Passes 540–562 initial sweep, 568–608 second sweep). All files ≤500 lines, most under 300-line soft limit.
+- ~~Replace stale generic documentation with repo-specific source-of-truth docs.~~ — Delivered (Pass 437 doc refactor, 537 consolidation, 563–564 truth reconciliation).
 - Tighten the navigation and dashboard router typing surface.
 - Consolidate notification ownership so bell and dropdown do not compete.
 - ~~Extract `ShopDirectoryScreen.tsx` (1383 lines) into composable sub-modules.~~ — Delivered (Pass 11/77). Screen reduced to 339 lines. Extracted: `useShopDirectorySession`, `ShopDirectorySearchPanel`, `ShopDirectoryHero`, `ShopDirectoryImmersiveMap`, `ShopDirectoryMapPane`, `ShopDirectoryMapOverlays`, `ShopDirectoryListBody`.
+- Zero production `any` types achieved (Pass 609). Zero dead code (Pass 622). Zero ungated console statements (Pass 611).
+- OWASP security audit passed (Pass 619). VIN input sanitization delivered. Photo upload unmount safety delivered (Pass 618).
+- Lazy chunk retry utility (`lazyWithRetry`) covers all 24 lazy-loaded screens (Pass 617).
 
 ### Next
 

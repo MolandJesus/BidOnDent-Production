@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-03 (Pass 619 — Security + input validation. Passes 615–619: chunk retry + error boundary, photo upload safety, VIN sanitization, security audit.)
+> **Last updated:** 2026-04-03 (Pass 622 — Code cleanliness sweep + dead code removal. Passes 612–622: aria-hidden fix, parallel data loading, runtime robustness, chunk retry + error boundary, photo upload safety, VIN sanitization, OWASP security audit, dead code removal.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
@@ -407,6 +407,12 @@ Archive note: The checklist below records the priorities captured during the Pas
 | `src/app/services/supabase/runtime.ts`                | Canonical Supabase client                            |
 | `src/app/services/intelligence/marketIntelligence.ts` | Shop recommendation engine                           |
 
+### Utilities
+
+| File                                                  | Purpose                                              |
+| ----------------------------------------------------- | ---------------------------------------------------- |
+| `src/app/utils/lazyWithRetry.ts`                      | Lazy chunk retry (retries once after 1.5s delay)     |
+
 ---
 
 ## 9. Development Commands
@@ -428,7 +434,7 @@ Archive note: The checklist below records the priorities captured during the Pas
 | ~~Hardcoded admin/demo passwords in source~~              | ✅ DONE  | Pass 567 — moved to `VITE_ADMIN_SWITCH_PASSWORD` / `VITE_DEMO_PASSWORD` env vars   |
 | ~~CORS wildcard `*` on edge functions~~                   | ✅ DONE  | Pass 567 — whitelisted origins, dynamic reflection via `getCorsOrigin()`           |
 | `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                          |
-| `any` types in `src/types/index.ts`                       | LOW      | 2 remaining `any` in shared type defs (line 48, 237)                               |
+| ~~`any` types in `src/types/index.ts`~~                   | ✅ DONE  | Pass 609 — eliminated remaining `any` from shared type definitions                 |
 | ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR                  |
 | ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections                  |
 | ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting)      |
