@@ -1,6 +1,6 @@
 import Map, { AttributionControl, NavigationControl } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { cn } from "../ui/utils";
 import MapNavigationHud from "./MapNavigationHud";
 import MapSurfaceControls from "./MapSurfaceControls";
@@ -20,66 +20,17 @@ import {
   MapLibreFollowLocationController,
   MapLibreArrivalCameraEffect,
 } from "./mapLibreControllers";
-import { circlePolygon } from "./mapLibreHelpers";
-import type {
-  CoverageCountyMarker,
-  CoveragePartnerShop,
-  CoverageSearchTarget,
-  MapTileMode,
-} from "./serviceCoverageMapTypes";
-import type { NavigationSpeedLimitConfidence, NavigationVoiceMode } from "../../types/navigation";
-import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDiscovery";
-
-/* ---------- main component ---------- */
-
-type MapLibreServiceCoverageMapProps = {
-  center: [number, number];
-  zoom: number;
-  revision: number;
-  tileMode: MapTileMode;
-  counties: CoverageCountyMarker[];
-  partnerShops: CoveragePartnerShop[];
-  activeSearchTarget: CoverageSearchTarget | null;
-  radiusMeters: number;
-  radiusMiles: string;
-  regionCount: number;
-  selectedShopId?: string;
-  selectedDiscoveryPlaceId?: string;
-  className?: string;
-  mapHeightClassName?: string;
-  immersiveFullscreen?: boolean;
-  presentationMode?: "coverage" | "navigation";
-  showSurfaceChrome?: boolean;
-  showNavigationHud?: boolean;
-  followCurrentPosition?: boolean;
-  followCurrentPositionRevision?: number;
-  /** Enable guidance-mode camera: higher zoom, tighter debounce, bearing rotation. */
-  guidanceMode?: boolean;
-  /** Compass/GPS heading in degrees (0-360) for map bearing rotation during guidance. */
-  currentHeadingDegrees?: number | null;
-  /** Whether the user has arrived at the destination (triggers arrival camera). */
-  hasArrived?: boolean;
-  /** Destination coordinate [lat, lng] for arrival camera effect. */
-  destination?: [number, number] | null;
-  discoveryPlaces?: NavigationDiscoveryPlace[];
-  routeGeometry?: [number, number][];
-  routeFitKey?: string | null;
-  currentPosition?: [number, number] | null;
-  gpsAccuracyMeters?: number | null;
-  currentSpeedMph?: number | null;
-  postedSpeedLimitMph?: number | null;
-  postedSpeedLimitConfidence?: NavigationSpeedLimitConfidence | null;
-  speedLimitMatchDistanceMeters?: number | null;
-  nearestRoadName?: string | null;
-  nextInstruction?: string | null;
-  voiceMode?: NavigationVoiceMode;
-  onTileModeChange: (mode: MapTileMode) => void;
-  onCenterActive: () => void;
-  onResetView: () => void;
-  onSelectShop?: (shopId: string) => void;
-  onSelectDiscoveryPlace?: (place: NavigationDiscoveryPlace) => void;
-  onExpand?: () => void;
-};
+import {
+  buildRouteGeoJSON,
+  buildCountyGeoJSON,
+  buildGpsPointGeoJSON,
+  buildGpsHeadingGeoJSON,
+  buildGpsAccuracyGeoJSON,
+  buildSearchTargetRadiusGeoJSON,
+  buildSearchTargetPointGeoJSON,
+  buildRadiusLabelGeoJSON,
+  type MapLibreServiceCoverageMapProps,
+} from "./mapLibreServiceCoverageMapHelpers";
 
 export default function MapLibreServiceCoverageMap({
   center,
@@ -159,120 +110,50 @@ export default function MapLibreServiceCoverageMap({
       : null;
 
   /* --- route GeoJSON --- */
-  const routeGeoJSON = useMemo(() => {
-    if (!routeGeometry || routeGeometry.length < 2) return null;
-    return {
-      type: "Feature" as const,
-      geometry: {
-        type: "LineString" as const,
-        coordinates: routeGeometry.map(([lat, lng]) => [lng, lat]),
-      },
-      properties: {},
-    };
-  }, [routeGeometry]);
+  const routeGeoJSON = useMemo(
+    () => buildRouteGeoJSON(routeGeometry),
+    [routeGeometry]
+  );
 
   /* --- county GeoJSON --- */
   const countyGeoJSON = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: counties.map((c) => ({
-        type: "Feature" as const,
-        geometry: { type: "Point" as const, coordinates: [c.lng, c.lat] },
-        properties: { name: c.name },
-      })),
-    }),
+    () => buildCountyGeoJSON(counties),
     [counties]
   );
 
   /* --- GPS GeoJSON --- */
-  const gpsPointGeoJSON = useMemo(() => {
-    if (!currentPosition) return null;
-    return {
-      type: "Feature" as const,
-      geometry: {
-        type: "Point" as const,
-        coordinates: [currentPosition[1], currentPosition[0]],
-      },
-      properties: {},
-    };
-  }, [currentPosition]);
+  const gpsPointGeoJSON = useMemo(
+    () => buildGpsPointGeoJSON(currentPosition),
+    [currentPosition]
+  );
 
-  /* --- GPS heading direction cone (short line from dot in heading direction) --- */
-  const gpsHeadingGeoJSON = useMemo(() => {
-    if (!currentPosition || !guidanceMode || typeof currentHeadingDegrees !== "number") return null;
-    const [lat, lng] = currentPosition;
-    // ~60m line in the heading direction
-    const headingRad = (currentHeadingDegrees * Math.PI) / 180;
-    const distDeg = 60 / 111320; // ~60 meters in degrees
-    const endLat = lat + distDeg * Math.cos(headingRad);
-    const endLng = lng + (distDeg * Math.sin(headingRad)) / Math.cos((lat * Math.PI) / 180);
-    return {
-      type: "Feature" as const,
-      geometry: {
-        type: "LineString" as const,
-        coordinates: [
-          [lng, lat],
-          [endLng, endLat],
-        ],
-      },
-      properties: {},
-    };
-  }, [currentPosition, guidanceMode, currentHeadingDegrees]);
+  /* --- GPS heading direction cone --- */
+  const gpsHeadingGeoJSON = useMemo(
+    () => buildGpsHeadingGeoJSON(currentPosition, guidanceMode, currentHeadingDegrees),
+    [currentPosition, guidanceMode, currentHeadingDegrees]
+  );
 
-  const gpsAccuracyGeoJSON = useMemo(() => {
-    if (!currentPosition || !gpsAccuracyMeters) return null;
-    return circlePolygon(
-      currentPosition[0],
-      currentPosition[1],
-      Math.max(18, Math.min(gpsAccuracyMeters, 180))
-    );
-  }, [currentPosition, gpsAccuracyMeters]);
+  const gpsAccuracyGeoJSON = useMemo(
+    () => buildGpsAccuracyGeoJSON(currentPosition, gpsAccuracyMeters),
+    [currentPosition, gpsAccuracyMeters]
+  );
 
   /* --- search target GeoJSON --- */
-  const searchTargetRadiusGeoJSON = useMemo(() => {
-    if (!activeSearchTarget) return null;
-    return circlePolygon(activeSearchTarget.lat, activeSearchTarget.lng, radiusMeters);
-  }, [activeSearchTarget, radiusMeters]);
+  const searchTargetRadiusGeoJSON = useMemo(
+    () => buildSearchTargetRadiusGeoJSON(activeSearchTarget, radiusMeters),
+    [activeSearchTarget, radiusMeters]
+  );
 
-  const searchTargetPointGeoJSON = useMemo(() => {
-    if (!activeSearchTarget) return null;
-    return {
-      type: "FeatureCollection" as const,
-      features: [
-        {
-          type: "Feature" as const,
-          geometry: {
-            type: "Point" as const,
-            coordinates: [activeSearchTarget.lng, activeSearchTarget.lat],
-          },
-          properties: { kind: "outer" },
-        },
-        {
-          type: "Feature" as const,
-          geometry: {
-            type: "Point" as const,
-            coordinates: [activeSearchTarget.lng, activeSearchTarget.lat],
-          },
-          properties: { kind: "inner" },
-        },
-      ],
-    };
-  }, [activeSearchTarget]);
+  const searchTargetPointGeoJSON = useMemo(
+    () => buildSearchTargetPointGeoJSON(activeSearchTarget),
+    [activeSearchTarget]
+  );
 
-  /* --- radius edge label point (east edge of radius circle) --- */
-  const radiusLabelGeoJSON = useMemo(() => {
-    if (!activeSearchTarget || !radiusMiles) return null;
-    const latRad = (activeSearchTarget.lat * Math.PI) / 180;
-    const lngOffset = radiusMeters / (111320 * Math.cos(latRad));
-    return {
-      type: "Feature" as const,
-      geometry: {
-        type: "Point" as const,
-        coordinates: [activeSearchTarget.lng + lngOffset, activeSearchTarget.lat],
-      },
-      properties: { label: `${radiusMiles} mi` },
-    };
-  }, [activeSearchTarget, radiusMeters, radiusMiles]);
+  /* --- radius edge label point --- */
+  const radiusLabelGeoJSON = useMemo(
+    () => buildRadiusLabelGeoJSON(activeSearchTarget, radiusMeters, radiusMiles),
+    [activeSearchTarget, radiusMeters, radiusMiles]
+  );
 
   const interactiveLayerIds = useMemo(() => {
     const ids = [PARTNER_SHOPS_LAYER_ID];
