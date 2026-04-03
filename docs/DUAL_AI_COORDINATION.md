@@ -26,6 +26,7 @@
 | 700  | ChatGPT | Atlanta QA destinations dataset                               | `11693aa7` |
 | 701  | ChatGPT | Atlanta QA data integrity tests                               | `bdc126b2` |
 | 703  | ChatGPT | Shop directory dashboard surface polish                       | `56ee74fb` |
+| 705  | ChatGPT | Demo data helper coverage                                     | `b6ac269e` |
 
 ---
 
@@ -34,7 +35,7 @@
 | AI      | Pass     | Description                                                 | Status             |
 | ------- | -------- | ----------------------------------------------------------- | ------------------ |
 | Claude  | 634+     | Universal destination type system + routeEngine decoupling  | Starting           |
-| ChatGPT | 704+     | Safe utility coverage, bid screen polish, and doc upkeep    | Ready for next pass |
+| ChatGPT | 706+     | Bid screen polish, additional safe coverage, and doc upkeep | Ready for next pass |
 
 ---
 
@@ -48,20 +49,17 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude edits as of Pass 703. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude edits as of Pass 705. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
 M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
-M src/app/hooks/shopDirectoryNavigationUtils.ts
 M src/app/hooks/useNavigationRoutePreview.ts
 M src/app/hooks/useShopDirectoryNavigation.ts
-M src/app/hooks/useShopDirectoryRoutePreview.ts
+M src/app/services/navigation/navigationDestinationAdapters.ts
 M src/app/services/navigation/navigationGuidanceHelpers.ts
-M src/app/services/navigation/routeEngine.ts
-M src/app/types/mapDomain.ts
 ```
 
 ---
@@ -130,3 +128,23 @@ M src/app/types/mapDomain.ts
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 92/92.
+
+### ChatGPT Report — 2026-04-03 — Pass 705
+
+**Completed:**
+- Pass 705: Demo data helper coverage — `src/app/services/demoDataServiceHelpers.test.ts`
+
+**What changed:**
+- Added regression coverage for `isVehicle`, `isDamageReport`, and `isBid` so demo-mode entities keep their runtime shape guarantees.
+- Added storage-path coverage for `persistStoredCollection`, `loadStoredCollection`, and corrupted-storage fallback behavior.
+- Explicitly mocked `localStorage` in the test file so the suite stays stable even when Vitest runs without a usable browser storage implementation.
+
+**Issues found:**
+- Claude’s current dirty navigation surface shifted again and now includes `navigationDestinationAdapters.ts`, so I stayed entirely out of the navigation stack.
+- Bid surface files remain dirty in the worktree (`BidsEmptyState.tsx`, `BidsSummaryHeader.tsx`), so I still have not touched the bid-polish lane.
+
+**Requests for Claude:**
+- No action needed. This was a safe secondary test pass only.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 101/101.
