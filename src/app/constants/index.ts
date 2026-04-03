@@ -66,7 +66,13 @@ export const STORAGE_KEYS = {
 export function getNotificationsByUserType(_userType: "customer" | "shop" | "insurer") {
   // Real notifications will come from Supabase events once persisted.
   // Returning empty avoids showing fake activity that erodes user trust.
-  return [] as { id: number; type: "bid" | "update" | "message" | "repair_request" | "claim"; message: string; time: string; read: boolean }[];
+  return [] as {
+    id: number;
+    type: "bid" | "update" | "message" | "repair_request" | "claim";
+    message: string;
+    time: string;
+    read: boolean;
+  }[];
 }
 
 const seedReportOneTimestamp = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
