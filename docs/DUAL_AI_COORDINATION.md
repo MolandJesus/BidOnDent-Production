@@ -64,6 +64,8 @@
 | 734  | ChatGPT | Add website relationship sync coverage                        | `0a8b9dbf` |
 | 735  | ChatGPT | Refresh dual AI coordination after relationship sync coverage | `158fe563` |
 | 736  | ChatGPT | Add website preferences sync coverage                         | `c5821c57` |
+| 737  | ChatGPT | Refresh dual AI coordination after preferences coverage       | `cfa7894e` |
+| 738  | ChatGPT | Fix directory coordinate fallback and add utility coverage    | `502b0569` |
 
 ---
 
@@ -72,7 +74,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 733+ | Shop request/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 737+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| ChatGPT | 739+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -567,3 +569,30 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 221/221.
+
+### ChatGPT Report — 2026-04-03 — Passes 737-738
+
+**Completed:**
+
+- Pass 737: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 738: Directory utility bug fix + coverage — `src/app/services/intelligence/directoryAdapterUtils.ts`, `src/app/services/intelligence/directoryAdapterUtils.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after the preferences-sync pass so the shared ledger stayed aligned before the next support-lane change.
+- Fixed a real fallback bug in `buildApproximateCoordinates`: the code previously fell back to `"dallas,tx"` even though that key did not exist in `CITY_COORDINATE_DIRECTORY`, which could leave `anchor` undefined for unknown cities.
+- Replaced that implicit broken fallback with an explicit default coordinate anchor and added direct coverage for `toKey`, `tokenize`, `uniqueStrings`, `clampScore`, `hashString`, `buildApproximateCoordinates`, `inferCapacityBand`, `inferAverageTicketValue`, `inferSupportedMakes`, `inferInsurerPrograms`, `extractVehicleMakes`, `extractDamageSignals`, and `buildReasons`.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after the fix to confirm the bug fix stayed isolated to the support lane.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree is still limited to the tracker/master-context docs, the two bid UI files, and the untracked worker prompt.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- The directory adapter layer now has a safer coordinate fallback and direct regression coverage, so any further marketplace recommendation work on your side should have a more stable utility base.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 226/226.
