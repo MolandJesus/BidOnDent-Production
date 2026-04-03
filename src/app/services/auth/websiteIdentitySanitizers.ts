@@ -8,6 +8,7 @@ import {
   deepEqual,
   isAllowedValue,
   isFiniteNumber,
+  isNonEmptyString,
   isRecord,
   isValidTimestamp,
   sanitizeCoordinates,
