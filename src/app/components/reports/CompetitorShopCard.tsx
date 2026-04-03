@@ -49,9 +49,11 @@ export default function CompetitorShopCard({
 }: CompetitorShopCardProps) {
   return (
     <article
-      className={`bd-glass-card overflow-hidden rounded-[26px] transition-shadow hover:shadow-md${
-        isFocused ? " ring-2 ring-blue-400/60 shadow-lg" : ""
-      }${isLight ? " bd-light-surface" : ""}`}
+      className={`bd-dashboard-section overflow-hidden rounded-[26px] transition-shadow ${
+        isFocused
+          ? "bd-dashboard-section--selected ring-2 ring-blue-400/60 shadow-lg"
+          : "bd-dashboard-section--interactive"
+      }`}
     >
       <div className={`border-b p-4 ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}>
         <div className="flex items-start justify-between gap-3">
@@ -63,7 +65,7 @@ export default function CompetitorShopCard({
               </h3>
               {shop.topPick && <CheckCircle className="h-4 w-4 text-blue-500" />}
               {shop.watched && (
-                <span className="rounded-full bg-blue-500/10 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-400">
+                <span className="bd-dashboard-chip rounded-full px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-blue-400">
                   Watched
                 </span>
               )}
@@ -146,7 +148,7 @@ export default function CompetitorShopCard({
             {shop.specialties.map((specialty) => (
               <span
                 key={specialty}
-                className="rounded bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-400"
+                className="bd-dashboard-chip rounded px-2 py-1 text-xs font-medium text-blue-400"
               >
                 {specialty}
               </span>
@@ -160,7 +162,7 @@ export default function CompetitorShopCard({
             {shop.certifications.map((certification) => (
               <span
                 key={certification}
-                className="flex items-center gap-1 rounded bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700"
+                className="bd-dashboard-chip flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-sky-700"
               >
                 <Award className="h-3 w-3" />
                 {certification}
@@ -172,12 +174,8 @@ export default function CompetitorShopCard({
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={() => onToggleWatch(shop.id)}
-            className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
-              shop.watched
-                ? "border border-blue-400/20 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20"
-                : isLight
-                  ? "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                  : "border border-white/[0.10] bg-white/[0.06] text-slate-300 hover:bg-white/[0.10]"
+            className={`bd-dashboard-secondary-button inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium ${
+              shop.watched ? "text-blue-400" : isLight ? "text-slate-600" : "text-slate-300"
             }`}
           >
             <Bookmark className="h-4 w-4" />
@@ -186,8 +184,8 @@ export default function CompetitorShopCard({
           {onOpenMap && (
             <button
               onClick={onOpenMap}
-              className="rounded-2xl px-4 py-3 text-sm font-medium text-white"
-              style={{ backgroundColor: primaryColor }}
+              className="bd-dashboard-primary-button rounded-2xl px-4 py-3 text-sm font-medium text-white"
+              style={{ background: primaryColor }}
             >
               Review In Map
             </button>

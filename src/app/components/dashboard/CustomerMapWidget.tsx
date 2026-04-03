@@ -40,6 +40,17 @@ export default function CustomerMapWidget({
   onViewShops,
 }: CustomerMapWidgetProps) {
   const isLight = appearanceMode === "light";
+  const capabilitySurfaceClasses = [
+    "bd-dashboard-section--accent-cyan",
+    "bd-dashboard-section--accent-blue",
+    "bd-dashboard-section--accent-indigo",
+  ];
+  const shopSurfaceClasses = [
+    "bd-dashboard-section--accent-blue",
+    "bd-dashboard-section--deep",
+    "bd-dashboard-section--accent-cyan",
+    "bd-dashboard-section--deep",
+  ];
   const { partnerShops: rawShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
   const partnerShops = rawShops as CoveragePartnerShop[];
   const [mapCenter] = useState<[number, number]>(defaultCoverageCenter);
@@ -97,12 +108,7 @@ export default function CustomerMapWidget({
     <section className="overflow-visible">
       {/* Embedded mini-map with click-through overlay */}
       <div
-        className="group relative h-[200px] cursor-pointer overflow-hidden rounded-2xl md:h-[220px]"
-        style={{
-          boxShadow: isLight
-            ? "0 10px 26px rgba(15,23,42,0.10), inset 0 1px 0 rgba(255,255,255,0.65)"
-            : "0 14px 30px rgba(2,8,24,0.42), inset 0 1px 0 rgba(147,197,253,0.12)",
-        }}
+        className="bd-dashboard-panel bd-dashboard-panel--deep group relative h-[200px] cursor-pointer overflow-hidden rounded-2xl md:h-[220px]"
         onClick={() => onViewShops?.()}
         role="button"
         tabIndex={0}
@@ -137,17 +143,7 @@ export default function CustomerMapWidget({
         </div>
 
         {/* Floating badge — top left */}
-        <div
-          className="absolute top-3 left-3 z-10 flex items-center gap-2 rounded-xl px-3 py-1.5 pointer-events-none"
-          style={{
-            background: isLight ? "rgba(255,255,255,0.90)" : "rgba(8,18,38,0.85)",
-            backdropFilter: "blur(12px)",
-            border: isLight
-              ? "1px solid rgba(148,163,184,0.25)"
-              : "1px solid rgba(96,165,250,0.20)",
-            boxShadow: isLight ? "0 2px 8px rgba(0,0,0,0.06)" : "0 2px 10px rgba(0,0,0,0.30)",
-          }}
-        >
+        <div className="bd-dashboard-chip absolute top-3 left-3 z-10 flex items-center gap-2 rounded-xl px-3 py-1.5 pointer-events-none">
           <MapPinned className={`h-3.5 w-3.5 ${isLight ? "text-blue-600" : "text-blue-300"}`} />
           <span
             className={`text-xs font-semibold ${isLight ? "text-slate-700" : "text-slate-100"}`}
@@ -169,7 +165,7 @@ export default function CustomerMapWidget({
             e.stopPropagation();
             onViewShops?.();
           }}
-          className="absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 min-h-[40px] text-xs font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 active:scale-[0.96] shadow-lg"
+          className="bd-dashboard-primary-button absolute top-3 right-3 z-10 inline-flex min-h-[40px] items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-white active:scale-[0.96]"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
           }}
@@ -180,67 +176,97 @@ export default function CustomerMapWidget({
       </div>
 
       {/* Capability teasers — show what full map can do */}
-      <div
-        className={`relative z-10 mt-2 grid grid-cols-3 gap-2 rounded-2xl border px-3 py-3 sm:px-4 ${
-          isLight ? "bg-white/88 border-slate-200/60" : "bg-slate-950/62 border-blue-400/20"
-        }`}
-        style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
-      >
-        {capabilities.map(({ icon: Icon, label, desc }) => (
-          <button
-            key={label}
-            type="button"
-            onClick={() => onViewShops?.()}
-            className={`flex flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-center transition-colors active:scale-[0.97] ${
-              isLight
-                ? "bg-slate-50 hover:bg-blue-50/60 border border-slate-200/60"
-                : "bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06]"
-            }`}
-          >
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                isLight ? "bg-blue-50 text-blue-600" : "bg-blue-400/15 text-blue-300"
+      <div className="bd-dashboard-panel bd-dashboard-panel--accent-cyan relative z-10 mt-2 rounded-2xl px-3 py-3 sm:px-4">
+        <div className="mb-3 flex items-start justify-between gap-3">
+          <div>
+            <p
+              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                isLight ? "text-slate-500" : "text-cyan-100/58"
               }`}
             >
-              <Icon className="h-4 w-4" />
-            </div>
-            <span
-              className={`text-[11px] font-semibold leading-tight ${isLight ? "text-slate-700" : "text-slate-100"}`}
+              Smart Map Tools
+            </p>
+            <p className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+              Compare routing, matching, and bid context
+            </p>
+          </div>
+          <span
+            className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
+              isLight ? "bg-white/85 text-cyan-700" : "border-cyan-200/18 bg-white/10 text-cyan-50"
+            }`}
+          >
+            {capabilities.length} tools
+          </span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {capabilities.map(({ icon: Icon, label, desc }, index) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => onViewShops?.()}
+              className={`bd-dashboard-section bd-dashboard-section--interactive flex flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-center active:scale-[0.97] ${
+                capabilitySurfaceClasses[index % capabilitySurfaceClasses.length]
+              }`}
             >
-              {label}
-            </span>
-            <span
-              className={`text-[10px] leading-tight ${isLight ? "text-slate-400" : "text-blue-100/50"}`}
-            >
-              {desc}
-            </span>
-          </button>
-        ))}
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                  isLight ? "bg-white/80 text-blue-700" : "bg-white/10 text-blue-100"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+              </div>
+              <span
+                className={`text-[11px] font-semibold leading-tight ${isLight ? "text-slate-700" : "text-slate-100"}`}
+              >
+                {label}
+              </span>
+              <span
+                className={`text-[10px] leading-tight ${isLight ? "text-slate-400" : "text-blue-100/50"}`}
+              >
+                {desc}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Shop tiles + main CTA */}
-      <div
-        className={`relative z-10 mt-2 rounded-2xl border px-3 py-3 sm:px-4 md:px-5 ${
-          isLight ? "bg-white/88 border-slate-200/60" : "bg-slate-950/62 border-blue-400/20"
-        }`}
-        style={{ backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}
-      >
+      <div className="bd-dashboard-panel bd-dashboard-panel--deep relative z-10 mt-2 rounded-2xl px-3 py-3 sm:px-4 md:px-5">
+        <div className="mb-3 flex items-start justify-between gap-3">
+          <div>
+            <p
+              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                isLight ? "text-slate-500" : "text-blue-100/55"
+              }`}
+            >
+              Nearby Matches
+            </p>
+            <p className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+              Local shops around your current report area
+            </p>
+          </div>
+          <span
+            className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
+              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+            }`}
+          >
+            {isLoadingShops ? "Loading" : `${compactShops.length || displayShops.length} shown`}
+          </span>
+        </div>
         {!isLoadingShops && compactShops.length > 0 ? (
           <div className="grid grid-cols-2 gap-2 pb-0.5 md:flex md:items-center md:gap-3 md:overflow-x-auto md:scrollbar-hide">
-            {compactShops.map((shop) => (
+            {compactShops.map((shop, index) => (
               <button
                 key={shop.id || shop.name}
                 type="button"
                 onClick={() => onViewShops?.()}
-                className={`flex w-full min-w-0 items-center gap-2 rounded-xl px-3 py-2 text-left transition-colors active:scale-[0.97] md:w-auto md:shrink-0 ${
-                  isLight
-                    ? "bg-slate-50 hover:bg-slate-100 border border-slate-200/60"
-                    : "bg-white/[0.05] hover:bg-white/[0.09] border border-white/[0.08]"
+                className={`bd-dashboard-section bd-dashboard-section--interactive flex w-full min-w-0 items-center gap-2 rounded-xl px-3 py-2 text-left active:scale-[0.97] md:w-auto md:shrink-0 ${
+                  shopSurfaceClasses[index % shopSurfaceClasses.length]
                 }`}
               >
                 <div
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${
-                    isLight ? "bg-blue-50 text-blue-600" : "bg-blue-400/15 text-blue-200"
+                    isLight ? "bg-white/80 text-blue-700" : "bg-white/10 text-blue-100"
                   }`}
                 >
                   <Store className="h-3.5 w-3.5" />
@@ -272,10 +298,8 @@ export default function CustomerMapWidget({
           </div>
         ) : !isLoadingShops && fetchError ? (
           <div
-            className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 ${
-              isLight
-                ? "border-rose-200 bg-rose-50 text-rose-700"
-                : "border-rose-400/30 bg-rose-500/10 text-rose-200"
+            className={`bd-dashboard-note flex items-center gap-2 rounded-xl px-3 py-2.5 ${
+              isLight ? "text-rose-700" : "text-rose-200"
             }`}
           >
             <Store
@@ -304,10 +328,9 @@ export default function CustomerMapWidget({
           <button
             type="button"
             onClick={onViewShops}
-            className="group/cta mt-2.5 flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
+            className="bd-dashboard-primary-button group/cta mt-2.5 flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold text-white active:scale-[0.98]"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-              boxShadow: "0 4px 16px rgba(37, 99, 235, 0.25)",
             }}
           >
             <div className="flex items-center gap-2">

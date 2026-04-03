@@ -24,13 +24,13 @@ export default function MissingReportState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="bd-glass-card overflow-hidden rounded-3xl"
+        className="bd-dashboard-panel overflow-hidden rounded-3xl"
       >
         <div className="border-b border-white/[0.08] px-5 py-4">
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 rounded-full border border-white/[0.10]/60 px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-white/[0.08]"
+            className="bd-dashboard-secondary-button inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -41,7 +41,7 @@ export default function MissingReportState({
           <motion.div
             animate={{ x: [0, -7, 7, -5, 5, 0] }}
             transition={{ duration: 0.7, repeat: Infinity, repeatDelay: 3.6 }}
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-500/10 text-blue-600 shadow-sm"
+            className="bd-dashboard-note mx-auto flex h-16 w-16 items-center justify-center rounded-3xl text-blue-600 shadow-sm"
           >
             <AlertCircle className="h-7 w-7" />
           </motion.div>
@@ -53,7 +53,7 @@ export default function MissingReportState({
             <button
               type="button"
               onClick={onAction}
-              className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:shadow-md"
+              className="bd-dashboard-primary-button inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold text-white"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
               }}
@@ -64,7 +64,7 @@ export default function MissingReportState({
             <button
               type="button"
               onClick={onBack}
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.10]/60 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:bg-white/[0.08]"
+              className="bd-dashboard-secondary-button inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold"
             >
               Return to dashboard
             </button>

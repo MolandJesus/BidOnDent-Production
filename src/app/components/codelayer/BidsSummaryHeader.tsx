@@ -20,18 +20,18 @@ export default function BidsSummaryHeader({
   fastestBidDays,
   onBack,
 }: BidsSummaryHeaderProps) {
+  const statToneClasses = [
+    "bd-dashboard-section--accent-blue",
+    "bd-dashboard-section--deep",
+    "bd-dashboard-section--accent-cyan",
+  ];
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="relative overflow-hidden bd-glass-card p-4 md:p-5"
-      style={{
-        background: isLight
-          ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
-          : "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
-        borderColor: isLight ? "rgba(148,163,184,0.30)" : "rgba(96, 165, 250, 0.24)",
-      }}
+      className="bd-dashboard-panel bd-dashboard-panel--accent-blue relative overflow-hidden p-4 md:p-5"
     >
       <div
         className="pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full"
@@ -52,7 +52,7 @@ export default function BidsSummaryHeader({
       <div className="flex items-center gap-3">
         {onBack && (
           <button
-            className={`h-11 w-11 flex items-center justify-center rounded-xl transition-colors ${isLight ? "hover:bg-slate-100" : "hover:bg-white/10"}`}
+            className="bd-dashboard-secondary-button flex h-11 w-11 items-center justify-center rounded-xl"
             onClick={onBack}
             aria-label="Go back to dashboard"
           >
@@ -60,6 +60,13 @@ export default function BidsSummaryHeader({
           </button>
         )}
         <div className="flex-1">
+          <p
+            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+              isLight ? "text-blue-700/70" : "text-blue-100/58"
+            }`}
+          >
+            Bid Comparison
+          </p>
           <h1 className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}>
             Repair Bids
           </h1>
@@ -67,15 +74,18 @@ export default function BidsSummaryHeader({
             {bidCount} bid{bidCount === 1 ? "" : "s"} for {vehicleLabel}
           </p>
         </div>
-        <div
-          className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border ${
-            isLight
-              ? "bg-blue-50 text-blue-700 border-blue-200/50"
-              : "bg-blue-400/12 text-blue-100 border-blue-300/20"
-          }`}
-        >
-          <Sparkles className="w-4 h-4" />
-          Compare before accepting
+        <div className="hidden items-center gap-2 md:flex">
+          <div className="bd-dashboard-chip items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium">
+            <Sparkles className="w-4 h-4" />
+            Compare before accepting
+          </div>
+          <div
+            className={`bd-dashboard-chip rounded-full px-3 py-1.5 text-sm font-medium ${
+              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+            }`}
+          >
+            {bidCount} offers
+          </div>
         </div>
       </div>
 
@@ -86,13 +96,12 @@ export default function BidsSummaryHeader({
             { label: "Average Quote", value: `$${averagePrice.toLocaleString()}` },
             { label: "Fastest Timeline", value: `${fastestBidDays}-${fastestBidDays + 1} days` },
           ] as const
-        ).map((stat) => (
+        ).map((stat, index) => (
           <div
             key={stat.label}
-            className={`rounded-xl px-3 py-2.5 border ${
-              isLight ? "bg-white/70 border-slate-200/50" : "bg-slate-900/25 border-blue-300/18"
+            className={`bd-dashboard-section rounded-xl px-3 py-2.5 ${
+              statToneClasses[index % statToneClasses.length]
             }`}
-            style={isLight ? {} : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
           >
             <p
               className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-blue-200/70"}`}

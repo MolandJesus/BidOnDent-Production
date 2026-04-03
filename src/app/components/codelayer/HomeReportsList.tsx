@@ -37,31 +37,76 @@ export function HomeReportsList({
   onStartReport: () => void;
 }) {
   const isLightAppearance = appearanceMode === "light";
+  const visibleReports = sortedReports.slice(0, 4);
+
+  const getReportToneClass = (report: DamageReport) => {
+    const status = String(report?.status ?? "pending").toLowerCase();
+    const acceptedBid =
+      status === "active" ? report.bids?.find((bid) => bid.status === "accepted") : undefined;
+
+    if (acceptedBid) {
+      return "bd-dashboard-section--accent-cyan";
+    }
+
+    if ((report?.bids?.length ?? report?.bidsCount ?? 0) > 0 || status === "in-review") {
+      return "bd-dashboard-section--accent-blue";
+    }
+
+    if (status === "completed" || status === "resolved") {
+      return "bd-dashboard-section--accent-indigo";
+    }
+
+    return "bd-dashboard-section--deep";
+  };
+
   return (
-    <div
-      className={`rounded-2xl border p-4 sm:p-5 ${isLightAppearance ? "bg-white/80 border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <h2
-          className={`text-base font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-        >
-          {listHeader}
-        </h2>
-        {onViewAll && (
-          <button
-            onClick={onViewAll}
-            className={`text-sm font-medium inline-flex items-center gap-1 px-3 py-2 min-h-[44px] rounded-xl transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700 hover:bg-blue-50" : "text-blue-200 hover:text-white hover:bg-blue-400/12"}`}
+    <div className="bd-dashboard-panel bd-dashboard-panel--deep rounded-2xl p-4 sm:p-5">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <p
+            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+              isLightAppearance ? "text-slate-500" : "text-blue-100/55"
+            }`}
           >
-            View All
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        )}
+            Repair Activity
+          </p>
+          <h2
+            className={`text-base font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+          >
+            {listHeader}
+          </h2>
+          <p
+            className={`mt-1 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
+          >
+            {sortedReports.length > 0
+              ? "Your most recent items with map access and status context."
+              : "This space fills in once reports or requests start coming through."}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span
+            className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
+              isLightAppearance
+                ? "bg-white/85 text-blue-700"
+                : "border-blue-200/18 bg-white/10 text-blue-50"
+            }`}
+          >
+            {sortedReports.length > 0 ? `${visibleReports.length} recent` : "Waiting"}
+          </span>
+          {onViewAll && (
+            <button
+              onClick={onViewAll}
+              className="bd-dashboard-ghost-button inline-flex min-h-[44px] items-center gap-1 rounded-xl px-3 py-2 text-sm font-medium"
+            >
+              View All
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {sortedReports.length === 0 && (
-        <div
-          className={`rounded-xl border p-4 text-center sm:p-8 ${isLightAppearance ? "bg-blue-50/60 border-blue-100/80" : "bg-blue-950/30 border-blue-300/[0.22]"}`}
-        >
+        <div className="bd-dashboard-section bd-dashboard-section--accent-blue rounded-xl p-4 text-center sm:p-8">
           <Camera
             className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/70" : "text-blue-400/70"}`}
           />
@@ -83,7 +128,7 @@ export function HomeReportsList({
           {userType === "customer" && (
             <button
               onClick={onStartReport}
-              className="inline-flex items-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium text-white shadow-sm hover:shadow-md transition-all"
+              className="bd-dashboard-primary-button inline-flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-white"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               }}
@@ -97,7 +142,7 @@ export function HomeReportsList({
 
       {sortedReports.length > 0 && (
         <div className="space-y-3">
-          {sortedReports.slice(0, 4).map((report) => {
+          {visibleReports.map((report) => {
             const status = String(report?.status ?? "pending").toLowerCase();
             const statusClass = isLightAppearance
               ? (statusClassesLight[status] ?? "bg-slate-100 text-slate-600")
@@ -106,18 +151,18 @@ export function HomeReportsList({
             const description = getReportDescription(report, userType);
             const hasPhoto = Array.isArray(report?.photos) && report.photos.length > 0;
             const canOpenReport = Boolean(onOpenReport && report?.id);
+            const acceptedBid =
+              userType !== "insurer" && status === "active"
+                ? report.bids?.find((bid) => bid.status === "accepted")
+                : undefined;
+            const cardToneClass = getReportToneClass(report);
 
             return (
               <article
                 key={report.id}
-                className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} p-4 transition-shadow ${isLightAppearance ? "border-slate-200/60" : "bg-slate-900/25 border-blue-400/[0.18]"} ${
-                  canOpenReport ? "hover:shadow-md cursor-pointer" : ""
+                className={`bd-dashboard-section p-4 transition-shadow ${cardToneClass} ${
+                  canOpenReport ? "bd-dashboard-section--interactive cursor-pointer" : ""
                 }`}
-                style={
-                  isLightAppearance
-                    ? undefined
-                    : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }
-                }
                 onClick={canOpenReport ? () => onOpenReport?.(String(report.id)) : undefined}
                 role={canOpenReport ? "button" : undefined}
                 tabIndex={canOpenReport ? 0 : undefined}
@@ -177,18 +222,14 @@ export function HomeReportsList({
                         <Calendar className="w-4 h-4" />
                         {formatDate(report?.submittedAt)}
                       </span>
-                      {userType !== "insurer" &&
-                      status === "active" &&
-                      report.bids?.find((b) => b.status === "accepted") ? (
+                      {userType !== "insurer" && acceptedBid ? (
                         <span
                           className={`inline-flex items-center gap-1.5 font-medium ${isLightAppearance ? "text-emerald-700" : "text-emerald-400"}`}
                         >
                           <Wrench className="w-4 h-4" />
-                          {report.bids!.find((b) => b.status === "accepted")!.shopName}
+                          {acceptedBid.shopName}
                           {" · $"}
-                          {report
-                            .bids!.find((b) => b.status === "accepted")!
-                            .amount.toLocaleString()}
+                          {acceptedBid.amount.toLocaleString()}
                         </span>
                       ) : userType !== "insurer" ? (
                         <span className="inline-flex items-center gap-1.5">
@@ -206,11 +247,7 @@ export function HomeReportsList({
                           e.stopPropagation();
                           onViewReportOnMap(String(report.id));
                         }}
-                        className={`inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-xl transition-colors ${
-                          isLightAppearance
-                            ? "text-blue-500 hover:bg-blue-50 hover:text-blue-600"
-                            : "text-blue-300/70 hover:bg-blue-400/12 hover:text-blue-200"
-                        }`}
+                        className="bd-dashboard-secondary-button inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl"
                         title="View on map"
                         aria-label="View report on map"
                       >

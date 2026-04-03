@@ -112,18 +112,23 @@ export default function ReportDetailScreen({
   return (
     <div className="min-h-screen pb-20">
       {/* Header */}
-      <div
-        className={`bd-glass-panel border-b sticky top-0 z-10${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
-      >
-        <div className="px-4 py-4">
+      <div className="sticky top-0 z-10 px-4 pt-4">
+        <div className="bd-dashboard-panel bd-dashboard-panel--accent-blue px-4 py-4">
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className={`mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors ${isLight ? "hover:bg-slate-100" : "hover:bg-white/10"}`}
+              className="bd-dashboard-secondary-button mr-3 flex h-11 w-11 items-center justify-center rounded-lg"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div className="flex-1">
+              <p
+                className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                  isLight ? "text-blue-700/70" : "text-blue-100/58"
+                }`}
+              >
+                Report Overview
+              </p>
               <h1 className="text-lg font-bold">
                 {vehicleInfo.year} {vehicleInfo.make} {vehicleInfo.model}
               </h1>
@@ -168,12 +173,12 @@ export default function ReportDetailScreen({
 
       <div className="px-2 py-2 space-y-3 sm:px-4 sm:py-4 sm:space-y-4">
         {/* Photo Gallery */}
-        <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
+        <div className="bd-dashboard-panel bd-dashboard-panel--deep overflow-hidden">
           <div className="p-3 sm:p-4">
             <h2 className="font-bold text-lg mb-2 sm:mb-3">Damage Photos</h2>
             {photos.length === 0 ? (
               <div
-                className={`rounded-xl border border-dashed border-slate-300/60 p-4 text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                className={`bd-dashboard-note bd-dashboard-note--deep rounded-xl border border-dashed p-4 text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}
               >
                 No photos were submitted with this report.
               </div>
@@ -198,7 +203,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Vehicle Information */}
-        <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
+        <div className="bd-dashboard-panel bd-dashboard-panel--accent-cyan p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Vehicle Information</h2>
           <div className="space-y-2">
             <div className="flex justify-between">
@@ -227,7 +232,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Damage Description */}
-        <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
+        <div className="bd-dashboard-panel bd-dashboard-panel--deep p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Damage Description</h2>
           <p className={isLight ? "text-slate-700" : "text-slate-300"}>{description}</p>
           {report.incident && (
@@ -239,7 +244,7 @@ export default function ReportDetailScreen({
         </div>
 
         {/* Submission Details */}
-        <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
+        <div className="bd-dashboard-panel bd-dashboard-panel--accent-indigo p-3 sm:p-4">
           <h2 className="font-bold text-lg mb-3">Submission Details</h2>
           <div
             className={`flex items-center text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}
@@ -259,7 +264,7 @@ export default function ReportDetailScreen({
 
         {/* Report Location Map */}
         {reportCoords && (
-          <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
+          <div className="bd-dashboard-panel bd-dashboard-panel--accent-cyan overflow-hidden">
             <div className="p-3 sm:p-4">
               <h2 className="font-bold text-lg mb-2">Report Location</h2>
               <p className={`text-sm mb-3 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
@@ -282,8 +287,8 @@ export default function ReportDetailScreen({
             {onFindShops && (
               <div className="p-3 sm:p-4 pt-0">
                 <button
-                  className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-colors"
-                  style={{ backgroundColor: `${primaryColor}18`, color: primaryColor }}
+                  className="bd-dashboard-secondary-button flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold"
+                  style={{ color: primaryColor }}
                   onClick={onFindShops}
                 >
                   <Search className="h-4 w-4" />
@@ -296,7 +301,7 @@ export default function ReportDetailScreen({
 
         {/* Active Repair Card — shown when a bid has been accepted */}
         {status === "active" && acceptedBid && (
-          <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
+          <div className="bd-dashboard-panel bd-dashboard-panel--accent-cyan overflow-hidden">
             <div className="p-3 sm:p-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/15">
@@ -310,7 +315,7 @@ export default function ReportDetailScreen({
                 </div>
               </div>
               <div
-                className={`rounded-xl p-3 space-y-2 ${isLight ? "bg-emerald-50/60" : "bg-emerald-500/[0.08]"}`}
+                className={`bd-dashboard-note bd-dashboard-note--deep rounded-xl p-3 space-y-2 ${isLight ? "text-slate-700" : "text-slate-200"}`}
               >
                 <div className="flex justify-between items-center">
                   <span className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300"}`}>
@@ -343,7 +348,7 @@ export default function ReportDetailScreen({
 
         {/* Repair Complete Card — shown when shop marks job completed */}
         {status === "completed" && (
-          <div className={`bd-glass-card overflow-hidden${isLight ? " bd-light-surface" : ""}`}>
+          <div className="bd-dashboard-panel bd-dashboard-panel--accent-indigo overflow-hidden">
             <div className="p-3 sm:p-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/15">
@@ -358,7 +363,7 @@ export default function ReportDetailScreen({
               </div>
               {acceptedBid && (
                 <div
-                  className={`rounded-xl p-3 space-y-2 mb-3 ${isLight ? "bg-emerald-50/60" : "bg-emerald-500/[0.08]"}`}
+                  className={`bd-dashboard-note bd-dashboard-note--deep mb-3 rounded-xl p-3 space-y-2 ${isLight ? "text-slate-700" : "text-slate-200"}`}
                 >
                   <div className="flex justify-between items-center">
                     <span className={`text-sm ${isLight ? "text-slate-600" : "text-slate-300"}`}>
@@ -379,7 +384,8 @@ export default function ReportDetailScreen({
               {onConfirmCompletion && (
                 <button
                   onClick={() => onConfirmCompletion(String(report.id))}
-                  className="w-full py-3 min-h-[44px] rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+                  className="bd-dashboard-primary-button flex w-full min-h-[44px] items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white"
+                  style={{ background: "linear-gradient(135deg, #059669 0%, #10b981 100%)" }}
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   Confirm Repair Complete

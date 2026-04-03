@@ -35,6 +35,24 @@ export default function ReportsListScreen({
   const [filter, setFilter] = useState("all"); // all, pending, active, completed
   const [selectedPhotos, setSelectedPhotos] = useState<string[] | null>(null);
 
+  const getReportToneClass = (report: DamageReport) => {
+    const status = String(report.status || "pending");
+
+    if (status === "active") {
+      return "bd-dashboard-section--accent-cyan";
+    }
+
+    if (status === "completed" || status === "resolved") {
+      return "bd-dashboard-section--accent-indigo";
+    }
+
+    if ((report.bidsCount || report.bids?.length || 0) > 0) {
+      return "bd-dashboard-section--accent-blue";
+    }
+
+    return "bd-dashboard-section--deep";
+  };
+
   // Report location pins for overview map
   const reportMapPins = useMemo<ReportPin[]>(() => {
     if (!Array.isArray(reports)) return [];
@@ -80,18 +98,23 @@ export default function ReportsListScreen({
   return (
     <div className="min-h-screen pb-20">
       {/* Header */}
-      <div
-        className={`bd-glass-panel border-b sticky top-0 z-10${isLight ? " bd-light-surface border-slate-200/60" : " border-white/30"}`}
-      >
-        <div className="px-4 py-4">
+      <div className="sticky top-0 z-10 px-4 pt-4">
+        <div className="bd-dashboard-panel bd-dashboard-panel--accent-blue px-4 py-4">
           <div className="flex items-center mb-3">
             <button
               onClick={onBack}
-              className="mr-3 flex h-11 w-11 items-center justify-center rounded-lg transition-colors hover:bg-white/10"
+              className="bd-dashboard-secondary-button mr-3 flex h-11 w-11 items-center justify-center rounded-lg"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
+              <p
+                className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                  isLight ? "text-blue-700/70" : "text-blue-100/58"
+                }`}
+              >
+                Report Library
+              </p>
               <h1 className="text-xl font-bold">My Reports</h1>
               <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                 {Array.isArray(reports) ? reports.length : 0} total reports
@@ -110,10 +133,10 @@ export default function ReportsListScreen({
               <button
                 key={tab.id}
                 onClick={() => setFilter(tab.id)}
-                className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  filter === tab.id ? "text-white" : "bd-glass-control--utility"
+                className={`bd-dashboard-filter-button min-h-[44px] rounded-lg px-4 py-2.5 text-sm font-medium whitespace-nowrap ${
+                  filter === tab.id ? "bd-dashboard-filter-button--active" : ""
                 }`}
-                style={filter === tab.id ? { backgroundColor: primaryColor } : {}}
+                style={filter === tab.id ? { background: primaryColor } : {}}
               >
                 {tab.label}
               </button>
@@ -129,13 +152,7 @@ export default function ReportsListScreen({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: 0.06 }}
-            className="bd-glass-card overflow-hidden"
-            style={{
-              background: isLight
-                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-                : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
-              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
-            }}
+            className="bd-dashboard-panel bd-dashboard-panel--accent-cyan overflow-hidden"
           >
             <div className="p-3">
               <div className="flex items-center justify-between gap-3">
@@ -151,13 +168,7 @@ export default function ReportsListScreen({
                     All your submitted damage reports on the map.
                   </p>
                 </div>
-                <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                    isLight
-                      ? "bg-amber-50 text-amber-700 border border-amber-200/60"
-                      : "bg-amber-400/14 text-amber-200 border border-amber-300/20"
-                  }`}
-                >
+                <span className="bd-dashboard-chip shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold">
                   {reportMapPins.length}/{filteredReports.length} mapped
                 </span>
               </div>
@@ -180,11 +191,7 @@ export default function ReportsListScreen({
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-2 p-3">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                      isLight ? "bg-amber-100 text-amber-700" : "bg-amber-500/20 text-amber-200"
-                    }`}
-                  >
+                  <span className="bd-dashboard-chip inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium">
                     <span className="h-2 w-2 rounded-full bg-amber-400" />
                     Damage report
                   </span>
@@ -197,8 +204,8 @@ export default function ReportsListScreen({
               </>
             ) : (
               <div
-                className={`mx-3 mb-3 flex items-start gap-2 rounded-xl border border-dashed px-3 py-2.5 text-xs ${
-                  isLight ? "border-slate-300/70 text-slate-600" : "border-white/20 text-slate-300"
+                className={`bd-dashboard-note mx-3 mb-3 flex items-start gap-2 rounded-xl px-3 py-2.5 text-xs ${
+                  isLight ? "text-slate-600" : "text-slate-300"
                 }`}
               >
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
@@ -214,21 +221,15 @@ export default function ReportsListScreen({
       {/* Reports List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
-          <div
-            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
-          >
+          <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 text-center sm:p-8">
             <p className={isLight ? "text-slate-500" : "text-slate-400"}>Loading reports…</p>
           </div>
         ) : reportsError ? (
-          <div
-            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
-          >
+          <div className="bd-dashboard-panel bd-dashboard-panel--accent-indigo p-5 text-center sm:p-8">
             <p className="text-red-600 font-semibold">Unable to load reports</p>
           </div>
         ) : filteredReports.length === 0 ? (
-          <div
-            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
-          >
+          <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 text-center sm:p-8">
             <MapPin
               className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
             />
@@ -240,11 +241,8 @@ export default function ReportsListScreen({
               <button
                 type="button"
                 onClick={onStartReport}
-                className={`mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors min-h-[44px] ${
-                  isLight
-                    ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
-                    : "bg-blue-500/90 text-white hover:bg-blue-400/90 active:bg-blue-600/90"
-                }`}
+                className="bd-dashboard-primary-button mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white"
+                style={{ background: primaryColor }}
               >
                 Start New Report
               </button>
@@ -258,7 +256,7 @@ export default function ReportsListScreen({
             return (
               <div
                 key={report.id}
-                className={`bd-glass-card overflow-hidden hover:shadow-md transition-shadow${isLight ? " bd-light-surface" : ""}`}
+                className={`bd-dashboard-section bd-dashboard-section--interactive overflow-hidden transition-shadow ${getReportToneClass(report)}`}
               >
                 <div className="flex gap-3 p-4">
                   {/* Small Photo Thumbnail - Left Side */}

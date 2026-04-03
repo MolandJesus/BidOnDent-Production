@@ -36,8 +36,8 @@ export default function AccountHeader({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className={`rounded-2xl p-5 md:p-6 shadow-lg border relative overflow-hidden ${
-        isLight ? "text-slate-800 border-blue-200/30" : "text-white border-blue-400/20"
+      className={`bd-dashboard-panel relative overflow-hidden rounded-2xl p-5 shadow-lg md:p-6 ${
+        isLight ? "text-slate-800" : "text-white"
       }`}
       style={{
         background: isLight
@@ -105,23 +105,34 @@ export default function AccountHeader({
             </div>
           )}
           <button
-            className={`absolute bottom-0 right-0 rounded-full p-1.5 shadow-md hover:scale-105 transition-transform ${
-              isLight ? "bg-blue-500" : "bg-blue-600"
+            className={`bd-dashboard-secondary-button absolute bottom-0 right-0 rounded-full p-1.5 shadow-md transition-transform hover:scale-105 ${
+              isLight
+                ? "border-blue-200/70 bg-white/85 text-blue-700"
+                : "border-blue-300/30 bg-slate-950/55 text-blue-100"
             }`}
             onClick={onProfileImageClick}
             type="button"
             aria-label="Update profile photo"
           >
-            <Camera className="w-4 h-4 text-white" />
+            <Camera className="w-4 h-4" />
           </button>
         </div>
 
         <div className="ml-4 flex-1">
+          <p
+            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+              isLight ? "text-blue-700/70" : "text-blue-100/60"
+            }`}
+          >
+            Account Hub
+          </p>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tight">{userInfo.name}</h1>
             <div
-              className={`px-2 py-0.5 flex items-center gap-1 text-xs rounded-full border ${
-                isLight ? "bg-blue-50 border-blue-200/40 text-blue-600" : "bd-glass-badge"
+              className={`bd-dashboard-chip flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${
+                isLight
+                  ? "bg-white/80 text-blue-700"
+                  : "border-blue-200/20 bg-white/10 text-blue-50"
               }`}
             >
               <UserIcon className="w-3 h-3" />

@@ -185,95 +185,98 @@ export default function CompetitorAnalysisScreen({
 
   return (
     <div className="min-h-screen pb-20">
-      <div
-        className="sticky top-0 z-10 px-4 py-4 text-white shadow-md"
-        style={{
-          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        }}
-      >
-        <div className="mb-4 flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-white/10"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </button>
-          <div>
-            <h1 className="text-xl font-bold">Competitor Analysis</h1>
-            <p className="text-sm text-white/80">
-              Watchlist synced from the Smart Shop Map for your shop account
-            </p>
+      <div className="sticky top-0 z-10 px-4 pt-4">
+        <div
+          className="bd-dashboard-panel px-4 py-4 text-white shadow-md"
+          style={{
+            background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+          }}
+        >
+          <div className="mb-4 flex items-center gap-3">
+            <button
+              onClick={onBack}
+              className="bd-dashboard-secondary-button flex h-11 w-11 items-center justify-center rounded-full text-white"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </button>
+            <div>
+              <h1 className="text-xl font-bold">Competitor Analysis</h1>
+              <p className="text-sm text-white/80">
+                Watchlist synced from the Smart Shop Map for your shop account
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/60" />
-          <input
-            type="text"
-            placeholder="Search competitors, neighborhoods, or specialties..."
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            className="w-full rounded-lg border border-white/30 bg-white/20 py-2.5 pl-11 pr-4 text-white placeholder-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
-          />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/60" />
+            <input
+              type="text"
+              placeholder="Search competitors, neighborhoods, or specialties..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              className="w-full rounded-lg border border-white/30 bg-white/20 py-2.5 pl-11 pr-4 text-white placeholder-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+            />
+          </div>
         </div>
       </div>
 
-      <div
-        className={`border-b bd-glass-panel px-4 py-4 ${isLight ? "bd-light-surface border-slate-200/60" : "border-white/30"}`}
-      >
-        <div className="grid grid-cols-3 gap-2 sm:gap-4">
-          <div className="text-center">
-            <p className="text-2xl font-bold" style={{ color: primaryColor }}>
-              {marketListings.length}
-            </p>
-            <p className="text-xs text-slate-500">Competitors</p>
+      <div className="px-4 pt-4">
+        <div className="bd-dashboard-panel px-4 py-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
+            <div className="bd-dashboard-section p-3 text-center">
+              <p className="text-2xl font-bold" style={{ color: primaryColor }}>
+                {marketListings.length}
+              </p>
+              <p className="text-xs text-slate-500">Competitors</p>
+            </div>
+            <div className="bd-dashboard-section p-3 text-center">
+              <p className="text-2xl font-bold" style={{ color: primaryColor }}>
+                {watchedListings.length}
+              </p>
+              <p className="text-xs text-slate-500">Watched</p>
+            </div>
+            <div className="bd-dashboard-section p-3 text-center">
+              <p className="text-2xl font-bold" style={{ color: primaryColor }}>
+                {avgRating.toFixed(1)}
+              </p>
+              <p className="text-xs text-slate-500">Avg Rating</p>
+            </div>
           </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold" style={{ color: primaryColor }}>
-              {watchedListings.length}
-            </p>
-            <p className="text-xs text-slate-500">Watched</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold" style={{ color: primaryColor }}>
-              {avgRating.toFixed(1)}
-            </p>
-            <p className="text-xs text-slate-500">Avg Rating</p>
-          </div>
-        </div>
 
-        <p className={`mt-3 text-[11px] italic ${isLight ? "text-slate-400" : "text-slate-500"}`}>
-          Market data is estimated from directory metrics and may not reflect actual volumes.
-        </p>
+          <p className={`mt-3 text-[11px] italic ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+            Market data is estimated from directory metrics and may not reflect actual volumes.
+          </p>
 
-        <div className="mt-3 rounded-2xl bg-blue-500/10 p-3">
-          <div className="flex items-center justify-between">
-            <span
-              className={`text-sm font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}
-            >
-              Estimated Market Share
-            </span>
-            <span className="text-sm font-bold" style={{ color: primaryColor }}>
-              {((yourShopJobs / Math.max(totalJobs, 1)) * 100).toFixed(1)}%
-            </span>
+          <div className="bd-dashboard-note mt-3 rounded-2xl p-3">
+            <div className="flex items-center justify-between">
+              <span
+                className={`text-sm font-medium ${isLight ? "text-slate-700" : "text-slate-300"}`}
+              >
+                Estimated Market Share
+              </span>
+              <span className="text-sm font-bold" style={{ color: primaryColor }}>
+                {((yourShopJobs / Math.max(totalJobs, 1)) * 100).toFixed(1)}%
+              </span>
+            </div>
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width: `${Math.min(100, (yourShopJobs / Math.max(totalJobs, 1)) * 100)}%`,
+                  backgroundColor: primaryColor,
+                }}
+              />
+            </div>
+            {onOpenMap && (
+              <button
+                onClick={onOpenMap}
+                className="bd-dashboard-secondary-button mt-3 rounded-2xl px-3 py-2 text-sm font-medium"
+                style={{ color: primaryColor }}
+              >
+                Open Competitor Map
+              </button>
+            )}
           </div>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${Math.min(100, (yourShopJobs / Math.max(totalJobs, 1)) * 100)}%`,
-                backgroundColor: primaryColor,
-              }}
-            />
-          </div>
-          {onOpenMap && (
-            <button
-              onClick={onOpenMap}
-              className="mt-3 rounded-2xl border border-blue-400/20 bg-blue-500/10 px-3 py-2 text-sm font-medium text-blue-400 transition-colors hover:bg-blue-500/20"
-            >
-              Open Competitor Map
-            </button>
-          )}
         </div>
       </div>
 
@@ -283,7 +286,7 @@ export default function CompetitorAnalysisScreen({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, ease: "easeOut" }}
-          className={`mx-4 mt-4 overflow-hidden rounded-[28px] ${isLight ? "bg-white/80 border border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+          className="bd-dashboard-panel mx-4 mt-4 overflow-hidden rounded-[28px]"
         >
           <div className="flex items-center justify-between px-4 pt-3 pb-1">
             <h3
@@ -292,9 +295,7 @@ export default function CompetitorAnalysisScreen({
               <MapPin className="mr-1.5 inline-block h-4 w-4 align-[-2px] text-blue-400" />
               Competitor density
             </h3>
-            <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${isLight ? "bg-blue-100 text-blue-700" : "bg-blue-400/15 text-blue-200"}`}
-            >
+            <span className="bd-dashboard-chip rounded-full px-2 py-0.5 text-[11px] font-semibold">
               {competitorPins.length} / {marketListings.length} mapped
             </span>
           </div>
@@ -316,7 +317,7 @@ export default function CompetitorAnalysisScreen({
               </div>
             ) : (
               <div
-                className={`flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-6 ${isLight ? "border-slate-200 text-slate-400" : "border-white/10 text-slate-400/60"}`}
+                className={`bd-dashboard-note flex items-center justify-center gap-2 rounded-2xl py-6 ${isLight ? "text-slate-400" : "text-slate-400/60"}`}
               >
                 <MapPin className="h-5 w-5" />
                 <span className="text-sm">No competitors with resolvable coordinates</span>
@@ -340,37 +341,37 @@ export default function CompetitorAnalysisScreen({
         </motion.section>
       )}
 
-      <div
-        className={`border-b bd-glass-panel px-4 py-3 ${isLight ? "bd-light-surface border-slate-200/60" : "border-white/30"}`}
-      >
-        <div className="flex gap-2 overflow-x-auto">
-          <button
-            onClick={() => setSortBy("rating")}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
-              sortBy === "rating" ? "text-white shadow-md" : "bd-glass-control--utility"
-            }`}
-            style={sortBy === "rating" ? { backgroundColor: primaryColor } : {}}
-          >
-            By Rating
-          </button>
-          <button
-            onClick={() => setSortBy("jobs")}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
-              sortBy === "jobs" ? "text-white shadow-md" : "bd-glass-control--utility"
-            }`}
-            style={sortBy === "jobs" ? { backgroundColor: primaryColor } : {}}
-          >
-            By Jobs
-          </button>
-          <button
-            onClick={() => setSortBy("distance")}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all ${
-              sortBy === "distance" ? "text-white shadow-md" : "bd-glass-control--utility"
-            }`}
-            style={sortBy === "distance" ? { backgroundColor: primaryColor } : {}}
-          >
-            By Distance
-          </button>
+      <div className="px-4 pt-4">
+        <div className="bd-dashboard-panel px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto">
+            <button
+              onClick={() => setSortBy("rating")}
+              className={`bd-dashboard-filter-button whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium ${
+                sortBy === "rating" ? "bd-dashboard-filter-button--active text-white" : ""
+              }`}
+              style={sortBy === "rating" ? { background: primaryColor } : {}}
+            >
+              By Rating
+            </button>
+            <button
+              onClick={() => setSortBy("jobs")}
+              className={`bd-dashboard-filter-button whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium ${
+                sortBy === "jobs" ? "bd-dashboard-filter-button--active text-white" : ""
+              }`}
+              style={sortBy === "jobs" ? { background: primaryColor } : {}}
+            >
+              By Jobs
+            </button>
+            <button
+              onClick={() => setSortBy("distance")}
+              className={`bd-dashboard-filter-button whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium ${
+                sortBy === "distance" ? "bd-dashboard-filter-button--active text-white" : ""
+              }`}
+              style={sortBy === "distance" ? { background: primaryColor } : {}}
+            >
+              By Distance
+            </button>
+          </div>
         </div>
       </div>
 

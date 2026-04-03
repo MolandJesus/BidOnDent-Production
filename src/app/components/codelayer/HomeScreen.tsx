@@ -86,6 +86,20 @@ export default function HomeScreen({
     onCreateNewClaim,
     onStartReport
   );
+  const welcomeEyebrow =
+    userType === "customer"
+      ? "Repair overview"
+      : userType === "shop"
+        ? "Shop operations"
+        : "Claims overview";
+  const welcomeChipLabel =
+    userType === "customer"
+      ? isNewUser
+        ? "Ready to start"
+        : "Live activity"
+      : userType === "shop"
+        ? "Work queue"
+        : "Claims desk";
   const quickActions = buildQuickActions(userType, {
     onStartReport,
     onViewBids,
@@ -106,26 +120,7 @@ export default function HomeScreen({
       {/* Dashboard content — welcome, actions, reports, then map widget */}
       <div className="relative z-20 mt-3 w-full max-w-4xl px-2 md:mt-6 md:px-6 flex flex-col gap-3.5 md:gap-5">
         {/* Compact welcome bar */}
-        <section
-          className={`bd-glass-floating relative flex items-center justify-between gap-3 overflow-hidden px-4 py-3 md:px-5 md:py-3.5 flex-wrap${isLightAppearance ? " bd-light-surface" : ""}`}
-          style={
-            isLightAppearance
-              ? {
-                  background:
-                    "linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 255, 0.92) 100%)",
-                  borderColor: "rgba(148, 163, 184, 0.28)",
-                  boxShadow:
-                    "0 10px 32px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.90)",
-                }
-              : {
-                  background:
-                    "linear-gradient(180deg, rgba(8, 18, 46, 0.88) 0%, rgba(7, 15, 38, 0.82) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.22)",
-                  boxShadow:
-                    "0 12px 36px rgba(2, 8, 24, 0.45), inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 40px rgba(37, 99, 235, 0.06)",
-                }
-          }
-        >
+        <section className="bd-dashboard-panel bd-dashboard-panel--accent-blue relative flex flex-wrap items-center justify-between gap-3 overflow-hidden px-4 py-3 md:px-5 md:py-4">
           {/* Subtle royal blue left-edge accent glow */}
           {!isLightAppearance && (
             <div
@@ -137,8 +132,26 @@ export default function HomeScreen({
             />
           )}
           <div className="min-w-0">
+            <p
+              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                isLightAppearance ? "text-blue-700/70" : "text-blue-100/58"
+              }`}
+            >
+              {welcomeEyebrow}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
+                  isLightAppearance
+                    ? "bg-white/85 text-blue-700"
+                    : "border-blue-200/20 bg-white/10 text-blue-50"
+                }`}
+              >
+                {welcomeChipLabel}
+              </span>
+            </div>
             <h1
-              className={`text-lg md:text-2xl font-bold tracking-tight truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+              className={`mt-2 text-lg font-bold tracking-tight md:text-2xl truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
             >
               {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}`}
             </h1>
@@ -156,10 +169,9 @@ export default function HomeScreen({
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={primaryAction.onClick}
-              className="inline-flex items-center justify-center gap-1.5 px-4 py-2 min-h-[44px] rounded-xl text-sm font-semibold hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-[0.97] text-white whitespace-nowrap"
+              className="bd-dashboard-primary-button inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap text-white active:scale-[0.97]"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                boxShadow: "0 4px 16px rgba(37, 99, 235, 0.25)",
               }}
             >
               {primaryAction.label}
@@ -168,10 +180,10 @@ export default function HomeScreen({
             {demoMode && onExitDemoMode && userType !== originalAccountType && (
               <button
                 onClick={onExitDemoMode}
-                className={`px-3 py-2 min-h-[40px] text-sm font-medium rounded-xl border transition-colors ${
+                className={`bd-dashboard-secondary-button min-h-[40px] rounded-xl px-3 py-2 text-sm font-medium ${
                   isLightAppearance
-                    ? "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 shadow-sm"
-                    : "bd-glass-control text-blue-100"
+                    ? "border-slate-200/80 bg-white/90 text-slate-700"
+                    : "border-blue-200/18 bg-slate-950/55 text-blue-50"
                 }`}
               >
                 Exit Demo
@@ -183,45 +195,53 @@ export default function HomeScreen({
           <HomeOnboardingCard primaryColor={primaryColor} secondaryColor={secondaryColor} />
         ) : null}
         {/* Quick Actions — role-specific navigation buttons */}
-        <HomeQuickActions
-          quickActions={quickActions}
-          appearanceMode={appearanceMode}
-          primaryColor={primaryColor}
-        />
+        <HomeQuickActions quickActions={quickActions} appearanceMode={appearanceMode} />
         {/* Customer: Estimate Request Status Cards */}
         {userType === "customer" && estimateRequests.length > 0 && (
-          <section
-            className={`bd-glass-floating px-4 py-3.5 md:px-5 md:py-4${isLightAppearance ? " bd-light-surface" : ""}`}
-            style={
-              isLightAppearance
-                ? {
-                    background: "rgba(255, 255, 255, 0.95)",
-                    borderColor: "rgba(148, 163, 184, 0.28)",
-                  }
-                : {
-                    background:
-                      "linear-gradient(180deg, rgba(8, 18, 46, 0.88) 0%, rgba(7, 15, 38, 0.82) 100%)",
-                    borderColor: "rgba(96, 165, 250, 0.22)",
-                  }
-            }
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <Mail
-                className={`h-4 w-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
-              />
-              <h2
-                className={`text-sm font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-              >
-                Estimate Requests
-              </h2>
+          <section className="bd-dashboard-panel bd-dashboard-panel--accent-indigo px-4 py-3.5 md:px-5 md:py-4">
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <div className="mb-1 flex items-center gap-2">
+                  <Mail
+                    className={`h-4 w-4 ${isLightAppearance ? "text-indigo-600" : "text-indigo-300"}`}
+                  />
+                  <p
+                    className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                      isLightAppearance ? "text-slate-500" : "text-indigo-100/58"
+                    }`}
+                  >
+                    Live outreach
+                  </p>
+                </div>
+                <h2
+                  className={`text-sm font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                >
+                  Estimate Requests
+                </h2>
+                <p
+                  className={`mt-1 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/64"}`}
+                >
+                  Track which shops have viewed, answered, or accepted your request.
+                </p>
+              </div>
               <span
-                className={`ml-auto text-xs font-medium ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`}
+                className={`bd-dashboard-chip shrink-0 px-2 py-1 text-xs font-medium ${
+                  isLightAppearance
+                    ? "bg-white/85 text-indigo-700"
+                    : "border-indigo-200/18 bg-white/10 text-indigo-50"
+                }`}
               >
                 {estimateRequests.length} sent
               </span>
             </div>
             <div className="space-y-2">
               {estimateRequests.slice(0, 3).map((req) => {
+                const requestToneClass =
+                  req.status === "responded" || req.status === "accepted"
+                    ? "bd-dashboard-section--accent-cyan"
+                    : req.status === "viewed"
+                      ? "bd-dashboard-section--accent-blue"
+                      : "bd-dashboard-section--deep";
                 const statusIcon =
                   req.status === "responded" ? (
                     <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
@@ -247,7 +267,7 @@ export default function HomeScreen({
                     key={req.id}
                     type="button"
                     onClick={() => onSelectEstimate?.(req)}
-                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 w-full text-left transition-colors ${isLightAppearance ? "bg-slate-50 hover:bg-slate-100" : "bg-white/[0.04] hover:bg-white/[0.08]"}`}
+                    className={`bd-dashboard-section bd-dashboard-section--interactive flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left ${requestToneClass}`}
                   >
                     {statusIcon}
                     <div className="min-w-0 flex-1">

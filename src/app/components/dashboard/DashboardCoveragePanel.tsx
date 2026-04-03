@@ -154,10 +154,10 @@ export default function DashboardCoveragePanel({
 
   return (
     <>
-      <section className="bd-glass-panel p-5">
+      <section className="bd-dashboard-panel p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-[var(--bd-royal-blue-faint)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--bd-royal-blue)]">
+            <div className="bd-dashboard-chip inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--bd-royal-blue)]">
               <Radar className="w-3.5 h-3.5" />
               Coverage
             </div>
@@ -169,7 +169,7 @@ export default function DashboardCoveragePanel({
           </div>
 
           <div
-            className="hidden sm:flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-sm"
+            className="bd-dashboard-primary-button hidden h-12 w-12 items-center justify-center rounded-2xl text-white shadow-sm sm:flex"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
@@ -179,7 +179,7 @@ export default function DashboardCoveragePanel({
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="bd-glass-card p-4">
+          <div className="bd-dashboard-section p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">
               Live Regions
             </div>
@@ -187,13 +187,13 @@ export default function DashboardCoveragePanel({
               {operatingRegions.length}
             </div>
           </div>
-          <div className="bd-glass-card p-4">
+          <div className="bd-dashboard-section p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">
               Partner Markers
             </div>
             <div className="mt-2 text-2xl font-semibold text-slate-100">{partnerShops.length}</div>
           </div>
-          <div className="bd-glass-card p-4">
+          <div className="bd-dashboard-section p-4">
             <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">View Mode</div>
             <div className="mt-2 text-2xl font-semibold text-slate-100">
               {mapLibreTileLabels[tileMode]}
@@ -205,7 +205,7 @@ export default function DashboardCoveragePanel({
           {operatingRegions.slice(0, 4).map((region) => (
             <span
               key={region}
-              className="rounded-full border border-white/[0.10] bg-white/[0.05] px-3 py-1 text-sm text-slate-300"
+              className="bd-dashboard-chip rounded-full px-3 py-1 text-sm text-slate-300"
             >
               {region}
             </span>
@@ -216,7 +216,7 @@ export default function DashboardCoveragePanel({
           <button
             type="button"
             onClick={() => setIsMapExpanded(true)}
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            className="bd-dashboard-primary-button inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
@@ -229,7 +229,7 @@ export default function DashboardCoveragePanel({
             <button
               type="button"
               onClick={onOpenCoveragePage}
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors bd-glass-control--utility"
+              className="bd-dashboard-secondary-button inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold"
             >
               Full Search Flow
               <ArrowUpRight className="w-4 h-4" />

@@ -207,31 +207,40 @@ export default function BidsScreen({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, delay: 0.05 }}
-        className="bd-glass-card p-3"
-        style={{
-          background: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-            : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
-          borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
-        }}
+        className="bd-dashboard-panel bd-dashboard-panel--deep p-3"
       >
+        <div className="mb-3 flex items-start justify-between gap-3 px-1">
+          <div>
+            <p
+              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                isLight ? "text-slate-500" : "text-blue-100/55"
+              }`}
+            >
+              Sort & Compare
+            </p>
+            <p className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/66"}`}>
+              Switch between price, speed, and rating to find the best bid.
+            </p>
+          </div>
+          <span
+            className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
+              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+            }`}
+          >
+            {filteredBids.length} visible
+          </span>
+        </div>
         <div className="flex flex-wrap gap-2">
           {FILTERS.map((item) => (
             <button
               key={item.id}
-              className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
-                filter === item.id
-                  ? "text-white border border-blue-400/40 shadow-sm"
-                  : isLight
-                    ? "text-slate-600 bg-slate-100/80 border border-slate-200/60 hover:bg-slate-200/60"
-                    : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"
+              className={`bd-dashboard-filter-button rounded-full px-3.5 py-1.5 text-sm font-medium ${
+                filter === item.id ? "bd-dashboard-filter-button--active" : ""
               }`}
               style={
                 filter === item.id
                   ? {
-                      background:
-                        "linear-gradient(135deg, rgba(37,99,235,0.45) 0%, rgba(56,189,248,0.3) 100%)",
-                      boxShadow: "inset 0 1px 0 rgba(148,163,184,0.1)",
+                      background: `linear-gradient(135deg, ${primaryColor} 0%, rgba(56,189,248,0.75) 100%)`,
                     }
                   : {}
               }
@@ -328,19 +337,9 @@ export default function BidsScreen({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.15 }}
-            className="bd-glass-card p-5 text-center"
-            style={{
-              background: isLight
-                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-                : "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.20)",
-            }}
+            className="bd-dashboard-panel bd-dashboard-panel--accent-indigo p-5 text-center"
           >
-            <div
-              className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border ${
-                isLight ? "bg-amber-50 border-amber-200/50" : "bg-amber-400/15 border-amber-300/20"
-              }`}
-            >
+            <div className="bd-dashboard-note bd-dashboard-note--deep mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">
               <MapPin className={`h-5 w-5 ${isLight ? "text-amber-500" : "text-amber-200"}`} />
             </div>
             <h3
@@ -355,7 +354,7 @@ export default function BidsScreen({
             </p>
             <button
               onClick={onViewShopDirectory}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
+              className="bd-dashboard-primary-button mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
               }}

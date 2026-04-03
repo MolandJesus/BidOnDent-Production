@@ -31,7 +31,7 @@ export default function ReportDetailInterestedShops({
   onFindShops,
 }: ReportDetailInterestedShopsProps) {
   return (
-    <div className={`bd-glass-card p-3 sm:p-4${isLight ? " bd-light-surface" : ""}`}>
+    <div className="bd-dashboard-panel p-3 sm:p-4">
       <div className="flex justify-between items-center mb-3">
         <h2 className="font-bold text-lg">Interested Shops</h2>
         <span className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
@@ -41,13 +41,13 @@ export default function ReportDetailInterestedShops({
 
       {shops.length === 0 ? (
         <div
-          className={`rounded-xl border border-dashed border-slate-300/60 p-4 text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}
+          className={`bd-dashboard-note rounded-xl p-4 text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}
         >
           <p>No bids have arrived yet. Shops will appear here as soon as they respond.</p>
           {onFindShops && (
             <button
-              className="mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl text-white text-sm font-semibold"
-              style={{ backgroundColor: primaryColor }}
+              className="bd-dashboard-primary-button mt-3 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold text-white"
+              style={{ background: primaryColor }}
               onClick={onFindShops}
             >
               <Search className="h-4 w-4" />
@@ -60,7 +60,7 @@ export default function ReportDetailInterestedShops({
           {shops.map((shop) => (
             <div
               key={shop.id}
-              className={`bd-glass-card p-3 hover:shadow-md transition-all duration-200${isLight ? " bd-light-surface" : ""}`}
+              className="bd-dashboard-section bd-dashboard-section--interactive p-3 transition-all duration-200"
             >
               <div className="flex items-start gap-3">
                 <div
@@ -80,7 +80,9 @@ export default function ReportDetailInterestedShops({
                     >
                       {shop.name}
                     </h3>
-                    <span className="bd-glass-badge ml-2 flex-shrink-0">BID</span>
+                    <span className="bd-dashboard-chip ml-2 flex-shrink-0 px-2 py-0.5 text-[11px] font-semibold">
+                      BID
+                    </span>
                   </div>
 
                   <div className="flex items-center text-sm mb-2 flex-wrap gap-x-2 gap-y-1">
@@ -119,8 +121,8 @@ export default function ReportDetailInterestedShops({
                       </div>
                     </div>
                     <button
-                      className="px-4 py-2.5 min-h-[44px] rounded-xl text-white text-sm font-semibold flex-shrink-0"
-                      style={{ backgroundColor: primaryColor }}
+                      className="bd-dashboard-primary-button min-h-[44px] flex-shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold text-white"
+                      style={{ background: primaryColor }}
                       onClick={onViewAllBids}
                     >
                       View Bid
@@ -137,16 +139,16 @@ export default function ReportDetailInterestedShops({
         <>
           {/* Mobile: sticky footer */}
           <button
-            className="sm:hidden fixed left-2 right-2 bottom-2 z-40 py-3 px-4 rounded-xl text-white font-semibold shadow-lg min-h-[52px]"
-            style={{ backgroundColor: primaryColor }}
+            className="bd-dashboard-primary-button sm:hidden fixed left-2 right-2 bottom-2 z-40 min-h-[52px] rounded-xl px-4 py-3 font-semibold text-white"
+            style={{ background: primaryColor }}
             onClick={onViewAllBids}
           >
             Compare All Bids
           </button>
           {/* Desktop: inline */}
           <button
-            className="hidden sm:block w-full mt-4 py-3 px-4 rounded-xl text-white font-semibold"
-            style={{ backgroundColor: primaryColor }}
+            className="bd-dashboard-primary-button mt-4 hidden w-full rounded-xl px-4 py-3 font-semibold text-white sm:block"
+            style={{ background: primaryColor }}
             onClick={onViewAllBids}
           >
             Compare All Bids

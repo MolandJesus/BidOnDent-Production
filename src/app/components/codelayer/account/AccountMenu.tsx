@@ -8,9 +8,21 @@ import {
   Shield,
   Trash2,
   CheckSquare,
+  type LucideIcon,
 } from "lucide-react";
 import { motion } from "motion/react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
+
+type RowTone = "deep" | "blue" | "cyan" | "indigo" | "rose";
+
+type MenuRow = {
+  label: string;
+  description: string;
+  icon: LucideIcon;
+  tone: RowTone;
+  onClick?: () => void;
+  disabled?: boolean;
+};
 
 type AccountMenuProps = {
   userType: string;
@@ -44,14 +56,177 @@ export default function AccountMenu({
   const isLight = appearanceMode === "light";
 
   const rowBaseClass =
-    "w-full py-3.5 px-4 flex items-center justify-between rounded-xl transition-colors";
+    "bd-dashboard-section bd-dashboard-section--interactive flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left transition-colors";
+  const labelTone = isLight ? "text-slate-700" : "text-slate-100";
+  const subduedLabelTone = isLight ? "text-slate-500" : "text-blue-100/62";
+  const sectionEyebrowTone = isLight ? "text-slate-500" : "text-blue-100/50";
 
-  const rowHover = isLight ? "hover:bg-blue-50/80" : "hover:bg-blue-400/12";
-  const iconBox = isLight
-    ? "bg-blue-50 text-blue-600 border-blue-200/30"
-    : "bg-blue-400/12 text-blue-100 border-blue-300/20";
-  const labelColor = isLight ? "text-slate-700" : "text-slate-100";
-  const chevronColor = isLight ? "text-slate-400" : "text-blue-100/70";
+  const rowToneClass: Record<RowTone, string> = {
+    deep: "bd-dashboard-section--deep",
+    blue: "bd-dashboard-section--accent-blue",
+    cyan: "bd-dashboard-section--accent-cyan",
+    indigo: "bd-dashboard-section--accent-indigo",
+    rose: "bd-dashboard-section--accent-rose",
+  };
+
+  const iconToneClass: Record<RowTone, string> = {
+    deep: isLight
+      ? "border-slate-200/60 bg-slate-100/90 text-slate-700"
+      : "border-blue-200/12 bg-slate-900/55 text-slate-100",
+    blue: isLight
+      ? "border-blue-200/60 bg-white/80 text-blue-700"
+      : "border-blue-300/22 bg-blue-400/14 text-blue-100",
+    cyan: isLight
+      ? "border-cyan-200/60 bg-white/80 text-cyan-700"
+      : "border-cyan-300/20 bg-cyan-400/14 text-cyan-100",
+    indigo: isLight
+      ? "border-indigo-200/60 bg-white/80 text-indigo-700"
+      : "border-indigo-300/25 bg-indigo-400/15 text-indigo-100",
+    rose: isLight
+      ? "border-rose-200/60 bg-white/80 text-rose-600"
+      : "border-rose-300/20 bg-rose-400/12 text-rose-200",
+  };
+
+  const chevronToneClass: Record<RowTone, string> = {
+    deep: isLight ? "text-slate-400" : "text-blue-100/65",
+    blue: isLight ? "text-blue-500/70" : "text-blue-100/72",
+    cyan: isLight ? "text-cyan-600/70" : "text-cyan-100/70",
+    indigo: isLight ? "text-indigo-500/75" : "text-indigo-100/72",
+    rose: isLight ? "text-rose-500/70" : "text-rose-200/68",
+  };
+
+  const labelToneClass: Record<RowTone, string> = {
+    deep: labelTone,
+    blue: labelTone,
+    cyan: labelTone,
+    indigo: isLight ? "text-indigo-700" : "text-indigo-100",
+    rose: isLight ? "text-rose-700" : "text-rose-200",
+  };
+
+  const descriptionToneClass: Record<RowTone, string> = {
+    deep: subduedLabelTone,
+    blue: isLight ? "text-blue-600/75" : "text-blue-100/68",
+    cyan: isLight ? "text-cyan-700/75" : "text-cyan-100/68",
+    indigo: isLight ? "text-indigo-700/70" : "text-indigo-100/68",
+    rose: isLight ? "text-rose-700/72" : "text-rose-100/72",
+  };
+
+  const preferenceRows: MenuRow[] = [
+    {
+      label: "Appearance Settings",
+      description: "Theme, motion, and overall dashboard feel.",
+      icon: Settings,
+      tone: "deep",
+      onClick: onOpenSettings,
+    },
+    {
+      label: "Payment Preview",
+      description: "Review the billing and payment-facing experience.",
+      icon: CreditCard,
+      tone: "blue",
+      onClick: onOpenPayment,
+    },
+  ];
+
+  const profileRows: MenuRow[] = [];
+
+  if (userType === "customer") {
+    profileRows.push({
+      label: "My Vehicles",
+      description: "Manage saved cars for faster report intake.",
+      icon: CarIcon,
+      tone: "cyan",
+      onClick: onViewVehicles,
+      disabled: !onViewVehicles,
+    });
+  }
+
+  if (userType === "shop") {
+    profileRows.push({
+      label: "Shop Profile",
+      description: "Update storefront details and business presence.",
+      icon: Settings,
+      tone: "cyan",
+      onClick: onOpenShopProfile,
+    });
+  }
+
+  profileRows.push({
+    label: "Help & Support",
+    description: "Open guides, troubleshooting, and support details.",
+    icon: HelpCircle,
+    tone: "indigo",
+    onClick: onOpenHelp,
+  });
+
+  if (isAdmin && onOpenAdminPanel) {
+    profileRows.push({
+      label: "Admin Panel",
+      description: "Access elevated tools and administrative controls.",
+      icon: Shield,
+      tone: "indigo",
+      onClick: onOpenAdminPanel,
+    });
+  }
+
+  if (import.meta.env.DEV && onOpenSmokeTest) {
+    profileRows.push({
+      label: "Smoke Test Checklist",
+      description: "Quick QA shortcuts for this local environment.",
+      icon: CheckSquare,
+      tone: "deep",
+      onClick: onOpenSmokeTest,
+    });
+  }
+
+  const sessionRows: MenuRow[] = [
+    {
+      label: "Sign Out",
+      description: "End your current session on this device.",
+      icon: LogOut,
+      tone: "deep",
+      onClick: onLogout,
+    },
+    {
+      label: "Delete Account",
+      description: "Permanently remove profile access and stored account data.",
+      icon: Trash2,
+      tone: "rose",
+      onClick: onOpenDeleteAccount,
+      disabled: !onOpenDeleteAccount,
+    },
+  ];
+
+  const renderRow = ({
+    label,
+    description,
+    icon: Icon,
+    tone,
+    onClick,
+    disabled = false,
+  }: MenuRow) => (
+    <button
+      className={`${rowBaseClass} ${rowToneClass[tone]} ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
+      onClick={onClick}
+      disabled={disabled}
+      type="button"
+    >
+      <div className="flex items-start gap-3">
+        <span
+          className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-[1rem] border ${iconToneClass[tone]}`}
+        >
+          <Icon className="h-5 w-5" />
+        </span>
+        <span className="flex flex-col items-start">
+          <span className={`text-sm font-semibold ${labelToneClass[tone]}`}>{label}</span>
+          <span className={`mt-1 text-xs leading-5 ${descriptionToneClass[tone]}`}>
+            {description}
+          </span>
+        </span>
+      </div>
+      <ChevronRight className={`h-5 w-5 shrink-0 ${chevronToneClass[tone]}`} />
+    </button>
+  );
 
   return (
     <motion.section
@@ -59,167 +234,89 @@ export default function AccountMenu({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.1 }}
-      className={`rounded-2xl p-3 relative overflow-hidden border ${
-        isLight ? "border-blue-200/25" : "bd-glass-card"
-      }`}
-      style={{
-        background: isLight
-          ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,247,255,0.88) 100%)"
-          : "linear-gradient(180deg, rgba(11, 23, 47, 0.88) 0%, rgba(8, 18, 38, 0.84) 100%)",
-        borderColor: isLight ? undefined : "rgba(96, 165, 250, 0.22)",
-      }}
+      className="bd-dashboard-panel bd-dashboard-panel--deep relative overflow-hidden rounded-2xl p-4 md:p-5"
     >
-      {/* Subtle decorative orb */}
       <div
-        className="absolute -left-10 bottom-8 w-28 h-28 rounded-full pointer-events-none"
+        className="pointer-events-none absolute -left-10 bottom-8 h-28 w-28 rounded-full"
         style={{
           background: isLight
             ? "radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 70%)"
             : "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)",
         }}
       />
-      <div className="space-y-1.5">
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenSettings} type="button">
-          <div className="flex items-center">
-            <span
-              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
+      <div className="space-y-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p
+              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${sectionEyebrowTone}`}
             >
-              <Settings className="w-5 h-5" />
-            </span>
-            <span className={`font-medium ${labelColor}`}>Appearance Settings</span>
-          </div>
-          <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
-        </button>
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenPayment} type="button">
-          <div className="flex items-center">
-            <span
-              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
+              Account Controls
+            </p>
+            <h2
+              className={`text-xl font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
             >
-              <CreditCard className="w-5 h-5" />
-            </span>
-            <span className={`font-medium ${labelColor}`}>Payment Preview</span>
+              Actions & Preferences
+            </h2>
+            <p className={`mt-1 text-sm ${subduedLabelTone}`}>
+              Test a more layered feel with grouped tools, darker glass, and tinted action states.
+            </p>
           </div>
-          <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
-        </button>
-
-        {userType === "customer" && (
-          <button className={`${rowBaseClass} ${rowHover}`} onClick={onViewVehicles} type="button">
-            <div className="flex items-center">
-              <span
-                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
-              >
-                <CarIcon className="w-5 h-5" />
-              </span>
-              <span className={`font-medium ${labelColor}`}>My Vehicles</span>
-            </div>
-            <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
-          </button>
-        )}
-
-        {userType === "shop" && (
-          <button
-            className={`${rowBaseClass} ${rowHover}`}
-            onClick={onOpenShopProfile}
-            type="button"
+          <span
+            className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
+              isLight ? "bg-white/80 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+            }`}
           >
-            <div className="flex items-center">
-              <span
-                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
-              >
-                <Settings className="w-5 h-5" />
-              </span>
-              <span className={`font-medium ${labelColor}`}>Shop Profile</span>
-            </div>
-            <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
-          </button>
-        )}
+            3 zones
+          </span>
+        </div>
 
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenHelp} type="button">
-          <div className="flex items-center">
-            <span
-              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
+        <div className="bd-dashboard-note rounded-2xl p-3">
+          <div className="mb-2 flex items-center justify-between px-1">
+            <p
+              className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
             >
-              <HelpCircle className="w-5 h-5" />
-            </span>
-            <span className={`font-medium ${labelColor}`}>Help & Support</span>
+              Preferences
+            </p>
+            <span className={`text-xs ${subduedLabelTone}`}>{preferenceRows.length} items</span>
           </div>
-          <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
-        </button>
+          <div className="space-y-2">
+            {preferenceRows.map((row) => (
+              <div key={row.label}>{renderRow(row)}</div>
+            ))}
+          </div>
+        </div>
 
-        {isAdmin && onOpenAdminPanel && (
-          <button
-            className={`${rowBaseClass} ${isLight ? "hover:bg-indigo-50/80" : "hover:bg-indigo-400/12"}`}
-            onClick={onOpenAdminPanel}
-            type="button"
-          >
-            <div className="flex items-center">
-              <span
-                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${
-                  isLight
-                    ? "bg-indigo-50 text-indigo-600 border-indigo-200/30"
-                    : "bg-indigo-400/15 text-indigo-200 border-indigo-300/25"
-                }`}
-              >
-                <Shield className="w-5 h-5" />
-              </span>
-              <span className={`font-medium ${isLight ? "text-indigo-700" : "text-indigo-100"}`}>
-                Admin Panel
-              </span>
-            </div>
-            <ChevronRight
-              className={`w-5 h-5 ${isLight ? "text-indigo-400" : "text-indigo-200/70"}`}
-            />
-          </button>
-        )}
-
-        {import.meta.env.DEV && onOpenSmokeTest && (
-          <button className={`${rowBaseClass} ${rowHover}`} onClick={onOpenSmokeTest} type="button">
-            <div className="flex items-center">
-              <span
-                className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
-              >
-                <CheckSquare className="w-5 h-5" />
-              </span>
-              <span className={`font-medium ${labelColor}`}>Smoke Test Checklist</span>
-            </div>
-            <ChevronRight className={`w-5 h-5 ${chevronColor}`} />
-          </button>
-        )}
-
-        <button
-          className={`${rowBaseClass} ${onOpenDeleteAccount ? (isLight ? "hover:bg-rose-50/80 text-rose-600" : "hover:bg-rose-400/12 text-rose-300") : "opacity-40 cursor-not-allowed"}`}
-          onClick={onOpenDeleteAccount}
-          disabled={!onOpenDeleteAccount}
-          type="button"
-        >
-          <div className="flex items-center">
-            <span
-              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${
-                isLight
-                  ? "bg-rose-50 text-rose-500 border-rose-200/30"
-                  : "bg-rose-400/12 text-rose-300 border-rose-300/25"
-              }`}
+        <div className="bd-dashboard-note bd-dashboard-note--deep rounded-2xl p-3">
+          <div className="mb-2 flex items-center justify-between px-1">
+            <p
+              className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
             >
-              <Trash2 className="w-5 h-5" />
-            </span>
-            <span className={`font-medium ${isLight ? "text-rose-600" : "text-rose-300"}`}>
-              Delete Account
-            </span>
+              Profile Tools
+            </p>
+            <span className={`text-xs ${subduedLabelTone}`}>{profileRows.length} items</span>
           </div>
-        </button>
+          <div className="space-y-2">
+            {profileRows.map((row) => (
+              <div key={row.label}>{renderRow(row)}</div>
+            ))}
+          </div>
+        </div>
 
-        <button className={`${rowBaseClass} ${rowHover}`} onClick={onLogout} type="button">
-          <div className="flex items-center">
-            <span
-              className={`w-10 h-10 rounded-[1rem] flex items-center justify-center mr-3 border ${iconBox}`}
+        <div className="bd-dashboard-note rounded-2xl p-3">
+          <div className="mb-2 flex items-center justify-between px-1">
+            <p
+              className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
             >
-              <LogOut className="w-5 h-5" />
-            </span>
-            <span className={`font-medium ${isLight ? "text-blue-600" : "text-blue-100"}`}>
-              Sign Out
-            </span>
+              Session
+            </p>
+            <span className={`text-xs ${subduedLabelTone}`}>Sensitive actions</span>
           </div>
-        </button>
+          <div className="space-y-2">
+            {sessionRows.map((row) => (
+              <div key={row.label}>{renderRow(row)}</div>
+            ))}
+          </div>
+        </div>
       </div>
     </motion.section>
   );

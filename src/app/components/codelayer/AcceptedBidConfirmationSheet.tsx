@@ -64,11 +64,7 @@ export default function AcceptedBidConfirmationSheet({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className={`fixed inset-x-0 bottom-0 z-50 rounded-t-2xl ${
-              isLight
-                ? "bg-white border-t border-slate-200/80 shadow-xl"
-                : "bd-glass-card border-t border-white/[0.08]"
-            }`}
+            className="bd-dashboard-panel fixed inset-x-0 bottom-0 z-50 rounded-t-2xl border-t border-white/[0.08]"
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1">
@@ -93,13 +89,7 @@ export default function AcceptedBidConfirmationSheet({
               </div>
 
               {/* Details row */}
-              <div
-                className={`flex items-center justify-center gap-4 rounded-xl px-4 py-3 mb-4 ${
-                  isLight
-                    ? "bg-slate-50 border border-slate-200/60"
-                    : "bg-white/[0.06] border border-white/[0.08]"
-                }`}
-              >
+              <div className="bd-dashboard-note mb-4 flex items-center justify-center gap-4 rounded-xl px-4 py-3">
                 <div className="flex items-center gap-1.5">
                   <DollarSign
                     className={`h-4 w-4 ${isLight ? "text-emerald-600" : "text-emerald-400"}`}
@@ -135,7 +125,7 @@ export default function AcceptedBidConfirmationSheet({
               <div className="flex flex-col gap-2.5">
                 <button
                   onClick={onViewShopOnMap}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3:min-h-[44px] text-white font-semibold shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                  className="bd-dashboard-primary-button flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                   style={{
                     background: "linear-gradient(135deg, #003d82 0%, #0f8fd7 100%)",
                     minHeight: 44,
@@ -150,11 +140,7 @@ export default function AcceptedBidConfirmationSheet({
                 </button>
                 <button
                   onClick={onDismiss}
-                  className={`flex w-full items-center justify-center rounded-xl px-5 py-3 font-medium transition-all focus:outline-none focus-visible:ring-2 ${
-                    isLight
-                      ? "bg-slate-100 text-slate-700 hover:bg-slate-200 focus-visible:ring-slate-400"
-                      : "bg-white/[0.08] text-slate-200 hover:bg-white/[0.12] focus-visible:ring-white/30"
-                  }`}
+                  className="bd-dashboard-secondary-button flex w-full items-center justify-center rounded-xl px-5 py-3 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
                   style={{ minHeight: 44 }}
                 >
                   Stay on Bids

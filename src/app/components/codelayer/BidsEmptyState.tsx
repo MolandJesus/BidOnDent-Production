@@ -22,18 +22,12 @@ export default function BidsEmptyState({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className={`relative overflow-hidden bd-glass-card p-5${isLight ? " bd-light-surface" : ""}`}
-        style={{
-          background: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
-            : "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.82) 100%)",
-          borderColor: isLight ? "rgba(148,163,184,0.30)" : "rgba(96, 165, 250, 0.24)",
-        }}
+        className="bd-dashboard-panel bd-dashboard-panel--accent-blue relative overflow-hidden p-5"
       >
         <div className="flex items-center gap-3">
           {onBack && (
             <button
-              className={`h-11 w-11 flex items-center justify-center rounded-xl transition-colors ${isLight ? "hover:bg-slate-100" : "hover:bg-white/10"}`}
+              className="bd-dashboard-secondary-button flex h-11 w-11 items-center justify-center rounded-xl"
               onClick={onBack}
               aria-label="Go back to dashboard"
             >
@@ -41,6 +35,13 @@ export default function BidsEmptyState({
             </button>
           )}
           <div className="flex-1">
+            <p
+              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                isLight ? "text-blue-700/70" : "text-blue-100/58"
+              }`}
+            >
+              Bid Queue
+            </p>
             <h1
               className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
             >
@@ -61,20 +62,19 @@ export default function BidsEmptyState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, delay: 0.05 }}
-        className={`bd-glass-card p-5 sm:p-6 text-center${isLight ? " bd-light-surface" : ""}`}
-        style={{
-          background: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-            : "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-          borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.20)",
-        }}
+        className="bd-dashboard-panel bd-dashboard-panel--deep p-5 text-center sm:p-6"
       >
-        <div
-          className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border ${
-            isLight ? "bg-blue-50 border-blue-200/50" : "bg-blue-400/15 border-blue-300/20"
-          }`}
-        >
+        <div className="bd-dashboard-note bd-dashboard-note--deep mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full">
           <Clock className={`h-6 w-6 ${isLight ? "text-blue-500" : "text-blue-200"}`} />
+        </div>
+        <div className="mb-3 flex justify-center">
+          <span
+            className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
+              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+            }`}
+          >
+            Awaiting responses
+          </span>
         </div>
         <h2 className={`text-lg font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
           {userType === "shop"
@@ -95,7 +95,7 @@ export default function BidsEmptyState({
         {userType === "customer" && onStartReport && (
           <button
             onClick={onStartReport}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
+            className="bd-dashboard-primary-button mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
             }}

@@ -71,25 +71,9 @@ export default function BidCardArticle({
       variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
       whileHover={{ y: -3, scale: 1.003 }}
       transition={{ duration: 0.2 }}
-      className={`group relative bd-glass-card overflow-hidden transition-all${isLight ? " bd-light-surface" : ""} ${
-        isActive
-          ? isLight
-            ? "border-blue-400/60 shadow-md"
-            : "border-blue-400/50 shadow-md"
-          : isLight
-            ? "hover:border-blue-300/40"
-            : "hover:border-blue-400/30"
+      className={`bd-dashboard-section group relative overflow-hidden transition-all ${
+        isActive ? "bd-dashboard-section--selected" : "bd-dashboard-section--interactive"
       }`}
-      style={{
-        background: isLight
-          ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
-          : "linear-gradient(180deg, rgba(11, 23, 47, 0.82) 0%, rgba(8, 18, 38, 0.78) 100%)",
-        borderColor: isActive
-          ? undefined
-          : isLight
-            ? "rgba(148,163,184,0.30)"
-            : "rgba(96, 165, 250, 0.18)",
-      }}
     >
       {isRecommended && (
         <div
@@ -123,13 +107,7 @@ export default function BidCardArticle({
                 {bid.shopName}
               </h3>
               {isRecommended && (
-                <span
-                  className={`hidden sm:inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold ${
-                    isLight
-                      ? "bg-blue-100 text-blue-700 border border-blue-200/60"
-                      : "bg-blue-400/15 text-blue-200 border border-blue-300/20"
-                  }`}
-                >
+                <span className="bd-dashboard-chip hidden items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold sm:inline-flex">
                   <BadgeCheck className="w-3 h-3" />
                   Recommended
                 </span>
@@ -195,55 +173,25 @@ export default function BidCardArticle({
               className={`px-4 pb-4 border-t ${isLight ? "border-slate-200/60" : "border-white/[0.08]"}`}
             >
               <div className="flex flex-wrap gap-3 text-sm mt-3 mb-3">
-                <div
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
-                    isLight
-                      ? "bg-slate-100/80 text-slate-700 border-slate-200/60"
-                      : "bg-white/[0.07] text-slate-200 border-white/[0.1]"
-                  }`}
-                >
+                <div className="bd-dashboard-chip inline-flex items-center gap-1.5 px-2.5 py-1 text-sm">
                   <DollarSign className="w-4 h-4" />${bid.price}
                 </div>
-                <div
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
-                    isLight
-                      ? "bg-slate-100/80 text-slate-700 border-slate-200/60"
-                      : "bg-white/[0.07] text-slate-200 border-white/[0.1]"
-                  }`}
-                >
+                <div className="bd-dashboard-chip inline-flex items-center gap-1.5 px-2.5 py-1 text-sm">
                   <Clock className="w-4 h-4" />
                   {bid.timeframe}
                 </div>
-                <div
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
-                    isLight
-                      ? "bg-slate-100/80 text-slate-700 border-slate-200/60"
-                      : "bg-white/[0.07] text-slate-200 border-white/[0.1]"
-                  }`}
-                >
+                <div className="bd-dashboard-chip inline-flex items-center gap-1.5 px-2.5 py-1 text-sm">
                   <MapPin className="w-4 h-4" />
                   {bid.distance}
                 </div>
-                <div
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border ${
-                    isLight
-                      ? "bg-blue-50 text-blue-700 border-blue-200/60"
-                      : "bg-blue-400/15 text-blue-300 border-blue-300/20"
-                  }`}
-                >
+                <div className="bd-dashboard-chip inline-flex items-center gap-1.5 px-2.5 py-1 text-sm">
                   <BadgeCheck className="w-4 h-4" />
                   {bid.warranty}
                 </div>
               </div>
 
               {bid.shopLatitude && bid.shopLongitude && (
-                <div
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg mb-3 text-sm ${
-                    isLight
-                      ? "bg-blue-50/80 text-blue-700 border border-blue-200/50"
-                      : "bg-blue-400/10 text-blue-200 border border-blue-300/15"
-                  }`}
-                >
+                <div className="bd-dashboard-note mb-3 flex items-center gap-2 rounded-lg px-3 py-2 text-sm">
                   <MapPin className="w-4 h-4 flex-shrink-0" />
                   <span>Shop location available — compare on map</span>
                 </div>
@@ -257,7 +205,7 @@ export default function BidCardArticle({
                 <button
                   onClick={onAccept}
                   disabled={isAccepted}
-                  className="px-4 py-2.5 rounded-xl text-white font-medium shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                  className="bd-dashboard-primary-button rounded-xl px-4 py-2.5 text-white font-medium disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                   style={{
                     background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
                   }}
@@ -267,10 +215,10 @@ export default function BidCardArticle({
                 {!isAccepted && onReject && (
                   <button
                     onClick={onReject}
-                    className={`px-4 py-2.5 rounded-xl border font-medium transition-all ${
+                    className={`bd-dashboard-secondary-button rounded-xl px-4 py-2.5 font-medium ${
                       isLight
-                        ? "border-slate-200/80 text-slate-600 hover:text-red-600 hover:border-red-300/50 hover:bg-red-50/60"
-                        : "border-white/[0.12] text-slate-400 hover:text-red-400 hover:border-red-400/30 hover:bg-red-400/10"
+                        ? "text-rose-600 hover:text-rose-700"
+                        : "text-rose-300 hover:text-rose-200"
                     }`}
                   >
                     Decline
@@ -278,42 +226,26 @@ export default function BidCardArticle({
                 )}
                 <button
                   aria-label="Call shop"
-                  className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-                    isLight
-                      ? "border-slate-200/80 text-slate-600 hover:bg-slate-100/60"
-                      : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"
-                  }`}
+                  className="bd-dashboard-secondary-button inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                 >
                   <Phone className="w-4 h-4" />
                 </button>
                 <button
                   aria-label="Message shop"
-                  className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-                    isLight
-                      ? "border-slate-200/80 text-slate-600 hover:bg-slate-100/60"
-                      : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"
-                  }`}
+                  className="bd-dashboard-secondary-button inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                 >
                   <MessageSquare className="w-4 h-4" />
                 </button>
                 <button
                   aria-label="Visit shop website"
-                  className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-                    isLight
-                      ? "border-slate-200/80 text-slate-600 hover:bg-slate-100/60"
-                      : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"
-                  }`}
+                  className="bd-dashboard-secondary-button inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                 >
                   <ExternalLink className="w-4 h-4" />
                 </button>
                 {userType === "customer" && (
                   <button
                     aria-label="Rate this shop"
-                    className={`px-3 py-2.5 rounded-xl border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-                      isLight
-                        ? "border-slate-200/80 text-slate-600 hover:bg-slate-100/60"
-                        : "border-white/[0.12] text-slate-300 hover:bg-white/[0.1]"
-                    }`}
+                    className="bd-dashboard-secondary-button inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
                     onClick={onRate}
                   >
                     <ThumbsUp className="w-4 h-4" />

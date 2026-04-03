@@ -39,19 +39,56 @@ export default function AccountInfoCard({
     hasBusinessName ? "yes" : "",
   ].filter(Boolean).length;
   const completionPercent = Math.round((completionScore / 5) * 100);
+  const detailFields: Array<{
+    label: string;
+    value: string;
+    breakWords?: boolean;
+    toneClass: string;
+    wide?: boolean;
+  }> = [
+    {
+      label: "Name",
+      value: userInfo.name || "-",
+      toneClass: "bd-dashboard-section--deep",
+    },
+    {
+      label: "Phone",
+      value: userInfo.phone || "-",
+      toneClass: "bd-dashboard-section--accent-cyan",
+    },
+    {
+      label: "Email",
+      value: userInfo.email || "-",
+      breakWords: true,
+      toneClass: "bd-dashboard-section--deep",
+      wide: true,
+    },
+  ];
+
+  if (userType === "shop") {
+    detailFields.push({
+      label: "Shop Profile",
+      value: userInfo.shopName || "-",
+      toneClass: "bd-dashboard-section--accent-indigo",
+      wide: true,
+    });
+  }
+
+  if (userType === "insurer") {
+    detailFields.push({
+      label: "Insurer Profile",
+      value: userInfo.companyName || "-",
+      toneClass: "bd-dashboard-section--accent-indigo",
+      wide: true,
+    });
+  }
 
   return (
     <motion.section
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.05 }}
-      className={`bd-glass-card rounded-2xl p-5 mb-5 relative overflow-hidden${isLightAppearance ? " bd-light-surface" : ""}`}
-      style={{
-        background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(241, 247, 255, 0.88) 100%)"
-          : "linear-gradient(180deg, rgba(11, 23, 47, 0.88) 0%, rgba(8, 18, 38, 0.84) 100%)",
-        borderColor: isLightAppearance ? "rgba(37, 99, 235, 0.18)" : "rgba(96, 165, 250, 0.22)",
-      }}
+      className="bd-dashboard-panel relative mb-5 overflow-hidden rounded-2xl p-5"
     >
       {/* Subtle decorative orb */}
       <div
@@ -60,19 +97,38 @@ export default function AccountInfoCard({
           background: "radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%)",
         }}
       />
-      <div className="flex justify-between items-center mb-4">
-        <h2
-          className={`font-semibold text-xl ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-        >
-          Account Information
-        </h2>
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <p
+            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+              isLightAppearance ? "text-blue-700/65" : "text-blue-100/55"
+            }`}
+          >
+            Identity
+          </p>
+          <h2
+            className={`font-semibold text-xl ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+          >
+            Account Information
+          </h2>
+          <p
+            className={`mt-1 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/68"}`}
+          >
+            Core details, contact info, and saved profile data.
+          </p>
+        </div>
         <button
-          className={`${isLightAppearance ? "text-blue-600 hover:text-blue-700" : "text-blue-300 hover:text-blue-200"} transition-colors`}
+          className={`bd-dashboard-secondary-button inline-flex min-h-[44px] items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ${
+            isLightAppearance
+              ? "border-blue-200/70 bg-white/80 text-blue-700"
+              : "border-blue-300/25 bg-slate-950/45 text-blue-100"
+          }`}
           onClick={onEditProfile}
           type="button"
           aria-label="Edit account information"
         >
           <Edit className="w-5 h-5" />
+          <span>Edit</span>
         </button>
       </div>
 
@@ -86,7 +142,7 @@ export default function AccountInfoCard({
           </p>
         </div>
         <div
-          className={`h-2 rounded-full overflow-hidden ${isLightAppearance ? "bg-blue-100 border border-blue-200/70" : "bg-slate-900/45 border border-blue-300/10"}`}
+          className={`bd-dashboard-note bd-dashboard-note--deep h-2 overflow-hidden rounded-full ${isLightAppearance ? "bg-blue-100" : ""}`}
         >
           <div
             className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500"
@@ -99,75 +155,47 @@ export default function AccountInfoCard({
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4 relative">
-        {[
-          { label: "Name", value: userInfo.name || "-", show: true },
-          {
-            label: "Email",
-            value: userInfo.email || "-",
-            show: true,
-            breakWords: true,
-          },
-          { label: "Phone", value: userInfo.phone || "-", show: true },
-          {
-            label: "Shop Profile",
-            value: userInfo.shopName || "-",
-            show: userType === "shop",
-          },
-          {
-            label: "Insurer Profile",
-            value: userInfo.companyName || "-",
-            show: userType === "insurer",
-          },
-        ]
-          .filter((field) => field.show)
-          .map((field) => (
-            <div
-              key={field.label}
-              className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} rounded-xl p-3.5 ${
-                isLightAppearance
-                  ? "bg-white/80 border-slate-200/50"
-                  : "bg-slate-900/35 border-blue-200/18"
-              }`}
-              style={{
-                boxShadow: isLightAppearance
-                  ? "0 1px 3px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.6)"
-                  : "0 1px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(148,163,184,0.06)",
-              }}
-            >
-              <p
-                className={`text-xs uppercase tracking-wide ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
-              >
-                {field.label}
-              </p>
-              <p
-                className={`font-medium mt-1 ${field.breakWords ? "break-words" : ""} ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-              >
-                {field.value}
-              </p>
-            </div>
-          ))}
-        {userType === "customer" && userInfo.vehicles.length > 0 && (
+        {detailFields.map((field) => (
           <div
-            className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""} rounded-xl p-3.5 ${
-              isLightAppearance
-                ? "bg-white/80 border-slate-200/50"
-                : "bg-slate-900/35 border-blue-200/18"
+            key={field.label}
+            className={`bd-dashboard-section rounded-xl p-3.5 ${field.toneClass} ${
+              field.wide ? "sm:col-span-2" : ""
             }`}
-            style={{
-              boxShadow: isLightAppearance
-                ? "0 1px 3px rgba(37,99,235,0.08), inset 0 1px 0 rgba(255,255,255,0.6)"
-                : "0 1px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(148,163,184,0.06)",
-            }}
           >
             <p
               className={`text-xs uppercase tracking-wide ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
             >
-              Vehicles
+              {field.label}
             </p>
+            <p
+              className={`font-medium mt-1 ${field.breakWords ? "break-words" : ""} ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            >
+              {field.value}
+            </p>
+          </div>
+        ))}
+        {userType === "customer" && userInfo.vehicles.length > 0 && (
+          <div className="bd-dashboard-section bd-dashboard-section--accent-blue rounded-xl p-3.5 sm:col-span-2">
+            <div className="flex items-center justify-between gap-3">
+              <p
+                className={`text-xs uppercase tracking-wide ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+              >
+                Vehicles
+              </p>
+              <span
+                className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
+                  isLightAppearance
+                    ? "bg-white/80 text-blue-700"
+                    : "border-blue-200/20 bg-white/10 text-blue-50"
+                }`}
+              >
+                {userInfo.vehicles.length} saved
+              </span>
+            </div>
             {userInfo.vehicles.map((vehicle, index) => (
               <p
                 key={index}
-                className={`font-medium mt-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+                className={`font-medium mt-1.5 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
               >
                 {vehicle.year} {vehicle.make} {vehicle.model}
               </p>
