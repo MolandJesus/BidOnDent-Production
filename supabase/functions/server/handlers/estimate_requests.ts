@@ -70,6 +70,10 @@ export async function getEstimateRequests(
   respond: RespondFunction
 ): Promise<Response> {
   try {
+    const session = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: false,
+    }).then((result) => result.session);
+
     const url = new URL(req.url);
     const clerkUserId = url.searchParams.get("clerkUserId");
     const shopId = url.searchParams.get("shopId");
@@ -77,6 +81,14 @@ export async function getEstimateRequests(
 
     if (!clerkUserId && !shopId && !shopClerkUserId) {
       return respond({ error: "Missing clerkUserId, shopId, or shopClerkUserId" }, 400);
+    }
+
+    // Validate that the requesting user matches the query identity
+    if (clerkUserId) {
+      ensureClerkUserMatchesSession(session, clerkUserId);
+    }
+    if (shopClerkUserId) {
+      ensureClerkUserMatchesSession(session, shopClerkUserId);
     }
 
     let resolvedShopId: number | null = shopId ? parseInt(shopId, 10) : null;
@@ -127,22 +139,28 @@ export async function updateEstimateRequest(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: false,
+    });
     const { clerkUserId, requestId, status, responseMessage } = body;
 
     if (!clerkUserId || !requestId || !status) {
       return respond({ error: "Missing clerkUserId, requestId, or status" }, 400);
     }
 
+    // Bind body-supplied clerkUserId to authenticated JWT identity
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
+
     const validStatuses = ["pending", "viewed", "responded", "declined"];
     if (!validStatuses.includes(status)) {
       return respond({ error: `Invalid status. Must be one of: ${validStatuses.join(", ")}` }, 400);
     }
 
-    // Verify the shop owns this request
+    // Verify the shop owns this request using JWT-validated identity
     const { data: shopProfile } = await supabase
       .from("shop_profiles")
       .select("id")
-      .eq("clerk_user_id", clerkUserId)
+      .eq("clerk_user_id", authenticatedClerkUserId)
       .single();
 
     if (!shopProfile?.id) {
@@ -210,25 +228,31 @@ export async function customerRespondToEstimate(
 ): Promise<Response> {
   try {
     const body = await req.json();
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: false,
+    });
     const { clerkUserId, requestId, status } = body;
 
     if (!clerkUserId || !requestId || !status) {
       return respond({ error: "Missing clerkUserId, requestId, or status" }, 400);
     }
 
+    // Bind body-supplied clerkUserId to authenticated JWT identity
+    const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
+
     const validStatuses = ["accepted", "declined"];
     if (!validStatuses.includes(status)) {
       return respond({ error: `Invalid status. Must be one of: ${validStatuses.join(", ")}` }, 400);
     }
 
-    // Verify the customer owns this estimate request
+    // Verify the customer owns this estimate request using JWT-validated identity
     const { data: existing } = await supabase
       .from("estimate_requests")
       .select("clerk_customer_user_id, status")
       .eq("id", requestId)
       .single();
 
-    if (!existing || existing.clerk_customer_user_id !== clerkUserId) {
+    if (!existing || existing.clerk_customer_user_id !== authenticatedClerkUserId) {
       return respond({ error: "Estimate request not found or not owned by this customer" }, 403);
     }
 
