@@ -3,14 +3,14 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-03 (Pass 567 — Security hardening: removed hardcoded credentials from source, CORS whitelisted, console leakage fixed. Pass 566 — DrawerOverlay forwardRef, ReportDetailDrawer/ReportLayerPopup UX polish.)
+> **Last updated:** 2026-04-03 (Pass 614 — Runtime robustness + UX. Passes 609–614: type safety (zero `any`), aria-hidden fix, console DEV-gating, parallel data loading, bid acceptance resilience.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
-> **Build:** ✅ 0 errors · ~3.3s · MapLibre GL JS WebGL engine
+> **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
-> **TypeScript:** 0 tsc errors (re-verified 2026-03-29 during MapLibre stabilization)
+> **TypeScript:** 0 tsc errors · 0 VS Code diagnostics
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
-> **Production `any` types:** 0 (was 21 — eliminated Passes 433-434; 7 remain in test files only)
+> **Production `any` types:** 0 (eliminated Passes 433-434, re-verified Pass 609; 3 intentional `as any` workarounds remain)
 
 ---
 
