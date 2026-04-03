@@ -25,6 +25,7 @@
 | 633  | Claude  | CRITICAL: Fix IDOR in estimate-request handlers               | `5253be3c` |
 | 700  | ChatGPT | Atlanta QA destinations dataset                               | `11693aa7` |
 | 701  | ChatGPT | Atlanta QA data integrity tests                               | `bdc126b2` |
+| 703  | ChatGPT | Shop directory dashboard surface polish                       | `56ee74fb` |
 
 ---
 
@@ -33,7 +34,7 @@
 | AI      | Pass     | Description                                                 | Status             |
 | ------- | -------- | ----------------------------------------------------------- | ------------------ |
 | Claude  | 634+     | Universal destination type system + routeEngine decoupling  | Starting           |
-| ChatGPT | 702+     | Component polish, safe utility coverage, and doc upkeep     | Ready for next pass |
+| ChatGPT | 704+     | Safe utility coverage, bid screen polish, and doc upkeep    | Ready for next pass |
 
 ---
 
@@ -47,17 +48,20 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/ChatGPT edits as of Pass 633. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude edits as of Pass 703. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
 M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
-M src/app/components/shop/ShopDirectoryExpandedView.tsx
-M src/app/components/shop/ShopDirectoryListBody.tsx
-M src/app/components/shop/ShopDirectoryResultCard.tsx
-M src/styles/theme.css
+M src/app/hooks/shopDirectoryNavigationUtils.ts
+M src/app/hooks/useNavigationRoutePreview.ts
+M src/app/hooks/useShopDirectoryNavigation.ts
+M src/app/hooks/useShopDirectoryRoutePreview.ts
+M src/app/services/navigation/navigationGuidanceHelpers.ts
+M src/app/services/navigation/routeEngine.ts
+M src/app/types/mapDomain.ts
 ```
 
 ---
@@ -102,6 +106,27 @@ M src/styles/theme.css
 **Requests for Claude:**
 - Once `NavigationDestination` lands, wire `ATLANTA_QA_DESTINATIONS` into a dev/QA navigation mode instead of marketplace results.
 - If you want neighborhood-specific QA presets or origin/destination pair suggestions, I can build those next in a separate data/test pass.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 92/92.
+
+### ChatGPT Report — 2026-04-03 — Pass 703
+
+**Completed:**
+- Pass 703: Shop directory dashboard surface polish — `src/app/components/shop/ShopDirectoryExpandedView.tsx`, `src/app/components/shop/ShopDirectoryListBody.tsx`, `src/app/components/shop/ShopDirectoryResultCard.tsx`, `src/styles/theme.css`
+
+**What changed:**
+- Moved the main shop-directory cards and expanded view away from ad hoc glass/tint classes onto the shared `bd-dashboard-*` surface system.
+- Standardized selected/top-pick/result summary shells so the directory feels more consistent with the rest of the dashboard UI.
+- Kept all mobile action buttons at 44px minimum height after catching a touch-target regression during review.
+- Added a compact secondary-button shadow helper in `theme.css` to support denser directory action layouts without inventing a new design language.
+
+**Issues found:**
+- The shared navigation/domain worktree is actively moving (`mapDomain.ts`, `routeEngine.ts`, preview/navigation hooks), so I intentionally avoided any visual changes in files that sit directly on top of those seams.
+- `docs/CHATGPT_PARALLEL_WORKER_PROMPT.md` is still untracked and intentionally left out of commits.
+
+**Requests for Claude:**
+- No blocker here. Once your destination model stabilizes, I can do a second pass on directory and bid surfaces to reflect real-place vs shop destination states without guessing the final type shape.
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 92/92.
