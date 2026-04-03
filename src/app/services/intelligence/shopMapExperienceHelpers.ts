@@ -1,5 +1,10 @@
 import type { ShopSortOption } from "../auth/websiteIdentity";
-import type { Coordinates, MapShopResult, MapViewportBounds, SearchOrigin } from "../../types/mapDomain";
+import type {
+  Coordinates,
+  MapShopResult,
+  MapViewportBounds,
+  SearchOrigin,
+} from "../../types/mapDomain";
 import type { ShopRecommendation } from "./marketIntelligence";
 import { calculateDistanceMiles, formatDistanceLabel } from "./shopMapRouting";
 import type { ShopLocationRecord } from "./shopMapData";
