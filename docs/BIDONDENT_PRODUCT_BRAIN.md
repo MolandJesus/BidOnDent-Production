@@ -23,7 +23,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # BidOnDent Product Brain
 
-Last updated: April 3, 2026 (Pass 565 — Structural extraction: useNavigationLaunch.ts from useOperatingRegionsCoverage.ts + build fixes)
+Last updated: April 3, 2026 (Pass 626 — Bundle optimization: 10 dead deps removed, lazy-load landing page + settings modal, index chunk 604→206KB. Test normalization fix Pass 625.)
 Status: Active strategic reference
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.

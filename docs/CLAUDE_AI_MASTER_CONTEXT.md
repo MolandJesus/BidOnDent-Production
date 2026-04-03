@@ -3,10 +3,10 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-03 (Pass 622 — Code cleanliness sweep + dead code removal. Passes 612–622: aria-hidden fix, parallel data loading, runtime robustness, chunk retry + error boundary, photo upload safety, VIN sanitization, OWASP security audit, dead code removal.)
+> **Last updated:** 2026-04-03 (Pass 626 — Bundle optimization: 10 dead deps removed, landing page + settings modal lazy-loaded, index chunk 604→206KB. Pass 625: test fix for status normalization.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
-> **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
+> **Build:** ✅ 0 errors · ~3.1s · MapLibre GL JS WebGL engine
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
 > **TypeScript:** 0 tsc errors · 0 VS Code diagnostics
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)

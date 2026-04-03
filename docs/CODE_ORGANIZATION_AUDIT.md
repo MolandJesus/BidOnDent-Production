@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** April 3, 2026 (Pass 622 — Code cleanliness sweep: dead code removed (RealtimeBidExample.tsx), lazyWithRetry utility for all 24 lazy-loaded screens, OWASP security audit passed, VIN input sanitization.)
+**Last updated:** April 3, 2026 (Pass 626 — Bundle optimization: 10 unused deps removed (@mui, @emotion, react-dnd, react-slick, react-popper, etc.), landing page + settings modal lazy-loaded, index chunk 604→206KB (66% reduction). Pass 625: test fix for status normalization.)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -49,9 +49,7 @@ Use this together with:
 - `src/app/utils/buildDashboardRouterProps.ts`
   is the adapter layer between the app shell and dashboard screens.
 - `src/app/routers/DashboardRouter.tsx`
-  is a thin shell.
-- `src/app/routers/DashboardRouterScreens.tsx`
-  currently holds most authenticated screen routing decisions.
+  owns authenticated screen routing decisions, lazy-loaded tab screens, and secondary views.
 
 ### Shell components
 
@@ -83,9 +81,9 @@ Use this together with:
 
 ## File Size Status
 
-The repository is fully under the 500-line hard cap as of Pass 562. A second extraction sweep (Passes 568–608) brought many files further under the 300-line soft limit. The codebase was then hardened through Passes 609–622 (type safety, security, dead code removal, runtime safety).
+The repository is fully under the 500-line hard cap as of Pass 562. A second extraction sweep (Passes 568–608) brought many files further under the 300-line soft limit. The codebase was then hardened through Passes 609–626 (type safety, security, dead code removal, runtime safety, bundle optimization).
 
-**Current codebase health (Pass 622):**
+**Current codebase health (Pass 626):**
 
 - Zero production `any` types (3 intentional `as any` workarounds remain — MapLibre resize patch, CSS custom props, Clerk profile)
 - Zero ungated console statements in production code
@@ -94,6 +92,8 @@ The repository is fully under the 500-line hard cap as of Pass 562. A second ext
 - All 24 lazy-loaded screens use `lazyWithRetry` for chunk-load resilience (Pass 617)
 - VIN input sanitization on both vehicle forms (Pass 619)
 - Photo upload mounted guard for unmount safety (Pass 618)
+- Bundle: 10 unused deps removed (Pass 626), landing page + settings modal lazy-loaded, index chunk 604→206KB (66% reduction)
+- Tests: 87/87 passing (6 test files, Vitest 4.1.2)
 - Top file: `useShopDirectorySession.ts` at ~406 lines (was 500, reduced Pass 569)
 
 - `src/app/components/shop/ShopDirectoryScreen.tsx` reduced from 1383 → 979 → 1163 → 478 (Pass 11) → grew back to ~1,003 → **Pass 540: 1003 → 499 lines.** Map interaction handlers extracted to `useShopDirectoryMapActions.ts`, dialog/sheet composition extracted to `ShopDirectoryDialogs.tsx`. Pass 554 compacted further to 494. **✅ Now under 500-line hard cap.**
@@ -130,11 +130,11 @@ The repository is fully under the 500-line hard cap as of Pass 562. A second ext
 - **Pass 563-564 (2026-04-02):** Repository truth reconciliation + commit-ready stabilization. Fixed doc drift in master context, product brain, and code org audit. Committed 212-file working tree (hash `14aa33d5`).
 - **Pass 565 (2026-04-03):** Structural extraction of `useNavigationLaunch.ts` from `useOperatingRegionsCoverage.ts` (515→436 lines). New hook owns navigation-launch state, focus-sync/pending-start effects, and `handleOpenDirections`/`handleOpenBidOnDentNavigation`. Fixed duplicate `circlePolygon` import in `MapLibreServiceCoverageMap.tsx` (build-breaker) and type errors in `CustomerEstimateDetailSheet.tsx`.
 - The largest active files (all under 500) are:
-  - `src/app/hooks/useShopDirectorySession.ts` (500 lines)
-  - `src/app/routers/DashboardRouterScreens.tsx` (~492 lines)
+  - `src/app/hooks/useShopDirectorySession.ts` (~406 lines)
   - `src/app/components/shop/ShopDirectoryScreen.tsx` (~494 lines)
   - `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (~495 lines)
-- **Pass 84 fixes**: `DashboardRouter.tsx` and `DashboardTabScreens.tsx` now correctly plumb `onDeleteAccount` and `websiteIdentity` props to `AccountScreen`. Migration `010_add_clerk_user_id_to_damage_reports.sql` aligns database schema with edge function expectations. `MobileMapBottomSheet.tsx` has `pointer-events-auto` for touch gesture capture.
+  - `src/app/routers/DashboardRouter.tsx` (~452 lines)
+- **Pass 84 fixes**: `DashboardRouter.tsx` now correctly plumbs `onDeleteAccount` and `websiteIdentity` props to `AccountScreen`. Migration `010_add_clerk_user_id_to_damage_reports.sql` aligns database schema with edge function expectations. `MobileMapBottomSheet.tsx` has `pointer-events-auto` for touch gesture capture.
 
 ## What Is Organized Well
 
