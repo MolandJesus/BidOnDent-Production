@@ -90,7 +90,10 @@ export default function ReportLayerPopup({
         )}
         <button
           type="button"
-          onClick={onOpenDrawer}
+          onClick={(e) => {
+            (e.currentTarget as HTMLButtonElement).blur();
+            onOpenDrawer();
+          }}
           className={`mt-1.5 inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
             isDark
               ? "border-amber-400/30 bg-amber-600/30 text-amber-100 hover:bg-amber-600/45"
