@@ -1,5 +1,5 @@
 import { ClerkProvider, useUser, useClerk, useAuth as useClerkAuth } from "@clerk/clerk-react";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
@@ -33,6 +33,7 @@ import {
 import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
 import { completeShopOnboarding, completeInsurerOnboarding } from "./utils/onboardingHandlers";
 import { renderLandingPage } from "./utils/renderLandingPage";
+import { lazyWithRetry } from "./utils/lazyWithRetry";
 import type { ViewMode, DamageReport } from "./types";
 
 // Import components
@@ -44,10 +45,12 @@ import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
-const AboutPage = lazy(() => import("./components/landing/AboutPage"));
-const PrivacyPolicyPage = lazy(() => import("./components/legal/PrivacyPolicyPage"));
-const TermsOfServicePage = lazy(() => import("./components/legal/TermsOfServicePage"));
-const InsurerPartnershipPage = lazy(() => import("./components/landing/InsurerPartnershipPage"));
+const AboutPage = lazyWithRetry(() => import("./components/landing/AboutPage"));
+const PrivacyPolicyPage = lazyWithRetry(() => import("./components/legal/PrivacyPolicyPage"));
+const TermsOfServicePage = lazyWithRetry(() => import("./components/legal/TermsOfServicePage"));
+const InsurerPartnershipPage = lazyWithRetry(
+  () => import("./components/landing/InsurerPartnershipPage")
+);
 
 import { clerkPublishableKey } from "../../utils/clerk/info";
 

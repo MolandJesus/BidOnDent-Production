@@ -1,8 +1,9 @@
-import { lazy, Suspense, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft } from "lucide-react";
+import { lazyWithRetry } from "../../../utils/lazyWithRetry";
 
-const AdminDashboard = lazy(() => import("../../admin/AdminDashboard"));
+const AdminDashboard = lazyWithRetry(() => import("../../admin/AdminDashboard"));
 
 type AccountAdminOverlayProps = {
   isOpen: boolean;

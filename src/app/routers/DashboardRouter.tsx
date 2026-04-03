@@ -1,19 +1,24 @@
 import { AnimatePresence, motion } from "motion/react";
-import { lazy, Suspense, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { ScreenErrorBoundary } from "../components/ScreenErrorBoundary";
 import { useBidsForReport } from "../hooks/useBidsForReport";
 import { useDashboardData } from "./useDashboardData";
+import { lazyWithRetry } from "../utils/lazyWithRetry";
 
-// Lazy-loaded screens for route-level code splitting
-const HomeScreen = lazy(() => import("../components/codelayer/HomeScreen"));
-const ReportScreen = lazy(() => import("../components/codelayer/ReportScreen"));
-const BidsScreen = lazy(() => import("../components/codelayer/BidsScreen"));
-const AccountScreen = lazy(() => import("../components/codelayer/AccountScreen"));
-const ShopRequestsScreen = lazy(() => import("../components/shop/ShopRequestsScreen"));
-const ShopActiveJobsScreen = lazy(() => import("../components/shop/ShopActiveJobsScreen"));
-const ShopEstimateInboxScreen = lazy(() => import("../components/shop/ShopEstimateInboxScreen"));
-const InsurerClaimsScreen = lazy(() => import("../components/insurer/InsurerClaimsScreen"));
-const InsurerPartnerShopsScreen = lazy(
+// Lazy-loaded screens with automatic retry on chunk load failure
+const HomeScreen = lazyWithRetry(() => import("../components/codelayer/HomeScreen"));
+const ReportScreen = lazyWithRetry(() => import("../components/codelayer/ReportScreen"));
+const BidsScreen = lazyWithRetry(() => import("../components/codelayer/BidsScreen"));
+const AccountScreen = lazyWithRetry(() => import("../components/codelayer/AccountScreen"));
+const ShopRequestsScreen = lazyWithRetry(() => import("../components/shop/ShopRequestsScreen"));
+const ShopActiveJobsScreen = lazyWithRetry(() => import("../components/shop/ShopActiveJobsScreen"));
+const ShopEstimateInboxScreen = lazyWithRetry(
+  () => import("../components/shop/ShopEstimateInboxScreen")
+);
+const InsurerClaimsScreen = lazyWithRetry(
+  () => import("../components/insurer/InsurerClaimsScreen")
+);
+const InsurerPartnerShopsScreen = lazyWithRetry(
   () => import("../components/insurer/InsurerPartnerShopsScreen")
 );
 

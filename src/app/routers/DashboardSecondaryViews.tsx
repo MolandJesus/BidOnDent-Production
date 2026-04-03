@@ -7,25 +7,30 @@
  * competitor-analysis, demo-switcher, and route fallback.
  */
 import { AnimatePresence, motion } from "motion/react";
-import { lazy, useMemo } from "react";
+import { useMemo } from "react";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import { zipToCoordinates } from "../services/supabase/map";
+import { lazyWithRetry } from "../utils/lazyWithRetry";
 
-const ReportsListScreen = lazy(() => import("../components/reports/ReportsListScreen"));
-const ReportDetailScreen = lazy(() => import("../components/reports/ReportDetailScreen"));
-const SmokeTestScreen = lazy(() => import("../components/demo/SmokeTestScreen"));
-const InsurerConnectionScreen = lazy(() => import("../components/insurer/InsurerConnectionScreen"));
-const LikedShopsScreen = lazy(() => import("../components/shop/LikedShopsScreen"));
-const VehicleProfileScreen = lazy(() => import("../components/shop/VehicleProfileScreen"));
-const ShopDirectoryScreen = lazy(() => import("../components/shop/ShopDirectoryScreen"));
-const InsurerNewClaimScreen = lazy(() => import("../components/insurer/InsurerNewClaimScreen"));
-const InsuranceCompaniesScreen = lazy(
+const ReportsListScreen = lazyWithRetry(() => import("../components/reports/ReportsListScreen"));
+const ReportDetailScreen = lazyWithRetry(() => import("../components/reports/ReportDetailScreen"));
+const SmokeTestScreen = lazyWithRetry(() => import("../components/demo/SmokeTestScreen"));
+const InsurerConnectionScreen = lazyWithRetry(
+  () => import("../components/insurer/InsurerConnectionScreen")
+);
+const LikedShopsScreen = lazyWithRetry(() => import("../components/shop/LikedShopsScreen"));
+const VehicleProfileScreen = lazyWithRetry(() => import("../components/shop/VehicleProfileScreen"));
+const ShopDirectoryScreen = lazyWithRetry(() => import("../components/shop/ShopDirectoryScreen"));
+const InsurerNewClaimScreen = lazyWithRetry(
+  () => import("../components/insurer/InsurerNewClaimScreen")
+);
+const InsuranceCompaniesScreen = lazyWithRetry(
   () => import("../components/insurer/InsuranceCompaniesScreen")
 );
-const CompetitorAnalysisScreen = lazy(
+const CompetitorAnalysisScreen = lazyWithRetry(
   () => import("../components/reports/CompetitorAnalysisScreen")
 );
-const DemoAccountSwitcher = lazy(() => import("../components/demo/DemoAccountSwitcher"));
+const DemoAccountSwitcher = lazyWithRetry(() => import("../components/demo/DemoAccountSwitcher"));
 
 const screenTransition = {
   initial: { opacity: 0, x: -20 },

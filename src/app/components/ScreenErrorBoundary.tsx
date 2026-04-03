@@ -9,6 +9,7 @@ interface Props {
 interface State {
   hasError: boolean;
   errorMessage: string;
+  isChunkError: boolean;
 }
 
 /**
@@ -17,10 +18,15 @@ interface State {
  * a retry affordance inside the content area.
  */
 export class ScreenErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, errorMessage: "" };
+  state: State = { hasError: false, errorMessage: "", isChunkError: false };
 
   static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, errorMessage: error?.message || "Something went wrong." };
+    const msg = error?.message || "";
+    const isChunkError =
+      msg.includes("Failed to fetch dynamically imported module") ||
+      msg.includes("Loading chunk") ||
+      msg.includes("Loading CSS chunk");
+    return { hasError: true, errorMessage: msg || "Something went wrong.", isChunkError };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -31,7 +37,11 @@ export class ScreenErrorBoundary extends Component<Props, State> {
   }
 
   private handleRetry = () => {
-    this.setState({ hasError: false, errorMessage: "" });
+    if (this.state.isChunkError) {
+      window.location.reload();
+      return;
+    }
+    this.setState({ hasError: false, errorMessage: "", isChunkError: false });
     this.props.onRetry?.();
   };
 
@@ -60,9 +70,13 @@ export class ScreenErrorBoundary extends Component<Props, State> {
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
         </div>
-        <h2 className="text-lg font-semibold text-slate-100">This screen couldn't load</h2>
+        <h2 className="text-lg font-semibold text-slate-100">
+          {this.state.isChunkError ? "Update available" : "This screen couldn't load"}
+        </h2>
         <p className="mt-2 text-sm text-slate-400 max-w-sm">
-          Something went wrong loading this view. Your data is safe.
+          {this.state.isChunkError
+            ? "A newer version of BidOnDent is available. Reload to get the latest."
+            : "Something went wrong loading this view. Your data is safe."}
         </p>
         {import.meta.env.DEV && this.state.errorMessage && (
           <p className="mt-3 rounded-lg bg-slate-800/50 p-3 text-left font-mono text-xs text-slate-400 max-w-md break-words">
@@ -75,7 +89,7 @@ export class ScreenErrorBoundary extends Component<Props, State> {
           className="mt-5 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
           style={{ background: "linear-gradient(135deg, #003d82 0%, #00a0e9 100%)" }}
         >
-          Try Again
+          {this.state.isChunkError ? "Reload Page" : "Try Again"}
         </button>
       </div>
     );
