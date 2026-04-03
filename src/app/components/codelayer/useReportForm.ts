@@ -45,6 +45,7 @@ export function useReportForm({
   const saveIndicatorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const mountedRef = useRef(true);
 
   // Load draft from localStorage on mount
   useEffect(() => {
@@ -68,6 +69,7 @@ export function useReportForm({
 
   useEffect(() => {
     return () => {
+      mountedRef.current = false;
       if (saveIndicatorTimeoutRef.current) {
         clearTimeout(saveIndicatorTimeoutRef.current);
       }
@@ -89,9 +91,11 @@ export function useReportForm({
       let fallbackCount = 0;
 
       for (let i = 0; i < files.length; i++) {
+        if (!mountedRef.current) return;
         const file = files[i];
         setUploadProgress(`Uploading photo ${i + 1} of ${files.length}...`);
         const uploadedPhoto = await uploadReportPhoto(file);
+        if (!mountedRef.current) return;
         setPhotos((prev) => [...prev, uploadedPhoto]);
         if (isBase64Photo(uploadedPhoto)) {
           fallbackCount++;
@@ -99,6 +103,8 @@ export function useReportForm({
           cloudCount++;
         }
       }
+
+      if (!mountedRef.current) return;
 
       if (fallbackCount > 0 && cloudCount === 0) {
         setUploadProgress("Photos saved locally — will retry on submit");
@@ -108,13 +114,16 @@ export function useReportForm({
         setUploadProgress("Upload complete!");
       }
       setTimeout(() => {
+        if (!mountedRef.current) return;
         setUploadingPhoto(false);
         setUploadProgress("");
       }, 2500);
     } catch (error) {
+      if (!mountedRef.current) return;
       if (import.meta.env.DEV) console.error("Error uploading photos:", error);
       setUploadProgress("Upload failed — please try again");
       setTimeout(() => {
+        if (!mountedRef.current) return;
         setUploadingPhoto(false);
         setUploadProgress("");
       }, 2500);
