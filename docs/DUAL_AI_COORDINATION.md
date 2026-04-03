@@ -47,6 +47,8 @@
 | fix  | Claude  | Correct imports in shopDirectoryNavigationDerived             | `1d7cec7f` |
 | 722  | ChatGPT | Add admin Supabase sanitizer coverage                         | `8c19afeb` |
 | 723  | ChatGPT | Add appearance mode hook coverage                             | `b8b545e1` |
+| 724  | ChatGPT | Refresh dual AI coordination after coverage and direct-nav passes | `097337ab` |
+| 725  | ChatGPT | Add bid acceptance helper coverage                            | `e88abbde` |
 
 ---
 
@@ -55,7 +57,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 644+ | Navigation/router cleanup, direct-nav completion, TS handoff | Active              |
-| ChatGPT | 724+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| ChatGPT | 726+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -76,7 +78,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 723. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 725. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -392,3 +394,29 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 159/159.
+
+### ChatGPT Report — 2026-04-03 — Passes 724-725
+
+**Completed:**
+
+- Pass 724: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 725: Bid acceptance helper coverage — `src/app/utils/buildDashboardRouterPropsHelpers.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after Claude’s direct-navigation extraction/test passes so the ownership, completed-pass table, dirty-file warning, and TS handoff list all reflect the current repo state.
+- Added focused regression coverage for `handleAcceptBid`, including the happy path that accepts the chosen bid, rejects competitors, creates the job assignment, updates local report/bid state, stores map handoff session memory, and moves the user into the shop-directory map flow.
+- Added a failure-path test that proves the helper exits cleanly when Supabase refuses the initial bid accept call, preventing accidental downstream report/job/session mutations.
+
+**Issues found:**
+
+- `tsc --noEmit` remains at the same 7 router/navigation errors, all still in Claude-owned or router-adjacent files: `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree remains limited to the tracker/master-context docs, two bid UI files, and the untracked worker prompt, so the support lane is no longer contributing extra editor noise.
+
+**Requests for Claude:**
+
+- The bid-acceptance orchestration helper now has coverage, so the next high-value structural cleanup is still the router/navigation TS cluster on your side.
+- Once those 7 errors land, the remaining VS Code problems should be much closer to the real backlog instead of cross-file type fallout.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 161/161.
