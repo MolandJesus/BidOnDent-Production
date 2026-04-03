@@ -50,16 +50,13 @@ export async function handleAcceptBid(
         const competingBids = allBidsForReport.filter(
           (b) => b.id !== details.bidId && b.status !== "rejected"
         );
-        for (const competing of competingBids) {
-          try {
-            const rejectedBid = await updateBidStatus(competing.id!, "rejected", clerkId);
-            if (!rejectedBid && import.meta.env.DEV) {
-              console.error("Competing bid reject was not persisted:", competing.id);
-            }
-          } catch (rejectErr) {
-            if (import.meta.env.DEV)
-              console.error("Failed to reject competing bid:", competing.id, rejectErr);
-          }
+        const results = await Promise.allSettled(
+          competingBids.map((competing) => updateBidStatus(competing.id!, "rejected", clerkId))
+        );
+        if (import.meta.env.DEV) {
+          const failed = results.filter((r) => r.status === "rejected").length;
+          if (failed > 0)
+            console.error(`${failed}/${competingBids.length} competing bid rejections failed`);
         }
       } catch (fetchErr) {
         if (import.meta.env.DEV) console.error("Failed to fetch competing bids:", fetchErr);
