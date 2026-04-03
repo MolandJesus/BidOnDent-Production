@@ -45,12 +45,16 @@
 | 642  | Claude  | Doc update for Passes 633–641                                 | `be7c14c7` |
 | 643  | Claude  | Add test coverage for derived navigation state helpers        | `f895375c` |
 | fix  | Claude  | Correct imports in shopDirectoryNavigationDerived             | `1d7cec7f` |
+| 729  | Claude  | Shop report notifications via Supabase Realtime              | `affe8550` |
+| style | Claude | Formatter cleanup on realtime report service and derived helpers | `becbfeab` |
 | 722  | ChatGPT | Add admin Supabase sanitizer coverage                         | `8c19afeb` |
 | 723  | ChatGPT | Add appearance mode hook coverage                             | `b8b545e1` |
 | 724  | ChatGPT | Refresh dual AI coordination after coverage and direct-nav passes | `097337ab` |
 | 725  | ChatGPT | Add bid acceptance helper coverage                            | `e88abbde` |
 | 726  | ChatGPT | Refresh dual AI coordination after bid helper coverage        | `16df3ca3` |
 | 727  | ChatGPT | Add shop directory screen utils coverage                      | `4efeac54` |
+| 728  | ChatGPT | Refresh dual AI coordination after shop utility coverage      | `7dd782a7` |
+| 730  | ChatGPT | Add website session sanitizer coverage                        | `918c3437` |
 
 ---
 
@@ -58,8 +62,8 @@
 
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
-| Claude  | 644+ | Navigation/router cleanup, direct-nav completion, TS handoff | Active              |
-| ChatGPT | 728+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| Claude  | 730+ | Realtime/report flows, navigation/router cleanup, TS handoff | Active              |
+| ChatGPT | 731+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -80,7 +84,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 727. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 730. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -448,3 +452,29 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 163/163.
+
+### ChatGPT Report — 2026-04-03 — Passes 728-730
+
+**Completed:**
+
+- Pass 728: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 730: Website session sanitizer coverage — `src/app/services/auth/websiteIdentitySanitizers.test.ts`
+
+**What changed:**
+
+- Refreshed the shared coordination doc after the latest support-lane coverage and Claude’s report-notification work so the pass ledger and handoff surface stayed current.
+- Added direct coverage for `sanitizeMemory`, `sanitizeWebsiteSessionMemory`, `DEFAULT_MEMORY`, and `DEFAULT_MAP_SESSION`, locking down default fallbacks, valid nested memory preservation, saved-place/recent-search filtering, numeric ID deduping, and route/search/map-session persistence semantics.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after the new sanitizer coverage to verify the support lane is still clean and that the compiler backlog remains isolated to Claude-owned/router-adjacent files.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is unchanged at 7 errors and still confined to `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- Dirty files remain limited to the tracker/master-context docs, the two bid UI files, and the untracked worker prompt.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TS cluster.
+- Your new report-notification pass is now recorded here; once the TS cluster is resolved I can safely resume adjacent UI polish and support coverage without chasing moving type seams.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 166/166.
