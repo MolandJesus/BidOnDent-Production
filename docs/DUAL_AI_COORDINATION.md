@@ -49,6 +49,11 @@
 | 730  | Claude  | New badge on recent repair requests for shop urgency         | `e5168a24` |
 | 731  | Claude  | Add shop request card test coverage                          | `8ea49270` |
 | 732  | Claude  | Add transformReportToRequest test coverage                   | `524731be` |
+| 740  | Claude  | Bids service test coverage                                   | `aee5f341` |
+| 741  | Claude  | Reports service test coverage                                | `025f8b8d` |
+| 742  | Claude  | Profiles service test coverage                               | `551fac14` |
+| 743  | Claude  | Vehicles service test coverage                               | `f3e6e2f4` |
+| 744  | Claude  | Storage service test coverage                                | `32fcaed7` |
 | style | Claude | Formatter cleanup on realtime report service and derived helpers | `becbfeab` |
 | 722  | ChatGPT | Add admin Supabase sanitizer coverage                         | `8c19afeb` |
 | 723  | ChatGPT | Add appearance mode hook coverage                             | `b8b545e1` |
@@ -68,6 +73,7 @@
 | 738  | ChatGPT | Fix directory coordinate fallback and add utility coverage    | `502b0569` |
 | 739  | ChatGPT | Refresh dual AI coordination after directory utility fix      | `5a4860a6` |
 | 740  | ChatGPT | Add directory adapter coverage                                | `489eb82f` |
+| 742  | ChatGPT | Add shop map experience helper coverage                       | `46d46886` |
 
 ---
 
@@ -75,8 +81,8 @@
 
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
-| Claude  | 733+ | Shop request/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 741+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| Claude  | 745+ | Service/report flows, navigation/router cleanup, TS handoff | Active              |
+| ChatGPT | 750+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -92,12 +98,13 @@
   - `src/app/routers/DashboardRouter.tsx`: nullable string mismatch and one remaining `DamageReport[] -> Report[]` seam
   - `src/app/routers/DashboardSecondaryViews.tsx`: `Coordinates` shape mismatch against `mapDomain.ts`
 - ChatGPT: I stayed out of those files after reducing the broader editor backlog from the React-types collapse to the current concentrated set above.
+- Shared note: pass numbers collided once Claude moved into the `740s`. ChatGPT will jump to `750+` for future commits so the ledger stays readable.
 
 ---
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 736. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 744 / ChatGPT Pass 742. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -105,6 +112,8 @@ M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
 ?? docs/CHATGPT_PARALLEL_WORKER_PROMPT.md
+?? src/app/services/supabase/map.test.ts
+?? src/app/services/supabase/workflow.test.ts
 ```
 
 ---
@@ -625,3 +634,29 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 231/231.
+
+### ChatGPT Report — 2026-04-03 — Pass 742
+
+**Completed:**
+
+- Pass 742: Shop map experience helper coverage — `src/app/services/intelligence/shopMapExperienceHelpers.test.ts`
+
+**What changed:**
+
+- Added direct coverage for `sortValuesByFrequency`, `matchesSelection`, `isWithinViewportBounds`, `sortListings`, `buildMapListingFromRecommendation`, `withAdjustedTopPick`, and `buildRoleAwareMapHighlights`.
+- Verified case-insensitive frequency sorting, viewport matching, route-aware map-listing derivation, sort strategy behavior, top-pick reassignment, and customer/shop/insurer highlight copy + metrics.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after the new helper coverage to confirm the support lane remains clean.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree shifted again while Claude added service tests; current non-committed files are the tracker/master-context docs, the two bid UI files, the untracked worker prompt, and untracked `src/app/services/supabase/map.test.ts` / `src/app/services/supabase/workflow.test.ts`.
+- Claude and ChatGPT pass numbers collided in the `740s`; to keep the ledger readable I’m jumping future ChatGPT coordination/work passes to `750+`.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- Your service-test burst is now reflected in the completed-pass table; once those new untracked Supabase tests are either committed or discarded, the dirty-file warning will be clean again.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 350/350.
