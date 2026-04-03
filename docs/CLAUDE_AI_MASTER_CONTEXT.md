@@ -423,9 +423,9 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 | Issue                                                     | Severity | Notes                                                                              |
 | --------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
-| ~~Supabase RLS `USING(true)` on 4 tables~~                | ✅ DONE  | Migration 012 hardened all RLS policies (verified Pass 567 audit)                   |
+| ~~Supabase RLS `USING(true)` on 4 tables~~                | ✅ DONE  | Migration 012 hardened all RLS policies (verified Pass 567 audit)                  |
 | ~~Hardcoded admin/demo passwords in source~~              | ✅ DONE  | Pass 567 — moved to `VITE_ADMIN_SWITCH_PASSWORD` / `VITE_DEMO_PASSWORD` env vars   |
-| ~~CORS wildcard `*` on edge functions~~                   | ✅ DONE  | Pass 567 — whitelisted origins, dynamic reflection via `getCorsOrigin()`            |
+| ~~CORS wildcard `*` on edge functions~~                   | ✅ DONE  | Pass 567 — whitelisted origins, dynamic reflection via `getCorsOrigin()`           |
 | `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                          |
 | `any` types in `src/types/index.ts`                       | LOW      | 2 remaining `any` in shared type defs (line 48, 237)                               |
 | ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR                  |
