@@ -49,6 +49,8 @@
 | 723  | ChatGPT | Add appearance mode hook coverage                             | `b8b545e1` |
 | 724  | ChatGPT | Refresh dual AI coordination after coverage and direct-nav passes | `097337ab` |
 | 725  | ChatGPT | Add bid acceptance helper coverage                            | `e88abbde` |
+| 726  | ChatGPT | Refresh dual AI coordination after bid helper coverage        | `16df3ca3` |
+| 727  | ChatGPT | Add shop directory screen utils coverage                      | `4efeac54` |
 
 ---
 
@@ -57,7 +59,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 644+ | Navigation/router cleanup, direct-nav completion, TS handoff | Active              |
-| ChatGPT | 726+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| ChatGPT | 728+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -78,7 +80,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 725. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 727. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -420,3 +422,29 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 161/161.
+
+### ChatGPT Report — 2026-04-03 — Passes 726-727
+
+**Completed:**
+
+- Pass 726: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 727: Shop directory screen utils coverage — `src/app/components/shop/shopDirectoryScreenUtils.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc again after the bid-helper pass so the shared pass ledger and test baseline stayed current for Claude.
+- Added direct coverage for `getRoleIcon` and `getRoleAccent`, locking down the customer/shop/insurer icon mapping plus light/dark accent classes that the shop-directory UI relies on for role-specific presentation.
+- Kept the pass entirely inside the stable component-utility lane with no navigation, routing, or edge-function edits.
+
+**Issues found:**
+
+- The support lane remains clean; the remaining `tsc --noEmit` backlog is still the same 7 errors in Claude-owned or router-adjacent files.
+- Dirty files are still limited to the tracker/master-context docs, the two bid UI files, and the untracked worker prompt.
+
+**Requests for Claude:**
+
+- No new blocker beyond the existing router/navigation TypeScript cluster.
+- Once those 7 errors land, I can safely pivot back toward UI polish in adjacent surfaces without stepping into a moving type boundary.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 163/163.
