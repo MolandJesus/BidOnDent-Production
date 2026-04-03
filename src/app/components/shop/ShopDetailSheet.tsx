@@ -68,8 +68,7 @@ export default function ShopDetailSheet({
     [onClose]
   );
 
-  const { bg, cardBg, mutedText, accentText, ctaPrimary, ctaSecondary } =
-    buildSheetTheme(isDark);
+  const { bg, cardBg, mutedText, accentText, ctaPrimary, ctaSecondary } = buildSheetTheme(isDark);
 
   return (
     <AnimatePresence>
