@@ -1,38 +1,11 @@
-import {
-  AlertTriangle,
-  ExternalLink,
-  LocateFixed,
-  MapPinned,
-  Navigation,
-  RefreshCw,
-  Search,
-  Star,
-} from "lucide-react";
+import { AlertTriangle, LocateFixed, MapPinned, Navigation, RefreshCw, Search } from "lucide-react";
 import { cn } from "../ui/utils";
-import { formatApproximateDriveWindow } from "../maps/mapRoutePresentation";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
-import type {
-  CoverageNearbyShop,
-  CoverageSearchTarget,
-  MapSurfaceTone,
-} from "../maps/serviceCoverageMapTypes";
-
-type CoverageNearestShopsProps = {
-  tone: MapSurfaceTone;
-  isLoadingShops: boolean;
-  fetchError?: string | null;
-  usingDemoFallback?: boolean;
-  activeSearchTarget: CoverageSearchTarget | null;
-  nearbyShops: CoverageNearbyShop[];
-  radiusMiles: string;
-  selectedShopId?: string;
-  onSelectShop: (shop: CoverageNearbyShop) => void;
-  onOpenDirections: (shop: CoverageNearbyShop) => void;
-  onRetryShops?: () => void;
-  className?: string;
-  variant?: "default" | "landing-showcase";
-  selectedShopName?: string | null;
-};
+import CoverageNearestShopCard from "./CoverageNearestShopCard";
+import {
+  LANDING_INSTRUCTION_CARDS,
+  type CoverageNearestShopsProps,
+} from "./coverageNearestShopsHelpers";
 
 export default function CoverageNearestShops({
   tone,
@@ -57,8 +30,7 @@ export default function CoverageNearestShops({
   return (
     <div
       className={
-        className ||
-        cn(isLandingShowcase ? "p-4 lg:p-5" : "p-3", theme.panelStrongClassName)
+        className || cn(isLandingShowcase ? "p-4 lg:p-5" : "p-3", theme.panelStrongClassName)
       }
     >
       {isLandingShowcase ? (
@@ -84,17 +56,32 @@ export default function CoverageNearestShops({
 
           <div className="flex flex-wrap gap-2">
             {activeSearchTarget ? (
-              <span className={cn("rounded-full px-3 py-1.5 text-[11px] font-semibold", theme.softBadgeClassName)}>
+              <span
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-[11px] font-semibold",
+                  theme.softBadgeClassName
+                )}
+              >
                 {radiusMiles} mi radius
               </span>
             ) : null}
             {selectedShopName ? (
-              <span className={cn("rounded-full px-3 py-1.5 text-[11px] font-semibold", theme.badgeClassName)}>
+              <span
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-[11px] font-semibold",
+                  theme.badgeClassName
+                )}
+              >
                 Focused: {selectedShopName}
               </span>
             ) : null}
             {isLoadingShops ? (
-              <span className={cn("rounded-full px-3 py-1.5 text-[11px] font-semibold", theme.softBadgeClassName)}>
+              <span
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-[11px] font-semibold",
+                  theme.softBadgeClassName
+                )}
+              >
                 Loading…
               </span>
             ) : null}
@@ -179,21 +166,18 @@ export default function CoverageNearestShops({
               {[
                 {
                   icon: Search,
-                  title: "Search a ZIP or address",
-                  description:
-                    "Drop in home, work, or a repair address to focus the map fast.",
+                  title: LANDING_INSTRUCTION_CARDS[0].title,
+                  description: LANDING_INSTRUCTION_CARDS[0].description,
                 },
                 {
                   icon: LocateFixed,
-                  title: "Use live location",
-                  description:
-                    "Switch to GPS when you want the map to follow where you are now.",
+                  title: LANDING_INSTRUCTION_CARDS[1].title,
+                  description: LANDING_INSTRUCTION_CARDS[1].description,
                 },
                 {
                   icon: Navigation,
-                  title: "Choose a shop below",
-                  description:
-                    "Once the map is focused, compare nearby partners and jump into routing.",
+                  title: LANDING_INSTRUCTION_CARDS[2].title,
+                  description: LANDING_INSTRUCTION_CARDS[2].description,
                 },
               ].map((item) => {
                 const Icon = item.icon;
@@ -288,160 +272,14 @@ export default function CoverageNearestShops({
                 isLandingShowcase && "flex h-full flex-col gap-3"
               )}
             >
-              {isLandingShowcase ? (
-                <>
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className={cn("text-base font-semibold tracking-tight sm:text-lg", theme.titleClassName)}>
-                        {shop.name}
-                      </div>
-                      <div className={cn("mt-0.5 text-sm", theme.secondaryTextClassName)}>
-                        {shop.addressLine || shop.countyLabel}
-                      </div>
-                    </div>
-
-                    <div className="flex shrink-0 flex-col items-end gap-2">
-                      {selectedShopId === `${shop.id || shop.name}` ? (
-                        <span className={theme.badgeClassName}>Focused</span>
-                      ) : null}
-                      {shop.dataMode === "demo" ? (
-                        <span className="inline-flex rounded-full border border-amber-400/25 bg-amber-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-300">
-                          Demo
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <span className={cn("inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold", theme.softBadgeClassName)}>
-                      <Star className="h-3.5 w-3.5 fill-amber-400 stroke-amber-400" />
-                      {shop.rating.toFixed(1)}
-                    </span>
-                    <span className={cn("rounded-full px-3 py-1.5 text-[11px] font-semibold", theme.softBadgeClassName)}>
-                      {shop.distanceMiles.toFixed(1)} mi
-                    </span>
-                    {formatApproximateDriveWindow(shop.distanceMiles) ? (
-                      <span className={cn("rounded-full px-3 py-1.5 text-[11px] font-semibold", theme.softBadgeClassName)}>
-                        {formatApproximateDriveWindow(shop.distanceMiles)}
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <p className={cn("text-xs leading-5 sm:text-sm sm:leading-6", theme.secondaryTextClassName)}>
-                    {shop.countyLabel}
-                  </p>
-
-                  {shop.specialties.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {shop.specialties.slice(0, 2).map((specialty) => (
-                        <span
-                          key={`${shop.id || shop.name}-${specialty}`}
-                          className={cn("rounded-full px-3 py-1 text-[11px] font-medium", theme.softBadgeClassName)}
-                        >
-                          {specialty}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  <div className="mt-auto flex flex-wrap gap-2 pt-0.5">
-                    <button
-                      type="button"
-                      onClick={() => onSelectShop(shop)}
-                      className={theme.secondaryButtonClassName}
-                    >
-                      <LocateFixed className="h-3.5 w-3.5" />
-                      View on map
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onOpenDirections(shop)}
-                      className={theme.primaryButtonClassName}
-                    >
-                      <Navigation className="h-3.5 w-3.5" />
-                      Start Route
-                    </button>
-                    {shop.phoneNumber ? (
-                      <a href={`tel:${shop.phoneNumber}`} className={theme.secondaryButtonClassName}>
-                        <ExternalLink className="h-3.5 w-3.5" />
-                        Call
-                      </a>
-                    ) : null}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-                        {shop.name}
-                      </div>
-                      <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                        {shop.distanceMiles.toFixed(1)} miles away
-                        {formatApproximateDriveWindow(shop.distanceMiles)
-                          ? ` • ${formatApproximateDriveWindow(shop.distanceMiles)}`
-                          : ""}
-                      </div>
-                      <div className={cn("mt-1 text-xs", theme.secondaryTextClassName)}>
-                        {shop.countyLabel}
-                      </div>
-                      {shop.dataMode === "demo" ? (
-                        <span className="mt-1.5 inline-flex rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-amber-400/15 text-amber-300 border border-amber-400/25">
-                          Demo
-                        </span>
-                      ) : null}
-                    </div>
-                    {selectedShopId === `${shop.id || shop.name}` ? (
-                      <span className={theme.badgeClassName}>Live Focus</span>
-                    ) : null}
-                  </div>
-
-                  {shop.addressLine ? (
-                    <div className={cn("mt-2 text-xs", theme.secondaryTextClassName)}>
-                      {shop.addressLine}
-                    </div>
-                  ) : null}
-                  <div
-                    className={cn(
-                      "mt-1 flex flex-wrap items-center gap-2 text-xs",
-                      theme.secondaryTextClassName
-                    )}
-                  >
-                    <span className="inline-flex items-center gap-0.5">
-                      <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
-                      <span className="font-medium text-amber-300">{shop.rating.toFixed(1)}</span>
-                    </span>
-                    {shop.specialties.length > 0 && (
-                      <span>{shop.specialties.slice(0, 3).join(" • ")}</span>
-                    )}
-                  </div>
-
-                  <div className="mt-3 sm:mt-4 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => onSelectShop(shop)}
-                      className={theme.secondaryButtonClassName}
-                    >
-                      <LocateFixed className="h-3.5 w-3.5" />
-                      View on map
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onOpenDirections(shop)}
-                      className={theme.primaryButtonClassName}
-                    >
-                      <Navigation className="h-3.5 w-3.5" />
-                      Start Route
-                    </button>
-                    {shop.phoneNumber ? (
-                      <a href={`tel:${shop.phoneNumber}`} className={theme.secondaryButtonClassName}>
-                        <ExternalLink className="h-3.5 w-3.5" />
-                        Call
-                      </a>
-                    ) : null}
-                  </div>
-                </>
-              )}
+              <CoverageNearestShopCard
+                shop={shop}
+                theme={theme}
+                isSelected={selectedShopId === `${shop.id || shop.name}`}
+                isLandingShowcase={isLandingShowcase}
+                onSelectShop={onSelectShop}
+                onOpenDirections={onOpenDirections}
+              />
             </div>
           ))}
         </div>

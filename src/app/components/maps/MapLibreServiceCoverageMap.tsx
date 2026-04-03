@@ -110,22 +110,13 @@ export default function MapLibreServiceCoverageMap({
       : null;
 
   /* --- route GeoJSON --- */
-  const routeGeoJSON = useMemo(
-    () => buildRouteGeoJSON(routeGeometry),
-    [routeGeometry]
-  );
+  const routeGeoJSON = useMemo(() => buildRouteGeoJSON(routeGeometry), [routeGeometry]);
 
   /* --- county GeoJSON --- */
-  const countyGeoJSON = useMemo(
-    () => buildCountyGeoJSON(counties),
-    [counties]
-  );
+  const countyGeoJSON = useMemo(() => buildCountyGeoJSON(counties), [counties]);
 
   /* --- GPS GeoJSON --- */
-  const gpsPointGeoJSON = useMemo(
-    () => buildGpsPointGeoJSON(currentPosition),
-    [currentPosition]
-  );
+  const gpsPointGeoJSON = useMemo(() => buildGpsPointGeoJSON(currentPosition), [currentPosition]);
 
   /* --- GPS heading direction cone --- */
   const gpsHeadingGeoJSON = useMemo(

@@ -133,9 +133,7 @@ export function buildSearchTargetRadiusGeoJSON(
   return circlePolygon(activeSearchTarget.lat, activeSearchTarget.lng, radiusMeters);
 }
 
-export function buildSearchTargetPointGeoJSON(
-  activeSearchTarget: CoverageSearchTarget | null
-) {
+export function buildSearchTargetPointGeoJSON(activeSearchTarget: CoverageSearchTarget | null) {
   if (!activeSearchTarget) return null;
   return {
     type: "FeatureCollection" as const,
