@@ -136,10 +136,7 @@ describe("transformReportToRequest", () => {
   });
 
   it("counts photos correctly", () => {
-    const result = transformReportToRequest(
-      makeReport({ photos: ["a.jpg", "b.jpg", "c.jpg"] }),
-      0
-    );
+    const result = transformReportToRequest(makeReport({ photos: ["a.jpg", "b.jpg", "c.jpg"] }), 0);
     expect(result.photoCount).toBe(3);
     expect(result.previewPhoto).toBe("a.jpg");
   });
