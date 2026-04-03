@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-03 (Pass 614 — Runtime robustness + UX. Passes 609–614: type safety (zero `any`), aria-hidden fix, console DEV-gating, parallel data loading, bid acceptance resilience.)
+> **Last updated:** 2026-04-03 (Pass 619 — Security + input validation. Passes 615–619: chunk retry + error boundary, photo upload safety, VIN sanitization, security audit.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
@@ -11,6 +11,7 @@
 > **TypeScript:** 0 tsc errors · 0 VS Code diagnostics
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
 > **Production `any` types:** 0 (eliminated Passes 433-434, re-verified Pass 609; 3 intentional `as any` workarounds remain)
+> **Security:** OWASP audit Pass 619 — zero XSS, zero injection, VIN input sanitized, photo upload guarded
 
 ---
 
