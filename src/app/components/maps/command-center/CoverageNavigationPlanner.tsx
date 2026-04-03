@@ -49,6 +49,7 @@ type CoverageNavigationPlannerProps = {
   onResetNavigationSettings: () => void;
   onRetryRoutePreview: () => void;
   onStartNavigation: () => void;
+  onOpenShops: () => void;
   preferredVoiceLabel: string | null;
   voiceGuidanceSupported: boolean;
   voiceStatusLabel: string;
@@ -92,6 +93,7 @@ export default function CoverageNavigationPlanner({
   onResetNavigationSettings,
   onRetryRoutePreview,
   onStartNavigation,
+  onOpenShops,
   preferredVoiceLabel,
   voiceGuidanceSupported,
   voiceStatusLabel,
@@ -241,6 +243,7 @@ export default function CoverageNavigationPlanner({
         onResetNavigationSettings={onResetNavigationSettings}
         onRetryRoutePreview={onRetryRoutePreview}
         onStartNavigation={onStartNavigation}
+        onOpenShops={onOpenShops}
         currentStepIndex={currentStepIndex}
       />
 

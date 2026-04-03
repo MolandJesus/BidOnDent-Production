@@ -1,13 +1,14 @@
+import { useState } from "react";
 import {
+  ChevronDown,
+  ChevronUp,
   LoaderCircle,
   MapPin,
-  Pause,
-  Play,
   Radio,
   Route,
-  Square,
   TriangleAlert,
 } from "lucide-react";
+import RoutePanelGuidanceControls from "./RoutePanelGuidanceControls";
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
@@ -69,6 +70,7 @@ export default function ShopDirectoryRoutePanel({
   onResumeNavigation,
   onEndNavigation,
 }: ShopDirectoryRoutePanelProps) {
+  const [showAllSteps, setShowAllSteps] = useState(false);
   const isLight = appearanceMode === "light";
   const isGuidanceMode = mode === "guidance";
   const isArrivedMode = hasArrived && Boolean(selectedShop);
@@ -82,7 +84,11 @@ export default function ShopDirectoryRoutePanel({
         selectedRoute.instructions.length
       )
     : 0;
-  const visibleInstructionLimit = isGuidanceMode ? 3 : 2;
+  const baseVisibleLimit = isGuidanceMode ? 3 : 2;
+  const totalRemainingSteps = selectedRoute
+    ? selectedRoute.instructions.length - safeInstructionStartIndex
+    : 0;
+  const visibleInstructionLimit = showAllSteps ? totalRemainingSteps : baseVisibleLimit;
   const visibleInstructions = selectedRoute
     ? selectedRoute.instructions.slice(
         safeInstructionStartIndex,
@@ -422,60 +428,41 @@ export default function ShopDirectoryRoutePanel({
                   </div>
                 ))}
 
-              {!isArrivedMode && hiddenInstructionCount > 0 ? (
-                <div
-                  className={`rounded-[18px] border px-3 py-2 text-sm ${
+              {!isArrivedMode && (hiddenInstructionCount > 0 || showAllSteps) ? (
+                <button
+                  type="button"
+                  onClick={() => setShowAllSteps((v) => !v)}
+                  className={`flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-[18px] border px-3 py-2 text-sm transition-colors ${
                     isLight
-                      ? "border-slate-200/70 bg-white text-slate-500"
-                      : "border-white/[0.08] bg-white/[0.03] text-slate-300/70"
+                      ? "border-slate-200/70 bg-white text-slate-500 hover:bg-slate-50 active:bg-slate-100"
+                      : "border-white/[0.08] bg-white/[0.03] text-slate-300/70 hover:bg-white/[0.06] active:bg-white/[0.08]"
                   }`}
                 >
-                  +{hiddenInstructionCount} more step{hiddenInstructionCount === 1 ? "" : "s"}
-                  {isGuidanceMode ? " after these cues" : " once the route is active"}
-                </div>
+                  {showAllSteps ? (
+                    <>
+                      <ChevronUp className="h-3.5 w-3.5" />
+                      Show fewer steps
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-3.5 w-3.5" />+{hiddenInstructionCount} more step
+                      {hiddenInstructionCount === 1 ? "" : "s"}
+                    </>
+                  )}
+                </button>
               ) : null}
             </div>
 
             {isGuidanceMode &&
             !isArrivedMode &&
             (onPauseNavigation || onResumeNavigation || onEndNavigation) ? (
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {navigationSessionStatus === "paused" ? (
-                  onResumeNavigation ? (
-                    <button
-                      className="flex min-h-[44px] items-center justify-center gap-2 rounded-[1rem] bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
-                      onClick={onResumeNavigation}
-                      type="button"
-                    >
-                      <Play className="h-4 w-4" />
-                      Resume
-                    </button>
-                  ) : null
-                ) : onPauseNavigation ? (
-                  <button
-                    className={`flex min-h-[44px] items-center justify-center gap-2 rounded-[1rem] border px-4 py-2.5 text-sm font-semibold transition-colors ${
-                      isLight
-                        ? "border-slate-300 text-slate-700 hover:bg-slate-100"
-                        : "border-white/20 text-white/80 hover:bg-white/10"
-                    }`}
-                    onClick={onPauseNavigation}
-                    type="button"
-                  >
-                    <Pause className="h-4 w-4" />
-                    Pause
-                  </button>
-                ) : null}
-                {onEndNavigation ? (
-                  <button
-                    className="flex min-h-[44px] items-center justify-center gap-2 rounded-[1rem] bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 active:bg-red-800"
-                    onClick={onEndNavigation}
-                    type="button"
-                  >
-                    <Square className="h-4 w-4" />
-                    End
-                  </button>
-                ) : null}
-              </div>
+              <RoutePanelGuidanceControls
+                navigationSessionStatus={navigationSessionStatus}
+                isLight={isLight}
+                onPauseNavigation={onPauseNavigation}
+                onResumeNavigation={onResumeNavigation}
+                onEndNavigation={onEndNavigation}
+              />
             ) : null}
           </div>
         </>

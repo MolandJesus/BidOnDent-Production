@@ -200,6 +200,8 @@ export const coreDatabaseSchemaSql = `
     city TEXT,
     state TEXT,
     zip_code TEXT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
     photo_urls TEXT[] DEFAULT '{}',
     insurance_claim BOOLEAN DEFAULT false,
     insurance_company TEXT,
@@ -216,6 +218,7 @@ export const coreDatabaseSchemaSql = `
   CREATE INDEX IF NOT EXISTS idx_damage_reports_vehicle_id ON public.damage_reports(vehicle_id);
   CREATE INDEX IF NOT EXISTS idx_damage_reports_status ON public.damage_reports(status);
   CREATE INDEX IF NOT EXISTS idx_damage_reports_created_at ON public.damage_reports(created_at DESC);
+  CREATE INDEX IF NOT EXISTS idx_damage_reports_coords ON public.damage_reports(latitude, longitude) WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 
   ALTER TABLE public.damage_reports ENABLE ROW LEVEL SECURITY;
 

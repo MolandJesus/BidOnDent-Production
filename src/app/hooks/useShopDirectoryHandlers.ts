@@ -143,7 +143,9 @@ export function useShopDirectoryHandlers({
   };
 
   const handleToggleTheme = () => {
-    setMapTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
+    setMapTheme((currentTheme) =>
+      currentTheme === "light" ? "dark" : currentTheme === "dark" ? "auto" : "light"
+    );
   };
 
   const handleSearchInArea = () => {

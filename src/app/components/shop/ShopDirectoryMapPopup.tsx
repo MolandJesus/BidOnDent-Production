@@ -4,7 +4,7 @@
  *
  * Extracted from MapLibreShopDirectoryMapPane to enforce file-size limits.
  */
-import { Compass, LoaderCircle, Radio, Route, TriangleAlert } from "lucide-react";
+import { Compass, Eye, LoaderCircle, Radio, Route, Send, TriangleAlert } from "lucide-react";
 import { Popup } from "react-map-gl/maplibre";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
@@ -32,6 +32,9 @@ type ShopDirectoryMapPopupProps = {
   isLoadingRoute?: boolean;
   onOpenShopDirections?: (shop: ShopMapListing) => void;
   onStartNavigation?: (shop: ShopMapListing) => void;
+  onViewDetails?: (shop: ShopMapListing) => void;
+  onRequestEstimate?: (shop: ShopMapListing) => void;
+  compact?: boolean;
 };
 
 export default function ShopDirectoryMapPopup({
@@ -52,8 +55,14 @@ export default function ShopDirectoryMapPopup({
   isLoadingRoute = false,
   onOpenShopDirections,
   onStartNavigation,
+  onViewDetails,
+  onRequestEstimate,
+  compact = false,
 }: ShopDirectoryMapPopupProps) {
   const isDark = mapTheme === "dark";
+  const actionButtonClassName = compact
+    ? "inline-flex min-h-[36px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-1.5 text-[11px] font-semibold transition-colors"
+    : "inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-sm font-semibold transition-colors";
 
   /* ── Popup-specific derived state ─────────────────────────────────── */
   const popupRouteReady = Boolean(
@@ -84,20 +93,20 @@ export default function ShopDirectoryMapPopup({
       (navigationSessionStatus === "active" || navigationSessionStatus === "paused")
   );
 
-  /* ── Theme tokens ─────────────────────────────────────────────────── */
-  const popupTitle = isDark ? "text-slate-100" : "text-slate-800";
+  /* ── Theme tokens (aligned with landing-page glass language) ──────── */
+  const popupTitle = isDark ? "text-white" : "text-slate-800";
   const popupSub = isDark ? "text-slate-200" : "text-slate-500";
   const popupScoreCard = isDark
-    ? "border-white/22 bg-slate-900/72 text-slate-200"
-    : "border-slate-200 bg-slate-50 text-slate-500";
+    ? "border-blue-300/25 bg-[linear-gradient(180deg,rgba(37,99,235,0.26),rgba(15,23,42,0.82))] text-slate-200"
+    : "border-sky-200/70 bg-[linear-gradient(180deg,rgba(239,246,255,0.84),rgba(219,234,254,0.72))] text-slate-500";
   const popupScoreValue = isDark ? "text-white" : "text-slate-800";
   const popupCarrierCard = isDark
     ? "border-emerald-300/35 bg-emerald-900/42 text-emerald-200"
     : "border-emerald-200 bg-emerald-50 text-emerald-600";
   const popupCarrierValue = isDark ? "text-emerald-200" : "text-emerald-800";
   const popupCta = isDark
-    ? "border-blue-300/55 bg-blue-600/42 text-white hover:bg-blue-600/55"
-    : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100";
+    ? "border-blue-300/30 bg-blue-300 text-slate-950 shadow-[0_10px_20px_rgba(59,130,246,0.24)] hover:-translate-y-0.5 hover:bg-blue-200"
+    : "border-blue-300/40 bg-[linear-gradient(180deg,rgba(59,130,246,0.82),rgba(29,78,216,0.88))] text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)] hover:-translate-y-0.5 hover:brightness-110";
   const badgeBase =
     "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em]";
   const sessionBadge =
@@ -148,15 +157,18 @@ export default function ShopDirectoryMapPopup({
       offset={14}
       closeOnClick={false}
       onClose={onClose}
+      maxWidth={compact ? "264px" : "320px"}
     >
-      <div className="space-y-2">
+      <div className={compact ? "space-y-1.5" : "space-y-2"}>
         <div>
-          <p className={`font-semibold ${popupTitle}`}>{shopPopup.shop.name}</p>
-          <p className={`text-sm ${popupSub}`}>
+          <p className={`truncate ${compact ? "text-sm" : ""} font-semibold ${popupTitle}`}>
+            {shopPopup.shop.name}
+          </p>
+          <p className={`truncate ${compact ? "text-xs" : "text-sm"} ${popupSub}`}>
             {shopPopup.shop.mapResult.address}, {shopPopup.shop.mapResult.city}
           </p>
           {shopPopup.shop.rating > 0 && (
-            <p className={`mt-0.5 text-xs ${popupSub}`}>
+            <p className={`mt-0.5 ${compact ? "text-[11px]" : "text-xs"} ${popupSub}`}>
               ★ {shopPopup.shop.rating.toFixed(1)}
               {shopPopup.shop.reviews > 0 && (
                 <span className="ml-1 opacity-70">({shopPopup.shop.reviews})</span>
@@ -187,22 +199,26 @@ export default function ShopDirectoryMapPopup({
             </span>
           ) : null}
         </div>
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          <div className={`rounded-xl border px-3 py-2 ${popupScoreCard}`}>
+        <div className={`grid grid-cols-2 ${compact ? "gap-1.5 text-xs" : "gap-2 text-sm"}`}>
+          <div
+            className={`rounded-xl border px-3 py-2 ${shopPopup.shop.insuranceCompatibilityScore > 0 ? "" : "col-span-2"} ${popupScoreCard}`}
+          >
             <p>AI fit</p>
             <p className={`font-semibold ${popupScoreValue}`}>
               {shopPopup.shop.recommendationScore}%
             </p>
           </div>
-          <div className={`rounded-xl border px-3 py-2 ${popupCarrierCard}`}>
-            <p>Carrier fit</p>
-            <p className={`font-semibold ${popupCarrierValue}`}>
-              {shopPopup.shop.insuranceCompatibilityScore}%
-            </p>
-          </div>
+          {shopPopup.shop.insuranceCompatibilityScore > 0 && (
+            <div className={`rounded-xl border px-3 py-2 ${popupCarrierCard}`}>
+              <p>Carrier fit</p>
+              <p className={`font-semibold ${popupCarrierValue}`}>
+                {shopPopup.shop.insuranceCompatibilityScore}%
+              </p>
+            </div>
+          )}
         </div>
         {selectedRoute ? (
-          <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className={`grid grid-cols-2 ${compact ? "gap-1.5 text-xs" : "gap-2 text-sm"}`}>
             <div className={`rounded-xl border px-3 py-2 ${popupScoreCard}`}>
               <p>Route</p>
               <p className={`font-semibold ${popupScoreValue}`}>{selectedRoute.label}</p>
@@ -227,23 +243,53 @@ export default function ShopDirectoryMapPopup({
             <p className="leading-5">{routeError}</p>
           </div>
         ) : null}
-        {onOpenShopDirections && (
-          <button
-            type="button"
-            onClick={() => {
-              if (shouldUsePopupNavigationAction && onStartNavigation) {
-                onStartNavigation(shopPopup.shop);
-                return;
-              }
+        <div className="flex gap-2">
+          {onViewDetails && (
+            <button
+              type="button"
+              onClick={() => onViewDetails(shopPopup.shop)}
+              className={`${actionButtonClassName} ${
+                isDark
+                  ? "border-white/15 bg-white/[0.06] text-slate-200 hover:bg-white/10"
+                  : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              <Eye className="h-3.5 w-3.5" />
+              Details
+            </button>
+          )}
+          {onRequestEstimate && (
+            <button
+              type="button"
+              onClick={() => onRequestEstimate(shopPopup.shop)}
+              className={`${actionButtonClassName} ${
+                isDark
+                  ? "border-blue-400/25 bg-blue-600/20 text-blue-200 hover:bg-blue-600/30"
+                  : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+              }`}
+            >
+              <Send className="h-3.5 w-3.5" />
+              Estimate
+            </button>
+          )}
+          {onOpenShopDirections && (
+            <button
+              type="button"
+              onClick={() => {
+                if (shouldUsePopupNavigationAction && onStartNavigation) {
+                  onStartNavigation(shopPopup.shop);
+                  return;
+                }
 
-              onOpenShopDirections(shopPopup.shop);
-            }}
-            className={`inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors ${popupCta}`}
-          >
-            <Compass className="h-3.5 w-3.5" />
-            {popupHasArrived ? "Start Again" : popupActionLabel}
-          </button>
-        )}
+                onOpenShopDirections(shopPopup.shop);
+              }}
+              className={`${compact ? "inline-flex min-h-[38px] flex-1 items-center justify-center gap-1.5 rounded-xl border px-2.5 py-2 text-xs font-semibold transition-colors" : "inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors"} ${popupCta}`}
+            >
+              <Compass className="h-3.5 w-3.5" />
+              {popupHasArrived ? "Start Again" : popupActionLabel}
+            </button>
+          )}
+        </div>
       </div>
     </Popup>
   );

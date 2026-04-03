@@ -6,8 +6,8 @@
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
-  ensureWebsiteUserKeyMatchesSession,
   requireClerkSession,
+  resolveWebsiteUserKeyForSession,
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 import { hydrateSignedStorageUrl } from "../utils/storage.ts";
@@ -83,8 +83,9 @@ export async function getShopProfile(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const session = await requireClerkSession(req, { requireEmail: true });
-    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+    const session = await requireClerkSession(req, { requireEmail: false });
+    const websiteUserKey = await resolveWebsiteUserKeyForSession(
+      supabase,
       session,
       url.searchParams.get("websiteUserKey")
     );
@@ -132,14 +133,15 @@ export async function saveShopProfile(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const { identity, profile } = body || {};
 
     if (!profile?.businessName) {
       return respond({ error: "Missing identity or businessName" }, 400);
     }
 
-    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+    const websiteUserKey = await resolveWebsiteUserKeyForSession(
+      supabase,
       session,
       identity?.websiteUserKey || null
     );
@@ -195,8 +197,9 @@ export async function getInsurerProfile(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const session = await requireClerkSession(req, { requireEmail: true });
-    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+    const session = await requireClerkSession(req, { requireEmail: false });
+    const websiteUserKey = await resolveWebsiteUserKeyForSession(
+      supabase,
       session,
       url.searchParams.get("websiteUserKey")
     );
@@ -244,14 +247,15 @@ export async function saveInsurerProfile(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const { identity, profile } = body || {};
 
     if (!profile?.companyName) {
       return respond({ error: "Missing identity or companyName" }, 400);
     }
 
-    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+    const websiteUserKey = await resolveWebsiteUserKeyForSession(
+      supabase,
       session,
       identity?.websiteUserKey || null
     );

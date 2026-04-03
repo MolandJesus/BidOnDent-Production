@@ -6,9 +6,10 @@
  * liked-shops, vehicles, shop-directory, new-claim, insurance-companies,
  * competitor-analysis, demo-switcher, and route fallback.
  */
-import { motion } from "motion/react";
-import { lazy } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { lazy, useMemo } from "react";
 import type { DashboardRouterProps } from "./dashboard-router-types";
+import { zipToCoordinates } from "../services/supabase/map";
 
 const ReportsListScreen = lazy(() => import("../components/reports/ReportsListScreen"));
 const ReportDetailScreen = lazy(() => import("../components/reports/ReportDetailScreen"));
@@ -29,7 +30,7 @@ const DemoAccountSwitcher = lazy(() => import("../components/demo/DemoAccountSwi
 const screenTransition = {
   initial: { opacity: 0, x: -20 },
   animate: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: 20 },
+  exit: { opacity: 0, x: 20, pointerEvents: "none" as const },
   transition: { duration: 0.2 },
 };
 
@@ -79,8 +80,20 @@ export default function DashboardSecondaryViews({
   onExitDemoMode,
   onConfirmCompletion,
 }: Props) {
+  // Compute report-based map center for shop directory when navigating from a report
+  const reportMapCenter = useMemo(() => {
+    const report = selectedReportId
+      ? reports.find((r) => r.id === selectedReportId)
+      : reports[reports.length - 1];
+    if (!report) return undefined;
+    if (report.latitude != null && report.longitude != null) {
+      return { lat: report.latitude, lng: report.longitude };
+    }
+    return zipToCoordinates(report.zip_code || report.zipCode) ?? undefined;
+  }, [selectedReportId, reports]);
+
   return (
-    <>
+    <AnimatePresence mode="wait">
       {/* Reports List Screen */}
       {viewMode === "reports-list" && (
         <motion.div key="reports-list" {...screenTransition}>
@@ -237,6 +250,22 @@ export default function DashboardSecondaryViews({
               onSelectReport(reportId);
               onViewModeChange("report-detail");
             }}
+            onViewBids={(reportId?: string) => {
+              if (reportId) onSelectReport(reportId);
+              onTabChange("bids");
+              onViewModeChange("dashboard");
+            }}
+            mapReports={reports as unknown as import("../services/supabase/types").DamageReport[]}
+            initialSearchHint={
+              reports.length > 0
+                ? (() => {
+                    const latest = reports[reports.length - 1];
+                    return latest.zip_code || latest.zipCode || latest.city || undefined;
+                  })()
+                : undefined
+            }
+            initialMapCenter={reportMapCenter}
+            focusReportId={selectedReportId ?? undefined}
           />
         </motion.div>
       )}
@@ -304,6 +333,6 @@ export default function DashboardSecondaryViews({
           />
         </motion.div>
       )}
-    </>
+    </AnimatePresence>
   );
 }

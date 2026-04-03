@@ -104,7 +104,7 @@ export default function BusinessInquirySection({
   return (
     <section
       id="business-inquiry"
-      className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
+      className="pt-8 pb-12 sm:pt-10 sm:pb-16 md:pt-12 md:pb-20 relative overflow-hidden"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #edf1f8 0%, #f0f4fa 35%, #eaeff6 70%, #e8ecf4 100%)"
@@ -184,7 +184,7 @@ export default function BusinessInquirySection({
 
       <div className="container mx-auto px-4 max-w-6xl relative">
         <div
-          className={`text-center mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+          className={`text-center mb-6 sm:mb-7 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
             className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/30 bg-white/40 text-blue-700 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
@@ -193,12 +193,12 @@ export default function BusinessInquirySection({
             Growth &amp; Partnerships
           </span>
           <h3
-            className={`text-2xl sm:text-4xl font-bold mt-5 mb-3 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            className={`text-2xl sm:text-4xl font-bold mt-4 mb-2.5 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
           >
             Shop Signup and Insurer Partnerships
           </h3>
           <p
-            className={`text-base sm:text-xl leading-relaxed max-w-3xl mx-auto ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+            className={`text-base sm:text-lg leading-relaxed max-w-3xl mx-auto ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
           >
             Submit your information to join the BidOnDent network. Every request is reviewed and
             confirmed by our team.

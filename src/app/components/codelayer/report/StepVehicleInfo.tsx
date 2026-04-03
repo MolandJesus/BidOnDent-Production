@@ -8,10 +8,12 @@ type Vehicle = {
   vin: string;
 };
 
+type SavedVehicle = Vehicle & { id: string };
+
 type StepVehicleInfoProps = {
   primaryColor: string;
   appearanceMode?: DashboardAppearanceMode;
-  vehicles: any[];
+  vehicles: SavedVehicle[];
   vehicle: Vehicle;
   onVehicleChange: (vehicle: Vehicle) => void;
   onContinue: () => void;
@@ -62,7 +64,7 @@ export default function StepVehicleInfo({
             Pick a saved vehicle
           </h3>
           <div className="space-y-2.5">
-            {vehicles.map((savedVehicle: any) => (
+            {vehicles.map((savedVehicle) => (
               <button
                 key={savedVehicle.id}
                 onClick={() =>

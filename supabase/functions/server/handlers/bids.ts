@@ -29,7 +29,9 @@ async function enrichBidsWithGeo(
   if (!shops || shops.length === 0) return bids;
 
   const geoMap = new Map(
-    shops.map((s: any) => [s.clerk_user_id, { lat: s.geo_latitude, lng: s.geo_longitude }])
+    shops
+      .filter((s: any) => s.geo_latitude != null && s.geo_longitude != null)
+      .map((s: any) => [s.clerk_user_id, { lat: s.geo_latitude, lng: s.geo_longitude }])
   );
 
   return bids.map((bid) => {
@@ -50,7 +52,7 @@ export async function createBid(
   try {
     const body = await req.json();
     const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
-      requireEmail: true,
+      requireEmail: false,
     });
     const { clerkUserId, bid } = body;
     const damageReportId = bid?.damage_report_id ?? bid?.report_id;
@@ -117,7 +119,7 @@ export async function getBids(
   try {
     const url = new URL(req.url);
     const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
-      requireEmail: true,
+      requireEmail: false,
     });
     const reportId = url.searchParams.get("reportId");
     const clerkUserId = url.searchParams.get("clerkUserId");
@@ -235,7 +237,7 @@ export async function updateBidStatus(
 
     const body = await req.json();
     const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
-      requireEmail: true,
+      requireEmail: false,
     });
     const { status, clerkUserId } = body;
 
@@ -331,7 +333,7 @@ export async function deleteBid(
       return respond({ error: "Missing bid ID" }, 400);
     }
 
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const url = new URL(req.url);
     const clerkUserId = url.searchParams.get("clerkUserId");
 

@@ -43,6 +43,8 @@ export interface DamageReport {
   city?: string;
   state?: string;
   zip_code?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   photo_urls?: string[];
   insurance_claim?: boolean;
   insurance_company?: string;

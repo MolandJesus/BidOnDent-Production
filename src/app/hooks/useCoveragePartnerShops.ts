@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { CoveragePartnerShop } from "../components/maps/serviceCoverageMapTypes";
 import { fallbackPartnerHubs } from "../components/landing/coverageData";
@@ -38,6 +38,11 @@ export function useCoveragePartnerShops() {
   const [publicShops, setPublicShops] = useState<PartnerShopMapRecord[]>([]);
   const [isLoadingShops, setIsLoadingShops] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
+
+  const retryPartnerShops = useCallback(() => {
+    setRetryNonce((current) => current + 1);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -62,11 +67,12 @@ export function useCoveragePartnerShops() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [retryNonce]);
 
   const mappedPartnerShops = useMemo(() => mapPartnerShopRecords(publicShops), [publicShops]);
-  // Map surfaces are backend-first by default; demo fallback must be explicitly enabled.
-  const allowDemoFallback = DEMO_MODE && import.meta.env.VITE_ENABLE_MAP_DEMO_FALLBACK === "true";
+  // Keep production backend-first while ensuring local demo/dev route flows remain testable.
+  const explicitDemoFallback = import.meta.env.VITE_ENABLE_MAP_DEMO_FALLBACK === "true";
+  const allowDemoFallback = explicitDemoFallback || (DEMO_MODE && import.meta.env.DEV);
   const usingDemoFallback = mappedPartnerShops.length === 0 && allowDemoFallback;
 
   return {
@@ -79,5 +85,6 @@ export function useCoveragePartnerShops() {
           : [],
     usingDemoFallback,
     fetchError,
+    retryPartnerShops,
   };
 }

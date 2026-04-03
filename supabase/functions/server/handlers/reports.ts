@@ -29,6 +29,8 @@ function buildReportPayload(clerkUserId: string, report: any) {
     city: report.city || null,
     state: report.state || null,
     zip_code: report.zip_code || null,
+    latitude: typeof report.latitude === 'number' ? report.latitude : null,
+    longitude: typeof report.longitude === 'number' ? report.longitude : null,
     photo_urls: report.photo_urls || [],
     insurance_claim: report.insurance_claim || false,
     insurance_company: report.insurance_company || null,
@@ -55,14 +57,14 @@ export async function createReport(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const { clerkUserId, report } = body;
     const authenticatedClerkUserId = ensureClerkUserMatchesSession(
       session,
       clerkUserId || null
     );
 
-    const requiredFields = ['vehicle_make', 'vehicle_model', 'vehicle_year', 'damage_type'] as const;
+    const requiredFields = ['vehicle_make', 'vehicle_model', 'vehicle_year', 'damage_type', 'damage_location'] as const;
     for (const field of requiredFields) {
       if (!report?.[field]) {
         return respond({ error: `Missing required field: ${field}` }, 400);
@@ -104,7 +106,7 @@ export async function getReports(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const clerkUserId = ensureClerkUserMatchesSession(
       session,
       url.searchParams.get('clerkUserId')
@@ -149,7 +151,7 @@ export async function updateReport(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const { clerkUserId, report } = body;
 
     if (!reportId || !clerkUserId) {
@@ -233,7 +235,7 @@ export async function deleteReport(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const url = new URL(req.url);
     const clerkUserId = url.searchParams.get("clerkUserId");
 

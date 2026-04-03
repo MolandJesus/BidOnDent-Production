@@ -162,7 +162,7 @@ export default function ShopDirectoryOriginSearch({
         </div>
       )}
 
-      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex flex-wrap gap-1.5 pb-1">
         {onUseMyLocation && (
           <button
             className={`shrink-0 inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${

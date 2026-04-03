@@ -152,7 +152,10 @@ export function buildOriginGeoJson(origin: Place | null): PointFeature | null {
 }
 
 // ── User Coords ────────────────────────────────────────────────────────────
-export function buildUserCoordsGeoJson(userCoords: Coordinates | null): PointFeature | null {
+export function buildUserCoordsGeoJson(
+  userCoords: Coordinates | null,
+  headingDegrees?: number | null
+): PointFeature | null {
   if (!userCoords) return null;
   return {
     type: "Feature",
@@ -160,7 +163,10 @@ export function buildUserCoordsGeoJson(userCoords: Coordinates | null): PointFea
       type: "Point",
       coordinates: [userCoords.longitude, userCoords.latitude] as [number, number],
     },
-    properties: {},
+    properties: {
+      heading: typeof headingDegrees === "number" ? headingDegrees : -1,
+      hasHeading: typeof headingDegrees === "number" ? 1 : 0,
+    },
   };
 }
 

@@ -10,6 +10,7 @@
 
 import { useEffect, useRef } from "react";
 import type { DeviationEvent } from "./deviationTypes";
+import type { RerouteState } from "./rerouteTypes";
 import type { NavigationSession } from "./sessionTypes";
 import type { NotificationActions } from "../notifications/useNotificationEvents";
 
@@ -35,12 +36,14 @@ export function useNavigationToastBridge(
   latestDeviation: DeviationEvent | null,
   notifications: NotificationActions,
   restoredFromCloud?: boolean,
-  syncError?: string | null
+  syncError?: string | null,
+  rerouteState?: RerouteState | null
 ): void {
   const prevStatusRef = useRef<SessionStatus>(session.status);
   const prevDeviationRef = useRef<DeviationEvent | null>(null);
   const restoredToastedRef = useRef(false);
   const prevSyncErrorRef = useRef<string | null>(null);
+  const prevRerouteStatusRef = useRef<RerouteState["status"] | null>(null);
 
   // Watch session status transitions
   useEffect(() => {
@@ -113,4 +116,34 @@ export function useNavigationToastBridge(
     }
     prevSyncErrorRef.current = syncError ?? null;
   }, [syncError, notifications]);
+
+  // Auto-reroute confirmation toasts
+  useEffect(() => {
+    if (!rerouteState) return;
+
+    const prev = prevRerouteStatusRef.current;
+    const next = rerouteState.status;
+    prevRerouteStatusRef.current = next;
+
+    if (prev === next) return;
+
+    // Only toast for auto-reroute (not user-requested)
+    const isAutoOrigin = rerouteState.activeRequest?.origin === "auto";
+
+    if (next === "pending" && isAutoOrigin) {
+      notifications.showToast({
+        message: "Finding a new route…",
+        variant: "info",
+        durationMs: 3000,
+        deepLink: null,
+      });
+    } else if ((next === "completed" || next === "cooldown") && prev === "pending") {
+      notifications.showToast({
+        message: "Rerouted — new route loaded",
+        variant: "success",
+        durationMs: 3000,
+        deepLink: null,
+      });
+    }
+  }, [rerouteState, notifications]);
 }

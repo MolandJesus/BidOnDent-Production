@@ -31,8 +31,9 @@ export type RerouteStatus = "idle" | "eligible" | "pending" | "completed" | "coo
  *
  * user_requested   → tapped "Review route" in the off-route prompt
  * system_suggested → system determined reroute is advisable (future)
+ * auto             → auto-reroute triggered by high-severity off-route
  */
-export type RerouteOrigin = "user_requested" | "system_suggested";
+export type RerouteOrigin = "user_requested" | "system_suggested" | "auto";
 
 /* ------------------------------------------------------------------ */
 /*  Reroute request                                                    */

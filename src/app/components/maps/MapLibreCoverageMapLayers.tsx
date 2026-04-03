@@ -29,6 +29,7 @@ type MapLibreCoverageMapLayersProps = {
   onSelectDiscoveryPlace?: (place: NavigationDiscoveryPlace) => void;
   gpsAccuracyGeoJSON: GeoJSON | null;
   gpsPointGeoJSON: GeoJSON | null;
+  gpsHeadingGeoJSON: GeoJSON | null;
   activeSearchTarget: { label: string } | null;
   searchTargetRadiusGeoJSON: GeoJSON | null;
   searchTargetPointGeoJSON: GeoJSON | null;
@@ -51,6 +52,7 @@ export default function MapLibreCoverageMapLayers({
   onSelectDiscoveryPlace,
   gpsAccuracyGeoJSON,
   gpsPointGeoJSON,
+  gpsHeadingGeoJSON,
   activeSearchTarget,
   searchTargetRadiusGeoJSON,
   searchTargetPointGeoJSON,
@@ -204,6 +206,21 @@ export default function MapLibreCoverageMapLayers({
               "circle-stroke-color": "#ffffff",
               "circle-stroke-width": 3,
             }}
+          />
+        </Source>
+      ) : null}
+
+      {gpsHeadingGeoJSON ? (
+        <Source id="gps-heading" type="geojson" data={gpsHeadingGeoJSON}>
+          <Layer
+            id="gps-heading-line"
+            type="line"
+            paint={{
+              "line-color": tone === "light" ? "#0ea5e9" : "#22d3ee",
+              "line-width": 4,
+              "line-opacity": 0.7,
+            }}
+            layout={{ "line-cap": "round" }}
           />
         </Source>
       ) : null}

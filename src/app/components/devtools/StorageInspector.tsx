@@ -58,8 +58,8 @@ export default function StorageInspector({ onClose, userEmail }: StorageInspecto
         total_vehicles: vehicles?.length || 0,
         total_reports: validReports.length,
       });
-    } catch (error: any) {
-      setSupabaseData({ error: error.message });
+    } catch (err: unknown) {
+      setSupabaseData({ error: err instanceof Error ? err.message : String(err) });
     } finally {
       setLoading(false);
     }

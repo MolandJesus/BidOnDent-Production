@@ -214,15 +214,25 @@ export function buildRoleAwareRouteSummary({
   selectedRoute,
   shop,
   userType,
+  isActiveGuidance = false,
 }: {
   selectedRoute: RouteOption | null;
   shop: ShopMapListing | null;
   userType: MarketUserType;
+  isActiveGuidance?: boolean;
 }) {
   if (!selectedRoute || !shop) {
     return {
       description: "Pick an origin to unlock route preview, ETA, and turn guidance.",
       title: "Route preview ready when you are",
+      callouts: [],
+    };
+  }
+
+  if (isActiveGuidance) {
+    return {
+      title: `Navigating to ${shop.name}`,
+      description: "",
       callouts: [],
     };
   }

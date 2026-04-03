@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import type { NavigationSessionStatus } from "../../features/navigation";
+import MapPaneLegendPanel from "./MapPaneLegendPanel";
 
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
@@ -51,6 +52,9 @@ type BottomOverlayProps = {
   reportCount?: number | null;
   showRoutes?: boolean;
   onToggleRoutes?: () => void;
+  reportStatusFilter?: string;
+  onReportStatusFilterChange?: (status: string) => void;
+  density?: "default" | "compact";
 };
 
 type SearchPillsProps = {
@@ -60,38 +64,39 @@ type SearchPillsProps = {
   onSearchInArea?: () => void;
   onClearAreaSearch?: () => void;
   onClearPan: () => void;
+  density?: "default" | "compact";
 };
 
 /* ── Theme tokens (shared between header + bottom) ──────────────────── */
+/**
+ * Premium glass tokens aligned with the landing-page mapSurfaceTheme
+ * design language (blue-accented gradients, royal blue shadow palette).
+ */
 function useOverlayTokens(isDark: boolean) {
   return {
     badgeCard: isDark
-      ? "border-white/22 bg-slate-950/82 text-white shadow-xl backdrop-blur"
-      : "border-black/8 bg-white/85 text-slate-800 shadow-xl backdrop-blur",
-    badgeLabel: isDark ? "text-white/78" : "text-slate-500",
-    badgeValue: isDark ? "text-white/95" : "text-slate-800",
+      ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))] text-white shadow-xl backdrop-blur-2xl"
+      : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.84),rgba(226,232,240,0.76))] text-slate-800 shadow-xl backdrop-blur-2xl",
+    badgeLabel: isDark ? "text-slate-400" : "text-slate-500",
+    badgeValue: isDark ? "text-white" : "text-slate-800",
     topGradient: isDark
-      ? "bg-gradient-to-b from-slate-950/64 via-slate-950/20 to-transparent"
-      : "bg-gradient-to-b from-black/18 via-black/5 to-transparent",
+      ? "bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.18),transparent_40%),linear-gradient(180deg,rgba(2,6,23,0.62)_0%,rgba(2,6,23,0.18)_50%,transparent_100%)]"
+      : "bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.10),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.06)_50%,transparent_100%)]",
     bottomGradient: isDark
-      ? "bg-gradient-to-t from-slate-950/84 via-slate-950/30 to-transparent"
-      : "bg-gradient-to-t from-black/22 via-black/8 to-transparent",
+      ? "bg-[linear-gradient(0deg,rgba(2,6,23,0.82)_0%,rgba(15,23,42,0.38)_45%,transparent_100%)]"
+      : "bg-[linear-gradient(0deg,rgba(226,232,240,0.68)_0%,rgba(248,250,252,0.22)_45%,transparent_100%)]",
     shopCardCls: isDark
-      ? "border-white/24 bg-slate-950/94 text-white shadow-2xl backdrop-blur-xl"
-      : "border-black/8 bg-white/94 text-slate-800 shadow-2xl backdrop-blur-xl",
-    shopCardSecondary: isDark ? "text-slate-200/92" : "text-slate-500",
-    shopCardMeta: isDark ? "text-slate-200/78" : "text-slate-500",
-    shopCardScore: isDark ? "bg-slate-900/92 text-white" : "bg-slate-100 text-slate-800",
-    shopCardScoreLabel: isDark ? "text-white/78" : "text-slate-500",
+      ? "border-blue-200/22 bg-[linear-gradient(180deg,rgba(30,58,138,0.34),rgba(15,23,42,0.82))] text-white shadow-[0_26px_64px_rgba(2,6,23,0.32)] backdrop-blur-2xl"
+      : "border-slate-200/82 bg-[linear-gradient(180deg,rgba(248,250,252,0.88),rgba(226,232,240,0.78))] text-slate-800 shadow-[0_26px_64px_rgba(15,23,42,0.12)] backdrop-blur-2xl",
+    shopCardSecondary: isDark ? "text-slate-200" : "text-slate-500",
+    shopCardMeta: isDark ? "text-slate-300" : "text-slate-500",
+    shopCardScore: isDark
+      ? "bg-[linear-gradient(180deg,rgba(37,99,235,0.36),rgba(15,23,42,0.88))] border border-blue-300/25 text-white"
+      : "bg-[linear-gradient(180deg,rgba(239,246,255,0.84),rgba(219,234,254,0.72))] border border-sky-200/70 text-slate-800",
+    shopCardScoreLabel: isDark ? "text-blue-200/70" : "text-sky-600",
     shopCardCta: isDark
-      ? "border-blue-300/55 bg-blue-600/42 text-white hover:bg-blue-600/55"
-      : "border-blue-300/70 bg-blue-50 text-blue-700 hover:bg-blue-100",
-    legendCard: isDark
-      ? "border-white/24 bg-slate-950/82 text-white/95 shadow-xl backdrop-blur"
-      : "border-black/8 bg-white/85 text-slate-600 shadow-xl backdrop-blur",
-    topPickDot: isDark
-      ? "border border-white/70 bg-slate-900 shadow-[0_0_0_1px_rgba(148,163,184,0.45)]"
-      : "border border-slate-200 bg-slate-900",
+      ? "border-blue-300/30 bg-blue-300 text-slate-950 shadow-[0_14px_26px_rgba(59,130,246,0.24)] hover:-translate-y-0.5 hover:bg-blue-200"
+      : "border-blue-300/40 bg-[linear-gradient(180deg,rgba(59,130,246,0.82),rgba(29,78,216,0.88))] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)] hover:-translate-y-0.5 hover:brightness-110",
   };
 }
 
@@ -106,7 +111,7 @@ export function MapPaneHeaderBadges({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-2.5 py-2 sm:px-4 sm:py-3`}
+      className={`pointer-events-none absolute inset-x-0 top-0 z-[500] ${t.topGradient} px-2 py-1.5 @xl:px-2.5 @xl:py-2 @3xl:px-4 @3xl:py-3`}
     >
       <div className="flex flex-wrap items-start justify-between gap-1.5">
         <div className={`rounded-lg border px-2 py-1.5 ${t.badgeCard}`}>
@@ -123,7 +128,9 @@ export function MapPaneHeaderBadges({
 
         <div className={`rounded-lg border px-2 py-1.5 text-right ${t.badgeCard}`}>
           <p className={`text-[9px] uppercase tracking-[0.2em] ${t.badgeLabel}`}>Shops</p>
-          <p className={`text-base font-semibold leading-tight ${t.badgeValue}`}>{shopCount}</p>
+          <p className={`text-sm @xl:text-base font-semibold leading-tight ${t.badgeValue}`}>
+            {shopCount}
+          </p>
         </div>
       </div>
     </div>
@@ -155,8 +162,12 @@ export function MapPaneBottomOverlay({
   reportCount,
   showRoutes,
   onToggleRoutes,
+  reportStatusFilter = "all",
+  onReportStatusFilterChange,
+  density = "default",
 }: BottomOverlayProps) {
   const t = useOverlayTokens(isDark);
+  const isCompactDensity = density === "compact";
   const sessionBadgeClass = hasArrived
     ? isDark
       ? "border-emerald-400/30 bg-emerald-400/12 text-emerald-100"
@@ -202,44 +213,56 @@ export function MapPaneBottomOverlay({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-x-0 bottom-0 z-[500] ${t.bottomGradient} px-3 pt-10 sm:px-5 sm:pt-16`}
+      className={`pointer-events-none absolute inset-x-0 bottom-0 z-[500] ${t.bottomGradient} px-2 pt-6 @lg:px-3 @lg:pt-8 @3xl:px-5 @3xl:pt-12`}
       style={{
         paddingBottom: compact
-          ? "max(10rem, calc(env(safe-area-inset-bottom, 0px) + 9rem))"
+          ? "max(4.75rem, calc(env(safe-area-inset-bottom, 0px) + 3.75rem))"
           : "max(1rem, env(safe-area-inset-bottom, 0px))",
       }}
     >
       <div
-        className={`flex flex-wrap items-end ${compact ? "justify-end" : "justify-between"} gap-3`}
+        className={`flex flex-wrap items-end ${compact ? "justify-end" : "justify-between"} ${
+          isCompactDensity ? "gap-1.5 @xl:gap-2" : "gap-2 @xl:gap-3"
+        }`}
       >
         {selectedShop && !compact && (
-          <div className={`max-w-md rounded-2xl border p-2.5 sm:p-3 ${t.shopCardCls}`}>
+          <div
+            className={`w-full max-w-[calc(100vw-1.5rem)] rounded-2xl border ${isCompactDensity ? "p-2 @xl:max-w-[15rem] @3xl:max-w-[16.5rem]" : "p-2 @lg:p-2.5 @3xl:p-3 @xl:max-w-sm @3xl:max-w-md"} ${t.shopCardCls}`}
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h3
-                  className={`truncate text-base font-semibold sm:text-lg ${isDark ? "text-white" : "text-slate-800"}`}
+                  className={`truncate font-semibold ${isCompactDensity ? "text-[13px] @xl:text-sm @3xl:text-base" : "text-sm @xl:text-base @3xl:text-lg"} ${isDark ? "text-white" : "text-slate-800"}`}
                 >
                   {selectedShop.name}
                 </h3>
-                {selectedShop.mapResult.city ? (
+                {selectedShop.mapResult?.city ? (
                   <p
-                    className={`mt-0.5 truncate text-xs ${isDark ? "text-slate-400/70" : "text-slate-400"}`}
+                    className={`mt-0.5 truncate ${isCompactDensity ? "text-[11px]" : "text-xs"} ${isDark ? "text-slate-400/70" : "text-slate-400"}`}
                   >
-                    {[selectedShop.mapResult.city, selectedShop.mapResult.state]
+                    {[selectedShop.mapResult?.city, selectedShop.mapResult?.state]
                       .filter(Boolean)
                       .join(", ")}
                   </p>
                 ) : null}
               </div>
-              <div className={`shrink-0 rounded-xl px-2 py-1.5 text-center ${t.shopCardScore}`}>
-                <p className={`text-[10px] uppercase tracking-[0.18em] ${t.shopCardScoreLabel}`}>
+              <div
+                className={`shrink-0 text-center ${isCompactDensity ? "rounded-lg px-1.5 py-1" : "rounded-lg px-1.5 py-1 @xl:rounded-xl @xl:px-2 @xl:py-1.5"} ${t.shopCardScore}`}
+              >
+                <p
+                  className={`${isCompactDensity ? "text-[8px] @xl:text-[9px]" : "text-[9px] @xl:text-[10px]"} uppercase tracking-[0.16em] ${t.shopCardScoreLabel}`}
+                >
                   AI Fit
                 </p>
-                <p className="text-base font-semibold">{selectedShop.recommendationScore}%</p>
+                <p
+                  className={`${isCompactDensity ? "text-xs @xl:text-sm" : "text-sm @xl:text-base"} font-semibold`}
+                >
+                  {selectedShop.recommendationScore}%
+                </p>
               </div>
             </div>
 
-            <div className="mt-2 flex flex-wrap gap-1.5">
+            <div className="mt-1 @xl:mt-2 flex flex-wrap gap-1">
               {hasLiveNavigation ? (
                 <span
                   className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] ${sessionBadgeClass}`}
@@ -276,7 +299,7 @@ export function MapPaneBottomOverlay({
             </div>
 
             <div
-              className={`mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm ${t.shopCardSecondary}`}
+              className={`mt-1.5 flex flex-wrap items-center gap-y-0.5 ${isCompactDensity ? "gap-x-1.5 text-[11px] @xl:text-xs" : "gap-x-2 text-xs @xl:text-sm @xl:gap-x-3"} ${t.shopCardSecondary}`}
             >
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className={`h-4 w-4 ${t.shopCardMeta}`} />
@@ -284,7 +307,7 @@ export function MapPaneBottomOverlay({
               </span>
               {etaLabel ? (
                 <span className="inline-flex items-center gap-1.5">
-                  <Sparkles className={`h-4 w-4 ${t.shopCardMeta}`} />
+                  <Compass className={`h-4 w-4 ${t.shopCardMeta}`} />
                   {etaLabel}
                 </span>
               ) : null}
@@ -294,13 +317,17 @@ export function MapPaneBottomOverlay({
                   {selectedShop.rating.toFixed(1)}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1.5">
-                <Shield className={`h-4 w-4 ${t.shopCardMeta}`} />
-                {selectedShop.insuranceCompatibilityScore}% carrier
-              </span>
+              {selectedShop.insuranceCompatibilityScore > 0 && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Shield className={`h-4 w-4 ${t.shopCardMeta}`} />
+                  {selectedShop.insuranceCompatibilityScore}% carrier
+                </span>
+              )}
             </div>
 
-            <p className={`mt-2 hidden text-sm leading-6 sm:block ${t.shopCardSecondary}`}>
+            <p
+              className={`mt-1.5 hidden @3xl:block ${isCompactDensity ? "text-[11px] leading-[1.15rem]" : "text-xs leading-5"} ${t.shopCardSecondary}`}
+            >
               {hasArrived
                 ? "You made it to this shop. The trip is complete, and you can restart directions whenever you need."
                 : selectedShop.aiSummary}
@@ -332,7 +359,7 @@ export function MapPaneBottomOverlay({
 
                   onOpenShopDirections(selectedShop);
                 }}
-                className={`pointer-events-auto mt-2 inline-flex min-h-[36px] w-full items-center justify-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-semibold transition-colors ${t.shopCardCta}`}
+                className={`pointer-events-auto mt-1.5 @xl:mt-2 inline-flex w-full items-center justify-center rounded-xl border font-semibold transition-colors ${isCompactDensity ? "min-h-[34px] gap-1 px-2 py-1 text-[10px] @xl:text-[11px]" : "min-h-[36px] gap-1 px-2 py-1 @xl:gap-1.5 @xl:px-2.5 @xl:py-1.5 text-[11px] @xl:text-xs"} ${t.shopCardCta}`}
               >
                 <Compass className="h-3.5 w-3.5" />
                 {hasArrived
@@ -344,91 +371,19 @@ export function MapPaneBottomOverlay({
           </div>
         )}
 
-        <div
-          className={`rounded-xl border px-2.5 py-1.5 text-[10px] shadow-lg sm:px-3 sm:py-2 sm:text-[11px] ${t.legendCard}`}
-        >
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
-            <span className="inline-flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-orange-500" />
-              Origin
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-blue-600" />
-              Selected
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <span className={`inline-block h-2.5 w-2.5 rounded-full ${t.topPickDot}`} />
-              Top pick
-            </span>
-            {onToggleReports ? (
-              <button
-                type="button"
-                onClick={onToggleReports}
-                aria-label={showReports ? "Hide reports" : "Show reports"}
-                aria-pressed={showReports}
-                className={`inline-flex min-h-[44px] items-center gap-1 rounded px-1.5 -mx-1 transition-opacity ${
-                  showReports ? "opacity-100" : "opacity-40"
-                }`}
-                title={showReports ? "Hide reports" : "Show reports"}
-              >
-                <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
-                Reports
-                {reportCount != null && (
-                  <span className="ml-0.5 text-[9px] opacity-60">({reportCount})</span>
-                )}
-              </button>
-            ) : (
-              <span className="inline-flex items-center gap-1">
-                <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
-                Reports
-                {reportCount != null && (
-                  <span className="ml-0.5 text-[9px] opacity-60">({reportCount})</span>
-                )}
-              </span>
-            )}
-            {onToggleSavedPlaces && (
-              <button
-                type="button"
-                onClick={onToggleSavedPlaces}
-                aria-label={showSavedPlaces ? "Hide saved places" : "Show saved places"}
-                aria-pressed={showSavedPlaces}
-                className={`inline-flex min-h-[44px] items-center gap-1 rounded px-1.5 -mx-1 transition-opacity ${
-                  showSavedPlaces ? "opacity-100" : "opacity-40"
-                }`}
-                title={showSavedPlaces ? "Hide saved places" : "Show saved places"}
-              >
-                <span className="inline-block h-2 w-2 rounded-full bg-blue-600 opacity-40" />
-                Saved
-              </button>
-            )}
-            {onToggleRoutes ? (
-              <button
-                type="button"
-                onClick={onToggleRoutes}
-                aria-label={showRoutes ? "Hide routes" : "Show routes"}
-                aria-pressed={showRoutes}
-                className={`inline-flex min-h-[44px] items-center gap-1 rounded px-1.5 -mx-1 transition-opacity ${
-                  showRoutes ? "opacity-100" : "opacity-40"
-                }`}
-                title={showRoutes ? "Hide routes" : "Show routes"}
-              >
-                <span
-                  className="inline-block h-2.5 w-4 rounded border border-current opacity-50"
-                  style={{ borderStyle: "dashed" }}
-                />
-                Routes
-              </button>
-            ) : (
-              <span className="inline-flex items-center gap-1">
-                <span
-                  className="inline-block h-2.5 w-4 rounded border border-current opacity-50"
-                  style={{ borderStyle: "dashed" }}
-                />
-                Routes
-              </span>
-            )}
-          </div>
-        </div>
+        <MapPaneLegendPanel
+          isDark={isDark}
+          showSavedPlaces={showSavedPlaces}
+          onToggleSavedPlaces={onToggleSavedPlaces}
+          showReports={showReports}
+          onToggleReports={onToggleReports}
+          reportCount={reportCount}
+          showRoutes={showRoutes}
+          onToggleRoutes={onToggleRoutes}
+          reportStatusFilter={reportStatusFilter}
+          onReportStatusFilterChange={onReportStatusFilterChange}
+          density={density}
+        />
       </div>
     </div>
   );
@@ -442,17 +397,27 @@ export function MapPaneSearchPills({
   onSearchInArea,
   onClearAreaSearch,
   onClearPan,
+  density = "default",
 }: SearchPillsProps) {
+  const isCompactDensity = density === "compact";
   if (onSearchInArea && hasPanned && !searchWithinViewport) {
     return (
-      <div className="pointer-events-auto absolute inset-x-0 top-3 z-[600] flex justify-center">
+      <div
+        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center ${
+          isCompactDensity ? "top-2" : "top-3"
+        }`}
+      >
         <button
           type="button"
           onClick={onSearchInArea}
-          className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-xl backdrop-blur-md transition-colors ${
+          className={`pointer-events-auto inline-flex items-center gap-1.5 rounded-full border font-semibold shadow-[0_16px_36px_rgba(15,23,42,0.14)] backdrop-blur-2xl transition-all duration-200 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+            isCompactDensity
+              ? "min-h-[34px] px-3 py-1.5 text-[10px]"
+              : "min-h-[44px] px-4 py-2.5 text-xs"
+          } ${
             isDark
-              ? "border-white/30 bg-slate-900/88 text-white hover:bg-slate-900/96"
-              : "border-black/10 bg-white/90 text-slate-800 hover:bg-white"
+              ? "border-blue-200/16 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(30,41,59,0.74))] text-slate-100 hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(30,58,138,0.38),rgba(30,41,59,0.82))] hover:text-white"
+              : "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.76),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/90 hover:text-slate-950"
           }`}
         >
           <Search className="h-3 w-3" />
@@ -464,17 +429,25 @@ export function MapPaneSearchPills({
 
   if (onClearAreaSearch && searchWithinViewport) {
     return (
-      <div className="pointer-events-auto absolute inset-x-0 top-3 z-[600] flex justify-center">
+      <div
+        className={`pointer-events-none absolute inset-x-0 z-[600] flex justify-center ${
+          isCompactDensity ? "top-2" : "top-3"
+        }`}
+      >
         <button
           type="button"
           onClick={() => {
             onClearAreaSearch();
             onClearPan();
           }}
-          className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-xl backdrop-blur-md transition-colors ${
+          className={`pointer-events-auto inline-flex items-center gap-1.5 rounded-full border font-semibold shadow-[0_14px_26px_rgba(59,130,246,0.24)] backdrop-blur-2xl transition-all duration-200 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+            isCompactDensity
+              ? "min-h-[34px] px-3 py-1.5 text-[10px]"
+              : "min-h-[44px] px-4 py-2.5 text-xs"
+          } ${
             isDark
-              ? "border-blue-300/55 bg-blue-600/42 text-white hover:bg-blue-600/55"
-              : "border-blue-400/40 bg-blue-100 text-blue-700 hover:bg-blue-200"
+              ? "border-blue-300/30 bg-blue-300 text-slate-950 hover:-translate-y-0.5 hover:bg-blue-200"
+              : "border-blue-300/40 bg-[linear-gradient(180deg,rgba(59,130,246,0.82),rgba(29,78,216,0.88))] text-white hover:-translate-y-0.5 hover:brightness-110"
           }`}
         >
           <X className="h-3 w-3" />

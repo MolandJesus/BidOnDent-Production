@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef, lazy, Suspense } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft } from "lucide-react";
+import { useState, useRef } from "react";
+import { motion } from "motion/react";
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
 import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
@@ -9,6 +8,7 @@ import { saveShopBusinessProfile } from "../../services/networkProfiles";
 import { SUPABASE_STORAGE_BUCKETS } from "../../services/supabase/runtime";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import { hasAdminPrivileges } from "../../config/adminConfig";
+import AccountAdminOverlay from "./account/AccountAdminOverlay";
 import AccountHeader from "./account/AccountHeader";
 import AccountInfoCard from "./account/AccountInfoCard";
 import AccountMenu from "./account/AccountMenu";
@@ -22,7 +22,7 @@ import ShopProfileModal from "./account/ShopProfileModal";
 import type { ShopProfileFormData } from "./account/ShopProfileModal";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
-const AdminDashboard = lazy(() => import("../admin/AdminDashboard"));
+import type { Report } from "../../../types";
 
 type AccountScreenProps = {
   userType: string;
@@ -32,8 +32,8 @@ type AccountScreenProps = {
   userEmail?: string;
   userPhone?: string;
   profileImage?: string;
-  vehicles?: any[];
-  reports?: any[];
+  vehicles?: { id?: string; make: string; model: string; year: string | number }[];
+  reports?: Report[];
   websiteIdentity?: WebsiteIdentity | null;
   onDeleteAccount?: () => Promise<void> | void;
   onLogout?: () => Promise<void> | void;
@@ -87,28 +87,6 @@ export default function AccountScreen({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isAdminUser = hasAdminPrivileges(userEmail);
-
-  useEffect(() => {
-    if (!showAdminPanel || typeof document === "undefined") {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setShowAdminPanel(false);
-      }
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [showAdminPanel]);
 
   // REMOVED: Supabase session checking - we now use Clerk for authentication
   // The session check was causing automatic logout when switching to account tab
@@ -474,48 +452,13 @@ export default function AccountScreen({
         appearanceMode={appearanceMode}
       />
 
-      {/* Admin Panel Full-Screen Overlay */}
-      <AnimatePresence>
-        {showAdminPanel && isAdminUser && (
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="fixed inset-0 z-50 overflow-y-auto"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Admin panel"
-            style={{
-              background: "linear-gradient(180deg, #0b1220 0%, #0a1328 50%, #091020 100%)",
-            }}
-          >
-            <div
-              className="sticky top-0 z-10 flex items-center gap-3 px-4 py-3 border-b border-blue-400/15 backdrop-blur-xl"
-              style={{ background: "rgba(11, 18, 32, 0.92)" }}
-            >
-              <button
-                onClick={() => setShowAdminPanel(false)}
-                className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-400/10 hover:bg-blue-400/20 transition-colors border border-blue-300/15"
-                type="button"
-                aria-label="Close admin panel"
-              >
-                <ArrowLeft className="w-5 h-5 text-blue-100" />
-              </button>
-              <h2 className="text-lg font-semibold text-slate-100">Admin Panel</h2>
-            </div>
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center p-12">
-                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-400" />
-                </div>
-              }
-            >
-              <AdminDashboard primaryColor={primaryColor} adminEmail={userEmail} />
-            </Suspense>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AccountAdminOverlay
+        isOpen={showAdminPanel}
+        isAdmin={isAdminUser}
+        primaryColor={primaryColor}
+        adminEmail={userEmail}
+        onClose={() => setShowAdminPanel(false)}
+      />
     </div>
   );
 }

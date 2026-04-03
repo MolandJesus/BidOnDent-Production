@@ -39,6 +39,8 @@ export interface DamageReport {
   incident?: string;
   zipCode?: string;
   zip_code?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   damageType?: string;
   claimNumber?: string;
   customerName?: string;

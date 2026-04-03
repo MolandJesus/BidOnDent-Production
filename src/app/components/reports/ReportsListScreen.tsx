@@ -1,17 +1,8 @@
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import {
-  ArrowLeft,
-  Clock,
-  DollarSign,
-  ChevronRight,
-  ZoomIn,
-  X,
-  ChevronLeft,
-  MapPin,
-  Wrench,
-} from "lucide-react";
+import { ArrowLeft, Clock, DollarSign, ChevronRight, ZoomIn, MapPin, Wrench } from "lucide-react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
+import PhotoGalleryLightbox from "./PhotoGalleryLightbox";
 import { zipToCoordinates } from "../../services/supabase/map";
 import { defaultCoverageCenter } from "../landing/coverageData";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
@@ -43,31 +34,26 @@ export default function ReportsListScreen({
   const isLight = appearanceMode === "light";
   const [filter, setFilter] = useState("all"); // all, pending, active, completed
   const [selectedPhotos, setSelectedPhotos] = useState<string[] | null>(null);
-  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
 
   // Report location pins for overview map
   const reportMapPins = useMemo<ReportPin[]>(() => {
     if (!Array.isArray(reports)) return [];
     return reports
       .map((report) => {
+        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+        const label =
+          [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean).join(" ") ||
+          report?.damageArea ||
+          "Damage report";
+        const lat = report?.latitude;
+        const lng = report?.longitude;
+        if (lat != null && lng != null) {
+          return { id: String(report.id), lat, lng, label };
+        }
         const zipCode = report?.zipCode || report?.zip_code || "";
         const coords = zipCode ? zipToCoordinates(zipCode) : null;
         if (!coords) return null;
-
-        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
-        const label = [vehicleData.year, vehicleData.make, vehicleData.model]
-          .filter(Boolean)
-          .join(" ");
-
-        return {
-          id: String(report.id),
-          lat: coords.lat,
-          lng: coords.lng,
-          label: label || report?.damageArea || "Damage report",
-        };
+        return { id: String(report.id), lat: coords.lat, lng: coords.lng, label };
       })
       .filter((pin): pin is ReportPin => pin !== null);
   }, [reports]);
@@ -282,8 +268,6 @@ export default function ReportsListScreen({
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedPhotos(report.photos);
-                        setCurrentPhotoIndex(0);
-                        setZoomLevel(1);
                       }}
                     >
                       <ImageWithFallback
@@ -322,14 +306,24 @@ export default function ReportsListScreen({
                       <span
                         className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2 flex-shrink-0 ${
                           report.status === "pending"
-                            ? "bg-sky-100 text-sky-700"
+                            ? isLight
+                              ? "bg-sky-100 text-sky-700"
+                              : "bg-sky-500/15 text-sky-300"
                             : report.status === "active"
-                              ? "bg-emerald-100 text-emerald-700"
+                              ? isLight
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-emerald-500/15 text-emerald-300"
                               : report.status === "completed"
-                                ? "bg-violet-100 text-violet-700"
+                                ? isLight
+                                  ? "bg-violet-100 text-violet-700"
+                                  : "bg-violet-500/15 text-violet-300"
                                 : report.status === "resolved"
-                                  ? "bg-emerald-100 text-emerald-700"
-                                  : "bg-indigo-100 text-indigo-700"
+                                  ? isLight
+                                    ? "bg-emerald-100 text-emerald-700"
+                                    : "bg-emerald-500/15 text-emerald-300"
+                                  : isLight
+                                    ? "bg-indigo-100 text-indigo-700"
+                                    : "bg-indigo-500/15 text-indigo-300"
                         }`}
                       >
                         {report.status === "active"
@@ -425,151 +419,9 @@ export default function ReportsListScreen({
         )}
       </div>
 
-      {/* Photo Gallery Lightbox - Clean Mobile-Friendly Design */}
+      {/* Photo Gallery Lightbox */}
       {selectedPhotos && selectedPhotos.length > 0 && (
-        <div
-          className="fixed inset-0 bg-black z-50 flex flex-col"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setSelectedPhotos(null);
-              setCurrentPhotoIndex(0);
-              setZoomLevel(1);
-            }
-          }}
-        >
-          {/* Header Bar */}
-          <div className="flex items-center justify-between p-4 bg-black/50 backdrop-blur">
-            <div className="text-white">
-              <span className="font-medium">
-                {currentPhotoIndex + 1} / {selectedPhotos.length}
-              </span>
-            </div>
-            <button
-              className="text-white hover:bg-white/10 rounded-full p-2 transition-colors"
-              onClick={() => {
-                setSelectedPhotos(null);
-                setCurrentPhotoIndex(0);
-                setZoomLevel(1);
-              }}
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-
-          {/* Main Photo Area with Touch Support */}
-          <div
-            className="flex-1 flex items-center justify-center relative overflow-hidden"
-            onTouchStart={(e) => {
-              setTouchStart(e.targetTouches[0].clientX);
-            }}
-            onTouchMove={(e) => {
-              setTouchEnd(e.targetTouches[0].clientX);
-            }}
-            onTouchEnd={() => {
-              if (touchStart - touchEnd > 75) {
-                // Swiped left - next photo
-                if (currentPhotoIndex < selectedPhotos.length - 1) {
-                  setCurrentPhotoIndex((prev) => prev + 1);
-                  setZoomLevel(1);
-                }
-              }
-              if (touchStart - touchEnd < -75) {
-                // Swiped right - previous photo
-                if (currentPhotoIndex > 0) {
-                  setCurrentPhotoIndex((prev) => prev - 1);
-                  setZoomLevel(1);
-                }
-              }
-            }}
-            onDoubleClick={() => {
-              // Double-click to toggle zoom
-              setZoomLevel((prev) => (prev === 1 ? 2 : 1));
-            }}
-            onClick={(e) => {
-              if (e.detail === 2) {
-                // Double-tap for mobile
-                setZoomLevel((prev) => (prev === 1 ? 2 : 1));
-              }
-            }}
-          >
-            <img
-              src={selectedPhotos[currentPhotoIndex]}
-              alt={`Photo ${currentPhotoIndex + 1}`}
-              className="max-w-full max-h-full object-contain transition-transform duration-300"
-              style={{
-                transform: `scale(${zoomLevel})`,
-                cursor: zoomLevel === 1 ? "zoom-in" : "zoom-out",
-              }}
-            />
-
-            {/* Navigation Arrows (Desktop) */}
-            {selectedPhotos.length > 1 && (
-              <>
-                {currentPhotoIndex > 0 && (
-                  <button
-                    className="hidden md:flex absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur text-white rounded-full p-3 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentPhotoIndex((prev) => prev - 1);
-                      setZoomLevel(1);
-                    }}
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
-                )}
-                {currentPhotoIndex < selectedPhotos.length - 1 && (
-                  <button
-                    className="hidden md:flex absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur text-white rounded-full p-3 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentPhotoIndex((prev) => prev + 1);
-                      setZoomLevel(1);
-                    }}
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Bottom Controls */}
-          <div className="p-4 bg-black/50 backdrop-blur space-y-3">
-            {/* Photo Thumbnails Strip */}
-            {selectedPhotos.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-2">
-                {selectedPhotos.map((photo, idx) => (
-                  <button
-                    key={idx}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      idx === currentPhotoIndex
-                        ? "border-white scale-105"
-                        : "border-white/30 opacity-60 hover:opacity-100"
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCurrentPhotoIndex(idx);
-                      setZoomLevel(1);
-                    }}
-                  >
-                    <img
-                      src={photo}
-                      alt={`Thumbnail ${idx + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Instructions */}
-            <div className="text-center text-white/70 text-sm">
-              <span className="hidden md:inline">Click photo to zoom • </span>
-              <span className="md:hidden">Double-tap to zoom • Swipe to navigate • </span>
-              Tap outside to close
-            </div>
-          </div>
-        </div>
+        <PhotoGalleryLightbox photos={selectedPhotos} onClose={() => setSelectedPhotos(null)} />
       )}
     </div>
   );

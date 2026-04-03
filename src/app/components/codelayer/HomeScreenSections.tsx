@@ -5,6 +5,7 @@ import {
   ChevronRight,
   DollarSign,
   Eye,
+  MapPin,
   Wrench,
   type LucideIcon,
 } from "lucide-react";
@@ -49,31 +50,40 @@ export function HomeOnboardingCard({
 
   return (
     <section
-      className="rounded-2xl p-5 sm:p-6 text-white relative overflow-hidden"
+      className="relative overflow-hidden rounded-2xl p-4 text-white bd-glass-card sm:p-6"
       style={{
-        background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+        background:
+          "linear-gradient(135deg, rgba(15, 30, 60, 0.92) 0%, rgba(10, 22, 48, 0.88) 50%, rgba(20, 40, 80, 0.85) 100%)",
+        borderColor: "rgba(96, 165, 250, 0.25)",
         boxShadow:
-          "0 8px 32px rgba(37, 99, 235, 0.28), 0 0 64px rgba(59, 130, 246, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.18)",
+          "0 8px 32px rgba(2, 6, 23, 0.35), 0 0 64px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(147, 197, 253, 0.12)",
       }}
     >
-      {/* Multi-layer atmospheric sheen */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_-10%,rgba(255,255,255,0.14),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_-5%_110%,rgba(255,255,255,0.08),transparent_55%)]" />
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+      {/* Royal blue atmospheric sheen */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse 80% 60% at 80% -10%, ${primaryColor}22, transparent 50%), radial-gradient(ellipse 50% 40% at -5% 110%, ${secondaryColor}18, transparent 55%)`,
+        }}
+      />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/25 to-transparent" />
       <div className="relative">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.20em] text-white/55 mb-1">
+        <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.20em] text-blue-300/55">
           Getting started
         </p>
-        <h2 className="text-xl font-semibold mb-2">How BidOnDent Works</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+        <h2 className="mb-2 text-lg font-semibold sm:text-xl">How BidOnDent Works</h2>
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:mt-4 sm:grid-cols-3 sm:gap-4">
           {steps.map((step, i) => (
-            <div key={step.label} className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 text-sm font-bold shadow-sm shrink-0 ring-1 ring-white/15">
+            <div
+              key={step.label}
+              className="flex items-start gap-3 rounded-xl border border-blue-300/14 bg-white/[0.03] px-3 py-2.5 sm:border-0 sm:bg-transparent sm:px-0 sm:py-0"
+            >
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500/25 text-sm font-bold shadow-sm ring-1 ring-blue-400/30 backdrop-blur-sm">
                 {i + 1}
               </div>
               <div>
                 <p className="font-semibold">{step.label}</p>
-                <p className="text-white/75 text-sm leading-5 mt-0.5">{step.detail}</p>
+                <p className="mt-0.5 text-sm leading-5 text-blue-100/70">{step.detail}</p>
               </div>
             </div>
           ))}
@@ -100,14 +110,14 @@ export function HomeQuickActions({
   if (quickActions.length === 0) return null;
   return (
     <section
-      className={`rounded-2xl p-4 md:p-5 border ${isLight ? "bg-white/80 border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+      className={`rounded-2xl border p-4 md:p-5 ${isLight ? "bg-white/80 border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
     >
       <h2
-        className={`text-base font-semibold mb-3 ${isLight ? "text-slate-800" : "text-slate-100"}`}
+        className={`mb-3 text-sm font-semibold uppercase tracking-[0.18em] md:text-base md:normal-case md:tracking-normal ${isLight ? "text-slate-800" : "text-slate-100"}`}
       >
         Quick Actions
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3">
+      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-2.5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 md:gap-3">
         {quickActions.map((action, index) => {
           const Icon = action.icon;
           const iconTone = actionIconTones[index % actionIconTones.length];
@@ -115,16 +125,16 @@ export function HomeQuickActions({
             <button
               key={action.title}
               onClick={action.onClick}
-              className={`text-left p-3 md:p-4 transition-all duration-200 rounded-xl font-medium active:scale-[0.97] min-h-[44px] ${
+              className={`w-[min(15rem,72vw)] shrink-0 snap-start rounded-xl p-3 text-left font-medium transition-all duration-200 active:scale-[0.97] min-h-[124px] sm:min-h-[44px] sm:w-auto md:p-4 ${
                 isLight
                   ? "border border-slate-200/70 bg-white/60 hover:bg-blue-50/50 hover:border-blue-300/40 hover:shadow-sm"
                   : "bd-glass-card hover:shadow-lg hover:-translate-y-0.5 hover:border-blue-400/[0.2]"
               }`}
             >
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2.5 ${iconTone}`}
+                className={`mb-2 flex h-9 w-9 items-center justify-center rounded-xl md:mb-2.5 md:h-10 md:w-10 ${iconTone}`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="h-4.5 w-4.5 md:h-5 md:w-5" />
               </div>
               <h3
                 className={`font-semibold text-sm leading-tight ${isLight ? "text-slate-800" : "text-slate-100"}`}
@@ -132,7 +142,7 @@ export function HomeQuickActions({
                 {action.title}
               </h3>
               <p
-                className={`text-xs mt-0.5 leading-snug ${isLight ? "text-slate-500" : "text-slate-500"}`}
+                className={`mt-1 line-clamp-2 text-[11px] leading-snug md:text-xs ${isLight ? "text-slate-500" : "text-slate-500"}`}
               >
                 {action.description}
               </p>
@@ -157,6 +167,7 @@ export function HomeReportsList({
   secondaryColor,
   onViewAll,
   onOpenReport,
+  onViewReportOnMap,
   onStartReport,
 }: {
   userType: string;
@@ -167,12 +178,13 @@ export function HomeReportsList({
   secondaryColor: string;
   onViewAll?: () => void;
   onOpenReport?: (reportId: string) => void;
+  onViewReportOnMap?: (reportId: string) => void;
   onStartReport: () => void;
 }) {
   const isLightAppearance = appearanceMode === "light";
   return (
     <div
-      className={`rounded-2xl p-5 border ${isLightAppearance ? "bg-white/80 border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
+      className={`rounded-2xl border p-4 sm:p-5 ${isLightAppearance ? "bg-white/80 border-slate-200/60 shadow-sm" : "bd-glass-card"}`}
     >
       <div className="flex items-center justify-between mb-4">
         <h2
@@ -193,7 +205,7 @@ export function HomeReportsList({
 
       {sortedReports.length === 0 && (
         <div
-          className={`rounded-xl p-5 sm:p-8 text-center border ${isLightAppearance ? "bg-blue-50/60 border-blue-100/80" : "bg-blue-950/30 border-blue-300/[0.22]"}`}
+          className={`rounded-xl border p-4 text-center sm:p-8 ${isLightAppearance ? "bg-blue-50/60 border-blue-100/80" : "bg-blue-950/30 border-blue-300/[0.22]"}`}
         >
           <Camera
             className={`w-10 h-10 mx-auto mb-3 ${isLightAppearance ? "text-blue-500/70" : "text-blue-400/70"}`}
@@ -201,7 +213,7 @@ export function HomeReportsList({
           <p
             className={`font-medium mb-1 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
           >
-            {userType === "customer" && "No repair requests yet"}
+            {userType === "customer" && "No damage reports yet"}
             {userType === "shop" && "No customer requests yet"}
             {userType === "insurer" && "No claims submitted yet"}
           </p>
@@ -331,9 +343,29 @@ export function HomeReportsList({
                       ) : null}
                     </div>
                   </div>
-                  <ChevronRight
-                    className={`w-5 h-5 mt-7 flex-shrink-0 ${isLightAppearance ? "text-slate-400" : "text-blue-200/80"}`}
-                  />
+                  <div className="flex flex-col items-center gap-1 flex-shrink-0 mt-4">
+                    {onViewReportOnMap && report?.id && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onViewReportOnMap(String(report.id));
+                        }}
+                        className={`inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-xl transition-colors ${
+                          isLightAppearance
+                            ? "text-blue-500 hover:bg-blue-50 hover:text-blue-600"
+                            : "text-blue-300/70 hover:bg-blue-400/12 hover:text-blue-200"
+                        }`}
+                        title="View on map"
+                        aria-label="View report on map"
+                      >
+                        <MapPin className="w-4.5 h-4.5" />
+                      </button>
+                    )}
+                    <ChevronRight
+                      className={`w-5 h-5 flex-shrink-0 ${isLightAppearance ? "text-slate-400" : "text-blue-200/80"}`}
+                    />
+                  </div>
                 </div>
               </article>
             );

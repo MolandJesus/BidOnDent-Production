@@ -83,8 +83,11 @@ type CoverageBrowseSidebarContentProps = {
 
   /* ── Shops panel ── */
   isLoadingShops: boolean;
+  coverageFetchError?: string | null;
+  usingDemoFallback?: boolean;
   radiusMiles: string;
   onOpenDirections: (shop: CoveragePartnerShop) => void;
+  onRetryPartnerShops?: () => void;
 };
 
 export default function CoverageBrowseSidebarContent({
@@ -119,32 +122,36 @@ export default function CoverageBrowseSidebarContent({
   onSaveParkedCar,
   onClearParkedCar,
   isLoadingShops,
+  coverageFetchError,
+  usingDemoFallback = false,
   radiusMiles,
   onOpenDirections,
+  onRetryPartnerShops,
 }: CoverageBrowseSidebarContentProps) {
   return (
     <>
       {/* ── Sticky control bar — view tabs + tile + map controls ── */}
       <div
         className={cn(
-          "sticky top-0 z-20 space-y-1.5 rounded-[1.25rem] p-2 backdrop-blur-2xl",
+          "sticky top-0 z-20 space-y-2 rounded-[1.25rem] p-2 backdrop-blur-2xl",
           theme.panelStrongClassName
         )}
       >
         {/* View tab bar (segmented control) */}
-        <div className={theme.segmentedClassName}>
+        <div className={cn(theme.segmentedClassName, "grid w-full grid-cols-4 gap-1")}>
           {VIEW_TABS.map(({ id, label, Icon }) => (
             <button
               key={id}
               type="button"
               onClick={() => onSidebarViewChange(id)}
+              aria-pressed={sidebarView === id}
               className={cn(
-                "flex flex-1 items-center justify-center gap-1.5 rounded-full px-2.5 py-2.5 min-h-[44px] text-xs font-semibold transition-all duration-200",
+                "flex items-center justify-center gap-1.5 rounded-full px-2.5 py-2.5 min-h-[44px] text-xs font-semibold transition-all duration-200",
                 sidebarView === id ? theme.activeSegmentClassName : theme.inactiveSegmentClassName
               )}
             >
               <Icon className="h-3.5 w-3.5 shrink-0" />
-              {label}
+              <span>{label}</span>
             </button>
           ))}
         </div>
@@ -177,6 +184,7 @@ export default function CoverageBrowseSidebarContent({
             onResetNavigationSettings={navigation.resetNavigationSettings}
             onRetryRoutePreview={navigation.refreshRoutePreview}
             onStartNavigation={onStartNavigation}
+            onOpenShops={() => onSidebarViewChange("shops")}
             preferredVoiceLabel={navigation.preferredVoiceLabel}
             voiceGuidanceSupported={navigation.voiceGuidanceSupported}
             voiceStatusLabel={navigation.voiceStatusLabel}
@@ -244,12 +252,15 @@ export default function CoverageBrowseSidebarContent({
             tone={tone}
             className={cn("p-4", theme.panelStrongClassName)}
             isLoadingShops={isLoadingShops}
+            fetchError={coverageFetchError}
+            usingDemoFallback={usingDemoFallback}
             activeSearchTarget={listSearchTarget}
             nearbyShops={nearbyShops}
             radiusMiles={radiusMiles}
             selectedShopId={selectedShopId}
             onSelectShop={onSelectShop}
             onOpenDirections={onOpenDirections}
+            onRetryShops={onRetryPartnerShops}
           />
         ) : null}
       </NavigationErrorBoundary>

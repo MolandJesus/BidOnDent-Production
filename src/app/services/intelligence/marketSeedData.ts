@@ -1,5 +1,4 @@
 import type { InsuranceCompanyProfile, ShopProfile } from "./marketIntelligence";
-import { ATLANTA_TEST_SHOPS } from "./atlantaTestHubSeed";
 
 const CORE_SHOPS: ShopProfile[] = [
   {
@@ -251,7 +250,7 @@ const CORE_SHOPS: ShopProfile[] = [
   },
 ];
 
-export const SHOPS: ShopProfile[] = [...CORE_SHOPS, ...ATLANTA_TEST_SHOPS];
+export const SHOPS: ShopProfile[] = [...CORE_SHOPS];
 
 export const INSURERS: InsuranceCompanyProfile[] = [
   {

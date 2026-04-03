@@ -1,11 +1,12 @@
 import Map, { AttributionControl, NavigationControl } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { cn } from "../ui/utils";
 import MapNavigationHud from "./MapNavigationHud";
 import MapSurfaceControls from "./MapSurfaceControls";
 import MapSurfaceHeaderBadges from "./MapSurfaceHeaderBadges";
 import MapSurfaceStatusBar from "./MapSurfaceStatusBar";
+import { useMapPerformanceTracking } from "./useMapPerformanceTracking";
 import MapLibreCoverageMapLayers from "./MapLibreCoverageMapLayers";
 import MapLibrePartnerShopLayer, { PARTNER_SHOPS_LAYER_ID } from "./MapLibrePartnerShopLayer";
 import MapLibreReportLayer, { REPORT_MARKERS_LAYER_ID } from "./MapLibreReportLayer";
@@ -17,14 +18,10 @@ import { mapLibreStyles, mapLibreTileLabels } from "./mapLibreStyles";
 import {
   MapLibreViewportController,
   MapLibreFollowLocationController,
+  MapLibreArrivalCameraEffect,
 } from "./mapLibreControllers";
 import { circlePolygon } from "./mapLibreHelpers";
-import {
-  clearMapInteractionSamples,
-  getMapPerformanceSummary,
-  recordMapInteractionSample,
-  type MapPerformanceSummary,
-} from "../../services/navigation/mapPerformance";
+import { circlePolygon } from "./mapLibreHelpers";
 import type {
   CoverageCountyMarker,
   CoveragePartnerShop,
@@ -57,6 +54,14 @@ type MapLibreServiceCoverageMapProps = {
   showNavigationHud?: boolean;
   followCurrentPosition?: boolean;
   followCurrentPositionRevision?: number;
+  /** Enable guidance-mode camera: higher zoom, tighter debounce, bearing rotation. */
+  guidanceMode?: boolean;
+  /** Compass/GPS heading in degrees (0-360) for map bearing rotation during guidance. */
+  currentHeadingDegrees?: number | null;
+  /** Whether the user has arrived at the destination (triggers arrival camera). */
+  hasArrived?: boolean;
+  /** Destination coordinate [lat, lng] for arrival camera effect. */
+  destination?: [number, number] | null;
   discoveryPlaces?: NavigationDiscoveryPlace[];
   routeGeometry?: [number, number][];
   routeFitKey?: string | null;
@@ -98,6 +103,10 @@ export default function MapLibreServiceCoverageMap({
   showNavigationHud = true,
   followCurrentPosition = false,
   followCurrentPositionRevision = 0,
+  guidanceMode = false,
+  currentHeadingDegrees,
+  hasArrived = false,
+  destination,
   discoveryPlaces = [],
   routeGeometry,
   routeFitKey,
@@ -117,10 +126,16 @@ export default function MapLibreServiceCoverageMap({
   onSelectDiscoveryPlace,
   onExpand,
 }: MapLibreServiceCoverageMapProps) {
-  const [liveZoom, setLiveZoom] = useState(zoom);
-  const [performanceSummary, setPerformanceSummary] = useState<MapPerformanceSummary>(() =>
-    getMapPerformanceSummary()
-  );
+  const {
+    liveZoom,
+    performanceSummary,
+    onZoomStart,
+    onZoomEnd,
+    onMoveStart,
+    onMoveEnd,
+    handleZoom,
+    resetPerformance,
+  } = useMapPerformanceTracking(zoom, revision);
 
   const isNavigationPresentation = presentationMode === "navigation";
   const tone = resolveMapSurfaceTone(tileMode);
@@ -143,49 +158,6 @@ export default function MapLibreServiceCoverageMap({
     : showStrategicOverview
       ? "Strategic overview"
       : null;
-
-  useEffect(() => {
-    setLiveZoom(zoom);
-  }, [zoom, revision]);
-
-  /* --- performance tracking --- */
-  const zoomStartRef = useRef<number | null>(null);
-  const moveStartRef = useRef<number | null>(null);
-  const isZoomingRef = useRef(false);
-
-  const onZoomStart = useCallback(() => {
-    isZoomingRef.current = true;
-    zoomStartRef.current = performance.now();
-  }, []);
-
-  const onZoomEnd = useCallback(() => {
-    if (zoomStartRef.current !== null) {
-      recordMapInteractionSample("zoom", performance.now() - zoomStartRef.current);
-      setPerformanceSummary(getMapPerformanceSummary());
-    }
-    zoomStartRef.current = null;
-    isZoomingRef.current = false;
-  }, []);
-
-  const onMoveStart = useCallback(() => {
-    moveStartRef.current = performance.now();
-  }, []);
-
-  const onMoveEnd = useCallback(() => {
-    if (isZoomingRef.current) {
-      moveStartRef.current = null;
-      return;
-    }
-    if (moveStartRef.current !== null) {
-      recordMapInteractionSample("pan", performance.now() - moveStartRef.current);
-      setPerformanceSummary(getMapPerformanceSummary());
-    }
-    moveStartRef.current = null;
-  }, []);
-
-  const handleZoom = useCallback((e: { viewState: { zoom: number } }) => {
-    setLiveZoom(e.viewState.zoom);
-  }, []);
 
   /* --- route GeoJSON --- */
   const routeGeoJSON = useMemo(() => {
@@ -225,6 +197,28 @@ export default function MapLibreServiceCoverageMap({
       properties: {},
     };
   }, [currentPosition]);
+
+  /* --- GPS heading direction cone (short line from dot in heading direction) --- */
+  const gpsHeadingGeoJSON = useMemo(() => {
+    if (!currentPosition || !guidanceMode || typeof currentHeadingDegrees !== "number") return null;
+    const [lat, lng] = currentPosition;
+    // ~60m line in the heading direction
+    const headingRad = (currentHeadingDegrees * Math.PI) / 180;
+    const distDeg = 60 / 111320; // ~60 meters in degrees
+    const endLat = lat + distDeg * Math.cos(headingRad);
+    const endLng = lng + (distDeg * Math.sin(headingRad)) / Math.cos((lat * Math.PI) / 180);
+    return {
+      type: "Feature" as const,
+      geometry: {
+        type: "LineString" as const,
+        coordinates: [
+          [lng, lat],
+          [endLng, endLat],
+        ],
+      },
+      properties: {},
+    };
+  }, [currentPosition, guidanceMode, currentHeadingDegrees]);
 
   const gpsAccuracyGeoJSON = useMemo(() => {
     if (!currentPosition || !gpsAccuracyMeters) return null;
@@ -415,7 +409,10 @@ export default function MapLibreServiceCoverageMap({
             enabled={followCurrentPosition}
             currentPosition={currentPosition}
             revision={followCurrentPositionRevision}
+            guidanceMode={guidanceMode}
+            bearing={currentHeadingDegrees}
           />
+          <MapLibreArrivalCameraEffect hasArrived={hasArrived} destination={destination ?? null} />
 
           <MapLibreCoverageMapLayers
             tone={tone}
@@ -433,6 +430,7 @@ export default function MapLibreServiceCoverageMap({
             onSelectDiscoveryPlace={onSelectDiscoveryPlace}
             gpsAccuracyGeoJSON={gpsAccuracyGeoJSON}
             gpsPointGeoJSON={gpsPointGeoJSON}
+            gpsHeadingGeoJSON={gpsHeadingGeoJSON}
             activeSearchTarget={activeSearchTarget}
             searchTargetRadiusGeoJSON={searchTargetRadiusGeoJSON}
             searchTargetPointGeoJSON={searchTargetPointGeoJSON}
@@ -458,14 +456,7 @@ export default function MapLibreServiceCoverageMap({
           performanceLatestSampleAgeMs={performanceSummary.latestSampleAgeMs}
           lastZoomDurationMs={performanceSummary.lastZoomDurationMs}
           lastPanDurationMs={performanceSummary.lastPanDurationMs}
-          onResetPerformance={
-            showPerformanceResetControl
-              ? () => {
-                  clearMapInteractionSamples();
-                  setPerformanceSummary(getMapPerformanceSummary());
-                }
-              : undefined
-          }
+          onResetPerformance={showPerformanceResetControl ? resetPerformance : undefined}
         />
       ) : null}
     </div>

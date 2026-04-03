@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { ScreenErrorBoundary } from "../components/ScreenErrorBoundary";
 import { useBidsForReport } from "../hooks/useBidsForReport";
-import { useMarketplaceReports } from "../hooks/useMarketplaceReports";
+import { useDashboardData } from "./useDashboardData";
 
 // Lazy-loaded screens for route-level code splitting
 const HomeScreen = lazy(() => import("../components/codelayer/HomeScreen"));
@@ -11,17 +11,16 @@ const BidsScreen = lazy(() => import("../components/codelayer/BidsScreen"));
 const AccountScreen = lazy(() => import("../components/codelayer/AccountScreen"));
 const ShopRequestsScreen = lazy(() => import("../components/shop/ShopRequestsScreen"));
 const ShopActiveJobsScreen = lazy(() => import("../components/shop/ShopActiveJobsScreen"));
+const ShopEstimateInboxScreen = lazy(() => import("../components/shop/ShopEstimateInboxScreen"));
 const InsurerClaimsScreen = lazy(() => import("../components/insurer/InsurerClaimsScreen"));
 const InsurerPartnerShopsScreen = lazy(
   () => import("../components/insurer/InsurerPartnerShopsScreen")
 );
 
-import { SEED_DAMAGE_REPORTS } from "../constants";
-import { getShopSubmittedBids } from "../services/supabase/bids";
 import { updateClaimDecision } from "../services/supabase/reports";
-import type { DamageReport } from "../types";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import DashboardSecondaryViews from "./DashboardSecondaryViews";
+import CustomerEstimateDetailSheet from "../components/dashboard/CustomerEstimateDetailSheet";
 
 const screenTransition = {
   initial: { opacity: 0, x: -20 },
@@ -90,93 +89,28 @@ export default function DashboardRouter({
       : null;
   const { bids: liveBids } = useBidsForReport(bidsReportId);
 
-  // Fetch all reports from Supabase for shop/insurer marketplace views
   const {
-    marketplaceReports,
-    loading: marketplaceLoading,
-    refetch: refetchMarketplace,
-  } = useMarketplaceReports(userType);
-  const enrichedUserReports = reports.map((report) => ({
-    ...report,
-    photos:
-      Array.isArray(photoStorage[report.id]) && photoStorage[report.id].length > 0
-        ? photoStorage[report.id]
-        : Array.isArray(report.photos)
-          ? report.photos
-          : [],
-  }));
-
-  const liveReportMap = new Map<string, DamageReport>();
-
-  marketplaceReports.forEach((report) => {
-    liveReportMap.set(String(report.id), report);
+    enrichedUserReports,
+    shopInsurerReports,
+    shopInsurerReportsLoading,
+    usingSeedFallback,
+    shopSubmittedBids,
+    shopBidReportIdsArray,
+    shopEstimateRequests,
+    shopEstimatesLoading,
+    customerEstimateRequests,
+    selectedEstimate,
+    setSelectedEstimate,
+    estimateActionLoading,
+    handleCustomerEstimateResponse,
+    handleShopEstimateUpdate,
+    refetchMarketplace,
+  } = useDashboardData({
+    userType,
+    providerUserId: websiteIdentity?.providerUserId,
+    reports,
+    photoStorage,
   });
-
-  enrichedUserReports.forEach((report) => {
-    const reportKey = String(report.id);
-    const existing = liveReportMap.get(reportKey);
-
-    if (!existing) {
-      liveReportMap.set(reportKey, report);
-      return;
-    }
-
-    liveReportMap.set(reportKey, {
-      ...existing,
-      customerName: report.customerName || existing.customerName,
-      customerEmail: report.customerEmail || existing.customerEmail,
-      customerPhone: report.customerPhone || existing.customerPhone,
-      description: report.description || existing.description,
-      damageDescription: report.damageDescription || existing.damageDescription,
-      damageArea: report.damageArea || existing.damageArea,
-      damageType: report.damageType || existing.damageType,
-      address: report.address || existing.address,
-      city: report.city || existing.city,
-      state: report.state || existing.state,
-      zipCode: report.zipCode || existing.zipCode,
-      zip_code: report.zip_code || existing.zip_code,
-      claimNumber: report.claimNumber || existing.claimNumber,
-      policyNumber: report.policyNumber || existing.policyNumber,
-      vehicle: report.vehicle || existing.vehicle,
-      vehicleInfo: report.vehicleInfo || existing.vehicleInfo,
-      photos: report.photos.length > 0 ? report.photos : existing.photos,
-      bids: Array.isArray(report.bids) && report.bids.length > 0 ? report.bids : existing.bids,
-      bidsCount: report.bidsCount ?? existing.bidsCount,
-      bidAmount: report.bidAmount ?? existing.bidAmount,
-      submittedAt: report.submittedAt || existing.submittedAt,
-      createdAt: report.createdAt || existing.createdAt,
-      status: report.status || existing.status,
-    });
-  });
-
-  const liveMarketplaceReports = Array.from(liveReportMap.values()).sort((left, right) => {
-    const leftDate = Date.parse(left.submittedAt || left.createdAt || "");
-    const rightDate = Date.parse(right.submittedAt || right.createdAt || "");
-    return rightDate - leftDate;
-  });
-  const usingSeedFallback = liveMarketplaceReports.length === 0;
-  const shopInsurerReports = usingSeedFallback ? SEED_DAMAGE_REPORTS : liveMarketplaceReports;
-  const shopInsurerReportsLoading = marketplaceLoading && liveMarketplaceReports.length === 0;
-
-  // Pre-load shop's existing bids so ShopRequestsScreen knows which reports already have bids
-  const [shopBidReportIds, setShopBidReportIds] = useState<Set<string>>(new Set());
-  useEffect(() => {
-    if (userType !== "shop" || !websiteIdentity?.providerUserId) return;
-    let cancelled = false;
-    getShopSubmittedBids(websiteIdentity.providerUserId).then((bids) => {
-      if (!cancelled) {
-        const ids = new Set(
-          bids.map((b) => b.damage_report_id || b.report_id || "").filter(Boolean)
-        );
-        setShopBidReportIds(ids);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [userType, websiteIdentity?.providerUserId]);
-
-  const shopBidReportIdsArray = useMemo(() => Array.from(shopBidReportIds), [shopBidReportIds]);
 
   // Scroll to top whenever view changes
   useEffect(() => {
@@ -188,6 +122,7 @@ export default function DashboardRouter({
     (viewMode === "dashboard" && currentTab === "report" && userType === "customer") ||
     (viewMode === "dashboard" && currentTab === "bids" && userType === "customer") ||
     (viewMode === "dashboard" && currentTab === "requests" && userType === "shop") ||
+    (viewMode === "dashboard" && currentTab === "estimates" && userType === "shop") ||
     (viewMode === "dashboard" && currentTab === "jobs" && userType === "shop") ||
     (viewMode === "dashboard" && currentTab === "claims" && userType === "insurer") ||
     (viewMode === "dashboard" && currentTab === "shops" && userType === "insurer") ||
@@ -242,6 +177,10 @@ export default function DashboardRouter({
                     onTabChange("claims");
                     onViewModeChange("dashboard");
                   }}
+                  onViewReportOnMap={(reportId) => {
+                    onSelectReport(reportId);
+                    onViewModeChange("shop-directory");
+                  }}
                   onConnectInsurance={onConnectInsurance}
                   onViewLikedShops={onViewLikedShops}
                   onViewBids={onViewBids}
@@ -263,6 +202,9 @@ export default function DashboardRouter({
                       ? shopInsurerReports
                       : enrichedUserReports
                   }
+                  estimateRequests={userType === "customer" ? customerEstimateRequests : undefined}
+                  onSelectEstimate={(est) => setSelectedEstimate(est)}
+                  shopSubmittedBids={userType === "shop" ? shopSubmittedBids : undefined}
                 />
               </motion.div>
             )}
@@ -277,7 +219,10 @@ export default function DashboardRouter({
                   onSaveVehicle={onSaveVehicle}
                   hasSeenPhotoGuide={hasSeenPhotoGuide}
                   onPhotoGuideComplete={onPhotoGuideComplete}
-                  onReportSubmit={onReportSubmit}
+                  onReportSubmit={async (...args) => {
+                    await onReportSubmit(...args);
+                    refetchMarketplace();
+                  }}
                   onViewReports={() => {
                     // Navigate to "reports-list" viewMode which shows the reports list
                     onViewModeChange("reports-list");
@@ -326,6 +271,19 @@ export default function DashboardRouter({
                   onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
                     onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
                   }}
+                />
+              </motion.div>
+            )}
+
+            {/* Shop: Estimate Inbox Screen */}
+            {viewMode === "dashboard" && currentTab === "estimates" && userType === "shop" && (
+              <motion.div key="estimates" {...screenTransition}>
+                <ShopEstimateInboxScreen
+                  estimateRequests={shopEstimateRequests}
+                  loading={shopEstimatesLoading}
+                  primaryColor={primaryColor}
+                  appearanceMode={appearanceMode}
+                  onUpdateStatus={handleShopEstimateUpdate}
                 />
               </motion.div>
             )}
@@ -429,30 +387,6 @@ export default function DashboardRouter({
               </motion.div>
             )}
 
-            {/* Secondary / overlay views */}
-            <DashboardSecondaryViews
-              viewMode={viewMode}
-              userType={userType}
-              userInfo={userInfo}
-              primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
-              appearanceMode={appearanceMode}
-              reports={reports}
-              photoStorage={photoStorage}
-              reportsLoading={reportsLoading}
-              reportsError={reportsError}
-              vehicles={vehicles}
-              selectedReportId={selectedReportId}
-              websiteIdentity={websiteIdentity}
-              onSelectReport={onSelectReport}
-              onViewModeChange={onViewModeChange}
-              onTabChange={onTabChange}
-              onSaveVehicles={onSaveVehicles}
-              onEnableDemoMode={onEnableDemoMode}
-              onExitDemoMode={onExitDemoMode}
-              onConfirmCompletion={onConfirmCompletion}
-            />
-
             {!hasRouteMatch && (
               <motion.div key="route-fallback" {...screenTransition}>
                 <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
@@ -472,9 +406,47 @@ export default function DashboardRouter({
                 </div>
               </motion.div>
             )}
+
+            {/* Secondary / overlay views — same AnimatePresence for clean transitions */}
+            {viewMode !== "dashboard" && (
+              <motion.div key={`secondary-${viewMode}`} {...screenTransition}>
+                <DashboardSecondaryViews
+                  viewMode={viewMode}
+                  userType={userType}
+                  userInfo={userInfo}
+                  primaryColor={primaryColor}
+                  secondaryColor={secondaryColor}
+                  appearanceMode={appearanceMode}
+                  reports={reports}
+                  photoStorage={photoStorage}
+                  reportsLoading={reportsLoading}
+                  reportsError={reportsError}
+                  vehicles={vehicles}
+                  selectedReportId={selectedReportId}
+                  websiteIdentity={websiteIdentity}
+                  onSelectReport={onSelectReport}
+                  onViewModeChange={onViewModeChange}
+                  onTabChange={onTabChange}
+                  onSaveVehicles={onSaveVehicles}
+                  onEnableDemoMode={onEnableDemoMode}
+                  onExitDemoMode={onExitDemoMode}
+                  onConfirmCompletion={onConfirmCompletion}
+                />
+              </motion.div>
+            )}
           </AnimatePresence>
         </Suspense>
       </ScreenErrorBoundary>
+
+      {/* Customer estimate detail bottom sheet — portals outside AnimatePresence */}
+      <CustomerEstimateDetailSheet
+        estimate={selectedEstimate}
+        open={selectedEstimate !== null}
+        onClose={() => setSelectedEstimate(null)}
+        onAccept={(id) => handleCustomerEstimateResponse(id, "accepted")}
+        onDecline={(id) => handleCustomerEstimateResponse(id, "declined")}
+        loading={estimateActionLoading}
+      />
     </div>
   );
 }

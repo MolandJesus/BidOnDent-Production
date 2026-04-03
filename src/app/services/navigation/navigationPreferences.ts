@@ -11,6 +11,7 @@ export function getDefaultNavigationGuidanceSettings(): NavigationGuidanceSettin
     voiceVolumePreset: "normal",
     gpsTrackingEnabled: true,
     speedLimitMonitorEnabled: true,
+    autoRerouteEnabled: true,
     addressSearchProvider: "nominatim",
     routeProvider: "osrm-public",
     speedLimitProvider: "overpass",
@@ -47,6 +48,10 @@ export function loadNavigationGuidanceSettings(): NavigationGuidanceSettings {
         typeof parsed.speedLimitMonitorEnabled === "boolean"
           ? parsed.speedLimitMonitorEnabled
           : defaults.speedLimitMonitorEnabled,
+      autoRerouteEnabled:
+        typeof parsed.autoRerouteEnabled === "boolean"
+          ? parsed.autoRerouteEnabled
+          : defaults.autoRerouteEnabled,
       addressSearchProvider: defaults.addressSearchProvider,
       routeProvider: defaults.routeProvider,
       speedLimitProvider: defaults.speedLimitProvider,

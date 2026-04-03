@@ -1,4 +1,5 @@
 import { createClerkClient, verifyToken } from "npm:@clerk/backend";
+import { createRemoteJWKSet, jwtVerify } from "npm:jose";
 import { config } from "../config/constants.ts";
 
 export type VerifiedClerkSession = {
@@ -7,6 +8,9 @@ export type VerifiedClerkSession = {
   claims: Record<string, unknown>;
 };
 
+const CLERK_ISSUER_HOST_SUFFIXES = [".clerk.accounts.dev", ".clerk.com"];
+const remoteJwksCache = new Map<string, ReturnType<typeof createRemoteJWKSet>>();
+
 function normalizeEmail(value: string | null | undefined): string | null {
   if (!value) {
     return null;
@@ -14,6 +18,123 @@ function normalizeEmail(value: string | null | undefined): string | null {
 
   const normalized = value.trim().toLowerCase();
   return normalized.length > 0 ? normalized : null;
+}
+
+function decodeBase64Url(value: string): string {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = `${normalized}${"=".repeat((4 - (normalized.length % 4)) % 4)}`;
+  const binary = atob(padded);
+  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
+function getConfiguredClerkHost(): string | null {
+  const match = config.CLERK_PUBLISHABLE_KEY.match(/^pk_(?:test|live)_(.+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  try {
+    const decoded = decodeBase64Url(match[1]).replace(/\$+$/, "").trim().toLowerCase();
+    return decoded || null;
+  } catch {
+    return null;
+  }
+}
+
+function getIssuerFromToken(token: string): URL {
+  const segments = token.split(".");
+
+  if (segments.length !== 3) {
+    throw new Error("Invalid Clerk bearer token");
+  }
+
+  let payload: Record<string, unknown>;
+
+  try {
+    payload = JSON.parse(decodeBase64Url(segments[1])) as Record<string, unknown>;
+  } catch {
+    throw new Error("Invalid Clerk bearer token payload");
+  }
+
+  if (typeof payload.iss !== "string") {
+    throw new Error("Missing Clerk token issuer");
+  }
+
+  let issuer: URL;
+
+  try {
+    issuer = new URL(payload.iss);
+  } catch {
+    throw new Error("Invalid Clerk token issuer");
+  }
+
+  if (issuer.protocol !== "https:") {
+    throw new Error("Invalid Clerk token issuer protocol");
+  }
+
+  return issuer;
+}
+
+function isTrustedClerkIssuer(issuer: URL) {
+  const hostname = issuer.hostname.toLowerCase();
+  const configuredHost = getConfiguredClerkHost();
+
+  if (configuredHost && hostname === configuredHost) {
+    return true;
+  }
+
+  return CLERK_ISSUER_HOST_SUFFIXES.some(
+    (suffix) => hostname === suffix.slice(1) || hostname.endsWith(suffix)
+  );
+}
+
+function getRemoteClerkJwks(issuer: URL) {
+  const cacheKey = issuer.origin;
+  const cached = remoteJwksCache.get(cacheKey);
+
+  if (cached) {
+    return cached;
+  }
+
+  const next = createRemoteJWKSet(new URL("/.well-known/jwks.json", issuer.origin));
+  remoteJwksCache.set(cacheKey, next);
+  return next;
+}
+
+function assertAuthorizedParty(
+  claims: Record<string, unknown>,
+  authorizedParties: string[]
+) {
+  if (authorizedParties.length === 0) {
+    return;
+  }
+
+  const authorizedParty = typeof claims.azp === "string" ? claims.azp : null;
+
+  if (!authorizedParty || !authorizedParties.includes(authorizedParty)) {
+    throw new Error("Clerk authorized party mismatch");
+  }
+}
+
+async function verifyClerkJwtWithRemoteJwks(
+  token: string,
+  authorizedParties: string[]
+): Promise<Record<string, unknown>> {
+  const issuer = getIssuerFromToken(token);
+
+  if (!isTrustedClerkIssuer(issuer)) {
+    throw new Error("Untrusted Clerk issuer");
+  }
+
+  const verified = await jwtVerify(token, getRemoteClerkJwks(issuer), {
+    issuer: issuer.origin,
+  });
+  const claims = verified.payload as Record<string, unknown>;
+
+  assertAuthorizedParty(claims, authorizedParties);
+  return claims;
 }
 
 function getEmailFromClaims(claims: Record<string, unknown>): string | null {
@@ -51,6 +172,59 @@ const clerkClient = config.CLERK_SECRET_KEY
       publishableKey: config.CLERK_PUBLISHABLE_KEY || undefined,
     })
   : null;
+
+function buildVerifyOptions(authorizedParties: string[], includeSecretKey: boolean) {
+  return {
+    ...(authorizedParties.length > 0 ? { authorizedParties } : {}),
+    ...(includeSecretKey && config.CLERK_SECRET_KEY
+      ? { secretKey: config.CLERK_SECRET_KEY }
+      : {}),
+  };
+}
+
+async function verifyClerkJwt(
+  token: string,
+  authorizedParties: string[]
+): Promise<Record<string, unknown>> {
+  let secretKeyError: unknown = null;
+
+  if (config.CLERK_SECRET_KEY) {
+    try {
+      return (await verifyToken(
+        token,
+        buildVerifyOptions(authorizedParties, true)
+      )) as Record<string, unknown>;
+    } catch (error) {
+      secretKeyError = error;
+    }
+  }
+
+  try {
+    const claims = await verifyClerkJwtWithRemoteJwks(token, authorizedParties);
+
+    if (secretKeyError) {
+      console.warn(
+        "[Clerk] Secret-key verification failed; remote JWKS verification succeeded.",
+        secretKeyError instanceof Error ? secretKeyError.message : secretKeyError
+      );
+    }
+
+    return claims;
+  } catch (remoteJwksError) {
+    try {
+      return (await verifyToken(
+        token,
+        buildVerifyOptions(authorizedParties, false)
+      )) as Record<string, unknown>;
+    } catch {
+      if (secretKeyError) {
+        throw secretKeyError;
+      }
+
+      throw remoteJwksError;
+    }
+  }
+}
 
 async function fetchClerkEmail(clerkUserId: string): Promise<string | null> {
   if (!clerkClient) {
@@ -108,17 +282,7 @@ export async function verifyClerkSessionRequest(
   const token = getBearerToken(req);
   const authorizedParties = getAuthorizedParties(req);
 
-  const claims = (await verifyToken(
-    token,
-    authorizedParties.length > 0
-      ? {
-          authorizedParties,
-          ...(config.CLERK_SECRET_KEY ? { secretKey: config.CLERK_SECRET_KEY } : {}),
-        }
-      : config.CLERK_SECRET_KEY
-        ? { secretKey: config.CLERK_SECRET_KEY }
-        : {}
-  )) as Record<string, unknown>;
+  const claims = await verifyClerkJwt(token, authorizedParties);
 
   const clerkUserId = typeof claims.sub === "string" ? claims.sub : null;
 

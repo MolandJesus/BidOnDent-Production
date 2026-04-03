@@ -1,10 +1,8 @@
 import {
   ArrowUp,
-  CheckCircle2,
   LoaderCircle,
   LocateFixed,
   Pause,
-  Phone,
   Play,
   RefreshCw,
   Route,
@@ -19,6 +17,12 @@ import type { ShopMapListing } from "../../services/intelligence/shopMapExperien
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { GpsStatus } from "../../hooks/useNavigationGpsTracking";
 import type { Place, RouteOption } from "../../types/mapDomain";
+import {
+  formatActiveDuration,
+  formatSpeedLimitDetail,
+  getGpsRecoveryMessage,
+} from "./shopDirectoryGuidanceUtils";
+import { GuidanceArrivalCelebration, GuidanceArrivalActions } from "./GuidanceArrivalSection";
 
 type ShopDirectoryGuidanceCardProps = {
   selectedOrigin: Place;
@@ -45,70 +49,14 @@ type ShopDirectoryGuidanceCardProps = {
   followingInstruction?: string | null;
   onRetryGps?: () => void;
   onRetryRoute?: () => void;
+  onViewDetails?: (shop: ShopMapListing) => void;
+  onRequestEstimate?: (shop: ShopMapListing) => void;
   onPauseNavigation?: () => void;
   onResumeNavigation?: () => void;
   onEndNavigation?: () => void;
   onRecenterNavigation?: () => void;
+  density?: "default" | "compact";
 };
-
-function formatActiveDuration(totalSeconds: number) {
-  if (totalSeconds < 60) return `${totalSeconds}s`;
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
-}
-
-function formatSpeedLimitDetail(
-  currentSpeedMph: number | null | undefined,
-  speedLimitMph: number | null | undefined
-) {
-  if (!Number.isFinite(speedLimitMph)) {
-    return null;
-  }
-
-  const roundedLimit = Math.round(Number(speedLimitMph));
-
-  if (!Number.isFinite(currentSpeedMph) || Number(currentSpeedMph) < 1) {
-    return `Limit ${roundedLimit}`;
-  }
-
-  const roundedCurrentSpeed = Math.round(Number(currentSpeedMph));
-  const overageMph = roundedCurrentSpeed - roundedLimit;
-
-  if (overageMph > 0) {
-    return `+${overageMph} over ${roundedLimit}`;
-  }
-
-  if (overageMph >= -2) {
-    return `At limit ${roundedLimit}`;
-  }
-
-  return `${Math.abs(overageMph)} below ${roundedLimit}`;
-}
-
-function getGpsRecoveryMessage(gpsStatus: GpsStatus, gpsError: string | undefined) {
-  if (gpsError?.trim()) {
-    return gpsError;
-  }
-
-  if (gpsStatus === "denied") {
-    return "Location permission denied. Allow access, then retry GPS.";
-  }
-
-  if (gpsStatus === "lost") {
-    return "GPS signal lost — turn-by-turn position may be outdated.";
-  }
-
-  return "GPS signal stale — no fresh location update in the last 10 seconds.";
-}
-
-function formatEtaComparison(actualSeconds: number, estimatedMinutes: number) {
-  const actualMinutes = Math.round(actualSeconds / 60);
-  const diff = actualMinutes - estimatedMinutes;
-  if (Math.abs(diff) <= 1) return "On time";
-  if (diff > 0) return `${diff}m slower`;
-  return `${Math.abs(diff)}m faster`;
-}
 
 export default function ShopDirectoryGuidanceCard({
   selectedOrigin,
@@ -135,11 +83,15 @@ export default function ShopDirectoryGuidanceCard({
   followingInstruction,
   onRetryGps,
   onRetryRoute,
+  onViewDetails,
+  onRequestEstimate,
   onPauseNavigation,
   onResumeNavigation,
   onEndNavigation,
   onRecenterNavigation,
+  density = "default",
 }: ShopDirectoryGuidanceCardProps) {
+  const isCompactDensity = density === "compact";
   const glassPanel = isDark
     ? "border-blue-400/25 bg-slate-950/82 backdrop-blur-md text-white shadow-[0_0_24px_rgba(59,130,246,0.08)]"
     : "border-black/8 bg-white/88 backdrop-blur-md text-slate-800";
@@ -228,11 +180,15 @@ export default function ShopDirectoryGuidanceCard({
 
   return (
     <div
-      className="pointer-events-auto absolute left-3 z-[510] w-[18rem] max-w-[calc(100vw-1.5rem)] sm:left-4 sm:w-[19rem]"
+      className={`pointer-events-auto absolute left-3 z-[510] max-w-[calc(100vw-1.5rem)] sm:left-4 ${
+        isCompactDensity ? "w-[16rem] sm:w-[17rem]" : "w-[18rem] sm:w-[19rem]"
+      }`}
       style={{ bottom: "max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.4rem))" }}
     >
       <div
-        className={`rounded-[1.3rem] border p-2.5 shadow-2xl sm:rounded-2xl sm:p-3 ${glassPanel}`}
+        className={`rounded-[1.3rem] border shadow-2xl sm:rounded-2xl ${
+          isCompactDensity ? "p-2 sm:p-2.5" : "p-2.5 sm:p-3"
+        } ${glassPanel}`}
       >
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -318,57 +274,12 @@ export default function ShopDirectoryGuidanceCard({
         ) : null}
 
         {hasArrived ? (
-          <div
-            className={`mt-2 rounded-xl border px-3 py-2.5 ${
-              isDark
-                ? "border-emerald-400/25 bg-emerald-400/10"
-                : "border-emerald-200 bg-emerald-50"
-            }`}
-          >
-            <div className="flex items-start gap-2.5">
-              <CheckCircle2
-                className={`mt-0.5 h-4 w-4 shrink-0 ${isDark ? "text-emerald-300" : "text-emerald-600"}`}
-              />
-              <p
-                className={`text-xs font-semibold leading-5 ${isDark ? "text-emerald-100" : "text-emerald-800"}`}
-              >
-                You've arrived at {selectedShop.name}
-              </p>
-            </div>
-            <div className={`mt-2.5 grid grid-cols-3 gap-1.5 border-t pt-2.5 ${divider}`}>
-              <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
-                <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>
-                  Duration
-                </p>
-                <p
-                  className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
-                >
-                  {formatActiveDuration(sessionActiveSeconds)}
-                </p>
-              </div>
-              <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
-                <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>
-                  Distance
-                </p>
-                <p
-                  className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
-                >
-                  {selectedRoute.totalDistanceLabel}
-                </p>
-              </div>
-              <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
-                <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>vs ETA</p>
-                <p
-                  className={`mt-1 text-sm font-semibold ${isDark ? "text-white" : "text-slate-800"}`}
-                >
-                  {formatEtaComparison(
-                    sessionActiveSeconds,
-                    selectedRoute.estimatedDurationMinutes
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
+          <GuidanceArrivalCelebration
+            shopName={selectedShop.name}
+            selectedRoute={selectedRoute}
+            sessionActiveSeconds={sessionActiveSeconds}
+            isDark={isDark}
+          />
         ) : routeSummary.description ? (
           <p className={`mt-2 text-xs leading-5 ${isDark ? "text-white/80" : "text-slate-700"}`}>
             {routeSummary.description}
@@ -437,7 +348,13 @@ export default function ShopDirectoryGuidanceCard({
                 {formatActiveDuration(sessionActiveSeconds)}
               </p>
             </div>
-            <div className={`rounded-xl border px-2 py-2 text-center ${glassChip}`}>
+            <div
+              className={`rounded-xl border px-2 py-2 text-center ${
+                isOverSpeedLimit
+                  ? `animate-speed-warning ${isDark ? "border-red-500/50 bg-red-500/15" : "border-red-400/60 bg-red-50"}`
+                  : glassChip
+              }`}
+            >
               <p className={`text-[10px] uppercase tracking-[0.16em] ${secondaryText}`}>Speed</p>
               <p
                 className={`mt-1 text-sm font-semibold ${
@@ -479,29 +396,14 @@ export default function ShopDirectoryGuidanceCard({
         )}
 
         {hasArrived ? (
-          <div className={`mt-3 border-t pt-3 ${divider}`}>
-            <div className="grid grid-cols-2 gap-2">
-              {selectedShop.mapResult?.phone ? (
-                <a
-                  className="flex min-h-[44px] items-center justify-center gap-2 rounded-[1rem] bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
-                  href={`tel:${selectedShop.mapResult.phone}`}
-                >
-                  <Phone className="h-4 w-4" />
-                  Call Shop
-                </a>
-              ) : null}
-              <button
-                className={`flex min-h-[44px] items-center justify-center gap-2 rounded-[1rem] bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-700 active:bg-emerald-800 ${
-                  selectedShop.mapResult?.phone ? "" : "col-span-2"
-                }`}
-                onClick={onEndNavigation}
-                type="button"
-              >
-                <Square className="h-4 w-4" />
-                Done
-              </button>
-            </div>
-          </div>
+          <GuidanceArrivalActions
+            selectedShop={selectedShop}
+            isDark={isDark}
+            isCompactDensity={isCompactDensity}
+            onViewDetails={onViewDetails}
+            onRequestEstimate={onRequestEstimate}
+            onEndNavigation={onEndNavigation}
+          />
         ) : (
           <div className="mt-3 grid grid-cols-3 gap-2">
             {sessionStatus === "paused" ? (

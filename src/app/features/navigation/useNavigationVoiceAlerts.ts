@@ -83,6 +83,8 @@ export function useNavigationVoiceAlerts(
 ): NavigationVoiceAlerts {
   // Track which event IDs we've already announced
   const announcedEventIdsRef = useRef<Set<string>>(new Set());
+  // Track recent (type,severity) to suppress semantically-duplicate alerts
+  const recentAlertKeyRef = useRef<{ key: string; at: number } | null>(null);
   // Track the last reroute status we announced
   const lastAnnouncedRerouteStatusRef = useRef<RerouteStatus>("idle");
   // Diagnostic counters
@@ -111,6 +113,18 @@ export function useNavigationVoiceAlerts(
     const phrase = getDeviationPhrase(latestEvent.type, latestEvent.severity);
     if (!phrase) return;
 
+    // Suppress semantically-duplicate alerts within 10 seconds
+    const alertKey = `${latestEvent.type}:${latestEvent.severity}`;
+    const now = Date.now();
+    if (
+      recentAlertKeyRef.current &&
+      recentAlertKeyRef.current.key === alertKey &&
+      now - recentAlertKeyRef.current.at < 10_000
+    ) {
+      announcedEventIdsRef.current.add(latestEvent.id);
+      return;
+    }
+
     const result = speakNavigationInstruction({
       text: phrase,
       voiceMode: settings.voiceMode,
@@ -119,6 +133,7 @@ export function useNavigationVoiceAlerts(
     });
 
     announcedEventIdsRef.current.add(latestEvent.id);
+    recentAlertKeyRef.current = { key: alertKey, at: now };
     deviationCountRef.current += 1;
     lastPhraseRef.current = phrase;
     lastResultRef.current = result;
@@ -151,7 +166,13 @@ export function useNavigationVoiceAlerts(
     rerouteCountRef.current += 1;
     lastPhraseRef.current = phrase;
     lastResultRef.current = result;
-  }, [enabled, rerouteStatus, settings.voiceMode, settings.voicePersona, settings.voiceVolumePreset]);
+  }, [
+    enabled,
+    rerouteStatus,
+    settings.voiceMode,
+    settings.voicePersona,
+    settings.voiceVolumePreset,
+  ]);
 
   return {
     snapshot: {

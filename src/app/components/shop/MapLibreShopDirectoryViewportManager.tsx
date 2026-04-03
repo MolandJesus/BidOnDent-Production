@@ -47,12 +47,22 @@ export default function MapLibreShopDirectoryViewportManager({
   const restoredInitialViewportRef = useRef(false);
   const initialViewportRef = useRef({ center: initialCenter, zoom: initialZoom });
   const prevSelectedShopIdRef = useRef<number | null>(null);
+  const lastAppliedFitKeyRef = useRef<string | null>(null);
 
   // Invalidate size after layout shifts
   useEffect(() => {
     const map = mapRef?.getMap();
     if (!map) return;
-    const timer = window.setTimeout(() => map.resize(), 120);
+    const timer = window.setTimeout(() => {
+      try {
+        const container = map.getContainer();
+        if (container && container.offsetWidth > 0 && container.offsetHeight > 0) {
+          map.resize();
+        }
+      } catch {
+        // MapLibre resize can fail before container is fully laid out — safe to ignore
+      }
+    }, 200);
     return () => window.clearTimeout(timer);
   }, [fitSignature, mapRef]);
 
@@ -61,61 +71,103 @@ export default function MapLibreShopDirectoryViewportManager({
     const map = mapRef?.getMap();
     if (!map) return;
 
-    if (
-      !restoredInitialViewportRef.current &&
-      initialViewportRef.current.center &&
-      typeof initialViewportRef.current.zoom === "number"
-    ) {
-      restoredInitialViewportRef.current = true;
-      map.jumpTo({
-        center: [
-          initialViewportRef.current.center.longitude,
-          initialViewportRef.current.center.latitude,
+    const fitRunKey = `${fitSignature}|preserve:${preserveViewport ? "1" : "0"}`;
+
+    const applyFit = () => {
+      if (
+        !restoredInitialViewportRef.current &&
+        initialViewportRef.current.center &&
+        typeof initialViewportRef.current.zoom === "number"
+      ) {
+        restoredInitialViewportRef.current = true;
+        const { longitude: lng, latitude: lat } = initialViewportRef.current.center;
+        if (!isFinite(lng) || !isFinite(lat)) return;
+        map.jumpTo({
+          center: [lng, lat],
+          zoom: initialViewportRef.current.zoom,
+        });
+        return;
+      }
+
+      if (lastAppliedFitKeyRef.current === fitRunKey) return;
+
+      if (preserveViewport && restoredInitialViewportRef.current) {
+        lastAppliedFitKeyRef.current = fitRunKey;
+        return;
+      }
+
+      const points: [number, number][] = [
+        ...(selectedOrigin &&
+        isFinite(selectedOrigin.longitude) &&
+        isFinite(selectedOrigin.latitude)
+          ? [[selectedOrigin.longitude, selectedOrigin.latitude] as [number, number]]
+          : []),
+        ...shops
+          .filter(
+            (shop) =>
+              isFinite(shop.mapResult.coordinates.longitude) &&
+              isFinite(shop.mapResult.coordinates.latitude)
+          )
+          .map(
+            (shop) =>
+              [shop.mapResult.coordinates.longitude, shop.mapResult.coordinates.latitude] as [
+                number,
+                number,
+              ]
+          ),
+      ];
+
+      if (points.length === 0) {
+        lastAppliedFitKeyRef.current = fitRunKey;
+        return;
+      }
+
+      if (points.length === 1) {
+        lastAppliedFitKeyRef.current = fitRunKey;
+        map.jumpTo({ center: points[0], zoom: 14 });
+        return;
+      }
+
+      let minLng = Infinity,
+        maxLng = -Infinity,
+        minLat = Infinity,
+        maxLat = -Infinity;
+      for (const [lng, lat] of points) {
+        if (lng < minLng) minLng = lng;
+        if (lng > maxLng) maxLng = lng;
+        if (lat < minLat) minLat = lat;
+        if (lat > maxLat) maxLat = lat;
+      }
+      if (!isFinite(minLng) || !isFinite(maxLng) || !isFinite(minLat) || !isFinite(maxLat)) {
+        console.warn("[ViewportManager] Invalid bounds, skipping fitBounds:", {
+          minLng,
+          maxLng,
+          minLat,
+          maxLat,
+          pointCount: points.length,
+        });
+        lastAppliedFitKeyRef.current = fitRunKey;
+        return;
+      }
+      map.fitBounds(
+        [
+          [minLng, minLat],
+          [maxLng, maxLat],
         ],
-        zoom: initialViewportRef.current.zoom,
-      });
-      return;
+        { padding: 44, maxZoom: 15, animate: false }
+      );
+      lastAppliedFitKeyRef.current = fitRunKey;
+    };
+
+    // Defer viewport operations until map is loaded to avoid NaN in _calcMatrices
+    if (map.loaded()) {
+      applyFit();
+    } else {
+      map.once("load", applyFit);
+      return () => {
+        map.off("load", applyFit);
+      };
     }
-
-    if (preserveViewport && restoredInitialViewportRef.current) return;
-
-    const points: [number, number][] = [
-      ...(selectedOrigin
-        ? [[selectedOrigin.longitude, selectedOrigin.latitude] as [number, number]]
-        : []),
-      ...shops.map(
-        (shop) =>
-          [shop.mapResult.coordinates.longitude, shop.mapResult.coordinates.latitude] as [
-            number,
-            number,
-          ]
-      ),
-    ];
-
-    if (points.length === 0) return;
-
-    if (points.length === 1) {
-      map.jumpTo({ center: points[0], zoom: 12 });
-      return;
-    }
-
-    let minLng = Infinity,
-      maxLng = -Infinity,
-      minLat = Infinity,
-      maxLat = -Infinity;
-    for (const [lng, lat] of points) {
-      if (lng < minLng) minLng = lng;
-      if (lng > maxLng) maxLng = lng;
-      if (lat < minLat) minLat = lat;
-      if (lat > maxLat) maxLat = lat;
-    }
-    map.fitBounds(
-      [
-        [minLng, minLat],
-        [maxLng, maxLat],
-      ],
-      { padding: 44, maxZoom: 12, animate: false }
-    );
   }, [fitSignature, mapRef, preserveViewport, selectedOrigin, shops]);
 
   // Fly to selected shop
@@ -130,16 +182,32 @@ export default function MapLibreShopDirectoryViewportManager({
     prevSelectedShopIdRef.current = selectedShopId;
 
     const selectedShop = shops.find((shop) => shop.id === selectedShopId);
-    if (!selectedShop) return;
+    if (
+      !selectedShop ||
+      !isFinite(selectedShop.mapResult.coordinates.longitude) ||
+      !isFinite(selectedShop.mapResult.coordinates.latitude)
+    )
+      return;
 
-    map.flyTo({
-      center: [
-        selectedShop.mapResult.coordinates.longitude,
-        selectedShop.mapResult.coordinates.latitude,
-      ],
-      zoom: Math.max(map.getZoom(), 12),
-      duration: 450,
-    });
+    const doFly = () => {
+      map.flyTo({
+        center: [
+          selectedShop.mapResult.coordinates.longitude,
+          selectedShop.mapResult.coordinates.latitude,
+        ],
+        zoom: Math.max(map.getZoom(), 12),
+        duration: 450,
+      });
+    };
+
+    if (map.loaded()) {
+      doFly();
+    } else {
+      map.once("load", doFly);
+      return () => {
+        map.off("load", doFly);
+      };
+    }
   }, [fitSignature, mapRef, selectedShopId, shops]);
 
   // Broadcast viewport changes

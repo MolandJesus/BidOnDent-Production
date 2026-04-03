@@ -5,7 +5,9 @@ import {
   Compass,
   LoaderCircle,
   MapPin,
+  RefreshCw,
   Route,
+  Send,
   TriangleAlert,
   X,
 } from "lucide-react";
@@ -29,8 +31,11 @@ type ShopDirectoryRoutePreviewCardProps = {
   isDark: boolean;
   onSelectRoute: (id: string) => void;
   onStartNavigation?: () => void;
+  onRequestEstimate?: (shop: ShopMapListing) => void;
   onDismiss?: () => void;
+  onRetryRoute?: () => void;
   directionsLabel?: string;
+  density?: "default" | "compact";
 };
 
 export default function ShopDirectoryRoutePreviewCard({
@@ -49,10 +54,14 @@ export default function ShopDirectoryRoutePreviewCard({
   isDark,
   onSelectRoute,
   onStartNavigation,
+  onRequestEstimate,
   onDismiss,
+  onRetryRoute,
   directionsLabel,
+  density = "default",
 }: ShopDirectoryRoutePreviewCardProps) {
   const [routeExpanded, setRouteExpanded] = useState(false);
+  const isCompactDensity = density === "compact";
 
   const glassPanel = isDark
     ? "border-blue-400/25 bg-slate-950/82 backdrop-blur-md text-white shadow-[0_0_24px_rgba(59,130,246,0.08)]"
@@ -96,10 +105,20 @@ export default function ShopDirectoryRoutePreviewCard({
 
   return (
     <div
-      className="pointer-events-auto absolute left-3 z-[510] w-[16rem] max-w-[calc(100vw-1.5rem)] sm:left-4 sm:w-[17rem]"
-      style={{ bottom: "max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.4rem))" }}
+      className={`pointer-events-auto absolute left-2.5 z-[510] max-w-[calc(100vw-1.25rem)] sm:left-3 ${
+        isCompactDensity ? "w-[13.5rem] sm:w-[14.25rem]" : "w-[16rem] sm:w-[17rem]"
+      }`}
+      style={{
+        bottom: isCompactDensity
+          ? "max(3rem, calc(env(safe-area-inset-bottom, 0px) + 2rem))"
+          : "max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.4rem))",
+      }}
     >
-      <div className={`rounded-2xl border p-2 shadow-2xl sm:p-2.5 ${glassPanel}`}>
+      <div
+        className={`rounded-2xl border shadow-2xl ${
+          isCompactDensity ? "p-2 sm:p-2.5" : "p-2 sm:p-2.5"
+        } ${glassPanel}`}
+      >
         <div className="flex items-center justify-between">
           <div
             className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] ${secondaryText}`}
@@ -109,8 +128,10 @@ export default function ShopDirectoryRoutePreviewCard({
           </div>
           <div className="flex items-center gap-1">
             <button
-              className={`rounded-full p-1 transition-colors ${secondaryText} hover:opacity-80`}
+              className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${secondaryText} hover:opacity-80`}
               onClick={() => setRouteExpanded((value) => !value)}
+              aria-expanded={routeExpanded}
+              aria-label="Toggle route steps"
               type="button"
             >
               {routeExpanded ? (
@@ -121,7 +142,7 @@ export default function ShopDirectoryRoutePreviewCard({
             </button>
             {onDismiss ? (
               <button
-                className={`rounded-full p-1 transition-colors ${secondaryText} hover:opacity-80`}
+                className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${secondaryText} hover:opacity-80`}
                 onClick={onDismiss}
                 type="button"
                 aria-label="Close route preview"
@@ -132,13 +153,17 @@ export default function ShopDirectoryRoutePreviewCard({
           </div>
         </div>
 
-        <div className="mt-2 flex gap-1.5">
+        <div className={`mt-2 flex ${isCompactDensity ? "gap-1" : "gap-1.5"}`}>
           {routeOptions.map((route) => {
             const isActive = route.id === selectedRoute.id;
             return (
               <button
                 key={route.id}
-                className={`flex min-h-[32px] flex-1 flex-col items-center justify-center rounded-lg px-1.5 py-1 text-center text-[10px] transition-colors sm:min-h-[34px] sm:text-[11px] ${isActive ? activeRoute : inactiveRoute}`}
+                className={`flex flex-1 flex-col items-center justify-center rounded-lg text-center transition-colors ${
+                  isCompactDensity
+                    ? "min-h-[26px] px-1 py-1 text-[9px]"
+                    : "min-h-[32px] px-1.5 py-1 text-[10px] sm:min-h-[34px] sm:text-[11px]"
+                } ${isActive ? activeRoute : inactiveRoute}`}
                 onClick={() => onSelectRoute(route.id)}
                 type="button"
               >
@@ -198,9 +223,25 @@ export default function ShopDirectoryRoutePreviewCard({
             }`}
           >
             <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            <p className="leading-5">
-              Using estimated route — live directions temporarily unavailable
-            </p>
+            <div className="flex-1">
+              <p className="leading-5">
+                Using estimated route — live directions temporarily unavailable
+              </p>
+              {onRetryRoute && !isLoadingRoute ? (
+                <button
+                  type="button"
+                  onClick={onRetryRoute}
+                  className={`mt-1.5 inline-flex min-h-[32px] items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                    isDark
+                      ? "border-amber-400/30 bg-amber-400/15 text-amber-100 hover:bg-amber-400/25"
+                      : "border-amber-300 bg-amber-100 text-amber-800 hover:bg-amber-200"
+                  }`}
+                >
+                  <RefreshCw className="h-3 w-3" />
+                  Retry live route
+                </button>
+              ) : null}
+            </div>
           </div>
         ) : null}
 
@@ -239,15 +280,37 @@ export default function ShopDirectoryRoutePreviewCard({
           </div>
         ) : null}
 
-        {onStartNavigation ? (
-          <button
-            className="mt-2 flex min-h-[36px] w-full items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800"
-            onClick={onStartNavigation}
-            type="button"
-          >
-            <Compass className="h-4 w-4" />
-            {isArrivedForSelectedShop ? "Start Again" : directionsLabel || "Start Navigation"}
-          </button>
+        {onStartNavigation || onRequestEstimate ? (
+          <div className="mt-2 flex gap-2">
+            {onRequestEstimate ? (
+              <button
+                className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                  isCompactDensity ? "min-h-[38px] px-2.5 py-2 text-[11px]" : "min-h-[44px] px-3 py-2 text-xs"
+                } ${
+                  isDark
+                    ? "bg-white/10 text-white hover:bg-white/20"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+                onClick={() => onRequestEstimate(selectedShop)}
+                type="button"
+              >
+                <Send className="h-3.5 w-3.5" />
+                Request Estimate
+              </button>
+            ) : null}
+            {onStartNavigation ? (
+              <button
+                className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-blue-600 font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                  isCompactDensity ? "min-h-[38px] px-2.5 py-2 text-[11px]" : "min-h-[44px] px-3 py-2 text-xs"
+                }`}
+                onClick={onStartNavigation}
+                type="button"
+              >
+                <Compass className="h-4 w-4" />
+                {isArrivedForSelectedShop ? "Start Again" : directionsLabel || "Start Navigation"}
+              </button>
+            ) : null}
+          </div>
         ) : null}
       </div>
     </div>

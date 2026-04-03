@@ -185,14 +185,14 @@ export default function PlannerVoiceGpsSettings({
           <div
             className={cn(
               "mt-1.5 flex items-center gap-1.5 rounded px-2 py-1 text-[10px] font-medium leading-4",
-              gpsStatus === "denied"
+              gpsStatus === "denied" || gpsStatus === "lost"
                 ? tone === "light"
                   ? "bg-rose-100 text-rose-800"
                   : "bg-rose-500/20 text-rose-300"
-                : gpsStatus === "lost"
+                : gpsStatus === "acquiring"
                   ? tone === "light"
-                    ? "bg-rose-100 text-rose-800"
-                    : "bg-rose-500/20 text-rose-300"
+                    ? "bg-sky-100 text-sky-800"
+                    : "bg-sky-500/20 text-sky-300"
                   : tone === "light"
                     ? "bg-amber-100 text-amber-800"
                     : "bg-amber-500/20 text-amber-300"
@@ -200,11 +200,13 @@ export default function PlannerVoiceGpsSettings({
           >
             <LocateFixed className="h-3 w-3 shrink-0" />
             <span className="flex-1">
-              {gpsStatus === "denied"
-                ? "Location permission denied"
-                : gpsStatus === "lost"
-                  ? "GPS signal lost — position may be outdated"
-                  : "GPS signal stale — no update in 10 s"}
+              {gpsStatus === "acquiring"
+                ? "Acquiring GPS position..."
+                : gpsStatus === "denied"
+                  ? "Location permission denied"
+                  : gpsStatus === "lost"
+                    ? "GPS signal lost — position may be outdated"
+                    : "GPS signal stale — no update in 10 s"}
             </span>
             {(gpsStatus === "denied" || gpsStatus === "lost") && (
               <button

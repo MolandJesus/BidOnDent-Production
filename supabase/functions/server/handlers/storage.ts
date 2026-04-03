@@ -111,7 +111,7 @@ export async function handleUploadPhoto(
 ): Promise<Response> {
   try {
     const formData = await req.formData();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const file = formData.get('file') as File;
     const bucket = formData.get('bucket') as string;
     const requestedPathValue = formData.get('path');
@@ -197,7 +197,7 @@ export async function handleDeletePhoto(
   respond: Function
 ): Promise<Response> {
   try {
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     let body: Record<string, unknown> = {};
 
     try {
@@ -254,7 +254,7 @@ export async function handleGetSignedStorageUrl(
   respond: Function
 ): Promise<Response> {
   try {
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     let body: Record<string, unknown> = {};
 
     try {
@@ -312,7 +312,7 @@ export async function handleListStorageObjects(
   respond: Function
 ): Promise<Response> {
   try {
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const url = new URL(req.url);
     const bucket = url.searchParams.get("bucket");
     const requestedPath = url.searchParams.get("path");

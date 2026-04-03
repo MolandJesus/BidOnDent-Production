@@ -73,7 +73,7 @@ export async function getDamageReports(
     }
   }
 
-  return [];
+  return { error: "Failed to fetch reports after 2 attempts" };
 }
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {
@@ -125,6 +125,8 @@ export async function saveDamageReport(
         vehicle_model: report.vehicle_model,
         vehicle_year: report.vehicle_year,
         zip_code: report.zip_code,
+        latitude: report.latitude ?? null,
+        longitude: report.longitude ?? null,
       },
     };
 
@@ -140,7 +142,7 @@ export async function saveDamageReport(
 
     if (import.meta.env.DEV)
       console.log("[DEV]", shouldUpdate ? "Damage report updated" : "Damage report created");
-    return result.report as DamageReport;
+    return result?.report ?? null;
   } catch (error) {
     if (import.meta.env.DEV) console.error("[DEV] Error in saveDamageReport:", error);
     throw error;

@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Wrench,
 } from "lucide-react";
+import { motion } from "motion/react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type StepCompleteProps = {
@@ -139,9 +140,13 @@ export default function StepComplete({
       </div>
 
       {onFindShops ? (
-        <button
+        <motion.button
           type="button"
           onClick={onFindShops}
+          initial={{ opacity: 0, scale: 0.95, y: 8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
+          whileTap={{ scale: 0.97 }}
           className="w-full py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold mb-3 inline-flex items-center justify-center gap-2 hover:brightness-110 transition-all"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
@@ -150,7 +155,7 @@ export default function StepComplete({
         >
           <Map className="w-4 h-4" />
           Browse shops on the map
-        </button>
+        </motion.button>
       ) : (
         <button
           type="button"

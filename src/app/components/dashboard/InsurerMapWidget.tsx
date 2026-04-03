@@ -35,6 +35,12 @@ export default function InsurerMapWidget({
   const reportPins = useMemo<ReportPin[]>(() => {
     return reports
       .map((r) => {
+        const lat = r.latitude;
+        const lng = r.longitude;
+        if (lat != null && lng != null) {
+          const label = r.claimNumber || r.damageType || "Claim";
+          return { id: r.id, lat, lng, label };
+        }
         const zip = r.zip_code || r.zipCode;
         const coords = zipToCoordinates(zip);
         if (!coords) return null;

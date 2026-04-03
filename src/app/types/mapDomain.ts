@@ -10,7 +10,7 @@
 // ============================================================================
 
 export type MapViewMode = "list" | "map" | "hybrid";
-export type MapTheme = "light" | "dark";
+export type MapTheme = "light" | "dark" | "auto";
 
 // ============================================================================
 // GEOGRAPHIC PRIMITIVES
@@ -132,6 +132,9 @@ export interface MapShopResult {
   // Visual
   image: string;
   certifications: string[];
+
+  // Contact
+  phone?: string;
 
   // Operational
   responseTimeHours: number;

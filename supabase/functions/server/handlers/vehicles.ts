@@ -24,7 +24,7 @@ export async function saveVehicle(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const { clerkUserId, vehicle } = body;
     const authenticatedClerkUserId = ensureClerkUserMatchesSession(
       session,
@@ -125,7 +125,7 @@ export async function getVehicles(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const clerkUserId = ensureClerkUserMatchesSession(
       session,
       url.searchParams.get('clerkUserId')
@@ -177,7 +177,7 @@ export async function deleteVehicleByPost(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const { vehicleId, clerkUserId } = body;
 
     if (!vehicleId || !clerkUserId) {
@@ -222,7 +222,7 @@ export async function deleteVehicleByDelete(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const url = new URL(req.url);
     const clerkUserId = url.searchParams.get("clerkUserId");
 

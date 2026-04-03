@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCoveragePersistEffect } from "./useCoveragePersistEffect";
 import { useCoveragePartnerShops } from "./useCoveragePartnerShops";
 import { useCoverageNavigationExperience } from "./useCoverageNavigationExperience";
+import { useUserGeolocation } from "./useUserGeolocation";
 import { openDirections, type NavigationProvider } from "../services/navigation/externalNavigation";
 import { addressResultToSearchTarget } from "../services/navigation/addressSearch";
 import { markRecentNavigationLocation } from "../services/navigation/savedLocations";
@@ -16,11 +18,9 @@ import type {
   MapTileMode,
 } from "../components/maps/serviceCoverageMapTypes";
 import {
-  COVERAGE_STATE_STORAGE_KEY,
   focusZoomByRadius,
   loadSavedCoverageState,
   type MapViewState,
-  type SavedCoverageState,
 } from "../components/landing/coverageState";
 import {
   countyCenters,
@@ -35,12 +35,11 @@ export function useOperatingRegionsCoverage() {
   const [radiusMiles, setRadiusMiles] = useState(() => savedCoverageState.radiusMiles || "20");
   const [geoMessage, setGeoMessage] = useState("");
   const [tileMode, setTileMode] = useState<MapTileMode>(
-    () => savedCoverageState.tileMode || "roadmap"
+    () => savedCoverageState.tileMode || "night"
   );
   const [isMapExpanded, setIsMapExpanded] = useState(
     () => savedCoverageState.isMapExpanded || false
   );
-  const [isFindingLocation, setIsFindingLocation] = useState(false);
   const [activeOriginMode, setActiveOriginMode] = useState<"zip" | "geolocation" | "address">(
     () => savedCoverageState.activeOriginMode || "zip"
   );
@@ -53,6 +52,9 @@ export function useOperatingRegionsCoverage() {
     loadNavigationSession
   );
   const [navigationStartRequestId, setNavigationStartRequestId] = useState(0);
+  const [pendingNavigationStartShopId, setPendingNavigationStartShopId] = useState<string | null>(
+    null
+  );
   const [voiceGuidanceEnabled, setVoiceGuidanceEnabled] = useState(false);
   const [currentLocationTarget, setCurrentLocationTarget] = useState<CoverageSearchTarget | null>(
     () => savedCoverageState.currentLocationTarget || null
@@ -65,8 +67,15 @@ export function useOperatingRegionsCoverage() {
     zoom: savedCoverageState.mapView?.zoom || 9,
     revision: savedCoverageState.mapView?.revision || 0,
   });
-  const { partnerShops: mapPartnerShops, isLoadingShops } = useCoveragePartnerShops();
+  const {
+    partnerShops: mapPartnerShops,
+    isLoadingShops,
+    fetchError: coverageFetchError,
+    retryPartnerShops,
+    usingDemoFallback,
+  } = useCoveragePartnerShops();
   const surfaceTone = resolveMapSurfaceTone(tileMode);
+  const geolocation = useUserGeolocation();
 
   const normalizedZip = zipCode.trim();
   const lookup = useMemo(() => {
@@ -198,25 +207,35 @@ export function useOperatingRegionsCoverage() {
   }, [isMapExpanded, voiceGuidanceEnabled]);
 
   useEffect(() => {
-    const nextState: SavedCoverageState = {
-      zipCode,
-      radiusMiles,
-      tileMode,
-      isMapExpanded,
-      activeOriginMode,
-      selectedShopId,
-      preferredNavigationProvider,
-      currentLocationTarget,
-      manualSearchTarget,
-      mapView,
-    };
-
-    try {
-      localStorage.setItem(COVERAGE_STATE_STORAGE_KEY, JSON.stringify(nextState));
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Error saving coverage map state:", error);
+    if (!isMapExpanded) {
+      setPendingNavigationStartShopId(null);
+      return;
     }
+
+    if (!pendingNavigationStartShopId || !selectedShop) {
+      return;
+    }
+
+    if (`${selectedShop.id || selectedShop.name}` !== pendingNavigationStartShopId) {
+      return;
+    }
+
+    if (!navigation.activeOriginTarget || navigation.isLoadingRoute || !navigation.routePreview) {
+      return;
+    }
+
+    setNavigationStartRequestId((current) => current + 1);
+    setPendingNavigationStartShopId(null);
   }, [
+    isMapExpanded,
+    navigation.activeOriginTarget,
+    navigation.isLoadingRoute,
+    navigation.routePreview,
+    pendingNavigationStartShopId,
+    selectedShop,
+  ]);
+
+  useCoveragePersistEffect({
     zipCode,
     radiusMiles,
     tileMode,
@@ -227,7 +246,7 @@ export function useOperatingRegionsCoverage() {
     currentLocationTarget,
     manualSearchTarget,
     mapView,
-  ]);
+  });
 
   function focusMapOnShop(shop: CoveragePartnerShop, message?: string) {
     updateMapView([shop.lat, shop.lng], 12, message || `Map focused on ${shop.name}.`);
@@ -273,6 +292,13 @@ export function useOperatingRegionsCoverage() {
   }
 
   function handleOpenBidOnDentNavigation(shop: CoveragePartnerShop) {
+    if (!navigation.activeOriginTarget && !fallbackSearchTarget) {
+      setGeoMessage(
+        "Choose your current location or enter a ZIP or address before starting a route."
+      );
+      return;
+    }
+
     handleSelectShop(shop, { centerMap: true });
     markRecentNavigationLocation({
       label: shop.name,
@@ -287,8 +313,9 @@ export function useOperatingRegionsCoverage() {
       primeVoiceEngine();
     }
 
+    setGeoMessage("");
     setIsMapExpanded(true);
-    setNavigationStartRequestId((current) => current + 1);
+    setPendingNavigationStartShopId(`${shop.id || shop.name}`);
   }
 
   function updateMapView(target: [number, number], zoom: number, message?: string) {
@@ -390,8 +417,26 @@ export function useOperatingRegionsCoverage() {
     setActiveOriginMode(currentLocationTarget ? "geolocation" : "zip");
   }
 
-  function handleUseCurrentLocation() {
-    if (!navigator.geolocation) {
+  // Sync currentLocationTarget when geolocation.coords updates
+  useEffect(() => {
+    if (!geolocation.coords) return;
+
+    const target: CoverageSearchTarget = {
+      lat: geolocation.coords.latitude,
+      lng: geolocation.coords.longitude,
+      county: "Current location",
+      label: "Your current location",
+      source: "geolocation",
+    };
+
+    setCurrentLocationTarget(target);
+    if (activeOriginMode === "geolocation") {
+      centerOnTarget(target, "Coverage map centered to your live location.");
+    }
+  }, [geolocation.coords]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleUseCurrentLocation = useCallback(() => {
+    if (geolocation.permissionState === "unsupported") {
       setGeoMessage("Geolocation is not supported on this browser.");
       return;
     }
@@ -400,48 +445,30 @@ export function useOperatingRegionsCoverage() {
     setManualSearchTarget(null);
     navigation.clearManualOrigin();
     navigation.setAddressQuery("");
-    setIsFindingLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const target: CoverageSearchTarget = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          county: "Current location",
-          label: "Your current location",
-          source: "geolocation",
-        };
+    setGeoMessage("");
+    setActiveOriginMode("geolocation");
 
-        setCurrentLocationTarget(target);
-        setGeoMessage("");
-        setActiveOriginMode("geolocation");
-        centerOnTarget(target, "Coverage map centered to your live location.");
-        setIsFindingLocation(false);
-      },
-      () => {
-        setGeoMessage("Location permission denied. You can still search by ZIP code.");
-        setIsFindingLocation(false);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 300000,
-        timeout: 10000,
-      }
-    );
-  }
+    // Request geolocation (the effect will sync the target when coords arrive)
+    geolocation.requestLocation();
+  }, [geolocation, navigation]);
+
+  const searchQuery =
+    navigation.addressQuery ||
+    (activeOriginMode === "address" ? manualSearchTarget?.label || "" : zipCode);
 
   return {
     surfaceTone,
     zipCode,
     normalizedZip,
-    searchQuery:
-      navigation.addressQuery ||
-      (activeOriginMode === "address" ? manualSearchTarget?.label || "" : zipCode),
+    searchQuery,
     radiusMiles,
     radiusMeters,
     geoMessage,
     tileMode,
     isMapExpanded,
-    isFindingLocation,
+    isFindingLocation: geolocation.isLocating,
+    locationError: geolocation.error,
+    locationPermissionState: geolocation.permissionState,
     activeOriginMode,
     hasCoverageSignal,
     coverageCounty: lookup?.county,
@@ -450,6 +477,9 @@ export function useOperatingRegionsCoverage() {
     mapView,
     mapPartnerShops,
     isLoadingShops,
+    coverageFetchError,
+    retryCoveragePartnerShops: retryPartnerShops,
+    usingDemoFallback,
     mapFocusTarget,
     listSearchTarget,
     nearbyShops,

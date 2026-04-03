@@ -91,15 +91,15 @@ export default function TrustStatsSection({
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl relative">
-        <div className="grid md:grid-cols-4 gap-8 text-center">
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-2 xl:grid-cols-4">
           {commitments.map((item, index) => (
             <div
               key={item.label}
-              className="group transition-all duration-300"
+              className={`group h-full rounded-[1.75rem] border px-5 py-6 text-left backdrop-blur-xl transition-all duration-300 sm:px-6 sm:py-7 md:text-center ${isLightAppearance ? "border-white/65 bg-[linear-gradient(180deg,rgba(255,255,255,0.58),rgba(241,245,249,0.48))] shadow-[0_18px_38px_rgba(15,23,42,0.08)] hover:-translate-y-1 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.74),rgba(241,245,249,0.58))]" : "border-blue-300/16 bg-[linear-gradient(180deg,rgba(10,22,44,0.78),rgba(8,18,36,0.68))] shadow-[0_18px_38px_rgba(2,8,24,0.26)] hover:-translate-y-1 hover:border-blue-300/24 hover:bg-[linear-gradient(180deg,rgba(15,30,58,0.84),rgba(9,20,40,0.74))]"}`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
-                className={`inline-flex items-center justify-center w-12 h-12 rounded-xl backdrop-blur-sm mb-3 group-hover:scale-105 transition-all duration-300 border ${isLightAppearance ? "bg-white/50 border-blue-200/25 group-hover:bg-white/65" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
+                className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-300 group-hover:scale-105 ${isLightAppearance ? "bg-white/50 border-blue-200/25 group-hover:bg-white/65" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
                 style={
                   isLightAppearance
                     ? {
@@ -122,7 +122,7 @@ export default function TrustStatsSection({
                 {item.value}
               </div>
               <div
-                className={`text-sm leading-relaxed max-w-[180px] mx-auto ${isLightAppearance ? "text-slate-500" : "text-slate-300/80"}`}
+                className={`text-sm leading-relaxed md:mx-auto md:max-w-[180px] ${isLightAppearance ? "text-slate-500" : "text-slate-300/80"}`}
               >
                 {item.label}
               </div>

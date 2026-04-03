@@ -1,9 +1,7 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import { useEffect, useMemo, useState } from "react";
 import {
   Map,
-  Popup,
   FullscreenControl,
   GeolocateControl,
   NavigationControl,
@@ -11,15 +9,34 @@ import {
 } from "react-map-gl/maplibre";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
+import MapLibreReportLayer from "../maps/MapLibreReportLayer";
+import MapLibreShopDirectoryViewportManager from "./MapLibreShopDirectoryViewportManager";
+import ShopDirectoryMapLayers from "./ShopDirectoryMapLayers";
+import {
+  MapLibreFollowLocationController,
+  MapLibreArrivalCameraEffect,
+} from "../maps/mapLibreControllers";
+import {
+  MapPaneHeaderBadges,
+  MapPaneBottomOverlay,
+  MapPaneSearchPills,
+} from "./ShopDirectoryMapPaneOverlays";
+import {
+  MapLoadingSkeleton,
+  MapTilePicker,
+  MapEmptyState,
+  GeoErrorToast,
+} from "./ShopDirectoryMapPaneInlineUI";
+import { useMapPaneState } from "./useMapPaneState";
+import MapPaneAtmosphereOverlays from "./MapPaneAtmosphereOverlays";
+import MapPaneInfoPopups from "./MapPaneInfoPopups";
 
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { NavigationRouteStep } from "../../types/navigation";
-import {
-  getShopRouteActionLabel,
-  shouldUseShopNavigationAction,
-} from "../../hooks/shopDirectorySessionUtils";
+import type { MapTileMode } from "../maps/serviceCoverageMapTypes";
+import type { DamageReport } from "../../services/supabase/types";
 import type {
   Coordinates,
   MapTheme,
@@ -28,37 +45,6 @@ import type {
   RouteOption,
   SavedPlace,
 } from "../../types/mapDomain";
-import { mapLibreStyles } from "../maps/mapLibreStyles";
-import type { MapTileMode } from "../maps/serviceCoverageMapTypes";
-import MapLibreReportLayer from "../maps/MapLibreReportLayer";
-import MapLibreShopDirectoryViewportManager from "./MapLibreShopDirectoryViewportManager";
-import ShopDirectoryMapLayers, {
-  SHOP_LAYER,
-  SHOP_CLUSTER_LAYER,
-  SAVED_PLACES_LAYER,
-  ROUTE_SELECTED_LAYER,
-  ROUTE_UNSELECTED_LAYER,
-} from "./ShopDirectoryMapLayers";
-import { MapLibreFollowLocationController } from "../maps/mapLibreControllers";
-import {
-  MapPaneHeaderBadges,
-  MapPaneBottomOverlay,
-  MapPaneSearchPills,
-} from "./ShopDirectoryMapPaneOverlays";
-import {
-  buildShopsGeoJson,
-  buildRoutesGeoJson,
-  buildOriginGeoJson,
-  buildUserCoordsGeoJson,
-  buildSavedPlacesGeoJson,
-} from "./shopDirectoryGeoJson";
-import { useShopMapInteraction } from "./useShopMapInteraction";
-import {
-  MapLoadingSkeleton,
-  MapTilePicker,
-  MapEmptyState,
-  GeoErrorToast,
-} from "./ShopDirectoryMapPaneInlineUI";
 
 /* ── Props ──────────────────────────────────────────────────────────── */
 type ShopDirectoryMapPaneProps = {
@@ -77,15 +63,20 @@ type ShopDirectoryMapPaneProps = {
   onViewportChange: (center: Coordinates, zoom: number, bounds: MapViewportBounds) => void;
   children?: React.ReactNode;
   suppressHeader?: boolean;
+  suppressTilePicker?: boolean;
+  externalTileMode?: MapTileMode | null;
   searchWithinViewport?: boolean;
   onSearchInArea?: () => void;
   onClearAreaSearch?: () => void;
+  onFindShopsNear?: (coords: { lat: number; lng: number }) => void;
   userCoords?: Coordinates | null;
   userHeadingDegrees?: number | null;
   followCurrentPosition?: boolean;
   followCurrentPositionRevision?: number;
   onOpenShopDirections?: (shop: ShopMapListing) => void;
   onStartNavigation?: (shop: ShopMapListing) => void;
+  onViewDetails?: (shop: ShopMapListing) => void;
+  onRequestEstimate?: (shop: ShopMapListing) => void;
   navigationSessionStatus: NavigationSessionStatus;
   navigationSessionDestinationId: string | null;
   directionsActionLabel?: string;
@@ -96,9 +87,20 @@ type ShopDirectoryMapPaneProps = {
   routeError?: string;
   isLoadingRoute?: boolean;
   onViewReportDetail?: (reportId: string) => void;
+  onPlaceBid?: (report: DamageReport) => void;
+  onViewBids?: (reportId: string) => void;
+  initialReports?: DamageReport[];
+  focusReportId?: string;
   navigationSteps?: NavigationRouteStep[];
   currentStepIndex?: number;
   navigationMode?: "browse" | "route-preview" | "guidance";
+  isOffRoute?: boolean;
+  onSwitchToListMode?: () => void;
+  suppressBottomCard?: boolean;
+  suppressShopPopup?: boolean;
+  onTileDarkChange?: (isDark: boolean) => void;
+  onTileModeChange?: (mode: MapTileMode) => void;
+  overlayDensity?: "default" | "compact";
 };
 
 export default function MapLibreShopDirectoryMapPane({
@@ -117,15 +119,20 @@ export default function MapLibreShopDirectoryMapPane({
   onViewportChange,
   children,
   suppressHeader,
+  suppressTilePicker = false,
+  externalTileMode,
   searchWithinViewport,
   onSearchInArea,
   onClearAreaSearch,
+  onFindShopsNear: onFindShopsNearProp,
   userCoords,
   userHeadingDegrees,
   followCurrentPosition = false,
   followCurrentPositionRevision = 0,
   onOpenShopDirections,
   onStartNavigation,
+  onViewDetails,
+  onRequestEstimate,
   navigationSessionStatus,
   navigationSessionDestinationId,
   directionsActionLabel,
@@ -136,35 +143,42 @@ export default function MapLibreShopDirectoryMapPane({
   routeError = "",
   isLoadingRoute = false,
   onViewReportDetail,
+  onPlaceBid,
+  onViewBids,
+  initialReports,
+  focusReportId,
   navigationSteps = [],
   currentStepIndex = 0,
   navigationMode = "browse",
+  isOffRoute = false,
+  onSwitchToListMode,
+  suppressBottomCard = false,
+  suppressShopPopup = false,
+  onTileDarkChange,
+  onTileModeChange,
+  overlayDensity = "default",
 }: ShopDirectoryMapPaneProps) {
-  const [hasPanned, setHasPanned] = useState(false);
-  const [showSavedPlaces, setShowSavedPlaces] = useState(true);
-  const [showReports, setShowReports] = useState(true);
-  const [showRoutes, setShowRoutes] = useState(true);
-  const [reportCount, setReportCount] = useState<number | null>(null);
-  const [tileMode, setTileMode] = useState<MapTileMode>(mapTheme === "dark" ? "night" : "roadmap");
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [mapLoadFailed, setMapLoadFailed] = useState(false);
-  const [geoError, setGeoError] = useState<string | null>(null);
-
-  /* Map load timeout — show retry after 12s */
-  useEffect(() => {
-    if (mapLoaded) return;
-    const timer = setTimeout(() => setMapLoadFailed(true), 12_000);
-    return () => clearTimeout(timer);
-  }, [mapLoaded]);
-
-  /* Auto-dismiss geolocation error toast after 4s */
-  useEffect(() => {
-    if (!geoError) return;
-    const timer = setTimeout(() => setGeoError(null), 4_000);
-    return () => clearTimeout(timer);
-  }, [geoError]);
-
   const {
+    containerRef,
+    containerReady,
+    mapLoaded,
+    mapLoadFailed,
+    mapRenderNonce,
+    geoError,
+    setGeoError,
+    tileMode,
+    setTileMode,
+    hasPanned,
+    setHasPanned,
+    showSavedPlaces,
+    setShowSavedPlaces,
+    showReports,
+    setShowReports,
+    showRoutes,
+    setShowRoutes,
+    reportStatusFilter,
+    setReportStatusFilter,
+    reportCount,
     cursor,
     setCursor,
     shopPopup,
@@ -175,83 +189,75 @@ export default function MapLibreShopDirectoryMapPane({
     setRoutePopup,
     handleMapClick,
     handleMapMouseMove,
-  } = useShopMapInteraction({ shops, selectedShopId, onSelectShop, navigationSessionStatus });
-
-  // Sync tile mode when parent theme changes (unless user has explicitly picked satellite)
-  useEffect(() => {
-    setTileMode((prev) =>
-      prev === "satellite" ? prev : mapTheme === "dark" ? "night" : "roadmap"
-    );
-  }, [mapTheme]);
-
-  const selectedShop = shops.find((s) => s.id === selectedShopId) || shops[0] || null;
-  const selectedRoute =
-    routeOptions.find((r) => r.id === selectedRouteId) || routeOptions[0] || null;
-  const selectedShopHasLiveNavigation = Boolean(
-    selectedShop &&
-      navigationSessionDestinationId === String(selectedShop.id) &&
-      (navigationSessionStatus === "active" || navigationSessionStatus === "paused")
-  );
-  const canStartNavigationForSelectedShop = Boolean(
-    selectedShop && selectedOrigin && selectedRoute && onStartNavigation
-  );
-  const canUseNavigationActionForSelectedShop = Boolean(
-    selectedShop &&
-      onStartNavigation &&
-      shouldUseShopNavigationAction({
-        shopId: selectedShop.id,
-        routeReady: canStartNavigationForSelectedShop,
-        navigationSessionStatus,
-        navigationSessionDestinationId,
-      })
-  );
-  const selectedShopActionLabel = selectedShop
-    ? getShopRouteActionLabel({
-        shopId: selectedShop.id,
-        routeReady: canStartNavigationForSelectedShop,
-        hasArrived,
-        defaultLabel: directionsActionLabel || "Get Directions",
-        navigationSessionStatus,
-        navigationSessionDestinationId,
-      })
-    : directionsActionLabel || "Get Directions";
-  const isDark = tileMode === "night" || tileMode === "satellite";
-  const mapStyle = mapLibreStyles[tileMode];
-  const fitSignature = [
-    selectedOrigin?.placeId || selectedOrigin?.name || "no-origin",
-    shops.map((s) => s.id).join(","),
-  ].join(":");
-
-  /* ── GeoJSON data (builders extracted to shopDirectoryGeoJson.ts) ── */
-  const shopsGeoJson = useMemo(
-    () => buildShopsGeoJson(shops, selectedShopId),
-    [shops, selectedShopId]
-  );
-  const routesGeoJson = useMemo(
-    () => buildRoutesGeoJson(routeOptions, selectedRoute, navigationMode, userCoords ?? null),
-    [routeOptions, selectedRoute, navigationMode, userCoords]
-  );
-  const originGeoJson = useMemo(() => buildOriginGeoJson(selectedOrigin ?? null), [selectedOrigin]);
-  const userCoordsGeoJson = useMemo(() => buildUserCoordsGeoJson(userCoords ?? null), [userCoords]);
-  const savedPlacesGeoJson = useMemo(() => buildSavedPlacesGeoJson(savedPlaces), [savedPlaces]);
-
-  /* ── Interaction ──────────────────────────────────────────────────── */
-  const interactiveLayerIds = [
-    SHOP_LAYER,
-    SHOP_CLUSTER_LAYER,
-    SAVED_PLACES_LAYER,
-    ROUTE_SELECTED_LAYER,
-    ROUTE_UNSELECTED_LAYER,
-  ];
+    selectedShop,
+    selectedRoute,
+    isNight,
+    isSatellite,
+    isDark,
+    effectiveMapTheme,
+    isCompactOverlay,
+    isGuidanceActive,
+    selectedShopHasLiveNavigation,
+    canUseNavigationActionForSelectedShop,
+    selectedShopActionLabel,
+    mapStyle,
+    fitSignature,
+    shopsGeoJson,
+    routesGeoJson,
+    originGeoJson,
+    userCoordsGeoJson,
+    savedPlacesGeoJson,
+    interactiveLayerIds,
+    handleRetryMap,
+    handleViewportBroadcast,
+    handleReportCountChange,
+    handleFindShopsNear,
+    handleMapLoad,
+    handleMapLoadError,
+  } = useMapPaneState({
+    userType,
+    mapTheme,
+    externalTileMode,
+    shops,
+    selectedShopId,
+    onSelectShop,
+    routeOptions,
+    selectedRouteId,
+    selectedOrigin,
+    savedPlaces,
+    userCoords,
+    userHeadingDegrees,
+    navigationMode,
+    navigationSessionStatus,
+    navigationSessionDestinationId,
+    hasArrived,
+    directionsActionLabel,
+    onStartNavigation,
+    onTileDarkChange,
+    onTileModeChange,
+    onViewportChange,
+    onFindShopsNear: onFindShopsNearProp,
+    onSearchInArea,
+    overlayDensity,
+  });
 
   /* ── Render ───────────────────────────────────────────────────────── */
   return (
     <div
-      data-map-theme={mapTheme}
+      ref={containerRef}
+      data-map-theme={effectiveMapTheme}
       role="region"
       aria-label="Shop directory map"
-      className="shop-directory-map relative h-full min-h-[420px] w-full overflow-hidden"
+      className="shop-directory-map @container relative h-full min-h-[420px] w-full overflow-hidden"
+      style={
+        isNight
+          ? { backgroundColor: "#0a1a38" }
+          : isSatellite
+            ? { backgroundColor: "#0c1420" }
+            : undefined
+      }
     >
+      <MapPaneAtmosphereOverlays isNight={isNight} isSatellite={isSatellite} />
       {/* ── Header badges ── */}
       {!suppressHeader && (
         <MapPaneHeaderBadges
@@ -262,227 +268,227 @@ export default function MapLibreShopDirectoryMapPane({
         />
       )}
 
-      {/* ── MapLibre GL map ── */}
-      <NavigationErrorBoundary>
-        <Map
-          id="shop-directory-map"
-          initialViewState={{
-            longitude: initialCenter?.longitude ?? -73.8654,
-            latitude: initialCenter?.latitude ?? 41.0534,
-            zoom: initialZoom ?? 11,
-          }}
-          maxBounds={[-180, -75, 180, 85]}
-          minZoom={3}
-          maxZoom={18}
-          maxPitch={tileMode === "satellite" ? 60 : 0}
-          mapStyle={mapStyle}
-          style={{ width: "100%", height: "100%" }}
-          cursor={cursor}
-          interactiveLayerIds={interactiveLayerIds}
-          onClick={handleMapClick}
-          onMouseMove={handleMapMouseMove}
-          onMouseLeave={() => setCursor("")}
-          onLoad={() => {
-            setMapLoaded(true);
-            setMapLoadFailed(false);
-          }}
-          onError={() => setMapLoadFailed(true)}
-          attributionControl={{ compact: true }}
-        >
-          {/* Standard map controls */}
-          <FullscreenControl position="top-right" />
-          <GeolocateControl
-            position="bottom-right"
-            trackUserLocation
-            showUserHeading
-            showAccuracyCircle={false}
-            onError={(e) => {
-              if (e?.code === 1) {
-                setGeoError("Location access denied. Enable it in your browser settings.");
-              } else {
-                setGeoError("Unable to determine your location.");
-              }
+      {/* ── MapLibre GL map (gated on container dimensions) ── */}
+      {containerReady && (
+        <NavigationErrorBoundary>
+          <Map
+            key={mapRenderNonce}
+            id="shop-directory-map"
+            initialViewState={{
+              longitude: initialCenter?.longitude ?? -73.8654,
+              latitude: initialCenter?.latitude ?? 41.0534,
+              zoom: initialZoom ?? 11,
             }}
-          />
-          <NavigationControl position="bottom-right" showCompass={navigationMode === "guidance"} />
-          <ScaleControl position="bottom-left" maxWidth={120} unit="imperial" />
-
-          {/* Viewport management (fit, fly, broadcast) */}
-          <MapLibreShopDirectoryViewportManager
-            fitSignature={fitSignature}
-            shops={shops}
-            selectedShopId={selectedShopId}
-            selectedOrigin={selectedOrigin}
-            initialCenter={initialCenter}
-            initialZoom={initialZoom}
-            preserveViewport={preserveViewport}
-            onViewportChange={(center, zoom, bounds) => {
-              setHasPanned(true);
-              onViewportChange(center, zoom, bounds);
-            }}
-          />
-
-          {/* Report markers (Supabase-fetched) */}
-          <MapLibreReportLayer
-            mapTheme={mapTheme}
-            onViewReportDetail={onViewReportDetail}
-            onReportCountChange={(count, loading) => setReportCount(loading ? null : count)}
-            onFindShopsNear={() => {
-              setHasPanned(true);
-              onSearchInArea?.();
-            }}
-            visible={showReports}
-          />
-
-          <ShopDirectoryMapLayers
-            isDark={isDark}
-            hasRoutes={routeOptions.length > 0}
-            routesGeoJson={routesGeoJson}
-            originGeoJson={originGeoJson}
-            userCoordsGeoJson={userCoordsGeoJson}
-            savedPlacesGeoJson={savedPlacesGeoJson}
-            shopsGeoJson={shopsGeoJson}
-            showSavedPlaces={showSavedPlaces}
-            showRoutes={showRoutes}
-            navigationSteps={navigationSteps}
-            currentStepIndex={currentStepIndex}
-            isGuidanceActive={navigationMode === "guidance"}
-          />
-
-          <MapLibreFollowLocationController
-            enabled={followCurrentPosition}
-            currentPosition={
-              userCoords ? ([userCoords.latitude, userCoords.longitude] as [number, number]) : null
-            }
-            revision={followCurrentPositionRevision}
-            guidanceMode={navigationMode === "guidance"}
-            bearing={userHeadingDegrees}
-          />
-
-          {/* ── Shop popup ── */}
-          {shopPopup && (
-            <ShopDirectoryMapPopup
-              shopPopup={shopPopup}
-              onClose={() => {
-                setShopPopup(null);
-                onSelectShop(null);
+            minZoom={navigationMode === "guidance" ? 12 : 3}
+            maxZoom={19}
+            maxPitch={tileMode === "satellite" || navigationMode === "guidance" ? 65 : 0}
+            mapStyle={mapStyle}
+            style={{ width: "100%", height: "100%" }}
+            cursor={cursor}
+            interactiveLayerIds={interactiveLayerIds}
+            onClick={handleMapClick}
+            onMouseMove={handleMapMouseMove}
+            onMouseLeave={() => setCursor("")}
+            onLoad={handleMapLoad}
+            onError={handleMapLoadError}
+            attributionControl={{ compact: true }}
+          >
+            {/* Standard map controls */}
+            <FullscreenControl position="top-right" />
+            <GeolocateControl
+              position="bottom-right"
+              trackUserLocation
+              showAccuracyCircle={false}
+              onError={(e) => {
+                if (e?.code === 1) {
+                  const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                  setGeoError(
+                    isIos
+                      ? "Location denied. Open Settings → Privacy → Location Services."
+                      : "Location denied. Check browser location permissions."
+                  );
+                } else {
+                  setGeoError("Unable to determine your location.");
+                }
               }}
-              mapTheme={mapTheme}
-              selectedShop={selectedShop}
-              selectedOrigin={selectedOrigin}
-              selectedRoute={selectedRoute}
-              navigationSessionStatus={navigationSessionStatus}
-              navigationSessionDestinationId={navigationSessionDestinationId}
-              directionsActionLabel={directionsActionLabel}
-              hasArrived={hasArrived}
-              remainingEtaLabel={remainingEtaLabel}
-              remainingDistanceLabel={remainingDistanceLabel}
-              usingLiveRoutes={usingLiveRoutes}
-              routeError={routeError}
-              isLoadingRoute={isLoadingRoute}
-              onOpenShopDirections={onOpenShopDirections}
-              onStartNavigation={onStartNavigation}
             />
-          )}
+            <NavigationControl
+              position="bottom-right"
+              showCompass={navigationMode === "guidance"}
+            />
+            <ScaleControl position="bottom-left" maxWidth={120} unit="imperial" />
 
-          {/* ── Saved place popup ── */}
-          {savedPlacePopup && (
-            <Popup
-              longitude={savedPlacePopup.lng}
-              latitude={savedPlacePopup.lat}
-              anchor="bottom"
-              offset={12}
-              closeOnClick={false}
-              onClose={() => setSavedPlacePopup(null)}
-            >
-              <div className="min-w-[120px] space-y-0.5 p-1">
-                <p
-                  className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}
-                >
-                  {savedPlacePopup.label}
-                </p>
-                {savedPlacePopup.address && (
-                  <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                    {savedPlacePopup.address}
-                  </p>
-                )}
-              </div>
-            </Popup>
-          )}
+            {/* Viewport management (fit, fly, broadcast) */}
+            <MapLibreShopDirectoryViewportManager
+              fitSignature={fitSignature}
+              shops={shops}
+              selectedShopId={selectedShopId}
+              selectedOrigin={selectedOrigin}
+              initialCenter={initialCenter}
+              initialZoom={initialZoom}
+              preserveViewport={preserveViewport}
+              onViewportChange={handleViewportBroadcast}
+            />
 
-          {/* ── Route info popup ── */}
-          {routePopup && (
-            <Popup
-              longitude={routePopup.lng}
-              latitude={routePopup.lat}
-              anchor="bottom"
-              offset={16}
-              closeOnClick={false}
-              onClose={() => setRoutePopup(null)}
-            >
-              <div className="min-w-[140px] space-y-0.5 p-1">
-                <p
-                  className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}
-                >
-                  {routePopup.label}
-                </p>
-                <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-600"}`}>
-                  {routePopup.distance}
-                  {routePopup.duration > 0 && ` · ${routePopup.duration} min`}
-                </p>
-                {routePopup.traffic && (
-                  <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                    {routePopup.traffic}
-                  </p>
-                )}
-              </div>
-            </Popup>
-          )}
-        </Map>
-      </NavigationErrorBoundary>
+            {/* Report markers (Supabase-fetched) */}
+            <MapLibreReportLayer
+              mapTheme={effectiveMapTheme}
+              onViewReportDetail={onViewReportDetail}
+              onReportCountChange={handleReportCountChange}
+              onFindShopsNear={handleFindShopsNear}
+              onPlaceBid={onPlaceBid}
+              onViewBids={onViewBids}
+              initialReports={initialReports}
+              visible={showReports}
+              statusFilter={reportStatusFilter}
+              userType={userType}
+              focusReportId={focusReportId}
+            />
 
-      <MapLoadingSkeleton mapLoaded={mapLoaded} mapLoadFailed={mapLoadFailed} />
+            <ShopDirectoryMapLayers
+              isDark={isDark}
+              hasRoutes={routeOptions.length > 0}
+              routesGeoJson={routesGeoJson}
+              originGeoJson={originGeoJson}
+              userCoordsGeoJson={userCoordsGeoJson}
+              savedPlacesGeoJson={savedPlacesGeoJson}
+              shopsGeoJson={shopsGeoJson}
+              showSavedPlaces={showSavedPlaces}
+              showRoutes={showRoutes}
+              navigationSteps={navigationSteps}
+              currentStepIndex={currentStepIndex}
+              isGuidanceActive={navigationMode === "guidance"}
+              isOffRoute={isOffRoute}
+              userHeadingDegrees={userHeadingDegrees}
+            />
 
-      <MapTilePicker isDark={isDark} tileMode={tileMode} setTileMode={setTileMode} />
+            <MapLibreFollowLocationController
+              enabled={followCurrentPosition}
+              currentPosition={
+                userCoords
+                  ? ([userCoords.latitude, userCoords.longitude] as [number, number])
+                  : null
+              }
+              revision={followCurrentPositionRevision}
+              guidanceMode={navigationMode === "guidance"}
+              bearing={userHeadingDegrees}
+            />
+
+            <MapLibreArrivalCameraEffect
+              hasArrived={hasArrived}
+              destination={
+                selectedShop
+                  ? ([
+                      selectedShop.mapResult.coordinates.latitude,
+                      selectedShop.mapResult.coordinates.longitude,
+                    ] as [number, number])
+                  : null
+              }
+            />
+
+            {/* ── Shop popup (suppressed when side panel is active) ── */}
+            {shopPopup && !suppressShopPopup && (
+              <ShopDirectoryMapPopup
+                shopPopup={shopPopup}
+                onClose={() => {
+                  setShopPopup(null);
+                  onSelectShop(null);
+                }}
+                mapTheme={effectiveMapTheme}
+                selectedShop={selectedShop}
+                selectedOrigin={selectedOrigin}
+                selectedRoute={selectedRoute}
+                navigationSessionStatus={navigationSessionStatus}
+                navigationSessionDestinationId={navigationSessionDestinationId}
+                directionsActionLabel={directionsActionLabel}
+                hasArrived={hasArrived}
+                remainingEtaLabel={remainingEtaLabel}
+                remainingDistanceLabel={remainingDistanceLabel}
+                usingLiveRoutes={usingLiveRoutes}
+                routeError={routeError}
+                isLoadingRoute={isLoadingRoute}
+                onOpenShopDirections={onOpenShopDirections}
+                onStartNavigation={onStartNavigation}
+                onViewDetails={onViewDetails}
+                onRequestEstimate={onRequestEstimate}
+                compact={isCompactOverlay}
+              />
+            )}
+
+            <MapPaneInfoPopups
+              isDark={isDark}
+              savedPlacePopup={savedPlacePopup}
+              onCloseSavedPlace={() => setSavedPlacePopup(null)}
+              routePopup={routePopup}
+              onCloseRoute={() => setRoutePopup(null)}
+            />
+          </Map>
+        </NavigationErrorBoundary>
+      )}
+
+      <MapLoadingSkeleton
+        mapLoaded={mapLoaded}
+        mapLoadFailed={mapLoadFailed}
+        isDark={isDark}
+        onRetryMap={handleRetryMap}
+        onSwitchToListMode={onSwitchToListMode}
+      />
+
+      {!isGuidanceActive && !suppressTilePicker && (
+        <MapTilePicker
+          compact={isCompactOverlay}
+          isDark={isDark}
+          tileMode={tileMode}
+          setTileMode={setTileMode}
+        />
+      )}
 
       <MapEmptyState isDark={isDark} shopCount={shops.length} />
 
       {/* ── Bottom gradient overlay: selected shop card + legend ── */}
-      <MapPaneBottomOverlay
-        isDark={isDark}
-        selectedShop={selectedShop}
-        selectedRoute={selectedRoute}
-        hasArrived={hasArrived}
-        onOpenShopDirections={onOpenShopDirections}
-        onStartNavigation={onStartNavigation}
-        canStartNavigation={canUseNavigationActionForSelectedShop}
-        directionsActionLabel={selectedShopActionLabel}
-        hasLiveNavigation={selectedShopHasLiveNavigation}
-        isLoadingRoute={isLoadingRoute}
-        navigationSessionStatus={navigationSessionStatus}
-        remainingDistanceLabel={remainingDistanceLabel}
-        remainingEtaLabel={remainingEtaLabel}
-        routeError={routeError}
-        usingLiveRoutes={usingLiveRoutes}
-        compact={Boolean(children && selectedRoute)}
-        showSavedPlaces={showSavedPlaces}
-        onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
-        showReports={showReports}
-        onToggleReports={() => setShowReports((v) => !v)}
-        reportCount={reportCount}
-        showRoutes={showRoutes}
-        onToggleRoutes={() => setShowRoutes((v) => !v)}
-      />
+      {!suppressBottomCard && (
+        <MapPaneBottomOverlay
+          isDark={isDark}
+          selectedShop={selectedShop}
+          selectedRoute={selectedRoute}
+          hasArrived={hasArrived}
+          onOpenShopDirections={onOpenShopDirections}
+          onStartNavigation={onStartNavigation}
+          canStartNavigation={canUseNavigationActionForSelectedShop}
+          directionsActionLabel={selectedShopActionLabel}
+          hasLiveNavigation={selectedShopHasLiveNavigation}
+          isLoadingRoute={isLoadingRoute}
+          navigationSessionStatus={navigationSessionStatus}
+          remainingDistanceLabel={remainingDistanceLabel}
+          remainingEtaLabel={remainingEtaLabel}
+          routeError={routeError}
+          usingLiveRoutes={usingLiveRoutes}
+          compact={Boolean(children && selectedRoute)}
+          showSavedPlaces={showSavedPlaces}
+          onToggleSavedPlaces={() => setShowSavedPlaces((v) => !v)}
+          showReports={showReports}
+          onToggleReports={() => setShowReports((v) => !v)}
+          reportCount={reportCount}
+          showRoutes={showRoutes}
+          onToggleRoutes={() => setShowRoutes((v) => !v)}
+          reportStatusFilter={reportStatusFilter}
+          onReportStatusFilterChange={setReportStatusFilter}
+          density={overlayDensity}
+        />
+      )}
 
-      {/* Search area pills */}
-      <MapPaneSearchPills
-        isDark={isDark}
-        hasPanned={hasPanned}
-        searchWithinViewport={searchWithinViewport}
-        onSearchInArea={onSearchInArea}
-        onClearAreaSearch={onClearAreaSearch}
-        onClearPan={() => setHasPanned(false)}
-      />
+      {/* Search area pills — hidden during guidance */}
+      {!isGuidanceActive && (
+        <MapPaneSearchPills
+          isDark={isDark}
+          hasPanned={hasPanned}
+          searchWithinViewport={searchWithinViewport}
+          onSearchInArea={onSearchInArea}
+          onClearAreaSearch={onClearAreaSearch}
+          onClearPan={() => setHasPanned(false)}
+          density={overlayDensity}
+        />
+      )}
 
       <GeoErrorToast geoError={geoError} />
 

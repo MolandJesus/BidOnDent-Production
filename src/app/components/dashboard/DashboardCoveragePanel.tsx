@@ -180,19 +180,21 @@ export default function DashboardCoveragePanel({
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="bd-glass-card p-4">
-            <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Live Regions</div>
+            <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">
+              Live Regions
+            </div>
             <div className="mt-2 text-2xl font-semibold text-slate-100">
               {operatingRegions.length}
             </div>
           </div>
           <div className="bd-glass-card p-4">
-            <div className="text-xs uppercase tracking-[0.24em] text-slate-500">
+            <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">
               Partner Markers
             </div>
             <div className="mt-2 text-2xl font-semibold text-slate-100">{partnerShops.length}</div>
           </div>
           <div className="bd-glass-card p-4">
-            <div className="text-xs uppercase tracking-[0.24em] text-slate-500">View Mode</div>
+            <div className="text-xs uppercase tracking-[0.24em] text-slate-400/85">View Mode</div>
             <div className="mt-2 text-2xl font-semibold text-slate-100">
               {mapLibreTileLabels[tileMode]}
             </div>
@@ -214,7 +216,7 @@ export default function DashboardCoveragePanel({
           <button
             type="button"
             onClick={() => setIsMapExpanded(true)}
-            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
             }}
@@ -227,7 +229,7 @@ export default function DashboardCoveragePanel({
             <button
               type="button"
               onClick={onOpenCoveragePage}
-              className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors bd-glass-control--utility"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors bd-glass-control--utility"
             >
               Full Search Flow
               <ArrowUpRight className="w-4 h-4" />

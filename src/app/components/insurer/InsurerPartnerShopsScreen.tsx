@@ -32,7 +32,7 @@ import { defaultCoverageCenter } from "../landing/coverageData";
 type InsurerPartnerShopsScreenProps = {
   primaryColor?: string;
   identity?: WebsiteIdentity | null;
-  onAddShop?: (shopData: any) => void;
+  onAddShop?: (shopData: CustomProspect) => void;
   onOpenMap?: () => void;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -175,7 +175,7 @@ export default function InsurerPartnerShopsScreen({
         },
         mapSession: {
           lastViewedShopId: entry.id,
-          mapViewMode: "map",
+          mapViewMode: "hybrid",
           lastMapCenter: {
             latitude: entry.mapResult.coordinates.latitude,
             longitude: entry.mapResult.coordinates.longitude,

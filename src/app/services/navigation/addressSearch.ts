@@ -1,8 +1,12 @@
 import type { CoverageSearchTarget } from "../../components/maps/serviceCoverageMapTypes";
 import type { NavigationAddressResult, NavigationAddressSuggestion } from "../../types/navigation";
-import { runWithProviderHealth } from "./providerHealth";
+import { isProviderCircuitOpen, runWithProviderHealth } from "./providerHealth";
 
-const addressSearchCache = new Map<string, NavigationAddressResult[]>();
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+type CachedEntry<T> = { data: T; timestamp: number };
+
+const addressSearchCache = new Map<string, CachedEntry<NavigationAddressResult[]>>();
 
 type NominatimSearchResult = {
   place_id: number;
@@ -49,8 +53,12 @@ export async function searchNavigationAddresses(
   const cacheKey = normalizedQuery.toLowerCase();
   const cached = addressSearchCache.get(cacheKey);
 
-  if (cached) {
-    return cached;
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return cached.data;
+  }
+
+  if (isProviderCircuitOpen("nominatim-search")) {
+    throw new Error("Address lookup is temporarily overloaded. Try again in about 30 seconds.");
   }
 
   const url = new URL("https://nominatim.openstreetmap.org/search");
@@ -70,7 +78,7 @@ export async function searchNavigationAddresses(
   );
 
   if (!response.ok) {
-    throw new Error("Address lookup is temporarily unavailable.");
+    throw new Error("Address lookup failed. Please try a different search or wait a moment.");
   }
 
   const data = (await response.json()) as NominatimSearchResult[];
@@ -87,7 +95,7 @@ export async function searchNavigationAddresses(
     }))
     .filter((result) => Number.isFinite(result.lat) && Number.isFinite(result.lng));
 
-  addressSearchCache.set(cacheKey, results);
+  addressSearchCache.set(cacheKey, { data: results, timestamp: Date.now() });
   return results;
 }
 
@@ -105,7 +113,7 @@ export function addressResultToSearchTarget(
 
 // ── Predictive address suggestions ──────────────────────────────────────────
 
-const addressSuggestionCache = new Map<string, NavigationAddressSuggestion[]>();
+const addressSuggestionCache = new Map<string, CachedEntry<NavigationAddressSuggestion[]>>();
 
 function toSuggestionConfidence(result: NominatimSearchResult, query: string): number {
   const normalizedQuery = query.trim().toLowerCase();
@@ -149,8 +157,8 @@ export async function suggestNavigationAddresses(
 
   const cacheKey = `suggest:${normalizedQuery.toLowerCase()}`;
   const cached = addressSuggestionCache.get(cacheKey);
-  if (cached) {
-    return cached;
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return cached.data;
   }
 
   const url = new URL("https://nominatim.openstreetmap.org/search");
@@ -182,6 +190,6 @@ export async function suggestNavigationAddresses(
     .filter((s): s is NavigationAddressSuggestion => s !== null)
     .sort((a, b) => b.confidenceScore - a.confidenceScore);
 
-  addressSuggestionCache.set(cacheKey, suggestions);
+  addressSuggestionCache.set(cacheKey, { data: suggestions, timestamp: Date.now() });
   return suggestions;
 }

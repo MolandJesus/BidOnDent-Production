@@ -3,21 +3,13 @@ export const leadInPhrases = [
   "Coming up,",
   "Next move,",
   "Route update,",
-  "Navigation cue,",
   "Plan ahead,",
-  "Stay with this lane,",
-  "Keep this flow,",
+  "Keep this lane,",
   "Watch for this,",
-  "Note ahead,",
   "Next turn,",
-  "Route says,",
   "Get ready,",
-  "Preparing for the next step,",
-  "Guidance update,",
-  "On your navigate,",
+  "Ahead,",
   "Road ahead,",
-  "Routing note,",
-  "Steady pace,",
   "Stay alert,",
 ];
 
@@ -84,20 +76,15 @@ export const distanceNearPhrases = [
 ];
 
 export const distanceFarPhrases = [
-  "after a longer stretch",
-  "once you continue ahead",
-  "further up the route",
-  "after you stay on this road",
-  "once you pass the next segment",
-  "after this run",
+  "in about half a mile",
+  "further up the road",
+  "after some distance",
   "in a while",
-  "after a good stretch",
-  "further along",
-  "once you've covered more ground",
-  "when you've gone a bit further",
-  "after traveling a ways",
-  "after a longer drive",
-  "well ahead of you",
+  "well ahead",
+  "down the road",
+  "a good way ahead",
+  "in the distance",
+  "after this stretch",
 ];
 
 export const departureActionPhrases = [
@@ -413,19 +400,4 @@ export const roundaboutExitPhrases = [
   "round it and take exit {exit}",
 ];
 
-export const roadFallbacks = [
-  "the current road",
-  "this road",
-  "the active route",
-  "the current segment",
-  "the roadway ahead",
-  "this corridor",
-  "the route ahead",
-  "this stretch",
-  "the upcoming road",
-  "the next stretch",
-  "the present road",
-  "this lane",
-  "the onward road",
-  "the road before you",
-];
+export const roadFallbacks = ["the road", "this road", "the road ahead", "the current road"];

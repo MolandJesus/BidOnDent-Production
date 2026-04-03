@@ -1,9 +1,6 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import type { ShopSortOption, WebsiteIdentity } from "../services/auth/websiteIdentity";
-import {
-  loadWebsiteSessionMemory,
-  updateWebsiteSessionMemory,
-} from "../services/auth/websiteIdentity";
+import { loadWebsiteSessionMemory } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
 import {
   buildShopIntelligenceSummary,
@@ -35,6 +32,11 @@ import { useShopDirectoryHandlers } from "./useShopDirectoryHandlers";
 import { useShopDirectoryRoutePreview } from "./useShopDirectoryRoutePreview";
 import { useUserGeolocation } from "./useUserGeolocation";
 import {
+  useIdentitySyncEffect,
+  useOsPrefersDark,
+  useSessionPersistEffect,
+} from "./useShopDirectorySessionSync";
+import {
   buildPlaceFromAddressResult,
   buildPlaceFromAddressSuggestion,
   getContextChips,
@@ -51,6 +53,10 @@ type UseShopDirectorySessionArgs = {
     damageType?: string;
     description?: string;
   }>;
+  /** Pre-seed search query from report context (e.g. zip code or city). Used once on mount. */
+  initialSearchHint?: string;
+  /** Center the map on these coordinates on first mount (e.g. from a report). */
+  initialMapCenter?: Coordinates;
 };
 
 export function useShopDirectorySession({
@@ -58,6 +64,8 @@ export function useShopDirectorySession({
   userType,
   vehicles,
   reports,
+  initialSearchHint,
+  initialMapCenter,
 }: UseShopDirectorySessionArgs) {
   const { inventory } = useNetworkDirectory();
   const {
@@ -70,7 +78,9 @@ export function useShopDirectorySession({
   const savedMemory = loadWebsiteSessionMemory(identity);
   const suggestedOrigins = getSuggestedSearchOrigins();
 
-  const [searchQuery, setSearchQuery] = useState(savedMemory.shopDirectory.searchQuery);
+  const [searchQuery, setSearchQuery] = useState(
+    savedMemory.shopDirectory.searchQuery || initialSearchHint || ""
+  );
   const [filterRating, setFilterRating] = useState(savedMemory.shopDirectory.filterRating);
   const [sortBy, setSortBy] = useState<ShopSortOption>(savedMemory.shopDirectory.sortBy);
   const [selectedShopId, setSelectedShopId] = useState<number | null>(
@@ -97,17 +107,24 @@ export function useShopDirectorySession({
   const [insurerShortlistIds, setInsurerShortlistIds] = useState<number[]>(
     savedMemory.mapSession?.insurerShortlistIds || []
   );
-  const [mapViewMode, setMapViewMode] = useState<MapViewMode>(
-    savedMemory.mapSession?.mapViewMode || "hybrid"
-  );
+  // Always start in hybrid — immersive is entered only by explicit user action
+  // (directions button or full-screen toggle), never restored from saved state.
+  const [mapViewMode, setMapViewMode] = useState<MapViewMode>("hybrid");
   const [mapTheme, setMapTheme] = useState<MapTheme>(savedMemory.mapSession?.mapTheme || "light");
+
+  // Resolve "auto" mapTheme to dark/light based on OS preference
+  const osPrefersDark = useOsPrefersDark();
+  const isMapDark = mapTheme === "auto" ? osPrefersDark : mapTheme === "dark";
+
   const [selectedRouteId, setSelectedRouteId] = useState<string>(
     savedMemory.mapSession?.selectedRouteId || "fastest"
   );
   const [mapCenter, setMapCenter] = useState<Coordinates | undefined>(
-    savedMemory.mapSession?.lastMapCenter
+    initialMapCenter ?? savedMemory.mapSession?.lastMapCenter
   );
-  const [mapZoom, setMapZoom] = useState<number | undefined>(savedMemory.mapSession?.lastMapZoom);
+  const [mapZoom, setMapZoom] = useState<number | undefined>(
+    initialMapCenter ? 12 : savedMemory.mapSession?.lastMapZoom
+  );
   const [mapViewportBounds, setMapViewportBounds] = useState<MapViewportBounds | undefined>(
     savedMemory.mapSession?.lastViewportBounds
   );
@@ -118,27 +135,26 @@ export function useShopDirectorySession({
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
   // ── Session sync on identity change ──
-  useEffect(() => {
-    const memory = loadWebsiteSessionMemory(identity);
-    setSearchQuery(memory.shopDirectory.searchQuery);
-    setFilterRating(memory.shopDirectory.filterRating);
-    setSortBy(memory.shopDirectory.sortBy);
-    setSelectedShopId(memory.mapSession?.lastViewedShopId ?? memory.shopDirectory.lastViewedShopId);
-    setConnectedInsurerIds(memory.insuranceConnection.connectedInsurerIds);
-    setSelectedOrigin(memory.mapSession?.lastSearchOrigin || null);
-    setSavedPlaces(memory.mapSession?.savedPlaces || []);
-    setRecentSearches(memory.mapSession?.recentSearches || []);
-    setCustomerSavedShopIds(memory.mapSession?.customerSavedShopIds || []);
-    setShopWatchlistIds(memory.mapSession?.shopWatchlistIds || []);
-    setInsurerShortlistIds(memory.mapSession?.insurerShortlistIds || []);
-    setMapViewMode(memory.mapSession?.mapViewMode || "hybrid");
-    setMapTheme(memory.mapSession?.mapTheme || "light");
-    setSelectedRouteId(memory.mapSession?.selectedRouteId || "fastest");
-    setMapCenter(memory.mapSession?.lastMapCenter);
-    setMapZoom(memory.mapSession?.lastMapZoom);
-    setMapViewportBounds(memory.mapSession?.lastViewportBounds);
-    setSessionIntelligenceOpen(memory.shopDirectory.sessionIntelligenceOpen);
-  }, [identity?.websiteUserKey]);
+  useIdentitySyncEffect(identity, {
+    setSearchQuery,
+    setFilterRating,
+    setSortBy,
+    setSelectedShopId,
+    setConnectedInsurerIds,
+    setSelectedOrigin,
+    setSavedPlaces,
+    setRecentSearches,
+    setCustomerSavedShopIds,
+    setShopWatchlistIds,
+    setInsurerShortlistIds,
+    setMapViewMode,
+    setMapTheme,
+    setSelectedRouteId,
+    setMapCenter,
+    setMapZoom,
+    setMapViewportBounds,
+    setSessionIntelligenceOpen,
+  });
 
   // ── Computed values ──
   const allDirectoryShops = useMemo(() => {
@@ -154,21 +170,46 @@ export function useShopDirectorySession({
     return merged;
   }, [inventory.shops, partnerShops]);
 
-  const mapListings = buildShopMapListings({
-    connectedInsurerIds,
-    directoryInsurers: inventory.insurers,
-    directoryShops: allDirectoryShops,
-    filterRating,
-    filters: searchWithinViewport ? { searchWithinViewport: true } : undefined,
-    origin: selectedOrigin,
-    reports,
-    searchQuery: deferredSearchQuery,
-    sortBy,
-    userType,
-    vehicles,
-    viewportBounds: mapViewportBounds,
-  });
+  const mapListings = useMemo(
+    () =>
+      buildShopMapListings({
+        connectedInsurerIds,
+        directoryInsurers: inventory.insurers,
+        directoryShops: allDirectoryShops,
+        filterRating,
+        filters: searchWithinViewport ? { searchWithinViewport: true } : undefined,
+        origin: selectedOrigin,
+        reports,
+        searchQuery: deferredSearchQuery,
+        sortBy,
+        userType,
+        vehicles,
+        viewportBounds: mapViewportBounds,
+      }),
+    [
+      allDirectoryShops,
+      connectedInsurerIds,
+      deferredSearchQuery,
+      filterRating,
+      inventory.insurers,
+      mapViewportBounds,
+      reports,
+      searchWithinViewport,
+      selectedOrigin,
+      sortBy,
+      userType,
+      vehicles,
+    ]
+  );
 
+  const exactSearchMatchedShop = useMemo(() => {
+    const normalizedSearchQuery = slugify(searchQuery.trim());
+    if (!normalizedSearchQuery) {
+      return null;
+    }
+
+    return mapListings.find((shop) => slugify(shop.name) === normalizedSearchQuery) || null;
+  }, [mapListings, searchQuery]);
   const summary = buildShopIntelligenceSummary(mapListings, {
     connectedInsurerIds,
     reports,
@@ -176,20 +217,16 @@ export function useShopDirectorySession({
     userType,
     vehicles,
   });
-
   const connectedCarrierNames = getInsuranceDirectory(inventory.insurers)
     .filter((insurer) => connectedInsurerIds.includes(insurer.id))
     .map((insurer) => insurer.name);
-
   const contextChips = getContextChips(vehicles, reports);
-
   const roleHighlights = buildRoleAwareMapHighlights({
     connectedCarrierCount: connectedCarrierNames.length,
     recommendations: mapListings,
     reports,
     userType,
   });
-
   const collectionUniverse = buildShopMapListings({
     connectedInsurerIds,
     directoryInsurers: inventory.insurers,
@@ -201,9 +238,18 @@ export function useShopDirectorySession({
     userType,
     vehicles,
   });
-
   const selectedShop =
-    mapListings.find((shop) => shop.id === selectedShopId) || mapListings[0] || null;
+    mapListings.find((shop) => shop.id === selectedShopId) ||
+    exactSearchMatchedShop ||
+    mapListings[0] ||
+    null;
+  // Auto-select exact search match when no shop is explicitly selected
+  // (e.g., arriving from bid acceptance with shop name in search query)
+  useEffect(() => {
+    if (selectedShopId === null && exactSearchMatchedShop) {
+      setSelectedShopId(exactSearchMatchedShop.id);
+    }
+  }, [exactSearchMatchedShop?.id, selectedShopId]);
 
   const roleCollectionKey = getRoleCollectionKey(userType);
   const roleCollectionTitle = getRoleCollectionTitle(userType);
@@ -217,7 +263,7 @@ export function useShopDirectorySession({
     roleCollectionIds.includes(shop.id)
   );
 
-  const { routeOptions, isLoadingRoutes, routeError, usingLiveRoutes } =
+  const { routeOptions, isLoadingRoutes, routeError, usingLiveRoutes, refreshRoutePreview } =
     useShopDirectoryRoutePreview({
       selectedOrigin,
       selectedShop,
@@ -294,14 +340,14 @@ export function useShopDirectorySession({
   // ── Selection sync effects ──
   useEffect(() => {
     if (!selectedShopId && mapListings[0]) {
-      setSelectedShopId(mapListings[0].id);
+      setSelectedShopId(exactSearchMatchedShop?.id ?? mapListings[0].id);
       return;
     }
 
     if (selectedShopId && !mapListings.some((shop) => shop.id === selectedShopId)) {
-      setSelectedShopId(mapListings[0]?.id ?? null);
+      setSelectedShopId(exactSearchMatchedShop?.id ?? mapListings[0]?.id ?? null);
     }
-  }, [mapListings, selectedShopId]);
+  }, [exactSearchMatchedShop, mapListings, selectedShopId]);
 
   useEffect(() => {
     if (routeOptions.length === 0) {
@@ -314,62 +360,26 @@ export function useShopDirectorySession({
   }, [routeOptions, selectedRouteId]);
 
   // ── Session persist ──
-  useEffect(() => {
-    updateWebsiteSessionMemory(
-      identity,
-      {
-        insuranceConnection: {
-          connectedInsurerIds,
-        },
-        mapSession: {
-          lastMapCenter: mapCenter,
-          lastMapZoom: mapZoom,
-          lastViewportBounds: mapViewportBounds,
-          lastSearchFilters: {
-            minRating: filterRating,
-          },
-          lastSearchOrigin: selectedOrigin || undefined,
-          lastSearchQuery: searchQuery,
-          lastViewedShopId: selectedShopId ?? undefined,
-          mapTheme,
-          mapViewMode,
-          selectedRouteId,
-          customerSavedShopIds,
-          insurerShortlistIds,
-          recentSearches,
-          savedPlaces,
-          shopWatchlistIds,
-        },
-        shopDirectory: {
-          filterRating,
-          lastViewedShopId: selectedShopId,
-          searchQuery,
-          sessionIntelligenceOpen,
-          sortBy,
-        },
-      },
-      { accountType: userType }
-    );
-  }, [
+  useSessionPersistEffect(identity, userType, {
     connectedInsurerIds,
-    customerSavedShopIds,
-    filterRating,
-    identity,
-    insurerShortlistIds,
     mapCenter,
-    mapTheme,
-    mapViewMode,
     mapZoom,
+    mapViewportBounds,
+    filterRating,
+    selectedOrigin,
+    searchQuery,
+    selectedShopId,
+    mapTheme,
+    selectedRouteId,
+    customerSavedShopIds,
+    insurerShortlistIds,
     recentSearches,
     savedPlaces,
-    searchQuery,
-    selectedOrigin,
-    selectedRouteId,
-    selectedShopId,
-    sessionIntelligenceOpen,
     shopWatchlistIds,
+    sessionIntelligenceOpen,
     sortBy,
-  ]);
+    mapViewMode,
+  });
 
   // ── Handlers (extracted) ──
   const baseHandlers = useShopDirectoryHandlers({
@@ -424,6 +434,8 @@ export function useShopDirectorySession({
     recentSearches,
     mapViewMode,
     mapTheme,
+    isMapDark,
+    resolvedMapTheme: (isMapDark ? "dark" : "light") as "light" | "dark",
     selectedRouteId,
     mapCenter,
     mapZoom,
@@ -460,6 +472,7 @@ export function useShopDirectorySession({
     isLoadingRoutes,
     routeError,
     usingLiveRoutes,
+    refreshRoutePreview,
     directionsActionLabel,
     suggestedOrigins,
     originSearchQuery: originSearch.addressQuery,
@@ -479,9 +492,8 @@ export function useShopDirectorySession({
     handleOriginSearchQueryChange: originSearch.setAddressQuery,
     handleSelectOriginSearchResult,
     handleSelectOriginSuggestion,
-    // Geolocation
+    // Geolocation + data source
     userGeolocation: geolocation,
-    // Data source
     usingDemoFallback,
     coverageFetchError,
   };

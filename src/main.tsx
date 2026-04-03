@@ -1,3 +1,6 @@
+// Must be first — patches MapLibre resize before any maps are created
+import "./app/utils/maplibreResizePatch.ts";
+
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app/App.tsx";

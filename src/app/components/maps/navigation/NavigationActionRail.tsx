@@ -1,4 +1,4 @@
-import { List, LocateFixed, Volume2 } from "lucide-react";
+import { List, LocateFixed, Settings2, Volume2 } from "lucide-react";
 import { cn } from "../../ui/utils";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 
@@ -6,10 +6,12 @@ type NavigationActionRailProps = {
   tone: MapSurfaceTone;
   turnListOpen: boolean;
   voiceControlsOpen: boolean;
+  settingsOpen: boolean;
   showVoiceControl?: boolean;
   className?: string;
   onToggleTurnList: () => void;
   onToggleVoiceControls: () => void;
+  onToggleSettings: () => void;
   onRecenter: () => void;
 };
 
@@ -29,10 +31,12 @@ export default function NavigationActionRail({
   tone,
   turnListOpen,
   voiceControlsOpen,
+  settingsOpen,
   showVoiceControl = true,
   className,
   onToggleTurnList,
   onToggleVoiceControls,
+  onToggleSettings,
   onRecenter,
 }: NavigationActionRailProps) {
   const railShellClassName =
@@ -67,6 +71,7 @@ export default function NavigationActionRail({
             actionButtonClassName(tone, turnListOpen)
           )}
           aria-pressed={turnListOpen}
+          aria-label="Toggle turn-by-turn list"
         >
           <List className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
         </button>
@@ -79,10 +84,23 @@ export default function NavigationActionRail({
               actionButtonClassName(tone, voiceControlsOpen)
             )}
             aria-pressed={voiceControlsOpen}
+            aria-label="Toggle voice guidance"
           >
             <Volume2 className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </button>
         ) : null}
+        <button
+          type="button"
+          onClick={onToggleSettings}
+          className={cn(
+            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+            actionButtonClassName(tone, settingsOpen)
+          )}
+          aria-pressed={settingsOpen}
+          aria-label="Navigation settings"
+        >
+          <Settings2 className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+        </button>
         <button
           type="button"
           onClick={onRecenter}
@@ -90,6 +108,7 @@ export default function NavigationActionRail({
             "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
             actionButtonClassName(tone, false)
           )}
+          aria-label="Re-center map"
         >
           <LocateFixed className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
         </button>

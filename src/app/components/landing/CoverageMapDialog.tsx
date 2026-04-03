@@ -1,18 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { cn } from "../ui/utils";
 import type { CoverageNavigationExperience } from "../../hooks/useCoverageNavigationExperience";
 import type { NavigationProvider } from "../../services/navigation/externalNavigation";
-import { shareNavigationEta } from "../../services/navigation/shareEta";
 import { X } from "lucide-react";
-import ServiceCoverageMap from "../maps/MapLibreServiceCoverageMap";
-import NavigationActionRail from "../maps/navigation/NavigationActionRail";
-import NavigationActiveManeuverCard from "../maps/navigation/NavigationActiveManeuverCard";
-import NavigationActiveSpeedPanel from "../maps/navigation/NavigationActiveSpeedPanel";
-import NavigationSummarySheet from "../maps/navigation/NavigationSummarySheet";
-import NavigationTurnListSheet from "../maps/navigation/NavigationTurnListSheet";
-import NavigationVoiceControlsSheet from "../maps/navigation/NavigationVoiceControlsSheet";
 import { getMapSurfaceTheme, resolveMapSurfaceTone } from "../maps/mapSurfaceTheme";
 import { primeVoiceEngine } from "../../services/navigation/voiceSupport";
 import type { ExternalNavigationSession } from "../../types/navigation";
@@ -25,6 +23,7 @@ import type {
   CoverageSearchTarget,
   MapTileMode,
 } from "../maps/serviceCoverageMapTypes";
+import CoverageActiveNavigationLayout from "./CoverageActiveNavigationLayout";
 import CoverageBrowseExperience from "./CoverageBrowseExperience";
 
 type CoverageMapDialogProps = {
@@ -43,6 +42,8 @@ type CoverageMapDialogProps = {
   radiusMeters: number;
   regionCount: number;
   isLoadingShops: boolean;
+  coverageFetchError?: string | null;
+  usingDemoFallback?: boolean;
   selectedShopId?: string;
   initialDiscoveryRole?: NavigationDiscoveryRole;
   preferredNavigationProvider: NavigationProvider;
@@ -58,6 +59,7 @@ type CoverageMapDialogProps = {
   onExportDirections: (shop: CoveragePartnerShop) => void;
   onVoiceGuidanceEnabledChange?: (enabled: boolean) => void;
   startNavigationRequestId?: number;
+  onRetryPartnerShops?: () => void;
 };
 
 type CoverageMapDialogPresentationMode = "browse" | "navigating";
@@ -78,6 +80,8 @@ export default function CoverageMapDialog({
   radiusMeters,
   regionCount,
   isLoadingShops,
+  coverageFetchError,
+  usingDemoFallback = false,
   selectedShopId,
   initialDiscoveryRole,
   preferredNavigationProvider,
@@ -93,58 +97,25 @@ export default function CoverageMapDialog({
   onExportDirections,
   onVoiceGuidanceEnabledChange,
   startNavigationRequestId = 0,
+  onRetryPartnerShops,
 }: CoverageMapDialogProps) {
   const tone = resolveMapSurfaceTone(tileMode);
   const theme = getMapSurfaceTheme(tone, true);
   const notifications = useNotifications();
   const [presentationMode, setPresentationMode] =
     useState<CoverageMapDialogPresentationMode>("browse");
-  const [turnListOpen, setTurnListOpen] = useState(false);
-  const [voiceControlsOpen, setVoiceControlsOpen] = useState(false);
   const [followCurrentPositionRevision, setFollowCurrentPositionRevision] = useState(0);
-  const [shareFeedback, setShareFeedback] = useState("");
+  const [navigationTransition, setNavigationTransition] = useState(false);
+  const [arrivalTransition, setArrivalTransition] = useState(false);
   const [lastHandledStartRequestId, setLastHandledStartRequestId] = useState(0);
   const lastArrivalToastKeyRef = useRef<string | null>(null);
-  const routeGeometry =
-    navigation.routePreview?.geometry.map(({ lat, lng }) => [lat, lng] as [number, number]) ||
-    undefined;
-  const currentPosition = navigation.currentPosition
-    ? ([navigation.currentPosition.lat, navigation.currentPosition.lng] as [number, number])
-    : null;
   const isNavigationActive =
     presentationMode === "navigating" && Boolean(selectedShop && navigation.routePreview);
-  const followingStep = navigation.hasArrived
-    ? null
-    : navigation.routePreview?.steps[navigation.currentStepIndex + 1] || null;
-  const remainingDurationSeconds = useMemo(() => {
-    if (!navigation.routePreview || navigation.hasArrived) {
-      return 0;
-    }
-
-    const remaining = navigation.routePreview.steps
-      .slice(navigation.currentStepIndex)
-      .reduce((total, step) => total + step.durationSeconds, 0);
-
-    return remaining || navigation.routePreview.durationSeconds;
-  }, [navigation.currentStepIndex, navigation.hasArrived, navigation.routePreview]);
-  const remainingDistanceMeters = useMemo(() => {
-    if (!navigation.routePreview || navigation.hasArrived) {
-      return 0;
-    }
-
-    const remaining = navigation.routePreview.steps
-      .slice(navigation.currentStepIndex)
-      .reduce((total, step) => total + step.distanceMeters, 0);
-
-    return remaining || navigation.routePreview.distanceMeters;
-  }, [navigation.currentStepIndex, navigation.hasArrived, navigation.routePreview]);
 
   useEffect(() => {
     if (!open) {
       setPresentationMode("browse");
-      setTurnListOpen(false);
-      setVoiceControlsOpen(false);
-      setShareFeedback("");
+      setArrivalTransition(false);
     }
   }, [open]);
 
@@ -158,8 +129,6 @@ export default function CoverageMapDialog({
     }
 
     setPresentationMode("navigating");
-    setTurnListOpen(false);
-    setVoiceControlsOpen(false);
     setFollowCurrentPositionRevision((current) => current + 1);
     setLastHandledStartRequestId(startNavigationRequestId);
   }, [
@@ -173,8 +142,6 @@ export default function CoverageMapDialog({
   useEffect(() => {
     if (presentationMode === "navigating" && (!selectedShop || !navigation.routePreview)) {
       setPresentationMode("browse");
-      setTurnListOpen(false);
-      setVoiceControlsOpen(false);
     }
   }, [navigation.routePreview, presentationMode, selectedShop]);
 
@@ -212,19 +179,19 @@ export default function CoverageMapDialog({
       return;
     }
 
-    setPresentationMode("browse");
-    setTurnListOpen(false);
-    setVoiceControlsOpen(false);
+    setArrivalTransition(true);
+    const id = window.setTimeout(() => {
+      setArrivalTransition(false);
+      setPresentationMode("browse");
+    }, 2800);
+    return () => window.clearTimeout(id);
   }, [isNavigationActive, navigation.hasArrived]);
 
   useEffect(() => {
-    if (!shareFeedback) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => setShareFeedback(""), 2200);
-    return () => window.clearTimeout(timeoutId);
-  }, [shareFeedback]);
+    if (!navigationTransition) return;
+    const id = window.setTimeout(() => setNavigationTransition(false), 2200);
+    return () => window.clearTimeout(id);
+  }, [navigationTransition]);
 
   function handleStartNavigation() {
     if (!selectedShop || !navigation.routePreview) {
@@ -235,42 +202,13 @@ export default function CoverageMapDialog({
       primeVoiceEngine();
     }
 
+    if (!navigation.settings.gpsTrackingEnabled) {
+      navigation.setGpsTrackingEnabled(true);
+    }
+
+    setNavigationTransition(true);
     setPresentationMode("navigating");
-    setTurnListOpen(false);
-    setVoiceControlsOpen(false);
     setFollowCurrentPositionRevision((current) => current + 1);
-  }
-
-  async function handleShareEta() {
-    if (!selectedShop || !navigation.routePreview) {
-      return;
-    }
-
-    try {
-      const result = await shareNavigationEta({
-        destinationName: selectedShop.name,
-        arrivalLabel: new Date(Date.now() + remainingDurationSeconds * 1000).toLocaleTimeString(
-          [],
-          {
-            hour: "numeric",
-            minute: "2-digit",
-          }
-        ),
-        durationMinutes: remainingDurationSeconds / 60,
-        distanceMiles: remainingDistanceMeters / 1609.34,
-      });
-
-      setShareFeedback(
-        result === "shared"
-          ? "ETA shared."
-          : result === "copied"
-            ? "ETA copied to clipboard."
-            : "Share is not available on this device."
-      );
-    } catch (error) {
-      if (import.meta.env.DEV) console.error("Unable to share ETA:", error);
-      setShareFeedback("ETA share failed.");
-    }
   }
 
   function handleRecenterNavigation() {
@@ -279,180 +217,29 @@ export default function CoverageMapDialog({
 
   const handleExitNavigation = useCallback(() => {
     setPresentationMode("browse");
-    setTurnListOpen(false);
-    setVoiceControlsOpen(false);
+    setArrivalTransition(false);
   }, []);
-
-  useEffect(() => {
-    if (!isNavigationActive) return;
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        e.stopPropagation();
-        handleExitNavigation();
-      }
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isNavigationActive, handleExitNavigation]);
-
-  function renderActiveNavigationLayout() {
-    if (!selectedShop || !navigation.routePreview) {
-      return null;
-    }
-
-    return (
-      <div className="p-3 md:p-3 lg:p-4">
-        <div className="relative">
-          {/* Exit navigation — always-reachable back button */}
-          <button
-            type="button"
-            onClick={handleExitNavigation}
-            className={cn(
-              "absolute left-3 top-[6.5rem] z-[570] inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95 sm:left-4 sm:top-[7rem] sm:h-11 sm:w-11",
-              tone === "light"
-                ? "border-white/80 bg-white/90 text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.16)]"
-                : "border-white/15 bg-slate-950/85 text-white shadow-[0_8px_24px_rgba(2,6,23,0.38)]"
-            )}
-            aria-label="Exit navigation"
-          >
-            <X className="h-5 w-5" strokeWidth={2.4} />
-          </button>
-          <ServiceCoverageMap
-            center={currentPosition || center}
-            zoom={currentPosition ? Math.max(zoom, 15.5) : zoom}
-            revision={revision}
-            tileMode={tileMode}
-            counties={counties}
-            partnerShops={partnerShops}
-            activeSearchTarget={navigation.activeOriginTarget}
-            radiusMeters={radiusMeters}
-            radiusMiles={radiusMiles}
-            regionCount={regionCount}
-            mapHeightClassName="h-[100dvh] lg:h-[84vh] min-h-[400px] lg:min-h-[660px]"
-            immersiveFullscreen
-            presentationMode="navigation"
-            showSurfaceChrome={false}
-            showNavigationHud={false}
-            followCurrentPosition
-            followCurrentPositionRevision={followCurrentPositionRevision}
-            selectedShopId={selectedShopId}
-            routeGeometry={routeGeometry}
-            routeFitKey={navigation.routePreview.fetchedAt}
-            currentPosition={currentPosition}
-            gpsAccuracyMeters={navigation.gpsAccuracyMeters}
-            currentSpeedMph={navigation.currentSpeedMph}
-            postedSpeedLimitMph={navigation.speedLimitSnapshot?.speedLimitMph ?? null}
-            postedSpeedLimitConfidence={navigation.speedLimitSnapshot?.confidence ?? null}
-            speedLimitMatchDistanceMeters={
-              navigation.speedLimitSnapshot?.matchDistanceMeters ?? null
-            }
-            nearestRoadName={navigation.speedLimitSnapshot?.roadName ?? null}
-            nextInstruction={navigation.nextStep?.instruction ?? null}
-            voiceMode={navigation.settings.voiceMode}
-            onTileModeChange={onTileModeChange}
-            onCenterActive={onCenterActive}
-            onResetView={onResetView}
-            onSelectShop={(shopId) => {
-              const shop = partnerShops.find((entry) => `${entry.id || entry.name}` === shopId);
-              if (shop) {
-                onSelectShop(shop);
-              }
-            }}
-          />
-
-          <NavigationActiveManeuverCard
-            tone={tone}
-            nextStep={navigation.nextStep}
-            followingStep={followingStep}
-          />
-          <NavigationActionRail
-            tone={tone}
-            turnListOpen={turnListOpen}
-            voiceControlsOpen={voiceControlsOpen}
-            onToggleTurnList={() => {
-              setTurnListOpen((current) => !current);
-              setVoiceControlsOpen(false);
-            }}
-            onToggleVoiceControls={() => {
-              setVoiceControlsOpen((current) => !current);
-              setTurnListOpen(false);
-            }}
-            onRecenter={handleRecenterNavigation}
-          />
-          <NavigationActiveSpeedPanel
-            tone={tone}
-            currentSpeedMph={navigation.currentSpeedMph}
-            postedSpeedLimitMph={navigation.speedLimitSnapshot?.speedLimitMph ?? null}
-            postedSpeedLimitConfidence={navigation.speedLimitSnapshot?.confidence ?? null}
-            roadName={navigation.speedLimitSnapshot?.roadName ?? null}
-            gpsAccuracyMeters={navigation.gpsAccuracyMeters}
-            speedLimitMatchDistanceMeters={
-              navigation.speedLimitSnapshot?.matchDistanceMeters ?? null
-            }
-          />
-          <NavigationTurnListSheet
-            tone={tone}
-            open={turnListOpen}
-            steps={navigation.routePreview.steps}
-            currentStepIndex={navigation.currentStepIndex}
-            onClose={() => setTurnListOpen(false)}
-          />
-          <NavigationVoiceControlsSheet
-            tone={tone}
-            open={voiceControlsOpen}
-            voiceMode={navigation.settings.voiceMode}
-            voiceVolumePreset={navigation.settings.voiceVolumePreset}
-            preferredVoiceLabel={navigation.preferredVoiceLabel}
-            voiceGuidanceSupported={navigation.voiceGuidanceSupported}
-            onVoiceModeChange={navigation.setVoiceMode}
-            onVoiceVolumePresetChange={navigation.setVoiceVolumePreset}
-            onClose={() => setVoiceControlsOpen(false)}
-          />
-          <NavigationSummarySheet
-            tone={tone}
-            selectedShop={selectedShop}
-            remainingDurationSeconds={remainingDurationSeconds}
-            remainingDistanceMeters={remainingDistanceMeters}
-            shareFeedback={shareFeedback}
-            preferredNavigationProvider={preferredNavigationProvider}
-            onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
-            onShareEta={() => {
-              void handleShareEta();
-            }}
-            onOpenDirections={() => onExportDirections(selectedShop)}
-            onEndRoute={handleExitNavigation}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          "max-w-[100vw] overflow-hidden rounded-2xl p-0 sm:max-w-[calc(100vw-2rem)] lg:max-w-[min(1360px,calc(100vw-2rem))] [&>button:last-child]:hidden",
+          "left-0 top-0 h-[100dvh] max-h-[100dvh] w-screen max-w-none translate-x-0 translate-y-0 overflow-hidden rounded-none border-0 p-0 sm:left-[50%] sm:top-[50%] sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:w-full sm:max-w-[calc(100vw-2rem)] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-2xl sm:border lg:max-w-[min(1360px,calc(100vw-2rem))] [&>button:last-child]:hidden",
           theme.shellClassName,
           tone === "light" ? "text-slate-950" : "text-white"
         )}
       >
-        {/* Portal-based close button — escapes dialog z-50 stacking context */}
-        {createPortal(
-          <button
-            type="button"
-            onClick={() => onOpenChange(false)}
-            className={cn(
-              "fixed top-3 right-3 z-[700] inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95 sm:top-4 sm:right-4 sm:h-11 sm:w-11",
-              tone === "light"
-                ? "border-white/80 bg-white/90 text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.18)]"
-                : "border-white/15 bg-slate-950/85 text-white shadow-[0_8px_24px_rgba(2,6,23,0.38)]"
-            )}
-            aria-label="Close map"
-          >
-            <X className="h-5 w-5" strokeWidth={2.4} />
-          </button>,
-          document.body
-        )}
+        <DialogClose
+          className={cn(
+            "absolute right-3 top-[calc(env(safe-area-inset-top,0px)+0.75rem)] z-[590] inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95 sm:right-4 sm:top-4 sm:h-11 sm:w-11",
+            tone === "light"
+              ? "border-white/80 bg-white/90 text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.18)]"
+              : "border-white/15 bg-slate-950/85 text-white shadow-[0_8px_24px_rgba(2,6,23,0.38)]"
+          )}
+          aria-label="Close map"
+        >
+          <X className="h-5 w-5" strokeWidth={2.4} />
+        </DialogClose>
         <DialogHeader className="sr-only">
           <DialogTitle>Coverage command center</DialogTitle>
           <DialogDescription>
@@ -460,8 +247,34 @@ export default function CoverageMapDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {isNavigationActive ? (
-          renderActiveNavigationLayout()
+        {isNavigationActive && selectedShop ? (
+          <CoverageActiveNavigationLayout
+            tone={tone}
+            navigation={navigation}
+            selectedShop={selectedShop}
+            selectedShopId={selectedShopId}
+            center={center}
+            zoom={zoom}
+            revision={revision}
+            tileMode={tileMode}
+            counties={counties}
+            partnerShops={partnerShops}
+            radiusMeters={radiusMeters}
+            radiusMiles={radiusMiles}
+            regionCount={regionCount}
+            followCurrentPositionRevision={followCurrentPositionRevision}
+            navigationTransition={navigationTransition}
+            arrivalTransition={arrivalTransition}
+            preferredNavigationProvider={preferredNavigationProvider}
+            onPreferredNavigationProviderChange={onPreferredNavigationProviderChange}
+            onTileModeChange={onTileModeChange}
+            onCenterActive={onCenterActive}
+            onResetView={onResetView}
+            onSelectShop={onSelectShop}
+            onExportDirections={onExportDirections}
+            onExitNavigation={handleExitNavigation}
+            onRecenter={handleRecenterNavigation}
+          />
         ) : (
           <CoverageBrowseExperience
             tone={tone}
@@ -478,6 +291,8 @@ export default function CoverageMapDialog({
             radiusMeters={radiusMeters}
             regionCount={regionCount}
             isLoadingShops={isLoadingShops}
+            coverageFetchError={coverageFetchError}
+            usingDemoFallback={usingDemoFallback}
             selectedShopId={selectedShopId}
             initialDiscoveryRole={initialDiscoveryRole}
             selectedShop={selectedShop}
@@ -490,6 +305,7 @@ export default function CoverageMapDialog({
             onOpenBidOnDentNavigation={onOpenBidOnDentNavigation}
             onExportDirections={onExportDirections}
             onStartNavigation={handleStartNavigation}
+            onRetryPartnerShops={onRetryPartnerShops}
           />
         )}
       </DialogContent>

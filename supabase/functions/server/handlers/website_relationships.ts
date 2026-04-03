@@ -5,8 +5,8 @@
 
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
-  ensureWebsiteUserKeyMatchesSession,
   requireClerkSession,
+  resolveWebsiteUserKeyForSession,
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
@@ -120,8 +120,9 @@ export async function getWebsiteRelationships(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const session = await requireClerkSession(req, { requireEmail: true });
-    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+    const session = await requireClerkSession(req, { requireEmail: false });
+    const websiteUserKey = await resolveWebsiteUserKeyForSession(
+      supabase,
       session,
       url.searchParams.get("websiteUserKey")
     );
@@ -180,14 +181,15 @@ export async function saveWebsiteRelationships(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const session = await requireClerkSession(req, { requireEmail: false });
     const { accountType, collections, identity } = body || {};
 
     if (!identity) {
       return respond({ error: "Missing identity" }, 400);
     }
 
-    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+    const websiteUserKey = await resolveWebsiteUserKeyForSession(
+      supabase,
       session,
       identity.websiteUserKey || null
     );

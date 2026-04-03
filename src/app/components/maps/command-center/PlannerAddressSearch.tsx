@@ -102,14 +102,15 @@ export default function PlannerAddressSearch({
           >
             Search address or place
           </label>
-          <div className="flex gap-1.5">
+          <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
             <input
               id="planner-address-search"
               value={addressQuery}
               onChange={(event) => onAddressQueryChange(event.target.value)}
-              placeholder="Enter address, ZIP, or place name…"
+              placeholder="Enter address, ZIP, or place"
+              enterKeyHint="search"
               className={cn(
-                "h-11 flex-1 rounded-[0.875rem] border px-3 text-sm outline-none transition",
+                "h-11 min-w-0 rounded-[0.875rem] border px-3 text-sm outline-none transition",
                 tone === "light"
                   ? "border-white/80 bg-white/80 text-slate-900 placeholder:text-slate-400 focus:border-sky-300"
                   : "border-white/12 bg-slate-900/78 text-white placeholder:text-slate-400 focus:border-cyan-400/40"
@@ -120,11 +121,11 @@ export default function PlannerAddressSearch({
               disabled={isSearchingAddresses}
               className={cn(
                 theme.primaryButtonClassName,
-                "!py-1.5 !px-3 !text-xs shrink-0 disabled:opacity-60"
+                "!gap-1 !py-1.5 !px-2.5 !text-xs w-full justify-center shrink-0 sm:w-auto disabled:opacity-60"
               )}
             >
               <Search className="h-3.5 w-3.5" />
-              {isSearchingAddresses ? "…" : "Search"}
+              {isSearchingAddresses ? "…" : "Find"}
             </button>
           </div>
 

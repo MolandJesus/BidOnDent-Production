@@ -9,6 +9,8 @@ type NavigationActiveManeuverCardProps = {
   tone: MapSurfaceTone;
   nextStep: NavigationRouteStep | null;
   followingStep: NavigationRouteStep | null;
+  /** Live GPS distance to the next step in meters (overrides step.distanceMeters). */
+  liveDistanceMeters?: number | null;
   containerClassName?: string;
 };
 
@@ -39,12 +41,17 @@ export default function NavigationActiveManeuverCard({
   tone,
   nextStep,
   followingStep,
+  liveDistanceMeters,
   containerClassName,
 }: NavigationActiveManeuverCardProps) {
   const theme = getMapSurfaceTheme(tone, true);
   const ManeuverIcon = getManeuverIcon(nextStep);
   const FollowingIcon = getManeuverIcon(followingStep);
-  const nextDistance = formatTurnDistance(nextStep?.distanceMeters);
+  const effectiveDistanceMeters =
+    typeof liveDistanceMeters === "number" && Number.isFinite(liveDistanceMeters)
+      ? liveDistanceMeters
+      : nextStep?.distanceMeters;
+  const nextDistance = formatTurnDistance(effectiveDistanceMeters);
   const followingDistance = formatTurnDistance(followingStep?.distanceMeters);
 
   return (

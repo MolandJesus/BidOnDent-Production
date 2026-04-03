@@ -111,6 +111,7 @@ export default function ReportScreen({
               address={form.address}
               onZipChange={form.setZipCode}
               onAddressChange={form.setAddress}
+              onCoordsChange={form.setReportCoords}
               onBack={form.prevStep}
               onContinue={form.handleLocationContinue}
             />

@@ -51,6 +51,10 @@ type ShopDirectoryMapOverlaysProps = {
   gpsError?: string;
   onRetryGps?: () => void;
   onRetryRoute?: () => void;
+  onViewDetails?: (shop: ShopMapListing) => void;
+  onRequestEstimate?: (shop: ShopMapListing) => void;
+  intelligenceLeftClass?: string;
+  density?: "default" | "compact";
 };
 
 export default function ShopDirectoryMapOverlays({
@@ -91,20 +95,25 @@ export default function ShopDirectoryMapOverlays({
   gpsError,
   onRetryGps,
   onRetryRoute,
+  onViewDetails,
+  onRequestEstimate,
+  intelligenceLeftClass = "left-4",
+  density = "default",
 }: ShopDirectoryMapOverlaysProps) {
   const [intelligenceExpanded, setIntelligenceExpanded] = useState(false);
   const isDark = mapTheme === "dark";
+  const isCompactDensity = density === "compact";
 
   const glassPanel = isDark
-    ? "border-blue-400/25 bg-slate-950/82 backdrop-blur-md text-white shadow-[0_0_24px_rgba(59,130,246,0.08)]"
+    ? "border-blue-400/20 bg-[linear-gradient(180deg,rgba(30,58,138,0.20)_0%,rgba(12,25,41,0.84)_100%)] backdrop-blur-xl text-white shadow-[0_8px_32px_rgba(2,6,23,0.40),0_0_20px_rgba(37,99,235,0.06)]"
     : "border-black/8 bg-white/88 backdrop-blur-md text-slate-800";
   const glassChip = isDark
-    ? "border-blue-400/30 bg-slate-950/75 text-white backdrop-blur-md hover:bg-slate-950/85 shadow-[0_0_16px_rgba(59,130,246,0.06)]"
+    ? "border-blue-400/[0.18] bg-[rgba(12,25,41,0.82)] text-white backdrop-blur-xl hover:bg-[rgba(12,25,41,0.92)] shadow-[0_4px_20px_rgba(2,6,23,0.45),0_0_12px_rgba(37,99,235,0.06)]"
     : "border-black/8 bg-white/85 text-slate-700 backdrop-blur-md hover:bg-white/95";
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
   let distanceLabel = "";
   let etaLabel = "";
-  if (selectedOrigin && selectedShop && selectedRoute) {
+  if (selectedOrigin && selectedShop?.mapResult?.coordinates && selectedRoute) {
     const distance = haversineDistanceMiles(selectedOrigin, selectedShop.mapResult.coordinates);
     distanceLabel = formatDistance(distance);
     etaLabel = computeETA(distance);
@@ -141,10 +150,22 @@ export default function ShopDirectoryMapOverlays({
       )}
 
       {showIntelligence && (
-        <div className={`pointer-events-auto absolute left-4 ${overlayTopClass} z-[510] max-w-xs`}>
+        <div
+          className={`pointer-events-auto absolute ${intelligenceLeftClass} ${overlayTopClass} z-[510] max-w-[calc(100vw-2rem)] ${isCompactDensity ? "sm:max-w-[12.5rem]" : "sm:max-w-xs"}`}
+        >
           <button
-            className={`flex min-h-[32px] items-center gap-1.5 rounded-xl border px-2.5 py-1 text-[11px] font-semibold transition-colors ${glassChip}`}
+            className={`flex items-center gap-1.5 rounded-xl border font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+              isCompactDensity ? "min-h-[34px] px-2.5 py-1.5 text-[10px]" : "min-h-[44px] px-3 py-2 text-[11px]"
+            } ${glassChip}`}
             onClick={() => setIntelligenceExpanded((value) => !value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && intelligenceExpanded) {
+                setIntelligenceExpanded(false);
+                e.stopPropagation();
+              }
+            }}
+            aria-expanded={intelligenceExpanded}
+            aria-label="Navigation intelligence"
             type="button"
           >
             <Sparkles className="h-3 w-3 text-blue-400" />
@@ -157,14 +178,19 @@ export default function ShopDirectoryMapOverlays({
           </button>
 
           {intelligenceExpanded && (
-            <div className={`mt-2 rounded-2xl border p-3 shadow-xl ${glassPanel}`}>
+            <div
+              className={`mt-2 rounded-2xl border shadow-xl ${
+                isCompactDensity ? "p-2.5" : "p-3"
+              } ${glassPanel}`}
+            >
               <div className="flex items-center justify-between">
                 <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${secondaryText}`}>
                   Intelligence
                 </p>
                 <button
-                  className={`rounded-full p-1 transition-colors ${secondaryText} hover:opacity-80`}
+                  className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${secondaryText} hover:opacity-80`}
                   onClick={() => setIntelligenceExpanded(false)}
+                  aria-label="Close intelligence panel"
                   type="button"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -249,10 +275,13 @@ export default function ShopDirectoryMapOverlays({
           gpsError={gpsError}
           onRetryGps={onRetryGps}
           onRetryRoute={onRetryRoute}
+          onViewDetails={onViewDetails}
+          onRequestEstimate={onRequestEstimate}
           onPauseNavigation={onPauseNavigation}
           onResumeNavigation={onResumeNavigation}
           onEndNavigation={onEndNavigation}
           onRecenterNavigation={onRecenterNavigation}
+          density={density}
         />
       ) : null}
 
@@ -273,8 +302,11 @@ export default function ShopDirectoryMapOverlays({
           isDark={isDark}
           onSelectRoute={onSelectRoute}
           onStartNavigation={onStartNavigation}
+          onRequestEstimate={onRequestEstimate}
           onDismiss={onDismissRoutePreview}
+          onRetryRoute={onRetryRoute}
           directionsLabel={directionsLabel}
+          density={density}
         />
       ) : null}
     </>

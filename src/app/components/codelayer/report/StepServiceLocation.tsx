@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
-import { zipToCoordinates } from "../../../services/supabase/map";
+import { zipToCoordinates, geocodeAddress } from "../../../services/supabase/map";
 import DashboardMapPreview from "../../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
@@ -14,6 +14,7 @@ type StepServiceLocationProps = {
   onAddressChange: (address: string) => void;
   onBack: () => void;
   onContinue: () => void;
+  onCoordsChange?: (coords: { lat: number; lng: number } | null) => void;
 };
 
 export default function StepServiceLocation({
@@ -25,6 +26,7 @@ export default function StepServiceLocation({
   onAddressChange,
   onBack,
   onContinue,
+  onCoordsChange,
 }: StepServiceLocationProps) {
   const isLightAppearance = appearanceMode === "light";
 
@@ -33,21 +35,54 @@ export default function StepServiceLocation({
     return zipToCoordinates(zipCode);
   }, [zipCode]);
 
+  // Refine with geocoded address when available
+  const [geocodedCoords, setGeocodedCoords] = useState<{ lat: number; lng: number } | null>(null);
+
+  useEffect(() => {
+    if (zipCode.length !== 5) {
+      setGeocodedCoords(null);
+      return;
+    }
+    // Only geocode if there's meaningful address text
+    const trimmed = address.trim();
+    if (trimmed.length < 3) {
+      setGeocodedCoords(null);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      geocodeAddress({ address: trimmed, zip: zipCode }).then((coords) => {
+        if (!cancelled) setGeocodedCoords(coords);
+      });
+    }, 600); // debounce to avoid hammering Nominatim on each keystroke
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [address, zipCode]);
+
+  const pinCoords = geocodedCoords ?? resolvedCoords;
+
+  // Propagate resolved coordinates to parent
+  useEffect(() => {
+    onCoordsChange?.(pinCoords);
+  }, [pinCoords, onCoordsChange]);
+
   const previewPin = useMemo<ReportPin[]>(() => {
-    if (!resolvedCoords) return [];
+    if (!pinCoords) return [];
     return [
       {
         id: "report-preview",
-        lat: resolvedCoords.lat,
-        lng: resolvedCoords.lng,
+        lat: pinCoords.lat,
+        lng: pinCoords.lng,
         label: "Your report location",
       },
     ];
-  }, [resolvedCoords]);
+  }, [pinCoords]);
 
   const mapCenter = useMemo<[number, number]>(
-    () => (resolvedCoords ? [resolvedCoords.lat, resolvedCoords.lng] : [41.05, -73.87]),
-    [resolvedCoords]
+    () => (pinCoords ? [pinCoords.lat, pinCoords.lng] : [41.05, -73.87]),
+    [pinCoords]
   );
 
   return (

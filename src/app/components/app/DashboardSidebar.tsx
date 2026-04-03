@@ -1,24 +1,8 @@
 import { Car, Sparkles } from "lucide-react";
 import { useState, type RefObject } from "react";
-import type { Bid, NavTab, Notification, Vehicle } from "../../types";
+import type { Bid, NavTab, Notification, Report, Vehicle } from "../../types";
+import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
-
-type UserProfile = {
-  name: string;
-  email: string;
-  user_type: string;
-  phone?: string;
-};
-
-type ProfileDropdownData = {
-  userType: "customer" | "shop" | "insurer";
-  reports: any[];
-  vehicles: Vehicle[];
-  bids: Bid[];
-  onNavigate: (destination: string, tab?: string) => void;
-  onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement | null>;
-};
 
 type DashboardSidebarProps = {
   isLightAppearance: boolean;
@@ -35,7 +19,7 @@ type DashboardSidebarProps = {
   userImageUrl: string;
   notifications: Notification[];
   notificationSyncActive: boolean;
-  reports: any[];
+  reports: Report[];
   vehicles: Vehicle[];
   bids: Bid[];
   onDismissTopProfile: () => void;

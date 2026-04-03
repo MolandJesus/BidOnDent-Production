@@ -233,19 +233,19 @@ function buildActionPhrase(step: OsrmStep, destinationName: string, hashSeed: nu
   }
 
   if (maneuverType === "merge") {
-    return fillTemplate(pickVariant(mergeActionPhrases, hashSeed, 15), values);
+    return `${fillTemplate(pickVariant(mergeActionPhrases, hashSeed, 15), values)} ${roadName}`;
   }
 
   if (maneuverType === "on ramp") {
-    return fillTemplate(pickVariant(onRampActionPhrases, hashSeed, 19), values);
+    return `${fillTemplate(pickVariant(onRampActionPhrases, hashSeed, 19), values)} ${roadName}`;
   }
 
   if (maneuverType === "off ramp") {
-    return fillTemplate(pickVariant(offRampActionPhrases, hashSeed, 21), values);
+    return `${fillTemplate(pickVariant(offRampActionPhrases, hashSeed, 21), values)} ${roadName}`;
   }
 
   if (maneuverType === "fork") {
-    return fillTemplate(pickVariant(forkActionPhrases, hashSeed, 25), values);
+    return `${fillTemplate(pickVariant(forkActionPhrases, hashSeed, 25), values)} ${roadName}`;
   }
 
   if (maneuverType === "new name") {
@@ -274,22 +274,22 @@ function buildActionPhrase(step: OsrmStep, destinationName: string, hashSeed: nu
     }
 
     if (step.maneuver.modifier === "sharp left" || step.maneuver.modifier === "sharp right") {
-      return fillTemplate(pickVariant(sharpTurnActionPhrases, hashSeed, 45), values);
+      return `${fillTemplate(pickVariant(sharpTurnActionPhrases, hashSeed, 45), values)} ${roadName}`;
     }
 
     if (step.maneuver.modifier === "slight left" || step.maneuver.modifier === "slight right") {
-      return fillTemplate(pickVariant(slightTurnActionPhrases, hashSeed, 47), values);
+      return `${fillTemplate(pickVariant(slightTurnActionPhrases, hashSeed, 47), values)} ${roadName}`;
     }
 
     if (step.maneuver.modifier === "straight") {
       return `${pickVariant(straightContinuePhrases, hashSeed, 37)} ${roadName}`;
     }
 
-    return fillTemplate(pickVariant(turnActionPhrases, hashSeed, 35), values);
+    return `${fillTemplate(pickVariant(turnActionPhrases, hashSeed, 35), values)} ${roadName}`;
   }
 
   if (maneuverType === "use lane") {
-    return fillTemplate(pickVariant(keepActionPhrases, hashSeed, 49), values);
+    return `${fillTemplate(pickVariant(keepActionPhrases, hashSeed, 49), values)} ${roadName}`;
   }
 
   return `proceed ${modifier} on ${roadName}`;

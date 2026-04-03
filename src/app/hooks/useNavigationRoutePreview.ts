@@ -87,14 +87,30 @@ export function useNavigationRoutePreview({
   const originTracksGps =
     gpsTrackingEnabled && activeOriginTarget?.source === "geolocation" && Boolean(currentPosition);
 
+  // Off-route detection: compute minimum distance from GPS to route geometry
+  const isOffRoute =
+    originTracksGps &&
+    currentPosition &&
+    routePreview &&
+    routePreview.geometry.length >= 2 &&
+    (() => {
+      let minDist = Infinity;
+      for (const point of routePreview.geometry) {
+        const d = haversineMiles(currentPosition, point);
+        if (d < minDist) minDist = d;
+      }
+      // ~100m threshold = 0.062 miles
+      return minDist > 0.062;
+    })();
+
   // Route fetching
   useEffect(() => {
     if (!selectedShop || !activeOriginTarget || !originKey || !destinationKey) {
-      setRoutePreview(null);
-      setRouteAlternatives([]);
-      setRouteError("");
-      setCurrentStepIndex(0);
-      setHasArrived(false);
+      setRoutePreview((prev) => (prev === null ? prev : null));
+      setRouteAlternatives((prev) => (prev.length === 0 ? prev : []));
+      setRouteError((prev) => (prev === "" ? prev : ""));
+      setCurrentStepIndex((prev) => (prev === 0 ? prev : 0));
+      setHasArrived((prev) => (prev === false ? prev : false));
       spokenStepIdsRef.current.clear();
       cancelVoiceGuidance();
       lastRouteOriginKeyRef.current = null;
@@ -117,6 +133,7 @@ export function useNavigationRoutePreview({
     const shouldRefreshRoute =
       !routePreview ||
       hasDestinationChanged ||
+      isOffRoute ||
       (originTracksGps ? gpsMovedEnough : hasOriginChanged);
 
     if (!shouldRefreshRoute) {
@@ -197,6 +214,7 @@ export function useNavigationRoutePreview({
     selectedRouteIndex,
     gpsTrackingEnabled,
     originTracksGps,
+    isOffRoute,
   ]);
 
   // Alternative route selection
@@ -237,8 +255,7 @@ export function useNavigationRoutePreview({
     }
 
     const stepDistanceMeters = haversineMiles(currentPosition, nextStep.location) * 1609.34;
-    const arrivalCompletionThresholdMeters =
-      getArrivalCompletionDistanceMeters(gpsAccuracyMeters);
+    const arrivalCompletionThresholdMeters = getArrivalCompletionDistanceMeters(gpsAccuracyMeters);
     const adaptiveSpeakThresholdMeters =
       getManeuverBaseSpeakDistanceMeters(nextStep) +
       getSpeedAdjustmentMeters(currentSpeedMph) +

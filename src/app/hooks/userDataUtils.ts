@@ -202,6 +202,8 @@ export const buildSupabaseReportPayload = (report: Record<string, any>) => ({
   city: report.city || "",
   state: report.state || "",
   zip_code: report.zipCode || report.zip_code || "",
+  latitude: typeof report.latitude === "number" ? report.latitude : null,
+  longitude: typeof report.longitude === "number" ? report.longitude : null,
   photo_urls: report.photos || report.photo_urls || [],
   insurance_claim: report.insurance_claim ?? false,
   preferred_contact: report.preferred_contact || "email",

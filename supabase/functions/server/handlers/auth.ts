@@ -36,7 +36,7 @@ export async function handleTrackLogin(
   respond: Function
 ): Promise<Response> {
   try {
-    const session = await requireClerkSession(req, { requireEmail: true })
+    const session = await requireClerkSession(req, { requireEmail: false })
 
     let query = supabase.from('profiles').update({
       last_login: new Date().toISOString()

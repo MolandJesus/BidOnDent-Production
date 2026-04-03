@@ -40,12 +40,15 @@ export default function MapLibreDashboardMapPreview({
   }, [shops, reportPins]);
 
   const fittedView = useMemo(() => {
-    if (allPoints.length < 2) return null;
+    // Fit viewport to shops only — report pins outside coverage area should not
+    // pull the viewport away from the service region.
+    const fitPoints = shops.length >= 2 ? shops : allPoints;
+    if (fitPoints.length < 2) return null;
     let minLat = Infinity,
       maxLat = -Infinity,
       minLng = Infinity,
       maxLng = -Infinity;
-    for (const p of allPoints) {
+    for (const p of fitPoints) {
       if (p.lat < minLat) minLat = p.lat;
       if (p.lat > maxLat) maxLat = p.lat;
       if (p.lng < minLng) minLng = p.lng;
@@ -59,7 +62,7 @@ export default function MapLibreDashboardMapPreview({
     // Approximate zoom from geographic span (log2 scale with padding)
     const z = Math.min(14, Math.max(3, Math.floor(8.5 - Math.log2(span))));
     return { latitude: cLat, longitude: cLng, zoom: z };
-  }, [allPoints]);
+  }, [shops, allPoints]);
 
   /* Controlled viewport — responds when parent changes center/zoom */
   const [viewState, setViewState] = useState<Pick<ViewState, "longitude" | "latitude" | "zoom">>({

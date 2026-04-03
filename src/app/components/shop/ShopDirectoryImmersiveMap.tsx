@@ -1,24 +1,23 @@
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Layers3, List, MapPin, PanelLeftClose, Search, SunMoon } from "lucide-react";
-import ShopDirectoryMapPane from "./MapLibreShopDirectoryMapPane";
-import ShopDirectoryMapOverlays from "./ShopDirectoryMapOverlays";
-import ShopDirectoryResultCard from "./ShopDirectoryResultCard";
-import NavigationActionRail from "../maps/navigation/NavigationActionRail";
-import NavigationTurnListSheet from "../maps/navigation/NavigationTurnListSheet";
-import NavigationVoiceControlsSheet from "../maps/navigation/NavigationVoiceControlsSheet";
+import { useState } from "react";
+import ShopDirectoryMapInfoPanel from "./ShopDirectoryMapInfoPanel";
+import ImmersiveOriginPicker from "./ImmersiveOriginPicker";
+import ImmersiveMapTopBar from "./ImmersiveMapTopBar";
+import ImmersiveMapResultsDrawer, { type DrawerSnap } from "./ImmersiveMapResultsDrawer";
+import ImmersiveMapViewport from "./ImmersiveMapViewport";
+import type { MapTileMode } from "../maps/serviceCoverageMapTypes";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { GpsStatus } from "../../hooks/useNavigationGpsTracking";
-import type { NavigationRouteStep } from "../../types/navigation";
+import type { DamageReport } from "../../services/supabase/types";
+import type {
+  NavigationAddressResult,
+  NavigationAddressSuggestion,
+  NavigationRouteStep,
+} from "../../types/navigation";
 import type { NavigationVoiceMode, NavigationVoiceVolumePreset } from "../../types/navigation";
-import {
-  getShopRouteActionLabel,
-  shouldUseShopNavigationAction,
-} from "../../hooks/shopDirectorySessionUtils";
-import { getRoleCollectionActionLabels } from "../../services/intelligence/shopMapExperience";
 import type {
   Coordinates,
   MapTheme,
@@ -27,6 +26,7 @@ import type {
   Place,
   RouteOption,
   SavedPlace,
+  ShopSortOption,
 } from "../../types/mapDomain";
 
 type ShopDirectoryImmersiveMapProps = {
@@ -40,6 +40,7 @@ type ShopDirectoryImmersiveMapProps = {
   savedPlaces: SavedPlace[];
   routeSummary: IntelligenceSummary;
   mapTheme: MapTheme;
+  isMapDark?: boolean;
   mapCenter: Coordinates | null;
   mapZoom: number;
   userType: MarketUserType;
@@ -66,6 +67,7 @@ type ShopDirectoryImmersiveMapProps = {
   followCurrentPosition?: boolean;
   followCurrentPositionRevision?: number;
   deviationPrompt?: React.ReactNode;
+  isOffRoute?: boolean;
   navigationMode: "browse" | "route-preview" | "guidance";
   routeSteps?: NavigationRouteStep[];
   currentStepIndex?: number;
@@ -81,11 +83,18 @@ type ShopDirectoryImmersiveMapProps = {
   voiceGuidanceSupported?: boolean;
   onVoiceModeChange?: (mode: NavigationVoiceMode) => void;
   onVoiceVolumePresetChange?: (preset: NavigationVoiceVolumePreset) => void;
+  gpsTrackingEnabled?: boolean;
+  speedLimitMonitorEnabled?: boolean;
+  autoRerouteEnabled?: boolean;
+  onToggleGpsTracking?: () => void;
+  onToggleSpeedLimitMonitor?: () => void;
+  onToggleAutoReroute?: () => void;
   onRetryGps?: () => void;
   onRetryRoute?: () => void;
   searchWithinViewport?: boolean;
   onSearchInArea?: () => void;
   onClearAreaSearch?: () => void;
+  onFindShopsNear?: (coords: { lat: number; lng: number }) => void;
 
   onSearchQueryChange: (query: string) => void;
   onSearchSubmit: (event: FormEvent) => void;
@@ -94,6 +103,8 @@ type ShopDirectoryImmersiveMapProps = {
   onToggleRoleCollection: (shopId: number) => void;
   onOpenShopDirections: (shop: ShopMapListing) => void;
   onStartNavigation?: (shop: ShopMapListing) => void;
+  onViewDetails?: (shop: ShopMapListing) => void;
+  onRequestEstimate?: (shop: ShopMapListing) => void;
   onPauseNavigation?: () => void;
   onResumeNavigation?: () => void;
   onEndNavigation?: () => void;
@@ -107,6 +118,26 @@ type ShopDirectoryImmersiveMapProps = {
   userCoords?: Coordinates | null;
   userHeadingDegrees?: number | null;
   onViewReportDetail?: (reportId: string) => void;
+  onPlaceBid?: (report: DamageReport) => void;
+  onViewBids?: (reportId: string) => void;
+  initialReports?: DamageReport[];
+  // Origin picker props for immersive mode
+  suggestedOrigins?: Place[];
+  originSearchQuery?: string;
+  originSearchResults?: NavigationAddressResult[];
+  originSuggestions?: NavigationAddressSuggestion[];
+  isSearchingOrigins?: boolean;
+  originSearchError?: string;
+  locationError?: string | null;
+  isLocating?: boolean;
+  onSelectOrigin?: (origin: Place) => void;
+  onOriginSearchQueryChange?: (query: string) => void;
+  onSearchOrigin?: () => void | Promise<void>;
+  onSelectOriginSearchResult?: (result: NavigationAddressResult) => void;
+  onSelectOriginSuggestion?: (suggestion: NavigationAddressSuggestion) => void;
+  onUseMyLocation?: () => void;
+  sortBy?: ShopSortOption;
+  onSortChange?: (sort: ShopSortOption) => void;
 };
 
 export default function ShopDirectoryImmersiveMap({
@@ -120,6 +151,7 @@ export default function ShopDirectoryImmersiveMap({
   savedPlaces,
   routeSummary,
   mapTheme,
+  isMapDark,
   mapCenter,
   mapZoom,
   userType,
@@ -141,6 +173,7 @@ export default function ShopDirectoryImmersiveMap({
   followCurrentPosition = false,
   followCurrentPositionRevision = 0,
   deviationPrompt,
+  isOffRoute = false,
   navigationMode,
   routeSteps = [],
   currentStepIndex = 0,
@@ -156,11 +189,18 @@ export default function ShopDirectoryImmersiveMap({
   voiceGuidanceSupported = true,
   onVoiceModeChange,
   onVoiceVolumePresetChange,
+  gpsTrackingEnabled = true,
+  speedLimitMonitorEnabled = true,
+  autoRerouteEnabled = true,
+  onToggleGpsTracking,
+  onToggleSpeedLimitMonitor,
+  onToggleAutoReroute,
   onRetryGps,
   onRetryRoute,
   searchWithinViewport = false,
   onSearchInArea,
   onClearAreaSearch,
+  onFindShopsNear,
   onSearchQueryChange,
   onSearchSubmit,
   onSelectShop,
@@ -168,6 +208,8 @@ export default function ShopDirectoryImmersiveMap({
   onToggleRoleCollection,
   onOpenShopDirections,
   onStartNavigation,
+  onViewDetails,
+  onRequestEstimate,
   onPauseNavigation,
   onResumeNavigation,
   onEndNavigation,
@@ -175,385 +217,276 @@ export default function ShopDirectoryImmersiveMap({
   onSetMapCenter,
   onSetMapZoom,
   onSetMapViewportBounds,
-  onToggleTheme,
+  onToggleTheme: _onToggleTheme,
   onSwitchMode,
   onBack,
   userCoords,
   userHeadingDegrees,
   onViewReportDetail,
+  onPlaceBid,
+  onViewBids,
+  initialReports,
+  suggestedOrigins = [],
+  originSearchQuery = "",
+  originSearchResults = [],
+  originSuggestions = [],
+  isSearchingOrigins = false,
+  originSearchError,
+  locationError,
+  isLocating = false,
+  onSelectOrigin,
+  onOriginSearchQueryChange,
+  onSearchOrigin,
+  onSelectOriginSearchResult,
+  onSelectOriginSuggestion,
+  onUseMyLocation,
+  sortBy = "smart-match",
+  onSortChange,
 }: ShopDirectoryImmersiveMapProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [turnListOpen, setTurnListOpen] = useState(false);
-  const [voiceControlsOpen, setVoiceControlsOpen] = useState(false);
-  const isDark = mapTheme === "dark";
+  const [drawerSnap, setDrawerSnap] = useState<DrawerSnap>("half");
+  const [tileDarkOverride, setTileDarkOverride] = useState<boolean | null>(null);
+  const [tileModeOverride, setTileModeOverride] = useState<MapTileMode | null>(null);
+  const isDark = tileDarkOverride ?? isMapDark ?? mapTheme === "dark";
+  const isSatellite = tileModeOverride === "satellite";
+  const isNight = tileModeOverride === "night" || (!tileModeOverride && isDark);
+  const activeTileMode: MapTileMode = tileModeOverride ?? (isDark ? "night" : "roadmap");
+  const effectiveMapTheme: MapTheme = isDark ? "dark" : "light";
   const isGuidanceMode = navigationMode === "guidance";
 
-  useEffect(() => {
-    if (!isGuidanceMode && turnListOpen) {
-      setTurnListOpen(false);
-    }
-    if (!isGuidanceMode && voiceControlsOpen) {
-      setVoiceControlsOpen(false);
-    }
-  }, [isGuidanceMode, turnListOpen, voiceControlsOpen]);
-
-  const getDefaultCenter = (): Coordinates => ({ latitude: 40.7128, longitude: -74.006 });
-
-  // Theme-aware top bar tokens
-  const topGradient = isDark
-    ? "bg-gradient-to-b from-slate-950/60 via-slate-950/20 to-transparent"
-    : "bg-gradient-to-b from-black/20 via-black/6 to-transparent";
-  const iconBtn = isDark
-    ? "border-white/20 bg-slate-950/70 text-white shadow-xl backdrop-blur-md hover:bg-slate-950/85"
-    : "border-black/10 bg-white/82 text-slate-800 shadow-xl backdrop-blur-md hover:bg-white/95";
-  const searchInput = isDark
-    ? "border-white/20 bg-slate-950/70 text-white placeholder:text-white/45 focus:border-blue-400/50 focus:bg-slate-950/80"
-    : "border-black/10 bg-white/82 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/40 focus:bg-white/95";
-  const listBtnActive = isDark
-    ? "border-blue-400/40 bg-blue-600/30 text-white"
-    : "border-blue-400/40 bg-blue-100 text-blue-700";
-  const listBtnInactive = isDark
-    ? "border-white/20 bg-slate-950/70 text-white/80 hover:bg-slate-950/85 hover:text-white"
-    : "border-black/10 bg-white/82 text-slate-600 hover:bg-white/95 hover:text-slate-800";
-  const drawerBg = isDark
-    ? "border-white/10 bg-slate-950/90 backdrop-blur-xl"
-    : "border-black/8 bg-white/92 backdrop-blur-xl";
-  const drawerDivider = isDark ? "border-white/[0.08]" : "border-black/[0.06]";
-  const drawerLabel = isDark ? "text-slate-500" : "text-slate-400";
-  const drawerTitle = isDark ? "text-slate-100" : "text-slate-800";
-  const drawerClose = isDark
-    ? "text-slate-400 hover:bg-white/[0.10] hover:text-slate-200"
-    : "text-slate-500 hover:bg-black/[0.06] hover:text-slate-700";
-
   return (
-    <div className={`fixed inset-0 z-[60] ${isDark ? "bg-slate-950" : "bg-slate-100"}`}>
-      {/* Map — absolute full viewport */}
-      <div className="absolute inset-0">
-        <ShopDirectoryMapPane
-          initialCenter={mapCenter || getDefaultCenter()}
-          initialZoom={mapZoom}
-          mapTheme={mapTheme}
-          onSelectShop={onSelectShop}
-          onViewportChange={(center, zoom, bounds) => {
-            onSetMapCenter(center);
-            onSetMapZoom(zoom);
-            onSetMapViewportBounds(bounds);
+    <div
+      className={`fixed inset-0 z-[60] ${isDark ? "bg-slate-950" : "bg-slate-100"}`}
+      style={
+        isNight
+          ? { background: "linear-gradient(180deg, #0a1a38 0%, #0d2244 40%, #091832 100%)" }
+          : isSatellite
+            ? { background: "#0c1420" }
+            : undefined
+      }
+    >
+      {/* Ambient glow layers (night mode) */}
+      {isNight && (
+        <>
+          <div
+            className="pointer-events-none absolute inset-0 z-[1]"
+            style={{
+              background: [
+                "radial-gradient(ellipse 75% 55% at 15% 10%, rgba(59,130,246,0.14), transparent)",
+                "radial-gradient(ellipse 55% 55% at 85% 90%, rgba(37,99,235,0.08), transparent)",
+                "radial-gradient(ellipse 65% 40% at 50% 95%, rgba(30,58,138,0.06), transparent)",
+              ].join(", "),
+            }}
+          />
+          <div className="pointer-events-none absolute -top-20 right-[10%] z-[1] h-[28rem] w-[28rem] rounded-full bg-blue-500/[0.10] blur-[140px]" />
+          <div className="pointer-events-none absolute -bottom-16 left-[8%] z-[1] h-[32rem] w-[32rem] rounded-full bg-indigo-500/[0.05] blur-[160px]" />
+        </>
+      )}
+      {isSatellite && (
+        <div
+          className="pointer-events-none absolute inset-0 z-[1]"
+          style={{
+            background: [
+              "radial-gradient(ellipse 70% 50% at 20% 15%, rgba(59,130,246,0.06), transparent)",
+              "radial-gradient(ellipse 50% 50% at 80% 85%, rgba(37,99,235,0.04), transparent)",
+            ].join(", "),
           }}
-          routeOptions={routeOptions}
-          savedPlaces={savedPlaces}
+        />
+      )}
+
+      <ImmersiveMapViewport
+        isDark={isDark}
+        isNight={isNight}
+        isSatellite={isSatellite}
+        effectiveMapTheme={effectiveMapTheme}
+        isGuidanceMode={isGuidanceMode}
+        mapCenter={mapCenter}
+        mapZoom={mapZoom}
+        mapTheme={mapTheme}
+        mapListings={mapListings}
+        routeOptions={routeOptions}
+        selectedRoute={selectedRoute}
+        selectedRouteId={selectedRouteId}
+        selectedShopId={selectedShopId}
+        selectedShop={selectedShop}
+        selectedOrigin={selectedOrigin}
+        savedPlaces={savedPlaces}
+        routeSummary={routeSummary}
+        userType={userType}
+        roleHighlights={roleHighlights}
+        directionsActionLabel={directionsActionLabel}
+        navigationSessionStatus={navigationSessionStatus}
+        navigationSessionDestinationId={navigationSessionDestinationId}
+        sessionActiveSeconds={sessionActiveSeconds}
+        hasArrived={hasArrived}
+        remainingEtaLabel={remainingEtaLabel}
+        remainingDistanceLabel={remainingDistanceLabel}
+        usingLiveRoutes={usingLiveRoutes}
+        routeError={routeError}
+        isLoadingRoute={isLoadingRoute}
+        guidanceOverlay={guidanceOverlay}
+        followCurrentPosition={followCurrentPosition}
+        followCurrentPositionRevision={followCurrentPositionRevision}
+        deviationPrompt={deviationPrompt}
+        isOffRoute={isOffRoute}
+        navigationMode={navigationMode}
+        routeSteps={routeSteps}
+        currentStepIndex={currentStepIndex}
+        nextInstruction={nextInstruction}
+        currentSpeedMph={currentSpeedMph}
+        speedLimitMph={speedLimitMph}
+        gpsStatus={gpsStatus}
+        gpsError={gpsError}
+        followingInstruction={followingInstruction}
+        voiceMode={voiceMode}
+        voiceVolumePreset={voiceVolumePreset}
+        preferredVoiceLabel={preferredVoiceLabel}
+        voiceGuidanceSupported={voiceGuidanceSupported}
+        onVoiceModeChange={onVoiceModeChange}
+        onVoiceVolumePresetChange={onVoiceVolumePresetChange}
+        gpsTrackingEnabled={gpsTrackingEnabled}
+        speedLimitMonitorEnabled={speedLimitMonitorEnabled}
+        autoRerouteEnabled={autoRerouteEnabled}
+        onToggleGpsTracking={onToggleGpsTracking}
+        onToggleSpeedLimitMonitor={onToggleSpeedLimitMonitor}
+        onToggleAutoReroute={onToggleAutoReroute}
+        onRetryGps={onRetryGps}
+        onRetryRoute={onRetryRoute}
+        searchWithinViewport={searchWithinViewport}
+        onSearchInArea={onSearchInArea}
+        onClearAreaSearch={onClearAreaSearch}
+        onFindShopsNear={onFindShopsNear}
+        onSelectShop={onSelectShop}
+        onSelectRoute={onSelectRoute}
+        onOpenShopDirections={onOpenShopDirections}
+        onStartNavigation={onStartNavigation}
+        onViewDetails={onViewDetails}
+        onRequestEstimate={onRequestEstimate}
+        onPauseNavigation={onPauseNavigation}
+        onResumeNavigation={onResumeNavigation}
+        onEndNavigation={onEndNavigation}
+        onRecenterNavigation={onRecenterNavigation}
+        onSetMapCenter={onSetMapCenter}
+        onSetMapZoom={onSetMapZoom}
+        onSetMapViewportBounds={onSetMapViewportBounds}
+        userCoords={userCoords}
+        userHeadingDegrees={userHeadingDegrees}
+        onViewReportDetail={onViewReportDetail}
+        onPlaceBid={onPlaceBid}
+        onViewBids={onViewBids}
+        initialReports={initialReports}
+        tileModeOverride={tileModeOverride}
+        onTileDarkChange={setTileDarkOverride}
+        onTileModeChange={setTileModeOverride}
+      />
+
+      {/* Origin picker — shown when shop selected but no origin set */}
+      {selectedShop &&
+        !selectedOrigin &&
+        !isGuidanceMode &&
+        onSelectOrigin &&
+        onOriginSearchQueryChange &&
+        onSearchOrigin &&
+        onSelectOriginSearchResult &&
+        onSelectOriginSuggestion && (
+          <ImmersiveOriginPicker
+            isDark={isDark}
+            shopName={selectedShop.name}
+            suggestedOrigins={suggestedOrigins}
+            selectedOrigin={selectedOrigin}
+            originSearchQuery={originSearchQuery}
+            originSearchResults={originSearchResults}
+            originSuggestions={originSuggestions}
+            isSearchingOrigins={isSearchingOrigins}
+            originSearchError={originSearchError}
+            locationError={locationError}
+            isLocating={isLocating}
+            onSelectOrigin={onSelectOrigin}
+            onOriginSearchQueryChange={onOriginSearchQueryChange}
+            onSearchOrigin={onSearchOrigin}
+            onSelectOriginSearchResult={onSelectOriginSearchResult}
+            onSelectOriginSuggestion={onSelectOriginSuggestion}
+            onUseMyLocation={onUseMyLocation}
+          />
+        )}
+
+      {/* Shop info panel */}
+      {!isGuidanceMode && (
+        <ShopDirectoryMapInfoPanel
+          shop={selectedShopId != null ? selectedShop : null}
+          mapTheme={effectiveMapTheme}
+          selectedRoute={selectedRoute}
           selectedOrigin={selectedOrigin}
-          selectedRouteId={selectedRouteId}
-          selectedShopId={selectedShopId}
-          shops={mapListings}
-          suppressHeader
-          userCoords={userCoords}
-          userHeadingDegrees={userHeadingDegrees}
-          userType={userType}
-          followCurrentPosition={followCurrentPosition}
-          followCurrentPositionRevision={followCurrentPositionRevision}
-          onOpenShopDirections={onOpenShopDirections}
-          onStartNavigation={onStartNavigation}
           navigationSessionStatus={navigationSessionStatus}
           navigationSessionDestinationId={navigationSessionDestinationId}
           directionsActionLabel={directionsActionLabel}
-          searchWithinViewport={searchWithinViewport}
-          preserveViewport={searchWithinViewport}
-          onSearchInArea={onSearchInArea}
-          onClearAreaSearch={onClearAreaSearch}
           hasArrived={hasArrived}
-          isLoadingRoute={isLoadingRoute}
-          remainingDistanceLabel={remainingDistanceLabel}
           remainingEtaLabel={remainingEtaLabel}
-          routeError={routeError}
-          usingLiveRoutes={usingLiveRoutes}
-          onViewReportDetail={onViewReportDetail}
-          navigationSteps={routeSteps}
-          currentStepIndex={currentStepIndex}
-          navigationMode={navigationMode}
-        >
-          <>
-            <ShopDirectoryMapOverlays
-              deviationPrompt={deviationPrompt}
-              directionsLabel={
-                selectedShop
-                  ? getShopRouteActionLabel({
-                      shopId: selectedShop.id,
-                      routeReady: Boolean(selectedOrigin && selectedRoute),
-                      defaultLabel: directionsActionLabel,
-                      navigationSessionStatus,
-                      navigationSessionDestinationId,
-                    })
-                  : directionsActionLabel
-              }
-              intelligenceCallouts={roleHighlights.callouts}
-              intelligenceTitle={roleHighlights.title}
-              mapTheme={mapTheme}
-              navigationMode={navigationMode}
-              onEndNavigation={onEndNavigation}
-              onPauseNavigation={onPauseNavigation}
-              onRecenterNavigation={onRecenterNavigation}
-              onResumeNavigation={onResumeNavigation}
-              onSelectRoute={onSelectRoute}
-              onStartNavigation={
-                selectedShop
-                  ? () =>
-                      onStartNavigation
-                        ? onStartNavigation(selectedShop)
-                        : onOpenShopDirections(selectedShop)
-                  : undefined
-              }
-              routeOptions={routeOptions}
-              routeSummary={routeSummary}
-              hasArrived={hasArrived}
-              remainingDistanceLabel={remainingDistanceLabel}
-              remainingEtaLabel={remainingEtaLabel}
-              routeError={routeError}
-              sessionActiveSeconds={sessionActiveSeconds}
-              sessionDestinationId={navigationSessionDestinationId}
-              sessionDestinationLabel={selectedShop?.name ?? null}
-              sessionStatus={navigationSessionStatus}
-              isLoadingRoute={isLoadingRoute}
-              selectedOrigin={selectedOrigin}
-              selectedRoute={selectedRoute}
-              selectedShop={selectedShop}
-              usingLiveRoutes={usingLiveRoutes}
-              overlayTopClass={isGuidanceMode ? "top-16" : "top-28"}
-              nextInstruction={nextInstruction}
-              followingInstruction={followingInstruction}
-              currentSpeedMph={currentSpeedMph}
-              gpsStatus={gpsStatus}
-              gpsError={gpsError}
-              speedLimitMph={speedLimitMph}
-              onRetryGps={onRetryGps}
-              onRetryRoute={onRetryRoute}
-            />
-            {guidanceOverlay}
-            {isGuidanceMode && (
-              <>
-                <NavigationActionRail
-                  tone={mapTheme}
-                  turnListOpen={turnListOpen}
-                  voiceControlsOpen={voiceControlsOpen}
-                  showVoiceControl
-                  className="bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_20rem)]"
-                  onToggleTurnList={() => setTurnListOpen((c) => !c)}
-                  onToggleVoiceControls={() => setVoiceControlsOpen((c) => !c)}
-                  onRecenter={() => onRecenterNavigation?.()}
-                />
-                <NavigationTurnListSheet
-                  tone={mapTheme}
-                  open={turnListOpen}
-                  steps={routeSteps}
-                  currentStepIndex={currentStepIndex}
-                  onClose={() => setTurnListOpen(false)}
-                />
-                <NavigationVoiceControlsSheet
-                  tone={mapTheme}
-                  open={voiceControlsOpen}
-                  voiceMode={voiceMode}
-                  voiceVolumePreset={voiceVolumePreset}
-                  preferredVoiceLabel={preferredVoiceLabel}
-                  voiceGuidanceSupported={voiceGuidanceSupported}
-                  onVoiceModeChange={(mode) => onVoiceModeChange?.(mode)}
-                  onVoiceVolumePresetChange={(preset) => onVoiceVolumePresetChange?.(preset)}
-                  onClose={() => setVoiceControlsOpen(false)}
-                />
-              </>
-            )}
-          </>
-        </ShopDirectoryMapPane>
-      </div>
-
-      {/* Floating top bar */}
-      <div
-        className={`pointer-events-none absolute inset-x-0 top-0 z-[550] ${topGradient} px-3 pb-8 sm:px-4`}
-        style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0.75rem))" }}
-      >
-        <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2.5">
-          {/* Back */}
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-11 ${iconBtn}`}
-            onClick={onBack}
-            type="button"
-            aria-label="Back to shop directory"
-          >
-            <ArrowLeft className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
-          </button>
-
-          {/* Map-owned search — hidden during guidance (not actionable while navigating) */}
-          {!isGuidanceMode && (
-            <form className="flex-1" onSubmit={onSearchSubmit}>
-              <div className="relative max-w-lg">
-                <Search
-                  className={`pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 ${isDark ? "text-white/60" : "text-slate-400"}`}
-                />
-                <input
-                  className={`w-full rounded-full border py-2.5 pl-9 pr-4 text-sm shadow-xl outline-none backdrop-blur-md transition-colors sm:py-2.5 ${searchInput}`}
-                  onChange={(event) => onSearchQueryChange(event.target.value)}
-                  placeholder="Search shops, programs, specialties..."
-                  type="text"
-                  value={searchQuery}
-                />
-              </div>
-            </form>
-          )}
-
-          {/* Spacer — push controls right during guidance when search is hidden */}
-          {isGuidanceMode && <div className="flex-1" />}
-
-          {/* Results drawer toggle */}
-          <button
-            className={`flex h-10 items-center gap-1.5 rounded-full border px-2.5 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:gap-2 sm:px-3 ${drawerOpen ? listBtnActive : listBtnInactive}`}
-            onClick={() => setDrawerOpen((v) => !v)}
-            type="button"
-            aria-expanded={drawerOpen}
-            aria-label="Toggle results drawer"
-          >
-            <List className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">{mapListings.length}</span>
-          </button>
-
-          {/* Mode switch — hidden during guidance (full-screen map required) */}
-          {!isGuidanceMode && (
-            <button
-              className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-auto sm:gap-2 sm:px-3 sm:text-sm sm:font-medium ${iconBtn}`}
-              onClick={() => onSwitchMode("hybrid")}
-              type="button"
-              aria-label="Switch to split view"
-            >
-              <Layers3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Split</span>
-            </button>
-          )}
-
-          {/* Theme toggle */}
-          <button
-            className={`flex h-10 w-10 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:h-11 sm:w-11 ${iconBtn}`}
-            onClick={onToggleTheme}
-            type="button"
-            aria-label={mapTheme === "light" ? "Switch to dark map" : "Switch to light map"}
-          >
-            <SunMoon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Collapsible results drawer — bottom sheet on mobile, side drawer on sm+ */}
-      {drawerOpen && (
-        <aside
-          className={`pointer-events-auto absolute inset-x-0 bottom-0 z-[530] flex max-h-[78dvh] touch-pan-y overscroll-y-contain flex-col overflow-hidden rounded-t-2xl border-t shadow-2xl sm:inset-x-auto sm:bottom-0 sm:left-0 sm:top-16 sm:max-h-none sm:w-[360px] sm:max-w-[85vw] sm:rounded-t-none sm:rounded-r-2xl sm:border-t-0 sm:border-r ${drawerBg}`}
-          role="region"
-          aria-label="Shop results"
-          onKeyDown={(e) => e.key === "Escape" && setDrawerOpen(false)}
-          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-        >
-          {/* Mobile drag handle indicator */}
-          <div className="flex justify-center py-2 sm:hidden">
-            <div className={`h-1 w-10 rounded-full ${isDark ? "bg-white/20" : "bg-black/15"}`} />
-          </div>
-          <div
-            className={`flex items-center justify-between border-b px-4 py-3 sm:pt-3 ${drawerDivider}`}
-          >
-            <div>
-              <p className={`text-xs font-semibold uppercase tracking-[0.16em] ${drawerLabel}`}>
-                Results
-              </p>
-              <p className={`text-lg font-semibold ${drawerTitle}`}>
-                {mapListings.length} shop{mapListings.length === 1 ? "" : "s"}
-              </p>
-            </div>
-            <button
-              className={`flex h-11 w-11 items-center justify-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${drawerClose}`}
-              onClick={() => setDrawerOpen(false)}
-              type="button"
-              aria-label="Close results drawer"
-            >
-              <PanelLeftClose className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div className="flex-1 min-h-0 space-y-3 overflow-y-auto overscroll-y-contain p-4 pb-6 touch-pan-y [-webkit-overflow-scrolling:touch]">
-            {mapListings.length === 0 && (
-              <div
-                className={`rounded-2xl border border-dashed p-4 ${isDark ? "border-blue-300/20 bg-blue-500/[0.04]" : "border-blue-200 bg-blue-50"}`}
-              >
-                <p
-                  className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}
-                >
-                  No shops matched
-                </p>
-                <p
-                  className={`mt-1 text-xs leading-5 ${isDark ? "text-slate-300/80" : "text-slate-500"}`}
-                >
-                  Try broadening the search, switching to Smart Match, or removing the 4.5+ filter.
-                </p>
-              </div>
-            )}
-
-            {mapListings.map((shop) => {
-              const roleAction = getRoleCollectionActionLabels(
-                userType,
-                roleCollectionIds.includes(shop.id)
-              );
-              const shopOwnsSessionDestination = navigationSessionDestinationId === String(shop.id);
-              const hasArrivedForShop = hasArrived && selectedShopId === shop.id;
-              const routeReadyForShop = Boolean(
-                onStartNavigation && selectedOrigin && selectedRoute && selectedShopId === shop.id
-              );
-              const routeStatusLabel = hasArrivedForShop
-                ? "Arrived"
-                : shopOwnsSessionDestination && navigationSessionStatus === "paused"
-                  ? "Paused route"
-                  : shopOwnsSessionDestination && navigationSessionStatus === "active"
-                    ? "Live guidance"
-                    : null;
-              const routeStatusTone = hasArrivedForShop
-                ? ("arrived" as const)
-                : navigationSessionStatus === "paused"
-                  ? ("paused" as const)
-                  : ("live" as const);
-              const shouldUseNavigationAction = Boolean(
-                onStartNavigation &&
-                  shouldUseShopNavigationAction({
-                    shopId: shop.id,
-                    routeReady: routeReadyForShop,
-                    navigationSessionStatus,
-                    navigationSessionDestinationId,
-                  })
-              );
-
-              return (
-                <ShopDirectoryResultCard
-                  compact
-                  directionsActionLabel={getShopRouteActionLabel({
-                    shopId: shop.id,
-                    routeReady: routeReadyForShop,
-                    hasArrived: hasArrivedForShop,
-                    defaultLabel: directionsActionLabel,
-                    navigationSessionStatus,
-                    navigationSessionDestinationId,
-                  })}
-                  isSelected={selectedShopId === shop.id}
-                  key={shop.id}
-                  onDirectionsAction={() =>
-                    shouldUseNavigationAction && onStartNavigation
-                      ? onStartNavigation(shop)
-                      : onOpenShopDirections(shop)
-                  }
-                  onPrimaryAction={() => onToggleRoleCollection(shop.id)}
-                  onSecondaryAction={() => onSelectShop(shop.id)}
-                  primaryActionLabel={roleAction.primary}
-                  primaryColor={primaryColor}
-                  routeStatusLabel={routeStatusLabel}
-                  routeStatusTone={routeStatusTone}
-                  secondaryActionLabel={roleHighlights.secondaryActionLabel}
-                  shop={shop}
-                />
-              );
-            })}
-          </div>
-        </aside>
+          remainingDistanceLabel={remainingDistanceLabel}
+          onOpenShopDirections={onOpenShopDirections}
+          onStartNavigation={onStartNavigation}
+          onViewDetails={onViewDetails}
+          onRequestEstimate={onRequestEstimate}
+          hideDirectionsCta={Boolean(selectedOrigin && selectedRoute && selectedShop)}
+        />
       )}
+
+      <ImmersiveMapTopBar
+        isDark={isDark}
+        isGuidanceMode={isGuidanceMode}
+        searchQuery={searchQuery}
+        onSearchQueryChange={onSearchQueryChange}
+        onSearchSubmit={onSearchSubmit}
+        drawerOpen={drawerOpen}
+        onToggleDrawer={() => {
+          setDrawerOpen((v) => !v);
+          if (!drawerOpen) setDrawerSnap("half");
+        }}
+        shopCount={mapListings.length}
+        onSwitchToSplit={() => onSwitchMode("hybrid")}
+        activeTileMode={activeTileMode}
+        onCycleTileMode={() => {
+          const next: MapTileMode =
+            activeTileMode === "roadmap"
+              ? "night"
+              : activeTileMode === "night"
+                ? "satellite"
+                : "roadmap";
+          setTileModeOverride(next);
+        }}
+        onBack={onBack}
+      />
+
+      <ImmersiveMapResultsDrawer
+        isDark={isDark}
+        open={drawerOpen}
+        snap={drawerSnap}
+        onClose={() => {
+          setDrawerOpen(false);
+          setDrawerSnap("half");
+        }}
+        onSnapChange={setDrawerSnap}
+        mapListings={mapListings}
+        selectedShopId={selectedShopId}
+        selectedOrigin={selectedOrigin}
+        selectedRoute={selectedRoute}
+        navigationSessionStatus={navigationSessionStatus}
+        navigationSessionDestinationId={navigationSessionDestinationId}
+        directionsActionLabel={directionsActionLabel}
+        hasArrived={hasArrived}
+        userType={userType}
+        roleHighlights={roleHighlights}
+        roleCollectionIds={roleCollectionIds}
+        primaryColor={primaryColor}
+        sortBy={sortBy}
+        onSortChange={onSortChange}
+        onSelectShop={onSelectShop}
+        onToggleRoleCollection={onToggleRoleCollection}
+        onOpenShopDirections={onOpenShopDirections}
+        onStartNavigation={onStartNavigation}
+        onViewDetails={onViewDetails}
+        onRequestEstimate={onRequestEstimate}
+      />
     </div>
   );
 }

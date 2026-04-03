@@ -64,7 +64,6 @@ export interface DashboardRouterProps {
     price: number;
     timeframe: string;
     reportId?: string;
-    skipNavigation?: boolean;
   }) => void;
   onRejectBid?: (details: { bidId: string; shopName: string }) => void;
   onUpdateJobStatus?: (jobId: number, status: string) => void;

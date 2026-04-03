@@ -102,6 +102,10 @@ export function useAppHandlers({
     estimatedDays?: number,
     description?: string
   ) => {
+    if (!userId) {
+      throw new Error("Please sign in to submit a bid.");
+    }
+
     if (import.meta.env.DEV) console.log(`Submitting bid of $${bidAmount} for report ${reportId}`);
 
     const report = userData.reports.find((entry) => entry.id === reportId);

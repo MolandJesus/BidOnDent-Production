@@ -22,11 +22,15 @@ import {
 import InsurerNewClaimForm, { type ClaimFormData } from "./InsurerNewClaimForm";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
+import type { Report } from "../../../types";
+
 type InsurerNewClaimScreenProps = {
   primaryColor?: string;
-  reports?: any[];
+  reports?: Report[];
   onBack?: () => void;
-  onCreateClaim?: (claimData: any) => void;
+  onCreateClaim?: (
+    claimData: { customer: Policyholder; shop: ClaimShop | null } & ClaimFormData
+  ) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
 

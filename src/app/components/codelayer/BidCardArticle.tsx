@@ -161,7 +161,7 @@ export default function BidCardArticle({
             <div
               className={`font-bold text-3xl leading-none tabular-nums ${isLight ? "text-slate-800" : "text-slate-100"}`}
             >
-              ${bid.price}
+              ${bid.price.toLocaleString()}
             </div>
             <div className={`text-sm mt-1 ${isLight ? "text-slate-500" : "text-slate-300/80"}`}>
               {bid.timeframe}
@@ -170,7 +170,7 @@ export default function BidCardArticle({
               <div className="text-xs text-emerald-400 mt-1 font-medium">Lowest bid</div>
             ) : (
               <div className={`text-xs mt-1 ${isLight ? "text-slate-400" : "text-slate-400/80"}`}>
-                +${savings} vs lowest
+                +${savings.toLocaleString()} vs lowest
               </div>
             )}
           </div>

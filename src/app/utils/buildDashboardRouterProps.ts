@@ -164,7 +164,6 @@ export function buildDashboardRouterProps({
       price: number;
       timeframe: string;
       reportId?: string;
-      skipNavigation?: boolean;
     }) => {
       try {
         const clerkId = userProfile?.id;
@@ -245,10 +244,12 @@ export function buildDashboardRouterProps({
           websiteIdentity,
           {
             shopDirectory: {
+              lastViewedShopId: undefined,
               searchQuery: details.shopName,
             },
             mapSession: {
-              mapViewMode: "map",
+              lastViewedShopId: undefined,
+              mapViewMode: "hybrid",
               ...(acceptedOriginCoords
                 ? {
                     lastSearchOrigin: {
@@ -272,9 +273,7 @@ export function buildDashboardRouterProps({
           { accountType: "customer" }
         );
 
-        if (!details.skipNavigation) {
-          navigation.setViewMode("shop-directory");
-        }
+        navigation.setViewMode("shop-directory");
       } catch (err) {
         if (import.meta.env.DEV) console.error("Failed to accept bid:", err);
       }

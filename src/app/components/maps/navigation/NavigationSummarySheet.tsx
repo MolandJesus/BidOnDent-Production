@@ -44,6 +44,9 @@ export default function NavigationSummarySheet({
   const arrivalLabel = formatArrivalTimeFromNow(remainingDurationSeconds);
   const durationLabel = formatDurationMinutes(remainingDurationSeconds);
   const distanceLabel = formatTurnDistance(remainingDistanceMeters);
+  const durationValue = durationLabel ? durationLabel.replace(" min", "") : "--";
+  const distanceValue = distanceLabel ? distanceLabel.replace(/\s?(mi|ft)$/u, "") : "--";
+  const distanceUnit = distanceLabel ? (distanceLabel.includes("ft") ? "ft" : "mi") : "";
   const exportProviderLabel = getNavigationProviderLabel(preferredNavigationProvider);
 
   return (
@@ -57,61 +60,54 @@ export default function NavigationSummarySheet({
         <div className="map-liquid-sheen pointer-events-none absolute inset-0 opacity-70" />
 
         {/* ── Compact metric bar ─────────────────────────────────── */}
-        <div className="flex items-baseline justify-between gap-3 border-b border-white/10 pb-2 sm:pb-2.5">
-          <div className="flex items-baseline gap-4 sm:gap-6">
-            <div className="text-center">
-              <span
-                className={cn(
-                  "text-xl font-semibold tracking-[-0.02em] sm:text-2xl",
-                  theme.titleClassName
-                )}
-              >
-                {arrivalLabel || "--"}
-              </span>
-              <span
-                className={cn(
-                  "ml-1 text-[10px] font-medium sm:text-xs",
-                  theme.secondaryTextClassName
-                )}
-              >
-                arrival
-              </span>
+        <div className="grid grid-cols-3 gap-1.5 border-b border-white/10 pb-2.5 sm:gap-2 sm:pb-3">
+          <div className={cn("rounded-xl px-2.5 py-2", theme.panelClassName)}>
+            <div
+              className={cn("text-[10px] font-semibold uppercase tracking-wider", theme.secondaryTextClassName)}
+            >
+              Arrival
             </div>
-            <div className="text-center">
-              <span
-                className={cn(
-                  "text-xl font-semibold tracking-[-0.02em] sm:text-2xl",
-                  theme.titleClassName
-                )}
-              >
-                {durationLabel ? durationLabel.replace(" min", "") : "--"}
-              </span>
-              <span
-                className={cn(
-                  "ml-1 text-[10px] font-medium sm:text-xs",
-                  theme.secondaryTextClassName
-                )}
-              >
-                min
-              </span>
+            <div
+              className={cn(
+                "mt-1 text-xl font-bold tabular-nums tracking-[-0.03em] sm:text-2xl",
+                theme.titleClassName
+              )}
+            >
+              {arrivalLabel || "--"}
             </div>
-            <div className="text-center">
-              <span
-                className={cn(
-                  "text-xl font-semibold tracking-[-0.02em] sm:text-2xl",
-                  theme.titleClassName
-                )}
-              >
-                {distanceLabel ? distanceLabel.replace(" mi", "") : "--"}
-              </span>
-              <span
-                className={cn(
-                  "ml-1 text-[10px] font-medium sm:text-xs",
-                  theme.secondaryTextClassName
-                )}
-              >
-                {distanceLabel?.includes("ft") ? "ft" : "mi"}
-              </span>
+          </div>
+          <div className={cn("rounded-xl px-2.5 py-2", theme.panelClassName)}>
+            <div
+              className={cn("text-[10px] font-semibold uppercase tracking-wider", theme.secondaryTextClassName)}
+            >
+              Time
+            </div>
+            <div
+              className={cn(
+                "mt-1 text-xl font-bold tabular-nums tracking-[-0.03em] sm:text-2xl",
+                theme.titleClassName
+              )}
+            >
+              {durationValue}
+              <span className="ml-0.5 text-xs font-medium opacity-70">min</span>
+            </div>
+          </div>
+          <div className={cn("rounded-xl px-2.5 py-2", theme.panelClassName)}>
+            <div
+              className={cn("text-[10px] font-semibold uppercase tracking-wider", theme.secondaryTextClassName)}
+            >
+              Distance
+            </div>
+            <div
+              className={cn(
+                "mt-1 text-xl font-bold tabular-nums tracking-[-0.03em] sm:text-2xl",
+                theme.titleClassName
+              )}
+            >
+              {distanceValue}
+              {distanceUnit ? (
+                <span className="ml-0.5 text-xs font-medium opacity-70">{distanceUnit}</span>
+              ) : null}
             </div>
           </div>
         </div>
@@ -142,11 +138,11 @@ export default function NavigationSummarySheet({
         </div>
 
         {/* ── Action row: Share · Export · End ────────────────────── */}
-        <div className="mt-2 flex items-center gap-2 sm:mt-2.5">
+        <div className="mt-2.5 flex items-center gap-2 sm:mt-3">
           <button
             type="button"
             onClick={onShareEta}
-            className={cn(theme.secondaryButtonClassName, "flex-1 py-2 text-xs sm:text-sm")}
+            className={cn(theme.secondaryButtonClassName, "flex-1 min-h-[42px] py-2 text-xs sm:text-sm")}
           >
             <Share2 className="h-3.5 w-3.5" />
             Share ETA
@@ -160,7 +156,7 @@ export default function NavigationSummarySheet({
                 setShowExportOptions(true);
               }
             }}
-            className={cn(theme.secondaryButtonClassName, "flex-1 py-2 text-xs sm:text-sm")}
+            className={cn(theme.secondaryButtonClassName, "flex-1 min-h-[42px] py-2 text-xs sm:text-sm")}
           >
             <ExternalLink className="h-3.5 w-3.5" />
             {showExportOptions ? `Export to ${exportProviderLabel}` : "Export"}
@@ -168,7 +164,7 @@ export default function NavigationSummarySheet({
           <button
             type="button"
             onClick={onEndRoute}
-            className={cn(theme.destructiveButtonClassName, "flex-1 py-2 text-xs sm:text-sm")}
+            className={cn(theme.destructiveButtonClassName, "flex-1 min-h-[42px] py-2 text-xs font-semibold sm:text-sm")}
           >
             End Route
           </button>

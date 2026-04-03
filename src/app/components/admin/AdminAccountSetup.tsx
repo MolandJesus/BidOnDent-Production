@@ -132,7 +132,8 @@ export default function AdminAccountSetup() {
         setShow(false);
         window.location.reload();
       }, 2000);
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err instanceof Error ? err : new Error(String(err));
       if (import.meta.env.DEV) console.error("❌ Error creating admin account:", error);
       if (import.meta.env.DEV)
         console.error("❌ Error details:", {

@@ -72,8 +72,14 @@ export interface NavigationReroute {
  * Orchestrate reroute lifecycle in response to deviation events.
  *
  * @param latestEvent - The most recent deviation event from useNavigationIntelligence.
+ * @param options - Optional configuration.
+ * @param options.autoRerouteEnabled - When true, automatically request reroute on eligible off-route events.
+ * @param options.currentRouteId - Required for auto-reroute; the active route ID to reroute from.
  */
-export function useNavigationReroute(latestEvent: DeviationEvent | null): NavigationReroute {
+export function useNavigationReroute(
+  latestEvent: DeviationEvent | null,
+  options?: { autoRerouteEnabled?: boolean; currentRouteId?: string }
+): NavigationReroute {
   const [state, setState] = useState<RerouteState>(INITIAL_STATE);
   const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -86,6 +92,44 @@ export function useNavigationReroute(latestEvent: DeviationEvent | null): Naviga
       setState((prev) => ({ ...prev, status: "eligible" }));
     }
   }, [decision.eligible, state.status]);
+
+  // Auto-reroute: when enabled, eligible, and high-severity off-route, auto-request
+  const autoRerouteEnabled = options?.autoRerouteEnabled ?? false;
+  const currentRouteId = options?.currentRouteId;
+  const autoTriggeredEventRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (
+      !autoRerouteEnabled ||
+      !currentRouteId ||
+      !latestEvent ||
+      state.status !== "eligible" ||
+      !decision.eligible
+    ) {
+      return;
+    }
+
+    // Only auto-reroute on high-severity off-route (medium requires user action)
+    if (latestEvent.type !== "off_route" || latestEvent.severity !== "high") return;
+
+    // Prevent re-triggering for the same event
+    if (autoTriggeredEventRef.current === latestEvent.id) return;
+    autoTriggeredEventRef.current = latestEvent.id;
+
+    const request: RerouteRequest = {
+      id: new Date().toISOString(),
+      origin: "auto",
+      triggerEvent: latestEvent,
+      previousRouteId: currentRouteId,
+      requestedAt: new Date().toISOString(),
+    };
+
+    setState((prev) => ({
+      ...prev,
+      status: "pending",
+      activeRequest: request,
+    }));
+  }, [autoRerouteEnabled, currentRouteId, latestEvent, state.status, decision.eligible]);
 
   // When cooldown expires, return to idle
   useEffect(() => {

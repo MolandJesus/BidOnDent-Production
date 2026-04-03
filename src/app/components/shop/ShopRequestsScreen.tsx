@@ -115,21 +115,20 @@ export default function ShopRequestsScreen({
   const requestPins = useMemo<ReportPin[]>(() => {
     return reports
       .map((report) => {
+        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+        const label =
+          [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean).join(" ") ||
+          report?.damageArea ||
+          "Repair request";
+        const lat = report?.latitude;
+        const lng = report?.longitude;
+        if (lat != null && lng != null) {
+          return { id: String(report.id), lat, lng, label };
+        }
         const zipCode = report?.zipCode || report?.zip_code || "";
         const coords = zipCode ? zipToCoordinates(zipCode) : null;
         if (!coords) return null;
-
-        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
-        const label = [vehicleData.year, vehicleData.make, vehicleData.model]
-          .filter(Boolean)
-          .join(" ");
-
-        return {
-          id: String(report.id),
-          lat: coords.lat,
-          lng: coords.lng,
-          label: label || report?.damageArea || "Repair request",
-        };
+        return { id: String(report.id), lat: coords.lat, lng: coords.lng, label };
       })
       .filter((pin): pin is ReportPin => pin !== null);
   }, [reports]);

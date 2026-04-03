@@ -1,5 +1,4 @@
 import type { Coordinates, Place } from "../../types/mapDomain";
-import { ATLANTA_SUGGESTED_ORIGINS, ATLANTA_TEST_SHOP_LOCATIONS } from "./atlantaTestHubSeed";
 
 export type ShopLocationRecord = {
   coordinates: Coordinates;
@@ -74,7 +73,6 @@ const SHOP_LOCATION_DIRECTORY: Record<number, ShopLocationRecord> = {
     state: "NY",
     zipCode: "10591",
   },
-  ...ATLANTA_TEST_SHOP_LOCATIONS,
 };
 
 const SUGGESTED_SEARCH_ORIGINS: Place[] = [
@@ -158,77 +156,6 @@ const SUGGESTED_SEARCH_ORIGINS: Place[] = [
     longitude: -73.859,
     placeId: "tarrytown-ny",
   },
-  {
-    name: "Los Angeles",
-    address: "200 N Spring St",
-    city: "Los Angeles",
-    state: "CA",
-    zipCode: "90012",
-    latitude: 34.0537,
-    longitude: -118.2428,
-    placeId: "los-angeles-ca",
-  },
-  {
-    name: "Chicago",
-    address: "121 N LaSalle St",
-    city: "Chicago",
-    state: "IL",
-    zipCode: "60602",
-    latitude: 41.8837,
-    longitude: -87.6324,
-    placeId: "chicago-il",
-  },
-  {
-    name: "Dallas",
-    address: "1500 Marilla St",
-    city: "Dallas",
-    state: "TX",
-    zipCode: "75201",
-    latitude: 32.7767,
-    longitude: -96.797,
-    placeId: "dallas-tx",
-  },
-  {
-    name: "Miami",
-    address: "3500 Pan American Dr",
-    city: "Miami",
-    state: "FL",
-    zipCode: "33133",
-    latitude: 25.7617,
-    longitude: -80.1918,
-    placeId: "miami-fl",
-  },
-  {
-    name: "Denver",
-    address: "1437 Bannock St",
-    city: "Denver",
-    state: "CO",
-    zipCode: "80202",
-    latitude: 39.7392,
-    longitude: -104.9903,
-    placeId: "denver-co",
-  },
-  {
-    name: "Seattle",
-    address: "600 4th Ave",
-    city: "Seattle",
-    state: "WA",
-    zipCode: "98104",
-    latitude: 47.6062,
-    longitude: -122.3321,
-    placeId: "seattle-wa",
-  },
-  {
-    name: "Phoenix",
-    address: "200 W Washington St",
-    city: "Phoenix",
-    state: "AZ",
-    zipCode: "85003",
-    latitude: 33.4484,
-    longitude: -112.074,
-    placeId: "phoenix-az",
-  },
-  ...ATLANTA_SUGGESTED_ORIGINS,
 ];
 
 export function getLocationForShop(shopId: number): ShopLocationRecord {

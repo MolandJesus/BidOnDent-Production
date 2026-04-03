@@ -1,5 +1,6 @@
-import { Car, Mail, MapPin } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
+import BrandLogo from "../app/BrandLogo";
 
 interface FooterSectionProps {
   primaryColor: string;
@@ -50,33 +51,13 @@ export default function FooterSection({
           className={`grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <div className="col-span-2 md:col-span-1">
-            <div
-              className={`flex items-center gap-2.5 px-3 py-2 rounded-full backdrop-blur-sm mb-4 inline-flex ${isLightAppearance ? "bg-white/50 border border-slate-200/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "bg-white/[0.07] border border-white/[0.1]"}`}
-            >
-              <span
-                className="w-9 h-9 rounded-[1rem] flex items-center justify-center text-white"
-                style={{
-                  background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                }}
-              >
-                <Car className="w-4 h-4" />
-              </span>
-              <h3 className="text-lg font-bold">
-                <span
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  Bid
-                </span>
-                <span style={{ color: "#70c0ee" }}>On</span>
-                <span className={isLightAppearance ? "text-slate-800" : "text-blue-100/80"}>
-                  Dent
-                </span>
-              </h3>
+            <div className="mb-5 inline-flex">
+              <BrandLogo
+                primaryColor={primaryColor}
+                secondaryColor={secondaryColor}
+                tone={isLightAppearance ? "light" : "dark"}
+                size="footer"
+              />
             </div>
             <p
               className={`text-sm leading-relaxed mb-4 ${isLightAppearance ? "text-slate-500" : "text-blue-100/55"}`}

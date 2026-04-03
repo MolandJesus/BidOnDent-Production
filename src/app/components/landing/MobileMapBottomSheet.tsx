@@ -49,14 +49,20 @@ function normalizeSnapValue(value: number | string | null) {
 
 export default function MobileMapBottomSheet({ tone, children }: MobileMapBottomSheetProps) {
   const theme = getMapSurfaceTheme(tone, true);
-  // Start at HALF so map sections are immediately reachable and scrollable on mobile.
-  const [snap, setSnap] = useState<number | string | null>(HALF);
+  // Start collapsed so the fullscreen map stays the primary surface on phones.
+  const [snap, setSnap] = useState<number | string | null>(COLLAPSED);
   const snapValue = normalizeSnapValue(snap);
   const isCollapsed = snapValue <= COLLAPSED + 1;
   const isScrollable = snapValue >= PEEK - 0.01;
   const showBackToMap = snapValue >= HALF - 0.01;
 
-  const collapseToMap = useCallback(() => setSnap(COLLAPSED), []);
+  const collapseToMap = useCallback(() => {
+    if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    setSnap(COLLAPSED);
+  }, []);
 
   return (
     <DrawerPrimitive.Root
@@ -66,11 +72,14 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
       activeSnapPoint={snap}
       setActiveSnapPoint={setSnap}
       dismissible={false}
+      fixed
+      handleOnly
+      snapToSequentialPoint
     >
       <DrawerPrimitive.Portal>
         <DrawerPrimitive.Content
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[610] flex h-full max-h-[92vh] touch-pan-y flex-col",
+            "fixed inset-x-0 bottom-0 z-[610] flex h-[100dvh] max-h-[100dvh] flex-col",
             "rounded-t-[1.35rem] border-t backdrop-blur-2xl",
             "map-liquid-card map-ui-enter pointer-events-auto",
             theme.panelStrongClassName
@@ -80,9 +89,9 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
           }}
         >
           {/* Drag handle — enlarged hit area for reliable gesture capture */}
-          <div className="flex shrink-0 cursor-grab items-center justify-center py-3 active:cursor-grabbing">
+          <DrawerPrimitive.Handle className="flex shrink-0 cursor-grab items-center justify-center py-3 active:cursor-grabbing">
             <div className="h-1 w-10 rounded-full bg-sky-400/45" />
-          </div>
+          </DrawerPrimitive.Handle>
 
           {/* Header strip — "Back to Map" affordance when sheet covers the map */}
           {showBackToMap && (
@@ -107,11 +116,13 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
           <div
             data-vaul-no-drag
             className={cn(
-              "flex-1 min-h-0 touch-pan-y overscroll-y-contain px-3 pb-4 [-webkit-overflow-scrolling:touch]",
+              "flex-1 min-h-0 touch-auto overscroll-y-contain px-3 pb-4 [-webkit-overflow-scrolling:touch]",
               isScrollable ? "overflow-y-auto" : "overflow-hidden"
             )}
           >
-            <div className="space-y-3">{children}</div>
+            <div className="space-y-3 pb-[calc(env(safe-area-inset-bottom,0px)+0.5rem)]">
+              {children}
+            </div>
           </div>
         </DrawerPrimitive.Content>
       </DrawerPrimitive.Portal>

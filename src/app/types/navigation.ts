@@ -96,6 +96,7 @@ export type NavigationGuidanceSettings = {
   voiceVolumePreset: NavigationVoiceVolumePreset;
   gpsTrackingEnabled: boolean;
   speedLimitMonitorEnabled: boolean;
+  autoRerouteEnabled: boolean;
   addressSearchProvider: NavigationSearchProvider;
   routeProvider: NavigationRouteProvider;
   speedLimitProvider: NavigationSpeedLimitProvider;

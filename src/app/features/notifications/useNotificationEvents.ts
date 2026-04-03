@@ -6,7 +6,7 @@
  * can integrate with push notification services and Supabase persistence.
  */
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type {
   NotificationEvent,
   NotificationToast,
@@ -34,6 +34,10 @@ export interface NotificationActions {
   showToast: (toast: NotificationToast) => void;
   /** Clear all notifications. */
   clear: () => void;
+  /** Register a deep link navigation handler (called by AppContent). */
+  setDeepLinkHandler: (handler: ((deepLink: NotificationDeepLink) => void) | null) => void;
+  /** Navigate via deep link (used by toast click). */
+  navigateDeepLink: (deepLink: NotificationDeepLink) => void;
 }
 
 let notificationIdCounter = 0;
@@ -54,6 +58,7 @@ const TOAST_CATEGORIES: Set<NotificationCategory> = new Set([
 export function useNotificationEvents(): NotificationActions {
   const [events, setEvents] = useState<NotificationEvent[]>([]);
   const [activeToast, setActiveToast] = useState<NotificationToast | null>(null);
+  const deepLinkHandlerRef = useRef<((deepLink: NotificationDeepLink) => void) | null>(null);
 
   const push = useCallback((partial: Omit<NotificationEvent, "id" | "createdAt" | "read">) => {
     const event: NotificationEvent = {
@@ -88,6 +93,19 @@ export function useNotificationEvents(): NotificationActions {
   const showToast = useCallback((toast: NotificationToast) => setActiveToast(toast), []);
   const clear = useCallback(() => setEvents([]), []);
 
+  const setDeepLinkHandler = useCallback(
+    (handler: ((deepLink: NotificationDeepLink) => void) | null) => {
+      deepLinkHandlerRef.current = handler;
+    },
+    []
+  );
+
+  const navigateDeepLink = useCallback((deepLink: NotificationDeepLink) => {
+    if (deepLink && deepLinkHandlerRef.current) {
+      deepLinkHandlerRef.current(deepLink);
+    }
+  }, []);
+
   const unreadCount = events.filter((e) => !e.read).length;
 
   return {
@@ -100,6 +118,8 @@ export function useNotificationEvents(): NotificationActions {
     dismissToast,
     showToast,
     clear,
+    setDeepLinkHandler,
+    navigateDeepLink,
   };
 }
 

@@ -28,6 +28,7 @@ export type NotificationDeepLink =
   | { screen: "report"; reportId: string }
   | { screen: "bid"; bidId: string; reportId?: string }
   | { screen: "shop"; shopId: string }
+  | { screen: "shop-directory" }
   | { screen: "dashboard" }
   | null;
 

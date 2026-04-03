@@ -14,7 +14,7 @@ import {
 import { fetchNearestSpeedLimit } from "../services/navigation/speedLimit";
 import { createTimeoutAbortController } from "../services/navigation/requestTimeout";
 
-export type GpsStatus = "active" | "lost" | "stale" | "denied";
+export type GpsStatus = "acquiring" | "active" | "lost" | "stale" | "denied";
 export type SpeedLimitStatus = "off" | "waiting" | "loading" | "available" | "unavailable";
 
 const GPS_STALE_THRESHOLD_MS = 10_000;
@@ -57,7 +57,7 @@ export function useNavigationGpsTracking({
   const [currentSpeedMph, setCurrentSpeedMph] = useState<number | null>(null);
   const [gpsAccuracyMeters, setGpsAccuracyMeters] = useState<number | null>(null);
   const [gpsError, setGpsError] = useState("");
-  const [gpsStatus, setGpsStatus] = useState<GpsStatus>("active");
+  const [gpsStatus, setGpsStatus] = useState<GpsStatus>("acquiring");
   const [retryCounter, setRetryCounter] = useState(0);
   const [speedLimitSnapshot, setSpeedLimitSnapshot] = useState<NavigationSpeedLimitSnapshot | null>(
     null
@@ -69,6 +69,7 @@ export function useNavigationGpsTracking({
   const previousAcceptedSpeedRef = useRef<number | null>(null);
   const lastGpsUpdateRef = useRef<number>(Date.now());
   const staleAutoRetryFiredRef = useRef(false);
+  const compassHeadingRef = useRef<number | null>(null);
   const lastSpeedLimitLookupRef = useRef<{
     coordinate: NavigationCoordinate;
     fetchedAt: number;
@@ -78,10 +79,45 @@ export function useNavigationGpsTracking({
     setRetryCounter((c) => c + 1);
   }, []);
 
+  // ── Device orientation fallback for heading (compass on mobile) ──
+  useEffect(() => {
+    if (!gpsTrackingEnabled) {
+      compassHeadingRef.current = null;
+      return;
+    }
+
+    function handleOrientation(e: DeviceOrientationEvent) {
+      // webkitCompassHeading is Safari-specific (iOS), alpha is standard
+      const heading =
+        typeof (e as DeviceOrientationEvent & { webkitCompassHeading?: number })
+          .webkitCompassHeading === "number"
+          ? (e as DeviceOrientationEvent & { webkitCompassHeading: number }).webkitCompassHeading
+          : typeof e.alpha === "number" && e.absolute
+            ? (360 - e.alpha) % 360
+            : null;
+
+      if (heading !== null && Number.isFinite(heading)) {
+        compassHeadingRef.current = heading;
+        // Use compass heading when not moving fast enough for position-based bearing
+        const speed = previousAcceptedSpeedRef.current;
+        if (speed === null || speed <= 2) {
+          setCurrentHeadingDegrees(heading);
+        }
+      }
+    }
+
+    window.addEventListener("deviceorientationabsolute", handleOrientation as EventListener);
+    window.addEventListener("deviceorientation", handleOrientation);
+    return () => {
+      window.removeEventListener("deviceorientationabsolute", handleOrientation as EventListener);
+      window.removeEventListener("deviceorientation", handleOrientation);
+    };
+  }, [gpsTrackingEnabled]);
+
   useEffect(() => {
     if (!gpsTrackingEnabled) {
       setGpsError("");
-      setGpsStatus("active");
+      setGpsStatus("acquiring");
       setCurrentPosition(null);
       setCurrentHeadingDegrees(null);
       setCurrentSpeedMph(null);
@@ -134,14 +170,23 @@ export function useNavigationGpsTracking({
           gpsAccuracyMeters: nextAccuracyMeters,
         });
 
-        // Calculate heading from position delta (only if moving meaningfully)
+        // Calculate heading: prefer device-reported heading, fallback to position delta
+        const deviceHeading =
+          typeof position.coords.heading === "number" && Number.isFinite(position.coords.heading)
+            ? position.coords.heading
+            : null;
         const prev = previousPositionRef.current;
-        if (prev && nextSpeed !== null && nextSpeed > 2) {
+
+        if (deviceHeading !== null && nextSpeed !== null && nextSpeed > 2) {
+          // Device GPS reports heading directly (most accurate when moving)
+          setCurrentHeadingDegrees(deviceHeading);
+        } else if (prev && nextSpeed !== null && nextSpeed > 2) {
           const dist = haversineMiles(prev, nextPosition);
           if (dist > 0.003) {
             setCurrentHeadingDegrees(calculateBearing(prev, nextPosition));
           }
         }
+        // When speed <= 2 mph, device orientation effect handles heading via compass
 
         previousPositionRef.current = nextPosition;
         previousPositionTimestampRef.current = nextTimestamp;

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { LANDING_PAGE_IMAGES } from "../../constants";
-import type { Notification } from "../../types";
+import type { Notification, Report } from "../../types";
 import { getNotificationDestination, getNotificationVisual } from "./notification-utils";
 import ProfileRoleStats from "./ProfileRoleStats";
 
@@ -33,9 +33,9 @@ interface ProfileDropdownProps {
   onLogout: () => void;
   forwardedRef: RefObject<HTMLDivElement | null>;
   // Account-specific data props
-  reports?: any[];
-  vehicles?: any[];
-  bids?: any[];
+  reports?: Report[];
+  vehicles?: { id?: string; make: string; model: string; year: string | number }[];
+  bids?: { id?: string; shopRating?: number }[];
   variant?: "popover" | "embedded";
   isLightAppearance?: boolean;
 }
@@ -73,7 +73,7 @@ export default function ProfileDropdown({
   const insurerPartnerShops = new Set(
     reportList.flatMap((report) =>
       Array.isArray(report?.bids)
-        ? report.bids.map((bid: any) => bid?.shopName).filter(Boolean)
+        ? report.bids.map((bid: { shopName?: string }) => bid?.shopName).filter(Boolean)
         : []
     )
   ).size;

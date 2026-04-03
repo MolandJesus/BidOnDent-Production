@@ -103,20 +103,24 @@ export default function InsurerPartnerShopCard({
             </div>
           </div>
 
-          <div
-            className={`rounded-2xl border px-3 py-2 text-center ${
-              isLight ? "border-blue-400/40 bg-blue-50" : "border-blue-400/30 bg-blue-500/20"
-            }`}
-          >
-            <p
-              className={`text-[11px] uppercase tracking-[0.16em] ${isLight ? "text-blue-500" : "text-blue-200/60"}`}
+          {entry.insuranceCompatibilityScore > 0 && (
+            <div
+              className={`rounded-2xl border px-3 py-2 text-center ${
+                isLight ? "border-blue-400/40 bg-blue-50" : "border-blue-400/30 bg-blue-500/20"
+              }`}
             >
-              Carrier Fit
-            </p>
-            <p className={`text-lg font-semibold ${isLight ? "text-blue-700" : "text-slate-100"}`}>
-              {entry.insuranceCompatibilityScore}%
-            </p>
-          </div>
+              <p
+                className={`text-[11px] uppercase tracking-[0.16em] ${isLight ? "text-blue-500" : "text-blue-200/60"}`}
+              >
+                Carrier Fit
+              </p>
+              <p
+                className={`text-lg font-semibold ${isLight ? "text-blue-700" : "text-slate-100"}`}
+              >
+                {entry.insuranceCompatibilityScore}%
+              </p>
+            </div>
+          )}
         </div>
 
         <div className={`space-y-1 text-sm ${isLight ? "text-slate-600" : "text-slate-300/70"}`}>

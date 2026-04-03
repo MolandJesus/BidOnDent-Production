@@ -92,6 +92,7 @@ export function getPreferredVoiceLabel(voicePersona: NavigationVoicePersona) {
 }
 
 export function cancelVoiceGuidance() {
+  clearResumeWatchdog();
   const speechSynthesis = getSpeechSynthesisController();
   speechSynthesis?.cancel();
 }
@@ -109,6 +110,27 @@ export type SpeakResult = "spoken" | "muted" | "no-api" | "no-text";
 /** Arguments for a single speak dispatch. */
 export type SpeakInstructionArgs = NavigationVoiceSettings & { text: string };
 
+/**
+ * Max characters to speak in a single utterance. Chrome/Edge can stall
+ * on utterances longer than ~15 seconds. 200 chars ≈ 12-14s at normal
+ * rate, keeping us safely under the threshold.
+ */
+const MAX_UTTERANCE_CHARS = 200;
+
+/**
+ * Chrome/Edge bug: long utterances can pause and never resume.
+ * A periodic resume() poke keeps the engine alive.
+ * Cleared when utterance ends or errors.
+ */
+let resumeWatchdog: ReturnType<typeof setInterval> | null = null;
+
+function clearResumeWatchdog() {
+  if (resumeWatchdog) {
+    clearInterval(resumeWatchdog);
+    resumeWatchdog = null;
+  }
+}
+
 export function speakNavigationInstruction(args: SpeakInstructionArgs): SpeakResult {
   if (args.voiceMode === "muted") {
     return "muted";
@@ -124,7 +146,13 @@ export function speakNavigationInstruction(args: SpeakInstructionArgs): SpeakRes
     return "no-api";
   }
 
-  const utterance = new SpeechSynthesisUtterance(args.text);
+  // Defensive trim: prevent Chrome/Edge >15s stall on unexpected long text
+  const safeText =
+    args.text.length > MAX_UTTERANCE_CHARS
+      ? args.text.slice(0, MAX_UTTERANCE_CHARS).trimEnd() + "…"
+      : args.text;
+
+  const utterance = new SpeechSynthesisUtterance(safeText);
   const voice = getPreferredVoice(args.voicePersona);
 
   if (voice) {
@@ -143,12 +171,28 @@ export function speakNavigationInstruction(args: SpeakInstructionArgs): SpeakRes
   // Safari gesture-blocked calls fail silently without firing onerror,
   // so this only catches real engine errors (audio device issues, etc.).
   utterance.onerror = (event) => {
+    clearResumeWatchdog();
     // "interrupted" and "canceled" are normal — we cancel() before each speak()
     if (event.error === "interrupted" || event.error === "canceled") return;
     lastSpeechError = `Speech error: ${event.error}`;
   };
 
+  utterance.onend = () => {
+    clearResumeWatchdog();
+  };
+
   speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
+
+  // Chrome/Edge resume watchdog: poke the engine every 5s to prevent stall
+  clearResumeWatchdog();
+  resumeWatchdog = setInterval(() => {
+    if (speechSynthesis.speaking && speechSynthesis.paused) {
+      speechSynthesis.resume();
+    } else if (!speechSynthesis.speaking) {
+      clearResumeWatchdog();
+    }
+  }, 5_000);
+
   return "spoken";
 }

@@ -8,7 +8,7 @@ type AccountInfoCardProps = {
     name: string;
     email: string;
     phone: string;
-    vehicles: any[];
+    vehicles: { id?: string; make: string; model: string; year: string | number }[];
     shopName?: string;
     companyName?: string;
   };

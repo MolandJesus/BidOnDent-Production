@@ -13,9 +13,11 @@ import { useAppEffects } from "./hooks/useAppEffects";
 import { useAppHandlers } from "./hooks/useAppHandlers";
 import { useWebsiteSessionSync } from "./hooks/useWebsiteSessionSync";
 import { useBusinessProfile } from "./hooks/useBusinessProfile";
+import { useAppearanceMode } from "./hooks/useAppearanceMode";
 
 // Notification system
 import { useNotificationEvents, NotificationProvider } from "./features/notifications";
+import { useNotifications } from "./features/notifications/NotificationContext";
 import NotificationToast from "./components/ui/NotificationToast";
 
 // Import constants
@@ -32,8 +34,7 @@ import {
 // Import helpers
 import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
 import { completeShopOnboarding, completeInsurerOnboarding } from "./utils/onboardingHandlers";
-import type { ViewMode } from "./types";
-import type { DashboardAppearanceMode } from "./routers/dashboard-router-types";
+import type { ViewMode, DamageReport } from "./types";
 
 // Import components
 import AppLoading from "./components/app/AppLoading";
@@ -60,66 +61,6 @@ const hasValidClerkPublishableKey =
 
 if (!hasValidClerkPublishableKey && import.meta.env.DEV) {
   console.error("Missing or invalid Clerk publishable key in utils/clerk/info.tsx");
-}
-
-const APPEARANCE_STORAGE_KEY = "bidondent.appearance-mode";
-const APPEARANCE_MODES = [
-  "light",
-  "map-dark",
-] as const satisfies readonly DashboardAppearanceMode[];
-
-function isAppearanceMode(value: unknown): value is DashboardAppearanceMode {
-  return typeof value === "string" && (APPEARANCE_MODES as readonly string[]).includes(value);
-}
-
-function clearSavedAppearanceMode() {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    window.localStorage.removeItem(APPEARANCE_STORAGE_KEY);
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("Error clearing appearance mode:", error);
-  }
-}
-
-function readSavedAppearanceMode(): DashboardAppearanceMode {
-  if (typeof window === "undefined") {
-    return "map-dark";
-  }
-
-  try {
-    const saved = window.localStorage.getItem(APPEARANCE_STORAGE_KEY);
-    if (isAppearanceMode(saved)) {
-      return saved;
-    }
-
-    if (saved !== null) {
-      clearSavedAppearanceMode();
-    }
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("Error reading appearance mode:", error);
-  }
-
-  // Respect OS preference when no explicit choice has been saved
-  if (window.matchMedia?.("(prefers-color-scheme: light)").matches) {
-    return "light";
-  }
-
-  return "map-dark";
-}
-
-function persistAppearanceMode(appearanceMode: DashboardAppearanceMode) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(APPEARANCE_STORAGE_KEY, appearanceMode);
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("Error saving appearance mode:", error);
-  }
 }
 
 // Main App content (wrapped by ClerkProvider)
@@ -165,25 +106,7 @@ function AppContent() {
     isLoading: isBusinessProfileLoading,
     saveProfile: saveBusinessProfile,
   } = useBusinessProfile(websiteIdentity, userProfile?.user_type);
-  const [appearanceMode, setAppearanceMode] =
-    useState<DashboardAppearanceMode>(readSavedAppearanceMode);
-
-  useEffect(() => {
-    persistAppearanceMode(appearanceMode);
-    document.documentElement.setAttribute("data-appearance-mode", appearanceMode);
-    document.documentElement.style.colorScheme = "dark";
-  }, [appearanceMode]);
-
-  // Sync appearance mode across browser tabs via storage events
-  useEffect(() => {
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === APPEARANCE_STORAGE_KEY) {
-        setAppearanceMode(isAppearanceMode(e.newValue) ? e.newValue : readSavedAppearanceMode());
-      }
-    };
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  const [appearanceMode, setAppearanceMode] = useAppearanceMode();
 
   // ============================================================================
   // CUSTOM HOOKS - Centralized State Management
@@ -210,11 +133,72 @@ function AppContent() {
       navigation,
     });
 
+  // Notification-enhanced report submission: toast + auto-redirect to shop directory
+  const notifications = useNotifications();
+  const handleReportSubmitWithNotification = async (report: DamageReport) => {
+    try {
+      await handleReportSubmit(report);
+      notifications.push({
+        category: "report",
+        title: "Report submitted!",
+        body: "Shops in your area will start sending bids soon.",
+        payload: { reportId: report.id },
+        userId: user?.id ?? "",
+        deepLink: { screen: "dashboard" },
+        priority: "normal",
+      });
+      notifications.showToast({
+        message: "Report submitted — browse nearby shops!",
+        variant: "success",
+        durationMs: 4000,
+        deepLink: { screen: "shop-directory" },
+      });
+    } catch (error) {
+      notifications.showToast({
+        message: "Failed to submit report. Please try again.",
+        variant: "error",
+        durationMs: 5000,
+        deepLink: null,
+      });
+      throw error;
+    }
+  };
+
   useAppEffects({
     navigation,
     userProfile,
     userData,
   });
+
+  // Register deep link navigation handler for toast clicks
+  useEffect(() => {
+    notifications.setDeepLinkHandler((deepLink) => {
+      if (!deepLink) return;
+      switch (deepLink.screen) {
+        case "dashboard":
+          navigation.setViewMode("dashboard");
+          break;
+        case "report":
+          navigation.setSelectedReportId(deepLink.reportId);
+          navigation.setViewMode("report-detail");
+          break;
+        case "bid":
+          navigation.setCurrentTab("bids");
+          navigation.setViewMode("dashboard");
+          break;
+        case "shop":
+          navigation.setViewMode("shop-directory");
+          break;
+        case "shop-directory":
+          navigation.setViewMode("shop-directory");
+          break;
+        case "navigation":
+          navigation.setViewMode("shop-directory");
+          break;
+      }
+    });
+    return () => notifications.setDeepLinkHandler(null);
+  }, [notifications, navigation]);
 
   // ============================================================================
   // CONSTANTS - Imported from /constants
@@ -434,7 +418,7 @@ function AppContent() {
       submitBid,
       handleDeleteAccount,
       handleLogout,
-      onReportSubmit: handleReportSubmit,
+      onReportSubmit: handleReportSubmitWithNotification,
       primaryColor,
       secondaryColor,
       userImageUrl: user?.imageUrl || "",
@@ -505,6 +489,7 @@ function AppWithToast() {
       <NotificationToast
         toast={notificationActions.activeToast}
         onDismiss={notificationActions.dismissToast}
+        onDeepLinkClick={notificationActions.navigateDeepLink}
       />
     </NotificationProvider>
   );

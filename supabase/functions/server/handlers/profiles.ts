@@ -1,8 +1,8 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
-  ensureWebsiteUserKeyMatchesSession,
-  getAuthenticatedProfile,
+  requireAuthenticatedProfile,
   requireClerkSession,
+  resolveWebsiteUserKeyForSession,
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 import { hydrateSignedStorageUrl } from "../utils/storage.ts";
@@ -83,7 +83,9 @@ export async function getUserProfile(
 ): Promise<Response> {
   try {
     const url = new URL(req.url);
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: false,
+    });
     const requestedClerkUserId = url.searchParams.get("clerkUserId");
     const requestedEmail = normalizeEmail(url.searchParams.get("email"));
 
@@ -91,13 +93,13 @@ export async function getUserProfile(
       return respond({ error: "Forbidden" }, 403);
     }
 
-    if (requestedEmail && requestedEmail !== normalizeEmail(session.email)) {
+    const normalizedSessionEmail = normalizeEmail(session.email) || normalizeEmail(profile?.email);
+
+    if (requestedEmail && normalizedSessionEmail && requestedEmail !== normalizedSessionEmail) {
       return respond({ error: "Forbidden" }, 403);
     }
 
-    ensureWebsiteUserKeyMatchesSession(session, url.searchParams.get("websiteUserKey"));
-
-    const profile = await getAuthenticatedProfile(supabase, session);
+    await resolveWebsiteUserKeyForSession(supabase, session, url.searchParams.get("websiteUserKey"));
     const hydratedProfile = profile
       ? {
           ...profile,
@@ -132,10 +134,15 @@ export async function saveUserProfile(
 ): Promise<Response> {
   try {
     const body = await req.json();
-    const session = await requireClerkSession(req, { requireEmail: true });
+    const { profile: authenticatedProfile, session } = await requireAuthenticatedProfile(
+      req,
+      supabase,
+      { requireEmail: false }
+    );
     const identity: ProfileIdentity = body?.identity || {};
     const profile = body?.profile || {};
-    const normalizedSessionEmail = normalizeEmail(session.email);
+    const normalizedSessionEmail =
+      normalizeEmail(session.email) || normalizeEmail(authenticatedProfile?.email);
 
     if (!normalizedSessionEmail || !profile?.name || !profile?.account_type) {
       return respond({ error: "Missing profile email, name, or account type" }, 400);
@@ -145,16 +152,19 @@ export async function saveUserProfile(
       return respond({ error: "Forbidden" }, 403);
     }
 
-    const websiteUserKey = ensureWebsiteUserKeyMatchesSession(
+    const websiteUserKey = await resolveWebsiteUserKeyForSession(
+      supabase,
       session,
-      identity.websiteUserKey || null
+      identity.websiteUserKey || authenticatedProfile?.website_user_key || null
     );
 
-    const existingProfile = await findExistingProfile(supabase, {
-      clerkUserId: session.clerkUserId,
-      email: normalizedSessionEmail,
-      websiteUserKey,
-    });
+    const existingProfile =
+      authenticatedProfile ||
+      (await findExistingProfile(supabase, {
+        clerkUserId: session.clerkUserId,
+        email: normalizedSessionEmail,
+        websiteUserKey,
+      }));
 
     const payload = {
       account_type: profile.account_type,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type { CoveragePartnerShop } from "../components/maps/serviceCoverageMapTypes";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
@@ -33,6 +33,7 @@ type UseShopDirectoryRoutePreviewResult = {
   isLoadingRoutes: boolean;
   routeError: string;
   usingLiveRoutes: boolean;
+  refreshRoutePreview: () => void;
 };
 
 function toCoveragePartnerShop(shop: ShopMapListing): CoveragePartnerShop {
@@ -161,11 +162,29 @@ export function useShopDirectoryRoutePreview({
     [selectedOrigin, selectedShop]
   );
 
+  const [retryCounter, setRetryCounter] = useState(0);
+  const lastRouteKeyRef = useRef("");
+
+  const refreshRoutePreview = useCallback(() => {
+    lastRouteKeyRef.current = "";
+    setLiveRouteOptions([]);
+    setRouteError("");
+    setRetryCounter((c) => c + 1);
+  }, []);
+
   useEffect(() => {
     if (!selectedOrigin || !selectedShop) {
       setLiveRouteOptions([]);
       setIsLoadingRoutes(false);
       setRouteError("");
+      lastRouteKeyRef.current = "";
+      return;
+    }
+
+    const routeKey = `${selectedOrigin.latitude},${selectedOrigin.longitude}-${selectedShop.id}`;
+
+    // Skip refetch if this exact route was already fetched successfully
+    if (routeKey === lastRouteKeyRef.current) {
       return;
     }
 
@@ -185,6 +204,7 @@ export function useShopDirectoryRoutePreview({
         const routePreviews = nextRoutes.alternatives.length
           ? nextRoutes.alternatives
           : [nextRoutes.primary];
+        lastRouteKeyRef.current = routeKey;
         setLiveRouteOptions(buildLiveRouteOptionsFromPreviews(routePreviews, selectedShop.name));
       })
       .catch((error) => {
@@ -220,6 +240,7 @@ export function useShopDirectoryRoutePreview({
     selectedShop?.id,
     selectedShop?.mapResult.coordinates.latitude,
     selectedShop?.mapResult.coordinates.longitude,
+    retryCounter,
   ]);
 
   return {
@@ -227,5 +248,6 @@ export function useShopDirectoryRoutePreview({
     isLoadingRoutes,
     routeError,
     usingLiveRoutes: liveRouteOptions.length > 0,
+    refreshRoutePreview,
   };
 }

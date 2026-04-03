@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Clock, MapPin, Sparkles } from "lucide-react";
+import { MapPin } from "lucide-react";
 import ShopRatingModal from "../shop/ShopRatingModal";
 import BidCardArticle from "./BidCardArticle";
 import AcceptedBidConfirmationSheet from "./AcceptedBidConfirmationSheet";
 import type { AcceptedBidInfo } from "./AcceptedBidConfirmationSheet";
 import { zipToCoordinates } from "../../services/supabase/map";
 import { defaultCoverageCenter } from "../landing/coverageData";
-import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
+import BidsEmptyState from "./BidsEmptyState";
+import BidsSummaryHeader from "./BidsSummaryHeader";
+import BidsGeographyMap from "./BidsGeographyMap";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { Bid, DamageReport } from "../../types";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
@@ -30,7 +32,6 @@ type BidsScreenProps = {
     price: number;
     timeframe: string;
     reportId?: string;
-    skipNavigation?: boolean;
   }) => void;
   onRejectBid?: (details: { bidId: string; shopName: string }) => void;
 };
@@ -105,7 +106,9 @@ export default function BidsScreen({
     if (!selectedReport) {
       return null;
     }
-
+    if (selectedReport.latitude != null && selectedReport.longitude != null) {
+      return { lat: selectedReport.latitude, lng: selectedReport.longitude };
+    }
     return zipToCoordinates(selectedReport.zip_code || selectedReport.zipCode);
   }, [selectedReport]);
 
@@ -181,94 +184,13 @@ export default function BidsScreen({
 
   if (!hasLiveBids) {
     return (
-      <div className="pb-20 px-4 md:px-6 py-4 md:py-5 space-y-4">
-        <motion.section
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className={`relative overflow-hidden bd-glass-card p-5${isLight ? " bd-light-surface" : ""}`}
-          style={{
-            background: isLight
-              ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
-              : "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.82) 100%)",
-            borderColor: isLight ? "rgba(148,163,184,0.30)" : "rgba(96, 165, 250, 0.24)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            {onBack && (
-              <button
-                className={`h-11 w-11 flex items-center justify-center rounded-xl transition-colors ${isLight ? "hover:bg-slate-100" : "hover:bg-white/10"}`}
-                onClick={onBack}
-                aria-label="Go back to dashboard"
-              >
-                <ArrowLeft className={`w-5 h-5 ${isLight ? "text-blue-600" : "text-blue-100"}`} />
-              </button>
-            )}
-            <div className="flex-1">
-              <h1
-                className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
-              >
-                Repair Bids
-              </h1>
-              <p className={isLight ? "text-slate-500" : "text-blue-100/80"}>
-                {userType === "shop"
-                  ? "No active bids from your shop yet."
-                  : userType === "insurer"
-                    ? "No bids on connected claims yet."
-                    : "No live bids have been submitted for your reports yet."}
-              </p>
-            </div>
-          </div>
-        </motion.section>
-
-        <motion.section
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25, delay: 0.05 }}
-          className={`bd-glass-card p-5 sm:p-6 text-center${isLight ? " bd-light-surface" : ""}`}
-          style={{
-            background: isLight
-              ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-              : "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-            borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.20)",
-          }}
-        >
-          <div
-            className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border ${
-              isLight ? "bg-blue-50 border-blue-200/50" : "bg-blue-400/15 border-blue-300/20"
-            }`}
-          >
-            <Clock className={`h-6 w-6 ${isLight ? "text-blue-500" : "text-blue-200"}`} />
-          </div>
-          <h2 className={`text-lg font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
-            {userType === "shop"
-              ? "No bids placed yet"
-              : userType === "insurer"
-                ? "No claims with active bids"
-                : "Waiting for shop responses"}
-          </h2>
-          <p
-            className={`mt-2 text-sm leading-relaxed max-w-sm mx-auto ${isLight ? "text-slate-500" : "text-blue-100/80"}`}
-          >
-            {userType === "shop"
-              ? "When customers submit damage reports near your shop, you'll see them here and can send competitive bids."
-              : userType === "insurer"
-                ? "Bids on claims connected to your network will appear here for review."
-                : "Once you submit a damage report, nearby shops will review it and send competitive bids. Most shops respond within 24 hours."}
-          </p>
-          {userType === "customer" && onStartReport && (
-            <button
-              onClick={onStartReport}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
-              }}
-            >
-              Submit a Report
-            </button>
-          )}
-        </motion.section>
-      </div>
+      <BidsEmptyState
+        isLight={isLight}
+        userType={userType}
+        primaryColor={primaryColor}
+        onBack={onBack}
+        onStartReport={onStartReport}
+      />
     );
   }
 
@@ -321,120 +243,15 @@ export default function BidsScreen({
 
   return (
     <div className="pb-20 px-4 md:px-6 py-4 md:py-5 space-y-4">
-      <motion.section
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="relative overflow-hidden bd-glass-card p-4 md:p-5"
-        style={{
-          background: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(241,245,249,0.88) 100%)"
-            : "linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.80) 100%)",
-          borderColor: isLight ? "rgba(148,163,184,0.30)" : "rgba(96, 165, 250, 0.24)",
-        }}
-      >
-        <div
-          className="pointer-events-none absolute -top-10 -right-10 h-36 w-36 rounded-full"
-          style={{
-            background: isLight
-              ? "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(56,189,248,0.14) 0%, transparent 70%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full"
-          style={{
-            background: isLight
-              ? "radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)"
-              : "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)",
-          }}
-        />
-        <div className="flex items-center gap-3">
-          {onBack && (
-            <button
-              className={`h-11 w-11 flex items-center justify-center rounded-xl transition-colors ${isLight ? "hover:bg-slate-100" : "hover:bg-white/10"}`}
-              onClick={onBack}
-              aria-label="Go back to dashboard"
-            >
-              <ArrowLeft className={`w-5 h-5 ${isLight ? "text-blue-600" : "text-blue-100"}`} />
-            </button>
-          )}
-          <div className="flex-1">
-            <h1
-              className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
-            >
-              Repair Bids
-            </h1>
-            <p className={isLight ? "text-slate-500" : "text-blue-100/80"}>
-              {liveBids.length} bid{liveBids.length === 1 ? "" : "s"} for {vehicleLabel}
-            </p>
-          </div>
-          <div
-            className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border ${
-              isLight
-                ? "bg-blue-50 text-blue-700 border-blue-200/50"
-                : "bg-blue-400/12 text-blue-100 border-blue-300/20"
-            }`}
-          >
-            <Sparkles className="w-4 h-4" />
-            Compare before accepting
-          </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div
-            className={`rounded-xl px-3 py-2.5 border ${
-              isLight ? "bg-white/70 border-slate-200/50" : "bg-slate-900/25 border-blue-300/18"
-            }`}
-            style={isLight ? {} : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
-          >
-            <p
-              className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
-            >
-              Lowest Bid
-            </p>
-            <p
-              className={`mt-1 text-xl font-bold tabular-nums ${isLight ? "text-slate-800" : "text-slate-100"}`}
-            >
-              ${lowestPrice}
-            </p>
-          </div>
-          <div
-            className={`rounded-xl px-3 py-2.5 border ${
-              isLight ? "bg-white/70 border-slate-200/50" : "bg-slate-900/25 border-blue-300/18"
-            }`}
-            style={isLight ? {} : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
-          >
-            <p
-              className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
-            >
-              Average Quote
-            </p>
-            <p
-              className={`mt-1 text-xl font-bold tabular-nums ${isLight ? "text-slate-800" : "text-slate-100"}`}
-            >
-              ${averagePrice}
-            </p>
-          </div>
-          <div
-            className={`rounded-xl px-3 py-2.5 border ${
-              isLight ? "bg-white/70 border-slate-200/50" : "bg-slate-900/25 border-blue-300/18"
-            }`}
-            style={isLight ? {} : { boxShadow: "inset 0 1px 0 rgba(148,163,184,0.06)" }}
-          >
-            <p
-              className={`text-xs uppercase tracking-wide ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
-            >
-              Fastest Timeline
-            </p>
-            <p
-              className={`mt-1 text-xl font-bold tabular-nums ${isLight ? "text-slate-800" : "text-slate-100"}`}
-            >
-              {fastestBidDays}-{fastestBidDays + 1} days
-            </p>
-          </div>
-        </div>
-      </motion.section>
+      <BidsSummaryHeader
+        isLight={isLight}
+        bidCount={liveBids.length}
+        vehicleLabel={vehicleLabel}
+        lowestPrice={lowestPrice}
+        averagePrice={averagePrice}
+        fastestBidDays={fastestBidDays}
+        onBack={onBack}
+      />
 
       <motion.section
         initial={{ opacity: 0, y: 10 }}
@@ -476,96 +293,14 @@ export default function BidsScreen({
         </div>
       </motion.section>
 
-      <motion.section
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.25, delay: 0.08 }}
-        className="bd-glass-card overflow-hidden"
-        style={{
-          background: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-            : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
-          borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
-        }}
-      >
-        <div className="p-3">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h2
-                className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
-              >
-                Bid geography comparison
-              </h2>
-              <p className={`mt-0.5 text-xs ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
-                Compare where each bidding shop is relative to your report.
-              </p>
-            </div>
-            <span
-              className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                isLight
-                  ? "bg-blue-50 text-blue-700 border border-blue-200/60"
-                  : "bg-blue-400/14 text-blue-200 border border-blue-300/20"
-              }`}
-            >
-              {bidMapShops.length}/{liveBids.length} mapped
-            </span>
-          </div>
-        </div>
-
-        {bidMapShops.length > 0 ? (
-          <>
-            <div className="h-[220px] md:h-[240px]">
-              <DashboardMapPreview
-                shops={bidMapShops}
-                reportPins={reportPins}
-                center={bidMapCenter}
-                zoom={10}
-                isLight={isLight}
-                onShopClick={(shop) => {
-                  if (shop.id) {
-                    setActiveBid(shop.id);
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-wrap items-center gap-2 p-3">
-              <span
-                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                  isLight ? "bg-slate-100 text-slate-700" : "bg-white/10 text-slate-200"
-                }`}
-              >
-                <span className="h-2 w-2 rounded-full bg-blue-500" />
-                Shop bid
-              </span>
-              {reportPins.length > 0 ? (
-                <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                    isLight ? "bg-amber-100 text-amber-700" : "bg-amber-500/20 text-amber-200"
-                  }`}
-                >
-                  <span className="h-2 w-2 rounded-full bg-amber-400" />
-                  Your report
-                </span>
-              ) : null}
-              <span className={`text-[11px] ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
-                Tap a blue pin to highlight that shop&apos;s bid card.
-              </span>
-            </div>
-          </>
-        ) : (
-          <div
-            className={`mx-3 mb-3 flex items-start gap-2 rounded-xl border border-dashed px-3 py-2.5 text-xs ${
-              isLight ? "border-slate-300/70 text-slate-600" : "border-white/20 text-slate-300"
-            }`}
-          >
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>
-              No bid locations are available yet. Location-enabled bids will appear on this map as
-              soon as shops include coordinates.
-            </span>
-          </div>
-        )}
-      </motion.section>
+      <BidsGeographyMap
+        isLight={isLight}
+        bidMapShops={bidMapShops}
+        totalBids={liveBids.length}
+        reportPins={reportPins}
+        bidMapCenter={bidMapCenter}
+        onShopClick={(id) => setActiveBid(id)}
+      />
 
       <motion.section
         variants={{
@@ -608,12 +343,11 @@ export default function BidsScreen({
                   price: bid.price,
                   timeframe: bid.timeframe,
                   reportId: bid.reportId,
-                  skipNavigation: true,
                 });
                 notifications.push({
                   category: "bid",
                   title: `Bid accepted — ${bid.shopName}`,
-                  body: `You accepted ${bid.shopName}'s bid for ${bid.price}.`,
+                  body: `You accepted ${bid.shopName}'s bid for $${bid.price.toLocaleString()}.`,
                   payload: { bidId: bid.id, shopId: bid.shopId, reportId: bid.reportId },
                   userId: "",
                   deepLink: { screen: "bid", bidId: String(bid.id), reportId: bid.reportId },
@@ -634,6 +368,53 @@ export default function BidsScreen({
           );
         })}
       </motion.section>
+
+      {/* ── All bids rejected: guide customer back to map ── */}
+      {userType === "customer" &&
+        liveBids.length > 0 &&
+        liveBids.every((b) => b.status === "rejected") &&
+        onViewShopDirectory && (
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+            className="bd-glass-card p-5 text-center"
+            style={{
+              background: isLight
+                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
+                : "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
+              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.20)",
+            }}
+          >
+            <div
+              className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border ${
+                isLight ? "bg-amber-50 border-amber-200/50" : "bg-amber-400/15 border-amber-300/20"
+              }`}
+            >
+              <MapPin className={`h-5 w-5 ${isLight ? "text-amber-500" : "text-amber-200"}`} />
+            </div>
+            <h3
+              className={`text-base font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+            >
+              All bids declined
+            </h3>
+            <p
+              className={`mt-1.5 text-sm leading-relaxed max-w-xs mx-auto ${isLight ? "text-slate-500" : "text-blue-100/80"}`}
+            >
+              Explore more shops on the map to find the right match for your repair.
+            </p>
+            <button
+              onClick={onViewShopDirectory}
+              className="mt-4 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] text-sm font-semibold text-white transition-all hover:opacity-90 hover:-translate-y-0.5 shadow-md"
+              style={{
+                background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
+              }}
+            >
+              <MapPin className="h-4 w-4" />
+              Find More Shops
+            </button>
+          </motion.section>
+        )}
 
       {showRatingModal && (
         <ShopRatingModal

@@ -27,6 +27,28 @@ import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import MobileMapBottomSheet from "./MobileMapBottomSheet";
 
+type SidebarView = "search" | "explore" | "saved" | "shops";
+
+function resolveInitialSidebarView({
+  selectedShop,
+  listSearchTarget,
+  nearbyShops,
+}: {
+  selectedShop: CoveragePartnerShop | null;
+  listSearchTarget: CoverageSearchTarget | null;
+  nearbyShops: CoverageNearbyShop[];
+}): SidebarView {
+  if (selectedShop) {
+    return "search";
+  }
+
+  if (listSearchTarget && nearbyShops.length > 0) {
+    return "shops";
+  }
+
+  return "search";
+}
+
 type CoverageBrowseExperienceProps = {
   tone: MapSurfaceTone;
   center: [number, number];
@@ -42,6 +64,8 @@ type CoverageBrowseExperienceProps = {
   radiusMeters: number;
   regionCount: number;
   isLoadingShops: boolean;
+  coverageFetchError?: string | null;
+  usingDemoFallback?: boolean;
   selectedShopId?: string;
   initialDiscoveryRole?: NavigationDiscoveryRole;
   selectedShop: CoveragePartnerShop | null;
@@ -54,6 +78,7 @@ type CoverageBrowseExperienceProps = {
   onOpenBidOnDentNavigation: (shop: CoveragePartnerShop) => void;
   onExportDirections: (shop: CoveragePartnerShop) => void;
   onStartNavigation: () => void;
+  onRetryPartnerShops?: () => void;
 };
 
 export default function CoverageBrowseExperience({
@@ -71,6 +96,8 @@ export default function CoverageBrowseExperience({
   radiusMeters,
   regionCount,
   isLoadingShops,
+  coverageFetchError,
+  usingDemoFallback = false,
   selectedShopId,
   initialDiscoveryRole,
   selectedShop,
@@ -82,6 +109,7 @@ export default function CoverageBrowseExperience({
   onSelectShop,
   onOpenBidOnDentNavigation,
   onStartNavigation,
+  onRetryPartnerShops,
 }: CoverageBrowseExperienceProps) {
   const theme = getMapSurfaceTheme(tone, true);
   const savedNavigation = useSavedNavigationLocations();
@@ -104,8 +132,8 @@ export default function CoverageBrowseExperience({
   const [navigationStartRequestedShopId, setNavigationStartRequestedShopId] = useState<
     string | null
   >(null);
-  const [sidebarView, setSidebarView] = useState<"search" | "explore" | "saved" | "shops">(
-    "search"
+  const [sidebarView, setSidebarView] = useState<SidebarView>(() =>
+    resolveInitialSidebarView({ selectedShop, listSearchTarget, nearbyShops })
   );
   const effectiveCenter = mapOverride?.center || center;
   const effectiveZoom = mapOverride?.zoom || zoom;
@@ -146,6 +174,14 @@ export default function CoverageBrowseExperience({
     setSelectedDiscoveryPlaceId(null);
     setMapOverride(null);
   }, [discoveryRole, listSearchTarget]);
+
+  useEffect(() => {
+    if (selectedShop || !listSearchTarget || nearbyShops.length === 0) {
+      return;
+    }
+
+    setSidebarView((current) => (current === "search" ? "shops" : current));
+  }, [listSearchTarget, nearbyShops.length, selectedShop]);
 
   useEffect(() => {
     if (!navigationStartRequestedShopId) {
@@ -316,8 +352,11 @@ export default function CoverageBrowseExperience({
       onSaveParkedCar={handleSaveParkedCar}
       onClearParkedCar={savedNavigation.clearParkedCar}
       isLoadingShops={isLoadingShops}
+      coverageFetchError={coverageFetchError}
+      usingDemoFallback={usingDemoFallback}
       radiusMiles={radiusMiles}
       onOpenDirections={handleStartShopRouteInApp}
+      onRetryPartnerShops={onRetryPartnerShops}
     />
   );
 
@@ -336,9 +375,10 @@ export default function CoverageBrowseExperience({
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border-0 bg-transparent shadow-none">
+    <div className="relative overflow-hidden border-0 bg-transparent shadow-none rounded-none lg:rounded-2xl">
       <div className="relative">
         <ServiceCoverageMap
+          className="rounded-none lg:rounded-[2rem]"
           center={effectiveCenter}
           zoom={effectiveZoom}
           revision={effectiveRevision}
@@ -349,7 +389,7 @@ export default function CoverageBrowseExperience({
           radiusMeters={radiusMeters}
           radiusMiles={radiusMiles}
           regionCount={regionCount}
-          mapHeightClassName="h-[100dvh] lg:h-[84vh] min-h-[360px] lg:min-h-[620px]"
+          mapHeightClassName="h-[100dvh] min-h-[100dvh] lg:h-[84vh] lg:min-h-[620px]"
           immersiveFullscreen
           showSurfaceChrome={false}
           selectedShopId={selectedShopId}
@@ -389,7 +429,7 @@ export default function CoverageBrowseExperience({
         />
 
         {isDesktop ? (
-          <div className="pointer-events-none absolute inset-y-6 left-4 z-[610] hidden w-[340px] lg:block xl:left-6 xl:w-[380px] 2xl:left-8 2xl:w-[410px]">
+          <div className="pointer-events-none absolute inset-y-6 left-4 z-[610] hidden w-[420px] lg:block xl:left-6 xl:w-[448px] 2xl:left-8 2xl:w-[468px]">
             <div
               className={cn(
                 "pointer-events-auto h-full overflow-hidden rounded-[1.5rem] border backdrop-blur-2xl",

@@ -8,6 +8,7 @@ import {
   Wrench,
   Shield,
   Building2,
+  Mail,
 } from "lucide-react";
 import type { DamageReport, NavTab } from "../types";
 
@@ -41,6 +42,7 @@ export const CUSTOMER_NAV_TABS: NavTab[] = [
 export const SHOP_NAV_TABS: NavTab[] = [
   { id: "home", label: "Dashboard", icon: Home },
   { id: "requests", label: "Requests", icon: ClipboardList },
+  { id: "estimates", label: "Estimates", icon: Mail },
   { id: "jobs", label: "Active Jobs", icon: Wrench },
   { id: "account", label: "Account", icon: User },
 ];

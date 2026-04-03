@@ -1,31 +1,15 @@
 import { useMemo, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
-import type { Bid, NavTab, Notification, Vehicle } from "../../types";
+import type { Bid, NavTab, Notification, Report, Vehicle } from "../../types";
 import { getGlobalSurfaceTheme } from "../../theme/globalSurfaceTheme";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
 import { useNotifications } from "../../features/notifications/NotificationContext";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
 import SettingsModal from "../codelayer/account/SettingsModal";
 import DashboardAtmosphere from "./DashboardAtmosphere";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
-
-type UserProfile = {
-  name: string;
-  email: string;
-  user_type: string;
-  phone?: string;
-};
-
-type ProfileDropdownData = {
-  userType: "customer" | "shop" | "insurer";
-  reports: any[];
-  vehicles: Vehicle[];
-  bids: Bid[];
-  onNavigate: (destination: string, tab?: string) => void;
-  onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement | null>;
-};
 
 type DashboardLayoutProps = {
   appearanceMode: DashboardAppearanceMode;
@@ -40,7 +24,7 @@ type DashboardLayoutProps = {
   userImageUrl: string;
   notifications: Notification[];
   notificationSyncActive: boolean;
-  reports: any[];
+  reports: Report[];
   vehicles: Vehicle[];
   bids: Bid[];
   onLogoClick: () => void;

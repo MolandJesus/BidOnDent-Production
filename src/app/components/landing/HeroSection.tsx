@@ -270,7 +270,7 @@ export default function HeroSection({
             >
               <button
                 onClick={onGetStarted}
-                className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base font-semibold text-white rounded-2xl px-7 py-3.5 min-h-[48px] transition-all hover:brightness-110 hover:shadow-lg active:scale-[0.97]"
+                className="inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 rounded-[1.75rem] border border-white/10 px-7 py-4 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg active:scale-[0.97] sm:w-auto sm:rounded-2xl sm:py-3.5 sm:text-base"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor} 0%, #3b82f6 100%)`,
                   boxShadow: "0 4px 24px rgba(37, 99, 235, 0.35), 0 0 40px rgba(59, 130, 246, 0.1)",
@@ -282,7 +282,7 @@ export default function HeroSection({
               </button>
               <button
                 onClick={onLearnMore}
-                className={`inline-flex items-center justify-center gap-1.5 w-full sm:w-auto text-sm sm:text-base font-medium rounded-2xl px-7 py-3.5 min-h-[48px] border backdrop-blur-md transition-all active:scale-[0.97] ${isLightAppearance ? "text-slate-700 border-slate-300/40 bg-white/45 hover:bg-white/65 hover:border-slate-300/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]" : "text-blue-200 border-blue-400/25 bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-400/40"}`}
+                className={`inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 rounded-[1.75rem] border px-7 py-4 text-sm font-medium backdrop-blur-md transition-all active:scale-[0.97] sm:w-auto sm:rounded-2xl sm:py-3.5 sm:text-base ${isLightAppearance ? "border-slate-300/40 bg-white/45 text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] hover:bg-white/65 hover:border-slate-300/60" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/40"}`}
                 type="button"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
@@ -292,18 +292,20 @@ export default function HeroSection({
 
             {/* Trust microcopy */}
             <div
-              className={`flex flex-wrap items-center gap-2 pt-1 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              className={`grid grid-cols-2 gap-2 pt-1 transition-all duration-700 sm:flex sm:flex-wrap sm:items-center ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: "0.9s" }}
             >
-              {["Now available in NY", "Transparent bids", "Free for customers"].map((item) => (
-                <span
-                  key={item}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs sm:text-sm font-medium backdrop-blur-sm ${isLightAppearance ? "border-blue-200/30 bg-white/40 text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-blue-500/8 text-blue-200/80"}`}
-                >
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                  {item}
-                </span>
-              ))}
+              {["Now available in NY", "Transparent bids", "Free for customers"].map(
+                (item, index) => (
+                  <span
+                    key={item}
+                    className={`inline-flex min-h-[40px] items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium backdrop-blur-sm sm:justify-start sm:px-2.5 sm:py-1 sm:text-sm ${index === 2 ? "col-span-2 sm:col-span-1" : ""} ${isLightAppearance ? "border-blue-200/30 bg-white/40 text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-blue-500/10 text-blue-100/80"}`}
+                  >
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                    {item}
+                  </span>
+                )
+              )}
             </div>
           </div>
 

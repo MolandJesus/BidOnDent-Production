@@ -2,20 +2,39 @@
  * Small inline UI components used inside the ShopDirectoryMapPane,
  * extracted for file-size governance.
  */
+import { Map as MapIcon, MoonStar, Satellite } from "lucide-react";
 import type { MapTileMode } from "../maps/serviceCoverageMapTypes";
 
 /* ── Map loading skeleton with timeout fallback ── */
 export function MapLoadingSkeleton({
   mapLoaded,
   mapLoadFailed,
+  isDark,
+  onRetryMap,
+  onSwitchToListMode,
 }: {
   mapLoaded: boolean;
   mapLoadFailed: boolean;
+  isDark: boolean;
+  onRetryMap: () => void;
+  onSwitchToListMode?: () => void;
 }) {
   if (mapLoaded) return null;
   return (
-    <div className="absolute inset-0 z-[600] flex items-center justify-center bg-slate-950 transition-opacity">
-      <div className="flex flex-col items-center gap-3">
+    <div
+      className={`absolute inset-0 z-[600] flex items-center justify-center transition-opacity ${
+        isDark
+          ? "bg-[radial-gradient(circle_at_70%_15%,rgba(59,130,246,0.16),rgba(2,6,23,0.95)_40%,rgba(2,6,23,0.98)_100%)]"
+          : "bg-[radial-gradient(circle_at_70%_15%,rgba(59,130,246,0.14),rgba(226,232,240,0.92)_42%,rgba(241,245,249,0.96)_100%)]"
+      }`}
+    >
+      <div
+        className={`mx-4 flex w-full max-w-sm flex-col items-center gap-3 rounded-2xl border px-5 py-5 text-center backdrop-blur-2xl ${
+          isDark
+            ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))]"
+            : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.86),rgba(226,232,240,0.76))]"
+        }`}
+      >
         {!mapLoadFailed ? (
           <>
             <svg className="h-8 w-8 animate-spin text-blue-400" viewBox="0 0 24 24" fill="none">
@@ -35,19 +54,40 @@ export function MapLoadingSkeleton({
                 strokeLinecap="round"
               />
             </svg>
-            <p className="text-xs font-medium text-white/60">Loading map…</p>
+            <p className={`text-xs font-medium ${isDark ? "text-white/65" : "text-slate-500"}`}>
+              Loading map...
+            </p>
           </>
         ) : (
           <>
-            <p className="text-sm font-semibold text-white/80">Map failed to load</p>
-            <p className="text-xs text-white/50">Check your connection and try again</p>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="mt-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-500"
-            >
-              Reload
-            </button>
+            <p className={`text-sm font-semibold ${isDark ? "text-white/90" : "text-slate-800"}`}>
+              Map failed to load
+            </p>
+            <p className={`text-xs leading-relaxed ${isDark ? "text-white/60" : "text-slate-500"}`}>
+              Your shop list is still available. Retry the map or continue in list mode.
+            </p>
+            <div className="mt-1.5 flex w-full flex-wrap justify-center gap-2">
+              <button
+                type="button"
+                onClick={onRetryMap}
+                className="min-h-[40px] rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-500"
+              >
+                Retry map
+              </button>
+              {onSwitchToListMode ? (
+                <button
+                  type="button"
+                  onClick={onSwitchToListMode}
+                  className={`min-h-[40px] rounded-full border px-4 py-2 text-xs font-semibold transition-colors ${
+                    isDark
+                      ? "border-white/20 bg-slate-800/80 text-white/85 hover:bg-slate-700/90"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  Use list mode
+                </button>
+              ) : null}
+            </div>
           </>
         )}
       </div>
@@ -55,41 +95,60 @@ export function MapLoadingSkeleton({
   );
 }
 
-/* ── Map tile mode picker (roadmap / dark / satellite) ── */
+/* ── Map tile mode picker (premium segmented, matches landing page) ── */
 export function MapTilePicker({
+  compact = false,
   isDark,
   tileMode,
   setTileMode,
 }: {
+  compact?: boolean;
   isDark: boolean;
   tileMode: MapTileMode;
   setTileMode: (mode: MapTileMode) => void;
 }) {
+  const modes: Array<{ key: MapTileMode; label: string; Icon: typeof MapIcon }> = [
+    { key: "roadmap", label: "Map", Icon: MapIcon },
+    { key: "night", label: "Night", Icon: MoonStar },
+    { key: "satellite", label: "Satellite", Icon: Satellite },
+  ];
+
   return (
-    <div className="pointer-events-none absolute left-2 top-16 z-[520] sm:left-3 sm:top-20">
+    <div
+      className={`pointer-events-none absolute z-[520] ${
+        compact ? "left-2 top-10 sm:left-3 sm:top-12" : "left-2 top-16 sm:left-3 sm:top-20"
+      }`}
+    >
       <div
-        className={`pointer-events-auto flex rounded-lg border shadow-lg backdrop-blur-md ${
-          isDark ? "border-white/20 bg-slate-950/80" : "border-black/8 bg-white/90"
+        className={`pointer-events-auto inline-flex items-center rounded-full border shadow-[0_16px_36px_rgba(15,23,42,0.14)] backdrop-blur-2xl transition-[background,border-color,box-shadow] duration-300 ${
+          compact ? "gap-0.5 p-[3px]" : "gap-1 p-1"
+        } ${
+          isDark
+            ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(15,23,42,0.8))]"
+            : "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(241,245,249,0.7))]"
         }`}
       >
-        {(["roadmap", "night", "satellite"] as const).map((mode) => (
+        {modes.map(({ key, label, Icon }) => (
           <button
-            key={mode}
+            key={key}
             type="button"
-            onClick={() => setTileMode(mode)}
-            className={`px-2.5 py-1.5 text-[10px] font-semibold transition-colors first:rounded-l-lg last:rounded-r-lg ${
-              tileMode === mode
+            onClick={() => setTileMode(key)}
+            className={`inline-flex items-center rounded-full font-semibold transition-all duration-200 active:scale-[0.97] ${
+              compact ? "h-6.5 gap-1 px-2 text-[10px]" : "h-8 gap-1.5 px-3 text-xs"
+            } ${
+              tileMode === key
                 ? isDark
-                  ? "bg-blue-600/50 text-white"
-                  : "bg-blue-100 text-blue-700"
+                  ? "bg-[linear-gradient(180deg,#93c5fd,#60a5fa)] text-slate-950 shadow-[0_12px_24px_rgba(59,130,246,0.34)]"
+                  : "bg-sky-500/80 text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)]"
                 : isDark
-                  ? "text-white/60 hover:text-white/90"
-                  : "text-slate-500 hover:text-slate-800"
+                  ? "text-slate-200 hover:bg-blue-500/15 hover:text-white"
+                  : "text-slate-600 hover:bg-white/35 hover:text-slate-900"
             }`}
-            aria-label={`${mode === "roadmap" ? "Map" : mode === "night" ? "Dark" : "Satellite"} view`}
-            aria-pressed={tileMode === mode}
+            aria-label={`${label} view`}
+            aria-pressed={tileMode === key}
           >
-            {mode === "roadmap" ? "Map" : mode === "night" ? "Dark" : "Satellite"}
+            <Icon className={compact ? "h-2.5 w-2.5" : "h-3.5 w-3.5"} />
+            <span className={compact ? "hidden xl:inline" : "hidden sm:inline"}>{label}</span>
           </button>
         ))}
       </div>
@@ -103,14 +162,14 @@ export function MapEmptyState({ isDark, shopCount }: { isDark: boolean; shopCoun
   return (
     <div className="pointer-events-none absolute inset-0 z-[450] flex items-center justify-center">
       <div
-        className={`pointer-events-auto rounded-2xl border px-5 py-4 text-center shadow-xl backdrop-blur-md ${
+        className={`pointer-events-auto rounded-2xl border px-5 py-4 text-center shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur-2xl ${
           isDark
-            ? "border-white/20 bg-slate-950/80 text-white"
-            : "border-black/8 bg-white/88 text-slate-700"
+            ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))] text-white"
+            : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.84),rgba(226,232,240,0.76))] text-slate-700"
         }`}
       >
         <p className="text-sm font-semibold">No shops in this area</p>
-        <p className={`mt-1 text-xs ${isDark ? "text-white/60" : "text-slate-400"}`}>
+        <p className={`mt-1 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
           Try a different location or broaden your filters
         </p>
       </div>

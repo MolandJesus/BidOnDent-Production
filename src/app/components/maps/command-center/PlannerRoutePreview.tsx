@@ -5,7 +5,7 @@
  * All state and orchestration remain in the parent shell.
  */
 
-import { Navigation, RefreshCcw, Route } from "lucide-react";
+import { MapPinned, Navigation, RefreshCcw, Route } from "lucide-react";
 import { cn } from "../../ui/utils";
 import { formatApproximateDriveWindow, formatDistanceMiles } from "../mapRoutePresentation";
 import type { MapSurfaceTheme, MapSurfaceTone } from "../serviceCoverageMapTypes";
@@ -30,6 +30,7 @@ type PlannerRoutePreviewProps = {
   onResetNavigationSettings: () => void;
   onRetryRoutePreview: () => void;
   onStartNavigation: () => void;
+  onOpenShops: () => void;
   currentStepIndex: number;
 };
 
@@ -50,6 +51,7 @@ export default function PlannerRoutePreview({
   onResetNavigationSettings,
   onRetryRoutePreview,
   onStartNavigation,
+  onOpenShops,
   currentStepIndex,
 }: PlannerRoutePreviewProps) {
   return (
@@ -152,7 +154,7 @@ export default function PlannerRoutePreview({
           ) : routePreview ? (
             <>
               {routeAlternatives.length > 1 ? (
-                <div className="mt-2 grid gap-1.5 sm:grid-cols-3">
+                <div className="mt-2 flex flex-wrap gap-1.5">
                   {routeAlternatives.map((route, index) => {
                     const isSelected = index === selectedRouteIndex;
                     const distanceMiles = route.distanceMeters / 1609.34;
@@ -166,7 +168,7 @@ export default function PlannerRoutePreview({
                         type="button"
                         onClick={() => onSelectRouteIndex(index)}
                         className={cn(
-                          "rounded-[0.875rem] border px-2.5 py-2 text-left backdrop-blur-2xl transition-all duration-200",
+                          "min-w-[5.5rem] flex-1 rounded-[0.875rem] border px-2.5 py-2 text-left backdrop-blur-2xl transition-all duration-200",
                           isSelected
                             ? tone === "light"
                               ? "border-sky-300/80 bg-[linear-gradient(180deg,rgba(239,246,255,0.96),rgba(219,234,254,0.86))]"
@@ -222,18 +224,29 @@ export default function PlannerRoutePreview({
           )}
 
           <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={onStartNavigation}
-              disabled={!routePreview || !selectedShop || isLoadingRoute}
-              className={cn(
-                theme.primaryButtonClassName,
-                "!py-1.5 !px-3 !text-xs disabled:opacity-50"
-              )}
-            >
-              <Navigation className="h-3.5 w-3.5" />
-              Start Route
-            </button>
+            {!selectedShop ? (
+              <button
+                type="button"
+                onClick={onOpenShops}
+                className={cn(theme.secondaryButtonClassName, "!py-1.5 !px-3 !text-xs")}
+              >
+                <MapPinned className="h-3.5 w-3.5" />
+                Open Shops
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onStartNavigation}
+                disabled={!routePreview || isLoadingRoute}
+                className={cn(
+                  theme.primaryButtonClassName,
+                  "!py-1.5 !px-3 !text-xs disabled:opacity-50"
+                )}
+              >
+                <Navigation className="h-3.5 w-3.5" />
+                Start Route
+              </button>
+            )}
           </div>
         </div>
       ) : (
@@ -262,7 +275,7 @@ export default function PlannerRoutePreview({
                   ? "Route preview is ready. Tap Start Route when you\u2019re set."
                   : selectedShop
                     ? "Provide GPS location or search an address to build a route."
-                    : "Select a shop from the Shops tab, then search an origin address."}
+                    : "Open the Shops tab to choose a destination, then search an origin address."}
               </div>
             </div>
           </div>
@@ -280,18 +293,29 @@ export default function PlannerRoutePreview({
             </div>
           ) : null}
           <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={onStartNavigation}
-              disabled={!routePreview || !selectedShop || isLoadingRoute}
-              className={cn(
-                theme.primaryButtonClassName,
-                "!py-1.5 !px-3 !text-xs disabled:opacity-50"
-              )}
-            >
-              <Navigation className="h-3.5 w-3.5" />
-              Start Route
-            </button>
+            {!selectedShop ? (
+              <button
+                type="button"
+                onClick={onOpenShops}
+                className={cn(theme.secondaryButtonClassName, "!py-1.5 !px-3 !text-xs")}
+              >
+                <MapPinned className="h-3.5 w-3.5" />
+                Open Shops
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onStartNavigation}
+                disabled={!routePreview || isLoadingRoute}
+                className={cn(
+                  theme.primaryButtonClassName,
+                  "!py-1.5 !px-3 !text-xs disabled:opacity-50"
+                )}
+              >
+                <Navigation className="h-3.5 w-3.5" />
+                Start Route
+              </button>
+            )}
           </div>
         </div>
       )}

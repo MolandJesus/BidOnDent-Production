@@ -10,9 +10,11 @@ import { useNotifications } from "../../features/notifications/NotificationConte
 import ShopActiveJobCard, { type ActiveJob } from "./ShopActiveJobCard";
 import ShopActiveJobDetailModal from "./ShopActiveJobDetailModal";
 
+import type { Report } from "../../../types";
+
 type ShopActiveJobsScreenProps = {
   primaryColor?: string;
-  reports?: any[];
+  reports?: Report[];
   isSeedData?: boolean;
   onUpdateJobStatus?: (jobId: number, status: string) => void;
   appearanceMode?: DashboardAppearanceMode;
@@ -59,7 +61,7 @@ export default function ShopActiveJobsScreen({
   };
 
   const liveJobs = reports
-    .map((report: any, index: number) => {
+    .map((report, index: number) => {
       const rawStatus = String(report?.status ?? "pending").toLowerCase();
       const status =
         rawStatus === "completed"
@@ -110,22 +112,21 @@ export default function ShopActiveJobsScreen({
   // Map pins for active job locations
   const jobPins = useMemo<ReportPin[]>(() => {
     return (reports || [])
-      .map((report: any) => {
+      .map((report) => {
+        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
+        const label =
+          [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean).join(" ") ||
+          report?.damageArea ||
+          "Active job";
+        const lat = report?.latitude;
+        const lng = report?.longitude;
+        if (lat != null && lng != null) {
+          return { id: String(report?.id ?? ""), lat, lng, label };
+        }
         const zipCode = report?.zipCode || report?.zip_code || "";
         const coords = zipCode ? zipToCoordinates(zipCode) : null;
         if (!coords) return null;
-
-        const vehicleData = report?.vehicle || report?.vehicleInfo || {};
-        const label = [vehicleData.year, vehicleData.make, vehicleData.model]
-          .filter(Boolean)
-          .join(" ");
-
-        return {
-          id: String(report?.id ?? ""),
-          lat: coords.lat,
-          lng: coords.lng,
-          label: label || report?.damageArea || "Active job",
-        };
+        return { id: String(report?.id ?? ""), lat: coords.lat, lng: coords.lng, label };
       })
       .filter((pin): pin is ReportPin => pin !== null);
   }, [reports]);

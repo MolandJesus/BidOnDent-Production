@@ -23,6 +23,7 @@ export default class NavigationErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("[NavigationErrorBoundary]", error.message, error.stack);
     captureException(error, {
       boundary: "NavigationErrorBoundary",
       componentStack: info.componentStack ?? undefined,
@@ -43,9 +44,7 @@ export default class NavigationErrorBoundary extends Component<Props, State> {
           <AlertTriangle className="h-5 w-5" />
         </div>
 
-        <p className="text-sm font-medium text-slate-200">
-          Navigation hit an error
-        </p>
+        <p className="text-sm font-medium text-slate-200">Navigation hit an error</p>
         <p className="text-xs text-slate-500 dark:text-slate-400">
           Your data is safe. Try reopening navigation.
         </p>

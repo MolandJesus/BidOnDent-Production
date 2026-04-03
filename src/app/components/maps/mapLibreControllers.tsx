@@ -33,6 +33,7 @@ export function MapLibreViewportController({
 /**
  * Keeps the camera following a GPS position when enabled.
  * In guidance mode, uses a higher zoom and tighter debounce for turn-by-turn.
+ * On first guidance activation, performs a dramatic zoom-in transition.
  * Debounces tiny movements (< threshold m).
  */
 export function MapLibreFollowLocationController({
@@ -55,8 +56,9 @@ export function MapLibreFollowLocationController({
   const lastPositionRef = useRef<[number, number] | null>(null);
   const lastRevisionRef = useRef(revision);
   const wasGuidanceModeRef = useRef(guidanceMode);
+  const hasEnteredGuidanceRef = useRef(false);
 
-  const effectiveMinZoom = guidanceMode ? Math.max(minimumZoom, 16.5) : minimumZoom;
+  const effectiveMinZoom = guidanceMode ? Math.max(minimumZoom, 17) : minimumZoom;
   const debounceMeters = guidanceMode ? 8 : 18;
   const flyDuration = guidanceMode ? 600 : 850;
 
@@ -64,12 +66,31 @@ export function MapLibreFollowLocationController({
   useEffect(() => {
     if (wasGuidanceModeRef.current && !guidanceMode && map) {
       map.flyTo({ bearing: 0, pitch: 0, duration: 800 });
+      hasEnteredGuidanceRef.current = false;
     }
     wasGuidanceModeRef.current = guidanceMode;
   }, [guidanceMode, map]);
 
   useEffect(() => {
     if (!enabled || !currentPosition || !map) return;
+
+    // Dramatic zoom-in on first guidance activation
+    const isFirstGuidanceEntry = guidanceMode && !hasEnteredGuidanceRef.current;
+    if (isFirstGuidanceEntry) {
+      hasEnteredGuidanceRef.current = true;
+      const entryBearing = typeof bearing === "number" && Number.isFinite(bearing) ? bearing : 0;
+      map.flyTo({
+        center: [currentPosition[1], currentPosition[0]],
+        zoom: 17,
+        bearing: entryBearing,
+        pitch: 55,
+        duration: 1800,
+        essential: true,
+      });
+      lastPositionRef.current = currentPosition;
+      lastRevisionRef.current = revision;
+      return;
+    }
 
     const shouldForce = revision !== lastRevisionRef.current;
     const last = lastPositionRef.current;
@@ -83,14 +104,14 @@ export function MapLibreFollowLocationController({
 
     const flyOptions: Parameters<typeof map.flyTo>[0] = {
       center: [currentPosition[1], currentPosition[0]],
-      zoom: Math.max(map.getZoom(), effectiveMinZoom),
-      duration: flyDuration,
+      zoom: shouldForce ? effectiveMinZoom : Math.max(map.getZoom(), effectiveMinZoom),
+      duration: shouldForce ? 1000 : flyDuration,
     };
 
     // Apply bearing rotation in guidance mode
     if (guidanceMode && typeof bearing === "number" && Number.isFinite(bearing)) {
       flyOptions.bearing = bearing;
-      flyOptions.pitch = 45;
+      flyOptions.pitch = 50;
     } else if (!guidanceMode) {
       // Reset to north-up when leaving guidance
       flyOptions.bearing = 0;
@@ -112,6 +133,44 @@ export function MapLibreFollowLocationController({
     bearing,
     guidanceMode,
   ]);
+
+  return null;
+}
+
+/**
+ * Flies the camera to the destination when the user arrives,
+ * providing a satisfying "arrival moment" zoom-to effect.
+ */
+export function MapLibreArrivalCameraEffect({
+  hasArrived,
+  destination,
+}: {
+  hasArrived: boolean;
+  destination: [number, number] | null;
+}) {
+  const { current: map } = useMap();
+  const hasPlayedRef = useRef(false);
+
+  useEffect(() => {
+    if (!hasArrived || !destination || !map || hasPlayedRef.current) return;
+    hasPlayedRef.current = true;
+
+    map.flyTo({
+      center: [destination[1], destination[0]],
+      zoom: 17.5,
+      pitch: 40,
+      bearing: 0,
+      duration: 2000,
+      essential: true,
+    });
+  }, [hasArrived, destination, map]);
+
+  // Reset when arrival is cleared (new navigation session)
+  useEffect(() => {
+    if (!hasArrived) {
+      hasPlayedRef.current = false;
+    }
+  }, [hasArrived]);
 
   return null;
 }

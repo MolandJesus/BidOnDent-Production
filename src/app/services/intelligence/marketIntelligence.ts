@@ -2,6 +2,7 @@ import type { ShopSortOption } from "../auth/websiteIdentity";
 import type { InsurerBusinessProfile } from "../../types/networkProfiles";
 import { buildDirectoryInsuranceProfiles, mergeDirectoryEntriesByName } from "./directoryAdapters";
 import { INSURERS, SHOPS } from "./marketSeedData";
+import { getLocationForShop } from "./shopMapData";
 
 export type MarketUserType = "customer" | "shop" | "insurer";
 
@@ -186,6 +187,10 @@ export function buildShopRecommendations({
       ...shop.supportedMakes,
       ...shop.insurerPrograms,
       shop.aiSummary,
+      ...((): string[] => {
+        const loc = getLocationForShop(shop.id);
+        return [loc.city, loc.state, loc.zipCode, loc.address];
+      })(),
     ]);
   }).map((shop) => {
     let score = shop.rating * 12 + Math.min(shop.reviews, 200) * 0.08;
@@ -236,7 +241,10 @@ export function buildShopRecommendations({
       reasons.push("Can absorb higher claim volume without long delays");
     }
 
-    const insuranceCompatibilityScore = clampScore(insurerOverlap.length * 28 + shop.rating * 10);
+    const insuranceCompatibilityScore =
+      connectedInsurerIds.length > 0
+        ? clampScore(insurerOverlap.length * 28 + shop.rating * 10)
+        : 0;
 
     return {
       ...shop,

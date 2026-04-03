@@ -47,6 +47,7 @@ export type CoverageNavigationExperience = {
   setVoiceVolumePreset: (voiceVolumePreset: NavigationVoiceVolumePreset) => void;
   setGpsTrackingEnabled: (gpsTrackingEnabled: boolean) => void;
   setSpeedLimitMonitorEnabled: (speedLimitMonitorEnabled: boolean) => void;
+  setAutoRerouteEnabled: (autoRerouteEnabled: boolean) => void;
   addressQuery: string;
   setAddressQuery: (value: string) => void;
   addressResults: NavigationAddressResult[];
@@ -69,6 +70,7 @@ export type CoverageNavigationExperience = {
   hasArrived: boolean;
   nextStep: NavigationRouteStep | null;
   currentPosition: NavigationCoordinate | null;
+  currentHeadingDegrees: number | null;
   currentSpeedMph: number | null;
   gpsAccuracyMeters: number | null;
   gpsError: string;
@@ -100,6 +102,7 @@ export function useCoverageNavigationExperience({
   const [selectedRouteIndex, setSelectedRouteIndexState] = useState(0);
   const {
     currentPosition,
+    currentHeadingDegrees,
     currentSpeedMph,
     gpsAccuracyMeters,
     gpsError,
@@ -220,6 +223,8 @@ export function useCoverageNavigationExperience({
       setSettings((current) => ({ ...current, gpsTrackingEnabled })),
     setSpeedLimitMonitorEnabled: (speedLimitMonitorEnabled: boolean) =>
       setSettings((current) => ({ ...current, speedLimitMonitorEnabled })),
+    setAutoRerouteEnabled: (autoRerouteEnabled: boolean) =>
+      setSettings((current) => ({ ...current, autoRerouteEnabled })),
     addressQuery: addressSearch.addressQuery,
     setAddressQuery: addressSearch.setAddressQuery,
     addressResults: addressSearch.addressResults,
@@ -248,6 +253,7 @@ export function useCoverageNavigationExperience({
     hasArrived,
     nextStep,
     currentPosition,
+    currentHeadingDegrees,
     currentSpeedMph,
     gpsAccuracyMeters,
     gpsError,

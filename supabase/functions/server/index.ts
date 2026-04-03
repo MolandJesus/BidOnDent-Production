@@ -79,6 +79,7 @@ import {
 } from './handlers/network_profiles.ts'
 import { getUserProfile, saveUserProfile } from './handlers/profiles.ts'
 import { createBid, getBids, updateBidStatus, deleteBid } from './handlers/bids.ts'
+import { createEstimateRequest, getEstimateRequests, updateEstimateRequest, customerRespondToEstimate } from './handlers/estimate_requests.ts'
 import { getRateLimitKey, checkRateLimit, maybePruneStore } from './utils/rateLimiter.ts'
 
 console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
@@ -345,6 +346,22 @@ Deno.serve(async (req) => {
     if (path.startsWith('/bids/') && req.method === 'DELETE') {
       const bidId = path.split('/').pop()
       return await deleteBid(req, bidId, supabase, respond)
+    }
+
+    if (path === '/estimate-requests' && req.method === 'POST') {
+      return await createEstimateRequest(req, supabase, respond)
+    }
+
+    if (path === '/estimate-requests' && req.method === 'GET') {
+      return await getEstimateRequests(req, supabase, respond)
+    }
+
+    if (path === '/estimate-requests' && req.method === 'PATCH') {
+      return await updateEstimateRequest(req, supabase, respond)
+    }
+
+    if (path === '/estimate-requests' && req.method === 'PUT') {
+      return await customerRespondToEstimate(req, supabase, respond)
     }
 
     return respond({ error: 'Not found', path }, 404)

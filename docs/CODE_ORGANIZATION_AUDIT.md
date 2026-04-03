@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** March 29, 2026 (Map program passes 478-483 sync)
+**Last updated:** April 2, 2026 (Pass 562 — Code extraction sweep complete, all files ≤500 lines)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -28,7 +28,6 @@ Use this together with:
 
 - `docs/CLAUDE_AI_MASTER_CONTEXT.md`
 - `docs/BIDONDENT_PRODUCT_BRAIN.md`
-- `docs/MAP_EXPERIENCE_ARCHITECTURE.md`
 
 ## Current Architecture Snapshot
 
@@ -84,16 +83,16 @@ Use this together with:
 
 ## File Size Status
 
-The repository is back under the active 500-line hard cap for the primary map surfaces after the follow-up MapLibre extractions:
+The repository is fully under the 500-line hard cap as of Pass 562. A comprehensive extraction sweep (Passes 540–562) decomposed every oversized file into focused hooks and components. Top file: `useShopDirectorySession.ts` at exactly 500 lines.
 
-- `src/app/components/shop/ShopDirectoryScreen.tsx` reduced from 1383 → 979 lines via Pass 2; refactored in Pass 9 (~1060 lines); Pass 10 added immersive early-return (~1163 lines); **Pass 11 extraction: 1163 → 478 lines.** State, effects, handlers, computed values extracted to `useShopDirectorySession` hook. Hero and search panel extracted to dedicated components. Screen is now a thin composition layer: navigation intelligence orchestration + layout delegation. Under 500-line hard cap.
+- `src/app/components/shop/ShopDirectoryScreen.tsx` reduced from 1383 → 979 → 1163 → 478 (Pass 11) → grew back to ~1,003 → **Pass 540: 1003 → 499 lines.** Map interaction handlers extracted to `useShopDirectoryMapActions.ts`, dialog/sheet composition extracted to `ShopDirectoryDialogs.tsx`. Pass 554 compacted further to 494. **✅ Now under 500-line hard cap.**
 - `src/app/hooks/useShopDirectorySession.ts` (**new, Pass 11**, 494 lines): all 18 state variables, session-memory sync, selection effects, search/origin/directions handlers, all computed values (mapListings, summary, contextChips, roleHighlights, routeOptions, etc). Accepts `{ identity, userType, vehicles, reports }`.
 - `src/app/components/shop/ShopDirectoryHero.tsx` (**new, Pass 11**, 149 lines): two render modes — compact bar (map/hybrid) with back+badge+title+count, or full hero card with gradient, metrics grid, intelligence panel, callout cards.
 - `src/app/components/shop/ShopDirectorySearchPanel.tsx` (**new, Pass 11**, now 363 lines): search form, view mode toggle, sort select, rating filter, theme toggle, and role-specific panel. The heavier origin-search lane is now extracted again to keep this file under the hard cap.
-- `src/app/components/shop/ShopDirectoryImmersiveMap.tsx` (Pass 10, 253 lines): full-viewport immersive map experience. `fixed inset-0 z-40` container. Floating glass top bar (back + search + drawer toggle + mode switch + theme). Collapsible left-side results drawer with compact result cards. Renders `MapLibreShopDirectoryMapPane` + `ShopDirectoryMapOverlays` at full viewport.
+- `src/app/components/shop/ShopDirectoryImmersiveMap.tsx` (Pass 10, updated through Pass 487, ~300 lines): full-viewport immersive map experience. `fixed inset-0 z-40` container. Floating glass top bar (back + search + drawer toggle + mode switch + theme). Collapsible left-side results drawer with compact result cards. Renders `MapLibreShopDirectoryMapPane` + `ShopDirectoryMapOverlays` at full viewport. **Pass 487:** Added `tileDarkOverride` state and `effectiveMapTheme` computation for tile-aware theming — overlays, info panel, and intelligence panel now react to light/dark/satellite tile mode changes.
 - `src/app/components/shop/ShopDirectoryOriginSearch.tsx` (241 lines): extracted U.S.-wide origin search lane for the shop flow. Combines Nominatim-backed address/city/ZIP search with quick-pick origin chips, My Location, and save-origin affordances.
-- `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (Pass 9, updated through Pass 470, 288 lines): floating in-map overlay layer. Renders intelligence chip (top-left, expandable), route preview card (bottom-left, expandable turn list), and deviation prompt slot (top-center). Now includes immersive top-offset control plus safe-area-aware route-card bottom spacing.
-- `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx` (MapLibre migration + follow-up extraction, 365 lines): dashboard shop-discovery map surface now focused on state, interaction, popup handling, and composition. Back under the 500-line hard cap.
+- `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (Pass 9, updated through Pass 488, ~300 lines): floating in-map overlay layer. Renders intelligence chip (top-left, expandable), route preview card (bottom-left, expandable turn list), and deviation prompt slot (top-center). Now includes immersive top-offset control plus safe-area-aware route-card bottom spacing. **Pass 487:** Null-safe `selectedShop?.mapResult?.coordinates`. **Pass 488:** Mobile viewport overflow fix — `max-w-[calc(100vw-2rem)] sm:max-w-xs` ensures intelligence panel fits 375px screens.
+- `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx` (MapLibre migration + follow-up extraction, ~380 lines): dashboard shop-discovery map surface now focused on state, interaction, popup handling, and composition. Back under the 500-line hard cap. **Pass 487:** Added `onTileDarkChange` callback prop — fires `isDark` boolean derived from tile mode (`night`/`satellite` = dark, `roadmap` = light) so parent components can sync overlay theming.
 - `src/app/components/shop/ShopDirectoryMapLayers.tsx` (265 lines): extracted Source/Layer rendering block for routes, origin, user marker, saved places, and shop marker hierarchy.
 - `src/app/hooks/useShopDirectoryRoutePreview.ts` (234 lines): OSRM-backed live route-alternative hook for the shop flow. Converts public-provider route geometry and step instructions into `RouteOption` data, with local fallback route generation preserved for resilience.
 - `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx` (255 lines): extracted map-pane chrome for header badges, selected-shop bottom card, legend, and search-area pills. Includes compact legend mode and safe-area-aware bottom spacing.
@@ -116,10 +115,12 @@ The repository is back under the active 500-line hard cap for the primary map su
 - **Pass 435 (2026-03-29):** Runtime safety: submitBid throws on missing report, Promise.allSettled for session sync, useMemo for BidsScreen calculations.
 - **Pass 436 (2026-03-29):** ShopProfileModal 3 unlinked inputs wired to local state + Supabase save via `saveShopBusinessProfile` edge function.
 - **Pass 437 (2026-03-29):** Documentation system refactor — 14 historical docs archived to `/docs/archive/`, governance index rewritten.
-- The largest active screen/router files that are next best split targets:
-  - `src/app/routers/DashboardRouterScreens.tsx`
-  - `src/app/components/dashboard/ProfileDropdown.tsx`
-  - `src/app/components/app/DashboardLayout.tsx`
+- **Pass 562 (2026-04-02):** Comprehensive extraction sweep complete. All source files verified ≤500 lines. 20+ extraction passes (540–562) created ~25 new focused hooks and components. Key extractions: `ShopDirectoryScreen` (1003→494), `websiteIdentity` (683→274), `MapLibreShopDirectoryMapPane` (771→396), `BidsScreen` (708→442), `DashboardRouter` (615→452), `App.tsx` (574→496). See `CLAUDE_AI_MASTER_CONTEXT.md` Section 17 for the full extraction table.
+- The largest active files (all under 500) are:
+  - `src/app/hooks/useShopDirectorySession.ts` (500 lines)
+  - `src/app/routers/DashboardRouterScreens.tsx` (~492 lines)
+  - `src/app/components/shop/ShopDirectoryScreen.tsx` (~494 lines)
+  - `src/app/components/shop/ShopDirectoryMapOverlays.tsx` (~495 lines)
 - **Pass 84 fixes**: `DashboardRouter.tsx` and `DashboardTabScreens.tsx` now correctly plumb `onDeleteAccount` and `websiteIdentity` props to `AccountScreen`. Migration `010_add_clerk_user_id_to_damage_reports.sql` aligns database schema with edge function expectations. `MobileMapBottomSheet.tsx` has `pointer-events-auto` for touch gesture capture.
 
 ## What Is Organized Well
@@ -241,33 +242,6 @@ Do not broad-stroke move the whole repo at once. The safest evolution path is:
 - move report/bid view adapters closer to report/bid domains
 - reduce repeated per-screen normalization logic
 
-## Documentation Governance
-
-### Current source-of-truth docs
-
-- `docs/PHASE_1_PLATFORM_ARCHITECTURE_AUDIT_2026-03-20.md`
-- `docs/CODE_ORGANIZATION_AUDIT.md`
-- `docs/PLATFORM_REFACTOR_BACKLOG_2026-03-20.md`
-- `docs/PRODUCTION_READINESS_AUDIT_2026-03-20.md`
-- `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
-- `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
-- `docs/README.md`
-
-### Docs that need retirement review
-
-These older docs were retired because they no longer matched the live code:
-
-- `docs/FIXES_APPLIED.md`
-- `docs/IDENTIFIED_ISSUES.md`
-- `docs/PROJECT_COMPLETION_SUMMARY.md`
-- `docs/PROJECT_STATUS.md`
-- `docs/COMPREHENSIVE_TEST_PLAN.md`
-- `docs/CROSS_ACCOUNT_TESTING_PLAN.md`
-- `docs/BIDONDENT_NAVIGATION_REBUILD_MASTER_PLAN_2026-03-20.md`
-- `docs/JEFFREY_REQUEST_IMPLEMENTATION_PLAN.md`
-
-Use `docs/README.md` as the current documentation entry point instead.
-
 ## Next Structural Priorities
 
 ### Now
@@ -365,7 +339,7 @@ If a future pass introduces a reusable pattern from these exceptions, extract it
 
 1. **Dark mode refinement ongoing**: Navy base is delivered but continued tuning toward Apple Maps-style soft night mode is expected in future passes.
 2. **Map control consistency**: Premium styling is in place now but must be preserved across future feature passes. Any new map control must use the `mapSurfaceTheme.ts` tone system.
-3. **ShopDirectoryScreen** (339 lines after Pass 77 extraction): Extracted `useShopDirectorySession` hook, `ShopDirectorySearchPanel`, `ShopDirectoryHero`, `ShopDirectoryImmersiveMap`, `ShopDirectoryMapPane`, `ShopDirectoryMapOverlays`, `ShopDirectoryListBody`. Well under 500-line hard cap.
+3. **ShopDirectoryScreen** (✅ **494 lines** — reduced from ~1,003 by Pass 540 extraction sweep): Extracted `useShopDirectoryActions` (map interaction handlers), `ShopDirectorySheets` (sheet composition), plus earlier extractions: `useShopDirectorySession`, `ShopDirectorySearchPanel`, `ShopDirectoryHero`, `ShopDirectoryImmersiveMap`, `ShopDirectoryMapPane`, `ShopDirectoryMapOverlays`, `ShopDirectoryListBody`. **Now under 500-line hard cap.**
 4. **Landing page**: Not yet fully unified with the glass design system. Pass 1 (HeroSection carousel) is next.
 5. **Some role screens** still use raw Tailwind gray palette instead of theme tokens. These are acceptable as-is but should migrate during future glass adoption passes.
 
@@ -377,4 +351,4 @@ If a future pass introduces a reusable pattern from these exceptions, extract it
 - Feature work must not outpace design-system and architecture clarity.
 - The project is in a "design system correction + platform refinement" phase, not random feature expansion.
 - Governance docs (this file, Product Brain, Map Tracker, MOLANDJEUS) should be updated with every meaningful pass.
-- **Quality sweep (Passes 400-431)** delivered: all files < 500 lines, zero tsc errors, zero user-facing alerts, race conditions fixed, 57% image size reduction. See `docs/CLAUDE_AI_MASTER_CONTEXT.md` Section 14 for the full sweep log.
+- **Quality sweep (Passes 400-431)** delivered: initial 8 oversized files refactored, zero tsc errors, zero user-facing alerts, race conditions fixed, 57% image size reduction. **Comprehensive extraction sweep (Passes 540-562)** completed all remaining oversized files — all src files now under 500-line hard cap. See `docs/CLAUDE_AI_MASTER_CONTEXT.md` Sections 14 and 17.

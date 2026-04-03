@@ -37,6 +37,7 @@ export function useReportForm({
   const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [incident, setIncident] = useState("");
+  const [reportCoords, setReportCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [showSaveIndicator, setShowSaveIndicator] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -244,6 +245,8 @@ export function useReportForm({
           damageArea,
           zipCode,
           address,
+          latitude: reportCoords?.lat ?? null,
+          longitude: reportCoords?.lng ?? null,
           photos: uploadedPhotos,
           description,
           status: "pending" as const,
@@ -292,6 +295,7 @@ export function useReportForm({
     setDescription,
     setIncident,
     setStep,
+    setReportCoords,
     handlePhotoUpload,
     openFilePicker,
     openCamera,

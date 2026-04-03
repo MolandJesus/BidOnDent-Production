@@ -354,7 +354,10 @@ export function buildDirectoryShopRecommendations({
         id: getDirectoryShopId(profile),
         image: inferShopImage(profile),
         insurerPrograms,
-        insuranceCompatibilityScore: clampScore(matchingCarriers.length * 28 + rating * 10),
+        insuranceCompatibilityScore:
+          connectedCarrierNames.length > 0
+            ? clampScore(matchingCarriers.length * 28 + rating * 10)
+            : 0,
         matchReasons: reasons,
         name: profile.businessName,
         rating,

@@ -40,8 +40,11 @@ type ShopDirectoryListBodyProps = {
   compactCards: boolean;
   appearanceMode?: DashboardAppearanceMode;
   onStartNavigation?: (shop: ShopMapListing) => void;
+  onViewDetails?: (shop: ShopMapListing) => void;
+  onRequestEstimate?: (shop: ShopMapListing) => void;
   navigationSessionStatus: NavigationSessionStatus;
   navigationSessionDestinationId: string | null;
+  variant?: "default" | "showcase";
 };
 
 export default function ShopDirectoryListBody({
@@ -52,10 +55,14 @@ export default function ShopDirectoryListBody({
   compactCards,
   appearanceMode = "map-dark",
   onStartNavigation,
+  onViewDetails,
+  onRequestEstimate,
   navigationSessionStatus,
   navigationSessionDestinationId,
+  variant = "default",
 }: ShopDirectoryListBodyProps) {
   const isLight = appearanceMode === "light";
+  const isShowcase = variant === "showcase";
   const sectionLabelClass = `flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
     isLight ? "text-blue-600/70" : "text-blue-200/50"
   }`;
@@ -76,10 +83,14 @@ export default function ShopDirectoryListBody({
 
   return (
     <div
-      className={`min-h-0 flex-1 p-3 sm:p-4 lg:p-5 lg:overflow-y-auto ${session.showMapPane ? "pb-[calc(env(safe-area-inset-bottom)+6.5rem)] sm:pb-6" : ""}`}
+      className={
+        isShowcase
+          ? "min-h-0"
+          : `min-h-0 flex-1 p-3 sm:p-4 lg:p-5 lg:overflow-y-auto ${session.showMapPane ? "pb-[calc(env(safe-area-inset-bottom)+6.5rem)] sm:pb-6" : ""}`
+      }
     >
       {/* Route panel: in sidebar on list mode only (floating overlay on map modes) */}
-      {!session.showMapPane && (
+      {!isShowcase && !session.showMapPane && (
         <ShopDirectoryRoutePanel
           appearanceMode={appearanceMode}
           currentStepIndex={routePanel.currentStepIndex}
@@ -106,7 +117,7 @@ export default function ShopDirectoryListBody({
         />
       )}
 
-      {session.roleCollectionListings.length > 0 && (
+      {!isShowcase && session.roleCollectionListings.length > 0 && (
         <div className="mb-3">
           <div className={sectionLabelClass}>
             <Bookmark className="h-3.5 w-3.5" />
@@ -162,7 +173,7 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      {session.savedPlaces.length > 0 && (
+      {!isShowcase && session.savedPlaces.length > 0 && (
         <div className="mb-3">
           <div className={sectionLabelClass}>
             <Bookmark className="h-3.5 w-3.5" />
@@ -192,7 +203,7 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      {session.recentSearches.length > 0 && (
+      {!isShowcase && session.recentSearches.length > 0 && (
         <div className="mb-3">
           <div className={sectionLabelClass}>
             <Search className="h-3.5 w-3.5" />
@@ -227,7 +238,7 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-3">
+      <div className={`flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-3 ${isShowcase ? "" : ""}`}>
         <div>
           <p
             className={`text-xs font-semibold uppercase tracking-[0.18em] ${
@@ -237,12 +248,18 @@ export default function ShopDirectoryListBody({
             Recommended shops
           </p>
           <p
-            className={`mt-1 text-xl font-semibold ${
+            className={`mt-1 ${isShowcase ? "text-2xl sm:text-[2rem]" : "text-xl"} font-semibold ${
               isLight ? "text-slate-900" : "text-slate-100"
             }`}
           >
             {session.mapListings.length} result{session.mapListings.length === 1 ? "" : "s"}
           </p>
+          {isShowcase && (
+            <p className={`mt-2 max-w-2xl text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
+              Compare AI fit, distance, response time, and routing readiness after refining the map
+              above.
+            </p>
+          )}
         </div>
         {session.selectedShop && (
           <div
@@ -281,7 +298,7 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      <div className="mt-3 space-y-3">
+      <div className={isShowcase ? "mt-4 grid gap-4 md:grid-cols-2 2xl:grid-cols-3" : "mt-3 space-y-3"}>
         {session.mapListings.map((shop) => {
           const roleCollectionAction = getRoleCollectionActionLabels(
             userType,
@@ -332,13 +349,18 @@ export default function ShopDirectoryListBody({
                 compact={compactCards}
                 directionsActionLabel={directionsActionLabel}
                 isSelected={session.selectedShopId === shop.id}
+                onCardClick={() => session.setSelectedShopId(shop.id)}
                 onDirectionsAction={() =>
                   shouldUseNavigationAction && onStartNavigation
                     ? onStartNavigation(shop)
                     : session.handleOpenShopDirections(shop)
                 }
                 onPrimaryAction={() => session.handleToggleRoleCollection(shop.id)}
-                onSecondaryAction={() => session.setSelectedShopId(shop.id)}
+                onRequestEstimate={onRequestEstimate ? () => onRequestEstimate(shop) : undefined}
+                onSecondaryAction={() => {
+                  session.setSelectedShopId(shop.id);
+                  onViewDetails?.(shop);
+                }}
                 primaryActionLabel={roleCollectionAction.primary}
                 primaryColor={primaryColor}
                 routeStatusLabel={routeStatusLabel}

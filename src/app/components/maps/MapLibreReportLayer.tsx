@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Source, Layer, Popup, useMap } from "react-map-gl/maplibre";
+import { useCallback, useEffect, useState } from "react";
+import { Source, Layer, useMap } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
-import { getAllDamageReports } from "../../services/supabase/reports";
-import { zipToCoordinates, geocodeAddress } from "../../services/supabase/map";
 import { ReportDetailDrawer } from "./ReportDetailDrawer";
+import ReportLayerPopup from "./ReportLayerPopup";
+import { useReportLayerData } from "./useReportLayerData";
 import type { DamageReport } from "../../services/supabase/types";
+import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { MapTheme } from "../../types/mapDomain";
 
 const LAYER_ID = "report-markers-circle";
@@ -17,7 +18,13 @@ type MapLibreReportLayerProps = {
   onViewReportDetail?: (reportId: string) => void;
   onReportCountChange?: (count: number, loading: boolean) => void;
   onFindShopsNear?: (coords: { lat: number; lng: number }) => void;
+  onPlaceBid?: (report: DamageReport) => void;
+  onViewBids?: (reportId: string) => void;
+  initialReports?: DamageReport[];
   visible?: boolean;
+  statusFilter?: string;
+  userType?: MarketUserType;
+  focusReportId?: string;
 };
 
 export default function MapLibreReportLayer({
@@ -25,118 +32,39 @@ export default function MapLibreReportLayer({
   onViewReportDetail,
   onReportCountChange,
   onFindShopsNear,
+  onPlaceBid,
+  onViewBids,
+  initialReports,
   visible = true,
+  statusFilter = "all",
+  userType = "customer",
+  focusReportId,
 }: MapLibreReportLayerProps) {
   const isDark = mapTheme === "dark";
-  const [reports, setReports] = useState<DamageReport[]>([]);
+  const {
+    reports,
+    loading,
+    fetchError,
+    fetchReports,
+    bidCounts,
+    reportsWithCoordinates,
+    filteredReportsWithCoordinates,
+    geojson,
+  } = useReportLayerData({ initialReports, statusFilter, onReportCountChange });
   const [selectedReport, setSelectedReport] = useState<DamageReport | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(false);
 
-  const fetchReports = useCallback(() => {
-    setLoading(true);
-    setFetchError(false);
-    let isMounted = true;
-    getAllDamageReports()
-      .then((data) => {
-        if (!isMounted) return;
-        setReports(Array.isArray(data) ? data : []);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setFetchError(true);
-        setReports([]);
-      })
-      .finally(() => {
-        if (isMounted) setLoading(false);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
+  // Auto-open drawer for focused report (e.g. navigated from dashboard)
+  const [focusHandled, setFocusHandled] = useState(false);
   useEffect(() => {
-    fetchReports();
-  }, [fetchReports]);
-
-  // Notify parent of report count changes
-  useEffect(() => {
-    onReportCountChange?.(reports.length, loading);
-  }, [reports.length, loading, onReportCountChange]);
-
-  // Start with ZIP centroids, then refine with precise geocoding
-  const [geocodedCoords, setGeocodedCoords] = useState<Map<string, { lat: number; lng: number }>>(
-    new Map()
-  );
-
-  useEffect(() => {
-    if (reports.length === 0) return;
-    let cancelled = false;
-
-    (async () => {
-      for (const report of reports) {
-        if (cancelled) break;
-        if (!report.address && !report.city) continue;
-        const coords = await geocodeAddress({
-          address: report.address,
-          city: report.city,
-          state: report.state,
-          zip: report.zip_code,
-        });
-        if (cancelled) break;
-        if (coords && report.id) {
-          setGeocodedCoords((prev) => {
-            const next = new Map(prev);
-            next.set(report.id!, coords);
-            return next;
-          });
-        }
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [reports]);
-
-  const reportsWithCoordinates = useMemo(
-    () =>
-      reports
-        .map((report) => {
-          // Prefer geocoded address coordinates, fall back to ZIP centroid
-          const geocoded = report.id ? geocodedCoords.get(report.id) : undefined;
-          const coords = geocoded ?? zipToCoordinates(report.zip_code);
-          if (!coords) return null;
-          return { report, coords };
-        })
-        .filter((entry): entry is { report: DamageReport; coords: { lat: number; lng: number } } =>
-          Boolean(entry)
-        ),
-    [reports, geocodedCoords]
-  );
-
-  const geojson = useMemo(
-    () => ({
-      type: "FeatureCollection" as const,
-      features: reportsWithCoordinates.map(({ report, coords }) => ({
-        type: "Feature" as const,
-        geometry: {
-          type: "Point" as const,
-          coordinates: [coords.lng, coords.lat],
-        },
-        properties: {
-          id: report.id,
-          status: report.status ?? "pending",
-          vehicle: `${report.vehicle_year} ${report.vehicle_make} ${report.vehicle_model}`,
-          damageType: report.damage_type,
-          severity: report.damage_severity,
-          zip: report.zip_code ?? "",
-        },
-      })),
-    }),
-    [reportsWithCoordinates]
-  );
+    if (focusHandled || !focusReportId || reports.length === 0) return;
+    const target = reports.find((r) => r.id === focusReportId);
+    if (target) {
+      setSelectedReport(target);
+      setDrawerOpen(true);
+      setFocusHandled(true);
+    }
+  }, [focusReportId, reports, focusHandled]);
 
   const handleClick = useCallback(
     (e: MapLayerMouseEvent) => {
@@ -169,8 +97,9 @@ export default function MapLibreReportLayer({
       }
 
       // Individual report click
-      const reportId = feature.properties?.id as string;
-      const entry = reportsWithCoordinates.find((r) => r.report.id === reportId);
+      const reportId = feature.properties?.id;
+      if (!reportId) return;
+      const entry = reportsWithCoordinates.find((r) => r.report.id === String(reportId));
       if (entry) {
         setSelectedReport(entry.report);
         setDrawerOpen(true);
@@ -259,6 +188,23 @@ export default function MapLibreReportLayer({
           )}
         </div>
       )}
+
+      {/* ── Filtered-empty state (reports exist but filter hides all) ── */}
+      {!loading &&
+        !fetchError &&
+        reports.length > 0 &&
+        filteredReportsWithCoordinates.length === 0 && (
+          <div className="pointer-events-none absolute left-1/2 top-14 z-20 -translate-x-1/2">
+            <div
+              className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium shadow-lg backdrop-blur-md ${
+                isDark ? "bg-slate-900/80 text-slate-300" : "bg-white/80 text-slate-600"
+              }`}
+            >
+              No {statusFilter !== "all" ? statusFilter.replace("-", " ") : ""} reports on map
+            </div>
+          </div>
+        )}
+
       <Source
         id="damage-reports"
         type="geojson"
@@ -302,7 +248,7 @@ export default function MapLibreReportLayer({
           filter={["!", ["has", "point_count"]]}
           paint={
             {
-              "circle-radius": 11,
+              "circle-radius": 13,
               "circle-color": [
                 "match",
                 ["get", "status"],
@@ -316,8 +262,8 @@ export default function MapLibreReportLayer({
                 isDark ? "#64748b" : "#475569",
                 isDark ? "#f59e0b" : "#d97706",
               ],
-              "circle-opacity": isDark ? 0.92 : 0.88,
-              "circle-stroke-width": 2.5,
+              "circle-opacity": isDark ? 0.95 : 0.92,
+              "circle-stroke-width": 3,
               "circle-stroke-color": [
                 "match",
                 ["get", "status"],
@@ -376,74 +322,62 @@ export default function MapLibreReportLayer({
             } as Record<string, unknown>
           }
         />
+        {/* ── Bid count badge background (top-right of pin) ── */}
+        <Layer
+          id="report-bid-count-bg"
+          type="circle"
+          filter={["all", ["!", ["has", "point_count"]], [">", ["get", "bidCount"], 0]]}
+          paint={
+            {
+              "circle-radius": 8,
+              "circle-color": isDark ? "#3b82f6" : "#2563eb",
+              "circle-opacity": 0.95,
+              "circle-stroke-width": 1.5,
+              "circle-stroke-color": isDark ? "#93c5fd" : "#1d4ed8",
+              "circle-translate": [9, -9],
+            } as Record<string, unknown>
+          }
+        />
+        {/* ── Bid count badge number ── */}
+        <Layer
+          id="report-bid-count-text"
+          type="symbol"
+          filter={["all", ["!", ["has", "point_count"]], [">", ["get", "bidCount"], 0]]}
+          layout={
+            {
+              "text-field": ["to-string", ["get", "bidCount"]],
+              "text-size": 10,
+              "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+              "text-offset": [0.65, -0.65],
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+            } as Record<string, unknown>
+          }
+          paint={{
+            "text-color": "#ffffff",
+          }}
+        />
       </Source>
-      {selectedReport
-        ? (() => {
-            const popupCoords = reportsWithCoordinates.find(
-              (r) => r.report.id === selectedReport.id
-            )?.coords;
-            if (!popupCoords) return null;
-            return (
-              <Popup
-                longitude={popupCoords.lng}
-                latitude={popupCoords.lat}
-                closeOnClick={false}
-                onClose={() => {
-                  setSelectedReport(null);
-                  setDrawerOpen(false);
-                }}
-                anchor="bottom"
-                offset={16}
-              >
-                <div className="min-w-[160px] space-y-1 p-1">
-                  <div
-                    className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-900"}`}
-                  >
-                    {selectedReport.vehicle_year} {selectedReport.vehicle_make}{" "}
-                    {selectedReport.vehicle_model}
-                  </div>
-                  <div className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                    {selectedReport.damage_type} &middot; {selectedReport.damage_severity}
-                  </div>
-                  {selectedReport.status && (
-                    <span
-                      className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                        selectedReport.status === "in-repair" ||
-                        selectedReport.status === "approved"
-                          ? isDark
-                            ? "bg-green-900/50 text-green-300"
-                            : "bg-green-100 text-green-700"
-                          : selectedReport.status === "resolved" ||
-                              selectedReport.status === "completed"
-                            ? isDark
-                              ? "bg-slate-700/50 text-slate-300"
-                              : "bg-slate-100 text-slate-600"
-                            : isDark
-                              ? "bg-amber-900/50 text-amber-300"
-                              : "bg-amber-100 text-amber-700"
-                      }`}
-                    >
-                      {selectedReport.status
-                        .replace(/-/g, " ")
-                        .replace(/\b\w/g, (c) => c.toUpperCase())}
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setDrawerOpen(true)}
-                    className={`mt-1.5 inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                      isDark
-                        ? "border-amber-400/30 bg-amber-600/30 text-amber-100 hover:bg-amber-600/45"
-                        : "border-amber-300/60 bg-amber-50 text-amber-700 hover:bg-amber-100"
-                    }`}
-                  >
-                    View Detail
-                  </button>
-                </div>
-              </Popup>
-            );
-          })()
-        : null}
+      {selectedReport &&
+        (() => {
+          const popupCoords = reportsWithCoordinates.find(
+            (r) => r.report.id === selectedReport.id
+          )?.coords;
+          if (!popupCoords) return null;
+          return (
+            <ReportLayerPopup
+              report={selectedReport}
+              coords={popupCoords}
+              isDark={isDark}
+              bidCount={selectedReport.id ? bidCounts[selectedReport.id] : undefined}
+              onClose={() => {
+                setSelectedReport(null);
+                setDrawerOpen(false);
+              }}
+              onOpenDrawer={() => setDrawerOpen(true)}
+            />
+          );
+        })()}
       <ReportDetailDrawer
         open={drawerOpen}
         onOpenChange={handleDrawerChange}
@@ -457,6 +391,9 @@ export default function MapLibreReportLayer({
         mapTheme={mapTheme}
         onViewReportDetail={onViewReportDetail}
         onFindShopsNear={onFindShopsNear}
+        onPlaceBid={onPlaceBid}
+        onViewBids={onViewBids}
+        bidCount={selectedReport?.id ? bidCounts[selectedReport.id] : undefined}
       />
     </>
   );

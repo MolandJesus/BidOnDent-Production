@@ -1,24 +1,9 @@
-import { Bell, Car, Home, LogOut, Search, Settings, Sparkles, User } from "lucide-react";
+import { Bell, Home, LogOut, Search, Settings, Sparkles, User } from "lucide-react";
 import { useEffect, useRef, useState, type RefObject } from "react";
-import type { Bid, Notification, Vehicle } from "../../types";
+import type { Bid, Notification, Report, Vehicle } from "../../types";
+import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
 import NotificationCenter from "../dashboard/NotificationCenter";
-
-type UserProfile = {
-  name: string;
-  email: string;
-  user_type: string;
-  phone?: string;
-};
-
-type ProfileDropdownData = {
-  userType: "customer" | "shop" | "insurer";
-  reports: any[];
-  vehicles: Vehicle[];
-  bids: Bid[];
-  onNavigate: (destination: string, tab?: string) => void;
-  onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement | null>;
-};
+import BrandLogo from "./BrandLogo";
 
 type DashboardHeaderProps = {
   isLightAppearance: boolean;
@@ -31,7 +16,7 @@ type DashboardHeaderProps = {
   userImageUrl: string;
   notifications: Notification[];
   notificationSyncActive: boolean;
-  reports: any[];
+  reports: Report[];
   profileDropdownData?: ProfileDropdownData;
   unreadCount: number;
   onMarkNotificationRead: (notificationId: string | number) => void;
@@ -114,7 +99,7 @@ export default function DashboardHeader({
 
   return (
     <header
-      className={`sticky top-0 z-40 mx-2 mt-2 md:mx-3 md:mt-3 rounded-3xl md:rounded-[2rem] border ${
+      className={`sticky top-0 z-40 mx-1.5 mt-1.5 rounded-3xl border sm:mx-2 sm:mt-2 md:mx-3 md:mt-3 md:rounded-[2rem] ${
         isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.12]"
       }`}
       style={{
@@ -128,36 +113,19 @@ export default function DashboardHeader({
           : "0 8px 28px rgba(2, 8, 24, 0.50), inset 0 -1px 0 rgba(59, 130, 246, 0.14)",
       }}
     >
-      <div className="px-4 md:px-8 py-2.5 md:py-3.5 flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-2 px-3 py-2 sm:px-4 md:gap-3 md:px-8 md:py-3.5">
         <button
           onClick={onLogoClick}
           aria-label="Open dashboard home"
-          className="md:hidden flex items-center gap-2 cursor-pointer"
+          className={`flex min-h-[44px] min-w-0 shrink-0 items-center rounded-2xl px-1 py-1 transition-colors md:hidden ${isLightAppearance ? "hover:bg-slate-900/[0.04] active:bg-slate-900/[0.08]" : "hover:bg-white/5 active:bg-white/10"}`}
           type="button"
         >
-          <span
-            className="w-9 h-9 rounded-[1rem] flex items-center justify-center text-white"
-            style={{
-              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-              boxShadow: "0 3px 10px rgba(37, 99, 235, 0.30)",
-            }}
-          >
-            <Car className="w-4 h-4" />
-          </span>
-          <span className="text-lg font-bold tracking-tight">
-            <span
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Bid
-            </span>
-            <span style={{ color: "#3b82f6" }}>On</span>
-            <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>Dent</span>
-          </span>
+          <BrandLogo
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            tone={isLightAppearance ? "light" : "dark"}
+            size="header"
+          />
         </button>
 
         <div className="hidden md:block">
@@ -168,15 +136,17 @@ export default function DashboardHeader({
           </h2>
         </div>
 
-        <div className="flex items-center gap-2.5 ml-auto">
+        <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
           {onOpenDemoMode && (
             <button
               onClick={onOpenDemoMode}
-              className="md:hidden w-10 h-10 rounded-xl bd-glass-control--secondary flex items-center justify-center"
+              className={`flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border backdrop-blur-xl transition-all md:hidden ${isLightAppearance ? "border-slate-200/70 bg-white/72 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-white/90" : "border-blue-300/18 bg-white/[0.05] shadow-[0_10px_22px_rgba(2,6,23,0.26)] hover:bg-white/[0.08]"}`}
               aria-label="Open demo mode"
               type="button"
             >
-              <Sparkles className="w-5 h-5 text-blue-600" />
+              <Sparkles
+                className={`h-4 w-4 ${isLightAppearance ? "text-blue-600" : "text-blue-200/85"}`}
+              />
             </button>
           )}
           <div
@@ -215,7 +185,7 @@ export default function DashboardHeader({
                 setShowNotifications((current) => !current);
                 setShowTopProfileMenu(false);
               }}
-              className={`relative w-11 h-11 rounded-full flex items-center justify-center transition-colors ${isLightAppearance ? "border border-slate-200/80 bg-white/70 hover:bg-white/90" : "bd-glass-control--utility"}`}
+              className={`relative flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-colors ${isLightAppearance ? "border border-slate-200/80 bg-white/70 hover:bg-white/90" : "bd-glass-control--utility"}`}
               aria-label={
                 showNotifications
                   ? "Close notifications"
@@ -271,7 +241,7 @@ export default function DashboardHeader({
               aria-expanded={showTopProfileMenu}
               aria-haspopup="menu"
               aria-label={showTopProfileMenu ? "Close user profile menu" : "Open user profile menu"}
-              className="flex items-center gap-2 p-1 md:pl-1.5 md:pr-2 md:py-1.5 rounded-full hover:bg-blue-500/10 transition-colors"
+              className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-full p-1 transition-colors hover:bg-blue-500/10 md:gap-2 md:pl-1.5 md:pr-2 md:py-1.5"
               type="button"
             >
               {userImageUrl ? (

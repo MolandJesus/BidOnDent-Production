@@ -266,7 +266,7 @@ export interface WorkflowEvent {
   timestamp: string;
   actor?: string;
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ActivityLog {
@@ -276,7 +276,7 @@ export interface ActivityLog {
   resourceType: string;
   resourceId: string;
   timestamp: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 // ============================================================================

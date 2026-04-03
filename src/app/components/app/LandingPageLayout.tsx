@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
-import type { Bid, Notification, RedirectInfo, UserInfo, Vehicle } from "../../types";
+import type { Bid, Notification, RedirectInfo, Report, UserInfo, Vehicle } from "../../types";
+import type { ProfileDropdownData } from "../../types/dashboardShell";
 import CTASection from "../landing/CTASection";
 import BenefitsSection from "../landing/BenefitsSection";
 import BusinessInquirySection from "../landing/BusinessInquirySection";
@@ -14,18 +15,6 @@ import LandingPageHeader from "../landing/LandingPageHeader";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-
-type ProfileDropdownData = {
-  userType: "customer" | "shop" | "insurer";
-  notifications: Notification[];
-  notificationSyncActive?: boolean;
-  reports: any[];
-  vehicles: Vehicle[];
-  bids: Bid[];
-  onNavigate: (destination: string, tab?: string) => void;
-  onLogout: () => void;
-  forwardedRef: RefObject<HTMLDivElement | null>;
-};
 
 type LandingPageLayoutProps = {
   isLoggedIn: boolean;

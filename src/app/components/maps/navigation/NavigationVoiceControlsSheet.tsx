@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import { Check, X } from "lucide-react";
+import { Check, Play, X } from "lucide-react";
 import { cn } from "../../ui/utils";
 import { getMapSurfaceTheme } from "../mapSurfaceTheme";
 import type { MapSurfaceTone } from "../serviceCoverageMapTypes";
 import type { NavigationVoiceMode, NavigationVoiceVolumePreset } from "../../../types/navigation";
+import { speakNavigationInstruction } from "../../../services/navigation/voiceGuidance";
 
 type NavigationVoiceControlsSheetProps = {
   tone: MapSurfaceTone;
@@ -121,6 +121,24 @@ export default function NavigationVoiceControlsSheet({
             ))}
           </div>
         </div>
+
+        {voiceGuidanceSupported && voiceMode !== "muted" ? (
+          <button
+            type="button"
+            onClick={() => {
+              speakNavigationInstruction({
+                text: "In 400 feet, turn right onto Main Street.",
+                voiceMode: "full",
+                voicePersona: "british-smooth",
+                voiceVolumePreset,
+              });
+            }}
+            className={cn(theme.secondaryButtonClassName, "mt-4 w-full")}
+          >
+            <Play className="h-3.5 w-3.5" />
+            Preview voice
+          </button>
+        ) : null}
       </div>
     </div>
   );

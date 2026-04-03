@@ -77,6 +77,84 @@ export function ensureWebsiteUserKeyMatchesSession(
   return expectedWebsiteUserKey;
 }
 
+function normalizeWebsiteUserKey(value?: string | null) {
+  const normalized = value?.trim() || "";
+  return normalized || null;
+}
+
+async function getStoredWebsiteUserKeyForSession(
+  supabase: SupabaseClient,
+  session: VerifiedClerkSession
+) {
+  const { data: websitePreferences, error: websitePreferencesError } = await supabase
+    .from("website_preferences")
+    .select("website_user_key")
+    .eq("clerk_user_id", session.clerkUserId)
+    .maybeSingle();
+
+  if (websitePreferencesError) {
+    throw websitePreferencesError;
+  }
+
+  const websitePreferencesKey = normalizeWebsiteUserKey(
+    typeof websitePreferences?.website_user_key === "string"
+      ? websitePreferences.website_user_key
+      : null
+  );
+
+  if (websitePreferencesKey) {
+    return websitePreferencesKey;
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("website_user_key")
+    .eq("clerk_user_id", session.clerkUserId)
+    .maybeSingle();
+
+  if (profileError) {
+    throw profileError;
+  }
+
+  return normalizeWebsiteUserKey(
+    typeof profile?.website_user_key === "string" ? profile.website_user_key : null
+  );
+}
+
+export async function resolveWebsiteUserKeyForSession(
+  supabase: SupabaseClient,
+  session: VerifiedClerkSession,
+  requestedWebsiteUserKey?: string | null
+) {
+  const normalizedRequestedWebsiteUserKey = normalizeWebsiteUserKey(requestedWebsiteUserKey);
+  const storedWebsiteUserKey = await getStoredWebsiteUserKeyForSession(supabase, session);
+  const derivedWebsiteUserKey = buildWebsiteUserKey({
+    clerkUserId: session.clerkUserId,
+    email: session.email,
+  });
+
+  if (normalizedRequestedWebsiteUserKey) {
+    const allowedWebsiteUserKeys = new Set<string>();
+
+    if (storedWebsiteUserKey) {
+      allowedWebsiteUserKeys.add(storedWebsiteUserKey);
+    }
+
+    if (normalizeEmail(session.email)) {
+      allowedWebsiteUserKeys.add(derivedWebsiteUserKey);
+    }
+
+    if (
+      allowedWebsiteUserKeys.size > 0 &&
+      !allowedWebsiteUserKeys.has(normalizedRequestedWebsiteUserKey)
+    ) {
+      throw new Error("Authenticated website identity mismatch");
+    }
+  }
+
+  return storedWebsiteUserKey || derivedWebsiteUserKey;
+}
+
 export async function getAuthenticatedProfile(
   supabase: SupabaseClient,
   session: VerifiedClerkSession
@@ -123,12 +201,26 @@ export async function requireAuthenticatedProfile(
   supabase: SupabaseClient,
   options: { requireEmail?: boolean } = { requireEmail: true }
 ) {
-  const session = await requireClerkSession(req, options);
+  const session = await requireClerkSession(req, { requireEmail: false });
   const profile = await getAuthenticatedProfile(supabase, session);
+
+  const resolvedEmail = normalizeEmail(session.email) || normalizeEmail(profile?.email);
+
+  if (options.requireEmail && !resolvedEmail) {
+    throw new Error(
+      "Unable to resolve authenticated Clerk email. Configure CLERK_SECRET_KEY or link a profile email."
+    );
+  }
 
   return {
     profile,
-    session,
+    session:
+      resolvedEmail === session.email
+        ? session
+        : {
+            ...session,
+            email: resolvedEmail,
+          },
   };
 }
 
@@ -154,7 +246,7 @@ export async function requireAdminContext(req: Request, supabase: SupabaseClient
 
 export async function requireMarketplaceContext(req: Request, supabase: SupabaseClient) {
   const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
-    requireEmail: true,
+    requireEmail: false,
   });
 
   const isMarketplaceActor =

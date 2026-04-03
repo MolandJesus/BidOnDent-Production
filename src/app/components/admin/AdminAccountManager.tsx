@@ -41,15 +41,17 @@ export default function AdminAccountManager() {
 
     try {
       const adminUsers = await listAdminUsers();
-      setUsers(adminUsers.map((u) => ({
-        id: u.id,
-        email: u.email || "",
-        created_at: u.created_at || "",
-        confirmed_at: u.confirmed_at || undefined,
-        email_confirmed_at: u.email_confirmed_at || undefined,
-        last_sign_in_at: u.last_sign_in_at || undefined,
-        user_metadata: u.user_metadata,
-      })));
+      setUsers(
+        adminUsers.map((u) => ({
+          id: u.id,
+          email: u.email || "",
+          created_at: u.created_at || "",
+          confirmed_at: u.confirmed_at || undefined,
+          email_confirmed_at: u.email_confirmed_at || undefined,
+          last_sign_in_at: u.last_sign_in_at || undefined,
+          user_metadata: u.user_metadata,
+        }))
+      );
     } catch (err) {
       if (import.meta.env.DEV) console.error("Error loading users:", err);
       setError(`Failed to load users: ${err instanceof Error ? err.message : "Unknown error"}`);
@@ -245,7 +247,7 @@ export default function AdminAccountManager() {
               <label className="block text-sm font-medium text-slate-300 mb-1">Account Type</label>
               <select
                 value={testUserType}
-                onChange={(e) => setTestUserType(e.target.value as any)}
+                onChange={(e) => setTestUserType(e.target.value as "customer" | "shop" | "insurer")}
                 className="w-full px-3 py-2 border border-white/[0.12] rounded-lg"
               >
                 <option value="customer">Customer</option>

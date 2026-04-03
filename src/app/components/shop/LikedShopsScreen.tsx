@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Heart, MapPin, Phone, Search, Shield, Star } from "lucide-react";
+import { ArrowLeft, Heart, MapPin, Phone, Search, Send, Shield, Star } from "lucide-react";
 import { motion } from "motion/react";
 import ImageWithFallback from "../codelayer/ImageWithFallback";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
@@ -12,6 +12,7 @@ import {
 } from "../../services/auth/websiteIdentity";
 import { buildShopMapListings } from "../../services/intelligence/shopMapExperience";
 import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
+import { useNotifications } from "../../features/notifications";
 import { defaultCoverageCenter } from "../landing/coverageData";
 
 type LikedShopsScreenProps = {
@@ -33,6 +34,7 @@ export default function LikedShopsScreen({
 }: LikedShopsScreenProps) {
   const isLight = appearanceMode === "light";
   const { inventory } = useNetworkDirectory();
+  const notifications = useNotifications();
   const memory = loadWebsiteSessionMemory(identity);
   const [savedShopIds, setSavedShopIds] = useState<number[]>(
     memory.mapSession?.customerSavedShopIds || []
@@ -308,12 +310,14 @@ export default function LikedShopsScreen({
                             />
                             {shop.mapDistanceLabel}
                           </span>
-                          <span className="inline-flex items-center gap-1">
-                            <Shield
-                              className={`h-4 w-4 ${isLight ? "text-blue-500/60" : "text-blue-200/50"}`}
-                            />
-                            {shop.insuranceCompatibilityScore}% carrier fit
-                          </span>
+                          {shop.insuranceCompatibilityScore > 0 && (
+                            <span className="inline-flex items-center gap-1">
+                              <Shield
+                                className={`h-4 w-4 ${isLight ? "text-blue-500/60" : "text-blue-200/50"}`}
+                              />
+                              {shop.insuranceCompatibilityScore}% carrier fit
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -409,11 +413,22 @@ export default function LikedShopsScreen({
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       <button
-                        className="rounded-2xl px-4 py-3 text-sm font-medium text-white"
+                        className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium text-white"
                         style={{ backgroundColor: primaryColor }}
-                        onClick={onOpenMap}
+                        onClick={() => {
+                          notifications.push({
+                            title: "Estimate Requested",
+                            body: `Your request has been sent to ${shop.name}. They'll respond with a quote soon.`,
+                            category: "bid",
+                            payload: { shopId: shop.id, shopName: shop.name },
+                            priority: "normal",
+                            userId: identity?.providerUserId || "",
+                            deepLink: { screen: "bid", bidId: String(shop.id) },
+                          });
+                        }}
                       >
-                        Review In Map
+                        <Send className="h-4 w-4" />
+                        Request Estimate
                       </button>
                       <button
                         className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
@@ -421,10 +436,23 @@ export default function LikedShopsScreen({
                             ? "border border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
                             : "bd-glass-control--utility"
                         }`}
+                        onClick={onOpenMap}
                       >
-                        <Phone className="h-4 w-4" />
-                        Contact Shop
+                        Review In Map
                       </button>
+                      {shop.mapResult?.phone && (
+                        <a
+                          href={`tel:${shop.mapResult.phone}`}
+                          className={`inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors ${
+                            isLight
+                              ? "border border-slate-300 bg-white text-slate-700 hover:bg-slate-100"
+                              : "bd-glass-control--utility"
+                          }`}
+                        >
+                          <Phone className="h-4 w-4" />
+                          Contact Shop
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>

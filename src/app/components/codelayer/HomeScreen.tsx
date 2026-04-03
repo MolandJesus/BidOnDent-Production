@@ -1,11 +1,14 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Mail, Clock, CheckCircle2, XCircle } from "lucide-react";
 import CustomerMapWidget from "../dashboard/CustomerMapWidget";
 import ShopMapWidget from "../dashboard/ShopMapWidget";
 import InsurerMapWidget from "../dashboard/InsurerMapWidget";
+import ShopBidsSummary from "../shop/ShopBidsSummary";
 import { buildPrimaryAction, buildQuickActions } from "./homeScreenData";
 import { HomeOnboardingCard, HomeQuickActions, HomeReportsList } from "./HomeScreenSections";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
+import type { EstimateRequest } from "../../services/supabase/estimateRequests";
+import type { Bid as SupabaseBid } from "../../services/supabase/types";
 
 type HomeScreenProps = {
   userType: string;
@@ -18,6 +21,7 @@ type HomeScreenProps = {
   onStartReport: () => void;
   onViewAllReports: () => void;
   onOpenReport?: (reportId: string) => void;
+  onViewReportOnMap?: (reportId: string) => void;
   onConnectInsurance?: () => void;
   onViewLikedShops?: () => void;
   onViewBids?: () => void;
@@ -34,6 +38,9 @@ type HomeScreenProps = {
   originalAccountType?: string;
   onExitDemoMode?: () => void;
   reports?: DamageReport[];
+  estimateRequests?: EstimateRequest[];
+  onSelectEstimate?: (estimate: EstimateRequest) => void;
+  shopSubmittedBids?: SupabaseBid[];
 };
 
 export default function HomeScreen({
@@ -45,6 +52,7 @@ export default function HomeScreen({
   onStartReport,
   onViewAllReports,
   onOpenReport,
+  onViewReportOnMap,
   onConnectInsurance,
   onViewLikedShops,
   onViewBids,
@@ -60,6 +68,9 @@ export default function HomeScreen({
   originalAccountType,
   onExitDemoMode,
   reports = [],
+  estimateRequests = [],
+  onSelectEstimate,
+  shopSubmittedBids,
 }: HomeScreenProps) {
   const isLightAppearance = appearanceMode === "light";
   // Derived variables for overlays and panels
@@ -92,41 +103,11 @@ export default function HomeScreen({
   // Map-first, floating overlays layout
   return (
     <div className="relative w-full h-full min-h-[80vh] flex flex-col items-center justify-start pb-20 md:pb-10">
-      {/* Map widget as hero — sticky at top, flows with content */}
-      <div className="sticky top-0 z-10 w-full flex flex-col items-center pt-2">
-        <div className="w-full max-w-4xl px-2 md:px-6">
-          {userType === "shop" ? (
-            <ShopMapWidget
-              primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
-              appearanceMode={appearanceMode}
-              reports={reports}
-              onViewShops={onViewShops}
-            />
-          ) : userType === "insurer" ? (
-            <InsurerMapWidget
-              primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
-              appearanceMode={appearanceMode}
-              reports={reports}
-              onViewShops={onViewShops}
-            />
-          ) : (
-            <CustomerMapWidget
-              primaryColor={primaryColor}
-              secondaryColor={secondaryColor}
-              appearanceMode={appearanceMode}
-              reports={reports}
-              onViewShops={onViewShops}
-            />
-          )}
-        </div>
-      </div>
-      {/* Overlays for onboarding, quick actions, and report list */}
-      <div className="relative z-20 w-full max-w-4xl mt-5 md:mt-6 px-2 md:px-6 flex flex-col gap-4 md:gap-5">
-        {/* Compact welcome bar — stays tight so map dominates */}
+      {/* Dashboard content — welcome, actions, reports, then map widget */}
+      <div className="relative z-20 mt-3 w-full max-w-4xl px-2 md:mt-6 md:px-6 flex flex-col gap-3.5 md:gap-5">
+        {/* Compact welcome bar */}
         <section
-          className={`bd-glass-floating px-4 py-3 md:px-5 md:py-3.5 flex items-center justify-between gap-3 flex-wrap relative overflow-hidden${isLightAppearance ? " bd-light-surface" : ""}`}
+          className={`bd-glass-floating relative flex items-center justify-between gap-3 overflow-hidden px-4 py-3 md:px-5 md:py-3.5 flex-wrap${isLightAppearance ? " bd-light-surface" : ""}`}
           style={
             isLightAppearance
               ? {
@@ -207,6 +188,105 @@ export default function HomeScreen({
           appearanceMode={appearanceMode}
           primaryColor={primaryColor}
         />
+        {/* Customer: Estimate Request Status Cards */}
+        {userType === "customer" && estimateRequests.length > 0 && (
+          <section
+            className={`bd-glass-floating px-4 py-3.5 md:px-5 md:py-4${isLightAppearance ? " bd-light-surface" : ""}`}
+            style={
+              isLightAppearance
+                ? {
+                    background: "rgba(255, 255, 255, 0.95)",
+                    borderColor: "rgba(148, 163, 184, 0.28)",
+                  }
+                : {
+                    background:
+                      "linear-gradient(180deg, rgba(8, 18, 46, 0.88) 0%, rgba(7, 15, 38, 0.82) 100%)",
+                    borderColor: "rgba(96, 165, 250, 0.22)",
+                  }
+            }
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <Mail
+                className={`h-4 w-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
+              />
+              <h2
+                className={`text-sm font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+              >
+                Estimate Requests
+              </h2>
+              <span
+                className={`ml-auto text-xs font-medium ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`}
+              >
+                {estimateRequests.length} sent
+              </span>
+            </div>
+            <div className="space-y-2">
+              {estimateRequests.slice(0, 3).map((req) => {
+                const statusIcon =
+                  req.status === "responded" ? (
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                  ) : req.status === "declined" ? (
+                    <XCircle className="h-3.5 w-3.5 text-slate-400" />
+                  ) : req.status === "accepted" ? (
+                    <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
+                  ) : (
+                    <Clock className="h-3.5 w-3.5 text-amber-400" />
+                  );
+                const statusText =
+                  req.status === "responded"
+                    ? "Shop responded"
+                    : req.status === "declined"
+                      ? "Declined"
+                      : req.status === "accepted"
+                        ? "Accepted"
+                        : req.status === "viewed"
+                          ? "Viewed by shop"
+                          : "Pending";
+                return (
+                  <button
+                    key={req.id}
+                    type="button"
+                    onClick={() => onSelectEstimate?.(req)}
+                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 w-full text-left transition-colors ${isLightAppearance ? "bg-slate-50 hover:bg-slate-100" : "bg-white/[0.04] hover:bg-white/[0.08]"}`}
+                  >
+                    {statusIcon}
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className={`text-sm font-medium truncate ${isLightAppearance ? "text-slate-800" : "text-slate-200"}`}
+                      >
+                        {req.shop_name || "Shop"}
+                      </p>
+                      <p
+                        className={`text-xs truncate ${isLightAppearance ? "text-slate-500" : "text-slate-400"}`}
+                      >
+                        {req.description}
+                      </p>
+                    </div>
+                    <span
+                      className={`shrink-0 text-[11px] font-medium ${
+                        req.status === "responded"
+                          ? isLightAppearance
+                            ? "text-green-600"
+                            : "text-green-400"
+                          : req.status === "accepted"
+                            ? isLightAppearance
+                              ? "text-blue-600"
+                              : "text-blue-400"
+                            : req.status === "declined"
+                              ? "text-slate-400"
+                              : isLightAppearance
+                                ? "text-amber-600"
+                                : "text-amber-400"
+                      }`}
+                    >
+                      {statusText}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
         {/* Report list always accessible as floating panel */}
         <HomeReportsList
           userType={userType}
@@ -217,8 +297,43 @@ export default function HomeScreen({
           secondaryColor={secondaryColor}
           onViewAll={listViewAllAction}
           onOpenReport={onOpenReport}
+          onViewReportOnMap={onViewReportOnMap}
           onStartReport={onStartReport}
         />
+        {/* Shop: My Bids summary (between reports list and map widget) */}
+        {userType === "shop" && shopSubmittedBids && shopSubmittedBids.length > 0 && (
+          <ShopBidsSummary
+            bids={shopSubmittedBids}
+            appearanceMode={appearanceMode}
+            onViewJobs={onViewJobs}
+          />
+        )}
+        {/* Map widget — compact preview with CTA to full Shop Directory */}
+        {userType === "shop" ? (
+          <ShopMapWidget
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            appearanceMode={appearanceMode}
+            reports={reports}
+            onViewShops={onViewShops}
+          />
+        ) : userType === "insurer" ? (
+          <InsurerMapWidget
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            appearanceMode={appearanceMode}
+            reports={reports}
+            onViewShops={onViewShops}
+          />
+        ) : (
+          <CustomerMapWidget
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            appearanceMode={appearanceMode}
+            reports={reports}
+            onViewShops={onViewShops}
+          />
+        )}
       </div>
     </div>
   );

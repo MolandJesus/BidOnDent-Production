@@ -1,8 +1,9 @@
-import { Car, Home, LogOut, Menu, Settings, User, X } from "lucide-react";
+import { Home, LogOut, Menu, Settings, User, X } from "lucide-react";
 import { SignInButton, SignUpButton, useClerk, useUser } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import SettingsModal from "../codelayer/account/SettingsModal";
+import BrandLogo from "../app/BrandLogo";
 
 interface LandingPageHeaderProps {
   isLoggedIn: boolean;
@@ -104,35 +105,20 @@ export default function LandingPageHeader({
             : "rgba(12, 25, 41, 0.3)",
       }}
     >
-      <div className="container mx-auto px-4 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between max-w-7xl">
+      <div className="container mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-2.5 sm:gap-4 sm:px-6 sm:py-4">
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Back to top"
-          className={`flex items-center gap-2.5 py-2 px-2 rounded-xl cursor-pointer transition-colors duration-200 ${isLightAppearance ? "hover:bg-slate-900/[0.04] active:bg-slate-900/[0.08]" : "hover:bg-white/5 active:bg-white/10"}`}
+          className={`flex min-h-[44px] shrink-0 items-center rounded-2xl px-1 py-1 transition-colors duration-200 sm:rounded-xl sm:px-1.5 sm:py-1.5 ${isLightAppearance ? "hover:bg-slate-900/[0.04] active:bg-slate-900/[0.08]" : "hover:bg-white/5 active:bg-white/10"}`}
           type="button"
         >
-          <span
-            className="w-10 h-10 rounded-[1rem] flex items-center justify-center text-white"
-            style={{
-              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-              boxShadow: "0 2px 12px rgba(37, 99, 235, 0.25), 0 0 20px rgba(59, 130, 246, 0.08)",
-            }}
-          >
-            <Car className="w-5 h-5" />
-          </span>
-          <h1 className="text-lg font-bold tracking-tight">
-            <span
-              style={{
-                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Bid
-            </span>
-            <span style={{ color: isLightAppearance ? "#3b82f6" : "#70c0ee" }}>On</span>
-            <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>Dent</span>
+          <h1 className="whitespace-nowrap leading-none">
+            <BrandLogo
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+              tone={isLightAppearance ? "light" : "dark"}
+              size="header"
+            />
           </h1>
         </button>
 
@@ -168,7 +154,7 @@ export default function LandingPageHeader({
           </button>
         </nav>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {/* Mobile menu toggle */}
           <button
             type="button"
@@ -176,7 +162,7 @@ export default function LandingPageHeader({
             aria-controls="landing-mobile-navigation"
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            className={`md:hidden h-11 w-11 flex items-center justify-center rounded-xl transition-colors ${isLightAppearance ? "text-slate-600 hover:bg-slate-900/[0.04]" : "text-blue-200/80 hover:bg-white/10"}`}
+            className={`flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-2xl border backdrop-blur-xl transition-all md:hidden ${isLightAppearance ? "border-slate-200/50 bg-white/60 text-slate-600 shadow-[0_8px_18px_rgba(15,23,42,0.06)] hover:bg-white/80" : "border-blue-300/20 bg-white/[0.04] text-blue-100/80 shadow-[0_10px_22px_rgba(2,6,23,0.28)] hover:bg-white/[0.08]"}`}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -188,7 +174,7 @@ export default function LandingPageHeader({
                 <button
                   onClick={onViewDashboard}
                   aria-label="Open dashboard"
-                  className={`inline-flex min-h-[40px] items-center gap-2 font-medium px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border backdrop-blur-md transition-all ${isLightAppearance ? "border-slate-200/55 bg-white/65 text-slate-700 hover:bg-white/80 shadow-[0_8px_18px_rgba(15,23,42,0.08)]" : "border-blue-300/28 bg-[linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))] text-blue-100 hover:bg-[linear-gradient(180deg,rgba(59,130,246,0.28),rgba(15,23,42,0.78))] shadow-[0_10px_22px_rgba(2,6,23,0.32)]"}`}
+                  className={`inline-flex h-11 w-11 min-h-[44px] items-center justify-center gap-2 rounded-2xl border font-medium backdrop-blur-md transition-all sm:w-auto sm:px-3.5 sm:py-2 ${isLightAppearance ? "border-slate-200/55 bg-white/65 text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-white/80" : "border-blue-300/28 bg-[linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))] text-blue-100 shadow-[0_10px_22px_rgba(2,6,23,0.32)] hover:bg-[linear-gradient(180deg,rgba(59,130,246,0.28),rgba(15,23,42,0.78))]"}`}
                   type="button"
                 >
                   <Home
@@ -213,7 +199,7 @@ export default function LandingPageHeader({
                   aria-label={
                     showProfileMenu ? "Close user profile menu" : "Open user profile menu"
                   }
-                  className={`flex items-center gap-2 px-1.5 py-1.5 rounded-xl transition-colors ${isLightAppearance ? "hover:bg-slate-900/[0.04]" : "hover:bg-white/10"}`}
+                  className={`flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl border px-1 py-1 backdrop-blur-xl transition-all ${isLightAppearance ? "border-slate-200/50 bg-white/55 hover:bg-white/80" : "border-blue-300/18 bg-white/[0.04] hover:bg-white/[0.08]"}`}
                   type="button"
                 >
                   {user?.imageUrl ? (
