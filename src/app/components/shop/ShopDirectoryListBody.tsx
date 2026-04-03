@@ -238,55 +238,55 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      <div className={`flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-3 ${isShowcase ? "" : ""}`}>
-        <div>
-          <p
-            className={`text-xs font-semibold uppercase tracking-[0.18em] ${
-              isLight ? "text-blue-600/70" : "text-blue-200/50"
-            }`}
-          >
-            Recommended shops
-          </p>
-          <p
-            className={`mt-1 ${isShowcase ? "text-2xl sm:text-[2rem]" : "text-xl"} font-semibold ${
-              isLight ? "text-slate-900" : "text-slate-100"
-            }`}
-          >
-            {session.mapListings.length} result{session.mapListings.length === 1 ? "" : "s"}
-          </p>
-          {isShowcase && (
-            <p className={`mt-2 max-w-2xl text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
-              Compare AI fit, distance, response time, and routing readiness after refining the map
-              above.
-            </p>
-          )}
-        </div>
-        {session.selectedShop && (
-          <div
-            className={`rounded-xl sm:rounded-2xl border px-3 py-2 sm:px-4 sm:py-3 ${
-              isLight ? "border-blue-200 bg-blue-50" : "border-blue-400/30 bg-blue-500/20"
-            }`}
-          >
+      <div
+        className={isShowcase ? "bd-dashboard-panel bd-dashboard-panel--deep mb-4 p-4 sm:p-5" : ""}
+      >
+        <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-3">
+          <div>
             <p
-              className={`text-[11px] uppercase tracking-[0.18em] ${
-                isLight ? "text-blue-600/70" : "text-blue-200/60"
+              className={`text-xs font-semibold uppercase tracking-[0.18em] ${
+                isLight ? "text-blue-600/70" : "text-blue-200/50"
               }`}
             >
-              Focused shop
+              Recommended shops
             </p>
-            <p className={`text-sm font-semibold ${isLight ? "text-blue-800" : "text-slate-100"}`}>
-              {session.selectedShop.name}
+            <p
+              className={`mt-1 ${isShowcase ? "text-2xl sm:text-[2rem]" : "text-xl"} font-semibold ${
+                isLight ? "text-slate-900" : "text-slate-100"
+              }`}
+            >
+              {session.mapListings.length} result{session.mapListings.length === 1 ? "" : "s"}
             </p>
+            {isShowcase && (
+              <p
+                className={`mt-2 max-w-2xl text-sm leading-6 ${isLight ? "text-slate-600" : "text-slate-300/80"}`}
+              >
+                Compare AI fit, distance, response time, and routing readiness after refining the
+                map above.
+              </p>
+            )}
           </div>
-        )}
+          {session.selectedShop && (
+            <div className="bd-dashboard-section bd-dashboard-section--accent-indigo rounded-xl px-3 py-2.5 sm:px-4">
+              <p
+                className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${
+                  isLight ? "text-indigo-600/70" : "text-indigo-100/62"
+                }`}
+              >
+                Focused shop
+              </p>
+              <p
+                className={`mt-0.5 text-sm font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
+              >
+                {session.selectedShop.name}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {session.mapListings.length === 0 && (
-        <div
-          className={`mt-4 ${
-            isLight ? "bg-white/80 border border-slate-200/60 rounded-2xl" : "bd-glass-card"
-          } p-4 sm:p-6`}
-        >
+        <div className="bd-dashboard-panel bd-dashboard-panel--deep mt-4 p-4 sm:p-6">
           <p className={`text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
             No shops matched
           </p>
@@ -298,7 +298,9 @@ export default function ShopDirectoryListBody({
         </div>
       )}
 
-      <div className={isShowcase ? "mt-4 grid gap-4 md:grid-cols-2 2xl:grid-cols-3" : "mt-3 space-y-3"}>
+      <div
+        className={isShowcase ? "mt-4 grid gap-4 md:grid-cols-2 2xl:grid-cols-3" : "mt-3 space-y-3"}
+      >
         {session.mapListings.map((shop) => {
           const roleCollectionAction = getRoleCollectionActionLabels(
             userType,

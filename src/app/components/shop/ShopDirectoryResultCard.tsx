@@ -41,6 +41,11 @@ export default function ShopDirectoryResultCard({
 }: ShopDirectoryResultCardProps) {
   const isLight = appearanceMode === "light";
   const visibleMatchReasons = compact ? shop.matchReasons.slice(0, 1) : shop.matchReasons;
+  const shellToneClass = isSelected
+    ? "bd-dashboard-section bd-dashboard-section--accent-blue border-blue-300/40 ring-1 ring-blue-300/20"
+    : shop.topPick
+      ? "bd-dashboard-section bd-dashboard-section--accent-cyan bd-dashboard-section--interactive"
+      : "bd-dashboard-section bd-dashboard-section--deep bd-dashboard-section--interactive";
   const routeStatusClass =
     routeStatusTone === "arrived"
       ? isLight
@@ -55,15 +60,7 @@ export default function ShopDirectoryResultCard({
           : "border-blue-400/30 bg-blue-400/14 text-blue-200";
   return (
     <article
-      className={`overflow-hidden transition-all ${onCardClick ? "cursor-pointer" : ""} ${
-        isLight
-          ? isSelected
-            ? "bg-white border border-blue-300 shadow-md rounded-2xl ring-2 ring-blue-200/60"
-            : "bg-white/80 border border-slate-200/60 shadow-sm rounded-2xl hover:border-blue-200"
-          : isSelected
-            ? "bd-glass-card border-blue-400/60 ring-2 ring-blue-400/20"
-            : "bd-glass-card border-white/[0.10] hover:border-white/[0.20]"
-      }`}
+      className={`overflow-hidden transition-all ${onCardClick ? "cursor-pointer" : ""} ${shellToneClass}`}
       onClick={(e) => {
         if (onCardClick && !(e.target as HTMLElement).closest("button")) {
           onCardClick();
@@ -72,7 +69,7 @@ export default function ShopDirectoryResultCard({
     >
       {compact ? (
         <div className="flex gap-3 p-3 sm:gap-4 sm:p-4">
-          <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl sm:h-24 sm:w-24">
+          <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl sm:h-24 sm:w-24">
             <ImageWithFallback
               alt={shop.name}
               className="h-full w-full object-cover"
@@ -206,7 +203,7 @@ export default function ShopDirectoryResultCard({
 
             <div className="space-y-1.5">
               <button
-                className="min-h-[40px] w-full rounded-xl px-3 py-2 text-xs font-semibold text-white shadow-lg"
+                className="bd-dashboard-primary-button min-h-[44px] w-full rounded-lg px-3 py-2 text-xs font-semibold text-white"
                 onClick={onDirectionsAction}
                 style={{ background: `linear-gradient(90deg, ${primaryColor} 0%, #147dd6 100%)` }}
                 type="button"
@@ -219,10 +216,8 @@ export default function ShopDirectoryResultCard({
               </button>
               <div className="grid grid-cols-2 gap-1.5">
                 <button
-                  className={`min-h-[44px] rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-colors ${
-                    isLight
-                      ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
-                      : "bd-glass-control text-slate-100"
+                  className={`bd-dashboard-secondary-button min-h-[44px] rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                    isLight ? "text-slate-700 hover:bg-slate-50" : "text-slate-100"
                   }`}
                   onClick={onSecondaryAction}
                   type="button"
@@ -234,10 +229,10 @@ export default function ShopDirectoryResultCard({
                 </button>
                 {onRequestEstimate ? (
                   <button
-                    className={`min-h-[44px] rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                    className={`bd-dashboard-secondary-button min-h-[44px] rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
                       isLight
-                        ? "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
-                        : "border-blue-400/25 bg-blue-600/20 text-blue-200 hover:bg-blue-600/30"
+                        ? "border-blue-200/70 bg-blue-50/90 text-blue-700 hover:bg-blue-100"
+                        : "border-blue-400/22 bg-blue-600/18 text-blue-200 hover:bg-blue-600/26"
                     }`}
                     onClick={onRequestEstimate}
                     type="button"
@@ -249,10 +244,8 @@ export default function ShopDirectoryResultCard({
                   </button>
                 ) : (
                   <button
-                    className={`min-h-[44px] rounded-xl border px-2.5 py-1.5 text-xs font-medium transition-colors ${
-                      isLight
-                        ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 shadow-sm"
-                        : "bd-glass-control text-slate-100"
+                    className={`bd-dashboard-secondary-button min-h-[44px] rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                      isLight ? "text-slate-700 hover:bg-slate-50" : "text-slate-100"
                     }`}
                     onClick={onPrimaryAction}
                     type="button"

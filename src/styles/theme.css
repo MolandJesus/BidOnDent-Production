@@ -2092,6 +2092,12 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+.bd-dashboard-secondary-button--compact {
+  box-shadow:
+    0 10px 18px rgba(2, 6, 23, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
 .bd-dashboard-ghost-button {
   border: 1px solid transparent;
   background: transparent;
