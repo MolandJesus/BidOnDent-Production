@@ -312,6 +312,7 @@ export function useShopDirectoryNavigation({
     shopMapUserCoords,
     notifications,
     liveNavigationForSelectedShop,
+    directDestination,
     navigationStartRequested,
     setNavigationStartRequested,
     setFollowCurrentPositionRevision,
@@ -410,15 +411,15 @@ export function useShopDirectoryNavigation({
     // Start the navigation session directly
     navSession.startPlanning(originWaypoint, navigationDestinationToSessionWaypoint(dest));
 
-    // Immediately activate (skip the shop-lifecycle intermediate step)
-    requestAnimationFrame(() => {
-      navSession.activate();
-      notifications.showToast({
-        message: `Navigation started to ${dest.name}.`,
-        variant: "info",
-        durationMs: 2400,
-        deepLink: null,
-      });
+    // Activate synchronously — React 18 batches both reducer dispatches in the same
+    // tick, so the session transitions planning → active before any lifecycle effect
+    // can observe the intermediate "planning" status and reset it.
+    navSession.activate();
+    notifications.showToast({
+      message: `Navigation started to ${dest.name}.`,
+      variant: "info",
+      durationMs: 2400,
+      deepLink: null,
     });
   };
 

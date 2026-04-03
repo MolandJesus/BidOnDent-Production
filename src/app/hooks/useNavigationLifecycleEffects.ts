@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import type { NavigationSnapshot } from "../features/navigation";
 import type { useNavigationIntelligence, useNavigationSession } from "../features/navigation";
 import type { useNotifications } from "../features/notifications";
+import type { NavigationDestination } from "../types/mapDomain";
 import type { useNavigationGpsTracking } from "./useNavigationGpsTracking";
 import type { useNavigationRoutePreview } from "./useNavigationRoutePreview";
 import type { useShopDirectorySession } from "./useShopDirectorySession";
@@ -17,6 +18,8 @@ type UseNavigationLifecycleEffectsParams = {
   shopMapUserCoords: { latitude: number; longitude: number } | null;
   notifications: ReturnType<typeof useNotifications>;
   liveNavigationForSelectedShop: boolean;
+  /** Active direct-navigation destination (non-shop). When set, shop-sync logic is bypassed. */
+  directDestination: NavigationDestination | null;
   navigationStartRequested: number | null;
   setNavigationStartRequested: (value: number | null) => void;
   setFollowCurrentPositionRevision: React.Dispatch<React.SetStateAction<number>>;
@@ -32,6 +35,7 @@ export function useNavigationLifecycleEffects({
   shopMapUserCoords,
   notifications,
   liveNavigationForSelectedShop,
+  directDestination,
   navigationStartRequested,
   setNavigationStartRequested,
   setFollowCurrentPositionRevision,
@@ -133,7 +137,11 @@ export function useNavigationLifecycleEffects({
   ]);
 
   // ── Sync navigation session with shop directory state ──
+  // When a direct destination is active, the shop-lifecycle sync must be skipped entirely.
+  // The direct navigation path manages its own session via handleStartDirectNavigation.
   useEffect(() => {
+    if (directDestination) return;
+
     const { selectedShop, selectedOrigin, selectedRoute } = session;
     const { status } = navSession.session;
 
@@ -172,6 +180,7 @@ export function useNavigationLifecycleEffects({
       navSession.end();
     }
   }, [
+    directDestination,
     session.selectedShop?.id,
     session.selectedOrigin?.placeId,
     session.selectedRoute?.id,
