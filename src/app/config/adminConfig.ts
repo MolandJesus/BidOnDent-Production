@@ -65,9 +65,12 @@ export const TEST_ACCOUNT_EMAILS = TEST_ACCOUNTS.map((acc) => acc.email.toLowerC
 
 /**
  * Admin password for switching accounts (dev/test only)
- * Tree-shaken from production builds via DEV guard
+ * Set via VITE_ADMIN_SWITCH_PASSWORD environment variable.
+ * Never hardcode credentials in source control.
  */
-export const ADMIN_SWITCH_PASSWORD: string = import.meta.env.DEV ? "admin123" : "";
+export const ADMIN_SWITCH_PASSWORD: string = import.meta.env.DEV
+  ? (import.meta.env.VITE_ADMIN_SWITCH_PASSWORD ?? "")
+  : "";
 
 /**
  * Check if the given email is the main admin account

@@ -33,8 +33,7 @@ export default function DemoModeBanner({ showDismiss = true }: DemoModeBannerPro
             <p className="font-semibold text-sm md:text-base">🎭 Demo Mode Active</p>
             <p className="text-xs md:text-sm opacity-90">
               All data is stored locally in your browser. Try:{" "}
-              <code className="bg-white/20 px-1 rounded">customer@demo.com</code> /{" "}
-              <code className="bg-white/20 px-1 rounded">demo123</code>
+              <code className="bg-white/20 px-1 rounded">customer@demo.com</code>
             </p>
           </div>
         </div>

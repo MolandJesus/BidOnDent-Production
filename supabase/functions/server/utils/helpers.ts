@@ -3,7 +3,7 @@
  * Common functions used across all route handlers
  */
 
-import { corsHeaders } from '../config/constants.ts'
+import { corsHeaders, getCorsOrigin } from '../config/constants.ts'
 
 export const EdgeErrorCode = {
   MISSING_FIELD: 'MISSING_FIELD',

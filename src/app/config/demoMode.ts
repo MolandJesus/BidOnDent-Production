@@ -5,6 +5,12 @@
 
 export const DEMO_MODE = true;
 
+/**
+ * Demo password — set via VITE_DEMO_PASSWORD env var.
+ * Never hardcode credentials in source control.
+ */
+const DEMO_PASSWORD = import.meta.env.VITE_DEMO_PASSWORD ?? '';
+
 export const DEMO_CONFIG = {
   // Show demo banner at top of app
   showBanner: true,
@@ -13,17 +19,17 @@ export const DEMO_CONFIG = {
   demoAccounts: {
     customer: {
       email: 'customer@demo.com',
-      password: 'demo123',
+      password: DEMO_PASSWORD,
       name: 'Demo Customer'
     },
     shop: {
       email: 'shop@demo.com',
-      password: 'demo123',
+      password: DEMO_PASSWORD,
       name: 'Demo Auto Shop'
     },
     insurer: {
       email: 'insurer@demo.com',
-      password: 'demo123',
+      password: DEMO_PASSWORD,
       name: 'Demo Insurance Co.'
     }
   },
@@ -32,6 +38,6 @@ export const DEMO_CONFIG = {
   messages: {
     oAuthDisabled: 'OAuth sign-in is not available in demo mode. Use demo@bidondent.com or create a new account.',
     demoNotice: '🎭 DEMO MODE - All data stored locally in browser',
-    welcomeMessage: 'Welcome to BidOnDent Demo! Try customer@demo.com / demo123'
+    welcomeMessage: 'Welcome to BidOnDent Demo! Use a demo account to explore.'
   }
 };

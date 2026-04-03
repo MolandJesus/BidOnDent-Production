@@ -51,9 +51,7 @@ export function ReportDetailDrawer({
   const damageArea = report.damage_location || "";
   const description = report.damage_description || "";
   const photos: string[] = Array.isArray(report.photo_urls) ? report.photo_urls : [];
-  const submittedAt = report.created_at
-    ? new Date(report.created_at).toLocaleDateString()
-    : null;
+  const submittedAt = report.created_at ? new Date(report.created_at).toLocaleDateString() : null;
   const status = report.status || "submitted";
   const damageType = report.damage_type || "";
   const damageSeverity = report.damage_severity || "";

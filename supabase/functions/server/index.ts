@@ -7,7 +7,7 @@
 
 import { initializeDatabaseTables } from './database_init.tsx'
 import { initializeStorageBuckets } from './storage_init.tsx'
-import { corsHeaders, config } from './config/constants.ts'
+import { corsHeaders, getCorsOrigin, config } from './config/constants.ts'
 import { supabase, supabaseAuth } from './config/clients.ts'
 import { stripFunctionPrefix, createResponse } from './utils/helpers.ts'
 import { requireAdminContext } from './utils/authz.ts'
@@ -89,13 +89,15 @@ console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
 })()
 
 Deno.serve(async (req) => {
+  const requestOrigin = req.headers.get('origin');
+  const originHeader = getCorsOrigin(requestOrigin);
   const respond = (body: any, status = 200, additionalHeaders: Record<string, string> = {}) =>
-    createResponse(body, status, additionalHeaders)
+    createResponse(body, status, { 'Access-Control-Allow-Origin': originHeader, ...additionalHeaders })
 
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
-      headers: corsHeaders,
+      headers: { ...corsHeaders, 'Access-Control-Allow-Origin': originHeader },
     })
   }
 

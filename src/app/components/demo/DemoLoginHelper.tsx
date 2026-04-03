@@ -5,6 +5,7 @@
  */
 
 import { User, Wrench, Shield } from "lucide-react";
+import { DEMO_CONFIG } from "../../config/demoMode";
 
 interface DemoLoginHelperProps {
   onQuickLogin: (email: string, password: string, accountType: 'customer' | 'shop' | 'insurer') => void;
@@ -14,8 +15,8 @@ export default function DemoLoginHelper({ onQuickLogin }: DemoLoginHelperProps) 
   const demoAccounts = [
     {
       type: 'customer' as const,
-      email: 'customer@demo.com',
-      password: 'demo123',
+      email: DEMO_CONFIG.demoAccounts.customer.email,
+      password: DEMO_CONFIG.demoAccounts.customer.password,
       name: 'Demo Customer',
       icon: User,
       color: '#003d82',
@@ -23,8 +24,8 @@ export default function DemoLoginHelper({ onQuickLogin }: DemoLoginHelperProps) 
     },
     {
       type: 'shop' as const,
-      email: 'shop@demo.com',
-      password: 'demo123',
+      email: DEMO_CONFIG.demoAccounts.shop.email,
+      password: DEMO_CONFIG.demoAccounts.shop.password,
       name: 'Demo Auto Shop',
       icon: Wrench,
       color: '#f57c00',
@@ -32,8 +33,8 @@ export default function DemoLoginHelper({ onQuickLogin }: DemoLoginHelperProps) 
     },
     {
       type: 'insurer' as const,
-      email: 'insurer@demo.com',
-      password: 'demo123',
+      email: DEMO_CONFIG.demoAccounts.insurer.email,
+      password: DEMO_CONFIG.demoAccounts.insurer.password,
       name: 'Demo Insurance',
       icon: Shield,
       color: '#388e3c',

@@ -17,7 +17,7 @@ export async function uploadAccountProfileImage(file: File): Promise<string> {
   const uploadPromise = uploadPhoto(compressedBlob, PROFILE_IMAGE_BUCKET);
   const uploadTimeoutPromise = new Promise<null>((resolve) =>
     setTimeout(() => {
-      console.warn("⏱️ Upload timeout - falling back to base64");
+      if (import.meta.env.DEV) console.warn("⏱️ Upload timeout - falling back to base64");
       resolve(null);
     }, 30000)
   );
@@ -29,7 +29,7 @@ export async function uploadAccountProfileImage(file: File): Promise<string> {
     return publicUrl;
   }
 
-  console.warn("⚠️ Cloud upload failed, using base64 fallback");
+  if (import.meta.env.DEV) console.warn("⚠️ Cloud upload failed, using base64 fallback");
   const base64 = await blobToBase64(compressedBlob);
   if (import.meta.env.DEV) console.log("✅ Using base64 fallback for profile image");
   return base64;

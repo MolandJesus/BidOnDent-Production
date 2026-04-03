@@ -139,13 +139,14 @@ export default function MapLibreShopDirectoryViewportManager({
         if (lat > maxLat) maxLat = lat;
       }
       if (!isFinite(minLng) || !isFinite(maxLng) || !isFinite(minLat) || !isFinite(maxLat)) {
-        console.warn("[ViewportManager] Invalid bounds, skipping fitBounds:", {
-          minLng,
-          maxLng,
-          minLat,
-          maxLat,
-          pointCount: points.length,
-        });
+        if (import.meta.env.DEV)
+          console.warn("[ViewportManager] Invalid bounds, skipping fitBounds:", {
+            minLng,
+            maxLng,
+            minLat,
+            maxLat,
+            pointCount: points.length,
+          });
         lastAppliedFitKeyRef.current = fitRunKey;
         return;
       }
