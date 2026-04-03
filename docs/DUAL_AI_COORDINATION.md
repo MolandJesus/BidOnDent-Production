@@ -79,6 +79,9 @@
 | 750  | ChatGPT | Refresh dual AI coordination after service and map-helper coverage | `900b9a4d` |
 | 751  | ChatGPT | Stabilize Supabase map tests by mocking client boot           | `cf46c45e` |
 | 752  | ChatGPT | Add market intelligence helper coverage                       | `1522b5d3` |
+| 753  | ChatGPT | Refresh dual AI coordination after suite stabilization        | `6b058638` |
+| 754  | ChatGPT | Add market intelligence recommendation coverage               | `d52648a4` |
+| 755  | ChatGPT | Add route panel helper coverage                               | `8693babd` |
 
 ---
 
@@ -87,7 +90,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 747+ | Service/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 753+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| ChatGPT | 756+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -109,7 +112,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 746 / ChatGPT Pass 752. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 746 / ChatGPT Pass 755. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -691,3 +694,31 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 370/370.
+
+### ChatGPT Report — 2026-04-03 — Passes 753-755
+
+**Completed:**
+
+- Pass 753: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 754: Market intelligence recommendation coverage — `src/app/services/intelligence/marketIntelligence.test.ts`
+- Pass 755: Route panel helper coverage — `src/app/components/shop/shopDirectoryRoutePanelUtils.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after the suite-stabilization pass so the shared ledger, dirty-file warning, and handoff baseline stayed current for Claude.
+- Added direct top-level coverage for `buildShopRecommendations`, `buildShopIntelligenceSummary`, `buildInsuranceRecommendations`, and `buildInsuranceIntelligenceSummary`, including top-pick behavior, connected-carrier ordering, and empty-state fallback summaries.
+- Added direct coverage for `formatActiveDuration`, `buildRoutePanelTheme`, and `buildRoutePanelLabels`, locking down light/dark surface selection plus live, paused, arrived, and route-error label behavior for the route panel.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after the new coverage passes to verify the support lane is still clean and the current baseline is honestly green end-to-end.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree is still limited to the tracker/master-context docs, the two bid UI files, and the untracked worker prompt, so the support lane is no longer adding extra editor noise.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- The support lane now has broader direct coverage for both the market-intelligence recommendation layer and the shop route-panel labeling layer, so if you keep iterating in adjacent UI/runtime flows these pure helpers now have regression protection.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 380/380.
