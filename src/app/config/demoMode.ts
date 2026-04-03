@@ -1,9 +1,12 @@
 /**
  * Demo Mode Configuration
- * Set to true to disable all Supabase functionality and use localStorage instead
+ *
+ * DEMO_MODE is controlled via the VITE_DEMO_MODE env var.
+ * - In production builds: defaults to false (real Supabase data only).
+ * - In local dev: set VITE_DEMO_MODE=true in .env.local to enable demo fallback.
  */
 
-export const DEMO_MODE = true;
+export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
 
 /**
  * Demo password — set via VITE_DEMO_PASSWORD env var.
