@@ -24,23 +24,21 @@ import NotificationToast from "./components/ui/NotificationToast";
 import {
   PRIMARY_COLOR,
   SECONDARY_COLOR,
-  CTA_BUTTON_TEXT,
   CUSTOMER_NAV_TABS,
   SHOP_NAV_TABS,
   INSURER_NAV_TABS,
-  LANDING_PAGE_IMAGES,
 } from "./constants";
 
 // Import helpers
 import { buildDashboardRouterProps } from "./utils/buildDashboardRouterProps";
 import { completeShopOnboarding, completeInsurerOnboarding } from "./utils/onboardingHandlers";
+import { renderLandingPage } from "./utils/renderLandingPage";
 import type { ViewMode, DamageReport } from "./types";
 
 // Import components
 import AppLoading from "./components/app/AppLoading";
 import { AuthConfigFallback, useHashPage } from "./components/app/AppShell";
 import DashboardLayout from "./components/app/DashboardLayout";
-import LandingPageLayout from "./components/app/LandingPageLayout";
 import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector";
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
@@ -201,22 +199,9 @@ function AppContent() {
   }, [notifications, navigation]);
 
   // ============================================================================
-  // CONSTANTS - Imported from /constants
-  // ============================================================================
-
-  const primaryColor = PRIMARY_COLOR;
-  const secondaryColor = SECONDARY_COLOR;
-  const ctaButtonText = CTA_BUTTON_TEXT;
-
-  // ============================================================================
   // COMPUTED VALUES
   // ============================================================================
 
-  // Determine which nav tabs to show based on user type
-  const navTabs = CUSTOMER_NAV_TABS;
-  const shopNavTabs = SHOP_NAV_TABS;
-  const insurerNavTabs = INSURER_NAV_TABS;
-  // Navigation tabs config - Switch based on demo mode or actual user type
   const effectiveUserType =
     navigation.demoMode && navigation.demoAccountType
       ? navigation.demoAccountType
@@ -224,47 +209,36 @@ function AppContent() {
 
   const currentNavTabs =
     effectiveUserType === "shop"
-      ? shopNavTabs
+      ? SHOP_NAV_TABS
       : effectiveUserType === "insurer"
-        ? insurerNavTabs
-        : navTabs;
+        ? INSURER_NAV_TABS
+        : CUSTOMER_NAV_TABS;
 
-  // ============================================================================
-  // LANDING PAGE IMAGES (from constants)
-  // ============================================================================
-
-  const heroImage = LANDING_PAGE_IMAGES.HERO;
-  const vehicleInspectionImage = LANDING_PAGE_IMAGES.VEHICLE_INSPECTION;
-  const mechanicImage = LANDING_PAGE_IMAGES.MECHANIC;
-  const repairToolImage = LANDING_PAGE_IMAGES.REPAIR_TOOLS;
-  const dentRepairImage = LANDING_PAGE_IMAGES.DENT_REPAIR;
-  const precisionRepairImage = LANDING_PAGE_IMAGES.PRECISION_REPAIR;
-
-  const landingUserInfo = userProfile
-    ? { name: userProfile.name, email: userProfile.email, profileImage: "" }
-    : userData.userInfo;
-
-  const landingRedirectInfo = userProfile ? { type: userProfile.user_type } : userData.redirectInfo;
-
-  const landingProfileDropdownData = userProfile
-    ? {
-        userType: userProfile.user_type,
-        notifications: userData.notifications,
-        reports: userData.reports,
-        vehicles: userData.vehicles,
-        bids: userData.bids,
-        onNavigate: (destination: string, tab?: string) => {
-          if (tab) {
-            navigation.setCurrentTab(tab);
-          }
-          navigation.setViewMode(destination as ViewMode);
-          navigation.setShowProfileDropdown(false);
-          navigation.setShowLandingPage(false);
-        },
-        onLogout: handleLogout,
-        forwardedRef: navigation.profileDropdownRef,
-      }
-    : undefined;
+  const landingPageDeps = {
+    appearanceMode,
+    setAppearanceMode,
+    showLandingPage: navigation.showLandingPage,
+    showProfileDropdown: navigation.showProfileDropdown,
+    userProfile: userProfile
+      ? { name: userProfile.name, email: userProfile.email, user_type: userProfile.user_type }
+      : null,
+    userInfo: userData.userInfo,
+    redirectInfo: userData.redirectInfo,
+    notifications: userData.notifications,
+    reports: userData.reports,
+    vehicles: userData.vehicles,
+    bids: userData.bids,
+    onLoginClick: handleLogin,
+    onViewDashboard: () => navigation.setShowLandingPage(false),
+    onLogout: handleLogout,
+    onNavigate: (destination: string, tab?: string) => {
+      if (tab) navigation.setCurrentTab(tab);
+      navigation.setViewMode(destination as ViewMode);
+      navigation.setShowProfileDropdown(false);
+      navigation.setShowLandingPage(false);
+    },
+    profileDropdownRef: navigation.profileDropdownRef,
+  };
 
   const shouldWaitForBusinessProfile =
     !!user && !!userProfile && userProfile.user_type !== "customer" && isBusinessProfileLoading;
@@ -295,30 +269,6 @@ function AppContent() {
     };
     await completeInsurerOnboarding(data, adaptedSave);
   };
-
-  const renderLandingPage = (isLoggedIn: boolean) => (
-    <LandingPageLayout
-      isLoggedIn={isLoggedIn}
-      appearanceMode={appearanceMode}
-      primaryColor={primaryColor}
-      secondaryColor={secondaryColor}
-      ctaButtonText={ctaButtonText}
-      heroImage={heroImage}
-      vehicleInspectionImage={vehicleInspectionImage}
-      mechanicImage={mechanicImage}
-      repairToolImage={repairToolImage}
-      dentRepairImage={dentRepairImage}
-      precisionRepairImage={precisionRepairImage}
-      showLandingPage={navigation.showLandingPage}
-      showProfileDropdown={navigation.showProfileDropdown}
-      userInfo={landingUserInfo}
-      redirectInfo={landingRedirectInfo}
-      onLoginClick={handleLogin}
-      onViewDashboard={() => navigation.setShowLandingPage(false)}
-      onAppearanceModeChange={setAppearanceMode}
-      profileDropdownData={landingProfileDropdownData}
-    />
-  );
 
   // ============================================================================
   // RENDER LOGIC
@@ -366,7 +316,7 @@ function AppContent() {
               navigation.setShowOnboarding(false);
               navigation.setOnboardingComplete(true);
             }}
-            primaryColor={primaryColor}
+            primaryColor={PRIMARY_COLOR}
           />
         );
       }
@@ -379,7 +329,7 @@ function AppContent() {
               navigation.setShowOnboarding(false);
               navigation.setOnboardingComplete(true);
             }}
-            primaryColor={primaryColor}
+            primaryColor={PRIMARY_COLOR}
           />
         );
       }
@@ -387,7 +337,7 @@ function AppContent() {
 
     // Show landing page while logged in
     if (navigation.showLandingPage) {
-      return renderLandingPage(true);
+      return renderLandingPage(landingPageDeps, true);
     }
 
     const profileDropdownData = {
@@ -419,8 +369,8 @@ function AppContent() {
       handleDeleteAccount,
       handleLogout,
       onReportSubmit: handleReportSubmitWithNotification,
-      primaryColor,
-      secondaryColor,
+      primaryColor: PRIMARY_COLOR,
+      secondaryColor: SECONDARY_COLOR,
       userImageUrl: user?.imageUrl || "",
       websiteIdentity,
       appearanceMode,
@@ -431,8 +381,8 @@ function AppContent() {
       <DashboardLayout
         appearanceMode={appearanceMode}
         onAppearanceModeChange={setAppearanceMode}
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
+        primaryColor={PRIMARY_COLOR}
+        secondaryColor={SECONDARY_COLOR}
         currentNavTabs={currentNavTabs}
         currentTab={navigation.currentTab}
         viewMode={navigation.viewMode}
@@ -464,7 +414,7 @@ function AppContent() {
   }
 
   // Landing page (not logged in)
-  return renderLandingPage(false);
+  return renderLandingPage(landingPageDeps, false);
 }
 
 // Main App component wrapped with ClerkProvider
