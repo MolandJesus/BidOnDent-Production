@@ -1,8 +1,8 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** April 3, 2026 (Pass 622 — Code cleanliness verified, dead code removed, OWASP audit passed)
+**Last updated:** April 3, 2026 (Pass 716 — support-lane test coverage and coordination refreshed)
 **Status:** Active documentation operating index
-**Active docs:** 11 | **Archived docs:** 24+
+**Active docs:** 14 | **Archived docs:** 24
 
 BidOnDent is a **map-first automotive repair marketplace**. The map is the product. Everything else exists to support the spatial workflow around reporting damage, finding shops, routing, bids, and insurer coordination.
 

@@ -1,11 +1,11 @@
 # Getting Started
 
-Last updated: March 28, 2026
+Last updated: April 3, 2026
 Status: Active onboarding guide
 
 Get BidOnDent running locally with Clerk + Supabase in about 10 minutes.
 
-Scope note: This guide is for local setup and first-run flow. For current execution status and pre-refactor truth, use `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` and `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`.
+Scope note: This guide is for local setup and first-run flow. For current execution truth, read `CLAUDE_AI_MASTER_CONTEXT.md`, `BIDONDENT_MAP_TRACKER_2026-03-21.md`, and `docs/README.md` instead of relying on archived baseline snapshots.
 
 ## Prerequisites
 
