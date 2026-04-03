@@ -409,9 +409,9 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ### Utilities
 
-| File                                                  | Purpose                                              |
-| ----------------------------------------------------- | ---------------------------------------------------- |
-| `src/app/utils/lazyWithRetry.ts`                      | Lazy chunk retry (retries once after 1.5s delay)     |
+| File                             | Purpose                                          |
+| -------------------------------- | ------------------------------------------------ |
+| `src/app/utils/lazyWithRetry.ts` | Lazy chunk retry (retries once after 1.5s delay) |
 
 ---
 

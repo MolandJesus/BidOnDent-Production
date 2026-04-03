@@ -273,7 +273,7 @@ describe("transformSupabaseReport", () => {
     expect(result.description).toBe("Minor dent from fender bender");
     expect(result.photos).toEqual(["url1.jpg", "url2.jpg"]);
     expect(result.incident).toBe("Happened in parking lot");
-    expect(result.status).toBe("submitted");
+    expect(result.status).toBe("pending"); // "submitted" normalizes to "pending" on frontend
     expect(result.address).toBe("123 Main St");
     expect(result.city).toBe("Yonkers");
     expect(result.state).toBe("NY");
