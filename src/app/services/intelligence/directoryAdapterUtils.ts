@@ -26,6 +26,11 @@ export const CITY_COORDINATE_DIRECTORY: Record<string, Coordinates> = {
   "brewster,ny": { latitude: 41.3951, longitude: -73.6182 },
 };
 
+const DEFAULT_COORDINATE_ANCHOR: Coordinates = {
+  latitude: 32.7767,
+  longitude: -96.797,
+};
+
 const SHOP_FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80",
@@ -75,7 +80,7 @@ export function buildApproximateCoordinates(
   state?: string | null
 ) {
   const cityKey = `${city || ""},${state || ""}`.toLowerCase();
-  const anchor = CITY_COORDINATE_DIRECTORY[cityKey] || CITY_COORDINATE_DIRECTORY["dallas,tx"];
+  const anchor = CITY_COORDINATE_DIRECTORY[cityKey] || DEFAULT_COORDINATE_ANCHOR;
   const hash = hashString(seed);
   const latitudeOffset = ((hash % 1000) / 1000 - 0.5) * 0.18;
   const longitudeOffset = ((Math.floor(hash / 1000) % 1000) / 1000 - 0.5) * 0.24;
