@@ -7,7 +7,7 @@
  * - useShopDirectorySession = search/filter/map state
  * - useShopDirectoryNavigation = navigation lifecycle + guidance + route intelligence
  */
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { CoveragePartnerShop } from "../components/maps/serviceCoverageMapTypes";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
@@ -20,10 +20,6 @@ import {
   useNavigationToastBridge,
   useNavigationVoiceAlerts,
 } from "../features/navigation";
-import {
-  loadNavigationGuidanceSettings,
-  saveNavigationGuidanceSettings,
-} from "../services/navigation/navigationPreferences";
 import {
   getPreferredVoiceLabel,
   supportsVoiceGuidance,
@@ -41,6 +37,7 @@ import {
   buildShopGuidanceOriginTarget,
 } from "./shopDirectoryNavigationUtils";
 import { useNavigationLifecycleEffects } from "./useNavigationLifecycleEffects";
+import { useGuidanceSettings } from "./useGuidanceSettings";
 
 type ShopDirectorySession = ReturnType<typeof useShopDirectorySession>;
 
@@ -61,57 +58,18 @@ export function useShopDirectoryNavigation({
 
   const intelligence = useNavigationIntelligence();
   const navSession = useNavigationSession(identity?.providerUserId ?? undefined);
-  const [guidanceSettings, setGuidanceSettings] = useState(() => loadNavigationGuidanceSettings());
+  const {
+    guidanceSettings,
+    handleVoiceModeChange,
+    handleVoiceVolumePresetChange,
+    handleToggleGpsTracking,
+    handleToggleSpeedLimitMonitor,
+    handleToggleAutoReroute,
+  } = useGuidanceSettings();
   const reroute = useNavigationReroute(intelligence.latestEvent, {
     autoRerouteEnabled: guidanceSettings.autoRerouteEnabled,
     currentRouteId: session.selectedRouteId,
   });
-
-  const handleVoiceModeChange = useCallback((voiceMode: typeof guidanceSettings.voiceMode) => {
-    if (voiceMode !== "muted") {
-      primeVoiceEngine();
-    }
-    setGuidanceSettings((prev) => {
-      const next = { ...prev, voiceMode };
-      saveNavigationGuidanceSettings(next);
-      return next;
-    });
-  }, []);
-
-  const handleVoiceVolumePresetChange = useCallback(
-    (voiceVolumePreset: typeof guidanceSettings.voiceVolumePreset) => {
-      setGuidanceSettings((prev) => {
-        const next = { ...prev, voiceVolumePreset };
-        saveNavigationGuidanceSettings(next);
-        return next;
-      });
-    },
-    []
-  );
-
-  const handleToggleGpsTracking = useCallback(() => {
-    setGuidanceSettings((prev) => {
-      const next = { ...prev, gpsTrackingEnabled: !prev.gpsTrackingEnabled };
-      saveNavigationGuidanceSettings(next);
-      return next;
-    });
-  }, []);
-
-  const handleToggleSpeedLimitMonitor = useCallback(() => {
-    setGuidanceSettings((prev) => {
-      const next = { ...prev, speedLimitMonitorEnabled: !prev.speedLimitMonitorEnabled };
-      saveNavigationGuidanceSettings(next);
-      return next;
-    });
-  }, []);
-
-  const handleToggleAutoReroute = useCallback(() => {
-    setGuidanceSettings((prev) => {
-      const next = { ...prev, autoRerouteEnabled: !prev.autoRerouteEnabled };
-      saveNavigationGuidanceSettings(next);
-      return next;
-    });
-  }, []);
 
   const shopNavigationGps = useNavigationGpsTracking({
     gpsTrackingEnabled: guidanceSettings.gpsTrackingEnabled,
