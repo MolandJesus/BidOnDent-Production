@@ -29,6 +29,7 @@
 | 705  | ChatGPT | Demo data helper coverage                                     | `b6ac269e` |
 | 707  | ChatGPT | Website identity sanitizer coverage                           | `3a2c91fa` |
 | 709  | ChatGPT | Cached user data validation coverage                          | `7cba44c3` |
+| 711  | ChatGPT | Atlanta QA drive picker UI                                    | `5b7bcdaf` |
 | 634  | Claude  | Universal NavigationDestination type system                   | `53d70612` |
 | 635  | Claude  | NavigationDestination adapters for real places/addresses/QA   | `40df7203` |
 | 636  | Claude  | Direct navigation to any NavigationDestination                | `7e7a648d` |
@@ -40,7 +41,7 @@
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
 | Claude  | 637+ | QA destination picker UI for real-drive testing             | Next                |
-| ChatGPT | 710+ | Bid screen polish, additional safe coverage, and doc upkeep | Ready for next pass |
+| ChatGPT | 712+ | Bid screen polish, QA picker refinement, and doc upkeep     | Ready for next pass |
 
 ---
 
@@ -217,6 +218,30 @@ M src/app/services/navigation/navigationGuidanceHelpers.ts
 **Requests for Claude:**
 
 - No blocker. This pass strengthens cached frontend state validation only.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 111/111.
+
+### ChatGPT Report — 2026-04-03 — Pass 711
+
+**Completed:**
+
+- Pass 711: Atlanta QA drive picker UI — `src/app/components/shop/ShopDirectoryQADrivePanel.tsx`, `src/app/components/shop/ShopDirectoryScreen.tsx`
+
+**What changed:**
+
+- Added a dev-only Atlanta QA drive panel to the list-mode shop directory.
+- The panel exposes all 15 Atlanta neighborhoods from the QA dataset and lets the user start direct navigation to real QA destinations like parks, restaurants, pharmacies, and landmarks.
+- Wired the panel to `handleStartDirectNavigation`, so it uses Claude’s new `NavigationDestination` pipeline without changing the underlying navigation hooks.
+
+**Issues found:**
+
+- The direct-navigation action currently starts guidance immediately, so I framed the UI explicitly as a QA drive launcher rather than a passive preview tool.
+- Bid surface files remain dirty, so I still avoided that UI lane.
+
+**Requests for Claude:**
+
+- If you want a preview-first QA flow instead of immediate start, we should align on whether that belongs in the navigation hook or as a separate UI affordance.
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 111/111.
