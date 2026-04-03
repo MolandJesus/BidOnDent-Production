@@ -98,7 +98,7 @@ export default function ShopDirectoryHybridMapSection({
   );
 
   const renderGuidanceOverlay = (containerClassName: string) =>
-    nav.liveNavigationForSelectedShop && nav.routePreview ? (
+    nav.liveNavigationActive && nav.routePreview ? (
       <NavigationActiveManeuverCard
         containerClassName={containerClassName}
         followingStep={nav.followingStep}
@@ -143,14 +143,14 @@ export default function ShopDirectoryHybridMapSection({
             userCoords={nav.shopMapUserCoords}
             userHeadingDegrees={nav.userHeadingDegrees}
             userType={userType}
-            followCurrentPosition={nav.liveNavigationForSelectedShop}
+            followCurrentPosition={nav.liveNavigationActive}
             followCurrentPositionRevision={nav.followCurrentPositionRevision}
             onOpenShopDirections={session.handleOpenShopDirections}
             onStartNavigation={nav.handleStartInAppNavigation}
             navigationSessionDestinationId={nav.navigationSessionDestinationId}
             navigationSessionStatus={nav.navigationSessionStatus}
             directionsActionLabel={session.directionsActionLabel}
-            hasArrived={nav.hasArrivedForSelectedShop}
+            hasArrived={nav.hasArrivedForDestination}
             isLoadingRoute={nav.routePanel.isLoadingRoute}
             remainingDistanceLabel={nav.liveRemainingDistanceLabel}
             remainingEtaLabel={nav.liveRemainingEtaLabel}
@@ -192,7 +192,7 @@ export default function ShopDirectoryHybridMapSection({
                 routeError={nav.routePanel.routeError}
                 routeOptions={nav.mapRouteOptions}
                 routeSummary={nav.mapRouteSummary}
-                hasArrived={nav.hasArrivedForSelectedShop}
+                hasArrived={nav.hasArrivedForDestination}
                 sessionActiveSeconds={nav.sessionActiveSeconds}
                 sessionDestinationId={nav.navigationSessionDestinationId}
                 sessionDestinationLabel={nav.sessionDestinationLabel}

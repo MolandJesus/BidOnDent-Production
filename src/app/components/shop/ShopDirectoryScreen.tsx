@@ -99,7 +99,7 @@ export default function ShopDirectoryScreen({
   const compactCards = session.mapViewMode === "map";
 
   const renderGuidanceOverlay = (containerClassName: string) =>
-    nav.liveNavigationForSelectedShop && nav.routePreview ? (
+    nav.liveNavigationActive && nav.routePreview ? (
       <NavigationActiveManeuverCard
         containerClassName={containerClassName}
         followingStep={nav.followingStep}
@@ -142,7 +142,7 @@ export default function ShopDirectoryScreen({
           <ShopDirectoryImmersiveMap
             deviationPrompt={deviationPromptNode}
             directionsActionLabel={session.directionsActionLabel}
-            followCurrentPosition={nav.liveNavigationForSelectedShop}
+            followCurrentPosition={nav.liveNavigationActive}
             followCurrentPositionRevision={nav.followCurrentPositionRevision}
             guidanceOverlay={renderGuidanceOverlay("top-20 sm:top-24")}
             isMapDark={session.isMapDark}
@@ -174,7 +174,7 @@ export default function ShopDirectoryScreen({
             onToggleRoleCollection={session.handleToggleRoleCollection}
             onToggleTheme={session.handleToggleTheme}
             primaryColor={primaryColor}
-            hasArrived={nav.hasArrivedForSelectedShop}
+            hasArrived={nav.hasArrivedForDestination}
             isLoadingRoute={nav.routePanel.isLoadingRoute}
             remainingDistanceLabel={nav.liveRemainingDistanceLabel}
             remainingEtaLabel={nav.liveRemainingEtaLabel}

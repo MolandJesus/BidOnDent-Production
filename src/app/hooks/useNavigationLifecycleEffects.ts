@@ -18,8 +18,12 @@ type UseNavigationLifecycleEffectsParams = {
   shopMapUserCoords: { latitude: number; longitude: number } | null;
   notifications: ReturnType<typeof useNotifications>;
   liveNavigationForSelectedShop: boolean;
+  /** True when ANY live navigation is active (shop or direct). */
+  liveNavigationActive: boolean;
   /** Active direct-navigation destination (non-shop). When set, shop-sync logic is bypassed. */
   directDestination: NavigationDestination | null;
+  /** True when the user has arrived at any active destination. */
+  hasArrivedForDestination: boolean;
   navigationStartRequested: number | null;
   setNavigationStartRequested: (value: number | null) => void;
   setFollowCurrentPositionRevision: React.Dispatch<React.SetStateAction<number>>;
@@ -35,7 +39,9 @@ export function useNavigationLifecycleEffects({
   shopMapUserCoords,
   notifications,
   liveNavigationForSelectedShop,
+  liveNavigationActive,
   directDestination,
+  hasArrivedForDestination,
   navigationStartRequested,
   setNavigationStartRequested,
   setFollowCurrentPositionRevision,
@@ -77,20 +83,27 @@ export function useNavigationLifecycleEffects({
 
   // ── Follow position revision on navigation activation ──
   useEffect(() => {
-    if (!liveNavigationForSelectedShop || navSession.session.status !== "active") {
+    if (!liveNavigationActive || navSession.session.status !== "active") {
       return;
     }
 
     setFollowCurrentPositionRevision((current) => current + 1);
-  }, [liveNavigationForSelectedShop, navSession.session.status, session.selectedShop?.id]);
+  }, [
+    liveNavigationActive,
+    navSession.session.status,
+    session.selectedShop?.id,
+    directDestination?.id,
+  ]);
 
   // ── Arrival toast ──
+  // Works for both shop-based and direct navigation destinations.
+  const arrivalDestinationLabel = session.selectedShop?.name ?? directDestination?.name ?? null;
   useEffect(() => {
-    if (!liveNavigationForSelectedShop || navSession.session.status !== "active") {
+    if (!liveNavigationActive || navSession.session.status !== "active") {
       return;
     }
 
-    if (!shopGuidancePreview.hasArrived || !session.selectedShop) {
+    if (!hasArrivedForDestination || !arrivalDestinationLabel) {
       return;
     }
 
@@ -99,28 +112,28 @@ export function useNavigationLifecycleEffects({
     }
 
     notifications.showToast({
-      message: `Arrived at ${session.selectedShop.name}.`,
+      message: `Arrived at ${arrivalDestinationLabel}.`,
       variant: "success",
       durationMs: 3200,
       deepLink: null,
     });
     lastArrivalToastSessionIdRef.current = navSession.session.id;
   }, [
-    liveNavigationForSelectedShop,
+    liveNavigationActive,
     navSession.session.id,
     navSession.session.status,
     notifications,
-    session.selectedShop,
-    shopGuidancePreview.hasArrived,
+    arrivalDestinationLabel,
+    hasArrivedForDestination,
   ]);
 
   // ── Auto-end after arrival delay ──
   useEffect(() => {
-    if (!liveNavigationForSelectedShop || navSession.session.status !== "active") {
+    if (!liveNavigationActive || navSession.session.status !== "active") {
       return;
     }
 
-    if (!shopGuidancePreview.hasArrived) {
+    if (!hasArrivedForDestination) {
       return;
     }
 
@@ -129,12 +142,7 @@ export function useNavigationLifecycleEffects({
     }, 6000);
 
     return () => clearTimeout(timer);
-  }, [
-    liveNavigationForSelectedShop,
-    navSession.end,
-    navSession.session.status,
-    shopGuidancePreview.hasArrived,
-  ]);
+  }, [liveNavigationActive, navSession.end, navSession.session.status, hasArrivedForDestination]);
 
   // ── Sync navigation session with shop directory state ──
   // When a direct destination is active, the shop-lifecycle sync must be skipped entirely.

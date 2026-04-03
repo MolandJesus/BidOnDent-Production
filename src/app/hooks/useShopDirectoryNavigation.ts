@@ -92,8 +92,16 @@ export function useShopDirectoryNavigation({
             guidanceSettings.gpsTrackingEnabled,
             shopNavigationGps.currentPosition
           )
-        : null,
+        : directDestination && guidanceSettings.gpsTrackingEnabled && shopNavigationGps.currentPosition
+          ? {
+              lat: shopNavigationGps.currentPosition.lat,
+              lng: shopNavigationGps.currentPosition.lng,
+              label: "Live GPS position",
+              source: "geolocation" as const,
+            }
+          : null,
     [
+      directDestination?.id,
       session.selectedOrigin?.placeId,
       session.selectedOrigin?.latitude,
       session.selectedOrigin?.longitude,
@@ -152,11 +160,19 @@ export function useShopDirectoryNavigation({
       navigationSessionDestinationId === String(session.selectedShop.id) &&
       (navSession.session.status === "active" || navSession.session.status === "paused")
   );
+  const liveNavigationForDirectDest = Boolean(
+    directDestination &&
+      navigationSessionDestinationId === String(directDestination.id) &&
+      (navSession.session.status === "active" || navSession.session.status === "paused")
+  );
+  /** True when ANY live navigation is active (shop or direct destination). */
+  const liveNavigationActive = liveNavigationForSelectedShop || liveNavigationForDirectDest;
   const hasArrivedForSelectedShop = Boolean(
     session.selectedShop &&
       navigationSessionDestinationId === String(session.selectedShop.id) &&
       shopGuidancePreview.hasArrived
   );
+  const hasArrivedForDestination = Boolean(liveNavigationActive && shopGuidancePreview.hasArrived);
   const selectedShopNavigationActionLabel = session.selectedShop
     ? getShopRouteActionLabel({
         shopId: session.selectedShop.id,
@@ -195,7 +211,7 @@ export function useShopDirectoryNavigation({
     : [];
 
   const mapRouteOptions =
-    liveNavigationForSelectedShop && liveGuidanceRouteOptions.length > 0
+    liveNavigationActive && liveGuidanceRouteOptions.length > 0
       ? liveGuidanceRouteOptions
       : session.routeOptions;
 
@@ -205,12 +221,24 @@ export function useShopDirectoryNavigation({
     null;
 
   const mapRouteSummary =
-    liveNavigationForSelectedShop && session.selectedShop
+    liveNavigationActive && (session.selectedShop || directDestination)
       ? buildRoleAwareRouteSummary({
           selectedRoute: mapSelectedRoute,
-          shop: session.selectedShop,
+          shop:
+            session.selectedShop ??
+            ({
+              id: 0,
+              name: directDestination?.name ?? "Destination",
+              mapResult: {
+                address: directDestination?.address ?? "",
+                coordinates: {
+                  latitude: directDestination?.lat ?? 0,
+                  longitude: directDestination?.lng ?? 0,
+                },
+              },
+            } as NonNullable<typeof session.selectedShop>),
           userType,
-          isActiveGuidance: Boolean(liveNavigationForSelectedShop || intelligence.latestEvent),
+          isActiveGuidance: Boolean(liveNavigationActive || intelligence.latestEvent),
         })
       : session.routeSummary;
 
@@ -241,47 +269,46 @@ export function useShopDirectoryNavigation({
     return Math.round(speedBasedSeconds * 0.7 + staticRemainingDurationSeconds * 0.3);
   })();
 
-  const liveRemainingEtaLabel = hasArrivedForSelectedShop
+  const liveRemainingEtaLabel = hasArrivedForDestination
     ? "Arrived"
-    : liveNavigationForSelectedShop && remainingDurationSeconds > 0
+    : liveNavigationActive && remainingDurationSeconds > 0
       ? `${Math.max(1, Math.round(remainingDurationSeconds / 60))}m`
       : null;
-  const liveRemainingDistanceLabel = hasArrivedForSelectedShop
+  const liveRemainingDistanceLabel = hasArrivedForDestination
     ? "Here"
-    : liveNavigationForSelectedShop && remainingDistanceMeters > 0
+    : liveNavigationActive && remainingDistanceMeters > 0
       ? formatDistanceLabel(remainingDistanceMeters / 1609.34)
       : null;
 
   const routePanel = {
-    routeSummary: liveNavigationForSelectedShop ? mapRouteSummary : session.routeSummary,
-    routeOptions: liveNavigationForSelectedShop ? mapRouteOptions : session.routeOptions,
-    selectedRoute: liveNavigationForSelectedShop ? mapSelectedRoute : session.selectedRoute,
-    mode: liveNavigationForSelectedShop ? ("guidance" as const) : ("preview" as const),
-    hasArrived: hasArrivedForSelectedShop,
-    isLoadingRoute: liveNavigationForSelectedShop
+    routeSummary: liveNavigationActive ? mapRouteSummary : session.routeSummary,
+    routeOptions: liveNavigationActive ? mapRouteOptions : session.routeOptions,
+    selectedRoute: liveNavigationActive ? mapSelectedRoute : session.selectedRoute,
+    mode: liveNavigationActive ? ("guidance" as const) : ("preview" as const),
+    hasArrived: hasArrivedForDestination,
+    isLoadingRoute: liveNavigationActive
       ? shopGuidancePreview.isLoadingRoute
       : session.isLoadingRoutes,
-    routeError: liveNavigationForSelectedShop ? shopGuidancePreview.routeError : session.routeError,
-    usingLiveRoutes: liveNavigationForSelectedShop
+    routeError: liveNavigationActive ? shopGuidancePreview.routeError : session.routeError,
+    usingLiveRoutes: liveNavigationActive
       ? liveGuidanceRouteOptions.length > 0
       : session.usingLiveRoutes,
     remainingEtaLabel: liveRemainingEtaLabel,
     remainingDistanceLabel: liveRemainingDistanceLabel,
-    currentStepIndex: liveNavigationForSelectedShop ? shopGuidancePreview.currentStepIndex : 0,
-    nextInstruction: liveNavigationForSelectedShop
+    currentStepIndex: liveNavigationActive ? shopGuidancePreview.currentStepIndex : 0,
+    nextInstruction: liveNavigationActive
       ? (shopGuidancePreview.nextStep?.instruction ?? null)
       : null,
-    followingInstruction: liveNavigationForSelectedShop
-      ? (followingStep?.instruction ?? null)
-      : null,
+    followingInstruction: liveNavigationActive ? (followingStep?.instruction ?? null) : null,
     navigationSessionStatus: navSession.session.status,
     sessionActiveSeconds: navSession.session.activeSeconds,
-    onPauseNavigation: liveNavigationForSelectedShop ? () => navSession.pause("user") : undefined,
-    onResumeNavigation: liveNavigationForSelectedShop ? navSession.resume : undefined,
-    onEndNavigation: liveNavigationForSelectedShop
+    onPauseNavigation: liveNavigationActive ? () => navSession.pause("user") : undefined,
+    onResumeNavigation: liveNavigationActive ? navSession.resume : undefined,
+    onEndNavigation: liveNavigationActive
       ? () => {
           const wasArrived = shopGuidancePreview.hasArrived;
           navSession.end();
+          setDirectDestination(null);
           if (!wasArrived) {
             notifications.showToast({
               message: "Route ended.",
@@ -295,7 +322,7 @@ export function useShopDirectoryNavigation({
   };
 
   const navigationMode: "browse" | "route-preview" | "guidance" =
-    liveNavigationForSelectedShop || intelligence.latestEvent
+    liveNavigationActive || intelligence.latestEvent
       ? "guidance"
       : session.selectedRoute
         ? "route-preview"
@@ -312,7 +339,9 @@ export function useShopDirectoryNavigation({
     shopMapUserCoords,
     notifications,
     liveNavigationForSelectedShop,
+    liveNavigationActive,
     directDestination,
+    hasArrivedForDestination,
     navigationStartRequested,
     setNavigationStartRequested,
     setFollowCurrentPositionRevision,
@@ -437,7 +466,9 @@ export function useShopDirectoryNavigation({
   return {
     navigationMode,
     liveNavigationForSelectedShop,
+    liveNavigationActive,
     hasArrivedForSelectedShop,
+    hasArrivedForDestination,
     selectedShopNavigationActionLabel,
     directDestination,
 
@@ -457,10 +488,10 @@ export function useShopDirectoryNavigation({
     liveRemainingEtaLabel,
     liveRemainingDistanceLabel,
     routeSteps:
-      liveNavigationForSelectedShop && shopGuidancePreview.routePreview
+      liveNavigationActive && shopGuidancePreview.routePreview
         ? shopGuidancePreview.routePreview.steps
         : [],
-    currentStepIndex: liveNavigationForSelectedShop ? shopGuidancePreview.currentStepIndex : 0,
+    currentStepIndex: liveNavigationActive ? shopGuidancePreview.currentStepIndex : 0,
 
     nextStep: shopGuidancePreview.nextStep ?? null,
     followingStep,
@@ -488,14 +519,14 @@ export function useShopDirectoryNavigation({
     onResumeNavigation: navSession.resume,
     onRecenterNavigation: () => setFollowCurrentPositionRevision((current) => current + 1),
 
-    currentSpeedMph: liveNavigationForSelectedShop ? shopNavigationGps.currentSpeedMph : null,
-    speedLimitMph: liveNavigationForSelectedShop
+    currentSpeedMph: liveNavigationActive ? shopNavigationGps.currentSpeedMph : null,
+    speedLimitMph: liveNavigationActive
       ? (shopNavigationGps.speedLimitSnapshot?.speedLimitMph ?? null)
       : null,
-    gpsStatus: liveNavigationForSelectedShop ? shopNavigationGps.gpsStatus : ("active" as const),
-    gpsError: liveNavigationForSelectedShop ? shopNavigationGps.gpsError : "",
-    onRetryGps: liveNavigationForSelectedShop ? shopNavigationGps.retryGps : undefined,
-    onRetryRoute: liveNavigationForSelectedShop
+    gpsStatus: liveNavigationActive ? shopNavigationGps.gpsStatus : ("active" as const),
+    gpsError: liveNavigationActive ? shopNavigationGps.gpsError : "",
+    onRetryGps: liveNavigationActive ? shopNavigationGps.retryGps : undefined,
+    onRetryRoute: liveNavigationActive
       ? () => shopGuidancePreview.refreshRoutePreview()
       : session.refreshRoutePreview,
 
