@@ -1,4 +1,4 @@
-import { useMemo, useState, type RefObject } from "react";
+import { lazy, Suspense, useMemo, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Bid, NavTab, Notification, Report, Vehicle } from "../../types";
 import { getGlobalSurfaceTheme } from "../../theme/globalSurfaceTheme";
@@ -6,7 +6,7 @@ import type { DashboardAppearanceMode } from "../../routers/dashboard-router-typ
 import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
 import { useNotifications } from "../../features/notifications/NotificationContext";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
-import SettingsModal from "../codelayer/account/SettingsModal";
+const SettingsModal = lazy(() => import("../codelayer/account/SettingsModal"));
 import DashboardAtmosphere from "./DashboardAtmosphere";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
@@ -196,14 +196,16 @@ export default function DashboardLayout({
         onTabClick={(tabId) => onMobileMenuTabClick(tabId)}
       />
 
-      {onAppearanceModeChange && (
-        <SettingsModal
-          isOpen={showSettingsModal}
-          primaryColor={primaryColor}
-          appearanceMode={appearanceMode}
-          onAppearanceModeChange={onAppearanceModeChange}
-          onClose={() => setShowSettingsModal(false)}
-        />
+      {onAppearanceModeChange && showSettingsModal && (
+        <Suspense fallback={null}>
+          <SettingsModal
+            isOpen={showSettingsModal}
+            primaryColor={primaryColor}
+            appearanceMode={appearanceMode}
+            onAppearanceModeChange={onAppearanceModeChange}
+            onClose={() => setShowSettingsModal(false)}
+          />
+        </Suspense>
       )}
     </div>
   );

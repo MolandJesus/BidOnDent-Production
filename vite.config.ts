@@ -56,10 +56,6 @@ export default defineConfig({
             return "vendor-clerk";
           }
 
-          if (id.includes("@mui") || id.includes("@emotion")) {
-            return "vendor-mui";
-          }
-
           if (id.includes("@radix-ui")) {
             return "vendor-radix";
           }
