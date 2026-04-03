@@ -153,7 +153,7 @@ export default function ShopDirectoryScreen({
             navigationMode={nav.navigationMode}
             navigationSessionDestinationId={nav.navigationSessionDestinationId}
             navigationSessionStatus={nav.navigationSessionStatus}
-            onBack={onBack}
+            onBack={() => session.setMapViewMode("hybrid")}
             onEndNavigation={nav.onEndNavigation}
             onOpenShopDirections={session.handleOpenShopDirections}
             onPauseNavigation={nav.onPauseNavigation}

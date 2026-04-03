@@ -45,7 +45,6 @@ export interface Report {
   status: ReportStatus;
   vehicle?: VehicleInfo;
   bidsCount?: number;
-  [key: string]: any;
 }
 
 export interface VehicleInfo {
@@ -232,9 +231,9 @@ export interface BaseScreenProps {
   onBack?: () => void;
 }
 
-export interface ListScreenProps extends BaseScreenProps {
-  items: any[];
-  onItemClick?: (item: any) => void;
+export interface ListScreenProps<T = Record<string, unknown>> extends BaseScreenProps {
+  items: T[];
+  onItemClick?: (item: T) => void;
 }
 
 // ============================================================================

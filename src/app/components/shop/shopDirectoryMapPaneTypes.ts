@@ -63,6 +63,7 @@ export type ShopDirectoryMapPaneProps = {
   navigationMode?: "browse" | "route-preview" | "guidance";
   isOffRoute?: boolean;
   onSwitchToListMode?: () => void;
+  onExpandMap?: () => void;
   suppressBottomCard?: boolean;
   suppressShopPopup?: boolean;
   onTileDarkChange?: (isDark: boolean) => void;

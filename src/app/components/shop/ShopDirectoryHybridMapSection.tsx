@@ -138,6 +138,7 @@ export default function ShopDirectoryHybridMapSection({
             selectedShopId={session.selectedShopId}
             shops={session.mapListings}
             suppressHeader
+            onExpandMap={() => session.setMapViewMode("map")}
             onSwitchToListMode={onSwitchToListMode}
             userCoords={nav.shopMapUserCoords}
             userHeadingDegrees={nav.userHeadingDegrees}

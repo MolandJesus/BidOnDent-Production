@@ -2,11 +2,11 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 import {
   Map,
-  FullscreenControl,
   GeolocateControl,
   NavigationControl,
   ScaleControl,
 } from "react-map-gl/maplibre";
+import { Expand } from "lucide-react";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
 import MapLibreReportLayer from "../maps/MapLibreReportLayer";
@@ -82,6 +82,7 @@ export default function MapLibreShopDirectoryMapPane({
   navigationMode = "browse",
   isOffRoute = false,
   onSwitchToListMode,
+  onExpandMap,
   suppressBottomCard = false,
   suppressShopPopup = false,
   onTileDarkChange,
@@ -198,6 +199,24 @@ export default function MapLibreShopDirectoryMapPane({
         />
       )}
 
+      {onExpandMap ? (
+        <div className="pointer-events-none absolute right-3 top-3 z-[520]">
+          <button
+            type="button"
+            onClick={onExpandMap}
+            aria-label="Expand map"
+            title="Expand map"
+            className={`pointer-events-auto inline-flex h-10 w-10 items-center justify-center rounded-xl border shadow-[0_14px_28px_rgba(15,23,42,0.22)] backdrop-blur-xl transition-all hover:scale-[1.03] active:scale-[0.97] ${
+              isDark
+                ? "border-blue-300/18 bg-[linear-gradient(180deg,rgba(15,23,42,0.88),rgba(15,23,42,0.78))] text-slate-100 hover:bg-[linear-gradient(180deg,rgba(21,33,58,0.92),rgba(15,23,42,0.84))]"
+                : "border-slate-200/85 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(241,245,249,0.88))] text-slate-700 hover:text-slate-900"
+            }`}
+          >
+            <Expand className="h-4 w-4" />
+          </button>
+        </div>
+      ) : null}
+
       {/* ── MapLibre GL map (gated on container dimensions) ── */}
       {containerReady && (
         <NavigationErrorBoundary>
@@ -224,7 +243,6 @@ export default function MapLibreShopDirectoryMapPane({
             attributionControl={{ compact: true }}
           >
             {/* Standard map controls */}
-            <FullscreenControl position="top-right" />
             <GeolocateControl
               position="bottom-right"
               trackUserLocation
