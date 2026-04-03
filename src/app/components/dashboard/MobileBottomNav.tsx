@@ -6,11 +6,13 @@ interface NavTab {
   icon: React.ComponentType<any>;
 }
 
+import type { ViewMode } from "../../types";
+
 interface MobileBottomNavProps {
   appearanceMode: "map-dark" | "light";
   tabs: NavTab[];
   currentTab: string;
-  viewMode: string;
+  viewMode: ViewMode;
   badgeCounts?: Record<string, number>;
   onTabClick: (tabId: string) => void;
 }

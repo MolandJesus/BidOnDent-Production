@@ -4,10 +4,12 @@ interface NavTab {
   icon: React.ComponentType<any>;
 }
 
+import type { ViewMode } from "../../types";
+
 interface DesktopNavTabsProps {
   tabs: NavTab[];
   currentTab: string;
-  viewMode: string;
+  viewMode: ViewMode;
   primaryColor: string;
   onTabClick: (tabId: string) => void;
 }

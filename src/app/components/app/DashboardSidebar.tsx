@@ -1,6 +1,6 @@
 import { Car, Sparkles } from "lucide-react";
 import { useState, type RefObject } from "react";
-import type { Bid, NavTab, Notification, Report, Vehicle } from "../../types";
+import type { Bid, NavTab, Notification, Report, Vehicle, ViewMode } from "../../types";
 import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 
@@ -10,7 +10,7 @@ type DashboardSidebarProps = {
   secondaryColor: string;
   currentNavTabs: NavTab[];
   currentTab: string;
-  viewMode: string;
+  viewMode: ViewMode;
   onLogoClick: () => void;
   onTabClick: (tabId: string) => void;
   onOpenDemoMode?: () => void;

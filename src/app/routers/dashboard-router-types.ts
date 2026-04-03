@@ -1,12 +1,12 @@
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
-import type { DamageReport, Vehicle, Bid } from "../types";
+import type { DamageReport, Vehicle, Bid, ViewMode } from "../types";
 
 export type DashboardUserType = "customer" | "shop" | "insurer";
 export type DashboardAppearanceMode = "map-dark" | "light";
 
 export interface DashboardRouterProps {
   // Navigation state
-  viewMode: string;
+  viewMode: ViewMode;
   currentTab: string;
 
   // User data

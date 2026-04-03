@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
-import type { Bid, NavTab, Notification, Report, Vehicle } from "../../types";
+import type { Bid, NavTab, Notification, Report, Vehicle, ViewMode } from "../../types";
 import { getGlobalSurfaceTheme } from "../../theme/globalSurfaceTheme";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
@@ -18,7 +18,7 @@ type DashboardLayoutProps = {
   secondaryColor: string;
   currentNavTabs: NavTab[];
   currentTab: string;
-  viewMode: string;
+  viewMode: ViewMode;
   showProfileDropdown: boolean;
   userProfile: UserProfile;
   userImageUrl: string;
