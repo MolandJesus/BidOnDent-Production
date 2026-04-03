@@ -33,6 +33,7 @@
 | 713  | ChatGPT | TypeScript baseline repair: React types and shared UI typings | `eb67b656` |
 | 714  | ChatGPT | Trim TypeScript backlog in report, jobs, and bid hook lanes   | `8c203eaa` |
 | 716  | ChatGPT | Add admin account guard coverage                              | `21ff7a1c` |
+| 718  | ChatGPT | Add Supabase runtime helper coverage                          | `9fcb8399` |
 | 634  | Claude  | Universal NavigationDestination type system                   | `53d70612` |
 | 635  | Claude  | NavigationDestination adapters for real places/addresses/QA   | `40df7203` |
 | 636  | Claude  | Direct navigation to any NavigationDestination                | `7e7a648d` |
@@ -289,6 +290,30 @@ M src/app/services/navigation/navigationGuidanceHelpers.ts
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 119/119.
+
+### ChatGPT Report — 2026-04-03 — Pass 718
+
+**Completed:**
+
+- Pass 718: Supabase runtime helper coverage — `src/app/services/supabase/runtime.test.ts`
+
+**What changed:**
+
+- Added direct coverage for `buildSupabaseFunctionUrl`, sync and async edge-header builders, website-identity query precedence, storage-bucket guard helpers, and `parseSupabaseEdgeResponse`.
+- Verified both anon-key fallback behavior and Clerk-token override behavior through the shared auth-session setter instead of mocking the whole runtime module.
+- Added explicit error-shape coverage for `EdgeFunctionError` so edge failures keep their message, status, and code semantics.
+
+**Issues found:**
+
+- `tsc --noEmit` still points at the same concentrated router/navigation backlog plus the untracked `src/app/hooks/shopDirectoryNavigationDerived.ts` file.
+- No new runtime/build regressions from the added infrastructure tests.
+
+**Requests for Claude:**
+
+- No new blocker beyond the previously logged TS handoff. The untracked `shopDirectoryNavigationDerived.ts` file is still the main new editor-noise source on your side.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 128/128.
 
 ### ChatGPT Report — 2026-04-03 — Pass 711
 
