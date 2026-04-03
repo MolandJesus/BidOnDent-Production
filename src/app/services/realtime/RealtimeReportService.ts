@@ -41,9 +41,7 @@ export interface RealtimeReportPayload {
 }
 
 export type ReportCallback = (report: RealtimeReportPayload) => void;
-export type ReportConnectionCallback = (
-  status: "connected" | "disconnected" | "error"
-) => void;
+export type ReportConnectionCallback = (status: "connected" | "disconnected" | "error") => void;
 
 // ─── Service ────────────────────────────────────────────────────
 
@@ -67,8 +65,7 @@ class RealtimeReportService {
     onConnectionStatus?: ReportConnectionCallback
   ): () => void {
     if (this.channel) {
-      if (import.meta.env.DEV)
-        console.log("⚠️ Already subscribed to new reports — skipping");
+      if (import.meta.env.DEV) console.log("⚠️ Already subscribed to new reports — skipping");
       return () => this.unsubscribe();
     }
 
@@ -92,8 +89,7 @@ class RealtimeReportService {
         }
       )
       .subscribe((status) => {
-        if (import.meta.env.DEV)
-          console.log("📋 Report subscription status:", status);
+        if (import.meta.env.DEV) console.log("📋 Report subscription status:", status);
 
         if (status === "SUBSCRIBED") {
           this.callbacks.onStatus?.("connected");
@@ -112,8 +108,7 @@ class RealtimeReportService {
    */
   unsubscribe(): void {
     if (this.channel) {
-      if (import.meta.env.DEV)
-        console.log("📋 Unsubscribing from damage reports");
+      if (import.meta.env.DEV) console.log("📋 Unsubscribing from damage reports");
       supabase.removeChannel(this.channel);
       this.channel = null;
       this.callbacks = {};

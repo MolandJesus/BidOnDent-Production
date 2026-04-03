@@ -4,7 +4,10 @@
  * Extracted from useShopDirectoryNavigation to keep it under the 500-line hard limit.
  * All functions are side-effect-free and return derived values from navigation state inputs.
  */
-import type { MarketUserType, IntelligenceSummary } from "../services/intelligence/marketIntelligence";
+import type {
+  MarketUserType,
+  IntelligenceSummary,
+} from "../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
 import { buildRoleAwareRouteSummary } from "../services/intelligence/shopMapExperience";
 import type { NavigationDestination, RouteOption } from "../types/mapDomain";

@@ -37,9 +37,7 @@ export function useShopReportNotifications({
         .filter(Boolean)
         .join(" ");
       const location = [report.city, report.state].filter(Boolean).join(", ");
-      const title = vehicle
-        ? `New repair request: ${vehicle}`
-        : "New repair request submitted";
+      const title = vehicle ? `New repair request: ${vehicle}` : "New repair request submitted";
       const body = location
         ? `${report.damageType || "Dent repair"} in ${location}`
         : report.damageType || "A customer needs dent repair";
