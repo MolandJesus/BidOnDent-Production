@@ -192,7 +192,16 @@ export function useCoverageNavigationExperience({
     nextStep,
     refreshRoutePreview,
   } = useNavigationRoutePreview({
-    selectedShop,
+    selectedDestination: selectedShop
+      ? {
+          id: selectedShop.id ?? selectedShop.name,
+          name: selectedShop.name,
+          lat: selectedShop.lat,
+          lng: selectedShop.lng,
+          kind: "shop" as const,
+          address: selectedShop.addressLine,
+        }
+      : null,
     activeOriginTarget,
     currentPosition,
     currentSpeedMph,

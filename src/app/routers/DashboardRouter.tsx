@@ -112,7 +112,7 @@ export default function DashboardRouter({
     refetchMarketplace,
   } = useDashboardData({
     userType,
-    providerUserId: websiteIdentity?.providerUserId,
+    providerUserId: websiteIdentity?.providerUserId ?? undefined,
     reports,
     photoStorage,
   });
@@ -364,7 +364,6 @@ export default function DashboardRouter({
                   profileImage={userInfo.profileImage}
                   websiteIdentity={websiteIdentity}
                   vehicles={vehicles}
-                  reports={reports}
                   onLogout={onLogout}
                   onDeleteAccount={onDeleteAccount}
                   onSaveProfile={async (data) => {

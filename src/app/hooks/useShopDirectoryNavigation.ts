@@ -227,7 +227,7 @@ export function useShopDirectoryNavigation({
     hasArrivedForDestination,
     routePreview: shopGuidancePreview.routePreview,
     currentStepIndex: shopGuidancePreview.currentStepIndex,
-    currentSpeedMph: shopNavigationGps.currentSpeedMph,
+    currentSpeedMph: shopNavigationGps.currentSpeedMph ?? 0,
   });
 
   const routePanel = {

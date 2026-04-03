@@ -92,9 +92,10 @@ export default function DashboardSecondaryViews({
       : reports[reports.length - 1];
     if (!report) return undefined;
     if (report.latitude != null && report.longitude != null) {
-      return { lat: report.latitude, lng: report.longitude };
+      return { latitude: report.latitude, longitude: report.longitude };
     }
-    return zipToCoordinates(report.zip_code || report.zipCode) ?? undefined;
+    const zip = zipToCoordinates(report.zip_code || report.zipCode);
+    return zip ? { latitude: zip.lat, longitude: zip.lng } : undefined;
   }, [selectedReportId, reports]);
 
   return (

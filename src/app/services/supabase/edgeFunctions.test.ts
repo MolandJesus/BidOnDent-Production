@@ -38,7 +38,8 @@ describe("buildEdgeFunctionUrl", () => {
 // ---------------------------------------------------------------------------
 describe("edgeFunctionFetch", () => {
   it("calls fetch with built URL and merged headers", async () => {
-    mockHeaders.mockResolvedValueOnce({ Authorization: "Bearer tok", "Content-Type": "application/json" });
+    const headers = new Headers({ Authorization: "Bearer tok", "Content-Type": "application/json" });
+    mockHeaders.mockResolvedValueOnce(headers);
     const fakeResponse = new Response("ok", { status: 200 });
     mockFetch.mockResolvedValueOnce(fakeResponse);
 
@@ -46,12 +47,12 @@ describe("edgeFunctionFetch", () => {
     expect(result).toBe(fakeResponse);
     expect(mockFetch).toHaveBeenCalledWith(
       "https://edge.test/reports",
-      expect.objectContaining({ headers: expect.objectContaining({ Authorization: "Bearer tok" }) })
+      expect.objectContaining({ headers })
     );
   });
 
   it("passes through request init options", async () => {
-    mockHeaders.mockResolvedValueOnce({});
+    mockHeaders.mockResolvedValueOnce(new Headers());
     mockFetch.mockResolvedValueOnce(new Response("ok"));
 
     await edgeFunctionFetch("/reports", { method: "POST", body: '{"test":true}' });
@@ -67,7 +68,7 @@ describe("edgeFunctionFetch", () => {
 // ---------------------------------------------------------------------------
 describe("edgeFunctionJson", () => {
   it("returns parsed JSON on success", async () => {
-    mockHeaders.mockResolvedValueOnce({});
+    mockHeaders.mockResolvedValueOnce(new Headers());
     mockFetch.mockResolvedValueOnce(
       new Response(JSON.stringify({ reports: [] }), { status: 200 })
     );
@@ -77,7 +78,7 @@ describe("edgeFunctionJson", () => {
   });
 
   it("throws on non-ok response with error from body", async () => {
-    mockHeaders.mockResolvedValueOnce({});
+    mockHeaders.mockResolvedValueOnce(new Headers());
     mockFetch.mockResolvedValueOnce(
       new Response(JSON.stringify({ error: "Not found" }), { status: 404 })
     );
@@ -86,7 +87,7 @@ describe("edgeFunctionJson", () => {
   });
 
   it("throws generic message when body has no error key", async () => {
-    mockHeaders.mockResolvedValueOnce({});
+    mockHeaders.mockResolvedValueOnce(new Headers());
     mockFetch.mockResolvedValueOnce(
       new Response(JSON.stringify({}), { status: 500 })
     );
@@ -95,7 +96,7 @@ describe("edgeFunctionJson", () => {
   });
 
   it("uses message field as fallback error text", async () => {
-    mockHeaders.mockResolvedValueOnce({});
+    mockHeaders.mockResolvedValueOnce(new Headers());
     mockFetch.mockResolvedValueOnce(
       new Response(JSON.stringify({ message: "Rate limited" }), { status: 429 })
     );

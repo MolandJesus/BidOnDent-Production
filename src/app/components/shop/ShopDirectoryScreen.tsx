@@ -270,7 +270,6 @@ export default function ShopDirectoryScreen({
         onBack={onBack}
         onOpenRelatedScreen={onOpenRelatedScreen}
         onViewReportDetail={onViewReportDetail}
-        onViewBids={onViewBids}
         mapReports={mapReports}
         focusReportId={focusReportId}
         RoleIcon={RoleIcon}

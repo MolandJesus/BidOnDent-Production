@@ -107,7 +107,7 @@ export function useShopDirectoryActions({ identity, mapListings }: UseShopDirect
             description,
             timeline,
           },
-          identity?.providerUserId
+          identity?.providerUserId ?? undefined
         );
         if (!result) {
           setEstimateError("Could not send request. Please try again.");
