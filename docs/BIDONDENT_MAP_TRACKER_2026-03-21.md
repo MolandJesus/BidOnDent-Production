@@ -1,9 +1,9 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 632 — Dashboard Surface System)
+**Last updated:** April 13, 2026 (Pass 641 — Derived state extraction)
 **Status:** Active execution tracker
-**Pass count:** 632
-**Build:** 0 errors (~3.2s)
+**Pass count:** 641
+**Build:** 0 errors (~3.1s)
 **Branch:** BidOnDent-Horizon-Beta
 
 ---
@@ -17,8 +17,9 @@
 - Shop bids from map (MapBidSheet → Supabase edge function), customer bid acceptance with competing-bid auto-rejection
 - Estimate requests: full Supabase backend lifecycle (customer→shop→respond→accept/decline)
 - Turn-by-turn voice navigation (Web Speech API) with deviation detection and auto-reroute (fully wired via useNavigationReroute → useShopDirectoryNavigation)
+- Direct navigation to any place (not just marketplace shops) — NavigationDestination type system, adapters, QA drive panel with 45 Atlanta destinations (Passes 634–641)
 - Report geocoding (Nominatim address + ZIP centroid fallback), bid count badges on map pins
-- Glass design system unified across landing + dashboard (bd-dashboard-* CSS primitives, Pass 632)
+- Glass design system unified across landing + dashboard (bd-dashboard-\* CSS primitives, Pass 632)
 - Cloud-synced saved shops, watchlists, shortlists, website preferences (Supabase `website_relationships` table)
 - Provider-agnostic business profiles (shop + insurer) in Supabase
 - Navigation session cloud persistence (Supabase `navigation_sessions` table)
@@ -49,18 +50,42 @@
 
 ---
 
+## Passes 633–641 — Direct Navigation System + Architecture Compliance (2026-04-13)
+
+| Pass | Title                               | Key Changes                                                                                                        |
+| ---- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| 633  | IDOR security fix                   | IDOR vulnerability in edge function — user can only access own data                                                |
+| 634  | NavigationDestination type system   | `NavigationDestination` + `NavigationDestinationKind` types in mapDomain.ts                                        |
+| 635  | Destination adapters                | 4 adapter functions (shop→dest, session waypoint, coverage target, geocode result) + 4 tests                       |
+| 636  | Direct navigation handler           | `handleStartDirectNavigation(dest)` in useShopDirectoryNavigation — starts session for any NavigationDestination   |
+| 637  | Doc coordination update             | ChatGPT parallel worker prompt + coordination docs                                                                  |
+| 638  | Fix P1 race condition               | `handleStartDirectNavigation` activates synchronously; lifecycle sync effect guards `directDestination`            |
+| 639  | Destination-agnostic lifecycle      | `liveNavigationActive` flag covers shop + direct; follow-position/arrival/auto-end fire for both                   |
+| 640  | Guidance card null-safety            | `selectedShop`/`selectedOrigin` nullable in guidance card; render guard loosened — card shows during direct nav     |
+| 641  | Derived state extraction            | Extract ~100 lines of derived state to `shopDirectoryNavigationDerived.ts`; main hook 547→497 lines (under 500)    |
+
+**Key artifacts created (Passes 634–641):**
+
+- `NavigationDestination` type — universal destination shape for shops, places, addresses
+- `navigationDestinationAdapters.ts` — 4 adapter functions (all tested)
+- `shopDirectoryNavigationDerived.ts` — Pure computation helpers: flags, route display, ETA/distance, action labels
+- QA Drive Panel (ChatGPT Passes 700–712) — 45 Atlanta destinations with neighborhood filter, DEV-only
+- Direct nav pipeline fully wired: QA Picker → session → lifecycle → guidance card → route fetching → display
+
+---
+
 ## Passes 625–632 — Bundle Optimization, Hardening, Dashboard Surface System (2026-04-05)
 
-| Pass | Title                           | Key Changes                                                                                                                                       |
-| ---- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 625  | Failing test fix                | Fixed 1 broken test in edge function test suite                                                                                                   |
-| 626  | Bundle optimization             | Index chunk 604KB → 206KB via lazy-loading heavy screens                                                                                          |
-| 627  | Doc drift fixes                 | Master context + tracker alignment                                                                                                                |
-| 628  | Edge function hardening         | Supabase edge function safety improvements                                                                                                        |
-| 629  | Edge function hardening pt 2    | Additional edge function validation                                                                                                               |
-| 630  | Mock notification removal       | Removed synthetic notification data                                                                                                               |
-| 631  | Code cleanup                    | Minor cleanup pass                                                                                                                                |
-| 632  | Dashboard Surface System        | +443 lines CSS primitives in theme.css (bd-dashboard-panel/section/chip/note/button classes with dark/light variants). 22 component migrations, zero logic changes. Co-authored with ChatGPT design pass. |
+| Pass | Title                        | Key Changes                                                                                                                                                                                               |
+| ---- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 625  | Failing test fix             | Fixed 1 broken test in edge function test suite                                                                                                                                                           |
+| 626  | Bundle optimization          | Index chunk 604KB → 206KB via lazy-loading heavy screens                                                                                                                                                  |
+| 627  | Doc drift fixes              | Master context + tracker alignment                                                                                                                                                                        |
+| 628  | Edge function hardening      | Supabase edge function safety improvements                                                                                                                                                                |
+| 629  | Edge function hardening pt 2 | Additional edge function validation                                                                                                                                                                       |
+| 630  | Mock notification removal    | Removed synthetic notification data                                                                                                                                                                       |
+| 631  | Code cleanup                 | Minor cleanup pass                                                                                                                                                                                        |
+| 632  | Dashboard Surface System     | +443 lines CSS primitives in theme.css (bd-dashboard-panel/section/chip/note/button classes with dark/light variants). 22 component migrations, zero logic changes. Co-authored with ChatGPT design pass. |
 
 **Key artifacts created (Pass 632):**
 

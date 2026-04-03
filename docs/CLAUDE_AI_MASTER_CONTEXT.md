@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-05 (Pass 632 — Dashboard Surface System: bd-dashboard-* CSS primitives in theme.css, 22-component styling migration, zero logic changes. Co-authored with ChatGPT design pass.)
+> **Last updated:** 2026-04-05 (Pass 632 — Dashboard Surface System: bd-dashboard-\* CSS primitives in theme.css, 22-component styling migration, zero logic changes. Co-authored with ChatGPT design pass.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
@@ -376,6 +376,10 @@ Archive note: The checklist below records the priorities captured during the Pas
 | `src/app/components/landing/CoverageMapDialog.tsx`                 | Full-screen coverage map modal + auto-start handoff   |
 | `src/app/hooks/useOperatingRegionsCoverage.ts`                     | Landing coverage orchestration + in-app route launch  |
 | `src/app/hooks/useNavigationLaunch.ts`                             | Navigation-launch state/effects extracted (Pass 565)  |
+| `src/app/hooks/useNavigationLifecycleEffects.ts`                   | Navigation lifecycle effects (follow, arrival, auto-end) |
+| `src/app/hooks/shopDirectoryNavigationDerived.ts`                  | Pure derived-state helpers for nav hook (Pass 641)    |
+| `src/app/services/navigation/navigationDestinationAdapters.ts`     | NavigationDestination adapters (4 converters, Pass 635) |
+| `src/app/types/mapDomain.ts`                                       | NavigationDestination + NavigationDestinationKind types (Pass 634) |
 | `src/app/components/dashboard/CustomerMapWidget.tsx`               | Customer home map widget                              |
 | `src/app/components/dashboard/ShopMapWidget.tsx`                   | Shop home map widget                                  |
 | `src/app/components/dashboard/InsurerMapWidget.tsx`                | Insurer home map widget                               |
