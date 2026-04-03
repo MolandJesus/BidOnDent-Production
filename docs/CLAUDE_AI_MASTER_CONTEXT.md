@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-02 (Pass 562 — Code Extraction Sweep Complete: All source files ≤500 lines. 20+ extraction passes (540–562) decomposed oversized files into focused hooks/components.)
+> **Last updated:** 2026-04-03 (Pass 565 — Structural extraction: `useNavigationLaunch.ts` from `useOperatingRegionsCoverage.ts` (515→436). Fixed duplicate import in `MapLibreServiceCoverageMap.tsx`, type errors in `CustomerEstimateDetailSheet.tsx`.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.3s · MapLibre GL JS WebGL engine
@@ -374,6 +374,7 @@ Archive note: The checklist below records the priorities captured during the Pas
 | `src/app/services/intelligence/directoryAdapters.ts`               | Supabase shop/insurer → ShopMapListing adapter        |
 | `src/app/components/landing/CoverageMapDialog.tsx`                 | Full-screen coverage map modal + auto-start handoff   |
 | `src/app/hooks/useOperatingRegionsCoverage.ts`                     | Landing coverage orchestration + in-app route launch  |
+| `src/app/hooks/useNavigationLaunch.ts`                             | Navigation-launch state/effects extracted (Pass 565)  |
 | `src/app/components/dashboard/CustomerMapWidget.tsx`               | Customer home map widget                              |
 | `src/app/components/dashboard/ShopMapWidget.tsx`                   | Shop home map widget                                  |
 | `src/app/components/dashboard/InsurerMapWidget.tsx`                | Insurer home map widget                               |

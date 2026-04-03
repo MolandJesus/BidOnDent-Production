@@ -3,13 +3,10 @@ import { useCoveragePersistEffect } from "./useCoveragePersistEffect";
 import { useCoveragePartnerShops } from "./useCoveragePartnerShops";
 import { useCoverageNavigationExperience } from "./useCoverageNavigationExperience";
 import { useUserGeolocation } from "./useUserGeolocation";
-import { openDirections, type NavigationProvider } from "../services/navigation/externalNavigation";
+import { useNavigationLaunch } from "./useNavigationLaunch";
+import type { NavigationProvider } from "../services/navigation/externalNavigation";
 import { addressResultToSearchTarget } from "../services/navigation/addressSearch";
-import { markRecentNavigationLocation } from "../services/navigation/savedLocations";
-import { loadNavigationSession } from "../services/navigation/navigationSession";
-import { primeVoiceEngine } from "../services/navigation/voiceSupport";
 import { haversineMiles, zipToCoordinates } from "../services/supabase/map";
-import type { ExternalNavigationSession } from "../types/navigation";
 import { resolveMapSurfaceTone } from "../components/maps/mapSurfaceTheme";
 import type {
   CoverageNearbyShop,
@@ -48,13 +45,6 @@ export function useOperatingRegionsCoverage() {
   );
   const [preferredNavigationProvider, setPreferredNavigationProvider] =
     useState<NavigationProvider>(() => savedCoverageState.preferredNavigationProvider || "apple");
-  const [navigationSession, setNavigationSession] = useState<ExternalNavigationSession | null>(
-    loadNavigationSession
-  );
-  const [navigationStartRequestId, setNavigationStartRequestId] = useState(0);
-  const [pendingNavigationStartShopId, setPendingNavigationStartShopId] = useState<string | null>(
-    null
-  );
   const [voiceGuidanceEnabled, setVoiceGuidanceEnabled] = useState(false);
   const [currentLocationTarget, setCurrentLocationTarget] = useState<CoverageSearchTarget | null>(
     () => savedCoverageState.currentLocationTarget || null
@@ -192,48 +182,10 @@ export function useOperatingRegionsCoverage() {
   }, [nearbyShops, selectedShopId]);
 
   useEffect(() => {
-    const syncNavigationSession = () => {
-      setNavigationSession(loadNavigationSession());
-    };
-
-    window.addEventListener("focus", syncNavigationSession);
-    return () => window.removeEventListener("focus", syncNavigationSession);
-  }, []);
-
-  useEffect(() => {
     if (!isMapExpanded && voiceGuidanceEnabled) {
       setVoiceGuidanceEnabled(false);
     }
   }, [isMapExpanded, voiceGuidanceEnabled]);
-
-  useEffect(() => {
-    if (!isMapExpanded) {
-      setPendingNavigationStartShopId(null);
-      return;
-    }
-
-    if (!pendingNavigationStartShopId || !selectedShop) {
-      return;
-    }
-
-    if (`${selectedShop.id || selectedShop.name}` !== pendingNavigationStartShopId) {
-      return;
-    }
-
-    if (!navigation.activeOriginTarget || navigation.isLoadingRoute || !navigation.routePreview) {
-      return;
-    }
-
-    setNavigationStartRequestId((current) => current + 1);
-    setPendingNavigationStartShopId(null);
-  }, [
-    isMapExpanded,
-    navigation.activeOriginTarget,
-    navigation.isLoadingRoute,
-    navigation.routePreview,
-    pendingNavigationStartShopId,
-    selectedShop,
-  ]);
 
   useCoveragePersistEffect({
     zipCode,
@@ -273,50 +225,19 @@ export function useOperatingRegionsCoverage() {
     handleSelectShop(shop);
   }
 
-  function handleOpenDirections(shop: CoveragePartnerShop) {
-    handleSelectShop(shop);
-    markRecentNavigationLocation({
-      label: shop.name,
-      subtitle: shop.addressLine || shop.countyLabel,
-      coordinate: {
-        lat: shop.lat,
-        lng: shop.lng,
-      },
-    });
-    openDirections({
-      provider: preferredNavigationProvider,
-      destination: shop,
-      origin: navigation.activeOriginTarget,
-    });
-    setNavigationSession(loadNavigationSession());
-  }
-
-  function handleOpenBidOnDentNavigation(shop: CoveragePartnerShop) {
-    if (!navigation.activeOriginTarget && !fallbackSearchTarget) {
-      setGeoMessage(
-        "Choose your current location or enter a ZIP or address before starting a route."
-      );
-      return;
-    }
-
-    handleSelectShop(shop, { centerMap: true });
-    markRecentNavigationLocation({
-      label: shop.name,
-      subtitle: shop.addressLine || shop.countyLabel,
-      coordinate: {
-        lat: shop.lat,
-        lng: shop.lng,
-      },
-    });
-
-    if (navigation.settings.voiceMode !== "muted") {
-      primeVoiceEngine();
-    }
-
-    setGeoMessage("");
-    setIsMapExpanded(true);
-    setPendingNavigationStartShopId(`${shop.id || shop.name}`);
-  }
+  const navLaunch = useNavigationLaunch({
+    selectedShop,
+    preferredNavigationProvider,
+    activeOriginTarget: navigation.activeOriginTarget,
+    isLoadingRoute: navigation.isLoadingRoute,
+    routePreview: navigation.routePreview,
+    voiceMode: navigation.settings.voiceMode,
+    fallbackSearchTarget,
+    isMapExpanded,
+    setIsMapExpanded,
+    setGeoMessage,
+    onSelectShop: handleSelectShop,
+  });
 
   function updateMapView(target: [number, number], zoom: number, message?: string) {
     setMapView((previous) => ({
@@ -486,8 +407,8 @@ export function useOperatingRegionsCoverage() {
     selectedShopId,
     selectedShop,
     preferredNavigationProvider,
-    navigationSession,
-    navigationStartRequestId,
+    navigationSession: navLaunch.navigationSession,
+    navigationStartRequestId: navLaunch.navigationStartRequestId,
     setVoiceGuidanceEnabled,
     navigation,
     routeGeometry,
@@ -503,8 +424,8 @@ export function useOperatingRegionsCoverage() {
     handleUseCurrentLocation,
     handleSelectShop,
     handleSelectShopById,
-    handleOpenBidOnDentNavigation,
-    handleOpenDirections,
+    handleOpenBidOnDentNavigation: navLaunch.handleOpenBidOnDentNavigation,
+    handleOpenDirections: navLaunch.handleOpenDirections,
     centerOnTarget,
     resetOverviewMap,
     addressSuggestions: navigation.addressSuggestions,

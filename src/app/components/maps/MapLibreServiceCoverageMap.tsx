@@ -21,7 +21,6 @@ import {
   MapLibreArrivalCameraEffect,
 } from "./mapLibreControllers";
 import { circlePolygon } from "./mapLibreHelpers";
-import { circlePolygon } from "./mapLibreHelpers";
 import type {
   CoverageCountyMarker,
   CoveragePartnerShop,

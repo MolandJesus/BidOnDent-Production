@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** April 2, 2026 (Pass 562 — Code extraction sweep complete, all files ≤500 lines)
+**Last updated:** April 3, 2026 (Pass 565 — Structural extraction: useNavigationLaunch.ts from useOperatingRegionsCoverage.ts (515→436 lines). Build fixes in MapLibreServiceCoverageMap.tsx and CustomerEstimateDetailSheet.tsx.)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -115,7 +115,9 @@ The repository is fully under the 500-line hard cap as of Pass 562. A comprehens
 - **Pass 435 (2026-03-29):** Runtime safety: submitBid throws on missing report, Promise.allSettled for session sync, useMemo for BidsScreen calculations.
 - **Pass 436 (2026-03-29):** ShopProfileModal 3 unlinked inputs wired to local state + Supabase save via `saveShopBusinessProfile` edge function.
 - **Pass 437 (2026-03-29):** Documentation system refactor — 14 historical docs archived to `/docs/archive/`, governance index rewritten.
-- **Pass 562 (2026-04-02):** Comprehensive extraction sweep complete. All source files verified ≤500 lines. 20+ extraction passes (540–562) created ~25 new focused hooks and components. Key extractions: `ShopDirectoryScreen` (1003→494), `websiteIdentity` (683→274), `MapLibreShopDirectoryMapPane` (771→396), `BidsScreen` (708→442), `DashboardRouter` (615→452), `App.tsx` (574→496). See `CLAUDE_AI_MASTER_CONTEXT.md` Section 17 for the full extraction table.
+- **Pass 562 (2026-04-02):** Comprehensive extraction sweep complete. All source files verified ≤500 lines. 20+ extraction passes (540–562) created ~25 new focused hooks and components. Key extractions: `ShopDirectoryScreen` (1003→494), `websiteIdentity` (683→274), `MapLibreShopDirectoryMapPane` (771→396), `BidsScreen` (708→442), `DashboardRouter` (615→452), `App.tsx` (574→496). See `CLAUDE_AI_MASTER_CONTEXT.md` Section 8 for the full extraction table.
+- **Pass 563-564 (2026-04-02):** Repository truth reconciliation + commit-ready stabilization. Fixed doc drift in master context, product brain, and code org audit. Committed 212-file working tree (hash `14aa33d5`).
+- **Pass 565 (2026-04-03):** Structural extraction of `useNavigationLaunch.ts` from `useOperatingRegionsCoverage.ts` (515→436 lines). New hook owns navigation-launch state, focus-sync/pending-start effects, and `handleOpenDirections`/`handleOpenBidOnDentNavigation`. Fixed duplicate `circlePolygon` import in `MapLibreServiceCoverageMap.tsx` (build-breaker) and type errors in `CustomerEstimateDetailSheet.tsx`.
 - The largest active files (all under 500) are:
   - `src/app/hooks/useShopDirectorySession.ts` (500 lines)
   - `src/app/routers/DashboardRouterScreens.tsx` (~492 lines)

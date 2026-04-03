@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 2, 2026 (Pass 562 — Extract useAppearanceMode from App.tsx; all files ≤500 lines)
+**Last updated:** April 3, 2026 (Pass 565 — Structural extraction: useNavigationLaunch.ts from useOperatingRegionsCoverage.ts; build fixes)
 **Status:** Active execution tracker
-**Pass count:** 562
+**Pass count:** 565
 **Build:** 0 errors
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -40,6 +40,29 @@
 - Shop-area notification system (the missing link for marketplace function)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Pass 565 — Structural extraction: useNavigationLaunch (2026-04-03)
+
+- **Why this pass was chosen:** P3-ARCH. `useOperatingRegionsCoverage.ts` was stuck at 515 lines on disk — Prettier `printWidth: 100` auto-expands the return object to one-property-per-line, defeating compaction (tried 3× in Passes 552/556, reverted each time). Only structural extraction solves this durably.
+- **What changed:**
+  - **Created `useNavigationLaunch.ts`** (126 lines): Extracted navigation-launch concern — `navigationSession`, `navigationStartRequestId`, `pendingNavigationStartShopId` state; focus-sync effect (auto-select pending shop on return from external nav); pending-start effect (~28 lines, manages navigation session priming + voice engine + geomessage); `handleOpenDirections` and `handleOpenBidOnDentNavigation` functions.
+  - **Modified `useOperatingRegionsCoverage.ts`** (436 lines, was 515): Removed 3 state declarations, 2 effects, 2 functions. Added `useNavigationLaunch({...})` call. Return object delegates 4 properties to `navLaunch.*`.
+  - **Fixed duplicate `circlePolygon` import** in `MapLibreServiceCoverageMap.tsx` (build-breaker — Vite babel overlay in browser).
+  - **Fixed 3 type errors** in `CustomerEstimateDetailSheet.tsx` (`estimate.id` and `estimate.status` are optional — added null guards).
+- **Files touched:** `useNavigationLaunch.ts` (new), `useOperatingRegionsCoverage.ts`, `MapLibreServiceCoverageMap.tsx`, `CustomerEstimateDetailSheet.tsx`
+- **Validation:** Build: 3.24s, 0 errors. Diagnostics: 0. All files ≤500 lines.
+- **Problem taxonomy:** P0:1-fixed (duplicate import) P1:0 P2:0 P3:1-fixed (extraction) P4:0 P5:0 P6:0 P7:0
+- **Architecture decisions:** `useNavigationLaunch` takes a deps object with selectedShop, navigation state, and callbacks — no circular dependencies. Parent hook passes through `navLaunch.*` in return object. Zero behavior change.
+- **Doc updates:** CLAUDE_AI_MASTER_CONTEXT (last-updated, key files table), CODE_ORGANIZATION_AUDIT (pass entry), PRODUCT_BRAIN (file sizes note), MAP_TRACKER (this entry).
+- **What this unlocks:** `useOperatingRegionsCoverage.ts` is now 436 lines — 64 lines of headroom. Prettier-safe. No further compaction/extraction needed for this file.
+- **Best next pass:** Continue with map product loop or handguide enrichment for AI agent onboarding quality.
+
+## Passes 563–564 — Repository Truth Reconciliation + Commit (2026-04-02)
+
+- **What changed:** Audited 49 untracked + 124 modified files from extraction sweep. Fixed doc drift in CLAUDE_AI_MASTER_CONTEXT (Section 17 wrong file names, stale exception language), PRODUCT_BRAIN (stale feature maturity claims), CODE_ORGANIZATION_AUDIT (stale ShopDirectoryScreen claims). Committed 212-file working tree as `14aa33d5`.
+- **Files touched:** 4 docs + git commit (212 files, 24,538 insertions, 12,821 deletions)
 
 ---
 

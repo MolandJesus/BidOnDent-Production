@@ -23,7 +23,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # BidOnDent Product Brain
 
-Last updated: April 2, 2026 (Pass 562 — Extraction Sweep Complete + Doc Truth Audit)
+Last updated: April 3, 2026 (Pass 565 — Structural extraction: useNavigationLaunch.ts from useOperatingRegionsCoverage.ts + build fixes)
 Status: Active strategic reference
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
@@ -844,7 +844,7 @@ Effect:
 - **Bundle:** 514KB index chunk (down from 783KB)
 - **Images:** 22.9MB total (down from 53.6MB — 57% reduction via JPEG conversion)
 - **User-facing alerts:** ZERO remaining (all replaced with inline feedback)
-- **File sizes:** 8 oversized files refactored under 500-line hard cap (Passes 400-407). Extraction sweep (Passes 540-562) reduced all major files: `ShopDirectoryScreen.tsx` (494), `DashboardRouter.tsx` (452), `MapLibreServiceCoverageMap.tsx` (459), `ShopDirectoryResultCard.tsx` (286). All files now under 500-line hard cap.
+- **File sizes:** 8 oversized files refactored under 500-line hard cap (Passes 400-407). Extraction sweep (Passes 540-562) reduced all major files: `ShopDirectoryScreen.tsx` (494), `DashboardRouter.tsx` (452), `MapLibreServiceCoverageMap.tsx` (459), `ShopDirectoryResultCard.tsx` (286). Pass 565 structurally extracted `useNavigationLaunch.ts` from `useOperatingRegionsCoverage.ts` (515→436) to durably stay under 500 despite Prettier expansion. All files now under 500-line hard cap.
 - **Race conditions:** Fixed in useBusinessProfile (426) and useUserData autosave (427)
 - **Session sync:** Promise.allSettled for resilient cloud hydration (435)
 - **Async safety:** All critical handlers have try-catch/finally (Pass 428); submitBid throws on missing report (435)

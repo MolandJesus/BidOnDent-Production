@@ -56,7 +56,7 @@ export default function CustomerEstimateDetailSheet({
 }: CustomerEstimateDetailSheetProps) {
   if (!estimate) return null;
 
-  const statusInfo = STATUS_CONFIG[estimate.status] ?? STATUS_CONFIG.pending;
+  const statusInfo = STATUS_CONFIG[estimate.status ?? "pending"] ?? STATUS_CONFIG.pending;
   const canRespond = estimate.status === "responded";
   const formattedDate = estimate.created_at
     ? new Date(estimate.created_at).toLocaleDateString("en-US", {
@@ -133,15 +133,15 @@ export default function CustomerEstimateDetailSheet({
         {canRespond && (
           <SheetFooter className="flex-row gap-3 border-t border-slate-700/40 pt-4">
             <button
-              onClick={() => onDecline(estimate.id)}
-              disabled={loading}
+              onClick={() => estimate.id && onDecline(estimate.id)}
+              disabled={loading || !estimate.id}
               className="flex-1 min-h-[44px] rounded-xl border border-slate-600/40 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-slate-300 transition-colors hover:bg-white/[0.08] active:scale-[0.97] disabled:opacity-50"
             >
               Decline
             </button>
             <button
-              onClick={() => onAccept(estimate.id)}
-              disabled={loading}
+              onClick={() => estimate.id && onAccept(estimate.id)}
+              disabled={loading || !estimate.id}
               className="flex-1 min-h-[44px] rounded-xl px-4 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.97] disabled:opacity-50"
               style={{
                 background: "linear-gradient(135deg, #003d82 0%, #00a0e9 100%)",
