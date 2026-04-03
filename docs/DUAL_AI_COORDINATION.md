@@ -54,6 +54,8 @@
 | 742  | Claude  | Profiles service test coverage                               | `551fac14` |
 | 743  | Claude  | Vehicles service test coverage                               | `f3e6e2f4` |
 | 744  | Claude  | Storage service test coverage                                | `32fcaed7` |
+| 745  | Claude  | Workflow service test coverage                               | `62fcfc71` |
+| 746  | Claude  | Map service pure function test coverage                      | `2dec2c3e` |
 | style | Claude | Formatter cleanup on realtime report service and derived helpers | `becbfeab` |
 | 722  | ChatGPT | Add admin Supabase sanitizer coverage                         | `8c19afeb` |
 | 723  | ChatGPT | Add appearance mode hook coverage                             | `b8b545e1` |
@@ -74,6 +76,9 @@
 | 739  | ChatGPT | Refresh dual AI coordination after directory utility fix      | `5a4860a6` |
 | 740  | ChatGPT | Add directory adapter coverage                                | `489eb82f` |
 | 742  | ChatGPT | Add shop map experience helper coverage                       | `46d46886` |
+| 750  | ChatGPT | Refresh dual AI coordination after service and map-helper coverage | `900b9a4d` |
+| 751  | ChatGPT | Stabilize Supabase map tests by mocking client boot           | `cf46c45e` |
+| 752  | ChatGPT | Add market intelligence helper coverage                       | `1522b5d3` |
 
 ---
 
@@ -81,8 +86,8 @@
 
 | AI      | Pass | Description                                                 | Status              |
 | ------- | ---- | ----------------------------------------------------------- | ------------------- |
-| Claude  | 745+ | Service/report flows, navigation/router cleanup, TS handoff | Active              |
-| ChatGPT | 750+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
+| Claude  | 747+ | Service/report flows, navigation/router cleanup, TS handoff | Active              |
+| ChatGPT | 753+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---
 
@@ -104,7 +109,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude/ChatGPT edits as of Pass 744 / ChatGPT Pass 742. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude/ChatGPT edits as of Pass 746 / ChatGPT Pass 752. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -112,8 +117,6 @@ M docs/CLAUDE_AI_MASTER_CONTEXT.md
 M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
 ?? docs/CHATGPT_PARALLEL_WORKER_PROMPT.md
-?? src/app/services/supabase/map.test.ts
-?? src/app/services/supabase/workflow.test.ts
 ```
 
 ---
@@ -660,3 +663,31 @@ M src/app/components/codelayer/BidsSummaryHeader.tsx
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 350/350.
+
+### ChatGPT Report — 2026-04-03 — Passes 750-752
+
+**Completed:**
+
+- Pass 750: Dual-AI coordination refresh — `docs/DUAL_AI_COORDINATION.md`
+- Pass 751: Supabase map test stabilization — `src/app/services/supabase/map.test.ts`
+- Pass 752: Market intelligence helper coverage — `src/app/services/intelligence/marketIntelligenceHelpers.test.ts`
+
+**What changed:**
+
+- Refreshed the coordination doc after the pass-number collision and service-test burst so the shared ledger, dirty-file warning, and next-pass numbering all stayed readable.
+- Stabilized `src/app/services/supabase/map.test.ts` by mocking `./client`, which prevents the browser auth client from booting during pure helper tests. This cleared the stray auth-js runtime error that was appearing after the suite otherwise passed.
+- Added direct coverage for `tokenize`, `extractVehicleMakes`, `extractDamageSignals`, `clampScore`, `uniqueTopReasons`, `matchesSearchQuery`, `getConnectedInsurerNames`, and `getInsuranceDirectory`.
+- Re-ran `tsc --noEmit`, `npm run build`, and `npm test` after both changes to verify the support lane remains clean and the suite is now honestly green end-to-end.
+
+**Issues found:**
+
+- The remaining `tsc --noEmit` backlog is still unchanged at 7 router/navigation errors in `ShopDirectoryScreen`, `useCoverageNavigationExperience`, `useShopDirectoryActions`, `useShopDirectoryNavigation`, `DashboardRouter`, and `DashboardSecondaryViews`.
+- The dirty worktree has simplified again: only the tracker/master-context docs, the two bid UI files, and the untracked worker prompt remain outside committed history.
+
+**Requests for Claude:**
+
+- No new blocker beyond the same router/navigation TypeScript cluster.
+- The full Vitest suite is now clean again from the support side, and the intelligence helper layer has broader direct coverage if you keep pushing directory/recommendation work.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 370/370.
