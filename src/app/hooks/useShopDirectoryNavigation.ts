@@ -11,7 +11,6 @@ import { useMemo, useRef, useState } from "react";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
-import { buildRoleAwareRouteSummary } from "../services/intelligence/shopMapExperience";
 import type { NavigationDestination } from "../types/mapDomain";
 import {
   useNavigationIntelligence,
@@ -26,18 +25,21 @@ import {
 } from "../services/navigation/voiceGuidance";
 import { navigationDestinationToSessionWaypoint } from "../services/navigation/navigationDestinationAdapters";
 import { useNotifications } from "../features/notifications";
-import { getShopRouteActionLabel } from "./shopDirectorySessionUtils";
+import {
+  computeLiveNavigationFlags,
+  computeRouteDisplayState,
+  computeRemainingLabels,
+  computeShopActionLabel,
+} from "./shopDirectoryNavigationDerived";
 import { useNavigationGpsTracking } from "./useNavigationGpsTracking";
 import { useNavigationRoutePreview } from "./useNavigationRoutePreview";
-import { buildLiveRouteOptionsFromPreviews } from "./useShopDirectoryRoutePreview";
 import type { useShopDirectorySession } from "./useShopDirectorySession";
-import { formatDistanceLabel } from "../services/intelligence/shopMapRouting";
 import { primeVoiceEngine } from "../services/navigation/voiceSupport";
+import { useNavigationLifecycleEffects } from "./useNavigationLifecycleEffects";
 import {
   shopToNavigationDestination,
   buildShopGuidanceOriginTarget,
 } from "./shopDirectoryNavigationUtils";
-import { useNavigationLifecycleEffects } from "./useNavigationLifecycleEffects";
 import { useGuidanceSettings } from "./useGuidanceSettings";
 
 type ShopDirectorySession = ReturnType<typeof useShopDirectorySession>;
@@ -155,36 +157,31 @@ export function useShopDirectoryNavigation({
     reroute.state
   );
 
-  /* ── Derived navigation state ──────────────────────── */
+  /* ── Derived navigation state (via extracted helpers) ── */
 
-  const liveNavigationForSelectedShop = Boolean(
-    session.selectedShop &&
-      navigationSessionDestinationId === String(session.selectedShop.id) &&
-      (navSession.session.status === "active" || navSession.session.status === "paused")
-  );
-  const liveNavigationForDirectDest = Boolean(
-    directDestination &&
-      navigationSessionDestinationId === String(directDestination.id) &&
-      (navSession.session.status === "active" || navSession.session.status === "paused")
-  );
-  /** True when ANY live navigation is active (shop or direct destination). */
-  const liveNavigationActive = liveNavigationForSelectedShop || liveNavigationForDirectDest;
-  const hasArrivedForSelectedShop = Boolean(
-    session.selectedShop &&
-      navigationSessionDestinationId === String(session.selectedShop.id) &&
-      shopGuidancePreview.hasArrived
-  );
-  const hasArrivedForDestination = Boolean(liveNavigationActive && shopGuidancePreview.hasArrived);
-  const selectedShopNavigationActionLabel = session.selectedShop
-    ? getShopRouteActionLabel({
-        shopId: session.selectedShop.id,
-        routeReady: Boolean(session.selectedOrigin && session.selectedRoute),
-        hasArrived: hasArrivedForSelectedShop,
-        defaultLabel: session.directionsActionLabel,
-        navigationSessionStatus: navSession.session.status,
-        navigationSessionDestinationId,
-      })
-    : session.directionsActionLabel;
+  const {
+    liveNavigationForSelectedShop,
+    liveNavigationForDirectDest,
+    liveNavigationActive,
+    hasArrivedForSelectedShop,
+    hasArrivedForDestination,
+  } = computeLiveNavigationFlags({
+    selectedShop: session.selectedShop,
+    directDestination,
+    navigationSessionDestinationId,
+    sessionStatus: navSession.session.status,
+    hasArrived: shopGuidancePreview.hasArrived,
+  });
+
+  const selectedShopNavigationActionLabel = computeShopActionLabel({
+    selectedShop: session.selectedShop,
+    selectedOrigin: session.selectedOrigin,
+    selectedRoute: session.selectedRoute,
+    hasArrivedForSelectedShop,
+    directionsActionLabel: session.directionsActionLabel,
+    navigationSessionStatus: navSession.session.status,
+    navigationSessionDestinationId,
+  });
 
   const shopMapUserCoords = useMemo(
     () =>
@@ -205,82 +202,33 @@ export function useShopDirectoryNavigation({
     ? null
     : shopGuidancePreview.routePreview?.steps[shopGuidancePreview.currentStepIndex + 1] || null;
 
-  const liveGuidanceRouteOptions = guidanceSelectedDestination
-    ? buildLiveRouteOptionsFromPreviews(
-        shopGuidancePreview.routeAlternatives,
-        guidanceSelectedDestination.name
-      )
-    : [];
+  const { liveGuidanceRouteOptions, mapRouteOptions, mapSelectedRoute, mapRouteSummary } =
+    computeRouteDisplayState({
+      liveNavigationActive,
+      guidanceSelectedDestination,
+      routeAlternatives: shopGuidancePreview.routeAlternatives,
+      sessionRouteOptions: session.routeOptions,
+      sessionSelectedRouteId: session.selectedRouteId,
+      selectedShop: session.selectedShop,
+      directDestination,
+      userType,
+      hasIntelligenceEvent: Boolean(intelligence.latestEvent),
+      sessionRouteSummary: session.routeSummary,
+    });
 
-  const mapRouteOptions =
-    liveNavigationActive && liveGuidanceRouteOptions.length > 0
-      ? liveGuidanceRouteOptions
-      : session.routeOptions;
-
-  const mapSelectedRoute =
-    mapRouteOptions.find((route) => route.id === session.selectedRouteId) ||
-    mapRouteOptions[0] ||
-    null;
-
-  const mapRouteSummary =
-    liveNavigationActive && (session.selectedShop || directDestination)
-      ? buildRoleAwareRouteSummary({
-          selectedRoute: mapSelectedRoute,
-          shop:
-            session.selectedShop ??
-            ({
-              id: 0,
-              name: directDestination?.name ?? "Destination",
-              mapResult: {
-                address: directDestination?.address ?? "",
-                coordinates: {
-                  latitude: directDestination?.lat ?? 0,
-                  longitude: directDestination?.lng ?? 0,
-                },
-              },
-            } as NonNullable<typeof session.selectedShop>),
-          userType,
-          isActiveGuidance: Boolean(liveNavigationActive || intelligence.latestEvent),
-        })
-      : session.routeSummary;
-
-  const staticRemainingDurationSeconds = shopGuidancePreview.routePreview
-    ? shopGuidancePreview.hasArrived
-      ? 0
-      : shopGuidancePreview.routePreview.steps
-          .slice(shopGuidancePreview.currentStepIndex)
-          .reduce((total, step) => total + step.durationSeconds, 0) ||
-        shopGuidancePreview.routePreview.durationSeconds
-    : 0;
-  const remainingDistanceMeters = shopGuidancePreview.routePreview
-    ? shopGuidancePreview.hasArrived
-      ? 0
-      : shopGuidancePreview.routePreview.steps
-          .slice(shopGuidancePreview.currentStepIndex)
-          .reduce((total, step) => total + step.distanceMeters, 0) ||
-        shopGuidancePreview.routePreview.distanceMeters
-    : 0;
-
-  // Adapt ETA based on actual speed: blend speed-based ETA with static when user is moving
-  const currentSpeedMph = shopNavigationGps.currentSpeedMph;
-  const remainingDurationSeconds = (() => {
-    if (!currentSpeedMph || currentSpeedMph < 3 || remainingDistanceMeters <= 0)
-      return staticRemainingDurationSeconds;
-    const speedBasedSeconds = (remainingDistanceMeters / 1609.34 / currentSpeedMph) * 3600;
-    // Blend 70% speed-based + 30% static for stability (avoids wild swings)
-    return Math.round(speedBasedSeconds * 0.7 + staticRemainingDurationSeconds * 0.3);
-  })();
-
-  const liveRemainingEtaLabel = hasArrivedForDestination
-    ? "Arrived"
-    : liveNavigationActive && remainingDurationSeconds > 0
-      ? `${Math.max(1, Math.round(remainingDurationSeconds / 60))}m`
-      : null;
-  const liveRemainingDistanceLabel = hasArrivedForDestination
-    ? "Here"
-    : liveNavigationActive && remainingDistanceMeters > 0
-      ? formatDistanceLabel(remainingDistanceMeters / 1609.34)
-      : null;
+  const {
+    remainingDurationSeconds,
+    remainingDistanceMeters,
+    liveRemainingEtaLabel,
+    liveRemainingDistanceLabel,
+  } = computeRemainingLabels({
+    liveNavigationActive,
+    hasArrived: shopGuidancePreview.hasArrived,
+    hasArrivedForDestination,
+    routePreview: shopGuidancePreview.routePreview,
+    currentStepIndex: shopGuidancePreview.currentStepIndex,
+    currentSpeedMph: shopNavigationGps.currentSpeedMph,
+  });
 
   const routePanel = {
     routeSummary: liveNavigationActive ? mapRouteSummary : session.routeSummary,
