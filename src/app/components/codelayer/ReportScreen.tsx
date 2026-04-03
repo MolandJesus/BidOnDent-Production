@@ -186,10 +186,13 @@ export default function ReportScreen({
     }
   };
 
-  const progress = Math.min(Math.round((form.step / 6) * 100), 100);
+  const reportStep = Math.min(form.step, 5);
 
   return (
-    <div className="min-h-[calc(100dvh-10rem)]" style={{ touchAction: "pan-x pan-y" }}>
+    <div
+      className="bd-report-flow min-h-[calc(100dvh-10rem)]"
+      style={{ touchAction: "pan-x pan-y" }}
+    >
       <ReportHeader
         step={form.step}
         appearanceMode={appearanceMode}
@@ -197,11 +200,7 @@ export default function ReportScreen({
         showCancel={form.step < 6}
       />
 
-      <ReportProgress
-        progress={progress}
-        primaryColor={primaryColor}
-        appearanceMode={appearanceMode}
-      />
+      <ReportProgress step={reportStep} primaryColor={primaryColor} appearanceMode={appearanceMode} />
 
       <div
         className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)] relative"
@@ -229,7 +228,7 @@ export default function ReportScreen({
           </>
         )}
         <div className="max-w-4xl mx-auto relative">
-          <div className={`bd-glass-card${isLightAppearance ? " bd-light-surface" : ""}`}>
+          <div className="bd-report-shell">
             <AnimatePresence mode="wait">
               <motion.div
                 key={form.step}

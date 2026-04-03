@@ -15,33 +15,30 @@ export default function ReportHeader({
   showCancel,
 }: ReportHeaderProps) {
   const isLightAppearance = appearanceMode === "light";
+  const isCompleteStep = step > 5;
+  const headerSubtitle = isCompleteStep
+    ? "Your request is live and shops can start reviewing it."
+    : "Tell us what happened and get bids faster";
 
   return (
-    <div
-      className={`bd-glass-panel${isLightAppearance ? " bd-light-surface" : ""} !rounded-none px-3 sm:px-4 md:px-6 py-2.5 sm:py-3.5 flex items-start sm:items-center gap-2.5 ${
-        isLightAppearance ? "border-b border-blue-200/35" : "border-b border-blue-300/20"
-      }`}
-      style={{
-        background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(241, 247, 255, 0.92) 100%)"
-          : "linear-gradient(180deg, rgba(11, 23, 47, 0.88) 0%, rgba(8, 18, 38, 0.84) 100%)",
-        boxShadow: isLightAppearance
-          ? "0 4px 18px rgba(37, 99, 235, 0.10)"
-          : "0 4px 20px rgba(3, 10, 24, 0.28)",
-      }}
-    >
+    <div className="bd-report-header !rounded-none px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-start sm:items-center gap-3">
       <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
         <div
-          className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 ${
+          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center shrink-0 ${
             isLightAppearance
-              ? "bg-blue-500/15 text-blue-600 border border-blue-300/40"
-              : "bg-blue-400/12 text-blue-200 border border-blue-300/25"
+              ? "bg-blue-500/12 text-blue-700 border border-blue-300/35"
+              : "bg-blue-400/12 text-blue-100 border border-blue-300/20"
           }`}
-          style={{ boxShadow: "0 0 12px rgba(59, 130, 246, 0.10)" }}
+          style={{
+            boxShadow: isLightAppearance
+              ? "0 14px 24px rgba(59, 130, 246, 0.10), inset 0 1px 0 rgba(255,255,255,0.8)"
+              : "0 18px 28px rgba(2, 6, 23, 0.24), inset 0 1px 0 rgba(255,255,255,0.08)",
+          }}
         >
           <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         <div className="min-w-0">
+          <span className="bd-report-eyebrow mb-2 hidden sm:inline-flex">Smart intake flow</span>
           <h1
             className={`font-semibold text-base sm:text-lg leading-tight ${
               isLightAppearance ? "text-slate-800" : "text-slate-100"
@@ -54,28 +51,36 @@ export default function ReportHeader({
               isLightAppearance ? "text-slate-500" : "text-blue-100/75"
             }`}
           >
-            Tell us what happened and get bids faster
+            {headerSubtitle}
           </p>
         </div>
       </div>
-      <div className="ml-auto flex items-center gap-1.5 sm:gap-3 shrink-0">
+      <div className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0">
         <div
-          className={`text-xs sm:text-sm font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ${
-            isLightAppearance
-              ? "text-blue-700 bg-blue-100/60 border border-blue-300/40"
-              : "text-blue-100/85 bg-blue-400/10 border border-blue-300/20"
+          className={`bd-report-eyebrow whitespace-nowrap ${
+            isCompleteStep
+              ? isLightAppearance
+                ? "!border-emerald-200 !bg-emerald-50 !text-emerald-700"
+                : "!border-emerald-400/30 !bg-emerald-500/10 !text-emerald-200"
+              : ""
           }`}
         >
-          <span className="sm:hidden">{step}/5</span>
-          <span className="hidden sm:inline">Step {step} of 5</span>
+          {isCompleteStep ? (
+            "Submitted"
+          ) : (
+            <>
+              <span className="sm:hidden">{step}/5</span>
+              <span className="hidden sm:inline">Step {step} of 5</span>
+            </>
+          )}
         </div>
         {showCancel && (
           <button
             onClick={onCancel}
-            className={`text-sm font-medium inline-flex items-center gap-1 ${
+            className={`rounded-full px-3 py-2 text-sm font-semibold inline-flex items-center gap-1.5 transition-colors ${
               isLightAppearance
-                ? "text-rose-600 hover:text-rose-700"
-                : "text-rose-300 hover:text-rose-200"
+                ? "text-rose-600 hover:bg-rose-50"
+                : "text-rose-200 hover:bg-rose-500/10"
             }`}
           >
             <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

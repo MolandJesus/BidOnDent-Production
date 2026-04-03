@@ -25,6 +25,18 @@ export async function createEstimateRequest(
 
     const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
 
+    // Validate the target shop exists
+    if (request.shop_id) {
+      const { data: shopExists } = await supabase
+        .from("shop_profiles")
+        .select("id")
+        .eq("id", request.shop_id)
+        .single();
+      if (!shopExists) {
+        return respond({ error: "Shop not found" }, 404);
+      }
+    }
+
     const { data, error } = await supabase
       .from("estimate_requests")
       .insert({
@@ -139,12 +151,28 @@ export async function updateEstimateRequest(
 
     const { data: existing } = await supabase
       .from("estimate_requests")
-      .select("shop_id")
+      .select("shop_id, status")
       .eq("id", requestId)
       .single();
 
     if (!existing || existing.shop_id !== shopProfile.id) {
       return respond({ error: "Estimate request not found or not owned by this shop" }, 403);
+    }
+
+    // Enforce forward-only status transitions
+    const allowedTransitions: Record<string, string[]> = {
+      pending: ["viewed", "responded", "declined"],
+      viewed: ["responded", "declined"],
+      responded: [],
+      declined: [],
+    };
+    const currentStatus = existing.status as string;
+    const allowed = allowedTransitions[currentStatus] ?? [];
+    if (!allowed.includes(status)) {
+      return respond(
+        { error: `Cannot transition from '${currentStatus}' to '${status}'` },
+        400
+      );
     }
 
     const updatePayload: Record<string, unknown> = {
