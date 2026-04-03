@@ -12,23 +12,21 @@ import type {
   Bid,
   Activity,
 } from "../types";
-import { getProfile, saveProfile, saveVehicle } from "../services/supabaseService";
+import { getProfile, saveProfile } from "../services/supabaseService";
 import { saveProfileToCloud, saveVehiclesToCloud, saveReportsToCloud } from "./userDataActions";
-import { saveDamageReport } from "../services/supabase/reports";
 import { STORAGE_KEYS, getNotificationsByUserType } from "../constants";
 import {
   normalizeEmail,
   getUserCacheKey,
   getLastActiveCacheKey,
   buildPhotoStorageFromReports,
-  toSupabaseVehicle,
-  buildSupabaseReportPayload,
   readLocalStorageItemSafely,
   writeLocalStorageItemSafely,
   removeLocalStorageItemSafely,
 } from "./userDataUtils";
 import { parseCachedUserData } from "./useUserDataHelpers";
 import { hydrateFromCloudProfile, migrateLocalToCloud } from "./useUserDataLoader";
+import { useUserDataCloudSync } from "./useUserDataCloudSync";
 
 export function useUserData(
   clerkUserId?: string,
@@ -253,96 +251,22 @@ export function useUserData(
   // ============================================================================
   // CLOUD SYNC (auto-save to Supabase with debounce)
   // ============================================================================
-  useEffect(() => {
-    if (!userInfo.email || !redirectInfo || isLoadingFromCloudRef.current) {
-      return;
-    }
-
-    const timeoutId = setTimeout(async () => {
-      if (isSavingRef.current) return;
-      isSavingRef.current = true;
-
-      try {
-        if (!clerkUserId) {
-          return;
-        }
-
-        const isCloudUrl =
-          userInfo.profileImage &&
-          (userInfo.profileImage.startsWith("http://") ||
-            userInfo.profileImage.startsWith("https://"));
-
-        const profileSignature = JSON.stringify({
-          email: userInfo.email,
-          name: userInfo.name,
-          phone: userPhone,
-          profileImage: userInfo.profileImage || "",
-          accountType: redirectInfo.type,
-        });
-        const vehiclesSignature = JSON.stringify(vehicles);
-        const reportsSignature = JSON.stringify(reports);
-
-        if (profileSignature !== lastSavedProfileSignatureRef.current) {
-          await saveProfile(
-            {
-              email: userInfo.email,
-              name: userInfo.name,
-              phone: userPhone,
-              profile_image_url: isCloudUrl ? userInfo.profileImage : undefined,
-              account_type: redirectInfo.type,
-            },
-            {
-              clerkUserId,
-              email: userInfo.email,
-              websiteUserKey,
-            }
-          );
-          lastSavedProfileSignatureRef.current = profileSignature;
-          if (import.meta.env.DEV) console.log("Auto-saved profile to Supabase");
-        }
-
-        if (vehiclesSignature !== lastSavedVehiclesSignatureRef.current) {
-          if (vehicles.length > 0) {
-            let savedCount = 0;
-            for (const vehicle of vehicles) {
-              const vid = vehicle.id;
-              const vSig = JSON.stringify(vehicle);
-              if (vid && vSig === vehicleSignaturesRef.current[vid]) continue;
-              await saveVehicle(toSupabaseVehicle(vehicle), clerkUserId);
-              if (vid) vehicleSignaturesRef.current[vid] = vSig;
-              savedCount++;
-            }
-            if (import.meta.env.DEV && savedCount > 0)
-              console.log(`Auto-saved ${savedCount}/${vehicles.length} vehicles to Supabase`);
-          }
-          lastSavedVehiclesSignatureRef.current = vehiclesSignature;
-        }
-
-        if (reportsSignature !== lastSavedReportsSignatureRef.current) {
-          if (reports.length > 0) {
-            let savedCount = 0;
-            for (const report of reports) {
-              const rid = report.id;
-              const rSig = JSON.stringify(report);
-              if (rid && rSig === reportSignaturesRef.current[rid]) continue;
-              await saveDamageReport(buildSupabaseReportPayload(report), clerkUserId);
-              if (rid) reportSignaturesRef.current[rid] = rSig;
-              savedCount++;
-            }
-            if (import.meta.env.DEV && savedCount > 0)
-              console.log(`Auto-saved ${savedCount}/${reports.length} reports to Supabase`);
-          }
-          lastSavedReportsSignatureRef.current = reportsSignature;
-        }
-      } catch (error) {
-        if (import.meta.env.DEV) console.error("Error auto-saving to Supabase:", error);
-      } finally {
-        isSavingRef.current = false;
-      }
-    }, 2000); // 2 second debounce for cloud saves
-
-    return () => clearTimeout(timeoutId);
-  }, [userInfo, vehicles, reports, userPhone, redirectInfo, clerkUserId, websiteUserKey]);
+  useUserDataCloudSync({
+    userInfo,
+    vehicles,
+    reports,
+    userPhone,
+    redirectInfo,
+    clerkUserId,
+    websiteUserKey,
+    isSavingRef,
+    isLoadingFromCloudRef,
+    lastSavedProfileSignatureRef,
+    lastSavedVehiclesSignatureRef,
+    lastSavedReportsSignatureRef,
+    vehicleSignaturesRef,
+    reportSignaturesRef,
+  });
 
   // ============================================================================
   // MANUAL SAVE FUNCTIONS (with cloud-first approach)
