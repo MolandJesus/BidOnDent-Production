@@ -222,10 +222,7 @@ export function buildDestinationKey(destination: NavigationDestination | null) {
 
   const destinationIdentity =
     normalizeKeyPart(destination.id) ||
-    [destination.name, destination.address]
-      .map(normalizeKeyPart)
-      .filter(Boolean)
-      .join("|") ||
+    [destination.name, destination.address].map(normalizeKeyPart).filter(Boolean).join("|") ||
     "unknown-destination";
 
   return `${destinationIdentity}:${toKeyCoordinate(destination.lat)},${toKeyCoordinate(destination.lng)}`;

@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type {
-  CoverageSearchTarget,
-} from "../components/maps/serviceCoverageMapTypes";
+import type { CoverageSearchTarget } from "../components/maps/serviceCoverageMapTypes";
 import { haversineMiles } from "../services/supabase/map";
 import type {
   NavigationCoordinate,
