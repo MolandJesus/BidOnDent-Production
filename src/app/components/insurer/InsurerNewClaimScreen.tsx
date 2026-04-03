@@ -20,19 +20,10 @@ import {
   type Policyholder,
 } from "./newClaimData";
 import InsurerNewClaimForm, { type ClaimFormData } from "./InsurerNewClaimForm";
-import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-
-import type { Report } from "../../../types";
-
-type InsurerNewClaimScreenProps = {
-  primaryColor?: string;
-  reports?: Report[];
-  onBack?: () => void;
-  onCreateClaim?: (
-    claimData: { customer: Policyholder; shop: ClaimShop | null } & ClaimFormData
-  ) => void;
-  appearanceMode?: DashboardAppearanceMode;
-};
+import {
+  INITIAL_CLAIM_FORM_DATA,
+  type InsurerNewClaimScreenProps,
+} from "./insurerNewClaimScreenHelpers";
 
 export default function InsurerNewClaimScreen({
   primaryColor = "#003d82",
@@ -47,13 +38,7 @@ export default function InsurerNewClaimScreen({
   const [selectedCustomer, setSelectedCustomer] = useState<Policyholder | null>(null);
   const [selectedShop, setSelectedShop] = useState<ClaimShop | null>(null);
   const [showNewClaimForm, setShowNewClaimForm] = useState(false);
-  const [claimFormData, setClaimFormData] = useState<ClaimFormData>({
-    policyNumber: "",
-    incidentDate: "",
-    damageDescription: "",
-    estimatedAmount: "",
-    priority: "medium",
-  });
+  const [claimFormData, setClaimFormData] = useState<ClaimFormData>(INITIAL_CLAIM_FORM_DATA);
 
   const policyholders = useMemo<Policyholder[]>(() => buildPolicyholders(reports), [reports]);
 
@@ -84,13 +69,7 @@ export default function InsurerNewClaimScreen({
       setShowNewClaimForm(false);
       setSelectedCustomer(null);
       setSelectedShop(null);
-      setClaimFormData({
-        policyNumber: "",
-        incidentDate: "",
-        damageDescription: "",
-        estimatedAmount: "",
-        priority: "medium",
-      });
+      setClaimFormData(INITIAL_CLAIM_FORM_DATA);
     }
   };
 
