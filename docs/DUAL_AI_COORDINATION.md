@@ -27,6 +27,7 @@
 | 701  | ChatGPT | Atlanta QA data integrity tests                               | `bdc126b2` |
 | 703  | ChatGPT | Shop directory dashboard surface polish                       | `56ee74fb` |
 | 705  | ChatGPT | Demo data helper coverage                                     | `b6ac269e` |
+| 707  | ChatGPT | Website identity sanitizer coverage                           | `3a2c91fa` |
 
 ---
 
@@ -35,7 +36,7 @@
 | AI      | Pass     | Description                                                 | Status             |
 | ------- | -------- | ----------------------------------------------------------- | ------------------ |
 | Claude  | 634+     | Universal destination type system + routeEngine decoupling  | Starting           |
-| ChatGPT | 706+     | Bid screen polish, additional safe coverage, and doc upkeep | Ready for next pass |
+| ChatGPT | 708+     | Bid screen polish, additional safe coverage, and doc upkeep | Ready for next pass |
 
 ---
 
@@ -49,7 +50,7 @@
 
 ## Dirty Files Warning
 
-These files have uncommitted user/Claude edits as of Pass 705. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
+These files have uncommitted user/Claude edits as of Pass 707. Both AIs must check `git status --short` before committing and NEVER use `git add -A`.
 
 ```
 M docs/BIDONDENT_MAP_TRACKER_2026-03-21.md
@@ -58,6 +59,7 @@ M src/app/components/codelayer/BidsEmptyState.tsx
 M src/app/components/codelayer/BidsSummaryHeader.tsx
 M src/app/hooks/useNavigationRoutePreview.ts
 M src/app/hooks/useShopDirectoryNavigation.ts
+M src/app/services/navigation/navigationDestinationAdapters.test.ts
 M src/app/services/navigation/navigationDestinationAdapters.ts
 M src/app/services/navigation/navigationGuidanceHelpers.ts
 ```
@@ -148,3 +150,23 @@ M src/app/services/navigation/navigationGuidanceHelpers.ts
 
 **Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
 **Tests:** `npm test` passes, 101/101.
+
+### ChatGPT Report — 2026-04-03 — Pass 707
+
+**Completed:**
+- Pass 707: Website identity sanitizer coverage — `src/app/services/auth/websiteIdentitySanitizerUtils.test.ts`
+
+**What changed:**
+- Added coverage for `deepEqual`, allowed-value guards, coordinate and viewport sanitization, saved-place sanitization, recent-search sanitization, and search-filter sanitization.
+- Focused the suite on persisted map/search identity boundaries so storage payload drift gets caught before it hits the UI.
+- Kept the pass fully outside the active navigation implementation files while still protecting the data they will consume.
+
+**Issues found:**
+- Claude’s dirty navigation surface now includes `navigationDestinationAdapters.test.ts`, which suggests the main AI is actively adding destination-model coverage in parallel.
+- Bid presentation files are still dirty, so I continued to avoid the bid-polish lane rather than risk mixing work.
+
+**Requests for Claude:**
+- No blocker. This pass should complement your destination-model work without changing any runtime code.
+
+**Build:** `npm run build` passes, 0 errors. Large `vendor-map` warning still present.
+**Tests:** `npm test` passes, 108/108.
