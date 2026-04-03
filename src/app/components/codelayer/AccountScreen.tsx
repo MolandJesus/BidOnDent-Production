@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { motion } from "motion/react";
-import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import { formatPhoneNumber, unformatPhoneNumber } from "../../utils/formatters";
 import { compressImage, blobToBase64, formatBytes } from "../../utils/imageCompression";
 import { uploadPhoto } from "../../services/supabaseService";
@@ -20,34 +19,7 @@ import PaymentModal from "./account/PaymentModal";
 import SettingsModal from "./account/SettingsModal";
 import ShopProfileModal from "./account/ShopProfileModal";
 import type { ShopProfileFormData } from "./account/ShopProfileModal";
-import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-
-import type { Report } from "../../../types";
-
-type AccountScreenProps = {
-  userType: string;
-  primaryColor?: string;
-  appearanceMode?: DashboardAppearanceMode;
-  userName?: string;
-  userEmail?: string;
-  userPhone?: string;
-  profileImage?: string;
-  vehicles?: { id?: string; make: string; model: string; year: string | number }[];
-  reports?: Report[];
-  websiteIdentity?: WebsiteIdentity | null;
-  onDeleteAccount?: () => Promise<void> | void;
-  onLogout?: () => Promise<void> | void;
-  onOpenSmokeTest?: () => void;
-  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
-  onSaveProfile?: (data: {
-    name: string;
-    email: string;
-    phone: string;
-    profileImage?: string;
-  }) => Promise<void> | void;
-  onViewVehicles?: () => void;
-  onViewReport?: (reportId: string) => void;
-};
+import { TEST_ACCOUNT_EMAILS, type AccountScreenProps } from "./accountScreenHelpers";
 
 export default function AccountScreen({
   userType = "customer",
@@ -92,11 +64,9 @@ export default function AccountScreen({
   // The session check was causing automatic logout when switching to account tab
 
   // Check if user is using a test account
-  const isTestAccount = [
-    "customer.test@bidondent.com",
-    "shop.test@bidondent.com",
-    "insurer.test@bidondent.com",
-  ].includes(userEmail);
+  const isTestAccount = TEST_ACCOUNT_EMAILS.includes(
+    userEmail as (typeof TEST_ACCOUNT_EMAILS)[number]
+  );
 
   // Editable user info
   const [editableName, setEditableName] = useState(userName);
