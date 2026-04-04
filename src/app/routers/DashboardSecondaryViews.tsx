@@ -62,7 +62,10 @@ type Props = Pick<
   | "onEnableDemoMode"
   | "onExitDemoMode"
   | "onConfirmCompletion"
->;
+> & {
+  refetchCustomerEstimates?: () => void;
+  refetchShopBids?: () => void;
+};
 
 export default function DashboardSecondaryViews({
   viewMode,
@@ -85,6 +88,8 @@ export default function DashboardSecondaryViews({
   onEnableDemoMode,
   onExitDemoMode,
   onConfirmCompletion,
+  refetchCustomerEstimates,
+  refetchShopBids,
 }: Props) {
   // Compute report-based map center for shop directory when navigating from a report
   const reportMapCenter = useMemo(() => {
@@ -278,6 +283,8 @@ export default function DashboardSecondaryViews({
             }
             initialMapCenter={reportMapCenter}
             focusReportId={selectedReportId ?? undefined}
+            onEstimateSubmitted={refetchCustomerEstimates}
+            onBidSubmitted={refetchShopBids}
           />
         </motion.div>
       )}

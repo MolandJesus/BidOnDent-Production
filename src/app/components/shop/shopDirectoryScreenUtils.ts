@@ -32,6 +32,10 @@ export type ShopDirectoryScreenProps = {
   initialMapCenter?: import("../../types/mapDomain").Coordinates;
   /** Auto-open report drawer for this report ID on map mount. */
   focusReportId?: string;
+  /** Called after a successful estimate request submission */
+  onEstimateSubmitted?: () => void;
+  /** Called after a successful bid submission */
+  onBidSubmitted?: () => void;
 };
 
 export function getRoleIcon(userType: MarketUserType) {

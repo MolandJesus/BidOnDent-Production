@@ -9,9 +9,16 @@ import { useNotifications } from "../features/notifications";
 interface UseShopDirectoryActionsOptions {
   identity?: WebsiteIdentity | null;
   mapListings: ShopMapListing[];
+  onEstimateSubmitted?: () => void;
+  onBidSubmitted?: () => void;
 }
 
-export function useShopDirectoryActions({ identity, mapListings }: UseShopDirectoryActionsOptions) {
+export function useShopDirectoryActions({
+  identity,
+  mapListings,
+  onEstimateSubmitted,
+  onBidSubmitted,
+}: UseShopDirectoryActionsOptions) {
   const notifications = useNotifications();
 
   // ── Detail sheet ──
@@ -65,6 +72,7 @@ export function useShopDirectoryActions({ identity, mapListings }: UseShopDirect
             deepLink: { screen: "bid", bidId: reportId },
           });
           setBidReport(null);
+          onBidSubmitted?.();
         } else {
           setBidError("Failed to submit bid. Please try again.");
         }
@@ -80,6 +88,7 @@ export function useShopDirectoryActions({ identity, mapListings }: UseShopDirect
       identity?.normalizedEmail,
       notifications,
       bidReport,
+      onBidSubmitted,
     ]
   );
 
@@ -123,13 +132,14 @@ export function useShopDirectoryActions({ identity, mapListings }: UseShopDirect
           deepLink: { screen: "shop-directory" },
         });
         setEstimateShop(null);
+        onEstimateSubmitted?.();
       } catch {
         setEstimateError("Failed to send request. Please try again.");
       } finally {
         setEstimateSubmitting(false);
       }
     },
-    [mapListings, notifications, identity?.providerUserId]
+    [mapListings, notifications, identity?.providerUserId, onEstimateSubmitted]
   );
 
   return {

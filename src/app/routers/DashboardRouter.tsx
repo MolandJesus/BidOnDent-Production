@@ -110,6 +110,8 @@ export default function DashboardRouter({
     handleCustomerEstimateResponse,
     handleShopEstimateUpdate,
     refetchMarketplace,
+    refetchCustomerEstimates,
+    refetchShopBids,
   } = useDashboardData({
     userType,
     providerUserId: websiteIdentity?.providerUserId ?? undefined,
@@ -274,9 +276,10 @@ export default function DashboardRouter({
                   isSeedData={usingSeedFallback}
                   existingBidReportIds={shopBidReportIdsArray}
                   appearanceMode={appearanceMode}
-                  onSubmitBid={(requestId, bidAmount, estimatedDays, description) =>
-                    onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description)
-                  }
+                  onSubmitBid={async (requestId, bidAmount, estimatedDays, description) => {
+                    await onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
+                    refetchShopBids();
+                  }}
                 />
               </motion.div>
             )}
@@ -430,6 +433,8 @@ export default function DashboardRouter({
                   onEnableDemoMode={onEnableDemoMode}
                   onExitDemoMode={onExitDemoMode}
                   onConfirmCompletion={onConfirmCompletion}
+                  refetchCustomerEstimates={refetchCustomerEstimates}
+                  refetchShopBids={refetchShopBids}
                 />
               </motion.div>
             )}

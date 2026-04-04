@@ -38,6 +38,8 @@ export default function ShopDirectoryScreen({
   initialSearchHint,
   initialMapCenter,
   focusReportId,
+  onEstimateSubmitted,
+  onBidSubmitted,
 }: ShopDirectoryScreenProps) {
   const session = useShopDirectorySession({
     identity,
@@ -48,7 +50,12 @@ export default function ShopDirectoryScreen({
     initialMapCenter,
   });
   const nav = useShopDirectoryNavigation({ session, identity, userType });
-  const actions = useShopDirectoryActions({ identity, mapListings: session.mapListings });
+  const actions = useShopDirectoryActions({
+    identity,
+    mapListings: session.mapListings,
+    onEstimateSubmitted,
+    onBidSubmitted,
+  });
   const notifications = useNotifications();
 
   const handleToggleSaveShop = useCallback(

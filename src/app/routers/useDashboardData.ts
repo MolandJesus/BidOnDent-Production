@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMarketplaceReports } from "../hooks/useMarketplaceReports";
 import { useShopReportNotifications } from "../hooks/useShopReportNotifications";
 import { useCustomerBidNotifications } from "../hooks/useCustomerBidNotifications";
@@ -130,6 +130,15 @@ export function useDashboardData({
     };
   }, [userType, providerUserId]);
 
+  const refetchShopBids = useCallback(() => {
+    if (userType !== "shop" || !providerUserId) return;
+    getShopSubmittedBids(providerUserId).then((bids) => {
+      setShopSubmittedBids(bids);
+      const ids = new Set(bids.map((b) => b.damage_report_id || b.report_id || "").filter(Boolean));
+      setShopBidReportIds(ids);
+    });
+  }, [userType, providerUserId]);
+
   const shopBidReportIdsArray = useMemo(() => Array.from(shopBidReportIds), [shopBidReportIds]);
 
   // Shop estimate requests
@@ -166,6 +175,11 @@ export function useDashboardData({
     return () => {
       cancelled = true;
     };
+  }, [userType, providerUserId]);
+
+  const refetchCustomerEstimates = useCallback(() => {
+    if (userType !== "customer" || !providerUserId) return;
+    getMyEstimateRequests(providerUserId).then(setCustomerEstimateRequests);
   }, [userType, providerUserId]);
 
   // Customer estimate detail sheet
@@ -224,5 +238,7 @@ export function useDashboardData({
     handleCustomerEstimateResponse,
     handleShopEstimateUpdate,
     refetchMarketplace,
+    refetchCustomerEstimates,
+    refetchShopBids,
   };
 }
