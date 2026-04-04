@@ -10,7 +10,7 @@ import {
   Building2,
   Mail,
 } from "lucide-react";
-import type { DamageReport, NavTab } from "../types";
+import type { DamageReport, NavTab, Bid } from "../types";
 
 // Import NEW professional auto body repair photos - January 2025
 import heroPhoto from "../../assets/e8f91a58c62f0ff2f49336844f4e54fe4e748352.jpg"; // NEW HERO: Person on phone with damaged blue car - perfect customer context!
@@ -89,7 +89,7 @@ export const SEED_DAMAGE_REPORTS: DamageReport[] = [
     status: "pending",
     createdAt: seedReportOneTimestamp,
     submittedAt: seedReportOneTimestamp,
-    bidsCount: 0,
+    bidsCount: 2,
     photos: [],
   },
   {
@@ -102,10 +102,68 @@ export const SEED_DAMAGE_REPORTS: DamageReport[] = [
     status: "in-review",
     createdAt: seedReportTwoTimestamp,
     submittedAt: seedReportTwoTimestamp,
-    bidsCount: 0,
+    bidsCount: 1,
     photos: [],
   },
 ];
+
+// Demo bids shown to demo-mode customers so they can test the accept/reject flow.
+// Keyed by seed report ID — only injected when real Supabase bids are unavailable.
+const demoBidTimestamp1 = new Date(Date.now() - 45 * 60 * 1000).toISOString();
+const demoBidTimestamp2 = new Date(Date.now() - 90 * 60 * 1000).toISOString();
+const demoBidTimestamp3 = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+
+export const SEED_DEMO_BIDS: Record<string, Bid[]> = {
+  "seed-report-1": [
+    {
+      id: "demo-bid-1a",
+      reportId: "seed-report-1",
+      shopId: "demo-shop-1",
+      shopName: "Joe's Auto Body",
+      shopEmail: "joe@demo.com",
+      amount: 450,
+      estimatedDays: 3,
+      description: "Full bumper repair with OEM paint match. Lifetime warranty on work.",
+      status: "pending",
+      createdAt: demoBidTimestamp1,
+      shopRating: 4.8,
+      shopReviews: 127,
+      shopDistance: "2.4 mi",
+    },
+    {
+      id: "demo-bid-1b",
+      reportId: "seed-report-1",
+      shopId: "demo-shop-2",
+      shopName: "Quick Dent Pros",
+      shopEmail: "info@demo.com",
+      amount: 380,
+      estimatedDays: 2,
+      description: "PDR technique — no repainting needed. Same-day service available.",
+      status: "pending",
+      createdAt: demoBidTimestamp2,
+      shopRating: 4.5,
+      shopReviews: 89,
+      shopDistance: "4.1 mi",
+    },
+  ],
+  "seed-report-2": [
+    {
+      id: "demo-bid-2a",
+      reportId: "seed-report-2",
+      shopId: "demo-shop-3",
+      shopName: "Elite Collision Center",
+      shopEmail: "elite@demo.com",
+      amount: 620,
+      estimatedDays: 5,
+      description: "Door panel replacement with factory color match. Insurance-approved facility.",
+      status: "pending",
+      createdAt: demoBidTimestamp3,
+      shopRating: 4.9,
+      shopReviews: 203,
+      shopDistance: "3.7 mi",
+    },
+  ],
+};
 
 // ============================================================================
 // LANDING PAGE IMAGES

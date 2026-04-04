@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getBidsForReport } from "../services/supabase/bids";
 import { realtimeBidService } from "../services/realtime/RealtimeBidService";
+import { SEED_DEMO_BIDS } from "../constants";
 import type { Bid } from "../types";
 
 interface MappedBid extends Bid {}
@@ -29,17 +30,12 @@ function mapBid(bid: unknown, reportId: string): MappedBid {
     shopReviews: Number(rawBid.shopReviews ?? rawBid.shop_reviews ?? 0),
     amount: Number(rawBid.amount ?? 0),
     estimatedDays: Number(rawBid.estimatedDays ?? rawBid.estimated_days ?? 0),
-    shopDistance:
-      rawBid.shopDistance || (rawBid.shop_distance as string) || "Within service area",
-    shopLatitude:
-      rawBid.shopLatitude ?? (rawBid.shop_latitude as number | undefined),
-    shopLongitude:
-      rawBid.shopLongitude ?? (rawBid.shop_longitude as number | undefined),
+    shopDistance: rawBid.shopDistance || (rawBid.shop_distance as string) || "Within service area",
+    shopLatitude: rawBid.shopLatitude ?? (rawBid.shop_latitude as number | undefined),
+    shopLongitude: rawBid.shopLongitude ?? (rawBid.shop_longitude as number | undefined),
     description: rawBid.description || "",
     status:
-      rawBid.status === "accepted" || rawBid.status === "rejected"
-        ? rawBid.status
-        : "pending",
+      rawBid.status === "accepted" || rawBid.status === "rejected" ? rawBid.status : "pending",
     createdAt: rawBid.createdAt || (rawBid.created_at as string) || new Date().toISOString(),
   };
 }
@@ -65,6 +61,13 @@ export function useBidsForReport(reportId?: string | null) {
       return;
     }
 
+    // Seed reports get demo bids locally — no Supabase call needed
+    const seedBids = SEED_DEMO_BIDS[reportId];
+    if (seedBids) {
+      setBids(seedBids.map((bid) => mapBid(bid, reportId)));
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -85,9 +88,9 @@ export function useBidsForReport(reportId?: string | null) {
     fetchBids();
   }, [fetchBids]);
 
-  // Real-time subscription
+  // Real-time subscription (skip for seed reports — no Supabase rows exist)
   useEffect(() => {
-    if (!reportId) {
+    if (!reportId || SEED_DEMO_BIDS[reportId]) {
       setConnectionStatus("idle");
       return;
     }
