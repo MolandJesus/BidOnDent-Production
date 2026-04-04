@@ -397,38 +397,38 @@ function AppContent() {
           appearanceMode={appearanceMode}
           onAppearanceModeChange={setAppearanceMode}
           primaryColor={PRIMARY_COLOR}
-        secondaryColor={SECONDARY_COLOR}
-        currentNavTabs={currentNavTabs}
-        currentTab={navigation.currentTab}
-        viewMode={navigation.viewMode}
-        showProfileDropdown={navigation.showProfileDropdown}
-        userProfile={userProfile}
-        userImageUrl={user?.imageUrl || ""}
-        notifications={userData.notifications}
-        notificationSyncActive={false}
-        onMarkNotificationRead={(id) => {
-          userData.setNotifications((prev) =>
-            prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-          );
-        }}
-        onMarkAllNotificationsRead={() => {
-          userData.setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-        }}
-        reports={userData.reports}
-        vehicles={userData.vehicles}
-        bids={userData.bids}
-        onLogoClick={() => navigation.setShowLandingPage(true)}
-        onTabClick={handleTabClick}
-        onMobileMenuTabClick={handleTabClick}
-        onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
-        onOpenDemoMode={() => navigation.setViewMode("demo-switcher")}
-        profileDropdownData={profileDropdownData}
-        dashboardRouterProps={dashboardRouterProps}
-        onNavigateToReport={(reportId) => {
-          navigation.setSelectedReportId(reportId);
-          navigation.setViewMode("report-detail");
-        }}
-      />
+          secondaryColor={SECONDARY_COLOR}
+          currentNavTabs={currentNavTabs}
+          currentTab={navigation.currentTab}
+          viewMode={navigation.viewMode}
+          showProfileDropdown={navigation.showProfileDropdown}
+          userProfile={userProfile}
+          userImageUrl={user?.imageUrl || ""}
+          notifications={userData.notifications}
+          notificationSyncActive={false}
+          onMarkNotificationRead={(id) => {
+            userData.setNotifications((prev) =>
+              prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+            );
+          }}
+          onMarkAllNotificationsRead={() => {
+            userData.setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+          }}
+          reports={userData.reports}
+          vehicles={userData.vehicles}
+          bids={userData.bids}
+          onLogoClick={() => navigation.setShowLandingPage(true)}
+          onTabClick={handleTabClick}
+          onMobileMenuTabClick={handleTabClick}
+          onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
+          onOpenDemoMode={() => navigation.setViewMode("demo-switcher")}
+          profileDropdownData={profileDropdownData}
+          dashboardRouterProps={dashboardRouterProps}
+          onNavigateToReport={(reportId) => {
+            navigation.setSelectedReportId(reportId);
+            navigation.setViewMode("report-detail");
+          }}
+        />
       </ScreenErrorBoundary>
     );
   }

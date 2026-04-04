@@ -3,12 +3,7 @@ import "../../utils/maplibreResizePatch";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import {
-  Map,
-  GeolocateControl,
-  NavigationControl,
-  ScaleControl,
-} from "react-map-gl/maplibre";
+import { Map, GeolocateControl, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
 import { Expand } from "lucide-react";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
