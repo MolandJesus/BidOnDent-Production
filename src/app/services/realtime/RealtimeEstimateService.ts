@@ -65,6 +65,59 @@ class RealtimeEstimateService {
       this.callback = undefined;
     }
   }
+
+  // ─── Estimate Update Subscriptions (status changes) ─────────
+
+  private updateChannel: RealtimeChannel | null = null;
+  private updateCallback: EstimateCallback | undefined;
+
+  /**
+   * Subscribe to estimate_requests UPDATE events (e.g. shop responds with pricing).
+   * Returns an unsubscribe function.
+   */
+  subscribeToUpdates(onEstimateUpdate?: EstimateCallback): () => void {
+    if (this.updateChannel) {
+      return () => this.unsubscribeFromUpdates();
+    }
+
+    this.updateCallback = onEstimateUpdate;
+
+    this.updateChannel = supabase
+      .channel("estimate-request-updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "estimate_requests",
+        },
+        (payload) => {
+          if (import.meta.env.DEV) console.log("📩 ESTIMATE REQUEST UPDATED:", payload);
+          const record = payload.new as Record<string, unknown>;
+          const estimate: RealtimeEstimatePayload = {
+            id: String(record.id ?? ""),
+            shopName: record.shop_name ? String(record.shop_name) : undefined,
+            description: record.description ? String(record.description) : undefined,
+            timeline: record.timeline ? String(record.timeline) : undefined,
+            status: record.status ? String(record.status) : undefined,
+          };
+          this.updateCallback?.(estimate);
+        }
+      )
+      .subscribe((status) => {
+        if (import.meta.env.DEV) console.log("📩 Estimate update subscription status:", status);
+      });
+
+    return () => this.unsubscribeFromUpdates();
+  }
+
+  private unsubscribeFromUpdates(): void {
+    if (this.updateChannel) {
+      supabase.removeChannel(this.updateChannel);
+      this.updateChannel = null;
+      this.updateCallback = undefined;
+    }
+  }
 }
 
 export const realtimeEstimateService = new RealtimeEstimateService();

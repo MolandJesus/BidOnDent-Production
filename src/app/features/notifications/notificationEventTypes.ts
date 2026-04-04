@@ -19,6 +19,7 @@ export type NotificationCategory =
   | "bid"
   | "shop"
   | "insurer"
+  | "estimate"
   | "system";
 
 // ─── Deep link targets ──────────────────────────────────────────
@@ -29,6 +30,7 @@ export type NotificationDeepLink =
   | { screen: "bid"; bidId: string; reportId?: string }
   | { screen: "shop"; shopId: string }
   | { screen: "shop-directory" }
+  | { screen: "estimates" }
   | { screen: "dashboard" }
   | null;
 

@@ -6,6 +6,7 @@ import { useShopBidStatusNotifications } from "../hooks/useShopBidStatusNotifica
 import { useCustomerReportStatusNotifications } from "../hooks/useCustomerReportStatusNotifications";
 import { useInsurerClaimNotifications } from "../hooks/useInsurerClaimNotifications";
 import { useShopEstimateNotifications } from "../hooks/useShopEstimateNotifications";
+import { useCustomerEstimateResponseNotifications } from "../hooks/useCustomerEstimateResponseNotifications";
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import { getShopSubmittedBids } from "../services/supabase/bids";
 import {
@@ -190,6 +191,12 @@ export function useDashboardData({
     if (userType !== "customer" || !providerUserId) return;
     getMyEstimateRequests(providerUserId).then(setCustomerEstimateRequests);
   }, [userType, providerUserId]);
+
+  // Real-time: notify customer when shop responds to their estimate request + auto-refresh
+  useCustomerEstimateResponseNotifications({
+    userType,
+    onEstimateResponse: refetchCustomerEstimates,
+  });
 
   // Customer estimate detail sheet
   const [selectedEstimate, setSelectedEstimate] = useState<EstimateRequest | null>(null);

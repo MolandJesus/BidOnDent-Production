@@ -193,6 +193,10 @@ function AppContent() {
         case "shop-directory":
           navigation.setViewMode("shop-directory");
           break;
+        case "estimates":
+          navigation.setCurrentTab("estimates");
+          navigation.setViewMode("dashboard");
+          break;
         case "navigation":
           navigation.setViewMode("shop-directory");
           break;
