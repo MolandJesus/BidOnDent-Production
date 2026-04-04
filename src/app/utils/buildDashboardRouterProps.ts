@@ -167,20 +167,14 @@ export function buildDashboardRouterProps({
       await handleAcceptBid(details, userProfile, navigation, userData, websiteIdentity);
     },
     onRejectBid: async (details: { bidId: string; shopName: string }) => {
-      try {
-        const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
-        if (!rejectedBid) {
-          if (import.meta.env.DEV)
-            console.error("Failed to reject bid in Supabase:", details.bidId);
-          return;
-        }
-        // Update local bids state so UI reflects the change immediately
-        userData.setBids(
-          userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
-        );
-      } catch (err) {
-        if (import.meta.env.DEV) console.error("Failed to reject bid:", err);
+      const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
+      if (!rejectedBid) {
+        throw new Error("Failed to reject bid — backend did not confirm");
       }
+      // Update local bids state so UI reflects the change immediately
+      userData.setBids(
+        userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
+      );
     },
     onPasswordChange: () => {
       if (import.meta.env.DEV) console.log("Password change not implemented");
@@ -243,19 +237,15 @@ export function buildDashboardRouterProps({
       await updateJobAssignmentStatus(assignmentId, backendStatus);
     },
     onConfirmCompletion: async (reportId: string) => {
-      try {
-        const clerkId = userProfile?.id;
-        if (clerkId) {
-          await updateReportStatus(reportId, "resolved", clerkId);
-        }
-        userData.setReports(
-          userData.reports.map((r) =>
-            String(r.id) === String(reportId) ? { ...r, status: "resolved" as const } : r
-          )
-        );
-      } catch (err) {
-        if (import.meta.env.DEV) console.error("Failed to confirm completion:", err);
+      const clerkId = userProfile?.id;
+      if (clerkId) {
+        await updateReportStatus(reportId, "resolved", clerkId);
       }
+      userData.setReports(
+        userData.reports.map((r) =>
+          String(r.id) === String(reportId) ? { ...r, status: "resolved" as const } : r
+        )
+      );
     },
   };
 }

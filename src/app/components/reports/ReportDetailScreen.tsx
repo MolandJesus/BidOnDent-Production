@@ -10,6 +10,7 @@ import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
+import { useNotifications } from "../../features/notifications/NotificationContext";
 
 type Report = DamageReport & {
   // Support flattened vehicle info (from Supabase)
@@ -38,6 +39,7 @@ export default function ReportDetailScreen({
   appearanceMode = "map-dark",
 }: ReportDetailScreenProps) {
   const isLight = appearanceMode === "light";
+  const notifications = useNotifications();
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   // Handle both nested vehicle and flattened vehicle properties
@@ -383,7 +385,30 @@ export default function ReportDetailScreen({
               )}
               {onConfirmCompletion && (
                 <button
-                  onClick={() => onConfirmCompletion(String(report.id))}
+                  onClick={async () => {
+                    try {
+                      await onConfirmCompletion(String(report.id));
+                      notifications.push({
+                        category: "report",
+                        title: "Repair confirmed complete",
+                        body: `Report #${report.id} has been marked as resolved.`,
+                        payload: { reportId: report.id },
+                        userId: "",
+                        deepLink: null,
+                        priority: "high",
+                      });
+                    } catch {
+                      notifications.push({
+                        category: "report",
+                        title: "Confirmation failed",
+                        body: "Could not confirm completion. Please try again.",
+                        payload: { reportId: report.id },
+                        userId: "",
+                        deepLink: null,
+                        priority: "high",
+                      });
+                    }
+                  }}
                   className="bd-dashboard-primary-button flex w-full min-h-[44px] items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white"
                   style={{ background: "linear-gradient(135deg, #059669 0%, #10b981 100%)" }}
                 >

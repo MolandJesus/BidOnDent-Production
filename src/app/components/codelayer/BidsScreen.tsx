@@ -329,11 +329,23 @@ export default function BidsScreen({
                   });
                 }
               }}
-              onReject={() => {
-                onRejectBid?.({
-                  bidId: String(bid.id),
-                  shopName: bid.shopName,
-                });
+              onReject={async () => {
+                try {
+                  await onRejectBid?.({
+                    bidId: String(bid.id),
+                    shopName: bid.shopName,
+                  });
+                } catch {
+                  notifications.push({
+                    category: "bid",
+                    title: "Rejection failed",
+                    body: `Could not reject ${bid.shopName}'s bid. Please try again.`,
+                    payload: { bidId: bid.id },
+                    userId: "",
+                    deepLink: null,
+                    priority: "high",
+                  });
+                }
               }}
               onRate={() => {
                 setSelectedShop(bid.shopName);
