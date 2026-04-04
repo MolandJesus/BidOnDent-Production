@@ -66,6 +66,17 @@ export default defineConfig({
       "X-Content-Type-Options": "nosniff",
       "X-Frame-Options": "SAMEORIGIN",
       "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Content-Security-Policy": [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' https://*.clerk.accounts.dev",
+        "style-src 'self' 'unsafe-inline'",
+        "img-src 'self' data: blob: https://*.supabase.co https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.clerk.com https://img.clerk.com",
+        "font-src 'self' data:",
+        "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.clerk.accounts.dev https://*.clerk.com https://*.sentry.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://nominatim.openstreetmap.org https://router.project-osrm.org",
+        "frame-src https://*.clerk.accounts.dev",
+        "worker-src 'self' blob:",
+      ].join("; "),
     },
   },
   resolve: {

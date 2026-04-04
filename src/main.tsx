@@ -6,10 +6,14 @@ import { createRoot } from "react-dom/client";
 import App from "./app/App.tsx";
 import { initSentry } from "./app/services/sentryInit.ts";
 import { captureException } from "./app/services/errorReporting.ts";
+import { validateAppConfig } from "./app/utils/validateAppConfig.ts";
 import "./styles/index.css";
 
 // Initialize Sentry before React renders (no-op without VITE_SENTRY_DSN)
 initSentry();
+
+// Validate critical configuration at startup
+validateAppConfig();
 
 type GlobalErrorBoundaryState = {
   hasError: boolean;
