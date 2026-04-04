@@ -1,9 +1,9 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 13, 2026 (Pass 641 — Derived state extraction)
+**Last updated:** April 4, 2026 (Pass 779 — Complete fake fallback sweep)
 **Status:** Active execution tracker
-**Pass count:** 641
-**Build:** 0 errors (~3.1s)
+**Pass count:** 779
+**Build:** 0 errors (~3.0s)
 **Branch:** BidOnDent-Horizon-Beta
 
 ---
@@ -38,6 +38,12 @@
 - Geocoding is Nominatim (free, rate-limited) — functional for dev, not production-scale
 - Demo mode provides synthetic data to populate screens; real mode shows only seed data
 
+**Data honesty status (verified Pass 779):**
+
+- All marketplace screens show "Not provided" for missing fields — zero fake placeholders remain
+- Seed data clearly guarded — actions on seed IDs are blocked with explicit messaging
+- Edge function `hydrateReport` returns real customer profile + bid count from Supabase
+
 **Not yet built:**
 
 - Push notifications, payment processing, offline detection
@@ -47,6 +53,37 @@
 - Shop-area notification system (the missing link for marketplace function)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Passes 769–779 — Data Honesty Sweep + Sticky Header Removal (2026-04-04)
+
+| Pass | Title                                    | Key Changes                                                                                                         |
+| ---- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| 769  | Fix demo mode bid submission             | DashboardRouter Promise propagation, demo bid guard for seed IDs                                                    |
+| 770  | Remove sticky headers (customer screens) | Removed frozen sticky headers from CustomerDashboard, ReportScreen, BidsScreen, AccountMenu                         |
+| 771  | Remove sticky headers (shop screens)     | Removed sticky headers from ShopRequestsScreen, ShopEstimatesScreen, ShopActiveJobsScreen                           |
+| 772  | Remove sticky headers (insurer screens)  | Removed sticky headers from InsurerClaimsScreen, InsurerPartnerShopsScreen, InsurerDashboard                        |
+| 773  | Remove sticky headers (shared screens)   | Removed sticky headers from DemoModeScreen, FindShopsScreen, ShopDetailScreen                                       |
+| 774  | Wire insurer claim submission to backend | InsurerClaimsScreen approve/deny handlers call Supabase edge function                                               |
+| 775  | Honest shop marketplace data path        | `hydrateReport` edge function JOINs profiles + counts bids; `transformSupabaseReport` maps real customer/bid fields |
+| 776  | Seed data transparency + action guards   | Fixed dishonest bidsCount on seed data; added guards preventing real API calls on seed-prefixed IDs                 |
+| 777  | Insurer claims data honesty              | Claim numbers now RPT-{reportId}; priority from photo count only; shopAssigned from accepted bid                    |
+| 778  | Shop job tasks and progress honesty      | Tasks reflect real bid state via hasBids flag; progress computed from task completion ratio (not hardcoded)         |
+| 779  | Complete fake fallback sweep             | Replaced all remaining fake customer labels across marketplace ("Customer"→"Not provided", etc)                     |
+
+**Key changes (Passes 775–779 data honesty sweep):**
+
+- `hydrateReport` edge function now JOINs `profiles` table for customer_name/email/phone per report, counts bids from `bids` table
+- `transformSupabaseReport` maps real customer, bid count, insurance fields from Supabase response
+- All marketplace screens show "Not provided" for missing data instead of fake placeholders
+- Seed data (`SEED_DAMAGE_REPORTS`) corrected: bidsCount was dishonestly 2, now 0
+- Seed data guards prevent real API calls (bids, approve, deny) on seed-prefixed report IDs
+- Insurer claim numbers are RPT-{reportId} (traceable) instead of synthetic CLM-0001 sequence
+- Shop active job tasks use real bid state; progress is computed from task completion ratio
+- Grep-verified zero remaining fake customer fallbacks across entire codebase
+
+**P4-UX noted for future fix:** `tel:Not provided` and `mailto:Not provided` links on shop/insurer cards should be disabled when no real contact info exists.
 
 ---
 

@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-05 (Pass 632 — Dashboard Surface System: bd-dashboard-\* CSS primitives in theme.css, 22-component styling migration, zero logic changes. Co-authored with ChatGPT design pass.)
+> **Last updated:** 2026-04-04 (Pass 779 — Complete data honesty sweep: all marketplace screens show real data or "Not provided"; zero fake placeholders remain. Passes 769-779 covered demo bid fix, sticky header removal across 13 screens, insurer claim wiring, and full data honesty sweep.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
