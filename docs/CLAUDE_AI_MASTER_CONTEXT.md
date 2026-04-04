@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-04 (Pass 797 — Shop estimate inbox real-time notifications. 6th Supabase Realtime hook. Estimate requests now push-notify shops in real time. Passes 789-797.)
+> **Last updated:** 2026-04-04 (Pass 798 — Customer estimate response real-time notifications + type fixes. Estimate notification loop complete. 7 Supabase Realtime hooks. Passes 789-798.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine

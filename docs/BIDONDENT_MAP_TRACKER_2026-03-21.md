@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 797 — Shop estimate inbox real-time notifications)
+**Last updated:** April 4, 2026 (Pass 798 — Customer estimate response real-time notifications)
 **Status:** Active execution tracker
-**Pass count:** 797
+**Pass count:** 798
 **Build:** 0 errors (~3.5s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -29,6 +29,7 @@
 - Real-time customer report status notifications (`useCustomerReportStatusNotifications` — toast on report lifecycle changes, Pass 785)
 - Real-time insurer claim notifications (`useInsurerClaimNotifications` — toast on claim lifecycle changes, Pass 786)
 - Real-time shop estimate request notifications (`useShopEstimateNotifications` — toast + refetch when customer submits estimate request, Pass 797)
+- Real-time customer estimate response notifications (`useCustomerEstimateResponseNotifications` — toast + refetch when shop responds with pricing, Pass 798)
 - Notification deduplication (3-second window via title+body key, prevents Supabase reconnect spam, Pass 788)
 - Job status update error surfacing (optimistic rollback + user-facing error notification, Pass 789)
 - Vehicle delete confirmation + save error handling with optimistic rollback (Pass 795)
@@ -208,6 +209,28 @@
   - Shop: new reports (pre-existing), bid status (784), new estimate requests (797)
   - Insurer: claim lifecycle (786)
 - Remaining real-time gaps: estimate responses → customers, customer accept/decline → shops
+
+---
+
+## Pass 798 — Customer Estimate Response Real-Time Notifications + Type Fixes (2026-04-04)
+
+| Pass | Title                                                     | Key Changes                                                                                                                                     |
+| ---- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 798  | Customer estimate response notifications + type fixes     | subscribeToUpdates() on RealtimeEstimateService; useCustomerEstimateResponseNotifications hook; NotificationCategory/DeepLink types fixed; App.tsx deep link handler |
+
+**Key changes (Pass 798):**
+
+- Customers now receive real-time notifications when shops respond to their estimate requests (status → "responded")
+- Extended `RealtimeEstimateService` with `subscribeToUpdates()` method for UPDATE events (2nd channel on same service)
+- Created `useCustomerEstimateResponseNotifications` — 7th real-time notification hook
+- Fixed `NotificationCategory` type: added "estimate" (was missing, caused TS error)
+- Fixed `NotificationDeepLink` type: added `{ screen: "estimates" }` (was missing, caused TS error)
+- Added "estimates" case to App.tsx deep link handler: navigates to shop estimates tab
+- Real-time notification coverage now complete for all user types:
+  - Customer: new bids (782), report status (785), estimate responses (798)
+  - Shop: new reports (pre-existing), bid status (784), new estimate requests (797)
+  - Insurer: claim lifecycle (786)
+- Remaining real-time gap: customer accept/decline estimate → shops (lower priority, shop sees on inbox refresh)
 
 ---
 
