@@ -192,6 +192,41 @@ export const transformSupabaseReport = (report: SupabaseReport): FrontendReport 
   };
 };
 
+/** Convert a frontend DamageReport to Supabase shape for map rendering components. */
+export function toMapReportShape(report: FrontendReport): SupabaseReport {
+  return {
+    id: report.id,
+    user_id: undefined,
+    vehicle_id: report.vehicleId || undefined,
+    vehicle_make: report.vehicleInfo?.make || report.vehicle?.make || "",
+    vehicle_model: report.vehicleInfo?.model || report.vehicle?.model || "",
+    vehicle_year: parseInt(report.vehicleInfo?.year || report.vehicle?.year || "0", 10),
+    damage_type: report.damageType || report.damageArea || "unknown",
+    damage_severity: "",
+    damage_description: report.damageDescription || report.description || "",
+    damage_location: report.damageArea || "",
+    address: report.address || "",
+    city: report.city || "",
+    state: report.state || "",
+    zip_code: report.zipCode || report.zip_code || "",
+    latitude: report.latitude ?? null,
+    longitude: report.longitude ?? null,
+    photo_urls: report.photos || [],
+    status: report.status || "pending",
+    created_at: report.createdAt || "",
+    customer_name: report.customerName || null,
+    customer_email: report.customerEmail || null,
+    customer_phone: report.customerPhone || null,
+    bids_count: report.bidsCount || 0,
+    insurance_claim: report.insuranceClaim,
+    insurance_company: report.insuranceCompany,
+    claim_status: report.claimStatus,
+    approved_amount: report.approvedAmount,
+    denial_reason: report.denialReason,
+    claim_decision_date: report.claimDecisionDate,
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts both frontend and Supabase report shapes
 export const buildSupabaseReportPayload = (report: Record<string, any>) => ({
   ...(isUuidLike(report.id) ? { id: report.id } : {}),

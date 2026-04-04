@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import { zipToCoordinates } from "../services/supabase/map";
 import { submitInsuranceClaim } from "../services/supabase/reports";
+import { toMapReportShape } from "../hooks/userDataUtils";
 import { lazyWithRetry } from "../utils/lazyWithRetry";
 
 const ReportsListScreen = lazyWithRetry(() => import("../components/reports/ReportsListScreen"));
@@ -272,7 +273,7 @@ export default function DashboardSecondaryViews({
               onTabChange("bids");
               onViewModeChange("dashboard");
             }}
-            mapReports={reports as unknown as import("../services/supabase/types").DamageReport[]}
+            mapReports={reports.map(toMapReportShape)}
             initialSearchHint={
               reports.length > 0
                 ? (() => {
