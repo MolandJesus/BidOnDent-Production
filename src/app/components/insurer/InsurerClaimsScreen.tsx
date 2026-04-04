@@ -11,14 +11,15 @@ import InsurerClaimApprovalModal from "./InsurerClaimApprovalModal";
 import InsurerClaimDenialModal from "./InsurerClaimDenialModal";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
+import { useNotifications } from "../../features/notifications/NotificationContext";
 
 type InsurerClaimsScreenProps = {
   primaryColor?: string;
   reports?: DamageReport[];
   reportsLoading?: boolean;
   isSeedData?: boolean;
-  onApproveClaim?: (claimId: string, amount: number) => void;
-  onDenyClaim?: (claimId: string, reason: string) => void;
+  onApproveClaim?: (claimId: string, amount: number) => void | Promise<void>;
+  onDenyClaim?: (claimId: string, reason: string) => void | Promise<void>;
   appearanceMode?: DashboardAppearanceMode;
 };
 
@@ -40,6 +41,7 @@ export default function InsurerClaimsScreen({
   const [approvalAmount, setApprovalAmount] = useState("");
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [showDenialModal, setShowDenialModal] = useState(false);
+  const notifications = useNotifications();
 
   // DEPRECATED: Sample claims data removed - component now expects live data from Supabase
   // If no data is provided, shows empty state instead
@@ -93,13 +95,34 @@ export default function InsurerClaimsScreen({
     setShowApprovalModal(true);
   };
 
-  const handleApproveClaim = () => {
+  const handleApproveClaim = async () => {
     if (selectedClaim && approvalAmount) {
       if (selectedClaim.id.startsWith("seed-")) return;
-      onApproveClaim?.(selectedClaim.id, parseFloat(approvalAmount));
-      setShowApprovalModal(false);
-      setApprovalAmount("");
-      setSelectedClaim(null);
+      try {
+        await onApproveClaim?.(selectedClaim.id, parseFloat(approvalAmount));
+        notifications.push({
+          category: "insurer",
+          title: "Claim approved",
+          body: `Claim ${selectedClaim.claimNumber} approved for $${parseFloat(approvalAmount).toLocaleString()}.`,
+          payload: { claimId: selectedClaim.id },
+          userId: "",
+          deepLink: null,
+          priority: "high",
+        });
+        setShowApprovalModal(false);
+        setApprovalAmount("");
+        setSelectedClaim(null);
+      } catch {
+        notifications.push({
+          category: "insurer",
+          title: "Approval failed",
+          body: "Could not approve this claim. Please try again.",
+          payload: { claimId: selectedClaim.id },
+          userId: "",
+          deepLink: null,
+          priority: "high",
+        });
+      }
     }
   };
 
@@ -108,12 +131,33 @@ export default function InsurerClaimsScreen({
     setShowDenialModal(true);
   };
 
-  const handleDenyClaim = (reason: string) => {
+  const handleDenyClaim = async (reason: string) => {
     if (selectedClaim) {
       if (selectedClaim.id.startsWith("seed-")) return;
-      onDenyClaim?.(selectedClaim.id, reason);
-      setShowDenialModal(false);
-      setSelectedClaim(null);
+      try {
+        await onDenyClaim?.(selectedClaim.id, reason);
+        notifications.push({
+          category: "insurer",
+          title: "Claim denied",
+          body: `Claim ${selectedClaim.claimNumber} has been denied.`,
+          payload: { claimId: selectedClaim.id },
+          userId: "",
+          deepLink: null,
+          priority: "normal",
+        });
+        setShowDenialModal(false);
+        setSelectedClaim(null);
+      } catch {
+        notifications.push({
+          category: "insurer",
+          title: "Denial failed",
+          body: "Could not deny this claim. Please try again.",
+          payload: { claimId: selectedClaim.id },
+          userId: "",
+          deepLink: null,
+          priority: "high",
+        });
+      }
     }
   };
 

@@ -320,21 +320,15 @@ export default function DashboardRouter({
                     const ok = await updateClaimDecision(claimId, "approved", {
                       approvedAmount: amount,
                     });
-                    if (ok) refetchMarketplace();
-                    if (import.meta.env.DEV)
-                      console.info("[BidOnDent] Claim approved:", {
-                        claimId,
-                        amount,
-                        persisted: ok,
-                      });
+                    if (!ok) throw new Error("Claim approval failed");
+                    refetchMarketplace();
                   }}
                   onDenyClaim={async (claimId, reason) => {
                     const ok = await updateClaimDecision(claimId, "denied", {
                       denialReason: reason,
                     });
-                    if (ok) refetchMarketplace();
-                    if (import.meta.env.DEV)
-                      console.info("[BidOnDent] Claim denied:", { claimId, reason, persisted: ok });
+                    if (!ok) throw new Error("Claim denial failed");
+                    refetchMarketplace();
                   }}
                 />
               </motion.div>
