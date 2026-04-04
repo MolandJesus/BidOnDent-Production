@@ -32,6 +32,7 @@ type BuildDashboardRouterPropsArgs = {
   websiteIdentity?: WebsiteIdentity | null;
   appearanceMode: DashboardAppearanceMode;
   onAppearanceModeChange: (mode: DashboardAppearanceMode) => void;
+  openUserProfile?: () => void;
 };
 
 export function buildDashboardRouterProps({
@@ -48,6 +49,7 @@ export function buildDashboardRouterProps({
   websiteIdentity,
   appearanceMode,
   onAppearanceModeChange,
+  openUserProfile,
 }: BuildDashboardRouterPropsArgs) {
   return {
     currentTab: navigation.currentTab,
@@ -177,7 +179,7 @@ export function buildDashboardRouterProps({
       );
     },
     onPasswordChange: () => {
-      if (import.meta.env.DEV) console.log("Password change not implemented");
+      openUserProfile?.();
     },
     onDeleteAccount: handleDeleteAccount,
     onSaveVehicles: async (vehicles: Vehicle[]) => {

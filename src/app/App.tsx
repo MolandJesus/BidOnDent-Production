@@ -78,7 +78,7 @@ function AppContent() {
   // CLERK AUTH - Replaces useAuth hook
   // ============================================================================
   const { user, isLoaded: isUserLoaded } = useUser();
-  const { signOut, openSignUp } = useClerk();
+  const { signOut, openSignUp, openUserProfile } = useClerk();
   const { getToken, isLoaded: isClerkAuthLoaded } = useClerkAuth();
   const userProfile = user ? extractUserProfile(user) : null;
 
@@ -385,6 +385,7 @@ function AppContent() {
       websiteIdentity,
       appearanceMode,
       onAppearanceModeChange: setAppearanceMode,
+      openUserProfile,
     });
 
     return (
