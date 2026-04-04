@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 787 — Context-aware empty states)
+**Last updated:** April 4, 2026 (Pass 789 — Fix silent job status update failure)
 **Status:** Active execution tracker
-**Pass count:** 787
+**Pass count:** 789
 **Build:** 0 errors (~3.0s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -28,6 +28,8 @@
 - Real-time shop bid status notifications (`useShopBidStatusNotifications` — toast when customer accepts/rejects, Pass 784)
 - Real-time customer report status notifications (`useCustomerReportStatusNotifications` — toast on report lifecycle changes, Pass 785)
 - Real-time insurer claim notifications (`useInsurerClaimNotifications` — toast on claim lifecycle changes, Pass 786)
+- Notification deduplication (3-second window via title+body key, prevents Supabase reconnect spam, Pass 788)
+- Job status update error surfacing (optimistic rollback + user-facing error notification, Pass 789)
 - Lazy chunk retry for all 24 lazy-loaded screens (`lazyWithRetry` utility, Pass 617)
 - Chunk-aware error boundary with "Update available / Reload Page" UX (Pass 617)
 - VIN input sanitization on both vehicle forms (auto-uppercase, strip I/O/Q, maxLength=17, Pass 619)
@@ -127,6 +129,22 @@
   - Insurer: claim lifecycle changes (Pass 786)
 - RealtimeReportService extended with UPDATE subscription channel alongside existing INSERT channel
 - Empty states now guide users clearly when there is genuinely no data vs when filters hide results
+
+---
+
+## Passes 788–789 — Notification Dedup + Backend Error Surfacing (2026-04-04)
+
+| Pass | Title                             | Key Changes                                                                                                              |
+| ---- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 788  | Notification deduplication        | useNotificationEvents.push() deduplicates events with identical title+body within 3-second window; Map-based tracking   |
+| 789  | Fix silent job status update fail | onUpdateJobStatus now throws on failure; ShopActiveJobsScreen awaits + rolls back optimistic UI + shows error notification |
+
+**Key changes (Passes 788–789):**
+
+- Duplicate notifications from Supabase reconnection are now silently dropped (3s dedup window)
+- Shop job status updates no longer fail silently — users see "Update failed" notification if backend persist fails
+- Seed/demo data status changes skip backend call entirely (local-only by design)
+- P2-ARCH: `onConfirmCompletion` has a similar silent-catch pattern — noted for next pass
 
 ---
 
