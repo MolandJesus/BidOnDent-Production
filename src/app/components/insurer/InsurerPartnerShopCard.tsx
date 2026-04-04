@@ -227,20 +227,40 @@ export default function InsurerPartnerShopCard({
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <a
-            href={`tel:${entry.phone}`}
-            className="flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-medium bd-glass-control--utility"
-          >
-            <Phone className="h-4 w-4" />
-            <span className="text-xs">Call</span>
-          </a>
-          <a
-            href={`mailto:${entry.email}`}
-            className="flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-medium bd-glass-control--utility"
-          >
-            <Mail className="h-4 w-4" />
-            <span className="text-xs">Email</span>
-          </a>
+          {entry.phone && entry.phone !== "Not provided" ? (
+            <a
+              href={`tel:${entry.phone}`}
+              className="flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-medium bd-glass-control--utility"
+            >
+              <Phone className="h-4 w-4" />
+              <span className="text-xs">Call</span>
+            </a>
+          ) : (
+            <span
+              className="flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+              title="Phone not available"
+            >
+              <Phone className="h-4 w-4" />
+              <span className="text-xs">Call</span>
+            </span>
+          )}
+          {entry.email && entry.email !== "Not provided" ? (
+            <a
+              href={`mailto:${entry.email}`}
+              className="flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-medium bd-glass-control--utility"
+            >
+              <Mail className="h-4 w-4" />
+              <span className="text-xs">Email</span>
+            </a>
+          ) : (
+            <span
+              className="flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+              title="Email not available"
+            >
+              <Mail className="h-4 w-4" />
+              <span className="text-xs">Email</span>
+            </span>
+          )}
           <button
             type="button"
             onClick={() => onDirections(entry)}
