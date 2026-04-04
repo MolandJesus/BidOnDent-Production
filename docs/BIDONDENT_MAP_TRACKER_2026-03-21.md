@@ -2,8 +2,8 @@
 
 **Last updated:** April 5, 2026 (Pass 851 — Service area circles in shop directory map)
 **Status:** Active execution tracker
-**Pass count:** 851
-**Build:** 0 errors (3.38s)
+**Pass count:** 853
+**Build:** 0 errors (3.49s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -124,6 +124,8 @@
 | 849  | App.tsx hard cap fix (extract deep link handler) | App.tsx was at 504 lines (4 over hard cap). Extracted deep link navigation useEffect to `useDeepLinkNavigation.ts` hook with single responsibility. App.tsx: 504 → 474 lines. All diagnostics clean.                                                                        |
 | 850  | cspell domain word cleanup                       | Added 25 domain words to `cspell.json` (notif, prefs, place names, etc.). Added `src/**/*.test.{ts,tsx}` to ignorePaths. Result: 0 spellcheck issues across 535 production files.                                                                                          |
 | 851  | Service area circles in shop directory map       | Extracted `circleToPolygon` to `geoCircle.ts`. `MapLibreDashboardMapPreview` imports from shared util. Edge handler: `?all=true` branch returns all active radius areas. `getAllPublicServiceAreas()` + `usePublicServiceAreas` hook created. Coverage circles rendered in `MapLibreShopDirectoryMapPane` (445→483 lines). |
+| 852  | Product Brain accuracy update                    | Removed outdated "demo-heavy" characterizations. Documented real wiring: ShopRequestsScreen (reports prop), ShopActiveJobsScreen (useShopJobAssignments), bid end-to-end, service area editor in AccountScreen. Insurer flows documented accurately. |
+| 853  | Real-time map refresh for new report pins        | `useReportLayerData`: subscribe to `damage_reports` INSERT events via `supabase.channel("map-report-layer-inserts")`. New reports appear as map pins within 1.5 s of submission. Dedicated channel to avoid collision with `useShopNearbyReportNotifications`. |
 
 **Full re-anchor audit (Pass 810+):**
 
