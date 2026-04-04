@@ -19,6 +19,8 @@ import { useAppearanceMode } from "./hooks/useAppearanceMode";
 import { useNotificationEvents, NotificationProvider } from "./features/notifications";
 import { useNotifications } from "./features/notifications/NotificationContext";
 import NotificationToast from "./components/ui/NotificationToast";
+import { useOnlineStatus } from "./hooks/useOnlineStatus";
+import { useServiceWorkerUpdate } from "./hooks/useServiceWorkerUpdate";
 
 // Import constants
 import {
@@ -437,9 +439,36 @@ export default function App() {
   );
 }
 
-/** Renders AppContent + global toast overlay. */
+/** Renders AppContent + global toast overlay + PWA lifecycle alerts. */
 function AppWithToast() {
   const notificationActions = useNotificationEvents();
+  const isOnline = useOnlineStatus();
+  const { needRefresh, updateServiceWorker } = useServiceWorkerUpdate();
+
+  // Offline / online toast
+  useEffect(() => {
+    if (!isOnline) {
+      notificationActions.showToast({
+        message: "You're offline — cached data is still available.",
+        variant: "warning",
+        durationMs: 6000,
+        deepLink: null,
+      });
+    } else {
+      // Only fire "back online" if the component has been mounted for at
+      // least a tick (avoids false positive on initial render).
+      const id = setTimeout(() => {
+        notificationActions.showToast({
+          message: "Back online.",
+          variant: "success",
+          durationMs: 3000,
+          deepLink: null,
+        });
+      }, 0);
+      return () => clearTimeout(id);
+    }
+  }, [isOnline]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <NotificationProvider value={notificationActions}>
       <AppContent />
@@ -448,6 +477,17 @@ function AppWithToast() {
         onDismiss={notificationActions.dismissToast}
         onDeepLinkClick={notificationActions.navigateDeepLink}
       />
+      {needRefresh && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[9999] px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg flex items-center gap-3 text-sm">
+          <span>A new version is available.</span>
+          <button
+            onClick={() => void updateServiceWorker()}
+            className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 font-medium transition-colors"
+          >
+            Update
+          </button>
+        </div>
+      )}
     </NotificationProvider>
   );
 }
