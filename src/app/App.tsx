@@ -55,6 +55,7 @@ const InsurerPartnershipPage = lazyWithRetry(
 );
 
 import { clerkPublishableKey } from "../../utils/clerk/info";
+import { clerkAppearance } from "./config/clerkAppearance";
 
 const hasValidClerkPublishableKey =
   typeof clerkPublishableKey === "string" &&
@@ -433,7 +434,7 @@ export default function App() {
   }
 
   return (
-    <ClerkProvider publishableKey={clerkPublishableKey}>
+    <ClerkProvider publishableKey={clerkPublishableKey} appearance={clerkAppearance}>
       <AppWithToast />
     </ClerkProvider>
   );

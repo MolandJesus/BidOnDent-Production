@@ -112,8 +112,15 @@ export function LoginLoginView({
       </motion.button>
 
       <div className="rounded-lg border border-white/[0.12] bg-white/[0.04] px-4 py-3 text-sm text-slate-300">
-        <span className="font-medium text-slate-200">Social sign-in is coming soon.</span> Use your
-        email and password for now.
+        <span className="font-medium text-slate-200">Prefer social sign-in?</span> Use the{" "}
+        <button
+          type="button"
+          onClick={() => onLoginViewChange("main")}
+          className="underline text-blue-400 hover:text-blue-300"
+        >
+          main login
+        </button>{" "}
+        page for Google and other providers.
       </div>
 
       <button
