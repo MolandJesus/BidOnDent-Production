@@ -237,10 +237,10 @@
 
 ## Passes 799–800 — Profile Error Surfacing + Estimate Loop Completion (2026-04-04)
 
-| Pass | Title                                                     | Key Changes                                                                                                                                                |
-| ---- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 799  | Fix silent profile save failure                           | AccountScreen.saveProfileChanges catch block now pushes "Profile Save Failed" notification instead of silently swallowing                                   |
-| 800  | Shop estimate accept/decline notifications + multi-sub    | useShopEstimateStatusNotifications hook; RealtimeEstimateService refactored to Set<callback> for multi-subscriber; estimate notification loop fully complete |
+| Pass | Title                                                  | Key Changes                                                                                                                                                  |
+| ---- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 799  | Fix silent profile save failure                        | AccountScreen.saveProfileChanges catch block now pushes "Profile Save Failed" notification instead of silently swallowing                                    |
+| 800  | Shop estimate accept/decline notifications + multi-sub | useShopEstimateStatusNotifications hook; RealtimeEstimateService refactored to Set<callback> for multi-subscriber; estimate notification loop fully complete |
 
 **Key changes (Passes 799–800):**
 
