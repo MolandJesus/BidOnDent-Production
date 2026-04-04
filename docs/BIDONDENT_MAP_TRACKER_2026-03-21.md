@@ -1,9 +1,9 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 793 — Loading state polish)
+**Last updated:** April 4, 2026 (Pass 795 — Vehicle delete safety + save error handling)
 **Status:** Active execution tracker
-**Pass count:** 793
-**Build:** 0 errors (~3.0s)
+**Pass count:** 795
+**Build:** 0 errors (~3.5s)
 **Branch:** BidOnDent-Horizon-Beta
 
 ---
@@ -30,6 +30,8 @@
 - Real-time insurer claim notifications (`useInsurerClaimNotifications` — toast on claim lifecycle changes, Pass 786)
 - Notification deduplication (3-second window via title+body key, prevents Supabase reconnect spam, Pass 788)
 - Job status update error surfacing (optimistic rollback + user-facing error notification, Pass 789)
+- Vehicle delete confirmation + save error handling with optimistic rollback (Pass 795)
+- Insurer claim approve/deny error surfacing with success/error notifications (Pass 794)
 - Lazy chunk retry for all 24 lazy-loaded screens (`lazyWithRetry` utility, Pass 617)
 - Chunk-aware error boundary with "Update available / Reload Page" UX (Pass 617)
 - VIN input sanitization on both vehicle forms (auto-uppercase, strip I/O/Q, maxLength=17, Pass 619)
@@ -164,7 +166,25 @@
   - Completion confirmation (Pass 791): error notification on failure, success notification on confirm
 - `buildDashboardRouterPropsHelpers.test.ts` updated: `handleAcceptBid` failure test expects thrown error
 - Zero silent error swallowing remains in the core report→bid→accept→repair→complete loop
-- Remaining fire-and-forget patterns (vehicle deletion, marketplace refresh) are P3-P4 — acceptable for non-critical secondary actions
+- Remaining fire-and-forget patterns (marketplace refresh) are P4 — acceptable for non-critical secondary actions
+
+---
+
+## Passes 794–795 — Error Surfacing Completion + Vehicle Safety (2026-04-04)
+
+| Pass | Title                                                 | Key Changes                                                                                                                                             |
+| ---- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 794  | Fix silent insurer claim approve/deny failure         | DashboardRouter throws on false return from updateClaimDecision; InsurerClaimsScreen awaits handlers, shows success/error notifications                 |
+| 795  | Vehicle delete confirmation + error handling/rollback | Inline delete confirmation banner; handleDelete/handleSave async with try/catch + optimistic rollback; onSaveVehicles async (no longer fire-and-forget) |
+
+**Key changes (Passes 794–795):**
+
+- Insurer claim approve/deny now surfaces backend failures with error notification (was completely silent)
+- Vehicle deletion requires explicit confirmation ("Delete this vehicle? This can't be undone.")
+- Both vehicle delete and save have optimistic rollback on failure: vehicles restore to pre-action state
+- `buildDashboardRouterProps.onSaveVehicles` now `async` — awaits `deleteVehicle()` calls (was fire-and-forget with `.catch()`)
+- `dashboard-router-types.ts`: `onSaveVehicles` type accepts `void | Promise<void>`
+- Error surfacing sweep now covers ALL user types and ALL critical + secondary actions
 
 ---
 
