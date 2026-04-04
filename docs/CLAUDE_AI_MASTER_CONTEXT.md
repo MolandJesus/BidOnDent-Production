@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-04 (Pass 789 — Notification dedup (3s window). Silent job status failure fixed: throw + optimistic rollback + error notification. All notification hooks complete. Passes 788-789.)
+> **Last updated:** 2026-04-04 (Pass 791 — Error surfacing sweep complete. All critical user actions (bid accept/reject, job status, completion confirm) now throw on failure with user-facing notifications + optimistic rollback. Passes 789-791.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine

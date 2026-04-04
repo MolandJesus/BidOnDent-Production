@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 789 — Fix silent job status update failure)
+**Last updated:** April 4, 2026 (Pass 791 — Error surfacing sweep complete)
 **Status:** Active execution tracker
-**Pass count:** 789
+**Pass count:** 791
 **Build:** 0 errors (~3.0s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -134,9 +134,9 @@
 
 ## Passes 788–789 — Notification Dedup + Backend Error Surfacing (2026-04-04)
 
-| Pass | Title                             | Key Changes                                                                                                              |
-| ---- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| 788  | Notification deduplication        | useNotificationEvents.push() deduplicates events with identical title+body within 3-second window; Map-based tracking   |
+| Pass | Title                             | Key Changes                                                                                                                |
+| ---- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 788  | Notification deduplication        | useNotificationEvents.push() deduplicates events with identical title+body within 3-second window; Map-based tracking      |
 | 789  | Fix silent job status update fail | onUpdateJobStatus now throws on failure; ShopActiveJobsScreen awaits + rolls back optimistic UI + shows error notification |
 
 **Key changes (Passes 788–789):**
@@ -145,6 +145,26 @@
 - Shop job status updates no longer fail silently — users see "Update failed" notification if backend persist fails
 - Seed/demo data status changes skip backend call entirely (local-only by design)
 - P2-ARCH: `onConfirmCompletion` has a similar silent-catch pattern — noted for next pass
+
+---
+
+## Passes 790–791 — Error Surfacing Sweep (Critical Product Loop) (2026-04-04)
+
+| Pass | Title                                      | Key Changes                                                                                                                  |
+| ---- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| 790  | Fix silent bid acceptance failure          | handleAcceptBid throws on backend failure; BidsScreen awaits + rolls back optimistic state + error notification              |
+| 791  | Fix silent bid rejection + confirm complete | onRejectBid + onConfirmCompletion throw on failure; callers await with error notification; ReportDetailScreen wired to notifs |
+
+**Key changes (Passes 789–791 error surfacing sweep):**
+
+- All critical user actions now surface backend failures to the user:
+  - Job status update (Pass 789): optimistic rollback + error notification
+  - Bid acceptance (Pass 790): optimistic rollback + error notification, success notification deferred until backend confirms
+  - Bid rejection (Pass 791): error notification on failure
+  - Completion confirmation (Pass 791): error notification on failure, success notification on confirm
+- `buildDashboardRouterPropsHelpers.test.ts` updated: `handleAcceptBid` failure test expects thrown error
+- Zero silent error swallowing remains in the core report→bid→accept→repair→complete loop
+- Remaining fire-and-forget patterns (vehicle deletion, marketplace refresh) are P3-P4 — acceptable for non-critical secondary actions
 
 ---
 
