@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 821 — Geographic matching edge functions + client service)
+**Last updated:** April 5, 2026 (Pass 822 — Shop nearby report notifications)
 **Status:** Active execution tracker
-**Pass count:** 821
+**Pass count:** 822
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -86,14 +86,14 @@
 | 808  | Phase 1-2 documentation sync          | Updated CODE_ORGANIZATION_AUDIT, tracker, and master context to reflect Pass 801-807 results                                                                                                                                  |
 | 809  | Update CODE_ORGANIZATION_AUDIT        | Synced audit doc with Phase 1-2 completion status and verified baseline numbers                                                                                                                                               |
 | 810  | Fix notification priority type errors | Fixed priority type mismatch in useCustomerReportStatusNotifications and useInsurerClaimNotifications                                                                                                                         |
-| 811  | Shop service area foundation          | Created shop_service_areas migration (017), edge function CRUD handlers, client service (serviceAreas.ts), registered routes                                                                                                 |
+| 811  | Shop service area foundation          | Created shop_service_areas migration (017), edge function CRUD handlers, client service (serviceAreas.ts), registered routes                                                                                                  |
 | 812  | Wire ShopMapWidget to real areas      | GET handler supports session-based fetch, added getMyShopServiceAreas client fn, useShopServiceAreas hook, ShopMapWidget shows real area data + dynamic map center                                                            |
 | 813  | Service area circle overlay           | DashboardMapPreview gains serviceAreaCircles prop with GeoJSON polygon rendering (fill + dashed border), ShopMapWidget passes radius areas as circle overlays on mini-map                                                     |
 | 814  | Report pin status/bid audit           | Verified: status-color coding (amber/green/slate) + bid count badges already fully wired in MapLibreReportLayer.tsx. No changes needed — passes 814-815 scope already delivered.                                              |
-| 816  | Fix tel/mailto disabled links         | InsurerPartnerShopCard: guarded tel/mailto against missing phone/email with disabled fallback. All other tel/mailto links already properly guarded. Map empty states verified present.                                         |
-| 819  | Wire claim Details → report detail   | InsurerClaimCard gains onViewDetails prop wired to Details button onClick. InsurerClaimsScreen gains onOpenReport prop piped to card. DashboardRouter passes onOpenReport using onSelectReport + onViewModeChange pattern.     |
-| 820  | Enable PostGIS + geography columns  | Migration 018: enable PostGIS, add GEOGRAPHY(POINT) to damage_reports/shop_profiles/shop_service_areas, GIST indexes, sync triggers, find_shops_near + find_reports_in_service_area functions. |
-| 821  | Geographic matching endpoints       | Edge handler geographic_matching.ts: getNearbyShops (PostGIS ST_DWithin), getReportsInServiceArea (session-based shop). Client service geographicMatching.ts. Routes registered.              |
+| 816  | Fix tel/mailto disabled links         | InsurerPartnerShopCard: guarded tel/mailto against missing phone/email with disabled fallback. All other tel/mailto links already properly guarded. Map empty states verified present.                                        |
+| 819  | Wire claim Details → report detail    | InsurerClaimCard gains onViewDetails prop wired to Details button onClick. InsurerClaimsScreen gains onOpenReport prop piped to card. DashboardRouter passes onOpenReport using onSelectReport + onViewModeChange pattern.    |
+| 820  | Enable PostGIS + geography columns    | Migration 018: enable PostGIS, add GEOGRAPHY(POINT) to damage_reports/shop_profiles/shop_service_areas, GIST indexes, sync triggers, find_shops_near + find_reports_in_service_area functions.                                |
+| 821  | Geographic matching endpoints         | Edge handler geographic_matching.ts: getNearbyShops (PostGIS ST_DWithin), getReportsInServiceArea (session-based shop). Client service geographicMatching.ts. Routes registered.                                              |
 
 **Full re-anchor audit (Pass 810+):**
 

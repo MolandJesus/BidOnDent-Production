@@ -8,6 +8,8 @@ import { useInsurerClaimNotifications } from "../hooks/useInsurerClaimNotificati
 import { useShopEstimateNotifications } from "../hooks/useShopEstimateNotifications";
 import { useShopEstimateStatusNotifications } from "../hooks/useShopEstimateStatusNotifications";
 import { useCustomerEstimateResponseNotifications } from "../hooks/useCustomerEstimateResponseNotifications";
+import { useShopNearbyReportNotifications } from "../hooks/useShopNearbyReportNotifications";
+import { useShopServiceAreas } from "../hooks/useShopServiceAreas";
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import { getShopSubmittedBids } from "../services/supabase/bids";
 import {
@@ -52,6 +54,16 @@ export function useDashboardData({
 
   // Real-time: notify insurer users when claim statuses change
   useInsurerClaimNotifications({ userType });
+
+  // Shop service areas (for proximity filtering)
+  const { serviceAreas } = useShopServiceAreas();
+
+  // Real-time: notify shop users when nearby reports appear in their service areas
+  useShopNearbyReportNotifications({
+    userType,
+    serviceAreas,
+    onNearbyReport: refetchMarketplace,
+  });
 
   const enrichedUserReports = reports.map((report) => ({
     ...report,
