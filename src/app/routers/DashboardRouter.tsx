@@ -306,6 +306,7 @@ export default function DashboardRouter({
                   isSeedData={usingSeedFallback}
                   appearanceMode={appearanceMode}
                   onUpdateJobStatus={onUpdateJobStatus}
+                  shopClerkUserId={websiteIdentity?.providerUserId ?? null}
                 />
               </motion.div>
             )}

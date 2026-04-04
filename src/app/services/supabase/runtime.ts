@@ -61,6 +61,7 @@ export const SUPABASE_EDGE_ROUTES = {
   insurerProfile: "/insurer-profile",
   insurerInterest: "/intake/insurer-interest",
   jobAssignment: "/job-assignment",
+  jobAssignments: "/job-assignments",
   jobAssignmentStatus: "/job-assignment/status",
   migrateDatabase: "/migrate-database",
   navigationSession: "/navigation-session",

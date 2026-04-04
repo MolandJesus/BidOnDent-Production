@@ -9,6 +9,7 @@ import type { DashboardAppearanceMode } from "../../routers/dashboard-router-typ
 import { useNotifications } from "../../features/notifications/NotificationContext";
 import ShopActiveJobCard, { type ActiveJob } from "./ShopActiveJobCard";
 import ShopActiveJobDetailModal from "./ShopActiveJobDetailModal";
+import { useShopJobAssignments } from "../../hooks/useShopJobAssignments";
 
 import type { Report } from "../../types";
 
@@ -18,6 +19,7 @@ type ShopActiveJobsScreenProps = {
   isSeedData?: boolean;
   onUpdateJobStatus?: (jobId: number, status: string) => void;
   appearanceMode?: DashboardAppearanceMode;
+  shopClerkUserId?: string | null;
 };
 
 export default function ShopActiveJobsScreen({
@@ -26,7 +28,47 @@ export default function ShopActiveJobsScreen({
   isSeedData = false,
   onUpdateJobStatus,
   appearanceMode = "map-dark",
+  shopClerkUserId,
 }: ShopActiveJobsScreenProps) {
+  const { jobs: dbJobs, isLoading: dbJobsLoading } = useShopJobAssignments(shopClerkUserId);
+
+  // Map DB job assignments to ActiveJob format
+  const dbActiveJobs: ActiveJob[] = useMemo(() => {
+    return dbJobs.map((ja) => {
+      const report = ja.report as Record<string, any> | null;
+      const bid = ja.bid as Record<string, any> | null;
+      const statusMap: Record<string, string> = {
+        scheduled: "pending",
+        in_progress: "in-progress",
+        awaiting_parts: "awaiting-parts",
+        completed: "completed",
+        cancelled: "completed",
+      };
+      const status = statusMap[ja.status] || "pending";
+      const vehicleParts = [report?.vehicle_year, report?.vehicle_make, report?.vehicle_model].filter(Boolean);
+      const tasks = buildTasks(status, !!bid);
+      const completedCount = tasks.filter((t) => t.completed).length;
+      const progress = Math.round((completedCount / tasks.length) * 100);
+      return {
+        id: ja.id,
+        customerName: report?.customer_name || "Customer",
+        customerEmail: report?.customer_email || "Not provided",
+        customerPhone: report?.customer_phone || "Not provided",
+        vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
+        damageType: report?.damage_area || report?.damage_type || "Repair request",
+        bidAmount: Number(bid?.amount) || 0,
+        startDate: ja.created_at ? new Date(ja.created_at).toLocaleDateString() : "Pending",
+        estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
+        status,
+        progress,
+        tasks,
+        insuranceClaim: !!report?.insurance_claim,
+        insuranceCompany: report?.insurance_company || "N/A",
+        claimNumber: report?.claim_number || "N/A",
+        notes: report?.description || "Repair request received and queued.",
+      };
+    });
+  }, [dbJobs]);
   const notifications = useNotifications();
   const isLight = appearanceMode === "light";
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,7 +102,7 @@ export default function ShopActiveJobsScreen({
     ];
   };
 
-  const liveJobs = reports
+  const reportDerivedJobs = reports
     .map((report, index: number) => {
       const rawStatus = String(report?.status ?? "pending").toLowerCase();
       const status =
@@ -107,6 +149,20 @@ export default function ShopActiveJobsScreen({
       return { ...job, status: override, progress, tasks: overrideTasks };
     });
 
+  // Merge: DB jobs take priority, report-derived fill in the rest
+  const dbJobIds = new Set(dbActiveJobs.map((j) => j.id));
+  const mergedJobs = [
+    ...dbActiveJobs,
+    ...reportDerivedJobs.filter((j) => !dbJobIds.has(j.id)),
+  ].map((job) => {
+    const override = statusOverrides[job.id];
+    if (!override) return job;
+    const overrideTasks = buildTasks(override, true);
+    const completedCount = overrideTasks.filter((t) => t.completed).length;
+    const progress = Math.round((completedCount / overrideTasks.length) * 100);
+    return { ...job, status: override, progress, tasks: overrideTasks };
+  });
+
   // Map pins for active job locations
   const jobPins = useMemo<ReportPin[]>(() => {
     return (reports || [])
@@ -136,7 +192,7 @@ export default function ShopActiveJobsScreen({
     return defaultCoverageCenter;
   }, [jobPins]);
 
-  const filteredJobs = liveJobs.filter((job) => {
+  const filteredJobs = mergedJobs.filter((job) => {
     const matchesSearch =
       job.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -246,7 +302,7 @@ export default function ShopActiveJobsScreen({
       )}
 
       {/* Job Geography Map */}
-      {liveJobs.length > 0 && (
+      {mergedJobs.length > 0 && (
         <div className="px-4 pt-4">
           <motion.section
             initial={{ opacity: 0, y: 10 }}
@@ -275,7 +331,7 @@ export default function ShopActiveJobsScreen({
                       : "bg-blue-400/14 text-blue-200 border border-blue-300/20"
                   }`}
                 >
-                  {jobPins.length}/{liveJobs.length} mapped
+                  {jobPins.length}/{mergedJobs.length} mapped
                 </span>
               </div>
             </div>

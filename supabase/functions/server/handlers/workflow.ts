@@ -80,6 +80,58 @@ export async function logWorkflowEvent(
   }
 }
 
+/** GET /workflow/job-assignments?shopClerkUserId=X — returns enriched jobs for a shop */
+export async function getJobAssignments(
+  req: Request,
+  supabase: SupabaseClient,
+  respond: RespondFunction
+) {
+  try {
+    const url = new URL(req.url);
+    const shopClerkUserId = url.searchParams.get("shopClerkUserId");
+    if (!shopClerkUserId) {
+      return respond({ error: "shopClerkUserId is required" }, 400);
+    }
+
+    const { data: jobs, error } = await supabase
+      .from("job_assignments")
+      .select("*")
+      .eq("shop_clerk_user_id", shopClerkUserId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    if (!jobs || jobs.length === 0) {
+      return respond({ jobs: [] });
+    }
+
+    // Enrich with report + bid data
+    const reportIds = [...new Set(jobs.map((j: any) => j.damage_report_id).filter(Boolean))];
+    const bidIds = [...new Set(jobs.map((j: any) => j.bid_id).filter(Boolean))];
+
+    const [reportResult, bidResult] = await Promise.all([
+      reportIds.length > 0
+        ? supabase.from("damage_reports").select("*").in("id", reportIds)
+        : { data: [] },
+      bidIds.length > 0
+        ? supabase.from("bids").select("*").in("id", bidIds)
+        : { data: [] },
+    ]);
+
+    const reportMap = new Map((reportResult.data || []).map((r: any) => [r.id, r]));
+    const bidMap = new Map((bidResult.data || []).map((b: any) => [b.id, b]));
+
+    const enriched = jobs.map((job: any) => ({
+      ...job,
+      report: reportMap.get(job.damage_report_id) || null,
+      bid: bidMap.get(job.bid_id) || null,
+    }));
+
+    return respond({ jobs: enriched });
+  } catch (error) {
+    return respond({ error: sanitizeErrorMessage(error) }, getWorkflowErrorStatus(error));
+  }
+}
+
 export async function createJobAssignment(
   req: Request,
   supabase: SupabaseClient,
