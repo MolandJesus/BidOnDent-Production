@@ -59,6 +59,8 @@ export interface DamageReport {
   approvedAmount?: number;
   denialReason?: string;
   claimDecisionDate?: string;
+  insuranceClaim?: boolean;
+  insuranceCompany?: string;
 }
 
 export type Report = DamageReport;

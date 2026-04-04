@@ -56,6 +56,10 @@ export interface DamageReport {
   denial_reason?: string;
   claim_decision_date?: string;
   claim_decided_by?: string;
+  customer_name?: string | null;
+  customer_email?: string | null;
+  customer_phone?: string | null;
+  bids_count?: number;
   created_at?: string;
   updated_at?: string;
 }

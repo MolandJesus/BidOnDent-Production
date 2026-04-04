@@ -76,9 +76,9 @@ export default function ShopActiveJobsScreen({
 
       return {
         id: String(report?.id ?? `job-${index}`),
-        customerName: "Customer",
-        customerEmail: report?.customerEmail || "Contact via BidOnDent",
-        customerPhone: report?.customerPhone || "Via platform",
+        customerName: report?.customerName || "Not provided",
+        customerEmail: report?.customerEmail || "Not provided",
+        customerPhone: report?.customerPhone || "Not provided",
         vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
         damageType: report?.damageArea || report?.damageType || "Repair request",
         bidAmount,
@@ -89,9 +89,9 @@ export default function ShopActiveJobsScreen({
         status,
         progress,
         tasks: buildTasks(status),
-        insuranceClaim: false,
-        insuranceCompany: "N/A",
-        claimNumber: "N/A",
+        insuranceClaim: report?.insuranceClaim ?? false,
+        insuranceCompany: report?.insuranceCompany || "N/A",
+        claimNumber: report?.claimNumber || "N/A",
         notes: report?.description || "Repair request received and queued.",
       };
     })

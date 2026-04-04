@@ -179,11 +179,16 @@ export const transformSupabaseReport = (report: SupabaseReport): FrontendReport 
     status: normalizeReportStatus(report.status),
     createdAt,
     submittedAt: createdAt,
-    bidsCount: 0,
+    bidsCount: report.bids_count ?? 0,
+    customerName: report.customer_name || undefined,
+    customerEmail: report.customer_email || undefined,
+    customerPhone: report.customer_phone || undefined,
     claimStatus: report.claim_status || undefined,
     approvedAmount: report.approved_amount ?? undefined,
     denialReason: report.denial_reason || undefined,
     claimDecisionDate: report.claim_decision_date || undefined,
+    insuranceClaim: report.insurance_claim ?? undefined,
+    insuranceCompany: report.insurance_company || undefined,
   };
 };
 
