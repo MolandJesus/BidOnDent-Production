@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 779 — Complete fake fallback sweep)
+**Last updated:** April 4, 2026 (Pass 784 — Shop bid acceptance/rejection notifications)
 **Status:** Active execution tracker
-**Pass count:** 779
+**Pass count:** 784
 **Build:** 0 errors (~3.0s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -24,6 +24,8 @@
 - Provider-agnostic business profiles (shop + insurer) in Supabase
 - Navigation session cloud persistence (Supabase `navigation_sessions` table)
 - Real-time bid updates via Supabase Realtime (`useBidsForReport` hook subscribes to INSERT/UPDATE/DELETE on `bids` table)
+- Real-time customer bid notifications (`useCustomerBidNotifications` — toast + feed when shop submits bid, Pass 782)
+- Real-time shop bid status notifications (`useShopBidStatusNotifications` — toast when customer accepts/rejects, Pass 784)
 - Lazy chunk retry for all 24 lazy-loaded screens (`lazyWithRetry` utility, Pass 617)
 - Chunk-aware error boundary with "Update available / Reload Page" UX (Pass 617)
 - VIN input sanitization on both vehicle forms (auto-uppercase, strip I/O/Q, maxLength=17, Pass 619)
@@ -37,6 +39,7 @@
 - Marketplace loop requires manual discovery — no notification to shops when new reports appear in their area
 - Geocoding is Nominatim (free, rate-limited) — functional for dev, not production-scale
 - Demo mode provides synthetic data to populate screens; real mode shows only seed data
+- Demo customer reports now include seed bids (3 bids across 2 seed reports, Pass 781)
 
 **Data honesty status (verified Pass 779):**
 
@@ -47,10 +50,11 @@
 **Not yet built:**
 
 - Push notifications, payment processing, offline detection
+- Insurer claim status notifications (real-time)
 - Real PostGIS geo-queries for shop proximity
 - Marker clustering for dense shop areas
 - Real third-party shop onboarding / organic shop participation
-- Shop-area notification system (the missing link for marketplace function)
+- Shop-area notification system (new-report notifications wired via `useShopReportNotifications`; bid status wired via `useShopBidStatusNotifications`; push notifications still needed)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
 
@@ -84,6 +88,25 @@
 - Grep-verified zero remaining fake customer fallbacks across entire codebase
 
 **P4-UX noted for future fix:** `tel:Not provided` and `mailto:Not provided` links on shop/insurer cards should be disabled when no real contact info exists.
+
+---
+
+## Passes 780–784 — Bid Loop Completion + Mobile Safety (2026-04-04)
+
+| Pass | Title                                     | Key Changes                                                                                                          |
+| ---- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 780  | Disable broken contact links              | Disabled tel:/mailto: links when contact info is "Not provided"                                                      |
+| 781  | Seed demo bids for customer demo          | Added SEED_DEMO_BIDS constant (3 bids across 2 seed reports); useBidsForReport returns seed bids locally             |
+| 782  | Real-time bid notifications for customers | Created useCustomerBidNotifications hook; subscribes to Supabase Realtime bid INSERTs per report                     |
+| 783  | Mobile viewport safety                    | CustomerMapWidget overflow-visible→hidden; CTA min-h 40→44px (all 3 widgets); HomeScreen overflow-x-hidden           |
+| 784  | Shop bid acceptance/rejection notify      | Created useShopBidStatusNotifications hook; subscribes to global bid UPDATEs; filters by shopId; pushes toast on status change |
+
+**Key changes (Passes 781–784 notification + UX sweep):**
+
+- Bidding loop notification is now complete: customer notified when shop bids, shop notified when customer accepts/rejects
+- Demo customers now see realistic bid data (3 bids with prices, timelines, shop names)
+- Mobile viewport hardened: no horizontal overflow possible on dashboard home, touch targets ≥44px
+- Real-time subscriptions use Supabase Realtime postgres_changes on `bids` table (INSERT for customers, UPDATE for shops)
 
 ---
 
