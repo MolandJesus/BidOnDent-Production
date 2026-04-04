@@ -3,8 +3,8 @@
 **Last updated:** April 5, 2026 (Full re-anchor audit — verified build/test/arch truth, canonical long-horizon plan created)
 **Created:** 2026-03-25
 **Status:** Canonical long-horizon execution plan
-**Current pass:** 828
-**Build:** ✅ 0 errors · 3.20s · 2883 modules
+**Current pass:** 832
+**Build:** ✅ 0 errors · 3.25s · 2883 modules
 **Tests:** ✅ 555/555 (55 test files)
 **Diagnostics:** ✅ 0 errors
 
@@ -66,13 +66,8 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 ### MISSING (Not Yet Built)
 
-- Payment processing (no Stripe, no payment handler, no revenue model)
-- Push notifications (native/background — no FCM, no service worker)
-- PostGIS extension and geo-queries
-- Third-party shop self-onboarding workflow
-- Email notifications for critical events
+- Payment processing (no Stripe, no payment handler, no revenue model — planning doc created Pass 828)
 - Advanced analytics/reporting dashboard
-- Offline detection/graceful degradation
 
 ---
 
