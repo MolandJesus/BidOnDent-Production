@@ -1,3 +1,6 @@
+// Must run before any Map instantiation — patches resize crash
+import "../../utils/maplibreResizePatch";
+
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import {

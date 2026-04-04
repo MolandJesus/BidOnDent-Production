@@ -1,3 +1,6 @@
+// Must run before any Map instantiation — patches resize crash
+import "../../utils/maplibreResizePatch";
+
 import Map, { Source, Layer, Popup } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";

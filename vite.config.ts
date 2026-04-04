@@ -85,7 +85,11 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    // Disable Vite's modulePreload polyfill — modern browsers handle
+    // <link rel="modulepreload"> natively, and the PWA service worker
+    // provides an additional caching layer.
+    modulePreload: false,
+    chunkSizeWarningLimit: 1100,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -101,12 +105,10 @@ export default defineConfig({
             return "vendor-react";
           }
 
-          if (
-            id.includes("/node_modules/maplibre-gl/") ||
-            id.includes("/node_modules/react-map-gl/")
-          ) {
-            return "vendor-map";
-          }
+          // maplibre-gl and react-map-gl are NOT manually chunked.
+          // They are lazy-loaded via React.lazy() boundaries, which lets
+          // Rollup split them naturally without forcing the __vitePreload
+          // helper (and its ~1 MB dependency) into the entry chunk.
 
           if (id.includes("@supabase")) {
             return "vendor-supabase";
