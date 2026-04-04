@@ -180,7 +180,7 @@ export function buildDashboardRouterProps({
       if (import.meta.env.DEV) console.log("Password change not implemented");
     },
     onDeleteAccount: handleDeleteAccount,
-    onSaveVehicles: (vehicles: Vehicle[]) => {
+    onSaveVehicles: async (vehicles: Vehicle[]) => {
       // Detect vehicles that were removed and delete them from Supabase
       const removedVehicles = userData.vehicles.filter(
         (existing) => existing.id && !vehicles.some((v) => v.id === existing.id)
@@ -189,10 +189,7 @@ export function buildDashboardRouterProps({
         const clerkUserId = userProfile.id;
         for (const removed of removedVehicles) {
           if (removed.id) {
-            deleteVehicle(removed.id, clerkUserId).catch((err) => {
-              if (import.meta.env.DEV)
-                console.error("Failed to delete vehicle from Supabase:", err);
-            });
+            await deleteVehicle(removed.id, clerkUserId);
           }
         }
       }

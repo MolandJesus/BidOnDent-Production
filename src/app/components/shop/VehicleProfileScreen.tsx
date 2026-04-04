@@ -2,11 +2,12 @@ import { useState } from "react";
 import { ArrowLeft, Car, Plus, Edit2, Trash2 } from "lucide-react";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { Vehicle } from "../../types";
+import { useNotifications } from "../../features/notifications/NotificationContext";
 
 type VehicleProfileScreenProps = {
   onBack: () => void;
   vehicles: Vehicle[];
-  onSaveVehicles: (vehicles: Vehicle[]) => void;
+  onSaveVehicles: (vehicles: Vehicle[]) => void | Promise<void>;
   primaryColor?: string;
   appearanceMode?: DashboardAppearanceMode;
 };
@@ -19,11 +20,16 @@ export default function VehicleProfileScreen({
   appearanceMode = "map-dark",
 }: VehicleProfileScreenProps) {
   const isLight = appearanceMode === "light";
+  const notifications = useNotifications();
   const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [deletingVehicle, setDeletingVehicle] = useState<{
+    id: string | undefined;
+    index: number;
+  } | null>(null);
   const [formData, setFormData] = useState<{
     year: string;
     make: string;
@@ -54,15 +60,36 @@ export default function VehicleProfileScreen({
     setShowAddForm(true);
   };
 
-  const handleDelete = (id: string | undefined, index: number) => {
+  const handleDeleteRequest = (id: string | undefined, index: number) => {
+    setDeletingVehicle({ id, index });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingVehicle) return;
+    const { id, index } = deletingVehicle;
+    const previousVehicles = [...vehicles];
     const updatedVehicles = id
       ? vehicles.filter((v) => v.id !== id)
       : vehicles.filter((_, i) => i !== index);
     setVehicles(updatedVehicles);
-    onSaveVehicles(updatedVehicles);
+    setDeletingVehicle(null);
+    try {
+      await onSaveVehicles(updatedVehicles);
+    } catch {
+      setVehicles(previousVehicles);
+      notifications.addNotification({
+        type: "error",
+        title: "Delete failed",
+        message: "Could not delete vehicle. Please try again.",
+      });
+    }
   };
 
-  const handleSave = () => {
+  const handleDeleteCancel = () => {
+    setDeletingVehicle(null);
+  };
+
+  const handleSave = async () => {
     if (!formData.year || !formData.make || !formData.model) {
       setFormError("Please fill in required fields: Year, Make, and Model");
       return;
@@ -89,8 +116,8 @@ export default function VehicleProfileScreen({
       updatedVehicles = [...vehicles, newVehicle as Vehicle];
     }
 
+    const previousVehicles = [...vehicles];
     setVehicles(updatedVehicles);
-    onSaveVehicles(updatedVehicles);
     setShowAddForm(false);
     setEditingId(null);
     setEditingIndex(null);
@@ -102,6 +129,16 @@ export default function VehicleProfileScreen({
       color: "",
       licensePlate: "",
     });
+    try {
+      await onSaveVehicles(updatedVehicles);
+    } catch {
+      setVehicles(previousVehicles);
+      notifications.addNotification({
+        type: "error",
+        title: "Save failed",
+        message: "Could not save vehicle. Please try again.",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -349,13 +386,40 @@ export default function VehicleProfileScreen({
                         <Edit2 className="w-4 h-4 text-slate-400/70" />
                       </button>
                       <button
-                        onClick={() => handleDelete(vehicle.id, index)}
+                        onClick={() => handleDeleteRequest(vehicle.id, index)}
                         className="p-2 hover:bg-rose-500/10 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </button>
                     </div>
                   </div>
+
+                  {/* Inline delete confirmation */}
+                  {deletingVehicle &&
+                    ((deletingVehicle.id && deletingVehicle.id === vehicle.id) ||
+                      (!deletingVehicle.id && deletingVehicle.index === index)) && (
+                      <div
+                        className={`mt-3 pt-3 border-t flex items-center justify-between gap-3 ${isLight ? "border-slate-200/60" : "border-white/10"}`}
+                      >
+                        <p className="text-sm text-rose-500 font-medium">
+                          Delete this vehicle? This can&apos;t be undone.
+                        </p>
+                        <div className="flex gap-2 shrink-0">
+                          <button
+                            onClick={handleDeleteCancel}
+                            className={`px-3 py-1.5 text-sm rounded-md font-medium ${isLight ? "border border-slate-200 text-slate-600 hover:bg-slate-100" : "border border-white/12 text-slate-200 hover:bg-white/10"}`}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={handleDeleteConfirm}
+                            className="px-3 py-1.5 text-sm rounded-md font-medium bg-rose-600 text-white hover:bg-rose-700"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    )}
                 </div>
               ))
           )}
