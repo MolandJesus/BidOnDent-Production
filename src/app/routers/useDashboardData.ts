@@ -6,6 +6,7 @@ import { useShopBidStatusNotifications } from "../hooks/useShopBidStatusNotifica
 import { useCustomerReportStatusNotifications } from "../hooks/useCustomerReportStatusNotifications";
 import { useInsurerClaimNotifications } from "../hooks/useInsurerClaimNotifications";
 import { useShopEstimateNotifications } from "../hooks/useShopEstimateNotifications";
+import { useShopEstimateStatusNotifications } from "../hooks/useShopEstimateStatusNotifications";
 import { useCustomerEstimateResponseNotifications } from "../hooks/useCustomerEstimateResponseNotifications";
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import { getShopSubmittedBids } from "../services/supabase/bids";
@@ -171,6 +172,9 @@ export function useDashboardData({
 
   // Real-time: notify shop users when new estimate requests arrive + auto-refresh inbox
   useShopEstimateNotifications({ userType, onNewEstimate: refetchShopEstimates });
+
+  // Real-time: notify shop users when customer accepts/declines their estimate
+  useShopEstimateStatusNotifications({ userType, onEstimateStatusChange: refetchShopEstimates });
 
   // Customer estimate requests
   const [customerEstimateRequests, setCustomerEstimateRequests] = useState<
