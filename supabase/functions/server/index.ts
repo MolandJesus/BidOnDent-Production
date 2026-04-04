@@ -81,6 +81,7 @@ import {
 import { getUserProfile, saveUserProfile } from './handlers/profiles.ts'
 import { createBid, getBids, updateBidStatus, deleteBid } from './handlers/bids.ts'
 import { createEstimateRequest, getEstimateRequests, updateEstimateRequest, customerRespondToEstimate } from './handlers/estimate_requests.ts'
+import { getShopServiceAreas, saveShopServiceArea, deleteShopServiceArea } from './handlers/service_areas.ts'
 import { getRateLimitKey, checkRateLimit, maybePruneStore } from './utils/rateLimiter.ts'
 
 console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
@@ -369,6 +370,18 @@ Deno.serve(async (req) => {
 
     if (path === '/estimate-requests' && req.method === 'PUT') {
       return await customerRespondToEstimate(req, supabase, respond)
+    }
+
+    if (path === '/shop-service-areas' && req.method === 'GET') {
+      return await getShopServiceAreas(req, supabase, respond)
+    }
+
+    if (path === '/shop-service-areas' && req.method === 'POST') {
+      return await saveShopServiceArea(req, supabase, respond)
+    }
+
+    if (path === '/shop-service-areas' && req.method === 'DELETE') {
+      return await deleteShopServiceArea(req, supabase, respond)
     }
 
     return respond({ error: 'Not found', path }, 404)

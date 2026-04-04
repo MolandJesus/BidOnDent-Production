@@ -1,9 +1,9 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 807 — Dead code removal, type safety, error handling)
+**Last updated:** April 5, 2026 (Pass 810 — Full re-anchor audit, canonical master plan created)
 **Status:** Active execution tracker
-**Pass count:** 807
-**Build:** 0 errors (~3.6s)
+**Pass count:** 810
+**Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -65,15 +65,15 @@
 
 - Push notifications, payment processing, offline detection
 - Real PostGIS geo-queries for shop proximity
-- Marker clustering for dense shop areas
 - Real third-party shop onboarding / organic shop participation
+- Shop service area definition and visualization (polygon/radius storage)
 - In-app real-time notifications complete (8 hooks across all user types; push notifications still needed for native/background delivery)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
 
 ---
 
-## Passes 801–807 — Reliability, Type Safety & Dead Code Sweep (2026-04-05)
+## Passes 801–810 — Reliability, Type Safety, Dead Code & Re-Anchor Audit (2026-04-05)
 
 | Pass | Title                               | Key Changes                                                                                                                                                                                                                   |
 | ---- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -83,6 +83,21 @@
 | 804  | Fix report geocoding data loss      | transformSupabaseReport now includes latitude/longitude; useReportLayerData prefers stored coordinates over re-geocoding; eliminates unnecessary Nominatim calls                                                              |
 | 805  | Fix map report data mismatch        | Added toMapReportShape() boundary transform in userDataUtils.ts; replaced unsafe `as unknown as DamageReport[]` cast in DashboardSecondaryViews — map pins now show correct vehicle/damage info for customer reports          |
 | 807  | Remove dead transform functions     | Removed ~120 lines: transformSupabaseReport, transformSupabaseReports, transformSupabaseBid, extractBidsFromReports, createFreshUserData from useUserDataHelpers.ts (all dead code, canonical transforms in userDataUtils.ts) |
+| 808  | Phase 1-2 documentation sync        | Updated CODE_ORGANIZATION_AUDIT, tracker, and master context to reflect Pass 801-807 results                                                                                                                                 |
+| 809  | Update CODE_ORGANIZATION_AUDIT      | Synced audit doc with Phase 1-2 completion status and verified baseline numbers                                                                                                                                               |
+| 810  | Fix notification priority type errors | Fixed priority type mismatch in useCustomerReportStatusNotifications and useInsurerClaimNotifications                                                                                                                        |
+
+**Full re-anchor audit (Pass 810+):**
+
+- Build: ✅ 0 errors, 3.19s, 2877 modules
+- Tests: ✅ 555/555 (55 test files, 3.34s)
+- VS Code diagnostics: ✅ 0 errors
+- Git: clean working tree, HEAD at afc63822
+- All files under 500-line hard cap (largest: DashboardRouter 456, MapLibreShopDirectoryMapPane 447)
+- OSRM routing verified genuinely wired (routeEngine.ts → router.project-osrm.org)
+- All 12+ edge function handlers confirmed real
+- Demo mode isolated and clearly flagged
+- Canonical long-horizon master plan created in BIDONDENT_FINISHING_MASTER_PLAN.md
 
 **Audit findings (no code changes needed):**
 

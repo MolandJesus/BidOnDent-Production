@@ -1,109 +1,218 @@
 # BidOnDent — Finishing Master Plan
 
-**Last updated:** April 3, 2026
+**Last updated:** April 5, 2026 (Full re-anchor audit — verified build/test/arch truth, canonical long-horizon plan created)
 **Created:** 2026-03-25
-**Status:** Active execution policy
-**Phase:** Pre-refactor stabilization, verification, and controlled completion
-
-This doc defines **how finishing work should be prioritized and governed**. It is not the pass log, not the setup guide, and not the product-architecture source of truth.
+**Status:** Canonical long-horizon execution plan
+**Current pass:** 810
+**Build:** ✅ 0 errors · 3.19s · 2877 modules
+**Tests:** ✅ 555/555 (55 test files)
+**Diagnostics:** ✅ 0 errors
 
 Use alongside:
 
 - `CLAUDE_AI_MASTER_CONTEXT.md` for product and architecture truth
-- `BIDONDENT_MAP_TRACKER_2026-03-21.md` for current execution reality
-- `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` for the verified baseline snapshot
-- `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md` for active validation coverage
+- `BIDONDENT_MAP_TRACKER_2026-03-21.md` for pass-by-pass execution reality
+- `CODE_ORGANIZATION_AUDIT.md` for codebase structure and safe seams
 
 ---
 
-## Product Truth
-
-BidOnDent is a **map-first auto body repair marketplace**. The map is not a feature. It is the product surface that ties together damage reporting, shop discovery, routing, bids, and insurer workflows.
-
-The platform is past its original milestone and no longer needs broad idea generation. It needs disciplined completion, coherence, and verification.
-
 ## What This Doc Owns
 
-- Finishing priorities
-- Validation discipline
-- Stop conditions
-- Rules for keeping completion work coherent
+- The canonical **phased execution plan** for making BidOnDent production-ready
+- Phase definitions, pass estimates, dependencies, and exit criteria
+- Confirmed gaps and their priority/effort classification
+- Hard rules and stop conditions
 
 ## What This Doc Does Not Own
 
-- Pass-by-pass execution history
-- Setup instructions
-- Deep architecture reference
-- Historical sprint sequencing
+- Pass-by-pass execution log (that's the Tracker)
+- Deep architecture reference (that's the Master Context + Code Org Audit)
+- Setup instructions (that's GETTING_STARTED.md + SUPABASE_SETUP_GUIDE.md)
 
-For those, use the tracker, setup guides, or archive.
+---
+
+## Verified Current State (Pass 810, April 5, 2026)
+
+This section was verified by a full re-anchor audit — not assumed from prior summaries.
+
+### REAL (Genuinely Wired & Functional)
+
+- **Core product loop:** Report → Supabase → map pin → shop sees report → bid → customer accepts → competing bids auto-rejected → job assignment created → map navigation
+- **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0, CARTO/Esri tiles, real shop + report markers
+- **OSRM routing:** Real — `routeEngine.ts` calls public OSRM server, returns routes with geometry + steps + alternatives
+- **Turn-by-turn voice navigation:** Real — Web Speech API, deviation detection, auto-reroute
+- **Edge functions:** 12+ real handlers (reports, bids, estimates, workflow, profiles, storage, auth, admin)
+- **Real-time notifications:** 8 Supabase Realtime hooks across all 3 user types (customer/shop/insurer)
+- **Error surfacing:** All critical actions surface backend failures to users (no silent swallowing)
+- **Data honesty:** All "Not provided" for missing data, seed data guarded, demo mode cleanly isolated
+- **Photo upload:** Signed URL storage in Supabase, mounted guard for unmount safety
+- **Estimate requests:** Full lifecycle (create → respond → accept/decline)
+- **Vehicle management:** Real CRUD with confirmation + optimistic rollback
+- **Security:** OWASP audit passed (zero XSS, zero injection, VIN sanitized)
+- **Cloud sync:** useUserData → Supabase with localStorage as cache only
+- **All files under 500-line hard cap** (largest: DashboardRouter 456, MapLibreShopDirectoryMapPane 447)
+
+### PARTIAL (Wired But Incomplete)
+
+- **Shop discovery:** Radius search works via haversine, but no PostGIS, no service area polygons
+- **Insurance claims:** Tables + handlers exist, approve/deny wired, but claims management UI is 70% complete
+- **Navigation:** In-app OSRM routing is real; external Apple/Google/Waze export exists as backup
+- **Notifications:** In-app real-time notification is complete; no email, no native push
+
+### PLACEHOLDER (Type/UI Exists, No Implementation)
+
+- **Shop service areas:** ShopMapWidget says "Coming soon", no `shop_service_areas` table
+- **Shop/Insurer map widgets:** Structure-only placeholder stats, not live query data
+
+### MISSING (Not Yet Built)
+
+- Payment processing (no Stripe, no payment handler, no revenue model)
+- Push notifications (native/background — no FCM, no service worker)
+- PostGIS extension and geo-queries
+- Third-party shop self-onboarding workflow
+- Email notifications for critical events
+- Advanced analytics/reporting dashboard
+- Offline detection/graceful degradation
+
+---
 
 ## Hard Rules
 
-1. **No silent scope expansion.** If a problem is real but outside the pass, log it instead of absorbing it.
+1. **No silent scope expansion.** If a problem is discovered during a pass but is outside scope, log it — don't absorb it.
 2. **No fake capability.** Product trust depends on honest behavior, copy, and data boundaries.
-3. **No broad rewrites during finishing work.** Prefer scoped slices, extraction, and verification.
-4. **No mixing unrelated work.** One coherent pass should have one main goal.
-5. **No doc drift.** If execution truth changes, update the relevant active docs in the same pass.
-6. **No bypassing architecture law.** Keep services, hooks, components, and backend boundaries intact.
+3. **No broad rewrites.** Prefer scoped slices, extraction, and verification.
+4. **One pass = one coherent change.** No mixing unrelated work.
+5. **No doc drift.** If execution truth changes, update active docs in the same pass.
+6. **No bypassing architecture law.** Services, hooks, components, and backend boundaries stay intact.
+7. **No `git add -A`.** Stage only the files you intentionally changed.
+8. **Validate every pass.** Build + diagnostics + mobile reasoning minimum.
 
-## Current Finishing Priorities
+---
 
-1. Functional correctness across customer, shop, and insurer routes.
-2. Map-first continuity across the main product loop: report -> map -> shop -> action.
-3. Security, data-boundary, and trust issues before polish.
-4. Validation accuracy across baseline, matrix, and current tracker.
-5. Refactor readiness only after current behavior is clearly verified.
+## Phased Execution Plan
 
-## Current Execution Policy
+### Phase 1: Map Program Completion (Passes 811–825)
 
-Use this order when deciding what to do next:
+**Goal:** Make the map feel production-ready with realistic data density.
+
+**Note:** Marker clustering for both shops and reports was discovered to be already fully implemented (MapLibre built-in clustering with click-to-zoom). This was incorrectly listed as "not built" in prior docs.
+
+| Pass Range | Feature | What Changes | Effort |
+|------------|---------|-------------|--------|
+| 811–813 | Shop service area foundation | Create `shop_service_areas` Supabase migration + edge function CRUD, wire ShopMapWidget to display real areas | Medium |
+| 814–815 | Report status on map | Verify report pins use status-color map (already present — audit and polish if needed), add bid count to report markers | Small |
+| 816–818 | Map UX polish | Fix tel/mailto disabled links (P4), review map empty states, cluster zoom-on-click behavior polish | Small |
+| 819–821 | Insurance claims UI completion | Complete claims management dashboard, claim-to-report detail view | Medium |
+| 822–825 | Buffer / overflow | Remaining P4 UX issues, map interaction edge cases | Small-Medium |
+
+**Dependencies:** None — all work is on existing foundation.
+
+**Exit Criteria:**
+- Clustering works with 50+ markers at multiple zoom levels
+- Shop service areas can be created via edge function and visualized on map
+- Map pins show report status + bid counts
+- Zero P4-UX issues in core customer → map → shop flow
+- Build + test + diagnostics clean
+
+---
+
+### Phase 2: Geographic Intelligence + Shop Enrollment (Passes 826–845)
+
+**Goal:** Enable organic shop growth and geographic matching.
+
+| Pass Range | Feature | What Changes | Effort |
+|------------|---------|-------------|--------|
+| 826–828 | PostGIS setup | Enable PostGIS extension, add geometry columns to shops/reports, migrate existing lat/lng data | Medium |
+| 829–831 | Geographic matching | Replace haversine with ST_DWithin queries, report-to-shop matching by service area | Medium |
+| 832–834 | Shop notification on new nearby reports | Trigger notification (Realtime + future email) when report appears in shop's service area | Medium |
+| 835–839 | Shop self-onboarding | Public signup page, profile wizard, service area definition (radius + polygon), admin verification queue | Large |
+| 840–845 | Buffer / overflow | Edge cases, onboarding polish, geographic query optimization | Medium |
+
+**Dependencies:** Phase 1 (shop service areas must exist before geographic matching).
+
+**Exit Criteria:**
+- Shops can self-register with service area
+- Reports auto-match to nearby shops via PostGIS
+- Shops notified in real-time when new report appears in their area
+- PostGIS queries replace all haversine distance calculations
+- Admin can verify/approve new shop registrations
+
+---
+
+### Phase 3: Notifications + Insurance Completion (Passes 846–860)
+
+**Goal:** Complete the notification system and insurance workflows end-to-end.
+
+| Pass Range | Feature | What Changes | Effort |
+|------------|---------|-------------|--------|
+| 846–848 | Email notifications | Supabase Edge Function email triggers for critical events (new bid, bid accepted, new report in area) | Medium |
+| 849–851 | Insurance claims completion | Claims management dashboard, claim-to-report linking, partner shop assignment flow | Medium |
+| 852–854 | Notification preferences | Per-user notification preferences (email on/off, in-app on/off), settings screen | Small-Medium |
+| 855–860 | Buffer / overflow | Edge cases, email template polish, insurer workflow testing | Medium |
+
+**Dependencies:** Phase 2 (shop enrollment needed for insurer partner-shop assignment).
+
+**Exit Criteria:**
+- Users receive email for critical marketplace events
+- Insurance claims flow is end-to-end functional (create → assign → track → resolve)
+- Notification preferences configurable per user
+- All 3 user types have complete notification coverage
+
+---
+
+### Phase 4: Revenue + Scale (Passes 861–880+)
+
+**Goal:** Production revenue model and scale infrastructure.
+
+| Pass Range | Feature | What Changes | Effort |
+|------------|---------|-------------|--------|
+| 861 | Payment model design | Planning pass — define pricing model (per-bid, subscription, commission) | Planning |
+| 862–866 | Stripe integration | Payment service, checkout flow, billing management | Large |
+| 867–870 | Push notifications (PWA) | Service worker registration, FCM setup, native push | Large |
+| 871–875 | Performance + scale | Bundle optimization, query caching, CDN strategy | Medium |
+| 876–880 | Production hardening | Rate limiting, monitoring, error alerting, analytics | Medium |
+
+**Dependencies:** Phases 1–3 complete (product must be functionally complete before monetization).
+
+**Exit Criteria:**
+- Revenue model operational
+- Users receive native push notifications
+- Application handles 1000+ concurrent users
+- Monitoring and alerting in place
+
+---
+
+## Priority Order for Pass Selection
+
+When choosing what to do next within a phase:
 
 1. Fix real breakage or trust failures first.
 2. Fix blockers in the core product loop next.
-3. Tighten architecture only when it directly reduces delivery risk.
-4. Polish only after behavior, trust, and verification are solid.
-
-Execution should stay **vertical and truthful**:
-
-- verify a real problem
-- fix one coherent slice
-- validate it
-- update active docs if truth changed
+3. Strengthen the map experience (it IS the product).
+4. Tighten architecture only when it directly reduces delivery risk.
+5. Polish only after behavior, trust, and verification are solid.
 
 ## Validation Gate
 
-Every finishing pass should be able to answer yes to these questions:
+Every pass must answer YES to at least one:
 
 1. Does this make the product more correct or more trustworthy?
 2. Does this reduce friction in the real user flow?
 3. Does this reinforce the map-first product identity?
-4. Is the validation result explicit and honest?
-
-If any answer is no, the pass likely needs to be narrowed or reconsidered.
-
-## Documentation Rule
-
-After a completed pass:
-
-1. Update `BIDONDENT_MAP_TRACKER_2026-03-21.md` when execution reality changed.
-2. Update `BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` when map strategy, architecture, or map-law implications changed.
-3. Update `docs/README.md` when the documentation hierarchy or source-of-truth guidance changed.
-4. Update this plan only when finishing policy or priority order changed.
+4. Does this move the system closer to production readiness?
 
 ## Stop Conditions
 
 Pause and realign if:
 
-- the build breaks in a genuinely new way
-- required product behavior is unclear
-- a reserved or concurrent-work file would need risky edits
-- docs are contradictory enough to block safe action
-
-Otherwise: keep moving.
+- Build breaks after 2 fix attempts on the same error
+- A pass would delete more than 3 files
+- A change touches auth, payment, or identity systems without explicit approval
+- Required product behavior is unclear
+- Docs are contradictory enough to block safe action
 
 ## North Star
 
 The product should feel like a **live map system**, not a disconnected website with map widgets attached.
 
-Every finishing pass should make BidOnDent feel more spatial, more trustworthy, and more operationally coherent.
+Every pass should make BidOnDent feel more spatial, more trustworthy, and more operationally coherent.

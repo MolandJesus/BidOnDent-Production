@@ -76,6 +76,7 @@ export const SUPABASE_EDGE_ROUTES = {
   websitePreferences: "/website-preferences",
   websiteRelationships: "/website-relationships",
   workflowEvent: "/workflow-event",
+  shopServiceAreas: "/shop-service-areas",
 } as const;
 
 export type CanonicalSupabaseBucket =
