@@ -4,6 +4,7 @@ import {
   CreditCard,
   HelpCircle,
   LogOut,
+  MapPin,
   Settings,
   Shield,
   Trash2,
@@ -31,6 +32,7 @@ type AccountMenuProps = {
   onOpenSettings: () => void;
   onOpenPayment: () => void;
   onOpenShopProfile: () => void;
+  onOpenServiceAreas?: () => void;
   onOpenHelp: () => void;
   onOpenSmokeTest?: () => void;
   onOpenAdminPanel?: () => void;
@@ -46,6 +48,7 @@ export default function AccountMenu({
   onOpenSettings,
   onOpenPayment,
   onOpenShopProfile,
+  onOpenServiceAreas,
   onOpenHelp,
   onOpenSmokeTest,
   onOpenAdminPanel,
@@ -148,6 +151,13 @@ export default function AccountMenu({
       icon: Settings,
       tone: "cyan",
       onClick: onOpenShopProfile,
+    });
+    profileRows.push({
+      label: "Service Areas",
+      description: "Define where you accept repair requests.",
+      icon: MapPin,
+      tone: "blue",
+      onClick: onOpenServiceAreas,
     });
   }
 

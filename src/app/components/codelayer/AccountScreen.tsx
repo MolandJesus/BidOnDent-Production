@@ -20,6 +20,7 @@ import PaymentModal from "./account/PaymentModal";
 import SettingsModal from "./account/SettingsModal";
 import ShopProfileModal from "./account/ShopProfileModal";
 import type { ShopProfileFormData } from "./account/ShopProfileModal";
+import ServiceAreaEditorModal from "./account/ServiceAreaEditorModal";
 import { TEST_ACCOUNT_EMAILS, type AccountScreenProps } from "./accountScreenHelpers";
 
 export default function AccountScreen({
@@ -49,6 +50,7 @@ export default function AccountScreen({
   const [showSettings, setShowSettings] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [showShopProfile, setShowShopProfile] = useState(false);
+  const [showServiceAreas, setShowServiceAreas] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -356,6 +358,7 @@ export default function AccountScreen({
             onOpenSettings={() => setShowSettings(true)}
             onOpenPayment={() => setShowPayment(true)}
             onOpenShopProfile={() => setShowShopProfile(true)}
+            onOpenServiceAreas={() => setShowServiceAreas(true)}
             onOpenHelp={() => setShowHelp(true)}
             onOpenSmokeTest={onOpenSmokeTest}
             onOpenAdminPanel={() => setShowAdminPanel(true)}
@@ -411,6 +414,13 @@ export default function AccountScreen({
         onPhoneChange={handleShopPhoneChange}
         onSave={handleSaveShopProfile}
         onClose={() => setShowShopProfile(false)}
+        appearanceMode={appearanceMode}
+      />
+
+      <ServiceAreaEditorModal
+        isOpen={showServiceAreas}
+        primaryColor={primaryColor}
+        onClose={() => setShowServiceAreas(false)}
         appearanceMode={appearanceMode}
       />
 
