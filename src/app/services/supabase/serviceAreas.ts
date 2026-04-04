@@ -97,3 +97,19 @@ export async function deleteShopServiceArea(
     throw error;
   }
 }
+
+/** Fetch all active radius service areas for map directory display. */
+export async function getAllPublicServiceAreas(): Promise<ShopServiceArea[]> {
+  try {
+    const data = await requestSupabaseEdge<{
+      serviceAreas: ShopServiceArea[];
+    }>(`${SUPABASE_EDGE_ROUTES.shopServiceAreas}?all=true`, {
+      method: "GET",
+    });
+    return data.serviceAreas ?? [];
+  } catch (error) {
+    if (import.meta.env.DEV)
+      console.error("getAllPublicServiceAreas error:", error);
+    return [];
+  }
+}

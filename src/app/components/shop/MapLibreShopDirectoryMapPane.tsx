@@ -1,10 +1,27 @@
+  /* ── Service area circles ─────────────────────────────────────── */
+  const { areas: publicServiceAreas } = usePublicServiceAreas();
+  const serviceAreaGeoJson = useMemo(
+    (): GeoJSON.FeatureCollection => ({
+      type: "FeatureCollection",
+      features: publicServiceAreas
+        .filter((a) => a.center_latitude != null && a.center_longitude != null && a.radius_miles != null)
+        .map((a) => circleToPolygon(a.center_latitude!, a.center_longitude!, a.radius_miles!)),
+    }),
+    [publicServiceAreas]
+  );
+
+  /* ── Render ─────────────────────────────────────────────────────── */
 // Must run before any Map instantiation — patches resize crash
 import "../../utils/maplibreResizePatch";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import { Map, GeolocateControl, NavigationControl, ScaleControl } from "react-map-gl/maplibre";
+import { Source, Layer } from "react-map-gl/maplibre";
+import { useMemo } from "react";
 import { Expand } from "lucide-react";
+import { usePublicServiceAreas } from "../../hooks/usePublicServiceAreas";
+import { circleToPolygon } from "../../utils/geoCircle";
 import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import ShopDirectoryMapPopup from "./ShopDirectoryMapPopup";
 import MapLibreReportLayer from "../maps/MapLibreReportLayer";
@@ -275,6 +292,27 @@ export default function MapLibreShopDirectoryMapPane({
               preserveViewport={preserveViewport}
               onViewportChange={handleViewportBroadcast}
             />
+
+            {/* ── Service area coverage circles ── */}
+            {publicServiceAreas.length > 0 && (
+              <Source id="shop-dir-service-areas" type="geojson" data={serviceAreaGeoJson}>
+                <Layer
+                  id="shop-dir-service-area-fill"
+                  type="fill"
+                  paint={{ "fill-color": "#2563eb", "fill-opacity": 0.08 }}
+                />
+                <Layer
+                  id="shop-dir-service-area-border"
+                  type="line"
+                  paint={{
+                    "line-color": "#3b82f6",
+                    "line-width": 1.5,
+                    "line-opacity": 0.45,
+                    "line-dasharray": [3, 2],
+                  }}
+                />
+              </Source>
+            )}
 
             {/* Report markers (Supabase-fetched) */}
             <MapLibreReportLayer

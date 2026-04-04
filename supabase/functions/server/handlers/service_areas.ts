@@ -33,6 +33,24 @@ export async function getShopServiceAreas(
     const session = await requireClerkSession(req, { requireEmail: false });
 
     const url = new URL(req.url);
+
+    // All public radius areas: used by the shop directory map to show coverage circles.
+    if (url.searchParams.get("all") === "true") {
+      const { data, error } = await supabase
+        .from("shop_service_areas")
+        .select("id, shop_profile_id, center_latitude, center_longitude, radius_miles, area_type, is_active")
+        .eq("is_active", true)
+        .eq("area_type", "radius")
+        .not("center_latitude", "is", null)
+        .not("center_longitude", "is", null)
+        .not("radius_miles", "is", null);
+      if (error) {
+        console.error("getAllServiceAreas error:", sanitizeErrorMessage(error.message));
+        return respond({ error: "Failed to load service areas" }, 500);
+      }
+      return respond({ serviceAreas: data ?? [] });
+    }
+
     let shopProfileId = url.searchParams.get("shopProfileId");
 
     // If no shopProfileId provided, resolve from authenticated user's shop profile

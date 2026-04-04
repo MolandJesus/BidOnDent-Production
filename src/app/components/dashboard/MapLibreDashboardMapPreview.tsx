@@ -7,29 +7,10 @@ import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { mapLibreStyles } from "../maps/mapLibreStyles";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { MapLayerMouseEvent, ViewState } from "react-map-gl/maplibre";
+import { circleToPolygon } from "../../utils/geoCircle";
 
 export type ReportPin = { id: string; lat: number; lng: number; label: string };
 export type ServiceAreaCircle = { lat: number; lng: number; radiusMiles: number };
-
-/** Generate a GeoJSON polygon approximating a circle (64 points). */
-function circleToPolygon(lat: number, lng: number, radiusMiles: number): GeoJSON.Feature {
-  const EARTH_RADIUS_MILES = 3958.8;
-  const points = 64;
-  const coords: [number, number][] = [];
-  for (let i = 0; i <= points; i++) {
-    const angle = (i / points) * 2 * Math.PI;
-    const dLat = (radiusMiles / EARTH_RADIUS_MILES) * (180 / Math.PI) * Math.cos(angle);
-    const dLng =
-      ((radiusMiles / EARTH_RADIUS_MILES) * (180 / Math.PI) * Math.sin(angle)) /
-      Math.cos(lat * (Math.PI / 180));
-    coords.push([lng + dLng, lat + dLat]);
-  }
-  return {
-    type: "Feature",
-    geometry: { type: "Polygon", coordinates: [coords] },
-    properties: {},
-  };
-}
 
 type MapLibreDashboardMapPreviewProps = {
   shops: CoveragePartnerShop[];
