@@ -35,20 +35,40 @@ export default function ManualProspectCard({
 
       <div className="space-y-3 p-4">
         <div className="grid gap-3 sm:grid-cols-3">
-          <a
-            href={`tel:${prospect.phone}`}
-            className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors bd-glass-control--utility"
-          >
-            <Phone className="h-4 w-4" />
-            {prospect.phone}
-          </a>
-          <a
-            href={`mailto:${prospect.email}`}
-            className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors bd-glass-control--utility"
-          >
-            <Mail className="h-4 w-4" />
-            {prospect.email}
-          </a>
+          {prospect.phone && prospect.phone !== "Not provided" ? (
+            <a
+              href={`tel:${prospect.phone}`}
+              className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors bd-glass-control--utility"
+            >
+              <Phone className="h-4 w-4" />
+              {prospect.phone}
+            </a>
+          ) : (
+            <span
+              className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+              title="Contact info not available"
+            >
+              <Phone className="h-4 w-4" />
+              Not provided
+            </span>
+          )}
+          {prospect.email && prospect.email !== "Not provided" ? (
+            <a
+              href={`mailto:${prospect.email}`}
+              className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-colors bd-glass-control--utility"
+            >
+              <Mail className="h-4 w-4" />
+              {prospect.email}
+            </a>
+          ) : (
+            <span
+              className="inline-flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+              title="Contact info not available"
+            >
+              <Mail className="h-4 w-4" />
+              Not provided
+            </span>
+          )}
           <button
             type="button"
             onClick={() => onDirections(prospect)}

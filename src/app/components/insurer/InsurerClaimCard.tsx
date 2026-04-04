@@ -300,28 +300,56 @@ export default function InsurerClaimCard({
         </div>
 
         <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
-          <a
-            href={`tel:${claim.customerPhone}`}
-            className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg transition-colors ${
-              isLight
-                ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200"
-                : "text-blue-100/80 bg-white/[0.08] border border-blue-300/15 hover:bg-white/[0.12]"
-            }`}
-          >
-            <Phone className="w-4 h-4" />
-            <span className="text-xs">Call</span>
-          </a>
-          <a
-            href={`mailto:${claim.customerEmail}`}
-            className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg transition-colors ${
-              isLight
-                ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200"
-                : "text-blue-100/80 bg-white/[0.08] border border-blue-300/15 hover:bg-white/[0.12]"
-            }`}
-          >
-            <Mail className="w-4 h-4" />
-            <span className="text-xs">Email</span>
-          </a>
+          {claim.customerPhone && claim.customerPhone !== "Not provided" ? (
+            <a
+              href={`tel:${claim.customerPhone}`}
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg transition-colors ${
+                isLight
+                  ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200"
+                  : "text-blue-100/80 bg-white/[0.08] border border-blue-300/15 hover:bg-white/[0.12]"
+              }`}
+            >
+              <Phone className="w-4 h-4" />
+              <span className="text-xs">Call</span>
+            </a>
+          ) : (
+            <span
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg opacity-50 cursor-not-allowed ${
+                isLight
+                  ? "text-slate-600 bg-slate-100 border border-slate-200"
+                  : "text-blue-100/80 bg-white/[0.08] border border-blue-300/15"
+              }`}
+              title="Contact info not available"
+            >
+              <Phone className="w-4 h-4" />
+              <span className="text-xs">Call</span>
+            </span>
+          )}
+          {claim.customerEmail && claim.customerEmail !== "Not provided" ? (
+            <a
+              href={`mailto:${claim.customerEmail}`}
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg transition-colors ${
+                isLight
+                  ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200"
+                  : "text-blue-100/80 bg-white/[0.08] border border-blue-300/15 hover:bg-white/[0.12]"
+              }`}
+            >
+              <Mail className="w-4 h-4" />
+              <span className="text-xs">Email</span>
+            </a>
+          ) : (
+            <span
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg opacity-50 cursor-not-allowed ${
+                isLight
+                  ? "text-slate-600 bg-slate-100 border border-slate-200"
+                  : "text-blue-100/80 bg-white/[0.08] border border-blue-300/15"
+              }`}
+              title="Contact info not available"
+            >
+              <Mail className="w-4 h-4" />
+              <span className="text-xs">Email</span>
+            </span>
+          )}
           <button
             className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg transition-colors ${
               isLight

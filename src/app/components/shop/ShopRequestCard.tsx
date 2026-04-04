@@ -259,20 +259,40 @@ export default function ShopRequestCard({
         <div className="grid grid-cols-2 gap-3 mb-3">
           {request.status === "accepted" ? (
             <>
-              <a
-                href={`tel:${request.customerPhone}`}
-                className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100" : "text-emerald-300 bg-emerald-500/15 border border-emerald-400/25 hover:bg-emerald-500/25"}`}
-              >
-                <Phone className="w-4 h-4" />
-                Call
-              </a>
-              <a
-                href={`mailto:${request.customerEmail}`}
-                className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100" : "text-emerald-300 bg-emerald-500/15 border border-emerald-400/25 hover:bg-emerald-500/25"}`}
-              >
-                <Mail className="w-4 h-4" />
-                Email
-              </a>
+              {request.customerPhone && request.customerPhone !== "Not provided" ? (
+                <a
+                  href={`tel:${request.customerPhone}`}
+                  className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100" : "text-emerald-300 bg-emerald-500/15 border border-emerald-400/25 hover:bg-emerald-500/25"}`}
+                >
+                  <Phone className="w-4 h-4" />
+                  Call
+                </a>
+              ) : (
+                <span
+                  className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium opacity-50 cursor-not-allowed ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
+                  title="Contact info not available"
+                >
+                  <Phone className="w-4 h-4" />
+                  Call
+                </span>
+              )}
+              {request.customerEmail && request.customerEmail !== "Not provided" ? (
+                <a
+                  href={`mailto:${request.customerEmail}`}
+                  className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium transition-colors ${isLight ? "text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100" : "text-emerald-300 bg-emerald-500/15 border border-emerald-400/25 hover:bg-emerald-500/25"}`}
+                >
+                  <Mail className="w-4 h-4" />
+                  Email
+                </a>
+              ) : (
+                <span
+                  className={`flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] rounded-xl text-sm font-medium opacity-50 cursor-not-allowed ${isLight ? "text-slate-400 bg-slate-100 border border-slate-200" : "text-blue-100/50 bg-white/5 border border-blue-300/10"}`}
+                  title="Contact info not available"
+                >
+                  <Mail className="w-4 h-4" />
+                  Email
+                </span>
+              )}
             </>
           ) : (
             <>

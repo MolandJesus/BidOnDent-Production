@@ -260,20 +260,40 @@ export default function ShopActiveJobCard({
       {/* Actions */}
       <div className={`p-4 border-t ${isLight ? "border-slate-200/60" : "border-blue-300/15"}`}>
         <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
-          <a
-            href={`tel:${job.customerPhone}`}
-            className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
-          >
-            <Phone className="w-4 h-4" />
-            <span className="text-xs">Call</span>
-          </a>
-          <a
-            href={`mailto:${job.customerEmail}`}
-            className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
-          >
-            <Mail className="w-4 h-4" />
-            <span className="text-xs">Email</span>
-          </a>
+          {job.customerPhone && job.customerPhone !== "Not provided" ? (
+            <a
+              href={`tel:${job.customerPhone}`}
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
+            >
+              <Phone className="w-4 h-4" />
+              <span className="text-xs">Call</span>
+            </a>
+          ) : (
+            <span
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium opacity-50 cursor-not-allowed ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15"}`}
+              title="Contact info not available"
+            >
+              <Phone className="w-4 h-4" />
+              <span className="text-xs">Call</span>
+            </span>
+          )}
+          {job.customerEmail && job.customerEmail !== "Not provided" ? (
+            <a
+              href={`mailto:${job.customerEmail}`}
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
+            >
+              <Mail className="w-4 h-4" />
+              <span className="text-xs">Email</span>
+            </a>
+          ) : (
+            <span
+              className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium opacity-50 cursor-not-allowed ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15"}`}
+              title="Contact info not available"
+            >
+              <Mail className="w-4 h-4" />
+              <span className="text-xs">Email</span>
+            </span>
+          )}
           <button
             className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
           >

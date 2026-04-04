@@ -204,20 +204,40 @@ export default function InsurerNewClaimScreen({
                   </div>
 
                   <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
-                    <a
-                      href={`tel:${customer.phone}`}
-                      className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
-                    >
-                      <Phone className="w-4 h-4" />
-                      <span className="text-xs">Call</span>
-                    </a>
-                    <a
-                      href={`mailto:${customer.email}`}
-                      className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
-                    >
-                      <Mail className="w-4 h-4" />
-                      <span className="text-xs">Email</span>
-                    </a>
+                    {customer.phone && customer.phone !== "Not provided" ? (
+                      <a
+                        href={`tel:${customer.phone}`}
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
+                      >
+                        <Phone className="w-4 h-4" />
+                        <span className="text-xs">Call</span>
+                      </a>
+                    ) : (
+                      <span
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+                        title="Contact info not available"
+                      >
+                        <Phone className="w-4 h-4" />
+                        <span className="text-xs">Call</span>
+                      </span>
+                    )}
+                    {customer.email && customer.email !== "Not provided" ? (
+                      <a
+                        href={`mailto:${customer.email}`}
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
+                      >
+                        <Mail className="w-4 h-4" />
+                        <span className="text-xs">Email</span>
+                      </a>
+                    ) : (
+                      <span
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+                        title="Contact info not available"
+                      >
+                        <Mail className="w-4 h-4" />
+                        <span className="text-xs">Email</span>
+                      </span>
+                    )}
                     <button
                       className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
                       type="button"
@@ -348,20 +368,40 @@ export default function InsurerNewClaimScreen({
                   </div>
 
                   <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
-                    <a
-                      href={`tel:${shop.phone}`}
-                      className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
-                    >
-                      <Phone className="w-4 h-4" />
-                      <span className="text-xs">Call</span>
-                    </a>
-                    <a
-                      href={`mailto:${shop.email}`}
-                      className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
-                    >
-                      <Mail className="w-4 h-4" />
-                      <span className="text-xs">Email</span>
-                    </a>
+                    {shop.phone && shop.phone !== "Not provided" ? (
+                      <a
+                        href={`tel:${shop.phone}`}
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
+                      >
+                        <Phone className="w-4 h-4" />
+                        <span className="text-xs">Call</span>
+                      </a>
+                    ) : (
+                      <span
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+                        title="Contact info not available"
+                      >
+                        <Phone className="w-4 h-4" />
+                        <span className="text-xs">Call</span>
+                      </span>
+                    )}
+                    {shop.email && shop.email !== "Not provided" ? (
+                      <a
+                        href={`mailto:${shop.email}`}
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
+                      >
+                        <Mail className="w-4 h-4" />
+                        <span className="text-xs">Email</span>
+                      </a>
+                    ) : (
+                      <span
+                        className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility opacity-50 cursor-not-allowed"
+                        title="Contact info not available"
+                      >
+                        <Mail className="w-4 h-4" />
+                        <span className="text-xs">Email</span>
+                      </span>
+                    )}
                     <button
                       className="flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium bd-glass-control--utility"
                       type="button"
