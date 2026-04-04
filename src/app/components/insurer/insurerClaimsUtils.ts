@@ -79,10 +79,9 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
       previewPhoto: reportPhotos[0] ?? null,
       description:
         report?.damageDescription || report?.description || "Claim details pending review.",
-      shopAssigned:
-        Array.isArray(report?.bids)
-          ? report.bids.find((b) => b.status === "accepted")?.shopName ?? null
-          : null,
+      shopAssigned: Array.isArray(report?.bids)
+        ? (report.bids.find((b) => b.status === "accepted")?.shopName ?? null)
+        : null,
       approvedAmount:
         report?.approvedAmount ?? (status === "approved" ? inferredBidAmount : undefined),
       denialReason: report?.denialReason || undefined,
