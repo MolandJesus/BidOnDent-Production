@@ -3,7 +3,7 @@
 **Last updated:** April 5, 2026 (Full re-anchor audit — verified build/test/arch truth, canonical long-horizon plan created)
 **Created:** 2026-03-25
 **Status:** Canonical long-horizon execution plan
-**Current pass:** 827
+**Current pass:** 828
 **Build:** ✅ 0 errors · 3.20s · 2883 modules
 **Tests:** ✅ 555/555 (55 test files)
 **Diagnostics:** ✅ 0 errors
@@ -151,12 +151,12 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 **Completion summary (Pass 827):** All exit criteria met. Notification preferences UI wired with optimistic updates (824). Email notification infrastructure built with Resend — branded templates for all 3 user types, preference-aware dispatch, fire-and-forget triggers on bid creation, bid status change, and claim decisions (825). Claims shop assignment plumbed end-to-end: schema field, backend, client service, callback (826). Claims screen now uses real shop directory data instead of demo hardcoded list (827). Requires `RESEND_API_KEY` secret in Supabase edge function env for email delivery.
 
-| Pass | Feature                     | What Changed                                                                                  |
-| ---- | --------------------------- | --------------------------------------------------------------------------------------------- |
-| 824  | Notification preferences    | Settings modal wired to live toggles (in-app/email/SMS), edge route + client service + hook   |
-| 825  | Email notifications         | Resend email utility, 6 branded templates, preference-aware dispatcher, 3 trigger points wired |
-| 826  | Claims shop assignment      | Migration 020, backend + client plumbing for shop assignment on claims, job_assignments record  |
-| 827  | Claims real shop list       | InsurerNewClaimScreen uses useNetworkDirectory for real shops, fallback to demo if empty        |
+| Pass | Feature                  | What Changed                                                                                   |
+| ---- | ------------------------ | ---------------------------------------------------------------------------------------------- |
+| 824  | Notification preferences | Settings modal wired to live toggles (in-app/email/SMS), edge route + client service + hook    |
+| 825  | Email notifications      | Resend email utility, 6 branded templates, preference-aware dispatcher, 3 trigger points wired |
+| 826  | Claims shop assignment   | Migration 020, backend + client plumbing for shop assignment on claims, job_assignments record |
+| 827  | Claims real shop list    | InsurerNewClaimScreen uses useNetworkDirectory for real shops, fallback to demo if empty       |
 
 **Exit Criteria:**
 
