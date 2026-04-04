@@ -1,7 +1,7 @@
 {
   "version": "0.2",
   "language": "en",
-  "ignorePaths": ["node_modules/**", "dist/**", "package-lock.json"],
+  "ignorePaths": ["node_modules/**", "dist/**", "package-lock.json", "src/**/*.test.ts", "src/**/*.test.tsx"],
   "ignoreRegExpList": ["/\\b[A-HJ-NPR-Z0-9]{17}\\b/g"],
   "words": [
     "BidOnDent",
@@ -190,6 +190,31 @@
     "Lakefield",
     "Medlock",
     "Gwinnett",
-    "Norcross"
+    "Norcross",
+    "notif",
+    "Notif",
+    "prefs",
+    "Prefs",
+    "unsubscribers",
+    "Xpress",
+    "statefarm",
+    "libertymutual",
+    "amfam",
+    "Dunwoody",
+    "dunwoody",
+    "Galambos",
+    "Moreland",
+    "Kennestone",
+    "Wellstar",
+    "brownwood",
+    "Brownwood",
+    "Quik",
+    "quiktrip",
+    "Quiktrip",
+    "Krog",
+    "krog",
+    "murphys",
+    "mcdonalds",
+    "Riverdale"
   ]
 }
