@@ -215,7 +215,9 @@ export function useReportForm({
     // Final validation gate — catch any data that slipped through step-level checks
     const trimmedDescription = description.trim();
     if (!vehicle.make?.trim() || !vehicle.model?.trim() || !vehicle.year?.trim()) {
-      setSubmitError("Vehicle information is incomplete. Please go back and fill in make, model, and year.");
+      setSubmitError(
+        "Vehicle information is incomplete. Please go back and fill in make, model, and year."
+      );
       return;
     }
     if (photos.length === 0) {
