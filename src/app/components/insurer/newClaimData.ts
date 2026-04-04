@@ -58,22 +58,26 @@ export function buildPolicyholders(reports: Array<Record<string, any>>): Policyh
 
     return {
       id: `customer-${safeReport.id ?? index}`,
-      name: typeof safeReport.customerName === "string" ? safeReport.customerName : "Policyholder on file",
-      email: typeof safeReport.customerEmail === "string" ? safeReport.customerEmail : "On file",
-      phone: typeof safeReport.customerPhone === "string" ? safeReport.customerPhone : "On file",
+      name: typeof safeReport.customerName === "string" ? safeReport.customerName : "Not provided",
+      email:
+        typeof safeReport.customerEmail === "string" ? safeReport.customerEmail : "Not provided",
+      phone:
+        typeof safeReport.customerPhone === "string" ? safeReport.customerPhone : "Not provided",
       policyNumber:
-        typeof safeReport.policyNumber === "string"
-          ? safeReport.policyNumber
-          : "Pending verification",
+        typeof safeReport.policyNumber === "string" ? safeReport.policyNumber : "Not provided",
       vehicles: [
         {
-          year: typeof vehicleData.year === "string" || typeof vehicleData.year === "number" ? vehicleData.year : "",
+          year:
+            typeof vehicleData.year === "string" || typeof vehicleData.year === "number"
+              ? vehicleData.year
+              : "",
           make: typeof vehicleData.make === "string" ? vehicleData.make : "Vehicle",
           model: typeof vehicleData.model === "string" ? vehicleData.model : "Pending",
           vin: typeof vehicleData.vin === "string" ? vehicleData.vin : undefined,
         },
       ],
-      location: typeof safeReport.location === "string" ? safeReport.location : "New York Service Region",
+      location:
+        typeof safeReport.location === "string" ? safeReport.location : "New York Service Region",
       memberSince: "2026",
       activeClaims,
       status: "active",
@@ -87,7 +91,7 @@ export function buildClaimShops(_reports: unknown[]): ClaimShop[] {
       id: "claim-shop-1",
       name: "BidOnDent Partner Network",
       email: "partners@bidondent.com",
-      phone: "On file",
+      phone: "Not provided",
       address: "Region-assigned dispatch",
       location: "New York service region",
       distance: "Service-radius based",

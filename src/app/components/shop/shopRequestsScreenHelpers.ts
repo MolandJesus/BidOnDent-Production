@@ -41,9 +41,9 @@ export function transformReportToRequest(report: DamageReport, index: number): R
 
   return {
     id: String(report?.id ?? `request-${index}`),
-    customerName: report?.customerName || "Customer",
-    customerEmail: report?.customerEmail || "Contact via BidOnDent",
-    customerPhone: report?.customerPhone || "Via platform",
+    customerName: report?.customerName || "Not provided",
+    customerEmail: report?.customerEmail || "Not provided",
+    customerPhone: report?.customerPhone || "Not provided",
     vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
     damageType: report?.damageArea || report?.damageType || "Damage report",
     description: report?.damageDescription || report?.description || "No description provided yet.",
@@ -57,8 +57,8 @@ export function transformReportToRequest(report: DamageReport, index: number): R
     submittedDate: submittedAt ? new Date(submittedAt).toLocaleDateString() : "Recently submitted",
     status: normalizedStatus,
     urgency: bidCount === 0 ? "high" : bidCount < 3 ? "medium" : "low",
-    insuranceClaim: Boolean(report?.policyNumber || report?.claimNumber),
-    insuranceCompany: report?.policyNumber || "",
+    insuranceClaim: report?.insuranceClaim ?? Boolean(report?.policyNumber || report?.claimNumber),
+    insuranceCompany: report?.insuranceCompany || "",
     bidCount,
   };
 }
