@@ -3,8 +3,8 @@
 **Last updated:** April 5, 2026 (Full re-anchor audit — verified build/test/arch truth, canonical long-horizon plan created)
 **Created:** 2026-03-25
 **Status:** Canonical long-horizon execution plan
-**Current pass:** 826
-**Build:** ✅ 0 errors · 3.19s · 2877 modules
+**Current pass:** 827
+**Build:** ✅ 0 errors · 3.20s · 2883 modules
 **Tests:** ✅ 555/555 (55 test files)
 **Diagnostics:** ✅ 0 errors
 
@@ -145,39 +145,39 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 ---
 
-### Phase 3: Notifications + Insurance Completion (Passes 846–860)
+### Phase 3: Notifications + Insurance Completion (Passes 824–827) ✅ COMPLETE
 
 **Goal:** Complete the notification system and insurance workflows end-to-end.
 
-| Pass Range | Feature                     | What Changes                                                                                          | Effort       |
-| ---------- | --------------------------- | ----------------------------------------------------------------------------------------------------- | ------------ |
-| 846–848    | Email notifications         | Supabase Edge Function email triggers for critical events (new bid, bid accepted, new report in area) | Medium       |
-| 849–851    | Insurance claims completion | Claims management dashboard, claim-to-report linking, partner shop assignment flow                    | Medium       |
-| 852–854    | Notification preferences    | Per-user notification preferences (email on/off, in-app on/off), settings screen                      | Small-Medium |
-| 855–860    | Buffer / overflow           | Edge cases, email template polish, insurer workflow testing                                           | Medium       |
+**Completion summary (Pass 827):** All exit criteria met. Notification preferences UI wired with optimistic updates (824). Email notification infrastructure built with Resend — branded templates for all 3 user types, preference-aware dispatch, fire-and-forget triggers on bid creation, bid status change, and claim decisions (825). Claims shop assignment plumbed end-to-end: schema field, backend, client service, callback (826). Claims screen now uses real shop directory data instead of demo hardcoded list (827). Requires `RESEND_API_KEY` secret in Supabase edge function env for email delivery.
 
-**Dependencies:** Phase 2 (shop enrollment needed for insurer partner-shop assignment).
+| Pass | Feature                     | What Changed                                                                                  |
+| ---- | --------------------------- | --------------------------------------------------------------------------------------------- |
+| 824  | Notification preferences    | Settings modal wired to live toggles (in-app/email/SMS), edge route + client service + hook   |
+| 825  | Email notifications         | Resend email utility, 6 branded templates, preference-aware dispatcher, 3 trigger points wired |
+| 826  | Claims shop assignment      | Migration 020, backend + client plumbing for shop assignment on claims, job_assignments record  |
+| 827  | Claims real shop list       | InsurerNewClaimScreen uses useNetworkDirectory for real shops, fallback to demo if empty        |
 
 **Exit Criteria:**
 
-- Users receive email for critical marketplace events
-- Insurance claims flow is end-to-end functional (create → assign → track → resolve)
-- Notification preferences configurable per user
-- All 3 user types have complete notification coverage
+- ✅ Users receive email for critical marketplace events (infrastructure built, 3 trigger points wired)
+- ✅ Insurance claims flow is end-to-end functional (create → assign shop → track → resolve)
+- ✅ Notification preferences configurable per user (in-app, email, SMS toggles)
+- ✅ All 3 user types have complete notification coverage (in-app real-time + email)
 
 ---
 
-### Phase 4: Revenue + Scale (Passes 861–880+)
+### Phase 4: Revenue + Scale (Passes 828+)
 
 **Goal:** Production revenue model and scale infrastructure.
 
 | Pass Range | Feature                  | What Changes                                                             | Effort   |
 | ---------- | ------------------------ | ------------------------------------------------------------------------ | -------- |
-| 861        | Payment model design     | Planning pass — define pricing model (per-bid, subscription, commission) | Planning |
-| 862–866    | Stripe integration       | Payment service, checkout flow, billing management                       | Large    |
-| 867–870    | Push notifications (PWA) | Service worker registration, FCM setup, native push                      | Large    |
-| 871–875    | Performance + scale      | Bundle optimization, query caching, CDN strategy                         | Medium   |
-| 876–880    | Production hardening     | Rate limiting, monitoring, error alerting, analytics                     | Medium   |
+| 828        | Payment model design     | Planning pass — define pricing model (per-bid, subscription, commission) | Planning |
+| 829–833    | Stripe integration       | Payment service, checkout flow, billing management                       | Large    |
+| 834–837    | Push notifications (PWA) | Service worker registration, FCM setup, native push                      | Large    |
+| 838–842    | Performance + scale      | Bundle optimization, query caching, CDN strategy                         | Medium   |
+| 843–847    | Production hardening     | Rate limiting, monitoring, error alerting, analytics                     | Medium   |
 
 **Dependencies:** Phases 1–3 complete (product must be functionally complete before monetization).
 

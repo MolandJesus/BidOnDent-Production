@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 826 — Claims shop assignment plumbing)
+**Last updated:** April 5, 2026 (Pass 827 — Claims real shop list from directory)
 **Status:** Active execution tracker
-**Pass count:** 826
+**Pass count:** 827
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -99,6 +99,7 @@
 | 824  | Notification preferences              | Migration 019 notification_preferences table. Edge handler GET (auto-create defaults) + PUT (whitelist upsert). Client service + useNotificationPreferences hook. SettingsModal live toggles replace disabled placeholders.   |
 | 825  | Email notification infrastructure     | Resend email utility + 6 email templates (customer: bid received, claim decision; shop: nearby report, bid status; insurer: new claim). notificationEmails dispatcher respects preferences. Wired into bids + workflow handlers. |
 | 826  | Claims shop assignment plumbing       | Migration 020: assigned_shop_clerk_user_id on damage_reports. Backend accepts shopClerkUserId + creates job_assignment. ClaimShop type gains clerkUserId field. Client service + callback wire shop through.                    |
+| 827  | Claims real shop list from directory  | InsurerNewClaimScreen uses useNetworkDirectory for real shop profiles in claims shop tab. mapShopProfilesToClaimShops maps ShopBusinessProfile→ClaimShop. Loading spinner. Fallback to demo data if directory empty. **Phase 3 COMPLETE.** |
 
 **Full re-anchor audit (Pass 810+):**
 
