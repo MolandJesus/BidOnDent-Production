@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  getAllPublicServiceAreas,
-  type ShopServiceArea,
-} from "../services/supabase/serviceAreas";
+import { getAllPublicServiceAreas, type ShopServiceArea } from "../services/supabase/serviceAreas";
 
 /**
  * Loads all active radius service areas for rendering on the public shop directory map.

@@ -71,6 +71,7 @@
 **Active Realtime Channel Allocation:**
 
 To prevent conflicts, each Supabase Realtime subscription uses a dedicated channel name:
+
 - `"new-damage-reports"` — `RealtimeReportService` singleton (customer notice feed, shop nearby notifications)
 - `"map-report-layer-changes"` — `useReportLayerData` (map pins for all damage_reports events)
 - `"map-report-bid-updates"` — `useReportLayerData` (map bid counters on bids table events)

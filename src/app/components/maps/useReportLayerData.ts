@@ -78,17 +78,13 @@ export function useReportLayerData({
     let refreshTimer: ReturnType<typeof setTimeout> | null = null;
     const channel = supabase
       .channel("map-report-layer-changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "damage_reports" },
-        () => {
-          // Debounce: wait 1.5 s before re-fetching in case of rapid successive changes
-          if (refreshTimer) clearTimeout(refreshTimer);
-          refreshTimer = setTimeout(() => {
-            void fetchReports();
-          }, 1500);
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "damage_reports" }, () => {
+        // Debounce: wait 1.5 s before re-fetching in case of rapid successive changes
+        if (refreshTimer) clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => {
+          void fetchReports();
+        }, 1500);
+      })
       .subscribe();
     return () => {
       if (refreshTimer) clearTimeout(refreshTimer);
@@ -103,16 +99,12 @@ export function useReportLayerData({
     let bidTimer: ReturnType<typeof setTimeout> | null = null;
     const bidChannel = supabase
       .channel("map-report-bid-updates")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "bids" },
-        () => {
-          if (bidTimer) clearTimeout(bidTimer);
-          bidTimer = setTimeout(() => {
-            void fetchReports();
-          }, 1500);
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "bids" }, () => {
+        if (bidTimer) clearTimeout(bidTimer);
+        bidTimer = setTimeout(() => {
+          void fetchReports();
+        }, 1500);
+      })
       .subscribe();
     return () => {
       if (bidTimer) clearTimeout(bidTimer);

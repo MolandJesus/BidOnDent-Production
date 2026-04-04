@@ -441,6 +441,7 @@ Insurer flows are real with appropriate fallback behavior.
 - Empty states are honest: "Showing example claims for preview" only appears when no reports exist yet
 
 Admin/devtools are real utility surfaces.
+
 - Clearly isolated in `src/app/components/admin/` and `demoMode.ts`
 - `DEMO_MODE` is env-controlled (`VITE_DEMO_MODE`), defaults to false in production
 

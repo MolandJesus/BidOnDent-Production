@@ -1,16 +1,18 @@
-  /* ── Service area circles ─────────────────────────────────────── */
-  const { areas: publicServiceAreas } = usePublicServiceAreas();
-  const serviceAreaGeoJson = useMemo(
-    (): GeoJSON.FeatureCollection => ({
-      type: "FeatureCollection",
-      features: publicServiceAreas
-        .filter((a) => a.center_latitude != null && a.center_longitude != null && a.radius_miles != null)
-        .map((a) => circleToPolygon(a.center_latitude!, a.center_longitude!, a.radius_miles!)),
-    }),
-    [publicServiceAreas]
-  );
+/* ── Service area circles ─────────────────────────────────────── */
+const { areas: publicServiceAreas } = usePublicServiceAreas();
+const serviceAreaGeoJson = useMemo(
+  (): GeoJSON.FeatureCollection => ({
+    type: "FeatureCollection",
+    features: publicServiceAreas
+      .filter(
+        (a) => a.center_latitude != null && a.center_longitude != null && a.radius_miles != null
+      )
+      .map((a) => circleToPolygon(a.center_latitude!, a.center_longitude!, a.radius_miles!)),
+  }),
+  [publicServiceAreas]
+);
 
-  /* ── Render ─────────────────────────────────────────────────────── */
+/* ── Render ─────────────────────────────────────────────────────── */
 // Must run before any Map instantiation — patches resize crash
 import "../../utils/maplibreResizePatch";
 
