@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 816 — Fix tel/mailto unguarded links in InsurerPartnerShopCard)
+**Last updated:** April 5, 2026 (Pass 819 — Wire claim Details button to report detail navigation)
 **Status:** Active execution tracker
-**Pass count:** 816
+**Pass count:** 819
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -91,6 +91,7 @@
 | 813  | Service area circle overlay           | DashboardMapPreview gains serviceAreaCircles prop with GeoJSON polygon rendering (fill + dashed border), ShopMapWidget passes radius areas as circle overlays on mini-map                                                     |
 | 814  | Report pin status/bid audit           | Verified: status-color coding (amber/green/slate) + bid count badges already fully wired in MapLibreReportLayer.tsx. No changes needed — passes 814-815 scope already delivered.                                              |
 | 816  | Fix tel/mailto disabled links         | InsurerPartnerShopCard: guarded tel/mailto against missing phone/email with disabled fallback. All other tel/mailto links already properly guarded. Map empty states verified present.                                         |
+| 819  | Wire claim Details → report detail   | InsurerClaimCard gains onViewDetails prop wired to Details button onClick. InsurerClaimsScreen gains onOpenReport prop piped to card. DashboardRouter passes onOpenReport using onSelectReport + onViewModeChange pattern.     |
 
 **Full re-anchor audit (Pass 810+):**
 

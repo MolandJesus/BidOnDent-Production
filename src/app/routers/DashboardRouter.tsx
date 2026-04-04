@@ -319,6 +319,10 @@ export default function DashboardRouter({
                   reportsLoading={shopInsurerReportsLoading}
                   isSeedData={usingSeedFallback}
                   appearanceMode={appearanceMode}
+                  onOpenReport={(reportId) => {
+                    onSelectReport(reportId);
+                    onViewModeChange("report-detail");
+                  }}
                   onApproveClaim={async (claimId, amount) => {
                     const ok = await updateClaimDecision(claimId, "approved", {
                       approvedAmount: amount,

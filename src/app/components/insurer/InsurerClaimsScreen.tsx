@@ -20,6 +20,7 @@ type InsurerClaimsScreenProps = {
   isSeedData?: boolean;
   onApproveClaim?: (claimId: string, amount: number) => void | Promise<void>;
   onDenyClaim?: (claimId: string, reason: string) => void | Promise<void>;
+  onOpenReport?: (reportId: string) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
 
@@ -30,6 +31,7 @@ export default function InsurerClaimsScreen({
   isSeedData = false,
   onApproveClaim,
   onDenyClaim,
+  onOpenReport,
   appearanceMode = "map-dark",
 }: InsurerClaimsScreenProps) {
   const isLight = appearanceMode === "light";
@@ -365,6 +367,7 @@ export default function InsurerClaimsScreen({
               appearanceMode={appearanceMode}
               onOpenApproval={handleOpenApproval}
               onOpenDenial={handleOpenDenial}
+              onViewDetails={(c) => onOpenReport?.(c.id)}
             />
           ))
         )}

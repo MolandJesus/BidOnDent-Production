@@ -22,6 +22,7 @@ type InsurerClaimCardProps = {
   primaryColor: string;
   onOpenApproval: (claim: ClaimData) => void;
   onOpenDenial?: (claim: ClaimData) => void;
+  onViewDetails?: (claim: ClaimData) => void;
   appearanceMode?: DashboardAppearanceMode;
 };
 
@@ -45,6 +46,7 @@ export default function InsurerClaimCard({
   primaryColor,
   onOpenApproval,
   onOpenDenial,
+  onViewDetails,
   appearanceMode = "map-dark",
 }: InsurerClaimCardProps) {
   const isLight = appearanceMode === "light";
@@ -351,6 +353,7 @@ export default function InsurerClaimCard({
             </span>
           )}
           <button
+            onClick={() => onViewDetails?.(claim)}
             className={`flex flex-col items-center justify-center gap-1 px-3 py-2 text-sm rounded-lg transition-colors ${
               isLight
                 ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200"
