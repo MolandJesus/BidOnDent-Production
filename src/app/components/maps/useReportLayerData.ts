@@ -5,6 +5,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAllDamageReports } from "../../services/supabase/reports";
+import { supabase } from "../../services/supabaseService";
 import { getBidsForReport } from "../../services/supabase/bids";
 import { zipToCoordinates, geocodeAddress } from "../../services/supabase/map";
 import type { DamageReport } from "../../services/supabase/types";
@@ -67,6 +68,25 @@ export function useReportLayerData({
   useEffect(() => {
     fetchReports();
   }, [fetchReports]);
+
+  // Auto-refresh when a new report is submitted — map pins update without page reload.
+  // Uses a dedicated channel name to avoid conflicting with useShopNearbyReportNotifications.
+  useEffect(() => {
+    if (initialReports) return; // Parent manages data — no subscription needed
+    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+    const channel = supabase
+      .channel("map-report-layer-inserts")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "damage_reports" }, () => {
+        // Debounce: wait 1.5 s before re-fetching in case multiple inserts arrive together
+        if (refreshTimer) clearTimeout(refreshTimer);
+        refreshTimer = setTimeout(() => { void fetchReports(); }, 1500);
+      })
+      .subscribe();
+    return () => {
+      if (refreshTimer) clearTimeout(refreshTimer);
+      void supabase.removeChannel(channel);
+    };
+  }, [initialReports, fetchReports]);
 
   // Geocode report addresses only if stored coordinates are missing
   useEffect(() => {
