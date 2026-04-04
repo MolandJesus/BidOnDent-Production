@@ -92,7 +92,7 @@ export default function DashboardRouter({
     currentTab === "bids" && userType === "customer"
       ? selectedReportId || reports[0]?.id || null
       : null;
-  const { bids: liveBids } = useBidsForReport(bidsReportId);
+  const { bids: liveBids, loading: bidsLoading } = useBidsForReport(bidsReportId);
 
   const {
     enrichedUserReports,
@@ -249,6 +249,7 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   userType={userType}
                   bids={liveBids.length > 0 ? liveBids : bids}
+                  bidsLoading={bidsLoading}
                   reports={reports}
                   appearanceMode={appearanceMode}
                   onAcceptBid={onAcceptBid}

@@ -9,6 +9,7 @@ export type BidsScreenProps = {
   onViewShopDirectory?: () => void;
   userType?: "customer" | "shop" | "insurer";
   bids?: Bid[];
+  bidsLoading?: boolean;
   reports?: DamageReport[];
   onAcceptBid?: (details: {
     bidId: string;

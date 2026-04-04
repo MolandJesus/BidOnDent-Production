@@ -23,6 +23,7 @@ export default function BidsScreen({
   onViewShopDirectory,
   userType = "customer",
   bids: incomingBids = [],
+  bidsLoading = false,
   reports = [],
   onAcceptBid,
   onRejectBid,
@@ -138,6 +139,15 @@ export default function BidsScreen({
       setActiveBid(liveBids[0]?.id ?? null);
     }
   }, [activeBid, hasLiveBids, liveBids]);
+
+  if (bidsLoading && !hasLiveBids) {
+    return (
+      <div className="flex min-h-[300px] flex-col items-center justify-center gap-3 px-6 py-12">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-current border-t-transparent opacity-60" />
+        <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>Loading bids…</p>
+      </div>
+    );
+  }
 
   if (!hasLiveBids) {
     return (
