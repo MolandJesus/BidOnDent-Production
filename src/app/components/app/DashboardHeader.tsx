@@ -1,5 +1,5 @@
-import { Bell, Home, LogOut, Search, Settings, Sparkles, User } from "lucide-react";
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { Bell, Home, LogOut, Search, Settings, Sparkles, User, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import type { Bid, Notification, Report, Vehicle } from "../../types";
 import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
 import NotificationCenter from "../dashboard/NotificationCenter";
@@ -22,6 +22,7 @@ type DashboardHeaderProps = {
   onMarkNotificationRead: (notificationId: string | number) => void;
   onMarkAllNotificationsRead: () => void;
   onOpenSettings: () => void;
+  onNavigateToReport?: (reportId: string) => void;
 };
 
 export default function DashboardHeader({
@@ -41,11 +42,48 @@ export default function DashboardHeader({
   onMarkNotificationRead,
   onMarkAllNotificationsRead,
   onOpenSettings,
+  onNavigateToReport,
 }: DashboardHeaderProps) {
   const [showTopProfileMenu, setShowTopProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const topProfileMenuRef = useRef<HTMLDivElement>(null);
   const notificationCenterRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q || q.length < 2) return [];
+    return reports
+      .filter((r) => {
+        const vi = r.vehicleInfo;
+        const text = [
+          vi?.year,
+          vi?.make,
+          vi?.model,
+          r.description,
+          r.damageDescription,
+          r.address,
+          r.city,
+          r.state,
+          r.claimNumber,
+          r.customerName,
+          r.status,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return text.includes(q);
+      })
+      .slice(0, 6);
+  }, [searchQuery, reports]);
+
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false);
+    setSearchQuery("");
+  }, []);
 
   useEffect(() => {
     if (!showNotifications && !showTopProfileMenu) {
@@ -61,6 +99,9 @@ export default function DashboardHeader({
         !notificationCenterRef.current.contains(event.target as Node)
       ) {
         setShowNotifications(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        closeSearch();
       }
     };
 
@@ -149,33 +190,114 @@ export default function DashboardHeader({
               />
             </button>
           )}
-          <div
-            aria-label="Dashboard search is coming soon"
-            className={`hidden lg:flex items-center justify-between gap-3 px-3 py-2 min-w-[260px] rounded-xl border ${isLightAppearance ? "border-slate-200/80 bg-slate-50/80" : "bd-glass-control--utility"}`}
-            role="note"
-          >
-            <div className="flex min-w-0 items-center gap-2">
+          <div ref={searchRef} className="relative hidden lg:block">
+            <div
+              className={`flex items-center gap-2 px-3 py-2 min-w-[260px] rounded-xl border transition-colors ${
+                searchOpen
+                  ? isLightAppearance
+                    ? "border-blue-400/40 bg-white ring-2 ring-blue-400/20"
+                    : "border-blue-400/30 bg-white/[0.08] ring-2 ring-blue-400/15"
+                  : isLightAppearance
+                    ? "border-slate-200/80 bg-slate-50/80 cursor-pointer hover:bg-slate-100/80"
+                    : "bd-glass-control--utility cursor-pointer"
+              }`}
+              onClick={() => {
+                if (!searchOpen) {
+                  setSearchOpen(true);
+                  setTimeout(() => searchInputRef.current?.focus(), 0);
+                }
+              }}
+              role={searchOpen ? undefined : "button"}
+              tabIndex={searchOpen ? undefined : 0}
+              onKeyDown={(e) => {
+                if (!searchOpen && (e.key === "Enter" || e.key === " ")) {
+                  e.preventDefault();
+                  setSearchOpen(true);
+                  setTimeout(() => searchInputRef.current?.focus(), 0);
+                }
+              }}
+            >
               <Search
                 className={`w-4 h-4 shrink-0 ${isLightAppearance ? "text-slate-400" : "text-blue-200/70"}`}
               />
-              <div className="min-w-0">
-                <p
-                  className={`truncate text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-slate-100"}`}
+              {searchOpen ? (
+                <>
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") closeSearch();
+                    }}
+                    placeholder="Search reports…"
+                    className={`w-full bg-transparent text-sm outline-none placeholder-slate-400 ${isLightAppearance ? "text-slate-700" : "text-slate-100"}`}
+                    autoComplete="off"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={closeSearch}
+                      className={`shrink-0 ${isLightAppearance ? "text-slate-400 hover:text-slate-600" : "text-blue-200/60 hover:text-blue-100"}`}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </>
+              ) : (
+                <span
+                  className={`truncate text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
                 >
-                  Global search
-                </p>
-                <p
-                  className={`truncate text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-200/60"}`}
-                >
-                  Coming soon
-                </p>
-              </div>
+                  Search reports…
+                </span>
+              )}
             </div>
-            <span
-              className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${isLightAppearance ? "bg-white text-slate-500 ring-1 ring-slate-200" : "bg-white/10 text-blue-100/70"}`}
-            >
-              Soon
-            </span>
+
+            {/* Search results dropdown */}
+            {searchOpen && searchQuery.length >= 2 && (
+              <div
+                className={`absolute left-0 right-0 top-full mt-1 rounded-xl border shadow-xl overflow-hidden z-50 ${
+                  isLightAppearance
+                    ? "border-slate-200/80 bg-white"
+                    : "border-blue-400/15 bg-[#0d1f35]"
+                }`}
+              >
+                {searchResults.length === 0 ? (
+                  <p
+                    className={`px-4 py-3 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+                  >
+                    No reports found.
+                  </p>
+                ) : (
+                  searchResults.map((report) => (
+                    <button
+                      key={report.id}
+                      type="button"
+                      onClick={() => {
+                        onNavigateToReport?.(report.id);
+                        closeSearch();
+                      }}
+                      className={`block w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                        isLightAppearance
+                          ? "hover:bg-slate-50 text-slate-700"
+                          : "hover:bg-white/[0.06] text-slate-200"
+                      }`}
+                    >
+                      <span className="font-medium">
+                        {[report.vehicleInfo?.year, report.vehicleInfo?.make, report.vehicleInfo?.model]
+                          .filter(Boolean)
+                          .join(" ") || "Report"}
+                      </span>
+                      <span
+                        className={`ml-2 text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-200/50"}`}
+                      >
+                        {report.city || report.address || report.status}
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
           <div className="relative" ref={notificationCenterRef}>

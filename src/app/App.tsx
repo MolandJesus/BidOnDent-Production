@@ -419,6 +419,10 @@ function AppContent() {
         onOpenDemoMode={() => navigation.setViewMode("demo-switcher")}
         profileDropdownData={profileDropdownData}
         dashboardRouterProps={dashboardRouterProps}
+        onNavigateToReport={(reportId) => {
+          navigation.setSelectedReportId(reportId);
+          navigation.setViewMode("report-detail");
+        }}
       />
     );
   }

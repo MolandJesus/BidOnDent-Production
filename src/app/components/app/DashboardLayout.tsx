@@ -36,6 +36,7 @@ type DashboardLayoutProps = {
   onMarkAllNotificationsRead: () => void;
   profileDropdownData?: ProfileDropdownData;
   dashboardRouterProps: React.ComponentProps<typeof DashboardRouter>;
+  onNavigateToReport?: (reportId: string) => void;
 };
 
 export default function DashboardLayout({
@@ -63,6 +64,7 @@ export default function DashboardLayout({
   onMarkAllNotificationsRead,
   profileDropdownData,
   dashboardRouterProps,
+  onNavigateToReport,
 }: DashboardLayoutProps) {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const isLightAppearance = appearanceMode === "light";
@@ -170,6 +172,7 @@ export default function DashboardLayout({
             onMarkNotificationRead={handleMarkRead}
             onMarkAllNotificationsRead={handleMarkAllRead}
             onOpenSettings={() => setShowSettingsModal(true)}
+            onNavigateToReport={onNavigateToReport}
           />
 
           <main
