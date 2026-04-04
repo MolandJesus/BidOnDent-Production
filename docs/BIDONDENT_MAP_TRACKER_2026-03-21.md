@@ -1,9 +1,10 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 800 — Shop estimate accept/decline notifications)
+**Last updated:** April 5, 2026 (Pass 807 — Dead code removal, type safety, error handling)
 **Status:** Active execution tracker
-**Pass count:** 800
-**Build:** 0 errors (~3.5s)
+**Pass count:** 807
+**Build:** 0 errors (~3.6s)
+**Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
 
 ---
@@ -41,6 +42,10 @@
 - Photo upload mounted guard prevents setState after unmount (Pass 618)
 - OWASP security audit passed: zero XSS, zero SQL injection, zero hardcoded secrets (Pass 619)
 - Zero production `any` types; zero dead code; zero ungated console statements (Passes 609, 611, 622)
+- Report geocoding preserves stored coordinates through transform — no re-geocoding on load (Pass 804)
+- Map report pins properly show vehicle/damage info for customer reports via toMapReportShape boundary transform (Pass 805)
+- Silent Supabase data-load and auto-save failures surfaced to users (Pass 801)
+- Duplicate incomplete transformSupabaseReport removed from useUserDataHelpers.ts — canonical transform lives in userDataUtils.ts only (Pass 807)
 
 **Seeded / dev-usable (not yet live marketplace behavior):**
 
@@ -65,6 +70,28 @@
 - In-app real-time notifications complete (8 hooks across all user types; push notifications still needed for native/background delivery)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Passes 801–807 — Reliability, Type Safety & Dead Code Sweep (2026-04-05)
+
+| Pass | Title                               | Key Changes                                                                                                                                                                                                                   |
+| ---- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 801  | Surface silent Supabase failures    | useUserData catch block now sets reportsError + stops loading instead of DEV-only log; useUserDataCloudSync fires onSyncError callback on auto-save failure                                                                   |
+| 802  | Type transformSupabaseReport return | Added explicit FrontendReport return type with narrow status cast; eliminated 4 `as unknown` casts in useUserDataHelpers + useUserDataLoader                                                                                  |
+| 803  | File size governance audit          | All core files under 500-line hard limit — no extraction needed                                                                                                                                                               |
+| 804  | Fix report geocoding data loss      | transformSupabaseReport now includes latitude/longitude; useReportLayerData prefers stored coordinates over re-geocoding; eliminates unnecessary Nominatim calls                                                              |
+| 805  | Fix map report data mismatch        | Added toMapReportShape() boundary transform in userDataUtils.ts; replaced unsafe `as unknown as DamageReport[]` cast in DashboardSecondaryViews — map pins now show correct vehicle/damage info for customer reports          |
+| 807  | Remove dead transform functions     | Removed ~120 lines: transformSupabaseReport, transformSupabaseReports, transformSupabaseBid, extractBidsFromReports, createFreshUserData from useUserDataHelpers.ts (all dead code, canonical transforms in userDataUtils.ts) |
+
+**Audit findings (no code changes needed):**
+
+- All 5 critical user flows (report creation, bid submission, vehicle management, photo upload, shop onboarding) verified fully wired to Supabase edge functions
+- Customer accept-bid flow verified: updateBidStatus → updateReportStatus → reject competing bids → createJobAssignment → map route handoff
+- Insurer claims workflow 70% production-ready — core approve/deny wired, gaps are P3/P4 new features
+- Geolocation error handling verified: ShopDirectoryOriginSearch + GeoErrorToast already surface GPS failures
+- getPublicPartnerShops() throw verified caught by useCoveragePartnerShops with fetchError state
+- All remaining `as unknown`/`as any` casts in production code are intentional (MapLibre library boundaries, window globals) or test-only (partial mocks)
 
 ---
 

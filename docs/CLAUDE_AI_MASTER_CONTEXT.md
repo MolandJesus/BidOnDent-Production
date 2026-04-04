@@ -3,14 +3,14 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-04 (Pass 800 — Estimate notification loop fully complete. Shop accept/decline notifications + multi-subscriber fix. Profile save error surfacing. 8 Supabase Realtime hooks. Passes 789-800.)
+> **Last updated:** 2026-04-05 (Pass 807 — Type safety, error handling, dead code sweep. Passes 801-807. All 5 critical flows verified fully wired. Map report data mismatch fixed. Report geocoding data loss fixed.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
-> **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
+> **Build:** ✅ 0 errors · ~3.6s · MapLibre GL JS WebGL engine · 555/555 tests passing
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
 > **TypeScript:** 0 tsc errors · 0 VS Code diagnostics
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
-> **Production `any` types:** 0 (eliminated Passes 433-434, re-verified Pass 609; 3 intentional `as any` workarounds remain)
+> **Production `any` types:** 0 (eliminated Passes 433-434, re-verified Pass 609; remaining `as any` in MapLibre/window/devtools only)
 > **Security:** OWASP audit Pass 619 — zero XSS, zero injection, VIN input sanitized, photo upload guarded
 
 ---
