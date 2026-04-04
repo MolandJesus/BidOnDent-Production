@@ -61,7 +61,29 @@ export function useNotificationEvents(): NotificationActions {
   const [activeToast, setActiveToast] = useState<NotificationToast | null>(null);
   const deepLinkHandlerRef = useRef<((deepLink: NotificationDeepLink) => void) | null>(null);
 
+  // Deduplication: reject events with the same title+body within a 3-second window
+  const recentPushKeys = useRef<Map<string, number>>(new Map());
+  const DEDUP_WINDOW_MS = 3000;
+
   const push = useCallback((partial: Omit<NotificationEvent, "id" | "createdAt" | "read">) => {
+    const now = Date.now();
+    const dedupKey = `${partial.title}::${partial.body ?? ""}`;
+
+    // Prune stale keys and check for duplicate
+    const lastSeen = recentPushKeys.current.get(dedupKey);
+    if (lastSeen && now - lastSeen < DEDUP_WINDOW_MS) {
+      if (import.meta.env.DEV) console.log("🔕 Notification deduped:", dedupKey);
+      return;
+    }
+    recentPushKeys.current.set(dedupKey, now);
+
+    // Prune old entries to prevent memory leak
+    if (recentPushKeys.current.size > 50) {
+      for (const [key, ts] of recentPushKeys.current) {
+        if (now - ts > DEDUP_WINDOW_MS) recentPushKeys.current.delete(key);
+      }
+    }
+
     const event: NotificationEvent = {
       ...partial,
       id: createNotificationId(),
