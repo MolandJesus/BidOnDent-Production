@@ -52,17 +52,17 @@
 
 ## Passes 633–641 — Direct Navigation System + Architecture Compliance (2026-04-13)
 
-| Pass | Title                               | Key Changes                                                                                                        |
-| ---- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| 633  | IDOR security fix                   | IDOR vulnerability in edge function — user can only access own data                                                |
-| 634  | NavigationDestination type system   | `NavigationDestination` + `NavigationDestinationKind` types in mapDomain.ts                                        |
-| 635  | Destination adapters                | 4 adapter functions (shop→dest, session waypoint, coverage target, geocode result) + 4 tests                       |
-| 636  | Direct navigation handler           | `handleStartDirectNavigation(dest)` in useShopDirectoryNavigation — starts session for any NavigationDestination   |
-| 637  | Doc coordination update             | ChatGPT parallel worker prompt + coordination docs                                                                  |
-| 638  | Fix P1 race condition               | `handleStartDirectNavigation` activates synchronously; lifecycle sync effect guards `directDestination`            |
-| 639  | Destination-agnostic lifecycle      | `liveNavigationActive` flag covers shop + direct; follow-position/arrival/auto-end fire for both                   |
-| 640  | Guidance card null-safety            | `selectedShop`/`selectedOrigin` nullable in guidance card; render guard loosened — card shows during direct nav     |
-| 641  | Derived state extraction            | Extract ~100 lines of derived state to `shopDirectoryNavigationDerived.ts`; main hook 547→497 lines (under 500)    |
+| Pass | Title                             | Key Changes                                                                                                      |
+| ---- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 633  | IDOR security fix                 | IDOR vulnerability in edge function — user can only access own data                                              |
+| 634  | NavigationDestination type system | `NavigationDestination` + `NavigationDestinationKind` types in mapDomain.ts                                      |
+| 635  | Destination adapters              | 4 adapter functions (shop→dest, session waypoint, coverage target, geocode result) + 4 tests                     |
+| 636  | Direct navigation handler         | `handleStartDirectNavigation(dest)` in useShopDirectoryNavigation — starts session for any NavigationDestination |
+| 637  | Doc coordination update           | ChatGPT parallel worker prompt + coordination docs                                                               |
+| 638  | Fix P1 race condition             | `handleStartDirectNavigation` activates synchronously; lifecycle sync effect guards `directDestination`          |
+| 639  | Destination-agnostic lifecycle    | `liveNavigationActive` flag covers shop + direct; follow-position/arrival/auto-end fire for both                 |
+| 640  | Guidance card null-safety         | `selectedShop`/`selectedOrigin` nullable in guidance card; render guard loosened — card shows during direct nav  |
+| 641  | Derived state extraction          | Extract ~100 lines of derived state to `shopDirectoryNavigationDerived.ts`; main hook 547→497 lines (under 500)  |
 
 **Key artifacts created (Passes 634–641):**
 

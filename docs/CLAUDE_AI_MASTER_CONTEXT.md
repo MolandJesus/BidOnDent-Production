@@ -348,46 +348,46 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ### Map Program (MapLibre GL JS — Leaflet fully removed Pass 448)
 
-| File                                                               | Purpose                                               |
-| ------------------------------------------------------------------ | ----------------------------------------------------- |
-| `src/app/components/shop/ShopDirectoryScreen.tsx`                  | Main orchestrator for dashboard shop discovery        |
-| `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)     |
-| `src/app/components/shop/ShopDirectoryMapLayers.tsx`               | Extracted Source/Layer rendering for shop directory   |
-| `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`         | Map-pane badges, legend, shop card, search pills      |
-| `src/app/components/shop/ShopDirectoryMapOverlays.tsx`             | Floating intelligence + route + action overlays       |
-| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`            | Full-viewport immersive map mode                      |
-| `src/app/components/shop/ShopDirectoryOriginSearch.tsx`            | U.S.-wide origin search UI for shop flow              |
-| `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                          |
-| `src/app/components/maps/MapLibreServiceCoverageMap.tsx`           | Landing + coverage map (route glow, GPS glow)         |
-| `src/app/components/maps/MapLibreCoverageMapLayers.tsx`            | Extracted route/county/GPS/search-target layers       |
-| `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`     | Lightweight click-through dashboard preview maps      |
-| `src/app/components/maps/MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                     |
-| `src/app/components/maps/MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                           |
-| `src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx`          | Category-colored discovery place circles              |
-| `src/app/components/maps/mapLibreControllers.tsx`                  | Shared MapLibre viewport/follow/route-fit controllers |
-| `src/app/components/maps/mapLibreHelpers.ts`                       | Shared geometry helpers for coverage map rendering    |
-| `src/app/components/maps/mapLibreStyles.ts`                        | StyleSpecification objects (roadmap/night/satellite)  |
-| `src/app/hooks/useShopDirectorySession.ts`                         | All session state for shop directory                  |
-| `src/app/hooks/useShopDirectoryRoutePreview.ts`                    | Live OSRM route alternatives for shop directory       |
-| `src/app/services/intelligence/shopMapExperience.ts`               | Shop listing builder, filters, role highlights        |
-| `src/app/services/intelligence/shopMapData.ts`                     | NY shop coordinates + suggested origins               |
-| `src/app/services/intelligence/shopMapRouting.ts`                  | Local route fallback + distance/ETA helpers           |
-| `src/app/services/intelligence/directoryAdapters.ts`               | Supabase shop/insurer → ShopMapListing adapter        |
-| `src/app/components/landing/CoverageMapDialog.tsx`                 | Full-screen coverage map modal + auto-start handoff   |
-| `src/app/hooks/useOperatingRegionsCoverage.ts`                     | Landing coverage orchestration + in-app route launch  |
-| `src/app/hooks/useNavigationLaunch.ts`                             | Navigation-launch state/effects extracted (Pass 565)  |
-| `src/app/hooks/useNavigationLifecycleEffects.ts`                   | Navigation lifecycle effects (follow, arrival, auto-end) |
-| `src/app/hooks/shopDirectoryNavigationDerived.ts`                  | Pure derived-state helpers for nav hook (Pass 641)    |
-| `src/app/services/navigation/navigationDestinationAdapters.ts`     | NavigationDestination adapters (4 converters, Pass 635) |
+| File                                                               | Purpose                                                            |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `src/app/components/shop/ShopDirectoryScreen.tsx`                  | Main orchestrator for dashboard shop discovery                     |
+| `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx`         | MapLibre map pane (GeoJSON, route glow, overlays)                  |
+| `src/app/components/shop/ShopDirectoryMapLayers.tsx`               | Extracted Source/Layer rendering for shop directory                |
+| `src/app/components/shop/ShopDirectoryMapPaneOverlays.tsx`         | Map-pane badges, legend, shop card, search pills                   |
+| `src/app/components/shop/ShopDirectoryMapOverlays.tsx`             | Floating intelligence + route + action overlays                    |
+| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`            | Full-viewport immersive map mode                                   |
+| `src/app/components/shop/ShopDirectoryOriginSearch.tsx`            | U.S.-wide origin search UI for shop flow                           |
+| `src/app/components/shop/MapLibreShopDirectoryViewportManager.tsx` | useMap() viewport fit/fly-to                                       |
+| `src/app/components/maps/MapLibreServiceCoverageMap.tsx`           | Landing + coverage map (route glow, GPS glow)                      |
+| `src/app/components/maps/MapLibreCoverageMapLayers.tsx`            | Extracted route/county/GPS/search-target layers                    |
+| `src/app/components/dashboard/MapLibreDashboardMapPreview.tsx`     | Lightweight click-through dashboard preview maps                   |
+| `src/app/components/maps/MapLibrePartnerShopLayer.tsx`             | GeoJSON partner shop circle layer                                  |
+| `src/app/components/maps/MapLibreReportLayer.tsx`                  | GeoJSON report marker layer                                        |
+| `src/app/components/maps/MapLibreDiscoveryPlaceLayer.tsx`          | Category-colored discovery place circles                           |
+| `src/app/components/maps/mapLibreControllers.tsx`                  | Shared MapLibre viewport/follow/route-fit controllers              |
+| `src/app/components/maps/mapLibreHelpers.ts`                       | Shared geometry helpers for coverage map rendering                 |
+| `src/app/components/maps/mapLibreStyles.ts`                        | StyleSpecification objects (roadmap/night/satellite)               |
+| `src/app/hooks/useShopDirectorySession.ts`                         | All session state for shop directory                               |
+| `src/app/hooks/useShopDirectoryRoutePreview.ts`                    | Live OSRM route alternatives for shop directory                    |
+| `src/app/services/intelligence/shopMapExperience.ts`               | Shop listing builder, filters, role highlights                     |
+| `src/app/services/intelligence/shopMapData.ts`                     | NY shop coordinates + suggested origins                            |
+| `src/app/services/intelligence/shopMapRouting.ts`                  | Local route fallback + distance/ETA helpers                        |
+| `src/app/services/intelligence/directoryAdapters.ts`               | Supabase shop/insurer → ShopMapListing adapter                     |
+| `src/app/components/landing/CoverageMapDialog.tsx`                 | Full-screen coverage map modal + auto-start handoff                |
+| `src/app/hooks/useOperatingRegionsCoverage.ts`                     | Landing coverage orchestration + in-app route launch               |
+| `src/app/hooks/useNavigationLaunch.ts`                             | Navigation-launch state/effects extracted (Pass 565)               |
+| `src/app/hooks/useNavigationLifecycleEffects.ts`                   | Navigation lifecycle effects (follow, arrival, auto-end)           |
+| `src/app/hooks/shopDirectoryNavigationDerived.ts`                  | Pure derived-state helpers for nav hook (Pass 641)                 |
+| `src/app/services/navigation/navigationDestinationAdapters.ts`     | NavigationDestination adapters (4 converters, Pass 635)            |
 | `src/app/types/mapDomain.ts`                                       | NavigationDestination + NavigationDestinationKind types (Pass 634) |
-| `src/app/components/dashboard/CustomerMapWidget.tsx`               | Customer home map widget                              |
-| `src/app/components/dashboard/ShopMapWidget.tsx`                   | Shop home map widget                                  |
-| `src/app/components/dashboard/InsurerMapWidget.tsx`                | Insurer home map widget                               |
-| `src/app/components/maps/useMapPerformanceTracking.ts`             | Extracted performance state/refs/callbacks (Pass 560) |
-| `src/app/components/shop/ShopDirectoryExpandedView.tsx`            | Extracted expanded result card view (Pass 558)        |
-| `src/app/components/shop/RoutePanelGuidanceControls.tsx`           | Extracted navigation pause/resume/end buttons (559)   |
-| `src/app/components/shop/MapPaneLegendPanel.tsx`                   | Extracted legend layers/controls (Pass 548)           |
-| `src/app/components/shop/ShopDirectoryIntelligencePanel.tsx`       | Extracted AI intelligence overlay (Pass 547)          |
+| `src/app/components/dashboard/CustomerMapWidget.tsx`               | Customer home map widget                                           |
+| `src/app/components/dashboard/ShopMapWidget.tsx`                   | Shop home map widget                                               |
+| `src/app/components/dashboard/InsurerMapWidget.tsx`                | Insurer home map widget                                            |
+| `src/app/components/maps/useMapPerformanceTracking.ts`             | Extracted performance state/refs/callbacks (Pass 560)              |
+| `src/app/components/shop/ShopDirectoryExpandedView.tsx`            | Extracted expanded result card view (Pass 558)                     |
+| `src/app/components/shop/RoutePanelGuidanceControls.tsx`           | Extracted navigation pause/resume/end buttons (559)                |
+| `src/app/components/shop/MapPaneLegendPanel.tsx`                   | Extracted legend layers/controls (Pass 548)                        |
+| `src/app/components/shop/ShopDirectoryIntelligencePanel.tsx`       | Extracted AI intelligence overlay (Pass 547)                       |
 
 ### Core Shell
 
