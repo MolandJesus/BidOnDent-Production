@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { BadgeCheck, Clock, DollarSign, MapPin, Navigation } from "lucide-react";
+import { BadgeCheck, Clock, DollarSign, MapPin, Navigation, Phone, Mail } from "lucide-react";
 import DashboardMapPreview from "../dashboard/MapLibreDashboardMapPreview";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
@@ -10,6 +10,9 @@ export type AcceptedBidInfo = {
   timeframe: string;
   shopLatitude?: number | null;
   shopLongitude?: number | null;
+  shopEmail?: string;
+  shopPhone?: string;
+  shopAddress?: string;
 };
 
 type AcceptedBidConfirmationSheetProps = {
@@ -108,6 +111,42 @@ export default function AcceptedBidConfirmationSheet({
                   </span>
                 </div>
               </div>
+
+              {/* Shop contact info */}
+              {(bid.shopPhone || bid.shopEmail || bid.shopAddress) && (
+                <div className="bd-dashboard-note mb-4 rounded-xl px-4 py-3 space-y-2">
+                  {bid.shopPhone && (
+                    <a
+                      href={`tel:${bid.shopPhone}`}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <Phone className={`h-4 w-4 ${isLight ? "text-emerald-600" : "text-emerald-400"}`} />
+                      <span className={isLight ? "text-slate-700" : "text-slate-200"}>
+                        {bid.shopPhone}
+                      </span>
+                    </a>
+                  )}
+                  {bid.shopEmail && (
+                    <a
+                      href={`mailto:${bid.shopEmail}`}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <Mail className={`h-4 w-4 ${isLight ? "text-blue-600" : "text-blue-400"}`} />
+                      <span className={isLight ? "text-slate-700" : "text-slate-200"}>
+                        {bid.shopEmail}
+                      </span>
+                    </a>
+                  )}
+                  {bid.shopAddress && (
+                    <div className="flex items-center gap-2 text-sm">
+                      <MapPin className={`h-4 w-4 ${isLight ? "text-slate-500" : "text-slate-400"}`} />
+                      <span className={isLight ? "text-slate-700" : "text-slate-200"}>
+                        {bid.shopAddress}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Mini-map preview (if shop has coordinates) */}
               {hasMapCoords && (

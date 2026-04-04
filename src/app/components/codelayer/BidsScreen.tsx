@@ -304,6 +304,9 @@ export default function BidsScreen({
                   timeframe: bid.timeframe,
                   shopLatitude: bid.shopLatitude,
                   shopLongitude: bid.shopLongitude,
+                  shopEmail: bid.shopEmail || undefined,
+                  shopPhone: bid.shopPhone || undefined,
+                  shopAddress: bid.shopAddress || undefined,
                 });
 
                 try {

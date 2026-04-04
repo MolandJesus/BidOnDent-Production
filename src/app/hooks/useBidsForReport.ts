@@ -33,6 +33,8 @@ function mapBid(bid: unknown, reportId: string): MappedBid {
     shopDistance: rawBid.shopDistance || (rawBid.shop_distance as string) || "Within service area",
     shopLatitude: rawBid.shopLatitude ?? (rawBid.shop_latitude as number | undefined),
     shopLongitude: rawBid.shopLongitude ?? (rawBid.shop_longitude as number | undefined),
+    shopPhone: rawBid.shopPhone || (rawBid.shop_phone as string) || undefined,
+    shopAddress: rawBid.shopAddress || (rawBid.shop_address as string) || undefined,
     description: rawBid.description || "",
     status:
       rawBid.status === "accepted" || rawBid.status === "rejected" ? rawBid.status : "pending",

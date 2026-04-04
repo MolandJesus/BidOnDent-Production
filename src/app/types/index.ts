@@ -81,6 +81,8 @@ export interface Bid {
   shopDistance?: string;
   shopLatitude?: number;
   shopLongitude?: number;
+  shopPhone?: string;
+  shopAddress?: string;
 }
 
 export interface Notification {

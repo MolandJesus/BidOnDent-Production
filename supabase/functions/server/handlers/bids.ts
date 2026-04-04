@@ -24,23 +24,25 @@ async function enrichBidsWithGeo(
 
   const { data: shops } = await supabase
     .from("shop_profiles")
-    .select("clerk_user_id, geo_latitude, geo_longitude")
+    .select("clerk_user_id, geo_latitude, geo_longitude, business_phone, business_address, business_city, business_state")
     .in("clerk_user_id", clerkIds);
 
   if (!shops || shops.length === 0) return bids;
 
-  const geoMap = new Map(
-    shops
-      .filter((s: any) => s.geo_latitude != null && s.geo_longitude != null)
-      .map((s: any) => [s.clerk_user_id, { lat: s.geo_latitude, lng: s.geo_longitude }])
+  const shopMap = new Map(
+    shops.map((s: any) => [s.clerk_user_id, s])
   );
 
   return bids.map((bid) => {
-    const geo = geoMap.get(bid.clerk_shop_user_id);
+    const shop = shopMap.get(bid.clerk_shop_user_id);
     return {
       ...bid,
-      shop_latitude: geo?.lat ?? null,
-      shop_longitude: geo?.lng ?? null,
+      shop_latitude: shop?.geo_latitude ?? null,
+      shop_longitude: shop?.geo_longitude ?? null,
+      shop_phone: shop?.business_phone ?? null,
+      shop_address: shop?.business_address
+        ? `${shop.business_address}${shop.business_city ? `, ${shop.business_city}` : ''}${shop.business_state ? `, ${shop.business_state}` : ''}`
+        : null,
     };
   });
 }

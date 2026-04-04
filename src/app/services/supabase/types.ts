@@ -84,6 +84,8 @@ export interface Bid {
   shop_distance?: string | null;
   shop_latitude?: number | null;
   shop_longitude?: number | null;
+  shop_phone?: string | null;
+  shop_address?: string | null;
   created_at?: string;
   updated_at?: string;
 }
