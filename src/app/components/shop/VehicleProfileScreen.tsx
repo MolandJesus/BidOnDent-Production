@@ -170,6 +170,7 @@ export default function VehicleProfileScreen({
             <div className="flex items-center">
               <button
                 onClick={onBack}
+                aria-label="Back"
                 className="mr-3 p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -381,12 +382,14 @@ export default function VehicleProfileScreen({
                     <div className="flex gap-2 ml-4">
                       <button
                         onClick={() => handleEdit(vehicle, index)}
+                        aria-label={`Edit ${vehicle.year} ${vehicle.make} ${vehicle.model}`}
                         className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                       >
                         <Edit2 className="w-4 h-4 text-slate-400/70" />
                       </button>
                       <button
                         onClick={() => handleDeleteRequest(vehicle.id, index)}
+                        aria-label={`Delete ${vehicle.year} ${vehicle.make} ${vehicle.model}`}
                         className="p-2 hover:bg-rose-500/10 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />

@@ -113,11 +113,13 @@ export default function StepServiceLocation({
       <div className="space-y-3">
         <div>
           <label
+            htmlFor="report-zip-code"
             className={`block text-sm font-medium mb-1.5 ${isLightAppearance ? "text-slate-700" : "text-blue-100/80"}`}
           >
             ZIP Code
           </label>
           <input
+            id="report-zip-code"
             type="text"
             inputMode="numeric"
             value={zipCode}
@@ -131,6 +133,7 @@ export default function StepServiceLocation({
         </div>
         <div>
           <label
+            htmlFor="report-address"
             className={`block text-sm font-medium mb-1.5 ${isLightAppearance ? "text-slate-700" : "text-blue-100/80"}`}
           >
             City or Address{" "}
@@ -143,6 +146,7 @@ export default function StepServiceLocation({
             </span>
           </label>
           <input
+            id="report-address"
             type="text"
             value={address}
             onChange={(e) => onAddressChange(e.target.value)}
