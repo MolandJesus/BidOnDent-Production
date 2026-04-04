@@ -1,9 +1,9 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 832 — Production hardening)
+**Last updated:** April 4, 2026 (Pass 836 — Insurance Directory)
 **Status:** Active execution tracker
-**Pass count:** 832
-**Build:** 0 errors (~3.2s)
+**Pass count:** 836
+**Build:** 0 errors (~3.3s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -105,6 +105,10 @@
 | 830  | Offline detection + SW update prompt  | useOnlineStatus hook (online/offline events), useServiceWorkerUpdate hook (virtual:pwa-register), App.tsx wired: offline/online toasts + floating update banner. tsconfig types updated.                                                                                   |
 | 831  | Image optimization                    | All src/assets images compressed: 30MB → 3MB (90% reduction). sips resize to 1920px max width, 70% JPEG quality. Profile PNG resized to 512px.                                                                                                                             |
 | 832  | Production hardening (CSP + HSTS)     | CSP header with whitelisted domains (Supabase, Clerk, Sentry, CARTO, Esri, OSM, OSRM). HSTS max-age=1yr. validateAppConfig utility checks Supabase/Clerk keys at startup.                                                                                                  |
+| 833  | Social Auth + Clerk branding          | Clerk appearance config (dark blue theme, BidOnDent branding). OAuth configured via Clerk Dashboard. LoginModal "coming soon" banners cleaned up — now documents OAuth availability.                                                                                          |
+| 834  | Enable privacy controls               | Migration 021: privacy columns on notification_preferences. Edge handler whitelist updated. TypeScript interface extended. SettingsModal privacy toggles wired to real backend persistence.                                                                                    |
+| 835  | Functional dashboard search           | DashboardHeader search input with real-time filtering across reports (vehicle, description, address, status). Results dropdown with click navigation to report detail. Keyboard Escape to close. Click-outside dismiss.                                                       |
+| 836  | Insurance directory with carriers     | InsuranceCompaniesScreen populated with major US auto insurance carriers (State Farm, GEICO, Progressive, etc.). Searchable grid with company details, claim types, digital experience ratings. Glass-styled cards.                                                            |
 
 **Full re-anchor audit (Pass 810+):**
 
