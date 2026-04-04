@@ -48,8 +48,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern:
-              /^https:\/\/(basemaps|tiles).*\.(carto|arcgisonline|esri)\..*/i,
+            urlPattern: /^https:\/\/(basemaps|tiles).*\.(carto|arcgisonline|esri)\..*/i,
             handler: "CacheFirst",
             options: {
               cacheName: "map-tiles",

@@ -284,7 +284,11 @@ export default function DashboardHeader({
                       }`}
                     >
                       <span className="font-medium">
-                        {[report.vehicleInfo?.year, report.vehicleInfo?.make, report.vehicleInfo?.model]
+                        {[
+                          report.vehicleInfo?.year,
+                          report.vehicleInfo?.make,
+                          report.vehicleInfo?.model,
+                        ]
                           .filter(Boolean)
                           .join(" ") || "Report"}
                       </span>

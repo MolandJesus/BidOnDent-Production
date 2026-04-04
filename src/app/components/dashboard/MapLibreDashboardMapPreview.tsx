@@ -17,9 +17,7 @@ function circleToPolygon(lat: number, lng: number, radiusMiles: number): GeoJSON
     const angle = (i / points) * 2 * Math.PI;
     const dLat = (radiusMiles / EARTH_RADIUS_MILES) * (180 / Math.PI) * Math.cos(angle);
     const dLng =
-      (radiusMiles / EARTH_RADIUS_MILES) *
-      (180 / Math.PI) *
-      Math.sin(angle) /
+      ((radiusMiles / EARTH_RADIUS_MILES) * (180 / Math.PI) * Math.sin(angle)) /
       Math.cos(lat * (Math.PI / 180));
     coords.push([lng + dLng, lat + dLat]);
   }

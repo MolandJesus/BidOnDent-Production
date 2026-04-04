@@ -158,7 +158,9 @@ export default function ServiceAreaEditorModal({
         className={`relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl ${bg} ${border} border shadow-2xl`}
       >
         {/* Header */}
-        <div className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b ${border} ${bg}`}>
+        <div
+          className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b ${border} ${bg}`}
+        >
           <div className="flex items-center gap-2">
             <MapPin size={18} style={{ color: primaryColor }} />
             <h2 className={`text-lg font-semibold ${text}`}>Service Areas</h2>
@@ -195,7 +197,9 @@ export default function ServiceAreaEditorModal({
                 <div className={`text-center py-8 ${textMuted}`}>
                   <MapPin size={32} className="mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No service areas defined yet.</p>
-                  <p className="text-xs mt-1">Add your first service area to start receiving nearby reports.</p>
+                  <p className="text-xs mt-1">
+                    Add your first service area to start receiving nearby reports.
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -207,9 +211,7 @@ export default function ServiceAreaEditorModal({
                       }`}
                     >
                       <div className="flex-1 min-w-0">
-                        <div className={`text-sm font-medium ${text} truncate`}>
-                          {area.label}
-                        </div>
+                        <div className={`text-sm font-medium ${text} truncate`}>{area.label}</div>
                         <div className={`text-xs ${textMuted}`}>
                           {area.area_type === "radius"
                             ? `${area.radius_miles ?? 15} mi radius`
@@ -298,7 +300,9 @@ export default function ServiceAreaEditorModal({
                 <>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className={`block text-xs font-medium mb-1 ${textMuted}`}>Latitude</label>
+                      <label className={`block text-xs font-medium mb-1 ${textMuted}`}>
+                        Latitude
+                      </label>
                       <input
                         type="number"
                         step="any"
@@ -306,7 +310,9 @@ export default function ServiceAreaEditorModal({
                         onChange={(e) =>
                           setEditing({
                             ...editing,
-                            center_latitude: e.target.value ? parseFloat(e.target.value) : undefined,
+                            center_latitude: e.target.value
+                              ? parseFloat(e.target.value)
+                              : undefined,
                           })
                         }
                         className={`w-full px-3 py-2 rounded-lg text-sm ${inputBg} ${text} border focus:outline-none`}
@@ -314,7 +320,9 @@ export default function ServiceAreaEditorModal({
                       />
                     </div>
                     <div>
-                      <label className={`block text-xs font-medium mb-1 ${textMuted}`}>Longitude</label>
+                      <label className={`block text-xs font-medium mb-1 ${textMuted}`}>
+                        Longitude
+                      </label>
                       <input
                         type="number"
                         step="any"
@@ -322,7 +330,9 @@ export default function ServiceAreaEditorModal({
                         onChange={(e) =>
                           setEditing({
                             ...editing,
-                            center_longitude: e.target.value ? parseFloat(e.target.value) : undefined,
+                            center_longitude: e.target.value
+                              ? parseFloat(e.target.value)
+                              : undefined,
                           })
                         }
                         className={`w-full px-3 py-2 rounded-lg text-sm ${inputBg} ${text} border focus:outline-none`}
