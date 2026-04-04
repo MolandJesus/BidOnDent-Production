@@ -30,8 +30,7 @@ export async function handleAcceptBid(
     const clerkId = userProfile?.id;
     const acceptedBid = await updateBidStatus(details.bidId, "accepted", clerkId);
     if (!acceptedBid) {
-      if (import.meta.env.DEV) console.error("Failed to accept bid in Supabase:", details.bidId);
-      return;
+      throw new Error("Failed to accept bid — backend did not confirm");
     }
 
     // Use the reportId passed from BidsScreen (sourced from live Supabase data)
@@ -133,5 +132,6 @@ export async function handleAcceptBid(
     navigation.setViewMode("shop-directory");
   } catch (err) {
     if (import.meta.env.DEV) console.error("Failed to accept bid:", err);
+    throw err;
   }
 }

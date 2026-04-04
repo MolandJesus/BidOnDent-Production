@@ -286,7 +286,7 @@ export default function BidsScreen({
               appearanceMode={appearanceMode}
               userRating={userRated}
               onToggle={() => setActiveBid((prev) => (prev === bid.id ? null : bid.id))}
-              onAccept={() => {
+              onAccept={async () => {
                 setAcceptedBidId(bid.id);
                 setConfirmedBid({
                   shopName: bid.shopName,
@@ -295,23 +295,39 @@ export default function BidsScreen({
                   shopLatitude: bid.shopLatitude,
                   shopLongitude: bid.shopLongitude,
                 });
-                onAcceptBid?.({
-                  bidId: String(bid.id),
-                  shopId: bid.shopId,
-                  shopName: bid.shopName,
-                  price: bid.price,
-                  timeframe: bid.timeframe,
-                  reportId: bid.reportId,
-                });
-                notifications.push({
-                  category: "bid",
-                  title: `Bid accepted — ${bid.shopName}`,
-                  body: `You accepted ${bid.shopName}'s bid for $${bid.price.toLocaleString()}.`,
-                  payload: { bidId: bid.id, shopId: bid.shopId, reportId: bid.reportId },
-                  userId: "",
-                  deepLink: { screen: "bid", bidId: String(bid.id), reportId: bid.reportId },
-                  priority: "high",
-                });
+
+                try {
+                  await onAcceptBid?.({
+                    bidId: String(bid.id),
+                    shopId: bid.shopId,
+                    shopName: bid.shopName,
+                    price: bid.price,
+                    timeframe: bid.timeframe,
+                    reportId: bid.reportId,
+                  });
+                  notifications.push({
+                    category: "bid",
+                    title: `Bid accepted — ${bid.shopName}`,
+                    body: `You accepted ${bid.shopName}'s bid for $${bid.price.toLocaleString()}.`,
+                    payload: { bidId: bid.id, shopId: bid.shopId, reportId: bid.reportId },
+                    userId: "",
+                    deepLink: { screen: "bid", bidId: String(bid.id), reportId: bid.reportId },
+                    priority: "high",
+                  });
+                } catch {
+                  // Roll back optimistic state
+                  setAcceptedBidId(null);
+                  setConfirmedBid(null);
+                  notifications.push({
+                    category: "bid",
+                    title: "Bid acceptance failed",
+                    body: `Could not accept ${bid.shopName}'s bid. Please try again.`,
+                    payload: { bidId: bid.id },
+                    userId: "",
+                    deepLink: null,
+                    priority: "high",
+                  });
+                }
               }}
               onReject={() => {
                 onRejectBid?.({

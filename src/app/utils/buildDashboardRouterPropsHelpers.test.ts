@@ -133,7 +133,7 @@ describe("handleAcceptBid", () => {
       { id: "clerk_123" } as Parameters<typeof handleAcceptBid>[1],
       navigation,
       userData,
-      websiteIdentity,
+      websiteIdentity
     );
 
     expect(mockUpdateBidStatus).toHaveBeenCalledWith("bid-1", "accepted", "clerk_123");
@@ -154,7 +154,7 @@ describe("handleAcceptBid", () => {
         id: "report-1",
         status: "active",
         assignmentId: "assignment-1",
-      }),
+      })
     );
     expect(mockUpdateWebsiteSessionMemory).toHaveBeenCalledWith(
       websiteIdentity,
@@ -171,7 +171,7 @@ describe("handleAcceptBid", () => {
           }),
         }),
       }),
-      { accountType: "customer" },
+      { accountType: "customer" }
     );
     expect(navigation.setViewMode).toHaveBeenCalledWith("shop-directory");
   });
@@ -191,20 +191,22 @@ describe("handleAcceptBid", () => {
 
     mockUpdateBidStatus.mockResolvedValueOnce(null);
 
-    await handleAcceptBid(
-      {
-        bidId: "bid-1",
-        shopId: "shop-1",
-        shopName: "Atlanta Dent Repair",
-        price: 1200,
-        timeframe: "3 days",
-        reportId: "report-1",
-      },
-      { id: "clerk_123" } as Parameters<typeof handleAcceptBid>[1],
-      navigation,
-      userData,
-      websiteIdentity,
-    );
+    await expect(
+      handleAcceptBid(
+        {
+          bidId: "bid-1",
+          shopId: "shop-1",
+          shopName: "Atlanta Dent Repair",
+          price: 1200,
+          timeframe: "3 days",
+          reportId: "report-1",
+        },
+        { id: "clerk_123" } as Parameters<typeof handleAcceptBid>[1],
+        navigation,
+        userData,
+        websiteIdentity
+      )
+    ).rejects.toThrow("Failed to accept bid");
 
     expect(mockUpdateReportStatus).not.toHaveBeenCalled();
     expect(mockGetBidsForReport).not.toHaveBeenCalled();
@@ -215,7 +217,7 @@ describe("handleAcceptBid", () => {
       expect.objectContaining({
         id: "report-1",
         status: "pending",
-      }),
+      })
     );
   });
 });
