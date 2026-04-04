@@ -4,6 +4,7 @@ import { useShopReportNotifications } from "../hooks/useShopReportNotifications"
 import { useCustomerBidNotifications } from "../hooks/useCustomerBidNotifications";
 import { useShopBidStatusNotifications } from "../hooks/useShopBidStatusNotifications";
 import { useCustomerReportStatusNotifications } from "../hooks/useCustomerReportStatusNotifications";
+import { useInsurerClaimNotifications } from "../hooks/useInsurerClaimNotifications";
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import { getShopSubmittedBids } from "../services/supabase/bids";
 import {
@@ -45,6 +46,9 @@ export function useDashboardData({
 
   // Real-time: notify customer users when their report status changes
   useCustomerReportStatusNotifications({ userType, reports });
+
+  // Real-time: notify insurer users when claim statuses change
+  useInsurerClaimNotifications({ userType });
 
   const enrichedUserReports = reports.map((report) => ({
     ...report,
