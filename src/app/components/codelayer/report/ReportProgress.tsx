@@ -40,20 +40,19 @@ export default function ReportProgress({
                           background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
                           borderColor: "rgba(125, 211, 252, 0.55)",
                           boxShadow: isLightAppearance
-                            ? "0 12px 22px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255,255,255,0.18)"
+                            ? "0 0 0 3px rgba(219, 234, 254, 0.92), 0 6px 14px rgba(37, 99, 235, 0.14), inset 0 1px 0 rgba(255,255,255,0.18)"
                             : "0 12px 22px rgba(2, 6, 23, 0.24), inset 0 1px 0 rgba(255,255,255,0.14)",
                         }
                       : {}
                   }
                 >
-                  {isActive && (
+                  {isActive && !isLightAppearance && (
                     <span
                       aria-hidden
                       className="pointer-events-none absolute inset-[-6px] rounded-full"
                       style={{
-                        background: isLightAppearance
-                          ? "radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(37, 99, 235, 0.08) 48%, transparent 74%)"
-                          : "radial-gradient(circle, rgba(56, 189, 248, 0.34) 0%, rgba(37, 99, 235, 0.16) 48%, transparent 74%)",
+                        background:
+                          "radial-gradient(circle, rgba(56, 189, 248, 0.34) 0%, rgba(37, 99, 235, 0.16) 48%, transparent 74%)",
                         filter: "blur(8px)",
                       }}
                     />

@@ -1468,6 +1468,16 @@ body {
     0 0 0 1px rgba(191, 219, 254, 0.16);
 }
 
+[data-appearance-mode="light"] .bd-report-header::before,
+[data-appearance-mode="light"] .bd-report-progress::before {
+  background: linear-gradient(90deg, transparent, rgba(191, 219, 254, 0.56), transparent);
+}
+
+[data-appearance-mode="light"] .bd-report-header::after,
+[data-appearance-mode="light"] .bd-report-progress::after {
+  opacity: 0;
+}
+
 .bd-report-progress {
   border-inline: 1px solid var(--bd-report-shell-border);
   border-bottom: 1px solid var(--bd-report-shell-border);
@@ -1477,6 +1487,7 @@ body {
 
 [data-appearance-mode="light"] .bd-report-progress {
   background: linear-gradient(180deg, rgba(248, 251, 255, 0.96) 0%, rgba(241, 245, 252, 0.94) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 .bd-report-shell {
@@ -1679,6 +1690,14 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+[data-appearance-mode="light"] .bd-report-progress-node {
+  border-color: rgba(191, 219, 254, 0.66);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 0.96) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    0 1px 2px rgba(148, 163, 184, 0.12);
+}
+
 .bd-report-progress-rail {
   border: 1px solid var(--bd-report-choice-border);
   background: linear-gradient(180deg, rgba(7, 17, 35, 0.72) 0%, rgba(11, 22, 43, 0.6) 100%);
@@ -1686,13 +1705,21 @@ body {
 }
 
 [data-appearance-mode="light"] .bd-report-progress-rail {
-  background: linear-gradient(180deg, rgba(239, 246, 255, 0.94) 0%, rgba(226, 232, 240, 0.72) 100%);
+  border-color: rgba(191, 219, 254, 0.54);
+  background: linear-gradient(180deg, rgba(241, 245, 249, 0.82) 0%, rgba(226, 232, 240, 0.7) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.96);
 }
 
 .bd-report-progress-rail-fill {
   box-shadow:
     0 0 18px rgba(59, 130, 246, 0.28),
     0 0 8px rgba(56, 189, 248, 0.18);
+}
+
+[data-appearance-mode="light"] .bd-report-progress-rail-fill {
+  box-shadow:
+    0 0 12px rgba(59, 130, 246, 0.16),
+    0 0 4px rgba(56, 189, 248, 0.1);
 }
 
 /* ============================================================

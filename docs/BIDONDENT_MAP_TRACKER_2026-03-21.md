@@ -170,10 +170,10 @@
 
 ## Passes 792–793 — Loading State Polish (2026-04-04)
 
-| Pass | Title                           | Key Changes                                                                                           |
-| ---- | ------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| 792  | BidsScreen loading state        | Pipe bidsLoading from useBidsForReport to BidsScreen; show spinner during fetch instead of empty state |
-| 793  | Report detail loading state     | Show spinner while reportsLoading is true instead of false 'Report not found' error                   |
+| Pass | Title                       | Key Changes                                                                                            |
+| ---- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 792  | BidsScreen loading state    | Pipe bidsLoading from useBidsForReport to BidsScreen; show spinner during fetch instead of empty state |
+| 793  | Report detail loading state | Show spinner while reportsLoading is true instead of false 'Report not found' error                    |
 
 **Key changes (Passes 792–793):**
 
