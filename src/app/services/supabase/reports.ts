@@ -148,22 +148,17 @@ export async function updateReportStatus(
   status: string,
   clerkUserId: string
 ): Promise<boolean> {
-  try {
-    await requestSupabaseEdge(
-      `${SUPABASE_EDGE_ROUTES.reports}/${reportId}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          clerkUserId,
-          report: { status },
-        }),
-      }
-    );
-    return true;
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("[DEV] Error updating report status:", error);
-    return false;
-  }
+  await requestSupabaseEdge(
+    `${SUPABASE_EDGE_ROUTES.reports}/${reportId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        clerkUserId,
+        report: { status },
+      }),
+    }
+  );
+  return true;
 }
 
 export async function updateClaimDecision(
@@ -171,22 +166,16 @@ export async function updateClaimDecision(
   decision: "approved" | "denied",
   options: { approvedAmount?: number; denialReason?: string }
 ): Promise<boolean> {
-  try {
-    await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimDecision, {
-      method: "POST",
-      body: JSON.stringify({
-        reportId,
-        decision,
-        approvedAmount: options.approvedAmount ?? null,
-        denialReason: options.denialReason ?? null,
-      }),
-    });
-    return true;
-  } catch (error) {
-    if (import.meta.env.DEV)
-      console.error("[DEV] Error updating claim decision:", error);
-    return false;
-  }
+  await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimDecision, {
+    method: "POST",
+    body: JSON.stringify({
+      reportId,
+      decision,
+      approvedAmount: options.approvedAmount ?? null,
+      denialReason: options.denialReason ?? null,
+    }),
+  });
+  return true;
 }
 
 export async function submitInsuranceClaim(
@@ -200,25 +189,19 @@ export async function submitInsuranceClaim(
     shopClerkUserId?: string;
   }
 ): Promise<boolean> {
-  try {
-    await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimSubmission, {
-      method: "POST",
-      body: JSON.stringify({
-        reportId,
-        policyNumber: claimData.policyNumber ?? null,
-        incidentDate: claimData.incidentDate ?? null,
-        damageDescription: claimData.damageDescription ?? null,
-        estimatedAmount: claimData.estimatedAmount ?? null,
-        priority: claimData.priority ?? "medium",
-        shopClerkUserId: claimData.shopClerkUserId ?? null,
-      }),
-    });
-    return true;
-  } catch (error) {
-    if (import.meta.env.DEV)
-      console.error("[DEV] Error submitting insurance claim:", error);
-    return false;
-  }
+  await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimSubmission, {
+    method: "POST",
+    body: JSON.stringify({
+      reportId,
+      policyNumber: claimData.policyNumber ?? null,
+      incidentDate: claimData.incidentDate ?? null,
+      damageDescription: claimData.damageDescription ?? null,
+      estimatedAmount: claimData.estimatedAmount ?? null,
+      priority: claimData.priority ?? "medium",
+      shopClerkUserId: claimData.shopClerkUserId ?? null,
+    }),
+  });
+  return true;
 }
 
 export async function deleteDamageReport(
@@ -232,17 +215,12 @@ export async function deleteDamageReport(
     return false;
   }
 
-  try {
-    const searchParams = new URLSearchParams({ clerkUserId });
-    await requestSupabaseEdge<{ success: boolean }>(
-      `${SUPABASE_EDGE_ROUTES.reports}/${reportId}?${searchParams.toString()}`,
-      {
-        method: "DELETE",
-      }
-    );
-    return true;
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("[DEV] Error in deleteDamageReport edge path:", error);
-    return false;
-  }
+  const searchParams = new URLSearchParams({ clerkUserId });
+  await requestSupabaseEdge<{ success: boolean }>(
+    `${SUPABASE_EDGE_ROUTES.reports}/${reportId}?${searchParams.toString()}`,
+    {
+      method: "DELETE",
+    }
+  );
+  return true;
 }
