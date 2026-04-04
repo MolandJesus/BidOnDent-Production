@@ -105,14 +105,16 @@ export default function LikedShopsScreen({
   return (
     <div className={`min-h-screen pb-20 ${isLight ? "bg-slate-50/80" : ""}`}>
       <div
-        className={`sticky top-0 z-10 border-b shadow-md ${
-          isLight ? "border-slate-200/70 text-slate-900" : "border-white/10 text-white"
-        }`}
-        style={{
-          background: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.94) 100%)"
-            : `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        }}
+        className={`border-b ${isLight ? "border-slate-200/60 bg-white/90" : "border-white/10"}`}
+        style={
+          isLight
+            ? { backdropFilter: "blur(12px)" }
+            : {
+                background:
+                  "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+                backdropFilter: "blur(12px)",
+              }
+        }
       >
         <div className="px-4 py-5">
           <div className="flex items-center gap-3">
@@ -122,11 +124,18 @@ export default function LikedShopsScreen({
                 isLight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/10 hover:bg-white/20"
               }`}
             >
-              <ArrowLeft className={`h-5 w-5 ${isLight ? "text-slate-700" : "text-white"}`} />
+              <ArrowLeft className={`h-5 w-5 ${isLight ? "text-slate-700" : "text-slate-200"}`} />
             </button>
             <div>
-              <h1 className="text-2xl font-bold">Saved Shops</h1>
-              <p className={`text-sm ${isLight ? "text-slate-600" : "text-white/80"}`}>
+              <p
+                className={`mb-0.5 text-[11px] font-semibold uppercase tracking-[0.22em] ${isLight ? "text-cyan-600" : "text-cyan-300/80"}`}
+              >
+                Shop shortlist
+              </p>
+              <h1 className={`text-2xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+                Saved Shops
+              </h1>
+              <p className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
                 {savedListings.length} customer shortlist{savedListings.length === 1 ? "" : "s"}{" "}
                 synced from the map
               </p>
@@ -136,7 +145,7 @@ export default function LikedShopsScreen({
           <div className="relative mt-4">
             <Search
               className={`pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 ${
-                isLight ? "text-slate-500" : "text-white/60"
+                isLight ? "text-slate-400" : "text-slate-400/60"
               }`}
             />
             <input
@@ -144,10 +153,10 @@ export default function LikedShopsScreen({
               placeholder="Search saved shops, specialties, or carrier programs..."
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              className={`w-full rounded-2xl border py-3 pl-10 pr-4 focus:outline-none focus:ring-2 ${
+              className={`w-full rounded-2xl border py-3 pl-10 pr-4 backdrop-blur-sm focus:outline-none focus:ring-2 ${
                 isLight
-                  ? "border-slate-300 bg-white text-slate-900 placeholder:text-slate-500 focus:ring-blue-300"
-                  : "border-white/20 bg-white/15 text-white placeholder:text-white/60 focus:ring-white/35"
+                  ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:ring-blue-300"
+                  : "border-white/15 bg-white/10 text-slate-100 placeholder:text-slate-400/60 focus:ring-blue-400/20"
               }`}
             />
           </div>

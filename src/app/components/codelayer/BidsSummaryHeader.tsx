@@ -52,11 +52,11 @@ export default function BidsSummaryHeader({
       <div className="flex items-center gap-3">
         {onBack && (
           <button
-            className="bd-dashboard-secondary-button flex h-11 w-11 items-center justify-center rounded-xl"
+            className="bd-dashboard-secondary-button bd-dashboard-secondary-button--compact flex h-9 w-9 items-center justify-center rounded-lg"
             onClick={onBack}
             aria-label="Go back to dashboard"
           >
-            <ArrowLeft className={`w-5 h-5 ${isLight ? "text-blue-600" : "text-blue-100"}`} />
+            <ArrowLeft className={`h-4 w-4 ${isLight ? "text-blue-600" : "text-blue-100"}`} />
           </button>
         )}
         <div className="flex-1">

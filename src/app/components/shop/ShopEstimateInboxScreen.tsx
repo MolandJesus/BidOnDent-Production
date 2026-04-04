@@ -71,12 +71,12 @@ export default function ShopEstimateInboxScreen({
       {/* Header */}
       <div
         className={cn(
-          "sticky top-0 z-10 border-b",
-          isLight ? "border-slate-200/60" : "border-blue-300/15"
+          "border-b",
+          isLight ? "border-slate-200/60 bg-white/90" : "border-blue-300/15"
         )}
         style={
           isLight
-            ? {}
+            ? { backdropFilter: "blur(12px)" }
             : {
                 background:
                   "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
@@ -86,9 +86,17 @@ export default function ShopEstimateInboxScreen({
         }
       >
         <div className="px-4 py-4">
+          <p
+            className={cn(
+              "mb-1 text-[11px] font-semibold uppercase tracking-[0.22em]",
+              isLight ? "text-indigo-600" : "text-indigo-300/80"
+            )}
+          >
+            Estimate inbox
+          </p>
           <div className="flex items-center justify-between mb-4">
             <h1 className={cn("text-2xl font-bold", isLight ? "text-slate-900" : "text-slate-100")}>
-              Estimate Requests
+              Estimates
             </h1>
             {pendingCount > 0 && (
               <span
@@ -132,7 +140,7 @@ export default function ShopEstimateInboxScreen({
                 type="button"
                 onClick={() => setFilterStatus(f)}
                 className={cn(
-                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors min-h-[32px]",
+                  "bd-dashboard-filter-button shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors min-h-[32px]",
                   filterStatus === f
                     ? isLight
                       ? "text-white"

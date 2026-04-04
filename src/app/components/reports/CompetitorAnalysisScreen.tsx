@@ -185,36 +185,57 @@ export default function CompetitorAnalysisScreen({
 
   return (
     <div className="min-h-screen pb-20">
-      <div className="sticky top-0 z-10 px-4 pt-4">
+      <div className="px-4 pt-4">
         <div
-          className="bd-dashboard-panel px-4 py-4 text-white shadow-md"
-          style={{
-            background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-          }}
+          className={`bd-dashboard-panel px-4 py-4 ${isLight ? "bg-white/90 border border-slate-200/60" : ""}`}
+          style={
+            isLight
+              ? { backdropFilter: "blur(12px)" }
+              : {
+                  background:
+                    "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+                  backdropFilter: "blur(12px)",
+                }
+          }
         >
           <div className="mb-4 flex items-center gap-3">
             <button
               onClick={onBack}
-              className="bd-dashboard-secondary-button flex h-11 w-11 items-center justify-center rounded-full text-white"
+              className={`flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
+                isLight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/10 hover:bg-white/20"
+              }`}
             >
-              <ArrowLeft className="h-6 w-6" />
+              <ArrowLeft className={`h-6 w-6 ${isLight ? "text-slate-700" : "text-slate-200"}`} />
             </button>
             <div>
-              <h1 className="text-xl font-bold">Competitor Analysis</h1>
-              <p className="text-sm text-white/80">
+              <p
+                className={`mb-0.5 text-[11px] font-semibold uppercase tracking-[0.22em] ${isLight ? "text-cyan-600" : "text-cyan-300/80"}`}
+              >
+                Market intelligence
+              </p>
+              <h1 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+                Competitor Analysis
+              </h1>
+              <p className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
                 Watchlist synced from the Smart Shop Map for your shop account
               </p>
             </div>
           </div>
 
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-white/60" />
+            <Search
+              className={`absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 ${isLight ? "text-slate-400" : "text-slate-400/60"}`}
+            />
             <input
               type="text"
               placeholder="Search competitors, neighborhoods, or specialties..."
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              className="w-full rounded-lg border border-white/30 bg-white/20 py-2.5 pl-11 pr-4 text-white placeholder-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+              className={`w-full rounded-2xl border py-2.5 pl-11 pr-4 backdrop-blur-sm focus:outline-none focus:ring-2 ${
+                isLight
+                  ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:ring-blue-300"
+                  : "border-white/15 bg-white/10 text-slate-100 placeholder:text-slate-400/60 focus:ring-blue-400/20"
+              }`}
             />
           </div>
         </div>

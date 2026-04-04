@@ -207,16 +207,32 @@ export default function InsurerPartnerShopsScreen({
   return (
     <div className="min-h-screen">
       <div
-        className={`sticky top-0 z-10 border-b border-blue-400/20 bd-glass-panel !rounded-none${isLight ? " bd-light-surface" : ""}`}
-        style={{ boxShadow: "0 4px 24px rgba(59, 130, 246, 0.04)" }}
+        className={`border-b ${isLight ? "border-slate-200/60 bg-white/90" : "border-blue-300/15"}`}
+        style={
+          isLight
+            ? { backdropFilter: "blur(12px)" }
+            : {
+                background:
+                  "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+                boxShadow: "0 4px 24px rgba(3, 10, 24, 0.30)",
+                backdropFilter: "blur(12px)",
+              }
+        }
       >
         <div className="px-4 py-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold tracking-[-0.02em]" style={{ color: primaryColor }}>
+              <p
+                className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${isLight ? "text-cyan-600" : "text-cyan-300/80"}`}
+              >
+                Network management
+              </p>
+              <h1
+                className={`text-2xl font-bold tracking-[-0.02em] ${isLight ? "text-slate-900" : "text-slate-100"}`}
+              >
                 Partner Shops
               </h1>
-              <p className="text-sm text-slate-500">
+              <p className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
                 {shortlistCount} shortlisted from the Smart Shop Map and {customProspects.length}{" "}
                 manual lead
                 {customProspects.length === 1 ? "" : "s"}
@@ -227,7 +243,7 @@ export default function InsurerPartnerShopsScreen({
               {onOpenMap && (
                 <button
                   onClick={onOpenMap}
-                  className="rounded-2xl px-4 py-2 text-sm font-medium shadow-sm transition-colors bd-glass-control--utility"
+                  className="bd-dashboard-primary-button rounded-2xl px-4 py-2 text-sm font-medium shadow-sm transition-colors text-white"
                 >
                   Open Recruitment Map
                 </button>

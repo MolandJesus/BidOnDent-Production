@@ -113,39 +113,58 @@ export default function InsurerConnectionScreen({
   };
 
   return (
-    <div className={`min-h-screen bd-glass-panel pb-20${isLight ? " bd-light-surface" : ""}`}>
+    <div className={`min-h-screen pb-20 ${isLight ? "bg-slate-50/80" : ""}`}>
       <div
-        className="text-white sticky top-0 z-10"
-        style={{
-          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-        }}
+        className={`border-b px-4 py-5 ${isLight ? "border-slate-200/60 bg-white/90" : "border-white/10"}`}
+        style={
+          isLight
+            ? { backdropFilter: "blur(12px)" }
+            : {
+                background:
+                  "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
+                backdropFilter: "blur(12px)",
+              }
+        }
       >
-        <div className="px-4 py-6">
-          <div className="flex items-center mb-4">
-            <button
-              onClick={onBack}
-              className="mr-3 p-2 hover:bg-white/10 rounded-lg transition-colors"
+        <div className="flex items-center mb-4">
+          <button
+            onClick={onBack}
+            className={`mr-3 inline-flex h-11 w-11 items-center justify-center rounded-2xl transition-colors ${
+              isLight ? "bg-slate-100 hover:bg-slate-200" : "bg-white/10 hover:bg-white/20"
+            }`}
+          >
+            <ArrowLeft className={`w-5 h-5 ${isLight ? "text-slate-700" : "text-slate-200"}`} />
+          </button>
+          <div>
+            <p
+              className={`mb-0.5 text-[11px] font-semibold uppercase tracking-[0.22em] ${isLight ? "text-cyan-600" : "text-cyan-300/80"}`}
             >
-              <ArrowLeft className="w-5 h-5 text-white" />
-            </button>
-            <div>
-              <h1 className="text-xl font-bold">Connect Your Insurance</h1>
-              <p className="text-white/80 text-sm">
-                Carrier-aware account links for the signed-in {userType} flow
-              </p>
-            </div>
+              Insurance connection
+            </p>
+            <h1 className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+              Connect Your Insurance
+            </h1>
+            <p className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
+              Carrier-aware account links for the signed-in {userType} flow
+            </p>
           </div>
+        </div>
 
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search carrier, headquarters, claims workflow, hail, network..."
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              className={`w-full pl-10 pr-4 py-3 rounded-lg ${isLight ? "border border-slate-200 bg-white text-slate-800 placeholder:text-slate-400" : "text-slate-100 placeholder-gray-500"}`}
-            />
-          </div>
+        <div className="relative">
+          <Search
+            className={`absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 ${isLight ? "text-slate-400" : "text-slate-400/60"}`}
+          />
+          <input
+            type="text"
+            placeholder="Search carrier, headquarters, claims workflow, hail, network..."
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            className={`w-full pl-10 pr-4 py-3 rounded-2xl border backdrop-blur-sm focus:outline-none focus:ring-2 ${
+              isLight
+                ? "border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:ring-blue-300"
+                : "border-white/15 bg-white/10 text-slate-100 placeholder:text-slate-400/60 focus:ring-blue-400/20"
+            }`}
+          />
         </div>
       </div>
 

@@ -98,7 +98,7 @@ export default function ReportsListScreen({
   return (
     <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-10 px-4 pt-4">
+      <div className="px-4 pt-4">
         <div className="bd-dashboard-panel bd-dashboard-panel--accent-blue px-4 py-4">
           <div className="flex items-center mb-3">
             <button

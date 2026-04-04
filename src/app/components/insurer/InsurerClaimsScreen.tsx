@@ -119,10 +119,10 @@ export default function InsurerClaimsScreen({
     <div className="min-h-screen">
       {/* Header */}
       <div
-        className={`sticky top-0 z-10 border-b ${isLight ? "border-slate-200/60" : "border-blue-300/15"}`}
+        className={`border-b ${isLight ? "border-slate-200/60 bg-white/90" : "border-blue-300/15"}`}
         style={
           isLight
-            ? {}
+            ? { backdropFilter: "blur(12px)" }
             : {
                 background:
                   "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
@@ -132,6 +132,11 @@ export default function InsurerClaimsScreen({
         }
       >
         <div className="px-4 py-4">
+          <p
+            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${isLight ? "text-indigo-600" : "text-indigo-300/80"}`}
+          >
+            Claims overview
+          </p>
           <h1
             className={`text-2xl font-bold mb-4 ${isLight ? "text-slate-900" : "text-slate-100"}`}
           >
@@ -170,7 +175,7 @@ export default function InsurerClaimsScreen({
                 <button
                   key={filter.id}
                   onClick={() => setFilterStatus(filter.id)}
-                  className={`px-4 py-2 min-h-[44px] rounded-lg font-medium whitespace-nowrap transition-colors ${
+                  className={`bd-dashboard-filter-button rounded-full px-4 py-2 min-h-[44px] font-medium whitespace-nowrap transition-colors ${
                     filterStatus === filter.id
                       ? "text-white shadow-sm"
                       : isLight
@@ -219,13 +224,7 @@ export default function InsurerClaimsScreen({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: 0.08 }}
-            className="bd-glass-card overflow-hidden"
-            style={{
-              background: isLight
-                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-                : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
-              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
-            }}
+            className="bd-dashboard-panel bd-dashboard-panel--accent-indigo overflow-hidden"
           >
             <div className="p-3">
               <div className="flex items-center justify-between gap-3">
@@ -294,33 +293,11 @@ export default function InsurerClaimsScreen({
       {/* Claims List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
-          <div
-            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
-            style={
-              isLight
-                ? {}
-                : {
-                    background:
-                      "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-                    borderColor: "rgba(96, 165, 250, 0.20)",
-                  }
-            }
-          >
+          <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 sm:p-8 text-center">
             <p className={isLight ? "text-slate-500" : "text-blue-100/70"}>Loading claims…</p>
           </div>
         ) : filteredClaims.length === 0 ? (
-          <div
-            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
-            style={
-              isLight
-                ? {}
-                : {
-                    background:
-                      "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-                    borderColor: "rgba(96, 165, 250, 0.20)",
-                  }
-            }
-          >
+          <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 sm:p-8 text-center">
             <AlertCircle
               className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
             />

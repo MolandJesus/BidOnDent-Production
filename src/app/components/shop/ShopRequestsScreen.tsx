@@ -153,10 +153,10 @@ export default function ShopRequestsScreen({
     <div className="min-h-screen">
       {/* Header */}
       <div
-        className={`sticky top-0 z-10 border-b ${isLight ? "border-slate-200/60" : "border-blue-300/15"}`}
+        className={`border-b ${isLight ? "border-slate-200/60 bg-white/90" : "border-blue-300/15"}`}
         style={
           isLight
-            ? {}
+            ? { backdropFilter: "blur(12px)" }
             : {
                 background:
                   "linear-gradient(180deg, rgba(11, 23, 47, 0.92) 0%, rgba(8, 18, 38, 0.86) 100%)",
@@ -166,10 +166,15 @@ export default function ShopRequestsScreen({
         }
       >
         <div className="px-4 py-4">
+          <p
+            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${isLight ? "text-blue-600" : "text-blue-300/80"}`}
+          >
+            Repair requests
+          </p>
           <h1
             className={`text-2xl font-bold mb-4 ${isLight ? "text-slate-900" : "text-slate-100"}`}
           >
-            Repair Requests
+            Marketplace
           </h1>
 
           {/* Search & Filter */}
@@ -201,7 +206,7 @@ export default function ShopRequestsScreen({
                 <button
                   key={filter.id}
                   onClick={() => setFilterStatus(filter.id)}
-                  className={`px-4 py-2 min-h-[44px] rounded-lg font-medium whitespace-nowrap transition-colors ${filterStatus === filter.id ? "text-white shadow-sm" : isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
+                  className={`bd-dashboard-filter-button rounded-full px-4 py-2 min-h-[44px] font-medium whitespace-nowrap transition-colors ${filterStatus === filter.id ? "text-white shadow-sm" : isLight ? "text-slate-600 bg-slate-100 border border-slate-200 hover:bg-slate-200" : "text-blue-100/80 bg-white/8 border border-blue-300/15 hover:bg-white/12"}`}
                   style={
                     filterStatus === filter.id
                       ? { background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }
@@ -242,13 +247,7 @@ export default function ShopRequestsScreen({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: 0.08 }}
-            className="bd-glass-card overflow-hidden"
-            style={{
-              background: isLight
-                ? "linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(241,245,249,0.84) 100%)"
-                : "linear-gradient(180deg, rgba(11, 23, 47, 0.78) 0%, rgba(8, 18, 38, 0.74) 100%)",
-              borderColor: isLight ? "rgba(148,163,184,0.25)" : "rgba(96, 165, 250, 0.18)",
-            }}
+            className="bd-dashboard-panel bd-dashboard-panel--accent-blue overflow-hidden"
           >
             <div className="p-3">
               <div className="flex items-center justify-between gap-3">
@@ -328,35 +327,13 @@ export default function ShopRequestsScreen({
       {/* Requests List */}
       <div className="px-4 py-4 space-y-4">
         {reportsLoading ? (
-          <div
-            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
-            style={
-              isLight
-                ? {}
-                : {
-                    background:
-                      "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-                    borderColor: "rgba(96, 165, 250, 0.20)",
-                  }
-            }
-          >
+          <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 sm:p-8 text-center">
             <p className={isLight ? "text-slate-500" : "text-blue-100/70"}>
               Loading repair requests…
             </p>
           </div>
         ) : filteredRequests.length === 0 ? (
-          <div
-            className={`bd-glass-card p-5 sm:p-8 text-center${isLight ? " bd-light-surface" : ""}`}
-            style={
-              isLight
-                ? {}
-                : {
-                    background:
-                      "linear-gradient(180deg, rgba(11, 23, 47, 0.80) 0%, rgba(8, 18, 38, 0.76) 100%)",
-                    borderColor: "rgba(96, 165, 250, 0.20)",
-                  }
-            }
-          >
+          <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 sm:p-8 text-center">
             <AlertCircle
               className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
             />

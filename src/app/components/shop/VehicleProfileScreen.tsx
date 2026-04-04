@@ -126,7 +126,7 @@ export default function VehicleProfileScreen({
     <div className={`min-h-screen bd-glass-panel pb-20${isLight ? " bd-light-surface" : ""}`}>
       {/* Header */}
       <div
-        className={`bd-glass-panel${isLight ? " bd-light-surface" : ""} border-b sticky top-0 z-10 ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}
+        className={`bd-glass-panel${isLight ? " bd-light-surface" : ""} border-b ${isLight ? "border-slate-200/60" : "border-blue-200/30"}`}
       >
         <div className="px-4 py-4">
           <div className="flex items-center justify-between">
