@@ -372,3 +372,34 @@ If a future pass introduces a reusable pattern from these exceptions, extract it
 - The project is in a "design system correction + platform refinement" phase, not random feature expansion.
 - Governance docs (this file, Product Brain, Map Tracker, MOLANDJEUS) should be updated with every meaningful pass.
 - **Quality sweep (Passes 400-431)** delivered: initial 8 oversized files refactored, zero tsc errors, zero user-facing alerts, race conditions fixed, 57% image size reduction. **Comprehensive extraction sweep (Passes 540-562)** completed all remaining oversized files — all src files now under 500-line hard cap. See `docs/CLAUDE_AI_MASTER_CONTEXT.md` Sections 14 and 17.
+
+---
+
+## Passes 851–854: Map Realtime & Service Areas (2026-04-05/06)
+
+**New Utilities (Pass 851):**
+- `src/app/utils/geoCircle.ts` (**new**, 38 lines) — Shared circle-to-polygon utility for service area visualization. Converts (lat, lng, radiusMiles) → 64-point GeoJSON polygon using haversine math. **Key invariant:** EARTH_RADIUS_MILES = 3958.8. Used by both dashboard mini-map and shop directory map.
+- `src/app/hooks/usePublicServiceAreas.ts` (**new**, 28 lines) — Loads all active radius service areas via `getAllPublicServiceAreas()` for public shop directory map. Returns `useAsyncData` pattern (pending/error/data states). No TTL cache — refetches on every mount (future optimization candidate).
+
+**Modified Services (Pass 851):**
+- `src/app/services/supabase/serviceAreas.ts` — Added `getAllPublicServiceAreas()` async function. Calls `GET /shop-service-areas?all=true` endpoint, returns empty array on error.
+- `supabase/functions/server/handlers/service_areas.ts` — Added `if (url.searchParams.get("all") === "true")` branch to return all active service areas (NO `requireClerkSession` check — endpoint is public).
+
+**Map Components Updated (Pass 851):**
+- `src/app/components/shop/MapLibreShopDirectoryMapPane.tsx` (383→483 lines) — Added service area circle rendering: imports `usePublicServiceAreas`, `circleToPolygon`; renders `<Source>` + two `<Layer>` (fill 0.08 opacity + dashed border) for coverage visualization. File now at 483 lines (under 500-line hard cap).
+
+**Realtime Subscriptions (Passes 853–854):**
+- `src/app/components/maps/useReportLayerData.ts` — Two independent Supabase Realtime channels:
+  1. `"map-report-layer-changes"` (Pass 854): Previously `"map-report-layer-inserts"` (Pass 853). Now subscribes to `damage_reports` `event: "*"` (all events: INSERT, UPDATE, DELETE). Report status changes (pending→accepted) update pins live without reload.
+  2. `"map-report-bid-updates"` (Pass 854, **new**): Subscribes to `bids` `event: "*"`. When bids are placed, updated, or withdrawn, report pin bid counts refresh within 1.5s. **Architectural rule:** Both channels guard on `if (initialReports) return;` to prevent subscriptions when parent manages data.
+
+**Channel Allocation Constraint (New):**
+- `"new-damage-reports"` is owned by `RealtimeReportService` singleton (used by `useShopNearbyReportNotifications`, `useCustomerReportStatusNotifications`)
+- `"map-report-layer-changes"` and `"map-report-bid-updates"` are exclusive to map-layer subsystem
+- **Future channels must not conflict** — maintain a channel allocation map (see BIDONDENT_MAP_TRACKER.md "Active Realtime Channel Allocation" section)
+
+**What This Unlocks:**
+- ✅ Shops see new repair opportunities appear on the directory map live (within 1.5s of customer submission)
+- ✅ Bid activity is reflected on pins in real-time (bid counters update as shops compete)
+- ✅ Report status changes (e.g., customer accepts a bid) update pin colors live
+- ⏳ Next: Push notification foundation (Phase 4), TTL cache for service areas (performance), service area update realtime (shops changing coverage)

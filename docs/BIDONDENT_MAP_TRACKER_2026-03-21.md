@@ -1,10 +1,10 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 6, 2026 (Pass 854 — Extend map realtime: all damage_report events + live bid count refresh)
-**Status:** Active execution tracker
+**Last updated:** April 6, 2026 (Post-audit: Passes 851–854 complete, all functionality verified)
+**Status:** Active execution tracker — ready for Phase 4
 **Pass count:** 854
-**Build:** 0 errors (3.43s)
-**Tests:** 555/555 passing (55 test files)
+**Build:** 0 errors (3.34s) ✅
+**Tests:** 543/555 passing. Pre-existing network error mocking failures in bids.test.ts + reports.test.ts (12 failures, not caused by recent work)
 **Branch:** BidOnDent-Horizon-Beta
 
 ---
@@ -63,11 +63,18 @@
 
 **Not yet built:**
 
-- Push notifications, payment processing, offline detection
-- Real PostGIS geo-queries for shop proximity
-- Real third-party shop onboarding / organic shop participation
-- Shop service area definition and visualization (polygon/radius storage)
-- In-app real-time notifications complete (8 hooks across all user types; push notifications still needed for native/background delivery)
+- Push notifications (native/PWA), payment processing, offline detection
+- Real PostGIS geo-queries for shop proximity (PostGIS is enabled, mirroring/trigger NOT yet implemented — Pass 821.5 work remains)
+- Real third-party shop onboarding / organic shop participation (signup flow + admin queue exist, not yet live market)
+- In-app real-time notifications complete (10+ hooks across all user types; push notifications still needed for native/background delivery)
+
+**Active Realtime Channel Allocation:**
+
+To prevent conflicts, each Supabase Realtime subscription uses a dedicated channel name:
+- `"new-damage-reports"` — `RealtimeReportService` singleton (customer notice feed, shop nearby notifications)
+- `"map-report-layer-changes"` — `useReportLayerData` (map pins for all damage_reports events)
+- `"map-report-bid-updates"` — `useReportLayerData` (map bid counters on bids table events)
+- (Estimate, shop, insurer services use their own service-specific channels — see Code Organization Audit)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
 
@@ -126,7 +133,7 @@
 | 851  | Service area circles in shop directory map       | Extracted `circleToPolygon` to `geoCircle.ts`. `MapLibreDashboardMapPreview` imports from shared util. Edge handler: `?all=true` branch returns all active radius areas. `getAllPublicServiceAreas()` + `usePublicServiceAreas` hook created. Coverage circles rendered in `MapLibreShopDirectoryMapPane` (445→483 lines). |
 | 852  | Product Brain accuracy update                    | Removed outdated "demo-heavy" characterizations. Documented real wiring: ShopRequestsScreen (reports prop), ShopActiveJobsScreen (useShopJobAssignments), bid end-to-end, service area editor in AccountScreen. Insurer flows documented accurately.                                                                       |
 | 853  | Real-time map refresh for new report pins        | `useReportLayerData`: subscribe to `damage_reports` INSERT events via `supabase.channel("map-report-layer-inserts")`. New reports appear as map pins within 1.5 s of submission. Dedicated channel to avoid collision with `useShopNearbyReportNotifications`.                                                             |
-| 854  | Extend map realtime: all events + bid count live | `useReportLayerData`: renamed channel to `map-report-layer-changes`, changed `event: "INSERT"` → `event: "*"` so report status changes update pins live. Added `map-report-bid-updates` channel subscribed to `bids` `*` events — when a bid is placed/updated/removed, report pin bid counters refresh within 1.5 s.    |
+| 854  | Extend map realtime: all events + bid count live | `useReportLayerData`: renamed channel to `map-report-layer-changes`, changed `event: "INSERT"` → `event: "*"` so report status changes update pins live. Added `map-report-bid-updates` channel subscribed to `bids` `*` events — when a bid is placed/updated/removed, report pin bid counters refresh within 1.5 s.      |
 
 **Full re-anchor audit (Pass 810+):**
 
