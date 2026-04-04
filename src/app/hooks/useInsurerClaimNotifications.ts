@@ -75,7 +75,7 @@ export function useInsurerClaimNotifications({
           payload: { reportId: report.id, status },
           userId: "",
           deepLink: { screen: "report", reportId: report.id },
-          priority: status === "completed" ? "high" : "medium",
+          priority: status === "completed" ? "high" : "normal",
         });
 
         onChangeRef.current?.();

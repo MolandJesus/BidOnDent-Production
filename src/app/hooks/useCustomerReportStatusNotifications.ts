@@ -84,7 +84,7 @@ export function useCustomerReportStatusNotifications({
           payload: { reportId: report.id, status },
           userId: "",
           deepLink: { screen: "report", reportId: report.id },
-          priority: status === "active" || status === "completed" ? "high" : "medium",
+          priority: status === "active" || status === "completed" ? "high" : "normal",
         });
 
         onChangeRef.current?.();
