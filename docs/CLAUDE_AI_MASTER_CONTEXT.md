@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-04 (Pass 791 — Error surfacing sweep complete. All critical user actions (bid accept/reject, job status, completion confirm) now throw on failure with user-facing notifications + optimistic rollback. Passes 789-791.)
+> **Last updated:** 2026-04-04 (Pass 793 — Error surfacing sweep complete for all critical actions. Loading state polish: BidsScreen + ReportDetailScreen no longer flash false empty/error states. Passes 789-793.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine

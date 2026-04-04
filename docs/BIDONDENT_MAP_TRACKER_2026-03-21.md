@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 791 — Error surfacing sweep complete)
+**Last updated:** April 4, 2026 (Pass 793 — Loading state polish)
 **Status:** Active execution tracker
-**Pass count:** 791
+**Pass count:** 793
 **Build:** 0 errors (~3.0s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -150,9 +150,9 @@
 
 ## Passes 790–791 — Error Surfacing Sweep (Critical Product Loop) (2026-04-04)
 
-| Pass | Title                                      | Key Changes                                                                                                                  |
-| ---- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| 790  | Fix silent bid acceptance failure          | handleAcceptBid throws on backend failure; BidsScreen awaits + rolls back optimistic state + error notification              |
+| Pass | Title                                       | Key Changes                                                                                                                   |
+| ---- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 790  | Fix silent bid acceptance failure           | handleAcceptBid throws on backend failure; BidsScreen awaits + rolls back optimistic state + error notification               |
 | 791  | Fix silent bid rejection + confirm complete | onRejectBid + onConfirmCompletion throw on failure; callers await with error notification; ReportDetailScreen wired to notifs |
 
 **Key changes (Passes 789–791 error surfacing sweep):**
@@ -165,6 +165,21 @@
 - `buildDashboardRouterPropsHelpers.test.ts` updated: `handleAcceptBid` failure test expects thrown error
 - Zero silent error swallowing remains in the core report→bid→accept→repair→complete loop
 - Remaining fire-and-forget patterns (vehicle deletion, marketplace refresh) are P3-P4 — acceptable for non-critical secondary actions
+
+---
+
+## Passes 792–793 — Loading State Polish (2026-04-04)
+
+| Pass | Title                           | Key Changes                                                                                           |
+| ---- | ------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 792  | BidsScreen loading state        | Pipe bidsLoading from useBidsForReport to BidsScreen; show spinner during fetch instead of empty state |
+| 793  | Report detail loading state     | Show spinner while reportsLoading is true instead of false 'Report not found' error                   |
+
+**Key changes (Passes 792–793):**
+
+- BidsScreen no longer flashes "No bids yet" while Supabase fetch is in progress — shows spinner
+- ReportDetailScreen no longer shows "Report not found" during loading — shows spinner
+- Both follow same pattern as existing ShopRequestsScreen/InsurerClaimsScreen loading states
 
 ---
 
