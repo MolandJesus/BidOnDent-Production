@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 798 — Customer estimate response real-time notifications)
+**Last updated:** April 4, 2026 (Pass 800 — Shop estimate accept/decline notifications)
 **Status:** Active execution tracker
-**Pass count:** 798
+**Pass count:** 800
 **Build:** 0 errors (~3.5s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -29,6 +29,7 @@
 - Real-time customer report status notifications (`useCustomerReportStatusNotifications` — toast on report lifecycle changes, Pass 785)
 - Real-time insurer claim notifications (`useInsurerClaimNotifications` — toast on claim lifecycle changes, Pass 786)
 - Real-time shop estimate request notifications (`useShopEstimateNotifications` — toast + refetch when customer submits estimate request, Pass 797)
+- Real-time shop estimate status notifications (`useShopEstimateStatusNotifications` — toast + refetch when customer accepts/declines estimate, Pass 800)
 - Real-time customer estimate response notifications (`useCustomerEstimateResponseNotifications` — toast + refetch when shop responds with pricing, Pass 798)
 - Notification deduplication (3-second window via title+body key, prevents Supabase reconnect spam, Pass 788)
 - Job status update error surfacing (optimistic rollback + user-facing error notification, Pass 789)
@@ -61,7 +62,7 @@
 - Real PostGIS geo-queries for shop proximity
 - Marker clustering for dense shop areas
 - Real third-party shop onboarding / organic shop participation
-- Shop-area notification system (new-report notifications wired via `useShopReportNotifications`; bid status wired via `useShopBidStatusNotifications`; estimate requests wired via `useShopEstimateNotifications`; push notifications still needed)
+- In-app real-time notifications complete (8 hooks across all user types; push notifications still needed for native/background delivery)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
 
@@ -231,6 +232,30 @@
   - Shop: new reports (pre-existing), bid status (784), new estimate requests (797)
   - Insurer: claim lifecycle (786)
 - Remaining real-time gap: customer accept/decline estimate → shops (lower priority, shop sees on inbox refresh)
+
+---
+
+## Passes 799–800 — Profile Error Surfacing + Estimate Loop Completion (2026-04-04)
+
+| Pass | Title                                                     | Key Changes                                                                                                                                                |
+| ---- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 799  | Fix silent profile save failure                           | AccountScreen.saveProfileChanges catch block now pushes "Profile Save Failed" notification instead of silently swallowing                                   |
+| 800  | Shop estimate accept/decline notifications + multi-sub    | useShopEstimateStatusNotifications hook; RealtimeEstimateService refactored to Set<callback> for multi-subscriber; estimate notification loop fully complete |
+
+**Key changes (Passes 799–800):**
+
+- Profile save errors now surface to users via toast notification (was completely silent, P2-DATA)
+- Shops now receive real-time notifications when customers accept or decline their estimates
+- `RealtimeEstimateService.subscribeToUpdates()` refactored from single-callback to `Set<EstimateCallback>` pattern:
+  - Channel created once, shared by all subscribers
+  - Channel torn down only when last subscriber disconnects
+  - Previously second subscriber was silently dropped
+- Real-time estimate notification loop now fully complete:
+  - Customer submits estimate request → shop notified (Pass 797)
+  - Shop responds with pricing → customer notified (Pass 798)
+  - Customer accepts/declines → shop notified (Pass 800)
+- 8 real-time notification hooks total across all user types
+- No remaining real-time notification gaps in the core product loop
 
 ---
 
