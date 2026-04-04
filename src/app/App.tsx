@@ -1,6 +1,9 @@
 import { ClerkProvider, useUser, useClerk, useAuth as useClerkAuth } from "@clerk/clerk-react";
 import { Suspense, useEffect, useState } from "react";
 
+// Error boundary for dashboard shell (header, sidebar, nav)
+import { ScreenErrorBoundary } from "./components/ScreenErrorBoundary";
+
 // Import Clerk service
 import { extractUserProfile } from "./services/clerkService";
 import { buildWebsiteIdentity } from "./services/auth/websiteIdentity";
@@ -389,10 +392,11 @@ function AppContent() {
     });
 
     return (
-      <DashboardLayout
-        appearanceMode={appearanceMode}
-        onAppearanceModeChange={setAppearanceMode}
-        primaryColor={PRIMARY_COLOR}
+      <ScreenErrorBoundary>
+        <DashboardLayout
+          appearanceMode={appearanceMode}
+          onAppearanceModeChange={setAppearanceMode}
+          primaryColor={PRIMARY_COLOR}
         secondaryColor={SECONDARY_COLOR}
         currentNavTabs={currentNavTabs}
         currentTab={navigation.currentTab}
@@ -425,6 +429,7 @@ function AppContent() {
           navigation.setViewMode("report-detail");
         }}
       />
+      </ScreenErrorBoundary>
     );
   }
 
