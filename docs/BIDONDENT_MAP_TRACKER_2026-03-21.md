@@ -214,9 +214,9 @@
 
 ## Pass 798 — Customer Estimate Response Real-Time Notifications + Type Fixes (2026-04-04)
 
-| Pass | Title                                                     | Key Changes                                                                                                                                     |
-| ---- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| 798  | Customer estimate response notifications + type fixes     | subscribeToUpdates() on RealtimeEstimateService; useCustomerEstimateResponseNotifications hook; NotificationCategory/DeepLink types fixed; App.tsx deep link handler |
+| Pass | Title                                                 | Key Changes                                                                                                                                                          |
+| ---- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 798  | Customer estimate response notifications + type fixes | subscribeToUpdates() on RealtimeEstimateService; useCustomerEstimateResponseNotifications hook; NotificationCategory/DeepLink types fixed; App.tsx deep link handler |
 
 **Key changes (Pass 798):**
 

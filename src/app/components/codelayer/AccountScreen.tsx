@@ -7,6 +7,7 @@ import { saveShopBusinessProfile } from "../../services/networkProfiles";
 import { SUPABASE_STORAGE_BUCKETS } from "../../services/supabase/runtime";
 import { LANDING_PAGE_IMAGES } from "../../constants";
 import { hasAdminPrivileges } from "../../config/adminConfig";
+import { useNotifications } from "../../features/notifications/NotificationContext";
 import AccountAdminOverlay from "./account/AccountAdminOverlay";
 import AccountHeader from "./account/AccountHeader";
 import AccountInfoCard from "./account/AccountInfoCard";
@@ -40,6 +41,7 @@ export default function AccountScreen({
 }: AccountScreenProps) {
   // Use default profile image if none provided
   const isLightAppearance = appearanceMode === "light";
+  const notifications = useNotifications();
   const [profileImage, setProfileImage] = useState<string | null>(
     initialProfileImage || LANDING_PAGE_IMAGES.DEFAULT_PROFILE
   );
@@ -244,7 +246,15 @@ export default function AccountScreen({
         setSaveSuccess(false);
       }, 3000);
     } catch {
-      // Save failed — isSaving will be cleared in finally
+      notifications.push({
+        category: "system",
+        title: "Profile Save Failed",
+        body: "Your profile changes could not be saved. Please try again.",
+        payload: {},
+        userId: "",
+        deepLink: null,
+        priority: "high",
+      });
     } finally {
       setIsSaving(false);
     }
