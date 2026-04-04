@@ -71,20 +71,52 @@ export function useReportLayerData({
 
   // Auto-refresh when a new report is submitted — map pins update without page reload.
   // Uses a dedicated channel name to avoid conflicting with useShopNearbyReportNotifications.
+  // Auto-refresh when damage reports change (insert, update, delete) — map pins stay live.
+  // Uses a dedicated channel name to avoid conflicting with useShopNearbyReportNotifications.
   useEffect(() => {
     if (initialReports) return; // Parent manages data — no subscription needed
     let refreshTimer: ReturnType<typeof setTimeout> | null = null;
     const channel = supabase
-      .channel("map-report-layer-inserts")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "damage_reports" }, () => {
-        // Debounce: wait 1.5 s before re-fetching in case multiple inserts arrive together
-        if (refreshTimer) clearTimeout(refreshTimer);
-        refreshTimer = setTimeout(() => { void fetchReports(); }, 1500);
-      })
+      .channel("map-report-layer-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "damage_reports" },
+        () => {
+          // Debounce: wait 1.5 s before re-fetching in case of rapid successive changes
+          if (refreshTimer) clearTimeout(refreshTimer);
+          refreshTimer = setTimeout(() => {
+            void fetchReports();
+          }, 1500);
+        }
+      )
       .subscribe();
     return () => {
       if (refreshTimer) clearTimeout(refreshTimer);
       void supabase.removeChannel(channel);
+    };
+  }, [initialReports, fetchReports]);
+
+  // Refresh bid counts when any bid is created, updated, or deleted.
+  // Triggers a full re-fetch so the bid counter on each report pin stays accurate.
+  useEffect(() => {
+    if (initialReports) return; // Parent manages data — no subscription needed
+    let bidTimer: ReturnType<typeof setTimeout> | null = null;
+    const bidChannel = supabase
+      .channel("map-report-bid-updates")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "bids" },
+        () => {
+          if (bidTimer) clearTimeout(bidTimer);
+          bidTimer = setTimeout(() => {
+            void fetchReports();
+          }, 1500);
+        }
+      )
+      .subscribe();
+    return () => {
+      if (bidTimer) clearTimeout(bidTimer);
+      void supabase.removeChannel(bidChannel);
     };
   }, [initialReports, fetchReports]);
 
