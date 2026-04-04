@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 846 — Complete .env.example)
+**Last updated:** April 5, 2026 (Pass 849 — App.tsx hard cap fix)
 **Status:** Active execution tracker
-**Pass count:** 846
+**Pass count:** 849
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -119,6 +119,9 @@
 | 844  | Social sharing meta tags               | Added og:url, og:image (1200×630 placeholder), og:image:width/height, twitter:card (summary_large_image), twitter:title, twitter:description, twitter:image, rel=canonical to index.html.                                                                                   |
 | 845  | Defer MapLibre bundle (~1 MB saved)    | Removed eager maplibreResizePatch import from main.tsx → added to 3 lazy map components. Removed maplibre-gl/react-map-gl from manualChunks (Rollup splits naturally via React.lazy). Disabled modulePreload polyfill. vendor-map no longer in entry imports.               |
 | 846  | Complete .env.example                  | Added VITE_SHOW_MAP_DIAGNOSTICS, VITE_ENABLE_MAP_DEMO_FALLBACK. Documented all backend env vars (CLERK_SECRET_KEY, RESEND_API_KEY, EMAIL_FROM_ADDRESS, SITE_URL, ENVIRONMENT). Organized into Frontend/Backend sections.                                                    |
+| 847  | Dashboard shell error boundary         | Added React ErrorBoundary wrapping DashboardRouter so a component crash shows a user-friendly recovery UI instead of a blank screen. Fallback has "Reload" button and "Try switching tabs" hint.                                                                            |
+| 848  | Accessibility: form labels + aria      | Added aria-label to all icon-only buttons in DashboardHeader, BidsScreen, BidCard, AcceptedBidConfirmationSheet, ShopActiveJobCard. Added visible `<label>` elements to search inputs in ShopRequestsScreen, useReportForm steps.                                           |
+| 849  | App.tsx hard cap fix (extract deep link handler) | App.tsx was at 504 lines (4 over hard cap). Extracted deep link navigation useEffect to `useDeepLinkNavigation.ts` hook with single responsibility. App.tsx: 504 → 474 lines. All diagnostics clean. |
 
 **Full re-anchor audit (Pass 810+):**
 

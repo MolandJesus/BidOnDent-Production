@@ -62,7 +62,7 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 ### PLACEHOLDER (Type/UI Exists, No Implementation)
 
-- **Shop/Insurer map widgets:** Insurer widget still structure-only placeholder stats, not live query data
+- ~~**Shop/Insurer map widgets:** Insurer widget still structure-only placeholder stats~~ ✅ DONE (Pass 849 audit): InsurerMapWidget is wired to real data — `reports` prop receives live `shopInsurerReports` from Supabase, `partnerShops` from `useCoveragePartnerShops → getPublicPartnerShops()`. Pending/photo-backed counts, shop count, avg rating all derived from real data.
 
 ### MISSING (Not Yet Built)
 
