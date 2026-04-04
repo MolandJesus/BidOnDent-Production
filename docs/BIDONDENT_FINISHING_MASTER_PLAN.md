@@ -56,6 +56,7 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 - **Shop discovery:** Radius search works via haversine, but no PostGIS, no service area polygons
 - **Shop service areas:** Backend CRUD + client service + ShopMapWidget wired to real data + circle overlay visualization on dashboard map. Missing: service area editor UI, full shop directory map integration
+- **Shop service areas:** ✅ COMPLETE (Pass 851 audit). Backend CRUD + client service + ShopMapWidget + circle visualization on dashboard map + ServiceAreaEditorModal in AccountScreen (Pass 823) + coverage circles in shop directory map (Pass 851).
 - **Insurance claims:** Tables + handlers exist, approve/deny wired, Details button now navigates to report detail (Pass 819). Claims management UI ~80% complete.
 - **Navigation:** In-app OSRM routing is real; external Apple/Google/Waze export exists as backup
 - **Notifications:** In-app real-time notification is complete; no email, no native push
