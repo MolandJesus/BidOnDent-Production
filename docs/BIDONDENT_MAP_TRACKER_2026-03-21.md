@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 796 — Estimate request + shop bid auto-refresh)
+**Last updated:** April 4, 2026 (Pass 797 — Shop estimate inbox real-time notifications)
 **Status:** Active execution tracker
-**Pass count:** 796
+**Pass count:** 797
 **Build:** 0 errors (~3.5s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -28,6 +28,7 @@
 - Real-time shop bid status notifications (`useShopBidStatusNotifications` — toast when customer accepts/rejects, Pass 784)
 - Real-time customer report status notifications (`useCustomerReportStatusNotifications` — toast on report lifecycle changes, Pass 785)
 - Real-time insurer claim notifications (`useInsurerClaimNotifications` — toast on claim lifecycle changes, Pass 786)
+- Real-time shop estimate request notifications (`useShopEstimateNotifications` — toast + refetch when customer submits estimate request, Pass 797)
 - Notification deduplication (3-second window via title+body key, prevents Supabase reconnect spam, Pass 788)
 - Job status update error surfacing (optimistic rollback + user-facing error notification, Pass 789)
 - Vehicle delete confirmation + save error handling with optimistic rollback (Pass 795)
@@ -59,7 +60,7 @@
 - Real PostGIS geo-queries for shop proximity
 - Marker clustering for dense shop areas
 - Real third-party shop onboarding / organic shop participation
-- Shop-area notification system (new-report notifications wired via `useShopReportNotifications`; bid status wired via `useShopBidStatusNotifications`; push notifications still needed)
+- Shop-area notification system (new-report notifications wired via `useShopReportNotifications`; bid status wired via `useShopBidStatusNotifications`; estimate requests wired via `useShopEstimateNotifications`; push notifications still needed)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
 
@@ -187,6 +188,26 @@
 - `dashboard-router-types.ts`: `onSaveVehicles` type accepts `void | Promise<void>`
 - Error surfacing sweep now covers ALL user types and ALL critical + secondary actions
 - Customer estimate requests and shop submitted bids lists now auto-refresh after successful submissions (was fetch-once-on-mount)
+
+---
+
+## Pass 797 — Shop Estimate Inbox Real-Time Notifications (2026-04-04)
+
+| Pass | Title                                       | Key Changes                                                                                                                              |
+| ---- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 797  | Shop estimate inbox real-time notifications | RealtimeEstimateService for estimate_requests INSERTs; useShopEstimateNotifications hook; refetchShopEstimates wired in useDashboardData |
+
+**Key changes (Pass 797):**
+
+- Shops now receive real-time notifications when customers submit estimate requests (was fetch-once-on-mount only)
+- Created `RealtimeEstimateService` — 3rd Supabase Realtime service singleton, subscribes to `estimate_requests` INSERT events
+- Created `useShopEstimateNotifications` — 6th real-time notification hook, pushes toast + calls refetch callback
+- `useDashboardData` wired with `refetchShopEstimates` callback using `getShopEstimateRequests` + state setter
+- Real-time notification coverage now includes:
+  - Customer: new bids (782), report status (785)
+  - Shop: new reports (pre-existing), bid status (784), new estimate requests (797)
+  - Insurer: claim lifecycle (786)
+- Remaining real-time gaps: estimate responses → customers, customer accept/decline → shops
 
 ---
 
