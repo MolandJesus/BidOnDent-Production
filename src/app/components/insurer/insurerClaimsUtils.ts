@@ -60,7 +60,7 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
 
     return {
       id: claimId,
-      claimNumber: report?.claimNumber || `CLM-${String(index + 1).padStart(4, "0")}`,
+      claimNumber: report?.claimNumber || `RPT-${claimId.slice(0, 8).toUpperCase()}`,
       customerName: report?.customerName || "Not provided",
       customerEmail: report?.customerEmail || "Not provided",
       customerPhone: report?.customerPhone || "Not provided",
@@ -73,18 +73,16 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
       estimatedDamage: inferredBidAmount,
       location,
       status,
-      priority:
-        inferredBidAmount >= 1800 || reportPhotos.length >= 4
-          ? "high"
-          : inferredBidAmount >= 1000 || reportPhotos.length >= 2
-            ? "medium"
-            : "low",
+      priority: reportPhotos.length >= 4 ? "high" : reportPhotos.length >= 2 ? "medium" : "low",
       photoCount: reportPhotos.length,
       photos: reportPhotos,
       previewPhoto: reportPhotos[0] ?? null,
       description:
         report?.damageDescription || report?.description || "Claim details pending review.",
-      shopAssigned: null,
+      shopAssigned:
+        Array.isArray(report?.bids)
+          ? report.bids.find((b) => b.status === "accepted")?.shopName ?? null
+          : null,
       approvedAmount:
         report?.approvedAmount ?? (status === "approved" ? inferredBidAmount : undefined),
       denialReason: report?.denialReason || undefined,
