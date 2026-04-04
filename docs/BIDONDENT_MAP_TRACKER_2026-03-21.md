@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 795 — Vehicle delete safety + save error handling)
+**Last updated:** April 4, 2026 (Pass 796 — Estimate request + shop bid auto-refresh)
 **Status:** Active execution tracker
-**Pass count:** 795
+**Pass count:** 796
 **Build:** 0 errors (~3.5s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -176,6 +176,7 @@
 | ---- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 794  | Fix silent insurer claim approve/deny failure         | DashboardRouter throws on false return from updateClaimDecision; InsurerClaimsScreen awaits handlers, shows success/error notifications                 |
 | 795  | Vehicle delete confirmation + error handling/rollback | Inline delete confirmation banner; handleDelete/handleSave async with try/catch + optimistic rollback; onSaveVehicles async (no longer fire-and-forget) |
+| 796  | Auto-refresh estimate requests + shop bids            | refetchCustomerEstimates + refetchShopBids callbacks in useDashboardData; wired through DashboardRouter → ShopDirectoryScreen after successful submissions |
 
 **Key changes (Passes 794–795):**
 
@@ -185,6 +186,7 @@
 - `buildDashboardRouterProps.onSaveVehicles` now `async` — awaits `deleteVehicle()` calls (was fire-and-forget with `.catch()`)
 - `dashboard-router-types.ts`: `onSaveVehicles` type accepts `void | Promise<void>`
 - Error surfacing sweep now covers ALL user types and ALL critical + secondary actions
+- Customer estimate requests and shop submitted bids lists now auto-refresh after successful submissions (was fetch-once-on-mount)
 
 ---
 

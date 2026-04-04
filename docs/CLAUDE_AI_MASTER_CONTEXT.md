@@ -3,7 +3,7 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-04 (Pass 795 — Error surfacing complete for ALL user types + ALL actions. Vehicle delete requires confirmation + has optimistic rollback. Insurer claim approve/deny error surfacing. Loading state polish. Passes 789-795.)
+> **Last updated:** 2026-04-04 (Pass 796 — Customer estimate requests + shop submitted bids auto-refresh after submission. Vehicle delete confirmation + rollback. Error surfacing complete for ALL user types. Passes 789-796.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine
