@@ -105,7 +105,7 @@ export default function CustomerMapWidget({
   ];
 
   return (
-    <section className="overflow-visible">
+    <section className="overflow-hidden">
       {/* Embedded mini-map with click-through overlay */}
       <div
         className="bd-dashboard-panel bd-dashboard-panel--deep group relative h-[200px] cursor-pointer overflow-hidden rounded-2xl md:h-[220px]"
@@ -165,7 +165,7 @@ export default function CustomerMapWidget({
             e.stopPropagation();
             onViewShops?.();
           }}
-          className="bd-dashboard-primary-button absolute top-3 right-3 z-10 inline-flex min-h-[40px] items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-white active:scale-[0.96]"
+          className="bd-dashboard-primary-button absolute top-3 right-3 z-10 inline-flex min-h-[44px] items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold text-white active:scale-[0.96]"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
           }}
