@@ -93,12 +93,12 @@
 
 ## Passes 780–784 — Bid Loop Completion + Mobile Safety (2026-04-04)
 
-| Pass | Title                                     | Key Changes                                                                                                          |
-| ---- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| 780  | Disable broken contact links              | Disabled tel:/mailto: links when contact info is "Not provided"                                                      |
-| 781  | Seed demo bids for customer demo          | Added SEED_DEMO_BIDS constant (3 bids across 2 seed reports); useBidsForReport returns seed bids locally             |
-| 782  | Real-time bid notifications for customers | Created useCustomerBidNotifications hook; subscribes to Supabase Realtime bid INSERTs per report                     |
-| 783  | Mobile viewport safety                    | CustomerMapWidget overflow-visible→hidden; CTA min-h 40→44px (all 3 widgets); HomeScreen overflow-x-hidden           |
+| Pass | Title                                     | Key Changes                                                                                                                    |
+| ---- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 780  | Disable broken contact links              | Disabled tel:/mailto: links when contact info is "Not provided"                                                                |
+| 781  | Seed demo bids for customer demo          | Added SEED_DEMO_BIDS constant (3 bids across 2 seed reports); useBidsForReport returns seed bids locally                       |
+| 782  | Real-time bid notifications for customers | Created useCustomerBidNotifications hook; subscribes to Supabase Realtime bid INSERTs per report                               |
+| 783  | Mobile viewport safety                    | CustomerMapWidget overflow-visible→hidden; CTA min-h 40→44px (all 3 widgets); HomeScreen overflow-x-hidden                     |
 | 784  | Shop bid acceptance/rejection notify      | Created useShopBidStatusNotifications hook; subscribes to global bid UPDATEs; filters by shopId; pushes toast on status change |
 
 **Key changes (Passes 781–784 notification + UX sweep):**
