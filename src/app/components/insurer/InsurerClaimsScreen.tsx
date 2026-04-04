@@ -303,9 +303,13 @@ export default function InsurerClaimsScreen({
             <AlertCircle
               className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
             />
-            <p className={isLight ? "text-slate-900" : "text-slate-100"}>No claims found</p>
+            <p className={isLight ? "text-slate-900" : "text-slate-100"}>
+              {liveClaims.length === 0 ? "No claims yet" : "No claims found"}
+            </p>
             <p className={`text-sm mt-1 ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
-              Try adjusting your filters or search
+              {liveClaims.length === 0
+                ? "Filed claims from customers will appear here automatically."
+                : "Try adjusting your filters or search"}
             </p>
           </div>
         ) : (

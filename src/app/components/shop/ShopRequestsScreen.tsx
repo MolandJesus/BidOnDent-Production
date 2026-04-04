@@ -343,9 +343,13 @@ export default function ShopRequestsScreen({
             <AlertCircle
               className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
             />
-            <p className={isLight ? "text-slate-900" : "text-slate-100"}>No requests found</p>
+            <p className={isLight ? "text-slate-900" : "text-slate-100"}>
+              {liveRequests.length === 0 ? "No repair requests yet" : "No requests found"}
+            </p>
             <p className={`text-sm mt-1 ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
-              Try adjusting your filters or search
+              {liveRequests.length === 0
+                ? "New customer repair requests will appear here as they come in."
+                : "Try adjusting your filters or search"}
             </p>
           </div>
         ) : (
