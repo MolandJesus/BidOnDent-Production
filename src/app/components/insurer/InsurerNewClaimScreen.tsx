@@ -16,6 +16,7 @@ import {
 import {
   buildClaimShops,
   buildPolicyholders,
+  mapShopProfilesToClaimShops,
   type ClaimShop,
   type Policyholder,
 } from "./newClaimData";
@@ -24,6 +25,7 @@ import {
   INITIAL_CLAIM_FORM_DATA,
   type InsurerNewClaimScreenProps,
 } from "./insurerNewClaimScreenHelpers";
+import { useNetworkDirectory } from "../../hooks/useNetworkDirectory";
 
 export default function InsurerNewClaimScreen({
   primaryColor = "#003d82",
@@ -42,7 +44,11 @@ export default function InsurerNewClaimScreen({
 
   const policyholders = useMemo<Policyholder[]>(() => buildPolicyholders(reports), [reports]);
 
-  const claimShops = useMemo<ClaimShop[]>(() => buildClaimShops(reports), [reports]);
+  const { inventory, isLoading: shopsLoading } = useNetworkDirectory();
+  const claimShops = useMemo<ClaimShop[]>(() => {
+    const real = mapShopProfilesToClaimShops(inventory.shops);
+    return real.length > 0 ? real : buildClaimShops(reports);
+  }, [inventory.shops, reports]);
 
   const filteredCustomers = policyholders.filter(
     (customer) =>
@@ -267,6 +273,10 @@ export default function InsurerNewClaimScreen({
                 </div>
               </div>
             ))}
+          </div>
+        ) : shopsLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400" />
           </div>
         ) : (
           <div className="space-y-3">

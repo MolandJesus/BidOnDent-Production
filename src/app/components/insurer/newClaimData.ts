@@ -107,3 +107,42 @@ export function buildClaimShops(_reports: unknown[]): ClaimShop[] {
     },
   ];
 }
+
+/** Maps real shop profiles from the directory to the ClaimShop shape. */
+export function mapShopProfilesToClaimShops(
+  shops: ReadonlyArray<{
+    id?: string;
+    clerkUserId?: string | null;
+    businessName: string;
+    businessPhone: string;
+    businessAddress: string;
+    businessCity: string;
+    businessState: string;
+    specialties: string[];
+    acceptsInsuranceClaims: boolean;
+    averageRating?: number | null;
+    totalReviews?: number | null;
+    createdAt?: string;
+  }>
+): ClaimShop[] {
+  return shops.map((shop, idx) => ({
+    id: shop.id ?? `shop-${idx}`,
+    clerkUserId: shop.clerkUserId ?? undefined,
+    name: shop.businessName,
+    email: "",
+    phone: shop.businessPhone || "Not provided",
+    address: shop.businessAddress || "",
+    location:
+      shop.businessCity && shop.businessState
+        ? `${shop.businessCity}, ${shop.businessState}`
+        : shop.businessCity || shop.businessState || "",
+    distance: "N/A",
+    rating: shop.averageRating ?? 0,
+    reviewCount: shop.totalReviews ?? 0,
+    specialties: shop.specialties ?? [],
+    certified: shop.acceptsInsuranceClaims ?? false,
+    partnerSince: shop.createdAt?.split("T")[0] ?? "",
+    completedJobs: 0,
+    avgCompletionDays: 0,
+  }));
+}
