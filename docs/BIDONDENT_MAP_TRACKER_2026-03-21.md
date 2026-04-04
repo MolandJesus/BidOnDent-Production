@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 842 — Silent Error Swallow Cleanup)
+**Last updated:** April 5, 2026 (Pass 846 — Complete .env.example)
 **Status:** Active execution tracker
-**Pass count:** 842
+**Pass count:** 846
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -115,6 +115,10 @@
 | 840  | Error recovery toasts                 | Removed silent catch blocks from `getBidsForReport`, `getAllDamageReports`, `getJobAssignments`. Added error toast notifications in `useBidsForReport`, `useMarketplaceReports`, `useShopJobAssignments` hooks via NotificationToast system.                               |
 | 841  | Report submission validation gate     | Final validation in `handleSubmitReport`: vehicle make/model/year, min 1 photo, description >= 10 chars (trimmed). Prevents bad data from localStorage draft manipulation bypass.                                                                                         |
 | 842  | Silent error swallow cleanup          | Removed silent try/catch from 9 service functions in `bids.ts` and `reports.ts` (submitBid, updateBidStatus, getMyBids, getShopSubmittedBids, deleteBid, updateReportStatus, updateClaimDecision, submitInsuranceClaim, deleteDamageReport). Errors now propagate to hooks. |
+| 843  | Loading state for ShopActiveJobsScreen | `dbJobsLoading` (already extracted from hook but unused) now renders spinner + "Loading active jobs…" while `dbJobsLoading && mergedJobs.length === 0`.                                                                                                                   |
+| 844  | Social sharing meta tags              | Added og:url, og:image (1200×630 placeholder), og:image:width/height, twitter:card (summary_large_image), twitter:title, twitter:description, twitter:image, rel=canonical to index.html.                                                                                 |
+| 845  | Defer MapLibre bundle (~1 MB saved)   | Removed eager maplibreResizePatch import from main.tsx → added to 3 lazy map components. Removed maplibre-gl/react-map-gl from manualChunks (Rollup splits naturally via React.lazy). Disabled modulePreload polyfill. vendor-map no longer in entry imports.              |
+| 846  | Complete .env.example                 | Added VITE_SHOW_MAP_DIAGNOSTICS, VITE_ENABLE_MAP_DEMO_FALLBACK. Documented all backend env vars (CLERK_SECRET_KEY, RESEND_API_KEY, EMAIL_FROM_ADDRESS, SITE_URL, ENVIRONMENT). Organized into Frontend/Backend sections.                                                  |
 
 **Full re-anchor audit (Pass 810+):**
 
