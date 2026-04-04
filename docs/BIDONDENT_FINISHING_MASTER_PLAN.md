@@ -3,7 +3,7 @@
 **Last updated:** April 5, 2026 (Full re-anchor audit — verified build/test/arch truth, canonical long-horizon plan created)
 **Created:** 2026-03-25
 **Status:** Canonical long-horizon execution plan
-**Current pass:** 810
+**Current pass:** 812
 **Build:** ✅ 0 errors · 3.19s · 2877 modules
 **Tests:** ✅ 555/555 (55 test files)
 **Diagnostics:** ✅ 0 errors
@@ -55,14 +55,14 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 ### PARTIAL (Wired But Incomplete)
 
 - **Shop discovery:** Radius search works via haversine, but no PostGIS, no service area polygons
+- **Shop service areas:** Backend CRUD + client service + ShopMapWidget wired to real data. Missing: service area editor UI, map visualization of areas
 - **Insurance claims:** Tables + handlers exist, approve/deny wired, but claims management UI is 70% complete
 - **Navigation:** In-app OSRM routing is real; external Apple/Google/Waze export exists as backup
 - **Notifications:** In-app real-time notification is complete; no email, no native push
 
 ### PLACEHOLDER (Type/UI Exists, No Implementation)
 
-- **Shop service areas:** ShopMapWidget says "Coming soon", no `shop_service_areas` table
-- **Shop/Insurer map widgets:** Structure-only placeholder stats, not live query data
+- **Shop/Insurer map widgets:** Insurer widget still structure-only placeholder stats, not live query data
 
 ### MISSING (Not Yet Built)
 
@@ -97,17 +97,18 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 **Note:** Marker clustering for both shops and reports was discovered to be already fully implemented (MapLibre built-in clustering with click-to-zoom). This was incorrectly listed as "not built" in prior docs.
 
-| Pass Range | Feature | What Changes | Effort |
-|------------|---------|-------------|--------|
-| 811–813 | Shop service area foundation | Create `shop_service_areas` Supabase migration + edge function CRUD, wire ShopMapWidget to display real areas | Medium |
-| 814–815 | Report status on map | Verify report pins use status-color map (already present — audit and polish if needed), add bid count to report markers | Small |
-| 816–818 | Map UX polish | Fix tel/mailto disabled links (P4), review map empty states, cluster zoom-on-click behavior polish | Small |
-| 819–821 | Insurance claims UI completion | Complete claims management dashboard, claim-to-report detail view | Medium |
-| 822–825 | Buffer / overflow | Remaining P4 UX issues, map interaction edge cases | Small-Medium |
+| Pass Range | Feature                        | What Changes                                                                                                            | Effort       |
+| ---------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------ |
+| 811–813    | Shop service area foundation   | Create `shop_service_areas` Supabase migration + edge function CRUD, wire ShopMapWidget to display real areas           | Medium       |
+| 814–815    | Report status on map           | Verify report pins use status-color map (already present — audit and polish if needed), add bid count to report markers | Small        |
+| 816–818    | Map UX polish                  | Fix tel/mailto disabled links (P4), review map empty states, cluster zoom-on-click behavior polish                      | Small        |
+| 819–821    | Insurance claims UI completion | Complete claims management dashboard, claim-to-report detail view                                                       | Medium       |
+| 822–825    | Buffer / overflow              | Remaining P4 UX issues, map interaction edge cases                                                                      | Small-Medium |
 
 **Dependencies:** None — all work is on existing foundation.
 
 **Exit Criteria:**
+
 - Clustering works with 50+ markers at multiple zoom levels
 - Shop service areas can be created via edge function and visualized on map
 - Map pins show report status + bid counts
@@ -120,17 +121,18 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 **Goal:** Enable organic shop growth and geographic matching.
 
-| Pass Range | Feature | What Changes | Effort |
-|------------|---------|-------------|--------|
-| 826–828 | PostGIS setup | Enable PostGIS extension, add geometry columns to shops/reports, migrate existing lat/lng data | Medium |
-| 829–831 | Geographic matching | Replace haversine with ST_DWithin queries, report-to-shop matching by service area | Medium |
-| 832–834 | Shop notification on new nearby reports | Trigger notification (Realtime + future email) when report appears in shop's service area | Medium |
-| 835–839 | Shop self-onboarding | Public signup page, profile wizard, service area definition (radius + polygon), admin verification queue | Large |
-| 840–845 | Buffer / overflow | Edge cases, onboarding polish, geographic query optimization | Medium |
+| Pass Range | Feature                                 | What Changes                                                                                             | Effort |
+| ---------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------ |
+| 826–828    | PostGIS setup                           | Enable PostGIS extension, add geometry columns to shops/reports, migrate existing lat/lng data           | Medium |
+| 829–831    | Geographic matching                     | Replace haversine with ST_DWithin queries, report-to-shop matching by service area                       | Medium |
+| 832–834    | Shop notification on new nearby reports | Trigger notification (Realtime + future email) when report appears in shop's service area                | Medium |
+| 835–839    | Shop self-onboarding                    | Public signup page, profile wizard, service area definition (radius + polygon), admin verification queue | Large  |
+| 840–845    | Buffer / overflow                       | Edge cases, onboarding polish, geographic query optimization                                             | Medium |
 
 **Dependencies:** Phase 1 (shop service areas must exist before geographic matching).
 
 **Exit Criteria:**
+
 - Shops can self-register with service area
 - Reports auto-match to nearby shops via PostGIS
 - Shops notified in real-time when new report appears in their area
@@ -143,16 +145,17 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 **Goal:** Complete the notification system and insurance workflows end-to-end.
 
-| Pass Range | Feature | What Changes | Effort |
-|------------|---------|-------------|--------|
-| 846–848 | Email notifications | Supabase Edge Function email triggers for critical events (new bid, bid accepted, new report in area) | Medium |
-| 849–851 | Insurance claims completion | Claims management dashboard, claim-to-report linking, partner shop assignment flow | Medium |
-| 852–854 | Notification preferences | Per-user notification preferences (email on/off, in-app on/off), settings screen | Small-Medium |
-| 855–860 | Buffer / overflow | Edge cases, email template polish, insurer workflow testing | Medium |
+| Pass Range | Feature                     | What Changes                                                                                          | Effort       |
+| ---------- | --------------------------- | ----------------------------------------------------------------------------------------------------- | ------------ |
+| 846–848    | Email notifications         | Supabase Edge Function email triggers for critical events (new bid, bid accepted, new report in area) | Medium       |
+| 849–851    | Insurance claims completion | Claims management dashboard, claim-to-report linking, partner shop assignment flow                    | Medium       |
+| 852–854    | Notification preferences    | Per-user notification preferences (email on/off, in-app on/off), settings screen                      | Small-Medium |
+| 855–860    | Buffer / overflow           | Edge cases, email template polish, insurer workflow testing                                           | Medium       |
 
 **Dependencies:** Phase 2 (shop enrollment needed for insurer partner-shop assignment).
 
 **Exit Criteria:**
+
 - Users receive email for critical marketplace events
 - Insurance claims flow is end-to-end functional (create → assign → track → resolve)
 - Notification preferences configurable per user
@@ -164,17 +167,18 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 **Goal:** Production revenue model and scale infrastructure.
 
-| Pass Range | Feature | What Changes | Effort |
-|------------|---------|-------------|--------|
-| 861 | Payment model design | Planning pass — define pricing model (per-bid, subscription, commission) | Planning |
-| 862–866 | Stripe integration | Payment service, checkout flow, billing management | Large |
-| 867–870 | Push notifications (PWA) | Service worker registration, FCM setup, native push | Large |
-| 871–875 | Performance + scale | Bundle optimization, query caching, CDN strategy | Medium |
-| 876–880 | Production hardening | Rate limiting, monitoring, error alerting, analytics | Medium |
+| Pass Range | Feature                  | What Changes                                                             | Effort   |
+| ---------- | ------------------------ | ------------------------------------------------------------------------ | -------- |
+| 861        | Payment model design     | Planning pass — define pricing model (per-bid, subscription, commission) | Planning |
+| 862–866    | Stripe integration       | Payment service, checkout flow, billing management                       | Large    |
+| 867–870    | Push notifications (PWA) | Service worker registration, FCM setup, native push                      | Large    |
+| 871–875    | Performance + scale      | Bundle optimization, query caching, CDN strategy                         | Medium   |
+| 876–880    | Production hardening     | Rate limiting, monitoring, error alerting, analytics                     | Medium   |
 
 **Dependencies:** Phases 1–3 complete (product must be functionally complete before monetization).
 
 **Exit Criteria:**
+
 - Revenue model operational
 - Users receive native push notifications
 - Application handles 1000+ concurrent users

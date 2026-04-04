@@ -2,9 +2,10 @@ import { MapPinned, Navigation, Wrench } from "lucide-react";
 import { useMemo } from "react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
+import { useShopServiceAreas } from "../../hooks/useShopServiceAreas";
 import type { DamageReport } from "../../types";
 import { zipToCoordinates } from "../../services/supabase/map";
-import { defaultCoverageCenter, operatingRegions } from "../landing/coverageData";
+import { defaultCoverageCenter } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
 import type { ReportPin } from "./MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
@@ -29,8 +30,39 @@ export default function ShopMapWidget({
   onViewShops,
 }: ShopMapWidgetProps) {
   const { partnerShops, isLoadingShops, fetchError } = useCoveragePartnerShops();
+  const { serviceAreas, isLoading: isLoadingAreas } = useShopServiceAreas();
   const isLight = appearanceMode === "light";
   const statSurfaceClasses = ["bd-dashboard-section--accent-blue", "bd-dashboard-section--deep"];
+
+  /** Use the first radius-type service area center for map, fallback to default */
+  const mapCenter = useMemo<[number, number]>(() => {
+    const radiusArea = serviceAreas.find(
+      (a) => a.area_type === "radius" && a.center_latitude != null && a.center_longitude != null
+    );
+    if (radiusArea) {
+      return [radiusArea.center_latitude!, radiusArea.center_longitude!];
+    }
+    return defaultCoverageCenter;
+  }, [serviceAreas]);
+
+  /** Build a human-readable summary of configured service areas */
+  const areaSummary = useMemo(() => {
+    if (isLoadingAreas) return null;
+    if (serviceAreas.length === 0) return null;
+    const radiusAreas = serviceAreas.filter((a) => a.area_type === "radius");
+    const zipAreas = serviceAreas.filter((a) => a.area_type === "zip_codes");
+    const parts: string[] = [];
+    if (radiusAreas.length > 0) {
+      const miles = radiusAreas[0].radius_miles;
+      parts.push(miles ? `${miles} mi radius` : "Radius area");
+      if (radiusAreas[0].label) parts[0] += ` · ${radiusAreas[0].label}`;
+    }
+    if (zipAreas.length > 0) {
+      const totalZips = zipAreas.reduce((sum, a) => sum + (a.zip_codes?.length || 0), 0);
+      parts.push(`${totalZips} ZIP code${totalZips !== 1 ? "s" : ""}`);
+    }
+    return parts.join(" + ");
+  }, [serviceAreas, isLoadingAreas]);
 
   /** Convert incoming damage reports to map pins via ZIP→coordinate lookup */
   const reportPins = useMemo<ReportPin[]>(() => {
@@ -70,7 +102,7 @@ export default function ShopMapWidget({
         <DashboardMapPreview
           shops={partnerShops}
           reportPins={reportPins}
-          center={defaultCoverageCenter}
+          center={mapCenter}
           zoom={9}
           isLight={isLight}
           onMapClick={onViewShops}
@@ -114,7 +146,7 @@ export default function ShopMapWidget({
               Coverage Snapshot
             </p>
             <p className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
-              Active repair territory and partner density
+              {areaSummary || "Set up your service area to attract nearby customers"}
             </p>
           </div>
           <span
@@ -130,12 +162,12 @@ export default function ShopMapWidget({
             <div
               className={`text-[10px] uppercase tracking-[0.2em] ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
             >
-              Regions
+              Service Areas
             </div>
             <div
               className={`mt-0.5 text-lg font-semibold ${isLight ? "text-slate-900" : "text-slate-100"}`}
             >
-              {operatingRegions.length}
+              {isLoadingAreas ? "\u2014" : serviceAreas.length || "Not set"}
             </div>
           </div>
           <div className={`bd-dashboard-section rounded-xl p-2.5 ${statSurfaceClasses[1]}`}>

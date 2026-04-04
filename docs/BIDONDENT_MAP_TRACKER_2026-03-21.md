@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 810 — Full re-anchor audit, canonical master plan created)
+**Last updated:** April 5, 2026 (Pass 812 — Wire ShopMapWidget to real service area data)
 **Status:** Active execution tracker
-**Pass count:** 810
+**Pass count:** 812
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -75,17 +75,19 @@
 
 ## Passes 801–810 — Reliability, Type Safety, Dead Code & Re-Anchor Audit (2026-04-05)
 
-| Pass | Title                               | Key Changes                                                                                                                                                                                                                   |
-| ---- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 801  | Surface silent Supabase failures    | useUserData catch block now sets reportsError + stops loading instead of DEV-only log; useUserDataCloudSync fires onSyncError callback on auto-save failure                                                                   |
-| 802  | Type transformSupabaseReport return | Added explicit FrontendReport return type with narrow status cast; eliminated 4 `as unknown` casts in useUserDataHelpers + useUserDataLoader                                                                                  |
-| 803  | File size governance audit          | All core files under 500-line hard limit — no extraction needed                                                                                                                                                               |
-| 804  | Fix report geocoding data loss      | transformSupabaseReport now includes latitude/longitude; useReportLayerData prefers stored coordinates over re-geocoding; eliminates unnecessary Nominatim calls                                                              |
-| 805  | Fix map report data mismatch        | Added toMapReportShape() boundary transform in userDataUtils.ts; replaced unsafe `as unknown as DamageReport[]` cast in DashboardSecondaryViews — map pins now show correct vehicle/damage info for customer reports          |
-| 807  | Remove dead transform functions     | Removed ~120 lines: transformSupabaseReport, transformSupabaseReports, transformSupabaseBid, extractBidsFromReports, createFreshUserData from useUserDataHelpers.ts (all dead code, canonical transforms in userDataUtils.ts) |
-| 808  | Phase 1-2 documentation sync        | Updated CODE_ORGANIZATION_AUDIT, tracker, and master context to reflect Pass 801-807 results                                                                                                                                 |
-| 809  | Update CODE_ORGANIZATION_AUDIT      | Synced audit doc with Phase 1-2 completion status and verified baseline numbers                                                                                                                                               |
-| 810  | Fix notification priority type errors | Fixed priority type mismatch in useCustomerReportStatusNotifications and useInsurerClaimNotifications                                                                                                                        |
+| Pass | Title                                 | Key Changes                                                                                                                                                                                                                   |
+| ---- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 801  | Surface silent Supabase failures      | useUserData catch block now sets reportsError + stops loading instead of DEV-only log; useUserDataCloudSync fires onSyncError callback on auto-save failure                                                                   |
+| 802  | Type transformSupabaseReport return   | Added explicit FrontendReport return type with narrow status cast; eliminated 4 `as unknown` casts in useUserDataHelpers + useUserDataLoader                                                                                  |
+| 803  | File size governance audit            | All core files under 500-line hard limit — no extraction needed                                                                                                                                                               |
+| 804  | Fix report geocoding data loss        | transformSupabaseReport now includes latitude/longitude; useReportLayerData prefers stored coordinates over re-geocoding; eliminates unnecessary Nominatim calls                                                              |
+| 805  | Fix map report data mismatch          | Added toMapReportShape() boundary transform in userDataUtils.ts; replaced unsafe `as unknown as DamageReport[]` cast in DashboardSecondaryViews — map pins now show correct vehicle/damage info for customer reports          |
+| 807  | Remove dead transform functions       | Removed ~120 lines: transformSupabaseReport, transformSupabaseReports, transformSupabaseBid, extractBidsFromReports, createFreshUserData from useUserDataHelpers.ts (all dead code, canonical transforms in userDataUtils.ts) |
+| 808  | Phase 1-2 documentation sync          | Updated CODE_ORGANIZATION_AUDIT, tracker, and master context to reflect Pass 801-807 results                                                                                                                                  |
+| 809  | Update CODE_ORGANIZATION_AUDIT        | Synced audit doc with Phase 1-2 completion status and verified baseline numbers                                                                                                                                               |
+| 810  | Fix notification priority type errors | Fixed priority type mismatch in useCustomerReportStatusNotifications and useInsurerClaimNotifications                                                                                                                         |
+| 811  | Shop service area foundation          | Created shop_service_areas migration (017), edge function CRUD handlers, client service (serviceAreas.ts), registered routes                                                                                                 |
+| 812  | Wire ShopMapWidget to real areas      | GET handler supports session-based fetch, added getMyShopServiceAreas client fn, useShopServiceAreas hook, ShopMapWidget shows real area data + dynamic map center                                                            |
 
 **Full re-anchor audit (Pass 810+):**
 

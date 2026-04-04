@@ -48,6 +48,20 @@ export async function getShopServiceAreas(
   }
 }
 
+/** Fetch service areas for the currently authenticated shop user (no shopProfileId needed). */
+export async function getMyShopServiceAreas(): Promise<ShopServiceArea[]> {
+  try {
+    const data = await requestSupabaseEdge<{
+      serviceAreas: ShopServiceArea[];
+    }>(SUPABASE_EDGE_ROUTES.shopServiceAreas, { method: "GET" });
+    return data.serviceAreas ?? [];
+  } catch (error) {
+    if (import.meta.env.DEV)
+      console.error("getMyShopServiceAreas error:", error);
+    return [];
+  }
+}
+
 export async function saveShopServiceArea(
   clerkUserId: string,
   serviceArea: SaveServiceAreaInput

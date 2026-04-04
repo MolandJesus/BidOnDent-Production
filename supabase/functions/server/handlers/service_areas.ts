@@ -19,8 +19,10 @@ type RespondFunction = (
 
 /**
  * GET /shop-service-areas?shopProfileId=UUID
+ * GET /shop-service-areas  (no param → resolves from authenticated user's shop profile)
  * Returns all active service areas for a given shop profile.
- * Any authenticated user may read (for map display).
+ * Any authenticated user may read by shopProfileId (for map display).
+ * Omitting shopProfileId returns the caller's own shop service areas.
  */
 export async function getShopServiceAreas(
   req: Request,
@@ -28,12 +30,27 @@ export async function getShopServiceAreas(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    await requireClerkSession(req, { requireEmail: false });
+    const session = await requireClerkSession(req, { requireEmail: false });
 
     const url = new URL(req.url);
-    const shopProfileId = url.searchParams.get("shopProfileId");
+    let shopProfileId = url.searchParams.get("shopProfileId");
+
+    // If no shopProfileId provided, resolve from authenticated user's shop profile
     if (!shopProfileId) {
-      return respond({ error: "shopProfileId query param required" }, 400);
+      const clerkUserId = session.sub;
+      if (!clerkUserId) {
+        return respond({ error: "Could not resolve user identity" }, 401);
+      }
+      const { data: shopProfile, error: profileError } = await supabase
+        .from("shop_profiles")
+        .select("id")
+        .eq("clerk_user_id", clerkUserId)
+        .maybeSingle();
+
+      if (profileError || !shopProfile) {
+        return respond({ error: "Shop profile not found" }, 404);
+      }
+      shopProfileId = shopProfile.id;
     }
 
     const { data, error } = await supabase
