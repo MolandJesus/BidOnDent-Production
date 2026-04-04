@@ -116,21 +116,17 @@ export default function AcceptedBidConfirmationSheet({
               {(bid.shopPhone || bid.shopEmail || bid.shopAddress) && (
                 <div className="bd-dashboard-note mb-4 rounded-xl px-4 py-3 space-y-2">
                   {bid.shopPhone && (
-                    <a
-                      href={`tel:${bid.shopPhone}`}
-                      className="flex items-center gap-2 text-sm"
-                    >
-                      <Phone className={`h-4 w-4 ${isLight ? "text-emerald-600" : "text-emerald-400"}`} />
+                    <a href={`tel:${bid.shopPhone}`} className="flex items-center gap-2 text-sm">
+                      <Phone
+                        className={`h-4 w-4 ${isLight ? "text-emerald-600" : "text-emerald-400"}`}
+                      />
                       <span className={isLight ? "text-slate-700" : "text-slate-200"}>
                         {bid.shopPhone}
                       </span>
                     </a>
                   )}
                   {bid.shopEmail && (
-                    <a
-                      href={`mailto:${bid.shopEmail}`}
-                      className="flex items-center gap-2 text-sm"
-                    >
+                    <a href={`mailto:${bid.shopEmail}`} className="flex items-center gap-2 text-sm">
                       <Mail className={`h-4 w-4 ${isLight ? "text-blue-600" : "text-blue-400"}`} />
                       <span className={isLight ? "text-slate-700" : "text-slate-200"}>
                         {bid.shopEmail}
@@ -139,7 +135,9 @@ export default function AcceptedBidConfirmationSheet({
                   )}
                   {bid.shopAddress && (
                     <div className="flex items-center gap-2 text-sm">
-                      <MapPin className={`h-4 w-4 ${isLight ? "text-slate-500" : "text-slate-400"}`} />
+                      <MapPin
+                        className={`h-4 w-4 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                      />
                       <span className={isLight ? "text-slate-700" : "text-slate-200"}>
                         {bid.shopAddress}
                       </span>
