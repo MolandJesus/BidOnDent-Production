@@ -230,7 +230,6 @@ describe("voiceSupport", () => {
 
   it("detectVoiceSupport returns no-api when speechSynthesis is missing", async () => {
     vi.unstubAllGlobals();
-    // @ts-expect-error: removing API for test
     delete (globalThis as Record<string, unknown>).speechSynthesis;
     const mod = await loadModule();
     const snapshot = mod.detectVoiceSupport();

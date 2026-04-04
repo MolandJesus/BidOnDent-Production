@@ -115,6 +115,14 @@ const sampleNominatimResults = [
   },
 ];
 
+const testDestination = {
+  id: "test-1",
+  lat: 30.32,
+  lng: -97.72,
+  name: "Shop",
+  kind: "shop" as const,
+};
+
 describe("routeEngine", () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -125,7 +133,7 @@ describe("routeEngine", () => {
 
     const options = await fetchNavigationRouteOptions({
       origin: { lat: 30.3, lng: -97.7 },
-      destination: { lat: 30.32, lng: -97.72, name: "Shop" },
+      destination: testDestination,
     });
 
     expect(options.primary.provider).toBe("osrm-public");
@@ -145,7 +153,7 @@ describe("routeEngine", () => {
 
     const preview = await fetchNavigationRoutePreview({
       origin: { lat: 30.3, lng: -97.7 },
-      destination: { lat: 30.32, lng: -97.72, name: "Shop" },
+      destination: testDestination,
     });
 
     expect(preview.distanceMeters).toBe(5000);
@@ -158,7 +166,7 @@ describe("routeEngine", () => {
     await expect(
       fetchNavigationRouteOptions({
         origin: { lat: 30.3, lng: -97.7 },
-        destination: { lat: 30.32, lng: -97.72, name: "Shop" },
+        destination: testDestination,
       })
     ).rejects.toThrow("No drivable route");
   });
@@ -169,7 +177,7 @@ describe("routeEngine", () => {
     await expect(
       fetchNavigationRouteOptions({
         origin: { lat: 30.3, lng: -97.7 },
-        destination: { lat: 30.32, lng: -97.72, name: "Shop" },
+        destination: testDestination,
       })
     ).rejects.toThrow("temporarily unavailable");
   });
@@ -180,7 +188,7 @@ describe("routeEngine", () => {
     await expect(
       fetchNavigationRouteOptions({
         origin: { lat: 30.3, lng: -97.7 },
-        destination: { lat: 30.32, lng: -97.72, name: "Shop" },
+        destination: testDestination,
       })
     ).rejects.toThrow("temporarily unavailable");
   });
@@ -199,7 +207,7 @@ describe("routeEngine", () => {
 
     const options = await fetchNavigationRouteOptions({
       origin: { lat: 30.3, lng: -97.7 },
-      destination: { lat: 30.32, lng: -97.72, name: "Shop" },
+      destination: testDestination,
     });
 
     expect(options.primary.steps).toHaveLength(0);
@@ -215,7 +223,7 @@ describe("routeEngine", () => {
 
     const options = await fetchNavigationRouteOptions({
       origin: { lat: 30.3, lng: -97.7 },
-      destination: { lat: 30.32, lng: -97.72, name: "Shop" },
+      destination: testDestination,
     });
 
     expect(options.alternatives.length).toBeLessThanOrEqual(3);

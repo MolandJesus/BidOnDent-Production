@@ -12,8 +12,12 @@ import type { WebsiteIdentity } from "./auth/websiteIdentity";
 
 // Mock the runtime module (edge headers + URL builder)
 vi.mock("./supabase/runtime", () => ({
-  buildSupabaseEdgeHeadersAsync: vi.fn().mockResolvedValue(new Headers({ Authorization: "Bearer test" })),
-  buildSupabaseFunctionUrl: vi.fn((route: string) => `https://test.supabase.co/functions/v1/server/${route}`),
+  buildSupabaseEdgeHeadersAsync: vi
+    .fn()
+    .mockResolvedValue(new Headers({ Authorization: "Bearer test" })),
+  buildSupabaseFunctionUrl: vi.fn(
+    (route: string) => `https://test.supabase.co/functions/v1/server/${route}`
+  ),
   SUPABASE_EDGE_ROUTES: {
     shopProfile: "shop-profile",
     insurerProfile: "insurer-profile",
@@ -25,8 +29,9 @@ const mockIdentity: WebsiteIdentity = {
   websiteUserKey: "key-123",
   provider: "clerk",
   providerUserId: "user_abc",
-  resolvedAt: Date.now(),
-  source: "clerk",
+  normalizedEmail: "test@example.com",
+  displayName: "Test User",
+  sessionId: "session-1",
 };
 
 // Save original fetch
