@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { requireClerkSession, requireMarketplaceContext } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { notifyCustomerClaimDecision } from "./notificationEmails.ts";
 
 type RespondFunction = (
   body: Record<string, unknown>,
@@ -303,6 +304,28 @@ export async function updateClaimDecision(
 
     if (error) {
       return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    // Fire-and-forget: email customer about claim decision
+    if (data?.id) {
+      supabase
+        .from("damage_reports")
+        .select("clerk_user_id")
+        .eq("id", reportId)
+        .maybeSingle()
+        .then(({ data: report }) => {
+          if (report?.clerk_user_id) {
+            notifyCustomerClaimDecision(
+              supabase,
+              report.clerk_user_id,
+              decision as "approved" | "denied",
+              approvedAmount,
+              denialReason,
+              reportId
+            ).catch(() => {});
+          }
+        })
+        .catch(() => {});
     }
 
     return respond({

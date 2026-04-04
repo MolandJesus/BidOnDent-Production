@@ -5,6 +5,7 @@ import {
   requireClerkSession,
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { notifyCustomerNewBid, notifyShopBidStatus } from "./notificationEmails.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -105,6 +106,27 @@ export async function createBid(
     if (error) {
       console.error("Error saving bid:", error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    // Fire-and-forget: email customer about the new bid
+    if (data?.damage_report_id) {
+      supabase
+        .from("damage_reports")
+        .select("clerk_user_id")
+        .eq("id", data.damage_report_id)
+        .maybeSingle()
+        .then(({ data: report }) => {
+          if (report?.clerk_user_id) {
+            notifyCustomerNewBid(
+              supabase,
+              report.clerk_user_id,
+              authenticatedClerkUserId,
+              bidAmount,
+              data.damage_report_id
+            ).catch(() => {});
+          }
+        })
+        .catch(() => {});
     }
 
     return respond({ success: true, bid: data });
@@ -316,6 +338,17 @@ export async function updateBidStatus(
         // Non-fatal: bid acceptance succeeded; log for monitoring
         console.error("Error auto-rejecting competing bids:", rejectError);
       }
+    }
+
+    // Fire-and-forget: email shop about bid acceptance/rejection
+    if (data?.clerk_shop_user_id && (status === "accepted" || status === "rejected")) {
+      notifyShopBidStatus(
+        supabase,
+        data.clerk_shop_user_id,
+        clerkUserId,
+        status,
+        Number(data.amount ?? 0)
+      ).catch(() => {});
     }
 
     return respond({ success: true, bid: data });

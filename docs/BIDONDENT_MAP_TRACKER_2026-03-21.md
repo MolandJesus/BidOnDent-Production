@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 824 — Notification preferences)
+**Last updated:** April 5, 2026 (Pass 825 — Email notification infrastructure)
 **Status:** Active execution tracker
-**Pass count:** 824
+**Pass count:** 825
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -94,9 +94,10 @@
 | 819  | Wire claim Details → report detail    | InsurerClaimCard gains onViewDetails prop wired to Details button onClick. InsurerClaimsScreen gains onOpenReport prop piped to card. DashboardRouter passes onOpenReport using onSelectReport + onViewModeChange pattern.    |
 | 820  | Enable PostGIS + geography columns    | Migration 018: enable PostGIS, add GEOGRAPHY(POINT) to damage_reports/shop_profiles/shop_service_areas, GIST indexes, sync triggers, find_shops_near + find_reports_in_service_area functions.                                |
 | 821  | Geographic matching endpoints         | Edge handler geographic_matching.ts: getNearbyShops (PostGIS ST_DWithin), getReportsInServiceArea (session-based shop). Client service geographicMatching.ts. Routes registered.                                              |
-| 822  | Shop nearby report notifications      | useShopNearbyReportNotifications hook: Realtime report INSERTs filtered by shop service areas (haversine radius + ZIP fallback). High-priority notification with distance + deep link. Wired into useDashboardData.            |
+| 822  | Shop nearby report notifications      | useShopNearbyReportNotifications hook: Realtime report INSERTs filtered by shop service areas (haversine radius + ZIP fallback). High-priority notification with distance + deep link. Wired into useDashboardData.           |
 | 823  | Service area editor UI                | ServiceAreaEditorModal: full CRUD for radius + ZIP service areas. Geolocation support. Glass-styled. Wired into AccountMenu (MapPin row for shops) + AccountScreen (modal state).                                             |
-| 824  | Notification preferences              | Migration 019 notification_preferences table. Edge handler GET (auto-create defaults) + PUT (whitelist upsert). Client service + useNotificationPreferences hook. SettingsModal live toggles replace disabled placeholders.    |
+| 824  | Notification preferences              | Migration 019 notification_preferences table. Edge handler GET (auto-create defaults) + PUT (whitelist upsert). Client service + useNotificationPreferences hook. SettingsModal live toggles replace disabled placeholders.   |
+| 825  | Email notification infrastructure     | Resend email utility + 6 email templates (customer: bid received, claim decision; shop: nearby report, bid status; insurer: new claim). notificationEmails dispatcher respects preferences. Wired into bids + workflow handlers. |
 
 **Full re-anchor audit (Pass 810+):**
 
