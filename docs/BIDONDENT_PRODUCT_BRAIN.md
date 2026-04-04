@@ -411,24 +411,38 @@ Admin -> Everyone:
 
 ## Current Implementation Reality Of Those Interactions
 
-Customer flows are the most real.
+**Last verified:** April 5, 2026 (Pass 852 accuracy audit)
 
-- customer auth/account setup is real through Clerk
-- customer vehicles and reports have real persistence paths through Supabase
-- customer report photo upload has real storage logic with fallback behavior
+Customer flows are real and fully wired.
 
-Shop flows are more demo-heavy.
+- Customer auth/account setup is real through Clerk
+- Customer vehicles and reports have real persistence paths through Supabase
+- Customer report photo upload has real storage logic (signed URLs, mounted guard)
+- Bid comparison and shop selection are end-to-end wired
+- Estimate requests have full lifecycle (create → respond → accept/decline)
 
-- shop dashboards look intentional and usable
-- shop request and job screens currently lean heavily on hardcoded sample data
-- shop bid submission UI exists, but the current cross-role data path is not fully coherent
+Shop flows are real and wired.
 
-Insurer flows are also more demo-heavy.
+- `ShopRequestsScreen` uses the `reports` prop (Supabase marketplace data) — not hardcoded
+- `ShopActiveJobsScreen` uses `useShopJobAssignments` (real `job_assignments` table) — not hardcoded
+- Bid submission is wired end-to-end: `ShopBidModal` → edge function → competing-bid auto-rejection → notifications
+- Shop profile, service area editor, and onboarding all persist to Supabase
+- Shop self-service area editor (`ServiceAreaEditorModal`) is wired to real CRUD in `AccountScreen`
+- Service area circles render on both dashboard mini-map and full shop directory map
+- Real-time notifications for new nearby reports via `useShopNearbyReportNotifications`
 
-- claims, partner shops, and new claim screens are polished
-- a lot of insurer-side data is sample/mock data, not clearly wired to real persisted marketplace state
+Insurer flows are real with appropriate fallback behavior.
+
+- `InsurerClaimsScreen` uses the `reports` prop (Supabase marketplace data), transformed to claim view
+- Claims approve/deny are wired to real edge endpoints with feedback
+- Claims shop assignment is wired (migration 020, edge handler, client service)
+- `InsurerNewClaimScreen` uses `useNetworkDirectory` for real shops with demo fallback if empty
+- Partner shops rendered via `InsurerMapWidget` pulling real `shopInsurerReports` + `useCoveragePartnerShops`
+- Empty states are honest: "Showing example claims for preview" only appears when no reports exist yet
 
 Admin/devtools are real utility surfaces.
+- Clearly isolated in `src/app/components/admin/` and `demoMode.ts`
+- `DEMO_MODE` is env-controlled (`VITE_DEMO_MODE`), defaults to false in production
 
 ## The Visual Language
 
