@@ -177,6 +177,73 @@ export async function updateJobAssignmentStatus(
 
 const VALID_CLAIM_DECISIONS = new Set(["approved", "denied"]);
 
+export async function submitInsuranceClaim(
+  req: Request,
+  supabase: SupabaseClient,
+  respond: RespondFunction
+): Promise<Response> {
+  try {
+    const { session } = await requireMarketplaceContext(req, supabase);
+
+    let body: Record<string, unknown> = {};
+    try {
+      body = await req.json();
+    } catch {
+      return respond({ error: "Invalid JSON in request body" }, 400);
+    }
+
+    const reportId = getString(body.reportId);
+    const policyNumber = getString(body.policyNumber);
+    const incidentDate = getString(body.incidentDate);
+    const damageDescription = getString(body.damageDescription);
+    const estimatedAmount =
+      typeof body.estimatedAmount === "number" ? body.estimatedAmount : null;
+    const priority = getString(body.priority) || "medium";
+
+    if (!reportId) {
+      return respond({ error: "Missing reportId" }, 400);
+    }
+
+    const clerkUserId = session.sub ?? session.user_id ?? "";
+
+    const payload: Record<string, unknown> = {
+      insurance_claim: true,
+      claim_status: "submitted",
+      updated_at: new Date().toISOString(),
+    };
+
+    if (policyNumber) payload.policy_number = policyNumber;
+    if (incidentDate) payload.incident_date = incidentDate;
+    if (damageDescription) payload.damage_description = damageDescription;
+    if (estimatedAmount !== null) payload.estimated_repair_cost = estimatedAmount;
+    if (priority) payload.priority = priority;
+    payload.claim_decided_by = clerkUserId;
+    payload.claim_decision_date = new Date().toISOString();
+
+    const { data, error } = await supabase
+      .from("damage_reports")
+      .update(payload)
+      .eq("id", reportId)
+      .select("id, insurance_claim, claim_status, policy_number")
+      .single();
+
+    if (error) {
+      return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    return respond({
+      claim: data || null,
+      success: true,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    const status = message.includes("Marketplace access required")
+      ? 403
+      : getWorkflowErrorStatus(error);
+    return respond({ error: sanitizeErrorMessage(error) }, status);
+  }
+}
+
 export async function updateClaimDecision(
   req: Request,
   supabase: SupabaseClient,

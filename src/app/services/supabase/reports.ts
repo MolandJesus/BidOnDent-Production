@@ -195,6 +195,36 @@ export async function updateClaimDecision(
   }
 }
 
+export async function submitInsuranceClaim(
+  reportId: string,
+  claimData: {
+    policyNumber?: string;
+    incidentDate?: string;
+    damageDescription?: string;
+    estimatedAmount?: number;
+    priority?: string;
+  }
+): Promise<boolean> {
+  try {
+    await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimSubmission, {
+      method: "POST",
+      body: JSON.stringify({
+        reportId,
+        policyNumber: claimData.policyNumber ?? null,
+        incidentDate: claimData.incidentDate ?? null,
+        damageDescription: claimData.damageDescription ?? null,
+        estimatedAmount: claimData.estimatedAmount ?? null,
+        priority: claimData.priority ?? "medium",
+      }),
+    });
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV)
+      console.error("[DEV] Error submitting insurance claim:", error);
+    return false;
+  }
+}
+
 export async function deleteDamageReport(
   reportId: string,
   clerkUserId?: string

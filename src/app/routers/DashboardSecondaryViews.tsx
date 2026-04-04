@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo } from "react";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import { zipToCoordinates } from "../services/supabase/map";
+import { submitInsuranceClaim } from "../services/supabase/reports";
 import { lazyWithRetry } from "../utils/lazyWithRetry";
 
 const ReportsListScreen = lazyWithRetry(() => import("../components/reports/ReportsListScreen"));
@@ -283,8 +284,24 @@ export default function DashboardSecondaryViews({
             primaryColor={primaryColor}
             appearanceMode={appearanceMode}
             onBack={() => onViewModeChange("dashboard")}
-            onCreateClaim={(claimData) => {
-              if (import.meta.env.DEV) console.info("[BidOnDent] New claim created:", claimData);
+            onCreateClaim={async (claimData) => {
+              const reportId = claimData.customer.id.replace("customer-", "");
+              const amount = claimData.estimatedAmount
+                ? parseFloat(claimData.estimatedAmount)
+                : undefined;
+              const ok = await submitInsuranceClaim(reportId, {
+                policyNumber: claimData.policyNumber || undefined,
+                incidentDate: claimData.incidentDate || undefined,
+                damageDescription: claimData.damageDescription || undefined,
+                estimatedAmount: Number.isFinite(amount) ? amount : undefined,
+                priority: claimData.priority || "medium",
+              });
+              if (import.meta.env.DEV)
+                console.info("[BidOnDent] New claim created:", {
+                  reportId,
+                  persisted: ok,
+                  claimData,
+                });
               onTabChange("claims");
               onViewModeChange("dashboard");
             }}

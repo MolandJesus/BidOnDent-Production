@@ -51,6 +51,7 @@ export const SUPABASE_EDGE_ROUTES = {
   bids: "/bids",
   estimateRequests: "/estimate-requests",
   claimDecision: "/claim-decision",
+  claimSubmission: "/claim-submission",
   cleanupOldReports: "/cleanup-old-reports",
   deletePhoto: "/delete-photo",
   deleteVehicle: "/delete-vehicle",

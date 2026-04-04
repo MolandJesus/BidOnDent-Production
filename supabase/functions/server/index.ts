@@ -63,6 +63,7 @@ import {
 import {
   createJobAssignment,
   logWorkflowEvent,
+  submitInsuranceClaim,
   updateClaimDecision,
   updateJobAssignmentStatus,
 } from './handlers/workflow.ts'
@@ -247,6 +248,10 @@ Deno.serve(async (req) => {
 
     if (path === '/claim-decision' && req.method === 'POST') {
       return await updateClaimDecision(req, supabase, respond)
+    }
+
+    if (path === '/claim-submission' && req.method === 'POST') {
+      return await submitInsuranceClaim(req, supabase, respond)
     }
 
     if (path === '/website-preferences' && req.method === 'GET') {
