@@ -3,7 +3,7 @@
 **Last updated:** April 5, 2026 (Full re-anchor audit — verified build/test/arch truth, canonical long-horizon plan created)
 **Created:** 2026-03-25
 **Status:** Canonical long-horizon execution plan
-**Current pass:** 819
+**Current pass:** 820
 **Build:** ✅ 0 errors · 3.19s · 2877 modules
 **Tests:** ✅ 555/555 (55 test files)
 **Diagnostics:** ✅ 0 errors
@@ -91,11 +91,13 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 ## Phased Execution Plan
 
-### Phase 1: Map Program Completion (Passes 811–825)
+### Phase 1: Map Program Completion (Passes 811–825) ✅ COMPLETE
 
 **Goal:** Make the map feel production-ready with realistic data density.
 
 **Note:** Marker clustering for both shops and reports was discovered to be already fully implemented (MapLibre built-in clustering with click-to-zoom). This was incorrectly listed as "not built" in prior docs.
+
+**Completion summary (Pass 819):** All exit criteria met. Service areas wired (811-813), report pins verified (814), tel/mailto fixed (816), claims Details→report navigation wired (819). No P4-UX issues remain in core flow.
 
 | Pass Range | Feature                        | What Changes                                                                                                            | Effort       |
 | ---------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------ |

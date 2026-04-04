@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 819 — Wire claim Details button to report detail navigation)
+**Last updated:** April 5, 2026 (Pass 820 — Enable PostGIS + geography columns)
 **Status:** Active execution tracker
-**Pass count:** 819
+**Pass count:** 820
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -92,6 +92,7 @@
 | 814  | Report pin status/bid audit           | Verified: status-color coding (amber/green/slate) + bid count badges already fully wired in MapLibreReportLayer.tsx. No changes needed — passes 814-815 scope already delivered.                                              |
 | 816  | Fix tel/mailto disabled links         | InsurerPartnerShopCard: guarded tel/mailto against missing phone/email with disabled fallback. All other tel/mailto links already properly guarded. Map empty states verified present.                                         |
 | 819  | Wire claim Details → report detail   | InsurerClaimCard gains onViewDetails prop wired to Details button onClick. InsurerClaimsScreen gains onOpenReport prop piped to card. DashboardRouter passes onOpenReport using onSelectReport + onViewModeChange pattern.     |
+| 820  | Enable PostGIS + geography columns  | Migration 018: enable PostGIS, add GEOGRAPHY(POINT) to damage_reports/shop_profiles/shop_service_areas, GIST indexes, sync triggers, find_shops_near + find_reports_in_service_area functions. |
 
 **Full re-anchor audit (Pass 810+):**
 
