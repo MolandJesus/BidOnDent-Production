@@ -23,8 +23,12 @@ export default function SettingsModal({
   const [selectedAppearanceMode, setSelectedAppearanceMode] =
     useState<DashboardAppearanceMode>(appearanceMode);
 
-  const { preferences: notifPrefs, isLoading: notifLoading, isSaving: notifSaving, update: updateNotif } =
-    useNotificationPreferences();
+  const {
+    preferences: notifPrefs,
+    isLoading: notifLoading,
+    isSaving: notifSaving,
+    update: updateNotif,
+  } = useNotificationPreferences();
 
   const togglePref = (key: keyof Omit<NotificationPreferences, "id" | "clerk_user_id">) => {
     if (!notifPrefs) return;
@@ -108,8 +112,8 @@ export default function SettingsModal({
                   : "border-blue-300/20 bg-blue-500/10 text-blue-100/80"
               }`}
             >
-              Appearance and notification changes save immediately. Privacy and language controls are
-              shown for upcoming account-settings wiring and do not save yet.
+              Appearance and notification changes save immediately. Privacy and language controls
+              are shown for upcoming account-settings wiring and do not save yet.
             </div>
 
             <div
@@ -127,7 +131,9 @@ export default function SettingsModal({
                   </p>
                 </div>
                 {(notifLoading || notifSaving) && (
-                  <Loader2 className={`w-4 h-4 animate-spin ${isLight ? "text-slate-400" : "text-blue-200/50"}`} />
+                  <Loader2
+                    className={`w-4 h-4 animate-spin ${isLight ? "text-slate-400" : "text-blue-200/50"}`}
+                  />
                 )}
               </div>
               {notifLoading ? (
@@ -137,18 +143,24 @@ export default function SettingsModal({
               ) : notifPrefs ? (
                 <div className="mt-3 space-y-3">
                   <div>
-                    <p className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}>
+                    <p
+                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}
+                    >
                       In-App
                     </p>
                     <div className="space-y-2">
-                      {([
-                        ["in_app_bid_updates", "Bid updates"],
-                        ["in_app_report_updates", "Report updates"],
-                        ["in_app_nearby_reports", "Nearby reports"],
-                        ["in_app_estimate_updates", "Estimate updates"],
-                      ] as const).map(([key, label]) => (
+                      {(
+                        [
+                          ["in_app_bid_updates", "Bid updates"],
+                          ["in_app_report_updates", "Report updates"],
+                          ["in_app_nearby_reports", "Nearby reports"],
+                          ["in_app_estimate_updates", "Estimate updates"],
+                        ] as const
+                      ).map(([key, label]) => (
                         <label key={key} className="flex items-center justify-between">
-                          <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
+                          <span
+                            className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}
+                          >
                             {label}
                           </span>
                           <input
@@ -164,12 +176,16 @@ export default function SettingsModal({
                   </div>
 
                   <div>
-                    <p className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}>
+                    <p
+                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}
+                    >
                       Email
                     </p>
                     <div className="space-y-2">
                       <label className="flex items-center justify-between">
-                        <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
+                        <span
+                          className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}
+                        >
                           Email notifications enabled
                         </span>
                         <input
@@ -180,35 +196,44 @@ export default function SettingsModal({
                           style={{ accentColor: primaryColor }}
                         />
                       </label>
-                      {notifPrefs.email_enabled && ([
-                        ["email_bid_updates", "Bid updates"],
-                        ["email_report_updates", "Report updates"],
-                        ["email_nearby_reports", "Nearby reports"],
-                        ["email_estimate_updates", "Estimate updates"],
-                      ] as const).map(([key, label]) => (
-                        <label key={key} className="flex items-center justify-between pl-3">
-                          <span className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
-                            {label}
-                          </span>
-                          <input
-                            type="checkbox"
-                            checked={notifPrefs[key]}
-                            onChange={() => togglePref(key)}
-                            className="w-5 h-5"
-                            style={{ accentColor: primaryColor }}
-                          />
-                        </label>
-                      ))}
+                      {notifPrefs.email_enabled &&
+                        (
+                          [
+                            ["email_bid_updates", "Bid updates"],
+                            ["email_report_updates", "Report updates"],
+                            ["email_nearby_reports", "Nearby reports"],
+                            ["email_estimate_updates", "Estimate updates"],
+                          ] as const
+                        ).map(([key, label]) => (
+                          <label key={key} className="flex items-center justify-between pl-3">
+                            <span
+                              className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}
+                            >
+                              {label}
+                            </span>
+                            <input
+                              type="checkbox"
+                              checked={notifPrefs[key]}
+                              onChange={() => togglePref(key)}
+                              className="w-5 h-5"
+                              style={{ accentColor: primaryColor }}
+                            />
+                          </label>
+                        ))}
                     </div>
                   </div>
 
                   <div>
-                    <p className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}>
+                    <p
+                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}
+                    >
                       SMS
                     </p>
                     <div className="space-y-2">
                       <label className="flex items-center justify-between">
-                        <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
+                        <span
+                          className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}
+                        >
                           SMS notifications enabled
                         </span>
                         <input
@@ -219,23 +244,28 @@ export default function SettingsModal({
                           style={{ accentColor: primaryColor }}
                         />
                       </label>
-                      {notifPrefs.sms_enabled && ([
-                        ["sms_bid_updates", "Bid updates"],
-                        ["sms_report_updates", "Report updates"],
-                      ] as const).map(([key, label]) => (
-                        <label key={key} className="flex items-center justify-between pl-3">
-                          <span className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
-                            {label}
-                          </span>
-                          <input
-                            type="checkbox"
-                            checked={notifPrefs[key]}
-                            onChange={() => togglePref(key)}
-                            className="w-5 h-5"
-                            style={{ accentColor: primaryColor }}
-                          />
-                        </label>
-                      ))}
+                      {notifPrefs.sms_enabled &&
+                        (
+                          [
+                            ["sms_bid_updates", "Bid updates"],
+                            ["sms_report_updates", "Report updates"],
+                          ] as const
+                        ).map(([key, label]) => (
+                          <label key={key} className="flex items-center justify-between pl-3">
+                            <span
+                              className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}
+                            >
+                              {label}
+                            </span>
+                            <input
+                              type="checkbox"
+                              checked={notifPrefs[key]}
+                              onChange={() => togglePref(key)}
+                              className="w-5 h-5"
+                              style={{ accentColor: primaryColor }}
+                            />
+                          </label>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -257,25 +287,19 @@ export default function SettingsModal({
                     Privacy
                   </h3>
                   <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
-                    Preview only for now.
+                    Control how your data is shared.
                   </p>
                 </div>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                    isLight ? "bg-slate-100 text-slate-500" : "bg-white/10 text-blue-100/60"
-                  }`}
-                >
-                  Coming soon
-                </span>
               </div>
-              <fieldset className="mt-3 space-y-2 opacity-60" disabled>
+              <fieldset className="mt-3 space-y-2" disabled={notifLoading || notifSaving}>
                 <label className="flex items-center justify-between">
                   <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
                     Share data with shops
                   </span>
                   <input
                     type="checkbox"
-                    defaultChecked
+                    checked={notifPrefs?.share_data_with_shops ?? true}
+                    onChange={() => togglePref("share_data_with_shops")}
                     className="w-5 h-5"
                     style={{ accentColor: primaryColor }}
                   />
@@ -286,6 +310,8 @@ export default function SettingsModal({
                   </span>
                   <input
                     type="checkbox"
+                    checked={notifPrefs?.show_profile_to_insurers ?? false}
+                    onChange={() => togglePref("show_profile_to_insurers")}
                     className="w-5 h-5"
                     style={{ accentColor: primaryColor }}
                   />

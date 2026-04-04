@@ -18,6 +18,8 @@ export interface NotificationPreferences {
   sms_report_updates: boolean;
   email_enabled: boolean;
   sms_enabled: boolean;
+  share_data_with_shops: boolean;
+  show_profile_to_insurers: boolean;
 }
 
 /**

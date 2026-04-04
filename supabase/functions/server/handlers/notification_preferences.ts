@@ -96,6 +96,8 @@ export async function updateNotificationPreferences(
       "sms_report_updates",
       "email_enabled",
       "sms_enabled",
+      "share_data_with_shops",
+      "show_profile_to_insurers",
     ];
 
     const updates: Record<string, boolean> = {};
