@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 784 — Shop bid acceptance/rejection notifications)
+**Last updated:** April 4, 2026 (Pass 787 — Context-aware empty states)
 **Status:** Active execution tracker
-**Pass count:** 784
+**Pass count:** 787
 **Build:** 0 errors (~3.0s)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -26,6 +26,8 @@
 - Real-time bid updates via Supabase Realtime (`useBidsForReport` hook subscribes to INSERT/UPDATE/DELETE on `bids` table)
 - Real-time customer bid notifications (`useCustomerBidNotifications` — toast + feed when shop submits bid, Pass 782)
 - Real-time shop bid status notifications (`useShopBidStatusNotifications` — toast when customer accepts/rejects, Pass 784)
+- Real-time customer report status notifications (`useCustomerReportStatusNotifications` — toast on report lifecycle changes, Pass 785)
+- Real-time insurer claim notifications (`useInsurerClaimNotifications` — toast on claim lifecycle changes, Pass 786)
 - Lazy chunk retry for all 24 lazy-loaded screens (`lazyWithRetry` utility, Pass 617)
 - Chunk-aware error boundary with "Update available / Reload Page" UX (Pass 617)
 - VIN input sanitization on both vehicle forms (auto-uppercase, strip I/O/Q, maxLength=17, Pass 619)
@@ -50,7 +52,6 @@
 **Not yet built:**
 
 - Push notifications, payment processing, offline detection
-- Insurer claim status notifications (real-time)
 - Real PostGIS geo-queries for shop proximity
 - Marker clustering for dense shop areas
 - Real third-party shop onboarding / organic shop participation
@@ -107,6 +108,25 @@
 - Demo customers now see realistic bid data (3 bids with prices, timelines, shop names)
 - Mobile viewport hardened: no horizontal overflow possible on dashboard home, touch targets ≥44px
 - Real-time subscriptions use Supabase Realtime postgres_changes on `bids` table (INSERT for customers, UPDATE for shops)
+
+---
+
+## Passes 785–787 — Full Notification Coverage + Empty State Polish (2026-04-04)
+
+| Pass | Title                                       | Key Changes                                                                                                             |
+| ---- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 785  | Customer report status change notifications | Added subscribeToReportUpdates to RealtimeReportService; useCustomerReportStatusNotifications hook for status lifecycle |
+| 786  | Insurer claim status change notifications   | useInsurerClaimNotifications hook reusing report update channel; filters claim-lifecycle events                         |
+| 787  | Context-aware empty states                  | ShopRequestsScreen + InsurerClaimsScreen: differentiate zero-data vs filtered-empty with guiding copy                   |
+
+**Key changes (Passes 785–787):**
+
+- All three user types now have real-time notification coverage:
+  - Customer: new bids (Pass 782), report status changes (Pass 785)
+  - Shop: new reports (pre-existing), bid acceptance/rejection (Pass 784)
+  - Insurer: claim lifecycle changes (Pass 786)
+- RealtimeReportService extended with UPDATE subscription channel alongside existing INSERT channel
+- Empty states now guide users clearly when there is genuinely no data vs when filters hide results
 
 ---
 
