@@ -1,6 +1,8 @@
-import { Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useNotificationPreferences } from "../../../hooks/useNotificationPreferences";
+import type { NotificationPreferences } from "../../../services/supabase/notificationPreferences";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type SettingsModalProps = {
@@ -20,6 +22,14 @@ export default function SettingsModal({
 }: SettingsModalProps) {
   const [selectedAppearanceMode, setSelectedAppearanceMode] =
     useState<DashboardAppearanceMode>(appearanceMode);
+
+  const { preferences: notifPrefs, isLoading: notifLoading, isSaving: notifSaving, update: updateNotif } =
+    useNotificationPreferences();
+
+  const togglePref = (key: keyof Omit<NotificationPreferences, "id" | "clerk_user_id">) => {
+    if (!notifPrefs) return;
+    updateNotif({ [key]: !notifPrefs[key] });
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -98,8 +108,8 @@ export default function SettingsModal({
                   : "border-blue-300/20 bg-blue-500/10 text-blue-100/80"
               }`}
             >
-              Appearance changes save today. Notification, privacy, and language controls are shown
-              for upcoming account-settings wiring and do not save yet.
+              Appearance and notification changes save immediately. Privacy and language controls are
+              shown for upcoming account-settings wiring and do not save yet.
             </div>
 
             <div
@@ -113,41 +123,127 @@ export default function SettingsModal({
                     Notifications
                   </h3>
                   <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
-                    Preview only for now.
+                    Control how you receive updates.
                   </p>
                 </div>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                    isLight ? "bg-slate-100 text-slate-500" : "bg-white/10 text-blue-100/60"
-                  }`}
-                >
-                  Coming soon
-                </span>
+                {(notifLoading || notifSaving) && (
+                  <Loader2 className={`w-4 h-4 animate-spin ${isLight ? "text-slate-400" : "text-blue-200/50"}`} />
+                )}
               </div>
-              <fieldset className="mt-3 space-y-2 opacity-60" disabled>
-                <label className="flex items-center justify-between">
-                  <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
-                    Email notifications
-                  </span>
-                  <input
-                    type="checkbox"
-                    defaultChecked
-                    className="w-5 h-5"
-                    style={{ accentColor: primaryColor }}
-                  />
-                </label>
-                <label className="flex items-center justify-between">
-                  <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
-                    SMS notifications
-                  </span>
-                  <input
-                    type="checkbox"
-                    defaultChecked
-                    className="w-5 h-5"
-                    style={{ accentColor: primaryColor }}
-                  />
-                </label>
-              </fieldset>
+              {notifLoading ? (
+                <div className={`mt-3 text-sm ${isLight ? "text-slate-400" : "text-blue-100/40"}`}>
+                  Loading preferences…
+                </div>
+              ) : notifPrefs ? (
+                <div className="mt-3 space-y-3">
+                  <div>
+                    <p className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}>
+                      In-App
+                    </p>
+                    <div className="space-y-2">
+                      {([
+                        ["in_app_bid_updates", "Bid updates"],
+                        ["in_app_report_updates", "Report updates"],
+                        ["in_app_nearby_reports", "Nearby reports"],
+                        ["in_app_estimate_updates", "Estimate updates"],
+                      ] as const).map(([key, label]) => (
+                        <label key={key} className="flex items-center justify-between">
+                          <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
+                            {label}
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={notifPrefs[key]}
+                            onChange={() => togglePref(key)}
+                            className="w-5 h-5"
+                            style={{ accentColor: primaryColor }}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}>
+                      Email
+                    </p>
+                    <div className="space-y-2">
+                      <label className="flex items-center justify-between">
+                        <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
+                          Email notifications enabled
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={notifPrefs.email_enabled}
+                          onChange={() => togglePref("email_enabled")}
+                          className="w-5 h-5"
+                          style={{ accentColor: primaryColor }}
+                        />
+                      </label>
+                      {notifPrefs.email_enabled && ([
+                        ["email_bid_updates", "Bid updates"],
+                        ["email_report_updates", "Report updates"],
+                        ["email_nearby_reports", "Nearby reports"],
+                        ["email_estimate_updates", "Estimate updates"],
+                      ] as const).map(([key, label]) => (
+                        <label key={key} className="flex items-center justify-between pl-3">
+                          <span className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
+                            {label}
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={notifPrefs[key]}
+                            onChange={() => togglePref(key)}
+                            className="w-5 h-5"
+                            style={{ accentColor: primaryColor }}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}>
+                      SMS
+                    </p>
+                    <div className="space-y-2">
+                      <label className="flex items-center justify-between">
+                        <span className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
+                          SMS notifications enabled
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={notifPrefs.sms_enabled}
+                          onChange={() => togglePref("sms_enabled")}
+                          className="w-5 h-5"
+                          style={{ accentColor: primaryColor }}
+                        />
+                      </label>
+                      {notifPrefs.sms_enabled && ([
+                        ["sms_bid_updates", "Bid updates"],
+                        ["sms_report_updates", "Report updates"],
+                      ] as const).map(([key, label]) => (
+                        <label key={key} className="flex items-center justify-between pl-3">
+                          <span className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
+                            {label}
+                          </span>
+                          <input
+                            type="checkbox"
+                            checked={notifPrefs[key]}
+                            onChange={() => togglePref(key)}
+                            className="w-5 h-5"
+                            style={{ accentColor: primaryColor }}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className={`mt-3 text-sm ${isLight ? "text-slate-400" : "text-blue-100/40"}`}>
+                  Unable to load preferences.
+                </div>
+              )}
             </div>
 
             <div

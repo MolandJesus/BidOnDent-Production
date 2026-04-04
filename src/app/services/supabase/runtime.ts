@@ -79,6 +79,7 @@ export const SUPABASE_EDGE_ROUTES = {
   shopServiceAreas: "/shop-service-areas",
   nearbyShops: "/nearby-shops",
   reportsInServiceArea: "/reports-in-service-area",
+  notificationPreferences: "/notification-preferences",
 } as const;
 
 export type CanonicalSupabaseBucket =

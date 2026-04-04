@@ -3,7 +3,7 @@
 **Last updated:** April 5, 2026 (Full re-anchor audit — verified build/test/arch truth, canonical long-horizon plan created)
 **Created:** 2026-03-25
 **Status:** Canonical long-horizon execution plan
-**Current pass:** 823
+**Current pass:** 824
 **Build:** ✅ 0 errors · 3.19s · 2877 modules
 **Tests:** ✅ 555/555 (55 test files)
 **Diagnostics:** ✅ 0 errors
@@ -119,9 +119,11 @@ This section was verified by a full re-anchor audit — not assumed from prior s
 
 ---
 
-### Phase 2: Geographic Intelligence + Shop Enrollment (Passes 826–845)
+### Phase 2: Geographic Intelligence + Shop Enrollment (Passes 826–845) ✅ COMPLETE
 
 **Goal:** Enable organic shop growth and geographic matching.
+
+**Completion summary (Pass 823):** All core exit criteria met. PostGIS enabled with spatial indexes (820), geographic matching edge functions (821), real-time nearby report notifications (822), service area editor UI (823). Shop self-registration (intake + wizard + admin queue) was already built. Client-side haversine retained for display distances — PostGIS is source of truth for matching.
 
 | Pass Range | Feature                                 | What Changes                                                                                             | Effort |
 | ---------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------ |

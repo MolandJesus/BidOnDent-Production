@@ -83,6 +83,7 @@ import { createBid, getBids, updateBidStatus, deleteBid } from './handlers/bids.
 import { createEstimateRequest, getEstimateRequests, updateEstimateRequest, customerRespondToEstimate } from './handlers/estimate_requests.ts'
 import { getShopServiceAreas, saveShopServiceArea, deleteShopServiceArea } from './handlers/service_areas.ts'
 import { getNearbyShops, getReportsInServiceArea } from './handlers/geographic_matching.ts'
+import { getNotificationPreferences, updateNotificationPreferences } from './handlers/notification_preferences.ts'
 import { getRateLimitKey, checkRateLimit, maybePruneStore } from './utils/rateLimiter.ts'
 
 console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
@@ -392,6 +393,15 @@ Deno.serve(async (req) => {
 
     if (path === '/reports-in-service-area' && req.method === 'GET') {
       return await getReportsInServiceArea(req, supabase, respond)
+    }
+
+    // Notification preferences
+    if (path === '/notification-preferences' && req.method === 'GET') {
+      return await getNotificationPreferences(req, supabase, respond)
+    }
+
+    if (path === '/notification-preferences' && req.method === 'PUT') {
+      return await updateNotificationPreferences(req, supabase, respond)
     }
 
     return respond({ error: 'Not found', path }, 404)
