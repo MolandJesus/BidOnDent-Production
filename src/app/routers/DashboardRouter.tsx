@@ -273,9 +273,9 @@ export default function DashboardRouter({
                   isSeedData={usingSeedFallback}
                   existingBidReportIds={shopBidReportIdsArray}
                   appearanceMode={appearanceMode}
-                  onSubmitBid={(requestId, bidAmount, estimatedDays, description) => {
-                    onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description);
-                  }}
+                  onSubmitBid={(requestId, bidAmount, estimatedDays, description) =>
+                    onSubmitBid(requestId.toString(), bidAmount, estimatedDays, description)
+                  }
                 />
               </motion.div>
             )}

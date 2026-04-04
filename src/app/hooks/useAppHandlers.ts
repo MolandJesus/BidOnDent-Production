@@ -108,6 +108,39 @@ export function useAppHandlers({
 
     if (import.meta.env.DEV) console.log(`Submitting bid of $${bidAmount} for report ${reportId}`);
 
+    // In demo mode, create a local-only bid (edge function rejects non-shop accounts)
+    if (navigation.demoMode) {
+      const report = userData.reports.find((entry) => entry.id === reportId);
+      const vehicleInfo = report
+        ? `${report.vehicle?.year || ""} ${report.vehicle?.make || ""} ${report.vehicle?.model || ""}`.trim() ||
+          "Vehicle"
+        : "Vehicle";
+
+      const demoBid: import("../types").Bid = {
+        id: `demo-bid-${Date.now()}`,
+        reportId,
+        shopId: userId,
+        shopName: userData.userInfo.name || "Demo Shop",
+        shopEmail: userData.userInfo.email,
+        shopRating: 4.5,
+        shopReviews: 12,
+        amount: bidAmount,
+        estimatedDays: estimatedDays ?? 0,
+        shopDistance: "Within service area",
+        description: description || "Repair bid submitted via BidOnDent",
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      };
+      userData.setBids((prev) => [...prev, demoBid]);
+      addActivity(
+        "bid_submitted",
+        `[Demo] Submitted bid of $${bidAmount.toLocaleString()} for ${vehicleInfo}`,
+        { reportId, bidAmount, vehicleInfo }
+      );
+      if (import.meta.env.DEV) console.log("✅ Demo bid created locally (not persisted)");
+      return;
+    }
+
     const report = userData.reports.find((entry) => entry.id === reportId);
     if (!report) {
       throw new Error(`Report not found: ${reportId}`);
