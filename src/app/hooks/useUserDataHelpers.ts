@@ -140,6 +140,8 @@ export function transformSupabaseReport(report: SupabaseDamageReport): FrontendR
     submittedAt: report.created_at || new Date().toISOString(),
     bids,
     bidsCount: bids.length,
+    latitude: report.latitude ?? null,
+    longitude: report.longitude ?? null,
   };
 }
 

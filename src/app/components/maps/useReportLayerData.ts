@@ -68,7 +68,7 @@ export function useReportLayerData({
     fetchReports();
   }, [fetchReports]);
 
-  // Geocode report addresses (refine ZIP centroids)
+  // Geocode report addresses only if stored coordinates are missing
   useEffect(() => {
     if (reports.length === 0) return;
     let cancelled = false;
@@ -76,6 +76,15 @@ export function useReportLayerData({
     (async () => {
       for (const report of reports) {
         if (cancelled) break;
+        // Skip geocoding if stored coordinates already exist
+        if (
+          typeof report.latitude === "number" &&
+          typeof report.longitude === "number" &&
+          Number.isFinite(report.latitude) &&
+          Number.isFinite(report.longitude)
+        ) {
+          continue;
+        }
         const zip = report.zip_code;
         if (!report.address && !report.city && !zip) continue;
         const coords = await geocodeAddress({
@@ -131,6 +140,15 @@ export function useReportLayerData({
     () =>
       reports
         .map((report) => {
+          // Prefer stored coordinates (from database) over re-geocoding
+          if (
+            typeof report.latitude === "number" &&
+            typeof report.longitude === "number" &&
+            Number.isFinite(report.latitude) &&
+            Number.isFinite(report.longitude)
+          ) {
+            return { report, coords: { lat: report.latitude, lng: report.longitude } };
+          }
           const geocoded = report.id ? geocodedCoords.get(report.id) : undefined;
           const coords = geocoded ?? zipToCoordinates(report.zip_code);
           if (!coords) return null;
