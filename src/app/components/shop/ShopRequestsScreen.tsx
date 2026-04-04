@@ -101,6 +101,12 @@ export default function ShopRequestsScreen({
   const handleSubmitBid = async () => {
     const days = parseInt(estimatedDays, 10);
     if (selectedRequest && bidAmount && days > 0) {
+      if (String(selectedRequest.id).startsWith("seed-")) {
+        setBidError(
+          "This is a demo request. Real bids can only be submitted on live customer reports."
+        );
+        return;
+      }
       setIsSubmittingBid(true);
       setBidError(null);
 

@@ -95,6 +95,7 @@ export default function InsurerClaimsScreen({
 
   const handleApproveClaim = () => {
     if (selectedClaim && approvalAmount) {
+      if (selectedClaim.id.startsWith("seed-")) return;
       onApproveClaim?.(selectedClaim.id, parseFloat(approvalAmount));
       setShowApprovalModal(false);
       setApprovalAmount("");
@@ -109,6 +110,7 @@ export default function InsurerClaimsScreen({
 
   const handleDenyClaim = (reason: string) => {
     if (selectedClaim) {
+      if (selectedClaim.id.startsWith("seed-")) return;
       onDenyClaim?.(selectedClaim.id, reason);
       setShowDenialModal(false);
       setSelectedClaim(null);

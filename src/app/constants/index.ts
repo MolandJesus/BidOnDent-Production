@@ -102,7 +102,7 @@ export const SEED_DAMAGE_REPORTS: DamageReport[] = [
     status: "in-review",
     createdAt: seedReportTwoTimestamp,
     submittedAt: seedReportTwoTimestamp,
-    bidsCount: 2,
+    bidsCount: 0,
     photos: [],
   },
 ];
