@@ -11,7 +11,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** April 3, 2026 (Pass 626 — Bundle optimization: 10 unused deps removed (@mui, @emotion, react-dnd, react-slick, react-popper, etc.), landing page + settings modal lazy-loaded, index chunk 604→206KB (66% reduction). Pass 625: test fix for status normalization.)
+**Last updated:** April 5, 2026 (Pass 808 — Phase 1-2 complete. Error handling, type safety, dead code sweep. All critical flows verified.)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  
@@ -83,17 +83,21 @@ Use this together with:
 
 The repository is fully under the 500-line hard cap as of Pass 562. A second extraction sweep (Passes 568–608) brought many files further under the 300-line soft limit. The codebase was then hardened through Passes 609–626 (type safety, security, dead code removal, runtime safety, bundle optimization).
 
-**Current codebase health (Pass 626):**
+**Current codebase health (Pass 808):**
 
-- Zero production `any` types (3 intentional `as any` workarounds remain — MapLibre resize patch, CSS custom props, Clerk profile)
+- Zero production `any` types (remaining `as any` in MapLibre resize patch, window globals, devtools only)
 - Zero ungated console statements in production code
-- Zero dead code (orphaned `RealtimeBidExample.tsx` removed Pass 622)
+- Zero dead code (duplicate transforms removed Pass 807, orphaned `RealtimeBidExample.tsx` removed Pass 622)
 - OWASP security audit passed (Pass 619): zero XSS, zero injection, proper auth boundaries
 - All 24 lazy-loaded screens use `lazyWithRetry` for chunk-load resilience (Pass 617)
 - VIN input sanitization on both vehicle forms (Pass 619)
 - Photo upload mounted guard for unmount safety (Pass 618)
-- Bundle: 10 unused deps removed (Pass 626), landing page + settings modal lazy-loaded, index chunk 604→206KB (66% reduction)
-- Tests: 87/87 passing (6 test files, Vitest 4.1.2)
+- Bundle: 10 unused deps removed (Pass 626), landing page + settings modal lazy-loaded
+- Tests: 555/555 passing (55 test files, Vitest 4.1.2)
+- All 5 critical user flows verified fully wired to Supabase (Pass 805 audit)
+- 8 Supabase Realtime notification hooks across all user types (Pass 800)
+- Report geocoding preserves stored coordinates through transform (Pass 804)
+- Map report pins show correct vehicle/damage info via boundary transform (Pass 805)
 - Top file: `useShopDirectorySession.ts` at ~406 lines (was 500, reduced Pass 569)
 
 - `src/app/components/shop/ShopDirectoryScreen.tsx` reduced from 1383 → 979 → 1163 → 478 (Pass 11) → grew back to ~1,003 → **Pass 540: 1003 → 499 lines.** Map interaction handlers extracted to `useShopDirectoryMapActions.ts`, dialog/sheet composition extracted to `ShopDirectoryDialogs.tsx`. Pass 554 compacted further to 494. **✅ Now under 500-line hard cap.**
