@@ -120,6 +120,73 @@ class RealtimeReportService {
     return this.channel !== null;
   }
 
+  // ─── Report Update Subscriptions ────────────────────────────
+
+  private updateChannel: RealtimeChannel | null = null;
+  private updateCallbacks: {
+    onUpdate?: ReportCallback;
+    onStatus?: ReportConnectionCallback;
+  } = {};
+
+  /**
+   * Subscribe to damage report UPDATE events (status changes, etc.).
+   * Returns an unsubscribe function.
+   */
+  subscribeToReportUpdates(
+    onReportUpdate?: ReportCallback,
+    onConnectionStatus?: ReportConnectionCallback
+  ): () => void {
+    if (this.updateChannel) {
+      if (import.meta.env.DEV) console.log("⚠️ Already subscribed to report updates — skipping");
+      return () => this.unsubscribeFromUpdates();
+    }
+
+    if (import.meta.env.DEV) console.log("📋 Subscribing to damage report UPDATEs");
+
+    this.updateCallbacks = { onUpdate: onReportUpdate, onStatus: onConnectionStatus };
+
+    this.updateChannel = supabase
+      .channel("damage-report-updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "damage_reports",
+        },
+        (payload) => {
+          if (import.meta.env.DEV) console.log("📋 REPORT UPDATED:", payload);
+          const report = this.transformFromDb(payload.new);
+          if (this.updateCallbacks.onUpdate) this.updateCallbacks.onUpdate(report);
+        }
+      )
+      .subscribe((status) => {
+        if (import.meta.env.DEV) console.log("📋 Report update subscription status:", status);
+
+        if (status === "SUBSCRIBED") {
+          this.updateCallbacks.onStatus?.("connected");
+        } else if (status === "CHANNEL_ERROR") {
+          this.updateCallbacks.onStatus?.("error");
+        } else if (status === "CLOSED") {
+          this.updateCallbacks.onStatus?.("disconnected");
+        }
+      });
+
+    return () => this.unsubscribeFromUpdates();
+  }
+
+  /**
+   * Tear down the update subscription.
+   */
+  unsubscribeFromUpdates(): void {
+    if (this.updateChannel) {
+      if (import.meta.env.DEV) console.log("📋 Unsubscribing from report updates");
+      supabase.removeChannel(this.updateChannel);
+      this.updateChannel = null;
+      this.updateCallbacks = {};
+    }
+  }
+
   // ─── Internal ───────────────────────────────────────────────
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase realtime payload shape varies

@@ -3,6 +3,7 @@ import { useMarketplaceReports } from "../hooks/useMarketplaceReports";
 import { useShopReportNotifications } from "../hooks/useShopReportNotifications";
 import { useCustomerBidNotifications } from "../hooks/useCustomerBidNotifications";
 import { useShopBidStatusNotifications } from "../hooks/useShopBidStatusNotifications";
+import { useCustomerReportStatusNotifications } from "../hooks/useCustomerReportStatusNotifications";
 import { SEED_DAMAGE_REPORTS } from "../constants";
 import { getShopSubmittedBids } from "../services/supabase/bids";
 import {
@@ -41,6 +42,9 @@ export function useDashboardData({
 
   // Real-time: notify shop users when their bids are accepted/rejected
   useShopBidStatusNotifications({ userType, providerUserId });
+
+  // Real-time: notify customer users when their report status changes
+  useCustomerReportStatusNotifications({ userType, reports });
 
   const enrichedUserReports = reports.map((report) => ({
     ...report,
