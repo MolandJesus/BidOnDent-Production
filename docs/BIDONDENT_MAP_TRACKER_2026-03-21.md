@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 825 — Email notification infrastructure)
+**Last updated:** April 5, 2026 (Pass 826 — Claims shop assignment plumbing)
 **Status:** Active execution tracker
-**Pass count:** 825
+**Pass count:** 826
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -98,6 +98,7 @@
 | 823  | Service area editor UI                | ServiceAreaEditorModal: full CRUD for radius + ZIP service areas. Geolocation support. Glass-styled. Wired into AccountMenu (MapPin row for shops) + AccountScreen (modal state).                                             |
 | 824  | Notification preferences              | Migration 019 notification_preferences table. Edge handler GET (auto-create defaults) + PUT (whitelist upsert). Client service + useNotificationPreferences hook. SettingsModal live toggles replace disabled placeholders.   |
 | 825  | Email notification infrastructure     | Resend email utility + 6 email templates (customer: bid received, claim decision; shop: nearby report, bid status; insurer: new claim). notificationEmails dispatcher respects preferences. Wired into bids + workflow handlers. |
+| 826  | Claims shop assignment plumbing       | Migration 020: assigned_shop_clerk_user_id on damage_reports. Backend accepts shopClerkUserId + creates job_assignment. ClaimShop type gains clerkUserId field. Client service + callback wire shop through.                    |
 
 **Full re-anchor audit (Pass 810+):**
 

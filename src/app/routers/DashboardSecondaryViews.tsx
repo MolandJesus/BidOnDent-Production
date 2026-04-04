@@ -308,6 +308,7 @@ export default function DashboardSecondaryViews({
                 damageDescription: claimData.damageDescription || undefined,
                 estimatedAmount: Number.isFinite(amount) ? amount : undefined,
                 priority: claimData.priority || "medium",
+                shopClerkUserId: claimData.shop?.clerkUserId || undefined,
               });
               if (import.meta.env.DEV)
                 console.info("[BidOnDent] New claim created:", {

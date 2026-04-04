@@ -13,6 +13,8 @@ export type Policyholder = {
 
 export type ClaimShop = {
   id: string;
+  /** Clerk user ID — present for real shops, absent for demo/placeholder */
+  clerkUserId?: string;
   name: string;
   email: string;
   phone: string;

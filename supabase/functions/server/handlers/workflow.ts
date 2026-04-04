@@ -200,6 +200,7 @@ export async function submitInsuranceClaim(
     const estimatedAmount =
       typeof body.estimatedAmount === "number" ? body.estimatedAmount : null;
     const priority = getString(body.priority) || "medium";
+    const shopClerkUserId = getString(body.shopClerkUserId);
 
     if (!reportId) {
       return respond({ error: "Missing reportId" }, 400);
@@ -218,6 +219,7 @@ export async function submitInsuranceClaim(
     if (damageDescription) payload.damage_description = damageDescription;
     if (estimatedAmount !== null) payload.estimated_repair_cost = estimatedAmount;
     if (priority) payload.priority = priority;
+    if (shopClerkUserId) payload.assigned_shop_clerk_user_id = shopClerkUserId;
     payload.claim_decided_by = clerkUserId;
     payload.claim_decision_date = new Date().toISOString();
 
@@ -225,11 +227,29 @@ export async function submitInsuranceClaim(
       .from("damage_reports")
       .update(payload)
       .eq("id", reportId)
-      .select("id, insurance_claim, claim_status, policy_number")
+      .select("id, insurance_claim, claim_status, policy_number, assigned_shop_clerk_user_id")
       .single();
 
     if (error) {
       return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    // Create a job assignment if a shop was assigned
+    if (shopClerkUserId && data?.id) {
+      const { error: jobError } = await supabase
+        .from("job_assignments")
+        .insert({
+          damage_report_id: reportId,
+          customer_user_id: clerkUserId,
+          shop_user_id: shopClerkUserId,
+          insurer_user_id: clerkUserId,
+          status: "scheduled",
+        });
+
+      if (jobError) {
+        // Non-fatal: claim was saved; log for monitoring
+        console.error("submitInsuranceClaim: job assignment creation failed:", sanitizeErrorMessage(jobError.message));
+      }
     }
 
     return respond({

@@ -203,6 +203,7 @@ export async function submitInsuranceClaim(
     damageDescription?: string;
     estimatedAmount?: number;
     priority?: string;
+    shopClerkUserId?: string;
   }
 ): Promise<boolean> {
   try {
@@ -215,6 +216,7 @@ export async function submitInsuranceClaim(
         damageDescription: claimData.damageDescription ?? null,
         estimatedAmount: claimData.estimatedAmount ?? null,
         priority: claimData.priority ?? "medium",
+        shopClerkUserId: claimData.shopClerkUserId ?? null,
       }),
     });
     return true;
