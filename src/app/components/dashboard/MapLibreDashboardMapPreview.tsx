@@ -6,10 +6,34 @@ import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { MapLayerMouseEvent, ViewState } from "react-map-gl/maplibre";
 
 export type ReportPin = { id: string; lat: number; lng: number; label: string };
+export type ServiceAreaCircle = { lat: number; lng: number; radiusMiles: number };
+
+/** Generate a GeoJSON polygon approximating a circle (64 points). */
+function circleToPolygon(lat: number, lng: number, radiusMiles: number): GeoJSON.Feature {
+  const EARTH_RADIUS_MILES = 3958.8;
+  const points = 64;
+  const coords: [number, number][] = [];
+  for (let i = 0; i <= points; i++) {
+    const angle = (i / points) * 2 * Math.PI;
+    const dLat = (radiusMiles / EARTH_RADIUS_MILES) * (180 / Math.PI) * Math.cos(angle);
+    const dLng =
+      (radiusMiles / EARTH_RADIUS_MILES) *
+      (180 / Math.PI) *
+      Math.sin(angle) /
+      Math.cos(lat * (Math.PI / 180));
+    coords.push([lng + dLng, lat + dLat]);
+  }
+  return {
+    type: "Feature",
+    geometry: { type: "Polygon", coordinates: [coords] },
+    properties: {},
+  };
+}
 
 type MapLibreDashboardMapPreviewProps = {
   shops: CoveragePartnerShop[];
   reportPins?: ReportPin[];
+  serviceAreaCircles?: ServiceAreaCircle[];
   center: [number, number];
   zoom: number;
   isLight: boolean;
@@ -21,6 +45,7 @@ type MapLibreDashboardMapPreviewProps = {
 export default function MapLibreDashboardMapPreview({
   shops,
   reportPins = [],
+  serviceAreaCircles = [],
   center,
   zoom,
   isLight,
@@ -103,6 +128,14 @@ export default function MapLibreDashboardMapPreview({
     [reportPins]
   );
 
+  const serviceAreaGeojson = useMemo(
+    () => ({
+      type: "FeatureCollection" as const,
+      features: serviceAreaCircles.map((c) => circleToPolygon(c.lat, c.lng, c.radiusMiles)),
+    }),
+    [serviceAreaCircles]
+  );
+
   const [tooltip, setTooltip] = useState<{
     lat: number;
     lng: number;
@@ -157,6 +190,29 @@ export default function MapLibreDashboardMapPreview({
         ]}
         onClick={handleMapClick}
       >
+        {serviceAreaCircles.length > 0 && (
+          <Source id="dashboard-service-areas" type="geojson" data={serviceAreaGeojson}>
+            <Layer
+              id="dashboard-service-area-fill"
+              type="fill"
+              paint={{
+                "fill-color": "#2563eb",
+                "fill-opacity": 0.1,
+              }}
+            />
+            <Layer
+              id="dashboard-service-area-border"
+              type="line"
+              paint={{
+                "line-color": "#3b82f6",
+                "line-width": 1.5,
+                "line-opacity": 0.5,
+                "line-dasharray": [3, 2],
+              }}
+            />
+          </Source>
+        )}
+
         <Source id="dashboard-shops" type="geojson" data={geojson}>
           <Layer
             id="dashboard-shops-circle"

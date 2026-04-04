@@ -7,7 +7,7 @@ import type { DamageReport } from "../../types";
 import { zipToCoordinates } from "../../services/supabase/map";
 import { defaultCoverageCenter } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
-import type { ReportPin } from "./MapLibreDashboardMapPreview";
+import type { ReportPin, ServiceAreaCircle } from "./MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type ShopMapWidgetProps = {
@@ -64,6 +64,23 @@ export default function ShopMapWidget({
     return parts.join(" + ");
   }, [serviceAreas, isLoadingAreas]);
 
+  /** Convert radius-type service areas to map circle overlays */
+  const serviceAreaCircles = useMemo<ServiceAreaCircle[]>(() => {
+    return serviceAreas
+      .filter(
+        (a) =>
+          a.area_type === "radius" &&
+          a.center_latitude != null &&
+          a.center_longitude != null &&
+          a.radius_miles != null
+      )
+      .map((a) => ({
+        lat: a.center_latitude!,
+        lng: a.center_longitude!,
+        radiusMiles: a.radius_miles!,
+      }));
+  }, [serviceAreas]);
+
   /** Convert incoming damage reports to map pins via ZIP→coordinate lookup */
   const reportPins = useMemo<ReportPin[]>(() => {
     return reports
@@ -102,6 +119,7 @@ export default function ShopMapWidget({
         <DashboardMapPreview
           shops={partnerShops}
           reportPins={reportPins}
+          serviceAreaCircles={serviceAreaCircles}
           center={mapCenter}
           zoom={9}
           isLight={isLight}

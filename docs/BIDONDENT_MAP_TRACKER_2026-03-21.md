@@ -1,8 +1,8 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 5, 2026 (Pass 812 — Wire ShopMapWidget to real service area data)
+**Last updated:** April 5, 2026 (Pass 813 — Service area circle overlay on dashboard map)
 **Status:** Active execution tracker
-**Pass count:** 812
+**Pass count:** 813
 **Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
@@ -88,6 +88,7 @@
 | 810  | Fix notification priority type errors | Fixed priority type mismatch in useCustomerReportStatusNotifications and useInsurerClaimNotifications                                                                                                                         |
 | 811  | Shop service area foundation          | Created shop_service_areas migration (017), edge function CRUD handlers, client service (serviceAreas.ts), registered routes                                                                                                 |
 | 812  | Wire ShopMapWidget to real areas      | GET handler supports session-based fetch, added getMyShopServiceAreas client fn, useShopServiceAreas hook, ShopMapWidget shows real area data + dynamic map center                                                            |
+| 813  | Service area circle overlay           | DashboardMapPreview gains serviceAreaCircles prop with GeoJSON polygon rendering (fill + dashed border), ShopMapWidget passes radius areas as circle overlays on mini-map                                                     |
 
 **Full re-anchor audit (Pass 810+):**
 
