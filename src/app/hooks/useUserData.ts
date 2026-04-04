@@ -197,6 +197,8 @@ export function useUserData(
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Error loading from Supabase:", error);
+        setReportsError("Unable to load your data. Please check your connection and try again.");
+        setReportsLoading(false);
       } finally {
         isLoadingFromCloudRef.current = false;
       }
@@ -251,6 +253,7 @@ export function useUserData(
   // ============================================================================
   // CLOUD SYNC (auto-save to Supabase with debounce)
   // ============================================================================
+  const [syncError, setSyncError] = useState<string | null>(null);
   useUserDataCloudSync({
     userInfo,
     vehicles,
@@ -266,6 +269,7 @@ export function useUserData(
     lastSavedReportsSignatureRef,
     vehicleSignaturesRef,
     reportSignaturesRef,
+    onSyncError: () => setSyncError("Auto-save failed — your recent changes may not be saved."),
   });
 
   // ============================================================================
@@ -341,6 +345,7 @@ export function useUserData(
     reports,
     reportsLoading,
     reportsError,
+    syncError,
     bids,
     activities,
     userPhone,

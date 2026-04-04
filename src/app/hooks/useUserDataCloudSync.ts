@@ -19,6 +19,7 @@ type CloudSyncDeps = {
   lastSavedReportsSignatureRef: MutableRefObject<string>;
   vehicleSignaturesRef: MutableRefObject<Record<string, string>>;
   reportSignaturesRef: MutableRefObject<Record<string, string>>;
+  onSyncError?: (error: unknown) => void;
 };
 
 export function useUserDataCloudSync({
@@ -36,6 +37,7 @@ export function useUserDataCloudSync({
   lastSavedReportsSignatureRef,
   vehicleSignaturesRef,
   reportSignaturesRef,
+  onSyncError,
 }: CloudSyncDeps) {
   useEffect(() => {
     if (!userInfo.email || !redirectInfo || isLoadingFromCloudRef.current) {
@@ -128,6 +130,7 @@ export function useUserDataCloudSync({
         }
       } catch (error) {
         if (import.meta.env.DEV) console.error("Error auto-saving to Supabase:", error);
+        onSyncError?.(error);
       } finally {
         isSavingRef.current = false;
       }
