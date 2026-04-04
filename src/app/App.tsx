@@ -21,6 +21,7 @@ import { useAppearanceMode } from "./hooks/useAppearanceMode";
 // Notification system
 import { useNotificationEvents, NotificationProvider } from "./features/notifications";
 import { useNotifications } from "./features/notifications/NotificationContext";
+import { useDeepLinkNavigation } from "./hooks/useDeepLinkNavigation";
 import NotificationToast from "./components/ui/NotificationToast";
 import { useOnlineStatus } from "./hooks/useOnlineStatus";
 import { useServiceWorkerUpdate } from "./hooks/useServiceWorkerUpdate";
@@ -178,38 +179,7 @@ function AppContent() {
   });
 
   // Register deep link navigation handler for toast clicks
-  useEffect(() => {
-    notifications.setDeepLinkHandler((deepLink) => {
-      if (!deepLink) return;
-      switch (deepLink.screen) {
-        case "dashboard":
-          navigation.setViewMode("dashboard");
-          break;
-        case "report":
-          navigation.setSelectedReportId(deepLink.reportId);
-          navigation.setViewMode("report-detail");
-          break;
-        case "bid":
-          navigation.setCurrentTab("bids");
-          navigation.setViewMode("dashboard");
-          break;
-        case "shop":
-          navigation.setViewMode("shop-directory");
-          break;
-        case "shop-directory":
-          navigation.setViewMode("shop-directory");
-          break;
-        case "estimates":
-          navigation.setCurrentTab("estimates");
-          navigation.setViewMode("dashboard");
-          break;
-        case "navigation":
-          navigation.setViewMode("shop-directory");
-          break;
-      }
-    });
-    return () => notifications.setDeepLinkHandler(null);
-  }, [notifications, navigation]);
+  useDeepLinkNavigation(notifications, navigation);
 
   // ============================================================================
   // COMPUTED VALUES
