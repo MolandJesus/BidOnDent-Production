@@ -126,7 +126,12 @@ export default function DashboardSecondaryViews({
       {/* Report Detail Screen */}
       {viewMode === "report-detail" && selectedReportId && (
         <motion.div key="report-detail" {...screenTransition}>
-          {reports.find((r) => r.id === selectedReportId) ? (
+          {reportsLoading && !reports.find((r) => r.id === selectedReportId) ? (
+            <div className="flex min-h-[300px] flex-col items-center justify-center gap-3 px-6 py-12">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-current border-t-transparent opacity-60" />
+              <p className="text-sm text-slate-400">Loading report…</p>
+            </div>
+          ) : reports.find((r) => r.id === selectedReportId) ? (
             <ReportDetailScreen
               report={{
                 ...reports.find((r) => r.id === selectedReportId)!,
