@@ -2,16 +2,11 @@ import { requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "./runtime";
 import type { Bid } from "./types";
 
 export async function getBidsForReport(reportId: string): Promise<Bid[]> {
-  try {
-    const data = await requestSupabaseEdge<{ bids: Bid[] }>(
-      `${SUPABASE_EDGE_ROUTES.bids}?reportId=${encodeURIComponent(reportId)}`,
-      { method: "GET" }
-    );
-    return data.bids ?? [];
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("Error in getBidsForReport:", error);
-    return [];
-  }
+  const data = await requestSupabaseEdge<{ bids: Bid[] }>(
+    `${SUPABASE_EDGE_ROUTES.bids}?reportId=${encodeURIComponent(reportId)}`,
+    { method: "GET" }
+  );
+  return data.bids ?? [];
 }
 
 export async function submitBid(bid: Bid, clerkUserId?: string): Promise<Bid | null> {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getAllDamageReports } from "../services/supabase/reports";
 import { transformSupabaseReport } from "./userDataUtils";
+import { useNotifications } from "../features/notifications/NotificationContext";
 import type { DamageReport } from "../types";
 
 /**
@@ -11,6 +12,16 @@ export function useMarketplaceReports(userType: string) {
   const [marketplaceReports, setMarketplaceReports] = useState<DamageReport[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const notifications = useNotifications();
+
+  const showErrorToast = useCallback(() => {
+    notifications.showToast({
+      message: "Unable to load requests. Please check your connection and try again.",
+      variant: "error",
+      durationMs: 4000,
+      deepLink: null,
+    });
+  }, [notifications]);
 
   const fetchReports = useCallback(async () => {
     if (userType !== "shop" && userType !== "insurer") return;
@@ -22,10 +33,11 @@ export function useMarketplaceReports(userType: string) {
       setMarketplaceReports(reports.map(transformSupabaseReport));
     } catch {
       setError("Unable to load live data — showing demo requests");
+      showErrorToast();
     } finally {
       setLoading(false);
     }
-  }, [userType]);
+  }, [userType, showErrorToast]);
 
   useEffect(() => {
     if (userType !== "shop" && userType !== "insurer") return;
@@ -44,6 +56,7 @@ export function useMarketplaceReports(userType: string) {
       } catch {
         if (!cancelled) {
           setError("Unable to load live data — showing demo requests");
+          showErrorToast();
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -53,7 +66,7 @@ export function useMarketplaceReports(userType: string) {
     return () => {
       cancelled = true;
     };
-  }, [userType]);
+  }, [userType, showErrorToast]);
 
   return { marketplaceReports, loading, error, refetch: fetchReports };
 }

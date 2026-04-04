@@ -64,15 +64,11 @@ export interface EnrichedJobAssignment {
 }
 
 export async function getJobAssignments(shopClerkUserId: string): Promise<EnrichedJobAssignment[]> {
-  try {
-    const data = await requestSupabaseEdge<{ jobs?: EnrichedJobAssignment[] }>(
-      `${SUPABASE_EDGE_ROUTES.jobAssignments}?shopClerkUserId=${encodeURIComponent(shopClerkUserId)}`,
-      { method: "GET" }
-    );
-    return data.jobs || [];
-  } catch {
-    return [];
-  }
+  const data = await requestSupabaseEdge<{ jobs?: EnrichedJobAssignment[] }>(
+    `${SUPABASE_EDGE_ROUTES.jobAssignments}?shopClerkUserId=${encodeURIComponent(shopClerkUserId)}`,
+    { method: "GET" }
+  );
+  return data.jobs || [];
 }
 
 export async function updateJobAssignmentStatus(

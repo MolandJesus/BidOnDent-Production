@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getBidsForReport } from "../services/supabase/bids";
 import { realtimeBidService } from "../services/realtime/RealtimeBidService";
+import { useNotifications } from "../features/notifications/NotificationContext";
 import { SEED_DEMO_BIDS } from "../constants";
 import type { Bid } from "../types";
 
@@ -56,6 +57,7 @@ export function useBidsForReport(reportId?: string | null) {
   >("idle");
   const reportIdRef = useRef(reportId);
   reportIdRef.current = reportId;
+  const notifications = useNotifications();
 
   const fetchBids = useCallback(async () => {
     if (!reportId) {
@@ -80,6 +82,12 @@ export function useBidsForReport(reportId?: string | null) {
     } catch (err) {
       if (import.meta.env.DEV) console.error("Failed to fetch bids for report:", err);
       setError("Failed to load bids");
+      notifications.showToast({
+        message: "Unable to load bids. Please check your connection and try again.",
+        variant: "error",
+        durationMs: 4000,
+        deepLink: null,
+      });
     } finally {
       setLoading(false);
     }

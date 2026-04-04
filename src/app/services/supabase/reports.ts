@@ -77,20 +77,14 @@ export async function getDamageReports(
 }
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {
-  try {
-    const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
-      `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
-      { method: "GET" }
-    );
-    if (payload && Array.isArray(payload.reports)) {
-      if (import.meta.env.DEV) console.log(`[DEV] Loaded ${payload.reports.length} marketplace reports via edge`);
-      return payload.reports;
-    }
-  } catch (edgeError) {
-    if (import.meta.env.DEV) console.warn("[DEV] Marketplace edge failed:", edgeError);
-    return [];
+  const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
+    `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
+    { method: "GET" }
+  );
+  if (payload && Array.isArray(payload.reports)) {
+    if (import.meta.env.DEV) console.log(`[DEV] Loaded ${payload.reports.length} marketplace reports via edge`);
+    return payload.reports;
   }
-
   return [];
 }
 
