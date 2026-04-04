@@ -212,6 +212,21 @@ export function useReportForm({
   };
 
   const handleSubmitReport = async () => {
+    // Final validation gate — catch any data that slipped through step-level checks
+    const trimmedDescription = description.trim();
+    if (!vehicle.make?.trim() || !vehicle.model?.trim() || !vehicle.year?.trim()) {
+      setSubmitError("Vehicle information is incomplete. Please go back and fill in make, model, and year.");
+      return;
+    }
+    if (photos.length === 0) {
+      setSubmitError("At least one photo is required. Please go back and add a photo.");
+      return;
+    }
+    if (trimmedDescription.length < 10) {
+      setSubmitError("Description must be at least 10 characters. Please go back and update it.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
     setPhotoUploadWarning(null);
@@ -270,7 +285,7 @@ export function useReportForm({
           latitude: reportCoords?.lat ?? null,
           longitude: reportCoords?.lng ?? null,
           photos: uploadedPhotos,
-          description,
+          description: trimmedDescription,
           status: "pending" as const,
           createdAt: submittedAt,
           submittedAt,
