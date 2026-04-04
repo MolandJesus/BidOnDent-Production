@@ -1,9 +1,9 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 4, 2026 (Pass 836 — Insurance Directory)
+**Last updated:** April 5, 2026 (Pass 842 — Silent Error Swallow Cleanup)
 **Status:** Active execution tracker
-**Pass count:** 836
-**Build:** 0 errors (~3.3s)
+**Pass count:** 842
+**Build:** 0 errors (~3.2s)
 **Tests:** 555/555 passing (55 test files)
 **Branch:** BidOnDent-Horizon-Beta
 
@@ -105,10 +105,16 @@
 | 830  | Offline detection + SW update prompt  | useOnlineStatus hook (online/offline events), useServiceWorkerUpdate hook (virtual:pwa-register), App.tsx wired: offline/online toasts + floating update banner. tsconfig types updated.                                                                                   |
 | 831  | Image optimization                    | All src/assets images compressed: 30MB → 3MB (90% reduction). sips resize to 1920px max width, 70% JPEG quality. Profile PNG resized to 512px.                                                                                                                             |
 | 832  | Production hardening (CSP + HSTS)     | CSP header with whitelisted domains (Supabase, Clerk, Sentry, CARTO, Esri, OSM, OSRM). HSTS max-age=1yr. validateAppConfig utility checks Supabase/Clerk keys at startup.                                                                                                  |
-| 833  | Social Auth + Clerk branding          | Clerk appearance config (dark blue theme, BidOnDent branding). OAuth configured via Clerk Dashboard. LoginModal "coming soon" banners cleaned up — now documents OAuth availability.                                                                                          |
-| 834  | Enable privacy controls               | Migration 021: privacy columns on notification_preferences. Edge handler whitelist updated. TypeScript interface extended. SettingsModal privacy toggles wired to real backend persistence.                                                                                    |
-| 835  | Functional dashboard search           | DashboardHeader search input with real-time filtering across reports (vehicle, description, address, status). Results dropdown with click navigation to report detail. Keyboard Escape to close. Click-outside dismiss.                                                       |
-| 836  | Insurance directory with carriers     | InsuranceCompaniesScreen populated with major US auto insurance carriers (State Farm, GEICO, Progressive, etc.). Searchable grid with company details, claim types, digital experience ratings. Glass-styled cards.                                                            |
+| 833  | Social Auth + Clerk branding          | Clerk appearance config (dark blue theme, BidOnDent branding). OAuth configured via Clerk Dashboard. LoginModal "coming soon" banners cleaned up — now documents OAuth availability.                                                                                       |
+| 834  | Enable privacy controls               | Migration 021: privacy columns on notification_preferences. Edge handler whitelist updated. TypeScript interface extended. SettingsModal privacy toggles wired to real backend persistence.                                                                                |
+| 835  | Functional dashboard search           | DashboardHeader search input with real-time filtering across reports (vehicle, description, address, status). Results dropdown with click navigation to report detail. Keyboard Escape to close. Click-outside dismiss.                                                    |
+| 836  | Insurance directory with carriers     | InsuranceCompaniesScreen populated with major US auto insurance carriers (State Farm, GEICO, Progressive, etc.). Searchable grid with company details, claim types, digital experience ratings. Glass-styled cards.                                                        |
+| 837  | Password change via Clerk             | `onPasswordChange` callback wired to Clerk's `openUserProfile()` for full account management (password, email, 2FA). No custom UI needed.                                                                                                                                |
+| 838  | Shop contact in bid acceptance        | Full stack: `enrichBidsWithGeo` selects shop phone/address from `shop_profiles`. Bid type extended. AcceptedBidConfirmationSheet shows phone (tel: link), email (mailto: link), address with icons.                                                                        |
+| 839  | Shop active jobs from database        | `getJobAssignments` backend handler + edge route. Client service + `useShopJobAssignments` hook. ShopActiveJobsScreen wired with DB-first merge (real jobs + report-derived fallback). `shopClerkUserId` passed from DashboardRouter.                                      |
+| 840  | Error recovery toasts                 | Removed silent catch blocks from `getBidsForReport`, `getAllDamageReports`, `getJobAssignments`. Added error toast notifications in `useBidsForReport`, `useMarketplaceReports`, `useShopJobAssignments` hooks via NotificationToast system.                               |
+| 841  | Report submission validation gate     | Final validation in `handleSubmitReport`: vehicle make/model/year, min 1 photo, description >= 10 chars (trimmed). Prevents bad data from localStorage draft manipulation bypass.                                                                                         |
+| 842  | Silent error swallow cleanup          | Removed silent try/catch from 9 service functions in `bids.ts` and `reports.ts` (submitBid, updateBidStatus, getMyBids, getShopSubmittedBids, deleteBid, updateReportStatus, updateClaimDecision, submitInsuranceClaim, deleteDamageReport). Errors now propagate to hooks. |
 
 **Full re-anchor audit (Pass 810+):**
 
