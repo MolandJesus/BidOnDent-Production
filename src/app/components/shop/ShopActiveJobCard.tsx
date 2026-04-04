@@ -190,7 +190,7 @@ export default function ShopActiveJobCard({
         <h4
           className={`font-semibold text-sm mb-2 ${isLight ? "text-slate-700" : "text-blue-100/80"}`}
         >
-          Tasks
+          Workflow
         </h4>
         <div className="space-y-2">
           {job.tasks.map((task) => (

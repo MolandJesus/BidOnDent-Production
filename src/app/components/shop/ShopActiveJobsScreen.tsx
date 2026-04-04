@@ -36,26 +36,26 @@ export default function ShopActiveJobsScreen({
   const [selectedJob, setSelectedJob] = useState<ActiveJob | null>(null);
   const [statusOverrides, setStatusOverrides] = useState<Record<string, string>>({});
 
-  const buildTasks = (status: string) => {
+  const buildTasks = (status: string, hasBids: boolean) => {
     if (status === "completed") {
       return [
-        { id: 1, name: "Intake Review", completed: true },
-        { id: 2, name: "Bid Selected", completed: true },
-        { id: 3, name: "Repair Completed", completed: true },
+        { id: 1, name: "Report Received", completed: true },
+        { id: 2, name: "Bid Accepted", completed: true },
+        { id: 3, name: "Repair Complete", completed: true },
       ];
     }
 
     if (status === "in-progress") {
       return [
-        { id: 1, name: "Intake Review", completed: true },
-        { id: 2, name: "Bid Selected", completed: true },
+        { id: 1, name: "Report Received", completed: true },
+        { id: 2, name: "Bid Accepted", completed: true },
         { id: 3, name: "Repair In Progress", completed: false },
       ];
     }
 
     return [
-      { id: 1, name: "Intake Review", completed: true },
-      { id: 2, name: "Bid Selection", completed: false },
+      { id: 1, name: "Report Received", completed: true },
+      { id: 2, name: hasBids ? "Bid Submitted" : "Awaiting Bid", completed: hasBids },
       { id: 3, name: "Repair Start", completed: false },
     ];
   };
@@ -72,7 +72,10 @@ export default function ShopActiveJobsScreen({
       const vehicleData = report?.vehicle || report?.vehicleInfo || {};
       const vehicleParts = [vehicleData.year, vehicleData.make, vehicleData.model].filter(Boolean);
       const bidAmount = Number(report?.bidAmount) || 0;
-      const progress = status === "completed" ? 100 : status === "in-progress" ? 60 : 20;
+      const hasBids = (report?.bidsCount ?? 0) > 0 || bidAmount > 0;
+      const tasks = buildTasks(status, hasBids);
+      const completedCount = tasks.filter((t) => t.completed).length;
+      const progress = Math.round((completedCount / tasks.length) * 100);
 
       return {
         id: String(report?.id ?? `job-${index}`),
@@ -88,7 +91,7 @@ export default function ShopActiveJobsScreen({
         estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
         status,
         progress,
-        tasks: buildTasks(status),
+        tasks,
         insuranceClaim: report?.insuranceClaim ?? false,
         insuranceCompany: report?.insuranceCompany || "N/A",
         claimNumber: report?.claimNumber || "N/A",
@@ -98,15 +101,10 @@ export default function ShopActiveJobsScreen({
     .map((job) => {
       const override = statusOverrides[job.id];
       if (!override) return job;
-      const progress =
-        override === "completed"
-          ? 100
-          : override === "in-progress"
-            ? 60
-            : override === "awaiting-parts"
-              ? 45
-              : 20;
-      return { ...job, status: override, progress, tasks: buildTasks(override) };
+      const overrideTasks = buildTasks(override, true);
+      const completedCount = overrideTasks.filter((t) => t.completed).length;
+      const progress = Math.round((completedCount / overrideTasks.length) * 100);
+      return { ...job, status: override, progress, tasks: overrideTasks };
     });
 
   // Map pins for active job locations
