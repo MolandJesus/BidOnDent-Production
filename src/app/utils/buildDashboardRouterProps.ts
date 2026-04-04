@@ -237,16 +237,10 @@ export function buildDashboardRouterProps({
       const report = userData.reports.find((r) => String(r.id) === String(jobId));
       const assignmentId = report?.assignmentId;
       if (!assignmentId) {
-        if (import.meta.env.DEV)
-          console.warn("No assignmentId found for report", jobId, "— status update is local-only");
-        return;
+        throw new Error(`No assignment found for job ${jobId}`);
       }
 
-      try {
-        await updateJobAssignmentStatus(assignmentId, backendStatus);
-      } catch (err) {
-        if (import.meta.env.DEV) console.error("Failed to update job status:", err);
-      }
+      await updateJobAssignmentStatus(assignmentId, backendStatus);
     },
     onConfirmCompletion: async (reportId: string) => {
       try {

@@ -349,7 +349,7 @@ export default function ShopActiveJobsScreen({
           isLight={isLight}
           appearanceMode={appearanceMode}
           onClose={() => setSelectedJob(null)}
-          onUpdateStatus={(jobId, newStatus) => {
+          onUpdateStatus={async (jobId, newStatus) => {
             setStatusOverrides((prev) => ({ ...prev, [jobId]: newStatus }));
             const progress =
               newStatus === "completed"
@@ -362,7 +362,31 @@ export default function ShopActiveJobsScreen({
             setSelectedJob((prev) =>
               prev ? { ...prev, status: newStatus, progress, tasks: buildTasks(newStatus) } : null
             );
-            onUpdateJobStatus?.(Number(jobId), newStatus);
+
+            // Persist to backend (skip for seed/demo data)
+            if (!isSeedData && onUpdateJobStatus) {
+              try {
+                await onUpdateJobStatus(Number(jobId), newStatus);
+              } catch {
+                // Roll back optimistic update
+                setStatusOverrides((prev) => {
+                  const next = { ...prev };
+                  delete next[jobId];
+                  return next;
+                });
+                notifications.push({
+                  category: "shop",
+                  title: "Update failed",
+                  body: `Could not save status for Job #${jobId}. Please try again.`,
+                  payload: { jobId, newStatus },
+                  userId: "",
+                  deepLink: null,
+                  priority: "high",
+                });
+                return;
+              }
+            }
+
             const statusLabels: Record<string, string> = {
               "in-progress": "Repair started",
               "awaiting-parts": "Awaiting parts",
