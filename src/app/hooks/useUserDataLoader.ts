@@ -91,7 +91,7 @@ export async function hydrateFromCloudProfile(
   const photoStorage: Record<string, string[]> = {};
 
   if (Array.isArray(reportsData)) {
-    reports = reportsData.map(transformSupabaseReport) as unknown as DamageReport[];
+    reports = reportsData.map(transformSupabaseReport);
     reportsError = null;
     reportsData.forEach((report: SupabaseDamageReport) => {
       if (report.photo_urls && Array.isArray(report.photo_urls)) {
@@ -146,7 +146,7 @@ export async function hydrateFromCloudProfile(
   const cachePayload: UserData = {
     userInfo,
     vehicles,
-    reports: validReports.map(transformSupabaseReport) as unknown as DamageReport[],
+    reports: validReports.map(transformSupabaseReport),
     bids,
     userPhone,
     redirectInfo,

@@ -5,7 +5,7 @@ import type {
   Bid as SupabaseBid,
   DamageReport as SupabaseDamageReport,
 } from "../services/supabase/types";
-import type { UserData } from "../types";
+import type { UserData, DamageReport as FrontendReport } from "../types";
 import {
   getUserCacheKey as buildUserCacheKey,
   readLocalStorageItemSafely,
@@ -114,7 +114,7 @@ export function buildPhotoStorageFromReports(
   return photoStorageData;
 }
 
-export function transformSupabaseReport(report: SupabaseDamageReport) {
+export function transformSupabaseReport(report: SupabaseDamageReport): FrontendReport {
   const vehicleInfo = {
     make: report.vehicle_make || "",
     model: report.vehicle_model || "",
@@ -135,7 +135,7 @@ export function transformSupabaseReport(report: SupabaseDamageReport) {
     photos: report.photo_urls || [],
     description: report.damage_description || "",
     incident: report.additional_notes || "",
-    status: report.status || "pending",
+    status: (report.status || "pending") as FrontendReport["status"],
     createdAt: report.created_at || new Date().toISOString(),
     submittedAt: report.created_at || new Date().toISOString(),
     bids,
@@ -209,7 +209,7 @@ export function createFreshUserData(args: {
       profileImage: profileData.profile_image_url || "",
     },
     vehicles: vehiclesData,
-    reports: transformSupabaseReports(reportsData) as unknown as UserData["reports"],
+    reports: transformSupabaseReports(reportsData),
     bids: [],
     userPhone: profileData.phone || "",
     redirectInfo: {
@@ -218,7 +218,7 @@ export function createFreshUserData(args: {
     } as UserData["redirectInfo"],
     notifications: buildNotificationsSnapshot({
       userType: profileData.account_type,
-      reports: transformSupabaseReports(reportsData) as unknown as UserData["reports"],
+      reports: transformSupabaseReports(reportsData),
       bids: [],
       existingNotifications: [],
     }),
