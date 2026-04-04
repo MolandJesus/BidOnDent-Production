@@ -45,7 +45,11 @@ export default function ShopActiveJobsScreen({
         cancelled: "completed",
       };
       const status = statusMap[ja.status] || "pending";
-      const vehicleParts = [report?.vehicle_year, report?.vehicle_make, report?.vehicle_model].filter(Boolean);
+      const vehicleParts = [
+        report?.vehicle_year,
+        report?.vehicle_make,
+        report?.vehicle_model,
+      ].filter(Boolean);
       const tasks = buildTasks(status, !!bid);
       const completedCount = tasks.filter((t) => t.completed).length;
       const progress = Math.round((completedCount / tasks.length) * 100);
@@ -151,17 +155,16 @@ export default function ShopActiveJobsScreen({
 
   // Merge: DB jobs take priority, report-derived fill in the rest
   const dbJobIds = new Set(dbActiveJobs.map((j) => j.id));
-  const mergedJobs = [
-    ...dbActiveJobs,
-    ...reportDerivedJobs.filter((j) => !dbJobIds.has(j.id)),
-  ].map((job) => {
-    const override = statusOverrides[job.id];
-    if (!override) return job;
-    const overrideTasks = buildTasks(override, true);
-    const completedCount = overrideTasks.filter((t) => t.completed).length;
-    const progress = Math.round((completedCount / overrideTasks.length) * 100);
-    return { ...job, status: override, progress, tasks: overrideTasks };
-  });
+  const mergedJobs = [...dbActiveJobs, ...reportDerivedJobs.filter((j) => !dbJobIds.has(j.id))].map(
+    (job) => {
+      const override = statusOverrides[job.id];
+      if (!override) return job;
+      const overrideTasks = buildTasks(override, true);
+      const completedCount = overrideTasks.filter((t) => t.completed).length;
+      const progress = Math.round((completedCount / overrideTasks.length) * 100);
+      return { ...job, status: override, progress, tasks: overrideTasks };
+    }
+  );
 
   // Map pins for active job locations
   const jobPins = useMemo<ReportPin[]>(() => {
@@ -376,7 +379,14 @@ export default function ShopActiveJobsScreen({
 
       {/* Jobs List */}
       <div className="px-4 py-4 space-y-4">
-        {filteredJobs.length === 0 ? (
+        {dbJobsLoading && mergedJobs.length === 0 ? (
+          <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 sm:p-8 text-center">
+            <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-blue-400/30 border-t-blue-400" />
+            <p className={isLight ? "text-slate-600" : "text-blue-100/70"}>
+              Loading active jobs&hellip;
+            </p>
+          </div>
+        ) : filteredJobs.length === 0 ? (
           <div className="bd-dashboard-panel bd-dashboard-panel--deep p-5 sm:p-8 text-center">
             <AlertCircle
               className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500/60" : "text-blue-400/70"}`}
