@@ -2,8 +2,15 @@
 
 **Created:** 2026-04-15 (Pass 869 — pre-Phase 6 prep)
 **Source:** Hardening Plan Phase 6.1 + 6.3
-**Status:** Code-verified (Pass 875) — result columns blank until staging + prod runs
-**Last code verification:** 2026-04-15 (Pass 875)
+**Status:** Code-verified (Pass 875); local Docker columns partially populated via programmatic Passes 7–10. Hosted Staging + Prod columns remain blank until those runs execute.
+**Last code verification:** 2026-04-15 (Pass 10)
+
+**Updates since Pass 875:**
+
+- **Pass 8 (commit 1c4f43a7)** — Fixed `vehicle.year.trim is not a function` crash on saved-vehicle selection in report wizard. Affects Section 1 (Report create) — existing row can be marked verified after the next fresh run.
+- **Pass 9A (commit a27fb8a0)** — Fixed report submission `Failed to submit` by UUID-guarding `vehicle_id` + adding deadlock retry. Affects Section 1 (Report create). Browser-verified against PROD edge function.
+- **Pass 9B (commit 32a89668)** — Report wizard UI polish: inline `CarDiagram` SVG (replaces broken Unsplash image), rounded buttons, photo step spacing. Cosmetic — no checklist impact, but note a 3rd design AI is still iterating on `CarDiagram.tsx` (uncommitted).
+- **Pass 10 (commit cc5475bd)** — Collapsed `database_init.tsx` runtime DDL into validation-only. Prod edge function still runs pre-Pass 5/10 code — **re-deploy before running Section 4 (RLS) or Section 7 (Migrations) against staging or prod**.
 
 ---
 

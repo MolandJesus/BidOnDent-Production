@@ -44,19 +44,21 @@ Revisit this roadmap **immediately after soft launch is declared stable**, then 
 
 ## Architecture & Code Quality (Post-Launch)
 
-### A1. Full type system merge to one canonical set — **Conditional**
+### A1. Full type system merge to one canonical set — **Conditional → Immediate post-launch candidate**
 
 - **Deferred from:** Group 4a (chose adapter layer at service boundary for launch)
 - **Why deferred:** Full merge is 2–4 days of refactor across 100+ files — too expensive pre-launch, too risky to land during a trust-hardening phase.
 - **Target state:** No parallel DB/UI type authorities remain. Adapter layer is either removed entirely or reduced to external-boundary-only translation. Type conflicts (naming, primitive mismatches like `Vehicle.year` string vs number) are eliminated. Domain types are the single source of truth across the app.
 - **Trigger:** When the adapter layer proves painful (e.g., mapper-drift bugs, new features consistently bottlenecking on type gymnastics). If the adapter layer stays healthy, this does not need to happen.
+- **Audit evidence (Pass 10 cleanup, 2026-04-15):** `npx tsc --noEmit` currently reports **49 pre-existing type errors**, all concentrated at the `src/app/types/index` (domain) vs `src/app/services/supabase/types` (DB) boundary. Representative failures: (a) `useUserDataLoader.ts:116/149` — mapping functions typed against the domain `Bid`/`DamageReport` receive the DB variant with different required fields (`estimated_days`, `vehicle_make`, etc.), (b) `DashboardSecondaryViews.tsx:105,273,278` and `useDashboardData.ts:102,138,152` — code reads `zip_code`/`damage_report_id`/`report_id` off what TypeScript believes is the domain type. These are **silent Bug 1 waiting to happen** — the build succeeds only because `tsc` errors do not fail the build pipeline. After launch stabilizes, this is strong evidence the trigger has already fired; consider promoting to Immediate post-launch. Until then, catalog any new bug whose root cause touches this boundary (the Pass 8 `vehicle.year.trim` crash is the canonical example).
 
-### A2. Codegen for schema bootstrap helpers from SQL migrations — **Partially resolved (Pass 871/878)**
+### A2. Codegen for schema bootstrap helpers from SQL migrations — **Mostly resolved (Pass 871/878/10)**
 
 - **Deferred from:** Group 4b (originally chose to retain `database_schema_sql_*.ts` as temporary runtime bootstrap helpers during soft launch).
-- **Update (Pass 871):** Drift audit revealed the modular `database_schema_sql_*.ts` helpers were never consumed by any runtime path — `database_init.tsx` uses its own inline SQL. Helpers are reference-only dead code. Pass 878 deletes them, resolving the dual hand-written authority problem.
-- **Remaining:** `database_init.tsx` remains as a cold-start safety net with inline SQL. Evaluate post-launch whether to (a) auto-generate it from migrations, or (b) remove the bootstrap path entirely once edge function deploy is stable.
-- **Trigger:** Post-launch stabilization, or if `database_init.tsx` inline SQL drifts from canonical migrations.
+- **Update (Pass 871):** Drift audit revealed the modular `database_schema_sql_*.ts` helpers were never consumed by any runtime path. Helpers are reference-only dead code. Pass 878 deleted them, resolving the dual hand-written authority problem.
+- **Update (Pass 10, 2026-04-15):** `database_init.tsx` no longer runs DDL at all. It is now a 95-line validation-only function that checks required tables + `requesting_clerk_user_id()` exist on cold start. `handlers/health.ts migrateDatabase` also stripped of redundant `ALTER TABLE` DDL. The drift surface from this file is now effectively zero.
+- **Remaining:** Decide whether `database_init.tsx` validation should be (a) kept as a cold-start safety net, (b) moved to a CI check instead of a runtime check, or (c) removed entirely once hosted staging + prod edge function deploys are stable and observability would catch schema validation failures elsewhere.
+- **Trigger:** Post-launch stabilization, or as part of cold-start latency audit (the validation adds a round-trip to Postgres on every edge function boot).
 
 ### A3. Broader identity column cleanup — **Immediate post-launch**
 
@@ -84,6 +86,24 @@ Revisit this roadmap **immediately after soft launch is declared stable**, then 
 - **Interim recovery path (required at launch):** Until the admin restore UI exists, restoration must be possible via a **documented direct database or admin procedure**. Having recoverable data is not enough if there is no remembered path to actually restore it. The documented procedure lives in the hardening plan's launch readiness notes.
 - **Target state:** Admin dashboard exposes a "Deleted records" view with filter, preview, and one-click restore for reports, bids, job assignments, and vehicles.
 - **Trigger:** First real incident requiring a restore, OR when regular admin/support users need self-service recovery.
+
+### S1b. `navigation_sessions` RLS policy review — **Immediate post-launch (non-blocking)**
+
+- **Discovered:** Pass 10 cleanup audit (2026-04-15)
+- **Finding:** `public.navigation_sessions` has `ENABLE ROW LEVEL SECURITY` but zero `CREATE POLICY` entries in `20251230000001_full_schema.sql`. Under Postgres semantics this means the table is effectively service-role-only — authenticated clients cannot read, write, or delete rows directly, even their own.
+- **Why this is safe for launch:** All navigation session writes flow through the `server` edge function (service role bypasses RLS). No client-side code reads this table directly. Launch flows are not affected.
+- **Why it still needs review:** An intentional "service-role-only" posture should either be (a) documented in a migration comment explaining _why_ no client policies exist, or (b) replaced with an explicit client-scoped policy so the intent is machine-verifiable and not an accident of drift. The current state reads like an omission even when it is not.
+- **Target state:** Either a documented `/* intentional: service-role only, see roadmap S1b */` comment in the migration, or a `requesting_clerk_user_id()`-scoped SELECT/INSERT/UPDATE/DELETE policy set written in a new migration file.
+- **Trigger:** First post-launch security review, or the first time a client feature needs to read navigation sessions directly.
+
+### S1c. Production `schema_migrations` history reconciliation — **Immediate post-launch (high priority)**
+
+- **Discovered:** Pass 871 archival + Pass 873 consolidation (2026-04-15)
+- **Finding:** Prod's `supabase_migrations.schema_migrations` table still contains the 27 old filenames from the incremental migration era (e.g. `024_clerk_jwt_rls_policies`), while the repo at HEAD only contains the consolidated `20251230000001_full_schema.sql`. This means `supabase db push` against prod will see the consolidated file as a new migration, try to re-apply it, and fail with "already exists" errors. Every schema change to prod is currently forced through dashboard paste.
+- **Risk:** (a) human error in a dashboard paste is higher than in `db push`, (b) no idempotent replay path for prod schema, (c) drift between what's in `schema_migrations` and what's actually in the schema is invisible.
+- **Target state:** Prod's `schema_migrations` table either (i) has the 27 old rows replaced with a single row referencing `20251230000001_full_schema.sql`, or (ii) has a synthetic row inserted so `supabase db push` thinks the consolidated file has already been applied and moves on to future migrations. Pick whichever approach keeps the `supabase/migrations` folder as the single forward-looking source of truth.
+- **Blocker pattern to preserve until fixed:** New migration files landed alongside the frozen baseline (e.g. `20260416000001_soft_delete_rls_hardening.sql`, any future Pass 11 RLS work) must be applied to prod via dashboard paste until `schema_migrations` is reconciled. Anyone running `supabase db push` against prod before this is fixed will get an error and may assume the migration itself is broken.
+- **Trigger:** Immediately post-launch. This is infrastructure debt that compounds — every new migration widens the gap.
 
 ### S2. Audit logging dashboard — **Conditional**
 
@@ -188,3 +208,4 @@ If an AI or dev finds themselves about to start work on one of these items witho
 - **2026-04-14** — Document created alongside the Soft Launch Hardening Plan. Seeded with deferred items from Groups 1–5.
 - **2026-04-14** — Nine refinements applied after outside pressure-test: review cadence added, priority bands introduced (Immediate post-launch / Conditional / Later), target state language tightened on A1/A2/D1, A3 stricter wording to prevent excuse-for-leaving-critical-messes-unfinished, S1 interim recovery path required, S2 minimum event fields explicitly referenced, F3 distinguished from observability, I1 trigger sharpened to user-visible pain, "Not Approved as Assumed Next Steps" section added as final anti-drift guardrail. Front-matter now explicitly frames the doc as a controlled holding area, not a second backlog.
 - **2026-04-14** — D2 added: "Finalize Privacy Policy content" (Immediate post-launch). Privacy Policy page exists and renders but content is an honest placeholder. Flagged during Phase 0 Pre-flight audit (Pass 855). Acceptable for soft launch; must be completed before scale or marketing push.
+- **2026-04-15** — Pass 10 cleanup audit additions: (a) A1 expanded with TypeScript type drift evidence — `tsc` reports 49 pre-existing errors at the domain/DB type boundary, reframed as near-Immediate; (b) A2 updated to reflect Pass 10's conversion of `database_init.tsx` to validation-only; (c) new **S1b** added — `navigation_sessions` has RLS enabled with zero policies, effectively service-role-only, needs intent documentation or explicit policies; (d) new **S1c** added — prod's `schema_migrations` still contains the 27 old incremental filenames, blocking `supabase db push` against prod until reconciled, flagged as high-priority Immediate post-launch infra debt.

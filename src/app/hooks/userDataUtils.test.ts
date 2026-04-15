@@ -302,7 +302,7 @@ describe("buildSupabaseReportPayload", () => {
     const report = {
       id: "550e8400-e29b-41d4-a716-446655440000",
       vehicle: { make: "Honda", model: "Civic", year: "2022" },
-      vehicleId: "v-1",
+      vehicleId: "7c0c4f5e-2b88-4d2e-9f1a-8a7e6d5c4b3a",
       damageArea: "rear bumper",
       description: "Paint scratch",
       address: "456 Oak Ave",
@@ -321,12 +321,17 @@ describe("buildSupabaseReportPayload", () => {
     expect(result.vehicle_make).toBe("Honda");
     expect(result.vehicle_model).toBe("Civic");
     expect(result.vehicle_year).toBe(2022);
-    expect(result.vehicle_id).toBe("v-1");
+    expect(result.vehicle_id).toBe("7c0c4f5e-2b88-4d2e-9f1a-8a7e6d5c4b3a");
     expect(result.damage_type).toBe("rear bumper");
     expect(result.damage_description).toBe("Paint scratch");
     expect(result.photo_urls).toEqual(["img1.jpg"]);
     expect(result.additional_notes).toBe("Hit by shopping cart");
     expect(result.zip_code).toBe("10601");
+  });
+
+  it("omits vehicle_id when not UUID-like (Pass 9A guard)", () => {
+    const result = buildSupabaseReportPayload({ vehicleId: "v-1" });
+    expect(result.vehicle_id).toBeUndefined();
   });
 
   it("omits id when not UUID-like", () => {
