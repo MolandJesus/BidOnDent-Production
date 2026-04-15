@@ -15,9 +15,6 @@ dist
 .supabase/
 supabase/.temp/
 
-# One-off staging bootstrap files (generated, not tracked)
-staging_bootstrap.sql
-
 # Local-only import/export and backup artifacts
 imports/
 exports/

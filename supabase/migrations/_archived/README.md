@@ -1,105 +1,25 @@
-# Bidondent Database Migrations
+# ⚠️ ARCHIVED — DO NOT APPLY
 
-This directory contains SQL migration files to set up the Bidondent database schema in Supabase.
+These 27 files are the **historical** incremental migrations that built the production database incrementally through 2026-04-15. They are kept for audit / forensic reference only.
 
-## How to Run Migrations
+## Do not run these files
 
-### Option 1: Using Supabase Dashboard (Recommended)
+- **Fresh environment bootstrap** (local Docker, new staging project, new prod project): use the consolidated single-pass migration at [`../20251230000001_full_schema.sql`](../20251230000001_full_schema.sql). That file represents the final intended schema state with every fix, dedupe, and RLS policy already applied.
+- **Existing production** (`wmdcnjgtsppftrofaqqa`): already has every one of these applied in its `supabase_migrations.schema_migrations` history. Re-running would fail with "already exists" errors.
+- **Existing staging** (`lhhdqycnhweaxqviwdqt`): bootstrapped from the consolidated migration. Same caveat.
 
-1. Go to your Supabase project dashboard
-2. Navigate to **SQL Editor** in the left sidebar
-3. Click **New Query**
-4. Copy and paste the contents of each migration file in order. Recommended order:
-    - `001_initial_schema.sql`
-    - `004_fix_profiles_recursion.sql`
-    - `20231223000001_create_storage_buckets.sql`
-5. If you are applying the legacy files instead, run in this order:
-    - `001_create_profiles_table.sql`
-    - `002_create_vehicles_table.sql`
-    - `003_create_damage_reports_table.sql`
-6. Click **Run** for each migration
+## Why they were archived (2026-04-15)
 
-### Option 2: Using Supabase CLI
+Applying them sequentially against a fresh database reproducibly failed due to:
 
-If you have the Supabase CLI installed:
+- Duplicate `CREATE TABLE` definitions for `profiles`, `vehicles`, `damage_reports` across early migrations with conflicting `CHECK` constraints.
+- Orphaned RLS policies from early migrations that later migrations never dropped, leaving dead policies alongside their replacements.
+- Duplicate `updated_at` triggers firing twice per row update (two trigger functions: `handle_updated_at()` and `update_updated_at_column()`).
+- Storage bucket privatization in migration 013 undone by the later `20231223000001_create_storage_buckets.sql` recreating them as public.
+- Cross-dependency on tables created only by `database_init.tsx` (runtime cold-start SQL) or ad-hoc dashboard pastes — migration 012 dropped policies on tables that had never existed in the migrations folder.
 
-```bash
-# From your project root
-supabase db push
-```
+Migration `011b_canonical_catchup.sql` (Pass 871) tried to close the drift gap but the underlying fragmentation was inherent. Pass (2026-04-15) replaced the fragmented set with the single consolidated file.
 
-## Migration Files
+## Production migration history note
 
-### 001_initial_schema.sql
-Creates the baseline tables and policies for profiles, vehicles, damage reports, and bids.
-
-### 001_create_profiles_table.sql
-Creates the `profiles` table to store user account information including:
-- User ID (linked to auth.users)
-- Email, name, phone
-- Profile image URL
-- Account type (customer, shop, insurer)
-- Timestamps
-
-Includes Row Level Security policies so users can read all profiles but only modify their own.
-
-### 002_create_vehicles_table.sql
-Creates the `vehicles` table to store user vehicles including:
-- User ID (linked to auth.users)
-- Make, model, year
-- Color, license plate, VIN
-- Vehicle image URL
-- Timestamps
-
-Includes Row Level Security policies so users can only access their own vehicles.
-
-### 003_create_damage_reports_table.sql
-Creates the `damage_reports` table to store damage reports including:
-- User ID (linked to auth.users)
-- Vehicle information
-- Damage details (type, severity, location, description)
-- Location information (address, city, state, zip)
-- Photo URLs (array)
-- Insurance information
-- Status tracking
-- Timestamps
-
-Includes Row Level Security policies so:
-- Users can access their own damage reports
-- Shops and insurers can view all damage reports
-- Users can only modify their own reports
-
-### 004_fix_profiles_recursion.sql
-Fixes a recursion issue in profile policies.
-
-### 20231223000001_create_storage_buckets.sql
-Creates the required Supabase Storage buckets for profile, vehicle, and damage photos.
-
-## Database Schema Overview
-
-```
-auth.users (Supabase Auth)
-    ↓
-profiles (user account info)
-    ↓
-vehicles (user vehicles)
-    ↓
-damage_reports (damage reports linked to vehicles)
-```
-
-## Row Level Security (RLS)
-
-All tables have RLS enabled with appropriate policies:
-
-- **Profiles**: Read all, modify own
-- **Vehicles**: Full CRUD for own vehicles only
-- **Damage Reports**: 
-  - Customers: Full CRUD for own reports
-  - Shops/Insurers: Read all reports (for bidding/claims)
-
-## Notes
-
-- All tables use UUID for primary keys
-- Foreign keys use CASCADE delete for automatic cleanup
-- Timestamps are automatically managed with triggers
-- Photo URLs are stored as TEXT arrays for damage_reports
+Production's `supabase_migrations.schema_migrations` still contains entries under the old filenames (e.g. `024_clerk_jwt_rls_policies`). The consolidated migration was NOT applied to production — production's schema is the cumulative result of these 27 files already. If `supabase db push` is ever run against production, it will see `20251230000001_full_schema.sql` as a new migration and attempt to re-apply it (which will fail). Always use dashboard paste for prod schema changes until this is resolved.

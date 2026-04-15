@@ -295,97 +295,77 @@ All service files live in `src/app/services/supabase/`. Each wraps `requestSupab
 
 ## 9. Database Initialization Strategy
 
-### Source of truth: `supabase/migrations/`
+### Source of truth: consolidated single-pass migration (2026-04-15)
 
-**The `supabase/migrations/` folder is the single authoritative source for the
-database schema.** Any fresh environment (local dev, staging, a new prod) must
-be bootstrapped by applying every file in this folder in lexicographic order.
-Every schema-affecting change — new table, new column, new policy, new trigger
-— must be introduced by a new migration file.
+**`supabase/migrations/20251230000001_full_schema.sql` is the single authoritative
+schema source.** It represents the final intended state of every table, RLS policy,
+trigger, function, index, and storage bucket after all hardening work through
+Phase 5.1. Any fresh environment (local Docker, new staging project, new prod
+project) is bootstrapped by applying this one file.
 
-This rule was **not** historically enforced. Prior to 2026-04-15 the schema was
-a Frankenstein built from three overlapping sources:
+The 27 historical incremental migrations that previously occupied this folder are
+archived at `supabase/migrations/_archived/` for audit reference only. They must
+not be applied to any environment — see that folder's README for the full list of
+cross-dependency bugs that made them fail on fresh databases (duplicate CREATE
+TABLE definitions with conflicting CHECK constraints, orphaned RLS policies,
+double-firing triggers, storage bucket privatization undone by a later file,
+and cross-dependencies on tables created only by `database_init.tsx`).
 
-1. Migration files in `supabase/migrations/`
-2. Runtime edge-function init in `database_init.tsx` (called on cold start)
-3. One-off dashboard pastes (`database-setup/*.sql`, ad-hoc SQL editor runs)
+### Production migration history caveat
 
-Several launch-critical tables (`shop_interest_submissions`,
-`insurer_interest_submissions`, `platform_activity_events`, `public_partner_shops`,
-`job_assignments`, `estimate_requests`) and Clerk-era columns on `bids`,
-`vehicles`, and `profiles` were never captured in a migration. This broke the
-staging bootstrap on 2026-04-15 when migration 012 tried to drop policies on
-tables that had never been created from the migrations folder alone.
+Production (`wmdcnjgtsppftrofaqqa`) was built incrementally via the 27 archived
+migrations and already contains their entries in `supabase_migrations.schema_migrations`.
+The consolidated file has **not** been applied to production and its name is **not**
+in prod's history. As a direct consequence:
 
-Migration `011b_canonical_catchup.sql` was added to close the drift gap. It is
-idempotent (all `IF NOT EXISTS` / `DO $$ ... IF NOT EXISTS $$`), so running it
-against production is a no-op — production already has every table and column
-it defines. On a fresh environment it fills in exactly what's missing so
-migrations 012, 024, 025, 026, and 027 apply cleanly.
+- `supabase db push` against production would see `20251230000001_full_schema.sql`
+  as a new migration and try to re-apply it, which fails with "already exists" errors.
+- **All production schema changes must go through dashboard paste** until this is
+  resolved. Post-launch, prod's `schema_migrations` can be reconciled by inserting
+  a row for the consolidated file name (one-time SQL) so `supabase db push` works
+  cleanly for future changes.
+
+### Future schema changes
+
+Every schema-affecting change from 2026-04-15 forward lands as a **new** migration
+file alongside the consolidated one — e.g. `20260501000001_add_foo.sql`. These new
+files apply cleanly to local, staging, and prod because they sort after both the
+consolidated migration (fresh environments) and the archived names (production history).
+
+Do **not** edit `20251230000001_full_schema.sql` to add new schema. Treat it as a
+frozen baseline.
 
 ### Legacy cold-start safety net: `database_init.tsx`
 
 `supabase/functions/server/database_init.tsx` still runs `initializeDatabaseTables()`
-on edge function cold start via `supabase/functions/server/index.ts:92`. This
-predates the migrations-first rule and contains its own ~700-line inline SQL
-blob that creates a partial subset of the schema idempotently. It is retained
-as a **cold-start safety net only** — it exists so that edge functions remain
-resilient to a partially bootstrapped database in an emergency. It is **not**
-authoritative and **must not** be treated as equal to the migrations folder.
-New schema work goes into migrations; this file is frozen pending retirement
-(tracked on the post-launch roadmap).
+on edge function cold start via `supabase/functions/server/index.ts:92`. It predates
+the migrations-first rule and contains its own inline SQL that creates a partial
+subset of the schema idempotently. Retained as a cold-start safety net only — not
+authoritative. New schema work goes into new migration files. Retirement is tracked
+on the Post-Launch Roadmap.
 
 ### ~~Modular helper stubs: `database_schema_sql_*.ts`~~ — Removed (Pass 878)
 
-These files were reference-only dead code — never consumed by any runtime path.
-`database_init.tsx` uses its own inline SQL, not these modules. They were deleted
-in Pass 878 after verification confirmed zero external consumers. The migrations
-folder is the enforced source of truth (see §9 header and Execution Discipline rule 4).
+Reference-only dead code, never consumed by any runtime path. Deleted in Pass 878.
 
 ### Migration files (`supabase/migrations/`)
 
-Apply in lexicographic filename order for fresh environments:
+| File                             | Role                                                                                                                                                                                                                                                                                                                                                             |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `20251230000001_full_schema.sql` | **Consolidated single-pass bootstrap.** The entire schema in one file: 17 tables, 34 Clerk-JWT-aware RLS policies, 18 `updated_at` triggers, utility functions (`handle_updated_at`, `update_updated_at_column`, `requesting_clerk_user_id`), PostGIS extension + spatial indexes, 3 canonical + 3 legacy private storage buckets, role grants. Frozen baseline. |
+| `_archived/*.sql`                | Historical incremental migrations (27 files) through 2026-04-15. Audit-only. **Do not apply.** See `_archived/README.md`.                                                                                                                                                                                                                                        |
 
-| #    | File                                               | Purpose                                                            |
-| ---- | -------------------------------------------------- | ------------------------------------------------------------------ |
-| 001  | `001_create_profiles_table.sql`                    | Legacy profiles DDL + `handle_updated_at()` trigger function       |
-| 001  | `001_initial_schema.sql`                           | Baseline: profiles, vehicles, damage_reports, bids, shop/insurer   |
-| 002  | `002_create_vehicles_table.sql`                    | Vehicles with user-scoped RLS                                      |
-| 003  | `003_create_damage_reports_table.sql`              | Damage reports with role-based RLS                                 |
-| 004  | `004_fix_profiles_recursion.sql`                   | Fix infinite recursion in profile policies                         |
-| 005  | `005_create_website_preferences_table.sql`         | Provider-agnostic session memory                                   |
-| 006  | `006_make_business_profiles_provider_agnostic.sql` | Clerk identity on business profiles                                |
-| 007  | `007_create_website_relationships_table.sql`       | Durable user↔entity relationships                                 |
-| 008  | `008_organize_website_storage_and_profiles.sql`    | Storage bucket reorganization                                      |
-| 009  | `009_create_navigation_sessions.sql`               | Persistent navigation flow state                                   |
-| 010  | `010_add_clerk_user_id_to_damage_reports.sql`      | Clerk-first auth on reports                                        |
-| 011  | `011_fix_damage_reports_rls_for_clerk.sql`         | RLS updates for Clerk identity                                     |
-| 011b | `011b_canonical_catchup.sql`                       | **Catchup**: missing tables/columns so 012+ apply on fresh DB      |
-| 012  | `012_harden_rls_policies.sql`                      | Strengthened RLS across all tables                                 |
-| 013  | `013_privatize_user_storage_buckets.sql`           | User-scoped storage access                                         |
-| 014  | `014_navigation_sessions_clerk_identity.sql`       | Navigation sessions Clerk support                                  |
-| 015  | `015_add_claim_decision_fields.sql`                | Claims decision tracking columns                                   |
-| 016  | `016_add_report_coordinates.sql`                   | Geocoded lat/lng on damage_reports                                 |
-| 017  | `017_create_shop_service_areas.sql`                | Per-shop radius / zip service areas                                |
-| 018  | `018_enable_postgis_geography.sql`                 | PostGIS + GEOGRAPHY(POINT) columns + spatial indexes               |
-| 019  | `019_create_notification_preferences.sql`          | Per-user email/in-app/SMS toggles                                  |
-| 020  | `020_add_shop_assignment_to_reports.sql`           | `assigned_shop_clerk_user_id` on damage_reports                    |
-| 021  | `021_add_privacy_columns.sql`                      | Privacy toggles on notification_preferences                        |
-| 024  | `024_clerk_jwt_rls_policies.sql`                   | Full Clerk JWT RLS rewrite (`requesting_clerk_user_id()` helper)   |
-| 025  | `025_event_capture_columns.sql`                    | `actor_id/object_id/outcome` on platform_activity_events           |
-| 026  | `026_idempotency_guards.sql`                       | Unique indexes preventing duplicate bids / job_assignments         |
-| 027  | `027_soft_delete.sql`                              | `deleted_at` on launch-critical tables                             |
-| —    | `20231223000001_create_storage_buckets.sql`        | Legacy storage bucket setup (earliest sort; supersedes by 008/013) |
+Future schema changes land as new files alongside the baseline, using a timestamp that sorts after it (e.g. `20260501000001_add_foo.sql`). They apply cleanly to fresh environments (which already have the baseline) and — once production's `schema_migrations` is reconciled — to production as well.
 
-### Staging / fresh-environment bootstrap (PG17 note)
+### Fresh-environment bootstrap paths
 
-Supabase PG17 projects isolate `uuid-ossp` and `postgis` into the `extensions`
-schema, which is **not** on the default `search_path` for the CLI-provisioned
-role. `supabase db push` is broken against PG17 staging as a result — use the
-dashboard SQL editor paste path instead. See
-`memory/feedback_supabase_cli_pg17.md` for the full gotcha and
-`staging_bootstrap.sql` for the concatenated, `gen_random_uuid()`-swapped blob
-used to bootstrap staging from scratch.
+| Environment                  | Path                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Local dev (Supabase Docker)  | `supabase start` applies the consolidated migration automatically on first boot.                      |
+| New hosted staging / sandbox | Paste `20251230000001_full_schema.sql` into the target project's SQL editor. Dashboard path, not CLI. |
+| Existing production          | Already built incrementally. Do not re-bootstrap. Schema changes via dashboard paste (see §9 caveat). |
+
+**PG17 note:** Supabase PG17 projects isolate `uuid-ossp` and `postgis` into the `extensions` schema, which is not on the default `search_path` for the CLI-provisioned role. `supabase db push` is broken against PG17 projects — use dashboard paste. See `memory/feedback_supabase_cli_pg17.md` for the full gotcha.
 
 ---
 
@@ -546,46 +526,44 @@ Do not delete `bidondent-profiles`, `bidondent-vehicles`, or `bidondent-damage-p
 
 ## Staging Environment
 
-> ⚠️ **Pending account setup** — No staging Supabase project exists yet. The steps below describe the intended preview/staging flow once a staging project is created.
+Staging Supabase project: `lhhdqycnhweaxqviwdqt` (created 2026-04-15 for Phase 5 hardening).
 
-### Preview deployment flow (Vercel)
+### Supabase
 
-BidOnDent is deployed to Vercel. Every push to `BidOnDent-Horizon-Beta` or a PR branch should generate a Vercel preview deployment. To verify:
+- **Bootstrap:** Paste `supabase/migrations/20251230000001_full_schema.sql` into the staging project's SQL editor. Do not use `supabase db push` — PG17 search-path incompatibility blocks it.
+- **Edge function:** `supabase functions deploy server --project-ref lhhdqycnhweaxqviwdqt` (verified working per Pass 880).
+- **Edge function secrets:** `supabase secrets set CLERK_SECRET_KEY=<key> RESEND_API_KEY=<key> --project-ref lhhdqycnhweaxqviwdqt`.
 
-1. Open the Vercel dashboard → **BidOnDent-Production** project → **Deployments** tab.
-2. Confirm a preview URL exists for a recent `BidOnDent-Horizon-Beta` commit.
-3. The preview URL will use whichever environment variables are configured under **Settings → Environment Variables → Preview**.
+### Vercel preview flow
 
-### Staging Supabase project (manual setup required)
+Every push to `BidOnDent-Horizon-Beta` or a PR branch should generate a Vercel preview deployment. Configure the following under **Settings → Environment Variables → Preview** so previews hit staging Supabase, not prod:
 
-To isolate preview deployments from production data:
+| Variable                     | Value                                             |
+| ---------------------------- | ------------------------------------------------- |
+| `VITE_SUPABASE_URL`          | `https://lhhdqycnhweaxqviwdqt.supabase.co`        |
+| `VITE_SUPABASE_ANON_KEY`     | Staging anon/public key (from Supabase dashboard) |
+| `VITE_CLERK_PUBLISHABLE_KEY` | Same Clerk key as prod (shared identity)          |
+| `VITE_SENTRY_ENVIRONMENT`    | `staging`                                         |
 
-1. Create a new Supabase project (e.g., `bidondent-staging`) in the Supabase dashboard.
-2. Run all 27 migrations in order against the staging project:
-   ```bash
-   supabase db push --db-url "postgresql://postgres:<password>@<staging-host>:5432/postgres"
-   ```
-3. Set the following environment variables on Vercel under **Preview** scope:
-   | Variable | Value |
-   | ------------------------------- | ---------------------------------- |
-   | `VITE_SUPABASE_PROJECT_ID` | Staging project ref |
-   | `VITE_SUPABASE_ANON_KEY` | Staging anon/public key |
-   | `VITE_CLERK_PUBLISHABLE_KEY` | Same Clerk key (shared identity) |
-   | `VITE_SENTRY_ENVIRONMENT` | `staging` |
-4. Deploy the Supabase edge function (`server`) to the staging project:
-   ```bash
-   supabase functions deploy server --project-ref <staging-ref>
-   ```
-5. Set edge function secrets on the staging project:
-   ```bash
-   supabase secrets set CLERK_SECRET_KEY=<key> RESEND_API_KEY=<key> --project-ref <staging-ref>
-   ```
+### Local Docker stack (Phase 5 hardening addition)
+
+As of 2026-04-15, `supabase start` spins up a full local stack (Postgres + Studio + edge runtime) with the consolidated migration applied automatically. Use this for development to avoid touching staging or prod data:
+
+```bash
+supabase start               # boots the local stack
+supabase functions serve     # serves edge functions from supabase/functions/server
+```
+
+Studio: http://127.0.0.1:54323. API: http://127.0.0.1:54321. DB: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`.
+
+Local Clerk keys live in `supabase/.env.local` (gitignored). Local Supabase auto-injects `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` at function serve time.
 
 ### Current status
 
-- **Vercel project:** Connected (assumed via GitHub integration — no `vercel.json` or CLI config in repo).
-- **Preview deployments:** Unverified from repo. Check Vercel dashboard manually.
-- **Staging Supabase:** Does not exist. Requires account-level action described above.
+- **Vercel preview env vars:** Pending user-side configuration (not in repo).
+- **Staging Supabase bootstrap:** Complete (Pass 872).
+- **Staging edge function deploy:** Complete (Pass 880).
+- **Local Docker stack:** Complete (Pass c2b44425).
 
 ---
 

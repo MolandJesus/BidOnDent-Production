@@ -40,16 +40,36 @@ Optional for local development:
 
 Keep all `.env` values local-only. Do not commit `.env` or `.env.*` files.
 
-## 3) Run database migrations
+## 3) Bootstrap the database
 
-Follow the order in `supabase/migrations/README.md` and run each migration in Supabase SQL Editor.
+As of 2026-04-15 the schema is a single consolidated migration: [`supabase/migrations/20251230000001_full_schema.sql`](../supabase/migrations/20251230000001_full_schema.sql). The 27 historical incremental migrations are archived at `supabase/migrations/_archived/` and must not be re-applied — see that folder's README for context.
 
-This creates:
+### Option A — Local Docker stack (preferred for dev)
+
+Install the Supabase CLI, make sure Docker Desktop is running, then from the repo root:
+
+```bash
+supabase start
+```
+
+The CLI spins up Postgres + Studio + edge runtime locally and applies `20251230000001_full_schema.sql` on first boot. Studio is at http://127.0.0.1:54323.
+
+### Option B — Dashboard paste against a hosted project
+
+If you're bootstrapping a brand-new hosted Supabase project (fresh staging, cloned prod, personal sandbox):
+
+1. Open the project's SQL Editor in the Supabase dashboard.
+2. Paste the contents of `supabase/migrations/20251230000001_full_schema.sql` and run it.
+3. Verify: 17 tables in `public`, 34 RLS policies, 3 canonical + 3 legacy storage buckets (all `public = false`), PostGIS enabled.
+
+`supabase db push` is **not** a supported path right now: production's migration history contains the old per-file names, so a push would try to re-apply the consolidated file and fail. Dashboard paste is the current bootstrap path for hosted environments.
+
+This bootstrap creates:
 
 - Core tables (profiles, vehicles, damage reports, bids)
 - Website identity/session tables (`website_preferences`, `website_relationships`)
-- RLS policies and indexes
-- Canonical website storage buckets (`bidondent-account-media`, `bidondent-vehicle-media`, `bidondent-report-media`)
+- RLS policies, indexes, triggers
+- Canonical storage buckets (`bidondent-account-media`, `bidondent-vehicle-media`, `bidondent-report-media`) — all private, accessed via edge functions + signed URLs
 
 ## 4) Start the app
 
