@@ -174,11 +174,11 @@ curl -i "https://lhhdqycnhweaxqviwdqt.supabase.co/functions/v1/server/health"
 
 ### Triage
 
-| Package | Severity | Direct/transitive | Real exposure |
-|---|---|---|---|
-| `vite` 6.4.1 → 6.4.2 | high + medium | direct (`devDependencies`) | dev server only — both CVEs require `vite dev` exposed; production builds unaffected |
-| `lodash` 4.17.23 → 4.18.0 | high + medium | transitive (recharts + workbox-build) | **zero direct imports in `src/`** verified by grep — risk surface is whatever recharts uses internally; recharts upgrades cleanly |
-| `serialize-javascript` 6.0.2 → 7.0.5 | high + medium | transitive (vite-plugin-pwa → @rollup/plugin-terser → workbox-build) | build-time only, never runs in production browser — zero end-user risk |
+| Package                              | Severity      | Direct/transitive                                                    | Real exposure                                                                                                                     |
+| ------------------------------------ | ------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `vite` 6.4.1 → 6.4.2                 | high + medium | direct (`devDependencies`)                                           | dev server only — both CVEs require `vite dev` exposed; production builds unaffected                                              |
+| `lodash` 4.17.23 → 4.18.0            | high + medium | transitive (recharts + workbox-build)                                | **zero direct imports in `src/`** verified by grep — risk surface is whatever recharts uses internally; recharts upgrades cleanly |
+| `serialize-javascript` 6.0.2 → 7.0.5 | high + medium | transitive (vite-plugin-pwa → @rollup/plugin-terser → workbox-build) | build-time only, never runs in production browser — zero end-user risk                                                            |
 
 ### Fix
 
