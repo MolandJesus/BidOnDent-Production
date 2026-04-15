@@ -117,14 +117,13 @@ These items are launch-scope regardless of which question group they originate f
 - **No mapping logic in UI code. No mini-adapters scattered across components.**
 - Full merge to a single canonical type set remains the long-term goal post-launch — clean, organized code is a stated priority alongside functionality and design.
 
-**4b. Schema source of truth — SQL migrations are canonical law; TS generators are temporary runtime bootstrap helpers.**
+**4b. Schema source of truth — SQL migrations are canonical law (updated Pass 871/877).**
 
 - `supabase/migrations/*.sql` = **canonical schema law.** Single source of truth.
-- `supabase/functions/server/database_schema_sql_*.ts` + `database_init.tsx` = **temporary runtime bootstrap helpers**, retained only as a cold-start safety net during soft launch. Not an equal authority.
-- TS helpers must **mirror** canonical schema, never invent it.
-- **Execution rule (baked into pass discipline, not a floating doc):** every schema-affecting change must update both paths in the same pass. The pass log / Module Completion Matrix must explicitly confirm schema sync was completed.
-- **Post-launch:** replace TS helpers with auto-generated codegen from SQL migrations, then delete the bootstrap path entirely.
-- Verified load-bearing at [supabase/functions/server/index.ts:8](supabase/functions/server/index.ts#L8) — `initializeDatabaseTables` is called on every edge function cold start. Cannot be deleted without removing bootstrap.
+- `supabase/functions/server/database_init.tsx` = **cold-start safety net only.** Uses its own inline SQL. Retained during soft launch but must not invent schema — it mirrors canonical migrations. Verified load-bearing at [supabase/functions/server/index.ts:8](supabase/functions/server/index.ts#L8) — `initializeDatabaseTables` is called on every edge function cold start.
+- `supabase/functions/server/database_schema_sql_*.ts` = **reference-only dead code.** Never consumed by any runtime path (`database_init.tsx` uses inline SQL, not these exports). Slated for removal in Pass 878.
+- **Execution rule (updated Pass 871):** see Execution Discipline rule 4 below. Every schema-affecting change lands as a new migration file. No dual-path sync required.
+- **Post-launch:** evaluate whether `database_init.tsx` cold-start bootstrap is still needed once edge function deploy is stable.
 
 **4c. Hardcoded Clerk + Supabase keys — migrate to `.env`.**
 
@@ -363,7 +362,7 @@ Work items:
 - For each, normalize to `clerk_user_id` (TEXT) as the primary identity column. Write migrations.
 - Update all service-layer code to use `clerk_user_id` consistently.
 - **Launch-first pragmatism:** if scope expands beyond these tables, stop, document the remaining work in [BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) under A3, and proceed to Phase 3. Do NOT let identity cleanup block RLS rollout.
-- Schema sync execution rule: every migration in this step must update both the SQL migration AND the corresponding `database_schema_sql_*.ts` helper in the same pass.
+- ~~Schema sync execution rule~~ — **Superseded by Pass 871.** Migrations folder is the sole authority; `database_schema_sql_*.ts` helpers are dead code. See Execution Discipline rule 4.
 
 **Gate criteria:** Launch-critical flows have **no verified DB-type leaks into UI code**, adapter functions exist for each launch-critical model, and a grep/typecheck review confirms no new snake_case DB types are consumed directly in components/hooks for those flows. Launch-critical tables all use `clerk_user_id`. Full test suite still passing (543+/555 baseline, do not regress). No runtime errors in preview env.
 

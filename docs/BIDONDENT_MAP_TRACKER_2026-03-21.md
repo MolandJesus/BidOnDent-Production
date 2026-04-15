@@ -124,6 +124,33 @@ Added to [docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md](docs/BIDONDENT_
 
 ---
 
+## Pass 877 — Governance Doc Consistency Sweep (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Pass 871 fallout cleanup
+**Outcome:** Reconciled 4 governance doc locations that still described `database_schema_sql_*.ts` helpers as "temporary runtime bootstrap helpers" or required dual-path schema sync. All now correctly reflect the Pass 871 stance: helpers are reference-only dead code (never consumed by any runtime path), `database_init.tsx` alone is the cold-start safety net, and migrations folder is the sole authority.
+
+### Changes
+
+1. **Hardening plan Group 4b (~line 121):** Separated `database_init.tsx` (cold-start safety net, load-bearing) from `database_schema_sql_*.ts` (dead code, slated for Pass 878 removal). Removed "TS helpers must mirror" and dual-path execution rule. Updated heading to note Pass 871/877.
+
+2. **Hardening plan Phase 2.2 (~line 366):** Replaced stale "Schema sync execution rule" (update both SQL migration AND `database_schema_sql_*.ts` in same pass) with strikethrough + audit breadcrumb pointing to Execution Discipline rule 4.
+
+3. **Post-launch roadmap A2 (~line 55):** Updated from "Conditional" to "Partially resolved (Pass 871/878)". Documented that helpers were never runtime consumers, Pass 878 deletes them. Remaining scope narrowed to evaluating `database_init.tsx` post-launch.
+
+4. **Code Organization Audit (~line 20):** Separated `database_init.tsx` (safety net) from `database_schema_sql_*.ts` (dead code, removed in Pass 878) in the schema source of truth rule. Updated datestamp.
+
+### Docs NOT edited (correctly left as-is)
+
+- **Hardening plan line 542 (Execution Discipline rule 4):** Already correct from Pass 873.
+- **Hardening plan line 563 (Pass 871 audit trail):** Historical factual record, not governance.
+- **Map Tracker (multiple entries):** Historical pass logs — never retroactively edited.
+- **Module Completion Matrix line 73:** Historical audit note.
+
+**Files touched:** `docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`, `docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`, `docs/CODE_ORGANIZATION_AUDIT.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry).
+**Build:** clean, 60 precache entries. **Tests:** 554/554 (doc-only pass, no code changes).
+
+---
+
 ## Pass 873 — Phase 5.2/5.3 Code-Side Completion (2026-04-15)
 
 **Phase:** Soft Launch Hardening — Phase 5.2/5.3 (doc alignment + governance fix)

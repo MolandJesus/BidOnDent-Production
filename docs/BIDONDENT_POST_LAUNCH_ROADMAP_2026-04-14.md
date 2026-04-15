@@ -51,12 +51,12 @@ Revisit this roadmap **immediately after soft launch is declared stable**, then 
 - **Target state:** No parallel DB/UI type authorities remain. Adapter layer is either removed entirely or reduced to external-boundary-only translation. Type conflicts (naming, primitive mismatches like `Vehicle.year` string vs number) are eliminated. Domain types are the single source of truth across the app.
 - **Trigger:** When the adapter layer proves painful (e.g., mapper-drift bugs, new features consistently bottlenecking on type gymnastics). If the adapter layer stays healthy, this does not need to happen.
 
-### A2. Codegen for schema bootstrap helpers from SQL migrations — **Conditional**
+### A2. Codegen for schema bootstrap helpers from SQL migrations — **Partially resolved (Pass 871/878)**
 
-- **Deferred from:** Group 4b (chose to retain `database_schema_sql_*.ts` as temporary runtime bootstrap helpers during soft launch)
-- **Why deferred:** Deleting the runtime safety net during a trust-focused hardening phase is the wrong direction. The proper solution is tooling work that doesn't help the soft launch ship.
-- **Target state:** **Choose one path — do not preserve dual hand-written schema authorities.** Either (a) auto-generate TS bootstrap helpers from SQL migrations at build time, OR (b) remove the bootstrap path entirely and rely solely on SQL migrations as the runtime dependency. Whichever path is chosen, the dual hand-written authority problem must be eliminated.
-- **Trigger:** When schema drift is observed, OR when a migration-to-helper sync is missed in practice, OR when post-launch stabilization creates breathing room to address it.
+- **Deferred from:** Group 4b (originally chose to retain `database_schema_sql_*.ts` as temporary runtime bootstrap helpers during soft launch).
+- **Update (Pass 871):** Drift audit revealed the modular `database_schema_sql_*.ts` helpers were never consumed by any runtime path — `database_init.tsx` uses its own inline SQL. Helpers are reference-only dead code. Pass 878 deletes them, resolving the dual hand-written authority problem.
+- **Remaining:** `database_init.tsx` remains as a cold-start safety net with inline SQL. Evaluate post-launch whether to (a) auto-generate it from migrations, or (b) remove the bootstrap path entirely once edge function deploy is stable.
+- **Trigger:** Post-launch stabilization, or if `database_init.tsx` inline SQL drifts from canonical migrations.
 
 ### A3. Broader identity column cleanup — **Immediate post-launch**
 
