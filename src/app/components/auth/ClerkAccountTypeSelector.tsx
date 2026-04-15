@@ -1,9 +1,31 @@
 import { useState } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { Car, Wrench, Shield } from "lucide-react";
+import { Car, Wrench, Shield, CheckCircle2 } from "lucide-react";
+import { motion } from "motion/react";
 import { updateUserMetadata } from "../../services/clerkService";
 import { useDocumentAppearanceMode } from "../../hooks/useDocumentAppearanceMode";
 import type { UserType } from "../../services/clerkService";
+
+const ACCOUNT_TYPES: {
+  type: UserType;
+  icon: typeof Car;
+  label: string;
+  desc: string;
+}[] = [
+  {
+    type: "customer",
+    icon: Car,
+    label: "Customer",
+    desc: "Get repair quotes for your vehicle",
+  },
+  { type: "shop", icon: Wrench, label: "Auto Shop", desc: "Bid on repair jobs" },
+  {
+    type: "insurer",
+    icon: Shield,
+    label: "Insurer",
+    desc: "Manage claims and shops",
+  },
+];
 
 export default function ClerkAccountTypeSelector() {
   const { user } = useUser();
@@ -36,22 +58,6 @@ export default function ClerkAccountTypeSelector() {
     }
   };
 
-  const ACCOUNT_TYPES = [
-    {
-      type: "customer" as UserType,
-      icon: Car,
-      label: "Customer",
-      desc: "Get repair quotes for your vehicle",
-    },
-    { type: "shop" as UserType, icon: Wrench, label: "Auto Shop", desc: "Bid on repair jobs" },
-    {
-      type: "insurer" as UserType,
-      icon: Shield,
-      label: "Insurer",
-      desc: "Manage claims and shops",
-    },
-  ];
-
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4"
@@ -61,104 +67,140 @@ export default function ClerkAccountTypeSelector() {
           : "radial-gradient(130% 90% at 28% 8%, rgba(10, 22, 58, 0.99) 0%, rgba(6, 14, 36, 0.99) 58%, #040a18 100%)",
       }}
     >
-      <div
-        className={`rounded-2xl shadow-xl p-5 sm:p-8 max-w-2xl w-full border ${
-          isLight ? "bg-white/95 border-slate-200/60 shadow-slate-200/40" : "bd-glass-card"
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+        className={`rounded-2xl p-5 sm:p-8 max-w-2xl w-full border ${
+          isLight
+            ? "bg-white/95 border-slate-200/60 shadow-[0_10px_40px_rgba(15,23,42,0.08)]"
+            : "bd-glass-card"
         }`}
       >
-        <h2 className={`text-3xl font-bold mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}>
-          Welcome to BidOnDent!
+        <h2
+          className={`text-2xl sm:text-3xl font-bold mb-1 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+        >
+          Welcome to BidOnDent
         </h2>
-        <p className={`mb-8 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-          Let&apos;s set up your account. What type of account do you need?
+        <p className={`mb-8 text-sm sm:text-base ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+          Choose your account type to get started.
         </p>
 
         {/* Account Type Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {ACCOUNT_TYPES.map(({ type, icon: Icon, label, desc }) => {
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
+          {ACCOUNT_TYPES.map(({ type, icon: Icon, label, desc }, idx) => {
             const isActive = selectedType === type;
             return (
-              <button
+              <motion.button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`p-6 rounded-xl transition-all border-2 ${
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.08 * idx, ease: [0.4, 0, 0.2, 1] }}
+                className={`relative p-5 sm:p-6 rounded-2xl transition-all min-h-[44px] text-left sm:text-center border ${
                   isActive
                     ? isLight
-                      ? "border-blue-400 bg-blue-50 shadow-sm"
-                      : "border-blue-500/60 bg-blue-500/15"
+                      ? "border-blue-400 bg-blue-50/80 shadow-[0_4px_16px_rgba(14,165,233,0.10)]"
+                      : "border-blue-500/50 bg-blue-500/10 shadow-[0_4px_20px_rgba(59,130,246,0.12)]"
                     : isLight
-                      ? "border-slate-200 bg-white hover:border-blue-300 hover:bg-blue-50/50"
-                      : "border-transparent bg-white/[0.04] hover:border-blue-200/40"
+                      ? "border-slate-200/80 bg-white/60 hover:border-blue-300 hover:bg-blue-50/40"
+                      : "border-white/[0.08] bg-white/[0.03] hover:border-blue-400/30 hover:bg-white/[0.06]"
                 }`}
               >
-                <Icon
-                  className={`w-12 h-12 mx-auto mb-3 ${isLight ? "text-blue-500" : "text-blue-400"}`}
-                />
-                <h3
-                  className={`font-semibold mb-1 ${isLight ? "text-slate-800" : "text-slate-100"}`}
-                >
-                  {label}
-                </h3>
-                <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>{desc}</p>
-              </button>
+                {isActive && (
+                  <CheckCircle2
+                    className={`absolute top-3 right-3 w-5 h-5 ${isLight ? "text-blue-500" : "text-blue-400"}`}
+                  />
+                )}
+                <div className="flex sm:flex-col items-center sm:items-center gap-3 sm:gap-0">
+                  <div
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 sm:mx-auto sm:mb-3 ${
+                      isActive ? "bg-blue-500/15" : isLight ? "bg-slate-100" : "bg-white/[0.06]"
+                    }`}
+                  >
+                    <Icon
+                      className={`w-6 h-6 ${isActive ? "text-blue-500" : isLight ? "text-slate-400" : "text-slate-500"}`}
+                    />
+                  </div>
+                  <div>
+                    <h3
+                      className={`font-semibold text-sm sm:text-base ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                    >
+                      {label}
+                    </h3>
+                    <p
+                      className={`text-xs sm:text-sm mt-0.5 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                    >
+                      {desc}
+                    </p>
+                  </div>
+                </div>
+              </motion.button>
             );
           })}
         </div>
 
         {/* Name and Phone */}
-        <div className="space-y-4 mb-6">
+        <div className="space-y-4 mb-8">
           <div>
             <label
-              className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+              className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
             >
-              Full Name *
+              Full Name
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+              className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
                 isLight
                   ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
                   : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
               }`}
-              placeholder="John Doe"
+              placeholder="Your full name"
               disabled={isLoading}
             />
           </div>
 
           <div>
             <label
-              className={`block text-sm font-medium mb-1 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+              className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
             >
-              Phone Number (Optional)
+              Phone Number
+              <span className={`ml-1 font-normal ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+                (optional)
+              </span>
             </label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
+              className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
                 isLight
                   ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
                   : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
               }`}
-              placeholder="Phone number"
+              placeholder="(555) 123-4567"
               disabled={isLoading}
             />
           </div>
         </div>
 
         {/* Complete Button */}
-        <button
+        <motion.button
           onClick={handleComplete}
           disabled={!name.trim() || isLoading}
-          className="w-full py-3 rounded-xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
-          style={{ background: "linear-gradient(135deg, #003d82 0%, #0ea5e9 100%)" }}
+          whileTap={{ scale: 0.98 }}
+          className={`w-full py-3 min-h-[44px] rounded-xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+            isLight
+              ? "bg-[#003d82] hover:bg-[#004da3] shadow-[0_4px_16px_rgba(0,61,130,0.18)]"
+              : "bg-blue-600 hover:bg-blue-500 shadow-[0_4px_20px_rgba(59,130,246,0.2)]"
+          }`}
         >
           {isLoading ? "Saving..." : "Complete Setup"}
-        </button>
-        {saveError && <p className="text-sm text-rose-600 text-center mt-3">{saveError}</p>}
-      </div>
+        </motion.button>
+        {saveError && <p className="text-sm text-rose-500 text-center mt-3">{saveError}</p>}
+      </motion.div>
     </div>
   );
 }

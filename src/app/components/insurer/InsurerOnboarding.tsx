@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Check, ArrowRight, Shield, DollarSign, FileText } from "lucide-react";
 import { motion } from "motion/react";
 import type { InsurerOnboardingFormData } from "../../types";
+import { useDocumentAppearanceMode } from "../../hooks/useDocumentAppearanceMode";
 
 type InsurerOnboardingProps = {
   primaryColor?: string;
@@ -17,6 +18,8 @@ export default function InsurerOnboarding({
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const appearanceMode = useDocumentAppearanceMode();
+  const isLight = appearanceMode === "light";
   const [formData, setFormData] = useState({
     companyName: "",
     licenseNumber: "",
@@ -78,15 +81,34 @@ export default function InsurerOnboarding({
   const progress = Math.round((step / 3) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f0f7ff] to-[#e8f0fa]">
+    <div
+      className="min-h-screen"
+      style={{
+        background: isLight
+          ? "linear-gradient(180deg, #f0f7ff 0%, #e0ecf8 100%)"
+          : "radial-gradient(130% 90% at 28% 8%, rgba(10, 22, 58, 0.99) 0%, rgba(6, 14, 36, 0.99) 58%, #040a18 100%)",
+      }}
+    >
       {/* Progress Bar */}
-      <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200/60">
+      <div
+        className={`backdrop-blur-sm border-b ${
+          isLight ? "bg-white/90 border-slate-200/60" : "bg-white/[0.04] border-white/[0.08]"
+        }`}
+      >
         <div className="px-4 py-3">
           <div className="flex justify-between items-center mb-2">
-            <h1 className="font-bold text-slate-900">Insurer Setup</h1>
-            <span className="text-sm text-slate-600">Step {step} of 3</span>
+            <h1 className={`font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
+              Insurer Setup
+            </h1>
+            <span className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+              Step {step} of 3
+            </span>
           </div>
-          <div className="h-2 bg-slate-200/60 rounded-full overflow-hidden">
+          <div
+            className={`h-2 rounded-full overflow-hidden ${
+              isLight ? "bg-slate-200/60" : "bg-white/[0.08]"
+            }`}
+          >
             <div
               className="h-full transition-all duration-300 rounded-full"
               style={{
@@ -103,115 +125,184 @@ export default function InsurerOnboarding({
           <div>
             <div className="mb-6">
               <div
-                className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
+                className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                 }}
               >
-                <Shield className="w-8 h-8 text-white" />
+                <Shield className="w-7 h-7 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-center mb-2 text-slate-900">
+              <h2
+                className={`text-2xl font-bold text-center mb-1 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+              >
                 Company Information
               </h2>
-              <p className="text-slate-600 text-center">Tell us about your insurance company</p>
+              <p className={`text-sm text-center ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+                Tell us about your insurance company
+              </p>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200/60 shadow-sm p-4 sm:p-6 space-y-4">
+            <div
+              className={`rounded-2xl border p-4 sm:p-6 space-y-4 ${
+                isLight
+                  ? "bg-white/80 backdrop-blur-sm border-slate-200/60 shadow-sm"
+                  : "bd-glass-card"
+              }`}
+            >
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Company Name *
+                <label
+                  className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                >
+                  Company Name
                 </label>
                 <input
                   type="text"
                   value={formData.companyName}
                   onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                  className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
+                  className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                      : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                  }`}
                   placeholder="SafeDrive Insurance"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Insurance License Number *
+                <label
+                  className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                >
+                  Insurance License Number
                 </label>
                 <input
                   type="text"
                   value={formData.licenseNumber}
                   onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                  className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
+                  className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                      : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                  }`}
                   placeholder="INS-123456"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Street Address *
+                <label
+                  className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                >
+                  Street Address
                 </label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
+                  className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                      : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                  }`}
                   placeholder="456 Insurance Blvd"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">City *</label>
+                  <label
+                    className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                  >
+                    City
+                  </label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
+                    className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                      isLight
+                        ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                        : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                    }`}
                     placeholder="City"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">State *</label>
+                  <label
+                    className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                  >
+                    State
+                  </label>
                   <input
                     type="text"
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                    className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
+                    className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                      isLight
+                        ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                        : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                    }`}
                     placeholder="State"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">ZIP Code *</label>
+                <label
+                  className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                >
+                  ZIP Code
+                </label>
                 <input
                   type="text"
                   value={formData.zip}
                   onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
-                  className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
+                  className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                      : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                  }`}
                   placeholder="12345"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Phone Number *
+                <label
+                  className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                >
+                  Phone Number
                 </label>
                 <input
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
-                  placeholder="Phone number (10+ digits)"
+                  className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                      : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                  }`}
+                  placeholder="(555) 123-4567"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Website (Optional)
+                <label
+                  className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+                >
+                  Website
+                  <span
+                    className={`ml-1 font-normal ${isLight ? "text-slate-400" : "text-slate-500"}`}
+                  >
+                    (optional)
+                  </span>
                 </label>
                 <input
                   type="url"
                   value={formData.website}
                   onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  className="w-full px-3 py-3 border border-slate-200 bg-white text-slate-800 rounded-md"
+                  className={`w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
+                    isLight
+                      ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
+                      : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
+                  }`}
                   placeholder="https://yourinsurance.com"
                 />
               </div>
@@ -228,9 +319,11 @@ export default function InsurerOnboarding({
                 !formData.zip ||
                 !formData.phone
               }
-              className="w-full mt-6 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: primaryColor }}
-              whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
+              className={`w-full mt-6 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
+                isLight
+                  ? "bg-[#003d82] hover:bg-[#004da3] shadow-[0_4px_16px_rgba(0,61,130,0.18)]"
+                  : "bg-blue-600 hover:bg-blue-500 shadow-[0_4px_20px_rgba(59,130,246,0.2)]"
+              }`}
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

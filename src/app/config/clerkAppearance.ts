@@ -1,6 +1,9 @@
 /**
  * Clerk appearance configuration — matches BidOnDent's dark blue design system.
  *
+ * Both "light" and "map-dark" modes use dark-toned backgrounds in BidOnDent,
+ * so a single dark Clerk theme works for both appearance modes.
+ *
  * When Google / Apple OAuth is enabled in the Clerk Dashboard,
  * social sign-in buttons appear automatically in the modal UI.
  *
@@ -19,14 +22,15 @@ export const clerkAppearance = {
     borderRadius: "0.75rem",
   },
   elements: {
-    card: "bg-[#0d1f35] border border-blue-400/15 shadow-2xl",
+    card: "bg-[#0d1f35] border border-blue-400/15 shadow-2xl rounded-2xl",
     headerTitle: "text-slate-100",
     headerSubtitle: "text-slate-400",
     socialButtonsBlockButton:
-      "border-blue-400/20 bg-white/[0.06] hover:bg-white/[0.10] text-slate-200",
+      "border-blue-400/20 bg-white/[0.06] hover:bg-white/[0.10] text-slate-200 min-h-[44px] rounded-xl",
     formFieldInput:
-      "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:ring-blue-500",
-    formButtonPrimary: "bg-[#003d82] hover:bg-[#004da3] text-white",
+      "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:ring-blue-500 min-h-[44px] rounded-xl",
+    formButtonPrimary:
+      "bg-[#003d82] hover:bg-[#004da3] text-white min-h-[44px] rounded-xl font-semibold",
     footerActionLink: "text-blue-400 hover:text-blue-300",
     dividerLine: "bg-blue-400/15",
     dividerText: "text-slate-500",
