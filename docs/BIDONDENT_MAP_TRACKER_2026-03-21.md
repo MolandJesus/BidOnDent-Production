@@ -89,6 +89,20 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 
 ---
 
+## Pass 874 — Phase 5.2 Email Trigger Mapping Table (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5.2 (code-side)
+**Outcome:** Built the trigger → recipient → template → timing → observed mapping table required by the hardening plan Phase 5.2. All 3 active email flows traced end-to-end from handler call site through dispatch function, template, preference guard, and recipient resolution. Observed result column left as `pending secret deploy` — cannot verify delivery until `RESEND_API_KEY` is deployed.
+
+### Mapping table location
+
+Added to [docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md](docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md) under "Email Delivery Status" → "Email trigger mapping table (Phase 5.2 requirement — Pass 874)". Includes dispatch pattern notes, idempotency commentary, and deferred flow cross-references.
+
+**Files touched:** `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry).
+**Build:** 3.58s, 0 errors. **Tests:** 554/554.
+
+---
+
 ## Pass 873 — Phase 5.2/5.3 Code-Side Completion (2026-04-15)
 
 **Phase:** Soft Launch Hardening — Phase 5.2/5.3 (doc alignment + governance fix)

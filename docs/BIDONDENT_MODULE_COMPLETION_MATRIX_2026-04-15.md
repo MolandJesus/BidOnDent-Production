@@ -100,6 +100,20 @@
   ```
 - **Runtime verification:** Deferred — requires deployed key + Resend dashboard confirmation. Cannot verify delivery from static trace alone.
 
+### Email trigger mapping table (Phase 5.2 requirement — Pass 874)
+
+| # | Trigger Event | Handler + Line | Dispatch Function | Template | Expected Recipient | Expected Timing | Preference Guard | Observed Result |
+|---|--------------|----------------|-------------------|----------|--------------------|-----------------|------------------|-----------------|
+| 1 | Shop creates a bid on a customer's report | `bids.ts:139` (inside `createBid`) | `notifyCustomerNewBid` | `newBidReceived` | Customer who owns the damage report (looked up via `damage_reports.clerk_user_id`) | Fire-and-forget, immediately after successful bid INSERT | `email_bid_updates` | `pending secret deploy` |
+| 2 | Customer accepts or rejects a bid | `bids.ts:385` (inside `updateBidStatus`) | `notifyShopBidStatus` | `bidStatusNotification` | Shop that submitted the bid (via `bids.clerk_shop_user_id`) | Fire-and-forget, immediately after successful bid status UPDATE | `email_bid_updates` | `pending secret deploy` |
+| 3 | Insurer approves or denies a claim | `workflow.ts:416` (inside `updateClaimDecision`) | `notifyCustomerClaimDecision` | `claimDecisionNotification` | Customer who owns the damage report (looked up via `damage_reports.clerk_user_id`) | Fire-and-forget, immediately after successful claim decision UPDATE | `email_report_updates` | `pending secret deploy` |
+
+**Dispatch pattern:** All three are fire-and-forget (`.catch(() => {})`) — email failure never blocks the API response. Each checks user notification preferences via `isEmailEnabled()` before sending. Each resolves recipient email from `profiles.email` via `getUserEmail()`.
+
+**Idempotency note:** No deduplication guard exists at the email layer. If the same handler is called twice with the same inputs (e.g., retry logic upstream), two emails will send. This is acceptable for launch — the upstream handlers have their own idempotency guards (see Pass 876 audit).
+
+**Missing flows (deferred):** See Insurer Role Promotion Epic below for `notifyShopNearbyReport` (geographic matching) and `newClaimSubmitted` (insurer pipeline). Both were removed as dead code in Pass 869 and will be rebuilt from scratch.
+
 ---
 
 ## Deferred Work
