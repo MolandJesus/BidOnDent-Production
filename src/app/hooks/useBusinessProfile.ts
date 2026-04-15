@@ -26,6 +26,13 @@ export function useBusinessProfile(
   identity: WebsiteIdentity | null | undefined,
   accountType: AccountType | undefined
 ): BusinessProfileState {
+  const provider = identity?.provider;
+  const providerUserId = identity?.providerUserId ?? null;
+  const normalizedEmail = identity?.normalizedEmail ?? "";
+  const displayName = identity?.displayName ?? "";
+  const websiteUserKey = identity?.websiteUserKey ?? "";
+  const sessionId = identity?.sessionId ?? "";
+
   const [businessProfile, setBusinessProfile] = useState<
     ShopBusinessProfile | InsurerBusinessProfile | null
   >(null);
@@ -34,12 +41,21 @@ export function useBusinessProfile(
   const fetchVersion = useRef(0);
 
   const refreshProfile = useCallback(async () => {
-    if (!identity || accountType === "customer" || !accountType) {
+    if (!websiteUserKey || !provider || accountType === "customer" || !accountType) {
       setBusinessProfile(null);
       setError(null);
       setIsLoading(false);
       return;
     }
+
+    const resolvedIdentity: WebsiteIdentity = {
+      provider,
+      providerUserId,
+      normalizedEmail,
+      displayName,
+      websiteUserKey,
+      sessionId,
+    };
 
     const version = ++fetchVersion.current;
     setIsLoading(true);
@@ -48,8 +64,8 @@ export function useBusinessProfile(
     try {
       const profile =
         accountType === "shop"
-          ? await fetchShopBusinessProfile(identity)
-          : await fetchInsurerBusinessProfile(identity);
+          ? await fetchShopBusinessProfile(resolvedIdentity)
+          : await fetchInsurerBusinessProfile(resolvedIdentity);
       if (version === fetchVersion.current) {
         setBusinessProfile(profile);
       }
@@ -64,7 +80,15 @@ export function useBusinessProfile(
         setIsLoading(false);
       }
     }
-  }, [accountType, identity]);
+  }, [
+    accountType,
+    displayName,
+    normalizedEmail,
+    provider,
+    providerUserId,
+    sessionId,
+    websiteUserKey,
+  ]);
 
   useEffect(() => {
     void refreshProfile();
@@ -75,9 +99,18 @@ export function useBusinessProfile(
       | Omit<ShopBusinessProfile, "websiteUserKey" | "clerkUserId">
       | Omit<InsurerBusinessProfile, "websiteUserKey" | "clerkUserId">
   ) => {
-    if (!identity || accountType === "customer" || !accountType) {
+    if (!websiteUserKey || !provider || accountType === "customer" || !accountType) {
       return null;
     }
+
+    const resolvedIdentity: WebsiteIdentity = {
+      provider,
+      providerUserId,
+      normalizedEmail,
+      displayName,
+      websiteUserKey,
+      sessionId,
+    };
 
     setError(null);
 
@@ -85,11 +118,11 @@ export function useBusinessProfile(
       const savedProfile =
         accountType === "shop"
           ? await saveShopBusinessProfile(
-              identity,
+              resolvedIdentity,
               profile as Omit<ShopBusinessProfile, "websiteUserKey" | "clerkUserId">
             )
           : await saveInsurerBusinessProfile(
-              identity,
+              resolvedIdentity,
               profile as Omit<InsurerBusinessProfile, "websiteUserKey" | "clerkUserId">
             );
 
