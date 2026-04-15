@@ -205,12 +205,29 @@ export async function updateEstimateRequest(
       .from("estimate_requests")
       .update(updatePayload)
       .eq("id", requestId)
+      .eq("status", currentStatus)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error("Error updating estimate request:", error);
       return respond({ error: sanitizeErrorMessage(error.message) }, 500);
+    }
+
+    if (!data) {
+      const { data: current, error: currentError } = await supabase
+        .from("estimate_requests")
+        .select("status")
+        .eq("id", requestId)
+        .maybeSingle();
+      if (currentError) {
+        console.error("Error fetching current estimate request after atomic update miss:", currentError);
+        return respond({ error: sanitizeErrorMessage(currentError.message) }, 500);
+      }
+      if (!current) {
+        return respond({ error: "Estimate request not found" }, 404);
+      }
+      return respond({ error: `Estimate request is already '${current.status}'` }, 409);
     }
 
     return respond({ estimateRequest: data });
@@ -268,12 +285,29 @@ export async function customerRespondToEstimate(
         updated_at: new Date().toISOString(),
       })
       .eq("id", requestId)
+      .eq("status", "responded")
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error("Error in customerRespondToEstimate:", error);
       return respond({ error: sanitizeErrorMessage(error.message) }, 500);
+    }
+
+    if (!data) {
+      const { data: current, error: currentError } = await supabase
+        .from("estimate_requests")
+        .select("status")
+        .eq("id", requestId)
+        .maybeSingle();
+      if (currentError) {
+        console.error("Error fetching current estimate request after atomic update miss:", currentError);
+        return respond({ error: sanitizeErrorMessage(currentError.message) }, 500);
+      }
+      if (!current) {
+        return respond({ error: "Estimate request not found" }, 404);
+      }
+      return respond({ error: `Estimate request is already '${current.status}'` }, 409);
     }
 
     return respond({ estimateRequest: data });
