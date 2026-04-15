@@ -186,14 +186,15 @@ export function useReportForm({
   const handleVehicleContinue = () => {
     if (onSaveVehicle && vehicle.make && vehicle.model && vehicle.year) {
       const isNewVehicle = !vehicles.some(
-        (v) => v.make === vehicle.make && v.model === vehicle.model && v.year === vehicle.year
+        (v) =>
+          v.make === vehicle.make && v.model === vehicle.model && String(v.year) === vehicle.year
       );
       if (isNewVehicle) {
         onSaveVehicle({
           id: String(Date.now()),
           make: vehicle.make,
           model: vehicle.model,
-          year: vehicle.year,
+          year: Number(vehicle.year),
           vin: vehicle.vin || "",
         });
       }
@@ -214,7 +215,8 @@ export function useReportForm({
   const handleSubmitReport = async () => {
     // Final validation gate — catch any data that slipped through step-level checks
     const trimmedDescription = description.trim();
-    if (!vehicle.make?.trim() || !vehicle.model?.trim() || !vehicle.year?.trim()) {
+    const yearStr = String(vehicle.year ?? "").trim();
+    if (!vehicle.make?.trim() || !vehicle.model?.trim() || !yearStr) {
       setSubmitError(
         "Vehicle information is incomplete. Please go back and fill in make, model, and year."
       );

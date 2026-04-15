@@ -8,7 +8,11 @@ type Vehicle = {
   vin?: string;
 };
 
-type SavedVehicle = Vehicle & { id: string; licensePlate?: string };
+type SavedVehicle = Omit<Vehicle, "year"> & {
+  id: string;
+  year: number | string;
+  licensePlate?: string;
+};
 
 type StepVehicleInfoProps = {
   primaryColor: string;
@@ -69,14 +73,14 @@ export default function StepVehicleInfo({
                   onVehicleChange({
                     make: savedVehicle.make,
                     model: savedVehicle.model,
-                    year: savedVehicle.year,
+                    year: String(savedVehicle.year),
                     vin: savedVehicle.vin ?? "",
                   })
                 }
                 className={`bd-report-choice w-full p-3.5 rounded-2xl text-left transition-all ${
                   vehicle.make === savedVehicle.make &&
                   vehicle.model === savedVehicle.model &&
-                  vehicle.year === savedVehicle.year
+                  vehicle.year === String(savedVehicle.year)
                     ? "bd-report-choice--active"
                     : ""
                 }`}
