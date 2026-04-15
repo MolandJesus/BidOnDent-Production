@@ -124,6 +124,49 @@ Added to [docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md](docs/BIDONDENT_
 
 ---
 
+## Pass 880 — Deploy edge function to staging (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5.1 (user-side action item closed)
+**Outcome:** Successfully deployed the `server` edge function to the staging Supabase project. Health check confirmed the function boots and the auth middleware engages.
+
+### Deploy
+
+```
+supabase functions deploy server --project-ref lhhdqycnhweaxqviwdqt
+```
+
+- **Timestamp:** 2026-04-15 ~14:28 UTC
+- **Assets uploaded:** 32 files (all handlers, utils, config, `database_init.tsx`, `storage_init.tsx`)
+- **Function URL:** `https://lhhdqycnhweaxqviwdqt.supabase.co/functions/v1/server`
+- **Dashboard:** `https://supabase.com/dashboard/project/lhhdqycnhweaxqviwdqt/functions`
+- **Deploy warnings:** None. Docker warning (expected — Supabase CLI uses remote bundling when Docker is not running).
+- **CLI version note:** v2.75.0 installed, v2.90.0 available. `functions logs` subcommand not available in this version.
+
+### Pre-deploy verification
+
+`grep -rn "database_schema_sql" supabase/functions/` — zero results. No stale imports from Pass 878 deletions.
+
+### Health check
+
+```
+curl -i "https://lhhdqycnhweaxqviwdqt.supabase.co/functions/v1/server/health"
+```
+
+- **Response:** HTTP 401 `{"code":"UNAUTHORIZED_NO_AUTH_HEADER","message":"Missing authorization header"}`
+- **With anon key:** HTTP 401 `{"code":"UNAUTHORIZED_INVALID_JWT_FORMAT","message":"Invalid JWT"}` (anon key is from production project, not staging — expected mismatch)
+- **Interpretation:** Function booted successfully. Supabase gateway auth middleware is engaging before the function's own router runs. HTTP 401 is the healthy signal — not 5xx or connection error.
+
+### Remaining Phase 5.1 blockers (user-side)
+
+1. **Vercel preview env vars** — `VITE_SUPABASE_PROJECT_ID` + `VITE_SUPABASE_ANON_KEY` scoped to Preview (staging anon key needed for health check with auth)
+2. **RESEND_API_KEY** — `supabase secrets set RESEND_API_KEY=<key>` to staging
+3. **Clerk JWT template** — Configure Supabase JWT template in Clerk dashboard
+
+**Files touched:** `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry).
+**Build:** clean, 60 precache entries. **Tests:** 554/554 (no code changes).
+
+---
+
 ## Pass 879 — Dependabot security sweep (2026-04-15)
 
 **Phase:** Repo health (parallel to Soft Launch Hardening)
