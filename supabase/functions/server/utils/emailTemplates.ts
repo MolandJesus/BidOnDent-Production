@@ -89,24 +89,6 @@ ${btn("View Details", `${BASE_URL}/dashboard/customer/reports`)}`;
 
 // ── Shop emails ──────────────────────────────────────────────────
 
-export function nearbyReportAlert(ctx: {
-  shopName: string;
-  distanceMiles: number;
-  damageType?: string;
-  zipCode?: string;
-}) {
-  const subject = `New repair request ${ctx.distanceMiles.toFixed(1)} mi away`;
-  const html = wrap(
-    "New nearby repair request",
-    `<p style="color:#475569;line-height:1.6">Hi ${ctx.shopName},</p>
-<p style="color:#475569;line-height:1.6">A new damage report was submitted <strong>${ctx.distanceMiles.toFixed(1)} miles</strong> from your location${ctx.zipCode ? ` (ZIP: ${ctx.zipCode})` : ""}${ctx.damageType ? ` — ${ctx.damageType} damage` : ""}.</p>
-${btn("View & Bid", `${BASE_URL}/dashboard/shops/requests`)}
-<p style="color:#94a3b8;font-size:13px">You're receiving this because this report is within your service area.</p>`
-  );
-  const text = `Hi ${ctx.shopName}, a new damage report was submitted ${ctx.distanceMiles.toFixed(1)} mi from your location. View: ${BASE_URL}/dashboard/shops/requests`;
-  return { subject, html, text };
-}
-
 export function bidStatusNotification(ctx: {
   shopName: string;
   customerName: string;
@@ -129,21 +111,4 @@ ${isAccepted ? btn("View Job", `${BASE_URL}/dashboard/shops/jobs`) : ""}
   return { subject, html, text };
 }
 
-// ── Insurer emails ──────────────────────────────────────────────
 
-export function newClaimSubmitted(ctx: {
-  insurerName: string;
-  policyNumber?: string;
-  estimatedAmount?: number | null;
-}) {
-  const subject = `New insurance claim submitted${ctx.policyNumber ? ` — Policy ${ctx.policyNumber}` : ""}`;
-  const html = wrap(
-    "New claim requires review",
-    `<p style="color:#475569;line-height:1.6">Hi ${ctx.insurerName},</p>
-<p style="color:#475569;line-height:1.6">A new insurance claim has been submitted${ctx.policyNumber ? ` for policy <strong>${ctx.policyNumber}</strong>` : ""}${ctx.estimatedAmount ? ` with an estimated repair cost of <strong>$${ctx.estimatedAmount.toLocaleString()}</strong>` : ""}.</p>
-${btn("Review Claim", `${BASE_URL}/dashboard/insurer/claims`)}
-<p style="color:#94a3b8;font-size:13px">This claim is pending your review and decision.</p>`
-  );
-  const text = `New insurance claim submitted${ctx.policyNumber ? ` for policy ${ctx.policyNumber}` : ""}. Review at ${BASE_URL}/dashboard/insurer/claims`;
-  return { subject, html, text };
-}

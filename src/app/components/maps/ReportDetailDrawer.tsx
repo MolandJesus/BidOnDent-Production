@@ -8,7 +8,7 @@ import {
   DrawerClose,
 } from "../ui/drawer";
 import { cn } from "../ui/utils";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 import type { MapTheme } from "../../types/mapDomain";
 
 type ReportDetailDrawerProps = {
@@ -40,21 +40,21 @@ export function ReportDetailDrawer({
 
   const isDark = mapTheme === "dark";
 
-  const vehicleLabel = report.vehicle_make
-    ? `${report.vehicle_year ? `${report.vehicle_year} ` : ""}${report.vehicle_make} ${report.vehicle_model || ""}`.trim()
+  const vehicleLabel = report.vehicleInfo?.make
+    ? `${report.vehicleInfo?.year ? `${report.vehicleInfo.year} ` : ""}${report.vehicleInfo.make} ${report.vehicleInfo?.model || ""}`.trim()
     : "Damage Report";
   const locationParts = [
     [report.city, report.state].filter(Boolean).join(", "),
-    report.zip_code,
+    report.zipCode,
   ].filter(Boolean);
   const locationLabel = locationParts.join(" · ");
-  const damageArea = report.damage_location || "";
-  const description = report.damage_description || "";
-  const photos: string[] = Array.isArray(report.photo_urls) ? report.photo_urls : [];
-  const submittedAt = report.created_at ? new Date(report.created_at).toLocaleDateString() : null;
+  const damageArea = report.damageArea || "";
+  const description = report.damageDescription || "";
+  const photos: string[] = Array.isArray(report.photos) ? report.photos : [];
+  const submittedAt = report.createdAt ? new Date(report.createdAt).toLocaleDateString() : null;
   const status = report.status || "submitted";
-  const damageType = report.damage_type || "";
-  const damageSeverity = report.damage_severity || "";
+  const damageType = report.damageType || "";
+  const damageSeverity = report.damageSeverity || "";
 
   const statusColor =
     status === "in-repair" || status === "approved"

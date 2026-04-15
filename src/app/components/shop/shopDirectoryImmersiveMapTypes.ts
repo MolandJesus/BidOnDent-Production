@@ -5,7 +5,7 @@ import type { IntelligenceSummary } from "../../services/intelligence/marketInte
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { GpsStatus } from "../../hooks/useNavigationGpsTracking";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 import type {
   NavigationAddressResult,
   NavigationAddressSuggestion,

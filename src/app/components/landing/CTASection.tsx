@@ -1,6 +1,7 @@
 import { ChevronRight, Sparkles } from "lucide-react";
 import { SignUpButton, useUser } from "@clerk/clerk-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
+import WaitlistCapture from "./WaitlistCapture";
 
 interface CTASectionProps {
   primaryColor: string;
@@ -145,6 +146,18 @@ export default function CTASection({
           >
             Free to use &bull; No obligation &bull; Get quotes in minutes
           </p>
+
+          {!isSignedIn && (
+            <div
+              className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              style={{ transitionDelay: "0.75s" }}
+            >
+              <p className="mt-6 text-xs text-blue-200/40">
+                or get notified when we launch in your area
+              </p>
+              <WaitlistCapture isLightAppearance={isLightAppearance} />
+            </div>
+          )}
         </div>
       </div>
     </section>

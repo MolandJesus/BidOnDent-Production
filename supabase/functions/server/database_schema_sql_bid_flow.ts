@@ -102,6 +102,15 @@ export const bidFlowDatabaseSchemaSql = `
     ) THEN
       ALTER TABLE public.bids ADD COLUMN updated_at TIMESTAMPTZ DEFAULT NOW();
     END IF;
+
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public'
+      AND table_name = 'bids'
+      AND column_name = 'deleted_at'
+    ) THEN
+      ALTER TABLE public.bids ADD COLUMN deleted_at TIMESTAMPTZ;
+    END IF;
   END $$;
 
   DO $$
@@ -121,18 +130,36 @@ export const bidFlowDatabaseSchemaSql = `
   CREATE INDEX IF NOT EXISTS idx_bids_clerk_shop_user_id ON public.bids(clerk_shop_user_id);
   CREATE INDEX IF NOT EXISTS idx_bids_status ON public.bids(status);
 
+  -- One active bid per shop per report (idempotency guard)
+  CREATE UNIQUE INDEX IF NOT EXISTS uq_bids_report_shop
+    ON public.bids(damage_report_id, clerk_shop_user_id)
+    WHERE status NOT IN ('rejected', 'withdrawn');
+
   ALTER TABLE public.bids ENABLE ROW LEVEL SECURITY;
 
   DROP POLICY IF EXISTS "Authenticated users can read bids" ON public.bids;
   DROP POLICY IF EXISTS "Authenticated shops can manage bids" ON public.bids;
 
   CREATE POLICY "Authenticated users can read bids"
-    ON public.bids FOR SELECT USING (auth.role() = 'authenticated');
+    ON public.bids FOR SELECT
+    USING (
+      deleted_at IS NULL
+      AND (
+        requesting_clerk_user_id() IS NOT NULL
+        OR auth.role() = 'authenticated'
+      )
+    );
 
   CREATE POLICY "Authenticated shops can manage bids"
     ON public.bids FOR ALL
-    USING (auth.uid() = shop_user_id)
-    WITH CHECK (auth.uid() = shop_user_id);
+    USING (
+      clerk_shop_user_id = requesting_clerk_user_id()
+      OR auth.uid() = shop_user_id
+    )
+    WITH CHECK (
+      clerk_shop_user_id = requesting_clerk_user_id()
+      OR auth.uid() = shop_user_id
+    );
 
   DROP TRIGGER IF EXISTS set_updated_at ON public.bids;
   CREATE TRIGGER set_updated_at
@@ -194,11 +221,55 @@ export const bidFlowDatabaseSchemaSql = `
     updated_at TIMESTAMPTZ DEFAULT NOW()
   );
 
+  -- Add deleted_at if table already exists
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'job_assignments' AND column_name = 'deleted_at'
+    ) THEN
+      ALTER TABLE public.job_assignments ADD COLUMN deleted_at TIMESTAMPTZ;
+    END IF;
+  END $$;
+
   CREATE INDEX IF NOT EXISTS idx_job_assignments_damage_report_id ON public.job_assignments(damage_report_id);
   CREATE INDEX IF NOT EXISTS idx_job_assignments_bid_id ON public.job_assignments(bid_id);
   CREATE INDEX IF NOT EXISTS idx_job_assignments_shop_clerk_user_id ON public.job_assignments(shop_clerk_user_id);
 
+  -- One active assignment per report (idempotency guard)
+  CREATE UNIQUE INDEX IF NOT EXISTS uq_job_assignments_report
+    ON public.job_assignments(damage_report_id)
+    WHERE status NOT IN ('cancelled');
+
   ALTER TABLE public.job_assignments ENABLE ROW LEVEL SECURITY;
+
+  DROP POLICY IF EXISTS "Participants can read their own job assignments" ON public.job_assignments;
+  DROP POLICY IF EXISTS "Shops can manage their own job assignments" ON public.job_assignments;
+
+  CREATE POLICY "Participants can read their own job assignments"
+    ON public.job_assignments FOR SELECT
+    USING (
+      deleted_at IS NULL
+      AND (
+        shop_clerk_user_id = requesting_clerk_user_id()
+        OR customer_clerk_user_id = requesting_clerk_user_id()
+        OR insurer_clerk_user_id = requesting_clerk_user_id()
+        OR customer_user_id = auth.uid()
+        OR shop_user_id = auth.uid()
+        OR insurer_user_id = auth.uid()
+      )
+    );
+
+  CREATE POLICY "Shops can manage their own job assignments"
+    ON public.job_assignments FOR ALL
+    USING (
+      shop_clerk_user_id = requesting_clerk_user_id()
+      OR shop_user_id = auth.uid()
+    )
+    WITH CHECK (
+      shop_clerk_user_id = requesting_clerk_user_id()
+      OR shop_user_id = auth.uid()
+    );
 
   DROP TRIGGER IF EXISTS set_updated_at ON public.job_assignments;
   CREATE TRIGGER set_updated_at

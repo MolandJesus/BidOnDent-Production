@@ -1,53 +1,52 @@
 /**
- * Demo Mode Banner Component
- * Displays at top of app when in demo mode to inform users
+ * Demo Mode Banner — persistent status bar when viewing a demo account.
+ * Keyboard-dismissible only (Escape key). Not confusable with a toast.
+ * Rendered at the dashboard layout level so it survives route changes.
  */
 
-import { Info, X } from "lucide-react";
-import { useState } from "react";
+import { Info } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface DemoModeBannerProps {
-  showDismiss?: boolean;
+  /** The demo account type currently being previewed */
+  demoAccountType?: "customer" | "shop" | "insurer" | null;
 }
 
-export default function DemoModeBanner({ showDismiss = true }: DemoModeBannerProps) {
+export default function DemoModeBanner({ demoAccountType }: DemoModeBannerProps) {
   const [dismissed, setDismissed] = useState(false);
+
+  // Reset dismiss when the demo account type changes
+  useEffect(() => {
+    setDismissed(false);
+  }, [demoAccountType]);
+
+  // Keyboard dismiss: Escape key only
+  useEffect(() => {
+    if (dismissed) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDismissed(true);
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [dismissed]);
 
   if (dismissed) return null;
 
+  const roleLabel = demoAccountType
+    ? demoAccountType.charAt(0).toUpperCase() + demoAccountType.slice(1)
+    : "Demo";
+
   return (
     <div
-      className="bg-gradient-to-r from-[#003d82] to-[#00a0e9] text-white py-3 px-4 shadow-md"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 9999,
-      }}
+      role="status"
+      aria-live="polite"
+      className="bg-amber-500/90 text-slate-900 py-1.5 px-4 text-center text-xs font-semibold tracking-wide select-none shrink-0"
     >
-      <div className="container mx-auto flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 flex-1">
-          <Info className="w-5 h-5 flex-shrink-0" />
-          <div className="flex-1">
-            <p className="font-semibold text-sm md:text-base">🎭 Demo Mode Active</p>
-            <p className="text-xs md:text-sm opacity-90">
-              All data is stored locally in your browser. Try:{" "}
-              <code className="bg-white/20 px-1 rounded">customer@demo.com</code>
-            </p>
-          </div>
-        </div>
-
-        {showDismiss && (
-          <button
-            onClick={() => setDismissed(true)}
-            className="text-white/70 hover:text-white transition-colors flex-shrink-0"
-            aria-label="Dismiss banner"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        )}
-      </div>
+      <span className="inline-flex items-center gap-1.5">
+        <Info className="w-3.5 h-3.5" />
+        Demo Mode — Viewing as {roleLabel}
+        <span className="hidden sm:inline opacity-70">· Press Esc to dismiss</span>
+      </span>
     </div>
   );
 }

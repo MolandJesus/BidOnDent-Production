@@ -1,4 +1,6 @@
 import { requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "./runtime";
+import type { JobAssignment } from "../../types";
+import { jobAssignmentFromDb } from "./adapters";
 
 export type WorkflowEventType =
   | "report_submitted"
@@ -17,6 +19,9 @@ export type WorkflowEventType =
 type EventPayload = {
   event_type: WorkflowEventType;
   source?: string;
+  actor_id?: string;
+  object_id?: string;
+  outcome?: string;
   payload?: Record<string, unknown>;
 };
 
@@ -63,12 +68,12 @@ export interface EnrichedJobAssignment {
   bid: Record<string, any> | null;
 }
 
-export async function getJobAssignments(shopClerkUserId: string): Promise<EnrichedJobAssignment[]> {
+export async function getJobAssignments(shopClerkUserId: string): Promise<JobAssignment[]> {
   const data = await requestSupabaseEdge<{ jobs?: EnrichedJobAssignment[] }>(
     `${SUPABASE_EDGE_ROUTES.jobAssignments}?shopClerkUserId=${encodeURIComponent(shopClerkUserId)}`,
     { method: "GET" }
   );
-  return data.jobs || [];
+  return (data.jobs || []).map(jobAssignmentFromDb);
 }
 
 export async function updateJobAssignmentStatus(

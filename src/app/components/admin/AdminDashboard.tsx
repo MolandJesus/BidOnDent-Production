@@ -1,5 +1,8 @@
 import { motion } from "motion/react";
 import StorageDebugPanel from "../devtools/StorageDebugPanel";
+import EdgeFunctionStatus from "../devtools/EdgeFunctionStatus";
+import RealtimeStatusIndicator from "../devtools/RealtimeStatusIndicator";
+import { StorageMonitor } from "../devtools/StorageMonitor";
 import AdminAccountManager from "./AdminAccountManager";
 import AdminHeader from "./AdminHeader";
 import QuickActions from "./QuickActions";
@@ -9,6 +12,7 @@ import LinkedTestAccounts from "./LinkedTestAccounts";
 import AdminInfoPanel from "./AdminInfoPanel";
 import SwitchBackPanel from "./SwitchBackPanel";
 import { useAdminActions } from "./useAdminActions";
+import { realtimeBidService } from "../../services/realtime/RealtimeBidService";
 
 /**
  * 🚨 PRODUCTION REMOVAL: Delete this file when removing admin features
@@ -52,6 +56,9 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* Edge Function health check overlay */}
+      <EdgeFunctionStatus />
+
       <AdminHeader primaryColor={primaryColor} adminEmail={adminEmail} />
 
       <QuickActions
@@ -125,6 +132,22 @@ export default function AdminDashboard({ primaryColor, adminEmail }: AdminDashbo
       <AdminInfoPanel adminEmail={adminEmail} />
 
       <SwitchBackPanel adminEmail={adminEmail} />
+
+      {/* System Health: Realtime + Storage */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="mb-6 space-y-4"
+      >
+        <div className="flex items-center gap-4 px-1">
+          <span className="text-sm font-medium text-slate-300">Realtime Status:</span>
+          <RealtimeStatusIndicator
+            isConnected={realtimeBidService.getHealthStatus().activeSubscriptions > 0}
+          />
+        </div>
+        <StorageMonitor />
+      </motion.div>
 
       {/* Storage Debug Panel */}
       <motion.div

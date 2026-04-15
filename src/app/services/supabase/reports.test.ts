@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { DamageReport } from "./types";
+import { reportFromDb } from "./adapters";
 
 vi.mock("./runtime", async (importOriginal) => {
   const actual = await importOriginal<typeof import("./runtime")>();
@@ -31,7 +32,11 @@ const fakeReport: DamageReport = {
   damage_severity: "minor",
   damage_location: "rear bumper",
   status: "pending",
+  created_at: "2026-01-01T00:00:00.000Z",
 };
+
+/** Expected app-domain shape after adapter transform. */
+const expectedAppReport = reportFromDb(fakeReport);
 
 afterEach(() => {
   mockRequest.mockReset();
@@ -46,7 +51,7 @@ describe("getDamageReports", () => {
 
     const result = await getDamageReports("clerk-user-1");
 
-    expect(result).toEqual([fakeReport]);
+    expect(result).toEqual([expectedAppReport]);
     expect(mockRequest).toHaveBeenCalledWith(
       expect.stringContaining(`${SUPABASE_EDGE_ROUTES.reports}?clerkUserId=clerk-user-1`),
       { method: "GET" },
@@ -58,7 +63,7 @@ describe("getDamageReports", () => {
 
     const result = await getDamageReports("user@example.com");
 
-    expect(result).toEqual([fakeReport]);
+    expect(result).toEqual([expectedAppReport]);
     expect(mockRequest).toHaveBeenCalledWith(
       expect.stringContaining("email=user%40example.com"),
       expect.any(Object),
@@ -70,7 +75,7 @@ describe("getDamageReports", () => {
 
     const result = await getDamageReports("website-user-abc");
 
-    expect(result).toEqual([fakeReport]);
+    expect(result).toEqual([expectedAppReport]);
     expect(mockRequest).toHaveBeenCalledWith(
       expect.stringContaining("websiteUserKey=website-user-abc"),
       expect.any(Object),
@@ -82,7 +87,7 @@ describe("getDamageReports", () => {
 
     const result = await getDamageReports({ clerkUserId: "clerk-obj-1" });
 
-    expect(result).toEqual([fakeReport]);
+    expect(result).toEqual([expectedAppReport]);
   });
 
   it("returns error object when identity is null", async () => {
@@ -113,7 +118,7 @@ describe("getDamageReports", () => {
 
     const result = await getDamageReports("clerk-user-1");
 
-    expect(result).toEqual([fakeReport]);
+    expect(result).toEqual([expectedAppReport]);
     expect(mockRequest).toHaveBeenCalledTimes(2);
   });
 
@@ -138,7 +143,7 @@ describe("getAllDamageReports", () => {
 
     const result = await getAllDamageReports();
 
-    expect(result).toEqual([fakeReport]);
+    expect(result).toEqual([expectedAppReport]);
     expect(mockRequest).toHaveBeenCalledWith(
       `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
       { method: "GET" },
@@ -172,7 +177,7 @@ describe("saveDamageReport", () => {
 
     const result = await saveDamageReport(newReport, "clerk-user-1");
 
-    expect(result).toEqual({ ...newReport, id: "new-uuid" });
+    expect(result).toEqual(expect.objectContaining({ id: "new-uuid", status: "pending" }));
     expect(mockRequest).toHaveBeenCalledWith(
       SUPABASE_EDGE_ROUTES.reports,
       expect.objectContaining({ method: "POST" }),
@@ -184,7 +189,7 @@ describe("saveDamageReport", () => {
 
     const result = await saveDamageReport(fakeReport, "clerk-user-1");
 
-    expect(result).toEqual(fakeReport);
+    expect(result).toEqual(expectedAppReport);
     expect(mockRequest).toHaveBeenCalledWith(
       `${SUPABASE_EDGE_ROUTES.reports}/${fakeReport.id}`,
       expect.objectContaining({ method: "PUT" }),

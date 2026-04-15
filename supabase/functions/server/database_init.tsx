@@ -332,6 +332,24 @@ export async function initializeDatabaseTables() {
 
         ALTER TABLE public.shop_profiles ENABLE ROW LEVEL SECURITY;
 
+        DROP POLICY IF EXISTS "Authenticated users can read shop profiles" ON public.shop_profiles;
+        DROP POLICY IF EXISTS "Shop owners can manage their own profile" ON public.shop_profiles;
+
+        CREATE POLICY "Authenticated users can read shop profiles"
+          ON public.shop_profiles FOR SELECT
+          USING (requesting_clerk_user_id() IS NOT NULL OR auth.role() = 'authenticated');
+
+        CREATE POLICY "Shop owners can manage their own profile"
+          ON public.shop_profiles FOR ALL
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR user_id = auth.uid()
+          )
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR user_id = auth.uid()
+          );
+
         DROP TRIGGER IF EXISTS set_updated_at ON public.shop_profiles;
         CREATE TRIGGER set_updated_at
           BEFORE UPDATE ON public.shop_profiles
@@ -405,6 +423,24 @@ export async function initializeDatabaseTables() {
           ON public.insurer_profiles(clerk_user_id);
 
         ALTER TABLE public.insurer_profiles ENABLE ROW LEVEL SECURITY;
+
+        DROP POLICY IF EXISTS "Authenticated users can read insurer profiles" ON public.insurer_profiles;
+        DROP POLICY IF EXISTS "Insurer owners can manage their own profile" ON public.insurer_profiles;
+
+        CREATE POLICY "Authenticated users can read insurer profiles"
+          ON public.insurer_profiles FOR SELECT
+          USING (requesting_clerk_user_id() IS NOT NULL OR auth.role() = 'authenticated');
+
+        CREATE POLICY "Insurer owners can manage their own profile"
+          ON public.insurer_profiles FOR ALL
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR user_id = auth.uid()
+          )
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR user_id = auth.uid()
+          );
 
         DROP TRIGGER IF EXISTS set_updated_at ON public.insurer_profiles;
         CREATE TRIGGER set_updated_at

@@ -10,7 +10,7 @@ export interface UserInfo {
 
 export interface Vehicle {
   id: string;
-  year: string;
+  year: number;
   make: string;
   model: string;
   vin?: string;
@@ -40,10 +40,10 @@ export interface DamageReport {
   damageArea?: string;
   incident?: string;
   zipCode?: string;
-  zip_code?: string;
   latitude?: number | null;
   longitude?: number | null;
   damageType?: string;
+  damageSeverity?: string;
   claimNumber?: string;
   customerName?: string;
   customerEmail?: string;
@@ -111,6 +111,29 @@ export interface Activity {
   message: string;
   timestamp: string;
   metadata?: Record<string, unknown>;
+}
+
+export interface JobAssignment {
+  id: string;
+  damageReportId: string;
+  bidId: string | null;
+  shopClerkUserId: string;
+  customerClerkUserId: string | null;
+  status: "scheduled" | "in_progress" | "awaiting_parts" | "completed" | "cancelled";
+  createdAt: string;
+  updatedAt: string;
+  report: Record<string, any> | null;
+  bid: Record<string, any> | null;
+}
+
+export interface ActivityEvent {
+  id: string;
+  eventType: string;
+  source?: string;
+  actorId?: string;
+  objectId?: string;
+  outcome?: string;
+  createdAt: string;
 }
 
 export interface RedirectInfo {

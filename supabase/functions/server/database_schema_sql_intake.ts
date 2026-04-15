@@ -67,9 +67,35 @@ export const intakeDatabaseSchemaSql = `
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event_type TEXT NOT NULL,
     source TEXT,
+    actor_id TEXT,
+    object_id TEXT,
+    outcome TEXT,
     payload JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
   );
+
+  -- Add columns if table already exists without them
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'platform_activity_events' AND column_name = 'actor_id'
+    ) THEN
+      ALTER TABLE public.platform_activity_events ADD COLUMN actor_id TEXT;
+    END IF;
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'platform_activity_events' AND column_name = 'object_id'
+    ) THEN
+      ALTER TABLE public.platform_activity_events ADD COLUMN object_id TEXT;
+    END IF;
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'platform_activity_events' AND column_name = 'outcome'
+    ) THEN
+      ALTER TABLE public.platform_activity_events ADD COLUMN outcome TEXT;
+    END IF;
+  END $$;
 
   CREATE INDEX IF NOT EXISTS idx_platform_activity_events_type ON public.platform_activity_events(event_type);
   CREATE INDEX IF NOT EXISTS idx_platform_activity_events_created_at ON public.platform_activity_events(created_at DESC);
@@ -77,7 +103,18 @@ export const intakeDatabaseSchemaSql = `
   ALTER TABLE public.platform_activity_events ENABLE ROW LEVEL SECURITY;
 
   DROP POLICY IF EXISTS "Public can insert platform activity events" ON public.platform_activity_events;
+  DROP POLICY IF EXISTS "Admins can read platform activity events" ON public.platform_activity_events;
 
   CREATE POLICY "Public can insert platform activity events"
     ON public.platform_activity_events FOR INSERT WITH CHECK (true);
+
+  CREATE POLICY "Admins can read platform activity events"
+    ON public.platform_activity_events FOR SELECT
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE profiles.clerk_user_id = requesting_clerk_user_id()
+        AND profiles.is_admin = TRUE
+      )
+    );
 `;

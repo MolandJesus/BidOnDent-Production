@@ -11,10 +11,12 @@ import {
 import { useMemo, useState } from "react";
 
 import { useCoveragePartnerShops } from "../../hooks/useCoveragePartnerShops";
+import { useMarketStatus } from "../../hooks/useMarketStatus";
 import { haversineMiles, zipToCoordinates } from "../../services/supabase/map";
 import type { DamageReport } from "../../types";
 import { defaultCoverageCenter } from "../landing/coverageData";
 import DashboardMapPreview from "./MapLibreDashboardMapPreview";
+import MarketStatusIndicator from "./MarketStatusIndicator";
 import type { ReportPin } from "./MapLibreDashboardMapPreview";
 import type { CoverageNearbyShop, CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
@@ -96,6 +98,8 @@ export default function CustomerMapWidget({
     return partnerShops.slice(0, 5).map((s) => ({ ...s, distanceMiles: 0 }));
   }, [partnerShops, reportPins]);
   const compactShops = displayShops.slice(0, 4);
+
+  const marketStatus = useMarketStatus(reports, displayShops.length);
 
   /** Capability teasers to entice users toward the full Smart Map */
   const capabilities = [
@@ -198,6 +202,15 @@ export default function CustomerMapWidget({
             {capabilities.length} tools
           </span>
         </div>
+        {(marketStatus.nearbyShopCount > 0 || marketStatus.recentBidCount > 0) && (
+          <div className="mb-3">
+            <MarketStatusIndicator
+              nearbyShopCount={marketStatus.nearbyShopCount}
+              recentBidCount={marketStatus.recentBidCount}
+              isLight={isLight}
+            />
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-2">
           {capabilities.map(({ icon: Icon, label, desc }, index) => (
             <button

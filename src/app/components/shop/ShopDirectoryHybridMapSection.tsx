@@ -6,7 +6,7 @@ import NavigationErrorBoundary from "../maps/NavigationErrorBoundary";
 import { getDefaultMapCenter } from "../../services/intelligence/shopMapExperience";
 import { cn } from "../ui/utils";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 import type { useShopDirectorySession } from "../../hooks/useShopDirectorySession";
 import type { useShopDirectoryNavigation } from "../../hooks/useShopDirectoryNavigation";
 import type { useShopDirectoryActions } from "../../hooks/useShopDirectoryActions";

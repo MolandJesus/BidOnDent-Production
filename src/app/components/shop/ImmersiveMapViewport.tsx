@@ -11,7 +11,7 @@ import type { MarketUserType } from "../../services/intelligence/marketIntellige
 import type { IntelligenceSummary } from "../../services/intelligence/marketIntelligence";
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { GpsStatus } from "../../hooks/useNavigationGpsTracking";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 import type { NavigationRouteStep } from "../../types/navigation";
 import type { NavigationVoiceMode, NavigationVoiceVolumePreset } from "../../types/navigation";
 import { getShopRouteActionLabel } from "../../hooks/shopDirectorySessionUtils";

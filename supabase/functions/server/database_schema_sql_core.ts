@@ -8,6 +8,15 @@ export const coreDatabaseSchemaSql = `
   END;
   $$ LANGUAGE plpgsql;
 
+  -- Helper: extract Clerk user ID from JWT sub claim.
+  -- Returns NULL when no JWT is present (anon / service_role context).
+  CREATE OR REPLACE FUNCTION public.requesting_clerk_user_id()
+  RETURNS TEXT
+  LANGUAGE sql STABLE
+  AS $fn$
+    SELECT NULLIF(current_setting('request.jwt.claims', true)::json->>'sub', '');
+  $fn$;
+
   -- Create profiles table
   CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -81,15 +90,29 @@ export const coreDatabaseSchemaSql = `
     ON public.profiles FOR SELECT USING (true);
 
   CREATE POLICY "Users can insert their own profile"
-    ON public.profiles FOR INSERT WITH CHECK (auth.uid() = user_id);
+    ON public.profiles FOR INSERT
+    WITH CHECK (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    );
 
   CREATE POLICY "Users can update their own profile"
     ON public.profiles FOR UPDATE
-    USING (auth.uid() = user_id)
-    WITH CHECK (auth.uid() = user_id);
+    USING (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    )
+    WITH CHECK (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    );
 
   CREATE POLICY "Users can delete their own profile"
-    ON public.profiles FOR DELETE USING (auth.uid() = user_id);
+    ON public.profiles FOR DELETE
+    USING (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    );
 
   DROP TRIGGER IF EXISTS set_updated_at ON public.profiles;
   CREATE TRIGGER set_updated_at
@@ -142,6 +165,13 @@ export const coreDatabaseSchemaSql = `
     ) THEN
       EXECUTE 'CREATE INDEX idx_vehicles_clerk_user_id ON public.vehicles(clerk_user_id)';
     END IF;
+
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'vehicles' AND column_name = 'deleted_at'
+    ) THEN
+      ALTER TABLE public.vehicles ADD COLUMN deleted_at TIMESTAMPTZ;
+    END IF;
   END $$;
 
   DO $$
@@ -164,18 +194,39 @@ export const coreDatabaseSchemaSql = `
   DROP POLICY IF EXISTS "Users can delete their own vehicles" ON public.vehicles;
 
   CREATE POLICY "Users can read their own vehicles"
-    ON public.vehicles FOR SELECT USING (auth.uid() = user_id);
+    ON public.vehicles FOR SELECT
+    USING (
+      deleted_at IS NULL
+      AND (
+        clerk_user_id = requesting_clerk_user_id()
+        OR auth.uid() = user_id
+      )
+    );
 
   CREATE POLICY "Users can insert their own vehicles"
-    ON public.vehicles FOR INSERT WITH CHECK (auth.uid() = user_id);
+    ON public.vehicles FOR INSERT
+    WITH CHECK (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    );
 
   CREATE POLICY "Users can update their own vehicles"
     ON public.vehicles FOR UPDATE
-    USING (auth.uid() = user_id)
-    WITH CHECK (auth.uid() = user_id);
+    USING (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    )
+    WITH CHECK (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    );
 
   CREATE POLICY "Users can delete their own vehicles"
-    ON public.vehicles FOR DELETE USING (auth.uid() = user_id);
+    ON public.vehicles FOR DELETE
+    USING (
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
+    );
 
   DROP TRIGGER IF EXISTS set_updated_at ON public.vehicles;
   CREATE TRIGGER set_updated_at
@@ -213,6 +264,17 @@ export const coreDatabaseSchemaSql = `
     CONSTRAINT user_id_or_clerk_user_id CHECK (user_id IS NOT NULL OR clerk_user_id IS NOT NULL)
   );
 
+  -- Add deleted_at if table already exists
+  DO $$
+  BEGIN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = 'damage_reports' AND column_name = 'deleted_at'
+    ) THEN
+      ALTER TABLE public.damage_reports ADD COLUMN deleted_at TIMESTAMPTZ;
+    END IF;
+  END $$;
+
   CREATE INDEX IF NOT EXISTS idx_damage_reports_user_id ON public.damage_reports(user_id);
   CREATE INDEX IF NOT EXISTS idx_damage_reports_clerk_user_id ON public.damage_reports(clerk_user_id);
   CREATE INDEX IF NOT EXISTS idx_damage_reports_vehicle_id ON public.damage_reports(vehicle_id);
@@ -231,53 +293,54 @@ export const coreDatabaseSchemaSql = `
   CREATE POLICY "Users can read their own damage reports"
     ON public.damage_reports FOR SELECT
     USING (
-      auth.uid() = user_id
-      OR clerk_user_id IN (
-        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
+      deleted_at IS NULL
+      AND (
+        clerk_user_id = requesting_clerk_user_id()
+        OR auth.uid() = user_id
       )
     );
 
   CREATE POLICY "Shops and insurers can read all damage reports"
     ON public.damage_reports FOR SELECT
     USING (
-      EXISTS (
-        SELECT 1 FROM public.profiles
-        WHERE profiles.user_id = auth.uid()
-        AND profiles.account_type IN ('shop', 'insurer')
+      deleted_at IS NULL
+      AND (
+        EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE profiles.clerk_user_id = requesting_clerk_user_id()
+          AND profiles.account_type IN ('shop', 'insurer')
+        )
+        OR EXISTS (
+          SELECT 1 FROM public.profiles
+          WHERE profiles.user_id = auth.uid()
+          AND profiles.account_type IN ('shop', 'insurer')
+        )
       )
     );
 
   CREATE POLICY "Users can insert their own damage reports"
     ON public.damage_reports FOR INSERT
     WITH CHECK (
-      auth.uid() = user_id
-      OR clerk_user_id IN (
-        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
-      )
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
     );
 
   CREATE POLICY "Users can update their own damage reports"
     ON public.damage_reports FOR UPDATE
     USING (
-      auth.uid() = user_id
-      OR clerk_user_id IN (
-        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
-      )
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
     )
     WITH CHECK (
-      auth.uid() = user_id
-      OR clerk_user_id IN (
-        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
-      )
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
     );
 
   CREATE POLICY "Users can delete their own damage reports"
     ON public.damage_reports FOR DELETE
     USING (
-      auth.uid() = user_id
-      OR clerk_user_id IN (
-        SELECT p.clerk_user_id FROM public.profiles p WHERE p.user_id = auth.uid()
-      )
+      clerk_user_id = requesting_clerk_user_id()
+      OR auth.uid() = user_id
     );
 
   DROP TRIGGER IF EXISTS set_updated_at ON public.damage_reports;

@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
 import { CarFront, MapPinned } from "lucide-react";
-import { ATLANTA_QA_DESTINATIONS, ATLANTA_QA_NEIGHBORHOODS } from "../../services/intelligence/atlantaQADestinations";
+import {
+  NY_METRO_QA_DESTINATIONS,
+  NY_METRO_QA_NEIGHBORHOODS,
+} from "../../services/intelligence/nyMetroQADestinations";
 import { qaDestinationToNavigationDestination } from "../../services/navigation/navigationDestinationAdapters";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
@@ -28,15 +31,15 @@ export default function ShopDirectoryQADrivePanel({
 }: ShopDirectoryQADrivePanelProps) {
   const isLight = appearanceMode === "light";
   const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>(
-    ATLANTA_QA_NEIGHBORHOODS[0],
+    NY_METRO_QA_NEIGHBORHOODS[0]
   );
 
   const visibleDestinations = useMemo(
     () =>
-      ATLANTA_QA_DESTINATIONS.filter(
-        (destination) => destination.neighborhood === selectedNeighborhood,
+      NY_METRO_QA_DESTINATIONS.filter(
+        (destination) => destination.neighborhood === selectedNeighborhood
       ),
-    [selectedNeighborhood],
+    [selectedNeighborhood]
   );
 
   if (!import.meta.env.DEV) {
@@ -53,7 +56,7 @@ export default function ShopDirectoryQADrivePanel({
             }`}
           >
             <CarFront className="h-4 w-4" />
-            Atlanta QA drives
+            NY Metro QA drives
           </div>
           <h2
             className={`mt-2 text-lg font-semibold ${
@@ -67,19 +70,19 @@ export default function ShopDirectoryQADrivePanel({
               isLight ? "text-slate-600" : "text-slate-300/80"
             }`}
           >
-            QA-only destination pack for Atlanta drive testing. Starting a drive here uses current
+            QA-only destination pack for NY metro drive testing. Starting a drive here uses current
             GPS when available, otherwise your selected origin.
           </p>
         </div>
 
         <div className="bd-dashboard-note bd-dashboard-note--deep rounded-2xl px-3 py-2 text-xs leading-5">
-          {ATLANTA_QA_DESTINATIONS.length} test destinations across{" "}
-          {ATLANTA_QA_NEIGHBORHOODS.length} neighborhoods
+          {NY_METRO_QA_DESTINATIONS.length} test destinations across{" "}
+          {NY_METRO_QA_NEIGHBORHOODS.length} neighborhoods
         </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {ATLANTA_QA_NEIGHBORHOODS.map((neighborhood) => {
+        {NY_METRO_QA_NEIGHBORHOODS.map((neighborhood) => {
           const isActive = neighborhood === selectedNeighborhood;
 
           return (
@@ -138,24 +141,20 @@ export default function ShopDirectoryQADrivePanel({
               </span>
             </div>
 
-            <div className={`flex items-start gap-2 text-sm ${isLight ? "text-slate-600" : "text-slate-300/80"}`}>
+            <div
+              className={`flex items-start gap-2 text-sm ${isLight ? "text-slate-600" : "text-slate-300/80"}`}
+            >
               <MapPinned className="mt-0.5 h-4 w-4 flex-shrink-0" />
               <span>{destination.address}</span>
             </div>
 
             <div className="mt-auto flex items-center justify-between gap-3">
-              <div
-                className={`text-xs ${
-                  isLight ? "text-slate-500" : "text-slate-400/80"
-                }`}
-              >
+              <div className={`text-xs ${isLight ? "text-slate-500" : "text-slate-400/80"}`}>
                 {destination.coordinates.lat.toFixed(4)}, {destination.coordinates.lng.toFixed(4)}
               </div>
               <button
                 className="bd-dashboard-primary-button min-h-[44px] rounded-xl px-3.5 py-2 text-sm font-semibold text-white"
-                onClick={() =>
-                  onStartDrive(qaDestinationToNavigationDestination(destination))
-                }
+                onClick={() => onStartDrive(qaDestinationToNavigationDestination(destination))}
                 type="button"
               >
                 Start drive

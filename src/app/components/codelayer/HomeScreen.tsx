@@ -6,9 +6,8 @@ import ShopBidsSummary from "../shop/ShopBidsSummary";
 import { buildPrimaryAction, buildQuickActions } from "./homeScreenData";
 import { HomeOnboardingCard, HomeQuickActions, HomeReportsList } from "./HomeScreenSections";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-import type { DamageReport } from "../../types";
+import type { DamageReport, Bid } from "../../types";
 import type { EstimateRequest } from "../../services/supabase/estimateRequests";
-import type { Bid as SupabaseBid } from "../../services/supabase/types";
 
 type HomeScreenProps = {
   userType: string;
@@ -40,7 +39,7 @@ type HomeScreenProps = {
   reports?: DamageReport[];
   estimateRequests?: EstimateRequest[];
   onSelectEstimate?: (estimate: EstimateRequest) => void;
-  shopSubmittedBids?: SupabaseBid[];
+  shopSubmittedBids?: Bid[];
 };
 
 export default function HomeScreen({

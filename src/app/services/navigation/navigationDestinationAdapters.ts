@@ -6,7 +6,7 @@ import type { NavigationDestination } from "../../types/mapDomain";
 import type { NavigationAddressResult } from "../../types/navigation";
 import type { SessionWaypoint } from "../../features/navigation/sessionTypes";
 import type { NavigationDiscoveryPlace } from "./placeDiscovery";
-import type { AtlantaQADestination } from "../intelligence/atlantaQADestinations";
+import type { NYMetroQADestination } from "../intelligence/nyMetroQADestinations";
 
 /** Nominatim address search result → NavigationDestination */
 export function addressResultToNavigationDestination(
@@ -36,9 +36,9 @@ export function discoveryPlaceToNavigationDestination(
   };
 }
 
-/** Atlanta QA test destination → NavigationDestination */
+/** QA test destination → NavigationDestination */
 export function qaDestinationToNavigationDestination(
-  dest: AtlantaQADestination
+  dest: NYMetroQADestination
 ): NavigationDestination {
   return {
     id: dest.id,

@@ -8,7 +8,7 @@ import { getAllDamageReports } from "../../services/supabase/reports";
 import { supabase } from "../../services/supabaseService";
 import { getBidsForReport } from "../../services/supabase/bids";
 import { zipToCoordinates, geocodeAddress } from "../../services/supabase/map";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 
 type UseReportLayerDataParams = {
   initialReports?: DamageReport[];
@@ -129,7 +129,7 @@ export function useReportLayerData({
         ) {
           continue;
         }
-        const zip = report.zip_code;
+        const zip = report.zipCode;
         if (!report.address && !report.city && !zip) continue;
         const coords = await geocodeAddress({
           address: report.address,
@@ -194,7 +194,7 @@ export function useReportLayerData({
             return { report, coords: { lat: report.latitude, lng: report.longitude } };
           }
           const geocoded = report.id ? geocodedCoords.get(report.id) : undefined;
-          const coords = geocoded ?? zipToCoordinates(report.zip_code);
+          const coords = geocoded ?? zipToCoordinates(report.zipCode);
           if (!coords) return null;
           return { report, coords };
         })
@@ -229,10 +229,11 @@ export function useReportLayerData({
         properties: {
           id: report.id,
           status: report.status ?? "pending",
-          vehicle: `${report.vehicle_year} ${report.vehicle_make} ${report.vehicle_model}`,
-          damageType: report.damage_type,
-          severity: report.damage_severity,
-          zip: report.zip_code ?? "",
+          vehicle:
+            `${report.vehicleInfo?.year || ""} ${report.vehicleInfo?.make || ""} ${report.vehicleInfo?.model || ""}`.trim(),
+          damageType: report.damageType,
+          severity: report.damageSeverity,
+          zip: report.zipCode ?? "",
           bidCount: report.id ? (bidCounts[report.id] ?? 0) : 0,
         },
       })),

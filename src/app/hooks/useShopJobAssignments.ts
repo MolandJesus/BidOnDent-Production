@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { getJobAssignments, type EnrichedJobAssignment } from "../services/supabase/workflow";
+import { getJobAssignments } from "../services/supabase/workflow";
+import type { JobAssignment } from "../types";
 import { useNotifications } from "../features/notifications/NotificationContext";
 
 export function useShopJobAssignments(shopClerkUserId: string | null | undefined) {
-  const [jobs, setJobs] = useState<EnrichedJobAssignment[]>([]);
+  const [jobs, setJobs] = useState<JobAssignment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const notifications = useNotifications();
 

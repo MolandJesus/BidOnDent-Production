@@ -3,7 +3,7 @@ import type { ShopMapListing } from "../../services/intelligence/shopMapExperien
 import type { NavigationSessionStatus } from "../../features/navigation";
 import type { NavigationRouteStep } from "../../types/navigation";
 import type { MapTileMode } from "../maps/serviceCoverageMapTypes";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 import type {
   Coordinates,
   MapTheme,

@@ -206,35 +206,4 @@ export async function notifyShopBidStatus(
   }
 }
 
-/**
- * Notify shop about a new nearby repair request.
- * Called from geographic matching or real-time trigger.
- */
-export async function notifyShopNearbyReport(
-  supabase: SupabaseClient,
-  shopClerkUserId: string,
-  distanceMiles: number,
-  damageType?: string,
-  zipCode?: string
-): Promise<void> {
-  try {
-    if (!(await isEmailEnabled(supabase, shopClerkUserId, "email_nearby_reports"))) return;
-    const email = await getUserEmail(supabase, shopClerkUserId);
-    if (!email) return;
 
-    const shopName = await getShopName(supabase, shopClerkUserId);
-    const template = templates.nearbyReportAlert({
-      shopName,
-      distanceMiles,
-      damageType,
-      zipCode,
-    });
-
-    const result = await sendEmail({ to: email, ...template });
-    if (!result.success) {
-      console.warn("notifyShopNearbyReport: email failed:", result.error);
-    }
-  } catch (err) {
-    console.error("notifyShopNearbyReport:", err instanceof Error ? err.message : err);
-  }
-}

@@ -61,7 +61,7 @@ export default function ShopActiveJobsScreen({
         vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",
         damageType: report?.damage_area || report?.damage_type || "Repair request",
         bidAmount: Number(bid?.amount) || 0,
-        startDate: ja.created_at ? new Date(ja.created_at).toLocaleDateString() : "Pending",
+        startDate: ja.createdAt ? new Date(ja.createdAt).toLocaleDateString() : "Pending",
         estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
         status,
         progress,

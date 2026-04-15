@@ -119,7 +119,6 @@ describe("transformReportToRequest", () => {
     report.city = undefined;
     report.state = undefined;
     report.zipCode = undefined;
-    report.zip_code = undefined;
     const result = transformReportToRequest(report, 0);
     expect(result.location).toBe("No location");
     expect(result.hasLocation).toBe(false);

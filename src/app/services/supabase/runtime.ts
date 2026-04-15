@@ -1,9 +1,23 @@
-import { projectId, publicAnonKey } from "../../../../utils/supabase/info";
 import { getClerkTokenForEdgeRequests } from "./authSession";
 
-export const SUPABASE_PROJECT_ID = projectId;
-export const SUPABASE_ANON_KEY = publicAnonKey;
-export const SUPABASE_BASE_URL = `https://${projectId}.supabase.co`;
+// Read Supabase config from environment variables (.env)
+const envUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const envAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
+// Extract project ID from URL (e.g., "https://abc123.supabase.co" → "abc123")
+function extractProjectId(url: string | undefined): string {
+  if (!url) return "";
+  try {
+    const hostname = new URL(url).hostname;
+    return hostname.split(".")[0] || "";
+  } catch {
+    return "";
+  }
+}
+
+export const SUPABASE_PROJECT_ID = extractProjectId(envUrl);
+export const SUPABASE_ANON_KEY = envAnonKey ?? "";
+export const SUPABASE_BASE_URL = envUrl ?? "";
 export const SUPABASE_EDGE_FUNCTION_SLUG = "server";
 export const SUPABASE_LEGACY_EDGE_NAMESPACE = "make-server-9f243523";
 

@@ -14,8 +14,14 @@ export function AuthConfigFallback() {
           or invalid.
         </p>
         <ol className="mt-6 list-decimal space-y-2 pl-5 text-sm text-blue-100/70">
-          <li>Open utils/clerk/info.tsx</li>
-          <li>Set clerkPublishableKey to your Clerk pk_test or pk_live value</li>
+          <li>
+            Copy <code className="text-blue-300">.env.example</code> to{" "}
+            <code className="text-blue-300">.env</code>
+          </li>
+          <li>
+            Set <code className="text-blue-300">VITE_CLERK_PUBLISHABLE_KEY</code> to your Clerk
+            pk_test or pk_live value
+          </li>
           <li>Refresh the browser</li>
         </ol>
       </div>

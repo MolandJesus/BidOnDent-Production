@@ -10,6 +10,7 @@ const SettingsModal = lazy(() => import("../codelayer/account/SettingsModal"));
 import DashboardAtmosphere from "./DashboardAtmosphere";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
+import DemoModeBanner from "../demo/DemoModeBanner";
 
 type DashboardLayoutProps = {
   appearanceMode: DashboardAppearanceMode;
@@ -32,6 +33,8 @@ type DashboardLayoutProps = {
   onMobileMenuTabClick: (tabId: string) => void;
   onProfileToggle: () => void;
   onOpenDemoMode?: () => void;
+  demoMode?: boolean;
+  demoAccountType?: "customer" | "shop" | "insurer" | null;
   onMarkNotificationRead: (notificationId: string | number) => void;
   onMarkAllNotificationsRead: () => void;
   profileDropdownData?: ProfileDropdownData;
@@ -60,6 +63,8 @@ export default function DashboardLayout({
   onMobileMenuTabClick,
   onProfileToggle,
   onOpenDemoMode,
+  demoMode,
+  demoAccountType,
   onMarkNotificationRead,
   onMarkAllNotificationsRead,
   profileDropdownData,
@@ -123,14 +128,16 @@ export default function DashboardLayout({
 
   return (
     <div
-      className={`min-h-screen relative ${isLightAppearance ? "" : "dark"}`}
+      className={`flex flex-col h-[100dvh] relative ${isLightAppearance ? "" : "dark"}`}
       data-theme={isLightAppearance ? "light" : "dark"}
       style={{ background: surfaceTheme.background }}
     >
       <DashboardAtmosphere isLightAppearance={isLightAppearance} />
 
+      {demoMode && <DemoModeBanner demoAccountType={demoAccountType} />}
+
       <div
-        className="relative z-10 flex flex-col md:flex-row h-[100dvh] overflow-hidden"
+        className="relative z-10 flex flex-col md:flex-row flex-1 overflow-hidden"
         style={{ touchAction: "pan-y pinch-zoom" }}
       >
         <DashboardSidebar

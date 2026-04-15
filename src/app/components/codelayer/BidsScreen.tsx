@@ -67,7 +67,7 @@ export default function BidsScreen({
     if (selectedReport.latitude != null && selectedReport.longitude != null) {
       return { lat: selectedReport.latitude, lng: selectedReport.longitude };
     }
-    return zipToCoordinates(selectedReport.zip_code || selectedReport.zipCode);
+    return zipToCoordinates(selectedReport.zipCode);
   }, [selectedReport]);
 
   const reportPins = useMemo<ReportPin[]>(() => {

@@ -135,6 +135,7 @@ export async function getVehicles(
       .from('vehicles')
       .select('*')
       .eq('clerk_user_id', clerkUserId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -188,12 +189,13 @@ export async function deleteVehicleByPost(
 
     const { error } = await supabase
       .from('vehicles')
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq('id', vehicleId)
-      .eq('clerk_user_id', authenticatedClerkUserId);
+      .eq('clerk_user_id', authenticatedClerkUserId)
+      .is('deleted_at', null);
 
     if (error) {
-      console.error('Error deleting vehicle:', error);
+      console.error('Error soft-deleting vehicle:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
@@ -234,12 +236,13 @@ export async function deleteVehicleByDelete(
 
     const { error } = await supabase
       .from('vehicles')
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq('id', vehicleId)
-      .eq('clerk_user_id', authenticatedClerkUserId);
+      .eq('clerk_user_id', authenticatedClerkUserId)
+      .is('deleted_at', null);
 
     if (error) {
-      console.error('Error deleting vehicle:', error);
+      console.error('Error soft-deleting vehicle:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 

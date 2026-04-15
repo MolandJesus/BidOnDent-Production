@@ -57,12 +57,19 @@ export async function logWorkflowEvent(
       return respond({ error: "Missing event_type" }, 400);
     }
 
+    const actorId = getString(body.actor_id);
+    const objectId = getString(body.object_id);
+    const outcome = getString(body.outcome);
+
     const { data, error } = await supabase
       .from("platform_activity_events")
       .insert({
         event_type: eventType,
         payload,
         source,
+        ...(actorId ? { actor_id: actorId } : {}),
+        ...(objectId ? { object_id: objectId } : {}),
+        ...(outcome ? { outcome } : {}),
       })
       .select("id")
       .single();
@@ -97,6 +104,7 @@ export async function getJobAssignments(
       .from("job_assignments")
       .select("*")
       .eq("shop_clerk_user_id", shopClerkUserId)
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
@@ -174,8 +182,26 @@ export async function createJobAssignment(
       .single();
 
     if (error) {
+      // Unique constraint violation → report already has an active assignment
+      if (error.code === "23505") {
+        return respond({ error: "This report already has an active job assignment" }, 409);
+      }
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
+
+    // Fire-and-forget: log activity event
+    supabase.from("platform_activity_events").insert({
+      event_type: "job_assignment_created",
+      source: "api",
+      actor_id: payload.customer_user_id,
+      object_id: data?.id || null,
+      outcome: "success",
+      payload: {
+        damage_report_id: payload.damage_report_id,
+        shop_user_id: payload.shop_user_id,
+        bid_id: payload.bid_id,
+      },
+    }).then(null, () => {});
 
     return respond({
       assignment: data || null,

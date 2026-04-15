@@ -32,15 +32,26 @@ export const estimateRequestsDatabaseSchemaSql = `
   -- RLS policies
   ALTER TABLE public.estimate_requests ENABLE ROW LEVEL SECURITY;
 
-  DO $$
-  BEGIN
-    IF NOT EXISTS (
-      SELECT 1 FROM pg_policies
-      WHERE tablename = 'estimate_requests' AND policyname = 'estimate_requests_service_role_all'
-    ) THEN
-      CREATE POLICY estimate_requests_service_role_all ON public.estimate_requests
-        FOR ALL USING (true) WITH CHECK (true);
-    END IF;
-  END
-  $$;
+  DROP POLICY IF EXISTS estimate_requests_service_role_all ON public.estimate_requests;
+  DROP POLICY IF EXISTS "Customers can read their own estimate requests" ON public.estimate_requests;
+  DROP POLICY IF EXISTS "Customers can insert their own estimate requests" ON public.estimate_requests;
+  DROP POLICY IF EXISTS "Shops can read estimate requests sent to them" ON public.estimate_requests;
+
+  CREATE POLICY "Customers can read their own estimate requests"
+    ON public.estimate_requests FOR SELECT
+    USING (clerk_customer_user_id = requesting_clerk_user_id());
+
+  CREATE POLICY "Customers can insert their own estimate requests"
+    ON public.estimate_requests FOR INSERT
+    WITH CHECK (clerk_customer_user_id = requesting_clerk_user_id());
+
+  CREATE POLICY "Shops can read estimate requests sent to them"
+    ON public.estimate_requests FOR SELECT
+    USING (
+      EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE profiles.clerk_user_id = requesting_clerk_user_id()
+        AND profiles.account_type = 'shop'
+      )
+    );
 `;

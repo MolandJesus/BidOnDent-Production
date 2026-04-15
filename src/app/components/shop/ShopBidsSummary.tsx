@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { DollarSign, Clock, CheckCircle2, XCircle } from "lucide-react";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-import type { Bid } from "../../services/supabase/types";
+import type { Bid } from "../../types";
 
 type ShopBidsSummaryProps = {
   bids: Bid[];
@@ -26,8 +26,8 @@ export default function ShopBidsSummary({
       else if (b.status === "rejected") r++;
     }
     const sorted = [...bids].sort((x, y) => {
-      const xd = Date.parse(x.created_at || "");
-      const yd = Date.parse(y.created_at || "");
+      const xd = Date.parse(x.createdAt || "");
+      const yd = Date.parse(y.createdAt || "");
       return yd - xd;
     });
     return { pending: p, accepted: a, rejected: r, recentBids: sorted.slice(0, 3) };
@@ -155,7 +155,7 @@ export default function ShopBidsSummary({
                     <span
                       className={`text-xs ml-1 ${isLight ? "text-slate-400" : "text-slate-500"}`}
                     >
-                      · {bid.estimated_days}d
+                      · {bid.estimatedDays}d
                     </span>
                   </span>
                   {bid.description && (

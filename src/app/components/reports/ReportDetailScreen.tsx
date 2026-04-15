@@ -12,15 +12,8 @@ import type { DashboardAppearanceMode } from "../../routers/dashboard-router-typ
 import type { DamageReport } from "../../types";
 import { useNotifications } from "../../features/notifications/NotificationContext";
 
-type Report = DamageReport & {
-  // Support flattened vehicle info (from Supabase)
-  vehicle_make?: string;
-  vehicle_model?: string;
-  vehicle_year?: number;
-};
-
 type ReportDetailScreenProps = {
-  report: Report;
+  report: DamageReport;
   onBack: () => void;
   onViewAllBids?: () => void;
   onFindShops?: () => void;
@@ -43,10 +36,10 @@ export default function ReportDetailScreen({
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   // Handle both nested vehicle and flattened vehicle properties
-  const vehicleInfo = report.vehicle || {
-    make: report.vehicle_make || "",
-    model: report.vehicle_model || "",
-    year: report.vehicle_year?.toString() || "",
+  const vehicleInfo = report.vehicleInfo || {
+    make: "",
+    model: "",
+    year: "",
   };
 
   // Provide safe defaults for potentially undefined properties
@@ -83,8 +76,8 @@ export default function ReportDetailScreen({
     if (report.latitude != null && report.longitude != null) {
       return { lat: report.latitude, lng: report.longitude };
     }
-    return zipToCoordinates(report.zip_code || report.zipCode);
-  }, [report.latitude, report.longitude, report.zip_code, report.zipCode]);
+    return zipToCoordinates(report.zipCode);
+  }, [report.latitude, report.longitude, report.zipCode]);
 
   /** Report pin for the map */
   const reportPins = useMemo<ReportPin[]>(() => {
@@ -272,7 +265,7 @@ export default function ReportDetailScreen({
               <p className={`text-sm mb-3 ${isLight ? "text-slate-500" : "text-slate-400"}`}>
                 {report.address || report.city
                   ? [report.address, report.city, report.state].filter(Boolean).join(", ")
-                  : `ZIP ${report.zip_code || report.zipCode || "area"}`}
+                  : `ZIP ${report.zipCode || "area"}`}
                 {shopPinsFromBids.length > 0 &&
                   ` · ${shopPinsFromBids.length} shop${shopPinsFromBids.length > 1 ? "s" : ""} bidding`}
               </p>

@@ -10,7 +10,7 @@ import type { ShopMapListing } from "../../services/intelligence/shopMapExperien
 import type { WebsiteIdentity } from "../../services/auth/websiteIdentity";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 import { cn } from "../ui/utils";
 
 import type { useShopDirectorySession } from "../../hooks/useShopDirectorySession";

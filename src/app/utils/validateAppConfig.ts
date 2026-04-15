@@ -5,7 +5,9 @@
  */
 
 import { SUPABASE_PROJECT_ID, SUPABASE_ANON_KEY } from "../services/supabase/runtime";
-import { clerkPublishableKey } from "../../../utils/clerk/info";
+
+// Read Clerk key from env for validation (same source as App.tsx)
+const clerkPublishableKey = (import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string) ?? "";
 
 interface ConfigIssue {
   key: string;

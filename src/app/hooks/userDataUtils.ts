@@ -9,51 +9,23 @@ import type {
   Vehicle as SupabaseVehicle,
   Bid as SupabaseBid,
 } from "../services/supabase/types";
+import {
+  reportFromDb,
+  reportToDb,
+  buildReportPayload,
+  bidFromDb,
+  vehicleFromDb,
+  vehicleToDb,
+} from "../services/supabase/adapters";
 
-/** Convert a Supabase Vehicle to a frontend Vehicle. */
-export function toFrontendVehicle(v: SupabaseVehicle): FrontendVehicle {
-  return {
-    id: v.id || "",
-    year: String(v.year),
-    make: v.make,
-    model: v.model,
-    vin: v.vin,
-    licensePlate: v.license_plate,
-    color: v.color,
-  };
-}
+/** Convert a Supabase Vehicle to a frontend Vehicle — delegates to canonical adapter. */
+export const toFrontendVehicle = vehicleFromDb;
 
-/** Convert a frontend Vehicle to a Supabase Vehicle for saving. */
-export function toSupabaseVehicle(v: FrontendVehicle): SupabaseVehicle {
-  return {
-    id: v.id || undefined,
-    make: v.make,
-    model: v.model,
-    year: parseInt(v.year, 10) || 0,
-    vin: v.vin,
-    license_plate: v.licensePlate,
-    color: v.color,
-  };
-}
+/** Convert a frontend Vehicle to a Supabase Vehicle for saving — delegates to canonical adapter. */
+export const toSupabaseVehicle = vehicleToDb;
 
-/** Convert a Supabase Bid to a frontend Bid. */
-export function toFrontendBid(b: SupabaseBid): FrontendBid {
-  return {
-    id: b.id || "",
-    shopId: b.shop_id || b.shop_user_id || b.clerk_shop_user_id || "",
-    shopName: b.shop_name || "",
-    shopEmail: b.shop_email || "",
-    reportId: b.damage_report_id || b.report_id || "",
-    amount: b.amount,
-    estimatedDays: b.estimated_days,
-    description: b.description || "",
-    status: b.status,
-    createdAt: b.created_at || new Date().toISOString(),
-    shopRating: b.shop_rating ?? undefined,
-    shopReviews: b.shop_reviews ?? undefined,
-    shopDistance: b.shop_distance ?? undefined,
-  };
-}
+/** Convert a Supabase Bid to a frontend Bid — delegates to canonical adapter. */
+export const toFrontendBid = bidFromDb;
 
 export const isUuidLike = (value?: string | null) =>
   Boolean(
@@ -133,120 +105,12 @@ export const buildPhotoStorageFromReports = (reportsData: FrontendReport[]) => {
   return photoStorageData;
 };
 
-function normalizeReportStatus(value?: string): FrontendReport["status"] {
-  switch (value) {
-    case "active":
-    case "completed":
-    case "in-review":
-    case "resolved":
-      return value;
-    default:
-      return "pending";
-  }
-}
+/** Convert a Supabase report to a frontend report — delegates to canonical adapter. */
+export const transformSupabaseReport = reportFromDb;
 
-export const transformSupabaseReport = (report: SupabaseReport): FrontendReport => {
-  const damageArea = report.damage_location || report.damage_type || "unknown";
-  const createdAt = report.created_at || new Date().toISOString();
-  const zipCode = report.zip_code || "";
+/** Convert a frontend DamageReport to Supabase shape for map rendering components — delegates to canonical adapter. */
+export const toMapReportShape = reportToDb;
 
-  return {
-    id: report.id || "",
-    vehicleId: report.vehicle_id || "",
-    vehicleInfo: {
-      year: report.vehicle_year?.toString() || "",
-      make: report.vehicle_make || "",
-      model: report.vehicle_model || "",
-    },
-    vehicle: {
-      make: report.vehicle_make || "",
-      model: report.vehicle_model || "",
-      year: report.vehicle_year?.toString() || "",
-      vin: "",
-    },
-    damageAreas: [damageArea],
-    damageArea,
-    photos: report.photo_urls || [],
-    description: report.damage_description || "",
-    damageDescription: report.damage_description || "",
-    incident: report.additional_notes || "",
-    address: report.address || "",
-    city: report.city || "",
-    state: report.state || "",
-    zipCode,
-    zip_code: zipCode,
-    damageType: report.damage_type || "",
-    status: normalizeReportStatus(report.status),
-    createdAt,
-    submittedAt: createdAt,
-    bidsCount: report.bids_count ?? 0,
-    customerName: report.customer_name || undefined,
-    customerEmail: report.customer_email || undefined,
-    customerPhone: report.customer_phone || undefined,
-    claimStatus: report.claim_status || undefined,
-    approvedAmount: report.approved_amount ?? undefined,
-    denialReason: report.denial_reason || undefined,
-    claimDecisionDate: report.claim_decision_date || undefined,
-    insuranceClaim: report.insurance_claim ?? undefined,
-    insuranceCompany: report.insurance_company || undefined,
-  };
-};
-
-/** Convert a frontend DamageReport to Supabase shape for map rendering components. */
-export function toMapReportShape(report: FrontendReport): SupabaseReport {
-  return {
-    id: report.id,
-    user_id: undefined,
-    vehicle_id: report.vehicleId || undefined,
-    vehicle_make: report.vehicleInfo?.make || report.vehicle?.make || "",
-    vehicle_model: report.vehicleInfo?.model || report.vehicle?.model || "",
-    vehicle_year: parseInt(report.vehicleInfo?.year || report.vehicle?.year || "0", 10),
-    damage_type: report.damageType || report.damageArea || "unknown",
-    damage_severity: "",
-    damage_description: report.damageDescription || report.description || "",
-    damage_location: report.damageArea || "",
-    address: report.address || "",
-    city: report.city || "",
-    state: report.state || "",
-    zip_code: report.zipCode || report.zip_code || "",
-    latitude: report.latitude ?? null,
-    longitude: report.longitude ?? null,
-    photo_urls: report.photos || [],
-    status: report.status || "pending",
-    created_at: report.createdAt || "",
-    customer_name: report.customerName || null,
-    customer_email: report.customerEmail || null,
-    customer_phone: report.customerPhone || null,
-    bids_count: report.bidsCount || 0,
-    insurance_claim: report.insuranceClaim,
-    insurance_company: report.insuranceCompany,
-    claim_status: report.claimStatus,
-    approved_amount: report.approvedAmount,
-    denial_reason: report.denialReason,
-    claim_decision_date: report.claimDecisionDate,
-  };
-}
-
+/** Build a DB-shaped report payload from mixed-shape input — delegates to canonical adapter. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts both frontend and Supabase report shapes
-export const buildSupabaseReportPayload = (report: Record<string, any>) => ({
-  ...(isUuidLike(report.id) ? { id: report.id } : {}),
-  vehicle_make: report.vehicle?.make || report.vehicle_make || "",
-  vehicle_model: report.vehicle?.model || report.vehicle_model || "",
-  vehicle_year: parseInt(report.vehicle?.year || report.vehicle_year || "0", 10),
-  vehicle_id: report.vehicleId || report.vehicle_id || undefined,
-  damage_type: report.damageArea || report.damage_type || "unknown",
-  damage_severity: report.damage_severity || "moderate",
-  damage_description: report.description || report.damage_description || "",
-  damage_location: report.damageArea || report.damage_location || "",
-  address: report.address || "",
-  city: report.city || "",
-  state: report.state || "",
-  zip_code: report.zipCode || report.zip_code || "",
-  latitude: typeof report.latitude === "number" ? report.latitude : null,
-  longitude: typeof report.longitude === "number" ? report.longitude : null,
-  photo_urls: report.photos || report.photo_urls || [],
-  insurance_claim: report.insurance_claim ?? false,
-  preferred_contact: report.preferred_contact || "email",
-  additional_notes: report.incident || report.additional_notes || "",
-  status: report.status || "pending",
-});
+export const buildSupabaseReportPayload = buildReportPayload;

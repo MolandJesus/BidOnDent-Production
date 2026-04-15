@@ -106,9 +106,26 @@ export async function createBid(
       .single();
 
     if (error) {
+      // Unique constraint violation → shop already has an active bid on this report
+      if (error.code === "23505") {
+        return respond({ error: "You already have an active bid on this report" }, 409);
+      }
       console.error("Error saving bid:", error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
+
+    // Fire-and-forget: log activity event
+    supabase.from("platform_activity_events").insert({
+      event_type: "bid_submitted",
+      source: "api",
+      actor_id: authenticatedClerkUserId,
+      object_id: data?.id || null,
+      outcome: "success",
+      payload: {
+        damage_report_id: damageReportId,
+        amount: bidAmount,
+      },
+    }).then(null, () => {});
 
     // Fire-and-forget: email customer about the new bid
     if (data?.damage_report_id) {
@@ -185,6 +202,7 @@ export async function getBids(
         .from("bids")
         .select("*")
         .eq("damage_report_id", reportId)
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .range(offset, offset + limit - 1);
 
@@ -217,6 +235,7 @@ export async function getBids(
         .from("bids")
         .select("*")
         .in("damage_report_id", reportIds)
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .range(offset, offset + limit - 1);
 
@@ -234,6 +253,7 @@ export async function getBids(
         .from("bids")
         .select("*")
         .eq("clerk_shop_user_id", clerkUserId)
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .range(offset, offset + limit - 1);
 
@@ -287,7 +307,7 @@ export async function updateBidStatus(
 
     const { data: existingBid, error: existingBidError } = await supabase
       .from("bids")
-      .select("id, damage_report_id")
+      .select("id, damage_report_id, status")
       .eq("id", bidId)
       .maybeSingle();
 
@@ -298,6 +318,11 @@ export async function updateBidStatus(
 
     if (!existingBid?.damage_report_id) {
       return respond({ error: "Bid not found" }, 404);
+    }
+
+    // State-machine guard: only pending bids can be accepted/rejected
+    if (existingBid.status !== "pending") {
+      return respond({ error: `Bid is already ${existingBid.status}` }, 409);
     }
 
     const { data: reportOwner, error: reportOwnerError } = await supabase
@@ -341,6 +366,19 @@ export async function updateBidStatus(
         console.error("Error auto-rejecting competing bids:", rejectError);
       }
     }
+
+    // Fire-and-forget: log activity event
+    supabase.from("platform_activity_events").insert({
+      event_type: status === "accepted" ? "bid_accepted" : "bid_rejected",
+      source: "api",
+      actor_id: clerkUserId,
+      object_id: bidId,
+      outcome: "success",
+      payload: {
+        damage_report_id: data?.damage_report_id || null,
+        amount: Number(data?.amount ?? 0),
+      },
+    }).then(null, () => {});
 
     // Fire-and-forget: email shop about bid acceptance/rejection
     if (data?.clerk_shop_user_id && (status === "accepted" || status === "rejected")) {
@@ -390,12 +428,13 @@ export async function deleteBid(
 
     const { error } = await supabase
       .from("bids")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq("id", bidId)
-      .eq("clerk_shop_user_id", authenticatedClerkUserId);
+      .eq("clerk_shop_user_id", authenticatedClerkUserId)
+      .is("deleted_at", null);
 
     if (error) {
-      console.error("Error deleting bid:", error);
+      console.error("Error soft-deleting bid:", error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 

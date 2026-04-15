@@ -116,6 +116,19 @@ export async function createReport(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
+    // Fire-and-forget: log activity event
+    supabase.from('platform_activity_events').insert({
+      event_type: 'report_submitted',
+      source: 'api',
+      actor_id: authenticatedClerkUserId,
+      object_id: data?.id || null,
+      outcome: 'success',
+      payload: {
+        vehicle: `${report.vehicle_year} ${report.vehicle_make} ${report.vehicle_model}`,
+        damage_type: report.damage_type,
+      },
+    }).then(null, () => {});
+
     return respond({
       success: true,
       report: data ? await hydrateReport(data, supabase) : null,
@@ -153,6 +166,7 @@ export async function getReports(
       .from('damage_reports')
       .select('*')
       .eq('clerk_user_id', clerkUserId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
@@ -239,6 +253,7 @@ export async function getMarketplaceReports(
     const { data, error } = await supabase
       .from('damage_reports')
       .select('*')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -281,12 +296,13 @@ export async function deleteReport(
 
     const { error } = await supabase
       .from('damage_reports')
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq('id', reportId)
-      .eq('clerk_user_id', authenticatedClerkUserId);
+      .eq('clerk_user_id', authenticatedClerkUserId)
+      .is('deleted_at', null);
 
     if (error) {
-      console.error('Error deleting report:', error);
+      console.error('Error soft-deleting report:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 

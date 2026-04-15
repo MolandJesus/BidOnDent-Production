@@ -33,6 +33,7 @@ const CompetitorAnalysisScreen = lazyWithRetry(
   () => import("../components/reports/CompetitorAnalysisScreen")
 );
 const DemoAccountSwitcher = lazyWithRetry(() => import("../components/demo/DemoAccountSwitcher"));
+const MissingReportState = lazyWithRetry(() => import("../components/reports/MissingReportState"));
 
 const screenTransition = {
   initial: { opacity: 0, x: -20 },
@@ -157,32 +158,28 @@ export default function DashboardSecondaryViews({
               appearanceMode={appearanceMode}
             />
           ) : (
-            <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
-              <p className="text-slate-600">Report not found.</p>
-              <button
-                onClick={() => onViewModeChange("reports-list")}
-                className="mt-4 px-4 py-2 rounded-xl text-white font-medium"
-                style={{ background: primaryColor }}
-              >
-                Back to Reports
-              </button>
-            </div>
+            <MissingReportState
+              primaryColor={primaryColor}
+              title="Report not found"
+              description="This report may have been deleted, or you may not have permission to view it. If you believe this is an error, try returning to your reports list."
+              actionLabel="Start New Report"
+              onAction={() => onTabChange("report")}
+              onBack={() => onViewModeChange("reports-list")}
+            />
           )}
         </motion.div>
       )}
 
       {viewMode === "report-detail" && !selectedReportId && (
         <motion.div key="report-detail-missing" {...screenTransition}>
-          <div className="pb-20 px-4 md:px-6 py-4 md:py-5 text-center">
-            <p className="text-slate-600">No report selected.</p>
-            <button
-              onClick={() => onViewModeChange("reports-list")}
-              className="mt-4 px-4 py-2 rounded-xl text-white font-medium"
-              style={{ background: primaryColor }}
-            >
-              Back to Reports
-            </button>
-          </div>
+          <MissingReportState
+            primaryColor={primaryColor}
+            title="No report selected"
+            description="Select a report from your reports list to view its details, or submit a new damage report to get started."
+            actionLabel="Start New Report"
+            onAction={() => onTabChange("report")}
+            onBack={() => onViewModeChange("reports-list")}
+          />
         </motion.div>
       )}
 

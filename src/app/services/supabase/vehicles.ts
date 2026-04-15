@@ -1,4 +1,6 @@
-import type { Vehicle } from "./types";
+import type { Vehicle as DbVehicle } from "./types";
+import type { Vehicle } from "../../types";
+import { vehicleFromDb } from "./adapters";
 import {
   buildWebsiteIdentityQuery,
   requestSupabaseEdge,
@@ -42,21 +44,21 @@ export async function getVehicles(
 
   try {
     const searchParams = buildWebsiteIdentityQuery(identity);
-    const payload = await requestSupabaseEdge<{ vehicles?: Vehicle[] }>(
+    const payload = await requestSupabaseEdge<{ vehicles?: DbVehicle[] }>(
       `${SUPABASE_EDGE_ROUTES.vehicles}?${searchParams.toString()}`,
       {
         method: "GET",
       }
     );
 
-    return payload.vehicles || [];
+    return (payload.vehicles || []).map(vehicleFromDb);
   } catch (error) {
     if (import.meta.env.DEV) console.error("Error in getVehicles edge path:", error);
     return [];
   }
 }
 
-export async function saveVehicle(vehicle: Vehicle, clerkUserId?: string): Promise<boolean> {
+export async function saveVehicle(vehicle: DbVehicle, clerkUserId?: string): Promise<boolean> {
   if (!clerkUserId) {
     if (import.meta.env.DEV) {
       console.warn("saveVehicle: missing Clerk user ID");

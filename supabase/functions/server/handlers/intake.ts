@@ -138,13 +138,16 @@ export async function submitShopInterest(
 
     const { error: activityError } = await supabase.from("platform_activity_events").insert({
       event_type: "shop_interest_submitted",
+      source: "landing",
+      actor_id: payload.email || null,
+      object_id: data?.id || null,
+      outcome: "success",
       payload: {
         shop_name: payload.shop_name,
         state: payload.state,
         submission_id: data?.id,
         zip_code: payload.zip_code,
       },
-      source: "landing",
     });
 
     if (activityError) {
@@ -192,11 +195,14 @@ export async function submitInsurerInterest(
 
     const { error: activityError } = await supabase.from("platform_activity_events").insert({
       event_type: "insurer_interest_submitted",
+      source: "landing",
+      actor_id: payload.email || null,
+      object_id: data?.id || null,
+      outcome: "success",
       payload: {
         company_name: payload.company_name,
         submission_id: data?.id,
       },
-      source: "landing",
     });
 
     if (activityError) {

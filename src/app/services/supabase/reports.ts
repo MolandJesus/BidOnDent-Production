@@ -1,4 +1,6 @@
-import type { DamageReport } from "./types";
+import type { DamageReport as DbDamageReport } from "./types";
+import type { DamageReport } from "../../types";
+import { reportFromDb } from "./adapters";
 import {
   buildWebsiteIdentityQuery,
   requestSupabaseEdge,
@@ -53,7 +55,7 @@ export async function getDamageReports(
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const searchParams = buildWebsiteIdentityQuery(identity);
-      const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
+      const payload = await requestSupabaseEdge<{ reports?: DbDamageReport[] }>(
         `${SUPABASE_EDGE_ROUTES.reports}?${searchParams.toString()}`,
         {
           method: "GET",
@@ -63,7 +65,7 @@ export async function getDamageReports(
         if (import.meta.env.DEV && attempt > 0) {
           console.log("[DEV] Edge function succeeded on retry");
         }
-        return payload.reports;
+        return payload.reports.map(reportFromDb);
       }
       return [];
     } catch (error) {
@@ -77,19 +79,19 @@ export async function getDamageReports(
 }
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {
-  const payload = await requestSupabaseEdge<{ reports?: DamageReport[] }>(
+  const payload = await requestSupabaseEdge<{ reports?: DbDamageReport[] }>(
     `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
     { method: "GET" }
   );
   if (payload && Array.isArray(payload.reports)) {
     if (import.meta.env.DEV) console.log(`[DEV] Loaded ${payload.reports.length} marketplace reports via edge`);
-    return payload.reports;
+    return payload.reports.map(reportFromDb);
   }
   return [];
 }
 
 export async function saveDamageReport(
-  report: DamageReport,
+  report: DbDamageReport,
   clerkUserId?: string
 ): Promise<DamageReport | null> {
   try {
@@ -126,7 +128,7 @@ export async function saveDamageReport(
 
     const shouldUpdate = isUuidLike(report.id);
 
-    const result = await requestSupabaseEdge<{ report: DamageReport }>(
+    const result = await requestSupabaseEdge<{ report: DbDamageReport }>(
       shouldUpdate ? `${SUPABASE_EDGE_ROUTES.reports}/${report.id}` : SUPABASE_EDGE_ROUTES.reports,
       {
         body: JSON.stringify(payload),
@@ -136,7 +138,7 @@ export async function saveDamageReport(
 
     if (import.meta.env.DEV)
       console.log("[DEV]", shouldUpdate ? "Damage report updated" : "Damage report created");
-    return result?.report ?? null;
+    return result?.report ? reportFromDb(result.report) : null;
   } catch (error) {
     if (import.meta.env.DEV) console.error("[DEV] Error in saveDamageReport:", error);
     throw error;

@@ -1,4 +1,6 @@
 import { buildEdgeFunctionUrl } from "./edgeFunctions";
+import { activityEventFromDb } from "./adapters";
+import type { ActivityEvent as AppActivityEvent } from "../../types";
 
 export type SubmissionStatus = "submitted" | "reviewing" | "approved" | "rejected";
 
@@ -31,7 +33,7 @@ export type ActivityEvent = {
 export type AdminIntakeOperationsPayload = {
   shopSubmissions: ShopSubmission[];
   insurerSubmissions: InsurerSubmission[];
-  activityEvents: ActivityEvent[];
+  activityEvents: AppActivityEvent[];
 };
 
 async function getRequiredClerkToken(getClerkToken: () => Promise<string | null>) {
@@ -61,7 +63,17 @@ export async function loadAdminIntakeOperations(
     throw new Error(result?.error || result?.details || "Failed to load intake operations data");
   }
 
-  return result as AdminIntakeOperationsPayload;
+  const raw = result as {
+    shopSubmissions: ShopSubmission[];
+    insurerSubmissions: InsurerSubmission[];
+    activityEvents: ActivityEvent[];
+  };
+
+  return {
+    shopSubmissions: raw.shopSubmissions,
+    insurerSubmissions: raw.insurerSubmissions,
+    activityEvents: (raw.activityEvents || []).map(activityEventFromDb),
+  };
 }
 
 export async function updateAdminSubmissionStatus(

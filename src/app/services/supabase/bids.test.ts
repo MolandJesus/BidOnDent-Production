@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { Bid } from "./types";
+import type { Bid as DbBid } from "./types";
+import { bidFromDb } from "./adapters";
 
 // Mock the runtime module so requestSupabaseEdge is a controllable stub
 vi.mock("./runtime", async (importOriginal) => {
@@ -23,14 +24,18 @@ import { requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "./runtime";
 
 const mockRequest = vi.mocked(requestSupabaseEdge);
 
-const fakeBid: Bid = {
+const fakeBid: DbBid = {
   id: "bid-1",
   damage_report_id: "report-1",
   amount: 350,
   estimated_days: 3,
   status: "pending",
   shop_name: "Quick Fix Auto",
+  created_at: "2026-01-01T00:00:00.000Z",
 };
+
+/** Expected app-domain shape after adapter transform. */
+const expectedAppBid = bidFromDb(fakeBid);
 
 afterEach(() => {
   mockRequest.mockReset();
@@ -45,7 +50,7 @@ describe("getBidsForReport", () => {
 
     const result = await getBidsForReport("report-1");
 
-    expect(result).toEqual([fakeBid]);
+    expect(result).toEqual([expectedAppBid]);
     expect(mockRequest).toHaveBeenCalledWith(
       `${SUPABASE_EDGE_ROUTES.bids}?reportId=report-1`,
       { method: "GET" },
@@ -89,7 +94,7 @@ describe("submitBid", () => {
 
     const result = await submitBid(fakeBid, "clerk-user-1");
 
-    expect(result).toEqual({ ...fakeBid, id: "bid-new" });
+    expect(result).toEqual(expect.objectContaining({ id: "bid-new", status: "pending" }));
     expect(mockRequest).toHaveBeenCalledWith(SUPABASE_EDGE_ROUTES.bids, {
       method: "POST",
       body: JSON.stringify({ clerkUserId: "clerk-user-1", bid: fakeBid }),
@@ -130,7 +135,7 @@ describe("updateBidStatus", () => {
 
     const result = await updateBidStatus("bid-1", "accepted", "clerk-user-1");
 
-    expect(result).toEqual(acceptedBid);
+    expect(result).toEqual(expect.objectContaining({ id: "bid-1", status: "accepted" }));
     expect(mockRequest).toHaveBeenCalledWith(
       `${SUPABASE_EDGE_ROUTES.bids}/bid-1`,
       {
@@ -146,7 +151,7 @@ describe("updateBidStatus", () => {
 
     const result = await updateBidStatus("bid-1", "rejected", "clerk-user-1");
 
-    expect(result).toEqual(rejectedBid);
+    expect(result).toEqual(expect.objectContaining({ id: "bid-1", status: "rejected" }));
   });
 
   it("returns null when clerkUserId is missing", async () => {
@@ -185,7 +190,7 @@ describe("getMyBids", () => {
 
     const result = await getMyBids("clerk-customer-1");
 
-    expect(result).toEqual([fakeBid]);
+    expect(result).toEqual([expectedAppBid]);
     expect(mockRequest).toHaveBeenCalledWith(
       `${SUPABASE_EDGE_ROUTES.bids}?customerClerkUserId=clerk-customer-1`,
       { method: "GET" },
@@ -217,7 +222,7 @@ describe("getShopSubmittedBids", () => {
 
     const result = await getShopSubmittedBids("clerk-shop-1");
 
-    expect(result).toEqual([fakeBid]);
+    expect(result).toEqual([expectedAppBid]);
     expect(mockRequest).toHaveBeenCalledWith(
       `${SUPABASE_EDGE_ROUTES.bids}?clerkUserId=clerk-shop-1`,
       { method: "GET" },

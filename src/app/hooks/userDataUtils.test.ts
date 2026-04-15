@@ -24,7 +24,7 @@ describe("toFrontendVehicle", () => {
     });
     expect(result).toEqual({
       id: "v-123",
-      year: "2023",
+      year: 2023,
       make: "Toyota",
       model: "Camry",
       vin: "1HGCG5655WA014344",
@@ -38,9 +38,9 @@ describe("toFrontendVehicle", () => {
     expect(result.id).toBe("");
   });
 
-  it("converts numeric year to string", () => {
+  it("preserves numeric year", () => {
     const result = toFrontendVehicle({ make: "Honda", model: "Civic", year: 0 });
-    expect(result.year).toBe("0");
+    expect(result.year).toBe(0);
   });
 });
 
@@ -50,7 +50,7 @@ describe("toSupabaseVehicle", () => {
       id: "v-456",
       make: "Honda",
       model: "Civic",
-      year: "2022",
+      year: 2022,
       vin: "ABC123",
       licensePlate: "XYZ789",
       color: "Red",
@@ -66,13 +66,13 @@ describe("toSupabaseVehicle", () => {
     });
   });
 
-  it("parses non-numeric year as 0", () => {
-    const result = toSupabaseVehicle({ id: "", make: "X", model: "Y", year: "not-a-year" });
+  it("passes through numeric year", () => {
+    const result = toSupabaseVehicle({ id: "", make: "X", model: "Y", year: 0 });
     expect(result.year).toBe(0);
   });
 
   it("sets id to undefined when empty", () => {
-    const result = toSupabaseVehicle({ id: "", make: "X", model: "Y", year: "2020" });
+    const result = toSupabaseVehicle({ id: "", make: "X", model: "Y", year: 2020 });
     expect(result.id).toBeUndefined();
   });
 });

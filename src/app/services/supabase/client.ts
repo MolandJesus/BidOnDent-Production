@@ -39,3 +39,17 @@ function getSupabaseClient(): SupabaseClient {
 }
 
 export const supabase = getSupabaseClient();
+
+/**
+ * Inject a Clerk-issued JWT (signed with Supabase's JWT secret via a "supabase"
+ * template) into the Supabase Realtime client so that RLS policies referencing
+ * `request.jwt.claims->>'sub'` resolve correctly for live subscriptions.
+ *
+ * Call this whenever the Clerk session token refreshes. Passing `null` clears
+ * the token (e.g., on sign-out).
+ */
+export function setSupabaseRealtimeAuth(token: string | null) {
+  if (token) {
+    supabase.realtime.setAuth(token);
+  }
+}

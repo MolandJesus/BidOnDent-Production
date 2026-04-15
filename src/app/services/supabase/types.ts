@@ -16,6 +16,7 @@ export interface Profile {
 export interface Vehicle {
   id?: string;
   user_id?: string;
+  clerk_user_id?: string | null;
   make: string;
   model: string;
   year: number;
@@ -30,6 +31,7 @@ export interface Vehicle {
 export interface DamageReport {
   id?: string;
   user_id?: string;
+  clerk_user_id?: string | null;
   vehicle_id?: string;
   bids?: Bid[];
   vehicle_make: string;
@@ -123,6 +125,9 @@ export interface PlatformActivityEvent {
   id?: string;
   event_type: string;
   source?: string;
+  actor_id?: string;
+  object_id?: string;
+  outcome?: string;
   payload?: Record<string, unknown>;
   created_at?: string;
 }
@@ -133,6 +138,9 @@ export interface JobAssignment {
   customer_user_id: string;
   shop_user_id: string;
   insurer_user_id?: string;
+  customer_clerk_user_id?: string | null;
+  shop_clerk_user_id?: string;
+  insurer_clerk_user_id?: string | null;
   bid_id?: string;
   status?: "scheduled" | "in_progress" | "awaiting_parts" | "completed" | "cancelled";
   scheduled_start_at?: string;

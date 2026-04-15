@@ -1,11 +1,11 @@
 import type { Coordinates, Place } from "../../types/mapDomain";
 import type { ShopProfile } from "./marketIntelligence";
 import {
-  type AtlantaHubFocus,
-  type AtlantaHubSeed,
-  ATLANTA_HUB_IMAGES,
-  ATLANTA_HUB_SEEDS,
-} from "./atlantaTestHubSeedData";
+  type NYMetroHubFocus,
+  type NYMetroHubSeed,
+  NY_METRO_HUB_IMAGES,
+  NY_METRO_HUB_SEEDS,
+} from "./nyMetroTestHubSeedData";
 
 export type TestShopLocationRecord = {
   coordinates: Coordinates;
@@ -16,7 +16,7 @@ export type TestShopLocationRecord = {
 };
 
 const FOCUS_PROFILES: Record<
-  AtlantaHubFocus,
+  NYMetroHubFocus,
   Pick<
     ShopProfile,
     | "certifications"
@@ -109,7 +109,7 @@ const FOCUS_PROFILES: Record<
   },
 };
 
-function buildAtlantaTestShop(seed: AtlantaHubSeed, index: number): ShopProfile {
+function buildNYMetroTestShop(seed: NYMetroHubSeed, index: number): ShopProfile {
   const focus = FOCUS_PROFILES[seed.focus];
   const rating = Number((4.3 + (index % 6) * 0.1).toFixed(1));
   const reviews = 68 + index * 13;
@@ -135,7 +135,7 @@ function buildAtlantaTestShop(seed: AtlantaHubSeed, index: number): ShopProfile 
     completionRate,
     responseTimeHours,
     responseTimeLabel: `< ${responseTimeHours} hour${responseTimeHours === 1 ? "" : "s"}`,
-    image: ATLANTA_HUB_IMAGES[index % ATLANTA_HUB_IMAGES.length],
+    image: NY_METRO_HUB_IMAGES[index % NY_METRO_HUB_IMAGES.length],
     categoryRatings: {
       quality: Number(Math.min(5, rating + 0.1).toFixed(1)),
       service: rating,
@@ -145,85 +145,85 @@ function buildAtlantaTestShop(seed: AtlantaHubSeed, index: number): ShopProfile 
     capabilityTags: focus.capabilityTags,
     serviceArea: seed.serviceArea,
     capacityBand: focus.capacityBand,
-    aiSummary: `${focus.summary} Useful for Atlanta QA route testing around ${seed.city}.`,
+    aiSummary: `${focus.summary} Useful for NY metro QA route testing around ${seed.city}.`,
   };
 }
 
-export const ATLANTA_TEST_SHOP_LOCATIONS: Record<number, TestShopLocationRecord> =
+export const NY_METRO_TEST_SHOP_LOCATIONS: Record<number, TestShopLocationRecord> =
   Object.fromEntries(
-    ATLANTA_HUB_SEEDS.map((seed) => [
+    NY_METRO_HUB_SEEDS.map((seed) => [
       seed.id,
       {
         coordinates: seed.coordinates,
         address: seed.address,
         city: seed.city,
-        state: "GA",
+        state: "NY",
         zipCode: seed.zipCode,
       },
     ])
   );
 
-export const ATLANTA_TEST_SHOPS: ShopProfile[] = ATLANTA_HUB_SEEDS.map(buildAtlantaTestShop);
+export const NY_METRO_TEST_SHOPS: ShopProfile[] = NY_METRO_HUB_SEEDS.map(buildNYMetroTestShop);
 
-export const ATLANTA_SUGGESTED_ORIGINS: Place[] = [
+export const NY_METRO_SUGGESTED_ORIGINS: Place[] = [
   {
-    name: "Atlanta",
-    address: "55 Trinity Ave SW",
-    city: "Atlanta",
-    state: "GA",
-    zipCode: "30303",
-    latitude: 33.749,
-    longitude: -84.388,
-    placeId: "atlanta-ga",
+    name: "White Plains",
+    address: "55 Court St",
+    city: "White Plains",
+    state: "NY",
+    zipCode: "10601",
+    latitude: 41.034,
+    longitude: -73.763,
+    placeId: "white-plains-ny",
   },
   {
-    name: "Buckhead",
-    address: "3060 Peachtree Rd NW",
-    city: "Atlanta",
-    state: "GA",
-    zipCode: "30305",
-    latitude: 33.8392,
-    longitude: -84.3794,
-    placeId: "buckhead-atlanta-ga",
+    name: "Yonkers",
+    address: "975 Central Park Ave",
+    city: "Yonkers",
+    state: "NY",
+    zipCode: "10704",
+    latitude: 40.937,
+    longitude: -73.892,
+    placeId: "yonkers-ny",
   },
   {
-    name: "Decatur",
-    address: "125 Clairemont Ave",
-    city: "Decatur",
-    state: "GA",
-    zipCode: "30030",
-    latitude: 33.7748,
-    longitude: -84.2963,
-    placeId: "decatur-ga",
+    name: "Poughkeepsie",
+    address: "250 Main Mall",
+    city: "Poughkeepsie",
+    state: "NY",
+    zipCode: "12601",
+    latitude: 41.694,
+    longitude: -73.921,
+    placeId: "poughkeepsie-ny",
   },
   {
-    name: "Sandy Springs",
-    address: "6400 Roswell Rd",
-    city: "Sandy Springs",
-    state: "GA",
-    zipCode: "30328",
-    latitude: 33.9304,
-    longitude: -84.3733,
-    placeId: "sandy-springs-ga",
+    name: "Garden City",
+    address: "100 Seventh St",
+    city: "Garden City",
+    state: "NY",
+    zipCode: "11530",
+    latitude: 40.727,
+    longitude: -73.634,
+    placeId: "garden-city-ny",
   },
   {
-    name: "Marietta",
-    address: "205 Lawrence St NE",
-    city: "Marietta",
-    state: "GA",
-    zipCode: "30060",
-    latitude: 33.9526,
-    longitude: -84.5499,
-    placeId: "marietta-ga",
+    name: "Newburgh",
+    address: "15 Liberty St",
+    city: "Newburgh",
+    state: "NY",
+    zipCode: "12550",
+    latitude: 41.503,
+    longitude: -74.01,
+    placeId: "newburgh-ny",
   },
   {
-    name: "Alpharetta",
-    address: "2 Park Plaza",
-    city: "Alpharetta",
-    state: "GA",
-    zipCode: "30009",
-    latitude: 34.0754,
-    longitude: -84.2941,
-    placeId: "alpharetta-ga",
+    name: "Nyack",
+    address: "80 Main St",
+    city: "Nyack",
+    state: "NY",
+    zipCode: "10960",
+    latitude: 41.091,
+    longitude: -73.919,
+    placeId: "nyack-ny",
   },
 ];

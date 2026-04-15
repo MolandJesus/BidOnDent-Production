@@ -4,7 +4,7 @@ import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { ReportDetailDrawer } from "./ReportDetailDrawer";
 import ReportLayerPopup from "./ReportLayerPopup";
 import { useReportLayerData } from "./useReportLayerData";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 import type { MarketUserType } from "../../services/intelligence/marketIntelligence";
 import type { MapTheme } from "../../types/mapDomain";
 

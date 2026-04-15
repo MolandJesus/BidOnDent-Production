@@ -8,6 +8,7 @@ import { ScreenErrorBoundary } from "./components/ScreenErrorBoundary";
 import { extractUserProfile } from "./services/clerkService";
 import { buildWebsiteIdentity } from "./services/auth/websiteIdentity";
 import { setClerkTokenGetter } from "./services/supabase/authSession";
+import { setSupabaseRealtimeAuth } from "./services/supabase/client";
 
 // Import custom hooks (for non-auth state management)
 import { useUserData } from "./hooks/useUserData";
@@ -58,8 +59,10 @@ const InsurerPartnershipPage = lazyWithRetry(
   () => import("./components/landing/InsurerPartnershipPage")
 );
 
-import { clerkPublishableKey } from "../../utils/clerk/info";
 import { clerkAppearance } from "./config/clerkAppearance";
+
+// Read Clerk publishable key from environment (.env)
+const clerkPublishableKey = (import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string) ?? "";
 
 const hasValidClerkPublishableKey =
   typeof clerkPublishableKey === "string" &&
@@ -68,7 +71,7 @@ const hasValidClerkPublishableKey =
   !clerkPublishableKey.includes("PASTE_YOUR");
 
 if (!hasValidClerkPublishableKey && import.meta.env.DEV) {
-  console.error("Missing or invalid Clerk publishable key in utils/clerk/info.tsx");
+  console.error("Missing or invalid VITE_CLERK_PUBLISHABLE_KEY in .env");
 }
 
 // Main App content (wrapped by ClerkProvider)
@@ -92,6 +95,17 @@ function AppContent() {
     }
 
     setClerkTokenGetter(() => getToken());
+
+    // Inject Clerk-issued Supabase JWT into Realtime so RLS policies work
+    // for live subscriptions. Requires a "supabase" JWT template in Clerk
+    // Dashboard signed with Supabase's JWT secret.
+    getToken({ template: "supabase" })
+      .then((token) => setSupabaseRealtimeAuth(token))
+      .catch(() => {
+        // Template not configured — Realtime stays unauthenticated (existing behavior)
+        if (import.meta.env.DEV)
+          console.warn("Clerk 'supabase' JWT template not configured — Realtime unauthenticated");
+      });
 
     return () => {
       setClerkTokenGetter(null);
@@ -392,6 +406,8 @@ function AppContent() {
           onMobileMenuTabClick={handleTabClick}
           onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
           onOpenDemoMode={() => navigation.setViewMode("demo-switcher")}
+          demoMode={navigation.demoMode}
+          demoAccountType={navigation.demoAccountType}
           profileDropdownData={profileDropdownData}
           dashboardRouterProps={dashboardRouterProps}
           onNavigateToReport={(reportId) => {

@@ -3,7 +3,7 @@
  * Extracted from MapLibreReportLayer to enforce file-size limits.
  */
 import { Popup } from "react-map-gl/maplibre";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 
 type ReportLayerPopupProps = {
   report: DamageReport;
@@ -37,21 +37,21 @@ export default function ReportLayerPopup({
         >
           Your Report
         </div>
-        {Array.isArray(report.photo_urls) && report.photo_urls.length > 0 && (
+        {Array.isArray(report.photos) && report.photos.length > 0 && (
           <img
-            src={report.photo_urls[0]}
+            src={report.photos[0]}
             alt="Damage"
             className="h-16 w-full rounded-md object-cover"
           />
         )}
         <div className={`text-sm font-semibold ${isDark ? "text-slate-100" : "text-slate-900"}`}>
-          {[report.vehicle_year, report.vehicle_make, report.vehicle_model]
+          {[report.vehicleInfo?.year, report.vehicleInfo?.make, report.vehicleInfo?.model]
             .filter(Boolean)
             .join(" ") || "Damage Report"}
         </div>
-        {(report.damage_type || report.damage_severity) && (
+        {(report.damageType || report.damageSeverity) && (
           <div className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-            {[report.damage_type, report.damage_severity].filter(Boolean).join(" · ")}
+            {[report.damageType, report.damageSeverity].filter(Boolean).join(" · ")}
           </div>
         )}
         {report.status && (

@@ -5,11 +5,11 @@ import { Activity, Building2, CircleCheck, Clock3, FileStack, Shield } from "luc
 import {
   loadAdminIntakeOperations,
   updateAdminSubmissionStatus,
-  type ActivityEvent,
   type InsurerSubmission,
   type ShopSubmission,
   type SubmissionStatus,
 } from "../../services/supabase/adminIntake";
+import type { ActivityEvent } from "../../types";
 
 type AdminIntakeOperationsPanelProps = {
   primaryColor: string;
@@ -166,9 +166,9 @@ export default function AdminIntakeOperationsPanel({
               key={event.id}
               className="text-sm text-slate-300 flex items-center justify-between border-b border-white/[0.08] pb-1"
             >
-              <span className="font-medium">{event.event_type}</span>
+              <span className="font-medium">{event.eventType}</span>
               <span className="text-xs text-slate-400">
-                {new Date(event.created_at).toLocaleString()}
+                {new Date(event.createdAt).toLocaleString()}
               </span>
             </div>
           ))}

@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { DollarSign, Clock, FileText, X, Send } from "lucide-react";
 import { cn } from "../ui/utils";
-import type { DamageReport } from "../../services/supabase/types";
+import type { DamageReport } from "../../types";
 
 /** Strip non-numeric characters except decimal point, return raw number string */
 function sanitizeCurrencyInput(value: string): string {
@@ -65,8 +65,8 @@ export default function MapBidSheet({
 
   if (!report) return null;
 
-  const vehicleLabel = report.vehicle_make
-    ? `${report.vehicle_year} ${report.vehicle_make} ${report.vehicle_model || ""}`.trim()
+  const vehicleLabel = report.vehicleInfo?.make
+    ? `${report.vehicleInfo?.year || ""} ${report.vehicleInfo.make} ${report.vehicleInfo?.model || ""}`.trim()
     : "Damage Report";
   const canSubmit =
     !isSubmitting &&
@@ -105,7 +105,7 @@ export default function MapBidSheet({
             </h3>
             <p className={cn("mt-0.5 text-sm", isDark ? "text-slate-400" : "text-slate-500")}>
               {vehicleLabel}
-              {report.damage_location ? ` — ${report.damage_location}` : ""}
+              {report.damageArea ? ` — ${report.damageArea}` : ""}
             </p>
           </div>
           <button

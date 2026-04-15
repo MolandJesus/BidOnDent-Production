@@ -436,7 +436,7 @@ export async function handleGetIntakeOperations(
         .limit(25),
       supabase
         .from('platform_activity_events')
-        .select('id, event_type, source, created_at')
+        .select('id, event_type, source, actor_id, object_id, outcome, created_at')
         .order('created_at', { ascending: false })
         .limit(20),
     ])
@@ -514,6 +514,9 @@ export async function handleUpdateIntakeSubmissionStatus(
     const { error: activityError } = await supabase.from('platform_activity_events').insert({
       event_type: `${table}_status_updated`,
       source: 'admin-ops',
+      actor_id: adminEmail,
+      object_id: id,
+      outcome: 'success',
       payload: {
         submission_id: id,
         new_status: status,
