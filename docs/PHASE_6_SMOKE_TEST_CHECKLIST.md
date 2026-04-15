@@ -78,12 +78,16 @@ Run this checklist **twice**: once against the staging preview URL (Phase 6.1), 
 
 ### 7. Security — RLS Verification
 
-| #   | Step                                                    | Expected                                               | Staging Result | Prod Result |
-| --- | ------------------------------------------------------- | ------------------------------------------------------ | -------------- | ----------- |
-| 7.1 | Open browser console (unauthenticated/anon)             | Console accessible                                     |                |             |
-| 7.2 | Attempt direct Supabase query on `profiles` table       | Query returns empty or is rejected — RLS blocks access |                |             |
-| 7.3 | Attempt direct Supabase query on `damage_reports` table | Query returns empty or is rejected — RLS blocks access |                |             |
-| 7.4 | Attempt direct Supabase query on `bids` table           | Query returns empty or is rejected — RLS blocks access |                |             |
+| #   | Step                                                    | Expected                                               | Local Stack Result (2026-04-15) | Staging Result | Prod Result |
+| --- | ------------------------------------------------------- | ------------------------------------------------------ | ------------------------------- | -------------- | ----------- |
+| 7.1 | Open browser console (unauthenticated/anon)             | Console accessible                                     | PASS — REST API returns HTTP 200 |                |             |
+| 7.2 | Attempt direct Supabase query on `profiles` table       | Query returns empty or is rejected — RLS blocks access | PARTIAL — SELECT returns rows (policy `qual=true` by design: public profile directory). INSERT blocked ("violates row-level security policy"). UPDATE/DELETE return empty (0 rows affected). Read-public is intentional for marketplace visibility. |                |             |
+| 7.3 | Attempt direct Supabase query on `damage_reports` table | Query returns empty or is rejected — RLS blocks access | PASS — anon SELECT returns 0 rows while service_role sees 1. Policies require `auth.uid() = user_id` or shop/insurer profile match. |                |             |
+| 7.4 | Attempt direct Supabase query on `bids` table           | Query returns empty or is rejected — RLS blocks access | PASS — anon SELECT returns 0 rows while service_role sees 1. Policy requires `requesting_clerk_user_id() IS NOT NULL` or `auth.role() = 'authenticated'`. |                |             |
+
+**Local Stack RLS Test Method** (2026-04-15): Ran against local Docker stack (`supabase start`, PG17). Inserted test row into each table via service_role key (bypasses RLS), then verified anon key could not read damage_reports/bids and could not write to any table. Test data cleaned up after verification. Policies are schema-level — identical behavior expected on staging and prod.
+
+**7.2 Design Note**: The `profiles` SELECT policy uses `qual = true` (anyone can read all profiles). This is a deliberate marketplace design: shop profiles must be visible to customers browsing bids. No PII beyond name/email is exposed, and write operations (INSERT/UPDATE/DELETE) are all correctly restricted to the profile owner via `auth.uid() = user_id`. If stricter read access is needed in the future, this policy would need to be scoped to authenticated users only.
 
 ### 8. Observability
 
