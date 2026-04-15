@@ -167,6 +167,16 @@ export async function saveShopProfile(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
+    // Phase 3.2 — log shop onboarding event
+    supabase.from("platform_activity_events").insert({
+      event_type: "shop_profile_saved",
+      source: "api",
+      actor_id: session.clerkUserId,
+      object_id: data?.id || null,
+      outcome: "success",
+      payload: { business_name: payload.business_name ?? null },
+    }).then(null, () => {});
+
     return respond({
       profile: {
         ...data,
@@ -280,6 +290,16 @@ export async function saveInsurerProfile(
       console.error("Error saving insurer profile:", error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
+
+    // Phase 3.2 — log insurer onboarding event
+    supabase.from("platform_activity_events").insert({
+      event_type: "insurer_profile_saved",
+      source: "api",
+      actor_id: session.clerkUserId,
+      object_id: data?.id || null,
+      outcome: "success",
+      payload: { company_name: payload.company_name ?? null },
+    }).then(null, () => {});
 
     return respond({
       profile: {

@@ -146,7 +146,7 @@ export async function createJobAssignment(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    await requireClerkSession(req, { requireEmail: false });
+    const session = await requireClerkSession(req, { requireEmail: false });
 
     let body: Record<string, unknown> = {};
     try {
@@ -193,7 +193,7 @@ export async function createJobAssignment(
     supabase.from("platform_activity_events").insert({
       event_type: "job_assignment_created",
       source: "api",
-      actor_id: payload.customer_user_id,
+      actor_id: session.clerkUserId,
       object_id: data?.id || null,
       outcome: "success",
       payload: {

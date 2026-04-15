@@ -193,6 +193,18 @@ export async function saveUserProfile(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
+    // Phase 3.2 — fire event on first-time profile creation only
+    if (!existingProfile) {
+      supabase.from("platform_activity_events").insert({
+        event_type: "user_profile_created",
+        source: "api",
+        actor_id: session.clerkUserId,
+        object_id: data?.id || null,
+        outcome: "success",
+        payload: { account_type: payload.account_type },
+      }).then(null, () => {});
+    }
+
     return respond({
       profile: {
         ...data,
