@@ -25,6 +25,13 @@ const REQUIRED_TABLES = [
   'platform_activity_events',
 ] as const;
 
+/** Minimal shape of the postgres Client used below. */
+interface PgClient {
+  connect(): Promise<void>;
+  queryArray(sql: string, params?: unknown[]): Promise<{ rows: unknown[][] }>;
+  end(): Promise<void>;
+}
+
 /**
  * Validate database schema on cold start.
  * Ensures the frozen migration has run and critical tables + functions exist.
@@ -37,7 +44,7 @@ export async function initializeDatabaseTables() {
     return;
   }
 
-  let client: InstanceType<typeof (await import('https://deno.land/x/postgres@v0.17.0/mod.ts')).Client> | null = null;
+  let client: PgClient | null = null;
 
   try {
     const { Client } = await import('https://deno.land/x/postgres@v0.17.0/mod.ts');
