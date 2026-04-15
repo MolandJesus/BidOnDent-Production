@@ -171,15 +171,29 @@ export async function initializeDatabaseTables() {
           ON public.profiles FOR SELECT USING (true);
 
         CREATE POLICY "Users can insert their own profile"
-          ON public.profiles FOR INSERT WITH CHECK (auth.uid() = user_id);
+          ON public.profiles FOR INSERT
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Users can update their own profile"
           ON public.profiles FOR UPDATE
-          USING (auth.uid() = user_id)
-          WITH CHECK (auth.uid() = user_id);
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          )
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Users can delete their own profile"
-          ON public.profiles FOR DELETE USING (auth.uid() = user_id);
+          ON public.profiles FOR DELETE
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         DROP TRIGGER IF EXISTS set_updated_at ON public.profiles;
         CREATE TRIGGER set_updated_at
@@ -524,18 +538,36 @@ export async function initializeDatabaseTables() {
         DROP POLICY IF EXISTS "Users can delete their own vehicles" ON public.vehicles;
 
         CREATE POLICY "Users can read their own vehicles"
-          ON public.vehicles FOR SELECT USING (auth.uid() = user_id);
+          ON public.vehicles FOR SELECT
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Users can insert their own vehicles"
-          ON public.vehicles FOR INSERT WITH CHECK (auth.uid() = user_id);
+          ON public.vehicles FOR INSERT
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Users can update their own vehicles"
           ON public.vehicles FOR UPDATE
-          USING (auth.uid() = user_id)
-          WITH CHECK (auth.uid() = user_id);
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          )
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Users can delete their own vehicles"
-          ON public.vehicles FOR DELETE USING (auth.uid() = user_id);
+          ON public.vehicles FOR DELETE
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         DROP TRIGGER IF EXISTS set_updated_at ON public.vehicles;
         CREATE TRIGGER set_updated_at
@@ -617,28 +649,51 @@ export async function initializeDatabaseTables() {
         DROP POLICY IF EXISTS "Users can delete their own damage reports" ON public.damage_reports;
 
         CREATE POLICY "Users can read their own damage reports"
-          ON public.damage_reports FOR SELECT USING (auth.uid() = user_id);
+          ON public.damage_reports FOR SELECT
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Shops and insurers can read all damage reports"
           ON public.damage_reports FOR SELECT
           USING (
             EXISTS (
               SELECT 1 FROM public.profiles
-              WHERE user_id = auth.uid()
-              AND account_type IN ('shop', 'insurer')
+              WHERE profiles.clerk_user_id = requesting_clerk_user_id()
+              AND profiles.account_type IN ('shop', 'insurer')
+            )
+            OR EXISTS (
+              SELECT 1 FROM public.profiles
+              WHERE profiles.user_id = auth.uid()
+              AND profiles.account_type IN ('shop', 'insurer')
             )
           );
 
         CREATE POLICY "Users can insert their own damage reports"
-          ON public.damage_reports FOR INSERT WITH CHECK (auth.uid() = user_id);
+          ON public.damage_reports FOR INSERT
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Users can update their own damage reports"
           ON public.damage_reports FOR UPDATE
-          USING (auth.uid() = user_id)
-          WITH CHECK (auth.uid() = user_id);
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          )
+          WITH CHECK (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         CREATE POLICY "Users can delete their own damage reports"
-          ON public.damage_reports FOR DELETE USING (auth.uid() = user_id);
+          ON public.damage_reports FOR DELETE
+          USING (
+            clerk_user_id = requesting_clerk_user_id()
+            OR auth.uid() = user_id
+          );
 
         DROP TRIGGER IF EXISTS set_updated_at ON public.damage_reports;
         CREATE TRIGGER set_updated_at
