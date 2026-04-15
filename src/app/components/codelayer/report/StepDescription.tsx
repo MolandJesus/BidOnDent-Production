@@ -115,14 +115,14 @@ export default function StepDescription({
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Back
         </button>
         <button
           type="button"
           onClick={onContinue}
-          className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-2xl text-white font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
           }}

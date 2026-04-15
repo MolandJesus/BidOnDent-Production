@@ -221,7 +221,7 @@ export default function StepVehicleInfo({
 
       <button
         onClick={onContinue}
-        className="bd-report-primary-button w-full py-3 px-4 rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bd-report-primary-button w-full py-3 px-4 rounded-2xl text-white font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{
           background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
         }}

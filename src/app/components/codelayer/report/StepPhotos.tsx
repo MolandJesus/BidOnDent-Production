@@ -187,20 +187,20 @@ export default function StepPhotos({
 
       {/* Sticky footer for progression controls on mobile */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-30 px-2 pt-2 pb-[env(safe-area-inset-bottom,0.75rem)] sm:static sm:bg-none sm:p-0 border-t ${isLightAppearance ? "bg-gradient-to-t from-white via-white/90 to-transparent border-slate-200" : "bg-gradient-to-t from-[rgba(11,23,47,0.95)] via-[rgba(11,23,47,0.80)] to-transparent border-white/10"}`}
+        className={`fixed bottom-0 left-0 right-0 z-30 px-3 pt-3 pb-[env(safe-area-inset-bottom,1rem)] sm:static sm:bg-none sm:p-0 sm:mt-8 border-t ${isLightAppearance ? "bg-gradient-to-t from-white via-white/90 to-transparent border-slate-200" : "bg-gradient-to-t from-[rgba(11,23,47,0.95)] via-[rgba(11,23,47,0.80)] to-transparent border-white/10"}`}
       >
         <div className="flex space-x-2 sm:space-x-3 max-w-md mx-auto">
           <button
             type="button"
             onClick={onBack}
-            className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold"
+            className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-2xl font-semibold"
           >
             Back
           </button>
           <button
             type="button"
             onClick={onContinue}
-            className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-2xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
             }}

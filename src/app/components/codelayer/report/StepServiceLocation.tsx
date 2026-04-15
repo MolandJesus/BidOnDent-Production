@@ -197,14 +197,14 @@ export default function StepServiceLocation({
         <button
           type="button"
           onClick={onBack}
-          className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl font-semibold"
+          className="bd-report-secondary-button flex-1 py-3 px-4 min-h-[44px] rounded-2xl font-semibold"
         >
           Back
         </button>
         <button
           type="button"
           onClick={onContinue}
-          className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center"
+          className="bd-report-primary-button flex-1 py-3 px-4 min-h-[44px] rounded-2xl text-white font-semibold flex items-center justify-center"
           style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
         >
           Continue
