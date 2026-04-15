@@ -346,36 +346,36 @@ folder is the enforced source of truth (see §9 header and Execution Discipline 
 
 Apply in lexicographic filename order for fresh environments:
 
-| #    | File                                               | Purpose                                                                |
-| ---- | -------------------------------------------------- | ---------------------------------------------------------------------- |
-| 001  | `001_create_profiles_table.sql`                    | Legacy profiles DDL + `handle_updated_at()` trigger function           |
-| 001  | `001_initial_schema.sql`                           | Baseline: profiles, vehicles, damage_reports, bids, shop/insurer      |
-| 002  | `002_create_vehicles_table.sql`                    | Vehicles with user-scoped RLS                                          |
-| 003  | `003_create_damage_reports_table.sql`              | Damage reports with role-based RLS                                     |
-| 004  | `004_fix_profiles_recursion.sql`                   | Fix infinite recursion in profile policies                             |
-| 005  | `005_create_website_preferences_table.sql`         | Provider-agnostic session memory                                       |
-| 006  | `006_make_business_profiles_provider_agnostic.sql` | Clerk identity on business profiles                                    |
-| 007  | `007_create_website_relationships_table.sql`       | Durable user↔entity relationships                                     |
-| 008  | `008_organize_website_storage_and_profiles.sql`    | Storage bucket reorganization                                          |
-| 009  | `009_create_navigation_sessions.sql`               | Persistent navigation flow state                                       |
-| 010  | `010_add_clerk_user_id_to_damage_reports.sql`      | Clerk-first auth on reports                                            |
-| 011  | `011_fix_damage_reports_rls_for_clerk.sql`         | RLS updates for Clerk identity                                         |
-| 011b | `011b_canonical_catchup.sql`                       | **Catchup**: missing tables/columns so 012+ apply on fresh DB         |
-| 012  | `012_harden_rls_policies.sql`                      | Strengthened RLS across all tables                                     |
-| 013  | `013_privatize_user_storage_buckets.sql`           | User-scoped storage access                                             |
-| 014  | `014_navigation_sessions_clerk_identity.sql`       | Navigation sessions Clerk support                                      |
-| 015  | `015_add_claim_decision_fields.sql`                | Claims decision tracking columns                                       |
-| 016  | `016_add_report_coordinates.sql`                   | Geocoded lat/lng on damage_reports                                     |
-| 017  | `017_create_shop_service_areas.sql`                | Per-shop radius / zip service areas                                    |
-| 018  | `018_enable_postgis_geography.sql`                 | PostGIS + GEOGRAPHY(POINT) columns + spatial indexes                   |
-| 019  | `019_create_notification_preferences.sql`          | Per-user email/in-app/SMS toggles                                      |
-| 020  | `020_add_shop_assignment_to_reports.sql`           | `assigned_shop_clerk_user_id` on damage_reports                        |
-| 021  | `021_add_privacy_columns.sql`                      | Privacy toggles on notification_preferences                            |
-| 024  | `024_clerk_jwt_rls_policies.sql`                   | Full Clerk JWT RLS rewrite (`requesting_clerk_user_id()` helper)      |
-| 025  | `025_event_capture_columns.sql`                    | `actor_id/object_id/outcome` on platform_activity_events               |
-| 026  | `026_idempotency_guards.sql`                       | Unique indexes preventing duplicate bids / job_assignments             |
-| 027  | `027_soft_delete.sql`                              | `deleted_at` on launch-critical tables                                 |
-| —    | `20231223000001_create_storage_buckets.sql`        | Legacy storage bucket setup (earliest sort; supersedes by 008/013)     |
+| #    | File                                               | Purpose                                                            |
+| ---- | -------------------------------------------------- | ------------------------------------------------------------------ |
+| 001  | `001_create_profiles_table.sql`                    | Legacy profiles DDL + `handle_updated_at()` trigger function       |
+| 001  | `001_initial_schema.sql`                           | Baseline: profiles, vehicles, damage_reports, bids, shop/insurer   |
+| 002  | `002_create_vehicles_table.sql`                    | Vehicles with user-scoped RLS                                      |
+| 003  | `003_create_damage_reports_table.sql`              | Damage reports with role-based RLS                                 |
+| 004  | `004_fix_profiles_recursion.sql`                   | Fix infinite recursion in profile policies                         |
+| 005  | `005_create_website_preferences_table.sql`         | Provider-agnostic session memory                                   |
+| 006  | `006_make_business_profiles_provider_agnostic.sql` | Clerk identity on business profiles                                |
+| 007  | `007_create_website_relationships_table.sql`       | Durable user↔entity relationships                                 |
+| 008  | `008_organize_website_storage_and_profiles.sql`    | Storage bucket reorganization                                      |
+| 009  | `009_create_navigation_sessions.sql`               | Persistent navigation flow state                                   |
+| 010  | `010_add_clerk_user_id_to_damage_reports.sql`      | Clerk-first auth on reports                                        |
+| 011  | `011_fix_damage_reports_rls_for_clerk.sql`         | RLS updates for Clerk identity                                     |
+| 011b | `011b_canonical_catchup.sql`                       | **Catchup**: missing tables/columns so 012+ apply on fresh DB      |
+| 012  | `012_harden_rls_policies.sql`                      | Strengthened RLS across all tables                                 |
+| 013  | `013_privatize_user_storage_buckets.sql`           | User-scoped storage access                                         |
+| 014  | `014_navigation_sessions_clerk_identity.sql`       | Navigation sessions Clerk support                                  |
+| 015  | `015_add_claim_decision_fields.sql`                | Claims decision tracking columns                                   |
+| 016  | `016_add_report_coordinates.sql`                   | Geocoded lat/lng on damage_reports                                 |
+| 017  | `017_create_shop_service_areas.sql`                | Per-shop radius / zip service areas                                |
+| 018  | `018_enable_postgis_geography.sql`                 | PostGIS + GEOGRAPHY(POINT) columns + spatial indexes               |
+| 019  | `019_create_notification_preferences.sql`          | Per-user email/in-app/SMS toggles                                  |
+| 020  | `020_add_shop_assignment_to_reports.sql`           | `assigned_shop_clerk_user_id` on damage_reports                    |
+| 021  | `021_add_privacy_columns.sql`                      | Privacy toggles on notification_preferences                        |
+| 024  | `024_clerk_jwt_rls_policies.sql`                   | Full Clerk JWT RLS rewrite (`requesting_clerk_user_id()` helper)   |
+| 025  | `025_event_capture_columns.sql`                    | `actor_id/object_id/outcome` on platform_activity_events           |
+| 026  | `026_idempotency_guards.sql`                       | Unique indexes preventing duplicate bids / job_assignments         |
+| 027  | `027_soft_delete.sql`                              | `deleted_at` on launch-critical tables                             |
+| —    | `20231223000001_create_storage_buckets.sql`        | Legacy storage bucket setup (earliest sort; supersedes by 008/013) |
 
 ### Staging / fresh-environment bootstrap (PG17 note)
 
