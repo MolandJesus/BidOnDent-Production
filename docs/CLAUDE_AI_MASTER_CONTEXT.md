@@ -14,12 +14,12 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-14 (Soft Launch Hardening phase — Hardening Plan + Post-Launch Roadmap promoted to project law. Previous Pass 810 re-anchor audit content below remains the architecture/product truth snapshot.)
+> **Last updated:** 2026-04-15 (Pass 11 — cold-start fix, event capture quality, doc refresh)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine · 555/555 tests passing
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
-> **TypeScript:** 0 tsc errors · 0 VS Code diagnostics
+> **TypeScript:** ⚠️ 49 pre-existing `tsc --noEmit` errors at domain/DB type boundary (Vite build and tests still pass — errors don't fail the build pipeline). Tracked under roadmap item A1. No new type errors introduced by Passes 855–11.
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
 > **Production `any` types:** 0 (eliminated Passes 433-434, re-verified Pass 609; remaining `as any` in MapLibre/window/devtools only)
 > **Security:** OWASP audit Pass 619 — zero XSS, zero injection, VIN input sanitized, photo upload guarded
