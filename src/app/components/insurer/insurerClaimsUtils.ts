@@ -42,7 +42,7 @@ export function transformReportsToClaims(reports: DamageReport[]): ClaimData[] {
       (Array.isArray(report?.bids) && report.bids.length > 0
         ? Math.max(...report.bids.map((bid) => Number(bid.amount) || 0))
         : 0);
-    const zipCode = report?.zipCode || report?.zip_code;
+    const zipCode = report?.zipCode;
     const vin = report?.vehicle?.vin || report?.vehicleInfo?.vin || "Not provided";
     const reportedAt = report?.submittedAt || report?.createdAt || "";
     const locationParts = [report?.address, report?.city, report?.state].filter(Boolean);

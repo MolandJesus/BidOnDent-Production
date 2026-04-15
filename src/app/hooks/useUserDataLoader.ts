@@ -25,13 +25,7 @@ import {
 import type { Profile, DamageReport as SupabaseDamageReport } from "../services/supabase/types";
 import { getMyBids } from "../services/supabase/bids";
 import { getNotificationsByUserType } from "../constants";
-import {
-  transformSupabaseReport,
-  buildSupabaseReportPayload,
-  toFrontendVehicle,
-  toSupabaseVehicle,
-  toFrontendBid,
-} from "./userDataUtils";
+import { buildSupabaseReportPayload, toFrontendVehicle, toSupabaseVehicle } from "./userDataUtils";
 import { parseCachedUserData } from "./useUserDataHelpers";
 
 export type HydrationResult = {
@@ -91,11 +85,11 @@ export async function hydrateFromCloudProfile(
   const photoStorage: Record<string, string[]> = {};
 
   if (Array.isArray(reportsData)) {
-    reports = reportsData.map(transformSupabaseReport);
+    reports = reportsData;
     reportsError = null;
-    reportsData.forEach((report: SupabaseDamageReport) => {
-      if (report.photo_urls && Array.isArray(report.photo_urls)) {
-        photoStorage[report.id || ""] = report.photo_urls;
+    reportsData.forEach((report: DamageReport) => {
+      if (Array.isArray(report.photos) && report.photos.length > 0) {
+        photoStorage[report.id || ""] = report.photos;
       }
     });
     if (import.meta.env.DEV) {
@@ -113,7 +107,7 @@ export async function hydrateFromCloudProfile(
     }
   }
 
-  const bids = bidsData.map(toFrontendBid);
+  const bids = bidsData;
   if (import.meta.env.DEV) {
     console.log(`[DEV] Loaded ${bids.length} bids from Supabase`);
   }
@@ -146,21 +140,18 @@ export async function hydrateFromCloudProfile(
   const cachePayload: UserData = {
     userInfo,
     vehicles,
-    reports: validReports.map(transformSupabaseReport),
+    reports: validReports,
     bids,
     userPhone,
     redirectInfo,
     notifications,
     hasSeenPhotoGuide: false,
-    photoStorage: validReports.reduce(
-      (acc: Record<string, string[]>, report: SupabaseDamageReport) => {
-        if (report?.id && Array.isArray(report.photo_urls)) {
-          acc[report.id] = report.photo_urls;
-        }
-        return acc;
-      },
-      {}
-    ),
+    photoStorage: validReports.reduce((acc: Record<string, string[]>, report: DamageReport) => {
+      if (report?.id && Array.isArray(report.photos)) {
+        acc[report.id] = report.photos;
+      }
+      return acc;
+    }, {}),
   };
 
   return {

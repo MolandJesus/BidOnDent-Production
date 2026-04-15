@@ -93,7 +93,10 @@ export async function handleAcceptBid(
     const acceptedReport = reportId
       ? userData.reports.find((report) => String(report.id) === String(reportId))
       : null;
-    const acceptedReportZip = acceptedReport?.zip_code || acceptedReport?.zipCode || "";
+    const acceptedReportLegacyZip = acceptedReport
+      ? ((acceptedReport as unknown as Record<string, unknown>).zip_code as string | undefined)
+      : undefined;
+    const acceptedReportZip = acceptedReport?.zipCode || acceptedReportLegacyZip || "";
     const acceptedOriginCoords = acceptedReportZip ? zipToCoordinates(acceptedReportZip) : null;
 
     updateWebsiteSessionMemory(

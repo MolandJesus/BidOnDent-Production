@@ -19,7 +19,7 @@
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine · 555/555 tests passing
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
-> **TypeScript:** ⚠️ 49 pre-existing `tsc --noEmit` errors at domain/DB type boundary (Vite build and tests still pass — errors don't fail the build pipeline). Tracked under roadmap item A1. No new type errors introduced by Passes 855–11.
+> **TypeScript:** ✅ 0 `tsc --noEmit` errors. The domain/DB boundary drift tracked under roadmap item A1 was remediated in Pass 15.
 > **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
 > **Production `any` types:** 0 (eliminated Passes 433-434, re-verified Pass 609; remaining `as any` in MapLibre/window/devtools only)
 > **Security:** OWASP audit Pass 619 — zero XSS, zero injection, VIN input sanitized, photo upload guarded

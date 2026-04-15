@@ -68,7 +68,7 @@ export default function ReportsListScreen({
         if (lat != null && lng != null) {
           return { id: String(report.id), lat, lng, label };
         }
-        const zipCode = report?.zipCode || report?.zip_code || "";
+        const zipCode = report?.zipCode || "";
         const coords = zipCode ? zipToCoordinates(zipCode) : null;
         if (!coords) return null;
         return { id: String(report.id), lat: coords.lat, lng: coords.lng, label };

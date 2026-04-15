@@ -70,7 +70,7 @@ export default function CustomerMapWidget({
             : "Damage report";
           return { id: r.id, lat, lng, label };
         }
-        const zip = r.zip_code || r.zipCode;
+        const zip = r.zipCode;
         const coords = zipToCoordinates(zip);
         if (!coords) return null;
         const label = r.vehicleInfo

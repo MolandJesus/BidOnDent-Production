@@ -99,7 +99,6 @@ export function useDashboardData({
       city: report.city || existing.city,
       state: report.state || existing.state,
       zipCode: report.zipCode || existing.zipCode,
-      zip_code: report.zip_code || existing.zip_code,
       claimNumber: report.claimNumber || existing.claimNumber,
       policyNumber: report.policyNumber || existing.policyNumber,
       vehicle: report.vehicle || existing.vehicle,
@@ -134,9 +133,7 @@ export function useDashboardData({
     getShopSubmittedBids(providerUserId).then((bids) => {
       if (!cancelled) {
         setShopSubmittedBids(bids);
-        const ids = new Set(
-          bids.map((b) => b.damage_report_id || b.report_id || "").filter(Boolean)
-        );
+        const ids = new Set(bids.map((b) => b.reportId || "").filter(Boolean));
         setShopBidReportIds(ids);
       }
     });
@@ -149,7 +146,7 @@ export function useDashboardData({
     if (userType !== "shop" || !providerUserId) return;
     getShopSubmittedBids(providerUserId).then((bids) => {
       setShopSubmittedBids(bids);
-      const ids = new Set(bids.map((b) => b.damage_report_id || b.report_id || "").filter(Boolean));
+      const ids = new Set(bids.map((b) => b.reportId || "").filter(Boolean));
       setShopBidReportIds(ids);
     });
   }, [userType, providerUserId]);

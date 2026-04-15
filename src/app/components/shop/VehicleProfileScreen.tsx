@@ -48,7 +48,7 @@ export default function VehicleProfileScreen({
 
   const handleEdit = (vehicle: Vehicle, index: number) => {
     setFormData({
-      year: vehicle.year || "",
+      year: vehicle.year ? String(vehicle.year) : "",
       make: vehicle.make || "",
       model: vehicle.model || "",
       vin: vehicle.vin || "",
@@ -77,10 +77,14 @@ export default function VehicleProfileScreen({
       await onSaveVehicles(updatedVehicles);
     } catch {
       setVehicles(previousVehicles);
-      notifications.addNotification({
-        type: "error",
+      notifications.push({
+        category: "system",
         title: "Delete failed",
-        message: "Could not delete vehicle. Please try again.",
+        body: "Could not delete vehicle. Please try again.",
+        payload: {},
+        userId: "",
+        deepLink: null,
+        priority: "high",
       });
     }
   };
@@ -101,16 +105,25 @@ export default function VehicleProfileScreen({
       // Update existing vehicle
       if (editingId) {
         // Update by ID (vehicle has UUID)
-        updatedVehicles = vehicles.map((v) =>
-          v.id === editingId ? ({ ...formData, id: editingId } as Vehicle) : v
-        );
+        const nextVehicle: Vehicle = {
+          ...formData,
+          id: editingId,
+          year: Number(formData.year),
+        };
+        updatedVehicles = vehicles.map((v) => (v.id === editingId ? nextVehicle : v));
       } else {
         // Update by index (vehicle doesn't have UUID yet)
-        updatedVehicles = vehicles.map((v, i) => (i === editingIndex ? (formData as Vehicle) : v));
+        const targetIndex = editingIndex ?? 0;
+        const nextVehicle: Vehicle = {
+          id: vehicles[targetIndex]?.id ?? `vehicle-${targetIndex}`,
+          ...formData,
+          year: Number(formData.year),
+        };
+        updatedVehicles = vehicles.map((v, i) => (i === targetIndex ? nextVehicle : v));
       }
     } else {
       // Create new vehicle without ID - let database generate UUID
-      const newVehicle: Partial<Vehicle> = { ...formData };
+      const newVehicle: Partial<Vehicle> = { ...formData, year: Number(formData.year) };
       // Remove id field if it exists
       delete newVehicle.id;
       updatedVehicles = [...vehicles, newVehicle as Vehicle];
@@ -133,10 +146,14 @@ export default function VehicleProfileScreen({
       await onSaveVehicles(updatedVehicles);
     } catch {
       setVehicles(previousVehicles);
-      notifications.addNotification({
-        type: "error",
+      notifications.push({
+        category: "system",
         title: "Save failed",
-        message: "Could not save vehicle. Please try again.",
+        body: "Could not save vehicle. Please try again.",
+        payload: {},
+        userId: "",
+        deepLink: null,
+        priority: "high",
       });
     }
   };

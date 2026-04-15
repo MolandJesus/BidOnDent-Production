@@ -276,7 +276,7 @@ export function useReportForm({
         );
         const report: DamageReport = {
           id: Date.now().toString(),
-          vehicleId: matchedVehicle?.id || undefined,
+          vehicleId: matchedVehicle?.id || "",
           vehicleInfo: {
             make: vehicle.make,
             model: vehicle.model,

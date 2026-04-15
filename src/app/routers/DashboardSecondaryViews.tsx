@@ -11,7 +11,6 @@ import { useMemo } from "react";
 import type { DashboardRouterProps } from "./dashboard-router-types";
 import { zipToCoordinates } from "../services/supabase/map";
 import { submitInsuranceClaim } from "../services/supabase/reports";
-import { toMapReportShape } from "../hooks/userDataUtils";
 import { lazyWithRetry } from "../utils/lazyWithRetry";
 
 const ReportsListScreen = lazyWithRetry(() => import("../components/reports/ReportsListScreen"));
@@ -102,7 +101,7 @@ export default function DashboardSecondaryViews({
     if (report.latitude != null && report.longitude != null) {
       return { latitude: report.latitude, longitude: report.longitude };
     }
-    const zip = zipToCoordinates(report.zip_code || report.zipCode);
+    const zip = zipToCoordinates(report.zipCode);
     return zip ? { latitude: zip.lat, longitude: zip.lng } : undefined;
   }, [selectedReportId, reports]);
 
@@ -270,12 +269,12 @@ export default function DashboardSecondaryViews({
               onTabChange("bids");
               onViewModeChange("dashboard");
             }}
-            mapReports={reports.map(toMapReportShape)}
+            mapReports={reports}
             initialSearchHint={
               reports.length > 0
                 ? (() => {
                     const latest = reports[reports.length - 1];
-                    return latest.zip_code || latest.zipCode || latest.city || undefined;
+                    return latest.zipCode || latest.city || undefined;
                   })()
                 : undefined
             }

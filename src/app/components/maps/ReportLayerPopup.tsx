@@ -57,7 +57,7 @@ export default function ReportLayerPopup({
         {report.status && (
           <span
             className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${
-              report.status === "in-repair" || report.status === "approved"
+              report.status === "active"
                 ? isDark
                   ? "bg-green-900/50 text-green-300"
                   : "bg-green-100 text-green-700"

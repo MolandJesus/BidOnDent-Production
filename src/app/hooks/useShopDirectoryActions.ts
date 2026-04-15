@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import type { ShopMapListing } from "../services/intelligence/shopMapExperience";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
-import type { DamageReport } from "../services/supabase/types";
+import type { DamageReport } from "../types";
 import { submitBid } from "../services/supabase/bids";
 import { submitEstimateRequest } from "../services/supabase/estimateRequests";
 import { useNotifications } from "../features/notifications";
@@ -59,8 +59,8 @@ export function useShopDirectoryActions({
           clerkUserId
         );
         if (result) {
-          const vehicleLabel = bidReport?.vehicle_make
-            ? `${bidReport.vehicle_year} ${bidReport.vehicle_make} ${bidReport.vehicle_model || ""}`.trim()
+          const vehicleLabel = bidReport?.vehicleInfo?.make
+            ? `${bidReport.vehicleInfo.year} ${bidReport.vehicleInfo.make} ${bidReport.vehicleInfo.model || ""}`.trim()
             : "report";
           notifications.push({
             title: "Bid Submitted",

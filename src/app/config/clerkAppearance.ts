@@ -8,9 +8,7 @@
  *   Clerk Dashboard → Configure → SSO Connections → Add Google / Apple
  *   https://dashboard.clerk.com  →  your-app  →  User & Authentication → Social connections
  */
-import type { Appearance } from "@clerk/types";
-
-export const clerkAppearance: Appearance = {
+export const clerkAppearance = {
   variables: {
     colorPrimary: "#003d82",
     colorBackground: "#0a1626",

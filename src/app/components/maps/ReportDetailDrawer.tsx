@@ -57,7 +57,7 @@ export function ReportDetailDrawer({
   const damageSeverity = report.damageSeverity || "";
 
   const statusColor =
-    status === "in-repair" || status === "approved"
+    status === "active"
       ? isDark
         ? "bg-green-900/50 text-green-300 border-green-400/25"
         : "bg-green-50 text-green-700 border-green-200/60"

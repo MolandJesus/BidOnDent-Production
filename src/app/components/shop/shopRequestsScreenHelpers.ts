@@ -32,7 +32,7 @@ export function transformReportToRequest(report: DamageReport, index: number): R
   const bidCount = Number(report?.bidsCount) || 0;
   const reportPhotos = Array.isArray(report?.photos) ? report.photos.filter(Boolean) : [];
 
-  const zipCode = report?.zipCode || report?.zip_code || "";
+  const zipCode = report?.zipCode || "";
   const locationParts = [report?.address, report?.city, report?.state].filter(Boolean);
   const address = locationParts.join(", ");
   const hasLocation = Boolean(zipCode || address);

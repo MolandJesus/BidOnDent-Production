@@ -180,7 +180,7 @@ export default function ShopActiveJobsScreen({
         if (lat != null && lng != null) {
           return { id: String(report?.id ?? ""), lat, lng, label };
         }
-        const zipCode = report?.zipCode || report?.zip_code || "";
+        const zipCode = report?.zipCode || "";
         const coords = zipCode ? zipToCoordinates(zipCode) : null;
         if (!coords) return null;
         return { id: String(report?.id ?? ""), lat: coords.lat, lng: coords.lng, label };
@@ -426,7 +426,9 @@ export default function ShopActiveJobsScreen({
                     ? 45
                     : 20;
             setSelectedJob((prev) =>
-              prev ? { ...prev, status: newStatus, progress, tasks: buildTasks(newStatus) } : null
+              prev
+                ? { ...prev, status: newStatus, progress, tasks: buildTasks(newStatus, true) }
+                : null
             );
 
             // Persist to backend (skip for seed/demo data)

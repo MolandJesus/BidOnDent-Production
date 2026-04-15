@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { UserData } from "../types";
 import { isCachedUserData, sanitizeCachedUserData } from "./userDataValidation";
 
-const validUserData: UserData = {
+const validUserData = {
   userInfo: {
     name: "Morgan Test",
     email: "morgan@example.com",
@@ -79,7 +79,7 @@ const validUserData: UserData = {
       metadata: { reportId: "report-1" },
     },
   ],
-};
+} as unknown as UserData;
 
 describe("userDataValidation", () => {
   it("accepts a fully valid cached user payload", () => {
@@ -91,14 +91,14 @@ describe("userDataValidation", () => {
       isCachedUserData({
         ...validUserData,
         photoStorage: { "report-1": ["ok", 123] },
-      }),
+      })
     ).toBe(false);
 
     expect(
       isCachedUserData({
         ...validUserData,
         redirectInfo: { type: "admin" },
-      }),
+      })
     ).toBe(false);
   });
 

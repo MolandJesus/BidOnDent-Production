@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { getAllDamageReports } from "../services/supabase/reports";
-import { transformSupabaseReport } from "./userDataUtils";
 import { useNotifications } from "../features/notifications/NotificationContext";
 import type { DamageReport } from "../types";
 
@@ -30,7 +29,7 @@ export function useMarketplaceReports(userType: string) {
     try {
       const raw = await getAllDamageReports();
       const reports = Array.isArray(raw) ? raw : [];
-      setMarketplaceReports(reports.map(transformSupabaseReport));
+      setMarketplaceReports(reports);
     } catch {
       setError("Unable to load live data — showing demo requests");
       showErrorToast();
@@ -51,7 +50,7 @@ export function useMarketplaceReports(userType: string) {
         const raw = await getAllDamageReports();
         if (!cancelled) {
           const reports = Array.isArray(raw) ? raw : [];
-          setMarketplaceReports(reports.map(transformSupabaseReport));
+          setMarketplaceReports(reports);
         }
       } catch {
         if (!cancelled) {
