@@ -79,15 +79,20 @@ export async function getDamageReports(
 }
 
 export async function getAllDamageReports(): Promise<DamageReport[]> {
-  const payload = await requestSupabaseEdge<{ reports?: DbDamageReport[] }>(
-    `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
-    { method: "GET" }
-  );
-  if (payload && Array.isArray(payload.reports)) {
-    if (import.meta.env.DEV) console.log(`[DEV] Loaded ${payload.reports.length} marketplace reports via edge`);
-    return payload.reports.map(reportFromDb);
+  try {
+    const payload = await requestSupabaseEdge<{ reports?: DbDamageReport[] }>(
+      `${SUPABASE_EDGE_ROUTES.reports}/marketplace`,
+      { method: "GET" }
+    );
+    if (payload && Array.isArray(payload.reports)) {
+      if (import.meta.env.DEV) console.log(`[DEV] Loaded ${payload.reports.length} marketplace reports via edge`);
+      return payload.reports.map(reportFromDb);
+    }
+    return [];
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] getAllDamageReports failed:", error);
+    return [];
   }
-  return [];
 }
 
 export async function saveDamageReport(
@@ -150,17 +155,22 @@ export async function updateReportStatus(
   status: string,
   clerkUserId: string
 ): Promise<boolean> {
-  await requestSupabaseEdge(
-    `${SUPABASE_EDGE_ROUTES.reports}/${reportId}`,
-    {
-      method: "PUT",
-      body: JSON.stringify({
-        clerkUserId,
-        report: { status },
-      }),
-    }
-  );
-  return true;
+  try {
+    await requestSupabaseEdge(
+      `${SUPABASE_EDGE_ROUTES.reports}/${reportId}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          clerkUserId,
+          report: { status },
+        }),
+      }
+    );
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] updateReportStatus failed:", error);
+    return false;
+  }
 }
 
 export async function updateClaimDecision(
@@ -168,16 +178,21 @@ export async function updateClaimDecision(
   decision: "approved" | "denied",
   options: { approvedAmount?: number; denialReason?: string }
 ): Promise<boolean> {
-  await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimDecision, {
-    method: "POST",
-    body: JSON.stringify({
-      reportId,
-      decision,
-      approvedAmount: options.approvedAmount ?? null,
-      denialReason: options.denialReason ?? null,
-    }),
-  });
-  return true;
+  try {
+    await requestSupabaseEdge(SUPABASE_EDGE_ROUTES.claimDecision, {
+      method: "POST",
+      body: JSON.stringify({
+        reportId,
+        decision,
+        approvedAmount: options.approvedAmount ?? null,
+        denialReason: options.denialReason ?? null,
+      }),
+    });
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] updateClaimDecision failed:", error);
+    return false;
+  }
 }
 
 export async function submitInsuranceClaim(
@@ -217,12 +232,17 @@ export async function deleteDamageReport(
     return false;
   }
 
-  const searchParams = new URLSearchParams({ clerkUserId });
-  await requestSupabaseEdge<{ success: boolean }>(
-    `${SUPABASE_EDGE_ROUTES.reports}/${reportId}?${searchParams.toString()}`,
-    {
-      method: "DELETE",
-    }
-  );
-  return true;
+  try {
+    const searchParams = new URLSearchParams({ clerkUserId });
+    await requestSupabaseEdge<{ success: boolean }>(
+      `${SUPABASE_EDGE_ROUTES.reports}/${reportId}?${searchParams.toString()}`,
+      {
+        method: "DELETE",
+      }
+    );
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] deleteDamageReport failed:", error);
+    return false;
+  }
 }

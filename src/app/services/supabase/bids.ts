@@ -4,25 +4,35 @@ import type { Bid } from "../../types";
 import { bidFromDb } from "./adapters";
 
 export async function getBidsForReport(reportId: string): Promise<Bid[]> {
-  const data = await requestSupabaseEdge<{ bids: DbBid[] }>(
-    `${SUPABASE_EDGE_ROUTES.bids}?reportId=${encodeURIComponent(reportId)}`,
-    { method: "GET" }
-  );
-  return (data.bids ?? []).map(bidFromDb);
+  try {
+    const data = await requestSupabaseEdge<{ bids: DbBid[] }>(
+      `${SUPABASE_EDGE_ROUTES.bids}?reportId=${encodeURIComponent(reportId)}`,
+      { method: "GET" }
+    );
+    return (data?.bids ?? []).map(bidFromDb);
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] getBidsForReport failed:", error);
+    return [];
+  }
 }
 
 export async function submitBid(bid: DbBid, clerkUserId?: string): Promise<Bid | null> {
   if (!clerkUserId) {
-    throw new Error("Sign in required to submit a bid.");
+    if (import.meta.env.DEV) console.warn("[DEV] submitBid: missing Clerk user ID");
+    return null;
   }
 
-  const data = await requestSupabaseEdge<{ bid: DbBid }>(SUPABASE_EDGE_ROUTES.bids, {
-    method: "POST",
-    body: JSON.stringify({ clerkUserId, bid }),
-  });
-
-  if (import.meta.env.DEV) console.log("✅ Bid submitted successfully");
-  return data.bid ? bidFromDb(data.bid) : null;
+  try {
+    const data = await requestSupabaseEdge<{ bid: DbBid }>(SUPABASE_EDGE_ROUTES.bids, {
+      method: "POST",
+      body: JSON.stringify({ clerkUserId, bid }),
+    });
+    if (import.meta.env.DEV) console.log("✅ Bid submitted successfully");
+    return data?.bid ? bidFromDb(data.bid) : null;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] submitBid failed:", error);
+    return null;
+  }
 }
 
 export async function updateBidStatus(
@@ -31,19 +41,24 @@ export async function updateBidStatus(
   clerkUserId?: string
 ): Promise<Bid | null> {
   if (!clerkUserId) {
-    throw new Error("Sign in required to update bid status.");
+    if (import.meta.env.DEV) console.warn("[DEV] updateBidStatus: missing Clerk user ID");
+    return null;
   }
 
-  const data = await requestSupabaseEdge<{ bid: DbBid }>(
-    `${SUPABASE_EDGE_ROUTES.bids}/${encodeURIComponent(bidId)}`,
-    {
-      method: "PUT",
-      body: JSON.stringify({ status, clerkUserId }),
-    }
-  );
-
-  if (import.meta.env.DEV) console.log(`✅ Bid status updated to ${status}`);
-  return data.bid ? bidFromDb(data.bid) : null;
+  try {
+    const data = await requestSupabaseEdge<{ bid: DbBid }>(
+      `${SUPABASE_EDGE_ROUTES.bids}/${encodeURIComponent(bidId)}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({ status, clerkUserId }),
+      }
+    );
+    if (import.meta.env.DEV) console.log(`✅ Bid status updated to ${status}`);
+    return data?.bid ? bidFromDb(data.bid) : null;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] updateBidStatus failed:", error);
+    return null;
+  }
 }
 
 export async function getMyBids(clerkUserId?: string): Promise<Bid[]> {
@@ -51,21 +66,31 @@ export async function getMyBids(clerkUserId?: string): Promise<Bid[]> {
     return [];
   }
 
-  const data = await requestSupabaseEdge<{ bids: DbBid[] }>(
-    `${SUPABASE_EDGE_ROUTES.bids}?customerClerkUserId=${encodeURIComponent(clerkUserId)}`,
-    { method: "GET" }
-  );
-  return (data.bids ?? []).map(bidFromDb);
+  try {
+    const data = await requestSupabaseEdge<{ bids: DbBid[] }>(
+      `${SUPABASE_EDGE_ROUTES.bids}?customerClerkUserId=${encodeURIComponent(clerkUserId)}`,
+      { method: "GET" }
+    );
+    return (data?.bids ?? []).map(bidFromDb);
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] getMyBids failed:", error);
+    return [];
+  }
 }
 
 export async function getShopSubmittedBids(clerkUserId?: string): Promise<Bid[]> {
   if (!clerkUserId) return [];
 
-  const data = await requestSupabaseEdge<{ bids: DbBid[] }>(
-    `${SUPABASE_EDGE_ROUTES.bids}?clerkUserId=${encodeURIComponent(clerkUserId)}`,
-    { method: "GET" }
-  );
-  return (data.bids ?? []).map(bidFromDb);
+  try {
+    const data = await requestSupabaseEdge<{ bids: DbBid[] }>(
+      `${SUPABASE_EDGE_ROUTES.bids}?clerkUserId=${encodeURIComponent(clerkUserId)}`,
+      { method: "GET" }
+    );
+    return (data?.bids ?? []).map(bidFromDb);
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] getShopSubmittedBids failed:", error);
+    return [];
+  }
 }
 
 export async function deleteBid(bidId: string, clerkUserId?: string): Promise<boolean> {
@@ -73,11 +98,15 @@ export async function deleteBid(bidId: string, clerkUserId?: string): Promise<bo
     return false;
   }
 
-  await requestSupabaseEdge<{ success: boolean }>(
-    `${SUPABASE_EDGE_ROUTES.bids}/${encodeURIComponent(bidId)}?clerkUserId=${encodeURIComponent(clerkUserId)}`,
-    { method: "DELETE" }
-  );
-
-  if (import.meta.env.DEV) console.log("✅ Bid deleted successfully");
-  return true;
+  try {
+    await requestSupabaseEdge<{ success: boolean }>(
+      `${SUPABASE_EDGE_ROUTES.bids}/${encodeURIComponent(bidId)}?clerkUserId=${encodeURIComponent(clerkUserId)}`,
+      { method: "DELETE" }
+    );
+    if (import.meta.env.DEV) console.log("✅ Bid deleted successfully");
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV) console.error("[DEV] deleteBid failed:", error);
+    return false;
+  }
 }
