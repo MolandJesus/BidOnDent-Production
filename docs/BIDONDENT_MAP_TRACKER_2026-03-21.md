@@ -8,12 +8,12 @@
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 
-**Last updated:** April 15, 2026 (Hardening phase — Pass 872 closed Phase 5.1 recovery + working-tree cleanup)
+**Last updated:** April 15, 2026 (Hardening phase — Pass 879 closed all 6 dependabot vulnerabilities)
 **Status:** Historical pass log / audit trail during Soft Launch Hardening phase
-**Pass count:** 872 (hardening passes continue from 855+)
+**Pass count:** 879 (hardening passes continue from 855+)
 **Build:** 0 errors ✅
-**Tests:** 554/554 passing ✅ (network-error mocking failures fixed in Pass 872)
-**Branch:** BidOnDent-Horizon-Beta (7 commits ahead of origin, awaiting user push)
+**Tests:** 554/554 passing ✅
+**Branch:** BidOnDent-Horizon-Beta (in sync with origin, deploys pending user-side actions)
 
 ---
 
@@ -121,6 +121,43 @@ Added to [docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md](docs/BIDONDENT_
 
 **Files touched:** `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry).
 **Build:** 3.58s, 0 errors. **Tests:** 554/554.
+
+---
+
+## Pass 879 — Dependabot security sweep (2026-04-15)
+
+**Phase:** Repo health (parallel to Soft Launch Hardening)
+**Outcome:** Closed all 6 open dependabot alerts (3 high, 3 moderate) — `vite`, `lodash`, `serialize-javascript`. Build clean, tests 554/554, `npm audit` reports 0 vulnerabilities.
+
+### Triage
+
+| Package | Severity | Direct/transitive | Real exposure |
+|---|---|---|---|
+| `vite` 6.4.1 → 6.4.2 | high + medium | direct (`devDependencies`) | dev server only — both CVEs require `vite dev` exposed; production builds unaffected |
+| `lodash` 4.17.23 → 4.18.0 | high + medium | transitive (recharts + workbox-build) | **zero direct imports in `src/`** verified by grep — risk surface is whatever recharts uses internally; recharts upgrades cleanly |
+| `serialize-javascript` 6.0.2 → 7.0.5 | high + medium | transitive (vite-plugin-pwa → @rollup/plugin-terser → workbox-build) | build-time only, never runs in production browser — zero end-user risk |
+
+### Fix
+
+- Direct bump: `package.json` devDependencies `vite` `^6.4.1` → `^6.4.2`
+- Top-level `overrides` block added to force transitive deps:
+  ```json
+  "overrides": {
+    "lodash": "^4.18.0",
+    "serialize-javascript": "^7.0.5"
+  }
+  ```
+- `npm install` → 2 packages removed, 3 changed, 0 vulnerabilities reported
+- Build: 3.08s, 0 errors, 60 PWA precache entries
+- Tests: 554/554 passing
+
+### Notes
+
+- Dead `pnpm.overrides` block (forces vite to `6.3.5`) left untouched — this repo uses npm (`package-lock.json`), so the pnpm block is inert. Removing it is scope creep beyond the security fix.
+- Repo-health stewardship is now handled in parallel with builder autopilot passes — security advisories, CI health, lockfile drift, and similar maintenance items will be tracked here under "Repo health" phase tags rather than the soft launch hardening phase tree.
+
+**Files touched:** `package.json`, `package-lock.json`, this tracker.
+**Build:** 3.08s, 0 errors. **Tests:** 554/554 passing.
 
 ---
 
