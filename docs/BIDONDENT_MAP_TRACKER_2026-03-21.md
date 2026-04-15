@@ -89,6 +89,27 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 
 ---
 
+## Pass 875 — Phase 6.1 Smoke-Test Code Verification (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 6.1 prep
+**Outcome:** Pre-populated all 26-27 smoke-test items with static code evidence. Every item annotated with exact file:line proof of wiring + specific runtime blocker. Staging Supabase project ref filled in. Blocker summary: 22 items blocked on staging preview URL (user-side), 3 on RESEND_API_KEY (user-side), 1 on Sentry dashboard access (user-side).
+
+### Evidence gathered
+
+- RLS: 3 tables verified with policy details from `024_clerk_jwt_rls_policies.sql` (profiles:L24-56, damage_reports:L100-154, bids:L156-179)
+- Legal: Routes confirmed at `App.tsx:280-281` (`#privacy-policy`, `#terms-of-service`) with component files in `src/app/components/legal/`
+- Observability: Sentry init at `main.tsx:10` → `sentryInit.ts:31`. Platform activity events INSERT in 5 edge function handlers (9 call sites total)
+- Error boundary: `ScreenErrorBoundary` wraps app root at `App.tsx:379`. 3-tier chain confirmed
+- Customer signup: `ClerkAccountTypeSelector` at `App.tsx:301`
+- Report wizard: 6-step switch in `ReportScreen.tsx:79`
+- Shop onboarding: 4-step `ShopOnboarding` at `App.tsx:310`
+- Email: All 3 flows traced with dispatch function, template, preference guard, and fire-and-forget pattern
+
+**Files touched:** `docs/PHASE_6_SMOKE_TEST_CHECKLIST.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry).
+**Build:** 3.20s, 0 errors. **Tests:** 554/554.
+
+---
+
 ## Pass 874 — Phase 5.2 Email Trigger Mapping Table (2026-04-15)
 
 **Phase:** Soft Launch Hardening — Phase 5.2 (code-side)

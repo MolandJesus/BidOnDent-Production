@@ -2,7 +2,8 @@
 
 **Created:** 2026-04-15 (Pass 869 — pre-Phase 6 prep)
 **Source:** Hardening Plan Phase 6.1 + 6.3
-**Status:** Skeleton — result columns blank until staging + prod runs
+**Status:** Code-verified (Pass 875) — result columns blank until staging + prod runs
+**Last code verification:** 2026-04-15 (Pass 875)
 
 ---
 
@@ -14,13 +15,13 @@ Run this checklist **twice**: once against the staging preview URL (Phase 6.1), 
 
 ## Environment Info
 
-| Field             | Staging                  | Production            |
-| ----------------- | ------------------------ | --------------------- |
-| URL               | _(fill after 5.1 setup)_ | https://bidondent.com |
-| Supabase project  | _(fill after 5.1 setup)_ | wmdcnjgtsppftrofaqqa  |
-| Clerk environment | _(shared)_               | _(shared)_            |
-| Date run          |                          |                       |
-| Tester            |                          |                       |
+| Field             | Staging                                 | Production            |
+| ----------------- | --------------------------------------- | --------------------- |
+| URL               | _(Vercel preview — blocked: user-side)_ | https://bidondent.com |
+| Supabase project  | lhhdqycnhweaxqviwdqt                    | wmdcnjgtsppftrofaqqa  |
+| Clerk environment | _(shared)_                              | _(shared)_            |
+| Date run          |                                         |                       |
+| Tester            |                                         |                       |
 
 ---
 
@@ -124,3 +125,89 @@ Run this checklist **twice**: once against the staging preview URL (Phase 6.1), 
 - [ ] No regressions from Phase 4 changes
 - [ ] Observability is catching real events
 - [ ] Emails are landing in real inboxes
+
+---
+
+## Code Verification Notes (Pass 875)
+
+Pre-populated from static code analysis. Items marked ✅ have code-level evidence confirming the wiring exists. Runtime verification still required during actual smoke test.
+
+### Section 1 — Customer Signup
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 1.1 | ✅ `ClerkAccountTypeSelector` rendered at `App.tsx:301`. Clerk Provider wraps app. | `blocked: staging preview URL` |
+| 1.2 | ✅ Account type selector calls edge function to create `profiles` row. | `blocked: staging preview URL` |
+| 1.3 | ✅ `DashboardLayout` at `App.tsx:379` wrapped in `ScreenErrorBoundary`. Customer dashboard loads via `DashboardRouter`. | `blocked: staging preview URL` |
+
+### Section 2 — Report Submission
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 2.1 | ✅ 6-step wizard in `ReportScreen.tsx:79` — switch on `form.step` (1–6). Steps: VehicleInfo, DamageArea, ServiceLocation, Photos, Description, Complete. | `blocked: staging preview URL` |
+| 2.2 | ✅ Photo upload via Supabase Storage (step 4 `StepPhotos`). Report saved via `saveDamageReport` edge function call. | `blocked: staging preview URL` |
+| 2.3 | ✅ Reports list component exists in customer dashboard. | `blocked: staging preview URL` |
+| 2.4 | ✅ `CustomerMapWidget` renders report pins via `MapLibreReportLayer`. | `blocked: staging preview URL` |
+
+### Section 3 — Shop Signup + Bid
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 3.1 | ✅ `ShopOnboarding` (4 steps) at `App.tsx:310`. Creates `shop_profiles` via edge function. | `blocked: staging preview URL` |
+| 3.2 | ✅ Shop onboarding steps include business info + `ServiceAreaEditorModal`. | `blocked: staging preview URL` |
+| 3.3 | ✅ `MapLibreShopDirectoryMapPane` + `ShopMapWidget` show nearby reports. | `blocked: staging preview URL` |
+| 3.4 | ✅ `MapBidSheet` → `submitBid()` → `createBid` edge handler (`bids.ts:11`). Activity event logged at `bids.ts:118`. | `blocked: staging preview URL` |
+
+### Section 4 — Bid Acceptance + Job
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 4.1 | ✅ `BidsScreen` lists bids for customer. | `blocked: staging preview URL` |
+| 4.2 | ✅ `acceptBid()` → auto-reject + `createJobAssignment()` (`workflow.ts:45`). Activity event at `bids.ts:371`. | `blocked: staging preview URL` |
+| 4.3 | ✅ `ShopActiveJobsScreen` displays jobs. `updateJobAssignmentStatus()` at `workflow.ts:79`. | `blocked: staging preview URL` |
+
+### Section 5 — Email Delivery
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 5.1 | ✅ `notifyCustomerNewBid` dispatched fire-and-forget at `bids.ts:139`. Template: `newBidReceived`. Preference guard: `email_bid_updates`. | `blocked: RESEND_API_KEY not deployed` |
+| 5.2 | ✅ `notifyShopBidStatus` dispatched at `bids.ts:385`. Template: `bidStatusNotification`. Preference guard: `email_bid_updates`. | `blocked: RESEND_API_KEY not deployed` |
+| 5.3 | ✅ `notifyCustomerClaimDecision` dispatched at `workflow.ts:416`. Template: `claimDecisionNotification`. Preference guard: `email_report_updates`. | `blocked: RESEND_API_KEY not deployed + insurer account needed` |
+
+### Section 6 — Navigation
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 6.1 | ✅ OSRM routing via `routeEngine.ts`. Turn-by-turn nav wired in customer dashboard. | `blocked: staging preview URL` |
+| 6.2 | ✅ Voice guidance + GPS in navigation components. | `blocked: staging preview URL + device GPS` |
+
+### Section 7 — RLS Verification
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 7.1 | N/A — runtime-only step (open console). | `blocked: staging preview URL` |
+| 7.2 | ✅ `profiles` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:24-56`: SELECT/INSERT/UPDATE/DELETE scoped to `requesting_clerk_user_id()`. | `blocked: staging preview URL` |
+| 7.3 | ✅ `damage_reports` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:100-154`: owner read/write, shop/insurer read-all. | `blocked: staging preview URL` |
+| 7.4 | ✅ `bids` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:156-179`: authenticated read, shop manage. | `blocked: staging preview URL` |
+
+### Section 8 — Observability
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 8.1 | ✅ `initSentry()` at `main.tsx:10` → `sentryInit.ts:31`. `ScreenErrorBoundary` wraps app root at `App.tsx:379`. 3-tier error boundary chain confirmed. | `blocked: Sentry dashboard access to verify capture` |
+| 8.2 | ✅ `platform_activity_events` INSERT calls in: `reports.ts:120` (report created), `bids.ts:118` (bid created), `bids.ts:371` (bid accepted/rejected), `workflow.ts:65,193` (job status), `admin.ts:438,514` (admin ops), `intake.ts:139,196` (interest submissions). | `blocked: staging preview URL to verify data lands` |
+
+### Section 9 — Legal Surfaces
+
+| # | Code Evidence | Runtime Blocker |
+|---|--------------|-----------------|
+| 9.1 | ✅ Route: `#terms-of-service` → `TermsOfServicePage` component (`App.tsx:281`). File: `src/app/components/legal/TermsOfServicePage.tsx`. | `blocked: staging preview URL to verify content` |
+| 9.2 | ✅ Route: `#privacy-policy` → `PrivacyPolicyPage` component (`App.tsx:280`). File: `src/app/components/legal/PrivacyPolicyPage.tsx`. | `blocked: staging preview URL to verify content` |
+
+### Blocker Summary
+
+| Blocker | Items Affected | Owner |
+|---------|---------------|-------|
+| Staging preview URL not yet live (Vercel env vars + edge function deploy) | 1.1–4.3, 6.1–6.2, 7.1–7.4, 8.2, 9.1–9.2 (22 items) | User |
+| `RESEND_API_KEY` not deployed to Supabase edge function secrets | 5.1–5.3 (3 items) | User |
+| Sentry dashboard access needed to verify capture | 8.1 (1 item) | User |
