@@ -124,6 +124,38 @@ Added to [docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md](docs/BIDONDENT_
 
 ---
 
+## Pass 878 — Remove Dead Modular Schema Helpers (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Pass 871 cleanup (final)
+**Outcome:** Deleted 5 dead `database_schema_sql_*.ts` files after verification-first grep confirmed zero external consumers. Updated `docs/SUPABASE_SETUP_GUIDE.md` §9. Resolves the dual hand-written schema authority problem identified in Pass 871.
+
+### Verification
+
+```
+grep -rn "databaseInitializationSql|coreDatabaseSchemaSql|bidFlowDatabaseSchemaSql|
+          intakeDatabaseSchemaSql|estimateRequestsDatabaseSchemaSql|database_schema_sql"
+     supabase/ src/ --include="*.ts" --include="*.tsx"
+```
+
+All matches were internal to the 5 files. `database_init.tsx` and `index.ts` do not reference them.
+
+### Files deleted
+
+- `supabase/functions/server/database_schema_sql.ts` (aggregate, imported the other 4)
+- `supabase/functions/server/database_schema_sql_core.ts`
+- `supabase/functions/server/database_schema_sql_bid_flow.ts`
+- `supabase/functions/server/database_schema_sql_intake.ts`
+- `supabase/functions/server/database_schema_sql_estimate_requests.ts`
+
+### Doc update
+
+- `docs/SUPABASE_SETUP_GUIDE.md` §9: Replaced "Modular helper stubs" subsection with strikethrough heading + removal note pointing to Pass 878 and the migrations-folder source of truth.
+
+**Files touched:** 5 deleted TS files, `docs/SUPABASE_SETUP_GUIDE.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry).
+**Build:** clean, 60 precache entries. **Tests:** 554/554 (no test references to deleted files).
+
+---
+
 ## Pass 877 — Governance Doc Consistency Sweep (2026-04-15)
 
 **Phase:** Soft Launch Hardening — Pass 871 fallout cleanup

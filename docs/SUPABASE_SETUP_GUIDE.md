@@ -335,20 +335,12 @@ authoritative and **must not** be treated as equal to the migrations folder.
 New schema work goes into migrations; this file is frozen pending retirement
 (tracked on the post-launch roadmap).
 
-### Modular helper stubs: `database_schema_sql_*.ts`
+### ~~Modular helper stubs: `database_schema_sql_*.ts`~~ — Removed (Pass 878)
 
-| File                                       | Constant                            | Status                                     |
-| ------------------------------------------ | ----------------------------------- | ------------------------------------------ |
-| `database_schema_sql_core.ts`              | `coreDatabaseSchemaSql`             | reference only — not wired to any runtime |
-| `database_schema_sql_bid_flow.ts`          | `bidFlowDatabaseSchemaSql`          | reference only — not wired to any runtime |
-| `database_schema_sql_estimate_requests.ts` | `estimateRequestsDatabaseSchemaSql` | reference only — not wired to any runtime |
-| `database_schema_sql_intake.ts`            | `intakeDatabaseSchemaSql`           | reference only — not wired to any runtime |
-
-These files export SQL strings that are aggregated in `database_schema_sql.ts`
-as `databaseInitializationSql`, but **nothing at runtime imports that aggregate**.
-`database_init.tsx` uses its own inline SQL, not these modules. The modular
-files exist as design-time reference for the canonical Clerk-aware schema; the
-migrations folder is now the enforced source of truth.
+These files were reference-only dead code — never consumed by any runtime path.
+`database_init.tsx` uses its own inline SQL, not these modules. They were deleted
+in Pass 878 after verification confirmed zero external consumers. The migrations
+folder is the enforced source of truth (see §9 header and Execution Discipline rule 4).
 
 ### Migration files (`supabase/migrations/`)
 

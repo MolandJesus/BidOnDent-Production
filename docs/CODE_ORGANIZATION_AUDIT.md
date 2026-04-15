@@ -16,6 +16,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 > This audit remains the source-of-truth for current repo structure, seams, and extraction boundaries.
 >
 > During the Soft Launch Hardening phase:
+>
 > - **Architecture work is scoped to [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) Phase 2** (adapter layer at service boundary, identity normalization). Full type-system merge and broader architecture refactors are deferred to [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) A1/A2.
 > - **Schema source of truth rule (updated 2026-04-15, clarified Pass 877):** `supabase/migrations/*.sql` is the **single authoritative source** for the database schema. Every schema-affecting change must land as a new migration file. `database_init.tsx` is retained as a legacy cold-start safety net only — not an equal authority. The modular `database_schema_sql_*.ts` helpers are reference-only dead code (never consumed by any runtime path) and are removed in Pass 878. See `docs/SUPABASE_SETUP_GUIDE.md` §9 for the full policy.
 > - When a hardening pass changes seams, file boundaries, or extraction paths, update the relevant section of this doc in the same pass.
