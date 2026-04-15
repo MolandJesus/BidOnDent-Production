@@ -470,7 +470,7 @@ Work items:
 
 Work items:
 
-**5.1 Group 7a — ~~Vercel previews as practical staging~~ Local dev + staging Supabase** *(Updated 2026-04-15)*
+**5.1 Group 7a — ~~Vercel previews as practical staging~~ Local dev + staging Supabase** _(Updated 2026-04-15)_
 
 - ~~Configure Vercel preview deployments to use staging Supabase config via env var overrides.~~
 - Staging Supabase project `lhhdqycnhweaxqviwdqt` created and fully bootstrapped (Pass 872).

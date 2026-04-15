@@ -3,6 +3,7 @@
 > ### ⚡ CURRENT PHASE: Soft Launch Hardening (2026-04-14 onward)
 >
 > **Project law during hardening:**
+>
 > - [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) — the locked execution plan. Launch Scope Guardrails, locked decisions (Groups 1–7), phased Execution Plan (Phases 0–6), Execution Discipline.
 > - [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) — controlled holding area for deferred work. Not a backlog.
 >
@@ -491,22 +492,22 @@ All other AI docs in this repo point to this file as the master context. See `do
 
 **Active docs (hardening phase — 2026-04-14):**
 
-| Doc                                                          | Use When                                                                                   |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| `docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`    | ⚡ Project law. Any hardening-phase execution pass. Always first read.                     |
-| `docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`           | ⚡ Checking whether an item is deferred, and under what trigger it would be reactivated.   |
-| `docs/README.md`                                             | Full documentation governance index                                                       |
-| `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`               | Strategic map vision (feature work paused during hardening)                                |
-| `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`                   | Historical pass log / audit trail                                                          |
-| `docs/BIDONDENT_PRODUCT_BRAIN.md`                            | Strategic product reference (paused during hardening)                                      |
-| `docs/CODE_ORGANIZATION_AUDIT.md`                            | Architecture snapshot + seams + schema sync rule reference                                 |
-| `docs/MOLANDJEUS_DESIGN_DECISIONS.md`                        | Design philosophy (aesthetic work paused except Phase 4 trust surfaces)                    |
-| `docs/GETTING_STARTED.md`                                    | Local setup (step 2 will change in Phase 1.5)                                              |
-| `docs/SUPABASE_SETUP_GUIDE.md`                               | Supabase / edge function reference (sections to be updated in Phase 1.5, 3.1, and L1)      |
-| `docs/GOOGLE_OAUTH_SETUP.md`                                 | Clerk + Google OAuth setup                                                                 |
-| `docs/PAYMENT_MODEL_DESIGN.md`                               | ⛔ Deferred — see Post-Launch Roadmap F1. Not an active decision during hardening.          |
-| `docs/ATTRIBUTIONS.md`                                       | Licenses and external asset attribution                                                    |
-| `.github/copilot-instructions.md`                            | Architecture rules + pass output format                                                    |
+| Doc                                                       | Use When                                                                                 |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md` | ⚡ Project law. Any hardening-phase execution pass. Always first read.                   |
+| `docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`        | ⚡ Checking whether an item is deferred, and under what trigger it would be reactivated. |
+| `docs/README.md`                                          | Full documentation governance index                                                      |
+| `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`            | Strategic map vision (feature work paused during hardening)                              |
+| `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`                | Historical pass log / audit trail                                                        |
+| `docs/BIDONDENT_PRODUCT_BRAIN.md`                         | Strategic product reference (paused during hardening)                                    |
+| `docs/CODE_ORGANIZATION_AUDIT.md`                         | Architecture snapshot + seams + schema sync rule reference                               |
+| `docs/MOLANDJEUS_DESIGN_DECISIONS.md`                     | Design philosophy (aesthetic work paused except Phase 4 trust surfaces)                  |
+| `docs/GETTING_STARTED.md`                                 | Local setup (step 2 will change in Phase 1.5)                                            |
+| `docs/SUPABASE_SETUP_GUIDE.md`                            | Supabase / edge function reference (sections to be updated in Phase 1.5, 3.1, and L1)    |
+| `docs/GOOGLE_OAUTH_SETUP.md`                              | Clerk + Google OAuth setup                                                               |
+| `docs/PAYMENT_MODEL_DESIGN.md`                            | ⛔ Deferred — see Post-Launch Roadmap F1. Not an active decision during hardening.       |
+| `docs/ATTRIBUTIONS.md`                                    | Licenses and external asset attribution                                                  |
+| `.github/copilot-instructions.md`                         | Architecture rules + pass output format                                                  |
 
 **Archived docs** (24+ in `/docs/archive/`): See `docs/README.md` for full archive manifest. Pass 537 consolidated and trimmed the doc system from ~13,000 to ~5,000 active lines.
 
