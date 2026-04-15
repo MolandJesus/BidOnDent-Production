@@ -89,6 +89,24 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 
 ---
 
+## Pass 873 — Phase 5.2/5.3 Code-Side Completion (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5.2/5.3 (doc alignment + governance fix)
+**Outcome:** Module Completion Matrix refreshed with accurate test baseline + Pass 871/872 addendum. Execution Discipline rule 4 rewritten to match the new migrations-folder-is-authoritative stance from Pass 871. Planner AI's Pass 872 doc changes committed in isolation.
+
+### Changes
+
+1. **Committed planner AI docs** — `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (Pass 872 entry) and `docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md` (Change Log entries for Passes 856–872) committed as `f7cb23d2` with subject `docs: Pass 872 tracker + hardening plan handoff`.
+
+2. **Module Completion Matrix refresh** — Updated test baseline from 542/554 → 554/554. Added "2026-04-15 Addendum (Pass 873)" section documenting: schema drift closure (011b), test fix, Phase 5.1 code-side closure, cell tally re-verification (17 ✅ / 2 ➖ / 2 ⛔ unchanged). Header `Last verified` updated to Pass 873.
+
+3. **Execution Discipline rule 4 fix** — Rewrote rule text from old "schema sync rule" (`updates SQL migrations AND database_schema_sql_*.ts helpers`) to new "schema source of truth" (`supabase/migrations/ is the single authoritative schema source`). Demotes `database_init.tsx` and `database_schema_sql_*.ts` helpers inline, matching the governance update in §9 of `docs/SUPABASE_SETUP_GUIDE.md`.
+
+**Files touched:** `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`, `docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md` (rule 4), `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry).
+**Build:** 2.94s, 0 errors, 60 precache entries. **Tests:** 554/554.
+
+---
+
 ## Pass 872 — Phase 5.1 closure + working-tree cleanup + test fix (2026-04-15)
 
 **Phase:** Soft Launch Hardening — Phase 5.1 closure + autopilot-readiness handoff prep

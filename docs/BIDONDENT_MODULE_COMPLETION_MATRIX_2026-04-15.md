@@ -1,10 +1,10 @@
 # BidOnDent Module Completion Matrix
 
 **Created:** 2026-04-15 (Pass 868 — Phase 5.3)
-**Last verified:** 2026-04-15
+**Last verified:** 2026-04-15 (Pass 873)
 **Status:** Active — canonical module completion reference
-**Build baseline:** 3.15s, 0 errors, 60 PWA precache entries
-**Test baseline:** 542/554 pass (12 pre-existing error-handling failures — no regression delta)
+**Build baseline:** 2.90s, 0 errors, 60 PWA precache entries
+**Test baseline:** 554/554 pass (0 failures — 12 pre-existing failures fixed in Pass 872)
 
 ---
 
@@ -124,9 +124,31 @@ When this trigger fires, the following work items activate as a single epic:
 
 ---
 
+## 2026-04-15 Addendum (Pass 873)
+
+### Schema drift closure (Passes 871–872)
+
+Pass 870 reported staging migrations as successful, but user verification revealed only `profiles` existed. Root cause: `supabase/migrations/` was never a complete schema source — six tables and multiple Clerk-identity columns were created only by `database_init.tsx` or ad-hoc dashboard pastes.
+
+**Fix:** New migration `011b_canonical_catchup.sql` (idempotent) closes the drift gap. Migrations folder is now the single authoritative schema source (`docs/SUPABASE_SETUP_GUIDE.md` §9). `database_init.tsx` demoted to legacy cold-start safety net.
+
+### Test baseline fix (Pass 872)
+
+12 pre-existing test failures in `bids.test.ts` / `reports.test.ts` resolved. Root cause: service layer lacked try/catch — rejections bubbled up instead of matching the graceful-fallback contract tests asserted. All 6 `bids.ts` exports + 4 `reports.ts` methods wrapped. `saveDamageReport` intentionally left throwing (its test explicitly asserts "throws on network error"). Test count: **554/554** (was 542/554).
+
+### Phase 5.1 code-side closure
+
+Staging Supabase project `lhhdqycnhweaxqviwdqt` fully populated from migrations folder alone. All tables + routines verified present. Remaining Phase 5.1 items are user-side (Vercel preview env vars, edge function deploy). Phase 5.2 (RESEND) and 5.3 (this matrix) remain in progress.
+
+### Cell tally re-verification
+
+No cell status changes from Passes 871–872. Schema drift was infrastructure, not module-level. The 17 ✅ / 2 ➖ / 2 ⛔ tally remains accurate.
+
+---
+
 ## Maintenance Notes
 
 - This document is the canonical module completion reference, replacing the inline matrix in the Map Tracker (Pass 867).
 - Update this document when any matrix cell status changes (new feature lands, gap is filled, or a new gap is discovered).
 - Runtime verification rows should be added as real smoke tests are performed (e.g., after RESEND deployment, after staging environment setup).
-- Cell count arithmetic: 17 ✅ + 2 ➖ + 2 ⛔ = 21 total cells. Verified 2026-04-15.
+- Cell count arithmetic: 17 ✅ + 2 ➖ + 2 ⛔ = 21 total cells. Last verified: Pass 873.

@@ -539,7 +539,7 @@ Same checklist, against the live prod URL. Everything must pass.
 1. **Verification-first.** Any destructive action (deletion, archival, source-of-truth change, removal of load-bearing code) must be verified against the live code in the current pass, not assumed from the plan. If verification contradicts the plan, stop and escalate.
 2. **North Star filter.** For every in-phase pass, ask: "Does this help one real transaction happen cleanly, end-to-end?" If no, defer to the Post-Launch Roadmap instead of shipping it.
 3. **No scope expansion.** If a pass needs work beyond its stated scope, stop and document the addition as a new planned pass. Do not silently expand.
-4. **Schema sync rule (Group 4b).** Every schema-affecting change updates SQL migrations AND `database_schema_sql_*.ts` helpers in the same pass.
+4. **Schema source of truth (Group 4b, updated Pass 871).** `supabase/migrations/` is the single authoritative schema source. Every schema-affecting change goes in a new migration file. `database_init.tsx` is a legacy cold-start safety net only — no new schema logic there. `database_schema_sql_*.ts` helpers are reference-only dead code.
 5. **Launch Scope Guardrails are inviolable.** If execution wants to defer one, it must be explicitly reclassified with written justification in the Change Log. Otherwise they ship.
 6. **Checkpoint gates are hard stops.** Do not begin the next phase until MolandJeus has reviewed the prior phase's gate criteria.
 
