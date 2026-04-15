@@ -135,7 +135,9 @@ export function buildReportPayload(report: Record<string, any>) {
     vehicle_make: report.vehicle?.make || report.vehicle_make || "",
     vehicle_model: report.vehicle?.model || report.vehicle_model || "",
     vehicle_year: parseInt(report.vehicle?.year || report.vehicle_year || "0", 10),
-    vehicle_id: report.vehicleId || report.vehicle_id || undefined,
+    vehicle_id: isUuidLike(report.vehicleId) ? report.vehicleId
+      : isUuidLike(report.vehicle_id) ? report.vehicle_id
+      : undefined,
     damage_type: report.damageArea || report.damage_type || "unknown",
     damage_severity: report.damage_severity || report.damageSeverity || "moderate",
     damage_description: report.description || report.damage_description || "",

@@ -269,9 +269,14 @@ export function useReportForm({
 
       if (onReportSubmit) {
         const submittedAt = new Date().toISOString();
+        // Look up the saved vehicle's real UUID; fall back to undefined (→ null in DB)
+        const matchedVehicle = vehicles.find(
+          (v) =>
+            v.make === vehicle.make && v.model === vehicle.model && String(v.year) === vehicle.year
+        );
         const report: DamageReport = {
           id: Date.now().toString(),
-          vehicleId: vehicle.vin || `vehicle-${Date.now()}`,
+          vehicleId: matchedVehicle?.id || undefined,
           vehicleInfo: {
             make: vehicle.make,
             model: vehicle.model,

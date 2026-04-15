@@ -99,55 +99,66 @@ export async function saveDamageReport(
   report: DbDamageReport,
   clerkUserId?: string
 ): Promise<DamageReport | null> {
-  try {
-    if (!clerkUserId) {
-      if (import.meta.env.DEV) console.warn("⚠️ No Clerk user ID provided to saveDamageReport");
-      return null;
-    }
-
-    const payload = {
-      clerkUserId,
-      report: {
-        address: report.address,
-        additional_notes: report.additional_notes,
-        city: report.city,
-        damage_description: report.damage_description,
-        damage_location: report.damage_location,
-        damage_severity: report.damage_severity,
-        damage_type: report.damage_type,
-        insurance_claim: report.insurance_claim,
-        insurance_company: report.insurance_company,
-        photo_urls: report.photo_urls || [],
-        preferred_contact: report.preferred_contact,
-        state: report.state,
-        status: report.status || "pending",
-        vehicle_id: report.vehicle_id,
-        vehicle_make: report.vehicle_make,
-        vehicle_model: report.vehicle_model,
-        vehicle_year: report.vehicle_year,
-        zip_code: report.zip_code,
-        latitude: report.latitude ?? null,
-        longitude: report.longitude ?? null,
-      },
-    };
-
-    const shouldUpdate = isUuidLike(report.id);
-
-    const result = await requestSupabaseEdge<{ report: DbDamageReport }>(
-      shouldUpdate ? `${SUPABASE_EDGE_ROUTES.reports}/${report.id}` : SUPABASE_EDGE_ROUTES.reports,
-      {
-        body: JSON.stringify(payload),
-        method: shouldUpdate ? "PUT" : "POST",
-      }
-    );
-
-    if (import.meta.env.DEV)
-      console.log("[DEV]", shouldUpdate ? "Damage report updated" : "Damage report created");
-    return result?.report ? reportFromDb(result.report) : null;
-  } catch (error) {
-    if (import.meta.env.DEV) console.error("[DEV] Error in saveDamageReport:", error);
-    throw error;
+  if (!clerkUserId) {
+    if (import.meta.env.DEV) console.warn("⚠️ No Clerk user ID provided to saveDamageReport");
+    return null;
   }
+
+  const payload = {
+    clerkUserId,
+    report: {
+      address: report.address,
+      additional_notes: report.additional_notes,
+      city: report.city,
+      damage_description: report.damage_description,
+      damage_location: report.damage_location,
+      damage_severity: report.damage_severity,
+      damage_type: report.damage_type,
+      insurance_claim: report.insurance_claim,
+      insurance_company: report.insurance_company,
+      photo_urls: report.photo_urls || [],
+      preferred_contact: report.preferred_contact,
+      state: report.state,
+      status: report.status || "pending",
+      vehicle_id: report.vehicle_id,
+      vehicle_make: report.vehicle_make,
+      vehicle_model: report.vehicle_model,
+      vehicle_year: report.vehicle_year,
+      zip_code: report.zip_code,
+      latitude: report.latitude ?? null,
+      longitude: report.longitude ?? null,
+    },
+  };
+
+  const shouldUpdate = isUuidLike(report.id);
+  const maxAttempts = 2;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      const result = await requestSupabaseEdge<{ report: DbDamageReport }>(
+        shouldUpdate ? `${SUPABASE_EDGE_ROUTES.reports}/${report.id}` : SUPABASE_EDGE_ROUTES.reports,
+        {
+          body: JSON.stringify(payload),
+          method: shouldUpdate ? "PUT" : "POST",
+        }
+      );
+
+      if (import.meta.env.DEV)
+        console.log("[DEV]", shouldUpdate ? "Damage report updated" : "Damage report created");
+      return result?.report ? reportFromDb(result.report) : null;
+    } catch (error) {
+      const isRetryable =
+        error instanceof Error &&
+        (error.message.includes("deadlock") || error.message.includes("could not serialize"));
+      if (isRetryable && attempt < maxAttempts - 1) {
+        if (import.meta.env.DEV) console.warn(`[DEV] Retryable DB error, attempt ${attempt + 1}:`, error.message);
+        continue;
+      }
+      if (import.meta.env.DEV) console.error("[DEV] Error in saveDamageReport:", error);
+      throw error;
+    }
+  }
+  return null;
 }
 
 export async function updateReportStatus(
