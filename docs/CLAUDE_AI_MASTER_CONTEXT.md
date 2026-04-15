@@ -1,9 +1,19 @@
 # BidOnDent — Master AI Context
 
+> ### ⚡ CURRENT PHASE: Soft Launch Hardening (2026-04-14 onward)
+>
+> **Project law during hardening:**
+> - [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) — the locked execution plan. Launch Scope Guardrails, locked decisions (Groups 1–7), phased Execution Plan (Phases 0–6), Execution Discipline.
+> - [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) — controlled holding area for deferred work. Not a backlog.
+>
+> **If this doc and the Hardening Plan disagree, the Hardening Plan wins.** Flag the conflict and patch this doc in the same pass.
+>
+> **North Star filter for every pass:** _Does this help one real transaction happen cleanly, end-to-end?_ If no → defer to the Post-Launch Roadmap.
+
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-05 (Pass 810 — Full re-anchor audit. Canonical long-horizon plan created. Build/test/arch truth verified. All core flows confirmed wired.)
+> **Last updated:** 2026-04-14 (Soft Launch Hardening phase — Hardening Plan + Post-Launch Roadmap promoted to project law. Previous Pass 810 re-anchor audit content below remains the architecture/product truth snapshot.)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine · 555/555 tests passing
@@ -55,7 +65,11 @@ utils/      = transforms/formatting/calculations — pure functions only
 - File soft limit: 300 lines. Hard limit: 500 lines.
 - Never bypass Supabase RLS; never commit `.env` files.
 
-### Concurrent Security-Track Rule
+### Hardening-Phase Execution Rule (2026-04-14)
+
+During the Soft Launch Hardening phase, the main AI on autopilot executes the phased Execution Plan in [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md). Every pass filters through the North Star, respects Launch Scope Guardrails, and honors the Execution Discipline standing rules. Checkpoint gates between phases are hard stops. A smaller support AI may run in parallel for isolated code cleanup / type error corrections only — it must not touch load-bearing launch-scope work.
+
+### Concurrent Security-Track Rule (legacy — retained for historical reference)
 
 If another AI is actively updating security/auth/data boundaries:
 
@@ -475,22 +489,24 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 All other AI docs in this repo point to this file as the master context. See `docs/README.md` for the full governed documentation index.
 
-**Active docs (11):**
+**Active docs (hardening phase — 2026-04-14):**
 
-| Doc                                            | Use When                                     |
-| ---------------------------------------------- | -------------------------------------------- |
-| `docs/README.md`                               | Need the full documentation governance index |
-| `docs/BIDONDENT_FINISHING_MASTER_PLAN.md`      | Need the product completion roadmap          |
-| `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` | Need map design law and strategic intent     |
-| `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`     | Need map delivery reality tracker            |
-| `docs/BIDONDENT_PRODUCT_BRAIN.md`              | Need full product strategy framework         |
-| `docs/CODE_ORGANIZATION_AUDIT.md`              | Need architecture snapshot + weak seams      |
-| `docs/MOLANDJEUS_DESIGN_DECISIONS.md`          | Need design philosophy + page audit          |
-| `docs/GETTING_STARTED.md`                      | New developer environment setup              |
-| `docs/SUPABASE_SETUP_GUIDE.md`                 | Supabase project configuration               |
-| `docs/GOOGLE_OAUTH_SETUP.md`                   | Clerk + Google OAuth setup                   |
-| `docs/ATTRIBUTIONS.md`                         | Licenses and external asset attribution      |
-| `.github/copilot-instructions.md`              | Architecture rules + pass output format      |
+| Doc                                                          | Use When                                                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`    | ⚡ Project law. Any hardening-phase execution pass. Always first read.                     |
+| `docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`           | ⚡ Checking whether an item is deferred, and under what trigger it would be reactivated.   |
+| `docs/README.md`                                             | Full documentation governance index                                                       |
+| `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`               | Strategic map vision (feature work paused during hardening)                                |
+| `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`                   | Historical pass log / audit trail                                                          |
+| `docs/BIDONDENT_PRODUCT_BRAIN.md`                            | Strategic product reference (paused during hardening)                                      |
+| `docs/CODE_ORGANIZATION_AUDIT.md`                            | Architecture snapshot + seams + schema sync rule reference                                 |
+| `docs/MOLANDJEUS_DESIGN_DECISIONS.md`                        | Design philosophy (aesthetic work paused except Phase 4 trust surfaces)                    |
+| `docs/GETTING_STARTED.md`                                    | Local setup (step 2 will change in Phase 1.5)                                              |
+| `docs/SUPABASE_SETUP_GUIDE.md`                               | Supabase / edge function reference (sections to be updated in Phase 1.5, 3.1, and L1)      |
+| `docs/GOOGLE_OAUTH_SETUP.md`                                 | Clerk + Google OAuth setup                                                                 |
+| `docs/PAYMENT_MODEL_DESIGN.md`                               | ⛔ Deferred — see Post-Launch Roadmap F1. Not an active decision during hardening.          |
+| `docs/ATTRIBUTIONS.md`                                       | Licenses and external asset attribution                                                    |
+| `.github/copilot-instructions.md`                            | Architecture rules + pass output format                                                    |
 
 **Archived docs** (24+ in `/docs/archive/`): See `docs/README.md` for full archive manifest. Pass 537 consolidated and trimmed the doc system from ~13,000 to ~5,000 active lines.
 

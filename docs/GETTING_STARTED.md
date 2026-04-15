@@ -1,11 +1,11 @@
 # Getting Started
 
-Last updated: April 3, 2026
+Last updated: April 14, 2026 (Phase 1.5 .env migration complete)
 Status: Active onboarding guide
 
 Get BidOnDent running locally with Clerk + Supabase in about 10 minutes.
 
-Scope note: This guide is for local setup and first-run flow. For current execution truth, read `CLAUDE_AI_MASTER_CONTEXT.md`, `BIDONDENT_MAP_TRACKER_2026-03-21.md`, and `docs/README.md` instead of relying on archived baseline snapshots.
+Scope note: This guide is for local setup and first-run flow. For current execution truth during hardening, read the [Soft Launch Hardening Plan](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md), then `CLAUDE_AI_MASTER_CONTEXT.md` and `docs/README.md`.
 
 ## Prerequisites
 
@@ -19,20 +19,24 @@ Scope note: This guide is for local setup and first-run flow. For current execut
 npm install
 ```
 
-## 2) Configure keys
+## 2) Configure environment
 
-Update the key files in the repo:
+```bash
+cp .env.example .env
+```
 
-- `utils/clerk/info.tsx` -> set `clerkPublishableKey`
-- `utils/supabase/info.tsx` -> set `projectId` and `publicAnonKey`
-- optional local operator secrets go in `.env` only:
-  - `SUPABASE_ACCESS_TOKEN`
-  - `SUPABASE_DB_URL` or `SUPABASE_DB_PASSWORD`
+Fill in your `.env` with:
 
-Key locations:
+| Variable                     | Source                                                    |
+| ---------------------------- | --------------------------------------------------------- |
+| `VITE_CLERK_PUBLISHABLE_KEY` | Clerk Dashboard → Your App → API Keys (starts with `pk_`) |
+| `VITE_SUPABASE_URL`          | Supabase Project Settings → API → Project URL             |
+| `VITE_SUPABASE_ANON_KEY`     | Supabase Project Settings → API → anon/public key         |
 
-- Clerk: Dashboard -> Your App -> API Keys
-- Supabase: Project Settings -> API -> Project URL and anon key
+Optional for local development:
+
+- `SUPABASE_ACCESS_TOKEN` — CLI auth for deployments
+- `SUPABASE_DB_URL` or `SUPABASE_DB_PASSWORD` — direct Postgres access
 
 Keep all `.env` values local-only. Do not commit `.env` or `.env.*` files.
 
@@ -72,7 +76,7 @@ Regular user:
 
 ## Common issues
 
-- Missing keys: re-check `utils/clerk/info.tsx` and `utils/supabase/info.tsx`.
+- Missing keys: verify `.env` has `VITE_CLERK_PUBLISHABLE_KEY`, `VITE_SUPABASE_URL`, and `VITE_SUPABASE_ANON_KEY` set.
 - Auth UI not loading: verify Clerk key starts with `pk_`.
 - Database errors: confirm migrations ran in order.
 - Photos not uploading: confirm the canonical media buckets exist and the `server` edge function is deployed.

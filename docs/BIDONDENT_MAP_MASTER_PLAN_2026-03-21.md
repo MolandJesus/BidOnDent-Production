@@ -1,7 +1,15 @@
 # BidOnDent Map Master Plan
 
-**Last updated:** April 3, 2026 (Pass 622)
-**Status:** Strategic law for map program
+> ### ⚡ HARDENING PHASE NOTICE (2026-04-14)
+>
+> This document remains the **strategic vision** for the map program. It is **not** current execution law.
+>
+> During the Soft Launch Hardening phase, the binding execution doc is [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md). **Feature-level map work is paused** — no new map features, no aspirational atmosphere work, no provider migrations. The strategic vision in this doc stays intact for post-launch reactivation; it just does not drive the day-to-day queue while hardening is active.
+>
+> Exception: any map change that is required to close a Launch Scope Guardrail or support a Hardening Plan phase item is allowed under the Hardening Plan's scope, not this doc's.
+
+**Last updated:** April 14, 2026 (Hardening phase began — strategic vision retained, feature work paused)
+**Status:** Strategic vision (paused during hardening)
 
 > Implementation notes archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Per-pass delivery notes belong in the Map Tracker.
 

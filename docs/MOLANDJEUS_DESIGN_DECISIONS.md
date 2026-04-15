@@ -15,9 +15,15 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # MolandJesus — Design Decisions & Vision
 
+> ### ⚡ HARDENING PHASE NOTICE (2026-04-14)
+>
+> Strategic design reference. **Not** current execution law.
+>
+> During the Soft Launch Hardening phase, aesthetic work is paused except where required to close Phase 4 trust surfaces (demo banner, honest empty states, Coming Soon → waitlist conversion, market status layer). All other design refinements defer until soft launch stabilizes. See [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) Phase 4 for exact scope.
+
 **Collaborative design document for Mola and Jesus**
-Last updated: March 22, 2026
-Status: Active design reference
+Last updated: April 14, 2026 (Hardening phase began — design work paused except for Phase 4 trust surfaces)
+Status: Strategic design reference (paused during hardening)
 
 ## Living Design Alignment (2026-03-22)
 

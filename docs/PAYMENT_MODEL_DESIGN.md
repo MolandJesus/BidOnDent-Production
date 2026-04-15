@@ -1,8 +1,18 @@
 # BidOnDent — Payment Model Design
 
+> ### ⛔ DEFERRED (2026-04-14)
+>
+> **Payments are deferred to post-launch** per Group 1b of the [Soft Launch Hardening Plan](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) and tracked as item **F1** in the [Post-Launch Roadmap](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md).
+>
+> The soft launch is a **free marketplace**. Adding payments before proving the loop works is premature. Implementation is gated on:
+> 1. Real transactions flowing through the free loop, AND
+> 2. Market signal (via waitlist captures from Phase 4A.3) showing willingness to pay.
+>
+> **Do not implement without a fired trigger.** Do not treat this doc as an assumed next step. The business decision below remains open — but it is not an active decision during the hardening phase.
+
 **Created:** Pass 828 (Phase 4 planning)
-**Status:** DECISION REQUIRED — awaiting business decision before implementation
-**Dependencies:** Phases 1–3 COMPLETE, product functionally ready
+**Status:** ⛔ DEFERRED — see Post-Launch Roadmap F1. Not an active decision during hardening.
+**Dependencies:** Soft launch stabilized + fired F1 trigger (real transactions + willingness-to-pay signal)
 
 ---
 

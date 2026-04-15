@@ -23,8 +23,16 @@ All of the above is **future planning** and not yet implemented unless otherwise
 
 # BidOnDent Product Brain
 
-Last updated: April 3, 2026 (Pass 626 — Bundle optimization: 10 dead deps removed, lazy-load landing page + settings modal, index chunk 604→206KB. Test normalization fix Pass 625.)
-Status: Active strategic reference
+> ### ⚡ HARDENING PHASE NOTICE (2026-04-14)
+>
+> Strategic product handbook. **Not** current execution law.
+>
+> During the Soft Launch Hardening phase, execution follows [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md). This doc remains the reference for product reasoning, role architecture, and long-horizon vision — but no new features or Phase 4 product work lands until the hardening plan is complete and the "one real transaction happens cleanly" milestone is met.
+>
+> Deferred Phase 4 items (payments, push, advanced analytics, offline mode) live in [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) with explicit triggers. Do not reactivate without a fired trigger.
+
+Last updated: April 14, 2026 (Hardening phase began — strategic vision retained, feature work paused)
+Status: Strategic reference (paused during hardening)
 
 This is a working internal handbook for anyone acting as the product brain, engineering partner, or maintenance agent for BidOnDent. It is meant to preserve context, reduce re-discovery, and keep future edits aligned with what the product is trying to be.
 

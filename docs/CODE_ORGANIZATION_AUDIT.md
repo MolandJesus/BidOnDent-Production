@@ -11,7 +11,16 @@ All future map/product/design direction is planned/aspirational unless otherwise
 
 # Code Organization Audit
 
-**Last updated:** April 5, 2026 (Pass 808 — Phase 1-2 complete. Error handling, type safety, dead code sweep. All critical flows verified.)
+> ### ⚡ HARDENING PHASE NOTICE (2026-04-14)
+>
+> This audit remains the source-of-truth for current repo structure, seams, and extraction boundaries.
+>
+> During the Soft Launch Hardening phase:
+> - **Architecture work is scoped to [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) Phase 2** (adapter layer at service boundary, identity normalization). Full type-system merge and broader architecture refactors are deferred to [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) A1/A2.
+> - **Schema source of truth rule (updated 2026-04-15):** `supabase/migrations/*.sql` is the **single authoritative source** for the database schema. Every schema-affecting change must land as a new migration file. Runtime init in `database_init.tsx` and the modular `database_schema_sql_*.ts` helpers are retained as legacy cold-start safety nets only and must not be treated as equal authorities. See `docs/SUPABASE_SETUP_GUIDE.md` §9 for the full policy and the 2026-04-15 drift audit that triggered this clarification.
+> - When a hardening pass changes seams, file boundaries, or extraction paths, update the relevant section of this doc in the same pass.
+
+**Last updated:** April 14, 2026 (Hardening phase began — architecture work scoped to Phase 2 of the Hardening Plan)
 **Status:** Active source-of-truth audit
 
 **Date**: March 22, 2026  

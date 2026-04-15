@@ -1,8 +1,16 @@
 # BidOnDent Map Tracker
 
-**Last updated:** April 6, 2026 (Post-audit: Passes 851–854 complete, all functionality verified)
-**Status:** Active execution tracker — ready for Phase 4
-**Pass count:** 854
+> ### ⚡ HARDENING PHASE NOTICE (2026-04-14)
+>
+> This tracker continues from pass 855+ as the **historical pass log / audit trail** during the Soft Launch Hardening phase. It is no longer the primary "where are we" tool — the Module Completion Matrix (built in Phase 5 of the Hardening Plan) takes that role once populated.
+>
+> **Current execution law:** [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md). Every new pass must tie back to a specific Hardening Plan phase/work item, filter through the North Star, and respect Launch Scope Guardrails. Feature-level map work is paused.
+>
+> Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
+
+**Last updated:** April 14, 2026 (Hardening phase began — Hardening Plan is current execution law)
+**Status:** Historical pass log / audit trail during Soft Launch Hardening phase
+**Pass count:** 854 (hardening passes continue from 855+)
 **Build:** 0 errors (3.34s) ✅
 **Tests:** 543/555 passing. Pre-existing network error mocking failures in bids.test.ts + reports.test.ts (12 failures, not caused by recent work)
 **Branch:** BidOnDent-Horizon-Beta
@@ -78,6 +86,352 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 - (Estimate, shop, insurer services use their own service-specific channels — see Code Organization Audit)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Pass 871 — Schema Drift Audit + Migration 011b Canonical Catchup (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5.1 recovery (Pass 870 follow-up)
+**Outcome:** Discovered that `supabase/migrations/*.sql` was **not** a complete source of the production schema. Authored migration `011b_canonical_catchup.sql` to close the drift gap. Updated governance docs to lock the migrations folder as the single source of truth going forward.
+
+### Discovery
+
+Pass 870 reported success applying all 27 migrations to staging, but user screenshots revealed only the `profiles` table existed on staging. First retry attempt hit `ERROR: 42501: Direct deletion from storage tables is not allowed` (migration 008's `storage.protect_delete()` trigger). Second attempt after commenting out those DELETEs hit `ERROR: 42P01: relation "public.shop_interest_submissions" does not exist` in migration 012.
+
+Root cause audit found prod's schema was a Frankenstein built from **three** overlapping sources, only one of which was under source control:
+
+1. **`supabase/migrations/*.sql`** — the purported source of truth. Creates profiles, vehicles, damage_reports, bids (partial), shop/insurer profiles, website_preferences, website_relationships, navigation_sessions, shop_service_areas, PostGIS, notification_preferences, storage buckets, soft deletes.
+2. **`supabase/functions/server/database_init.tsx`** (~700-line inline SQL blob, called on edge function cold start via `index.ts:92`) — additionally handles profiles.is_admin/setup_completed/last_login, vehicles.clerk_user_id, damage_reports.clerk_user_id, and a Clerk-aware bids schema.
+3. **`database-setup/business_intake_and_activity.sql`** + ad-hoc dashboard pastes — created `shop_interest_submissions`, `insurer_interest_submissions`, `platform_activity_events`, `public_partner_shops`, `job_assignments`, and `estimate_requests`. These tables were **never captured in a migration**.
+
+Migrations 012, 024, 025, 026, and 027 all reference tables or columns from categories (2) and (3), so a fresh environment rebuilt from `supabase/migrations/` alone would crash partway through 012. This has been true for months; it was only surfaced now because Phase 5.1 was the first time anyone actually tried to build a fresh environment from migrations alone.
+
+The modular `database_schema_sql_*.ts` helpers (`coreDatabaseSchemaSql`, `bidFlowDatabaseSchemaSql`, etc.) and their aggregate `databaseInitializationSql` were also found to be **dead code** — imported from `database_schema_sql.ts` but never consumed by any runtime path. `database_init.tsx` uses its own inline SQL. The modular files exist as design-time reference only.
+
+### Fix — `011b_canonical_catchup.sql`
+
+New migration file inserted between `011_fix_damage_reports_rls_for_clerk.sql` and `012_harden_rls_policies.sql` (lexicographic sort: `011_` < `011b` < `012`). Every statement is idempotent (`CREATE TABLE IF NOT EXISTS`, `ADD COLUMN IF NOT EXISTS`, `DO $$ IF NOT EXISTS`), so running it against production is a no-op and running it against a fresh DB fills in exactly what's missing.
+
+Creates / backfills:
+
+- **profiles columns:** `setup_completed`, `last_login`, `is_admin`
+- **vehicles columns:** `clerk_user_id`, `deleted_at`; relax `user_id` NOT NULL; add `vehicles_user_id_or_clerk_user_id` check constraint + `idx_vehicles_clerk_user_id`
+- **bids columns:** `clerk_shop_user_id`, `shop_name`, `shop_email`, `notes`, `shop_rating`, `shop_reviews`, `shop_distance`; relax `shop_user_id` NOT NULL; add `bids_shop_identity_check` + `idx_bids_clerk_shop_user_id`
+- **shop_interest_submissions** — table, indexes, RLS, public-INSERT policy, updated_at trigger
+- **insurer_interest_submissions** — same pattern
+- **platform_activity_events** — table, indexes, RLS, public-INSERT policy
+- **public_partner_shops** — table, indexes, RLS, public-SELECT policy, updated_at trigger
+- **job_assignments** — table with both Supabase-auth (`customer_user_id`, `shop_user_id`, `insurer_user_id`) and Clerk (`customer_clerk_user_id`, `shop_clerk_user_id`, `insurer_clerk_user_id`) identity columns, full index set, RLS, updated_at trigger
+- **estimate_requests** — table, RLS, updated_at trigger
+
+### Governance updates
+
+- **`docs/SUPABASE_SETUP_GUIDE.md` §9** rewritten: migrations folder declared the single authoritative schema source. `database_init.tsx` demoted to "legacy cold-start safety net" status. Modular `database_schema_sql_*.ts` helpers documented as reference-only dead code. Migration table expanded through 027 + 011b.
+- **`docs/CODE_ORGANIZATION_AUDIT.md`** Hardening Phase Notice updated: "schema sync rule" replaced with "schema source of truth rule" pointing at the migrations folder.
+- **`supabase/migrations/`** no-op files (migration numbers 022, 023) remain reserved gaps.
+
+### Staging bootstrap regeneration
+
+`staging_bootstrap.sql` at repo root regenerated from the corrected migrations folder with `uuid_generate_v4()` → `gen_random_uuid()` sed substitution, the storage-DELETE statements in migration 008 commented out (would hit `storage.protect_delete()` trigger), and `SET LOCAL search_path = public, extensions;` prepended inside a `BEGIN/COMMIT` transaction. Staging re-bootstrap pending after this pass.
+
+**Files touched:** `supabase/migrations/011b_canonical_catchup.sql` (new), `docs/SUPABASE_SETUP_GUIDE.md` §9, `docs/CODE_ORGANIZATION_AUDIT.md` Hardening Phase Notice, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this pass entry), `staging_bootstrap.sql` (regenerated).
+**Build:** Not re-run (no src/ changes). **Tests:** Not re-run.
+
+---
+
+## Pass 870 — Phase 5.1: Staging Supabase Migration (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5.1 (Staging Environment)
+**Outcome:** All 27 migrations applied to staging Supabase project (`lhhdqycnhweaxqviwdqt`). `requesting_clerk_user_id()` helper function confirmed present.
+
+### Execution path
+
+- **Supabase CLI v2.75.0** — installed and authenticated.
+- **CLI approach blocked:** `supabase db push` failed 4 times on `001_initial_schema.sql` — `uuid_generate_v4()` not found. Root cause: PG17 staging project has `uuid-ossp` extension in `extensions` schema, and the CLI's `cli_login_postgres` role connection ignores all `ALTER ROLE/DATABASE SET search_path` changes. This is a Supabase CLI + PG17 compatibility issue.
+- **Fallback:** Concatenated all 27 migration files into a 2,033-line SQL blob with `SET search_path TO public, extensions;` prepended. User pasted into staging SQL Editor. All migrations ran without errors.
+
+### Pre-migration fixes (user-performed in SQL Editor)
+
+1. `DROP EXTENSION IF EXISTS "uuid-ossp"; CREATE EXTENSION "uuid-ossp" SCHEMA public;` — moved extension to public schema
+2. `ALTER DATABASE postgres SET search_path TO public, extensions;` — database-level search_path (did not help CLI, but benefits SQL Editor)
+3. `ALTER ROLE postgres SET search_path TO public, extensions;` + `ALTER ROLE cli_login_postgres SET search_path TO public, extensions;` — role-level fixes (did not help CLI)
+4. DB reset (DROP profiles + supabase_migrations schema) before blob paste
+
+### Verification
+
+- **`requesting_clerk_user_id()`**: ✅ Returns exactly 1 row in `pg_proc`
+- **Table existence**: Verified by successful execution of all 27 migrations (all use `CREATE TABLE IF NOT EXISTS`)
+
+### Other changes
+
+- Added `.supabase/` to `.gitignore` (was missing — CLI link config must not be committed)
+
+### Remaining Phase 5.1 steps (user-side)
+
+- Configure Vercel preview environment variables (`VITE_SUPABASE_PROJECT_ID` + `VITE_SUPABASE_ANON_KEY`) scoped to Preview
+- Deploy edge function to staging: `supabase functions deploy server --project-ref lhhdqycnhweaxqviwdqt`
+- Push a commit to trigger Vercel preview build, capture preview URL
+
+**Files touched:** `.gitignore` (added `.supabase/`), `/tmp/bidondent_staging_migration_blob.sql` (generated, not in repo).
+**Build:** Not re-run (no source code changes). **Tests:** Not re-run.
+
+---
+
+## Pass 869 — Pre-Phase 6 Prep: Dead Email Code Removal + Smoke-Test Checklist (2026-04-15)
+
+**Phase:** Soft Launch Hardening — pre-Phase 6 prep (Phase 5 blocked on manual account-level actions)
+**Outcome:** Removed 2 dead-code email flows (P7 → resolved). Created Phase 6 smoke-test checklist skeleton.
+
+### Dead email code resolved
+
+| Flow                                                    | Decision    | Rationale                                                                                                                                                                                                              |
+| ------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `notifyShopNearbyReport` + `nearbyReportAlert` template | **Removed** | Wiring requires geographic matching logic that doesn't exist. Client-side RT (`useShopNearbyReportNotifications`) already handles shop awareness. Will be rebuilt from scratch when Insurer Role Promotion Epic fires. |
+| `newClaimSubmitted` template                            | **Removed** | No dispatch function existed. Building one requires the insurer new-claim pipeline, explicitly deferred. Will be rebuilt when the epic fires.                                                                          |
+
+### Phase 6 smoke-test checklist
+
+- Created `docs/PHASE_6_SMOKE_TEST_CHECKLIST.md` — 26-27 items across 9 categories (customer signup, report, shop+bid, acceptance+job, email delivery, navigation, RLS, observability, legal surfaces).
+- Result columns left blank — user fills during staging + prod runs.
+- Sourced from Hardening Plan Phase 6.1 + 6.3 requirements.
+
+### Doc updates
+
+- Updated `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md` — email flow table corrected from 4/5 to 3/3 (dead flows removed, not just noted). Insurer Role Promotion Epic updated to reflect "rebuild from scratch" scope.
+
+**Files touched:** `notificationEmails.ts` (removed `notifyShopNearbyReport`), `emailTemplates.ts` (removed `nearbyReportAlert` + `newClaimSubmitted`), `BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`, `PHASE_6_SMOKE_TEST_CHECKLIST.md` (new), `BIDONDENT_MAP_TRACKER_2026-03-21.md`.
+**Build:** 3.15s, 0 errors, 60 precache entries. **Tests:** 542/554 (0 delta).
+
+---
+
+## Pass 868 — Phase 5.1+5.2+5.3: Launch Operability (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5.1 (Staging), 5.2 (Email), 5.3 (Matrix Doc)
+**Outcome:** Staging documented as aspirational (requires account-level action). Email flows traced — 3/5 wired, 2 dead code, no P0. Formal Module Completion Matrix doc created with corrected cell tally (17 ✅, 2 ➖, 2 ⛔).
+
+### 5.1 Staging environment
+
+- **Vercel preview:** Unverifiable from repo — no `vercel.json`, no Vercel CLI, no deployment workflow in `ci.yml`. CI only builds + uploads artifacts. If Vercel is connected via GitHub integration, preview URLs exist in the Vercel dashboard but cannot be confirmed from code.
+- **Staging Supabase:** Does not exist. Requires account-level action: create project, run 27 migrations, set Vercel Preview env vars, deploy edge function.
+- **Doc update:** Added "Staging Environment" section to `SUPABASE_SETUP_GUIDE.md` (labeled ⚠️ Pending account setup) with full setup instructions.
+
+### 5.2 Email delivery (RESEND)
+
+- **RESEND_API_KEY security:** Accessed only via `Deno.env.get("RESEND_API_KEY")` in `email.ts:10` and `config/constants.ts:43`. Zero references in `src/**` — **no client bundle leak, no P0.**
+- **3 active email flows:** `notifyCustomerNewBid` (bids.ts:139), `notifyShopBidStatus` (bids.ts:385), `notifyCustomerClaimDecision` (workflow.ts:416).
+- **2 dead-code flows:** `notifyShopNearbyReport` (exported, never called — no handler trigger), `newClaimSubmitted` template (no dispatch function). Both P7 techdebt.
+- **Deployment status:** `RESEND_API_KEY` not set. Manual step: `supabase secrets set RESEND_API_KEY=<key> --project-ref wmdcnjgtsppftrofaqqa`.
+- **Runtime verification:** Deferred — requires deployed key + Resend dashboard confirmation.
+
+### 5.3 Module Completion Matrix doc
+
+- Created `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md` — full 3×7 matrix, per-cell evidence table, runtime verification log, email flow wiring table, Insurer Role Promotion Epic.
+- **Corrected cell tally:** 17 ✅, 2 ➖, 2 ⛔ (Pass 867 reported 14/2/3 — arithmetic was wrong).
+- Linked from `docs/README.md` operating index under Execution Reference.
+
+**Files touched:** `docs/SUPABASE_SETUP_GUIDE.md`, `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md` (new), `docs/README.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`.
+**Build:** 3.24s, 0 errors, 60 precache entries. **Tests:** 542/554 (0 delta — not re-run, doc-only changes).
+
+---
+
+## Pass 867 — Phase 5.0 + 5: Pre-step Verifications + Module Completion Matrix (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5 (Module Completion Matrix)
+**Outcome:** Verification-only pass. No code changes. All 21 matrix cells (3 roles × 7 modules) audited.
+
+### Phase 5.0 Pre-step Verifications
+
+- **Dashboard layout smoke test:** Browser-verified customer dashboard (demo OFF) — header + sidebar + content fill viewport, no double scrollbars, map widget visible. Shop dashboard (demo ON) — DemoModeBanner renders as amber status bar "Demo Mode — Viewing as Shop · Press Esc to dismiss" above header, content scrolls within pane, no layout shift on banner mount.
+- **Waitlist RLS durability:** Confirmed `"Public can insert platform activity events" WITH CHECK (true)` exists in BOTH `database_schema_sql_intake.ts` (active bootstrap) and `024_clerk_jwt_rls_policies.sql` (active migration). Fresh DB bootstrap will preserve waitlist functionality.
+
+### Module Completion Matrix (per-cell evidence)
+
+| Module          | Customer                                                                                                                          | Shop                                                                                                                      | Insurer                                                                                                                    |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Auth/onboarding | ✅ Clerk → `ClerkAccountTypeSelector` → `profiles` edge fn (App.tsx:303)                                                          | ✅ + 4-step `ShopOnboarding` → `shop_profiles` (App.tsx:310)                                                              | ✅ + 3-step `InsurerOnboarding` → `insurer_profiles` (App.tsx:323)                                                         |
+| Report creation | ✅ 6-step wizard (`ReportScreen.tsx`), photos → Storage, Nominatim geocoding, draft persist                                       | ➖ N/A                                                                                                                    | ➖ N/A                                                                                                                     |
+| Bid flow        | ✅ `BidsScreen` view + accept → auto-reject others + job assign (`buildDashboardRouterPropsHelpers.ts:15`)                        | ✅ `MapBidSheet` → `submitBid()` → edge `createBid()` (bids.ts:11)                                                        | ✅ `InsurerClaimsScreen` approve/deny → `updateClaimDecision` edge fn (DashboardRouter.tsx:327, Pass 774+794)              |
+| Job assignment  | ✅ Created on accept → `createJobAssignment()` (workflow.ts:45)                                                                   | ✅ `ShopActiveJobsScreen` + status updates via `updateJobAssignmentStatus()` (workflow.ts:79)                             | ⛔ `insurer_user_id` column exists; no dedicated job-tracking UI                                                           |
+| Notifications   | ✅ RT: `useCustomerBidNotifications` + `useCustomerEstimateResponseNotifications`; Email: code wired, RESEND_API_KEY not deployed | ✅ RT: `useShopNearbyReportNotifications` + `useShopBidStatusNotifications` + `useShopEstimateNotifications`; Email: same | ✅ RT: `useInsurerClaimNotifications` (useDashboardData.ts:56) — claim lifecycle UPDATEs; ⛔ No INSERT hook for new claims |
+| Map/geo         | ✅ `CustomerMapWidget` + report pin + nav (OSRM routing, voice, GPS)                                                              | ✅ `ShopMapWidget` + service areas + `MapLibreShopDirectoryMapPane` + immersive guidance                                  | ✅ `InsurerMapWidget` (network overview) + shares shop directory map infrastructure                                        |
+| Profile/account | ✅ `EditProfileModal` (name/phone/photo) + vehicles + `DeleteAccountModal`                                                        | ✅ + `ShopProfileModal` + `ServiceAreaEditorModal` (AccountMenu.tsx:147)                                                  | ⛔ Personal edit works (EditProfileModal); no company profile edit modal (backend `saveInsurerBusinessProfile` exists)     |
+
+### Deferred gaps (all ⛔ cells — insurer role, non-launch-critical per North Star)
+
+| Gap                                   | Trigger (§4.9)                           | Rationale                                                                                                                      |
+| ------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Insurer job-tracking UI               | Insurer role promoted to launch priority | `insurer_user_id` column exists on `job_assignments`; no UI surface. Insurer is secondary to Customer→Shop core loop.          |
+| Insurer new-claim INSERT notification | Same                                     | Only lifecycle UPDATE notifications implemented. New-claim awareness is lower-urgency for insurers who poll the claims screen. |
+| Insurer company profile edit modal    | Same                                     | Backend service exists (`saveInsurerBusinessProfile` in networkProfiles.ts). AccountMenu has no insurer-specific menu items.   |
+
+### No ⚠️ cells found — no fixes required this pass.
+
+**Build:** 3.15s, 0 errors, 60 precache entries. **Tests:** 542/554 (0 delta from baseline — 12 pre-existing error-handling test failures). **Files:** No code files changed.
+
+---
+
+**Email delivery note:** All three roles show email code as wired but `RESEND_API_KEY` not deployed. This is a Phase 5.2 (Launch Operability) deliverable, not a matrix gap — infrastructure deployment, not missing code.
+
+---
+
+## Pass 866 — Phase 4B: Market Status Indicator (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 4B (Launch-Readiness Surfaces)
+**Outcome:** Single read-only market status indicator added to customer dashboard map widget.
+
+- Created `useMarketStatus` hook — derives shop count + bid activity from existing data (no new queries or realtime channels)
+- Created `MarketStatusIndicator` component — compact badge showing "N shops nearby · M bids active"
+- Wired into `CustomerMapWidget` below the Smart Map Tools heading
+- No new data fetching, no new realtime channels
+
+**Files:** `src/app/hooks/useMarketStatus.ts` (new), `src/app/components/dashboard/MarketStatusIndicator.tsx` (new), `src/app/components/dashboard/CustomerMapWidget.tsx` (modified)
+
+---
+
+## Pass 865 — Phase 4.0 + 4A: Pre-step Fixes + Trust Surfaces (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 4.0 + 4A (Trust & Launch-Readiness)
+**Outcome:** Pre-step migration fixes, Clerk JWT prerequisite doc, demo banner wiring, MissingReportState wiring, waitlist email capture.
+
+**Phase 4.0:**
+
+- Renamed migration files 020-023 → 024-027 to avoid collision with existing 020/021 files
+- Updated all migration references in `docs/SUPABASE_SETUP_GUIDE.md`
+- Added Clerk JWT prerequisite callout box to Supabase Setup Guide
+- Added "waitlist" to cspell dictionary
+
+**Phase 4A — Demo mode banner:**
+
+- Rewrote `DemoModeBanner.tsx`: keyboard-dismissible only (Escape), amber status bar style (not confusable with toast), accessible (`role="status"`, `aria-live="polite"`), resets on account type change
+- Added `demoMode` + `demoAccountType` props to `DashboardLayout`
+- Banner renders above the sidebar/content flex container — persists across route changes
+- Wired from `App.tsx` via `navigation.demoMode` and `navigation.demoAccountType`
+
+**Phase 4A — MissingReportState:**
+
+- Wired existing `MissingReportState` component into `DashboardSecondaryViews.tsx`
+- Replaced two bare inline "Report not found" / "No report selected" fallbacks with the proper component
+- Each case has contextual title, description, and "Start New Report" + "Return to dashboard" actions
+
+**Phase 4A — Waitlist capture:**
+
+- Created `WaitlistCapture.tsx` — email input with validation, inserts directly into `platform_activity_events` via Supabase anon key (public INSERT RLS policy exists)
+- Event fields: `event_type='waitlist_signup'`, `actor_id=email`, `outcome='captured'`, `source='landing-cta'`
+- Wired into `CTASection.tsx` below "Free to use" copy — shown only when user is NOT signed in
+- No new table, no new edge function, no auth required
+
+**Phase 4A — Empty states:**
+
+- Verified all dashboard screens already have intentional empty states with descriptive copy
+- Customer screens (ReportsListScreen, BidsScreen) have full empty states with CTAs
+- Shop screens (ShopRequestsScreen, ShopActiveJobsScreen) have contextual empty states
+- Insurer screen (InsurerClaimsScreen) has contextual empty state
+- No gaps found — no changes needed
+
+**Files:** `src/app/components/demo/DemoModeBanner.tsx`, `src/app/components/app/DashboardLayout.tsx`, `src/app/App.tsx`, `src/app/routers/DashboardSecondaryViews.tsx`, `src/app/components/landing/WaitlistCapture.tsx` (new), `src/app/components/landing/CTASection.tsx`, `docs/SUPABASE_SETUP_GUIDE.md`, `cspell.json`, `supabase/migrations/024-027` (renamed)
+
+---
+
+## Pass 864 — Phase 3.2–3.4: Event Capture, Idempotency, Soft Delete (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 3 (Security Hardening)
+**Outcome:** Three hardening sub-phases completed in one pass:
+
+**3.2 Event Capture Quality:** Added `actor_id TEXT`, `object_id TEXT`, `outcome TEXT` columns to `platform_activity_events`. Updated DB type (`PlatformActivityEvent`), app type (`ActivityEvent`), and adapter (`activityEventFromDb`). Wired fire-and-forget event emission into 4 launch-critical write flows: `createReport` → `report_submitted`, `createBid` → `bid_submitted`, `updateBidStatus` → `bid_accepted`/`bid_rejected`, `createJobAssignment` → `job_assignment_created`. Updated 2 existing event emissions in `intake.ts` (`shop_interest_submitted`, `insurer_interest_submitted`) and 1 in `admin.ts` (`*_status_updated`) with actor_id/object_id/outcome. Updated `logWorkflowEvent` generic endpoint to accept new fields. Updated admin events SELECT to include new columns. Migration: `021_event_capture_columns.sql`.
+
+**3.3 Idempotency:** Audited all 4 launch-critical write flows — all were UNPROTECTED. Added: (1) Unique partial index `uq_bids_report_shop` on `(damage_report_id, clerk_shop_user_id) WHERE status NOT IN ('rejected','withdrawn')` — one active bid per shop per report. (2) Unique partial index `uq_job_assignments_report` on `(damage_report_id) WHERE status NOT IN ('cancelled')` — one active assignment per report. (3) State-machine guard on `updateBidStatus`: now reads `status` from existing bid and rejects transitions from non-pending state (HTTP 409). (4) Graceful 409 responses for unique constraint violations in `createBid` and `createJobAssignment`. Report submission dedup deferred (reports legitimately duplicate — different incidents). Email side-effect dedup achieved transitively via upstream guards. Migration: `022_idempotency_guards.sql`.
+
+**3.4 Soft Delete:** Added `deleted_at TIMESTAMPTZ` to damage_reports, bids, job_assignments, vehicles (bootstrap helpers + migration). Converted 4 delete handlers to soft delete: `deleteReport`, `deleteBid`, `deleteVehicle`, `deleteVehicleByDelete` — all now use `.update({ deleted_at })` with `.is('deleted_at', null)` guard. Added `.is('deleted_at', null)` filter to 7 query handlers: `getReports`, `getMarketplaceReports`, 3 bid query paths in `getBids`, `getVehicles`, `getJobAssignments`. Updated RLS SELECT policies on vehicles, damage_reports, bids, job_assignments to include `deleted_at IS NULL`. Account deletion in `auth.ts` intentionally keeps hard deletes (GDPR compliance). Migration: `023_soft_delete.sql`. No restore UI (deferred per plan).
+
+**Files touched:** `database_schema_sql_core.ts`, `database_schema_sql_bid_flow.ts`, `database_schema_sql_intake.ts`, `types.ts` (DB), `types/index.ts` (app), `adapters.ts`, `workflow.ts` (client + handler), `reports.ts` (handler), `bids.ts` (handler), `vehicles.ts` (handler), `intake.ts` (handler), `admin.ts` (handler), `SUPABASE_SETUP_GUIDE.md`, 3 migrations.
+**Build:** 3.48s, 0 errors, 59 PWA precache entries.
+**Deferred:** Report submission dedup (acceptable risk — user-deletable). Email sent-tracking (cascading dupes prevented by upstream guards). Restore UI (S1 roadmap).
+
+---
+
+## Pass 863 — Phase 3.1: Clerk JWT RLS Rollout (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 3 (Security Hardening)
+**Outcome:** Rewrote all RLS policies across 10 launch-critical tables from `auth.uid()` (Supabase Auth, always NULL for Clerk users) to `requesting_clerk_user_id()` (Clerk JWT `sub` claim). Created helper SQL function `requesting_clerk_user_id()` to DRY the JWT extraction. Wired Clerk JWT injection into Supabase Realtime client via `setSupabaseRealtimeAuth()` in App.tsx. Phase 0 risk verified: all Realtime subscriptions were silently broken (anon key → auth.uid() NULL → RLS denies all). New policies add Clerk JWT path while preserving `auth.uid()` fallback for backward compat. Updated 4 bootstrap helpers (`database_schema_sql_core.ts`, `database_schema_sql_bid_flow.ts`, `database_schema_sql_estimate_requests.ts`, `database_schema_sql_intake.ts`, `database_init.tsx`) and created migration `020_clerk_jwt_rls_policies.sql`. Tables covered: profiles, vehicles, damage_reports, bids, job_assignments, estimate_requests, platform_activity_events, shop_profiles, insurer_profiles. notification_preferences + shop_service_areas already had Clerk JWT policies. zip_code deferral from Phase 2 verified as non-issue and dropped per §4.9. Build: 3.30s, 0 errors. Tests: 542/554 (0 regressions).
+**Prerequisite:** Clerk JWT template named "supabase" must be configured in Clerk Dashboard, signed with Supabase's JWT secret. Without this, Realtime stays unauthenticated (existing behavior).
+**Deferred:** Runtime verification of Realtime with Clerk JWT (requires deployed environment with template configured).
+
+---
+
+## Pass 862 — Phase 2.2: Identity Normalization Type Alignment (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 2 (Data Trust)
+**Outcome:** Audited all 10 launch-critical tables for identity column consistency. SQL schemas and `database_schema_sql_*.ts` bootstrap helpers already have `clerk_user_id` columns on all required tables. The gap was 3 TS DB-type definitions not reflecting existing DB columns. Added `clerk_user_id?: string | null` to `DamageReport` and `Vehicle` DB types, added `customer_clerk_user_id`, `shop_clerk_user_id`, `insurer_clerk_user_id` to `JobAssignment` DB type. Verified all launch-critical services consistently accept `clerkUserId` as the identity parameter. Build: 3.18s, 0 errors. Tests: 542/554 (0 regressions).
+**Deferred:** None — scope was narrower than planned because prior migrations already completed the DB-side work.
+
+---
+
+## Pass 861 — Phase 2.1: Canonical Adapter Layer (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 2 (Data Trust)
+**Outcome:** Created `src/app/services/supabase/adapters.ts` (~230 lines) with canonical DB↔App transforms for all 6 launch-critical models: `reportFromDb`, `reportToDb`, `buildReportPayload`, `bidFromDb`, `vehicleFromDb`, `vehicleToDb`, `jobAssignmentFromDb`, `activityEventFromDb`. Updated app domain types in `types/index.ts` (removed `zip_code`, added `damageSeverity`, fixed `Vehicle.year` to `number`, added `JobAssignment` + `ActivityEvent` interfaces). Wired adapters into 5 service files (`reports.ts`, `bids.ts`, `vehicles.ts`, `workflow.ts`, `adminIntake.ts`) — all service getters now return app domain types. Updated `userDataUtils.ts` to delegate to canonical adapters. Updated 16+ component files to use app domain types and camelCase property access. Zero DB-type imports remain in `features/` or `components/`. Build: 3.15s, 0 errors. Tests: 542/554 (12 pre-existing error-handling failures, 0 regressions).
+**Deferred:** 7 files with `zip_code` fallback patterns in router/helper layer (non-blocking, working via fallback). 4 hooks with DB-type imports at service-adjacent orchestration boundary (intentional pattern).
+
+---
+
+## Pass 860 — Phase 1.7: Atlanta QA Pack → NY Metro Conversion (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 1 (Safe Cleanup)
+**Outcome:** Converted all Atlanta QA data to NY metro coverage area. 5 old files deleted, 5 new files created. 45 destinations across 15 neighborhoods (Westchester, Rockland, Dutchess, Nassau, Orange, Putnam). 24 hub shop seeds. Imports updated in `ShopDirectoryQADrivePanel.tsx` and `navigationDestinationAdapters.ts`. All 4 NY metro tests pass.
+**Deferred:** None.
+
+---
+
+## Pass 859 — Phase 1.5: .env Migration (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 1 (Safe Cleanup)
+**Outcome:** Migrated Clerk + Supabase config reads from hardcoded `utils/clerk/info.tsx` and `utils/supabase/info.tsx` to `import.meta.env`. Deleted both info.tsx files and the empty `utils/` directory. Updated 4 callers (`runtime.ts`, `App.tsx`, `validateAppConfig.ts`, `AppShell.tsx`). Updated 3 docs (`README.md`, `GETTING_STARTED.md`, `SUPABASE_SETUP_GUIDE.md`). Runtime behavior preserved exactly.
+**Deferred:** Privacy Policy finalization logged as D2 in Post-Launch Roadmap.
+
+---
+
+## Pass 858 — Phase 1.4: Devtool Wiring into AdminDashboard (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 1 (Safe Cleanup)
+**Outcome:** Wired `EdgeFunctionStatus`, `RealtimeStatusIndicator`, and `StorageMonitor` into `AdminDashboard.tsx`. `StorageInspector` kept as standalone file (overlaps with existing `StorageDebugPanel`; skip documented per §4.4 Minimal Necessary Deviation).
+**Deferred:** None.
+
+---
+
+## Pass 857 — Phase 1.6: Archive DUAL_AI_COORDINATION.md (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 1 (Safe Cleanup)
+**Outcome:** Pre-satisfied. `DUAL_AI_COORDINATION.md` already in `docs/archive/`. No action needed.
+**Deferred:** None.
+
+---
+
+## Pass 856 — Phase 1.3: Group 6 Deletions (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 1 (Safe Cleanup)
+**Outcome:** Deleted `GoToAdminButton.tsx` (0 imports confirmed) and `AccountTypeMigrationModal.tsx` (0 imports confirmed). Build passes. Phase 1.1 (Sentry) and 1.2 (error boundary) verified as already satisfied — no code changes needed.
+**Deferred:** Sentry runtime capture verification deferred to Phase 6 (requires browser + dashboard test). Edge function server-side Sentry not configured — explicitly logged, not silently skipped.
+
+---
+
+## Pass 855 — Phase 0: Pre-flight Verification of Launch Scope Guardrails (2026-04-14)
+
+**Phase:** Soft Launch Hardening — Phase 0 (Pre-flight)
+**Outcome:** All 7 Launch Scope Guardrails audited against live code. 1 fully satisfied, 2 code-wired awaiting runtime verification, 4 needing Phase 1–3 work.
+
+| Guardrail               | Status                         | Key Finding                                                                                                      |
+| ----------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| Email delivery (Resend) | Code wired, runtime unverified | 4 handlers in notificationEmails.ts; RESEND_API_KEY read from env; delivery unproven                             |
+| Observability (Sentry)  | Code wired, runtime unverified | 3-file Sentry wiring complete; VITE_SENTRY_DSN deployment + capture unverified                                   |
+| Event capture quality   | Needs fix                      | platform_activity_events lacks actor_id, object_id, outcome columns                                              |
+| Global error boundary   | ✅ Satisfied                   | 3-tier: GlobalErrorBoundary (root) → ScreenErrorBoundary (dashboard) → NavigationErrorBoundary (map)             |
+| Staging/prod separation | Missing                        | No mechanism exists; Vercel previews + staging Supabase config needed                                            |
+| Identity normalization  | Mixed                          | bids, vehicles, job_assignments lack clerk_user_id; 6 tables already migrated                                    |
+| RLS policies            | Partially satisfied            | All tables have RLS enabled; legacy policies use auth.uid() (not Clerk JWT); newer tables use request.jwt.claims |
+
+Additional findings: Rate limiter covers all endpoints (global pre-dispatch). Legal pages routed + footer-linked. Group 4b/4c still load-bearing. Group 6 orphaned/devtools all at 0 imports.
+
+**Deferred:** None. All findings feed into already-planned phases.
 
 ---
 

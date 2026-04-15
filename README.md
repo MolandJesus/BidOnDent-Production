@@ -18,24 +18,24 @@ Report damage → See shops on map → Receive bids → Accept best offer → Tr
 
 ### Three Account Types
 
-| Role | Key Actions |
-|------|------------|
+| Role         | Key Actions                                               |
+| ------------ | --------------------------------------------------------- |
 | **Customer** | Report damage, compare bids, accept quotes, track repairs |
-| **Shop** | View requests, submit bids, manage active jobs |
-| **Insurer** | Create claims, manage partner shops, approve bids |
+| **Shop**     | View requests, submit bids, manage active jobs            |
+| **Insurer**  | Create claims, manage partner shops, approve bids         |
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 18, TypeScript, Tailwind CSS v4, Vite 6 |
-| **Auth** | Clerk (Google OAuth, email/password) |
-| **Backend** | Supabase (PostgreSQL, Edge Functions via Hono, Storage) |
-| **Maps** | Leaflet with custom glass overlays |
-| **Testing** | Vitest (81 tests), GitHub Actions CI |
-| **Design** | Liquid glass system — dark navy base, royal blue accents |
+| Layer        | Technology                                                                    |
+| ------------ | ----------------------------------------------------------------------------- |
+| **Frontend** | React 18, TypeScript, Tailwind CSS v4, Vite 6                                 |
+| **Auth**     | Clerk (Google OAuth, email/password)                                          |
+| **Backend**  | Supabase (PostgreSQL, Edge Functions via Hono, Storage)                       |
+| **Maps**     | MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (WebGL — Leaflet removed Pass 448) |
+| **Testing**  | Vitest (543+/555 passing), GitHub Actions CI                                  |
+| **Design**   | Liquid glass system — dark navy base, royal blue accents                      |
 
 ---
 
@@ -68,11 +68,14 @@ npm run dev
 
 ### Configuration
 
-| File | Purpose |
-|------|---------|
-| `utils/clerk/info.tsx` | Clerk publishable key |
-| `utils/supabase/info.tsx` | Supabase project URL and anon key |
-| `.env` | Sentry DSN (optional) |
+All keys are configured via `.env` (copy `.env.example` to `.env`):
+
+| Variable                     | Purpose                                                 |
+| ---------------------------- | ------------------------------------------------------- |
+| `VITE_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (from Clerk Dashboard → API Keys) |
+| `VITE_SUPABASE_URL`          | Supabase project URL (from Project Settings → API)      |
+| `VITE_SUPABASE_ANON_KEY`     | Supabase anon/public key (from Project Settings → API)  |
+| `VITE_SENTRY_DSN`            | Sentry DSN for error tracking (optional)                |
 
 For detailed setup, see [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) and [docs/SUPABASE_SETUP_GUIDE.md](docs/SUPABASE_SETUP_GUIDE.md).
 
@@ -132,11 +135,11 @@ npm run format
 npx cspell lint "src/**/*.{ts,tsx}" --no-progress
 ```
 
-### Build Stats
+### Build Stats (verified 2026-04-14)
 
-- **Build time:** ~2s
-- **Bundle size:** ~504KB (vendor-split)
-- **Tests:** 81 passing
+- **Build time:** 3.26s
+- **Bundle size:** vendor-split — index chunk ~230 KB, map vendor chunk ~1070 KB (MapLibre + tile styles), other vendor chunks each under 200 KB
+- **Tests:** 543+/555 passing (12 pre-existing network-mocking failures in `bids.test.ts` / `reports.test.ts` — not blocking)
 - **Build errors:** 0
 
 ---
@@ -170,7 +173,7 @@ The map is the primary product surface — not a supporting component.
 - **ShopDirectoryScreen** — full map-first shop discovery experience
 - **CustomerMapWidget / ShopMapWidget / InsurerMapWidget** — dashboard map widgets
 - **ServiceCoverageMap** — landing page map
-- Leaflet with theme-aware glass overlays and floating intelligence panels
+- MapLibre GL JS WebGL engine with CARTO/Esri tile layers, real shop + report markers, OSRM routing, Nominatim search, Web Speech turn-by-turn voice navigation
 
 ---
 
@@ -188,10 +191,10 @@ Experience all three account types without creating additional accounts:
 
 ## Branches
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Production — auto-deploys via Vercel |
-| `BidOnDent-Horizon-Beta` | Active development |
+| Branch                   | Purpose                              |
+| ------------------------ | ------------------------------------ |
+| `main`                   | Production — auto-deploys via Vercel |
+| `BidOnDent-Horizon-Beta` | Active development                   |
 
 Archived branches (`archive/*`) are preserved for history but inactive.
 
@@ -199,15 +202,20 @@ Archived branches (`archive/*`) are preserved for history but inactive.
 
 ## Documentation
 
-| Document | Purpose |
-|----------|---------|
-| [AI Master Context](docs/CLAUDE_AI_MASTER_CONTEXT.md) | Single source of truth for AI agents — **start here** |
-| [Product Brain](docs/BIDONDENT_PRODUCT_BRAIN.md) | Product vision, identity, roadmap |
-| [Map Master Plan](docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md) | Map strategy and design law |
-| [Map Tracker](docs/BIDONDENT_MAP_TRACKER_2026-03-21.md) | Execution log and validation |
-| [Build Progress](docs/BIDONDENT_BUILD_PROGRESS_DASHBOARD.md) | Pass-by-pass build dashboard |
-| [Getting Started](docs/GETTING_STARTED.md) | Local setup guide |
-| [Supabase Setup](docs/SUPABASE_SETUP_GUIDE.md) | Database configuration |
+**Current phase:** Soft Launch Hardening (2026-04-14 onward). The two docs at the top of this table are **project law** during the hardening phase — read them first.
+
+| Document                                                                                  | Purpose                                                                                                     |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| [**Soft Launch Hardening Plan**](docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) | ⚡ **Project law.** Locked decisions, Launch Scope Guardrails, phased Execution Plan, Execution Discipline. |
+| [**Post-Launch Roadmap**](docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md)               | ⚡ **Controlled holding area for deferred work.** Priority bands + triggers. Not a backlog.                 |
+| [Docs Operating Index](docs/README.md)                                                    | Full navigation of active docs + archive pointers                                                           |
+| [AI Master Context](docs/CLAUDE_AI_MASTER_CONTEXT.md)                                     | Product identity, architecture rules, active constraints                                                    |
+| [Product Brain](docs/BIDONDENT_PRODUCT_BRAIN.md)                                          | Strategic product handbook (paused during hardening)                                                        |
+| [Map Master Plan](docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md)                           | Map strategy (paused during hardening)                                                                      |
+| [Map Tracker](docs/BIDONDENT_MAP_TRACKER_2026-03-21.md)                                   | Historical pass log / audit trail                                                                           |
+| [Code Organization Audit](docs/CODE_ORGANIZATION_AUDIT.md)                                | Repo structure, seams, extraction boundaries                                                                |
+| [Getting Started](docs/GETTING_STARTED.md)                                                | Local setup guide                                                                                           |
+| [Supabase Setup](docs/SUPABASE_SETUP_GUIDE.md)                                            | Database + edge function reference                                                                          |
 
 ---
 
