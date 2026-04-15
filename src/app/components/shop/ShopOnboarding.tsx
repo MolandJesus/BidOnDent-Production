@@ -57,14 +57,7 @@ export default function ShopOnboarding({
   const progress = Math.round((step / 4) * 100);
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        background: isLight
-          ? "linear-gradient(180deg, #f0f7ff 0%, #e0ecf8 100%)"
-          : "radial-gradient(130% 90% at 28% 8%, rgba(10, 22, 58, 0.99) 0%, rgba(6, 14, 36, 0.99) 58%, #040a18 100%)",
-      }}
-    >
+    <div className="bd-report-flow min-h-screen">
       {/* Progress Bar */}
       <div
         className={`backdrop-blur-sm border-b ${

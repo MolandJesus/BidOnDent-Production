@@ -32,11 +32,6 @@ export default function ShopOnboardingStep1({
   };
 
   const labelClass = `block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`;
-  const inputClass = `w-full px-4 py-3 min-h-[44px] border rounded-xl focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 outline-none transition-colors ${
-    isLight
-      ? "border-slate-200 bg-white text-slate-900 placeholder-slate-400"
-      : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder-slate-500"
-  }`;
 
   return (
     <div>
@@ -59,18 +54,14 @@ export default function ShopOnboardingStep1({
         </p>
       </div>
 
-      <div
-        className={`rounded-2xl border p-4 sm:p-6 space-y-4 ${
-          isLight ? "bg-white/80 backdrop-blur-sm border-slate-200/60 shadow-sm" : "bd-glass-card"
-        }`}
-      >
+      <div className="bd-report-section rounded-2xl p-4 sm:p-6 space-y-4">
         <div>
           <label className={labelClass}>Shop Name</label>
           <input
             type="text"
             value={formData.shopName}
             onChange={(e) => onUpdate({ ...formData, shopName: e.target.value })}
-            className={inputClass}
+            className="bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl"
             placeholder="Express Auto Body"
           />
         </div>
@@ -81,7 +72,7 @@ export default function ShopOnboardingStep1({
             type="text"
             value={formData.address}
             onChange={(e) => onUpdate({ ...formData, address: e.target.value })}
-            className={inputClass}
+            className="bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl"
             placeholder="123 Main St"
           />
         </div>
@@ -93,7 +84,7 @@ export default function ShopOnboardingStep1({
               type="text"
               value={formData.city}
               onChange={(e) => onUpdate({ ...formData, city: e.target.value })}
-              className={inputClass}
+              className="bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl"
               placeholder="City"
             />
           </div>
@@ -103,7 +94,7 @@ export default function ShopOnboardingStep1({
               type="text"
               value={formData.state}
               onChange={(e) => onUpdate({ ...formData, state: e.target.value })}
-              className={inputClass}
+              className="bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl"
               placeholder="State"
             />
           </div>
@@ -115,19 +106,15 @@ export default function ShopOnboardingStep1({
             type="text"
             value={formData.zip}
             onChange={(e) => onUpdate({ ...formData, zip: e.target.value })}
-            className={inputClass}
+            className="bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl"
             placeholder="12345"
           />
         </div>
 
         {/* Map integration note */}
-        <div
-          className={`flex items-start gap-2.5 rounded-xl border px-3.5 py-3 ${
-            isLight ? "bg-blue-50/60 border-blue-200/40" : "bg-blue-500/[0.06] border-blue-400/20"
-          }`}
-        >
-          <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
-          <p className={`text-xs leading-relaxed ${isLight ? "text-slate-600" : "text-slate-400"}`}>
+        <div className="bd-report-note rounded-xl px-3.5 py-3 flex items-start gap-2.5">
+          <MapPin className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+          <p className={`text-xs leading-relaxed ${isLight ? "text-slate-600" : "text-slate-300"}`}>
             Your shop location will appear on the BidOnDent coverage map, making it discoverable by
             customers in your area.
           </p>
@@ -139,7 +126,7 @@ export default function ShopOnboardingStep1({
             type="tel"
             value={formData.phone}
             onChange={(e) => handlePhoneChange(e.target.value)}
-            className={inputClass}
+            className="bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl"
             placeholder="(555) 123-4567"
             inputMode="numeric"
           />
@@ -156,7 +143,7 @@ export default function ShopOnboardingStep1({
             type="url"
             value={formData.website}
             onChange={(e) => onUpdate({ ...formData, website: e.target.value })}
-            className={inputClass}
+            className="bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl"
             placeholder="https://yourshop.com"
           />
         </div>
@@ -172,11 +159,10 @@ export default function ShopOnboardingStep1({
           !formData.zip ||
           !formData.phone
         }
-        className={`w-full mt-6 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all ${
-          isLight
-            ? "bg-[#003d82] hover:bg-[#004da3] shadow-[0_4px_16px_rgba(0,61,130,0.18)]"
-            : "bg-blue-600 hover:bg-blue-500 shadow-[0_4px_20px_rgba(59,130,246,0.2)]"
-        }`}
+        className="bd-report-primary-button w-full mt-6 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{
+          background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+        }}
         whileTap={{ scale: 0.98 }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
