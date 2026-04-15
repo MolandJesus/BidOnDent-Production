@@ -15,7 +15,7 @@
 >
 > **Last updated:** 2026-04-14 (Soft Launch Hardening phase — Hardening Plan + Post-Launch Roadmap promoted to project law. Previous Pass 810 re-anchor audit content below remains the architecture/product truth snapshot.)
 > **Status:** Active master context
-> **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable, Vercel auto-deploy)
+> **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
 > **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine · 555/555 tests passing
 > **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
 > **TypeScript:** 0 tsc errors · 0 VS Code diagnostics
@@ -44,7 +44,7 @@ Insurer:  Browse shop network → Partner shops → Track claims
 - MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (WebGL maps — Leaflet fully removed Pass 448)
 - CARTO Voyager (light), CARTO Dark All (night), Esri Satellite tile layers
 - OSRM routing, Nominatim search, Web Speech API (British voice navigation)
-- Vercel deployment (auto from `main`)
+- Deployment method TBD (Vite static build, deployable anywhere)
 
 **Coverage area:** NY metro — Westchester, Rockland, Dutchess, Nassau, Orange, Putnam counties.
 
@@ -463,7 +463,7 @@ Archive note: The checklist below records the priorities captured during the Pas
 ## 11. Branch & Deployment
 
 - **Working branch:** `BidOnDent-Horizon-Beta`
-- **Stable/deploy branch:** `main` (Vercel auto-deploys from here)
+- **Stable/deploy branch:** `main` (deployment method TBD)
 - **Supabase project:** `wmdcnjgtsppftrofaqqa`
 - **Canonical edge function:** `server` (legacy alias: `make-server-9f243523`)
 - **Storage buckets:** `bidondent-account-media`, `bidondent-vehicle-media`, `bidondent-report-media`

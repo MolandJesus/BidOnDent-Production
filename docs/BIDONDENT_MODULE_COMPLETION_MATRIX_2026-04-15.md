@@ -152,7 +152,7 @@ Pass 870 reported staging migrations as successful, but user verification reveal
 
 ### Phase 5.1 code-side closure
 
-Staging Supabase project `lhhdqycnhweaxqviwdqt` fully populated from migrations folder alone. All tables + routines verified present. Remaining Phase 5.1 items are user-side (Vercel preview env vars, edge function deploy). Phase 5.2 (RESEND) and 5.3 (this matrix) remain in progress.
+Staging Supabase project `lhhdqycnhweaxqviwdqt` fully populated from migrations folder alone. All tables + routines verified present. Phase 5.1 complete: local Docker dev stack running, edge function deployed to staging. Phase 5.2 (RESEND) and 5.3 (this matrix) remain in progress.
 
 ### Cell tally re-verification
 

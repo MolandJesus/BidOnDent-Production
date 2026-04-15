@@ -534,23 +534,17 @@ Staging Supabase project: `lhhdqycnhweaxqviwdqt` (created 2026-04-15 for Phase 5
 - **Edge function:** `supabase functions deploy server --project-ref lhhdqycnhweaxqviwdqt` (verified working per Pass 880).
 - **Edge function secrets:** `supabase secrets set CLERK_SECRET_KEY=<key> RESEND_API_KEY=<key> --project-ref lhhdqycnhweaxqviwdqt`.
 
-### Vercel preview flow
+### Deployment preview flow (TBD)
 
-Every push to `BidOnDent-Horizon-Beta` or a PR branch should generate a Vercel preview deployment. Configure the following under **Settings → Environment Variables → Preview** so previews hit staging Supabase, not prod:
+Deployment method is not yet decided. The app builds as a Vite static site (`npm run build` → `dist/`) and is deployable to any static hosting provider. Development and testing use `localhost:5173` with the local Supabase Docker stack.
 
-| Variable                     | Value                                             |
-| ---------------------------- | ------------------------------------------------- |
-| `VITE_SUPABASE_URL`          | `https://lhhdqycnhweaxqviwdqt.supabase.co`        |
-| `VITE_SUPABASE_ANON_KEY`     | Staging anon/public key (from Supabase dashboard) |
-| `VITE_CLERK_PUBLISHABLE_KEY` | Same Clerk key as prod (shared identity)          |
-| `VITE_SENTRY_ENVIRONMENT`    | `staging`                                         |
+### Local Docker stack (Phase 5 hardening addition — primary dev workflow)
 
-### Local Docker stack (Phase 5 hardening addition)
-
-As of 2026-04-15, `supabase start` spins up a full local stack (Postgres + Studio + edge runtime) with the consolidated migration applied automatically. Use this for development to avoid touching staging or prod data:
+As of 2026-04-15, `supabase start` spins up a full local stack (Postgres + Studio + edge runtime) with the consolidated migration applied automatically. This is the primary development and testing environment:
 
 ```bash
 supabase start               # boots the local stack
+npm run dev                   # starts Vite dev server at localhost:5173
 supabase functions serve     # serves edge functions from supabase/functions/server
 ```
 
@@ -560,10 +554,10 @@ Local Clerk keys live in `supabase/.env.local` (gitignored). Local Supabase auto
 
 ### Current status
 
-- **Vercel preview env vars:** Pending user-side configuration (not in repo).
+- **Local Docker stack:** Complete (Pass c2b44425). Primary dev/test environment.
 - **Staging Supabase bootstrap:** Complete (Pass 872).
 - **Staging edge function deploy:** Complete (Pass 880).
-- **Local Docker stack:** Complete (Pass c2b44425).
+- **Deployment method:** TBD — not blocking any Phase 5/6 work.
 
 ---
 

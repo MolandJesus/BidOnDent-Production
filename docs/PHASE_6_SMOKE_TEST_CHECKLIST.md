@@ -9,19 +9,19 @@
 
 ## Instructions
 
-Run this checklist **twice**: once against the staging preview URL (Phase 6.1), once against the production URL after deploy (Phase 6.3). Use **fresh accounts** created during the test — not seeded, demo, or previously used test accounts. Record evidence (screenshot or log line) for each item.
+Run this checklist against the local dev server (`localhost:5173` + local Supabase Docker stack) first, then against the production URL after deploy. Use **fresh accounts** created during the test — not seeded, demo, or previously used test accounts. Record evidence (screenshot or log line) for each item.
 
 ---
 
 ## Environment Info
 
-| Field             | Staging                                 | Production            |
-| ----------------- | --------------------------------------- | --------------------- |
-| URL               | _(Vercel preview — blocked: user-side)_ | https://bidondent.com |
-| Supabase project  | lhhdqycnhweaxqviwdqt                    | wmdcnjgtsppftrofaqqa  |
-| Clerk environment | _(shared)_                              | _(shared)_            |
-| Date run          |                                         |                       |
-| Tester            |                                         |                       |
+| Field             | Local Dev                       | Staging (optional)        | Production            |
+| ----------------- | ------------------------------- | ------------------------- | --------------------- |
+| URL               | http://localhost:5173           | _(future — not blocking)_ | https://bidondent.com |
+| Supabase project  | local Docker (`supabase start`) | lhhdqycnhweaxqviwdqt      | wmdcnjgtsppftrofaqqa  |
+| Clerk environment | _(shared)_                      | _(shared)_                | _(shared)_            |
+| Date run          |                                 |                           |                       |
+| Tester            |                                 |                           |                       |
 
 ---
 
@@ -78,12 +78,12 @@ Run this checklist **twice**: once against the staging preview URL (Phase 6.1), 
 
 ### 7. Security — RLS Verification
 
-| #   | Step                                                    | Expected                                               | Local Stack Result (2026-04-15) | Staging Result | Prod Result |
-| --- | ------------------------------------------------------- | ------------------------------------------------------ | ------------------------------- | -------------- | ----------- |
-| 7.1 | Open browser console (unauthenticated/anon)             | Console accessible                                     | PASS — REST API returns HTTP 200 |                |             |
+| #   | Step                                                    | Expected                                               | Local Stack Result (2026-04-15)                                                                                                                                                                                                                     | Staging Result | Prod Result |
+| --- | ------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ----------- |
+| 7.1 | Open browser console (unauthenticated/anon)             | Console accessible                                     | PASS — REST API returns HTTP 200                                                                                                                                                                                                                    |                |             |
 | 7.2 | Attempt direct Supabase query on `profiles` table       | Query returns empty or is rejected — RLS blocks access | PARTIAL — SELECT returns rows (policy `qual=true` by design: public profile directory). INSERT blocked ("violates row-level security policy"). UPDATE/DELETE return empty (0 rows affected). Read-public is intentional for marketplace visibility. |                |             |
-| 7.3 | Attempt direct Supabase query on `damage_reports` table | Query returns empty or is rejected — RLS blocks access | PASS — anon SELECT returns 0 rows while service_role sees 1. Policies require `auth.uid() = user_id` or shop/insurer profile match. |                |             |
-| 7.4 | Attempt direct Supabase query on `bids` table           | Query returns empty or is rejected — RLS blocks access | PASS — anon SELECT returns 0 rows while service_role sees 1. Policy requires `requesting_clerk_user_id() IS NOT NULL` or `auth.role() = 'authenticated'`. |                |             |
+| 7.3 | Attempt direct Supabase query on `damage_reports` table | Query returns empty or is rejected — RLS blocks access | PASS — anon SELECT returns 0 rows while service_role sees 1. Policies require `auth.uid() = user_id` or shop/insurer profile match.                                                                                                                 |                |             |
+| 7.4 | Attempt direct Supabase query on `bids` table           | Query returns empty or is rejected — RLS blocks access | PASS — anon SELECT returns 0 rows while service_role sees 1. Policy requires `requesting_clerk_user_id() IS NOT NULL` or `auth.role() = 'authenticated'`.                                                                                           |                |             |
 
 **Local Stack RLS Test Method** (2026-04-15): Ran against local Docker stack (`supabase start`, PG17). Inserted test row into each table via service_role key (bypasses RLS), then verified anon key could not read damage_reports/bids and could not write to any table. Test data cleaned up after verification. Policies are schema-level — identical behavior expected on staging and prod.
 
@@ -124,7 +124,7 @@ Run this checklist **twice**: once against the staging preview URL (Phase 6.1), 
 
 ## Gate Criteria (Phase 6)
 
-- [ ] Every smoke-test item passes on staging
+- [ ] Every smoke-test item passes on local dev (`localhost:5173` + local Supabase)
 - [ ] Every smoke-test item passes on prod
 - [ ] No regressions from Phase 4 changes
 - [ ] Observability is catching real events
@@ -140,35 +140,35 @@ Pre-populated from static code analysis. Items marked ✅ have code-level eviden
 
 | #   | Code Evidence                                                                                                           | Runtime Blocker                |
 | --- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 1.1 | ✅ `ClerkAccountTypeSelector` rendered at `App.tsx:301`. Clerk Provider wraps app.                                      | `blocked: staging preview URL` |
-| 1.2 | ✅ Account type selector calls edge function to create `profiles` row.                                                  | `blocked: staging preview URL` |
-| 1.3 | ✅ `DashboardLayout` at `App.tsx:379` wrapped in `ScreenErrorBoundary`. Customer dashboard loads via `DashboardRouter`. | `blocked: staging preview URL` |
+| 1.1 | ✅ `ClerkAccountTypeSelector` rendered at `App.tsx:301`. Clerk Provider wraps app.                                      | `run against localhost:5173` |
+| 1.2 | ✅ Account type selector calls edge function to create `profiles` row.                                                  | `run against localhost:5173` |
+| 1.3 | ✅ `DashboardLayout` at `App.tsx:379` wrapped in `ScreenErrorBoundary`. Customer dashboard loads via `DashboardRouter`. | `run against localhost:5173` |
 
 ### Section 2 — Report Submission
 
 | #   | Code Evidence                                                                                                                                            | Runtime Blocker                |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 2.1 | ✅ 6-step wizard in `ReportScreen.tsx:79` — switch on `form.step` (1–6). Steps: VehicleInfo, DamageArea, ServiceLocation, Photos, Description, Complete. | `blocked: staging preview URL` |
-| 2.2 | ✅ Photo upload via Supabase Storage (step 4 `StepPhotos`). Report saved via `saveDamageReport` edge function call.                                      | `blocked: staging preview URL` |
-| 2.3 | ✅ Reports list component exists in customer dashboard.                                                                                                  | `blocked: staging preview URL` |
-| 2.4 | ✅ `CustomerMapWidget` renders report pins via `MapLibreReportLayer`.                                                                                    | `blocked: staging preview URL` |
+| 2.1 | ✅ 6-step wizard in `ReportScreen.tsx:79` — switch on `form.step` (1–6). Steps: VehicleInfo, DamageArea, ServiceLocation, Photos, Description, Complete. | `run against localhost:5173` |
+| 2.2 | ✅ Photo upload via Supabase Storage (step 4 `StepPhotos`). Report saved via `saveDamageReport` edge function call.                                      | `run against localhost:5173` |
+| 2.3 | ✅ Reports list component exists in customer dashboard.                                                                                                  | `run against localhost:5173` |
+| 2.4 | ✅ `CustomerMapWidget` renders report pins via `MapLibreReportLayer`.                                                                                    | `run against localhost:5173` |
 
 ### Section 3 — Shop Signup + Bid
 
 | #   | Code Evidence                                                                                                       | Runtime Blocker                |
 | --- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 3.1 | ✅ `ShopOnboarding` (4 steps) at `App.tsx:310`. Creates `shop_profiles` via edge function.                          | `blocked: staging preview URL` |
-| 3.2 | ✅ Shop onboarding steps include business info + `ServiceAreaEditorModal`.                                          | `blocked: staging preview URL` |
-| 3.3 | ✅ `MapLibreShopDirectoryMapPane` + `ShopMapWidget` show nearby reports.                                            | `blocked: staging preview URL` |
-| 3.4 | ✅ `MapBidSheet` → `submitBid()` → `createBid` edge handler (`bids.ts:11`). Activity event logged at `bids.ts:118`. | `blocked: staging preview URL` |
+| 3.1 | ✅ `ShopOnboarding` (4 steps) at `App.tsx:310`. Creates `shop_profiles` via edge function.                          | `run against localhost:5173` |
+| 3.2 | ✅ Shop onboarding steps include business info + `ServiceAreaEditorModal`.                                          | `run against localhost:5173` |
+| 3.3 | ✅ `MapLibreShopDirectoryMapPane` + `ShopMapWidget` show nearby reports.                                            | `run against localhost:5173` |
+| 3.4 | ✅ `MapBidSheet` → `submitBid()` → `createBid` edge handler (`bids.ts:11`). Activity event logged at `bids.ts:118`. | `run against localhost:5173` |
 
 ### Section 4 — Bid Acceptance + Job
 
 | #   | Code Evidence                                                                                                 | Runtime Blocker                |
 | --- | ------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 4.1 | ✅ `BidsScreen` lists bids for customer.                                                                      | `blocked: staging preview URL` |
-| 4.2 | ✅ `acceptBid()` → auto-reject + `createJobAssignment()` (`workflow.ts:45`). Activity event at `bids.ts:371`. | `blocked: staging preview URL` |
-| 4.3 | ✅ `ShopActiveJobsScreen` displays jobs. `updateJobAssignmentStatus()` at `workflow.ts:79`.                   | `blocked: staging preview URL` |
+| 4.1 | ✅ `BidsScreen` lists bids for customer.                                                                      | `run against localhost:5173` |
+| 4.2 | ✅ `acceptBid()` → auto-reject + `createJobAssignment()` (`workflow.ts:45`). Activity event at `bids.ts:371`. | `run against localhost:5173` |
+| 4.3 | ✅ `ShopActiveJobsScreen` displays jobs. `updateJobAssignmentStatus()` at `workflow.ts:79`.                   | `run against localhost:5173` |
 
 ### Section 5 — Email Delivery
 
@@ -182,36 +182,37 @@ Pre-populated from static code analysis. Items marked ✅ have code-level eviden
 
 | #   | Code Evidence                                                                       | Runtime Blocker                             |
 | --- | ----------------------------------------------------------------------------------- | ------------------------------------------- |
-| 6.1 | ✅ OSRM routing via `routeEngine.ts`. Turn-by-turn nav wired in customer dashboard. | `blocked: staging preview URL`              |
-| 6.2 | ✅ Voice guidance + GPS in navigation components.                                   | `blocked: staging preview URL + device GPS` |
+| 6.1 | ✅ OSRM routing via `routeEngine.ts`. Turn-by-turn nav wired in customer dashboard. | `run against localhost:5173`              |
+| 6.2 | ✅ Voice guidance + GPS in navigation components.                                   | `run against localhost:5173 + device GPS` |
 
 ### Section 7 — RLS Verification
 
 | #   | Code Evidence                                                                                                                                      | Runtime Blocker                |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 7.1 | N/A — runtime-only step (open console).                                                                                                            | `blocked: staging preview URL` |
-| 7.2 | ✅ `profiles` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:24-56`: SELECT/INSERT/UPDATE/DELETE scoped to `requesting_clerk_user_id()`. | `blocked: staging preview URL` |
-| 7.3 | ✅ `damage_reports` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:100-154`: owner read/write, shop/insurer read-all.                    | `blocked: staging preview URL` |
-| 7.4 | ✅ `bids` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:156-179`: authenticated read, shop manage.                                      | `blocked: staging preview URL` |
+| 7.1 | N/A — runtime-only step (open console).                                                                                                            | `run against localhost:5173` |
+| 7.2 | ✅ `profiles` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:24-56`: SELECT/INSERT/UPDATE/DELETE scoped to `requesting_clerk_user_id()`. | `run against localhost:5173` |
+| 7.3 | ✅ `damage_reports` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:100-154`: owner read/write, shop/insurer read-all.                    | `run against localhost:5173` |
+| 7.4 | ✅ `bids` RLS enabled. Policies in `024_clerk_jwt_rls_policies.sql:156-179`: authenticated read, shop manage.                                      | `run against localhost:5173` |
 
 ### Section 8 — Observability
 
 | #   | Code Evidence                                                                                                                                                                                                                                                        | Runtime Blocker                                      |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | 8.1 | ✅ `initSentry()` at `main.tsx:10` → `sentryInit.ts:31`. `ScreenErrorBoundary` wraps app root at `App.tsx:379`. 3-tier error boundary chain confirmed.                                                                                                               | `blocked: Sentry dashboard access to verify capture` |
-| 8.2 | ✅ `platform_activity_events` INSERT calls in: `reports.ts:120` (report created), `bids.ts:118` (bid created), `bids.ts:371` (bid accepted/rejected), `workflow.ts:65,193` (job status), `admin.ts:438,514` (admin ops), `intake.ts:139,196` (interest submissions). | `blocked: staging preview URL to verify data lands`  |
+| 8.2 | ✅ `platform_activity_events` INSERT calls in: `reports.ts:120` (report created), `bids.ts:118` (bid created), `bids.ts:371` (bid accepted/rejected), `workflow.ts:65,193` (job status), `admin.ts:438,514` (admin ops), `intake.ts:139,196` (interest submissions). | `run against localhost:5173 to verify data lands`  |
 
 ### Section 9 — Legal Surfaces
 
 | #   | Code Evidence                                                                                                                            | Runtime Blocker                                  |
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| 9.1 | ✅ Route: `#terms-of-service` → `TermsOfServicePage` component (`App.tsx:281`). File: `src/app/components/legal/TermsOfServicePage.tsx`. | `blocked: staging preview URL to verify content` |
-| 9.2 | ✅ Route: `#privacy-policy` → `PrivacyPolicyPage` component (`App.tsx:280`). File: `src/app/components/legal/PrivacyPolicyPage.tsx`.     | `blocked: staging preview URL to verify content` |
+| 9.1 | ✅ Route: `#terms-of-service` → `TermsOfServicePage` component (`App.tsx:281`). File: `src/app/components/legal/TermsOfServicePage.tsx`. | `run against localhost:5173 to verify content` |
+| 9.2 | ✅ Route: `#privacy-policy` → `PrivacyPolicyPage` component (`App.tsx:280`). File: `src/app/components/legal/PrivacyPolicyPage.tsx`.     | `run against localhost:5173 to verify content` |
 
 ### Blocker Summary
 
-| Blocker                                                                   | Items Affected                                     | Owner |
-| ------------------------------------------------------------------------- | -------------------------------------------------- | ----- |
-| Staging preview URL not yet live (Vercel env vars + edge function deploy) | 1.1–4.3, 6.1–6.2, 7.1–7.4, 8.2, 9.1–9.2 (22 items) | User  |
-| `RESEND_API_KEY` not deployed to Supabase edge function secrets           | 5.1–5.3 (3 items)                                  | User  |
-| Sentry dashboard access needed to verify capture                          | 8.1 (1 item)                                       | User  |
+| Blocker                                                | Items Affected | Owner | Notes                                                  |
+| ------------------------------------------------------ | -------------- | ----- | ------------------------------------------------------ |
+| `RESEND_API_KEY` not deployed to edge function secrets | 5.1–5.3 (3)    | User  | Needed on staging + prod for real email delivery proof |
+| Sentry dashboard access needed to verify capture       | 8.1 (1)        | User  | Check Sentry project dashboard after triggering error  |
+
+**Removed blocker:** Vercel preview URL — all smoke-test items can be run against local dev server (`localhost:5173` + local Supabase Docker stack). Vercel is not required for development, testing, or the Phase 6 gate. Deployment method is TBD and does not block product work.

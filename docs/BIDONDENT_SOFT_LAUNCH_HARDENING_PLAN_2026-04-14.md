@@ -470,12 +470,14 @@ Work items:
 
 Work items:
 
-**5.1 Group 7a — Vercel previews as practical staging**
+**5.1 Group 7a — ~~Vercel previews as practical staging~~ Local dev + staging Supabase** *(Updated 2026-04-15)*
 
-- Configure Vercel preview deployments to use staging Supabase config via env var overrides.
-- Decide: separate Supabase staging project (cleaner) or staging schema on the same project (cheaper). **Choose the fastest option that guarantees test data cannot be confused with or written into production data paths.** Safety — not cheapness — is the decision criterion.
-- Test the flow: branch → PR → preview URL → sign up a test user → submit a test report → verify the data lands in staging, NOT prod.
-- Do NOT build a second Vercel project. Do NOT build a custom staging pipeline.
+- ~~Configure Vercel preview deployments to use staging Supabase config via env var overrides.~~
+- Staging Supabase project `lhhdqycnhweaxqviwdqt` created and fully bootstrapped (Pass 872).
+- Local Docker dev stack running via `supabase start` with consolidated migration (Pass c2b44425).
+- Edge function deployed to staging (Pass 880) and serving locally.
+- Primary dev/test workflow: `localhost:5173` + local Supabase Docker stack. Deployment method (Vercel or otherwise) is TBD and does not gate any Phase 5/6 work.
+- **Status: COMPLETE.** Local stack + staging Supabase are sufficient for all development and smoke testing.
 
 **5.2 Group 7b — RESEND verification + deployment + one real email proof**
 
@@ -494,7 +496,7 @@ Work items:
 - **Keep the first version minimal and evidence-based.** Do not turn the matrix into a second planning system. It exists to reflect reality, not to prescribe work.
 - This matrix becomes the primary "where are we" reference going forward, replacing the pass log as the day-to-day tracker.
 
-**Gate criteria:** Preview URL proves end-to-end against staging Supabase. At least one real email delivered to a real inbox. Module Completion Matrix populated and reviewed.
+**Gate criteria:** Local dev server (`localhost:5173`) proves end-to-end against local or staging Supabase. At least one real email delivered to a real inbox. Module Completion Matrix populated and reviewed.
 
 ---
 
@@ -502,8 +504,8 @@ Work items:
 
 **Purpose:** Last line of defense. Group 7d smoke-test checklist run against staging, then against prod after deploy.
 
-**6.1 Run smoke-test checklist against staging**
-Run every item in the Group 7d checklist on the staging preview URL. **The full end-to-end happy path must be executed using a fresh customer account AND a fresh shop account in one uninterrupted run** — not seeded/demo identities, not previously used test accounts. Seeded/reused accounts can hide onboarding, profile initialization, identity linkage, role-specific permission, and duplicate-record bugs that only appear on day-one users. Record each step with evidence (screenshot or log line).
+**6.1 Run smoke-test checklist against local dev server**
+Run every item in the Group 7d checklist on `localhost:5173` with the local Supabase Docker stack (or staging Supabase keys in `.env`). **The full end-to-end happy path must be executed using a fresh customer account AND a fresh shop account in one uninterrupted run** — not seeded/demo identities, not previously used test accounts. Seeded/reused accounts can hide onboarding, profile initialization, identity linkage, role-specific permission, and duplicate-record bugs that only appear on day-one users. Record each step with evidence (screenshot or log line).
 
 Additionally, verify **legal-surface discoverability** as part of the smoke test: from the landing page nav/footer, both Terms of Service and Privacy Policy must be reachable in one click, must render, and must not contain content that is visibly misleading about current launch functionality (e.g., references to payments while payments are not live).
 
@@ -511,7 +513,7 @@ Additionally, verify **legal-surface discoverability** as part of the smoke test
 - Submit a damage report with at least one photo upload.
 - From a shop account, see the new report and submit a bid.
 - From the customer account, accept the bid, confirm competing-bid auto-reject and job assignment.
-- Receive the confirmation email (proves 7b is working in staging).
+- Receive the confirmation email (proves 7b is working).
 - Open the navigation flow to the shop, confirm route and turn-by-turn work.
 - Verify observability captures a deliberately-triggered error.
 - Verify RLS by attempting direct Supabase client queries on protected tables from an unauthenticated browser console — must fail.
@@ -519,7 +521,7 @@ Additionally, verify **legal-surface discoverability** as part of the smoke test
 **6.2 Deploy to prod**
 
 - Merge the hardening branch(es) to `main`.
-- Vercel auto-deploys.
+- Deploy via chosen method (TBD — not blocking Phase 5/6 work).
 
 **6.3 Re-run smoke-test checklist against prod**
 Same checklist, against the live prod URL. Everything must pass.
