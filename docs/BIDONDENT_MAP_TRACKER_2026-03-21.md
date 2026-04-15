@@ -8,12 +8,12 @@
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 
-**Last updated:** April 14, 2026 (Hardening phase began — Hardening Plan is current execution law)
+**Last updated:** April 15, 2026 (Hardening phase — Pass 872 closed Phase 5.1 recovery + working-tree cleanup)
 **Status:** Historical pass log / audit trail during Soft Launch Hardening phase
-**Pass count:** 854 (hardening passes continue from 855+)
-**Build:** 0 errors (3.34s) ✅
-**Tests:** 543/555 passing. Pre-existing network error mocking failures in bids.test.ts + reports.test.ts (12 failures, not caused by recent work)
-**Branch:** BidOnDent-Horizon-Beta
+**Pass count:** 872 (hardening passes continue from 855+)
+**Build:** 0 errors ✅
+**Tests:** 554/554 passing ✅ (network-error mocking failures fixed in Pass 872)
+**Branch:** BidOnDent-Horizon-Beta (7 commits ahead of origin, awaiting user push)
 
 ---
 
@@ -86,6 +86,48 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 - (Estimate, shop, insurer services use their own service-specific channels — see Code Organization Audit)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Pass 872 — Phase 5.1 closure + working-tree cleanup + test fix (2026-04-15)
+
+**Phase:** Soft Launch Hardening — Phase 5.1 closure + autopilot-readiness handoff prep
+**Outcome:** Staging DB verified complete against corrected migrations set. Pre-existing 12 test failures in `bids.test.ts`/`reports.test.ts` resolved. Repository working tree reorganized into 7 logical commits (branch now 7 ahead of origin, clean tree). Autopilot-ready.
+
+### Staging verification (closes Pass 871)
+
+- `staging_bootstrap.sql` regenerated with 011b slotted between migrations 011 and 012, executed against staging project `lhhdqycnhweaxqviwdqt` via SQL editor paste. No errors.
+- User-verified presence of all hardening-plan tables in `information_schema.tables` (estimate_requests, insurer_interest_submissions, job_assignments, platform_activity_events, public_partner_shops, shop_interest_submissions, notification_preferences, plus the Pass 871 column backfills).
+- Routines verified: `find_shops_near`, `handle_updated_at`, `requesting_clerk_user_id` all present in `pg_proc`.
+- Staging is now a clean rebuild target from `supabase/migrations/` alone — the Pass 871 drift gap is closed for real this time.
+
+### Test fix — `bids.ts` / `reports.ts` graceful-fallback error contract
+
+- 12 pre-existing failing tests confirmed via `git stash` isolation to predate this session (not introduced by hardening work).
+- Root cause: both service modules called `requestSupabaseEdge` without try/catch; tests asserted `"returns [] on network error"` / `"returns null on network error"` / `"returns false on network error"` for every method, but rejections bubbled up instead.
+- Fix in [src/app/services/supabase/bids.ts](src/app/services/supabase/bids.ts): wrapped all 6 exports in try/catch with graceful fallbacks; changed `submitBid` and `updateBidStatus` to return `null` (not `throw`) on missing `clerkUserId`.
+- Fix in [src/app/services/supabase/reports.ts](src/app/services/supabase/reports.ts): wrapped `getAllDamageReports`, `updateReportStatus`, `updateClaimDecision`, `deleteDamageReport` in try/catch. `saveDamageReport` intentionally left throwing — its test explicitly asserts "throws on network error (does not swallow)". `getDamageReports` already had its own retry+catch.
+- Result: **554/554 tests passing** (was 542/554).
+
+### Working-tree cleanup — 7 logical commits
+
+Prior autopilot passes had been instructed not to push, so ~90 uncommitted files had accumulated. Reorganized into meaningful commits rather than one bulk dump:
+
+1. `2180fdcd` — Pass 871 migration 011b canonical catchup (isolated, pathspec-scoped)
+2. `80de61a5` — chore: gitignore `supabase/.temp/` + document required env vars
+3. `dbaedfdf` — docs: archive superseded planning docs
+4. `9418fee2` — db: add hardening-plan migrations 024–027
+5. `defde294` — feat: soft launch hardening autopilot passes (code batch, 74 files)
+6. `61547433` — docs: hardening-plan batch + Pass 871 drift audit (15 docs)
+7. `e81d1761` — fix: graceful error handling in bids/reports services (this pass)
+
+Branch is clean, 7 ahead of `origin/BidOnDent-Horizon-Beta`. User handles pushes manually (confirmed).
+
+### Files touched
+
+`src/app/services/supabase/bids.ts`, `src/app/services/supabase/reports.ts`, `.gitignore`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` (this entry), `docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md` (Change Log append).
+
+**Build:** Clean. **Tests:** 554/554 passing.
 
 ---
 
