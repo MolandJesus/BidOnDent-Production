@@ -105,8 +105,17 @@ Use **fresh accounts** created during the test — not seeded, demo, or previous
 
 1. **Anon key blocked**: SELECT on profiles, damage_reports, bids, vehicles, job_assignments all return []. INSERT on profiles returns 42501.
 2. **Soft delete enforced at RLS level**: Seeded rows, set `deleted_at = NOW()`, confirmed service_role still sees them but anon/authenticated roles do not (deleted_at IS NULL in USING clause).
-3. **Idempotency indexes enforced**: Duplicate bid INSERT → 23505 (`uq_bids_report_shop`). Duplicate job_assignment INSERT → 23505 (`uq_job_assignments_report`). State-machine guard: PATCH with `status=eq.pending` on accepted bid returns [] (0 rows affected).
+3. **Idempotency enforced**: Duplicate bid INSERT → 23505 (`uq_bids_report_shop`). Duplicate job_assignment INSERT → 23505 (`uq_job_assignments_report`). Duplicate report POST now dedupes by `(clerk_user_id, client_request_id)` and returns the existing row. Bid acceptance now updates with `eq(status, 'pending')`, so a second concurrent accept/reject returns 409 and does not emit a second email.
 4. All test data cleaned up after verification.
+
+**Phase 3.3 Verification Artifacts** (2026-04-15):
+
+| Flow | Mechanism | Test performed | Result |
+| --- | --- | --- | --- |
+| Report submission | `uq_damage_reports_request_key` on `(clerk_user_id, client_request_id)` + handler fetches existing row on duplicate key | Local Docker transaction: inserted the same `(clerk_user_id, client_request_id)` pair twice | PASS — second insert hit the unique guard (`report_duplicate_blocked`) |
+| Bid creation | `uq_bids_report_shop` partial unique index on active bids | Local Docker transaction: inserted two active bids for the same `(damage_report_id, clerk_shop_user_id)` pair | PASS — second insert hit the unique guard (`bid_duplicate_blocked`) |
+| Bid acceptance / job assignment transition | Atomic bid status update (`WHERE status = 'pending'`) + `uq_job_assignments_report` partial unique index | Local Docker transaction: first `pending -> accepted` update affected 1 row, second `pending -> rejected` replay affected 0 rows; separate transaction inserted two active job assignments for the same report | PASS — atomic transition returned `first=1 second=0`; second job assignment insert returned `0` rows |
+| Outbound email side effects | Notification calls remain downstream of the guarded writes (`createBid` after successful insert; `updateBidStatus` after atomic update returns a row); report submit has no outbound email | Code-path audit of handlers plus local Docker duplicate-write verification above | PASS — duplicate replays are blocked before notification dispatch can run a second time |
 
 **7.2 Design Note**: The `profiles` SELECT policy uses `qual = true` (anyone can read all profiles). This is a deliberate marketplace design: shop profiles must be visible to customers browsing bids. No PII beyond name/email is exposed, and write operations (INSERT/UPDATE/DELETE) are all correctly restricted to the profile owner via `clerk_user_id = requesting_clerk_user_id() OR auth.uid() = user_id`. If stricter read access is needed in the future, this policy would need to be scoped to authenticated users only.
 

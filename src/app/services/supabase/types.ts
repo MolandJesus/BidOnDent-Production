@@ -32,6 +32,7 @@ export interface DamageReport {
   id?: string;
   user_id?: string;
   clerk_user_id?: string | null;
+  client_request_id?: string | null;
   vehicle_id?: string;
   bids?: Bid[];
   vehicle_make: string;

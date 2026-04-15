@@ -14,7 +14,16 @@ import { hydrateSignedStorageUrls } from "../utils/storage.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
-function buildReportPayload(clerkUserId: string, report: any) {
+function buildReportPayload(
+  clerkUserId: string,
+  report: any,
+  options: { includeClientRequestId?: boolean } = {}
+) {
+  const clientRequestId =
+    typeof report?.client_request_id === 'string' && report.client_request_id.trim().length > 0
+      ? report.client_request_id.trim()
+      : null;
+
   return {
     clerk_user_id: clerkUserId,
     vehicle_id: report.vehicle_id || null,
@@ -37,6 +46,9 @@ function buildReportPayload(clerkUserId: string, report: any) {
     preferred_contact: report.preferred_contact || 'email',
     additional_notes: report.additional_notes,
     status: report.status || 'pending',
+    ...(options.includeClientRequestId && clientRequestId
+      ? { client_request_id: clientRequestId }
+      : {}),
   };
 }
 
@@ -97,6 +109,10 @@ export async function createReport(
       session,
       clerkUserId || null
     );
+    const clientRequestId =
+      typeof report?.client_request_id === 'string' && report.client_request_id.trim().length > 0
+        ? report.client_request_id.trim()
+        : null;
 
     const requiredFields = ['vehicle_make', 'vehicle_model', 'vehicle_year', 'damage_type', 'damage_location'] as const;
     for (const field of requiredFields) {
@@ -107,11 +123,36 @@ export async function createReport(
 
     const { data, error } = await supabase
       .from('damage_reports')
-      .insert({ ...buildReportPayload(authenticatedClerkUserId, report), status: 'pending' })
+      .insert({
+        ...buildReportPayload(authenticatedClerkUserId, report, { includeClientRequestId: true }),
+        status: 'pending',
+      })
       .select()
       .single();
 
     if (error) {
+      if (error.code === '23505' && clientRequestId) {
+        const { data: existingReport, error: existingReportError } = await supabase
+          .from('damage_reports')
+          .select('*')
+          .eq('clerk_user_id', authenticatedClerkUserId)
+          .eq('client_request_id', clientRequestId)
+          .is('deleted_at', null)
+          .maybeSingle();
+
+        if (existingReportError) {
+          console.error('Error fetching existing idempotent damage report:', existingReportError);
+          return respond({ error: sanitizeErrorMessage(existingReportError) }, 500);
+        }
+
+        if (existingReport) {
+          return respond({
+            success: true,
+            report: await hydrateReport(existingReport, supabase),
+          });
+        }
+      }
+
       console.error('Error saving damage report:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }

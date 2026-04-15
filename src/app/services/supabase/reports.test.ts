@@ -212,6 +212,16 @@ describe("saveDamageReport", () => {
     expect(body.report.status).toBe("pending");
   });
 
+  it("forwards a non-UUID report id as client_request_id on create", async () => {
+    mockRequest.mockResolvedValueOnce({ report: { ...fakeReport, id: "new-uuid" } });
+
+    await saveDamageReport({ ...fakeReport, id: "draft-123" }, "clerk-user-1");
+
+    const body = JSON.parse(mockRequest.mock.calls[0][1]!.body as string);
+    expect(body.report.client_request_id).toBe("draft-123");
+    expect(mockRequest.mock.calls[0][0]).toBe(SUPABASE_EDGE_ROUTES.reports);
+  });
+
   it("returns null when clerkUserId is missing", async () => {
     const result = await saveDamageReport(fakeReport, undefined);
 

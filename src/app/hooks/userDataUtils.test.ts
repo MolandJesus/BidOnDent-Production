@@ -337,6 +337,7 @@ describe("buildSupabaseReportPayload", () => {
   it("omits id when not UUID-like", () => {
     const result = buildSupabaseReportPayload({ id: "new-draft" });
     expect(result.id).toBeUndefined();
+    expect(result.client_request_id).toBe("new-draft");
   });
 
   it("provides defaults for missing fields", () => {

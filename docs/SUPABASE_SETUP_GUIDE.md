@@ -7,7 +7,7 @@
 > - **Phase 1.5 (.env migration)** — COMPLETE. Clerk and Supabase keys now read from `.env` via `import.meta.env`. The old `utils/clerk/info.tsx` and `utils/supabase/info.tsx` files have been deleted.
 > - **Phase 3.1 (RLS rollout)** — COMPLETE. All 10 launch-critical tables now have Clerk JWT-based RLS policies using `requesting_clerk_user_id()` SQL helper (extracts `sub` from `request.jwt.claims`). Policies use dual-path: Clerk JWT primary, `auth.uid()` fallback for backward compat. Prerequisite: Clerk JWT template "supabase" must be configured in Clerk Dashboard, signed with Supabase's JWT secret, for Realtime auth. Migration: `024_clerk_jwt_rls_policies.sql`.
 > - **Phase 3.2 (Event capture)** — COMPLETE. `platform_activity_events` now has `actor_id`, `object_id`, `outcome` columns. All launch-critical write flows (report create, bid create, bid accept/reject, job assignment create) emit structured events. Migration: `025_event_capture_columns.sql`.
-> - **Phase 3.3 (Idempotency)** — COMPLETE. Unique partial indexes on `bids(damage_report_id, clerk_shop_user_id)` and `job_assignments(damage_report_id)` prevent duplicate submissions. Bid acceptance has state-machine guard (only `pending → accepted/rejected`). Migration: `026_idempotency_guards.sql`.
+> - **Phase 3.3 (Idempotency)** — COMPLETE. Unique partial indexes on `bids(damage_report_id, clerk_shop_user_id)` and `job_assignments(damage_report_id)` prevent duplicate submissions. Damage report POST now uses `(clerk_user_id, client_request_id)` dedupe for repeated request replays, and bid acceptance uses an atomic `pending → accepted/rejected` update so concurrent retries cannot double-send shop notifications. Migrations: `026_idempotency_guards.sql`, `20260416000002_report_submission_idempotency.sql`.
 > - **Phase 3.4 (Soft delete)** — COMPLETE. `deleted_at TIMESTAMPTZ` added to damage_reports, bids, job_assignments, vehicles. All delete handlers now set `deleted_at` instead of hard deleting. All query handlers filter `deleted_at IS NULL`. RLS policies filter deleted rows. Migration: `027_soft_delete.sql`. Account deletion in auth.ts still uses hard deletes (GDPR compliance).
 > - **Section 13 (Edge Function Deployment)** still documents the `make-server-9f243523` legacy alias. That alias is a live backward-compatibility layer deferred to [Post-Launch Roadmap item L1](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md). Keep the current deploy command until L1 fires; do not remove it prematurely.
 >
@@ -17,7 +17,7 @@
 >
 > Clerk Dashboard **must** have a JWT template named **`supabase`** configured and signed with the Supabase project's JWT secret (`SUPABASE_JWT_SECRET`). Without this template, all Clerk-JWT RLS policies (`requesting_clerk_user_id()`) will return `NULL` and deny every authenticated request. Runtime verification is deferred to deployment smoke test.
 
-Last updated: April 14, 2026 (Phase 3.1–3.4 complete — RLS, event capture, idempotency, soft delete)
+Last updated: April 15, 2026 (Phase 3.1–3.4 complete — RLS, event capture, idempotency, soft delete)
 Status: Active — comprehensive backend reference for current and future backend migration
 
 BidOnDent uses **Clerk** for authentication/identity and **Supabase** for application data, file storage, and edge-function-backed API services. This document is the single source of truth for the entire backend architecture. If the project migrates to a different backend, this document defines every contract that must be replicated.

@@ -340,16 +340,37 @@ export async function updateBidStatus(
       return respond({ error: "Forbidden" }, 403);
     }
 
+    const updatedAt = new Date().toISOString();
     const { data, error } = await supabase
       .from("bids")
-      .update({ status, updated_at: new Date().toISOString() })
+      .update({ status, updated_at: updatedAt })
       .eq("id", bidId)
+      .eq("status", "pending")
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.error("Error updating bid status:", error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    if (!data) {
+      const { data: currentBid, error: currentBidError } = await supabase
+        .from("bids")
+        .select("status")
+        .eq("id", bidId)
+        .maybeSingle();
+
+      if (currentBidError) {
+        console.error("Error fetching current bid after atomic status update miss:", currentBidError);
+        return respond({ error: sanitizeErrorMessage(currentBidError) }, 500);
+      }
+
+      if (!currentBid) {
+        return respond({ error: "Bid not found" }, 404);
+      }
+
+      return respond({ error: `Bid is already ${currentBid.status}` }, 409);
     }
 
     // Business rule: accepting a bid auto-rejects all other pending bids on the same report

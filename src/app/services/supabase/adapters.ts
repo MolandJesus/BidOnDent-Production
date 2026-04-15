@@ -130,8 +130,15 @@ export function buildReportPayload(report: Record<string, any>) {
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
     );
 
+  const reportId = typeof report.id === "string" ? report.id : undefined;
+  const clientRequestId =
+    report.client_request_id ||
+    report.clientRequestId ||
+    (!isUuidLike(reportId) ? reportId : undefined);
+
   return {
-    ...(isUuidLike(report.id) ? { id: report.id } : {}),
+    ...(isUuidLike(reportId) ? { id: reportId } : {}),
+    ...(clientRequestId ? { client_request_id: clientRequestId } : {}),
     vehicle_make: report.vehicle?.make || report.vehicle_make || "",
     vehicle_model: report.vehicle?.model || report.vehicle_model || "",
     vehicle_year: parseInt(report.vehicle?.year || report.vehicle_year || "0", 10),

@@ -104,6 +104,12 @@ export async function saveDamageReport(
     return null;
   }
 
+  const shouldUpdate = isUuidLike(report.id);
+  const clientRequestId =
+    !shouldUpdate && typeof report.id === "string"
+      ? report.client_request_id ?? report.id
+      : undefined;
+
   const payload = {
     clerkUserId,
     report: {
@@ -127,10 +133,9 @@ export async function saveDamageReport(
       zip_code: report.zip_code,
       latitude: report.latitude ?? null,
       longitude: report.longitude ?? null,
+      client_request_id: clientRequestId,
     },
   };
-
-  const shouldUpdate = isUuidLike(report.id);
   const maxAttempts = 2;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
