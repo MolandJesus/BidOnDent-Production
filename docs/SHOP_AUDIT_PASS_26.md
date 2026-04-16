@@ -22,6 +22,7 @@ Three confirmed bugs were reproduced with browser evidence and code-traced to ro
 ### Bug A — "Failed to submit bid"
 
 **Steps to reproduce**:
+
 1. Log in as TestShop
 2. Navigate to Requests tab (Marketplace)
 3. Click "Submit Bid" on first seed report (2019 Honda CR-V)
@@ -33,6 +34,7 @@ Three confirmed bugs were reproduced with browser evidence and code-traced to ro
 **Root cause**: Client-side guard in `ShopRequestsScreen.tsx:104` — `selectedRequest.id.startsWith("seed-")`. This fires because ALL visible reports are seed data (consequence of Bug C).
 
 **Code path**:
+
 ```
 ShopRequestsScreen.handleSubmitBid()
   → if selectedRequest.id.startsWith("seed-") → show demo error → return
@@ -45,17 +47,20 @@ ShopRequestsScreen.handleSubmitBid()
 ### Bug C — Marketplace shows seed fallback instead of real reports
 
 **Steps to reproduce**:
+
 1. Log in as TestShop
 2. Click "Requests" in sidebar
 3. Observe yellow banner: "Showing example requests for preview."
 4. Observe seed reports with "Not provided" customer names and "#seed-rep" IDs
 
 **Console errors**:
+
 - `403` on `getAllDamageReports` — "Marketplace access required" (repeated on every call)
 - `404` on `getShopEstimateRequests` — endpoint not deployed on remote
 - `404` on `getMyShopServiceAreas` — endpoint not deployed on remote
 
 **Root cause chain**:
+
 1. `useMarketplaceReports(userType)` → calls `getAllDamageReports()`
 2. Edge function `reports.ts` → `requireMarketplaceContext(req, supabase)`
 3. `requireMarketplaceContext` → `requireAuthenticatedProfile` → `getAuthenticatedProfile`
@@ -68,6 +73,7 @@ ShopRequestsScreen.handleSubmitBid()
 10. `ShopRequestsScreen` renders seed data with yellow banner
 
 **Key files**:
+
 - `src/app/hooks/useMarketplaceReports.ts` — fetch + fallback logic
 - `src/app/routers/useDashboardData.ts:121-122` — seed fallback decision
 - `supabase/functions/server/utils/authz.ts:247-265` — marketplace check
@@ -80,6 +86,7 @@ ShopRequestsScreen.handleSubmitBid()
 ### Bug D — "View All" routes shop to customer reports screen
 
 **Steps to reproduce**:
+
 1. Log in as TestShop
 2. On Dashboard home, click "View All →" next to "Incoming Requests"
 3. Observe navigation to "REPORT LIBRARY / My Reports" — a customer-oriented screen with "All, Pending, Active, Completed" filters
@@ -87,17 +94,20 @@ ShopRequestsScreen.handleSubmitBid()
 **Expected**: Shop should navigate to the Requests tab (marketplace view)
 
 **Root cause**: `buildDashboardRouterProps.ts:85`:
+
 ```typescript
 onViewAllReports: () => {
   navigation.setViewMode("reports-list");
-}
+};
 ```
+
 This callback is used for ALL user types. No role check. Compare with the correct shop action at line 99:
+
 ```typescript
 onViewRequests: () => {
   navigation.setCurrentTab("requests");
   navigation.setViewMode("dashboard");
-}
+};
 ```
 
 **Also**: `HomeScreen.tsx:81` — `listViewAllAction = onViewAllReports` for all roles (no branching), even though the header IS role-aware (shows "Incoming Requests" for shop).
@@ -109,6 +119,7 @@ onViewRequests: () => {
 ## 3. Dashboard Walkthrough
 
 ### Tab: Dashboard (Home)
+
 - **SHOP OPERATIONS** hero: "Welcome back, TestShop" / "Track incoming requests and active repairs" / "View Requests →" CTA
 - **COMMAND DECK** — Quick Actions (4 shortcuts): Open Requests, Active Jobs, Competitors, Browse Insurers
 - **REPAIR ACTIVITY** — Incoming Requests: 2 seed reports ("Damage Report #seed-rep") with map pin icons, bid counts, "View All →" button (Bug D)
@@ -117,6 +128,7 @@ onViewRequests: () => {
 - **Issues**: Seed data presented without a banner on this screen (unlike Requests tab). "View All" navigates to wrong screen.
 
 ### Tab: Requests (Marketplace)
+
 - **REPAIR REQUESTS / Marketplace** heading
 - Search bar + filter buttons: All Requests, New, Bidding, Accepted, Closed
 - **Yellow seed banner**: "Showing example requests for preview..."
@@ -125,12 +137,14 @@ onViewRequests: () => {
 - **Issues**: 403 errors on `getAllDamageReports`. Seed fallback active. Bid submission blocked.
 
 ### Tab: Estimates
+
 - **ESTIMATE INBOX / Estimates** heading
 - Search bar + filter buttons: All, Pending, Viewed, Responded, Declined, Accepted
 - Empty state: "No estimate requests yet / When customers request estimates from your shop, they'll appear here."
 - **Issues**: 404 on `getShopEstimateRequests` — endpoint not deployed on remote. Clean empty state UX (no crash).
 
 ### Tab: Active Jobs
+
 - **SHOP OPERATIONS / Active Jobs** heading
 - Search bar + filter buttons: All Jobs, Pending, In Progress, Awaiting Parts, Completed
 - **Error toast** (top-right): "Unable to load jobs. Please check your connection and try again."
@@ -140,6 +154,7 @@ onViewRequests: () => {
 - **Issues**: Error toast appears (likely from marketplace/bids fetch failure). Seed fallback active.
 
 ### Tab: Account
+
 - **ACCOUNT HUB**: TestShop avatar, "Profile" badge, camera icon
 - **IDENTITY / Account Information**: Profile completion 80%
   - Name: TestShop
@@ -152,6 +167,7 @@ onViewRequests: () => {
 - **Issues**: Shop Profile field shows "-" (likely because profile isn't persisted to remote). No obvious errors.
 
 ### Sidebar
+
 - 5 nav items: Dashboard, Requests, Estimates, Active Jobs, Account
 - "Demo Mode" toggle at bottom
 - User footer: TestShop / molalign1504s@gmail.com
@@ -162,14 +178,14 @@ onViewRequests: () => {
 
 ## 4. Console Error Summary (Page Load)
 
-| Error | Status | Endpoint | Count | Root Cause |
-|-------|--------|----------|-------|------------|
-| Marketplace access required | 403 | `getAllDamageReports` | 3+ | No shop profile row on remote Supabase |
-| Not found | 404 | `getShopEstimateRequests` | 1 | Edge function not deployed on remote |
-| Not found | 404 | `getMyShopServiceAreas` | 1 | Edge function not deployed on remote |
-| Invalid Clerk token issuer | 500 | `getShopSubmittedBids` | intermittent | Clerk dev token issuer mismatch with remote config |
-| JWT template not configured | warn | Realtime | 1 | Supabase Realtime JWT not set up |
-| ERR_ABORTED | varies | website relationships/preferences | 2+ | Clerk dashboard features not configured |
+| Error                       | Status | Endpoint                          | Count        | Root Cause                                         |
+| --------------------------- | ------ | --------------------------------- | ------------ | -------------------------------------------------- |
+| Marketplace access required | 403    | `getAllDamageReports`             | 3+           | No shop profile row on remote Supabase             |
+| Not found                   | 404    | `getShopEstimateRequests`         | 1            | Edge function not deployed on remote               |
+| Not found                   | 404    | `getMyShopServiceAreas`           | 1            | Edge function not deployed on remote               |
+| Invalid Clerk token issuer  | 500    | `getShopSubmittedBids`            | intermittent | Clerk dev token issuer mismatch with remote config |
+| JWT template not configured | warn   | Realtime                          | 1            | Supabase Realtime JWT not set up                   |
+| ERR_ABORTED                 | varies | website relationships/preferences | 2+           | Clerk dashboard features not configured            |
 
 ---
 
@@ -179,16 +195,16 @@ onViewRequests: () => {
 
 ### Step-by-step status:
 
-| Step | Action | Status | Blocker |
-|------|--------|--------|---------|
-| 1 | Customer creates damage report | NOT TESTED | Would need account switch |
-| 2 | Shop sees report on marketplace | **BLOCKED** | Bug C — 403 on marketplace fetch |
-| 3 | Shop submits bid on report | **BLOCKED** | Bug A — seed guard prevents bids |
-| 4 | Customer receives bid notification | BLOCKED | Step 3 prerequisite |
-| 5 | Customer accepts bid | BLOCKED | Step 4 prerequisite |
-| 6 | Shop starts repair job | BLOCKED | Step 5 prerequisite |
-| 7 | Shop completes job | BLOCKED | Step 6 prerequisite |
-| 8 | Customer rates shop | BLOCKED | Step 7 prerequisite |
+| Step | Action                             | Status      | Blocker                          |
+| ---- | ---------------------------------- | ----------- | -------------------------------- |
+| 1    | Customer creates damage report     | ✅ PASS      | Verified in Pass 34 (real report persisted) |
+| 2    | Shop sees report on marketplace    | ✅ PASS      | Real data, no seed fallback — Pass 34 |
+| 3    | Shop submits bid on report         | ✅ PASS      | $450 bid persisted to Supabase — Pass 34 |
+| 4    | Customer receives bid notification | ✅ PASS      | Full bid details visible in comparison view — Pass 34 |
+| 5    | Customer accepts bid               | ⚠️ PARTIAL  | Local state works; backend: updateReportStatus references missing latitude column; createJobAssignment receives Clerk ID instead of UUID |
+| 6    | Shop starts repair job             | 🔲 NOT TESTED | Depends on Step 5 backend fix    |
+| 7    | Shop completes job                 | 🔲 NOT TESTED | Depends on Step 6 prerequisite   |
+| 8    | Customer rates shop                | 🔲 NOT TESTED | Depends on Step 7 prerequisite   |
 
 **Verdict**: The green path is **COMPLETELY BLOCKED at step 2**. The core marketplace loop cannot function until the remote Supabase has a valid shop profile for the test account.
 
@@ -224,15 +240,22 @@ Remote Supabase profiles table
                       └── usingSeedFallback = true
                           ├── Bug C: Marketplace shows seed data
                           └── Bug A: Bid guard blocks seed bids
-                          
+
 Bug D is independent: buildDashboardRouterProps.ts:85 missing role check
 ```
 
 **Priority fix order**:
-1. **P1**: Fix remote profile sync — ensure shop onboarding creates a `profiles` row on remote Supabase with correct `clerk_user_id` and `account_type = 'shop'`
-2. **P1**: Fix Bug D — add role check to `onViewAllReports` in `buildDashboardRouterProps.ts`
+
+1. **P1**: Fix remote profile sync — ensure shop onboarding creates a `profiles` row on remote Supabase with correct `clerk_user_id` and `account_type = 'shop'` — ✅ Bootstrap path added in Pass 27, edge function email fix in Pass 29. Profile loads on remote Supabase.
+2. **P1**: Fix Bug D — add role check to `onViewAllReports` in `buildDashboardRouterProps.ts` — ✅ FIXED in Pass 28 — role-aware branching added.
 3. **P2**: Deploy missing edge functions (`getShopEstimateRequests`, `getMyShopServiceAreas`) to remote
-4. **P3**: Add seed-data indicator on Dashboard home "Incoming Requests" section
+4. **P3**: Add seed-data indicator on Dashboard home “Incoming Requests” section — ✅ Added in Pass 32
+
+**Additional passes since audit:**
+- Pass 29: Edge function email resolver fix (fetch Clerk email when JWT claims lack it)
+- Pass 30: Bid submission fix (marketplace reports — real bids now persist to Supabase)
+- Pass 32: Seed indicator added on Dashboard Home “Incoming Requests” section
+- Pass 34: Green-path Steps 1–4 verified — CORS fix deployed, real marketplace loop confirmed working
 
 ---
 

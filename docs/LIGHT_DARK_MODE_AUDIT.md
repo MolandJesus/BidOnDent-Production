@@ -9,12 +9,12 @@
 
 ## Summary
 
-| Metric | Count | % |
-|--------|------:|--:|
-| Total component files analyzed | 131 | 100 |
-| ✅ Fully appearance-aware | ~65 | 50 |
-| ⚠️ Partially appearance-aware | ~20 | 15 |
-| ❌ Hardcoded / missing support | ~46 | 35 |
+| Metric                         | Count |   % |
+| ------------------------------ | ----: | --: |
+| Total component files analyzed |   131 | 100 |
+| ✅ Fully appearance-aware      |   ~65 |  50 |
+| ⚠️ Partially appearance-aware  |   ~20 |  15 |
+| ❌ Hardcoded / missing support |   ~46 |  35 |
 
 **Design system convention:** Components receive `appearanceMode` (or `isLight` boolean) as a prop. Conditional Tailwind classes control text, background, border, and accent colors. CSS tokens (`bd-report-section`, `bd-report-input`, `bd-glass-control--*`) handle common patterns.
 
@@ -40,10 +40,10 @@
 
 #### ❌ Issues Found
 
-| File | Problem | Priority |
-|------|---------|----------|
-| `photo-guide-steps.tsx` | Hardcoded `text-gray-700`, `border-gray-300` — no conditionals | P2 |
-| `PhotoGuide.tsx` | Hardcoded colors not verified | P2 |
+| File                    | Problem                                                        | Priority |
+| ----------------------- | -------------------------------------------------------------- | -------- |
+| `photo-guide-steps.tsx` | Hardcoded `text-gray-700`, `border-gray-300` — no conditionals | P2       |
+| `PhotoGuide.tsx`        | Hardcoded colors not verified                                  | P2       |
 
 ---
 
@@ -63,9 +63,9 @@
 
 #### ❌ Issues Found
 
-| File | Problem | Priority |
-|------|---------|----------|
-| `InsurerPartnershipPage.tsx` (in `landing/`) | **Hardcoded light mode only** — `text-slate-700`, `text-slate-900`, `text-slate-600`, `border-slate-200`, `bg-slate-50`. No `appearanceMode` prop | P0 |
+| File                                         | Problem                                                                                                                                           | Priority |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `InsurerPartnershipPage.tsx` (in `landing/`) | **Hardcoded light mode only** — `text-slate-700`, `text-slate-900`, `text-slate-600`, `border-slate-200`, `bg-slate-50`. No `appearanceMode` prop | P0       |
 
 ---
 
@@ -88,9 +88,9 @@
 
 #### ❌ Issues Found
 
-| File | Problem | Priority |
-|------|---------|----------|
-| `ImageWithFallback.tsx` | Fallback renders `bg-white/[0.08]` (dark-only). No light mode fallback | P1 |
+| File                    | Problem                                                                | Priority |
+| ----------------------- | ---------------------------------------------------------------------- | -------- |
+| `ImageWithFallback.tsx` | Fallback renders `bg-white/[0.08]` (dark-only). No light mode fallback | P1       |
 
 ---
 
@@ -106,10 +106,10 @@
 
 #### ❌ Issues Found
 
-| File | Problem | Priority |
-|------|---------|----------|
-| `PhotoGalleryLightbox.tsx` | Hardcoded dark mode: `bg-white/10`, `text-white`. No light mode support | P0 |
-| `MissingReportState.tsx` | Hardcoded dark mode styling | P2 |
+| File                       | Problem                                                                 | Priority |
+| -------------------------- | ----------------------------------------------------------------------- | -------- |
+| `PhotoGalleryLightbox.tsx` | Hardcoded dark mode: `bg-white/10`, `text-white`. No light mode support | P0       |
+| `MissingReportState.tsx`   | Hardcoded dark mode styling                                             | P2       |
 
 ---
 
@@ -130,11 +130,11 @@
 
 #### ❌ Issues Found
 
-| File | Problem | Priority |
-|------|---------|----------|
-| `DashboardHeader.tsx` | **No appearance-mode prop.** Hardcoded `text-slate-100`, `text-gray-500`, `text-gray-800`. Logo unreadable in light mode | P0 |
-| `ProfileRoleStats.tsx` | Hardcoded light text | P1 |
-| `DesktopNavTabs.tsx` | Needs verification | P2 |
+| File                   | Problem                                                                                                                  | Priority |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------- |
+| `DashboardHeader.tsx`  | **No appearance-mode prop.** Hardcoded `text-slate-100`, `text-gray-500`, `text-gray-800`. Logo unreadable in light mode | P0       |
+| `ProfileRoleStats.tsx` | Hardcoded light text                                                                                                     | P1       |
+| `DesktopNavTabs.tsx`   | Needs verification                                                                                                       | P2       |
 
 ---
 
@@ -158,12 +158,12 @@
 
 #### ❌ Issues Found
 
-| File | Problem | Priority |
-|------|---------|----------|
-| `InsurerPartnershipPage.tsx` | Hardcoded light mode only — no dark mode support at all | P0 |
-| `AboutPage.tsx` | Hardcoded light mode only — `text-slate-700`, `bg-slate-50`, `border-slate-200` | P0 |
-| `CTASection.tsx` | Likely hardcoded light — needs verification | P2 |
-| `WhoWeServeSection.tsx` | May use light-only colors — needs verification | P2 |
+| File                         | Problem                                                                         | Priority |
+| ---------------------------- | ------------------------------------------------------------------------------- | -------- |
+| `InsurerPartnershipPage.tsx` | Hardcoded light mode only — no dark mode support at all                         | P0       |
+| `AboutPage.tsx`              | Hardcoded light mode only — `text-slate-700`, `bg-slate-50`, `border-slate-200` | P0       |
+| `CTASection.tsx`             | Likely hardcoded light — needs verification                                     | P2       |
+| `WhoWeServeSection.tsx`      | May use light-only colors — needs verification                                  | P2       |
 
 ---
 
@@ -171,12 +171,12 @@
 
 #### ❌ All Demo Components Hardcoded
 
-| File | Problem | Priority |
-|------|---------|----------|
-| `SmokeTestScreen.tsx` | Hardcoded light mode: `text-gray-900`, `text-gray-500`, `border-gray-100` | P1 |
-| `DemoAccountSwitcher.tsx` | Hardcoded dark mode: `bg-white/[0.10]`, `text-slate-100` | P1 |
-| `DemoLoginHelper.tsx` | Hardcoded light mode: `text-gray-600`, `text-gray-500` | P1 |
-| `DemoModeBanner.tsx` | Hardcoded `bg-amber-500/90` — acceptable as a persistent banner | P3 |
+| File                      | Problem                                                                   | Priority |
+| ------------------------- | ------------------------------------------------------------------------- | -------- |
+| `SmokeTestScreen.tsx`     | Hardcoded light mode: `text-gray-900`, `text-gray-500`, `border-gray-100` | P1       |
+| `DemoAccountSwitcher.tsx` | Hardcoded dark mode: `bg-white/[0.10]`, `text-slate-100`                  | P1       |
+| `DemoLoginHelper.tsx`     | Hardcoded light mode: `text-gray-600`, `text-gray-500`                    | P1       |
+| `DemoModeBanner.tsx`      | Hardcoded `bg-amber-500/90` — acceptable as a persistent banner           | P3       |
 
 ---
 
@@ -184,15 +184,15 @@
 
 ### P0 — User-Facing, High Impact
 
-1. **`DashboardHeader.tsx`** — No appearance prop, logo and profile text unreadable in light mode
-2. **`InsurerPartnershipPage.tsx`** — Entire page hardcoded light — invisible text in dark mode
-3. **`AboutPage.tsx`** — Entire page hardcoded light — invisible text in dark mode
-4. **`PhotoGalleryLightbox.tsx`** — Hardcoded dark overlay — no light mode counterpart
+1. **`DashboardHeader.tsx`** — No appearance prop, logo and profile text unreadable in light mode — ✅ FIXED in Pass 31
+2. **`InsurerPartnershipPage.tsx`** — Entire page hardcoded light — invisible text in dark mode — ✅ FIXED in Pass 33
+3. **`AboutPage.tsx`** — Entire page hardcoded light — invisible text in dark mode — ✅ FIXED in Pass 33
+4. **`PhotoGalleryLightbox.tsx`** — **Intentionally dark** — fullscreen photo lightbox, correct UX pattern (Instagram/Google Photos standard). Reclassified from P0 to N/A.
 
 ### P1 — High Priority
 
-5. **`ImageWithFallback.tsx`** — Fallback is dark-only, broken images look wrong in light mode
-6. **`ProfileRoleStats.tsx`** — Hardcoded light text
+5. **`ImageWithFallback.tsx`** — Fallback is dark-only, broken images look wrong in light mode — ✅ FIXED in Pass 35
+6. **`ProfileRoleStats.tsx`** — Already fully appearance-aware (has `isLightAppearance` prop with 6 conditional class variables — container, values, labels, footer). Incorrectly listed as P1 — reclassified to N/A.
 7. **`SmokeTestScreen.tsx`** — Demo checklist invisible in dark mode
 8. **`DemoAccountSwitcher.tsx`** — Can't preview in light mode
 9. **`DemoLoginHelper.tsx`** — Can't view in dark mode
@@ -218,9 +218,7 @@ type Props = {
   appearanceMode?: DashboardAppearanceMode; // or isLight?: boolean
 };
 
-export default function MyComponent({
-  appearanceMode = "map-dark",
-}: Props) {
+export default function MyComponent({ appearanceMode = "map-dark" }: Props) {
   const isLight = appearanceMode === "light";
 
   return (
