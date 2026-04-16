@@ -310,6 +310,16 @@ export async function customerRespondToEstimate(
       return respond({ error: `Estimate request is already '${current.status}'` }, 409);
     }
 
+    // Fire-and-forget: log activity event for estimate acceptance/decline
+    supabase.from('platform_activity_events').insert({
+      event_type: status === 'accepted' ? 'estimate_accepted' : 'estimate_declined',
+      source: 'api',
+      actor_id: authenticatedClerkUserId,
+      object_id: requestId,
+      outcome: 'success',
+      payload: { shop_name: data.shop_name || null },
+    }).then(null, () => {});
+
     return respond({ estimateRequest: data });
   } catch (error: any) {
     console.error("customerRespondToEstimate failed:", error);

@@ -468,7 +468,7 @@ CREATE TABLE public.estimate_requests (
   timeline TEXT DEFAULT 'flexible'
     CHECK (timeline IN ('urgent', 'this-week', 'flexible')),
   status TEXT DEFAULT 'pending'
-    CHECK (status IN ('pending', 'viewed', 'responded', 'declined')),
+    CHECK (status IN ('pending', 'viewed', 'responded', 'declined', 'accepted')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
