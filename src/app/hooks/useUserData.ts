@@ -96,11 +96,16 @@ export function useUserData(
       const identityCacheKey = getUserCacheKey(undefined, websiteUserKey);
       const signedInEmailCacheKey = getUserCacheKey(signedInEmail);
       const lastActiveCacheKey = getLastActiveCacheKey();
-      const cachedData =
-        readLocalStorageItemSafely(identityCacheKey) ||
-        readLocalStorageItemSafely(signedInEmailCacheKey) ||
-        readLocalStorageItemSafely(lastActiveCacheKey) ||
-        readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA);
+      // When a specific user is identified (clerkUserId), only load from
+      // user-scoped cache keys to prevent cross-account report leakage.
+      // The lastActive/bare fallbacks are only safe for anonymous pre-auth.
+      const cachedData = clerkUserId
+        ? (readLocalStorageItemSafely(identityCacheKey) ||
+           readLocalStorageItemSafely(signedInEmailCacheKey))
+        : (readLocalStorageItemSafely(identityCacheKey) ||
+           readLocalStorageItemSafely(signedInEmailCacheKey) ||
+           readLocalStorageItemSafely(lastActiveCacheKey) ||
+           readLocalStorageItemSafely(STORAGE_KEYS.USER_DATA));
       if (import.meta.env.DEV)
         console.log("[DEBUG] useUserData: Checking localStorage cache", {
           identityCacheKey,
