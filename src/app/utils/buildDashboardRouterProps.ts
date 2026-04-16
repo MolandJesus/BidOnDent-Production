@@ -33,6 +33,7 @@ type BuildDashboardRouterPropsArgs = {
   appearanceMode: DashboardAppearanceMode;
   onAppearanceModeChange: (mode: DashboardAppearanceMode) => void;
   openUserProfile?: () => void;
+  showErrorToast?: (message: string) => void;
 };
 
 export function buildDashboardRouterProps({
@@ -50,6 +51,7 @@ export function buildDashboardRouterProps({
   appearanceMode,
   onAppearanceModeChange,
   openUserProfile,
+  showErrorToast,
 }: BuildDashboardRouterPropsArgs) {
   return {
     currentTab: navigation.currentTab,
@@ -184,30 +186,37 @@ export function buildDashboardRouterProps({
       await handleAcceptBid(details, userProfile, navigation, userData, websiteIdentity);
     },
     onRejectBid: async (details: { bidId: string; shopName: string }) => {
-      const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
-      if (!rejectedBid) {
-        throw new Error("Failed to reject bid — backend did not confirm");
+      try {
+        const rejectedBid = await updateBidStatus(details.bidId, "rejected", userProfile?.id);
+        if (!rejectedBid) {
+          throw new Error("Failed to reject bid — backend did not confirm");
+        }
+        userData.setBids(
+          userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
+        );
+      } catch (err) {
+        showErrorToast?.(`Could not reject ${details.shopName}'s bid. Please try again.`);
+        throw err;
       }
-      // Update local bids state so UI reflects the change immediately
-      userData.setBids(
-        userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
-      );
     },
     onDeleteAccount: handleDeleteAccount,
     onSaveVehicles: async (vehicles: Vehicle[]) => {
-      // Detect vehicles that were removed and delete them from Supabase
-      const removedVehicles = userData.vehicles.filter(
-        (existing) => existing.id && !vehicles.some((v) => v.id === existing.id)
-      );
-      if (removedVehicles.length > 0) {
-        const clerkUserId = userProfile.id;
-        for (const removed of removedVehicles) {
-          if (removed.id) {
-            await deleteVehicle(removed.id, clerkUserId);
+      try {
+        const removedVehicles = userData.vehicles.filter(
+          (existing) => existing.id && !vehicles.some((v) => v.id === existing.id)
+        );
+        if (removedVehicles.length > 0) {
+          const clerkUserId = userProfile.id;
+          for (const removed of removedVehicles) {
+            if (removed.id) {
+              await deleteVehicle(removed.id, clerkUserId);
+            }
           }
         }
+        userData.setVehicles(vehicles);
+      } catch {
+        showErrorToast?.("Could not save vehicle changes. Please try again.");
       }
-      userData.setVehicles(vehicles);
     },
     onSaveVehicle: (vehicle: Vehicle) => {
       const existingIndex = userData.vehicles.findIndex((entry) => entry.id === vehicle.id);
@@ -225,41 +234,51 @@ export function buildDashboardRouterProps({
     },
     onReportSubmit,
     onUpdateJobStatus: async (jobId: string, status: string) => {
-      const statusMap: Record<
-        string,
-        "scheduled" | "in_progress" | "awaiting_parts" | "completed" | "cancelled"
-      > = {
-        "in-progress": "in_progress",
-        "awaiting-parts": "awaiting_parts",
-        completed: "completed",
-        cancelled: "cancelled",
-        scheduled: "scheduled",
-      };
-      const backendStatus = statusMap[status] || "in_progress";
+      try {
+        const statusMap: Record<
+          string,
+          "scheduled" | "in_progress" | "awaiting_parts" | "completed" | "cancelled"
+        > = {
+          "in-progress": "in_progress",
+          "awaiting-parts": "awaiting_parts",
+          completed: "completed",
+          cancelled: "cancelled",
+          scheduled: "scheduled",
+        };
+        const backendStatus = statusMap[status] || "in_progress";
 
-      // DB-sourced jobs: jobId IS the assignment UUID
-      // Report-derived jobs: jobId is a report ID — look up assignmentId
-      const report = userData.reports.find((r) => String(r.id) === jobId);
-      const assignmentId = report?.assignmentId || jobId;
+        const report = userData.reports.find((r) => String(r.id) === jobId);
+        const assignmentId = report?.assignmentId || jobId;
 
-      await updateJobAssignmentStatus(assignmentId, backendStatus);
+        await updateJobAssignmentStatus(assignmentId, backendStatus);
+      } catch {
+        showErrorToast?.("Could not update job status. Please try again.");
+      }
     },
     onDeleteReport: async (reportId: string): Promise<boolean> => {
-      const clerkId = userProfile?.id;
-      const success = await deleteDamageReport(reportId, clerkId);
-      if (success) {
-        userData.setReports(userData.reports.filter((r) => String(r.id) !== reportId));
+      try {
+        const clerkId = userProfile?.id;
+        const success = await deleteDamageReport(reportId, clerkId);
+        if (success) {
+          userData.setReports(userData.reports.filter((r) => String(r.id) !== reportId));
+        } else {
+          showErrorToast?.("Could not delete report. Please try again.");
+        }
+        return success;
+      } catch {
+        showErrorToast?.("Could not delete report. Please try again.");
+        return false;
       }
-      return success;
     },
     onConfirmCompletion: async (reportId: string) => {
       const clerkId = userProfile?.id;
-      if (clerkId) {
-        await updateReportStatus(reportId, "resolved", clerkId);
+      const updated = clerkId ? await updateReportStatus(reportId, "completed", clerkId) : false;
+      if (!updated) {
+        throw new Error("Could not confirm completion");
       }
       userData.setReports(
         userData.reports.map((r) =>
-          String(r.id) === String(reportId) ? { ...r, status: "resolved" as const } : r
+          String(r.id) === String(reportId) ? { ...r, status: "completed" as const } : r
         )
       );
     },

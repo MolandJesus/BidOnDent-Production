@@ -386,7 +386,7 @@ export default function ReportDetailScreen({
                       notifications.push({
                         category: "report",
                         title: "Repair confirmed complete",
-                        body: `Report #${report.id} has been marked as resolved.`,
+                        body: `Report #${report.id} has been marked as completed.`,
                         payload: { reportId: report.id },
                         userId: "",
                         deepLink: null,

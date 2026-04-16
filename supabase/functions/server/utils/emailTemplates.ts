@@ -51,7 +51,7 @@ export function newBidReceived(ctx: {
     "You received a new bid!",
     `<p style="color:#475569;line-height:1.6">Hi ${ctx.customerName},</p>
 <p style="color:#475569;line-height:1.6"><strong>${ctx.shopName}</strong> submitted a bid of <strong>$${ctx.amount.toLocaleString()}</strong> on your damage report.</p>
-${btn("View Bid", `${BASE_URL}/dashboard/customer/bids`)}
+${btn("View Bid", `${BASE_URL}`)}
 <p style="color:#94a3b8;font-size:13px">You can accept, compare, or decline this bid from your dashboard.</p>`
   );
   const text = `Hi ${ctx.customerName}, ${ctx.shopName} submitted a bid of $${ctx.amount.toLocaleString()} on your damage report. View it at ${BASE_URL}/dashboard/customer/bids`;
@@ -74,11 +74,11 @@ export function claimDecisionNotification(ctx: {
   const body = isApproved
     ? `<p style="color:#475569;line-height:1.6">Hi ${ctx.customerName},</p>
 <p style="color:#475569;line-height:1.6">Great news! Your insurance claim has been <strong style="color:#16a34a">approved</strong> for <strong>$${(ctx.amount ?? 0).toLocaleString()}</strong>.</p>
-${btn("View Details", `${BASE_URL}/dashboard/customer/reports`)}`
+${btn("View Details", `${BASE_URL}`)}`
     : `<p style="color:#475569;line-height:1.6">Hi ${ctx.customerName},</p>
 <p style="color:#475569;line-height:1.6">Your insurance claim has been <strong style="color:#dc2626">denied</strong>.</p>
 ${ctx.reason ? `<p style="color:#475569;line-height:1.6"><strong>Reason:</strong> ${ctx.reason}</p>` : ""}
-${btn("View Details", `${BASE_URL}/dashboard/customer/reports`)}`;
+${btn("View Details", `${BASE_URL}`)}`;
 
   const text = isApproved
     ? `Hi ${ctx.customerName}, your claim was approved for $${(ctx.amount ?? 0).toLocaleString()}. View: ${BASE_URL}/dashboard/customer/reports`
@@ -104,7 +104,7 @@ export function bidStatusNotification(ctx: {
     isAccepted ? "Your bid was accepted!" : "Bid status update",
     `<p style="color:#475569;line-height:1.6">Hi ${ctx.shopName},</p>
 <p style="color:#475569;line-height:1.6">${ctx.customerName} has <strong style="color:${isAccepted ? "#16a34a" : "#dc2626"}">${ctx.status}</strong> your bid of <strong>$${ctx.amount.toLocaleString()}</strong>.</p>
-${isAccepted ? btn("View Job", `${BASE_URL}/dashboard/shops/jobs`) : ""}
+${isAccepted ? btn("View Job", `${BASE_URL}`) : ""}
 <p style="color:#94a3b8;font-size:13px">${isAccepted ? "You can now schedule the repair from your dashboard." : "Keep bidding on other repair requests in your area."}</p>`
   );
   const text = `Hi ${ctx.shopName}, ${ctx.customerName} has ${ctx.status} your bid of $${ctx.amount.toLocaleString()}. ${isAccepted ? `View: ${BASE_URL}/dashboard/shops/jobs` : ""}`;

@@ -1,0 +1,337 @@
+# BidOnDent — System State (REFERENCE)
+
+**Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
+
+**Last updated:** 2026-04-16  
+**Build:** 0 errors, ~3.4s  
+**Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)  
+**Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`
+
+---
+
+## AI Session Reading Order
+
+Before starting work, read docs in this order based on task type:
+
+| Task | Reading order |
+|---|---|
+| **Bug fix** | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code |
+| **Feature (within hardening plan)** | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code |
+| **Architecture change** | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md` → code |
+| **Planning session** | All LAW → all REF → all PLAN → code as needed |
+| **UI/design work** | `LAW_PROJECT_RULES.md` → this doc → `theme.css` → code |
+
+**If this doc and `LAW_HARDENING_PLAN.md` disagree, the Hardening Plan wins.** Flag the conflict.
+
+---
+
+## 1. What BidOnDent Currently Is
+
+A **pre-launch React SPA** implementing a geo-native automotive repair marketplace. Three user roles (customer, shop, insurer) interact through a map-first interface backed by Supabase.
+
+**Maturity:** Late alpha / early beta. Core customer→shop→bid loop is wired end-to-end but has zero completed real transactions with real users. Email notifications are not delivering. No payment integration.
+
+**Coverage area:** NY metro — Westchester, Rockland, Dutchess, Nassau, Orange, Putnam counties.
+
+---
+
+## 2. Tech Stack (Actual Versions)
+
+| Layer | Technology | Version |
+|---|---|---|
+| Framework | React + TypeScript | 18.3.1 / ~5.7.0 |
+| Build | Vite | 6.4.2 |
+| CSS | Tailwind CSS + custom `bd-*` tokens | 4.1.12 |
+| Auth | Clerk | @clerk/clerk-react 5.59.2 |
+| Backend | Supabase (PostgreSQL, Edge Functions, Storage, Realtime) | @supabase/supabase-js 2.89.0 |
+| Maps | MapLibre GL JS + react-map-gl | 5.21.1 / 8.1.0 |
+| Routing | OSRM (external) + Nominatim geocoding | External services |
+| Monitoring | Sentry | @sentry/react (wired) |
+| UI components | Radix UI (27+ primitives), motion (animations), recharts | Various |
+| PWA | VitePWA plugin + workbox | Configured |
+
+**Edge functions:** Single Deno.serve() router under `supabase/functions/server/`. Canonical slug: `server`. Legacy alias: `make-server-9f243523`.
+
+---
+
+## 3. Current Role Reality
+
+### Customer (most complete)
+- Sign up via Clerk → profile created in Supabase
+- Submit damage report (6-step wizard with photo upload, location, vehicle)
+- View own reports (fetched from Supabase, enriched with signed photo URLs)
+- View bids on reports (live via Supabase Realtime subscription)
+- Accept/reject bids (writes bid status, creates job_assignment, auto-rejects competing bids)
+- Vehicle management (CRUD)
+- Estimate requests to shops
+- **Not working:** Email notifications (API key not deployed). No confirmation dialog on bid acceptance.
+
+### Shop (mostly complete)
+- View marketplace reports — **geo-filtered by service area** (PostGIS `find_reports_in_service_area`). Shops without service areas see most recent 50.
+- Submit bids with geo enrichment from shop_profiles
+- View own submitted bids
+- Estimate inbox (receive/respond to customer requests)
+- Active jobs screen (DB-sourced + report-derived, deduplicated)
+- Shop profile with service areas (PostGIS polygons)
+- **Not working:** Reports not filtered by service area. No notification when bid is accepted.
+
+### Insurer (thin stub)
+- Views all marketplace reports (same as shop — unfiltered)
+- Can "approve/deny" reports by patching `damage_reports` fields
+- Partner shops screen (displays shops, no business logic)
+- **Reality:** No claims table exists. "Claims" are damage reports. No policy verification, no adjuster workflow. See KI-030.
+
+### Admin (API-only)
+- User management, profile listing, test account creation via edge function endpoints
+- Protected by `requireAdminContext` (checks `is_admin` on profiles table)
+- No admin UI — all operations via API calls
+
+---
+
+## 4. Frontend Architecture
+
+### Application Shell
+
+```
+App.tsx (491 lines) — ClerkProvider + AppContent
+  └── AppContent — Auth resolution, hook init, render logic
+      ├── Hash pages (#about, #privacy, #terms) — lazy-loaded standalone
+      ├── Loading state
+      ├── Onboarding gate (account type selection)
+      ├── Landing page (unauthenticated)
+      └── DashboardLayout
+          └── DashboardRouter (472 lines) — Screen dispatch
+              ├── HomeScreen, ReportScreen, BidsScreen, AccountScreen
+              ├── ShopRequestsScreen, ShopActiveJobsScreen, ShopEstimateInboxScreen
+              ├── InsurerClaimsScreen, InsurerPartnerShopsScreen
+              └── DashboardSecondaryViews (report detail, shop directory, vehicles, etc.)
+```
+
+### Current Routing Model (State-Driven)
+
+Navigation is NOT URL-based. Two React state values drive all routing:
+
+- `viewMode` — which "page" (`dashboard`, `reports-list`, `report-detail`, `shop-directory`, etc.)
+- `currentTab` — which tab within dashboard (`home`, `report`, `bids`, `requests`, `jobs`, `claims`, `account`)
+
+These are stored in React state + persisted to localStorage. `history.pushState()` is used for browser back button support but the URL never changes from `/`.
+
+**Key file:** [useNavigation.ts](../src/app/hooks/useNavigation.ts) (245 lines)
+
+**12 valid view modes:** dashboard, reports-list, report-detail, insurer-connect, liked-shops, shop-directory, insurance-companies, competitor-analysis, vehicles, new-claim, smoke-test, demo-switcher.
+
+**Known limitation:** No URL sharing, no bookmarking, no deep linking. See KI-011.
+
+### Prop-Drilling Pattern (Current Bottleneck)
+
+All dashboard state and callbacks flow through a single adapter function:
+
+```
+App.tsx → buildDashboardRouterProps() → DashboardRouter → Screen Components
+```
+
+[buildDashboardRouterProps.ts](../src/app/utils/buildDashboardRouterProps.ts) (267 lines) constructs 60+ props from navigation state, user data, and handlers. It contains inline async mutation handlers that call Supabase services and update local state.
+
+[DashboardRouterProps](../src/app/routers/dashboard-router-types.ts) (90 lines) — the interface with ~30 handler callbacks.
+
+**Every new feature requires editing:** types file → builder → DashboardRouter → intermediate component → consuming component. See KI-010.
+
+### State Ownership
+
+| Domain | Owner | Source of Truth | Sync |
+|---|---|---|---|
+| Auth/session | Clerk SDK | Clerk | Real-time via hooks |
+| Navigation | useNavigation | React state | localStorage persist + history.pushState |
+| User profile | useUserData | Supabase (cloud-first) | Fetched on mount, Clerk→local sync via useAppEffects |
+| Reports | useUserData.reports | Supabase | Fetched on mount, manual refetch after mutations |
+| Bids (stale) | useUserData.bids | Supabase | Fetched once on mount |
+| Bids (live) | useBidsForReport | Supabase Realtime | Real-time subscription per report |
+| Marketplace reports | useDashboardData → useMarketplaceReports | Supabase | Fetched on mount for shop/insurer |
+| Vehicles | useUserData.vehicles | Supabase | Fetched on mount, optimistic updates |
+| Appearance mode | AppearanceModeContext | React context + localStorage | Cross-tab sync |
+
+**Split state warning:** Bids have dual ownership. See KI-012.
+
+### Key Hooks
+
+| Hook | Lines | Purpose |
+|---|---|---|
+| useNavigation | 245 | View mode, tab, report selection, demo mode, history integration |
+| useUserData | 412 | Cloud-first user data: reports, vehicles, bids, profile, photos |
+| useAppHandlers | 226 | Mutation handlers: login, logout, delete account, submit bid, submit report |
+| useAppEffects | 86 | Side effects: click-outside, Clerk→local profile sync |
+| useDashboardData | (in routers/) | Marketplace data merging, estimate requests, shop bids |
+| useBidsForReport | 143 | Live bids for a specific report with Realtime subscription |
+| useMarketplaceReports | 71 | Fetches ALL reports for shop/insurer (no pagination) |
+
+---
+
+## 5. Backend Architecture
+
+### Edge Function Router
+
+Single `Deno.serve()` in [server/index.ts](../supabase/functions/server/index.ts) (417 lines) with sequential `if (path === ... && req.method === ...)` matching for ~50 routes.
+
+**Middleware (applied per-handler, not globally):**
+- `requireClerkSession` — verifies Clerk JWT, extracts session
+- `ensureClerkUserMatchesSession` — validates clerkUserId param matches JWT subject
+- `requireMarketplaceContext` — verifies shop/insurer role
+- `requireAdminContext` — verifies is_admin flag
+- Rate limiting — applied globally before dispatch (but identity from query params — see KI-003)
+
+**Handler modules:** reports, bids, vehicles, workflow, profiles, network_profiles, estimate_requests, service_areas, geographic_matching, notification_preferences, storage, auth, admin, health, intake, navigation, preferences, website_relationships.
+
+### Auth Flow
+
+```
+Client: Clerk JWT → Authorization header
+  ↓
+Edge Function: requireClerkSession() extracts session from JWT
+  ↓
+ensureClerkUserMatchesSession() validates clerkUserId param matches session.sub
+  ↓
+Profile lookup: profiles.clerk_user_id = session.sub
+  (fallback: profiles.email = session.email — legacy migration path)
+  ↓
+Handler executes with authenticated clerkUserId
+```
+
+**Note:** Every API call passes `clerkUserId` as a parameter even though the JWT already contains it. This is a legacy pattern from the pre-Clerk auth system.
+
+### Database
+
+**Primary tables:** profiles, vehicles, damage_reports, bids, job_assignments, shop_profiles, insurer_profiles, website_preferences, website_relationships, navigation_sessions, shop_interest_submissions, insurer_interest_submissions, platform_activity_events, notification_preferences, shop_service_areas, estimate_requests.
+
+**Schema source of truth:** `supabase/migrations/20251230000001_full_schema.sql` (frozen). New changes go in new timestamped migration files.
+
+**Identity column:** `clerk_user_id` (TEXT) is the forward standard. Legacy `user_id` (UUID) exists on some tables but is not used in new code.
+
+**PostGIS:** Geography columns on `shop_profiles` and `damage_reports`. `shop_service_areas` stores polygon geometries.
+
+**RLS:** Enabled on launch-critical tables (hardened in Phase 3). Edge function uses service role key — RLS is bypassed by edge functions, enforced on direct client access (Realtime).
+
+### Data Boundary (Type Translation)
+
+**The problem:** DB uses snake_case. Domain uses camelCase. Translation happens in multiple places (see KI-020).
+
+**Current mapping locations:**
+1. Edge function handlers (`hydrateReport`, `buildReportPayload`) — server-side enrichment
+2. Client service files (`mapReportFromApi` in `services/supabase/reports.ts`) — client adapter
+3. Hook-level (`mapBid` in `useBidsForReport.ts`) — handles 4 field name variants for `shopId`
+4. Inline in various components
+
+**Target:** Single adapter function per entity type (Law 4). Not yet implemented.
+
+---
+
+## 6. Map Stack
+
+### Active and Foundational
+
+| Component | Purpose | Status |
+|---|---|---|
+| MapLibre GL JS + react-map-gl | WebGL map rendering | Active, stable |
+| CustomerMapWidget / ShopMapWidget / InsurerMapWidget | Dashboard home map previews | Active |
+| ShopDirectoryScreen + MapLibreShopDirectoryMapPane | Full interactive shop discovery | Active |
+| PostGIS geography columns | Spatial data storage | Active |
+| getNearbyShops endpoint | Find shops near a location | Built, **not wired to customer flow** |
+| getReportsInServiceArea endpoint | Filter reports by shop service area | Built, **not wired to shop flow** |
+| shop_service_areas table + CRUD | Shop service area polygons | Active, CRUD works |
+| Tile caching (service worker, 7-day TTL) | Performance | Active |
+
+### Built but Frozen
+
+| Component | Purpose | Status |
+|---|---|---|
+| OSRM routing integration | Turn-by-turn directions | Built, not needed for marketplace |
+| Web Speech API voice navigation | British voice guidance | Built, frozen |
+| navigation_sessions table + API | Real-time navigation tracking | Built, frozen |
+| useNavigationLaunch / useNavigationLifecycleEffects | Navigation state management | Built, frozen |
+
+**Map tile sources:** CARTO Voyager (light), CARTO Dark All (night), Esri Satellite.
+
+---
+
+## 7. Design System
+
+**Target aesthetic:** Apple Maps-inspired. Map is base layer. Everything floats above geography.
+
+**Appearance modes:** `"map-dark"` (default) | `"light"` — set via `data-appearance-mode` attribute.
+
+**CSS utilities** (defined in [theme.css](../src/styles/theme.css), 2173 lines):
+
+- Dashboard: `bd-dashboard-panel`, `bd-dashboard-section`, `bd-dashboard-chip`, `bd-dashboard-primary-button`, `bd-dashboard-secondary-button`, `bd-dashboard-ghost-button`
+- Accent modifiers: `--accent-blue`, `--accent-cyan`, `--accent-indigo`, `--deep`, `--interactive`
+- Landing: `bd-glass-panel`, `bd-glass-card`, `bd-glass-control`, `bd-glass-badge`, `bd-glass-floating`
+- Light mode: `bd-light-surface` class for white backgrounds with dark text
+
+**Color system:**
+- Royal blue `#003d82` — primary identity / CTAs
+- Sky blue `#00a0e9` — secondary / gradients
+- Navy — depth / night background
+
+**Note:** `primaryColor` and `secondaryColor` are threaded as props through the component tree. These are constants that never change. They should be CSS custom properties but this refactor is deferred.
+
+---
+
+## 8. Build and Development
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Production build (must = 0 errors) |
+| `supabase functions serve` | Local edge function server |
+| `supabase start` | Local Supabase Docker stack |
+
+**Staging:** Supabase project `lhhdqycnhweaxqviwdqt` (created 2026-04-15).
+
+**Build health:** 0 TypeScript errors (fixed in Pass 15). tsc --noEmit was previously failing with 49 errors — all resolved.
+
+**Chunk splitting:** Manual vendor chunks in vite.config.ts (react, supabase, clerk, radix, motion, ui, sentry).
+
+---
+
+## 9. What's Foundational vs. Built-but-Frozen vs. Deferred
+
+### Foundational (active, invest in)
+- Report submission wizard
+- Bid system (submit, accept, reject, auto-reject competing)
+- Map widgets and shop directory
+- PostGIS spatial queries and service areas
+- Clerk auth + edge function auth middleware
+- PWA configuration
+- `bd-*` design system tokens
+- Supabase Realtime for bid updates
+- Activity event logging
+
+### Built but Frozen (don't delete, don't invest)
+- OSRM turn-by-turn navigation
+- Web Speech API voice guidance
+- Navigation sessions (DB table + API + Realtime)
+- Market intelligence / AI shop recommendation engine
+
+### Deferred (not yet built)
+- URL-based routing (React Router / TanStack Router)
+- DashboardContext (replaces prop-drilling)
+- Single adapter layer per entity
+- Payment integration
+- Reviews and ratings
+- Push notifications
+- Admin UI
+- Content moderation
+- Dispute resolution
+
+---
+
+## 10. Authoritative Documents After This Rewrite
+
+| Document | Authority | Use when |
+|---|---|---|
+| `docs/LAW_PROJECT_RULES.md` | Permanent behavioral rules | Every session — governs what to do and not do |
+| `docs/LAW_HARDENING_PLAN.md` | Execution authority for hardening phase | Every execution session — governs current work |
+| `docs/REF_SYSTEM_STATE.md` (this doc) | Current system truth | Understanding architecture before making changes |
+| `docs/REF_KNOWN_ISSUES.md` | Known bugs and gaps | Before starting work on any area — check for known issues |
+| `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md` | Module status (to be rewritten as REF_MODULE_STATUS) | Checking what's done |
+| `docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md` | Deferred work (to be moved to PLAN tier) | Checking if something is deferred |
+
+**Superseded:** `docs/CLAUDE_AI_MASTER_CONTEXT.md` → archived to `docs/archive/`. This doc replaces it.

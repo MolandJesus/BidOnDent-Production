@@ -1,6 +1,11 @@
 ## START HERE
 
-Read [`docs/CLAUDE_AI_MASTER_CONTEXT.md`](../docs/CLAUDE_AI_MASTER_CONTEXT.md) before every session. It is the single source of truth for product context, architecture, design system, current state, map program status, and next priorities.
+Read these docs before every session (in order):
+
+1. [`docs/LAW_PROJECT_RULES.md`](../docs/LAW_PROJECT_RULES.md) — permanent behavioral rules, product definition, 6 laws
+2. [`docs/LAW_HARDENING_PLAN.md`](../docs/LAW_HARDENING_PLAN.md) — current execution authority
+3. [`docs/REF_SYSTEM_STATE.md`](../docs/REF_SYSTEM_STATE.md) — current architecture truth (replaces old CLAUDE_AI_MASTER_CONTEXT.md)
+4. [`docs/REF_KNOWN_ISSUES.md`](../docs/REF_KNOWN_ISSUES.md) — known bugs and gaps
 
 ---
 
@@ -144,12 +149,15 @@ For passes affecting multiple screens, shared shell surfaces, or multiple system
 
 Treat docs as essential to the codebase, not passive reference:
 
-- `docs/BIDONDENT_PRODUCT_BRAIN.md` — primary execution framework
-- `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — strategic map law
-- `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — delivery reality
+- `docs/LAW_PROJECT_RULES.md` — permanent project law (governs all work)
+- `docs/LAW_HARDENING_PLAN.md` — execution authority for hardening phase
+- `docs/REF_SYSTEM_STATE.md` — current architecture truth
+- `docs/REF_KNOWN_ISSUES.md` — known bugs and gaps
 - `docs/CODE_ORGANIZATION_AUDIT.md` — weak seams, safe boundaries
+- `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — strategic map vision (paused during hardening)
+- `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — historical pass log / audit trail
 
-A future AI or human should be able to read one Quick Card and one Upgrade Checklist in the Product Brain and begin correct work without reading the full codebase.
+Authority model: LAW > REFERENCE > PLAN. If any doc conflicts with LAW docs, LAW wins.
 
 ## Report Format After Each Pass
 

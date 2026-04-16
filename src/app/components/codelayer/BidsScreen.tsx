@@ -11,6 +11,8 @@ import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import BidsEmptyState from "./BidsEmptyState";
 import BidsSummaryHeader from "./BidsSummaryHeader";
 import BidsGeographyMap from "./BidsGeographyMap";
+import BidAcceptConfirmationDialog from "./BidAcceptConfirmationDialog";
+import type { PendingAcceptBid } from "./BidAcceptConfirmationDialog";
 import type { CoveragePartnerShop } from "../maps/serviceCoverageMapTypes";
 import { useNotifications } from "../../features/notifications/NotificationContext";
 import { FILTERS, transformBid, type BidsScreenProps, type FilterType } from "./bidsScreenHelpers";
@@ -34,6 +36,7 @@ export default function BidsScreen({
   const [acceptedBidId, setAcceptedBidId] = useState<string | number | null>(null);
   const [confirmedBid, setConfirmedBid] = useState<AcceptedBidInfo | null>(null);
   const [filter, setFilter] = useState<FilterType>("all");
+  const [pendingAcceptBid, setPendingAcceptBid] = useState<PendingAcceptBid | null>(null);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [selectedShop, setSelectedShop] = useState<string>("");
   const [shopRatings, setShopRatings] = useState<{
@@ -296,51 +299,14 @@ export default function BidsScreen({
               appearanceMode={appearanceMode}
               userRating={userRated}
               onToggle={() => setActiveBid((prev) => (prev === bid.id ? null : bid.id))}
-              onAccept={async () => {
-                setAcceptedBidId(bid.id);
-                setConfirmedBid({
+              onAccept={() => {
+                setPendingAcceptBid({
+                  id: bid.id,
                   shopName: bid.shopName,
                   price: bid.price,
                   timeframe: bid.timeframe,
-                  shopLatitude: bid.shopLatitude,
-                  shopLongitude: bid.shopLongitude,
-                  shopEmail: bid.shopEmail || undefined,
-                  shopPhone: bid.shopPhone || undefined,
-                  shopAddress: bid.shopAddress || undefined,
+                  estimatedDays: bid.estimatedDays,
                 });
-
-                try {
-                  await onAcceptBid?.({
-                    bidId: String(bid.id),
-                    shopId: bid.shopId,
-                    shopName: bid.shopName,
-                    price: bid.price,
-                    timeframe: bid.timeframe,
-                    reportId: bid.reportId,
-                  });
-                  notifications.push({
-                    category: "bid",
-                    title: `Bid accepted — ${bid.shopName}`,
-                    body: `You accepted ${bid.shopName}'s bid for $${bid.price.toLocaleString()}.`,
-                    payload: { bidId: bid.id, shopId: bid.shopId, reportId: bid.reportId },
-                    userId: "",
-                    deepLink: { screen: "bid", bidId: String(bid.id), reportId: bid.reportId },
-                    priority: "high",
-                  });
-                } catch {
-                  // Roll back optimistic state
-                  setAcceptedBidId(null);
-                  setConfirmedBid(null);
-                  notifications.push({
-                    category: "bid",
-                    title: "Bid acceptance failed",
-                    body: `Could not accept ${bid.shopName}'s bid. Please try again.`,
-                    payload: { bidId: bid.id },
-                    userId: "",
-                    deepLink: null,
-                    priority: "high",
-                  });
-                }
               }}
               onReject={async () => {
                 try {
@@ -417,6 +383,63 @@ export default function BidsScreen({
           appearanceMode={appearanceMode}
         />
       )}
+
+      <BidAcceptConfirmationDialog
+        bid={pendingAcceptBid}
+        isLight={isLight}
+        primaryColor={primaryColor}
+        onCancel={() => setPendingAcceptBid(null)}
+        onConfirm={async () => {
+          if (!pendingAcceptBid) return;
+          const bid = liveBids.find((b) => b.id === pendingAcceptBid.id);
+          if (!bid) return;
+
+          setPendingAcceptBid(null);
+          setAcceptedBidId(bid.id);
+          setConfirmedBid({
+            shopName: bid.shopName,
+            price: bid.price,
+            timeframe: bid.timeframe,
+            shopLatitude: bid.shopLatitude,
+            shopLongitude: bid.shopLongitude,
+            shopEmail: bid.shopEmail || undefined,
+            shopPhone: bid.shopPhone || undefined,
+            shopAddress: bid.shopAddress || undefined,
+          });
+
+          try {
+            await onAcceptBid?.({
+              bidId: String(bid.id),
+              shopId: bid.shopId,
+              shopName: bid.shopName,
+              price: bid.price,
+              timeframe: bid.timeframe,
+              reportId: bid.reportId,
+            });
+            notifications.push({
+              category: "bid",
+              title: `Bid accepted — ${bid.shopName}`,
+              body: `You accepted ${bid.shopName}'s bid for $${bid.price.toLocaleString()}.`,
+              payload: { bidId: bid.id, shopId: bid.shopId, reportId: bid.reportId },
+              userId: "",
+              deepLink: { screen: "bid", bidId: String(bid.id), reportId: bid.reportId },
+              priority: "high",
+            });
+          } catch {
+            setAcceptedBidId(null);
+            setConfirmedBid(null);
+            notifications.push({
+              category: "bid",
+              title: "Bid acceptance failed",
+              body: `Could not accept ${bid.shopName}'s bid. Please try again.`,
+              payload: { bidId: bid.id },
+              userId: "",
+              deepLink: null,
+              priority: "high",
+            });
+          }
+        }}
+      />
 
       <AcceptedBidConfirmationSheet
         bid={confirmedBid}

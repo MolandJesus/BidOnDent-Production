@@ -3,32 +3,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { handleAcceptBid } from "./buildDashboardRouterPropsHelpers";
 
 const {
-  mockGetBidsForReport,
   mockUpdateBidStatus,
-  mockUpdateReportStatus,
-  mockCreateJobAssignment,
   mockZipToCoordinates,
   mockUpdateWebsiteSessionMemory,
 } = vi.hoisted(() => ({
-  mockGetBidsForReport: vi.fn(),
   mockUpdateBidStatus: vi.fn(),
-  mockUpdateReportStatus: vi.fn(),
-  mockCreateJobAssignment: vi.fn(),
   mockZipToCoordinates: vi.fn(),
   mockUpdateWebsiteSessionMemory: vi.fn(),
 }));
 
 vi.mock("../services/supabase/bids", () => ({
-  getBidsForReport: mockGetBidsForReport,
   updateBidStatus: mockUpdateBidStatus,
-}));
-
-vi.mock("../services/supabase/reports", () => ({
-  updateReportStatus: mockUpdateReportStatus,
-}));
-
-vi.mock("../services/supabase/workflow", () => ({
-  createJobAssignment: mockCreateJobAssignment,
 }));
 
 vi.mock("../services/supabase/map", () => ({
@@ -100,16 +85,9 @@ describe("handleAcceptBid", () => {
       id: bidId,
       status,
     }));
-    mockGetBidsForReport.mockResolvedValue([
-      { id: "bid-1", status: "pending" },
-      { id: "bid-2", status: "pending" },
-      { id: "bid-3", status: "rejected" },
-    ]);
-    mockUpdateReportStatus.mockResolvedValue({ id: "report-1", status: "active" });
-    mockCreateJobAssignment.mockResolvedValue({ id: "assignment-1" });
   });
 
-  it("accepts a bid, rejects competitors, creates an assignment, and hands off to map flow", async () => {
+  it("accepts a bid, updates local state, and hands off to map flow", async () => {
     const navigation = createNavigationState("report-1");
     const userData = createUserDataState();
     const websiteIdentity = {
@@ -136,26 +114,20 @@ describe("handleAcceptBid", () => {
       websiteIdentity
     );
 
+    // Server call: only updateBidStatus (server handles report status + job assignment atomically)
     expect(mockUpdateBidStatus).toHaveBeenCalledWith("bid-1", "accepted", "clerk_123");
-    expect(mockUpdateReportStatus).toHaveBeenCalledWith("report-1", "active", "clerk_123");
-    expect(mockGetBidsForReport).toHaveBeenCalledWith("report-1");
-    expect(mockUpdateBidStatus).toHaveBeenCalledWith("bid-2", "rejected", "clerk_123");
-    expect(mockCreateJobAssignment).toHaveBeenCalledWith({
-      damage_report_id: "report-1",
-      customer_user_id: "clerk_123",
-      shop_user_id: "shop-1",
-      bid_id: "bid-1",
-      status: "scheduled",
-    });
+    expect(mockUpdateBidStatus).toHaveBeenCalledTimes(1);
 
+    // Local state updates
     expect(userData.bids.find((bid) => bid.id === "bid-1")?.status).toBe("accepted");
     expect(userData.reports[0]).toEqual(
       expect.objectContaining({
         id: "report-1",
         status: "active",
-        assignmentId: "assignment-1",
       })
     );
+
+    // Map flow handoff
     expect(mockUpdateWebsiteSessionMemory).toHaveBeenCalledWith(
       websiteIdentity,
       expect.objectContaining({
@@ -208,9 +180,6 @@ describe("handleAcceptBid", () => {
       )
     ).rejects.toThrow("Failed to accept bid");
 
-    expect(mockUpdateReportStatus).not.toHaveBeenCalled();
-    expect(mockGetBidsForReport).not.toHaveBeenCalled();
-    expect(mockCreateJobAssignment).not.toHaveBeenCalled();
     expect(mockUpdateWebsiteSessionMemory).not.toHaveBeenCalled();
     expect(navigation.setViewMode).not.toHaveBeenCalled();
     expect(userData.reports[0]).toEqual(

@@ -85,7 +85,7 @@ import { createEstimateRequest, getEstimateRequests, updateEstimateRequest, cust
 import { getShopServiceAreas, saveShopServiceArea, deleteShopServiceArea } from './handlers/service_areas.ts'
 import { getNearbyShops, getReportsInServiceArea } from './handlers/geographic_matching.ts'
 import { getNotificationPreferences, updateNotificationPreferences } from './handlers/notification_preferences.ts'
-import { getRateLimitKey, checkRateLimit, maybePruneStore } from './utils/rateLimiter.ts'
+import { getRateLimitKey, checkRateLimit, maybePruneStore, extractJwtSubject } from './utils/rateLimiter.ts'
 
 console.log(`Edge Function Server Starting - Build: ${config.BUILD_VERSION}`)
 ;(async () => {
@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
   // Skip rate limiting on OPTIONS, health checks, and migration (internal ops)
   const isExempt = path === '/health' || path === '/health/deep' || path === '/migrate-database'
   if (!isExempt) {
-    const identity = url.searchParams.get('clerkUserId') ?? url.searchParams.get('customerClerkUserId') ?? null
+    const identity = extractJwtSubject(req)
     const key = getRateLimitKey(req, identity)
     const { allowed, retryAfterMs } = checkRateLimit(key, rateLimitType)
     if (!allowed) {

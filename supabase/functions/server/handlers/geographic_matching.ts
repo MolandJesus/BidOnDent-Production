@@ -2,6 +2,45 @@ import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { requireClerkSession } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 
+/**
+ * Resolve a shop's service areas and return report IDs within them.
+ * Returns null if the shop has no profile or no active service areas (caller should fallback).
+ * Returns empty array if service areas exist but contain no reports.
+ */
+export async function resolveShopGeoReportIds(
+  clerkUserId: string,
+  supabase: SupabaseClient,
+): Promise<string[] | null> {
+  const { data: shopProfile } = await supabase
+    .from('shop_profiles')
+    .select('id')
+    .eq('clerk_user_id', clerkUserId)
+    .maybeSingle();
+
+  if (!shopProfile) return null;
+
+  const { data: areas } = await supabase
+    .from('shop_service_areas')
+    .select('id')
+    .eq('shop_profile_id', shopProfile.id)
+    .eq('is_active', true)
+    .limit(1);
+
+  if (!areas || areas.length === 0) return null;
+
+  const { data: geoResults, error: geoError } = await supabase.rpc(
+    'find_reports_in_service_area',
+    { p_shop_profile_id: shopProfile.id }
+  );
+
+  if (geoError) {
+    console.error('resolveShopGeoReportIds: RPC error:', sanitizeErrorMessage(geoError.message));
+    return null;
+  }
+
+  return (geoResults ?? []).map((r: { report_id: string }) => r.report_id);
+}
+
 type RespondFunction = (
   body: unknown,
   status?: number,

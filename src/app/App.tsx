@@ -373,6 +373,14 @@ function AppContent() {
       appearanceMode,
       onAppearanceModeChange: setAppearanceMode,
       openUserProfile,
+      showErrorToast: (message: string) => {
+        notifications.showToast({
+          message,
+          variant: "error",
+          durationMs: 5000,
+          deepLink: null,
+        });
+      },
     });
 
     return (

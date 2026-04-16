@@ -22,6 +22,27 @@ function getIp(req: Request): string {
   return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 }
 
+/**
+ * Extract the JWT `sub` claim from the Authorization header without full
+ * cryptographic verification. This is intentional: rate limiting runs before
+ * auth verification and only needs a best-effort identity that cannot be
+ * trivially spoofed via query params. Full JWT verification happens later
+ * per-handler via `requireClerkSession`.
+ */
+export function extractJwtSubject(req: Request): string | null {
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader?.startsWith("Bearer ")) return null;
+  const token = authHeader.slice(7);
+  const parts = token.split(".");
+  if (parts.length !== 3) return null;
+  try {
+    const payload = JSON.parse(atob(parts[1]));
+    return typeof payload.sub === "string" && payload.sub.length > 0 ? payload.sub : null;
+  } catch {
+    return null;
+  }
+}
+
 export function getRateLimitKey(req: Request, identity?: string | null): string {
   const ip = getIp(req);
   return identity ? `${identity}:${ip}` : ip;

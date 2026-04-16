@@ -5,8 +5,6 @@ import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
 import type { Bid } from "../types";
 import { updateBidStatus } from "../services/supabase/bids";
-import { updateReportStatus } from "../services/supabase/reports";
-import { createJobAssignment } from "../services/supabase/workflow";
 import { zipToCoordinates } from "../services/supabase/map";
 
 type NavigationState = ReturnType<typeof useNavigation>;
@@ -33,56 +31,19 @@ export async function handleAcceptBid(
       throw new Error("Failed to accept bid — backend did not confirm");
     }
 
-    // Use the reportId passed from BidsScreen (sourced from live Supabase data)
+    // Server now handles atomically: report status → "accepted", job assignment, competing bid rejection
     const reportId = details.reportId || navigation.selectedReportId || userData.reports[0]?.id;
-    if (reportId && userProfile?.id) {
-      const reportUpdated = await updateReportStatus(
-        reportId.toString(),
-        "accepted",
-        userProfile.id
+
+    // Update local state to match server-side changes
+    if (reportId) {
+      userData.setReports(
+        userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" as const } : r))
       );
-      if (reportUpdated) {
-        userData.setReports(
-          userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
-        );
-      } else {
-        console.warn(
-          "updateReportStatus returned false — report may still be 'pending' in DB. reportId:",
-          reportId,
-          "clerkUserId:",
-          userProfile.id
-        );
-      }
     }
 
-    // Server auto-rejects competing bids atomically (bids.ts:377-389)
-
-    // Update local bids state
     userData.setBids(
       userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "accepted" } : b))
     );
-
-    // Create job assignment in Supabase so shop can track repair status
-    if (reportId) {
-      try {
-        const assignment = await createJobAssignment({
-          damage_report_id: reportId.toString(),
-          customer_user_id: userProfile?.id || "",
-          shop_user_id: details.shopId || "",
-          bid_id: details.bidId,
-          status: "scheduled",
-        });
-        if (assignment?.id) {
-          userData.setReports(
-            userData.reports.map((r) =>
-              String(r.id) === String(reportId) ? { ...r, assignmentId: assignment.id } : r
-            )
-          );
-        }
-      } catch (assignErr) {
-        if (import.meta.env.DEV) console.error("Failed to create job assignment:", assignErr);
-      }
-    }
 
     // Route handoff: move customer straight into map flow with accepted-shop context.
     const acceptedReport = reportId

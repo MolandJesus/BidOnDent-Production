@@ -67,10 +67,10 @@ async function getUserName(
   try {
     const { data } = await supabase
       .from("profiles")
-      .select("full_name, email")
+      .select("name, email")
       .eq("clerk_user_id", clerkUserId)
       .maybeSingle();
-    return data?.full_name || data?.email || "User";
+    return data?.name || data?.email || "User";
   } catch {
     return "User";
   }

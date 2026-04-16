@@ -11,6 +11,7 @@ import {
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 import { hydrateSignedStorageUrls } from "../utils/storage.ts";
+import { resolveShopGeoReportIds } from "./geographic_matching.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
 
@@ -350,13 +351,62 @@ export async function getMarketplaceReports(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    await requireMarketplaceContext(req, supabase);
+    const { profile } = await requireMarketplaceContext(req, supabase);
 
+    // ── Shop: geographic filtering via service areas ──
+    if (profile?.account_type === 'shop' && profile.clerk_user_id) {
+      const geoReportIds = await resolveShopGeoReportIds(profile.clerk_user_id, supabase);
+
+      if (geoReportIds !== null) {
+        // Shop has service areas — return only geo-matched reports (may be empty)
+        if (geoReportIds.length === 0) {
+          return respond({ reports: [], geoFiltered: true });
+        }
+        const { data: geoData, error: geoError } = await supabase
+          .from('damage_reports')
+          .select('*')
+          .in('id', geoReportIds)
+          .is('deleted_at', null)
+          .in('status', ['pending', 'reviewing', 'quoted'])
+          .order('created_at', { ascending: false });
+
+        if (geoError) {
+          console.error('Error fetching geo-filtered reports:', geoError);
+          return respond({ error: sanitizeErrorMessage(geoError) }, 500);
+        }
+        return respond({
+          reports: await Promise.all((geoData || []).map((r: any) => hydrateReport(r, supabase))),
+          geoFiltered: true,
+        });
+      }
+
+      // Fallback: shop has no service areas — return bounded recent biddable reports
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('damage_reports')
+        .select('*')
+        .is('deleted_at', null)
+        .in('status', ['pending', 'reviewing', 'quoted'])
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (fallbackError) {
+        console.error('Error fetching fallback marketplace reports:', fallbackError);
+        return respond({ error: sanitizeErrorMessage(fallbackError) }, 500);
+      }
+
+      return respond({
+        reports: await Promise.all((fallbackData || []).map((r: any) => hydrateReport(r, supabase))),
+        geoFiltered: false,
+      });
+    }
+
+    // ── Insurer / Admin: all reports, bounded ──
     const { data, error } = await supabase
       .from('damage_reports')
       .select('*')
       .is('deleted_at', null)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(100);
 
     if (error) {
       console.error('Error fetching marketplace reports:', error);

@@ -15,8 +15,6 @@ async function enrichBidsWithGeo(
   supabase: SupabaseClient
 ): Promise<any[]> {
   if (!bids || bids.length === 0) return bids;
-
-  // Collect unique clerk_shop_user_ids
   const clerkIds = [
     ...new Set(bids.map((b) => b.clerk_shop_user_id).filter(Boolean)),
   ];
@@ -75,14 +73,16 @@ export async function createBid(
       return respond({ error: "Bid amount cannot be negative" }, 400);
     }
 
-    // Validate the damage report exists
+    // Validate the damage report exists and is still biddable
     const { data: reportExists } = await supabase
       .from("damage_reports")
-      .select("id")
+      .select("id, status")
       .eq("id", damageReportId)
+      .is("deleted_at", null)
       .maybeSingle();
-    if (!reportExists) {
-      return respond({ error: "Damage report not found" }, 404);
+    if (!reportExists) return respond({ error: "Damage report not found" }, 404);
+    if (!["pending", "reviewing", "quoted"].includes(reportExists.status)) {
+      return respond({ error: "This report is no longer accepting bids" }, 409);
     }
 
     const { data, error } = await supabase
@@ -106,8 +106,7 @@ export async function createBid(
       .single();
 
     if (error) {
-      // Unique constraint violation → shop already has an active bid on this report
-      if (error.code === "23505") {
+      if (error.code === "23505") { // unique constraint → duplicate bid
         return respond({ error: "You already have an active bid on this report" }, 409);
       }
       console.error("Error saving bid:", error);
@@ -373,18 +372,44 @@ export async function updateBidStatus(
       return respond({ error: `Bid is already ${currentBid.status}` }, 409);
     }
 
-    // Business rule: accepting a bid auto-rejects all other pending bids on the same report
+    // Business rule: accepting a bid triggers server-side side-effects
     if (status === "accepted" && data?.damage_report_id) {
+      const now = new Date().toISOString();
+
+      // 1. Auto-reject all other pending bids on the same report
       const { error: rejectError } = await supabase
         .from("bids")
-        .update({ status: "rejected", updated_at: new Date().toISOString() })
+        .update({ status: "rejected", updated_at: now })
         .eq("damage_report_id", data.damage_report_id)
         .eq("status", "pending")
         .neq("id", bidId);
 
       if (rejectError) {
-        // Non-fatal: bid acceptance succeeded; log for monitoring
         console.error("Error auto-rejecting competing bids:", rejectError);
+      }
+      // 2. Update report status (KI-022: now server-side, not client-orchestrated)
+      const { error: reportStatusErr } = await supabase
+        .from("damage_reports")
+        .update({ status: "accepted", updated_at: now })
+        .eq("id", data.damage_report_id);
+
+      if (reportStatusErr) {
+        console.error("Error updating report status after bid acceptance:", sanitizeErrorMessage(reportStatusErr.message));
+      }
+
+      // 3. Create job assignment so shop can track repair
+      const { error: assignErr } = await supabase
+        .from("job_assignments")
+        .insert({
+          damage_report_id: data.damage_report_id,
+          customer_clerk_user_id: reportOwner?.clerk_user_id || null,
+          shop_clerk_user_id: data.clerk_shop_user_id || null,
+          bid_id: bidId,
+          status: "scheduled",
+        });
+
+      if (assignErr && assignErr.code !== "23505") {
+        console.error("Error creating job assignment:", sanitizeErrorMessage(assignErr.message));
       }
     }
 
