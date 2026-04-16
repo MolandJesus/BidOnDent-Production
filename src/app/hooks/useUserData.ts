@@ -32,7 +32,8 @@ export function useUserData(
   clerkUserId?: string,
   websiteUserKey?: string,
   signedInEmail?: string,
-  authReady = true
+  authReady = true,
+  accountType?: string
 ) {
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: "", email: "", profileImage: "" });
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -192,6 +193,35 @@ export function useUserData(
             if (migrationResult) {
               applyHydration(migrationResult, userCacheKey);
             }
+          } else if (accountType && signedInEmail && clerkUserId) {
+            // Bootstrap profile for first-time user with no localStorage cache
+            if (import.meta.env.DEV)
+              console.log("[DEBUG] useUserData: Bootstrapping new profile", {
+                accountType,
+                signedInEmail,
+              });
+            const bootstrapName = signedInEmail.split("@")[0];
+            const saved = await saveProfile(
+              {
+                email: signedInEmail,
+                name: bootstrapName,
+                phone: "",
+                account_type: accountType,
+              },
+              { clerkUserId, email: signedInEmail, websiteUserKey }
+            );
+            if (saved) {
+              const freshProfile = await getProfile({
+                clerkUserId,
+                email: signedInEmail,
+                websiteUserKey,
+              });
+              if (freshProfile) {
+                const result = await hydrateFromCloudProfile(freshProfile, clerkUserId);
+                applyHydration(result, userCacheKey);
+                return;
+              }
+            }
           }
           setReportsLoading(false);
         }
@@ -205,7 +235,7 @@ export function useUserData(
     };
 
     loadUserData();
-  }, [authReady, clerkUserId, signedInEmail, websiteUserKey]);
+  }, [authReady, clerkUserId, signedInEmail, websiteUserKey, accountType]);
 
   // ============================================================================
   // CACHE UPDATE (localStorage) - for quick offline access

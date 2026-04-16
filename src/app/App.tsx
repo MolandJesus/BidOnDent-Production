@@ -140,7 +140,8 @@ function AppContent() {
     user?.id,
     websiteIdentity?.websiteUserKey,
     userProfile?.email,
-    isClerkAuthLoaded
+    isClerkAuthLoaded,
+    userProfile?.user_type
   );
 
   // Navigation state (tabs, views, modals, refs)
