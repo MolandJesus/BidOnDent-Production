@@ -1,4 +1,5 @@
 import { Building2, FileCheck, Shield } from "lucide-react";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 type InsurerPartnershipPageProps = {
   onBackToHome: () => void;
@@ -23,17 +24,25 @@ const focusAreas = [
 ];
 
 export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartnershipPageProps) {
+  const [appearanceMode] = useAppearanceModeCtx();
+  const isLight = appearanceMode === "light";
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80 py-14 px-4">
+    <main
+      className={`min-h-screen bg-gradient-to-b py-14 px-4 ${isLight ? "from-slate-50 to-slate-100/80" : "from-slate-900 to-slate-800/90"}`}
+    >
       <div className="max-w-5xl mx-auto">
         <section className="bd-glass-card p-8 md:p-10 mb-6">
-          <p className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-sm text-blue-700 font-medium">
+          <p
+            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${isLight ? "bg-blue-50 border border-blue-200 text-blue-700" : "bg-blue-900/30 border border-blue-700/50 text-blue-300"}`}
+          >
             Insurer Partnership
           </p>
-          <h1 className="text-2xl sm:text-4xl font-bold text-slate-900 mt-4 mb-4">
+          <h1
+            className={`text-2xl sm:text-4xl font-bold mt-4 mb-4 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+          >
             Partner With BidOnDent
           </h1>
-          <p className="text-slate-700 text-lg leading-relaxed">
+          <p className={`text-lg leading-relaxed ${isLight ? "text-slate-700" : "text-slate-300"}`}>
             We help insurers collaborate with repair shops and customers through a standardized,
             trackable process that improves coordination and decision quality.
           </p>
@@ -42,25 +51,35 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
         <section className="grid md:grid-cols-3 gap-5 mb-6">
           {focusAreas.map((item) => (
             <article key={item.title} className="bd-glass-card p-6">
-              <div className="w-11 h-11 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center mb-4">
-                <item.icon className="w-5 h-5 text-slate-700" />
+              <div
+                className={`w-11 h-11 rounded-xl border flex items-center justify-center mb-4 ${isLight ? "border-slate-200 bg-slate-50" : "border-slate-700 bg-slate-800"}`}
+              >
+                <item.icon className={`w-5 h-5 ${isLight ? "text-slate-700" : "text-blue-400"}`} />
               </div>
-              <h2 className="text-xl font-semibold text-slate-900 mb-2">{item.title}</h2>
-              <p className="text-slate-600 leading-relaxed">{item.text}</p>
+              <h2
+                className={`text-xl font-semibold mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+              >
+                {item.title}
+              </h2>
+              <p className={`leading-relaxed ${isLight ? "text-slate-600" : "text-slate-400"}`}>
+                {item.text}
+              </p>
             </article>
           ))}
         </section>
 
         <section className="bd-glass-card p-6 md:p-8">
-          <h2 className="text-xl font-semibold text-slate-900 mb-2">
+          <h2
+            className={`text-xl font-semibold mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+          >
             Start a Partnership Conversation
           </h2>
-          <p className="text-slate-600 mb-3">
+          <p className={`mb-3 ${isLight ? "text-slate-600" : "text-slate-400"}`}>
             Contact us and our team will coordinate next steps for operational fit and onboarding.
           </p>
           <a
             href="mailto:bidondent@gmail.com"
-            className="text-blue-700 font-semibold hover:text-blue-800"
+            className={`font-semibold ${isLight ? "text-blue-700 hover:text-blue-800" : "text-blue-400 hover:text-blue-300"}`}
           >
             bidondent@gmail.com
           </a>
