@@ -91,9 +91,9 @@ export async function getEstimateRequests(
       ensureClerkUserMatchesSession(session, shopClerkUserId);
     }
 
-    let resolvedShopId: number | null = shopId ? parseInt(shopId, 10) : null;
+    let resolvedShopId: string | null = shopId ?? null;
 
-    // Resolve shop_id from clerk user id if needed
+    // Resolve shop_id (UUID) from clerk user id if needed
     if (!resolvedShopId && shopClerkUserId) {
       const { data: shopProfile } = await supabase
         .from("shop_profiles")
