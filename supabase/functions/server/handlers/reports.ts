@@ -52,6 +52,44 @@ function buildReportPayload(
   };
 }
 
+function buildPartialReportPayload(
+  clerkUserId: string,
+  report: Record<string, unknown>
+): Record<string, unknown> {
+  const payload: Record<string, unknown> = { clerk_user_id: clerkUserId };
+
+  const fieldMap: Record<string, (val: unknown) => unknown> = {
+    vehicle_id: (v) => v || null,
+    vehicle_make: (v) => v,
+    vehicle_model: (v) => v,
+    vehicle_year: (v) => v,
+    damage_type: (v) => v,
+    damage_severity: (v) => v || 'moderate',
+    damage_description: (v) => v,
+    damage_location: (v) => v,
+    address: (v) => v || null,
+    city: (v) => v || null,
+    state: (v) => v || null,
+    zip_code: (v) => v || null,
+    latitude: (v) => typeof v === 'number' ? v : null,
+    longitude: (v) => typeof v === 'number' ? v : null,
+    photo_urls: (v) => v || [],
+    insurance_claim: (v) => v || false,
+    insurance_company: (v) => v || null,
+    preferred_contact: (v) => v || 'email',
+    additional_notes: (v) => v,
+    status: (v) => v || 'pending',
+  };
+
+  for (const [key, transform] of Object.entries(fieldMap)) {
+    if (key in report) {
+      payload[key] = transform(report[key]);
+    }
+  }
+
+  return payload;
+}
+
 async function hydrateReport(record: any, supabase: SupabaseClient) {
   // Hydrate signed photo URLs
   const photo_urls = await hydrateSignedStorageUrls(
@@ -249,7 +287,7 @@ export async function updateReport(
     const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
 
     const payload = {
-      ...buildReportPayload(authenticatedClerkUserId, report),
+      ...buildPartialReportPayload(authenticatedClerkUserId, report),
       updated_at: new Date().toISOString(),
     };
 
