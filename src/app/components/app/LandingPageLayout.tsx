@@ -14,11 +14,10 @@ import WhoWeServeSection from "../landing/WhoWeServeSection";
 import LandingPageHeader from "../landing/LandingPageHeader";
 import ProfileDropdown from "../dashboard/ProfileDropdown";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
-import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 type LandingPageLayoutProps = {
   isLoggedIn: boolean;
-  appearanceMode: DashboardAppearanceMode;
   primaryColor: string;
   secondaryColor: string;
   ctaButtonText: string;
@@ -35,13 +34,11 @@ type LandingPageLayoutProps = {
   initialDiscoveryRole?: NavigationDiscoveryRole;
   onLoginClick: () => void;
   onViewDashboard: () => void;
-  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
   profileDropdownData?: ProfileDropdownData;
 };
 
 export default function LandingPageLayout({
   isLoggedIn,
-  appearanceMode,
   primaryColor,
   secondaryColor,
   ctaButtonText,
@@ -58,9 +55,9 @@ export default function LandingPageLayout({
   initialDiscoveryRole,
   onLoginClick,
   onViewDashboard,
-  onAppearanceModeChange,
   profileDropdownData,
 }: LandingPageLayoutProps) {
+  const [appearanceMode] = useAppearanceModeCtx();
   const isLightAppearance = appearanceMode === "light";
 
   return (
@@ -69,7 +66,7 @@ export default function LandingPageLayout({
       data-theme={isLightAppearance ? "light" : "dark"}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #f5f7fb 0%, #eef2f9 50%, #e8edf5 100%)"
+          ? "radial-gradient(130% 90% at 30% 8%, #1b3158 0%, #15264a 52%, #0f1d3a 100%)"
           : "radial-gradient(130% 90% at 30% 8%, rgba(12, 28, 58, 0.99) 0%, rgba(6, 14, 32, 0.99) 58%, #040a18 100%)",
       }}
     >
@@ -79,8 +76,6 @@ export default function LandingPageLayout({
         secondaryColor={secondaryColor}
         showLandingPage={showLandingPage}
         isLightAppearance={isLightAppearance}
-        appearanceMode={appearanceMode}
-        onAppearanceModeChange={onAppearanceModeChange}
         onViewDashboard={onViewDashboard}
       />
 

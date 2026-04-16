@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ShopOnboardingFormData } from "../../types";
-import { useDocumentAppearanceMode } from "../../hooks/useDocumentAppearanceMode";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 import ShopOnboardingStep1 from "./ShopOnboardingStep1";
 import ShopOnboardingStep2 from "./ShopOnboardingStep2";
 import ShopOnboardingStep3 from "./ShopOnboardingStep3";
@@ -20,7 +20,7 @@ export default function ShopOnboarding({
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const appearanceMode = useDocumentAppearanceMode();
+  const [appearanceMode] = useAppearanceModeCtx();
   const isLight = appearanceMode === "light";
   const [formData, setFormData] = useState<ShopOnboardingFormData>({
     shopName: "",

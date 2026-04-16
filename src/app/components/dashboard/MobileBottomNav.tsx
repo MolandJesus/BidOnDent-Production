@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 interface NavTab {
   id: string;
@@ -9,7 +10,6 @@ interface NavTab {
 import type { ViewMode } from "../../types";
 
 interface MobileBottomNavProps {
-  appearanceMode: "map-dark" | "light";
   tabs: NavTab[];
   currentTab: string;
   viewMode: ViewMode;
@@ -18,13 +18,13 @@ interface MobileBottomNavProps {
 }
 
 export default function MobileBottomNav({
-  appearanceMode,
   tabs,
   currentTab,
   viewMode,
   badgeCounts,
   onTabClick,
 }: MobileBottomNavProps) {
+  const [appearanceMode] = useAppearanceModeCtx();
   const isLightAppearance = appearanceMode === "light";
 
   return (

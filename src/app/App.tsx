@@ -17,7 +17,7 @@ import { useAppEffects } from "./hooks/useAppEffects";
 import { useAppHandlers } from "./hooks/useAppHandlers";
 import { useWebsiteSessionSync } from "./hooks/useWebsiteSessionSync";
 import { useBusinessProfile } from "./hooks/useBusinessProfile";
-import { useAppearanceMode } from "./hooks/useAppearanceMode";
+import { AppearanceModeProvider, useAppearanceModeCtx } from "./hooks/AppearanceModeContext";
 
 // Notification system
 import { useNotificationEvents, NotificationProvider } from "./features/notifications";
@@ -50,6 +50,7 @@ import DashboardLayout from "./components/app/DashboardLayout";
 import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector";
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
+import AppearanceToggle from "./components/dev/AppearanceToggle";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
 const AboutPage = lazyWithRetry(() => import("./components/landing/AboutPage"));
@@ -128,7 +129,7 @@ function AppContent() {
     isLoading: isBusinessProfileLoading,
     saveProfile: saveBusinessProfile,
   } = useBusinessProfile(websiteIdentity, userProfile?.user_type);
-  const [appearanceMode, setAppearanceMode] = useAppearanceMode();
+  const [appearanceMode, setAppearanceMode] = useAppearanceModeCtx();
 
   // ============================================================================
   // CUSTOM HOOKS - Centralized State Management
@@ -212,8 +213,6 @@ function AppContent() {
         : CUSTOMER_NAV_TABS;
 
   const landingPageDeps = {
-    appearanceMode,
-    setAppearanceMode,
     showLandingPage: navigation.showLandingPage,
     showProfileDropdown: navigation.showProfileDropdown,
     userProfile: userProfile
@@ -378,8 +377,6 @@ function AppContent() {
     return (
       <ScreenErrorBoundary>
         <DashboardLayout
-          appearanceMode={appearanceMode}
-          onAppearanceModeChange={setAppearanceMode}
           primaryColor={PRIMARY_COLOR}
           secondaryColor={SECONDARY_COLOR}
           currentNavTabs={currentNavTabs}
@@ -467,24 +464,27 @@ function AppWithToast() {
   }, [isOnline]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <NotificationProvider value={notificationActions}>
-      <AppContent />
-      <NotificationToast
-        toast={notificationActions.activeToast}
-        onDismiss={notificationActions.dismissToast}
-        onDeepLinkClick={notificationActions.navigateDeepLink}
-      />
-      {needRefresh && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[9999] px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg flex items-center gap-3 text-sm">
-          <span>A new version is available.</span>
-          <button
-            onClick={() => void updateServiceWorker()}
-            className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 font-medium transition-colors"
-          >
-            Update
-          </button>
-        </div>
-      )}
-    </NotificationProvider>
+    <AppearanceModeProvider>
+      <NotificationProvider value={notificationActions}>
+        <AppContent />
+        {import.meta.env.DEV && <AppearanceToggle />}
+        <NotificationToast
+          toast={notificationActions.activeToast}
+          onDismiss={notificationActions.dismissToast}
+          onDeepLinkClick={notificationActions.navigateDeepLink}
+        />
+        {needRefresh && (
+          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[9999] px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg flex items-center gap-3 text-sm">
+            <span>A new version is available.</span>
+            <button
+              onClick={() => void updateServiceWorker()}
+              className="px-3 py-1 rounded-lg bg-white/20 hover:bg-white/30 font-medium transition-colors"
+            >
+              Update
+            </button>
+          </div>
+        )}
+      </NotificationProvider>
+    </AppearanceModeProvider>
   );
 }

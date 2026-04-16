@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Check, ArrowRight, Shield, DollarSign, FileText } from "lucide-react";
 import { motion } from "motion/react";
 import type { InsurerOnboardingFormData } from "../../types";
-import { useDocumentAppearanceMode } from "../../hooks/useDocumentAppearanceMode";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 type InsurerOnboardingProps = {
   primaryColor?: string;
@@ -18,7 +18,7 @@ export default function InsurerOnboarding({
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const appearanceMode = useDocumentAppearanceMode();
+  const [appearanceMode] = useAppearanceModeCtx();
   const isLight = appearanceMode === "light";
   const [formData, setFormData] = useState({
     companyName: "",

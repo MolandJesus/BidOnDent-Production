@@ -3,23 +3,17 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNotificationPreferences } from "../../../hooks/useNotificationPreferences";
 import type { NotificationPreferences } from "../../../services/supabase/notificationPreferences";
+import { useAppearanceModeCtx } from "../../../hooks/AppearanceModeContext";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 
 type SettingsModalProps = {
   isOpen: boolean;
   primaryColor: string;
-  appearanceMode: DashboardAppearanceMode;
-  onAppearanceModeChange: (mode: DashboardAppearanceMode) => void;
   onClose: () => void;
 };
 
-export default function SettingsModal({
-  isOpen,
-  primaryColor,
-  appearanceMode,
-  onAppearanceModeChange,
-  onClose,
-}: SettingsModalProps) {
+export default function SettingsModal({ isOpen, primaryColor, onClose }: SettingsModalProps) {
+  const [appearanceMode, setAppearanceMode] = useAppearanceModeCtx();
   const [selectedAppearanceMode, setSelectedAppearanceMode] =
     useState<DashboardAppearanceMode>(appearanceMode);
 
@@ -436,7 +430,7 @@ export default function SettingsModal({
             className="px-4 py-2 text-white rounded-lg flex items-center gap-2"
             style={{ backgroundColor: primaryColor }}
             onClick={() => {
-              onAppearanceModeChange(selectedAppearanceMode);
+              setAppearanceMode(selectedAppearanceMode);
               onClose();
             }}
             type="button"

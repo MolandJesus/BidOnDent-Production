@@ -3,7 +3,7 @@ import { useUser } from "@clerk/clerk-react";
 import { Car, Wrench, Shield, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import { updateUserMetadata } from "../../services/clerkService";
-import { useDocumentAppearanceMode } from "../../hooks/useDocumentAppearanceMode";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 import type { UserType } from "../../services/clerkService";
 
 const ACCOUNT_TYPES: {
@@ -35,7 +35,7 @@ export default function ClerkAccountTypeSelector() {
   const [isLoading, setIsLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const appearanceMode = useDocumentAppearanceMode();
+  const [appearanceMode] = useAppearanceModeCtx();
   const isLight = appearanceMode === "light";
 
   const handleComplete = async () => {

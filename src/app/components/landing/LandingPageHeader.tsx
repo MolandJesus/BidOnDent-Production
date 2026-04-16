@@ -1,7 +1,6 @@
 import { Home, LogOut, Menu, Settings, User, X } from "lucide-react";
 import { SignInButton, SignUpButton, useClerk, useUser } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
-import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import SettingsModal from "../codelayer/account/SettingsModal";
 import BrandLogo from "../app/BrandLogo";
 
@@ -11,8 +10,6 @@ interface LandingPageHeaderProps {
   secondaryColor: string;
   showLandingPage: boolean;
   isLightAppearance?: boolean;
-  appearanceMode?: DashboardAppearanceMode;
-  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
   onViewDashboard: () => void;
 }
 
@@ -22,8 +19,6 @@ export default function LandingPageHeader({
   secondaryColor,
   showLandingPage,
   isLightAppearance = false,
-  appearanceMode = "map-dark",
-  onAppearanceModeChange,
   onViewDashboard,
 }: LandingPageHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -397,15 +392,11 @@ export default function LandingPageHeader({
       </div>
 
       {/* Appearance Settings Modal */}
-      {onAppearanceModeChange && (
-        <SettingsModal
-          isOpen={showSettingsModal}
-          primaryColor={primaryColor}
-          appearanceMode={appearanceMode}
-          onAppearanceModeChange={onAppearanceModeChange}
-          onClose={() => setShowSettingsModal(false)}
-        />
-      )}
+      <SettingsModal
+        isOpen={showSettingsModal}
+        primaryColor={primaryColor}
+        onClose={() => setShowSettingsModal(false)}
+      />
     </header>
   );
 }

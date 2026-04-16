@@ -2,9 +2,9 @@ import { lazy, Suspense, useMemo, useState, type RefObject } from "react";
 import DashboardRouter from "../../routers/DashboardRouter";
 import type { Bid, NavTab, Notification, Report, Vehicle, ViewMode } from "../../types";
 import { getGlobalSurfaceTheme } from "../../theme/globalSurfaceTheme";
-import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShell";
 import { useNotifications } from "../../features/notifications/NotificationContext";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 import MobileBottomNav from "../dashboard/MobileBottomNav";
 const SettingsModal = lazy(() => import("../codelayer/account/SettingsModal"));
 import DashboardAtmosphere from "./DashboardAtmosphere";
@@ -13,8 +13,6 @@ import DashboardHeader from "./DashboardHeader";
 import DemoModeBanner from "../demo/DemoModeBanner";
 
 type DashboardLayoutProps = {
-  appearanceMode: DashboardAppearanceMode;
-  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
   primaryColor: string;
   secondaryColor: string;
   currentNavTabs: NavTab[];
@@ -43,8 +41,6 @@ type DashboardLayoutProps = {
 };
 
 export default function DashboardLayout({
-  appearanceMode,
-  onAppearanceModeChange,
   primaryColor,
   secondaryColor,
   currentNavTabs,
@@ -71,6 +67,7 @@ export default function DashboardLayout({
   dashboardRouterProps,
   onNavigateToReport,
 }: DashboardLayoutProps) {
+  const [appearanceMode, setAppearanceMode] = useAppearanceModeCtx();
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const isLightAppearance = appearanceMode === "light";
   const surfaceTheme = getGlobalSurfaceTheme(isLightAppearance ? "light" : "map-dark");
@@ -198,7 +195,6 @@ export default function DashboardLayout({
       </div>
 
       <MobileBottomNav
-        appearanceMode={appearanceMode}
         tabs={currentNavTabs}
         currentTab={currentTab}
         viewMode={viewMode}
@@ -206,13 +202,11 @@ export default function DashboardLayout({
         onTabClick={(tabId) => onMobileMenuTabClick(tabId)}
       />
 
-      {onAppearanceModeChange && showSettingsModal && (
+      {showSettingsModal && (
         <Suspense fallback={null}>
           <SettingsModal
             isOpen={showSettingsModal}
             primaryColor={primaryColor}
-            appearanceMode={appearanceMode}
-            onAppearanceModeChange={onAppearanceModeChange}
             onClose={() => setShowSettingsModal(false)}
           />
         </Suspense>

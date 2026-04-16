@@ -1,13 +1,10 @@
 import { Suspense, lazy, type ComponentProps } from "react";
-import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
 import type { RedirectInfo, UserInfo } from "../types";
 import { PRIMARY_COLOR, SECONDARY_COLOR, CTA_BUTTON_TEXT, LANDING_PAGE_IMAGES } from "../constants";
 
 const LandingPageLayout = lazy(() => import("../components/app/LandingPageLayout"));
 
 interface LandingPageDeps {
-  appearanceMode: DashboardAppearanceMode;
-  setAppearanceMode: (mode: DashboardAppearanceMode) => void;
   showLandingPage: boolean;
   showProfileDropdown: boolean;
   userProfile: { name: string; email: string; user_type: "customer" | "shop" | "insurer" } | null;
@@ -26,8 +23,6 @@ interface LandingPageDeps {
 
 export function renderLandingPage(deps: LandingPageDeps, isLoggedIn: boolean) {
   const {
-    appearanceMode,
-    setAppearanceMode,
     showLandingPage,
     showProfileDropdown,
     userProfile,
@@ -67,7 +62,6 @@ export function renderLandingPage(deps: LandingPageDeps, isLoggedIn: boolean) {
     <Suspense fallback={<div className="min-h-screen bg-gray-950" />}>
       <LandingPageLayout
         isLoggedIn={isLoggedIn}
-        appearanceMode={appearanceMode}
         primaryColor={PRIMARY_COLOR}
         secondaryColor={SECONDARY_COLOR}
         ctaButtonText={CTA_BUTTON_TEXT}
@@ -83,7 +77,6 @@ export function renderLandingPage(deps: LandingPageDeps, isLoggedIn: boolean) {
         redirectInfo={landingRedirectInfo}
         onLoginClick={onLoginClick}
         onViewDashboard={onViewDashboard}
-        onAppearanceModeChange={setAppearanceMode}
         profileDropdownData={
           landingProfileDropdownData as ComponentProps<
             typeof LandingPageLayout
