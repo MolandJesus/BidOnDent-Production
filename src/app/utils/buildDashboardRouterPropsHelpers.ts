@@ -36,7 +36,19 @@ export async function handleAcceptBid(
     // Use the reportId passed from BidsScreen (sourced from live Supabase data)
     const reportId = details.reportId || navigation.selectedReportId || userData.reports[0]?.id;
     if (reportId && userProfile?.id) {
-      await updateReportStatus(reportId.toString(), "accepted", userProfile.id);
+      const reportUpdated = await updateReportStatus(
+        reportId.toString(),
+        "accepted",
+        userProfile.id
+      );
+      if (!reportUpdated && import.meta.env.DEV) {
+        console.warn(
+          "updateReportStatus returned false — report may still be 'pending' in DB. reportId:",
+          reportId,
+          "clerkUserId:",
+          userProfile.id
+        );
+      }
       userData.setReports(
         userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
       );

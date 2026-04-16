@@ -172,7 +172,7 @@ export async function updateReportStatus(
   clerkUserId: string
 ): Promise<boolean> {
   try {
-    await requestSupabaseEdge(
+    const result = await requestSupabaseEdge<{ success?: boolean; report?: unknown }>(
       `${SUPABASE_EDGE_ROUTES.reports}/${reportId}`,
       {
         method: "PUT",
@@ -182,9 +182,14 @@ export async function updateReportStatus(
         }),
       }
     );
+    if (import.meta.env.DEV && result?.report === null) {
+      console.warn("[DEV] updateReportStatus: edge function returned report=null — 0 rows updated. reportId:", reportId, "clerkUserId:", clerkUserId);
+    }
     return true;
   } catch (error) {
-    if (import.meta.env.DEV) console.error("[DEV] updateReportStatus failed:", error);
+    if (import.meta.env.DEV) {
+      console.error("[DEV] updateReportStatus failed. reportId:", reportId, "clerkUserId:", clerkUserId, "error:", error);
+    }
     return false;
   }
 }

@@ -291,6 +291,8 @@ export async function updateReport(
       updated_at: new Date().toISOString(),
     };
 
+    console.log('[updateReport] reportId:', reportId, '| authenticatedClerkUserId:', authenticatedClerkUserId, '| payload keys:', Object.keys(payload));
+
     const { data, error } = await supabase
       .from('damage_reports')
       .update(payload)
@@ -299,9 +301,15 @@ export async function updateReport(
       .select()
       .single();
 
+    console.log('[updateReport] result — data:', data ? `id=${data.id} status=${data.status}` : 'null (0 rows matched)', '| error:', error ? error.message : 'none');
+
     if (error) {
       console.error('Error updating damage report:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    if (!data) {
+      console.warn('[updateReport] 0 rows updated — reportId or clerk_user_id did not match. reportId:', reportId, 'clerkUserId:', authenticatedClerkUserId);
     }
 
     return respond({
