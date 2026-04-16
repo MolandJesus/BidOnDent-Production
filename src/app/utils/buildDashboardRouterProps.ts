@@ -193,9 +193,6 @@ export function buildDashboardRouterProps({
         userData.bids.map((b: Bid) => (b.id === details.bidId ? { ...b, status: "rejected" } : b))
       );
     },
-    onPasswordChange: () => {
-      openUserProfile?.();
-    },
     onDeleteAccount: handleDeleteAccount,
     onSaveVehicles: async (vehicles: Vehicle[]) => {
       // Detect vehicles that were removed and delete them from Supabase

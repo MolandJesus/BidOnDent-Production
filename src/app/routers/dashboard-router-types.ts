@@ -81,7 +81,6 @@ export interface DashboardRouterProps {
     phone?: string;
     profileImage?: string;
   }) => void | Promise<void>;
-  onPasswordChange: (passwords: { current: string; new: string }) => void;
   onDeleteAccount: () => void;
   onSaveVehicles: (vehicles: Vehicle[]) => void | Promise<void>;
   onSaveVehicle: (vehicle: Vehicle) => void;

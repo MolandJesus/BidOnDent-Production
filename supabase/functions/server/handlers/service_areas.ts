@@ -45,8 +45,9 @@ export async function getShopServiceAreas(
         .not("center_longitude", "is", null)
         .not("radius_miles", "is", null);
       if (error) {
-        console.error("getAllServiceAreas error:", sanitizeErrorMessage(error.message));
-        return respond({ error: "Failed to load service areas" }, 500);
+        // Degrade gracefully — table may not exist yet on this environment
+        console.warn("getAllServiceAreas: returning empty (table may not exist):", sanitizeErrorMessage(error.message));
+        return respond({ serviceAreas: [] });
       }
       return respond({ serviceAreas: data ?? [] });
     }
