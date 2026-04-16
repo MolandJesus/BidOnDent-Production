@@ -195,16 +195,16 @@ onViewRequests: () => {
 
 ### Step-by-step status:
 
-| Step | Action                             | Status      | Blocker                          |
-| ---- | ---------------------------------- | ----------- | -------------------------------- |
-| 1    | Customer creates damage report     | ✅ PASS      | Verified in Pass 34 (real report persisted) |
-| 2    | Shop sees report on marketplace    | ✅ PASS      | Real data, no seed fallback — Pass 34 |
-| 3    | Shop submits bid on report         | ✅ PASS      | $450 bid persisted to Supabase — Pass 34 |
-| 4    | Customer receives bid notification | ✅ PASS      | Full bid details visible in comparison view — Pass 34 |
-| 5    | Customer accepts bid               | ⚠️ PARTIAL  | Local state works; backend: updateReportStatus references missing latitude column; createJobAssignment receives Clerk ID instead of UUID |
-| 6    | Shop starts repair job             | 🔲 NOT TESTED | Depends on Step 5 backend fix    |
-| 7    | Shop completes job                 | 🔲 NOT TESTED | Depends on Step 6 prerequisite   |
-| 8    | Customer rates shop                | 🔲 NOT TESTED | Depends on Step 7 prerequisite   |
+| Step | Action                             | Status        | Blocker                                                                                                                                  |
+| ---- | ---------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Customer creates damage report     | ✅ PASS       | Verified in Pass 34 (real report persisted)                                                                                              |
+| 2    | Shop sees report on marketplace    | ✅ PASS       | Real data, no seed fallback — Pass 34                                                                                                    |
+| 3    | Shop submits bid on report         | ✅ PASS       | $450 bid persisted to Supabase — Pass 34                                                                                                 |
+| 4    | Customer receives bid notification | ✅ PASS       | Full bid details visible in comparison view — Pass 34                                                                                    |
+| 5    | Customer accepts bid               | ⚠️ PARTIAL    | Local state works; backend: updateReportStatus references missing latitude column; createJobAssignment receives Clerk ID instead of UUID |
+| 6    | Shop starts repair job             | 🔲 NOT TESTED | Depends on Step 5 backend fix                                                                                                            |
+| 7    | Shop completes job                 | 🔲 NOT TESTED | Depends on Step 6 prerequisite                                                                                                           |
+| 8    | Customer rates shop                | 🔲 NOT TESTED | Depends on Step 7 prerequisite                                                                                                           |
 
 **Verdict**: The green path is **COMPLETELY BLOCKED at step 2**. The core marketplace loop cannot function until the remote Supabase has a valid shop profile for the test account.
 
@@ -252,6 +252,7 @@ Bug D is independent: buildDashboardRouterProps.ts:85 missing role check
 4. **P3**: Add seed-data indicator on Dashboard home “Incoming Requests” section — ✅ Added in Pass 32
 
 **Additional passes since audit:**
+
 - Pass 29: Edge function email resolver fix (fetch Clerk email when JWT claims lack it)
 - Pass 30: Bid submission fix (marketplace reports — real bids now persist to Supabase)
 - Pass 32: Seed indicator added on Dashboard Home “Incoming Requests” section

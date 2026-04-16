@@ -1,10 +1,12 @@
 # BidOnDent Module Completion Matrix
 
-**Created:** 2026-04-15 (Pass 868 — Phase 5.3)
-**Last verified:** 2026-04-15 (Pass 873)
+**Created:** 2026-04-15 (Phase 5.3)
+**Last verified:** 2026-04-16 (Pass 54 — hardening passes 46-54 complete)
 **Status:** Active — canonical module completion reference
-**Build baseline:** 2.90s, 0 errors, 60 PWA precache entries
-**Test baseline:** 554/554 pass (0 failures — 12 pre-existing failures fixed in Pass 872)
+**Build baseline:** 3.36s, 0 errors, 60 PWA precache entries
+**Edge functions:** Deployed version 40 on `wmdcnjgtsppftrofaqqa`
+
+**Note on pass numbering:** The matrix was originally created during passes 868-873 (pre-hardening numbering). Current hardening work uses a separate pass sequence starting at Pass 40. Both reference the same codebase on `BidOnDent-Horizon-Beta`.
 
 ---
 

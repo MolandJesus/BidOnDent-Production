@@ -14,14 +14,12 @@
 > **Primary first-read master context for any AI agent working on this repo.**
 > Read this first, then follow the startup path in `docs/README.md` for current execution truth and task-specific docs.
 >
-> **Last updated:** 2026-04-15 (Pass 11 — cold-start fix, event capture quality, doc refresh)
+> **Last updated:** 2026-04-16 (Pass 54 — marketplace 500 fix, notification-preferences fix, docs overhaul)
 > **Status:** Active master context
 > **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
-> **Build:** ✅ 0 errors · ~3.2s · MapLibre GL JS WebGL engine · 555/555 tests passing
-> **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed Pass 448)
-> **TypeScript:** ✅ 0 `tsc --noEmit` errors. The domain/DB boundary drift tracked under roadmap item A1 was remediated in Pass 15.
-> **Images:** 22.9MB total (was 53.6MB — Pass 430 JPEG conversion)
-> **Production `any` types:** 0 (eliminated Passes 433-434, re-verified Pass 609; remaining `as any` in MapLibre/window/devtools only)
+> **Build:** ✅ 0 errors · ~3.4s · MapLibre GL JS WebGL engine
+> **Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`
+> **Map engine:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (Leaflet fully removed)
 > **Security:** OWASP audit Pass 619 — zero XSS, zero injection, VIN input sanitized, photo upload guarded
 
 ---
@@ -124,8 +122,22 @@ The landing page is a separate surface — it uses inline style conditionals for
 
 **Target aesthetic:** Apple Maps-inspired. Map is base layer. Everything floats above geography.
 
-**Glass CSS classes** (defined in `src/styles/theme.css`):
+**CSS utility classes** (defined in `src/styles/theme.css`):
 
+Dashboard surfaces (primary — use these for all dashboard work):
+- `bd-dashboard-panel` — top-level dashboard cards/sections
+- `bd-dashboard-section` — nested content blocks within panels
+- `bd-dashboard-chip` — small status/label chips
+- `bd-dashboard-note` — informational note blocks
+- `bd-dashboard-primary-button` — gradient CTA buttons
+- `bd-dashboard-secondary-button` — outlined secondary actions
+- `bd-dashboard-ghost-button` — minimal text-style actions
+
+Accent modifiers (append to `bd-dashboard-panel` or `bd-dashboard-section`):
+- `--accent-blue` / `--accent-cyan` / `--accent-indigo` / `--deep` — color tone variants
+- `--interactive` — hover/focus states for clickable sections
+
+Landing page / legacy surfaces:
 - `bd-glass-panel` — floating panels, sidebars
 - `bd-glass-card` — content cards, result cards
 - `bd-glass-control` — interactive controls (buttons, pills)
@@ -149,49 +161,19 @@ The landing page is a separate surface — it uses inline style conditionals for
 
 ---
 
-## 4. Historical Snapshot — Pass 286 Era
+## 4. What's Built (Current State)
 
-Archive note: This section captures the implementation snapshot from the Pass 286 time window and immediate follow-on hardening notes. For current execution truth before refactor, use `PRE_REFACTOR_FULL_SITE_BASELINE_2026-03-28.md` and `FULL_SITE_FUNCTIONAL_VERIFICATION_MATRIX_2026-03-28.md`.
-
-**276 structured passes completed before this session** (at 173% of original 160-pass plan).
-
-### What's been built and is solid:
-
-- Glass design system across all screens (`bd-glass-*`)
-- Dark surface color system — all light backgrounds eliminated
-- Appearance mode (light/map-dark) system + cross-tab sync
-- Dashboard shell (DashboardLayout, MobileBottomNav, NotificationCenter)
-- Report wizard (5-step glass flow, Supabase photo storage)
-- Bid system (real Supabase data, acceptance flow)
-- Clerk identity + provider-agnostic website session memory
-- Network directory (shops + insurers from Supabase, seed fallback)
-- Route-level code splitting (783KB, down from 1078KB)
-- Type safety sweep (39 files, no `any[]` in critical paths)
-- Security hardening (console.log DEV-gates, path traversal fix, MIME validation)
-- Supabase edge functions (canonical slug `server`)
-- Liquid glass UI (passes 236-242): all white surfaces eliminated
-- Navigation system (useNavigationSession, useNavigationIntelligence, voice alerts, reroute)
-
-### Map program snapshot — Pass 286 (historical):
-
-**Problem found:** Map was entirely hardcoded to Dallas, TX. All overlays had hardcoded dark styles ignoring `mapTheme` toggle. Customers had no path from dashboard home to ShopDirectoryScreen.
-
-**What was fixed:**
-
-| File                                                     | What Changed                                                                                                                                                                                                                                                                                                                             |
-| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/components/shop/ShopDirectoryMapPane.tsx`       | Full `mapTheme` theming (9 token variables), NY fallback center, fixed Leaflet popup text to dark-on-white; added "Search in this area" + "Searching this area" pills with `onSearchInArea` / `onClearAreaSearch` / `searchWithinViewport` props; local `hasPanned` state shows pill after first pan                                     |
-| `src/app/components/shop/ShopDirectoryMapOverlays.tsx`   | Added `mapTheme` prop, full light/dark token set for all overlays                                                                                                                                                                                                                                                                        |
-| `src/app/components/shop/ShopDirectoryImmersiveMap.tsx`  | `mapTheme` theming for top bar + drawer, NY fallback center; added `onSetMapViewportBounds` prop wired to `onViewportChange`                                                                                                                                                                                                             |
-| `src/app/components/shop/ShopDirectoryScreen.tsx`        | Added `mapTheme` pass-through to hybrid mode overlays; wired `navigationMode` to hybrid mode overlays (was missing); viewport bounds wired in both hybrid and immersive `onViewportChange`; passes `handleSearchInArea` / `handleClearAreaSearch` / `searchWithinViewport` to map pane; passes `onSetMapViewportBounds` to immersive map |
-| `src/app/services/intelligence/shopMapData.ts`           | Replaced all Dallas TX data with NY coverage area (6 shops: Yonkers, White Plains, Spring Valley, Poughkeepsie, Hempstead, Middletown)                                                                                                                                                                                                   |
-| `src/app/services/intelligence/shopMapExperience.ts`     | Fixed directory shop fallback city/state from Dallas/TX to White Plains/NY; fixed shop callout text to reference NY counties; added `viewportBounds` param to `buildShopMapListings` → passed to `applyShopMapListingFilters`                                                                                                            |
-| `src/app/services/intelligence/directoryAdapters.ts`     | Replaced TX-only `CITY_COORDINATE_DIRECTORY` with 17 NY coverage area cities; fixed insurer HQ fallback to White Plains/NY                                                                                                                                                                                                               |
-| `src/app/components/insurer/insurerPartnerShopsUtils.ts` | Fixed `buildManualProspectCoordinate` base from Dallas to Westchester NY                                                                                                                                                                                                                                                                 |
-| `src/app/components/insurer/AddProspectModal.tsx`        | Updated city/state/zip placeholders to NY                                                                                                                                                                                                                                                                                                |
-| `src/app/components/dashboard/CustomerMapWidget.tsx`     | Added `onViewShops` prop + "Browse all shops & AI matching" button                                                                                                                                                                                                                                                                       |
-| `src/app/components/codelayer/HomeScreen.tsx`            | Wired `onViewShops` to `CustomerMapWidget` so customers reach `ShopDirectoryScreen`                                                                                                                                                                                                                                                      |
-| `src/app/hooks/useShopDirectorySession.ts`               | Added `mapViewportBounds` + `searchWithinViewport` state; wired into `buildShopMapListings`; added `handleSearchInArea` + `handleClearAreaSearch` handlers; exposed all four from hook return                                                                                                                                            |
+- **Dashboard shell:** DashboardLayout, MobileBottomNav, NotificationCenter, appearance mode (light/map-dark)
+- **Report wizard:** 6-step flow with Supabase photo storage, Nominatim geocoding, draft persist
+- **Bid system:** End-to-end: shop submits bid → customer accepts → competing bids auto-rejected → job assignment created
+- **Job management:** ShopActiveJobsScreen with DB-sourced + report-derived jobs, status transitions
+- **Report deletion:** Customer can delete reports that don't have accepted bids (soft-delete with server guard)
+- **Clerk identity:** Provider-agnostic website session memory, 3-tier JWT verification on edge functions
+- **Network directory:** Shops + insurers from Supabase, seed fallback when no real data
+- **Navigation:** OSRM routing, Nominatim search, Web Speech API (British voice), GPS tracking
+- **Notifications:** Real-time Supabase subscriptions per role (bid updates, nearby reports, estimate responses, claim lifecycle)
+- **Edge functions:** Canonical slug `server` on Supabase, deployed via `npx supabase functions deploy server --no-verify-jwt`
+- **Design system:** `bd-dashboard-*` utilities for dashboard, `bd-glass-*` for landing page (see Section 3)
 
 ---
 
@@ -308,39 +290,22 @@ Dashboard Home → shop tile click   → Shop Directory (full map experience)
 
 ---
 
-## 6. Historical Action Log (Pass 286 Follow-on)
+## 6. Recent Hardening Passes (46–54)
 
-Archive note: The checklist below records the priorities captured during the Pass 286 cycle. Do not treat this block as the active next-pass queue.
+| Pass | Fix | Impact |
+|------|-----|--------|
+| 46 | Removed redundant client-side competing bid rejection | Server-side atomic rejection is canonical (`bids.ts:377-389`) |
+| 47 | Added DEV logging to `updateReportStatus` failure path | Diagnostics for silent status-update failure |
+| 48 | Fixed Active Jobs UUID crash (`Number(uuid)` → `String`) | Shop status updates work for DB-sourced jobs |
+| 48.1 | Moved `buildTasks` before `useMemo` (TDZ fix) | Active Jobs screen no longer crashes on load |
+| 49 | Deduplicated Active Jobs when DB + report-derived overlap | No more duplicate Honda Accord cards |
+| 49S | Fixed bid count mismatch in detail view + customer_name join | Accurate bid counts, names on job cards |
+| 51 | Prevented cross-account report leakage from localStorage | User-scoped cache keys when `clerkUserId` known |
+| 52 | Customer report deletion with accepted-bid guard | Delete button on dashboard + server-side 409 guard |
+| 53 | `hydrateReport` resilience (`.single()` → `.maybeSingle()` + try/catch) | Marketplace endpoint no longer 500s on profile lookup failures |
+| 54 | Fixed `notification-preferences` (`session.sub` → `session.clerkUserId`) | Notification preferences endpoint works |
 
-### Map Program — Immediate
-
-| Priority | Task                                                                         | Why                                                                                                                                   |
-| -------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| ✅ DONE  | Fix `navigationMode` not passed to `ShopDirectoryMapOverlays` in hybrid mode | Fixed in pass 286                                                                                                                     |
-| ✅ DONE  | Add viewport bounds tracking in `useShopDirectorySession`                    | Fixed in pass 286 — full pipeline: pan → hasPanned → "Search in this area" pill → filter                                              |
-| ✅ DONE  | Add "Search in this area" button to `ShopDirectoryMapPane`                   | Fixed in pass 286                                                                                                                     |
-| ✅ DONE  | Real shop data from Supabase partner profiles                                | Pass 316 — `useCoveragePartnerShops` → `convertPartnerShopsToProfiles` → merged into `allDirectoryShops` in `useShopDirectorySession` |
-| ✅ DONE  | Add `mapViewportBounds` to session persist                                   | Pass 319 — persists viewport bounds in `MapSessionMemory`, restores on session/identity reload                                        |
-| ✅ DONE  | Mobile map audit at 375px                                                    | Pass 320 — touch targets enforced to 44px min across immersive map, overlays, search panel                                            |
-
-### Product Loop — Next Phase
-
-| Priority | Task                                | Why                                                           |
-| -------- | ----------------------------------- | ------------------------------------------------------------- |
-| ✅ DONE  | Report → map pin connection         | Pass 317 — `MapReportMarkers` added to `ShopDirectoryMapPane` |
-| ✅ DONE  | Bid → spatial context               | Pass 323 — shop geo coordinates wired through bid pipeline    |
-| ✅ DONE  | Shop selection → navigation handoff | Pass 318 — "Start Navigation" CTA on route preview card       |
-| P3       | Mobile map at 375px audit           | Pass 320 — 44px touch targets enforced                        |
-
-### Hardening
-
-| Priority | Task                                              | Notes                                                                        |
-| -------- | ------------------------------------------------- | ---------------------------------------------------------------------------- |
-| ✅ DONE  | Supabase RLS policies (`USING(true)` on 4 tables) | Pass 321 — migration 012 tightens profiles, submissions, activity events     |
-| ✅ DONE  | CI/CD pipeline                                    | Pass 327 — GitHub Actions: format check → test → build on push/PR            |
-| ✅ DONE  | Basic test coverage                               | Pass 324 — Vitest + 33 tests for formatters, routing, collections            |
-| ✅ DONE  | Bundle size (~783KB → 502KB)                      | Pass 325 — vendor-motion, vendor-clerk, vendor-sentry chunks (36% reduction) |
-| ✅ DONE  | WCAG AA audit                                     | Pass 326 — focus-visible, aria-labels, Escape handlers                       |
+**Open P1:** `updateReportStatus` silent failure after bid acceptance — diagnostics deployed (Pass 47), awaiting next accept-bid trigger to capture logs.
 
 ---
 
@@ -416,15 +381,32 @@ Archive note: The checklist below records the priorities captured during the Pas
 | `src/app/components/codelayer/HomeScreen.tsx` | Dashboard home (3 map widgets by userType)         |
 | `src/styles/theme.css`                        | All `bd-glass-*` CSS design tokens                 |
 
-### Services
+### Services & Data Layer
 
 | File                                                  | Purpose                                              |
 | ----------------------------------------------------- | ---------------------------------------------------- |
 | `src/app/services/auth/websiteIdentity.ts`            | Provider-agnostic identity + session memory          |
-| `src/app/services/auth/websiteIdentitySanitizers.ts`  | Extracted sanitization/validation logic (Pass 545)   |
-| `src/app/services/networkProfiles.ts`                 | Directory inventory (shops + insurers from Supabase) |
 | `src/app/services/supabase/runtime.ts`                | Canonical Supabase client                            |
+| `src/app/services/supabase/reports.ts`                | Report CRUD (create, update status, delete)          |
+| `src/app/services/supabase/bids.ts`                   | Bid CRUD + status updates                            |
+| `src/app/services/supabase/workflow.ts`               | Job assignment create/status + estimate requests     |
+| `src/app/services/networkProfiles.ts`                 | Directory inventory (shops + insurers from Supabase) |
 | `src/app/services/intelligence/marketIntelligence.ts` | Shop recommendation engine                           |
+| `src/app/hooks/useUserData.ts`                        | Central user data state + localStorage cache cascade |
+| `src/app/hooks/useShopJobAssignments.ts`              | Shop job assignment fetching from DB                 |
+| `src/app/utils/buildDashboardRouterProps.ts`          | Central callback wiring for all dashboard actions    |
+| `src/app/utils/buildDashboardRouterPropsHelpers.ts`   | Accept-bid orchestration (status + job + rejection)  |
+
+### Edge Function Handlers
+
+| File                                                              | Purpose                                            |
+| ----------------------------------------------------------------- | -------------------------------------------------- |
+| `supabase/functions/server/handlers/reports.ts`                   | Report CRUD + marketplace listing                  |
+| `supabase/functions/server/handlers/bids.ts`                      | Bid CRUD + atomic competing-bid rejection          |
+| `supabase/functions/server/handlers/workflow.ts`                   | Job assignments + estimate requests                |
+| `supabase/functions/server/handlers/notification_preferences.ts`  | User notification preference CRUD                  |
+| `supabase/functions/server/utils/clerk.ts`                        | 3-tier Clerk JWT verification                      |
+| `supabase/functions/server/utils/authz.ts`                        | Auth gates (session, marketplace, admin, identity) |
 
 ### Utilities
 
@@ -447,17 +429,12 @@ Archive note: The checklist below records the priorities captured during the Pas
 
 ## 10. Known Technical Debt
 
-| Issue                                                     | Severity | Notes                                                                              |
-| --------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
-| ~~Supabase RLS `USING(true)` on 4 tables~~                | ✅ DONE  | Migration 012 hardened all RLS policies (verified Pass 567 audit)                  |
-| ~~Hardcoded admin/demo passwords in source~~              | ✅ DONE  | Pass 567 — moved to `VITE_ADMIN_SWITCH_PASSWORD` / `VITE_DEMO_PASSWORD` env vars   |
-| ~~CORS wildcard `*` on edge functions~~                   | ✅ DONE  | Pass 567 — whitelisted origins, dynamic reflection via `getCorsOrigin()`           |
-| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                          |
-| ~~`any` types in `src/types/index.ts`~~                   | ✅ DONE  | Pass 609 — eliminated remaining `any` from shared type definitions                 |
-| ~~No CI/CD pipeline~~                                     | ✅ DONE  | Pass 327 — GitHub Actions: format check → test → build on push/PR                  |
-| ~~No test coverage~~                                      | ✅ DONE  | Pass 324 — Vitest + 33 tests for formatters, routing, collections                  |
-| ~~Bundle 783KB~~                                          | ✅ DONE  | Pass 325 → now 514KB index chunk (36% reduction + route-level code splitting)      |
-| ~~2–14MB PNG assets~~                                     | ✅ DONE  | Pass 430 — JPEG conversion: 53.6MB → 22.9MB (57% reduction); 3 dead images removed |
+| Issue | Severity | Notes |
+|-------|----------|-------|
+| `updateReportStatus` silent failure | P1 | Report stays "pending" after bid acceptance; diagnostics deployed Pass 47 |
+| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW | Prevents chunk separation |
+| WebSocket/Realtime Clerk JWT template | LOW | Not configured; RT subscriptions use anon key fallback |
+| 49 pre-existing `tsc --noEmit` errors | LOW | Domain/DB boundary drift; does not affect Vite build |
 
 ---
 

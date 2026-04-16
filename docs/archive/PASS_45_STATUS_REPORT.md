@@ -4,37 +4,41 @@
 
 ### Core Loop: Report → Map → Shop → Action
 
-| Stage | Status | Evidence |
-|-------|--------|----------|
-| Customer creates report | ✅ Working | Pass 44 confirmed end-to-end |
-| Report persists to DB | ✅ Working | Supabase DB query confirmed |
-| Shop sees report in Requests | ✅ Working | Post UUID fix, all reports visible |
-| Shop submits bid | ✅ Working | Bid created, shop notification fired |
-| Customer sees bid | ✅ Working | Bids screen loads with $575 bid |
-| Customer accepts bid | ✅ Working (UI) | "Bid Accepted" confirmation shown |
-| Bid status updated to "accepted" | ✅ Working | DB confirmed |
-| Job assignment created with Clerk IDs | ✅ Working | Pass 41 fix confirmed |
-| Report status updated to "accepted" | ⚠️ Silent failure | Report stays "pending" in DB |
+| Stage                                 | Status            | Evidence                             |
+| ------------------------------------- | ----------------- | ------------------------------------ |
+| Customer creates report               | ✅ Working        | Pass 44 confirmed end-to-end         |
+| Report persists to DB                 | ✅ Working        | Supabase DB query confirmed          |
+| Shop sees report in Requests          | ✅ Working        | Post UUID fix, all reports visible   |
+| Shop submits bid                      | ✅ Working        | Bid created, shop notification fired |
+| Customer sees bid                     | ✅ Working        | Bids screen loads with $575 bid      |
+| Customer accepts bid                  | ✅ Working (UI)   | "Bid Accepted" confirmation shown    |
+| Bid status updated to "accepted"      | ✅ Working        | DB confirmed                         |
+| Job assignment created with Clerk IDs | ✅ Working        | Pass 41 fix confirmed                |
+| Report status updated to "accepted"   | ⚠️ Silent failure | Report stays "pending" in DB         |
 
 ---
 
 ## Recent Passes Summary (Passes 40–44)
 
 ### Pass 40 — Partial Report Payload Fix
+
 - Fixed `buildPartialReportPayload` to prevent null-overwrites on status-only updates
 - Deployed to remote ✅
 
 ### Pass 41 — Clerk ID TEXT Column Fix
+
 - `createJobAssignment` handler now maps correct `*_clerk_user_id` TEXT columns
 - Deployed to remote ✅
 
 ### Pass 43 — Status Value Mismatch Fix
+
 - `updateReportStatus` was sending "active" (not a valid DB CHECK value)
 - Changed to "accepted" (valid DB value: `pending|reviewing|quoted|accepted|completed|cancelled`)
 - Updated `normalizeReportStatus` adapter to map DB "accepted" → client "active"
 - Committed: `f246c122`
 
 ### Pass 44 — Fresh Full-Cycle Green-Path Verification
+
 - Unblocked two P0/P1 issues discovered during testing:
   1. Schema cache staleness (latitude column) — resolved via edge function redeploy
   2. `estimate_requests.shop_id` INTEGER vs UUID type mismatch — resolved via DB migration + edge function fix
@@ -68,6 +72,7 @@ job_assignments:
 ### Pass 46 — Fix updateReportStatus Silent Failure (P1-RUNTIME)
 
 **Problem**: After customer accepts bid:
+
 - `updateBidStatus` succeeds → bid.status = "accepted" ✅
 - `updateReportStatus` silently fails → report.status remains "pending" ❌
 - `createJobAssignment` succeeds → job created ✅
@@ -75,12 +80,14 @@ job_assignments:
 **Impact**: Reports stay in "pending" state from a shop perspective even when a bid is accepted. Shops may continue seeing them as active in the marketplace.
 
 **Approach**:
+
 1. Add console logging to edge function `updateReport` handler to surface the failure
 2. Investigate whether the Clerk token's `sub` claim matches `clerkUserId` in the body at the time of the call
 3. Check if `requireClerkSession` is validating against the correct session context
 4. Verify `authenticatedClerkUserId` matches `clerk_user_id` on the report row
 
 **Files to touch**:
+
 - `supabase/functions/server/handlers/reports.ts` — add logging
 - May need token extraction fix in `buildDashboardRouterPropsHelpers.ts`
 
@@ -88,17 +95,17 @@ job_assignments:
 
 ## System Health Indicators
 
-| Category | Status |
-|----------|--------|
-| Build | ✅ Clean (3.35s) |
-| Edge function deployment | ✅ All handlers deployed |
-| DB schema | ✅ estimate_requests.shop_id now UUID |
-| Job assignments | ✅ Clerk IDs writing correctly |
-| Bid flow | ✅ End-to-end working |
-| Report status on acceptance | ⚠️ Silent failure — see Pass 46 |
-| Shop Requests view | ✅ Working after UUID fix |
-| WebSocket/Realtime | ⚠️ Known non-blocking — Clerk JWT template not configured |
-| getMyShopServiceAreas | ⚠️ Non-blocking error on customer dashboard |
+| Category                    | Status                                                    |
+| --------------------------- | --------------------------------------------------------- |
+| Build                       | ✅ Clean (3.35s)                                          |
+| Edge function deployment    | ✅ All handlers deployed                                  |
+| DB schema                   | ✅ estimate_requests.shop_id now UUID                     |
+| Job assignments             | ✅ Clerk IDs writing correctly                            |
+| Bid flow                    | ✅ End-to-end working                                     |
+| Report status on acceptance | ⚠️ Silent failure — see Pass 46                           |
+| Shop Requests view          | ✅ Working after UUID fix                                 |
+| WebSocket/Realtime          | ⚠️ Known non-blocking — Clerk JWT template not configured |
+| getMyShopServiceAreas       | ⚠️ Non-blocking error on customer dashboard               |
 
 ---
 

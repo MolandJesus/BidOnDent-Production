@@ -1,8 +1,8 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-04-14 (Soft Launch Hardening phase — Hardening Plan + Post-Launch Roadmap are now project law)
+**Last updated:** 2026-04-16 (Pass 54 — docs overhaul, archive stale point-in-time reports)
 **Status:** Active documentation operating index
-**Current phase:** Soft Launch Hardening (pre-Phase 0 execution)
+**Current phase:** Soft Launch Hardening (Passes 46–54 complete, edge functions v40)
 
 BidOnDent is a **map-first automotive repair marketplace**. The map is the product. Everything else exists to support the spatial workflow around reporting damage, finding shops, routing, bids, and insurer coordination.
 
@@ -48,15 +48,15 @@ Read in this order:
 - **[`CODE_ORGANIZATION_AUDIT.md`](CODE_ORGANIZATION_AUDIT.md)** — codebase structure, safe seams, extraction boundaries.
 - **[`MOLANDJEUS_DESIGN_DECISIONS.md`](MOLANDJEUS_DESIGN_DECISIONS.md)** — design philosophy and visual hierarchy. Aesthetic work frozen during hardening except where required by Phase 4 trust surfaces.
 
-### Execution Reference (historical audit trail)
+### Execution Reference
 
-- **[`BIDONDENT_MAP_TRACKER_2026-03-21.md`](BIDONDENT_MAP_TRACKER_2026-03-21.md)** — pass-by-pass history. Continues from pass 855+ during hardening as an audit trail. The Module Completion Matrix (built in Phase 5) becomes the primary "where are we" tool once populated.
-- **[`BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`](BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md)** — canonical module completion reference (3 roles × 7 modules). Corrected cell tally, per-cell evidence, email flow wiring, runtime verification log, and deferred Insurer Role Promotion Epic.
+- **[`BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`](BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md)** — canonical module completion reference (3 roles × 7 modules). Per-cell evidence, email flow wiring, deferred Insurer Role Promotion Epic.
+- **[`BIDONDENT_MAP_TRACKER_2026-03-21.md`](BIDONDENT_MAP_TRACKER_2026-03-21.md)** — historical pass-by-pass audit trail. For current state, use the Module Completion Matrix or `CLAUDE_AI_MASTER_CONTEXT.md` Section 6.
 
 ### Setup & Operations
 
-- **[`GETTING_STARTED.md`](GETTING_STARTED.md)** — local setup and first run. **Heads up:** Phase 1.5 of the hardening plan migrates Clerk/Supabase key configuration from `utils/*/info.tsx` to `.env` — this guide must be updated in the same pass that migration lands.
-- **[`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md)** — backend, storage, and edge-function setup. Same `.env` migration note applies. References to `make-server-9f243523` remain until Post-Launch Roadmap item L1 fires.
+- **[`GETTING_STARTED.md`](GETTING_STARTED.md)** — local setup and first run. `.env` configuration is the canonical approach.
+- **[`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md)** — backend, storage, and edge-function setup. References to `make-server-9f243523` remain until Post-Launch Roadmap item L1 fires.
 - **[`GOOGLE_OAUTH_SETUP.md`](GOOGLE_OAUTH_SETUP.md)** — Clerk + Google OAuth setup.
 
 ### Deferred Design Docs
@@ -71,11 +71,21 @@ Read in this order:
 
 Everything under [`docs/archive/`](archive/) is historical reference, retained for traceability. Not active operating surface.
 
-Recent archive moves (2026-04-14):
+Recent archive moves (2026-04-16):
 
-- `archive/DUAL_AI_COORDINATION.md` — superseded by Group 2a's "main AI on autopilot + smaller support AI for cleanup" model. Historical context only.
-- `archive/BIDONDENT_FINISHING_MASTER_PLAN.md` — pre-launch "finishing" plan. Fully superseded by the Soft Launch Hardening Plan as execution law.
-- `archive/SESSION_AUDIT_2026-04-06.md` — point-in-time audit for passes 851–854. Historical snapshot only.
+- `GREEN_PATH_FULL_CYCLE_PASS_44.md` — superseded by passes 45+ green-path work
+- `GREEN_PATH_STEP5_VERIFICATION.md` — passes 40-42 historical; fixes deployed
+- `GREEN_PATH_VERIFICATION_PASS_34.md` — superseded by 20+ subsequent passes
+- `LIGHT_DARK_MODE_AUDIT.md` — pass 24 audit; dark-mode work completed
+- `PASS_39_STATUS_REPORT.md` — superseded by passes 40-54
+- `PASS_45_STATUS_REPORT.md` — superseded; current state in CLAUDE_AI_MASTER_CONTEXT Section 6
+- `SHOP_AUDIT_PASS_26.md` — point-in-time; shop profile issue resolved
+
+Earlier archive moves (2026-04-14):
+
+- `DUAL_AI_COORDINATION.md` — superseded by Group 2a execution model
+- `BIDONDENT_FINISHING_MASTER_PLAN.md` — superseded by Soft Launch Hardening Plan
+- `SESSION_AUDIT_2026-04-06.md` — point-in-time audit for passes 851–854
 
 ---
 
@@ -103,25 +113,15 @@ Use the smallest doc set that answers the task:
 6. **Active docs need metadata.** Keep `Last updated` and `Status` markers accurate.
 7. **Keep cross-links honest.** If a doc is renamed, archived, or repurposed, update references everywhere in the docs system in the same pass.
 
-### Hardening-phase doc-sync rule (binding on the main AI on autopilot)
+### Hardening-phase doc-sync rule (binding on any AI executing passes)
 
-While executing the Hardening Plan, every pass that changes a load-bearing fact must also update the docs it contradicts — in the same pass, not later. Specifically:
+Every pass that changes a load-bearing fact must also update the docs it contradicts — in the same pass, not later. Specifically:
 
-- **Phase 1.5 (.env migration)** must update `GETTING_STARTED.md`, `SUPABASE_SETUP_GUIDE.md`, `README.md` (project root), and the error copy in `AppShell.tsx:17`. The Hardening Plan lists this explicitly.
-- **Phase 2.2 (identity normalization)** must update any doc that still references `user_id` UUID columns for launch-critical tables.
-- **Phase 3.1 (RLS rollout)** must update `SUPABASE_SETUP_GUIDE.md` with the new RLS posture where it conflicts.
-- **Phase 5.3 (Module Completion Matrix)** creates a new doc that becomes the primary "where are we" reference. README.md must add it to the active index in the same pass.
-- **Any Launch Scope Guardrail verification or reclassification** must be reflected in the Hardening Plan's Change Log in the same pass, per Execution Discipline rule 5.
-- **If a pass adjusts the Module Completion Matrix, the Hardening Plan, or the Post-Launch Roadmap**, summarize the change in the pass log in `BIDONDENT_MAP_TRACKER_2026-03-21.md` so the audit trail remains continuous.
+- **Any Launch Scope Guardrail verification or reclassification** must be reflected in the Hardening Plan's Change Log in the same pass.
+- **If a pass adjusts the Module Completion Matrix, the Hardening Plan, or the Post-Launch Roadmap**, summarize the change in the pass log so the audit trail remains continuous.
+- **Edge function changes** should note the new deployed version in `CLAUDE_AI_MASTER_CONTEXT.md` Section 6.
 
 Silent doc drift during auto-execution is a discipline failure. If you cannot update the affected docs in the same pass, stop and escalate.
 
 ---
 
-## Previously Retired (pre-archive system)
-
-These files were removed before the archive system was formalized:
-
-- `BIDONDENT_NAVIGATION_REBUILD_MASTER_PLAN_2026-03-20.md`
-- `JEFFREY_REQUEST_IMPLEMENTATION_PLAN.md`
-- `PROJECT_STATUS.md`
