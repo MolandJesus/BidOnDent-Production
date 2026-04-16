@@ -20,13 +20,13 @@ export type GlobalSurfaceTokens = {
 
 const toneTokens: Record<SurfaceTone, GlobalSurfaceTokens> = {
   light: {
-    background:
-      "linear-gradient(180deg, rgba(245, 247, 251, 1) 0%, rgba(238, 242, 249, 1) 54%, rgba(232, 237, 245, 1) 100%)",
-    glassBg: "rgba(255, 255, 255, 0.72)",
-    glassBorder: "rgba(148, 163, 184, 0.18)",
-    text: "#0f172a",
-    textSecondary: "#475569",
-    shadow: "0 18px 48px rgba(148, 163, 184, 0.16)",
+    background: "radial-gradient(130% 90% at 30% 8%, #1b3158 0%, #15264a 52%, #0f1d3a 100%)",
+    glassBg: "rgba(255, 251, 245, 0.74)",
+    glassBorder: "rgba(180, 160, 130, 0.28)",
+    text: "#1a1008",
+    textSecondary: "#5c4b34",
+    shadow:
+      "0 22px 56px rgba(2, 6, 23, 0.38), 0 0 0 1px rgba(255, 220, 170, 0.18), inset 0 1px 0 rgba(255, 255, 250, 0.96), 0 0 40px rgba(255, 191, 105, 0.06)",
   },
   "soft-dark": {
     background: "#0c1929",
