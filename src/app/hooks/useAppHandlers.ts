@@ -141,14 +141,12 @@ export function useAppHandlers({
       return;
     }
 
+    // Look up report for activity label — may be absent for marketplace bids
     const report = userData.reports.find((entry) => entry.id === reportId);
-    if (!report) {
-      throw new Error(`Report not found: ${reportId}`);
-    }
-
-    const vehicleInfo =
-      `${report.vehicle?.year || ""} ${report.vehicle?.make || ""} ${report.vehicle?.model || ""}`.trim() ||
-      "Vehicle";
+    const vehicleInfo = report
+      ? (`${report.vehicle?.year || ""} ${report.vehicle?.make || ""} ${report.vehicle?.model || ""}`.trim() ||
+          "Vehicle")
+      : "Vehicle";
 
     // Build bid object for Supabase
     const bid: import("../services/supabase/types").Bid = {
