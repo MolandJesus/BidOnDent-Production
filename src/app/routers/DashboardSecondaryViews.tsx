@@ -239,18 +239,14 @@ export default function DashboardSecondaryViews({
           <ShopDirectoryScreen
             onBack={() => onViewModeChange("dashboard")}
             onOpenRelatedScreen={() => {
-              if (userType === "shop") {
-                onViewModeChange("competitor-analysis");
-                return;
-              }
-
               if (userType === "insurer") {
                 onTabChange("shops");
                 onViewModeChange("dashboard");
                 return;
               }
 
-              onViewModeChange("liked-shops");
+              // Customer and shop: stay on shop directory (already here)
+              onViewModeChange("dashboard");
             }}
             appearanceMode={appearanceMode}
             primaryColor={primaryColor}

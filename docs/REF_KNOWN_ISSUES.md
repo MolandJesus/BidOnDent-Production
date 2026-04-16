@@ -131,9 +131,9 @@
 
 - **Impact:** Three `ViewMode` entries route to screens with no real content or backend: `competitor-analysis`, `insurance-companies`, `liked-shops`.
 - **Location:** [useNavigation.ts VALID_VIEW_MODES](../src/app/hooks/useNavigation.ts#L12), various `onView*` handlers in `buildDashboardRouterProps`.
-- **Current reality:** These screens render but have no data sources or business logic.
-- **Fix direction:** Remove the route entries and navigation callbacks. Keep the `ViewMode` type values for future use.
-- **Status:** Open — P4
+- **Current reality:** The screens still exist and ViewMode values are preserved, but the dead-end quick action tiles ("Competitors", "Browse Insurers") have been removed from shop and insurer home dashboards. ShopDirectoryScreen no longer routes to `competitor-analysis`. The empty screens are no longer reachable from normal navigation flows.
+- **Residual:** The ViewMode values, route entries in DashboardSecondaryViews, navigation callbacks in buildDashboardRouterProps, and the screen components themselves remain for future use. `liked-shops` remains reachable via customer shop directory flow but renders a functional (if empty) saved-shops UI.
+- **Status:** RESOLVED (2026-04-16) — dead-end navigation surfaces removed
 
 ### KI-032: Demo mode wired into production navigation
 

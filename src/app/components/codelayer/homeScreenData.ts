@@ -178,16 +178,10 @@ export function buildQuickActions(userType: string, callbacks: ActionCallbacks):
         onClick: callbacks.onViewJobs,
       },
       {
-        title: "Competitors",
-        description: "Track market pricing",
-        icon: TrendingUp,
-        onClick: callbacks.onViewCompetitors,
-      },
-      {
-        title: "Browse Insurers",
-        description: "Explore insurance partners",
-        icon: Shield,
-        onClick: callbacks.onViewInsurers,
+        title: "Shop Directory",
+        description: "Browse nearby repair shops",
+        icon: Store,
+        onClick: callbacks.onViewShops,
       },
     ];
   }
@@ -210,12 +204,6 @@ export function buildQuickActions(userType: string, callbacks: ActionCallbacks):
         description: "Manage repair network",
         icon: Store,
         onClick: callbacks.onViewShops,
-      },
-      {
-        title: "Browse Insurers",
-        description: "View carrier directory",
-        icon: Shield,
-        onClick: callbacks.onViewInsurers,
       },
     ];
   }
