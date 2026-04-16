@@ -424,7 +424,11 @@ export default function DashboardRouter({
                   primaryColor={primaryColor}
                   secondaryColor={secondaryColor}
                   appearanceMode={appearanceMode}
-                  reports={reports}
+                  reports={
+                    userType === "shop" || userType === "insurer"
+                      ? shopInsurerReports
+                      : enrichedUserReports
+                  }
                   photoStorage={photoStorage}
                   reportsLoading={reportsLoading}
                   reportsError={reportsError}

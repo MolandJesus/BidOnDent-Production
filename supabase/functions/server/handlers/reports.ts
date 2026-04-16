@@ -82,7 +82,7 @@ async function hydrateReport(record: any, supabase: SupabaseClient) {
     const { count } = await supabase
       .from('bids')
       .select('id', { count: 'exact', head: true })
-      .eq('report_id', record.id);
+      .eq('damage_report_id', record.id);
     bids_count = count ?? 0;
   }
 

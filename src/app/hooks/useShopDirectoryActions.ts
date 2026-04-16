@@ -76,8 +76,17 @@ export function useShopDirectoryActions({
         } else {
           setBidError("Failed to submit bid. Please try again.");
         }
-      } catch {
-        setBidError("An error occurred while submitting your bid.");
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "";
+        setBidError(
+          msg.includes("not found")
+            ? "This damage report is no longer available."
+            : msg.includes("sign in")
+              ? msg
+              : msg.includes("already have an active bid")
+                ? "You already have a bid on this report."
+                : "An error occurred while submitting your bid."
+        );
       } finally {
         setBidSubmitting(false);
       }

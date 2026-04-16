@@ -19,7 +19,7 @@ export async function getBidsForReport(reportId: string): Promise<Bid[]> {
 export async function submitBid(bid: DbBid, clerkUserId?: string): Promise<Bid | null> {
   if (!clerkUserId) {
     if (import.meta.env.DEV) console.warn("[DEV] submitBid: missing Clerk user ID");
-    return null;
+    throw new Error("Please sign in to submit a bid.");
   }
 
   try {
@@ -31,7 +31,7 @@ export async function submitBid(bid: DbBid, clerkUserId?: string): Promise<Bid |
     return data?.bid ? bidFromDb(data.bid) : null;
   } catch (error) {
     if (import.meta.env.DEV) console.error("[DEV] submitBid failed:", error);
-    return null;
+    throw error;
   }
 }
 

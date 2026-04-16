@@ -144,7 +144,13 @@ export async function saveUserProfile(
     const normalizedSessionEmail =
       normalizeEmail(session.email) || normalizeEmail(authenticatedProfile?.email);
 
-    if (!normalizedSessionEmail || !profile?.name || !profile?.account_type) {
+    // Derive a fallback name from the session email when the client sends an empty name
+    const resolvedName =
+      profile?.name ||
+      authenticatedProfile?.name ||
+      (normalizedSessionEmail ? normalizedSessionEmail.split("@")[0] : null);
+
+    if (!normalizedSessionEmail || !resolvedName || !profile?.account_type) {
       return respond({ error: "Missing profile email, name, or account type" }, 400);
     }
 
@@ -175,7 +181,7 @@ export async function saveUserProfile(
         normalizedSessionEmail === "bidondent@gmail.com" ||
         !!existingProfile?.is_admin,
       last_login: profile.last_login || existingProfile?.last_login || null,
-      name: profile.name,
+      name: resolvedName,
       phone: profile.phone || null,
       profile_image_url: profile.profile_image_url || null,
       setup_completed: profile.setup_completed ?? existingProfile?.setup_completed ?? false,

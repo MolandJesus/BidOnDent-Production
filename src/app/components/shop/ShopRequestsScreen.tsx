@@ -147,8 +147,15 @@ export default function ShopRequestsScreen({
         setEstimatedDays("");
         setBidDescription("");
         setSelectedRequest(null);
-      } catch {
-        setBidError("Failed to submit bid. Please try again.");
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "";
+        setBidError(
+          msg.includes("not found")
+            ? "This damage report is no longer available."
+            : msg.includes("already have an active bid")
+              ? "You already have a bid on this report."
+              : "Failed to submit bid. Please try again."
+        );
       } finally {
         setIsSubmittingBid(false);
       }
