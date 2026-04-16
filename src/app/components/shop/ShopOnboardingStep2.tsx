@@ -6,6 +6,7 @@ type ShopOnboardingStep2Props = {
   formData: ShopOnboardingFormData;
   primaryColor: string;
   secondaryColor: string;
+  isLight?: boolean;
   onUpdate: (data: ShopOnboardingFormData) => void;
   onNext: () => void;
   onBack: () => void;
@@ -15,6 +16,7 @@ export default function ShopOnboardingStep2({
   formData,
   primaryColor,
   secondaryColor,
+  isLight = true,
   onUpdate,
   onNext,
   onBack,
@@ -30,21 +32,33 @@ export default function ShopOnboardingStep2({
         >
           <Clock className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-center mb-2">Business Hours</h2>
-        <p className="text-slate-600 text-center">When are you open for business?</p>
+        <h2
+          className={`text-2xl font-bold text-center mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+        >
+          Business Hours
+        </h2>
+        <p className={`text-center ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+          When are you open for business?
+        </p>
       </div>
 
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200/60 shadow-sm p-4 sm:p-6 space-y-4">
+      <div className="bd-report-section rounded-2xl p-4 sm:p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Business Hours</label>
+          <label
+            className={`block text-sm font-medium mb-1.5 ${isLight ? "text-slate-700" : "text-slate-300"}`}
+          >
+            Business Hours
+          </label>
           <input
             type="text"
             value={formData.hours}
             onChange={(e) => onUpdate({ ...formData, hours: e.target.value })}
-            className="w-full px-3 py-3 border border-gray-300 rounded-md"
+            className={`bd-report-input w-full px-4 py-3 min-h-[44px] rounded-xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
             placeholder="Mon-Fri: 8AM-6PM, Sat: 9AM-3PM"
           />
-          <p className="text-xs text-gray-500 mt-1">You can edit this later in your profile</p>
+          <p className={`text-xs mt-1 ${isLight ? "text-slate-400" : "text-slate-500"}`}>
+            You can edit this later in your profile
+          </p>
         </div>
       </div>
 

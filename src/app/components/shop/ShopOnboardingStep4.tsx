@@ -5,6 +5,7 @@ import type { ShopOnboardingFormData } from "../../types";
 type ShopOnboardingStep4Props = {
   formData: ShopOnboardingFormData;
   primaryColor: string;
+  isLight?: boolean;
   isSubmitting: boolean;
   submitError?: string | null;
   onUpdate: (data: ShopOnboardingFormData) => void;
@@ -15,6 +16,7 @@ type ShopOnboardingStep4Props = {
 export default function ShopOnboardingStep4({
   formData,
   primaryColor,
+  isLight = true,
   isSubmitting,
   submitError,
   onUpdate,
@@ -30,15 +32,29 @@ export default function ShopOnboardingStep4({
         >
           <Check className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-center mb-2">Almost Done!</h2>
-        <p className="text-slate-600 text-center">Just a few more preferences</p>
+        <h2
+          className={`text-2xl font-bold text-center mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}
+        >
+          Almost Done!
+        </h2>
+        <p className={`text-center ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+          Just a few more preferences
+        </p>
       </div>
 
-      <div className="bg-white/80 backdrop-blur-sm rounded-lg border border-slate-200/60 shadow-sm p-4 sm:p-6 space-y-4">
-        <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
+      <div className="bd-report-section rounded-2xl p-4 sm:p-6 space-y-4">
+        <label
+          className={`flex items-center justify-between p-4 rounded-xl cursor-pointer border ${
+            isLight ? "border-slate-200/60 bg-white/60" : "border-white/[0.08] bg-white/[0.04]"
+          }`}
+        >
           <div>
-            <p className="font-medium">Accept insurance claims</p>
-            <p className="text-sm text-slate-600">Work directly with insurance companies</p>
+            <p className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+              Accept insurance claims
+            </p>
+            <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+              Work directly with insurance companies
+            </p>
           </div>
           <input
             type="checkbox"
@@ -49,10 +65,18 @@ export default function ShopOnboardingStep4({
           />
         </label>
 
-        <label className="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer">
+        <label
+          className={`flex items-center justify-between p-4 rounded-xl cursor-pointer border ${
+            isLight ? "border-slate-200/60 bg-white/60" : "border-white/[0.08] bg-white/[0.04]"
+          }`}
+        >
           <div>
-            <p className="font-medium">Provide free estimates</p>
-            <p className="text-sm text-slate-600">Offer complimentary damage assessments</p>
+            <p className={`font-medium ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+              Provide free estimates
+            </p>
+            <p className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
+              Offer complimentary damage assessments
+            </p>
           </div>
           <input
             type="checkbox"

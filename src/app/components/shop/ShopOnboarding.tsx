@@ -105,6 +105,7 @@ export default function ShopOnboarding({
             formData={formData}
             primaryColor={primaryColor}
             secondaryColor={secondaryColor}
+            isLight={isLight}
             onUpdate={setFormData}
             onNext={handleNext}
             onBack={handleBack}
@@ -115,6 +116,7 @@ export default function ShopOnboarding({
             formData={formData}
             primaryColor={primaryColor}
             secondaryColor={secondaryColor}
+            isLight={isLight}
             onUpdate={setFormData}
             onNext={handleNext}
             onBack={handleBack}
@@ -124,6 +126,7 @@ export default function ShopOnboarding({
           <ShopOnboardingStep4
             formData={formData}
             primaryColor={primaryColor}
+            isLight={isLight}
             isSubmitting={isSubmitting}
             submitError={submitError}
             onUpdate={setFormData}
