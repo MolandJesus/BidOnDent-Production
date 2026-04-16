@@ -4,7 +4,7 @@ import { updateWebsiteSessionMemory } from "../services/auth/websiteIdentity";
 import type { useNavigation } from "../hooks/useNavigation";
 import type { useUserData } from "../hooks/useUserData";
 import type { Bid } from "../types";
-import { getBidsForReport, updateBidStatus } from "../services/supabase/bids";
+import { updateBidStatus } from "../services/supabase/bids";
 import { updateReportStatus } from "../services/supabase/reports";
 import { createJobAssignment } from "../services/supabase/workflow";
 import { zipToCoordinates } from "../services/supabase/map";
@@ -42,25 +42,7 @@ export async function handleAcceptBid(
       );
     }
 
-    // Reject competing bids for the same report via Supabase query
-    if (reportId) {
-      try {
-        const allBidsForReport = await getBidsForReport(reportId.toString());
-        const competingBids = allBidsForReport.filter(
-          (b) => b.id !== details.bidId && b.status !== "rejected"
-        );
-        const results = await Promise.allSettled(
-          competingBids.map((competing) => updateBidStatus(competing.id!, "rejected", clerkId))
-        );
-        if (import.meta.env.DEV) {
-          const failed = results.filter((r) => r.status === "rejected").length;
-          if (failed > 0)
-            console.error(`${failed}/${competingBids.length} competing bid rejections failed`);
-        }
-      } catch (fetchErr) {
-        if (import.meta.env.DEV) console.error("Failed to fetch competing bids:", fetchErr);
-      }
-    }
+    // Server auto-rejects competing bids atomically (bids.ts:377-389)
 
     // Update local bids state
     userData.setBids(
