@@ -152,7 +152,7 @@
 
 #### ⚠️ Partially Appearance-Aware (3)
 
-- `FooterSection.tsx` — Uses `isLightAppearance` but some hardcoded accents
+- `FooterSection.tsx` — ✅ Verified fully appearance-aware in Pass 38 — `isLightAppearance` conditional on all text, backgrounds, borders, link hovers, and social icon styles. Reclassified from ⚠️ to ✅.
 - `OperatingRegionsSection.tsx` — `isLightAppearance` but incomplete
 - Various form components — May have gaps
 
@@ -202,8 +202,8 @@
 10. **`MissingReportState.tsx`** — Hardcoded dark styling
 11. **`photo-guide-steps.tsx`** — Hardcoded gray colors
 12. **`PhotoGuide.tsx`** — Hardcoded colors
-13. **`CTASection.tsx`** — Needs verification
-14. **`WhoWeServeSection.tsx`** — Needs verification
+13. **`CTASection.tsx`** — ✅ Already fully appearance-aware (verified Pass 38) — `isLightAppearance` prop with extensive conditionals throughout all backgrounds, borders, and text colors
+14. **`WhoWeServeSection.tsx`** — ✅ Already fully appearance-aware (verified Pass 38) — `isLightAppearance` prop with conditionals on all section/card/text colors
 15. **`DesktopNavTabs.tsx`** — Needs verification
 16. **`ProfileDropdown.tsx`** — Partial coverage
 
