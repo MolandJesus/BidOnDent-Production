@@ -33,7 +33,7 @@ export function useUserData(
   websiteUserKey?: string,
   signedInEmail?: string,
   authReady = true,
-  accountType?: string
+  accountType?: "customer" | "shop" | "insurer"
 ) {
   const [userInfo, setUserInfo] = useState<UserInfo>({ name: "", email: "", profileImage: "" });
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);

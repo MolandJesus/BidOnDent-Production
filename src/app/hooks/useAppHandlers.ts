@@ -144,8 +144,8 @@ export function useAppHandlers({
     // Look up report for activity label — may be absent for marketplace bids
     const report = userData.reports.find((entry) => entry.id === reportId);
     const vehicleInfo = report
-      ? (`${report.vehicle?.year || ""} ${report.vehicle?.make || ""} ${report.vehicle?.model || ""}`.trim() ||
-          "Vehicle")
+      ? `${report.vehicle?.year || ""} ${report.vehicle?.make || ""} ${report.vehicle?.model || ""}`.trim() ||
+        "Vehicle"
       : "Vehicle";
 
     // Build bid object for Supabase
