@@ -5,11 +5,11 @@ Status: Active onboarding guide
 
 Get BidOnDent running locally with Clerk + Supabase in about 10 minutes.
 
-Scope note: This guide is for local setup and first-run flow. For current execution truth during hardening, read the [Soft Launch Hardening Plan](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md), then `CLAUDE_AI_MASTER_CONTEXT.md` and `docs/README.md`.
+Scope note: This guide is for local setup and first-run flow. For current execution truth during hardening, read [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), then [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) and [`README.md`](README.md).
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 22+ (see `.nvmrc`)
 - Clerk account: https://clerk.com
 - Supabase account: https://supabase.com
 

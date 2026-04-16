@@ -637,11 +637,12 @@ Same checklist, against the live prod URL. Everything must pass.
 Command: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa`
 
 Changes included:
-1. **KI-001:** `getMarketplaceReports` geo-filters for shops via PostGIS `find_reports_in_service_area`
+1. **KI-001:** `getMarketplaceReports` geo-filters for shops via PostGIS `find_reports_in_service_area`. Shop marketplace shows only biddable reports (pending/reviewing/quoted).
 2. **KI-003:** `extractJwtSubject()` — rate limit identity from JWT instead of query params
 3. **KI-022:** Server-side atomic accept-bid (report status + job assignment + auto-reject in one handler)
-4. **KI-002 prep:** `getUserName` column fix (`full_name` → `name`), email template URL cleanup
-5. **KI-002 blocked:** Email delivery requires `supabase secrets set RESEND_API_KEY=re_xxx` before deploy. See KI-002 in REF_KNOWN_ISSUES.md for full steps.
+4. **Pass 66:** `createBid` server-side guard rejects bids on non-biddable reports (409)
+5. **KI-002 prep:** `getUserName` column fix (`full_name` → `name`), email template URL cleanup
+6. **KI-002 blocked:** Email delivery requires `supabase secrets set RESEND_API_KEY=re_xxx` before deploy. See KI-002 in REF_KNOWN_ISSUES.md for full steps.
 
 ### Change log addendum (2026-04-16)
 

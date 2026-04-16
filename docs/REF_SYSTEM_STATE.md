@@ -2,10 +2,10 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-04-16  
-**Build:** 0 errors, ~3.4s  
+**Last updated:** 2026-04-16 (Pass 67)  
+**Build:** 0 TS errors, 555/557 tests passing, ~3.4s  
 **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)  
-**Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`
+**Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`. Pending redeploy with: geo-filtered shop marketplace, JWT rate-limit identity, server-side atomic accept-bid, bid submission guard, email column fix. See LAW_HARDENING_PLAN.md "Edge function deploy handoff" for full list.
 
 ---
 
@@ -61,19 +61,19 @@ A **pre-launch React SPA** implementing a geo-native automotive repair marketpla
 - Submit damage report (6-step wizard with photo upload, location, vehicle)
 - View own reports (fetched from Supabase, enriched with signed photo URLs)
 - View bids on reports (live via Supabase Realtime subscription)
-- Accept/reject bids (writes bid status, creates job_assignment, auto-rejects competing bids)
+- Accept/reject bids (confirmation dialog → server-side atomic: bid status, job_assignment, auto-reject competing bids)
 - Vehicle management (CRUD)
 - Estimate requests to shops
-- **Not working:** Email notifications (API key not deployed). No confirmation dialog on bid acceptance.
+- **Not working:** Email notifications (API key not deployed — code-side complete, blocked on secret deployment).
 
 ### Shop (mostly complete)
-- View marketplace reports — **geo-filtered by service area** (PostGIS `find_reports_in_service_area`). Shops without service areas see most recent 50.
+- View marketplace reports — **geo-filtered by service area** (PostGIS `find_reports_in_service_area`). Only biddable reports shown (pending/reviewing/quoted). Shops without service areas see most recent 50.
 - Submit bids with geo enrichment from shop_profiles
 - View own submitted bids
 - Estimate inbox (receive/respond to customer requests)
 - Active jobs screen (DB-sourced + report-derived, deduplicated)
 - Shop profile with service areas (PostGIS polygons)
-- **Not working:** Reports not filtered by service area. No notification when bid is accepted.
+- **Not working:** No notification when bid is accepted (email blocked on RESEND_API_KEY deployment).
 
 ### Insurer (thin stub)
 - Views all marketplace reports (same as shop — unfiltered)
@@ -177,7 +177,7 @@ Single `Deno.serve()` in [server/index.ts](../supabase/functions/server/index.ts
 - `ensureClerkUserMatchesSession` — validates clerkUserId param matches JWT subject
 - `requireMarketplaceContext` — verifies shop/insurer role
 - `requireAdminContext` — verifies is_admin flag
-- Rate limiting — applied globally before dispatch (but identity from query params — see KI-003)
+- Rate limiting — applied globally before dispatch (identity from JWT `sub` claim since KI-003 fix)
 
 **Handler modules:** reports, bids, vehicles, workflow, profiles, network_profiles, estimate_requests, service_areas, geographic_matching, notification_preferences, storage, auth, admin, health, intake, navigation, preferences, website_relationships.
 
@@ -285,7 +285,7 @@ Handler executes with authenticated clerkUserId
 
 **Staging:** Supabase project `lhhdqycnhweaxqviwdqt` (created 2026-04-15).
 
-**Build health:** 0 TypeScript errors (fixed in Pass 15). tsc --noEmit was previously failing with 49 errors — all resolved.
+**Build health:** 0 TypeScript errors. 555/557 tests passing (2 pre-existing failures in `bids.test.ts` — network mock edge cases, not blocking).
 
 **Chunk splitting:** Manual vendor chunks in vite.config.ts (react, supabase, clerk, radix, motion, ui, sentry).
 

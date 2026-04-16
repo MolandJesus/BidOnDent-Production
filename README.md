@@ -32,7 +32,7 @@ Report damage → See shops on map → Receive bids → Accept best offer → Tr
 | ------------ | ----------------------------------------------------------------------------- |
 | **Frontend** | React 18, TypeScript, Tailwind CSS v4, Vite 6                                 |
 | **Auth**     | Clerk (Google OAuth, email/password)                                          |
-| **Backend**  | Supabase (PostgreSQL, Edge Functions via Hono, Storage)                       |
+| **Backend**  | Supabase (PostgreSQL, Edge Functions via Deno, Storage)                       |
 | **Maps**     | MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (WebGL — Leaflet removed Pass 448) |
 | **Testing**  | Vitest (543+/555 passing), GitHub Actions CI                                  |
 | **Design**   | Liquid glass system — dark navy base, royal blue accents                      |
@@ -108,7 +108,7 @@ src/
   assets/                           # Images
 
 supabase/
-  functions/server/                 # Edge functions (11 Hono handlers)
+  functions/server/                 # Edge functions (Deno.serve router, ~50 routes)
   migrations/                       # PostgreSQL schema migrations
 
 docs/                               # Project documentation
@@ -135,11 +135,11 @@ npm run format
 npx cspell lint "src/**/*.{ts,tsx}" --no-progress
 ```
 
-### Build Stats (verified 2026-04-14)
+### Build Stats (verified 2026-04-16)
 
-- **Build time:** 3.26s
+- **Build time:** ~3.4s
 - **Bundle size:** vendor-split — index chunk ~230 KB, map vendor chunk ~1070 KB (MapLibre + tile styles), other vendor chunks each under 200 KB
-- **Tests:** 543+/555 passing (12 pre-existing network-mocking failures in `bids.test.ts` / `reports.test.ts` — not blocking)
+- **Tests:** 555/557 passing (2 pre-existing network-mock edge cases in `bids.test.ts` — not blocking)
 - **Build errors:** 0
 
 ---
@@ -202,20 +202,18 @@ Archived branches (`archive/*`) are preserved for history but inactive.
 
 ## Documentation
 
-**Current phase:** Soft Launch Hardening (2026-04-14 onward). The two docs at the top of this table are **project law** during the hardening phase — read them first.
+**Current phase:** Soft Launch Hardening. Docs follow a **LAW > REFERENCE > PLAN** authority model. LAW docs govern all work.
 
-| Document                                                                                  | Purpose                                                                                                     |
-| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| [**Soft Launch Hardening Plan**](docs/BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) | ⚡ **Project law.** Locked decisions, Launch Scope Guardrails, phased Execution Plan, Execution Discipline. |
-| [**Post-Launch Roadmap**](docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md)               | ⚡ **Controlled holding area for deferred work.** Priority bands + triggers. Not a backlog.                 |
-| [Docs Operating Index](docs/README.md)                                                    | Full navigation of active docs + archive pointers                                                           |
-| [AI Master Context](docs/CLAUDE_AI_MASTER_CONTEXT.md)                                     | Product identity, architecture rules, active constraints                                                    |
-| [Product Brain](docs/BIDONDENT_PRODUCT_BRAIN.md)                                          | Strategic product handbook (paused during hardening)                                                        |
-| [Map Master Plan](docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md)                           | Map strategy (paused during hardening)                                                                      |
-| [Map Tracker](docs/BIDONDENT_MAP_TRACKER_2026-03-21.md)                                   | Historical pass log / audit trail                                                                           |
-| [Code Organization Audit](docs/CODE_ORGANIZATION_AUDIT.md)                                | Repo structure, seams, extraction boundaries                                                                |
-| [Getting Started](docs/GETTING_STARTED.md)                                                | Local setup guide                                                                                           |
-| [Supabase Setup](docs/SUPABASE_SETUP_GUIDE.md)                                            | Database + edge function reference                                                                          |
+| Document | Purpose |
+|---|---|
+| [**LAW: Project Rules**](docs/LAW_PROJECT_RULES.md) | Permanent behavioral rules, product definition, 6 laws |
+| [**LAW: Hardening Plan**](docs/LAW_HARDENING_PLAN.md) | Execution authority. Launch Scope Guardrails, phased Execution Plan, Execution Discipline |
+| [**REF: System State**](docs/REF_SYSTEM_STATE.md) | Current architecture truth. Auth flow, state ownership, role reality, known bottlenecks |
+| [**REF: Known Issues**](docs/REF_KNOWN_ISSUES.md) | Living inventory of bugs, gaps, and structural issues |
+| [Docs Operating Index](docs/README.md) | Full navigation of active docs + archive pointers |
+| [Post-Launch Roadmap](docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) | Deferred work with priority bands + triggers |
+| [Getting Started](docs/GETTING_STARTED.md) | Local setup guide |
+| [Supabase Setup](docs/SUPABASE_SETUP_GUIDE.md) | Database + edge function reference |
 
 ---
 
