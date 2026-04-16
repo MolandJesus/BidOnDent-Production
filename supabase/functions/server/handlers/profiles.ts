@@ -142,7 +142,7 @@ export async function saveUserProfile(
     const identity: ProfileIdentity = body?.identity || {};
     const profile = body?.profile || {};
     const normalizedSessionEmail =
-      normalizeEmail(session.email) || normalizeEmail(authenticatedProfile?.email);
+      normalizeEmail(session.email) || normalizeEmail(authenticatedProfile?.email) || normalizeEmail(identity.email) || normalizeEmail(profile?.email);
 
     // Derive a fallback name from the session email when the client sends an empty name
     const resolvedName =
@@ -158,9 +158,15 @@ export async function saveUserProfile(
       return respond({ error: "Forbidden" }, 403);
     }
 
+    // Enrich session with resolved email so downstream functions
+    // (e.g. resolveWebsiteUserKeyForSession) can derive the correct key
+    const enrichedSession = normalizedSessionEmail && !session.email
+      ? { ...session, email: normalizedSessionEmail }
+      : session;
+
     const websiteUserKey = await resolveWebsiteUserKeyForSession(
       supabase,
-      session,
+      enrichedSession,
       identity.websiteUserKey || authenticatedProfile?.website_user_key || null
     );
 
