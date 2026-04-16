@@ -59,7 +59,7 @@ export async function saveVehicle(
         .eq('id', vehicle.id)
         .eq('clerk_user_id', authenticatedClerkUserId)
         .select()
-        .single();
+        .maybeSingle();
 
       data = result.data;
       error = result.error;

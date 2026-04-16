@@ -176,7 +176,7 @@ export async function saveShopServiceArea(
         .eq("id", serviceArea.id)
         .eq("shop_profile_id", shopProfile.id)
         .select()
-        .single();
+        .maybeSingle();
       data = result.data;
       error = result.error;
     } else {

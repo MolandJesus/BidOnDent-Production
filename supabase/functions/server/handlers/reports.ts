@@ -313,7 +313,7 @@ export async function updateReport(
       .eq('id', reportId)
       .eq('clerk_user_id', authenticatedClerkUserId)
       .select()
-      .single();
+      .maybeSingle();
 
     console.log('[updateReport] result — data:', data ? `id=${data.id} status=${data.status}` : 'null (0 rows matched)', '| error:', error ? error.message : 'none');
 
@@ -324,11 +324,12 @@ export async function updateReport(
 
     if (!data) {
       console.warn('[updateReport] 0 rows updated — reportId or clerk_user_id did not match. reportId:', reportId, 'clerkUserId:', authenticatedClerkUserId);
+      return respond({ error: 'Report not found or access denied', success: false, report: null }, 404);
     }
 
     return respond({
       success: true,
-      report: data ? await hydrateReport(data, supabase) : null,
+      report: await hydrateReport(data, supabase),
     });
   } catch (error: any) {
     console.error('Error in update damage report endpoint:', error);

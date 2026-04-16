@@ -139,7 +139,11 @@ export default function ShopActiveJobCard({
           </div>
           <div className="text-right">
             <p className={`font-bold text-lg ${isLight ? "text-blue-600" : "text-blue-200"}`}>
-              {job.bidAmount > 0 ? `$${job.bidAmount.toLocaleString()}` : "Bid pending"}
+              {job.bidAmount > 0
+                ? `$${job.bidAmount.toLocaleString()}`
+                : job.tasks.some((t) => t.name === "Bid Accepted" && t.completed)
+                  ? "Bid accepted"
+                  : "Bid pending"}
             </p>
           </div>
         </div>

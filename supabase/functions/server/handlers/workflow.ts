@@ -273,14 +273,18 @@ export async function updateJobAssignmentStatus(
       .update({ status })
       .eq("id", assignmentId)
       .select("id, status")
-      .single();
+      .maybeSingle();
 
     if (error) {
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
+    if (!data) {
+      return respond({ error: "Job assignment not found" }, 404);
+    }
+
     return respond({
-      assignment: data || null,
+      assignment: data,
       success: true,
     });
   } catch (error) {
@@ -340,10 +344,14 @@ export async function submitInsuranceClaim(
       .update(payload)
       .eq("id", reportId)
       .select("id, insurance_claim, claim_status, policy_number, assigned_shop_clerk_user_id")
-      .single();
+      .maybeSingle();
 
     if (error) {
       return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    if (!data) {
+      return respond({ error: "Report not found" }, 404);
     }
 
     // Create a job assignment if a shop was assigned
@@ -432,10 +440,14 @@ export async function updateClaimDecision(
       .update(payload)
       .eq("id", reportId)
       .select("id, claim_status, approved_amount, denial_reason, claim_decision_date")
-      .single();
+      .maybeSingle();
 
     if (error) {
       return respond({ error: sanitizeErrorMessage(error) }, 500);
+    }
+
+    if (!data) {
+      return respond({ error: "Report not found" }, 404);
     }
 
     // Fire-and-forget: email customer about claim decision

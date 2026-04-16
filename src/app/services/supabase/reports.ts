@@ -182,14 +182,13 @@ export async function updateReportStatus(
         }),
       }
     );
-    if (import.meta.env.DEV && result?.report === null) {
-      console.warn("[DEV] updateReportStatus: edge function returned report=null — 0 rows updated. reportId:", reportId, "clerkUserId:", clerkUserId);
+    if (result?.success === false || result?.report === null) {
+      console.warn("updateReportStatus: 0 rows updated (report not found or access denied). reportId:", reportId, "clerkUserId:", clerkUserId);
+      return false;
     }
     return true;
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("[DEV] updateReportStatus failed. reportId:", reportId, "clerkUserId:", clerkUserId, "error:", error);
-    }
+    console.error("updateReportStatus failed. reportId:", reportId, "clerkUserId:", clerkUserId, "error:", error);
     return false;
   }
 }

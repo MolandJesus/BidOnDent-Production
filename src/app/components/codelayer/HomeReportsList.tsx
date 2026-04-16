@@ -28,6 +28,7 @@ export function HomeReportsList({
   onViewReportOnMap,
   onStartReport,
   usingSeedFallback = false,
+  onDeleteReport,
 }: {
   userType: string;
   appearanceMode?: DashboardAppearanceMode;
@@ -280,8 +281,11 @@ export function HomeReportsList({
                           if (!confirm("Delete this report? This cannot be undone.")) return;
                           const rid = String(report.id);
                           setDeletingId(rid);
-                          await onDeleteReport(rid);
+                          const deleted = await onDeleteReport(rid);
                           setDeletingId(null);
+                          if (!deleted) {
+                            alert("This report cannot be deleted — it may have an accepted bid.");
+                          }
                         }}
                         className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl transition-colors ${
                           isLightAppearance

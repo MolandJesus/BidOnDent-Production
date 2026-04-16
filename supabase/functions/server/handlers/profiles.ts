@@ -198,7 +198,7 @@ export async function saveUserProfile(
       ? supabase.from("profiles").update(payload).eq("id", existingProfile.id)
       : supabase.from("profiles").insert(payload);
 
-    const { data, error } = await query.select().single();
+    const { data, error } = await query.select().maybeSingle();
 
     if (error) {
       console.error("Error saving user profile:", error);

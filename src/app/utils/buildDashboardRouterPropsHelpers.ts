@@ -41,7 +41,11 @@ export async function handleAcceptBid(
         "accepted",
         userProfile.id
       );
-      if (!reportUpdated && import.meta.env.DEV) {
+      if (reportUpdated) {
+        userData.setReports(
+          userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
+        );
+      } else {
         console.warn(
           "updateReportStatus returned false — report may still be 'pending' in DB. reportId:",
           reportId,
@@ -49,9 +53,6 @@ export async function handleAcceptBid(
           userProfile.id
         );
       }
-      userData.setReports(
-        userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
-      );
     }
 
     // Server auto-rejects competing bids atomically (bids.ts:377-389)
