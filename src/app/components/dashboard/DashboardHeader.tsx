@@ -1,5 +1,6 @@
 import { Car } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 interface DashboardHeaderProps {
   userInfo: {
@@ -20,8 +21,10 @@ export default function DashboardHeader({
   secondaryColor,
   onLogoClick,
   unreadCount,
-  onProfileClick
+  onProfileClick,
 }: DashboardHeaderProps) {
+  const [appearanceMode] = useAppearanceModeCtx();
+  const isLight = appearanceMode === "light";
   return (
     <header className="bd-glass-panel border-b border-white/20 sticky top-0 z-40">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between max-w-7xl">
@@ -32,14 +35,18 @@ export default function DashboardHeader({
         >
           <Car className="w-6 h-6" style={{ color: primaryColor }} />
           <h1 className="text-2xl font-bold">
-            <span style={{ 
-              background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>Bid</span>
-            <span style={{ color: '#70c0ee' }}>on</span>
-            <span className="text-gray-800">dent</span>
+            <span
+              style={{
+                background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Bid
+            </span>
+            <span style={{ color: "#70c0ee" }}>on</span>
+            <span className={isLight ? "text-gray-800" : "text-slate-100"}>dent</span>
           </h1>
         </button>
 
@@ -54,21 +61,21 @@ export default function DashboardHeader({
           >
             <div className="relative">
               {/* Profile Picture */}
-              <div 
+              <div
                 className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
                 style={{ background: "linear-gradient(135deg, #003d82 0%, #00a0e9 100%)" }}
               >
                 {userInfo.profileImage ? (
-                  <ImageWithFallback 
-                    src={userInfo.profileImage} 
-                    alt="Profile" 
+                  <ImageWithFallback
+                    src={userInfo.profileImage}
+                    alt="Profile"
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
                   userInfo.name?.charAt(0).toUpperCase() || "U"
                 )}
               </div>
-              
+
               {/* Notification Badge */}
               {unreadCount > 0 && (
                 <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
@@ -76,11 +83,17 @@ export default function DashboardHeader({
                 </div>
               )}
             </div>
-            
+
             {/* Desktop: User name and email */}
             <div className="hidden md:flex flex-col items-start">
-              <span className="text-sm font-semibold text-slate-100">{userInfo.name}</span>
-              <span className="text-xs text-gray-500">{userInfo.email}</span>
+              <span
+                className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
+              >
+                {userInfo.name}
+              </span>
+              <span className={`text-xs ${isLight ? "text-slate-500" : "text-gray-500"}`}>
+                {userInfo.email}
+              </span>
             </div>
           </button>
         </div>
