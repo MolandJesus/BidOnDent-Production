@@ -44,8 +44,14 @@ export default function StepDamageArea({
       </p>
 
       <div className="bd-report-section relative mb-8 overflow-hidden max-w-md mx-auto md:max-w-sm p-4">
-        <CarDiagram className="w-full" selectedArea={damageArea} />
-        <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-medium inline-flex items-center gap-1.5">
+        <CarDiagram className="w-full" selectedArea={damageArea} appearanceMode={appearanceMode} />
+        <div
+          className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1.5 backdrop-blur-sm ${
+            isLightAppearance
+              ? "bg-white/88 text-slate-700 ring-1 ring-slate-200/80 shadow-sm"
+              : "bg-black/55 text-white"
+          }`}
+        >
           <MapPin className="w-3.5 h-3.5" />
           Select one area
         </div>

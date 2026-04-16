@@ -52,13 +52,10 @@ export default function ReportDetailScreen({
 
   // Load live bids for this report; fall back to embedded report.bids if not yet fetched
   const { bids: liveBids } = useBidsForReport(report.id);
-  const bidsSource = liveBids.length > 0 ? liveBids : (report.bids || []);
+  const bidsSource = liveBids.length > 0 ? liveBids : report.bids || [];
 
   // Detect accepted bid for active-repair card
-  const acceptedBid = useMemo(
-    () => bidsSource.find((b) => b.status === "accepted"),
-    [bidsSource]
-  );
+  const acceptedBid = useMemo(() => bidsSource.find((b) => b.status === "accepted"), [bidsSource]);
 
   const interestedShops = bidsSource.map((bid) => ({
     id: bid.id,
