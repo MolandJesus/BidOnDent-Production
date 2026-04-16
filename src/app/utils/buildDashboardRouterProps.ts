@@ -83,7 +83,19 @@ export function buildDashboardRouterProps({
     },
     onSubmitBid: submitBid,
     onViewAllReports: () => {
-      navigation.setViewMode("reports-list");
+      const effectiveUserType =
+        navigation.demoMode && navigation.demoAccountType
+          ? navigation.demoAccountType
+          : userProfile.user_type;
+      if (effectiveUserType === "shop") {
+        navigation.setCurrentTab("requests");
+        navigation.setViewMode("dashboard");
+      } else if (effectiveUserType === "insurer") {
+        navigation.setCurrentTab("claims");
+        navigation.setViewMode("dashboard");
+      } else {
+        navigation.setViewMode("reports-list");
+      }
     },
     onConnectInsurance: () => {
       navigation.setViewMode("insurer-connect");
