@@ -179,13 +179,9 @@ The map is the primary product surface — not a supporting component.
 
 ## Demo Mode
 
-Experience all three account types without creating additional accounts:
+Demo mode lets you preview all three account types (Customer, Shop, Insurer) without creating separate accounts. It is not accessible from normal user navigation — intended for developer testing and investor demos only.
 
-1. Sign in with any account
-2. Click profile dropdown → **Switch Demo Account**
-3. Choose: Customer, Shop, or Insurer
-4. Explore with pre-populated demo data
-5. Exit anytime to return to your real account
+To enable demo mode programmatically, navigate to the `demo-switcher` view mode via the browser console or URL param (implementation pending). When active, a banner indicates demo state and you can exit anytime to return to your real account.
 
 ---
 

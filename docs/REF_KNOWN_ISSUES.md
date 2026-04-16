@@ -138,10 +138,10 @@
 ### KI-032: Demo mode wired into production navigation
 
 - **Impact:** ~150 lines of conditional logic across navigation, routing, and data fetching. Adds complexity to every feature. Should be behind a URL param or separate deploy per Hardening Plan Group 3a.
-- **Location:** [useNavigation.ts](../src/app/hooks/useNavigation.ts) (enableDemoMode/exitDemoMode), [buildDashboardRouterProps.ts](../src/app/utils/buildDashboardRouterProps.ts) (demoMode conditionals), [DashboardRouter.tsx](../src/app/routers/DashboardRouter.tsx), [HomeScreen.tsx](../src/app/components/codelayer/HomeScreen.tsx).
-- **Current reality:** Demo mode is accessible from normal navigation (onEnterDemoMode callback). Hardening Plan Phase 4A.1 specifies gating behind URL param.
-- **Fix direction:** Per Hardening Plan Group 3a.
-- **Status:** Open — P2 (tracked in Hardening Plan Phase 4A.1)
+- **Location:** [useNavigation.ts](../src/app/hooks/useNavigation.ts) (enableDemoMode/exitDemoMode), [buildDashboardRouterProps.ts](../src/app/utils/buildDashboardRouterProps.ts) (demoMode conditionals), [DashboardRouter.tsx](../src/app/routers/DashboardRouter.tsx).
+- **Current reality:** Demo mode sparkles button removed from header/sidebar. Demo mode is no longer accessible from normal user navigation. The demo-switcher view, DemoAccountSwitcher component, and demo state logic remain for developer/investor use but require programmatic access. URL param gating (Group 3a) remains a post-launch improvement.
+- **Residual:** Demo conditional logic still present in routing/data-fetching code (~150 lines). Full URL param gating deferred.
+- **Status:** RESOLVED (2026-04-16) — demo mode hidden from production navigation surfaces
 
 ---
 

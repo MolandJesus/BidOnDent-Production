@@ -411,7 +411,6 @@ function AppContent() {
           onTabClick={handleTabClick}
           onMobileMenuTabClick={handleTabClick}
           onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
-          onOpenDemoMode={() => navigation.setViewMode("demo-switcher")}
           demoMode={navigation.demoMode}
           demoAccountType={navigation.demoAccountType}
           profileDropdownData={profileDropdownData}
