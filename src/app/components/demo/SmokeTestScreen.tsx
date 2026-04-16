@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 const CHECKLISTS = [
   {
@@ -47,6 +48,8 @@ type SmokeTestScreenProps = {
 
 export default function SmokeTestScreen({ primaryColor }: SmokeTestScreenProps) {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [appearanceMode] = useAppearanceModeCtx();
+  const isLight = appearanceMode === "light";
 
   const toggleItem = (key: string) => {
     setCheckedItems((prev) => ({
@@ -60,15 +63,26 @@ export default function SmokeTestScreen({ primaryColor }: SmokeTestScreenProps) 
       <div className="flex items-center gap-3 mb-6">
         <CheckCircle2 className="w-6 h-6" style={{ color: primaryColor }} />
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900">Smoke Test Checklist</h2>
-          <p className="text-sm text-gray-500">Use this for quick verification before handoffs.</p>
+          <h2 className={`text-2xl font-semibold ${isLight ? "text-gray-900" : "text-white"}`}>
+            Smoke Test Checklist
+          </h2>
+          <p className={`text-sm ${isLight ? "text-gray-500" : "text-gray-400"}`}>
+            Use this for quick verification before handoffs.
+          </p>
         </div>
       </div>
 
       <div className="grid gap-6">
         {CHECKLISTS.map((section) => (
-          <div key={section.title} className="border border-gray-100 rounded-xl p-4 md:p-5">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">{section.title}</h3>
+          <div
+            key={section.title}
+            className={`border ${isLight ? "border-gray-100" : "border-white/10"} rounded-xl p-4 md:p-5`}
+          >
+            <h3
+              className={`text-lg font-semibold ${isLight ? "text-gray-900" : "text-white"} mb-3`}
+            >
+              {section.title}
+            </h3>
             <div className="grid gap-2">
               {section.items.map((item) => {
                 const key = `${section.title}-${item}`;
@@ -81,7 +95,15 @@ export default function SmokeTestScreen({ primaryColor }: SmokeTestScreenProps) 
                       checked={checked}
                       onChange={() => toggleItem(key)}
                     />
-                    <span className={checked ? "text-gray-500 line-through" : "text-gray-700"}>
+                    <span
+                      className={
+                        checked
+                          ? `${isLight ? "text-gray-500" : "text-gray-400"} line-through`
+                          : isLight
+                            ? "text-gray-700"
+                            : "text-slate-200"
+                      }
+                    >
                       {item}
                     </span>
                   </label>

@@ -9,6 +9,7 @@ import {
   Wrench,
   type LucideIcon,
 } from "lucide-react";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 interface DemoAccountSwitcherProps {
   currentAccountType: "customer" | "shop" | "insurer";
@@ -47,6 +48,8 @@ export default function DemoAccountSwitcher({
   onExitDemo,
   primaryColor,
 }: DemoAccountSwitcherProps) {
+  const [appearanceMode] = useAppearanceModeCtx();
+  const isLight = appearanceMode === "light";
   const accountTypes: DemoAccountCard[] = [
     {
       id: "customer",
@@ -190,7 +193,9 @@ export default function DemoAccountSwitcher({
                   className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 font-medium transition-all ${
                     isActive
                       ? "bg-blue-400/20 text-blue-200 cursor-default"
-                      : "bg-white/[0.10] text-slate-100 hover:bg-white/[0.15]"
+                      : isLight
+                        ? "bg-gray-100 text-slate-800 hover:bg-gray-200"
+                        : "bg-white/[0.10] text-slate-100 hover:bg-white/[0.15]"
                   }`}
                 >
                   {isActive ? "Currently Viewing" : "Switch to This View"}

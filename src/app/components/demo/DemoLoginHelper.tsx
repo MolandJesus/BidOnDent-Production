@@ -6,6 +6,7 @@
 
 import { User, Wrench, Shield } from "lucide-react";
 import { DEMO_CONFIG } from "../../config/demoMode";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 interface DemoLoginHelperProps {
   onQuickLogin: (
@@ -16,6 +17,8 @@ interface DemoLoginHelperProps {
 }
 
 export default function DemoLoginHelper({ onQuickLogin }: DemoLoginHelperProps) {
+  const [appearanceMode] = useAppearanceModeCtx();
+  const isLight = appearanceMode === "light";
   const demoAccounts = [
     {
       type: "customer" as const,
@@ -47,8 +50,12 @@ export default function DemoLoginHelper({ onQuickLogin }: DemoLoginHelperProps) 
   ];
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
-      <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+    <div
+      className={`${isLight ? "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200" : "bg-white/[0.06] border border-white/10"} rounded-lg p-4`}
+    >
+      <p
+        className={`text-sm font-semibold ${isLight ? "text-gray-700" : "text-gray-200"} mb-3 flex items-center gap-2`}
+      >
         <span className="text-lg">🎭</span>
         Quick Demo Login:
       </p>
@@ -72,14 +79,18 @@ export default function DemoLoginHelper({ onQuickLogin }: DemoLoginHelperProps) 
                 <p className="font-semibold text-sm" style={{ color: account.color }}>
                   {account.name}
                 </p>
-                <p className="text-xs text-gray-600 truncate">{account.email}</p>
+                <p className={`text-xs ${isLight ? "text-gray-600" : "text-gray-300"} truncate`}>
+                  {account.email}
+                </p>
               </div>
             </button>
           );
         })}
       </div>
 
-      <p className="text-xs text-gray-500 mt-3 text-center">Or create your own account below ↓</p>
+      <p className={`text-xs ${isLight ? "text-gray-500" : "text-gray-400"} mt-3 text-center`}>
+        Or create your own account below ↓
+      </p>
     </div>
   );
 }
