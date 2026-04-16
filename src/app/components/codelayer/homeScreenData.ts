@@ -153,6 +153,7 @@ interface ActionCallbacks {
   onConnectInsurance?: () => void;
   onViewLikedShops?: () => void;
   onViewShops?: () => void;
+  onViewCoverage?: () => void;
   onViewRequests?: () => void;
   onViewJobs?: () => void;
   onViewCompetitors?: () => void;

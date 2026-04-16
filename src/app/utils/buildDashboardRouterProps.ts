@@ -122,6 +122,9 @@ export function buildDashboardRouterProps({
     onViewShops: () => {
       navigation.setViewMode("shop-directory");
     },
+    onViewCoverage: () => {
+      navigation.setViewMode("shop-directory");
+    },
     onCreateNewClaim: () => {
       navigation.setViewMode("new-claim");
     },

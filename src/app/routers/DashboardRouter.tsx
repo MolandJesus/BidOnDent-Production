@@ -58,6 +58,7 @@ export default function DashboardRouter({
   onViewJobs,
   onViewClaims,
   onViewShops,
+  onViewCoverage,
   onCreateNewClaim,
   onViewCompetitors,
   onViewInsurers,
@@ -196,6 +197,7 @@ export default function DashboardRouter({
                   onViewJobs={onViewJobs}
                   onViewClaims={onViewClaims}
                   onViewShops={onViewShops}
+                  onViewCoverage={onViewCoverage}
                   onCreateNewClaim={onCreateNewClaim}
                   onViewCompetitors={onViewCompetitors}
                   onViewInsurers={onViewInsurers}
