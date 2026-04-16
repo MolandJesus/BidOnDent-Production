@@ -17,7 +17,7 @@ type ShopActiveJobsScreenProps = {
   primaryColor?: string;
   reports?: Report[];
   isSeedData?: boolean;
-  onUpdateJobStatus?: (jobId: number, status: string) => void;
+  onUpdateJobStatus?: (jobId: string, status: string) => void;
   appearanceMode?: DashboardAppearanceMode;
   shopClerkUserId?: string | null;
 };
@@ -434,7 +434,7 @@ export default function ShopActiveJobsScreen({
             // Persist to backend (skip for seed/demo data)
             if (!isSeedData && onUpdateJobStatus) {
               try {
-                await onUpdateJobStatus(Number(jobId), newStatus);
+                await onUpdateJobStatus(String(jobId), newStatus);
               } catch {
                 // Roll back optimistic update
                 setStatusOverrides((prev) => {

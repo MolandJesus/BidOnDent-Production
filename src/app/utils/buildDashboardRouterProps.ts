@@ -224,8 +224,7 @@ export function buildDashboardRouterProps({
       userData.setHasSeenPhotoGuide(true);
     },
     onReportSubmit,
-    onUpdateJobStatus: async (jobId: number, status: string) => {
-      // Map kebab-case (UI) to snake_case (backend)
+    onUpdateJobStatus: async (jobId: string, status: string) => {
       const statusMap: Record<
         string,
         "scheduled" | "in_progress" | "awaiting_parts" | "completed" | "cancelled"
@@ -238,12 +237,10 @@ export function buildDashboardRouterProps({
       };
       const backendStatus = statusMap[status] || "in_progress";
 
-      // Find assignment ID from local report state
-      const report = userData.reports.find((r) => String(r.id) === String(jobId));
-      const assignmentId = report?.assignmentId;
-      if (!assignmentId) {
-        throw new Error(`No assignment found for job ${jobId}`);
-      }
+      // DB-sourced jobs: jobId IS the assignment UUID
+      // Report-derived jobs: jobId is a report ID — look up assignmentId
+      const report = userData.reports.find((r) => String(r.id) === jobId);
+      const assignmentId = report?.assignmentId || jobId;
 
       await updateJobAssignmentStatus(assignmentId, backendStatus);
     },

@@ -66,7 +66,7 @@ export interface DashboardRouterProps {
     reportId?: string;
   }) => void;
   onRejectBid?: (details: { bidId: string; shopName: string }) => void;
-  onUpdateJobStatus?: (jobId: number, status: string) => void;
+  onUpdateJobStatus?: (jobId: string, status: string) => void;
   onConfirmCompletion?: (reportId: string) => void;
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: DashboardUserType) => void;
