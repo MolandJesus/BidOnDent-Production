@@ -91,47 +91,61 @@ function buildPartialReportPayload(
 }
 
 async function hydrateReport(record: any, supabase: SupabaseClient) {
-  // Hydrate signed photo URLs
-  const photo_urls = await hydrateSignedStorageUrls(
-    supabase,
-    Array.isArray(record?.photo_urls) ? record.photo_urls : []
-  );
+  try {
+    // Hydrate signed photo URLs
+    const photo_urls = await hydrateSignedStorageUrls(
+      supabase,
+      Array.isArray(record?.photo_urls) ? record.photo_urls : []
+    );
 
-  // Fetch customer profile for marketplace consumers (shops/insurers)
-  let customer_name: string | null = null;
-  let customer_email: string | null = null;
-  let customer_phone: string | null = null;
-  if (record?.clerk_user_id) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('name, email, phone')
-      .eq('clerk_user_id', record.clerk_user_id)
-      .single();
-    if (profile) {
-      customer_name = profile.name || null;
-      customer_email = profile.email || null;
-      customer_phone = profile.phone || null;
+    // Fetch customer profile for marketplace consumers (shops/insurers)
+    let customer_name: string | null = null;
+    let customer_email: string | null = null;
+    let customer_phone: string | null = null;
+    if (record?.clerk_user_id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('name, email, phone')
+        .eq('clerk_user_id', record.clerk_user_id)
+        .maybeSingle();
+      if (profile) {
+        customer_name = profile.name || null;
+        customer_email = profile.email || null;
+        customer_phone = profile.phone || null;
+      }
     }
-  }
 
-  // Count bids for this report
-  let bids_count = 0;
-  if (record?.id) {
-    const { count } = await supabase
-      .from('bids')
-      .select('id', { count: 'exact', head: true })
-      .eq('damage_report_id', record.id);
-    bids_count = count ?? 0;
-  }
+    // Count bids for this report
+    let bids_count = 0;
+    if (record?.id) {
+      const { count } = await supabase
+        .from('bids')
+        .select('id', { count: 'exact', head: true })
+        .eq('damage_report_id', record.id);
+      bids_count = count ?? 0;
+    }
 
-  return {
-    ...record,
-    photo_urls,
-    customer_name,
-    customer_email,
-    customer_phone,
-    bids_count,
-  };
+    return {
+      ...record,
+      photo_urls,
+      customer_name,
+      customer_email,
+      customer_phone,
+      bids_count,
+    };
+  } catch (err) {
+    // If hydration fails for a single report, return it with defaults
+    // rather than crashing the entire batch
+    console.error('[hydrateReport] Error hydrating report', record?.id, ':', err);
+    return {
+      ...record,
+      photo_urls: Array.isArray(record?.photo_urls) ? record.photo_urls : [],
+      customer_name: null,
+      customer_email: null,
+      customer_phone: null,
+      bids_count: 0,
+    };
+  }
 }
 
 export async function createReport(

@@ -20,7 +20,7 @@ export async function getNotificationPreferences(
 ): Promise<Response> {
   try {
     const session = await requireClerkSession(req, { requireEmail: false });
-    const clerkUserId = session.sub;
+    const clerkUserId = session.clerkUserId;
 
     let { data, error } = await supabase
       .from("notification_preferences")
@@ -74,7 +74,7 @@ export async function updateNotificationPreferences(
 ): Promise<Response> {
   try {
     const session = await requireClerkSession(req, { requireEmail: false });
-    const clerkUserId = session.sub;
+    const clerkUserId = session.clerkUserId;
     const body = await req.json();
     const { preferences } = body;
 
