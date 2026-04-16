@@ -55,7 +55,7 @@ export async function getShopServiceAreas(
 
     // If no shopProfileId provided, resolve from authenticated user's shop profile
     if (!shopProfileId) {
-      const clerkUserId = session.sub;
+      const clerkUserId = session.clerkUserId;
       if (!clerkUserId) {
         return respond({ error: "Could not resolve user identity" }, 401);
       }

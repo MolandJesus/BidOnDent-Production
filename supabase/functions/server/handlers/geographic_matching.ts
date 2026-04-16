@@ -124,7 +124,7 @@ export async function getReportsInServiceArea(
 ): Promise<Response> {
   try {
     const session = await requireClerkSession(req, { requireEmail: false });
-    const clerkUserId = session.sub;
+    const clerkUserId = session.clerkUserId;
 
     // Resolve shop profile from session
     const { data: shopProfile, error: shopError } = await supabase

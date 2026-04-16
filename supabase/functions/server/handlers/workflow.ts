@@ -318,7 +318,7 @@ export async function submitInsuranceClaim(
       return respond({ error: "Missing reportId" }, 400);
     }
 
-    const clerkUserId = session.sub ?? session.user_id ?? "";
+    const clerkUserId = session.clerkUserId ?? "";
 
     const payload: Record<string, unknown> = {
       insurance_claim: true,
@@ -410,7 +410,7 @@ export async function updateClaimDecision(
       return respond({ error: "Denial reason is required" }, 400);
     }
 
-    const clerkUserId = session.sub ?? session.user_id ?? "";
+    const clerkUserId = session.clerkUserId ?? "";
 
     const payload: Record<string, unknown> = {
       claim_status: decision,
