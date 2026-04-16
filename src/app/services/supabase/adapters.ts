@@ -27,8 +27,13 @@ import type { EnrichedJobAssignment } from "./workflow";
 
 function normalizeReportStatus(value?: string): AppDamageReport["status"] {
   switch (value) {
+    case "accepted":
     case "active":
+      return "active";
+    case "reviewing":
+      return "in-review";
     case "completed":
+      return "completed";
     case "in-review":
     case "resolved":
       return value;

@@ -36,7 +36,7 @@ export async function handleAcceptBid(
     // Use the reportId passed from BidsScreen (sourced from live Supabase data)
     const reportId = details.reportId || navigation.selectedReportId || userData.reports[0]?.id;
     if (reportId && userProfile?.id) {
-      await updateReportStatus(reportId.toString(), "active", userProfile.id);
+      await updateReportStatus(reportId.toString(), "accepted", userProfile.id);
       userData.setReports(
         userData.reports.map((r) => (r.id === reportId ? { ...r, status: "active" } : r))
       );
