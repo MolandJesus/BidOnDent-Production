@@ -40,6 +40,7 @@ type HomeScreenProps = {
   estimateRequests?: EstimateRequest[];
   onSelectEstimate?: (estimate: EstimateRequest) => void;
   shopSubmittedBids?: Bid[];
+  usingSeedFallback?: boolean;
 };
 
 export default function HomeScreen({
@@ -70,6 +71,7 @@ export default function HomeScreen({
   estimateRequests = [],
   onSelectEstimate,
   shopSubmittedBids,
+  usingSeedFallback = false,
 }: HomeScreenProps) {
   const isLightAppearance = appearanceMode === "light";
   // Derived variables for overlays and panels
@@ -318,6 +320,7 @@ export default function HomeScreen({
           onOpenReport={onOpenReport}
           onViewReportOnMap={onViewReportOnMap}
           onStartReport={onStartReport}
+          usingSeedFallback={usingSeedFallback}
         />
         {/* Shop: My Bids summary (between reports list and map widget) */}
         {userType === "shop" && shopSubmittedBids && shopSubmittedBids.length > 0 && (

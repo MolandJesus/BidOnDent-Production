@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   ArrowRight,
   Calendar,
   Camera,
@@ -24,6 +25,7 @@ export function HomeReportsList({
   onOpenReport,
   onViewReportOnMap,
   onStartReport,
+  usingSeedFallback = false,
 }: {
   userType: string;
   appearanceMode?: DashboardAppearanceMode;
@@ -35,6 +37,7 @@ export function HomeReportsList({
   onOpenReport?: (reportId: string) => void;
   onViewReportOnMap?: (reportId: string) => void;
   onStartReport: () => void;
+  usingSeedFallback?: boolean;
 }) {
   const isLightAppearance = appearanceMode === "light";
   const visibleReports = sortedReports.slice(0, 4);
@@ -104,6 +107,16 @@ export function HomeReportsList({
           )}
         </div>
       </div>
+
+      {usingSeedFallback && (
+        <div className="mb-3 flex items-center gap-2 rounded-lg bg-amber-500/15 border border-amber-400/25 px-3 py-2 text-xs text-amber-300">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+          <span>
+            Showing example requests for preview. Real requests will appear as customers submit
+            reports.
+          </span>
+        </div>
+      )}
 
       {sortedReports.length === 0 && (
         <div className="bd-dashboard-section bd-dashboard-section--accent-blue rounded-xl p-4 text-center sm:p-8">

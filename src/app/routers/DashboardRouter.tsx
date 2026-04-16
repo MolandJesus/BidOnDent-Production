@@ -212,6 +212,9 @@ export default function DashboardRouter({
                   estimateRequests={userType === "customer" ? customerEstimateRequests : undefined}
                   onSelectEstimate={(est) => setSelectedEstimate(est)}
                   shopSubmittedBids={userType === "shop" ? shopSubmittedBids : undefined}
+                  usingSeedFallback={
+                    userType === "shop" || userType === "insurer" ? usingSeedFallback : false
+                  }
                 />
               </motion.div>
             )}
