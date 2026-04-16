@@ -154,8 +154,10 @@ export default function ShopActiveJobsScreen({
     });
 
   // Merge: DB jobs take priority, report-derived fill in the rest
+  // Exclude report-derived jobs whose report already has a DB job assignment
   const dbJobIds = new Set(dbActiveJobs.map((j) => j.id));
-  const mergedJobs = [...dbActiveJobs, ...reportDerivedJobs.filter((j) => !dbJobIds.has(j.id))].map(
+  const dbReportIds = new Set(dbJobs.map((ja) => ja.damageReportId).filter(Boolean));
+  const mergedJobs = [...dbActiveJobs, ...reportDerivedJobs.filter((j) => !dbJobIds.has(j.id) && !dbReportIds.has(j.id))].map(
     (job) => {
       const override = statusOverrides[job.id];
       if (!override) return job;
