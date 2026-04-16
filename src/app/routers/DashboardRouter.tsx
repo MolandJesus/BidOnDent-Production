@@ -396,7 +396,6 @@ export default function DashboardRouter({
                   onOpenSmokeTest={() => {
                     onViewModeChange("smoke-test");
                   }}
-                  onAppearanceModeChange={onAppearanceModeChange}
                 />
               </motion.div>
             )}

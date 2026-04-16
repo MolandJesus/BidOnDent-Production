@@ -38,7 +38,6 @@ export default function AccountScreen({
   onSaveProfile,
   onViewVehicles,
   onOpenSmokeTest,
-  onAppearanceModeChange,
 }: AccountScreenProps) {
   // Use default profile image if none provided
   const isLightAppearance = appearanceMode === "light";
@@ -392,10 +391,6 @@ export default function AccountScreen({
       <SettingsModal
         isOpen={showSettings}
         primaryColor={primaryColor}
-        appearanceMode={appearanceMode}
-        onAppearanceModeChange={(mode) => {
-          onAppearanceModeChange?.(mode);
-        }}
         onClose={() => setShowSettings(false)}
       />
 

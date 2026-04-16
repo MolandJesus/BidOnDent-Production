@@ -16,7 +16,6 @@ export type AccountScreenProps = {
   onDeleteAccount?: () => Promise<void> | void;
   onLogout?: () => Promise<void> | void;
   onOpenSmokeTest?: () => void;
-  onAppearanceModeChange?: (mode: DashboardAppearanceMode) => void;
   onSaveProfile?: (data: {
     name: string;
     email: string;
