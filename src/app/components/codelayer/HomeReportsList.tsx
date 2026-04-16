@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   AlertCircle,
   ArrowRight,
@@ -6,6 +7,7 @@ import {
   ChevronRight,
   DollarSign,
   MapPin,
+  Trash2,
   Wrench,
 } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
@@ -38,7 +40,9 @@ export function HomeReportsList({
   onViewReportOnMap?: (reportId: string) => void;
   onStartReport: () => void;
   usingSeedFallback?: boolean;
+  onDeleteReport?: (reportId: string) => Promise<boolean>;
 }) {
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const isLightAppearance = appearanceMode === "light";
   const visibleReports = sortedReports.slice(0, 4);
 
@@ -265,6 +269,29 @@ export function HomeReportsList({
                         aria-label="View report on map"
                       >
                         <MapPin className="w-4.5 h-4.5" />
+                      </button>
+                    )}
+                    {onDeleteReport && report?.id && !acceptedBid && status !== "active" && (
+                      <button
+                        type="button"
+                        disabled={deletingId === String(report.id)}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (!confirm("Delete this report? This cannot be undone.")) return;
+                          const rid = String(report.id);
+                          setDeletingId(rid);
+                          await onDeleteReport(rid);
+                          setDeletingId(null);
+                        }}
+                        className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl transition-colors ${
+                          isLightAppearance
+                            ? "text-red-400 hover:bg-red-50 hover:text-red-600"
+                            : "text-red-400/70 hover:bg-red-500/10 hover:text-red-300"
+                        }`}
+                        title="Delete report"
+                        aria-label="Delete report"
+                      >
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     )}
                     <ChevronRight

@@ -67,6 +67,7 @@ export interface DashboardRouterProps {
   }) => void;
   onRejectBid?: (details: { bidId: string; shopName: string }) => void;
   onUpdateJobStatus?: (jobId: string, status: string) => void;
+  onDeleteReport?: (reportId: string) => Promise<boolean>;
   onConfirmCompletion?: (reportId: string) => void;
   onEnterDemoMode?: () => void;
   onEnableDemoMode?: (accountType: DashboardUserType) => void;

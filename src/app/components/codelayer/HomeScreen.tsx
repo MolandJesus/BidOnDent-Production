@@ -41,6 +41,7 @@ type HomeScreenProps = {
   onSelectEstimate?: (estimate: EstimateRequest) => void;
   shopSubmittedBids?: Bid[];
   usingSeedFallback?: boolean;
+  onDeleteReport?: (reportId: string) => Promise<boolean>;
 };
 
 export default function HomeScreen({
@@ -72,6 +73,7 @@ export default function HomeScreen({
   onSelectEstimate,
   shopSubmittedBids,
   usingSeedFallback = false,
+  onDeleteReport,
 }: HomeScreenProps) {
   const isLightAppearance = appearanceMode === "light";
   // Derived variables for overlays and panels
@@ -321,6 +323,7 @@ export default function HomeScreen({
           onViewReportOnMap={onViewReportOnMap}
           onStartReport={onStartReport}
           usingSeedFallback={usingSeedFallback}
+          onDeleteReport={onDeleteReport}
         />
         {/* Shop: My Bids summary (between reports list and map widget) */}
         {userType === "shop" && shopSubmittedBids && shopSubmittedBids.length > 0 && (

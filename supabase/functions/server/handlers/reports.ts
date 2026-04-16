@@ -381,6 +381,18 @@ export async function deleteReport(
 
     const authenticatedClerkUserId = ensureClerkUserMatchesSession(session, clerkUserId);
 
+    // Block deletion if the report has an accepted bid (fully accepted on both ends)
+    const { data: acceptedBids } = await supabase
+      .from('bids')
+      .select('id')
+      .eq('damage_report_id', reportId)
+      .eq('status', 'accepted')
+      .limit(1);
+
+    if (acceptedBids && acceptedBids.length > 0) {
+      return respond({ error: 'Cannot delete a report with an accepted bid' }, 409);
+    }
+
     const { error } = await supabase
       .from('damage_reports')
       .update({ deleted_at: new Date().toISOString() })

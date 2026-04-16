@@ -6,7 +6,7 @@ import type { DashboardAppearanceMode } from "../routers/dashboard-router-types"
 import type { ViewMode, DamageReport, Vehicle, Bid } from "../types";
 import { deleteVehicle } from "../services/supabaseService";
 import { updateBidStatus } from "../services/supabase/bids";
-import { updateReportStatus } from "../services/supabase/reports";
+import { updateReportStatus, deleteDamageReport } from "../services/supabase/reports";
 import { updateJobAssignmentStatus } from "../services/supabase/workflow";
 import { handleAcceptBid } from "./buildDashboardRouterPropsHelpers";
 
@@ -243,6 +243,14 @@ export function buildDashboardRouterProps({
       const assignmentId = report?.assignmentId || jobId;
 
       await updateJobAssignmentStatus(assignmentId, backendStatus);
+    },
+    onDeleteReport: async (reportId: string): Promise<boolean> => {
+      const clerkId = userProfile?.id;
+      const success = await deleteDamageReport(reportId, clerkId);
+      if (success) {
+        userData.setReports(userData.reports.filter((r) => String(r.id) !== reportId));
+      }
+      return success;
     },
     onConfirmCompletion: async (reportId: string) => {
       const clerkId = userProfile?.id;

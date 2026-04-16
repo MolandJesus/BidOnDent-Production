@@ -71,6 +71,7 @@ export default function DashboardRouter({
   onAcceptBid,
   onRejectBid,
   onUpdateJobStatus,
+  onDeleteReport,
   onConfirmCompletion,
   onProfileUpdate,
   onDeleteAccount,
@@ -215,6 +216,7 @@ export default function DashboardRouter({
                   usingSeedFallback={
                     userType === "shop" || userType === "insurer" ? usingSeedFallback : false
                   }
+                  onDeleteReport={userType === "customer" ? onDeleteReport : undefined}
                 />
               </motion.div>
             )}
