@@ -11,6 +11,7 @@ import type { ReportPin } from "../dashboard/MapLibreDashboardMapPreview";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 import type { DamageReport } from "../../types";
 import { useNotifications } from "../../features/notifications/NotificationContext";
+import { useBidsForReport } from "../../hooks/useBidsForReport";
 
 type ReportDetailScreenProps = {
   report: DamageReport;
@@ -49,13 +50,17 @@ export default function ReportDetailScreen({
   const description = report.description || "No description provided";
   const submittedAt = report.submittedAt || new Date().toISOString();
 
+  // Load live bids for this report; fall back to embedded report.bids if not yet fetched
+  const { bids: liveBids } = useBidsForReport(report.id);
+  const bidsSource = liveBids.length > 0 ? liveBids : (report.bids || []);
+
   // Detect accepted bid for active-repair card
   const acceptedBid = useMemo(
-    () => (report.bids || []).find((b) => b.status === "accepted"),
-    [report.bids]
+    () => bidsSource.find((b) => b.status === "accepted"),
+    [bidsSource]
   );
 
-  const interestedShops = (report.bids || []).map((bid) => ({
+  const interestedShops = bidsSource.map((bid) => ({
     id: bid.id,
     name: bid.shopName || "Auto Shop",
     rating: Number(bid.shopRating || 0),

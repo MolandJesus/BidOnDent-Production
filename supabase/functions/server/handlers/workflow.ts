@@ -125,7 +125,41 @@ export async function getJobAssignments(
         : { data: [] },
     ]);
 
-    const reportMap = new Map((reportResult.data || []).map((r: any) => [r.id, r]));
+    // Fetch customer names from profiles using clerk_user_id from each report
+    const clerkUserIds = [
+      ...new Set(
+        (reportResult.data || []).map((r: any) => r.clerk_user_id).filter(Boolean)
+      ),
+    ];
+    const profileMap = new Map<string, { name: string | null; email: string | null; phone: string | null }>();
+    if (clerkUserIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("clerk_user_id, name, email, phone")
+        .in("clerk_user_id", clerkUserIds);
+      (profiles || []).forEach((p: any) => {
+        profileMap.set(p.clerk_user_id, {
+          name: p.name || null,
+          email: p.email || null,
+          phone: p.phone || null,
+        });
+      });
+    }
+
+    const reportMap = new Map(
+      (reportResult.data || []).map((r: any) => {
+        const profile = r.clerk_user_id ? profileMap.get(r.clerk_user_id) : null;
+        return [
+          r.id,
+          {
+            ...r,
+            customer_name: profile?.name || null,
+            customer_email: profile?.email || null,
+            customer_phone: profile?.phone || null,
+          },
+        ];
+      })
+    );
     const bidMap = new Map((bidResult.data || []).map((b: any) => [b.id, b]));
 
     const enriched = jobs.map((job: any) => ({
