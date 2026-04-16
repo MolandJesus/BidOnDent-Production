@@ -157,19 +157,19 @@ export async function createJobAssignment(
 
     const payload = {
       bid_id: getString(body.bid_id) || null,
-      customer_user_id: getString(body.customer_user_id),
+      customer_clerk_user_id: getString(body.customer_user_id) || null,
       damage_report_id: getString(body.damage_report_id),
       estimated_completion_at: getString(body.estimated_completion_at) || null,
-      insurer_user_id: getString(body.insurer_user_id) || null,
+      insurer_clerk_user_id: getString(body.insurer_user_id) || null,
       scheduled_start_at: getString(body.scheduled_start_at) || null,
-      shop_user_id: getString(body.shop_user_id),
+      shop_clerk_user_id: getString(body.shop_user_id) || null,
       status: getString(body.status) || "scheduled",
     };
 
     if (
       !payload.damage_report_id ||
-      !payload.customer_user_id ||
-      !payload.shop_user_id ||
+      !payload.customer_clerk_user_id ||
+      !payload.shop_clerk_user_id ||
       !VALID_JOB_STATUSES.has(payload.status)
     ) {
       return respond({ error: "Invalid job assignment payload" }, 400);
@@ -198,7 +198,7 @@ export async function createJobAssignment(
       outcome: "success",
       payload: {
         damage_report_id: payload.damage_report_id,
-        shop_user_id: payload.shop_user_id,
+        shop_clerk_user_id: payload.shop_clerk_user_id,
         bid_id: payload.bid_id,
       },
     }).then(null, () => {});
