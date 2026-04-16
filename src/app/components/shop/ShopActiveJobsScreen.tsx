@@ -32,6 +32,30 @@ export default function ShopActiveJobsScreen({
 }: ShopActiveJobsScreenProps) {
   const { jobs: dbJobs, isLoading: dbJobsLoading } = useShopJobAssignments(shopClerkUserId);
 
+  const buildTasks = (status: string, hasBids: boolean) => {
+    if (status === "completed") {
+      return [
+        { id: 1, name: "Report Received", completed: true },
+        { id: 2, name: "Bid Accepted", completed: true },
+        { id: 3, name: "Repair Complete", completed: true },
+      ];
+    }
+
+    if (status === "in-progress") {
+      return [
+        { id: 1, name: "Report Received", completed: true },
+        { id: 2, name: "Bid Accepted", completed: true },
+        { id: 3, name: "Repair In Progress", completed: false },
+      ];
+    }
+
+    return [
+      { id: 1, name: "Report Received", completed: true },
+      { id: 2, name: hasBids ? "Bid Submitted" : "Awaiting Bid", completed: hasBids },
+      { id: 3, name: "Repair Start", completed: false },
+    ];
+  };
+
   // Map DB job assignments to ActiveJob format
   const dbActiveJobs: ActiveJob[] = useMemo(() => {
     return dbJobs.map((ja) => {
@@ -81,30 +105,6 @@ export default function ShopActiveJobsScreen({
   >("all");
   const [selectedJob, setSelectedJob] = useState<ActiveJob | null>(null);
   const [statusOverrides, setStatusOverrides] = useState<Record<string, string>>({});
-
-  const buildTasks = (status: string, hasBids: boolean) => {
-    if (status === "completed") {
-      return [
-        { id: 1, name: "Report Received", completed: true },
-        { id: 2, name: "Bid Accepted", completed: true },
-        { id: 3, name: "Repair Complete", completed: true },
-      ];
-    }
-
-    if (status === "in-progress") {
-      return [
-        { id: 1, name: "Report Received", completed: true },
-        { id: 2, name: "Bid Accepted", completed: true },
-        { id: 3, name: "Repair In Progress", completed: false },
-      ];
-    }
-
-    return [
-      { id: 1, name: "Report Received", completed: true },
-      { id: 2, name: hasBids ? "Bid Submitted" : "Awaiting Bid", completed: hasBids },
-      { id: 3, name: "Repair Start", completed: false },
-    ];
-  };
 
   const reportDerivedJobs = reports
     .map((report, index: number) => {
