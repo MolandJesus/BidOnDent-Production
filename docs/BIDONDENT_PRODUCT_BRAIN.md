@@ -27,7 +27,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 >
 > Strategic product handbook. **Not** current execution law.
 >
-> During the Soft Launch Hardening phase, execution follows [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md). This doc remains the reference for product reasoning, role architecture, and long-horizon vision — but no new features or Phase 4 product work lands until the hardening plan is complete and the "one real transaction happens cleanly" milestone is met.
+> During the Soft Launch Hardening phase, execution follows [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md). This doc remains the reference for product reasoning, role architecture, and long-horizon vision — but no new features or Phase 4 product work lands until the hardening plan is complete and the "one real transaction happens cleanly" milestone is met.
 >
 > Deferred Phase 4 items (payments, push, advanced analytics, offline mode) live in [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) with explicit triggers. Do not reactivate without a fired trigger.
 

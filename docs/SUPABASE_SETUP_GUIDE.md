@@ -11,7 +11,7 @@
 > - **Phase 3.4 (Soft delete)** — COMPLETE. `deleted_at TIMESTAMPTZ` added to damage_reports, bids, job_assignments, vehicles. All delete handlers now set `deleted_at` instead of hard deleting. All query handlers filter `deleted_at IS NULL`. RLS policies filter deleted rows. Migration: `027_soft_delete.sql`. Account deletion in auth.ts still uses hard deletes (GDPR compliance).
 > - **Section 13 (Edge Function Deployment)** still documents the `make-server-9f243523` legacy alias. That alias is a live backward-compatibility layer deferred to [Post-Launch Roadmap item L1](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md). Keep the current deploy command until L1 fires; do not remove it prematurely.
 >
-> During the hardening phase, execution law is the [Soft Launch Hardening Plan](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md).
+> During the hardening phase, execution law is the [Hardening Plan (LAW)](LAW_HARDENING_PLAN.md).
 
 > ### 🔑 PREREQUISITE: Clerk JWT Template
 >
@@ -507,7 +507,7 @@ When a parallel AI/security pass updates auth, edge guards, or data-access docs:
 
 - Keep this guide additive; do not delete fresh security notes without verification.
 - Preserve source-of-truth ownership: Clerk = identity, Supabase = data/storage/edge.
-- If new edge/auth flows are introduced, update both this guide and `CLAUDE_AI_MASTER_CONTEXT.md` in the same pass.
+- If new edge/auth flows are introduced, update both this guide and [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) in the same pass.
 - Record pass notes in trackers rather than rewriting historical setup details.
 
 Do not create new uploads in `bidondent-landing-page-images`.

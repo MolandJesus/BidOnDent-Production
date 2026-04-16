@@ -4,7 +4,7 @@
 >
 > This document remains the **strategic vision** for the map program. It is **not** current execution law.
 >
-> During the Soft Launch Hardening phase, the binding execution doc is [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md). **Feature-level map work is paused** — no new map features, no aspirational atmosphere work, no provider migrations. The strategic vision in this doc stays intact for post-launch reactivation; it just does not drive the day-to-day queue while hardening is active.
+> During the Soft Launch Hardening phase, the binding execution doc is [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md). **Feature-level map work is paused** — no new map features, no aspirational atmosphere work, no provider migrations. The strategic vision in this doc stays intact for post-launch reactivation; it just does not drive the day-to-day queue while hardening is active.
 >
 > Exception: any map change that is required to close a Launch Scope Guardrail or support a Hardening Plan phase item is allowed under the Hardening Plan's scope, not this doc's.
 

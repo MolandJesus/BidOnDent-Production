@@ -1,7 +1,7 @@
 # BidOnDent — Post-Launch Roadmap
 
 **Created:** 2026-04-14
-**Companion to:** [BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md)
+**Companion to:** [LAW_HARDENING_PLAN.md](LAW_HARDENING_PLAN.md)
 **Purpose:** Controlled holding area for everything deliberately deferred from the soft launch hardening phase. These items are not forgotten — they are intentionally sequenced _after_ the "one real transaction happens cleanly" milestone. Each entry lists _why it was deferred_, a concrete _trigger_ for when it should return, and a _priority band_ so the post-launch queue has real sequencing instead of a flat backlog.
 
 > **For any AI or developer reading this:** treat this roadmap as a controlled holding area, not a second backlog. Items here are not automatically next. Re-open them only when their stated triggers fire, and do not use this doc to offload launch-scope hardening work. Immediate post-launch attention should go first to any deferred cleanup that directly reduces operational drag from launch, not to easy cosmetic or documentation tasks.

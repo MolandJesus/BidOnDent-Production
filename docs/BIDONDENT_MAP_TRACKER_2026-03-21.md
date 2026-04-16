@@ -4,7 +4,7 @@
 >
 > This tracker continues from pass 855+ as the **historical pass log / audit trail** during the Soft Launch Hardening phase. It is no longer the primary "where are we" tool — the Module Completion Matrix (built in Phase 5 of the Hardening Plan) takes that role once populated.
 >
-> **Current execution law:** [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md). Every new pass must tie back to a specific Hardening Plan phase/work item, filter through the North Star, and respect Launch Scope Guardrails. Feature-level map work is paused.
+> **Current execution law:** [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md). Every new pass must tie back to a specific Hardening Plan phase/work item, filter through the North Star, and respect Launch Scope Guardrails. Feature-level map work is paused.
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 

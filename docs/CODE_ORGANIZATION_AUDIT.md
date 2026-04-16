@@ -17,7 +17,7 @@ All future map/product/design direction is planned/aspirational unless otherwise
 >
 > During the Soft Launch Hardening phase:
 >
-> - **Architecture work is scoped to [`BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md`](BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14.md) Phase 2** (adapter layer at service boundary, identity normalization). Full type-system merge and broader architecture refactors are deferred to [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) A1/A2.
+> - **Architecture work is scoped to [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md) Phase 2** (adapter layer at service boundary, identity normalization). Full type-system merge and broader architecture refactors are deferred to [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) A1/A2.
 > - **Schema source of truth rule (updated 2026-04-15, clarified Pass 877):** `supabase/migrations/*.sql` is the **single authoritative source** for the database schema. Every schema-affecting change must land as a new migration file. `database_init.tsx` is retained as a legacy cold-start safety net only — not an equal authority. The modular `database_schema_sql_*.ts` helpers are reference-only dead code (never consumed by any runtime path) and are removed in Pass 878. See `docs/SUPABASE_SETUP_GUIDE.md` §9 for the full policy.
 > - When a hardening pass changes seams, file boundaries, or extraction paths, update the relevant section of this doc in the same pass.
 
@@ -36,7 +36,7 @@ Recent map-program sync note: coverage browse/landing routing now uses explicit 
 
 Use this together with:
 
-- `docs/CLAUDE_AI_MASTER_CONTEXT.md`
+- `docs/REF_SYSTEM_STATE.md`
 - `docs/BIDONDENT_PRODUCT_BRAIN.md`
 
 ## Current Architecture Snapshot
@@ -381,7 +381,7 @@ If a future pass introduces a reusable pattern from these exceptions, extract it
 - Feature work must not outpace design-system and architecture clarity.
 - The project is in a "design system correction + platform refinement" phase, not random feature expansion.
 - Governance docs (this file, Product Brain, Map Tracker, MOLANDJEUS) should be updated with every meaningful pass.
-- **Quality sweep (Passes 400-431)** delivered: initial 8 oversized files refactored, zero tsc errors, zero user-facing alerts, race conditions fixed, 57% image size reduction. **Comprehensive extraction sweep (Passes 540-562)** completed all remaining oversized files — all src files now under 500-line hard cap. See `docs/CLAUDE_AI_MASTER_CONTEXT.md` Sections 14 and 17.
+- **Quality sweep (Passes 400-431)** delivered: initial 8 oversized files refactored, zero tsc errors, zero user-facing alerts, race conditions fixed, 57% image size reduction. **Comprehensive extraction sweep (Passes 540-562)** completed all remaining oversized files — all src files now under 500-line hard cap. See `docs/REF_SYSTEM_STATE.md` Sections 14 and 17.
 
 ---
 
