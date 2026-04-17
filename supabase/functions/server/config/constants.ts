@@ -11,7 +11,6 @@
 const ALLOWED_ORIGINS = [
   'https://bidondent.com',
   'https://www.bidondent.com',
-  'https://bidondent.vercel.app',
   // Local development — safe because all endpoints require auth tokens
   'http://localhost:5173',
   'http://localhost:5174',
@@ -22,9 +21,27 @@ const ALLOWED_ORIGINS = [
 
 /** Build a CORS origin header value from the request Origin. */
 export function getCorsOrigin(requestOrigin?: string | null): string {
-  if (requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin)) {
+  if (!requestOrigin) {
+    return ALLOWED_ORIGINS[0];
+  }
+
+  // Exact match against static allow-list
+  if (ALLOWED_ORIGINS.includes(requestOrigin)) {
     return requestOrigin;
   }
+
+  // Allow any Vercel deployment (production, preview, branch deploys).
+  // Safe because *.vercel.app is Vercel-controlled and all endpoints
+  // still require Clerk auth tokens for data access.
+  try {
+    const url = new URL(requestOrigin);
+    if (url.protocol === 'https:' && url.hostname.endsWith('.vercel.app')) {
+      return requestOrigin;
+    }
+  } catch {
+    // Malformed origin — fall through to default
+  }
+
   // Fallback: first allowed origin (never wildcard)
   return ALLOWED_ORIGINS[0];
 }
