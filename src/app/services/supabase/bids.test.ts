@@ -101,10 +101,8 @@ describe("submitBid", () => {
     });
   });
 
-  it("returns null when clerkUserId is undefined", async () => {
-    const result = await submitBid(fakeBid, undefined);
-
-    expect(result).toBeNull();
+  it("throws when clerkUserId is undefined", async () => {
+    await expect(submitBid(fakeBid, undefined)).rejects.toThrow("Please sign in to submit a bid.");
     expect(mockRequest).not.toHaveBeenCalled();
   });
 
@@ -116,12 +114,10 @@ describe("submitBid", () => {
     expect(result).toBeNull();
   });
 
-  it("returns null on network error", async () => {
+  it("rethrows on network error", async () => {
     mockRequest.mockRejectedValueOnce(new Error("500"));
 
-    const result = await submitBid(fakeBid, "clerk-user-1");
-
-    expect(result).toBeNull();
+    await expect(submitBid(fakeBid, "clerk-user-1")).rejects.toThrow("500");
   });
 });
 

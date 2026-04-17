@@ -5,6 +5,21 @@ import type { ProfileDropdownData, UserProfile } from "../../types/dashboardShel
 import NotificationCenter from "../dashboard/NotificationCenter";
 import BrandLogo from "./BrandLogo";
 
+type NotificationAnchorRect = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+};
+
+type NotificationHeaderRect = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  borderRadius: string;
+};
+
 type DashboardHeaderProps = {
   isLightAppearance: boolean;
   primaryColor: string;
@@ -48,8 +63,13 @@ export default function DashboardHeader({
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [notificationAnchorRect, setNotificationAnchorRect] =
+    useState<NotificationAnchorRect | null>(null);
+  const [notificationHeaderRect, setNotificationHeaderRect] =
+    useState<NotificationHeaderRect | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const topProfileMenuRef = useRef<HTMLDivElement>(null);
-  const notificationCenterRef = useRef<HTMLDivElement>(null);
+  const notificationTriggerRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -86,7 +106,7 @@ export default function DashboardHeader({
   }, []);
 
   useEffect(() => {
-    if (!showNotifications && !showTopProfileMenu) {
+    if (!showTopProfileMenu && !searchOpen) {
       return;
     }
 
@@ -94,31 +114,35 @@ export default function DashboardHeader({
       if (topProfileMenuRef.current && !topProfileMenuRef.current.contains(event.target as Node)) {
         setShowTopProfileMenu(false);
       }
-      if (
-        notificationCenterRef.current &&
-        !notificationCenterRef.current.contains(event.target as Node)
-      ) {
-        setShowNotifications(false);
-      }
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         closeSearch();
       }
     };
 
+    document.addEventListener("mousedown", onDocumentClick);
+    return () => {
+      document.removeEventListener("mousedown", onDocumentClick);
+    };
+  }, [showTopProfileMenu, searchOpen, closeSearch]);
+
+  useEffect(() => {
+    if (!showNotifications && !showTopProfileMenu && !searchOpen) {
+      return;
+    }
+
     const onDocumentKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setShowTopProfileMenu(false);
         setShowNotifications(false);
+        closeSearch();
       }
     };
 
-    document.addEventListener("mousedown", onDocumentClick);
     document.addEventListener("keydown", onDocumentKeyDown);
     return () => {
-      document.removeEventListener("mousedown", onDocumentClick);
       document.removeEventListener("keydown", onDocumentKeyDown);
     };
-  }, [showNotifications, showTopProfileMenu]);
+  }, [showNotifications, showTopProfileMenu, searchOpen, closeSearch]);
 
   useEffect(() => {
     if (
@@ -138,23 +162,55 @@ export default function DashboardHeader({
     };
   }, [showNotifications]);
 
+  useEffect(() => {
+    if (!showNotifications) {
+      setNotificationAnchorRect(null);
+      setNotificationHeaderRect(null);
+      return;
+    }
+
+    const updateNotificationGeometry = () => {
+      const headerBounds = headerRef.current?.getBoundingClientRect();
+      const triggerBounds = notificationTriggerRef.current?.getBoundingClientRect();
+      if (!headerBounds || !triggerBounds) return;
+
+      const computedHeaderStyle = window.getComputedStyle(headerRef.current!);
+
+      setNotificationHeaderRect({
+        top: Math.round(headerBounds.top),
+        left: Math.round(headerBounds.left),
+        width: Math.round(headerBounds.width),
+        height: Math.round(headerBounds.height),
+        borderRadius: computedHeaderStyle.borderRadius,
+      });
+
+      setNotificationAnchorRect({
+        top: Math.round(triggerBounds.top),
+        right: Math.round(triggerBounds.right),
+        bottom: Math.round(triggerBounds.bottom),
+        left: Math.round(triggerBounds.left),
+      });
+    };
+
+    const frameId = window.requestAnimationFrame(updateNotificationGeometry);
+    window.addEventListener("resize", updateNotificationGeometry);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", updateNotificationGeometry);
+    };
+  }, [showNotifications]);
+
   return (
     <header
-      className={`sticky top-0 z-40 mx-1.5 mt-1.5 rounded-3xl border sm:mx-2 sm:mt-2 md:mx-3 md:mt-3 md:rounded-[2rem] ${
-        isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.12]"
+      ref={headerRef}
+      className={`bd-shell-header sticky top-0 z-40 mx-1.5 mt-1.5 rounded-3xl border sm:mx-2 sm:mt-2 md:mx-3 md:mt-3 md:rounded-[2rem] ${
+        isLightAppearance
+          ? "bd-shell-header--light border-[rgba(188,176,154,0.36)]"
+          : "bd-shell-header--dark border-blue-400/[0.12]"
       }`}
-      style={{
-        background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 251, 255, 0.96) 100%)"
-          : "linear-gradient(180deg, rgba(6, 14, 36, 0.78) 0%, rgba(5, 12, 30, 0.70) 100%)",
-        backdropFilter: "blur(24px) saturate(1.4)",
-        WebkitBackdropFilter: "blur(24px) saturate(1.4)",
-        boxShadow: isLightAppearance
-          ? "0 4px 16px rgba(15, 23, 42, 0.07), inset 0 -1px 0 rgba(148, 163, 184, 0.20)"
-          : "0 8px 28px rgba(2, 8, 24, 0.50), inset 0 -1px 0 rgba(59, 130, 246, 0.14)",
-      }}
     >
-      <div className="flex items-center justify-between gap-2 px-3 py-2 sm:px-4 md:gap-3 md:px-8 md:py-3.5">
+      <div className="relative z-[2] flex items-center justify-between gap-2 px-3 py-2 sm:px-4 md:gap-3 md:px-8 md:py-3.5">
         <button
           onClick={onLogoClick}
           aria-label="Open dashboard home"
@@ -195,10 +251,10 @@ export default function DashboardHeader({
               className={`flex items-center gap-2 px-3 py-2 min-w-[260px] rounded-xl border transition-colors ${
                 searchOpen
                   ? isLightAppearance
-                    ? "border-blue-400/40 bg-white ring-2 ring-blue-400/20"
+                    ? "border-amber-400/50 bg-white ring-2 ring-amber-300/25"
                     : "border-blue-400/30 bg-white/[0.08] ring-2 ring-blue-400/15"
                   : isLightAppearance
-                    ? "border-slate-200/80 bg-slate-50/80 cursor-pointer hover:bg-slate-100/80"
+                    ? "border-stone-200/70 bg-amber-50/60 cursor-pointer hover:bg-amber-50/90"
                     : "bd-glass-control--utility cursor-pointer"
               }`}
               onClick={() => {
@@ -304,14 +360,14 @@ export default function DashboardHeader({
             )}
           </div>
 
-          <div className="relative" ref={notificationCenterRef}>
+          <div className="relative" ref={notificationTriggerRef}>
             <button
               type="button"
               onClick={() => {
                 setShowNotifications((current) => !current);
                 setShowTopProfileMenu(false);
               }}
-              className={`relative flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-colors ${isLightAppearance ? "border border-slate-200/80 bg-white/70 hover:bg-white/90" : "bd-glass-control--utility"}`}
+              className={`relative flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border transition-all ${isLightAppearance ? "border-slate-200/70 bg-white/60 hover:bg-white/80 hover:border-slate-300/60" : "border-blue-400/[0.10] bg-white/[0.04] hover:bg-white/[0.08] hover:border-blue-400/[0.18]"}`}
               aria-label={
                 showNotifications
                   ? "Close notifications"
@@ -324,17 +380,17 @@ export default function DashboardHeader({
               aria-haspopup="dialog"
             >
               <Bell
-                className={`w-5 h-5 ${isLightAppearance ? "text-slate-600" : "text-slate-100"}`}
+                className={`w-[18px] h-[18px] ${isLightAppearance ? "text-slate-500" : "text-slate-300"}`}
               />
               {unreadCount > 0 && (
-                <>
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
-                  <span
-                    className={`absolute -right-1.5 -top-1.5 min-w-5 rounded-full px-1.5 py-0.5 text-center text-[10px] font-semibold leading-none ${isLightAppearance ? "bg-white text-slate-800 ring-1 ring-slate-200" : "bg-slate-950 text-white"}`}
-                  >
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                </>
+                <span
+                  className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-500 px-1 text-[10px] font-bold leading-none text-white"
+                  style={{
+                    boxShadow: "0 2px 6px rgba(59, 130, 246, 0.4)",
+                  }}
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
               )}
             </button>
 
@@ -346,6 +402,8 @@ export default function DashboardHeader({
                 notifications={notifications}
                 notificationSyncActive={notificationSyncActive}
                 activeReportsCount={reports.length}
+                anchorRect={notificationAnchorRect}
+                headerOverlayRect={notificationHeaderRect}
                 onClose={() => setShowNotifications(false)}
                 onNavigate={(destination, tab) => {
                   profileDropdownData.onNavigate(destination, tab);
