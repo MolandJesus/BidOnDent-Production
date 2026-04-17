@@ -28,12 +28,12 @@ Three defining properties (all three must survive every decision):
 
 ## Role Hierarchy
 
-| Role | Priority | Description |
-|------|----------|-------------|
-| **Customer** | Primary user | Has the dented car. Submits reports, receives bids, accepts bids. Product is built for this person first. |
-| **Shop** | Primary supply | Does the repair. Views reports in service area, bids competitively, manages jobs. |
-| **Insurer** | Secondary participant | Participates in transactions they don't initiate. Always subordinate to customer-shop transaction. |
-| **Admin** | Internal only | User management, moderation, marketplace health. API-only until >100 active users. |
+| Role         | Priority              | Description                                                                                               |
+| ------------ | --------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Customer** | Primary user          | Has the dented car. Submits reports, receives bids, accepts bids. Product is built for this person first. |
+| **Shop**     | Primary supply        | Does the repair. Views reports in service area, bids competitively, manages jobs.                         |
+| **Insurer**  | Secondary participant | Participates in transactions they don't initiate. Always subordinate to customer-shop transaction.        |
+| **Admin**    | Internal only         | User management, moderation, marketplace health. API-only until >100 active users.                        |
 
 **Rule:** Never build insurer features that don't connect to a customer-shop transaction.
 
@@ -41,13 +41,13 @@ Three defining properties (all three must survive every decision):
 
 ## BidOnDent Must Never Become
 
-| Anti-pattern | Boundary |
-|---|---|
-| A Yelp-style directory without bidding | If shops set prices unilaterally, the product has failed |
-| A fleet management / dispatch tool | Navigation sessions serve this future — freeze, don't build toward it |
-| An insurance claims processing platform | Insurers participate; they are not the customer |
-| A SaaS tool for shops | BidOnDent gives shops customers, not operational software |
-| A white-label marketplace engine | One brand, one marketplace, one set of rules |
+| Anti-pattern                            | Boundary                                                              |
+| --------------------------------------- | --------------------------------------------------------------------- |
+| A Yelp-style directory without bidding  | If shops set prices unilaterally, the product has failed              |
+| A fleet management / dispatch tool      | Navigation sessions serve this future — freeze, don't build toward it |
+| An insurance claims processing platform | Insurers participate; they are not the customer                       |
+| A SaaS tool for shops                   | BidOnDent gives shops customers, not operational software             |
+| A white-label marketplace engine        | One brand, one marketplace, one set of rules                          |
 
 ---
 
@@ -87,25 +87,25 @@ Auth checking is mandatory for every non-public endpoint. Rate limiting uses ver
 
 These investments are not premature — they are the product identity:
 
-| Element | Why |
-|---|---|
-| Map-first UI paradigm | BidOnDent IS a spatial product. The map is the product frame, not a feature. |
-| Premium glass design system (`bd-*` tokens) | Visual trust signal. A cheap-looking marketplace gets cheap engagement. |
-| PostGIS spatial infrastructure | Technical moat. No dent repair competitor has geographic service areas and spatial queries. |
-| Three-role architecture | Marketplace topology. Keep the schema even when insurer UI is stubbed. |
-| PWA-first mobile strategy | Real customers are standing next to their dented car. Mobile is the primary device. |
+| Element                                     | Why                                                                                         |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Map-first UI paradigm                       | BidOnDent IS a spatial product. The map is the product frame, not a feature.                |
+| Premium glass design system (`bd-*` tokens) | Visual trust signal. A cheap-looking marketplace gets cheap engagement.                     |
+| PostGIS spatial infrastructure              | Technical moat. No dent repair competitor has geographic service areas and spatial queries. |
+| Three-role architecture                     | Marketplace topology. Keep the schema even when insurer UI is stubbed.                      |
+| PWA-first mobile strategy                   | Real customers are standing next to their dented car. Mobile is the primary device.         |
 
 ---
 
 ## Map Investment Rules
 
-| Layer | Status | Rule |
-|---|---|---|
-| Map-as-frame (dashboard widgets, shop directory) | **Foundational** | Never degrade to secondary view. Maintain and polish. |
-| PostGIS spatial queries (getNearbyShops, getReportsInServiceArea) | **Foundational** | Wire to product flows. This is both identity and transaction-critical. |
-| Service area management | **Foundational** | Ensure CRUD UI works. Feeds spatial filtering. |
-| Tile infrastructure (MapLibre + caching) | **Foundational** | Maintain. Don't change providers without cause. |
-| Turn-by-turn navigation + voice (OSRM, Web Speech, navigation sessions) | **Frozen** | Don't delete. Don't invest further. Not needed for marketplace proof. |
+| Layer                                                                   | Status           | Rule                                                                   |
+| ----------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------- |
+| Map-as-frame (dashboard widgets, shop directory)                        | **Foundational** | Never degrade to secondary view. Maintain and polish.                  |
+| PostGIS spatial queries (getNearbyShops, getReportsInServiceArea)       | **Foundational** | Wire to product flows. This is both identity and transaction-critical. |
+| Service area management                                                 | **Foundational** | Ensure CRUD UI works. Feeds spatial filtering.                         |
+| Tile infrastructure (MapLibre + caching)                                | **Foundational** | Maintain. Don't change providers without cause.                        |
+| Turn-by-turn navigation + voice (OSRM, Web Speech, navigation sessions) | **Frozen**       | Don't delete. Don't invest further. Not needed for marketplace proof.  |
 
 ---
 
@@ -130,13 +130,13 @@ If a user requests work that conflicts with LAW → AI must flag the conflict
 
 ## Co-Update Rules
 
-| Trigger | Must update together |
-|---|---|
-| New migration applied | `REF_SYSTEM_STATE.md` (if architecture-affecting) |
-| New endpoint added | `REF_SYSTEM_STATE.md` |
-| Module completed | Module Completion Matrix (currently `BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`) |
-| Bug found | `REF_KNOWN_ISSUES.md` |
-| Bug fixed | `REF_KNOWN_ISSUES.md` (mark resolved) |
-| Architecture changed | `REF_SYSTEM_STATE.md` + `LAW_PROJECT_RULES.md` (if a rule changes) |
-| Design system changed | `REF_SYSTEM_STATE.md` § Design System |
-| Document superseded | Move old doc to `docs/archive/` with date suffix |
+| Trigger               | Must update together                                                                    |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| New migration applied | `REF_SYSTEM_STATE.md` (if architecture-affecting)                                       |
+| New endpoint added    | `REF_SYSTEM_STATE.md`                                                                   |
+| Module completed      | Module Completion Matrix (currently `BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`) |
+| Bug found             | `REF_KNOWN_ISSUES.md`                                                                   |
+| Bug fixed             | `REF_KNOWN_ISSUES.md` (mark resolved)                                                   |
+| Architecture changed  | `REF_SYSTEM_STATE.md` + `LAW_PROJECT_RULES.md` (if a rule changes)                      |
+| Design system changed | `REF_SYSTEM_STATE.md` § Design System                                                   |
+| Document superseded   | Move old doc to `docs/archive/` with date suffix                                        |

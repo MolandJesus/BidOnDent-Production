@@ -125,6 +125,7 @@ The landing page is a separate surface — it uses inline style conditionals for
 **CSS utility classes** (defined in `src/styles/theme.css`):
 
 Dashboard surfaces (primary — use these for all dashboard work):
+
 - `bd-dashboard-panel` — top-level dashboard cards/sections
 - `bd-dashboard-section` — nested content blocks within panels
 - `bd-dashboard-chip` — small status/label chips
@@ -134,10 +135,12 @@ Dashboard surfaces (primary — use these for all dashboard work):
 - `bd-dashboard-ghost-button` — minimal text-style actions
 
 Accent modifiers (append to `bd-dashboard-panel` or `bd-dashboard-section`):
+
 - `--accent-blue` / `--accent-cyan` / `--accent-indigo` / `--deep` — color tone variants
 - `--interactive` — hover/focus states for clickable sections
 
 Landing page / legacy surfaces:
+
 - `bd-glass-panel` — floating panels, sidebars
 - `bd-glass-card` — content cards, result cards
 - `bd-glass-control` — interactive controls (buttons, pills)
@@ -292,18 +295,18 @@ Dashboard Home → shop tile click   → Shop Directory (full map experience)
 
 ## 6. Recent Hardening Passes (46–54)
 
-| Pass | Fix | Impact |
-|------|-----|--------|
-| 46 | Removed redundant client-side competing bid rejection | Server-side atomic rejection is canonical (`bids.ts:377-389`) |
-| 47 | Added DEV logging to `updateReportStatus` failure path | Diagnostics for silent status-update failure |
-| 48 | Fixed Active Jobs UUID crash (`Number(uuid)` → `String`) | Shop status updates work for DB-sourced jobs |
-| 48.1 | Moved `buildTasks` before `useMemo` (TDZ fix) | Active Jobs screen no longer crashes on load |
-| 49 | Deduplicated Active Jobs when DB + report-derived overlap | No more duplicate Honda Accord cards |
-| 49S | Fixed bid count mismatch in detail view + customer_name join | Accurate bid counts, names on job cards |
-| 51 | Prevented cross-account report leakage from localStorage | User-scoped cache keys when `clerkUserId` known |
-| 52 | Customer report deletion with accepted-bid guard | Delete button on dashboard + server-side 409 guard |
-| 53 | `hydrateReport` resilience (`.single()` → `.maybeSingle()` + try/catch) | Marketplace endpoint no longer 500s on profile lookup failures |
-| 54 | Fixed `notification-preferences` (`session.sub` → `session.clerkUserId`) | Notification preferences endpoint works |
+| Pass | Fix                                                                      | Impact                                                         |
+| ---- | ------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| 46   | Removed redundant client-side competing bid rejection                    | Server-side atomic rejection is canonical (`bids.ts:377-389`)  |
+| 47   | Added DEV logging to `updateReportStatus` failure path                   | Diagnostics for silent status-update failure                   |
+| 48   | Fixed Active Jobs UUID crash (`Number(uuid)` → `String`)                 | Shop status updates work for DB-sourced jobs                   |
+| 48.1 | Moved `buildTasks` before `useMemo` (TDZ fix)                            | Active Jobs screen no longer crashes on load                   |
+| 49   | Deduplicated Active Jobs when DB + report-derived overlap                | No more duplicate Honda Accord cards                           |
+| 49S  | Fixed bid count mismatch in detail view + customer_name join             | Accurate bid counts, names on job cards                        |
+| 51   | Prevented cross-account report leakage from localStorage                 | User-scoped cache keys when `clerkUserId` known                |
+| 52   | Customer report deletion with accepted-bid guard                         | Delete button on dashboard + server-side 409 guard             |
+| 53   | `hydrateReport` resilience (`.single()` → `.maybeSingle()` + try/catch)  | Marketplace endpoint no longer 500s on profile lookup failures |
+| 54   | Fixed `notification-preferences` (`session.sub` → `session.clerkUserId`) | Notification preferences endpoint works                        |
 
 **Open P1:** `updateReportStatus` silent failure after bid acceptance — diagnostics deployed (Pass 47), awaiting next accept-bid trigger to capture logs.
 
@@ -399,14 +402,14 @@ Dashboard Home → shop tile click   → Shop Directory (full map experience)
 
 ### Edge Function Handlers
 
-| File                                                              | Purpose                                            |
-| ----------------------------------------------------------------- | -------------------------------------------------- |
-| `supabase/functions/server/handlers/reports.ts`                   | Report CRUD + marketplace listing                  |
-| `supabase/functions/server/handlers/bids.ts`                      | Bid CRUD + atomic competing-bid rejection          |
-| `supabase/functions/server/handlers/workflow.ts`                   | Job assignments + estimate requests                |
-| `supabase/functions/server/handlers/notification_preferences.ts`  | User notification preference CRUD                  |
-| `supabase/functions/server/utils/clerk.ts`                        | 3-tier Clerk JWT verification                      |
-| `supabase/functions/server/utils/authz.ts`                        | Auth gates (session, marketplace, admin, identity) |
+| File                                                             | Purpose                                            |
+| ---------------------------------------------------------------- | -------------------------------------------------- |
+| `supabase/functions/server/handlers/reports.ts`                  | Report CRUD + marketplace listing                  |
+| `supabase/functions/server/handlers/bids.ts`                     | Bid CRUD + atomic competing-bid rejection          |
+| `supabase/functions/server/handlers/workflow.ts`                 | Job assignments + estimate requests                |
+| `supabase/functions/server/handlers/notification_preferences.ts` | User notification preference CRUD                  |
+| `supabase/functions/server/utils/clerk.ts`                       | 3-tier Clerk JWT verification                      |
+| `supabase/functions/server/utils/authz.ts`                       | Auth gates (session, marketplace, admin, identity) |
 
 ### Utilities
 
@@ -429,12 +432,12 @@ Dashboard Home → shop tile click   → Shop Directory (full map experience)
 
 ## 10. Known Technical Debt
 
-| Issue | Severity | Notes |
-|-------|----------|-------|
-| `updateReportStatus` silent failure | P1 | Report stays "pending" after bid acceptance; diagnostics deployed Pass 47 |
-| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW | Prevents chunk separation |
-| WebSocket/Realtime Clerk JWT template | LOW | Not configured; RT subscriptions use anon key fallback |
-| 49 pre-existing `tsc --noEmit` errors | LOW | Domain/DB boundary drift; does not affect Vite build |
+| Issue                                                     | Severity | Notes                                                                     |
+| --------------------------------------------------------- | -------- | ------------------------------------------------------------------------- |
+| `updateReportStatus` silent failure                       | P1       | Report stays "pending" after bid acceptance; diagnostics deployed Pass 47 |
+| `dynamic/static import overlap` on `bids.ts`/`reports.ts` | LOW      | Prevents chunk separation                                                 |
+| WebSocket/Realtime Clerk JWT template                     | LOW      | Not configured; RT subscriptions use anon key fallback                    |
+| 49 pre-existing `tsc --noEmit` errors                     | LOW      | Domain/DB boundary drift; does not affect Vite build                      |
 
 ---
 

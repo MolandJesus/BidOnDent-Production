@@ -4,7 +4,9 @@ export function formatDistanceMiles(distanceMiles?: number | null) {
   }
 
   const roundedDistance = Number(distanceMiles);
-  return roundedDistance >= 10 ? `${roundedDistance.toFixed(0)} mi` : `${roundedDistance.toFixed(1)} mi`;
+  return roundedDistance >= 10
+    ? `${roundedDistance.toFixed(0)} mi`
+    : `${roundedDistance.toFixed(1)} mi`;
 }
 
 export function formatApproximateDriveWindow(distanceMiles?: number | null) {

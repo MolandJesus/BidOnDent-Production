@@ -19,79 +19,79 @@
 
 ## Completed Passes
 
-| Pass | AI      | Title                                                         | Commit     |
-| ---- | ------- | ------------------------------------------------------------- | ---------- |
-| 632  | ChatGPT | Dashboard Surface System (bd-dashboard-\* CSS, 22 components) | `0272a3e2` |
-| 633  | Claude  | CRITICAL: Fix IDOR in estimate-request handlers               | `5253be3c` |
-| 700  | ChatGPT | Atlanta QA destinations dataset                               | `11693aa7` |
-| 701  | ChatGPT | Atlanta QA data integrity tests                               | `bdc126b2` |
-| 703  | ChatGPT | Shop directory dashboard surface polish                       | `56ee74fb` |
-| 705  | ChatGPT | Demo data helper coverage                                     | `b6ac269e` |
-| 707  | ChatGPT | Website identity sanitizer coverage                           | `3a2c91fa` |
-| 709  | ChatGPT | Cached user data validation coverage                          | `7cba44c3` |
-| 711  | ChatGPT | Atlanta QA drive picker UI                                    | `5b7bcdaf` |
-| 713  | ChatGPT | TypeScript baseline repair: React types and shared UI typings | `eb67b656` |
-| 714  | ChatGPT | Trim TypeScript backlog in report, jobs, and bid hook lanes   | `8c203eaa` |
-| 716  | ChatGPT | Add admin account guard coverage                              | `21ff7a1c` |
-| 718  | ChatGPT | Add Supabase runtime helper coverage                          | `9fcb8399` |
-| 720  | ChatGPT | Add auth session and demo mode coverage                       | `9f058dad` |
-| 634  | Claude  | Universal NavigationDestination type system                   | `53d70612` |
-| 635  | Claude  | NavigationDestination adapters for real places/addresses/QA   | `40df7203` |
-| 636  | Claude  | Direct navigation to any NavigationDestination                | `7e7a648d` |
-| 638  | Claude  | Fix P1 race condition in direct navigation lifecycle          | `287f6ec1` |
-| 639  | Claude  | Destination-agnostic navigation lifecycle effects             | `00989bfa` |
-| 640  | Claude  | Guidance card + overlay null-safety for direct navigation     | `9f629367` |
-| 641  | Claude  | Extract derived navigation state to shopDirectoryNavigationDerived | `668c420c` |
-| 642  | Claude  | Doc update for Passes 633–641                                 | `be7c14c7` |
-| 643  | Claude  | Add test coverage for derived navigation state helpers        | `f895375c` |
-| fix  | Claude  | Correct imports in shopDirectoryNavigationDerived             | `1d7cec7f` |
-| 729  | Claude  | Shop report notifications via Supabase Realtime              | `affe8550` |
-| 730  | Claude  | New badge on recent repair requests for shop urgency         | `e5168a24` |
-| 731  | Claude  | Add shop request card test coverage                          | `8ea49270` |
-| 732  | Claude  | Add transformReportToRequest test coverage                   | `524731be` |
-| 740  | Claude  | Bids service test coverage                                   | `aee5f341` |
-| 741  | Claude  | Reports service test coverage                                | `025f8b8d` |
-| 742  | Claude  | Profiles service test coverage                               | `551fac14` |
-| 743  | Claude  | Vehicles service test coverage                               | `f3e6e2f4` |
-| 744  | Claude  | Storage service test coverage                                | `32fcaed7` |
-| 745  | Claude  | Workflow service test coverage                               | `62fcfc71` |
-| 746  | Claude  | Map service pure function test coverage                      | `2dec2c3e` |
-| style | Claude | Formatter cleanup on realtime report service and derived helpers | `becbfeab` |
-| 722  | ChatGPT | Add admin Supabase sanitizer coverage                         | `8c19afeb` |
-| 723  | ChatGPT | Add appearance mode hook coverage                             | `b8b545e1` |
-| 724  | ChatGPT | Refresh dual AI coordination after coverage and direct-nav passes | `097337ab` |
-| 725  | ChatGPT | Add bid acceptance helper coverage                            | `e88abbde` |
-| 726  | ChatGPT | Refresh dual AI coordination after bid helper coverage        | `16df3ca3` |
-| 727  | ChatGPT | Add shop directory screen utils coverage                      | `4efeac54` |
-| 728  | ChatGPT | Refresh dual AI coordination after shop utility coverage      | `7dd782a7` |
-| 730  | ChatGPT | Add website session sanitizer coverage                        | `918c3437` |
-| 731  | ChatGPT | Refresh dual AI coordination after sanitizer coverage         | `78ba26b7` |
-| 732  | ChatGPT | Add website identity persistence coverage                     | `a39c380b` |
-| 733  | ChatGPT | Refresh dual AI coordination after identity coverage          | `ea73fc92` |
-| 734  | ChatGPT | Add website relationship sync coverage                        | `0a8b9dbf` |
-| 735  | ChatGPT | Refresh dual AI coordination after relationship sync coverage | `158fe563` |
-| 736  | ChatGPT | Add website preferences sync coverage                         | `c5821c57` |
-| 737  | ChatGPT | Refresh dual AI coordination after preferences coverage       | `cfa7894e` |
-| 738  | ChatGPT | Fix directory coordinate fallback and add utility coverage    | `502b0569` |
-| 739  | ChatGPT | Refresh dual AI coordination after directory utility fix      | `5a4860a6` |
-| 740  | ChatGPT | Add directory adapter coverage                                | `489eb82f` |
-| 742  | ChatGPT | Add shop map experience helper coverage                       | `46d46886` |
-| 750  | ChatGPT | Refresh dual AI coordination after service and map-helper coverage | `900b9a4d` |
-| 751  | ChatGPT | Stabilize Supabase map tests by mocking client boot           | `cf46c45e` |
-| 752  | ChatGPT | Add market intelligence helper coverage                       | `1522b5d3` |
-| 753  | ChatGPT | Refresh dual AI coordination after suite stabilization        | `6b058638` |
-| 754  | ChatGPT | Add market intelligence recommendation coverage               | `d52648a4` |
-| 755  | ChatGPT | Add route panel helper coverage                               | `8693babd` |
-| 756  | ChatGPT | Refresh dual AI coordination after intelligence and route-panel coverage | `c198efdd` |
-| 757  | ChatGPT | Add guidance card helper coverage                             | `ab93fd61` |
+| Pass  | AI      | Title                                                                    | Commit     |
+| ----- | ------- | ------------------------------------------------------------------------ | ---------- |
+| 632   | ChatGPT | Dashboard Surface System (bd-dashboard-\* CSS, 22 components)            | `0272a3e2` |
+| 633   | Claude  | CRITICAL: Fix IDOR in estimate-request handlers                          | `5253be3c` |
+| 700   | ChatGPT | Atlanta QA destinations dataset                                          | `11693aa7` |
+| 701   | ChatGPT | Atlanta QA data integrity tests                                          | `bdc126b2` |
+| 703   | ChatGPT | Shop directory dashboard surface polish                                  | `56ee74fb` |
+| 705   | ChatGPT | Demo data helper coverage                                                | `b6ac269e` |
+| 707   | ChatGPT | Website identity sanitizer coverage                                      | `3a2c91fa` |
+| 709   | ChatGPT | Cached user data validation coverage                                     | `7cba44c3` |
+| 711   | ChatGPT | Atlanta QA drive picker UI                                               | `5b7bcdaf` |
+| 713   | ChatGPT | TypeScript baseline repair: React types and shared UI typings            | `eb67b656` |
+| 714   | ChatGPT | Trim TypeScript backlog in report, jobs, and bid hook lanes              | `8c203eaa` |
+| 716   | ChatGPT | Add admin account guard coverage                                         | `21ff7a1c` |
+| 718   | ChatGPT | Add Supabase runtime helper coverage                                     | `9fcb8399` |
+| 720   | ChatGPT | Add auth session and demo mode coverage                                  | `9f058dad` |
+| 634   | Claude  | Universal NavigationDestination type system                              | `53d70612` |
+| 635   | Claude  | NavigationDestination adapters for real places/addresses/QA              | `40df7203` |
+| 636   | Claude  | Direct navigation to any NavigationDestination                           | `7e7a648d` |
+| 638   | Claude  | Fix P1 race condition in direct navigation lifecycle                     | `287f6ec1` |
+| 639   | Claude  | Destination-agnostic navigation lifecycle effects                        | `00989bfa` |
+| 640   | Claude  | Guidance card + overlay null-safety for direct navigation                | `9f629367` |
+| 641   | Claude  | Extract derived navigation state to shopDirectoryNavigationDerived       | `668c420c` |
+| 642   | Claude  | Doc update for Passes 633–641                                            | `be7c14c7` |
+| 643   | Claude  | Add test coverage for derived navigation state helpers                   | `f895375c` |
+| fix   | Claude  | Correct imports in shopDirectoryNavigationDerived                        | `1d7cec7f` |
+| 729   | Claude  | Shop report notifications via Supabase Realtime                          | `affe8550` |
+| 730   | Claude  | New badge on recent repair requests for shop urgency                     | `e5168a24` |
+| 731   | Claude  | Add shop request card test coverage                                      | `8ea49270` |
+| 732   | Claude  | Add transformReportToRequest test coverage                               | `524731be` |
+| 740   | Claude  | Bids service test coverage                                               | `aee5f341` |
+| 741   | Claude  | Reports service test coverage                                            | `025f8b8d` |
+| 742   | Claude  | Profiles service test coverage                                           | `551fac14` |
+| 743   | Claude  | Vehicles service test coverage                                           | `f3e6e2f4` |
+| 744   | Claude  | Storage service test coverage                                            | `32fcaed7` |
+| 745   | Claude  | Workflow service test coverage                                           | `62fcfc71` |
+| 746   | Claude  | Map service pure function test coverage                                  | `2dec2c3e` |
+| style | Claude  | Formatter cleanup on realtime report service and derived helpers         | `becbfeab` |
+| 722   | ChatGPT | Add admin Supabase sanitizer coverage                                    | `8c19afeb` |
+| 723   | ChatGPT | Add appearance mode hook coverage                                        | `b8b545e1` |
+| 724   | ChatGPT | Refresh dual AI coordination after coverage and direct-nav passes        | `097337ab` |
+| 725   | ChatGPT | Add bid acceptance helper coverage                                       | `e88abbde` |
+| 726   | ChatGPT | Refresh dual AI coordination after bid helper coverage                   | `16df3ca3` |
+| 727   | ChatGPT | Add shop directory screen utils coverage                                 | `4efeac54` |
+| 728   | ChatGPT | Refresh dual AI coordination after shop utility coverage                 | `7dd782a7` |
+| 730   | ChatGPT | Add website session sanitizer coverage                                   | `918c3437` |
+| 731   | ChatGPT | Refresh dual AI coordination after sanitizer coverage                    | `78ba26b7` |
+| 732   | ChatGPT | Add website identity persistence coverage                                | `a39c380b` |
+| 733   | ChatGPT | Refresh dual AI coordination after identity coverage                     | `ea73fc92` |
+| 734   | ChatGPT | Add website relationship sync coverage                                   | `0a8b9dbf` |
+| 735   | ChatGPT | Refresh dual AI coordination after relationship sync coverage            | `158fe563` |
+| 736   | ChatGPT | Add website preferences sync coverage                                    | `c5821c57` |
+| 737   | ChatGPT | Refresh dual AI coordination after preferences coverage                  | `cfa7894e` |
+| 738   | ChatGPT | Fix directory coordinate fallback and add utility coverage               | `502b0569` |
+| 739   | ChatGPT | Refresh dual AI coordination after directory utility fix                 | `5a4860a6` |
+| 740   | ChatGPT | Add directory adapter coverage                                           | `489eb82f` |
+| 742   | ChatGPT | Add shop map experience helper coverage                                  | `46d46886` |
+| 750   | ChatGPT | Refresh dual AI coordination after service and map-helper coverage       | `900b9a4d` |
+| 751   | ChatGPT | Stabilize Supabase map tests by mocking client boot                      | `cf46c45e` |
+| 752   | ChatGPT | Add market intelligence helper coverage                                  | `1522b5d3` |
+| 753   | ChatGPT | Refresh dual AI coordination after suite stabilization                   | `6b058638` |
+| 754   | ChatGPT | Add market intelligence recommendation coverage                          | `d52648a4` |
+| 755   | ChatGPT | Add route panel helper coverage                                          | `8693babd` |
+| 756   | ChatGPT | Refresh dual AI coordination after intelligence and route-panel coverage | `c198efdd` |
+| 757   | ChatGPT | Add guidance card helper coverage                                        | `ab93fd61` |
 
 ---
 
 ## In Progress
 
-| AI      | Pass | Description                                                 | Status              |
-| ------- | ---- | ----------------------------------------------------------- | ------------------- |
-| Claude  | 747+ | Service/report flows, navigation/router cleanup, TS handoff | Active              |
+| AI      | Pass | Description                                                  | Status              |
+| ------- | ---- | ------------------------------------------------------------ | ------------------- |
+| Claude  | 747+ | Service/report flows, navigation/router cleanup, TS handoff  | Active              |
 | ChatGPT | 758+ | Coordination upkeep, safe UI/test polish, non-nav TS cleanup | Ready for next pass |
 
 ---

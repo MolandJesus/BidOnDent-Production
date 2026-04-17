@@ -157,16 +157,17 @@ export default function ShopActiveJobsScreen({
   // Exclude report-derived jobs whose report already has a DB job assignment
   const dbJobIds = new Set(dbActiveJobs.map((j) => j.id));
   const dbReportIds = new Set(dbJobs.map((ja) => ja.damageReportId).filter(Boolean));
-  const mergedJobs = [...dbActiveJobs, ...reportDerivedJobs.filter((j) => !dbJobIds.has(j.id) && !dbReportIds.has(j.id))].map(
-    (job) => {
-      const override = statusOverrides[job.id];
-      if (!override) return job;
-      const overrideTasks = buildTasks(override, true);
-      const completedCount = overrideTasks.filter((t) => t.completed).length;
-      const progress = Math.round((completedCount / overrideTasks.length) * 100);
-      return { ...job, status: override, progress, tasks: overrideTasks };
-    }
-  );
+  const mergedJobs = [
+    ...dbActiveJobs,
+    ...reportDerivedJobs.filter((j) => !dbJobIds.has(j.id) && !dbReportIds.has(j.id)),
+  ].map((job) => {
+    const override = statusOverrides[job.id];
+    if (!override) return job;
+    const overrideTasks = buildTasks(override, true);
+    const completedCount = overrideTasks.filter((t) => t.completed).length;
+    const progress = Math.round((completedCount / overrideTasks.length) * 100);
+    return { ...job, status: override, progress, tasks: overrideTasks };
+  });
 
   // Map pins for active job locations
   const jobPins = useMemo<ReportPin[]>(() => {

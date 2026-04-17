@@ -207,7 +207,9 @@ export default function StorageDebugPanel() {
                       <code className="text-sm font-mono font-semibold text-gray-900">
                         {item.key}
                       </code>
-                      <span className={`px-2 py-0.5 text-xs rounded-full ${getBadgeColor(item.type)}`}>
+                      <span
+                        className={`px-2 py-0.5 text-xs rounded-full ${getBadgeColor(item.type)}`}
+                      >
                         {item.type}
                       </span>
                       <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">

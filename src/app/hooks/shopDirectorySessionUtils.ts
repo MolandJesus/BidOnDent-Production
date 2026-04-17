@@ -1,7 +1,4 @@
-import type {
-  NavigationAddressResult,
-  NavigationAddressSuggestion,
-} from "../types/navigation";
+import type { NavigationAddressResult, NavigationAddressSuggestion } from "../types/navigation";
 import type { Place, RecentSearch, SavedPlace } from "../types/mapDomain";
 import type { NavigationSessionStatus } from "../features/navigation";
 

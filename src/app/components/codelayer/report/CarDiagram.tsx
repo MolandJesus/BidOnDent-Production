@@ -287,16 +287,8 @@ export default function CarDiagram({
           y2="152"
           gradientUnits="userSpaceOnUse"
         >
-          <stop
-            offset="0"
-            stopColor={palette.zoneFill}
-            stopOpacity={palette.zoneOpacityStart}
-          />
-          <stop
-            offset="0.7"
-            stopColor={palette.zoneFill}
-            stopOpacity={palette.zoneOpacityMid}
-          />
+          <stop offset="0" stopColor={palette.zoneFill} stopOpacity={palette.zoneOpacityStart} />
+          <stop offset="0.7" stopColor={palette.zoneFill} stopOpacity={palette.zoneOpacityMid} />
           <stop offset="1" stopColor={palette.zoneFill} stopOpacity={palette.zoneOpacityEnd} />
         </linearGradient>
 

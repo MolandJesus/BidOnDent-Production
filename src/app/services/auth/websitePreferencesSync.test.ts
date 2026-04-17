@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockBuildSupabaseEdgeHeadersAsync } = vi.hoisted(() => ({
-  mockBuildSupabaseEdgeHeadersAsync: vi.fn(async () => new Headers({ Authorization: "Bearer test" })),
+  mockBuildSupabaseEdgeHeadersAsync: vi.fn(
+    async () => new Headers({ Authorization: "Bearer test" })
+  ),
 }));
 
 vi.mock("../supabase/runtime", () => ({
@@ -30,9 +32,7 @@ function createIdentity(websiteUserKey: string): WebsiteIdentity {
   };
 }
 
-function createSessionMemory(
-  overrides?: Partial<WebsiteSessionMemory>,
-): WebsiteSessionMemory {
+function createSessionMemory(overrides?: Partial<WebsiteSessionMemory>): WebsiteSessionMemory {
   return {
     updatedAt: "2026-04-03T19:00:00.000Z",
     shopDirectory: {
@@ -111,8 +111,8 @@ describe("websitePreferencesSync", () => {
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        },
-      ),
+        }
+      )
     );
 
     const identity = createIdentity("preferences-fetch");
@@ -124,7 +124,7 @@ describe("websitePreferencesSync", () => {
       expect.objectContaining({
         method: "GET",
         headers: expect.any(Headers),
-      }),
+      })
     );
     expect(memory).toEqual(
       expect.objectContaining({
@@ -148,7 +148,7 @@ describe("websitePreferencesSync", () => {
           clusterLevel: "detailed",
           updatedAt: "2026-04-03T19:15:00.000Z",
         }),
-      }),
+      })
     );
   });
 
@@ -167,7 +167,7 @@ describe("websitePreferencesSync", () => {
       new Response(JSON.stringify({ ok: true }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }),
+      })
     );
     mockFetch.mockResolvedValueOnce(new Response("error", { status: 500 }));
 
@@ -196,7 +196,7 @@ describe("websitePreferencesSync", () => {
         method: "POST",
         headers: expect.any(Headers),
         body: JSON.stringify(payload),
-      }),
+      })
     );
   });
 
@@ -207,7 +207,7 @@ describe("websitePreferencesSync", () => {
       new Response(JSON.stringify({ ok: true }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }),
+      })
     );
 
     const identity = createIdentity("preferences-queue");
@@ -257,7 +257,7 @@ describe("websitePreferencesSync", () => {
             sessionIntelligenceOpen: true,
           }),
         }),
-      }),
+      })
     );
   });
 });

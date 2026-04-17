@@ -35,9 +35,7 @@ export default function WaitlistCapture({ isLightAppearance = false }: WaitlistC
 
   if (status === "success") {
     return (
-      <p className="mt-4 text-sm font-medium text-emerald-300">
-        Thanks! We'll keep you posted.
-      </p>
+      <p className="mt-4 text-sm font-medium text-emerald-300">Thanks! We'll keep you posted.</p>
     );
   }
 

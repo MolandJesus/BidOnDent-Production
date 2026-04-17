@@ -12,9 +12,7 @@ import {
   uniqueTopReasons,
 } from "./marketIntelligenceHelpers";
 
-function createInsurerProfile(
-  overrides?: Partial<InsurerBusinessProfile>,
-): InsurerBusinessProfile {
+function createInsurerProfile(overrides?: Partial<InsurerBusinessProfile>): InsurerBusinessProfile {
   return {
     websiteUserKey: "insurer-1",
     companyName: "Peachtree Mutual",
@@ -56,7 +54,7 @@ describe("marketIntelligenceHelpers", () => {
         { make: "Ford", model: "F-150", year: 2020 },
         { make: " Tesla ", model: "Model 3", year: 2024 },
         { model: "Missing make" },
-      ]),
+      ])
     ).toEqual(["ford", "tesla"]);
 
     expect(
@@ -67,7 +65,7 @@ describe("marketIntelligenceHelpers", () => {
           damageType: "dent",
           description: "ADAS sensor issue",
         },
-      ]),
+      ])
     ).toEqual(["front", "bumper", "dent", "adas", "sensor", "issue", "hood", "fender"]);
   });
 
@@ -83,14 +81,14 @@ describe("marketIntelligenceHelpers", () => {
         "Carrier overlap",
         "Strong rating",
         "Fast response",
-      ]),
+      ])
     ).toEqual(["Carrier overlap", "ADAS fit", "Strong rating"]);
 
     expect(
-      matchesSearchQuery(["tesla", "adas"], [
-        "Tesla-certified ADAS collision center",
-        "Westchester County",
-      ]),
+      matchesSearchQuery(
+        ["tesla", "adas"],
+        ["Tesla-certified ADAS collision center", "Westchester County"]
+      )
     ).toBe(true);
     expect(matchesSearchQuery(["bmw"], ["Tesla-certified ADAS collision center"])).toBe(false);
     expect(matchesSearchQuery([], ["anything"])).toBe(true);
@@ -114,11 +112,11 @@ describe("marketIntelligenceHelpers", () => {
     const insuranceDirectory = getInsuranceDirectory(directoryInsurers);
 
     expect(insuranceDirectory.some((insurer) => insurer.name === "State Farm")).toBe(true);
+    expect(insuranceDirectory.find((insurer) => insurer.name === "Geico")?.claimsPhone).toBe(
+      "555-2200"
+    );
     expect(
-      insuranceDirectory.find((insurer) => insurer.name === "Geico")?.claimsPhone,
-    ).toBe("555-2200");
-    expect(
-      insuranceDirectory.find((insurer) => insurer.name === "Peachtree Mutual")?.claimsPhone,
+      insuranceDirectory.find((insurer) => insurer.name === "Peachtree Mutual")?.claimsPhone
     ).toBe("555-3300");
 
     const geicoId = insuranceDirectory.find((insurer) => insurer.name === "Geico")?.id;

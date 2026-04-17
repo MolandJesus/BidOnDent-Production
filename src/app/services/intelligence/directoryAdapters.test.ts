@@ -44,9 +44,7 @@ function createShopProfile(overrides?: Partial<ShopBusinessProfile>): ShopBusine
   };
 }
 
-function createInsurerProfile(
-  overrides?: Partial<InsurerBusinessProfile>,
-): InsurerBusinessProfile {
+function createInsurerProfile(overrides?: Partial<InsurerBusinessProfile>): InsurerBusinessProfile {
   return {
     websiteUserKey: "insurer-1",
     companyName: "Peachtree Mutual",
@@ -121,10 +119,10 @@ describe("directoryAdapters", () => {
         responseTimeLabel: "< 2 hours",
         distanceLabel: "Real profile",
         serviceArea: "Yonkers NY",
-      }),
+      })
     );
     expect(recommendations[0]?.capabilityTags).toEqual(
-      expect.arrayContaining(["dent-repair", "adas-calibration", "insurance-claims", "estimates"]),
+      expect.arrayContaining(["dent-repair", "adas-calibration", "insurance-claims", "estimates"])
     );
     expect(recommendations[0]?.matchReasons.length).toBeGreaterThan(0);
   });
@@ -135,8 +133,8 @@ describe("directoryAdapters", () => {
         createShopProfile({
           geoLatitude: 33.749,
           geoLongitude: -84.388,
-        }),
-      ),
+        })
+      )
     ).toEqual({
       latitude: 33.749,
       longitude: -84.388,
@@ -148,7 +146,7 @@ describe("directoryAdapters", () => {
         geoLongitude: null,
         businessCity: "Unknown City",
         businessState: "GA",
-      }),
+      })
     );
 
     expect(fallback.latitude).toBeGreaterThan(32.6);
@@ -178,7 +176,7 @@ describe("directoryAdapters", () => {
         { id: 1, name: "Peachtree Mutual" },
         { id: 2, name: "State Farm" },
       ],
-      [{ id: 9, name: "  Peachtree   Mutual " }],
+      [{ id: 9, name: "  Peachtree   Mutual " }]
     );
 
     expect(merged).toEqual([

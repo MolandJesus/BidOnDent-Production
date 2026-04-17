@@ -50,17 +50,9 @@ function createRecommendation(overrides?: Record<string, unknown>) {
 
 describe("shopMapExperienceHelpers", () => {
   it("sorts values by frequency while keeping comparisons case-insensitive", () => {
-    expect(
-      sortValuesByFrequency([
-        "Tesla",
-        "Ford",
-        "tesla",
-        "BMW",
-        "Tesla",
-        "ford",
-        "  ",
-      ]),
-    ).toEqual(["Tesla", "Ford", "BMW"]);
+    expect(sortValuesByFrequency(["Tesla", "Ford", "tesla", "BMW", "Tesla", "ford", "  "])).toEqual(
+      ["Tesla", "Ford", "BMW"]
+    );
   });
 
   it("matches selections case-insensitively and checks viewport bounds inclusively", () => {
@@ -106,7 +98,7 @@ describe("shopMapExperienceHelpers", () => {
         zipCode: "10601",
         latitude: 41.0534,
         longitude: -73.7629,
-      },
+      }
     );
     const listingB = buildMapListingFromRecommendation(
       createRecommendation({
@@ -131,7 +123,7 @@ describe("shopMapExperienceHelpers", () => {
         zipCode: "10701",
         latitude: 40.9312,
         longitude: -73.8988,
-      },
+      }
     );
 
     expect(listingA.mapResult).toEqual(
@@ -141,7 +133,7 @@ describe("shopMapExperienceHelpers", () => {
         city: "Yonkers",
         matchScore: 90,
         insuranceCompatibilityScore: 88,
-      }),
+      })
     );
     expect(listingA.mapDistanceMiles).not.toBe(10);
     expect(listingA.mapDistanceLabel).toMatch(/mi$/);
@@ -149,38 +141,34 @@ describe("shopMapExperienceHelpers", () => {
     expect(sortListings([listingA, listingB], "rating")[0]?.name).toBe("Hudson Dent Works");
     expect(sortListings([listingA, listingB], "reviews")[0]?.name).toBe("North County Auto");
     expect(sortListings([listingA, listingB], "distance")[0]?.mapDistanceMiles).toBeLessThanOrEqual(
-      sortListings([listingA, listingB], "distance")[1]?.mapDistanceMiles ?? Infinity,
+      sortListings([listingA, listingB], "distance")[1]?.mapDistanceMiles ?? Infinity
     );
-    expect(sortListings([listingA, listingB], "smart-match")[0]?.recommendationScore).toBeGreaterThanOrEqual(
-      sortListings([listingA, listingB], "smart-match")[1]?.recommendationScore ?? 0,
+    expect(
+      sortListings([listingA, listingB], "smart-match")[0]?.recommendationScore
+    ).toBeGreaterThanOrEqual(
+      sortListings([listingA, listingB], "smart-match")[1]?.recommendationScore ?? 0
     );
   });
 
   it("marks only the first listing as top pick after ordering", () => {
     const adjusted = withAdjustedTopPick([
       {
-        ...buildMapListingFromRecommendation(
-          createRecommendation({ id: 1, name: "First Shop" }),
-          {
-            coordinates: { latitude: 40.9312, longitude: -73.899 },
-            address: "42 McLean Ave",
-            city: "Yonkers",
-            state: "NY",
-            zipCode: "10705",
-          },
-        ),
+        ...buildMapListingFromRecommendation(createRecommendation({ id: 1, name: "First Shop" }), {
+          coordinates: { latitude: 40.9312, longitude: -73.899 },
+          address: "42 McLean Ave",
+          city: "Yonkers",
+          state: "NY",
+          zipCode: "10705",
+        }),
       },
       {
-        ...buildMapListingFromRecommendation(
-          createRecommendation({ id: 2, name: "Second Shop" }),
-          {
-            coordinates: { latitude: 41.0534, longitude: -73.7629 },
-            address: "180 Main St",
-            city: "White Plains",
-            state: "NY",
-            zipCode: "10601",
-          },
-        ),
+        ...buildMapListingFromRecommendation(createRecommendation({ id: 2, name: "Second Shop" }), {
+          coordinates: { latitude: 41.0534, longitude: -73.7629 },
+          address: "180 Main St",
+          city: "White Plains",
+          state: "NY",
+          zipCode: "10601",
+        }),
       },
     ]);
 
@@ -198,7 +186,7 @@ describe("shopMapExperienceHelpers", () => {
           city: "Yonkers",
           state: "NY",
           zipCode: "10705",
-        },
+        }
       ),
       buildMapListingFromRecommendation(
         createRecommendation({
@@ -214,7 +202,7 @@ describe("shopMapExperienceHelpers", () => {
           city: "White Plains",
           state: "NY",
           zipCode: "10601",
-        },
+        }
       ),
     ];
 

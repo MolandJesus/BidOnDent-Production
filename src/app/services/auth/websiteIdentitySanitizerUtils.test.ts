@@ -15,26 +15,17 @@ import {
 describe("websiteIdentitySanitizerUtils", () => {
   it("compares nested arrays and records with deepEqual", () => {
     expect(
-      deepEqual(
-        { a: 1, b: ["north", { c: true }] },
-        { a: 1, b: ["north", { c: true }] },
-      ),
+      deepEqual({ a: 1, b: ["north", { c: true }] }, { a: 1, b: ["north", { c: true }] })
     ).toBe(true);
     expect(
-      deepEqual(
-        { a: 1, b: ["north", { c: true }] },
-        { a: 1, b: ["north", { c: false }] },
-      ),
+      deepEqual({ a: 1, b: ["north", { c: true }] }, { a: 1, b: ["north", { c: false }] })
     ).toBe(false);
   });
 
   it("accepts allowed values and removes empty string duplicates", () => {
     expect(isAllowedValue(MAP_THEMES, "dark")).toBe(true);
     expect(isAllowedValue(MAP_THEMES, "neon")).toBe(false);
-    expect(sanitizeStringArray(["collision", "", "collision", "ev"])).toEqual([
-      "collision",
-      "ev",
-    ]);
+    expect(sanitizeStringArray(["collision", "", "collision", "ev"])).toEqual(["collision", "ev"]);
   });
 
   it("sanitizes only valid coordinates and viewport bounds", () => {
@@ -44,9 +35,7 @@ describe("websiteIdentitySanitizerUtils", () => {
     });
     expect(sanitizeCoordinates({ latitude: 120, longitude: -84.39 })).toBeUndefined();
 
-    expect(
-      sanitizeViewportBounds({ north: 34, south: 33, east: -84, west: -85 }),
-    ).toEqual({
+    expect(sanitizeViewportBounds({ north: 34, south: 33, east: -84, west: -85 })).toEqual({
       north: 34,
       south: 33,
       east: -84,
@@ -71,7 +60,7 @@ describe("websiteIdentitySanitizerUtils", () => {
         latitude: 33.781,
         longitude: -84.384,
         metadata: { icon: "house", category: "home" },
-      }),
+      })
     ).toEqual({
       id: "place-1",
       label: "Home",
@@ -102,7 +91,7 @@ describe("websiteIdentitySanitizerUtils", () => {
         zipCode: "30309",
         latitude: 33.781,
         longitude: -84.384,
-      }),
+      })
     ).toBeNull();
   });
 
@@ -122,7 +111,7 @@ describe("websiteIdentitySanitizerUtils", () => {
           placeId: "place-3",
         },
         resultCount: 5,
-      }),
+      })
     ).toEqual({
       query: "dent repair",
       timestamp: "2026-04-03T14:00:00.000Z",
@@ -149,7 +138,7 @@ describe("websiteIdentitySanitizerUtils", () => {
         searchWithinViewport: true,
         openNow: false,
         hasAvailability: true,
-      }),
+      })
     ).toEqual({
       maxDistanceMiles: 25,
       minRating: 4.5,
@@ -168,7 +157,7 @@ describe("websiteIdentitySanitizerUtils", () => {
         maxDistanceMiles: 0,
         minRating: 9,
         serviceTypes: ["", ""],
-      }),
+      })
     ).toBeUndefined();
   });
 });

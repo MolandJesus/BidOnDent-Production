@@ -3,8 +3,8 @@
  * Shows live connection status for real-time features
  */
 
-import { useEffect, useState } from 'react';
-import { WifiOff, Radio } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { WifiOff, Radio } from "lucide-react";
 
 interface RealtimeStatusIndicatorProps {
   isConnected: boolean;
@@ -15,7 +15,7 @@ interface RealtimeStatusIndicatorProps {
 export default function RealtimeStatusIndicator({
   isConnected,
   showLabel = true,
-  className = ''
+  className = "",
 }: RealtimeStatusIndicatorProps) {
   const [isPulsing, setIsPulsing] = useState(false);
 
@@ -32,7 +32,7 @@ export default function RealtimeStatusIndicator({
       <div className="relative flex items-center justify-center">
         <div
           className={`w-2 h-2 rounded-full transition-colors ${
-            isConnected ? 'bg-green-500' : 'bg-red-500'
+            isConnected ? "bg-green-500" : "bg-red-500"
           }`}
         />
         {isPulsing && isConnected && (
@@ -49,12 +49,8 @@ export default function RealtimeStatusIndicator({
 
       {/* Label */}
       {showLabel && (
-        <span
-          className={`text-sm font-medium ${
-            isConnected ? 'text-green-600' : 'text-red-600'
-          }`}
-        >
-          {isConnected ? 'Live' : 'Offline'}
+        <span className={`text-sm font-medium ${isConnected ? "text-green-600" : "text-red-600"}`}>
+          {isConnected ? "Live" : "Offline"}
         </span>
       )}
     </div>

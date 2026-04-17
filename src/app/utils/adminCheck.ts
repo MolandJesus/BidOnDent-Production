@@ -1,19 +1,19 @@
 /**
  * Admin utilities for Bidondent
- * 
+ *
  * 🚨 PRODUCTION REMOVAL: Delete this file when removing admin features
  * See /src/app/config/adminConfig.ts for complete removal instructions
  */
 
-import { 
-  ADMIN_EMAIL, 
-  TEST_ACCOUNTS, 
+import {
+  ADMIN_EMAIL,
+  TEST_ACCOUNTS,
   isAdmin as configIsAdmin,
   isTestAccount,
   hasAdminPrivileges as configHasAdminPrivileges,
   getTestAccountInfo as configGetTestAccountInfo,
-  canSwitchToAdmin
-} from '../config/adminConfig';
+  canSwitchToAdmin,
+} from "../config/adminConfig";
 
 // Re-export for backwards compatibility
 export const ADMIN_EMAIL_EXPORT = ADMIN_EMAIL;

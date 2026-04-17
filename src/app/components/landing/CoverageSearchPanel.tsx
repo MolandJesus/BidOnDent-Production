@@ -122,7 +122,12 @@ export default function CoverageSearchPanel({
           </div>
 
           <div className="flex flex-wrap items-start content-start self-start gap-2 lg:max-w-[19rem] lg:justify-end">
-            <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", theme.softBadgeClassName)}>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                theme.softBadgeClassName
+              )}
+            >
               {radiusMiles} mi radius
             </span>
             <span
@@ -134,7 +139,12 @@ export default function CoverageSearchPanel({
               {originModeLabel}
             </span>
             {hasCoverageSignal && coverageCounty ? (
-              <span className={cn("rounded-full px-3 py-1 text-[11px] font-semibold", theme.softBadgeClassName)}>
+              <span
+                className={cn(
+                  "rounded-full px-3 py-1 text-[11px] font-semibold",
+                  theme.softBadgeClassName
+                )}
+              >
                 {coverageCounty}
               </span>
             ) : null}
@@ -253,7 +263,10 @@ export default function CoverageSearchPanel({
                 <button
                   type="button"
                   onClick={onClearAddressResult}
-                  className={cn(theme.secondaryButtonClassName, "!min-h-[38px] !px-3 !py-1.5 !text-xs")}
+                  className={cn(
+                    theme.secondaryButtonClassName,
+                    "!min-h-[38px] !px-3 !py-1.5 !text-xs"
+                  )}
                 >
                   <X className="h-3.5 w-3.5" />
                   Clear

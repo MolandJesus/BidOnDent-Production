@@ -1,12 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const {
-  mockQueueWebsiteSessionMemorySync,
-  mockQueueWebsiteRelationshipCollectionsSync,
-} = vi.hoisted(() => ({
-  mockQueueWebsiteSessionMemorySync: vi.fn(),
-  mockQueueWebsiteRelationshipCollectionsSync: vi.fn(),
-}));
+const { mockQueueWebsiteSessionMemorySync, mockQueueWebsiteRelationshipCollectionsSync } =
+  vi.hoisted(() => ({
+    mockQueueWebsiteSessionMemorySync: vi.fn(),
+    mockQueueWebsiteRelationshipCollectionsSync: vi.fn(),
+  }));
 
 vi.mock("./websitePreferencesSync", () => ({
   queueWebsiteSessionMemorySync: mockQueueWebsiteSessionMemorySync,
@@ -37,7 +35,7 @@ function createMemoryStorage(): Storage {
       entries = new Map();
     },
     getItem(key: string) {
-      return entries.has(key) ? entries.get(key) ?? null : null;
+      return entries.has(key) ? (entries.get(key) ?? null) : null;
     },
     key(index: number) {
       return Array.from(entries.keys())[index] ?? null;
@@ -85,9 +83,9 @@ describe("websiteIdentity", () => {
     expect(firstIdentity.sessionId).toMatch(/^session-[a-z0-9]+$/);
     expect(secondIdentity.sessionId).toBe(firstIdentity.sessionId);
 
-    expect(
-      window.sessionStorage.getItem(`${SESSION_PREFIX}:${firstIdentity.websiteUserKey}`),
-    ).toBe(firstIdentity.sessionId);
+    expect(window.sessionStorage.getItem(`${SESSION_PREFIX}:${firstIdentity.websiteUserKey}`)).toBe(
+      firstIdentity.sessionId
+    );
   });
 
   it("sanitizes loaded website session memory and rewrites corrupted stored values", () => {
@@ -137,7 +135,7 @@ describe("websiteIdentity", () => {
             { id: "", label: "Broken" },
           ],
         },
-      }),
+      })
     );
 
     const memory = loadWebsiteSessionMemory(identity);
@@ -171,13 +169,13 @@ describe("websiteIdentity", () => {
             }),
           ],
         }),
-      }),
+      })
     );
 
     expect(
       JSON.parse(
-        window.localStorage.getItem(`${MEMORY_PREFIX}:${identity.websiteUserKey}`) ?? "null",
-      ),
+        window.localStorage.getItem(`${MEMORY_PREFIX}:${identity.websiteUserKey}`) ?? "null"
+      )
     ).toEqual(memory);
   });
 
@@ -203,7 +201,7 @@ describe("websiteIdentity", () => {
           selectedRouteId: "fastest",
         },
       } as unknown as Parameters<typeof updateWebsiteSessionMemory>[1],
-      { accountType: "customer" },
+      { accountType: "customer" }
     );
 
     expect(nextMemory.shopDirectory.searchQuery).toBe("Buckhead");
@@ -217,8 +215,8 @@ describe("websiteIdentity", () => {
 
     expect(
       JSON.parse(
-        window.localStorage.getItem(`${MEMORY_PREFIX}:${identity.websiteUserKey}`) ?? "null",
-      ),
+        window.localStorage.getItem(`${MEMORY_PREFIX}:${identity.websiteUserKey}`) ?? "null"
+      )
     ).toEqual(nextMemory);
 
     expect(mockQueueWebsiteSessionMemorySync).toHaveBeenCalledWith({
@@ -273,8 +271,8 @@ describe("websiteIdentity", () => {
     expect(replacedMemory.insuranceConnection.connectedInsurerIds).toEqual([6, 7]);
     expect(
       JSON.parse(
-        window.localStorage.getItem(`${MEMORY_PREFIX}:${identity.websiteUserKey}`) ?? "null",
-      ),
+        window.localStorage.getItem(`${MEMORY_PREFIX}:${identity.websiteUserKey}`) ?? "null"
+      )
     ).toEqual(replacedMemory);
   });
 });

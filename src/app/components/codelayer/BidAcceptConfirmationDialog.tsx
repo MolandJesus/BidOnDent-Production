@@ -43,7 +43,8 @@ export default function BidAcceptConfirmationDialog({
         }`}
       >
         <AlertDialogHeader>
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full"
+          <div
+            className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full"
             style={{ background: `${primaryColor}20` }}
           >
             <BadgeCheck className="h-6 w-6" style={{ color: primaryColor }} />
@@ -56,13 +57,11 @@ export default function BidAcceptConfirmationDialog({
             Accept this bid?
           </AlertDialogTitle>
           <AlertDialogDescription
-            className={`text-center text-sm ${
-              isLight ? "text-slate-500" : "text-blue-100/70"
-            }`}
+            className={`text-center text-sm ${isLight ? "text-slate-500" : "text-blue-100/70"}`}
           >
             You are about to accept a bid from{" "}
-            <span className="font-semibold">{bid?.shopName}</span>. Other
-            pending bids on this report will be automatically rejected.
+            <span className="font-semibold">{bid?.shopName}</span>. Other pending bids on this
+            report will be automatically rejected.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -76,17 +75,11 @@ export default function BidAcceptConfirmationDialog({
               <DollarSign
                 className={`h-4 w-4 ${isLight ? "text-emerald-600" : "text-emerald-400"}`}
               />
-              <span className="text-sm font-semibold">
-                ${bid.price.toLocaleString()}
-              </span>
+              <span className="text-sm font-semibold">${bid.price.toLocaleString()}</span>
             </div>
-            <div
-              className={`h-4 w-px ${isLight ? "bg-slate-200" : "bg-white/10"}`}
-            />
+            <div className={`h-4 w-px ${isLight ? "bg-slate-200" : "bg-white/10"}`} />
             <div className="flex items-center gap-1.5">
-              <Clock
-                className={`h-4 w-4 ${isLight ? "text-blue-600" : "text-blue-400"}`}
-              />
+              <Clock className={`h-4 w-4 ${isLight ? "text-blue-600" : "text-blue-400"}`} />
               <span className="text-sm">{bid.timeframe}</span>
             </div>
           </div>

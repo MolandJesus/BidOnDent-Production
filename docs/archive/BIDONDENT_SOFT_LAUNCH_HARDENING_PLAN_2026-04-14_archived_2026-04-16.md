@@ -558,47 +558,47 @@ Same checklist, against the live prod URL. Everything must pass.
 
 ### Execution: Phases 0–5 (2026-04-14 to 2026-04-15)
 
-| Phase | Status | Key outcomes |
-|-------|--------|--------------|
-| 0 | Done | All 7 Launch Scope Guardrails audited with file:line evidence |
-| 1 | Done | `.env` migration, dead component cleanup, NY metro QA pack, devtools wired |
-| 2 | Done | Adapter layer, identity normalization on launch-critical tables |
-| 3 | Done | RLS verification, idempotency (atomic bid transitions, report dedupe), event capture quality |
-| 4 | Done | Trust surfaces (demo banner, empty states, market status layer) |
-| 5.1 | Done | Staging Supabase (`lhhdqycnhweaxqviwdqt`), migration collapse to frozen baseline |
-| 5.2 | Pending | RESEND key deployment + real email proof |
-| 5.3 | Done | Module Completion Matrix created |
+| Phase | Status  | Key outcomes                                                                                 |
+| ----- | ------- | -------------------------------------------------------------------------------------------- |
+| 0     | Done    | All 7 Launch Scope Guardrails audited with file:line evidence                                |
+| 1     | Done    | `.env` migration, dead component cleanup, NY metro QA pack, devtools wired                   |
+| 2     | Done    | Adapter layer, identity normalization on launch-critical tables                              |
+| 3     | Done    | RLS verification, idempotency (atomic bid transitions, report dedupe), event capture quality |
+| 4     | Done    | Trust surfaces (demo banner, empty states, market status layer)                              |
+| 5.1   | Done    | Staging Supabase (`lhhdqycnhweaxqviwdqt`), migration collapse to frozen baseline             |
+| 5.2   | Pending | RESEND key deployment + real email proof                                                     |
+| 5.3   | Done    | Module Completion Matrix created                                                             |
 
 ### Bug fixes (2026-04-15, Passes 8–16)
 
-| Pass | Fix |
-|------|-----|
-| 8 | `vehicle.year.trim` crash — String/Number boundary fix |
-| 9A | Report submission UUID rejection — vehicle_id lookup fix |
-| 9B | Report wizard SVG (CarDiagram.tsx), button rounding |
-| 10 | `database_init.tsx` collapsed from 758→95 lines (validation only) |
-| 11a | P0 edge function Deno parse error from Pass 10 — PgClient interface fix |
-| 11b | Event capture gaps closed (3 missing event types + actor_id Clerk ID fix) |
-| 12 | Atomic bid transitions + report submission idempotency |
-| 13 | Atomic estimate_request transitions |
-| 14 | tsc audit: 49 errors scoped into 3 clusters |
-| 15 | tsc 49→0: camelCase sweep, adapter boundary sealing, stale component fixes |
-| 16 | Shop onboarding infinite loading — `useBusinessProfile` dependency key fix |
+| Pass | Fix                                                                        |
+| ---- | -------------------------------------------------------------------------- |
+| 8    | `vehicle.year.trim` crash — String/Number boundary fix                     |
+| 9A   | Report submission UUID rejection — vehicle_id lookup fix                   |
+| 9B   | Report wizard SVG (CarDiagram.tsx), button rounding                        |
+| 10   | `database_init.tsx` collapsed from 758→95 lines (validation only)          |
+| 11a  | P0 edge function Deno parse error from Pass 10 — PgClient interface fix    |
+| 11b  | Event capture gaps closed (3 missing event types + actor_id Clerk ID fix)  |
+| 12   | Atomic bid transitions + report submission idempotency                     |
+| 13   | Atomic estimate_request transitions                                        |
+| 14   | tsc audit: 49 errors scoped into 3 clusters                                |
+| 15   | tsc 49→0: camelCase sweep, adapter boundary sealing, stale component fixes |
+| 16   | Shop onboarding infinite loading — `useBusinessProfile` dependency key fix |
 
 ### Marketplace hardening (2026-04-16, Passes 46–54)
 
-| Pass | Fix |
-|------|-----|
-| 46 | Removed redundant client-side competing bid rejection |
-| 47 | Added DEV logging to `updateReportStatus` failure path |
-| 48 | Active Jobs UUID crash: `Number(uuid)` → `String(uuid)` |
-| 48.1 | `buildTasks` TDZ crash — moved before `useMemo` |
-| 49 | Deduplicated Active Jobs (DB + report-derived overlap) |
-| 49S | Bid count mismatch + customer_name join in job assignments |
-| 51 | Cross-account report leakage — user-scoped localStorage keys |
-| 52 | Customer report deletion with accepted-bid server guard |
-| 53 | `hydrateReport` resilience (`.single()` → `.maybeSingle()` + try/catch) |
-| 54 | `notification-preferences` fix (`session.sub` → `session.clerkUserId`) |
+| Pass | Fix                                                                     |
+| ---- | ----------------------------------------------------------------------- |
+| 46   | Removed redundant client-side competing bid rejection                   |
+| 47   | Added DEV logging to `updateReportStatus` failure path                  |
+| 48   | Active Jobs UUID crash: `Number(uuid)` → `String(uuid)`                 |
+| 48.1 | `buildTasks` TDZ crash — moved before `useMemo`                         |
+| 49   | Deduplicated Active Jobs (DB + report-derived overlap)                  |
+| 49S  | Bid count mismatch + customer_name join in job assignments              |
+| 51   | Cross-account report leakage — user-scoped localStorage keys            |
+| 52   | Customer report deletion with accepted-bid server guard                 |
+| 53   | `hydrateReport` resilience (`.single()` → `.maybeSingle()` + try/catch) |
+| 54   | `notification-preferences` fix (`session.sub` → `session.clerkUserId`)  |
 
 **Edge functions deployed as version 40. Build: 3.36s, 0 errors.**
 

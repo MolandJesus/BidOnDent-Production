@@ -119,7 +119,7 @@ describe("demoDataServiceHelpers storage behavior", () => {
   it("sanitizes invalid stored items before returning them", () => {
     localStorage.setItem(
       TEST_KEY,
-      JSON.stringify([validVehicle, { id: "broken", userId: "user-2" }]),
+      JSON.stringify([validVehicle, { id: "broken", userId: "user-2" }])
     );
 
     const loaded = loadStoredCollection(TEST_KEY, isVehicle, []);

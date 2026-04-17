@@ -5264,4 +5264,3 @@ All future directions follow the consistent 6-part structure (Current State → 
 | Dashboard compact map widgets (CarPlay-style per role)                        | Map Master Plan | "Future Theme B"                        |
 
 This tracker does not duplicate the full 6-part plans above. The staged roadmap tables below track execution status against those plans.
-

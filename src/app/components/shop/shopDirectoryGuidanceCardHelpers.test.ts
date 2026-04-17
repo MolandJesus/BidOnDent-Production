@@ -13,7 +13,7 @@ describe("shopDirectoryGuidanceCardHelpers", () => {
       "active",
       undefined,
       40,
-      35,
+      35
     );
 
     expect(styles.glassPanel).toContain("bg-slate-950/82");
@@ -37,7 +37,7 @@ describe("shopDirectoryGuidanceCardHelpers", () => {
       "lost",
       undefined,
       0,
-      30,
+      30
     );
 
     expect(styles.routeSourceLabel).toBe("Trip complete");
@@ -59,7 +59,7 @@ describe("shopDirectoryGuidanceCardHelpers", () => {
       "stale",
       "Move to an open area for a clearer GPS lock.",
       22,
-      35,
+      35
     );
 
     expect(styles.routeSourceLabel).toBe("Route estimate");
@@ -83,7 +83,7 @@ describe("shopDirectoryGuidanceCardHelpers", () => {
       "lost",
       undefined,
       null,
-      null,
+      null
     );
 
     expect(styles.routeSourceLabel).toBe("Estimated route");
@@ -93,7 +93,7 @@ describe("shopDirectoryGuidanceCardHelpers", () => {
     expect(styles.speedLimitDetail).toBeNull();
     expect(styles.showGpsRecovery).toBe(true);
     expect(styles.gpsRecoveryMessage).toBe(
-      "GPS signal lost — turn-by-turn position may be outdated.",
+      "GPS signal lost — turn-by-turn position may be outdated."
     );
     expect(styles.gpsRecoveryPanel).toContain("red-500/10");
     expect(styles.gpsRecoveryButton).toContain("bg-white/10");

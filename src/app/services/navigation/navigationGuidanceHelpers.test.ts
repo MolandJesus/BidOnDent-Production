@@ -1,10 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../supabase/map", () => ({
-  haversineMiles: (
-    a: { lat: number; lng: number },
-    b: { lat: number; lng: number }
-  ) => {
+  haversineMiles: (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
     const toRadians = (value: number) => (value * Math.PI) / 180;
     const earthRadiusMiles = 3958.8;
     const dLat = toRadians(b.lat - a.lat);
@@ -12,8 +9,7 @@ vi.mock("../supabase/map", () => ({
     const startLat = toRadians(a.lat);
     const endLat = toRadians(b.lat);
     const haversine =
-      Math.sin(dLat / 2) ** 2 +
-      Math.cos(startLat) * Math.cos(endLat) * Math.sin(dLng / 2) ** 2;
+      Math.sin(dLat / 2) ** 2 + Math.cos(startLat) * Math.cos(endLat) * Math.sin(dLng / 2) ** 2;
     return 2 * earthRadiusMiles * Math.asin(Math.sqrt(haversine));
   },
 }));
@@ -25,9 +21,7 @@ import {
 
 describe("calculateFallbackSpeedMph", () => {
   it("returns null without a previous point", () => {
-    expect(
-      calculateFallbackSpeedMph(null, null, { lat: 41.1, lng: -73.8 }, Date.now())
-    ).toBeNull();
+    expect(calculateFallbackSpeedMph(null, null, { lat: 41.1, lng: -73.8 }, Date.now())).toBeNull();
   });
 
   it("calculates fallback speed from distance over time", () => {

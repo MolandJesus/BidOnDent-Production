@@ -195,9 +195,7 @@ export function GeoErrorToast({
             : "border-amber-300/60 bg-white/90 shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
         }`}
       >
-        <p
-          className={`text-xs font-medium ${isDark ? "text-amber-300" : "text-amber-700"}`}
-        >
+        <p className={`text-xs font-medium ${isDark ? "text-amber-300" : "text-amber-700"}`}>
           {geoError}
         </p>
       </div>

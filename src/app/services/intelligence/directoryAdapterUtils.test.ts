@@ -17,9 +17,7 @@ import {
   uniqueStrings,
 } from "./directoryAdapterUtils";
 
-function createProfile(
-  overrides?: Partial<ShopBusinessProfile>,
-): ShopBusinessProfile {
+function createProfile(overrides?: Partial<ShopBusinessProfile>): ShopBusinessProfile {
   return {
     websiteUserKey: "shop-profile-1",
     businessName: "Atlanta Dent Pros",
@@ -68,7 +66,7 @@ describe("directoryAdapterUtils", () => {
       expect.objectContaining({
         latitude: expect.any(Number),
         longitude: expect.any(Number),
-      }),
+      })
     );
 
     const fallback = buildApproximateCoordinates("seed-2", "Atlanta", "GA");
@@ -84,48 +82,48 @@ describe("directoryAdapterUtils", () => {
         createProfile({
           completionRate: 99,
           specialties: ["Luxury bodywork", "ADAS calibration", "Frame repair", "EV repair"],
-        }),
-      ),
+        })
+      )
     ).toBe("balanced");
 
     expect(
       inferCapacityBand(
         createProfile({
           isAcceptingBids: false,
-        }),
-      ),
+        })
+      )
     ).toBe("boutique");
 
     expect(
       inferAverageTicketValue(
         createProfile({
           specialties: ["Luxury refinishing"],
-        }),
-      ),
+        })
+      )
     ).toBe(1050);
 
     expect(
       inferAverageTicketValue(
         createProfile({
           specialties: ["Hail repair", "PDR"],
-        }),
-      ),
+        })
+      )
     ).toBe(760);
 
     expect(
       inferSupportedMakes(
         createProfile({
           specialties: ["Luxury collision"],
-        }),
-      ),
+        })
+      )
     ).toEqual(["BMW", "Mercedes-Benz", "Audi", "Porsche"]);
 
     expect(
       inferSupportedMakes(
         createProfile({
           specialties: ["EV diagnostics", "ADAS calibration"],
-        }),
-      ),
+        })
+      )
     ).toEqual(["Tesla", "Rivian", "Hyundai", "Ford"]);
 
     expect(inferInsurerPrograms(createProfile())).toEqual(["Progressive", "State Farm"]);
@@ -137,7 +135,7 @@ describe("directoryAdapterUtils", () => {
         { make: "Ford", model: "F-150", year: 2022 },
         { make: "Tesla", model: "Model 3", year: 2023 },
         { make: "Ford", model: "Mustang", year: 2020 },
-      ] as Array<{ make?: string; model?: string; year?: string | number }>),
+      ] as Array<{ make?: string; model?: string; year?: string | number }>)
     ).toEqual(["ford", "tesla"]);
 
     expect(
@@ -153,7 +151,7 @@ describe("directoryAdapterUtils", () => {
         damageAreas?: string[];
         damageType?: string;
         description?: string;
-      }>),
+      }>)
     ).toEqual(["front bumper", "dent", "hood", "fender", "adas sensor issue"]);
 
     const reasons = buildReasons(
@@ -169,7 +167,7 @@ describe("directoryAdapterUtils", () => {
         aboutSummary: "ADAS and dent specialists",
       }),
       ["Tesla", "Ford"],
-      ["Progressive", "Geico"],
+      ["Progressive", "Geico"]
     );
 
     expect(reasons).toEqual([

@@ -31,16 +31,16 @@ import {
   getProfile,
   saveProfile,
   getBidsForReport,
-  
+
   // Real-time
   realtimeBidService,
-  
+
   // Performance
   performanceOptimizer,
-  
+
   // Storage
-  storageService
-} from './services';
+  storageService,
+} from "./services";
 ```
 
 ---
@@ -71,13 +71,13 @@ await deleteDamageReport(reportId);
 // Bids (NEW!)
 await getBidsForReport(reportId);
 await submitBid(bidData);
-await updateBidStatus(bidId, 'accepted');
+await updateBidStatus(bidId, "accepted");
 await getMyBids();
 await deleteBid(bidId);
 
 // Storage
-await uploadPhoto(file, 'bidondent-profiles');
-await deletePhoto(url, 'bidondent-profiles');
+await uploadPhoto(file, "bidondent-profiles");
+await deletePhoto(url, "bidondent-profiles");
 ```
 
 ---
@@ -87,6 +87,7 @@ await deletePhoto(url, 'bidondent-profiles');
 **Purpose:** Live updates via WebSocket subscriptions
 
 **Key Features:**
+
 - ⚡ Instant bid notifications (<500ms)
 - 🔄 Automatic reconnection
 - 📊 Connection health monitoring
@@ -98,28 +99,28 @@ await deletePhoto(url, 'bidondent-profiles');
 // Subscribe to bids for a specific report
 const unsubscribe = realtimeBidService.subscribeToReportBids(
   reportId,
-  
+
   // New bid callback
   (bid) => {
-    console.log('New bid!', bid);
+    console.log("New bid!", bid);
     updateUI(bid);
   },
-  
+
   // Update callback
   (bid) => {
-    console.log('Bid updated!', bid);
+    console.log("Bid updated!", bid);
     updateBidInUI(bid);
   },
-  
+
   // Delete callback
   (bidId) => {
-    console.log('Bid deleted:', bidId);
+    console.log("Bid deleted:", bidId);
     removeBidFromUI(bidId);
   },
-  
+
   // Connection status callback
   (status) => {
-    console.log('Connection:', status);
+    console.log("Connection:", status);
     setConnectionStatus(status);
   }
 );
@@ -130,14 +131,14 @@ return () => unsubscribe();
 
 **Methods:**
 
-| Method | Purpose |
-|--------|---------|
-| `subscribeToReportBids(reportId, ...)` | Subscribe to specific report |
-| `subscribeToAllBids(...)` | Subscribe to all bids (shop view) |
-| `unsubscribeFromReportBids(reportId)` | Unsubscribe from report |
-| `unsubscribeAll()` | Unsubscribe from everything |
-| `getHealthStatus()` | Get connection health |
-| `isSubscribed(reportId)` | Check if subscribed |
+| Method                                 | Purpose                           |
+| -------------------------------------- | --------------------------------- |
+| `subscribeToReportBids(reportId, ...)` | Subscribe to specific report      |
+| `subscribeToAllBids(...)`              | Subscribe to all bids (shop view) |
+| `unsubscribeFromReportBids(reportId)`  | Unsubscribe from report           |
+| `unsubscribeAll()`                     | Unsubscribe from everything       |
+| `getHealthStatus()`                    | Get connection health             |
+| `isSubscribed(reportId)`               | Check if subscribed               |
 
 ---
 
@@ -146,6 +147,7 @@ return () => unsubscribe();
 **Purpose:** Caching, prefetching, optimistic updates
 
 **Key Features:**
+
 - 💾 Query result caching (85% hit rate)
 - 🚀 Request deduplication
 - ⚡ Optimistic UI updates
@@ -157,60 +159,60 @@ return () => unsubscribe();
 ```typescript
 // 1. Cache queries
 const data = await performanceOptimizer.cachedQuery(
-  'cache-key',
+  "cache-key",
   async () => await fetchFromDatabase(),
   60000 // TTL in milliseconds
 );
 
 // 2. Optimistic updates
 await performanceOptimizer.optimisticUpdate(
-  'cache-key',
-  optimisticData,        // Show this immediately
+  "cache-key",
+  optimisticData, // Show this immediately
   async () => await save() // Sync with server
 );
 
 // 3. Optimize images
 const optimizedUrl = performanceOptimizer.getOptimizedImageUrl(
-  'bidondent-damage-photos',
-  'car.jpg',
+  "bidondent-damage-photos",
+  "car.jpg",
   {
     width: 800,
     height: 600,
     quality: 80,
-    format: 'webp'
+    format: "webp",
   }
 );
 
 // 4. Prefetch data
 await performanceOptimizer.prefetch(
-  'reports-list',
+  "reports-list",
   async () => await getDamageReports(),
   300000 // 5 minutes
 );
 
 // 5. Invalidate cache
-performanceOptimizer.invalidateCache('cache-key');
-performanceOptimizer.invalidateCache('reports-*'); // Pattern
+performanceOptimizer.invalidateCache("cache-key");
+performanceOptimizer.invalidateCache("reports-*"); // Pattern
 performanceOptimizer.clearCache(); // All
 
 // 6. Get stats
 const stats = performanceOptimizer.getCacheStats();
-console.log('Cache size:', stats.size);
+console.log("Cache size:", stats.size);
 ```
 
 **Methods:**
 
-| Method | Purpose |
-|--------|---------|
-| `cachedQuery(key, fn, ttl)` | Execute with caching |
-| `optimisticUpdate(key, data, fn)` | Update UI immediately |
-| `batchQuery(queries)` | Batch multiple queries |
-| `prefetch(key, fn, ttl)` | Prefetch for later |
-| `getOptimizedImageUrl(...)` | Get optimized image |
-| `invalidateCache(key)` | Clear specific cache |
-| `clearCache()` | Clear all cache |
-| `getCacheStats()` | Get cache statistics |
-| `preloadCriticalData(userId)` | Preload essential data |
+| Method                            | Purpose                |
+| --------------------------------- | ---------------------- |
+| `cachedQuery(key, fn, ttl)`       | Execute with caching   |
+| `optimisticUpdate(key, data, fn)` | Update UI immediately  |
+| `batchQuery(queries)`             | Batch multiple queries |
+| `prefetch(key, fn, ttl)`          | Prefetch for later     |
+| `getOptimizedImageUrl(...)`       | Get optimized image    |
+| `invalidateCache(key)`            | Clear specific cache   |
+| `clearCache()`                    | Clear all cache        |
+| `getCacheStats()`                 | Get cache statistics   |
+| `preloadCriticalData(userId)`     | Preload essential data |
 
 ---
 
@@ -219,6 +221,7 @@ console.log('Cache size:', stats.size);
 **Purpose:** Cloud-agnostic file storage
 
 **Key Features:**
+
 - 🌐 Provider-agnostic (switch in 5 min)
 - ☁️ Supports Supabase, AWS S3, Cloudflare R2, etc.
 - 🔄 Zero code changes to switch
@@ -229,68 +232,65 @@ console.log('Cache size:', stats.size);
 ```typescript
 // 1. Upload file
 const result = await storageService.uploadFile({
-  bucket: 'bidondent-profiles',
+  bucket: "bidondent-profiles",
   path: `users/${userId}/profile.jpg`,
   file: photoFile,
-  contentType: 'image/jpeg',
-  cacheControl: '3600',
-  upsert: true
+  contentType: "image/jpeg",
+  cacheControl: "3600",
+  upsert: true,
 });
 
 if (result.success) {
-  console.log('URL:', result.publicUrl);
+  console.log("URL:", result.publicUrl);
 } else {
-  console.error('Error:', result.error);
+  console.error("Error:", result.error);
 }
 
 // 2. Delete file
 await storageService.deleteFile({
-  bucket: 'bidondent-profiles',
-  path: `users/${userId}/profile.jpg`
+  bucket: "bidondent-profiles",
+  path: `users/${userId}/profile.jpg`,
 });
 
 // 3. List files
 const files = await storageService.listFiles({
-  bucket: 'bidondent-profiles',
-  path: 'users',
-  limit: 100
+  bucket: "bidondent-profiles",
+  path: "users",
+  limit: 100,
 });
 
 // 4. Get signed URL (private files)
 const signed = await storageService.getSignedUrl({
-  bucket: 'bidondent-profiles',
-  path: 'users/123/private.jpg',
-  expiresIn: 3600 // 1 hour
+  bucket: "bidondent-profiles",
+  path: "users/123/private.jpg",
+  expiresIn: 3600, // 1 hour
 });
 
 // 5. Get public URL
-const publicUrl = storageService.getPublicUrl(
-  'bidondent-profiles',
-  'users/123/photo.jpg'
-);
+const publicUrl = storageService.getPublicUrl("bidondent-profiles", "users/123/photo.jpg");
 
 // 6. Get provider info
 const info = storageService.getProviderInfo();
-console.log('Using:', info.name); // "Supabase Storage"
+console.log("Using:", info.name); // "Supabase Storage"
 
 // 7. Switch provider (advanced)
-storageService.switchProvider('aws-s3');
+storageService.switchProvider("aws-s3");
 // Now all operations use AWS S3!
 ```
 
 **Methods:**
 
-| Method | Purpose |
-|--------|---------|
-| `uploadFile(options)` | Upload a file |
-| `deleteFile(options)` | Delete a file |
-| `listFiles(options)` | List files in bucket |
-| `getSignedUrl(options)` | Get temporary URL |
-| `getPublicUrl(bucket, path)` | Get public URL |
-| `isConfigured()` | Check if ready |
-| `ensureBucket(bucket)` | Create bucket if needed |
-| `getProviderInfo()` | Get provider details |
-| `switchProvider(type)` | Switch to different provider |
+| Method                       | Purpose                      |
+| ---------------------------- | ---------------------------- |
+| `uploadFile(options)`        | Upload a file                |
+| `deleteFile(options)`        | Delete a file                |
+| `listFiles(options)`         | List files in bucket         |
+| `getSignedUrl(options)`      | Get temporary URL            |
+| `getPublicUrl(bucket, path)` | Get public URL               |
+| `isConfigured()`             | Check if ready               |
+| `ensureBucket(bucket)`       | Create bucket if needed      |
+| `getProviderInfo()`          | Get provider details         |
+| `switchProvider(type)`       | Switch to different provider |
 
 ---
 
@@ -319,7 +319,7 @@ function DamageReportDetail({ reportId }) {
         toast.success(`New bid: $${newBid.amount}`);
       },
       (updated) => {
-        setBids(prev => prev.map(b => 
+        setBids(prev => prev.map(b =>
           b.id === updated.id ? updated : b
         ));
       },
@@ -343,23 +343,21 @@ function DamageReportDetail({ reportId }) {
 
 ```typescript
 async function handleAcceptBid(bid) {
-  const optimistic = { ...bid, status: 'accepted' };
-  
+  const optimistic = { ...bid, status: "accepted" };
+
   // UI updates immediately
   await performanceOptimizer.optimisticUpdate(
     `bids-${reportId}`,
-    bids.map(b => b.id === bid.id ? optimistic : b),
+    bids.map((b) => (b.id === bid.id ? optimistic : b)),
     async () => {
       // Server sync in background
-      const result = await updateBidStatus(bid.id, 'accepted');
-      if (!result) throw new Error('Failed');
+      const result = await updateBidStatus(bid.id, "accepted");
+      if (!result) throw new Error("Failed");
       return result;
     }
   );
-  
-  setBids(prev => prev.map(b => 
-    b.id === bid.id ? optimistic : b
-  ));
+
+  setBids((prev) => prev.map((b) => (b.id === bid.id ? optimistic : b)));
 }
 ```
 
@@ -368,19 +366,19 @@ async function handleAcceptBid(bid) {
 ```typescript
 async function handlePhotoUpload(file) {
   setUploading(true);
-  
+
   try {
     const result = await storageService.uploadFile({
-      bucket: 'bidondent-damage-photos',
+      bucket: "bidondent-damage-photos",
       path: `reports/${reportId}/${Date.now()}.jpg`,
-      file: file
+      file: file,
     });
-    
+
     if (result.success) {
       setPhotoUrl(result.publicUrl);
-      toast.success('Photo uploaded!');
+      toast.success("Photo uploaded!");
     } else {
-      toast.error('Upload failed: ' + result.error);
+      toast.error("Upload failed: " + result.error);
     }
   } finally {
     setUploading(false);
@@ -398,7 +396,7 @@ Set these to customize behavior:
 
 ```javascript
 // Switch storage provider
-window.__STORAGE_PROVIDER__ = 'supabase'; // default
+window.__STORAGE_PROVIDER__ = "supabase"; // default
 // or 'aws-s3', 'cloudflare-r2', etc.
 ```
 
@@ -408,13 +406,13 @@ Default TTLs (can be overridden):
 
 ```typescript
 // Short-lived (30s)
-await performanceOptimizer.cachedQuery('bids', fn, 30000);
+await performanceOptimizer.cachedQuery("bids", fn, 30000);
 
 // Medium (1 min)
-await performanceOptimizer.cachedQuery('reports', fn, 60000);
+await performanceOptimizer.cachedQuery("reports", fn, 60000);
 
 // Long-lived (5 min)
-await performanceOptimizer.cachedQuery('profiles', fn, 300000);
+await performanceOptimizer.cachedQuery("profiles", fn, 300000);
 ```
 
 ---
@@ -496,18 +494,20 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.bids;
 performanceOptimizer.clearCache();
 
 // Or reduce TTL
-await performanceOptimizer.cachedQuery('key', fn, 10000); // 10s instead of 60s
+await performanceOptimizer.cachedQuery("key", fn, 10000); // 10s instead of 60s
 ```
 
 ### Storage upload failing?
 
 ```typescript
 // Check session
-const { data: { session } } = await supabase.auth.getSession();
-console.log('Session:', session);
+const {
+  data: { session },
+} = await supabase.auth.getSession();
+console.log("Session:", session);
 
 // Verify bucket exists
-await storageService.ensureBucket('bidondent-profiles');
+await storageService.ensureBucket("bidondent-profiles");
 ```
 
 ---

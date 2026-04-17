@@ -156,7 +156,10 @@ export function buildPhotoGuideSteps({
             </h4>
             <div className="grid grid-cols-1 gap-3">
               {photoGuideTips.cameraBasics.map((tip) => (
-                <div key={tip.title} className="border border-white/[0.08] bg-white/[0.05] rounded-lg p-4">
+                <div
+                  key={tip.title}
+                  className="border border-white/[0.08] bg-white/[0.05] rounded-lg p-4"
+                >
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl">{tip.icon}</span>
                     <div>

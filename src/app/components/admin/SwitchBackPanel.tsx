@@ -24,13 +24,16 @@ export default function SwitchBackPanel({ adminEmail }: SwitchBackPanelProps) {
           <li>Confirm the switch in the dialog</li>
           <li>
             Enter your admin password for
-            <code className="bg-green-100 px-2 py-0.5 rounded font-mono font-semibold">{adminEmail}</code>
+            <code className="bg-green-100 px-2 py-0.5 rounded font-mono font-semibold">
+              {adminEmail}
+            </code>
           </li>
           <li>You'll be automatically signed in and redirected to the admin dashboard</li>
         </ol>
         <p className="mt-3 pt-3 border-t border-green-300">
-          <strong>✨ Security:</strong> Your actual admin password is required each time you switch back. No hardcoded
-          passwords are used. Works with any auth method (email/password, Google, Apple, etc.)
+          <strong>✨ Security:</strong> Your actual admin password is required each time you switch
+          back. No hardcoded passwords are used. Works with any auth method (email/password, Google,
+          Apple, etc.)
         </p>
       </div>
     </motion.div>

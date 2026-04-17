@@ -61,8 +61,7 @@ export default function NotificationCenter({
   }
 
   const unreadCount = notifications.filter((notification) => !notification.read).length;
-  const isMobile =
-    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+  const isMobile = typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
   const pageScrim =
     typeof document !== "undefined"
       ? createPortal(
@@ -181,185 +180,189 @@ export default function NotificationCenter({
                   : "blur(28px) saturate(1.28)",
               }}
             >
-        {/* ── Header ── */}
-        <div
-          className={`px-4 py-3 ${
-            isLightAppearance
-              ? "border-b border-[rgba(200,180,150,0.18)]"
-              : "border-b border-[rgba(96,165,250,0.10)]"
-          }`}
-        >
-          {/* Top row: title + unread count + close */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
+              {/* ── Header ── */}
               <div
-                className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                  isLightAppearance ? "bg-blue-50 text-blue-500" : "bg-blue-500/12 text-blue-400"
-                }`}
-              >
-                <Bell className="h-4 w-4" />
-              </div>
-              <div>
-                <h3
-                  className={`text-sm font-semibold leading-none ${
-                    isLightAppearance ? "text-slate-800" : "text-slate-100"
-                  }`}
-                >
-                  Notifications
-                </h3>
-                <p className="mt-1 text-[11px] leading-none text-slate-400">
-                  {notificationSyncActive ? (
-                    <span className="inline-flex items-center gap-1">
-                      <Radio className="h-2.5 w-2.5 animate-pulse text-blue-400" />
-                      Live
-                    </span>
-                  ) : (
-                    "Snapshot"
-                  )}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1.5">
-              {unreadCount > 0 && (
-                <span
-                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                    isLightAppearance ? "bg-blue-50 text-blue-600" : "bg-blue-500/15 text-blue-300"
-                  }`}
-                >
-                  {unreadCount} unread
-                </span>
-              )}
-              <button
-                type="button"
-                onClick={onClose}
-                className={`flex h-7 w-7 items-center justify-center rounded-lg transition ${
+                className={`px-4 py-3 ${
                   isLightAppearance
-                    ? "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-                    : "text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
-                }`}
-                aria-label="Close notifications"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Mark all read */}
-          {unreadCount > 0 && (
-            <div className="mt-2.5 flex justify-end">
-              <button
-                type="button"
-                onClick={onMarkAllRead}
-                className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium transition ${
-                  isLightAppearance
-                    ? "text-blue-600 hover:bg-blue-50"
-                    : "text-blue-400/80 hover:bg-blue-500/10 hover:text-blue-300"
+                    ? "border-b border-[rgba(200,180,150,0.18)]"
+                    : "border-b border-[rgba(96,165,250,0.10)]"
                 }`}
               >
-                <Sparkles className="h-3 w-3" />
-                Mark all read
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* ── Notification list ── */}
-        <div className="max-h-[22rem] overflow-y-auto overscroll-contain max-md:max-h-[min(55vh,22rem)]">
-          {notifications.length === 0 ? (
-            <div className="px-5 py-10 text-center">
-              <div
-                className={`mx-auto flex h-10 w-10 items-center justify-center rounded-xl ${
-                  isLightAppearance ? "bg-amber-50" : "bg-blue-500/10"
-                }`}
-              >
-                <Bell
-                  className={`h-4.5 w-4.5 ${isLightAppearance ? "text-amber-500" : "text-blue-400/60"}`}
-                />
-              </div>
-              <p
-                className={`mt-3 text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-slate-300"}`}
-              >
-                No notifications yet
-              </p>
-              <p
-                className={`mt-1 text-xs ${isLightAppearance ? "text-slate-400" : "text-slate-500"}`}
-              >
-                Activity from your account will appear here.
-              </p>
-            </div>
-          ) : (
-            <div>
-              {notifications.map((notification, index) => {
-                const visual = getNotificationVisual(notification.type);
-                const Icon = visual.icon;
-                const isLast = index === notifications.length - 1;
-
-                return (
-                  <button
-                    key={notification.id}
-                    type="button"
-                    onClick={() => handleNotificationSelect(notification)}
-                    className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors ${
-                      !isLast
-                        ? isLightAppearance
-                          ? "border-b border-[rgba(200,180,150,0.12)]"
-                          : "border-b border-[rgba(96,165,250,0.06)]"
-                        : ""
-                    } ${
-                      notification.read
-                        ? isLightAppearance
-                          ? "hover:bg-slate-50/60"
-                          : "hover:bg-white/[0.03]"
-                        : isLightAppearance
-                          ? "bg-blue-50/40 hover:bg-blue-50/60"
-                          : "bg-blue-500/[0.06] hover:bg-blue-500/[0.10]"
-                    }`}
-                  >
+                {/* Top row: title + unread count + close */}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
                     <div
-                      className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                        isLightAppearance ? "bg-slate-50" : "bg-white/[0.04]"
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                        isLightAppearance
+                          ? "bg-blue-50 text-blue-500"
+                          : "bg-blue-500/12 text-blue-400"
                       }`}
                     >
-                      <Icon className={`h-4 w-4 ${visual.iconClassName}`} />
+                      <Bell className="h-4 w-4" />
                     </div>
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`inline-flex rounded-md px-1.5 py-0.5 text-[10px] font-semibold leading-tight ${visual.badgeClassName}`}
-                        >
-                          {visual.label}
-                        </span>
-                        {!notification.read && (
-                          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
-                        )}
-                      </div>
-                      <p
-                        className={`mt-1.5 text-[13px] leading-snug ${
-                          notification.read
-                            ? isLightAppearance
-                              ? "text-slate-500"
-                              : "text-slate-400"
-                            : isLightAppearance
-                              ? "text-slate-700"
-                              : "text-slate-200"
+                    <div>
+                      <h3
+                        className={`text-sm font-semibold leading-none ${
+                          isLightAppearance ? "text-slate-800" : "text-slate-100"
                         }`}
                       >
-                        {notification.message}
-                      </p>
-                      <p
-                        className={`mt-1 text-[11px] ${isLightAppearance ? "text-slate-400" : "text-slate-500"}`}
-                      >
-                        {notification.time}
+                        Notifications
+                      </h3>
+                      <p className="mt-1 text-[11px] leading-none text-slate-400">
+                        {notificationSyncActive ? (
+                          <span className="inline-flex items-center gap-1">
+                            <Radio className="h-2.5 w-2.5 animate-pulse text-blue-400" />
+                            Live
+                          </span>
+                        ) : (
+                          "Snapshot"
+                        )}
                       </p>
                     </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    {unreadCount > 0 && (
+                      <span
+                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                          isLightAppearance
+                            ? "bg-blue-50 text-blue-600"
+                            : "bg-blue-500/15 text-blue-300"
+                        }`}
+                      >
+                        {unreadCount} unread
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className={`flex h-7 w-7 items-center justify-center rounded-lg transition ${
+                        isLightAppearance
+                          ? "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                          : "text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
+                      }`}
+                      aria-label="Close notifications"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Mark all read */}
+                {unreadCount > 0 && (
+                  <div className="mt-2.5 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={onMarkAllRead}
+                      className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium transition ${
+                        isLightAppearance
+                          ? "text-blue-600 hover:bg-blue-50"
+                          : "text-blue-400/80 hover:bg-blue-500/10 hover:text-blue-300"
+                      }`}
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      Mark all read
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Notification list ── */}
+              <div className="max-h-[22rem] overflow-y-auto overscroll-contain max-md:max-h-[min(55vh,22rem)]">
+                {notifications.length === 0 ? (
+                  <div className="px-5 py-10 text-center">
+                    <div
+                      className={`mx-auto flex h-10 w-10 items-center justify-center rounded-xl ${
+                        isLightAppearance ? "bg-amber-50" : "bg-blue-500/10"
+                      }`}
+                    >
+                      <Bell
+                        className={`h-4.5 w-4.5 ${isLightAppearance ? "text-amber-500" : "text-blue-400/60"}`}
+                      />
+                    </div>
+                    <p
+                      className={`mt-3 text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-slate-300"}`}
+                    >
+                      No notifications yet
+                    </p>
+                    <p
+                      className={`mt-1 text-xs ${isLightAppearance ? "text-slate-400" : "text-slate-500"}`}
+                    >
+                      Activity from your account will appear here.
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    {notifications.map((notification, index) => {
+                      const visual = getNotificationVisual(notification.type);
+                      const Icon = visual.icon;
+                      const isLast = index === notifications.length - 1;
+
+                      return (
+                        <button
+                          key={notification.id}
+                          type="button"
+                          onClick={() => handleNotificationSelect(notification)}
+                          className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors ${
+                            !isLast
+                              ? isLightAppearance
+                                ? "border-b border-[rgba(200,180,150,0.12)]"
+                                : "border-b border-[rgba(96,165,250,0.06)]"
+                              : ""
+                          } ${
+                            notification.read
+                              ? isLightAppearance
+                                ? "hover:bg-slate-50/60"
+                                : "hover:bg-white/[0.03]"
+                              : isLightAppearance
+                                ? "bg-blue-50/40 hover:bg-blue-50/60"
+                                : "bg-blue-500/[0.06] hover:bg-blue-500/[0.10]"
+                          }`}
+                        >
+                          <div
+                            className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                              isLightAppearance ? "bg-slate-50" : "bg-white/[0.04]"
+                            }`}
+                          >
+                            <Icon className={`h-4 w-4 ${visual.iconClassName}`} />
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`inline-flex rounded-md px-1.5 py-0.5 text-[10px] font-semibold leading-tight ${visual.badgeClassName}`}
+                              >
+                                {visual.label}
+                              </span>
+                              {!notification.read && (
+                                <span className="inline-flex h-1.5 w-1.5 rounded-full bg-blue-500" />
+                              )}
+                            </div>
+                            <p
+                              className={`mt-1.5 text-[13px] leading-snug ${
+                                notification.read
+                                  ? isLightAppearance
+                                    ? "text-slate-500"
+                                    : "text-slate-400"
+                                  : isLightAppearance
+                                    ? "text-slate-700"
+                                    : "text-slate-200"
+                              }`}
+                            >
+                              {notification.message}
+                            </p>
+                            <p
+                              className={`mt-1 text-[11px] ${isLightAppearance ? "text-slate-400" : "text-slate-500"}`}
+                            >
+                              {notification.time}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>,
             document.body
           )

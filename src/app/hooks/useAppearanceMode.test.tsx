@@ -122,7 +122,7 @@ describe("useAppearanceMode", () => {
         new StorageEvent("storage", {
           key: "bidondent.appearance-mode",
           newValue: "light",
-        }),
+        })
       );
     });
 

@@ -39,7 +39,7 @@ describe("websiteIdentitySanitizers", () => {
           savedPlaces: "not-an-array",
           recentSearches: null,
         },
-      }),
+      })
     ).toEqual({
       ...DEFAULT_MEMORY,
       insuranceConnection: {

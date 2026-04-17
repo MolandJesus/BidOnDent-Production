@@ -28,10 +28,10 @@ describe("marketIntelligence", () => {
     expect(recommendations.length).toBeGreaterThan(0);
     expect(recommendations[0]?.topPick).toBe(true);
     expect(
-      recommendations.every((shop, index) => (index === 0 ? shop.topPick : !shop.topPick)),
+      recommendations.every((shop, index) => (index === 0 ? shop.topPick : !shop.topPick))
     ).toBe(true);
     expect(recommendations[0]?.recommendationScore).toBeGreaterThanOrEqual(
-      recommendations[1]?.recommendationScore ?? 0,
+      recommendations[1]?.recommendationScore ?? 0
     );
     expect(recommendations[0]?.matchReasons.length).toBeGreaterThan(0);
 
@@ -61,7 +61,9 @@ describe("marketIntelligence", () => {
     });
 
     expect(byDistance.length).toBeGreaterThan(1);
-    expect(byDistance[0]?.distanceMiles).toBeLessThanOrEqual(byDistance[1]?.distanceMiles ?? Infinity);
+    expect(byDistance[0]?.distanceMiles).toBeLessThanOrEqual(
+      byDistance[1]?.distanceMiles ?? Infinity
+    );
 
     const noMatches = buildShopRecommendations({
       userType: "customer",
@@ -81,7 +83,7 @@ describe("marketIntelligence", () => {
         vehicles: [],
         reports: [],
         connectedInsurerIds: [],
-      }),
+      })
     ).toEqual({
       title: "No shops matched",
       description:
@@ -100,9 +102,7 @@ describe("marketIntelligence", () => {
     expect(recommendations.length).toBeGreaterThan(0);
     expect(recommendations[0]?.connected).toBe(true);
     expect(recommendations[0]?.name).toBe("Progressive");
-    expect(recommendations[0]?.fitScore).toBeGreaterThanOrEqual(
-      recommendations[1]?.fitScore ?? 0,
-    );
+    expect(recommendations[0]?.fitScore).toBeGreaterThanOrEqual(recommendations[1]?.fitScore ?? 0);
     expect(recommendations[0]?.connectionReasons.length).toBeGreaterThan(0);
 
     const summary = buildInsuranceIntelligenceSummary(recommendations);

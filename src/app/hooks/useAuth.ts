@@ -11,7 +11,9 @@ export function useAuth() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [keepMeSignedIn, setKeepMeSignedIn] = useState(false); // User must manually select this option
-  const [currentUserType, setCurrentUserType] = useState<"customer" | "shop" | "insurer">("customer");
+  const [currentUserType, setCurrentUserType] = useState<"customer" | "shop" | "insurer">(
+    "customer"
+  );
   const [showMigrationModal, setShowMigrationModal] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [signupError, setSignupError] = useState("");
@@ -58,7 +60,7 @@ export function useAuth() {
     showMigrationModal,
     loginError,
     signupError,
-    
+
     // Setters
     setShowLoginModal,
     setLoginView,
@@ -72,10 +74,10 @@ export function useAuth() {
     setShowMigrationModal,
     setLoginError,
     setSignupError,
-    
+
     // Actions
     resetAuthForm,
     openLoginModal,
-    closeLoginModal
+    closeLoginModal,
   };
 }

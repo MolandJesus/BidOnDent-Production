@@ -1,12 +1,12 @@
 /**
  * useAuth Hook - Clerk Compatibility Layer
- * 
+ *
  * This hook wraps Clerk's useUser hook to provide a simple auth interface
  * for backward compatibility with the existing codebase.
  */
 
-import { useUser, useClerk } from '@clerk/clerk-react';
-import { extractUserProfile } from '../services/clerkService';
+import { useUser, useClerk } from "@clerk/clerk-react";
+import { extractUserProfile } from "../services/clerkService";
 
 export interface UseAuthReturn {
   user: {
@@ -14,7 +14,7 @@ export interface UseAuthReturn {
     email: string;
     name: string;
     phone: string;
-    user_type: 'customer' | 'shop' | 'insurer' | 'admin';
+    user_type: "customer" | "shop" | "insurer" | "admin";
     account_setup_completed: boolean;
   } | null;
   isLoading: boolean;
@@ -24,7 +24,7 @@ export interface UseAuthReturn {
 
 /**
  * Hook to manage authentication state using Clerk
- * 
+ *
  * @returns {UseAuthReturn} Authentication state and methods
  */
 export function useAuth(): UseAuthReturn {
@@ -40,6 +40,6 @@ export function useAuth(): UseAuthReturn {
     isAuthenticated: !!clerkUser,
     signOut: async () => {
       await clerkSignOut();
-    }
+    },
   };
 }

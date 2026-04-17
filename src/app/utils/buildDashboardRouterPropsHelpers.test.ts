@@ -2,15 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { handleAcceptBid } from "./buildDashboardRouterPropsHelpers";
 
-const {
-  mockUpdateBidStatus,
-  mockZipToCoordinates,
-  mockUpdateWebsiteSessionMemory,
-} = vi.hoisted(() => ({
-  mockUpdateBidStatus: vi.fn(),
-  mockZipToCoordinates: vi.fn(),
-  mockUpdateWebsiteSessionMemory: vi.fn(),
-}));
+const { mockUpdateBidStatus, mockZipToCoordinates, mockUpdateWebsiteSessionMemory } = vi.hoisted(
+  () => ({
+    mockUpdateBidStatus: vi.fn(),
+    mockZipToCoordinates: vi.fn(),
+    mockUpdateWebsiteSessionMemory: vi.fn(),
+  })
+);
 
 vi.mock("../services/supabase/bids", () => ({
   updateBidStatus: mockUpdateBidStatus,

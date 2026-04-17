@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mockBuildSupabaseEdgeHeadersAsync } = vi.hoisted(() => ({
-  mockBuildSupabaseEdgeHeadersAsync: vi.fn(async () => new Headers({ Authorization: "Bearer test" })),
+  mockBuildSupabaseEdgeHeadersAsync: vi.fn(
+    async () => new Headers({ Authorization: "Bearer test" })
+  ),
 }));
 
 vi.mock("../supabase/runtime", () => ({
@@ -31,9 +33,7 @@ function createIdentity(websiteUserKey: string): WebsiteIdentity {
   };
 }
 
-function createSessionMemory(
-  overrides?: Partial<WebsiteSessionMemory>,
-): WebsiteSessionMemory {
+function createSessionMemory(overrides?: Partial<WebsiteSessionMemory>): WebsiteSessionMemory {
   return {
     updatedAt: "2026-04-03T16:00:00.000Z",
     shopDirectory: {
@@ -101,7 +101,7 @@ describe("websiteRelationshipsSync", () => {
           clusterLevel: "balanced",
           updatedAt: "2026-04-03T16:00:00.000Z",
         },
-      }),
+      })
     );
 
     expect(collections).toEqual({
@@ -124,7 +124,7 @@ describe("websiteRelationshipsSync", () => {
         insurerShortlistIds: [11],
         shopWatchlistIds: [19, 20],
         updatedAt: "2026-04-03T17:00:00.000Z",
-      },
+      }
     );
 
     expect(merged).toEqual(
@@ -139,7 +139,7 @@ describe("websiteRelationshipsSync", () => {
           shopWatchlistIds: [19, 20],
           updatedAt: "2026-04-03T17:00:00.000Z",
         }),
-      }),
+      })
     );
   });
 
@@ -159,8 +159,8 @@ describe("websiteRelationshipsSync", () => {
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        },
-      ),
+        }
+      )
     );
 
     const identity = createIdentity("relationships-fetch");
@@ -172,7 +172,7 @@ describe("websiteRelationshipsSync", () => {
       expect.objectContaining({
         method: "GET",
         headers: expect.any(Headers),
-      }),
+      })
     );
     expect(collections).toEqual({
       connectedInsurerIds: [1, 2],
@@ -190,7 +190,7 @@ describe("websiteRelationshipsSync", () => {
       new Response(JSON.stringify({ ok: true }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }),
+      })
     );
 
     const identity = createIdentity("relationships-queue");
@@ -252,7 +252,7 @@ describe("websiteRelationshipsSync", () => {
           shopWatchlistIds: [12],
           updatedAt: "2026-04-03T16:00:00.000Z",
         },
-      }),
+      })
     );
 
     mockFetch.mockClear();

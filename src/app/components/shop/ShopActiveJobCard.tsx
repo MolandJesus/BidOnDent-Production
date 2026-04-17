@@ -121,7 +121,10 @@ export default function ShopActiveJobCard({
               <span
                 className={`text-sm font-medium ${isLight ? "text-slate-500" : "text-blue-200/70"}`}
               >
-                Job #{typeof job.id === "string" && job.id.length > 8 ? job.id.slice(0, 8).toUpperCase() : job.id}
+                Job #
+                {typeof job.id === "string" && job.id.length > 8
+                  ? job.id.slice(0, 8).toUpperCase()
+                  : job.id}
               </span>
               <span
                 className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(job.status, isLight)} flex items-center gap-1`}

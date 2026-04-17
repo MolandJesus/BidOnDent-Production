@@ -30,7 +30,9 @@ export interface UserProfile {
  * Extract user profile from Clerk user object
  * This is the main way to get user data in the app
  */
-export function extractUserProfile(clerkUser: ClerkUserLike | null | undefined): UserProfile | null {
+export function extractUserProfile(
+  clerkUser: ClerkUserLike | null | undefined
+): UserProfile | null {
   if (!clerkUser) return null;
 
   const metadata = clerkUser.unsafeMetadata || {};

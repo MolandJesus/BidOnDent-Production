@@ -1,7 +1,4 @@
-export type {
-  AccountStatus,
-  CustomAccount,
-} from "./admin-dashboard-core-actions";
+export type { AccountStatus, CustomAccount } from "./admin-dashboard-core-actions";
 export {
   checkAccountStatusAction,
   checkEdgeFunctionHealthAction,

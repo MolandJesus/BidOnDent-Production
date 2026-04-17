@@ -15,10 +15,7 @@ import {
   normalizeStoragePath,
   uploadPhotoObject,
 } from "../supabase/storage";
-import {
-  isSupportedSupabaseBucket,
-  isUserScopedSupabaseBucket,
-} from "../supabase/runtime";
+import { isSupportedSupabaseBucket, isUserScopedSupabaseBucket } from "../supabase/runtime";
 import type {
   IStorageProvider,
   UploadOptions,
@@ -52,12 +49,17 @@ export class SupabaseStorageAdapter implements IStorageProvider {
       const normalizedPath = normalizeStoragePath(path);
 
       if (isUserScopedSupabaseBucket(bucket)) {
-        const uploadedPhoto = await uploadPhotoObject(file, bucket, getPathFileName(normalizedPath), {
-          cacheControl,
-          contentType: contentType || file.type,
-          path: normalizedPath,
-          upsert,
-        });
+        const uploadedPhoto = await uploadPhotoObject(
+          file,
+          bucket,
+          getPathFileName(normalizedPath),
+          {
+            cacheControl,
+            contentType: contentType || file.type,
+            path: normalizedPath,
+            upsert,
+          }
+        );
 
         if (!uploadedPhoto) {
           return {
@@ -72,7 +74,9 @@ export class SupabaseStorageAdapter implements IStorageProvider {
           expiresIn: 60 * 60 * 24,
         });
         const publicUrl =
-          signedUrlResult.signedUrl || uploadedPhoto.publicUrl || this.getPublicUrl(bucket, uploadedPhoto.path);
+          signedUrlResult.signedUrl ||
+          uploadedPhoto.publicUrl ||
+          this.getPublicUrl(bucket, uploadedPhoto.path);
 
         return {
           success: true,
@@ -251,7 +255,9 @@ export class SupabaseStorageAdapter implements IStorageProvider {
         };
       }
 
-      const { data, error } = await supabase.storage.from(bucket).createSignedUrl(normalizedPath, expiresIn);
+      const { data, error } = await supabase.storage
+        .from(bucket)
+        .createSignedUrl(normalizedPath, expiresIn);
 
       if (error) {
         return {
@@ -336,7 +342,8 @@ export class SupabaseStorageAdapter implements IStorageProvider {
 
       return true;
     } catch (error: unknown) {
-      if (import.meta.env.DEV) console.error(`Error ensuring bucket ${bucket}:`, toErrMsg(error, "unknown error"));
+      if (import.meta.env.DEV)
+        console.error(`Error ensuring bucket ${bucket}:`, toErrMsg(error, "unknown error"));
       return false;
     }
   }

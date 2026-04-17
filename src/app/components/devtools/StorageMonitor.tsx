@@ -1,6 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Database, HardDrive, Trash2, AlertTriangle } from 'lucide-react';
-import { getStorageStats, cleanupOldReports, type StorageStats } from "../../services/storageMonitor";
+import { useState, useEffect } from "react";
+import { Database, HardDrive, Trash2, AlertTriangle } from "lucide-react";
+import {
+  getStorageStats,
+  cleanupOldReports,
+  type StorageStats,
+} from "../../services/storageMonitor";
 
 export function StorageMonitor() {
   const [stats, setStats] = useState<StorageStats | null>(null);
@@ -28,10 +32,10 @@ export function StorageMonitor() {
     const deleted = await cleanupOldReports(daysOld);
     setLastCleanup(`Deleted ${deleted} old reports`);
     setCleaning(false);
-    
+
     // Reload stats
     await loadStats();
-    
+
     // Clear message after 5 seconds
     setTimeout(() => setLastCleanup(null), 5000);
   };
@@ -52,15 +56,15 @@ export function StorageMonitor() {
   }
 
   const getStatusColor = () => {
-    if (stats.storagePercentage > 70) return 'text-red-600';
-    if (stats.storagePercentage > 50) return 'text-yellow-600';
-    return 'text-green-600';
+    if (stats.storagePercentage > 70) return "text-red-600";
+    if (stats.storagePercentage > 50) return "text-yellow-600";
+    return "text-green-600";
   };
 
   const getProgressColor = () => {
-    if (stats.storagePercentage > 70) return 'bg-red-500';
-    if (stats.storagePercentage > 50) return 'bg-yellow-500';
-    return 'bg-green-500';
+    if (stats.storagePercentage > 70) return "bg-red-500";
+    if (stats.storagePercentage > 50) return "bg-yellow-500";
+    return "bg-green-500";
   };
 
   return (
@@ -113,9 +117,7 @@ export function StorageMonitor() {
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-red-900 mb-1">
-                Storage Critical
-              </p>
+              <p className="text-sm font-medium text-red-900 mb-1">Storage Critical</p>
               <p className="text-sm text-red-700">
                 Storage is over 70% capacity. Consider cleaning up old test data.
               </p>
@@ -129,9 +131,7 @@ export function StorageMonitor() {
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-yellow-900 mb-1">
-                Storage Warning
-              </p>
+              <p className="text-sm font-medium text-yellow-900 mb-1">Storage Warning</p>
               <p className="text-sm text-yellow-700">
                 Storage is over 50% capacity. Monitor usage closely.
               </p>
@@ -180,9 +180,7 @@ export function StorageMonitor() {
       )}
 
       {lastCleanup && (
-        <div className="mt-4 text-sm text-green-600 flex items-center gap-2">
-          ✓ {lastCleanup}
-        </div>
+        <div className="mt-4 text-sm text-green-600 flex items-center gap-2">✓ {lastCleanup}</div>
       )}
     </div>
   );

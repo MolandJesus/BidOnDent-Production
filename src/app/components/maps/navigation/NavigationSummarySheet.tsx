@@ -63,7 +63,10 @@ export default function NavigationSummarySheet({
         <div className="grid grid-cols-3 gap-1.5 border-b border-white/10 pb-2.5 sm:gap-2 sm:pb-3">
           <div className={cn("rounded-xl px-2.5 py-2", theme.panelClassName)}>
             <div
-              className={cn("text-[10px] font-semibold uppercase tracking-wider", theme.secondaryTextClassName)}
+              className={cn(
+                "text-[10px] font-semibold uppercase tracking-wider",
+                theme.secondaryTextClassName
+              )}
             >
               Arrival
             </div>
@@ -78,7 +81,10 @@ export default function NavigationSummarySheet({
           </div>
           <div className={cn("rounded-xl px-2.5 py-2", theme.panelClassName)}>
             <div
-              className={cn("text-[10px] font-semibold uppercase tracking-wider", theme.secondaryTextClassName)}
+              className={cn(
+                "text-[10px] font-semibold uppercase tracking-wider",
+                theme.secondaryTextClassName
+              )}
             >
               Time
             </div>
@@ -94,7 +100,10 @@ export default function NavigationSummarySheet({
           </div>
           <div className={cn("rounded-xl px-2.5 py-2", theme.panelClassName)}>
             <div
-              className={cn("text-[10px] font-semibold uppercase tracking-wider", theme.secondaryTextClassName)}
+              className={cn(
+                "text-[10px] font-semibold uppercase tracking-wider",
+                theme.secondaryTextClassName
+              )}
             >
               Distance
             </div>
@@ -142,7 +151,10 @@ export default function NavigationSummarySheet({
           <button
             type="button"
             onClick={onShareEta}
-            className={cn(theme.secondaryButtonClassName, "flex-1 min-h-[42px] py-2 text-xs sm:text-sm")}
+            className={cn(
+              theme.secondaryButtonClassName,
+              "flex-1 min-h-[42px] py-2 text-xs sm:text-sm"
+            )}
           >
             <Share2 className="h-3.5 w-3.5" />
             Share ETA
@@ -156,7 +168,10 @@ export default function NavigationSummarySheet({
                 setShowExportOptions(true);
               }
             }}
-            className={cn(theme.secondaryButtonClassName, "flex-1 min-h-[42px] py-2 text-xs sm:text-sm")}
+            className={cn(
+              theme.secondaryButtonClassName,
+              "flex-1 min-h-[42px] py-2 text-xs sm:text-sm"
+            )}
           >
             <ExternalLink className="h-3.5 w-3.5" />
             {showExportOptions ? `Export to ${exportProviderLabel}` : "Export"}
@@ -164,7 +179,10 @@ export default function NavigationSummarySheet({
           <button
             type="button"
             onClick={onEndRoute}
-            className={cn(theme.destructiveButtonClassName, "flex-1 min-h-[42px] py-2 text-xs font-semibold sm:text-sm")}
+            className={cn(
+              theme.destructiveButtonClassName,
+              "flex-1 min-h-[42px] py-2 text-xs font-semibold sm:text-sm"
+            )}
           >
             End Route
           </button>
