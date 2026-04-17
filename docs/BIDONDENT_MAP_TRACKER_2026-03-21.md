@@ -8,12 +8,12 @@
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 
-**Last updated:** April 17, 2026 (Hardening phase — Pass 885 edge-proxied geocoding transport hardening)
+**Last updated:** April 17, 2026 (Hardening phase — Pass 886 browser-verified cross-surface map chrome continuity)
 **Status:** Historical pass log / audit trail during Soft Launch Hardening phase
-**Pass count:** 885 (hardening passes continue from 855+)
+**Pass count:** 886 (hardening passes continue from 855+)
 **Build:** 0 errors ✅
-**Tests:** Focused geocoding suites passing ✅ (35 tests); full suite not run this pass
-**Branch:** BidOnDent-Horizon-Beta (in sync with origin; shared `server` edge function redeployed live for Pass 885)
+**Tests:** Automated unit suites not re-run this pass; diagnostics, spellcheck, production build, and live browser audit completed ✅
+**Branch:** BidOnDent-Horizon-Beta (working tree includes Pass 886 map chrome/docs changes; not pushed in this pass)
 
 ---
 
@@ -86,6 +86,28 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 - (Estimate, shop, insurer services use their own service-specific channels — see Code Organization Audit)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Pass 886 — Browser-Verified Cross-Surface Map Chrome Continuity (2026-04-17)
+
+**Phase:** Soft Launch Hardening — map trust/readability polish inside existing surfaces
+**Outcome:** Unified the visible map chrome across landing coverage browse, landing fullscreen tabs, dashboard inline/fullscreen Smart Shop Map, route preview, and active navigation without expanding map feature scope. Live browser QA now covers the route-active state as well, so this pass closes the biggest remaining gap from the user-requested site-wide map redesign audit.
+
+### What changed
+
+- Strengthened shared liquid-glass map primitives in `theme.css` so panels, cards, rails, and sidebar shells read as one system instead of disconnected local treatments.
+- Tightened the landing fullscreen coverage command center: narrower desktop shell, stronger panel framing, compact status strip (`Mode`, `regions`, `live shops`), and grouped right-side utility rail.
+- Tightened dashboard Smart Shop Map chrome: more deliberate header rhythm, stronger immersive top-bar grouping, refined tile picker shell, and less inert inline empty-state treatment.
+- Brought route-preview and active-guidance surfaces into the same visual family by updating the shared route preview card, guidance card, navigation action rail, and speed/status cluster.
+- Validated the redesigned active-navigation state live in-browser by starting navigation from the route-preview flow and confirming the maneuver card, guidance card, action buttons, right-side rail, and status metrics all render correctly together.
+- Expanded the browser-navigation runbook so future AI/browser audits are required to verify dashboard inline/fullscreen map states and active turn-by-turn states when those areas change.
+
+**Files touched:** `src/styles/theme.css`, `src/app/components/landing/CoverageBrowseExperience.tsx`, `src/app/components/landing/CoverageBrowseMapOverlays.tsx`, `src/app/components/maps/command-center/CoverageCommandCenterSidebar.tsx`, `src/app/components/shop/ImmersiveMapTopBar.tsx`, `src/app/components/maps/navigation/NavigationActionRail.tsx`, `src/app/components/maps/navigation/NavigationActiveSpeedPanel.tsx`, `src/app/components/shop/ShopDirectoryGuidanceCard.tsx`, `src/app/components/shop/ShopDirectoryRoutePreviewCard.tsx`, `src/app/components/shop/ShopDirectoryMapPaneInlineUI.tsx`, `docs/REF_AI_BROWSER_NAVIGATION.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`.
+
+**Validation:** Touched TS/TSX diagnostics stayed clean. `theme.css` still reports only pre-existing duplicate-selector warnings (`:root`, `[data-appearance-mode="light"]`). Spellcheck stayed clean for the touched source files and newly added wording, but `cspell` still reports historical tracker vocabulary in older entries (`ungated`, `pathspec`, commit hashes, etc.). Production build completed successfully. Live browser verification covered: landing coverage inline, landing fullscreen Search, Explore, Saved, Shops, dashboard inline Smart Shop Map, dashboard immersive fullscreen map, route preview, and active turn-by-turn navigation. Browser state during active guidance correctly surfaced degraded-location truth (`GPS weak`, retry CTA) instead of failing silently.
+
+**Residual risk / honesty note:** The integrated browser did not provide a trustworthy forced `375x812` rendering for this pass, so mobile validation is partially code-reasoned plus browser-checked within the available tooling rather than a fully reliable live mobile screenshot set. Desktop browser validation is complete; mobile still deserves a dedicated real-device or trustworthy viewport pass.
 
 ---
 

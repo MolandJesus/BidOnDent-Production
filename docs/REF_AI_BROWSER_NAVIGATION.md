@@ -61,6 +61,26 @@ Preferred landing-return selectors, in order:
 2. If state is uncertain, click header BidOnDent logo again.
 3. Re-verify coverage heading and map section.
 
+### 4) Open dashboard Smart Shop Map
+
+1. Start from dashboard home or another authenticated dashboard surface.
+2. Prefer the explicit Smart Shop Map / Directions entry point instead of trying to route through unrelated cards.
+3. Verify dashboard map state with at least two markers:
+
+- Heading contains: `Smart Shop Map`
+- Search/origin shell and map surface are both present
+
+### 5) Audit active navigation state
+
+1. From Smart Shop Map, use an existing route preview and click `Start Navigation`.
+2. Verify active-navigation markers:
+
+- Maneuver overlay contains `Next maneuver`
+- Guidance card contains route status plus action buttons (`Pause`, `Recenter`, `End Route`)
+- Right action rail contains turn-list, voice, settings, and recenter controls
+
+3. If location permission is denied in desktop browser QA, treat `GPS weak` plus retry guidance as expected degraded behavior, not as silent failure.
+
 ---
 
 ## Selector Strategy (ordered)
@@ -116,6 +136,16 @@ Recovery:
 2. Re-run canonical flow from logo click.
 3. Re-capture screenshot before making design judgments.
 
+### Shop results appear empty while auditing route states
+
+Symptom: Smart Shop Map loads, but the current search/filter state shows zero shops and no routable results.
+
+Recovery:
+
+1. Clear any persisted search text first.
+2. Prefer the dashboard `Directions` / Smart Shop Map entry point to surface the seeded example route-preview state quickly.
+3. If route preview still does not appear, use a known quick origin chip (for example `White Plains`) and re-run `Search this area`.
+
 ---
 
 ## Verification Checklist For Map Design Passes
@@ -127,7 +157,11 @@ For each pass that changes map UI:
 3. Full map (Explore tab) screenshot
 4. Full map (Saved tab) screenshot
 5. Full map (Shops tab) screenshot
-6. If changed: pin popup/destination card screenshot
+6. Dashboard inline Smart Shop Map screenshot
+7. Dashboard immersive/fullscreen Smart Shop Map screenshot
+8. If changed: route preview screenshot
+9. If changed: active navigation screenshot
+10. If changed: pin popup/destination card screenshot
 
 Do not mark design passes complete without this screenshot set.
 

@@ -8,7 +8,7 @@
 >
 > Exception: any map change that is required to close a Launch Scope Guardrail or support a Hardening Plan phase item is allowed under the Hardening Plan's scope, not this doc's.
 
-**Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, coverage-map access hardening documented)
+**Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, browser-verified cross-surface map chrome continuity documented)
 **Status:** Strategic vision (paused during hardening)
 
 > Implementation notes archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Per-pass delivery notes belong in the Map Tracker.
@@ -23,6 +23,14 @@
 - Browser-automation rules are now part of map operating discipline: Playwright-like agents must use the BidOnDent logo flow to return to landing surfaces while authenticated.
 - Coverage browse maps now require explicit opt-in before mounting shared report pins. This hardening guard prevents customer-facing coverage surfaces from accidentally calling marketplace-only report endpoints while leaving the shop-directory report-map path intact.
 - Strategic direction remains unchanged: premium, product-owned blue-system map UI with stronger trust signaling and clear cross-surface consistency.
+
+## 2026-04-17: Browser-Verified Cross-Surface Map Chrome Continuity Note
+
+- Current delivered map chrome continuity now explicitly spans seven user-visible states: landing coverage inline, landing fullscreen Search, landing fullscreen Explore, landing fullscreen Saved, landing fullscreen Shops, dashboard Smart Shop Map immersive/fullscreen mode, and active turn-by-turn navigation.
+- The delivered improvements stayed hardening-safe and UX-scoped: narrower command-center shells, grouped top/right control clusters, shared liquid-glass panel/card/rail treatment, route-preview/guidance shells that read as one family, and stronger pre-search or empty-state messaging instead of inert empty space.
+- This was not a map-feature expansion. Provider stack, routing engine, marketplace contracts, navigation-session architecture, and discovery data model all stayed the same.
+- Browser validation confirmed that active navigation still works in the checked-in build through the Smart Shop Map route-preview path. In desktop browser sessions without granted location permission, the degraded state stays explicit (`GPS weak` plus retry guidance) instead of failing silently.
+- Map QA protocol now has to cover dashboard inline/fullscreen states and active navigation states when those surfaces are touched, not only the landing full-map tabs.
 
 ---
 
