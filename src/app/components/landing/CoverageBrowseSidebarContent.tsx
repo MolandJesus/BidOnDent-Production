@@ -46,6 +46,7 @@ type CoverageBrowseSidebarContentProps = {
   onSidebarViewChange: (view: SidebarView) => void;
   tileMode: MapTileMode;
   onTileModeChange: (mode: MapTileMode) => void;
+  onSearchAddresses?: () => void;
 
   /* ── Navigation planner ── */
   navigation: CoverageNavigationExperience;
@@ -97,6 +98,7 @@ export default function CoverageBrowseSidebarContent({
   onSidebarViewChange,
   tileMode,
   onTileModeChange,
+  onSearchAddresses,
   navigation,
   selectedShop,
   onStartNavigation,
@@ -187,9 +189,7 @@ export default function CoverageBrowseSidebarContent({
             activeOriginLabel={navigation.activeOriginLabel}
             addressQuery={navigation.addressQuery}
             onAddressQueryChange={navigation.setAddressQuery}
-            onSearchAddresses={() => {
-              void navigation.searchAddresses();
-            }}
+            onSearchAddresses={onSearchAddresses ?? (() => { void navigation.searchAddresses(); })}
             addressResults={navigation.addressResults}
             selectedAddressResult={navigation.selectedAddressResult}
             isSearchingAddresses={navigation.isSearchingAddresses}

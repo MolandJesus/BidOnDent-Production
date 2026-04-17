@@ -24,7 +24,7 @@ export type NavigationAddressSearchResult = {
   selectedManualOriginTarget: CoverageSearchTarget | null;
   isSearchingAddresses: boolean;
   addressError: string;
-  searchAddresses: () => Promise<void>;
+  searchAddresses: () => Promise<NavigationAddressResult[]>;
   chooseAddressResult: (result: NavigationAddressResult) => void;
   selectManualOrigin: (target: CoverageSearchTarget) => void;
   clearAddressResult: () => void;
@@ -60,7 +60,7 @@ export function useNavigationAddressSearch(): NavigationAddressSearchResult {
     if (addressQuery.trim().length < 4) {
       setAddressError("Enter a full house, store, or street address to search.");
       setAddressResults([]);
-      return;
+      return [];
     }
 
     addressSearchAbortRef.current?.abort();
@@ -79,6 +79,8 @@ export function useNavigationAddressSearch(): NavigationAddressSearchResult {
       if (results.length === 0) {
         setAddressError("No address matches were found. Try a fuller address.");
       }
+
+      return results;
     } catch (error) {
       if (!addressRequest.controller.signal.aborted || addressRequest.didTimeout()) {
         setAddressError(error instanceof Error ? error.message : "Address lookup failed.");
@@ -89,6 +91,8 @@ export function useNavigationAddressSearch(): NavigationAddressSearchResult {
 
         setAddressResults([]);
       }
+
+      return [];
     } finally {
       addressRequest.clear();
 
@@ -123,6 +127,7 @@ export function useNavigationAddressSearch(): NavigationAddressSearchResult {
     setAddressQueryState(value);
     setAddressError("");
     setAddressResults([]);
+    setAddressSuggestions([]);
 
     // Debounced predictive suggestions
     if (suggestionDebounceRef.current) {
@@ -157,6 +162,7 @@ export function useNavigationAddressSearch(): NavigationAddressSearchResult {
     setAddressQueryState(target.label);
     setAddressError("");
     setAddressResults([]);
+    setAddressSuggestions([]);
   }
 
   return {

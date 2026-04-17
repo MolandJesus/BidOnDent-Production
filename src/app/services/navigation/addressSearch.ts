@@ -70,6 +70,95 @@ export async function searchNavigationAddresses(
   return results;
 }
 
+export function addressSuggestionToResult(
+  addressSuggestion: NavigationAddressSuggestion
+): NavigationAddressResult {
+  return {
+    id: addressSuggestion.id,
+    label: addressSuggestion.subtitle || addressSuggestion.title,
+    primaryLabel: addressSuggestion.title,
+    secondaryLabel: addressSuggestion.subtitle,
+    lat: addressSuggestion.coordinate.lat,
+    lng: addressSuggestion.coordinate.lng,
+    provider: addressSuggestion.provider,
+  };
+}
+
+function normalizeAddressSearchText(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function getAddressSearchTokens(value: string) {
+  return normalizeAddressSearchText(value)
+    .split(" ")
+    .filter((token) => token.length > 2);
+}
+
+function textContainsAllTokens(value: string, tokens: string[]) {
+  const normalizedValue = normalizeAddressSearchText(value);
+  return tokens.every((token) => normalizedValue.includes(token));
+}
+
+export function resolveSubmittedAddressResult({
+  query,
+  results,
+  suggestions,
+}: {
+  query: string;
+  results: NavigationAddressResult[];
+  suggestions: NavigationAddressSuggestion[];
+}): NavigationAddressResult | null {
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) {
+    return null;
+  }
+
+  if (results.length === 1) {
+    return results[0];
+  }
+
+  const queryTokens = getAddressSearchTokens(trimmedQuery);
+  if (queryTokens.length > 0 && results.length > 1) {
+    const matchingResults = results.filter((result) =>
+      textContainsAllTokens(
+        `${result.primaryLabel} ${result.secondaryLabel || result.label}`,
+        queryTokens
+      )
+    );
+
+    if (matchingResults.length === 1) {
+      return matchingResults[0];
+    }
+  }
+
+  const rankedSuggestions = [...suggestions].sort(
+    (left, right) => right.confidenceScore - left.confidenceScore
+  );
+  const topSuggestion = rankedSuggestions[0];
+  if (!topSuggestion || queryTokens.length === 0) {
+    return null;
+  }
+
+  const suggestionMatchesQuery = textContainsAllTokens(
+    `${topSuggestion.title} ${topSuggestion.subtitle || ""}`,
+    queryTokens
+  );
+  const scoreLead = topSuggestion.confidenceScore - (rankedSuggestions[1]?.confidenceScore ?? 0);
+
+  if (
+    suggestionMatchesQuery &&
+    topSuggestion.confidenceScore >= 80 &&
+    (rankedSuggestions.length === 1 || scoreLead >= 8)
+  ) {
+    return addressSuggestionToResult(topSuggestion);
+  }
+
+  return null;
+}
+
 export function addressResultToSearchTarget(
   addressResult: NavigationAddressResult
 ): CoverageSearchTarget {

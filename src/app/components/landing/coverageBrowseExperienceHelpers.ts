@@ -35,6 +35,7 @@ export type CoverageBrowseExperienceProps = {
   navigationSession: ExternalNavigationSession | null;
   navigation: CoverageNavigationExperience;
   onTileModeChange: (mode: MapTileMode) => void;
+  onSearchSubmit?: () => void;
   onCenterActive: () => void;
   onResetView: () => void;
   onSelectShop: (shop: CoveragePartnerShop) => void;

@@ -414,6 +414,7 @@ export default function OperatingRegionsSection({
         startNavigationRequestId={coverage.navigationStartRequestId}
         navigation={coverage.navigation}
         onTileModeChange={coverage.setTileMode}
+        onSearchSubmit={coverage.handleSearchSubmit}
         onCenterActive={() => coverage.centerOnTarget(coverage.mapFocusTarget)}
         onResetView={coverage.resetOverviewMap}
         onSelectShop={(shop) => coverage.handleSelectShop(shop, { centerMap: true })}

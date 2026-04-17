@@ -8,7 +8,7 @@
 >
 > Exception: any map change that is required to close a Launch Scope Guardrail or support a Hardening Plan phase item is allowed under the Hardening Plan's scope, not this doc's.
 
-**Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, browser-verified cross-surface map chrome continuity documented)
+**Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, submitted address search commit hardening documented)
 **Status:** Strategic vision (paused during hardening)
 
 > Implementation notes archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Per-pass delivery notes belong in the Map Tracker.
@@ -31,6 +31,14 @@
 - This was not a map-feature expansion. Provider stack, routing engine, marketplace contracts, navigation-session architecture, and discovery data model all stayed the same.
 - Browser validation confirmed that active navigation still works in the checked-in build through the Smart Shop Map route-preview path. In desktop browser sessions without granted location permission, the degraded state stays explicit (`GPS weak` plus retry guidance) instead of failing silently.
 - Map QA protocol now has to cover dashboard inline/fullscreen states and active navigation states when those surfaces are touched, not only the landing full-map tabs.
+
+## 2026-04-17: Submitted Address Search Commit Hardening (Pass 888)
+
+- Hardening-safe map UX work is allowed when it closes a misleading public interaction without expanding feature scope. Pass 888 fits that rule: the existing map search contract already supports predictive suggestions plus committed manual origins, but submit behavior left some flows visually incomplete until a second tap.
+- The delivered behavior now treats `Find` as a real submit action for deterministic cases across both existing address-search families already in the product: landing/fullscreen coverage browse and Smart Shop Map origin search. When there is one clear match, submit commits it, syncs origin state, and unlocks the existing nearby-shop / route-preview flows immediately.
+- Ambiguous searches still stay explicit. This pass did not turn submit into blind auto-selection; it only commits a single, uniquely matching, or clearly dominant result and otherwise preserves manual choice.
+- This was not a provider or routing change. Nominatim-backed suggestion/search, OSRM routing, and the overall map architecture stayed the same.
+- Strategic direction remains unchanged: search-first map UX should feel trustworthy, intentional, and complete, with no silent half-finished states between user intent and visible map response.
 
 ---
 

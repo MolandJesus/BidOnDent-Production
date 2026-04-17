@@ -5,7 +5,10 @@ import { useCoverageNavigationExperience } from "./useCoverageNavigationExperien
 import { useUserGeolocation } from "./useUserGeolocation";
 import { useNavigationLaunch } from "./useNavigationLaunch";
 import type { NavigationProvider } from "../services/navigation/externalNavigation";
-import { addressResultToSearchTarget } from "../services/navigation/addressSearch";
+import {
+  addressResultToSearchTarget,
+  resolveSubmittedAddressResult,
+} from "../services/navigation/addressSearch";
 import { haversineMiles, zipToCoordinates } from "../services/supabase/map";
 import { resolveMapSurfaceTone } from "../components/maps/mapSurfaceTheme";
 import type {
@@ -322,7 +325,50 @@ export function useOperatingRegionsCoverage({
       return;
     }
 
-    void navigation.searchAddresses();
+    const submittedQuery = navigation.addressQuery.trim();
+    if (!submittedQuery) {
+      return;
+    }
+
+    const applyResolvedAddressResult = (
+      result: Parameters<typeof navigation.chooseAddressResult>[0]
+    ) => {
+      const target = addressResultToSearchTarget(result);
+
+      navigation.chooseAddressResult(result);
+      setManualSearchTarget(target);
+      setGeoMessage("");
+      setActiveOriginMode("address");
+      centerOnTarget(target, `Coverage map centered on ${target.label}.`);
+    };
+
+    const immediateMatch = resolveSubmittedAddressResult({
+      query: submittedQuery,
+      results: navigation.addressResults,
+      suggestions: navigation.addressSuggestions,
+    });
+
+    if (immediateMatch) {
+      applyResolvedAddressResult(immediateMatch);
+      return;
+    }
+
+    void (async () => {
+      const results = await navigation.searchAddresses();
+      if (submittedQuery !== navigation.addressQuery.trim()) {
+        return;
+      }
+
+      const resolvedMatch = resolveSubmittedAddressResult({
+        query: submittedQuery,
+        results,
+        suggestions: navigation.addressSuggestions,
+      });
+
+      if (resolvedMatch) {
+        applyResolvedAddressResult(resolvedMatch);
+      }
+    })();
   }
 
   function handleChooseAddressResult(result: Parameters<typeof navigation.chooseAddressResult>[0]) {

@@ -4,7 +4,7 @@
  *
  * Extracted from MapLibreShopDirectoryMapPane to enforce file-size limits.
  */
-import { Compass, Eye, LoaderCircle, Radio, Route, Send, TriangleAlert } from "lucide-react";
+import { Compass, Eye, LoaderCircle, Radio, Route, Send, TriangleAlert, X } from "lucide-react";
 import { Popup } from "react-map-gl/maplibre";
 import type { ShopMapListing } from "../../services/intelligence/shopMapExperience";
 import type { NavigationSessionStatus } from "../../features/navigation";
@@ -156,17 +156,19 @@ export default function ShopDirectoryMapPopup({
       anchor="bottom"
       offset={14}
       closeOnClick={false}
+      closeButton={false}
       onClose={onClose}
       maxWidth={compact ? "264px" : "320px"}
     >
       <div className={compact ? "space-y-1.5" : "space-y-2"}>
-        <div>
-          <p className={`truncate ${compact ? "text-sm" : ""} font-semibold ${popupTitle}`}>
-            {shopPopup.shop.name}
-          </p>
-          <p className={`truncate ${compact ? "text-xs" : "text-sm"} ${popupSub}`}>
-            {shopPopup.shop.mapResult.address}, {shopPopup.shop.mapResult.city}
-          </p>
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className={`truncate ${compact ? "text-sm" : ""} font-semibold ${popupTitle}`}>
+              {shopPopup.shop.name}
+            </p>
+            <p className={`truncate ${compact ? "text-xs" : "text-sm"} ${popupSub}`}>
+              {shopPopup.shop.mapResult.address}, {shopPopup.shop.mapResult.city}
+            </p>
           {shopPopup.shop.rating > 0 && (
             <p className={`mt-0.5 ${compact ? "text-[11px]" : "text-xs"} ${popupSub}`}>
               ★ {shopPopup.shop.rating.toFixed(1)}
@@ -175,6 +177,19 @@ export default function ShopDirectoryMapPopup({
               )}
             </p>
           )}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`shrink-0 mt-0.5 rounded-lg p-1 transition-colors ${
+              isDark
+                ? "text-white/30 hover:text-white/70 hover:bg-white/10"
+                : "text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+            }`}
+            aria-label="Close"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {popupHasLiveNavigation ? (

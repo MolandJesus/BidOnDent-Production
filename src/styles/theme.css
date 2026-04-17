@@ -416,6 +416,100 @@ body {
     box-shadow: 0 14px 32px rgba(2, 6, 23, 0.3);
   }
 
+  /* MapLibre navigation & geolocate control groups — glass treatment */
+  .maplibregl-ctrl-group {
+    border-radius: 1rem !important;
+    border: 1px solid rgba(191, 219, 254, 0.55) !important;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.82),
+      rgba(241, 245, 249, 0.76)
+    ) !important;
+    backdrop-filter: blur(20px) saturate(1.1);
+    -webkit-backdrop-filter: blur(20px) saturate(1.1);
+    box-shadow:
+      0 14px 32px rgba(15, 23, 42, 0.12),
+      0 4px 12px rgba(59, 130, 246, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+    overflow: hidden;
+  }
+
+  .maplibregl-ctrl-group button {
+    border: none !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.15) !important;
+    background: transparent !important;
+    color: rgb(51 65 85);
+    transition: background 140ms ease, color 140ms ease;
+  }
+
+  .maplibregl-ctrl-group button:last-child {
+    border-bottom: none !important;
+  }
+
+  .maplibregl-ctrl-group button:hover {
+    background: rgba(59, 130, 246, 0.08) !important;
+    color: rgb(29 78 216);
+  }
+
+  .maplibregl-ctrl-group button:active {
+    background: rgba(59, 130, 246, 0.14) !important;
+  }
+
+  /* Dark mode control groups */
+  [data-map-tone="dark"] .maplibregl-ctrl-group,
+  [data-map-theme="dark"] .maplibregl-ctrl-group {
+    border-color: rgba(96, 165, 250, 0.24) !important;
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.86),
+      rgba(15, 23, 42, 0.78)
+    ) !important;
+    box-shadow:
+      0 14px 32px rgba(2, 6, 23, 0.32),
+      0 4px 12px rgba(59, 130, 246, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  }
+
+  [data-map-tone="dark"] .maplibregl-ctrl-group button,
+  [data-map-theme="dark"] .maplibregl-ctrl-group button {
+    color: rgb(203 213 225);
+    border-bottom-color: rgba(96, 165, 250, 0.12) !important;
+  }
+
+  [data-map-tone="dark"] .maplibregl-ctrl-group button:hover,
+  [data-map-theme="dark"] .maplibregl-ctrl-group button:hover {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: rgb(224 242 254);
+  }
+
+  /* Scale control — glass treatment */
+  .maplibregl-ctrl-scale {
+    border-radius: 0.6rem !important;
+    border: 1px solid rgba(191, 219, 254, 0.5) !important;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.78),
+      rgba(241, 245, 249, 0.72)
+    ) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    font-weight: 600 !important;
+    font-size: 10px !important;
+    color: rgb(51 65 85) !important;
+    padding: 0.15rem 0.5rem !important;
+  }
+
+  [data-map-tone="dark"] .maplibregl-ctrl-scale,
+  [data-map-theme="dark"] .maplibregl-ctrl-scale {
+    border-color: rgba(96, 165, 250, 0.2) !important;
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.82),
+      rgba(15, 23, 42, 0.72)
+    ) !important;
+    color: rgb(191 219 254) !important;
+  }
+
   .map-liquid-panel {
     position: relative;
     isolation: isolate;

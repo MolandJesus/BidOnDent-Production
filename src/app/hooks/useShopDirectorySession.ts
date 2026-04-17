@@ -20,6 +20,7 @@ import { useNetworkDirectory } from "./useNetworkDirectory";
 import { useShopDirectoryHandlers } from "./useShopDirectoryHandlers";
 import { useShopDirectoryRoutePreview } from "./useShopDirectoryRoutePreview";
 import { useUserGeolocation } from "./useUserGeolocation";
+import { resolveSubmittedAddressResult } from "../services/navigation/addressSearch";
 import {
   useIdentitySyncEffect,
   useOsPrefersDark,
@@ -346,6 +347,39 @@ export function useShopDirectorySession({
     setSearchWithinViewport(false);
   };
 
+  async function handleSearchOrigin() {
+    const submittedQuery = originSearch.addressQuery.trim();
+    if (!submittedQuery) {
+      return;
+    }
+
+    const immediateMatch = resolveSubmittedAddressResult({
+      query: submittedQuery,
+      results: originSearch.addressResults,
+      suggestions: originSearch.addressSuggestions,
+    });
+
+    if (immediateMatch) {
+      handleSelectOriginSearchResult(immediateMatch);
+      return;
+    }
+
+    const results = await originSearch.searchAddresses();
+    if (submittedQuery !== originSearch.addressQuery.trim()) {
+      return;
+    }
+
+    const resolvedMatch = resolveSubmittedAddressResult({
+      query: submittedQuery,
+      results,
+      suggestions: originSearch.addressSuggestions,
+    });
+
+    if (resolvedMatch) {
+      handleSelectOriginSearchResult(resolvedMatch);
+    }
+  }
+
   return {
     // State
     searchQuery,
@@ -412,7 +446,7 @@ export function useShopDirectorySession({
     handleSelectOrigin,
     handleClearOrigin,
     handleUseMyLocation,
-    handleSearchOrigin: originSearch.searchAddresses,
+    handleSearchOrigin,
     handleOriginSearchQueryChange: originSearch.setAddressQuery,
     handleSelectOriginSearchResult,
     handleSelectOriginSuggestion,

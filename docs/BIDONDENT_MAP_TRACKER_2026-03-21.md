@@ -8,12 +8,12 @@
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 
-**Last updated:** April 17, 2026 (Hardening phase — Pass 887 remaining dependency vulnerability sweep)
+**Last updated:** April 17, 2026 (Hardening phase — Pass 888 submitted address search commit hardening)
 **Status:** Historical pass log / audit trail during Soft Launch Hardening phase
-**Pass count:** 887 (hardening passes continue from 855+)
+**Pass count:** 888 (hardening passes continue from 855+)
 **Build:** 0 errors ✅
-**Tests:** 563/563 passing ✅
-**Branch:** BidOnDent-Horizon-Beta (working tree includes Pass 887 dependency + tracker changes; not pushed in this pass)
+**Tests:** 568/568 passing ✅
+**Branch:** BidOnDent-Horizon-Beta (working tree includes Pass 888 search-submit hardening changes; not pushed in this pass)
 
 ---
 
@@ -107,6 +107,27 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 **Validation:** `npm audit` now reports `0` vulnerabilities. `npm run build` passed (3.33s, 60 precache entries). `npm run typecheck` passed cleanly. `npm test` passed cleanly (563/563). Browser smoke against `http://localhost:5174/` reloaded into the dashboard Smart Shop Map surface without a dependency-related crash, hydration overlay, or broken shell. Browser console still shows pre-existing environment/runtime warnings during local dev (Clerk development keys, Realtime unauthenticated warning, transient WebSocket close, one `404` resource fetch), but none were introduced by this pass.
 
 **Notes / scope honesty:** The planner prompt's dependency baseline was stale. This pass only addressed the two live advisories actually present in the checked-out repo. It did not widen into general package freshness or unrelated dependency upgrades.
+
+---
+
+## Pass 888 — Submitted Address Search Commit Hardening (2026-04-17)
+
+**Phase:** Soft Launch Hardening — map trust / public search-flow completion
+**Outcome:** Closed a browser-verified map UX gap where typing an address or city and pressing `Find` often left coverage browse and shop-directory origin search in a half-finished state until the user manually tapped a suggestion. Submit-driven address search now commits a single or clearly dominant match across the shared map flows, while ambiguous searches still stay in explicit choose-a-result mode.
+
+### What changed
+
+- Added a shared submitted-address resolver in `addressSearch.ts` that can promote a single full-search result, a uniquely matching full-search result, or a single / clearly dominant predictive suggestion into a committed address result.
+- Hardened `useNavigationAddressSearch` so query edits clear stale predictive suggestions immediately, preventing submit actions from reusing an older suggestion set after the text changes.
+- Updated landing coverage search orchestration so both inline coverage search and the fullscreen command-center Search tab use the same owner-controlled submit path. A successful `Find` now commits the best match, syncs manual origin state, recenters the map, and primes nearby-shop / route readiness without requiring a second suggestion tap.
+- Updated shop-directory origin search submit flow to use the same best-match resolver, so dashboard and immersive origin pickers no longer strand the user in a manual second-tap flow when there is only one obvious address match.
+- Added focused regression coverage for the shared submit-resolution heuristics so the new behavior is locked to deterministic cases and still preserves manual choice for ambiguous searches.
+
+**Files touched:** `src/app/services/navigation/addressSearch.ts`, `src/app/services/navigation/addressSearch.test.ts`, `src/app/hooks/useNavigationAddressSearch.ts`, `src/app/hooks/useCoverageNavigationExperience.ts`, `src/app/hooks/useOperatingRegionsCoverage.ts`, `src/app/hooks/useShopDirectorySession.ts`, `src/app/components/landing/coverageBrowseExperienceHelpers.ts`, `src/app/components/landing/CoverageMapDialog.tsx`, `src/app/components/landing/CoverageBrowseExperience.tsx`, `src/app/components/landing/CoverageBrowseSidebarContent.tsx`, `src/app/components/landing/OperatingRegionsSection.tsx`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`.
+
+**Validation:** Browser audit established the failing public flow before code changes: typing `White Plains, NY` in the landing fullscreen coverage Search tab and pressing `Find` left the `Shops` tab inert until the suggestion was tapped manually. After this pass, `npm run build` passed cleanly, VS Code diagnostics stayed clean on all touched files, focused spellcheck passed on the touched source files plus the map master plan, and `npm test` passed cleanly (`58` files, `568` tests). The fullscreen coverage flow was then rechecked live so submit-driven address entry now commits the active origin when there is one clear match, produces a ready route preview, and leaves the `Shops` tab populated instead of inert. Any still-ambiguous address queries continue surfacing manual choices instead of auto-selecting a weak guess.
+
+**Notes / scope honesty:** This pass did not change providers, geocoding contracts, route engines, or discovery ranking. It only hardened submit behavior for existing map address search flows. Other browser-audit findings from the wider site pass, such as invalid local-dev `X-Frame-Options` meta usage and existing auth/runtime console warnings, remain outside this pass scope.
 
 ---
 

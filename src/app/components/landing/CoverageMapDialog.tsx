@@ -51,6 +51,7 @@ type CoverageMapDialogProps = {
   navigationSession: ExternalNavigationSession | null;
   navigation: CoverageNavigationExperience;
   onTileModeChange: (mode: MapTileMode) => void;
+  onSearchSubmit?: () => void;
   onCenterActive: () => void;
   onResetView: () => void;
   onSelectShop: (shop: CoveragePartnerShop) => void;
@@ -89,6 +90,7 @@ export default function CoverageMapDialog({
   navigationSession,
   navigation,
   onTileModeChange,
+  onSearchSubmit,
   onCenterActive,
   onResetView,
   onSelectShop,
@@ -299,6 +301,7 @@ export default function CoverageMapDialog({
             navigationSession={navigationSession}
             navigation={navigation}
             onTileModeChange={onTileModeChange}
+            onSearchSubmit={onSearchSubmit}
             onCenterActive={onCenterActive}
             onResetView={onResetView}
             onSelectShop={onSelectShop}

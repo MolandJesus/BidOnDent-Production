@@ -50,6 +50,7 @@ export default function CoverageBrowseExperience({
   navigationSession,
   navigation,
   onTileModeChange,
+  onSearchSubmit,
   onCenterActive,
   onResetView,
   onSelectShop,
@@ -269,6 +270,7 @@ export default function CoverageBrowseExperience({
       onSidebarViewChange={setSidebarView}
       tileMode={tileMode}
       onTileModeChange={onTileModeChange}
+      onSearchAddresses={onSearchSubmit}
       navigation={navigation}
       selectedShop={selectedShop}
       onStartNavigation={onStartNavigation}

@@ -158,10 +158,11 @@ export default function MapLibrePartnerShopLayer({
           longitude={popupShop.lng}
           latitude={popupShop.lat}
           closeOnClick={false}
+          closeButton={false}
           onClose={() => setPopupShop(null)}
           anchor="bottom"
           offset={24}
-          style={{ padding: 0, background: "transparent", border: "none", boxShadow: "none" }}
+          className="bd-map-tooltip"
         >
           <div
             style={{ margin: 0 }}

@@ -55,7 +55,7 @@ export type CoverageNavigationExperience = {
   selectedAddressResult: NavigationAddressResult | null;
   isSearchingAddresses: boolean;
   addressError: string;
-  searchAddresses: () => Promise<void>;
+  searchAddresses: () => Promise<NavigationAddressResult[]>;
   chooseAddressResult: (result: NavigationAddressResult) => void;
   selectManualOrigin: (target: CoverageSearchTarget) => void;
   clearAddressResult: () => void;
