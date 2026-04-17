@@ -19,7 +19,7 @@ describe("authSession", () => {
   });
 
   it("returns null when the registered getter throws", async () => {
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     setClerkTokenGetter(async () => {
       throw new Error("lookup failed");
     });

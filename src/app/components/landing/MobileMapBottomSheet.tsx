@@ -34,27 +34,38 @@ const HALF = 0.48;
 const FULL = 0.92;
 const SNAP_POINTS = [COLLAPSED, PEEK, HALF, FULL] as const;
 
-function normalizeSnapValue(value: number | string | null) {
-  if (typeof value === "number") {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const parsed = Number.parseFloat(value);
-    return Number.isFinite(parsed) ? parsed : PEEK;
-  }
-
-  return PEEK;
+/**
+ * Snap points mix pixel values (24, 88) with viewport fractions (0.48, 0.92).
+ * This helper converts the active snap to an ordinal rank so comparison logic
+ * works correctly regardless of unit type.
+ *
+ *   0 = collapsed (24 px)
+ *   1 = peek      (88 px)
+ *   2 = half      (48 %)
+ *   3 = full      (92 %)
+ */
+function snapLevel(value: number | string | null): number {
+  const v = typeof value === "string" ? Number.parseFloat(value) : value;
+  if (v === null || v === undefined || !Number.isFinite(v)) return 0;
+  if (v === FULL) return 3;
+  if (v === HALF) return 2;
+  if (v === PEEK) return 1;
+  if (v === COLLAPSED) return 0;
+  // Intermediate drag values: fractions (0–1) are viewport-% → always above pixel snaps
+  if (v > 0 && v <= 1) return v >= FULL - 0.01 ? 3 : v >= HALF - 0.01 ? 2 : 1;
+  // Pixel values
+  if (v >= PEEK - 1) return 1;
+  return 0;
 }
 
 export default function MobileMapBottomSheet({ tone, children }: MobileMapBottomSheetProps) {
   const theme = getMapSurfaceTheme(tone, true);
   // Start collapsed so the fullscreen map stays the primary surface on phones.
   const [snap, setSnap] = useState<number | string | null>(COLLAPSED);
-  const snapValue = normalizeSnapValue(snap);
-  const isCollapsed = snapValue <= COLLAPSED + 1;
-  const isScrollable = snapValue >= PEEK - 0.01;
-  const showBackToMap = snapValue >= HALF - 0.01;
+  const level = snapLevel(snap);
+  const isCollapsed = level === 0;
+  const isScrollable = level >= 1;
+  const showBackToMap = level >= 2;
 
   const collapseToMap = useCallback(() => {
     if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
@@ -73,15 +84,16 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
       setActiveSnapPoint={setSnap}
       dismissible={false}
       fixed
-      handleOnly
-      snapToSequentialPoint
     >
       <DrawerPrimitive.Portal>
         <DrawerPrimitive.Content
           className={cn(
             "fixed inset-x-0 bottom-0 z-[610] flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden",
             "rounded-t-[1.6rem] border-t backdrop-blur-2xl shadow-[0_-24px_64px_rgba(15,23,42,0.22)]",
-            "map-liquid-card map-ui-enter pointer-events-auto",
+            "map-liquid-card map-ui-enter",
+            // pointer-events-none when collapsed so the map behind stays interactive;
+            // auto when the sheet is raised so all sheet content receives touches.
+            isCollapsed ? "pointer-events-none" : "pointer-events-auto",
             theme.panelStrongClassName
           )}
           style={{
@@ -96,8 +108,8 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
                 : "bg-[linear-gradient(180deg,rgba(147,197,253,0.10),transparent)]"
             )}
           />
-          {/* Drag handle — enlarged hit area for reliable gesture capture */}
-          <DrawerPrimitive.Handle className="flex shrink-0 cursor-grab items-center justify-center py-3 active:cursor-grabbing">
+          {/* Drag handle — always interactive so the user can swipe up even when collapsed */}
+          <DrawerPrimitive.Handle className="pointer-events-auto flex shrink-0 cursor-grab items-center justify-center py-3 active:cursor-grabbing">
             <div
               className={cn(
                 "h-1.5 w-12 rounded-full",
