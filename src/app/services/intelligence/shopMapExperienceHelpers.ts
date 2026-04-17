@@ -220,17 +220,17 @@ export function buildRoleAwareMapHighlights({
   }
 
   return {
-    badge: "Customer repair routing",
-    title: "Match shops using repair, insurer, and vehicle context",
+    badge: "Smart shop matching",
+    title: "Finding the best shops for your repair",
     description:
-      "BidOnDent is blending signed-in repair context, connected insurance preferences, and repair specialties into a map-first search flow.",
+      "BidOnDent matches shops based on your vehicle, location, insurance, and repair needs to find the best fit.",
     metrics: [
       { label: "Connected Carriers", value: String(connectedCarrierCount) },
       { label: "Damage Signals", value: String(damageSignalCount) },
     ],
     callouts: [
-      "Connected insurers lift compatible shops higher when the carrier already works with that repair program.",
-      "Pick an origin to compare nearby shops visually before you start collecting or reviewing bids.",
+      "Shops that work with your insurance are ranked higher automatically.",
+      "Set your location to compare nearby shops before requesting bids.",
     ],
     primaryActionLabel: "Save for bids",
     secondaryActionLabel: "View fit",

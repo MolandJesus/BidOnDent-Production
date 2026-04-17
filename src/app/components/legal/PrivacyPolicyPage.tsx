@@ -19,16 +19,16 @@ export default function PrivacyPolicyPage({ onBackToHome }: PrivacyPolicyPagePro
         </div>
 
         <p className="text-slate-300 leading-relaxed mb-5">
-          BidOnDent is committed to protecting customer, shop, and insurer data. Our detailed
-          privacy policy is being finalized by our legal team. Please contact us at{" "}
-          <span className="font-semibold">bidondent@gmail.com</span> with any privacy inquiries.
+          BidOnDent is committed to protecting customer, shop, and insurer data. For any privacy
+          questions or data requests, please contact us at{" "}
+          <span className="font-semibold">bidondent@gmail.com</span>.
         </p>
 
         <div className="rounded-xl border border-blue-400/20 bg-blue-500/10 p-4 mb-6">
           <p className="text-blue-200 text-sm leading-relaxed">
-            <span className="font-semibold">Privacy Notice:</span> We are committed to your privacy
-            and data security. Our comprehensive privacy policy will be available upon request. For
-            questions about how we handle your data, please contact our privacy team.
+            <span className="font-semibold">Privacy Notice:</span> We take your privacy and data
+            security seriously. For questions about how we handle your data, please reach out to us
+            directly.
           </p>
         </div>
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import PhotoGuide from "../shop/PhotoGuide";
 import ReportAutoSaveIndicator from "./report/ReportAutoSaveIndicator";
@@ -43,6 +43,7 @@ export default function ReportScreen({
   const isLightAppearance = appearanceMode === "light";
   const [showPhotoGuide, setShowPhotoGuide] = useState(false);
   const [hasSeenGuideThisSession, setHasSeenGuideThisSession] = useState(false);
+  const reportStepShellRef = useRef<HTMLDivElement>(null);
 
   const form = useReportForm({
     onReportSubmit,
@@ -188,34 +189,67 @@ export default function ReportScreen({
 
   const reportStep = Math.min(form.step, 5);
 
+  useEffect(() => {
+    if (form.stepAdvanceCount === 0) return;
+
+    const shell = reportStepShellRef.current;
+    if (!shell) return;
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let animationFrameId = 0;
+
+    animationFrameId = window.requestAnimationFrame(() => {
+      timeoutId = setTimeout(() => {
+        shell.scrollIntoView({
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+          block: "center",
+          inline: "nearest",
+        });
+      }, 60);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [form.step, form.stepAdvanceCount]);
+
   return (
     <div
-      className="bd-report-flow min-h-[calc(100dvh-10rem)]"
+      className="bd-report-flow min-h-[calc(100dvh-9rem)]"
       style={{ touchAction: "pan-x pan-y" }}
     >
-      <ReportHeader
-        step={form.step}
-        appearanceMode={appearanceMode}
-        onCancel={form.resetForm}
-        showCancel={form.step < 6}
-      />
-
-      <ReportProgress
-        step={reportStep}
-        primaryColor={primaryColor}
-        appearanceMode={appearanceMode}
-      />
-
       <div
-        className="pb-24 md:pb-8 px-4 md:px-6 py-3 md:py-4 min-h-[calc(100vh-8rem)] relative"
+        className="relative min-h-[calc(100dvh-9rem)] px-3 py-4 pb-14 sm:px-4 md:px-6 md:py-6"
         style={{
           background: isLightAppearance
-            ? "linear-gradient(180deg, rgba(240, 248, 255, 0.5) 0%, rgba(226, 238, 250, 0.4) 100%)"
+            ? "linear-gradient(180deg, rgba(217, 228, 245, 0.86) 0%, rgba(205, 219, 238, 0.78) 46%, rgba(190, 205, 225, 0.74) 100%)"
             : "linear-gradient(180deg, rgba(8, 18, 38, 0.44) 0%, rgba(5, 12, 26, 0.36) 100%)",
         }}
       >
         {/* Atmospheric orbs */}
-        {!isLightAppearance && (
+        {isLightAppearance ? (
+          <>
+            <div
+              className="pointer-events-none absolute -top-20 right-12 h-48 w-48 rounded-full"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(255,255,255,0.42) 0%, rgba(191,219,254,0.14) 46%, transparent 74%)",
+              }}
+            />
+            <div
+              className="pointer-events-none absolute bottom-10 left-0 h-56 w-56 rounded-full"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(191,219,254,0.18) 0%, rgba(125,211,252,0.10) 44%, transparent 76%)",
+              }}
+            />
+          </>
+        ) : (
           <>
             <div
               className="absolute -top-16 -right-16 w-48 h-48 rounded-full pointer-events-none"
@@ -231,8 +265,22 @@ export default function ReportScreen({
             />
           </>
         )}
-        <div className="max-w-4xl mx-auto relative">
-          <div className="bd-report-shell">
+
+        <div className="relative mx-auto max-w-[62rem]">
+          <ReportHeader
+            step={form.step}
+            appearanceMode={appearanceMode}
+            onCancel={handleBackToDashboard}
+            showCancel={form.step < 6}
+          />
+
+          <ReportProgress
+            step={reportStep}
+            primaryColor={primaryColor}
+            appearanceMode={appearanceMode}
+          />
+
+          <div ref={reportStepShellRef} className="bd-report-shell mt-3 rounded-[2rem] sm:mt-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={form.step}
@@ -258,6 +306,12 @@ export default function ReportScreen({
               </motion.div>
             </AnimatePresence>
           </div>
+
+          {form.showSaveIndicator && (
+            <div className="mt-3 flex justify-center md:mt-4">
+              <ReportAutoSaveIndicator />
+            </div>
+          )}
         </div>
       </div>
 
@@ -277,9 +331,6 @@ export default function ReportScreen({
           appearanceMode={appearanceMode}
         />
       )}
-
-      {/* Save Indicator */}
-      {form.showSaveIndicator && <ReportAutoSaveIndicator />}
     </div>
   );
 }

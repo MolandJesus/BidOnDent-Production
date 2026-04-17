@@ -88,13 +88,13 @@ export default function AccountInfoCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: 0.05 }}
-      className="bd-dashboard-panel relative mb-5 overflow-hidden rounded-2xl p-5"
+      className="bd-dashboard-panel bd-dashboard-panel--deep relative mb-5 overflow-hidden rounded-2xl p-5"
     >
       {/* Subtle decorative orb */}
       <div
         className="absolute -right-12 -top-12 w-32 h-32 rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(180,160,100,0.08) 0%, transparent 70%)",
         }}
       />
       <div className="mb-4 flex items-start justify-between gap-3">

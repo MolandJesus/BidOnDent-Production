@@ -16,6 +16,7 @@ export type CoverageNearestShopsProps = {
   onSelectShop: (shop: CoverageNearbyShop) => void;
   onOpenDirections: (shop: CoverageNearbyShop) => void;
   onRetryShops?: () => void;
+  onOpenSearch?: () => void;
   className?: string;
   variant?: "default" | "landing-showcase";
   selectedShopName?: string | null;

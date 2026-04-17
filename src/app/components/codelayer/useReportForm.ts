@@ -47,6 +47,7 @@ export function useReportForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [photoUploadWarning, setPhotoUploadWarning] = useState<string | null>(null);
+  const [stepAdvanceCount, setStepAdvanceCount] = useState(0);
   const saveIndicatorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -153,6 +154,7 @@ export function useReportForm({
   };
 
   const nextStep = () => {
+    setStepAdvanceCount((count) => count + 1);
     setStep((previousStep) => {
       const next = Math.min(previousStep + 1, 6);
       if (next <= 5) {
@@ -332,6 +334,7 @@ export function useReportForm({
     isSubmitting,
     submitError,
     photoUploadWarning,
+    stepAdvanceCount,
     fileInputRef,
     cameraInputRef,
     setVehicle,

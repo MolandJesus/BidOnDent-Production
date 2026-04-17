@@ -21,7 +21,7 @@ export default function OperatingRegionsSection({
   isLightAppearance = false,
 }: OperatingRegionsSectionProps) {
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
-  const coverage = useOperatingRegionsCoverage();
+  const coverage = useOperatingRegionsCoverage({ isLightAppearance });
 
   // In light appearance mode, force panel tone to "light" regardless of tile mode
   const inlinePanelTone: MapSurfaceTone = isLightAppearance ? "light" : coverage.surfaceTone;
@@ -47,7 +47,7 @@ export default function OperatingRegionsSection({
       className={`relative overflow-hidden pt-8 pb-8 sm:pt-10 sm:pb-9 lg:pb-10 ${isLightAppearance ? "text-slate-800" : "text-white"}`}
       style={
         isLightAppearance
-          ? { background: "linear-gradient(180deg, #f0f4f8 0%, #e8edf4 50%, #dfe6ef 100%)" }
+          ? { background: "linear-gradient(180deg, #f2f5f9 0%, #edf1f7 50%, #e8ecf2 100%)" }
           : { background: "linear-gradient(180deg, #071830 0%, #0a2038 50%, #06142a 100%)" }
       }
       ref={sectionRef}
@@ -84,30 +84,52 @@ export default function OperatingRegionsSection({
           className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <div className="mx-auto max-w-2xl text-center">
-            <p
-              className={`mb-2 text-xs uppercase tracking-[0.18em] ${isLightAppearance ? "text-blue-600/80" : "text-blue-200/80"}`}
-            >
-              Live Coverage
-            </p>
+            <div className="flex justify-center mb-3">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] ${
+                  isLightAppearance
+                    ? "border-blue-200/70 bg-blue-50/80 text-blue-700 shadow-[0_2px_8px_rgba(59,130,246,0.10)]"
+                    : "border-blue-400/30 bg-blue-500/12 text-blue-200"
+                }`}
+              >
+                <MapPin className="h-3 w-3" />
+                Live Coverage
+              </span>
+            </div>
             <h3
-              className={`text-[2rem] font-bold tracking-tight sm:text-[2.35rem] ${isLightAppearance ? "text-slate-800" : "bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent"}`}
+              className={`text-[2.1rem] font-bold tracking-tight sm:text-[2.6rem] lg:text-[2.9rem] leading-[1.12] ${
+                isLightAppearance
+                  ? "text-slate-900"
+                  : "bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent"
+              }`}
             >
-              Search partner coverage near you
+              Find shops near you,
+              <br className="hidden sm:block" /> right on the map.
             </h3>
             <p
-              className={`mt-2.5 text-sm leading-6 sm:text-[15px] ${isLightAppearance ? "text-slate-600" : "text-blue-100/72"}`}
+              className={`mt-3 text-sm leading-6 sm:text-[15px] max-w-xl mx-auto ${
+                isLightAppearance ? "text-slate-500" : "text-blue-100/70"
+              }`}
             >
-              Enter a ZIP, address, or live location to focus the map, then compare the strongest
-              nearby repair options below.
+              Enter a ZIP, address, or tap your live location — the map focuses instantly and shows
+              the nearest partner shops ranked by distance.
             </p>
           </div>
 
-          <div className="mx-auto mt-6 max-w-[1080px]">
+          <div className="mx-auto mt-8 max-w-[1100px]">
             <div
               className={cn(
-                "relative overflow-hidden rounded-[2rem] p-2.5 sm:p-3.5 lg:p-4",
+                "relative overflow-hidden rounded-[2.2rem] p-3 sm:p-4 lg:p-5",
                 stageTheme.shellClassName
               )}
+              style={
+                isLightAppearance
+                  ? {
+                      boxShadow:
+                        "0 32px_80px_rgba(15,23,42,0.14), 0 10px 30px rgba(59,130,246,0.08), 0 0 0 1px rgba(147,197,253,0.30)",
+                    }
+                  : { boxShadow: "0 36px 90px rgba(2,6,23,0.50), 0 12px 32px rgba(37,99,235,0.12)" }
+              }
             >
               <div
                 className={cn(
@@ -117,7 +139,20 @@ export default function OperatingRegionsSection({
               />
 
               <div className="relative z-10">
-                <div className={cn("rounded-[1.7rem] border p-4 sm:p-5", stageTheme.panelStrongClassName)}>
+                <div
+                  className={cn(
+                    "rounded-[1.9rem] border p-5 sm:p-6",
+                    stageTheme.panelStrongClassName
+                  )}
+                  style={
+                    isLightAppearance
+                      ? {
+                          boxShadow:
+                            "0 18px 48px rgba(15,23,42,0.09), 0 3px 10px rgba(59,130,246,0.05)",
+                        }
+                      : undefined
+                  }
+                >
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                     <div className="max-w-2xl">
                       <span className={stageTheme.eyebrowClassName}>Coverage map</span>
@@ -127,22 +162,39 @@ export default function OperatingRegionsSection({
                           stageTheme.titleClassName
                         )}
                       >
-                        Keep search controls and the live map in one compact workspace.
+                        Search and compare shops right on the map.
                       </h4>
-                      <p className={cn("mt-2 text-sm leading-6", stageTheme.secondaryTextClassName)}>
-                        Focus the map fast, scan the strongest nearby shops below, and open the full
-                        browse view only when you need more room.
+                      <p
+                        className={cn("mt-2 text-sm leading-6", stageTheme.secondaryTextClassName)}
+                      >
+                        Focus the map quickly, scan the strongest nearby repair shops below, and use
+                        the full browse view when you need more room.
                       </p>
                     </div>
 
                     <div className="flex flex-wrap items-start content-start self-start gap-2 lg:max-w-[18rem] lg:justify-end">
-                      <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", stageTheme.softBadgeClassName)}>
+                      <span
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                          stageTheme.softBadgeClassName
+                        )}
+                      >
                         {coverage.nearbyShops.length} recommended
                       </span>
-                      <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", stageTheme.softBadgeClassName)}>
+                      <span
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                          stageTheme.softBadgeClassName
+                        )}
+                      >
                         {mapModeLabel}
                       </span>
-                      <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", stageTheme.softBadgeClassName)}>
+                      <span
+                        className={cn(
+                          "rounded-full px-2.5 py-1 text-[11px] font-semibold",
+                          stageTheme.softBadgeClassName
+                        )}
+                      >
                         {originModeLabel}
                       </span>
                     </div>
@@ -150,7 +202,12 @@ export default function OperatingRegionsSection({
 
                   <div className="relative mt-4">
                     <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                      <span className={cn("shrink-0 text-[11px] font-semibold uppercase tracking-[0.2em]", stageTheme.secondaryTextClassName)}>
+                      <span
+                        className={cn(
+                          "shrink-0 text-[11px] font-semibold uppercase tracking-[0.2em]",
+                          stageTheme.secondaryTextClassName
+                        )}
+                      >
                         Coverage regions
                       </span>
                       {operatingRegions.map((region) => (
@@ -217,10 +274,15 @@ export default function OperatingRegionsSection({
                     onUseCurrentLocation={coverage.handleUseCurrentLocation}
                     onExpandMap={() => coverage.setIsMapExpanded(true)}
                   />
-                  <div className={cn("mt-4 overflow-hidden rounded-[1.5rem] border p-2 sm:p-2.5 lg:p-3", stageTheme.panelClassName)}>
+                  <div
+                    className={cn(
+                      "mt-4 overflow-hidden rounded-[1.5rem] border p-2 sm:p-2.5 lg:p-3",
+                      stageTheme.panelClassName
+                    )}
+                  >
                     <ServiceCoverageMap
                       className="rounded-[1.25rem]"
-                      mapHeightClassName="h-[300px] sm:h-[380px] lg:h-[460px]"
+                      mapHeightClassName="h-[380px] sm:h-[500px] lg:h-[580px]"
                       center={coverage.mapView.center}
                       zoom={coverage.mapView.zoom}
                       revision={coverage.mapView.revision}
@@ -246,7 +308,9 @@ export default function OperatingRegionsSection({
                       }
                       gpsAccuracyMeters={coverage.navigation.gpsAccuracyMeters}
                       currentSpeedMph={coverage.navigation.currentSpeedMph}
-                      postedSpeedLimitMph={coverage.navigation.speedLimitSnapshot?.speedLimitMph ?? null}
+                      postedSpeedLimitMph={
+                        coverage.navigation.speedLimitSnapshot?.speedLimitMph ?? null
+                      }
                       postedSpeedLimitConfidence={
                         coverage.navigation.speedLimitSnapshot?.confidence ?? null
                       }
@@ -263,20 +327,39 @@ export default function OperatingRegionsSection({
                       onSelectShop={coverage.handleSelectShopById}
                     />
 
-                    <div className="mt-3 flex flex-col gap-2 px-1 sm:flex-row sm:items-center sm:justify-between">
-                      <p className={cn("text-xs leading-5 sm:text-sm sm:leading-6", stageTheme.secondaryTextClassName)}>
-                        Tap any highlighted marker to focus a shop, then open the full map when you
-                        want the immersive browse view.
+                    <div className="mt-4 flex flex-col gap-3 px-1 sm:flex-row sm:items-center sm:justify-between">
+                      <p
+                        className={cn(
+                          "text-xs leading-5 sm:text-sm sm:leading-6",
+                          stageTheme.secondaryTextClassName
+                        )}
+                      >
+                        Tap any pin to preview a shop — or open the full map for the immersive
+                        browse experience.
                       </p>
-                      <div className="flex flex-wrap items-start content-start self-start gap-2">
+                      <div className="flex flex-wrap items-center gap-2 shrink-0">
                         {coverage.selectedShop ? (
-                          <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", stageTheme.badgeClassName)}>
-                            Focused shop: {coverage.selectedShop.name}
+                          <span
+                            className={cn(
+                              "rounded-full px-3 py-1 text-[11px] font-semibold",
+                              stageTheme.badgeClassName
+                            )}
+                          >
+                            {coverage.selectedShop.name}
                           </span>
                         ) : null}
-                        <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", stageTheme.softBadgeClassName)}>
-                          {coverage.activeOriginLabel || "Regional overview"}
-                        </span>
+                        <button
+                          onClick={() => coverage.setIsMapExpanded(true)}
+                          className={cn(
+                            "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] font-semibold transition-all hover:-translate-y-0.5 active:scale-[0.97]",
+                            isLightAppearance
+                              ? "border-blue-300/50 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-[0_6px_20px_rgba(37,99,235,0.32)] hover:shadow-[0_10px_28px_rgba(37,99,235,0.42)]"
+                              : "border-blue-300/30 bg-blue-300 text-slate-950 shadow-[0_6px_18px_rgba(59,130,246,0.24)] hover:bg-blue-200"
+                          )}
+                        >
+                          <MapPin className="h-3.5 w-3.5" />
+                          Open Full Map
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -340,6 +423,10 @@ export default function OperatingRegionsSection({
         onVoiceGuidanceEnabledChange={coverage.setVoiceGuidanceEnabled}
         onRetryPartnerShops={coverage.retryCoveragePartnerShops}
       />
+      {/* Bottom transition — blends into Business Inquiry section */}
+      {isLightAppearance && (
+        <div className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none z-10 bg-gradient-to-b from-transparent to-[#f5f7fb]" />
+      )}
     </section>
   );
 }

@@ -367,6 +367,8 @@ export default function CoverageBrowseExperience({
             if (shop) {
               setSelectedDiscoveryPlaceId(null);
               onSelectShop(shop);
+              // Auto-switch sidebar to shops view so user sees the destination detail
+              setSidebarView("shops");
             }
           }}
           onSelectDiscoveryPlace={(place) => {
@@ -375,28 +377,45 @@ export default function CoverageBrowseExperience({
         />
 
         {isDesktop ? (
-          <div className="pointer-events-none absolute inset-y-6 left-4 z-[610] hidden w-[420px] lg:block xl:left-6 xl:w-[448px] 2xl:left-8 2xl:w-[468px]">
+          <div className="pointer-events-none absolute inset-y-4 left-3 z-[610] hidden w-[372px] lg:block xl:left-5 xl:w-[392px] 2xl:left-6 2xl:w-[408px]">
             <div
               className={cn(
-                "pointer-events-auto h-full overflow-hidden rounded-[1.5rem] border backdrop-blur-2xl",
+                "map-command-sidebar-shell pointer-events-auto relative h-full overflow-hidden rounded-[2rem] p-2.5",
+                theme.shellClassName,
                 tone === "dark"
-                  ? "border-white/10 bg-slate-950/55 shadow-[0_24px_64px_rgba(2,6,23,0.4)]"
-                  : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.8),rgba(226,232,240,0.74))] shadow-[0_24px_64px_rgba(15,23,42,0.1)]"
+                  ? "shadow-[0_30px_80px_rgba(2,6,23,0.48)]"
+                  : "shadow-[0_32px_84px_rgba(15,23,42,0.14)]"
               )}
             >
-              <CoverageCommandCenterSidebar
-                tone={tone}
-                dock="left"
-                showOverviewCards={false}
-                tileMode={tileMode}
-                regionCount={regionCount}
-                partnerShops={partnerShops}
-                selectedShop={selectedShop}
-                navigationSession={navigationSession}
-                onOpenDirections={onOpenBidOnDentNavigation}
+              <div className="map-liquid-sheen pointer-events-none absolute inset-0 opacity-65" />
+              <div
+                className={cn(
+                  "pointer-events-none absolute inset-x-6 top-0 h-20",
+                  tone === "dark"
+                    ? "bg-[linear-gradient(180deg,rgba(147,197,253,0.12),transparent)]"
+                    : "bg-[linear-gradient(180deg,rgba(255,255,255,0.58),transparent)]"
+                )}
+              />
+              <div
+                className={cn(
+                  "map-command-sidebar-panel relative h-full overflow-hidden rounded-[1.65rem] border",
+                  tone === "dark" ? "border-white/8 bg-slate-950/28" : "border-white/60 bg-white/14"
+                )}
               >
-                {sidebarContent}
-              </CoverageCommandCenterSidebar>
+                <CoverageCommandCenterSidebar
+                  tone={tone}
+                  dock="left"
+                  showOverviewCards={false}
+                  tileMode={tileMode}
+                  regionCount={regionCount}
+                  partnerShops={partnerShops}
+                  selectedShop={selectedShop}
+                  navigationSession={navigationSession}
+                  onOpenDirections={onOpenBidOnDentNavigation}
+                >
+                  {sidebarContent}
+                </CoverageCommandCenterSidebar>
+              </div>
             </div>
           </div>
         ) : null}

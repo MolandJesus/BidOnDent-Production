@@ -36,7 +36,7 @@ export default function WaitlistCapture({ isLightAppearance = false }: WaitlistC
   if (status === "success") {
     return (
       <p className="mt-4 text-sm font-medium text-emerald-300">
-        You're on the list! We'll be in touch.
+        Thanks! We'll keep you posted.
       </p>
     );
   }
@@ -54,7 +54,7 @@ export default function WaitlistCapture({ isLightAppearance = false }: WaitlistC
         }}
         className={`flex-1 rounded-full px-4 py-2.5 text-sm outline-none min-h-[44px] ${
           isLightAppearance
-            ? "bg-white/90 text-slate-800 placeholder:text-slate-400 border border-slate-200"
+            ? "bg-[rgba(255,251,245,0.92)] text-slate-800 placeholder:text-slate-400 border border-[rgba(200,180,150,0.25)]"
             : "bg-white/10 text-white placeholder:text-blue-200/50 border border-blue-300/20 focus:border-blue-400/40"
         }`}
       />
@@ -66,7 +66,7 @@ export default function WaitlistCapture({ isLightAppearance = false }: WaitlistC
           background: "linear-gradient(180deg, rgba(30,64,175,0.98) 0%, rgba(37,99,235,0.98) 100%)",
         }}
       >
-        {status === "submitting" ? "…" : "Join Waitlist"}
+        {status === "submitting" ? "…" : "Get Updates"}
       </button>
       {status === "error" && (
         <p className="absolute -bottom-5 left-0 text-xs text-red-400">

@@ -31,7 +31,14 @@ export default function ServiceAreaEditorModal({
   appearanceMode = "map-dark",
 }: ServiceAreaEditorModalProps) {
   const isLight = appearanceMode === "light";
-  const { serviceAreas, isLoading, error: loadError, retry } = useShopServiceAreas();
+  const {
+    serviceAreas,
+    isLoading,
+    error: loadError,
+    retry,
+  } = useShopServiceAreas({
+    enabled: isOpen,
+  });
   const [editing, setEditing] = useState<EditingArea | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);

@@ -22,25 +22,27 @@ export default function CTASection({
       className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #eaeff6 0%, #edf2f9 40%, #e8edf5 70%, #e6ebf3 100%)"
+          ? "linear-gradient(180deg, #e8f1fc 0%, #ddeaf9 40%, #d5e5f8 70%, #cde0f7 100%)"
           : "linear-gradient(180deg, #0c1e4a 0%, #142a5c 45%, #102450 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/30" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-slate-300/20" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
           {/* Subtle radial dot pattern */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(99,102,241,0.025)_1px,transparent_1px)] [background-size:24px_24px] opacity-45" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(99,102,241,0.11),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(59,130,246,0.09),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(255,191,105,0.06),transparent_50%)]" />
-          <div className="absolute top-0 right-[25%] w-64 h-64 bg-blue-300/[0.12] rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-indigo-300/[0.08] rounded-full blur-[120px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.02)_1px,transparent_1px)] [background-size:24px_24px] opacity-45" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(210,180,130,0.10),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(200,165,100,0.08),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(220,185,115,0.07),transparent_50%)]" />
+          <div className="absolute top-0 right-[25%] w-64 h-64 bg-amber-200/[0.06] rounded-full blur-[100px]" />
+          <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.04] rounded-full blur-[120px]" />
+          <div className="absolute -top-10 left-[10%] w-[44rem] h-[44rem] bg-sky-400/[0.07] rounded-full blur-[220px]" />
+          <div className="absolute bottom-0 right-[8%] w-[30rem] h-[30rem] bg-blue-400/[0.05] rounded-full blur-[210px]" />
         </>
       ) : (
         <>
@@ -59,7 +61,7 @@ export default function CTASection({
                     "linear-gradient(180deg, rgba(20, 42, 92, 0.88) 0%, rgba(12, 30, 68, 0.86) 100%)",
                   borderColor: "rgba(96, 165, 250, 0.30)",
                   boxShadow:
-                    "0 24px 56px rgba(4, 10, 24, 0.50), inset 0 1px 0 rgba(147, 197, 253, 0.15), 0 0 80px rgba(37, 99, 235, 0.06)",
+                    "0 40px 80px rgba(2, 6, 20, 0.62), 0 14px 40px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(147, 197, 253, 0.20), 0 0 120px rgba(37, 99, 235, 0.12)",
                 }
               : {
                   background:
@@ -70,20 +72,29 @@ export default function CTASection({
                 }
           }
         >
+          {" "}
+          {/* Ambient ring glow behind card */}
           <div
-            className={`absolute -top-6 -left-4 md:-left-8 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br rotate-12 ${isLightAppearance ? "from-blue-300 to-blue-500 opacity-70" : "from-blue-300 to-blue-500 opacity-80"}`}
+            className="absolute inset-0 rounded-3xl pointer-events-none"
             style={{
-              boxShadow: "0 8px 24px rgba(59, 130, 246, 0.25), 0 0 40px rgba(59, 130, 246, 0.10)",
+              boxShadow: isLightAppearance
+                ? "0 0 120px rgba(37, 99, 235, 0.22), 0 0 240px rgba(37, 99, 235, 0.11)"
+                : "0 0 100px rgba(37, 99, 235, 0.18), 0 0 200px rgba(37, 99, 235, 0.09)",
+            }}
+          />{" "}
+          <div
+            className={`absolute -top-6 -left-4 md:-left-8 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br rotate-12 ${isLightAppearance ? "from-blue-300 to-blue-500 opacity-85" : "from-blue-300 to-blue-500 opacity-80"}`}
+            style={{
+              boxShadow: "0 12px 36px rgba(59, 130, 246, 0.42), 0 0 64px rgba(59, 130, 246, 0.22)",
             }}
           />
           <div
-            className={`absolute -bottom-6 -right-4 md:-right-8 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${isLightAppearance ? "from-blue-300 to-indigo-500 opacity-65" : "from-blue-300 to-indigo-500 opacity-90"}`}
+            className={`absolute -bottom-6 -right-4 md:-right-8 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br ${isLightAppearance ? "from-blue-300 to-indigo-500 opacity-80" : "from-blue-300 to-indigo-500 opacity-90"}`}
             style={{
-              boxShadow: "0 8px 24px rgba(59, 130, 246, 0.30), 0 0 48px rgba(14, 165, 233, 0.15)",
+              boxShadow: "0 12px 40px rgba(99, 102, 241, 0.50), 0 0 80px rgba(99, 102, 241, 0.26)",
               animationDelay: "1.2s",
             }}
           />
-
           <div
             className={`mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
           >
@@ -92,10 +103,12 @@ export default function CTASection({
               Start Your Repair Journey
             </span>
           </div>
-
           <h3
             className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-5 transition-all duration-700 text-slate-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-            style={{ transitionDelay: "0.15s" }}
+            style={{
+              transitionDelay: "0.15s",
+              textShadow: "0 2px 12px rgba(0,0,0,0.25)",
+            }}
           >
             Ready to Get Started?
           </h3>
@@ -103,9 +116,9 @@ export default function CTASection({
             className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-8 transition-all duration-700 text-blue-100/75 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.3s" }}
           >
-            Compare competitive bids from local shops and get your auto body repair scheduled today.
+            No fees. No phone tag. Just transparent bids from trusted shops — compared and
+            scheduled, all in one place.
           </p>
-
           <div
             className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.45s" }}
@@ -113,11 +126,11 @@ export default function CTASection({
             {isSignedIn ? (
               <button
                 onClick={onNavigateToDashboard}
-                className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-white font-semibold text-base sm:text-lg leading-none transition-all duration-300 inline-flex items-center min-h-[48px] shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.97]"
+                className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-white font-semibold text-base sm:text-lg leading-none transition-all duration-300 inline-flex items-center min-h-[48px] shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-[0.97] border border-white/15"
                 style={{
-                  background: `linear-gradient(180deg, rgba(30, 64, 175, 0.98) 0%, rgba(37, 99, 235, 0.98) 100%)`,
+                  background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
                   boxShadow:
-                    "0 4px 20px rgba(37, 99, 235, 0.30), 0 0 32px rgba(59, 130, 246, 0.12)",
+                    "0 12px 42px rgba(37, 99, 235, 0.58), 0 4px 16px rgba(37, 99, 235, 0.30), inset 0 1px 0 rgba(255,255,255,0.22), 0 0 80px rgba(59, 130, 246, 0.20)",
                 }}
               >
                 Go to Dashboard
@@ -126,11 +139,11 @@ export default function CTASection({
             ) : (
               <SignUpButton mode="modal">
                 <button
-                  className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-white font-semibold text-base sm:text-lg leading-none transition-all duration-300 inline-flex items-center min-h-[48px] shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.97]"
+                  className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-white font-semibold text-base sm:text-lg leading-none transition-all duration-300 inline-flex items-center min-h-[48px] shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-[0.97] border border-white/15"
                   style={{
-                    background: `linear-gradient(180deg, rgba(30, 64, 175, 0.98) 0%, rgba(37, 99, 235, 0.98) 100%)`,
+                    background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
                     boxShadow:
-                      "0 4px 20px rgba(37, 99, 235, 0.30), 0 0 32px rgba(59, 130, 246, 0.12)",
+                      "0 12px 42px rgba(37, 99, 235, 0.58), 0 4px 16px rgba(37, 99, 235, 0.30), inset 0 1px 0 rgba(255,255,255,0.22), 0 0 80px rgba(59, 130, 246, 0.20)",
                   }}
                 >
                   Get Started Now
@@ -139,27 +152,29 @@ export default function CTASection({
               </SignUpButton>
             )}
           </div>
-
           <p
             className={`mt-6 text-sm sm:text-base transition-all duration-700 text-blue-100/55 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
             style={{ transitionDelay: "0.6s" }}
           >
-            Free to use &bull; No obligation &bull; Get quotes in minutes
+            Free to use &bull; No obligation &bull; Get quotes in under 48 hrs
           </p>
-
           {!isSignedIn && (
             <div
               className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: "0.75s" }}
             >
               <p className="mt-6 text-xs text-blue-200/40">
-                or get notified when we launch in your area
+                or stay in the loop — enter your email for updates
               </p>
               <WaitlistCapture isLightAppearance={isLightAppearance} />
             </div>
           )}
         </div>
       </div>
+      {/* Bottom transition — blends into Footer cool gray */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-20 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#eef1f7]" : "bg-gradient-to-b from-transparent to-[#040e1e]"}`}
+      />
     </section>
   );
 }

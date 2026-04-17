@@ -27,7 +27,7 @@ export default function BidsEmptyState({
         <div className="flex items-center gap-3">
           {onBack && (
             <button
-              className="bd-dashboard-secondary-button bd-dashboard-secondary-button--compact flex h-9 w-9 items-center justify-center rounded-lg"
+              className="bd-dashboard-secondary-button bd-dashboard-secondary-button--compact flex h-11 w-11 items-center justify-center rounded-lg"
               onClick={onBack}
               aria-label="Go back to dashboard"
             >

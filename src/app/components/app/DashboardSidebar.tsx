@@ -51,21 +51,27 @@ export default function DashboardSidebar({
     <aside
       aria-label="Dashboard sidebar"
       className={`hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r ${
-        isLightAppearance ? "bd-light-surface md:border-slate-200/60" : "md:border-blue-400/[0.12]"
+        isLightAppearance
+          ? "bd-light-surface md:border-[rgba(200,180,150,0.30)]"
+          : "md:border-blue-400/[0.12]"
       }`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(240, 247, 255, 0.95) 100%)"
+          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.66) 0%, rgba(249, 246, 239, 0.58) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.10) 46%, transparent 78%)"
           : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%)",
-        backdropFilter: "blur(24px) saturate(1.4)",
-        WebkitBackdropFilter: "blur(24px) saturate(1.4)",
+        backdropFilter: isLightAppearance
+          ? "blur(34px) saturate(1.64)"
+          : "blur(28px) saturate(1.5)",
+        WebkitBackdropFilter: isLightAppearance
+          ? "blur(34px) saturate(1.64)"
+          : "blur(28px) saturate(1.5)",
         boxShadow: isLightAppearance
-          ? "2px 0 24px rgba(15, 23, 42, 0.07)"
+          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.08), inset -1px 0 0 rgba(200, 180, 150, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.76)"
           : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(59, 130, 246, 0.08)",
       }}
     >
       <div
-        className={`px-5 py-5 border-b ${isLightAppearance ? "border-slate-200/70" : "border-blue-400/[0.10]"}`}
+        className={`px-5 py-5 border-b ${isLightAppearance ? "border-[rgba(200,180,150,0.20)]" : "border-blue-400/[0.10]"}`}
       >
         <button
           onClick={onLogoClick}
@@ -111,7 +117,7 @@ export default function DashboardSidebar({
               aria-current={isActive ? "page" : undefined}
               onClick={() => onTabClick(tab.id)}
               className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 relative ${
-                isActive ? "" : "hover:bg-blue-500/[0.06]"
+                isActive ? "" : "hover:bg-slate-500/[0.07]"
               }`}
               type="button"
               style={

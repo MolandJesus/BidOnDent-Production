@@ -35,7 +35,7 @@ export default function ReportDetailInterestedShops({
       <div className="flex justify-between items-center mb-3">
         <h2 className="font-bold text-lg">Interested Shops</h2>
         <span className={`text-sm ${isLight ? "text-slate-500" : "text-slate-400"}`}>
-          {shops.length} bids received
+          {shops.length === 1 ? "1 bid received" : `${shops.length} bids received`}
         </span>
       </div>
 

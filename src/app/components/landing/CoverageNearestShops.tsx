@@ -19,6 +19,7 @@ export default function CoverageNearestShops({
   onSelectShop,
   onOpenDirections,
   onRetryShops,
+  onOpenSearch,
   className,
   variant = "default",
   selectedShopName,
@@ -212,7 +213,69 @@ export default function CoverageNearestShops({
               })}
             </div>
           </div>
-        ) : null
+        ) : (
+          <div className={cn("mt-3 rounded-[1.35rem] border p-4", theme.panelClassName)}>
+            <div className="flex items-start gap-3">
+              <div
+                className={cn(
+                  "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl",
+                  theme.softBadgeClassName
+                )}
+              >
+                <Search className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className={cn("text-sm font-semibold tracking-tight", theme.titleClassName)}>
+                  Set an origin to reveal nearby shops
+                </div>
+                <p className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
+                  Use ZIP, address, or live GPS in Search to turn this panel into a ranked
+                  partner-shop list.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <div className={theme.listCardClassName}>
+                <div className="flex items-start gap-3">
+                  <LocateFixed className="mt-0.5 h-4 w-4 shrink-0" />
+                  <div>
+                    <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+                      Use live location
+                    </div>
+                    <div className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
+                      Let the map lock onto where you are for faster nearby recommendations.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={theme.listCardClassName}>
+                <div className="flex items-start gap-3">
+                  <MapPinned className="mt-0.5 h-4 w-4 shrink-0" />
+                  <div>
+                    <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+                      Browse the strongest matches
+                    </div>
+                    <div className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
+                      Once focused, this view ranks nearby BidOnDent partners by distance and fit.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {onOpenSearch ? (
+              <button
+                type="button"
+                onClick={onOpenSearch}
+                className={cn("mt-4 w-full", theme.secondaryButtonClassName)}
+              >
+                <Search className="h-4 w-4" />
+                Open Search
+              </button>
+            ) : null}
+          </div>
+        )
       ) : showBackendFailureState && nearbyShops.length === 0 ? (
         <div
           className={cn(

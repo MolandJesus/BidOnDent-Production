@@ -145,7 +145,7 @@ export default function InsurerConnectionScreen({
               Connect Your Insurance
             </h1>
             <p className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/70"}`}>
-              Carrier-aware account links for the signed-in {userType} flow
+              Link your insurance for smarter shop recommendations
             </p>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function InsurerConnectionScreen({
           />
           <input
             type="text"
-            placeholder="Search carrier, headquarters, claims workflow, hail, network..."
+            placeholder="Search insurance carriers..."
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             className={`w-full pl-10 pr-4 py-3 rounded-2xl border backdrop-blur-sm focus:outline-none focus:ring-2 ${
@@ -201,9 +201,8 @@ export default function InsurerConnectionScreen({
           <div className="text-sm text-blue-800">
             <p className="font-medium mb-1">Why connect your insurance?</p>
             <p>
-              This future-proof layer stores carrier connections against the BidOnDent website user
-              identity, not only a specific auth vendor, so recommendations and account context can
-              survive future sign-in provider swaps.
+              Connecting your insurance helps BidOnDent recommend shops that work with your carrier,
+              streamlining your repair experience and keeping your coverage details in one place.
             </p>
           </div>
         </div>

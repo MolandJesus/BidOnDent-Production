@@ -49,10 +49,10 @@ export default function BidsSummaryHeader({
             : "radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)",
         }}
       />
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3 sm:items-center">
         {onBack && (
           <button
-            className="bd-dashboard-secondary-button bd-dashboard-secondary-button--compact flex h-9 w-9 items-center justify-center rounded-lg"
+            className="bd-dashboard-secondary-button bd-dashboard-secondary-button--compact flex h-11 w-11 items-center justify-center rounded-lg"
             onClick={onBack}
             aria-label="Go back to dashboard"
           >
@@ -67,12 +67,29 @@ export default function BidsSummaryHeader({
           >
             Bid Comparison
           </p>
-          <h1 className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}>
+          <h1
+            className={`text-xl font-semibold sm:text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
+          >
             Repair Bids
           </h1>
           <p className={isLight ? "text-slate-500" : "text-blue-100/80"}>
             {bidCount} bid{bidCount === 1 ? "" : "s"} for {vehicleLabel}
           </p>
+          <div className="mt-2 flex flex-wrap items-center gap-2 md:hidden">
+            <div className="bd-dashboard-chip rounded-full px-2.5 py-1 text-xs font-medium">
+              <Sparkles className="h-3.5 w-3.5" />
+              Compare first
+            </div>
+            <div
+              className={`bd-dashboard-chip rounded-full px-2.5 py-1 text-xs font-medium ${
+                isLight
+                  ? "bg-white/85 text-blue-700"
+                  : "border-blue-200/18 bg-white/10 text-blue-50"
+              }`}
+            >
+              {bidCount} offers
+            </div>
+          </div>
         </div>
         <div className="hidden items-center gap-2 md:flex">
           <div className="bd-dashboard-chip items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium">

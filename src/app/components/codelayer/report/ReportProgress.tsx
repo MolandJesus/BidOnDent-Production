@@ -16,9 +16,9 @@ export default function ReportProgress({
   const activeStep = Math.max(1, Math.min(5, step));
 
   return (
-    <div className="bd-report-progress !rounded-none px-2.5 sm:px-4 md:px-6 py-3 sm:py-3.5">
+    <div className="bd-report-progress rounded-b-[2rem] border-t-0 px-3 sm:px-5 md:px-6 py-2.5 sm:py-3">
       <div className="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <div className="mx-auto flex min-w-max items-center justify-center px-1">
+        <div className="mx-auto flex min-w-max max-w-3xl items-center justify-center px-1">
           {steps.map((progressStep) => {
             const isCompleted = progressStep < activeStep;
             const isCurrent = progressStep === activeStep;
@@ -27,7 +27,7 @@ export default function ReportProgress({
             return (
               <div key={progressStep} className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
                 <div
-                  className={`bd-report-progress-node relative isolate flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-all ${
+                  className={`bd-report-progress-node relative isolate flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold transition-all ${
                     isActive
                       ? "text-white"
                       : isLightAppearance
@@ -60,7 +60,7 @@ export default function ReportProgress({
                   <span className="relative z-10">{progressStep}</span>
                 </div>
                 {progressStep < steps.length && (
-                  <div className="bd-report-progress-rail h-1.5 w-10 sm:w-16 md:w-24 lg:w-32 shrink-0 rounded-full overflow-hidden">
+                  <div className="bd-report-progress-rail h-1.5 w-12 sm:w-16 md:w-20 lg:w-24 shrink-0 rounded-full overflow-hidden">
                     <div
                       className="bd-report-progress-rail-fill h-full rounded-full transition-all duration-300"
                       style={{

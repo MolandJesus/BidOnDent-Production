@@ -108,7 +108,7 @@ describe("marketIntelligence", () => {
     const summary = buildInsuranceIntelligenceSummary(recommendations);
     expect(summary.title).toContain("is the strongest current carrier match");
     expect(summary.description).toContain("Headquarters:");
-    expect(summary.callouts[0]).toContain("% connection fit");
+    expect(summary.callouts[0]).toContain("% match for your repair needs");
   });
 
   it("returns the empty-state insurer summary when no carriers match", () => {

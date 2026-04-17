@@ -36,14 +36,9 @@ export default function AccountHeader({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className={`bd-dashboard-panel relative overflow-hidden rounded-2xl p-5 shadow-lg md:p-6 ${
+      className={`bd-dashboard-panel bd-dashboard-panel--accent-blue relative overflow-hidden rounded-2xl p-5 md:p-6 ${
         isLight ? "text-slate-800" : "text-white"
       }`}
-      style={{
-        background: isLight
-          ? "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(241,247,255,0.92) 40%, rgba(224,237,255,0.88) 100%)"
-          : "linear-gradient(135deg, rgba(0,42,90,0.92) 0%, rgba(8,50,120,0.88) 40%, rgba(0,80,160,0.82) 100%)",
-      }}
     >
       {/* Atmospheric decorative orbs */}
       <div
@@ -71,7 +66,7 @@ export default function AccountHeader({
         }}
       />
 
-      <div className="relative flex items-center">
+      <div className="relative flex items-center gap-4">
         <div className="relative">
           {profileImage ? (
             <div
@@ -105,7 +100,7 @@ export default function AccountHeader({
             </div>
           )}
           <button
-            className={`bd-dashboard-secondary-button absolute bottom-0 right-0 rounded-full p-1.5 shadow-md transition-transform hover:scale-105 ${
+            className={`bd-dashboard-secondary-button absolute -bottom-2 -right-2 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-0 shadow-md transition-transform hover:scale-105 ${
               isLight
                 ? "border-blue-200/70 bg-white/85 text-blue-700"
                 : "border-blue-300/30 bg-slate-950/55 text-blue-100"
@@ -118,7 +113,7 @@ export default function AccountHeader({
           </button>
         </div>
 
-        <div className="ml-4 flex-1">
+        <div className="min-w-0 flex-1">
           <p
             className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
               isLight ? "text-blue-700/70" : "text-blue-100/60"
@@ -126,10 +121,12 @@ export default function AccountHeader({
           >
             Account Hub
           </p>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight">{userInfo.name}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="min-w-0 truncate text-xl font-semibold tracking-tight md:text-2xl">
+              {userInfo.name}
+            </h1>
             <div
-              className={`bd-dashboard-chip flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${
+              className={`bd-dashboard-chip inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ${
                 isLight
                   ? "bg-white/80 text-blue-700"
                   : "border-blue-200/20 bg-white/10 text-blue-50"

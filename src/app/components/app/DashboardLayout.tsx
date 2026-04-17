@@ -134,7 +134,7 @@ export default function DashboardLayout({
       {demoMode && <DemoModeBanner demoAccountType={demoAccountType} />}
 
       <div
-        className="relative z-10 flex flex-col md:flex-row flex-1 overflow-hidden"
+        className="relative z-10 flex flex-col md:flex-row flex-1 overflow-x-hidden"
         style={{ touchAction: "pan-y pinch-zoom" }}
       >
         <DashboardSidebar
@@ -158,7 +158,7 @@ export default function DashboardLayout({
           onDismissTopProfile={() => {}}
         />
 
-        <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
+        <div className="flex-1 min-w-0 flex flex-col min-h-0">
           <DashboardHeader
             isLightAppearance={isLightAppearance}
             primaryColor={primaryColor}
@@ -183,7 +183,7 @@ export default function DashboardLayout({
             className="px-3 md:px-8 py-4 md:py-6 pb-24 md:pb-8 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain"
             style={{
               background: isLightAppearance
-                ? "linear-gradient(180deg, rgba(219, 234, 254, 0.08) 0%, transparent 100%)"
+                ? "linear-gradient(180deg, rgba(255, 253, 248, 0.04) 0%, transparent 100%)"
                 : "linear-gradient(180deg, rgba(2, 6, 23, 0.20) 0%, rgba(2, 6, 23, 0.08) 100%)",
             }}
           >

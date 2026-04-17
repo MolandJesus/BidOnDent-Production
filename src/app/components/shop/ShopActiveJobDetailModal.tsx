@@ -37,7 +37,7 @@ export default function ShopActiveJobDetailModal({
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className={`text-2xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
-                Job #{job.id}
+                Job #{typeof job.id === "string" && job.id.length > 8 ? job.id.slice(0, 8).toUpperCase() : job.id}
               </h2>
               <p className={isLight ? "text-slate-600" : "text-blue-100/75"}>{job.damageType}</p>
             </div>
@@ -66,7 +66,7 @@ export default function ShopActiveJobDetailModal({
               </p>
               <p className={`text-sm ${isLight ? "text-slate-700" : "text-blue-100/80"}`}>
                 <strong className={isLight ? "text-slate-900" : "text-slate-200"}>Phone:</strong>{" "}
-                {job.customerPhone}
+                {job.customerPhone?.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3") ?? "—"}
               </p>
               <p className={`text-sm ${isLight ? "text-slate-700" : "text-blue-100/80"}`}>
                 <strong className={isLight ? "text-slate-900" : "text-slate-200"}>Vehicle:</strong>{" "}
@@ -128,7 +128,7 @@ export default function ShopActiveJobDetailModal({
 
             <RepairLifecycleTimeline
               title="Job Lifecycle"
-              subtitle="Standardized execution phases for this repair"
+              subtitle="Track your repair progress step by step"
               steps={shopLifecycle(job.status)}
               compact
               appearanceMode={appearanceMode}

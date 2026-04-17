@@ -79,8 +79,8 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
       <DrawerPrimitive.Portal>
         <DrawerPrimitive.Content
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[610] flex h-[100dvh] max-h-[100dvh] flex-col",
-            "rounded-t-[1.35rem] border-t backdrop-blur-2xl",
+            "fixed inset-x-0 bottom-0 z-[610] flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden",
+            "rounded-t-[1.6rem] border-t backdrop-blur-2xl shadow-[0_-24px_64px_rgba(15,23,42,0.22)]",
             "map-liquid-card map-ui-enter pointer-events-auto",
             theme.panelStrongClassName
           )}
@@ -88,9 +88,22 @@ export default function MobileMapBottomSheet({ tone, children }: MobileMapBottom
             paddingBottom: "env(safe-area-inset-bottom, 0px)",
           }}
         >
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-x-0 top-0 h-16",
+              tone === "light"
+                ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.42),transparent)]"
+                : "bg-[linear-gradient(180deg,rgba(147,197,253,0.10),transparent)]"
+            )}
+          />
           {/* Drag handle — enlarged hit area for reliable gesture capture */}
           <DrawerPrimitive.Handle className="flex shrink-0 cursor-grab items-center justify-center py-3 active:cursor-grabbing">
-            <div className="h-1 w-10 rounded-full bg-sky-400/45" />
+            <div
+              className={cn(
+                "h-1.5 w-12 rounded-full",
+                tone === "light" ? "bg-slate-300/90" : "bg-sky-400/45"
+              )}
+            />
           </DrawerPrimitive.Handle>
 
           {/* Header strip — "Back to Map" affordance when sheet covers the map */}

@@ -86,7 +86,7 @@ export default function ShopActiveJobsScreen({
         damageType: report?.damage_area || report?.damage_type || "Repair request",
         bidAmount: Number(bid?.amount) || 0,
         startDate: ja.createdAt ? new Date(ja.createdAt).toLocaleDateString() : "Pending",
-        estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
+        estimatedCompletion: status === "completed" ? "Completed" : "To be scheduled",
         status,
         progress,
         tasks,
@@ -134,7 +134,7 @@ export default function ShopActiveJobsScreen({
         startDate: report?.submittedAt
           ? new Date(report.submittedAt).toLocaleDateString()
           : "Pending",
-        estimatedCompletion: status === "completed" ? "Completed" : "In scheduling",
+        estimatedCompletion: status === "completed" ? "Completed" : "To be scheduled",
         status,
         progress,
         tasks,
@@ -447,7 +447,7 @@ export default function ShopActiveJobsScreen({
                 notifications.push({
                   category: "shop",
                   title: "Update failed",
-                  body: `Could not save status for Job #${jobId}. Please try again.`,
+                  body: `Could not save status for Job #${typeof jobId === "string" && jobId.length > 8 ? jobId.slice(0, 8).toUpperCase() : jobId}. Please try again.`,
                   payload: { jobId, newStatus },
                   userId: "",
                   deepLink: null,
@@ -465,7 +465,7 @@ export default function ShopActiveJobsScreen({
             notifications.push({
               category: "shop",
               title: statusLabels[newStatus] || `Status: ${newStatus}`,
-              body: `Job #${jobId} updated to ${newStatus.replace(/-/g, " ")}.`,
+              body: `Job #${typeof jobId === "string" && jobId.length > 8 ? jobId.slice(0, 8).toUpperCase() : jobId} updated to ${newStatus.replace(/-/g, " ")}.`,
               payload: { jobId, newStatus },
               userId: "",
               deepLink: null,

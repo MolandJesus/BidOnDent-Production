@@ -143,6 +143,45 @@ export default function BidsScreen({
     }
   }, [activeBid, hasLiveBids, liveBids]);
 
+  // All hooks must be called before any early return to satisfy React's rules of hooks
+  const lowestPrice = useMemo(
+    () => (hasLiveBids ? Math.min(...liveBids.map((bid) => bid.price)) : 0),
+    [liveBids, hasLiveBids]
+  );
+  const averagePrice = useMemo(
+    () =>
+      hasLiveBids
+        ? Math.round(
+            liveBids.reduce((sum, bid) => sum + bid.price, 0) / Math.max(1, liveBids.length)
+          )
+        : 0,
+    [liveBids, hasLiveBids]
+  );
+  const fastestBidDays = useMemo(
+    () =>
+      hasLiveBids
+        ? Math.min(...liveBids.map((bid) => Math.max(1, Number(bid.estimatedDays || 0))))
+        : 0,
+    [liveBids, hasLiveBids]
+  );
+  const recommendedId = useMemo(() => {
+    if (!hasLiveBids) return null;
+    return [...liveBids].sort((a, b) => b.rating - a.rating + (b.reviews - a.reviews) / 200)[0].id;
+  }, [liveBids, hasLiveBids]);
+
+  const filteredBids = useMemo(() => {
+    return [...liveBids].sort((a, b) => {
+      if (filter === "lowest") return a.price - b.price;
+      if (filter === "fastest") {
+        const aDays = Math.max(1, Number(a.estimatedDays || 0));
+        const bDays = Math.max(1, Number(b.estimatedDays || 0));
+        return aDays - bDays;
+      }
+      if (filter === "rating") return b.rating - a.rating;
+      return 0;
+    });
+  }, [filter, liveBids]);
+
   if (bidsLoading && !hasLiveBids) {
     return (
       <div className="flex min-h-[300px] flex-col items-center justify-center gap-3 px-6 py-12">
@@ -163,33 +202,6 @@ export default function BidsScreen({
       />
     );
   }
-
-  const lowestPrice = useMemo(() => Math.min(...liveBids.map((bid) => bid.price)), [liveBids]);
-  const averagePrice = useMemo(
-    () =>
-      Math.round(liveBids.reduce((sum, bid) => sum + bid.price, 0) / Math.max(1, liveBids.length)),
-    [liveBids]
-  );
-  const fastestBidDays = useMemo(
-    () => Math.min(...liveBids.map((bid) => Math.max(1, Number(bid.estimatedDays || 0)))),
-    [liveBids]
-  );
-  const recommendedId = useMemo(() => {
-    return [...liveBids].sort((a, b) => b.rating - a.rating + (b.reviews - a.reviews) / 200)[0].id;
-  }, [liveBids]);
-
-  const filteredBids = useMemo(() => {
-    return [...liveBids].sort((a, b) => {
-      if (filter === "lowest") return a.price - b.price;
-      if (filter === "fastest") {
-        const aDays = Math.max(1, Number(a.estimatedDays || 0));
-        const bDays = Math.max(1, Number(b.estimatedDays || 0));
-        return aDays - bDays;
-      }
-      if (filter === "rating") return b.rating - a.rating;
-      return 0;
-    });
-  }, [filter, liveBids]);
 
   const handleRating = (
     shopName: string,
@@ -247,7 +259,7 @@ export default function BidsScreen({
           {FILTERS.map((item) => (
             <button
               key={item.id}
-              className={`bd-dashboard-filter-button rounded-full px-3.5 py-1.5 text-sm font-medium ${
+              className={`bd-dashboard-filter-button min-h-[44px] rounded-full px-3.5 py-2 text-sm font-medium ${
                 filter === item.id ? "bd-dashboard-filter-button--active" : ""
               }`}
               style={

@@ -50,7 +50,7 @@ export default function PhotoGuide({
       <motion.div
         className={`relative w-full sm:max-w-md sm:mx-4 rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[80dvh] sm:max-h-[85vh] ${
           isLight
-            ? "bg-white shadow-xl shadow-slate-300/40"
+            ? "bg-[#fffef8] shadow-xl shadow-stone-300/40"
             : "bg-slate-900/95 backdrop-blur-2xl shadow-2xl shadow-black/60 border border-white/[0.08]"
         }`}
         initial={{ opacity: 0, y: 60 }}
@@ -103,13 +103,13 @@ export default function PhotoGuide({
                 key={tip.label}
                 className={`flex items-start gap-3 p-3 rounded-xl border ${
                   isLight
-                    ? "border-slate-200/80 bg-slate-50/70"
+                    ? "border-amber-100/80 bg-amber-50/50"
                     : "border-white/[0.06] bg-white/[0.04]"
                 }`}
               >
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                    isLight ? "bg-blue-50 text-blue-600" : "bg-blue-500/15 text-blue-300"
+                    isLight ? "bg-amber-50 text-amber-700" : "bg-blue-500/15 text-blue-300"
                   }`}
                 >
                   {tip.icon}
@@ -196,7 +196,7 @@ export default function PhotoGuide({
 
         {/* Footer CTA */}
         <div
-          className={`shrink-0 px-5 pt-3 pb-[max(env(safe-area-inset-bottom),1rem)] border-t ${isLight ? "border-slate-200/60 bg-slate-50/50" : "border-white/[0.06] bg-white/[0.02]"}`}
+          className={`shrink-0 px-5 pt-3 pb-[max(env(safe-area-inset-bottom),1rem)] border-t ${isLight ? "border-amber-100/60 bg-amber-50/30" : "border-white/[0.06] bg-white/[0.02]"}`}
         >
           <button
             onClick={onComplete}

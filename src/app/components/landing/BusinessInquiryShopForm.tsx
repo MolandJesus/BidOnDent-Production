@@ -18,7 +18,7 @@ export default function BusinessInquiryShopForm({
   onSubmit,
 }: BusinessInquiryShopFormProps) {
   const labelCls = `block text-sm font-medium mb-1 ${isLightAppearance ? "text-slate-700" : "text-blue-100/85"}`;
-  const inputCls = `w-full h-11 px-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-slate-200/60 bg-white/60 text-slate-800 placeholder:text-slate-400 focus:ring-blue-300/40 focus:border-blue-300" : "border-blue-300/25 bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:ring-blue-200/40 focus:border-blue-300"}`;
+  const inputCls = `w-full h-11 px-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${isLightAppearance ? "border-[rgba(200,180,150,0.3)] bg-[rgba(255,251,245,0.6)] text-slate-800 placeholder:text-slate-400 focus:ring-[rgba(200,180,150,0.4)] focus:border-[rgba(200,180,150,0.5)]" : "border-blue-300/25 bg-slate-900/20 text-slate-100 placeholder:text-blue-100/35 focus:ring-blue-200/40 focus:border-blue-300"}`;
 
   return (
     <form className="grid md:grid-cols-2 gap-4" onSubmit={onSubmit}>

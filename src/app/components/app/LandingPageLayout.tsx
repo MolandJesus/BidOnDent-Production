@@ -66,7 +66,7 @@ export default function LandingPageLayout({
       data-theme={isLightAppearance ? "light" : "dark"}
       style={{
         background: isLightAppearance
-          ? "radial-gradient(130% 90% at 30% 8%, #1b3158 0%, #15264a 52%, #0f1d3a 100%)"
+          ? "linear-gradient(180deg, #f7f9fc 0%, #f2f5f9 100%)"
           : "radial-gradient(130% 90% at 30% 8%, rgba(12, 28, 58, 0.99) 0%, rgba(6, 14, 32, 0.99) 58%, #040a18 100%)",
       }}
     >

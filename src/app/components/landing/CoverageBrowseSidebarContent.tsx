@@ -128,15 +128,36 @@ export default function CoverageBrowseSidebarContent({
   onOpenDirections,
   onRetryPartnerShops,
 }: CoverageBrowseSidebarContentProps) {
+  const activeViewLabel = VIEW_TABS.find((tab) => tab.id === sidebarView)?.label || "Search";
+  const tileModeLabel =
+    tileMode === "night" ? "Night map" : tileMode === "satellite" ? "Satellite" : "Roadmap";
+
   return (
     <>
       {/* ── Sticky control bar — view tabs + tile + map controls ── */}
       <div
         className={cn(
-          "sticky top-0 z-20 space-y-2 rounded-[1.25rem] p-2 backdrop-blur-2xl",
+          "sticky top-0 z-20 space-y-3 rounded-[1.45rem] px-3 py-3 backdrop-blur-2xl",
           theme.panelStrongClassName
         )}
       >
+        <div className="flex items-center justify-between gap-3 px-1">
+          <div className="min-w-0">
+            <div className={theme.metricLabelClassName}>Coverage command center</div>
+            <div className={cn("mt-1 text-sm font-semibold", theme.titleClassName)}>
+              {activeViewLabel} view
+            </div>
+          </div>
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]",
+              theme.softBadgeClassName
+            )}
+          >
+            {tileModeLabel}
+          </span>
+        </div>
+
         {/* View tab bar (segmented control) */}
         <div className={cn(theme.segmentedClassName, "grid w-full grid-cols-4 gap-1")}>
           {VIEW_TABS.map(({ id, label, Icon }) => (
@@ -250,7 +271,7 @@ export default function CoverageBrowseSidebarContent({
         {sidebarView === "shops" ? (
           <CoverageNearestShops
             tone={tone}
-            className={cn("p-4", theme.panelStrongClassName)}
+            className={cn("p-4 sm:p-5", theme.panelStrongClassName)}
             isLoadingShops={isLoadingShops}
             fetchError={coverageFetchError}
             usingDemoFallback={usingDemoFallback}
@@ -261,6 +282,7 @@ export default function CoverageBrowseSidebarContent({
             onSelectShop={onSelectShop}
             onOpenDirections={onOpenDirections}
             onRetryShops={onRetryPartnerShops}
+            onOpenSearch={() => onSidebarViewChange("search")}
           />
         ) : null}
       </NavigationErrorBoundary>

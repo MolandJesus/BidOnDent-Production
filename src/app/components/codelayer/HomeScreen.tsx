@@ -123,7 +123,7 @@ export default function HomeScreen({
   return (
     <div className="relative w-full h-full min-h-[80vh] flex flex-col items-center justify-start pb-20 md:pb-10">
       {/* Dashboard content — welcome, actions, reports, then map widget */}
-      <div className="relative z-20 mt-3 w-full max-w-4xl px-2 md:mt-6 md:px-6 flex flex-col gap-3.5 md:gap-5 overflow-x-hidden">
+      <div className="relative z-20 mt-3 w-full max-w-5xl px-2 md:mt-6 md:px-6 flex flex-col gap-3.5 md:gap-5 overflow-x-hidden">
         {/* Compact welcome bar */}
         <section className="bd-dashboard-panel bd-dashboard-panel--accent-blue relative flex flex-wrap items-center justify-between gap-3 overflow-hidden px-4 py-3 md:px-5 md:py-4">
           {/* Subtle royal blue left-edge accent glow */}
@@ -156,7 +156,7 @@ export default function HomeScreen({
               </span>
             </div>
             <h1
-              className={`mt-2 text-lg font-bold tracking-tight md:text-2xl truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+              className={`mt-2 text-lg font-bold tracking-tight sm:truncate md:text-2xl ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
             >
               {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}`}
             </h1>
@@ -171,10 +171,10 @@ export default function HomeScreen({
               {userType === "insurer" && "Monitor claims and partner shop performance"}
             </p>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex w-full flex-wrap items-center gap-2 shrink-0 sm:w-auto sm:flex-nowrap">
             <button
               onClick={primaryAction.onClick}
-              className="bd-dashboard-primary-button inline-flex min-h-[44px] items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold whitespace-nowrap text-white active:scale-[0.97]"
+              className="bd-dashboard-primary-button inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-white active:scale-[0.97] sm:w-auto sm:whitespace-nowrap"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
               }}
@@ -185,7 +185,7 @@ export default function HomeScreen({
             {demoMode && onExitDemoMode && userType !== originalAccountType && (
               <button
                 onClick={onExitDemoMode}
-                className={`bd-dashboard-secondary-button min-h-[40px] rounded-xl px-3 py-2 text-sm font-medium ${
+                className={`bd-dashboard-secondary-button min-h-[44px] w-full rounded-xl px-3 py-2 text-sm font-medium sm:w-auto ${
                   isLightAppearance
                     ? "border-slate-200/80 bg-white/90 text-slate-700"
                     : "border-blue-200/18 bg-slate-950/55 text-blue-50"

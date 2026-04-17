@@ -122,13 +122,7 @@ export default function AccountMenu({
       tone: "deep",
       onClick: onOpenSettings,
     },
-    {
-      label: "Payment Preview",
-      description: "Review the billing and payment-facing experience.",
-      icon: CreditCard,
-      tone: "blue",
-      onClick: onOpenPayment,
-    },
+    // Payment Preview hidden until billing is live
   ];
 
   const profileRows: MenuRow[] = [];
@@ -260,7 +254,7 @@ export default function AccountMenu({
             <p
               className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${sectionEyebrowTone}`}
             >
-              Account Controls
+              Settings
             </p>
             <h2
               className={`text-xl font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
@@ -268,7 +262,7 @@ export default function AccountMenu({
               Actions & Preferences
             </h2>
             <p className={`mt-1 text-sm ${subduedLabelTone}`}>
-              Test a more layered feel with grouped tools, darker glass, and tinted action states.
+              Manage your account settings, preferences, and connected services.
             </p>
           </div>
           <span

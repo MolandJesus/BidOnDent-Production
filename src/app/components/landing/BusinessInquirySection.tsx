@@ -107,25 +107,25 @@ export default function BusinessInquirySection({
       className="pt-8 pb-12 sm:pt-10 sm:pb-16 md:pt-12 md:pb-20 relative overflow-hidden"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #edf1f8 0%, #f0f4fa 35%, #eaeff6 70%, #e8ecf4 100%)"
+          ? "linear-gradient(180deg, #f5f7fb 0%, #f8f9fc 35%, #f4f6fb 70%, #f0f4f9 100%)"
           : "linear-gradient(180deg, #071828 0%, #0a2036 50%, #081a30 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-indigo-300/30" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
           {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.025)_1px,transparent_1px)] [background-size:28px_28px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(99,102,241,0.11),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(59,130,246,0.09),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(255,191,105,0.06),transparent_50%)]" />
-          <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-blue-300/[0.12] rounded-full blur-[110px]" />
-          <div className="absolute top-10 right-[20%] w-48 h-48 bg-indigo-300/[0.08] rounded-full blur-[120px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.02)_1px,transparent_1px)] [background-size:28px_28px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(210,180,130,0.10),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(200,165,100,0.08),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(220,185,115,0.07),transparent_50%)]" />
+          <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-amber-200/[0.14] rounded-full blur-[110px]" />
+          <div className="absolute top-10 right-[20%] w-48 h-48 bg-amber-100/[0.10] rounded-full blur-[120px]" />
         </>
       ) : (
         <>
@@ -156,10 +156,10 @@ export default function BusinessInquirySection({
         style={{ animationDelay: "4s" }}
       >
         <div
-          className={`w-10 h-10 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-200/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-10 h-10 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-[rgba(255,251,245,0.45)] border border-[rgba(200,180,150,0.2)] backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 22px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.6)"
+              ? "0 0 22px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,250,240,0.7)"
               : "0 0 20px rgba(59,130,246,0.12)",
           }}
         >
@@ -187,7 +187,7 @@ export default function BusinessInquirySection({
           className={`text-center mb-6 sm:mb-7 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-blue-200/30 bg-white/40 text-blue-700 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.4)] text-blue-700 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,250,240,0.6)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200 backdrop-blur-sm"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Growth &amp; Partnerships
@@ -206,14 +206,14 @@ export default function BusinessInquirySection({
         </div>
 
         <div
-          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "border border-slate-200/60 backdrop-blur-sm" : "border border-blue-400/22 backdrop-blur-sm rounded-2xl"}`}
+          className={`rounded-2xl p-6 md:p-8 ${isLightAppearance ? "border border-[rgba(200,180,150,0.3)] backdrop-blur-sm" : "border border-blue-400/22 backdrop-blur-sm rounded-2xl"}`}
           style={
             isLightAppearance
               ? {
                   background:
-                    "linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(248, 250, 255, 0.55) 100%)",
+                    "linear-gradient(180deg, rgba(255, 253, 248, 0.68) 0%, rgba(250, 247, 240, 0.58) 100%)",
                   boxShadow:
-                    "0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.08)",
+                    "0 14px 44px rgba(0, 0, 0, 0.13), 0 4px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255, 250, 240, 0.92), 0 0 0 1px rgba(200, 180, 150, 0.18)",
                 }
               : {
                   background:
@@ -240,7 +240,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/50 bg-white/35 hover:bg-white/55 hover:border-blue-200/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.35)] hover:bg-[rgba(255,251,245,0.55)] hover:border-[rgba(200,180,150,0.3)] backdrop-blur-sm shadow-[0_6px_22px_rgba(0,0,0,0.09),0_2px_6px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,250,240,0.65)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-blue-600" : "bg-[#003d82]"}`}
@@ -271,7 +271,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-slate-200/50 bg-white/35 hover:bg-white/55 hover:border-blue-200/40 backdrop-blur-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.35)] hover:bg-[rgba(255,251,245,0.55)] hover:border-[rgba(200,180,150,0.3)] backdrop-blur-sm shadow-[0_6px_22px_rgba(0,0,0,0.09),0_2px_6px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,250,240,0.65)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-indigo-600" : "bg-[#1e3a5f]"}`}
@@ -384,6 +384,10 @@ export default function BusinessInquirySection({
           )}
         </div>
       </div>
+      {/* Bottom transition — blends into CTA sky-blue */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-28 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#e8f1fc]" : "bg-gradient-to-b from-transparent to-[#0c1e4a]"}`}
+      />
     </section>
   );
 }

@@ -289,7 +289,7 @@ export function buildInsuranceIntelligenceSummary(
     title: `${topRecommendation.name} is the strongest current carrier match`,
     description: `${topRecommendation.description} Headquarters: ${topRecommendation.headquarters}.`,
     callouts: [
-      `${topRecommendation.fitScore}% connection fit for the current search and account context.`,
+      `${topRecommendation.fitScore}% match for your repair needs.`,
       topRecommendation.connectionReasons[0],
       `Claims line: ${topRecommendation.claimsPhone}`,
     ],

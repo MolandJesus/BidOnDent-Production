@@ -230,7 +230,7 @@ describe("shopMapExperienceHelpers", () => {
       ],
       connectedCarrierCount: 2,
     });
-    expect(customer.badge).toBe("Customer repair routing");
+    expect(customer.badge).toBe("Smart shop matching");
     expect(customer.metrics).toEqual([
       { label: "Connected Carriers", value: "2" },
       { label: "Damage Signals", value: "4" },

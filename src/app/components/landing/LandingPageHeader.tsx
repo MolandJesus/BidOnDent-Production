@@ -86,17 +86,17 @@ export default function LandingPageHeader({
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? isLightAppearance
-            ? "backdrop-blur-2xl border-b border-slate-200/40 shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
+            ? "backdrop-blur-2xl border-b border-[rgba(200,180,150,0.22)] shadow-[0_4px_24px_rgba(0,0,0,0.06)]"
             : "backdrop-blur-2xl border-b border-blue-400/15 shadow-[0_4px_24px_rgba(2,6,23,0.3)]"
           : "backdrop-blur-md border-b border-transparent"
       }`}
       style={{
         background: isScrolled
           ? isLightAppearance
-            ? "linear-gradient(180deg, rgba(245, 247, 251, 0.88) 0%, rgba(238, 242, 249, 0.85) 100%)"
+            ? "linear-gradient(180deg, rgba(250, 247, 240, 0.9) 0%, rgba(248, 243, 235, 0.87) 100%)"
             : "linear-gradient(180deg, rgba(12, 25, 41, 0.95) 0%, rgba(10, 22, 38, 0.92) 100%)"
           : isLightAppearance
-            ? "rgba(245, 247, 251, 0.25)"
+            ? "rgba(250, 247, 240, 0.25)"
             : "rgba(12, 25, 41, 0.3)",
       }}
     >
@@ -157,7 +157,7 @@ export default function LandingPageHeader({
             aria-controls="landing-mobile-navigation"
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            className={`flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-2xl border backdrop-blur-xl transition-all md:hidden ${isLightAppearance ? "border-slate-200/50 bg-white/60 text-slate-600 shadow-[0_8px_18px_rgba(15,23,42,0.06)] hover:bg-white/80" : "border-blue-300/20 bg-white/[0.04] text-blue-100/80 shadow-[0_10px_22px_rgba(2,6,23,0.28)] hover:bg-white/[0.08]"}`}
+            className={`flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-2xl border backdrop-blur-xl transition-all md:hidden ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.6)] text-slate-600 shadow-[0_8px_18px_rgba(15,23,42,0.06)] hover:bg-[rgba(255,251,245,0.8)]" : "border-blue-300/20 bg-white/[0.04] text-blue-100/80 shadow-[0_10px_22px_rgba(2,6,23,0.28)] hover:bg-white/[0.08]"}`}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -169,7 +169,7 @@ export default function LandingPageHeader({
                 <button
                   onClick={onViewDashboard}
                   aria-label="Open dashboard"
-                  className={`inline-flex h-11 w-11 min-h-[44px] items-center justify-center gap-2 rounded-2xl border font-medium backdrop-blur-md transition-all sm:w-auto sm:px-3.5 sm:py-2 ${isLightAppearance ? "border-slate-200/55 bg-white/65 text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-white/80" : "border-blue-300/28 bg-[linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))] text-blue-100 shadow-[0_10px_22px_rgba(2,6,23,0.32)] hover:bg-[linear-gradient(180deg,rgba(59,130,246,0.28),rgba(15,23,42,0.78))]"}`}
+                  className={`inline-flex h-11 w-11 min-h-[44px] items-center justify-center gap-2 rounded-2xl border font-medium backdrop-blur-md transition-all sm:w-auto sm:px-3.5 sm:py-2 ${isLightAppearance ? "border-[rgba(200,180,150,0.28)] bg-[rgba(255,251,245,0.65)] text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-[rgba(255,251,245,0.8)]" : "border-blue-300/28 bg-[linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))] text-blue-100 shadow-[0_10px_22px_rgba(2,6,23,0.32)] hover:bg-[linear-gradient(180deg,rgba(59,130,246,0.28),rgba(15,23,42,0.78))]"}`}
                   type="button"
                 >
                   <Home
@@ -194,7 +194,7 @@ export default function LandingPageHeader({
                   aria-label={
                     showProfileMenu ? "Close user profile menu" : "Open user profile menu"
                   }
-                  className={`flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl border px-1 py-1 backdrop-blur-xl transition-all ${isLightAppearance ? "border-slate-200/50 bg-white/55 hover:bg-white/80" : "border-blue-300/18 bg-white/[0.04] hover:bg-white/[0.08]"}`}
+                  className={`flex min-h-[44px] shrink-0 items-center gap-2 rounded-2xl border px-1 py-1 backdrop-blur-xl transition-all ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.55)] hover:bg-[rgba(255,251,245,0.8)]" : "border-blue-300/18 bg-white/[0.04] hover:bg-white/[0.08]"}`}
                   type="button"
                 >
                   {user?.imageUrl ? (
@@ -220,10 +220,10 @@ export default function LandingPageHeader({
                     id="landing-user-profile-menu"
                     role="menu"
                     aria-label="User profile menu"
-                    className={`absolute right-0 mt-2 w-56 rounded-xl border backdrop-blur-xl shadow-lg z-50 overflow-hidden ${isLightAppearance ? "bg-white/90 border-slate-200/40 shadow-black/10" : "bg-[#0c1929]/95 border-blue-400/20 shadow-black/30"}`}
+                    className={`absolute right-0 mt-2 w-56 rounded-xl border backdrop-blur-xl shadow-lg z-50 overflow-hidden ${isLightAppearance ? "bg-[rgba(255,251,245,0.92)] border-[rgba(200,180,150,0.22)] shadow-black/10" : "bg-[#0c1929]/95 border-blue-400/20 shadow-black/30"}`}
                   >
                     <div
-                      className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-slate-200/40" : "border-blue-400/15"}`}
+                      className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-[rgba(200,180,150,0.22)]" : "border-blue-400/15"}`}
                     >
                       <p
                         className={`text-sm font-semibold truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
@@ -243,7 +243,7 @@ export default function LandingPageHeader({
                         setMobileMenuOpen(false);
                         setShowProfileMenu(false);
                       }}
-                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60" : "text-slate-200 hover:bg-white/8"}`}
+                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-[rgba(255,248,235,0.6)]" : "text-slate-200 hover:bg-white/8"}`}
                       type="button"
                     >
                       <Home className="w-4 h-4 opacity-60" />
@@ -256,7 +256,7 @@ export default function LandingPageHeader({
                         setShowProfileMenu(false);
                         setShowSettingsModal(true);
                       }}
-                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60" : "text-slate-200 hover:bg-white/8"}`}
+                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-[rgba(255,248,235,0.6)]" : "text-slate-200 hover:bg-white/8"}`}
                       type="button"
                     >
                       <Settings className="w-4 h-4 opacity-60" />
@@ -269,7 +269,7 @@ export default function LandingPageHeader({
                         setShowProfileMenu(false);
                         openUserProfile();
                       }}
-                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60" : "text-slate-200 hover:bg-white/8"}`}
+                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-[rgba(255,248,235,0.6)]" : "text-slate-200 hover:bg-white/8"}`}
                       type="button"
                     >
                       <User className="w-4 h-4 opacity-60" />
@@ -282,7 +282,7 @@ export default function LandingPageHeader({
                         setShowProfileMenu(false);
                         signOut({ redirectUrl: "/" });
                       }}
-                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors border-t ${isLightAppearance ? "text-rose-600 hover:bg-rose-50/60 border-slate-200/40" : "text-rose-400 hover:bg-rose-500/10 border-blue-400/15"}`}
+                      className={`w-full text-left px-3 py-2.5 text-sm flex items-center gap-2.5 transition-colors border-t ${isLightAppearance ? "text-rose-600 hover:bg-rose-50/60 border-[rgba(200,180,150,0.22)]" : "text-rose-400 hover:bg-rose-500/10 border-blue-400/15"}`}
                       type="button"
                     >
                       <LogOut className="w-4 h-4 opacity-60" />
@@ -326,10 +326,10 @@ export default function LandingPageHeader({
       <div
         id="landing-mobile-navigation"
         aria-label="Mobile navigation"
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileMenuOpen ? "max-h-80 opacity-100 border-t" : "max-h-0 opacity-0 border-t-0"} ${isLightAppearance ? "border-slate-200/40" : "border-blue-400/15"}`}
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileMenuOpen ? "max-h-80 opacity-100 border-t" : "max-h-0 opacity-0 border-t-0"} ${isLightAppearance ? "border-[rgba(200,180,150,0.22)]" : "border-blue-400/15"}`}
         role="region"
         style={{
-          background: isLightAppearance ? "rgba(245, 247, 251, 0.94)" : "rgba(10, 22, 38, 0.97)",
+          background: isLightAppearance ? "rgba(250, 247, 240, 0.95)" : "rgba(10, 22, 38, 0.97)",
         }}
       >
         <div className="container mx-auto px-6 py-4 flex flex-col gap-1 max-w-7xl">
@@ -345,7 +345,7 @@ export default function LandingPageHeader({
                 document.getElementById(item.target)?.scrollIntoView({ behavior: "smooth" });
                 setMobileMenuOpen(false);
               }}
-              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60 active:bg-slate-200/60" : "text-blue-100 hover:bg-white/8 active:bg-white/12"}`}
+              className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-[rgba(255,248,235,0.6)] active:bg-[rgba(255,240,215,0.6)]" : "text-blue-100 hover:bg-white/8 active:bg-white/12"}`}
             >
               {item.label}
             </button>
@@ -357,19 +357,19 @@ export default function LandingPageHeader({
               window.scrollTo({ top: 0, behavior: "smooth" });
               setMobileMenuOpen(false);
             }}
-            className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-slate-100/60 active:bg-slate-200/60" : "text-blue-100 hover:bg-white/8 active:bg-white/12"}`}
+            className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-[rgba(255,248,235,0.6)] active:bg-[rgba(255,240,215,0.6)]" : "text-blue-100 hover:bg-white/8 active:bg-white/12"}`}
           >
             About
           </button>
           {!isLoggedIn && (
             <div
-              className={`flex gap-3 pt-3 mt-2 border-t ${isLightAppearance ? "border-slate-200/40" : "border-blue-400/15"}`}
+              className={`flex gap-3 pt-3 mt-2 border-t ${isLightAppearance ? "border-[rgba(200,180,150,0.22)]" : "border-blue-400/15"}`}
             >
               <SignInButton mode="modal">
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   type="button"
-                  className={`flex-1 text-center font-medium text-sm px-4 py-2.5 rounded-xl border transition-colors ${isLightAppearance ? "border-slate-200/50 bg-white/50 text-slate-700 hover:bg-white/70" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
+                  className={`flex-1 text-center font-medium text-sm px-4 py-2.5 rounded-xl border transition-colors ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.5)] text-slate-700 hover:bg-[rgba(255,251,245,0.7)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20"}`}
                 >
                   Login
                 </button>

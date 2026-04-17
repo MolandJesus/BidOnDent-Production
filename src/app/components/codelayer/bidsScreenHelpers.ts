@@ -48,7 +48,7 @@ export function transformBid(bid: Bid, index: number) {
       ? `${bid.estimatedDays}-${bid.estimatedDays + 1} days`
       : "Timeline pending",
     distance: bid.shopDistance || "Within service area",
-    warranty: "Scope shared after acceptance",
+    warranty: "Details confirmed after acceptance",
     description: bid.description || "Bid details will be confirmed with the shop after selection.",
     image: "",
     status: bid.status || "pending",

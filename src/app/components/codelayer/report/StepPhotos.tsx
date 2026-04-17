@@ -34,9 +34,9 @@ export default function StepPhotos({
   onContinue,
 }: StepPhotosProps) {
   const isLightAppearance = appearanceMode === "light";
+
   return (
-    <div className="bd-report-step px-2 md:px-6 pt-4 pb-24 md:py-6 relative min-h-[80vh]">
-      {/* Title and instructions - compressed for mobile */}
+    <div className="bd-report-step relative min-h-[80vh] px-4 pt-5 pb-24 sm:px-5 sm:pt-6 md:px-6 md:py-6">
       <span className="bd-report-eyebrow mb-3">
         <Camera className="w-3.5 h-3.5" />
         Photo evidence
@@ -52,7 +52,6 @@ export default function StepPhotos({
         Add at least one clear photo. Three photos from different angles works best.
       </p>
 
-      {/* Info block - collapsed on mobile */}
       <div className="bd-report-note p-2 sm:p-4 mb-4 sm:mb-6 flex items-start text-xs sm:text-sm rounded-2xl">
         <div className="mr-2 sm:mr-3 mt-0.5">
           <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
@@ -65,7 +64,7 @@ export default function StepPhotos({
       {uploadingPhoto && (
         <div className="bd-report-note backdrop-blur-sm rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 flex items-center gap-3">
           <div className="animate-spin">
-            <Cloud className={`w-5 h-5 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`} />
+            <Cloud className="w-5 h-5 text-blue-400" />
           </div>
           <div className="flex-1">
             <p
@@ -82,7 +81,9 @@ export default function StepPhotos({
 
       {photos.length === 0 && (
         <div className="bd-report-section mb-4 sm:mb-6 px-3 py-6 sm:px-4 sm:py-10 text-center">
-          <ImagePlus className="w-7 h-7 sm:w-8 sm:h-8 text-blue-400/70 mx-auto mb-2" />
+          <ImagePlus
+            className={`w-7 h-7 sm:w-8 sm:h-8 mx-auto mb-2 ${isLightAppearance ? "text-amber-500/70" : "text-blue-400/70"}`}
+          />
           <p
             className={`font-medium text-sm sm:text-base ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
           >
@@ -143,7 +144,7 @@ export default function StepPhotos({
             className="bd-report-choice py-3 sm:py-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200"
           >
             <Camera
-              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
             />
             <span
               className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
@@ -157,7 +158,7 @@ export default function StepPhotos({
             className="bd-report-choice py-3 sm:py-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200"
           >
             <Upload
-              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-400" : "text-blue-400"}`}
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
             />
             <span
               className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
@@ -185,7 +186,6 @@ export default function StepPhotos({
         className="hidden"
       />
 
-      {/* Sticky footer for progression controls on mobile */}
       <div
         className={`fixed bottom-0 left-0 right-0 z-30 px-3 pt-3 pb-[env(safe-area-inset-bottom,1rem)] sm:static sm:bg-none sm:p-0 sm:mt-8 border-t ${isLightAppearance ? "bg-gradient-to-t from-white via-white/90 to-transparent border-slate-200" : "bg-gradient-to-t from-[rgba(11,23,47,0.95)] via-[rgba(11,23,47,0.80)] to-transparent border-white/10"}`}
       >

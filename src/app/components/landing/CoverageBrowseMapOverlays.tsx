@@ -110,53 +110,61 @@ export default function CoverageBrowseMapOverlays({
         )}
 
         {/* Right icon rail — map utility shortcuts */}
-        <div className="pointer-events-auto map-ui-enter map-ui-enter-delay-3 ml-auto flex flex-col gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            onClick={() => onSidebarViewChange("search")}
-            className={theme.compactIconButtonClassName}
-            aria-label="Open search"
-          >
-            <Search className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const next =
-                tileMode === "roadmap" ? "night" : tileMode === "night" ? "satellite" : "roadmap";
-              onTileModeChange(next);
-            }}
-            className={theme.compactIconButtonClassName}
-            aria-label={
-              tileMode === "roadmap"
-                ? "Switch to night map"
-                : tileMode === "night"
-                  ? "Switch to satellite"
-                  : "Switch to roadmap"
-            }
-          >
-            {tileMode === "satellite" ? (
-              <Layers className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
+        <div className="pointer-events-auto map-ui-enter map-ui-enter-delay-3 ml-auto">
+          <div
+            className={cn(
+              "map-liquid-rail relative flex flex-col gap-1.5 overflow-hidden rounded-[1.45rem] border p-1.5 sm:gap-2 sm:rounded-[1.65rem] sm:p-2",
+              theme.panelStrongClassName
             )}
-          </button>
-          <button
-            type="button"
-            onClick={onCenterMap}
-            className={cn(theme.compactIconButtonClassName, "hidden xl:flex")}
-            aria-label="Center map"
           >
-            <Crosshair className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onResetMap}
-            className={cn(theme.compactIconButtonClassName, "hidden xl:flex")}
-            aria-label="Reset map view"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </button>
+            <div className="map-liquid-sheen pointer-events-none absolute inset-0 opacity-65" />
+            <button
+              type="button"
+              onClick={() => onSidebarViewChange("search")}
+              className={cn(theme.compactIconButtonClassName, "relative z-10")}
+              aria-label="Open search"
+            >
+              <Search className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const next =
+                  tileMode === "roadmap" ? "night" : tileMode === "night" ? "satellite" : "roadmap";
+                onTileModeChange(next);
+              }}
+              className={cn(theme.compactIconButtonClassName, "relative z-10")}
+              aria-label={
+                tileMode === "roadmap"
+                  ? "Switch to night map"
+                  : tileMode === "night"
+                    ? "Switch to satellite"
+                    : "Switch to roadmap"
+              }
+            >
+              {tileMode === "satellite" ? (
+                <Layers className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={onCenterMap}
+              className={cn(theme.compactIconButtonClassName, "relative z-10 hidden xl:flex")}
+              aria-label="Center map"
+            >
+              <Crosshair className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={onResetMap}
+              className={cn(theme.compactIconButtonClassName, "relative z-10 hidden xl:flex")}
+              aria-label="Reset map view"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
 

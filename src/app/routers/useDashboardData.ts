@@ -56,7 +56,7 @@ export function useDashboardData({
   useInsurerClaimNotifications({ userType });
 
   // Shop service areas (for proximity filtering)
-  const { serviceAreas } = useShopServiceAreas();
+  const { serviceAreas } = useShopServiceAreas({ enabled: userType === "shop" });
 
   // Real-time: notify shop users when nearby reports appear in their service areas
   useShopNearbyReportNotifications({

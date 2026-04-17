@@ -70,25 +70,27 @@ export default function WhoWeServeSection({
       className="py-12 sm:py-16 md:py-20 relative overflow-hidden"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(178deg, #edf1f7 0%, #f0f4fa 35%, #eaeff6 70%, #e8edf5 100%)"
+          ? "linear-gradient(178deg, #f2f8ff 0%, #eaf3ff 35%, #e4efff 70%, #dde9ff 100%)"
           : "linear-gradient(177deg, #0c1c34 0%, #10243e 45%, #0a1a30 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-300/30" : "via-blue-400/25"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-sky-300/30" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (
         <>
           {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.03)_1px,transparent_1px)] [background-size:36px_36px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(59,130,246,0.11),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(99,102,241,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(255,191,105,0.07),transparent_50%)]" />
-          <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-blue-300/[0.12] rounded-full blur-[110px]" />
-          <div className="absolute top-10 left-[15%] w-48 h-48 bg-indigo-300/[0.08] rounded-full blur-[120px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.025)_1px,transparent_1px)] [background-size:36px_36px] opacity-40" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(210,180,130,0.10),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(200,165,100,0.08),transparent_55%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(220,185,115,0.08),transparent_50%)]" />
+          <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-amber-200/[0.10] rounded-full blur-[110px]" />
+          <div className="absolute top-10 left-[15%] w-48 h-48 bg-amber-100/[0.08] rounded-full blur-[120px]" />
+          <div className="absolute -top-10 right-[0%] w-[30rem] h-[30rem] bg-sky-400/[0.10] rounded-full blur-[130px]" />
+          <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-blue-300/[0.07] rounded-full blur-[120px]" />
         </>
       ) : (
         <>
@@ -106,10 +108,10 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "0s" }}
       >
         <div
-          className={`w-7 h-7 rounded-full ${isLightAppearance ? "bg-blue-400/30" : "bg-blue-400/45"}`}
+          className={`w-7 h-7 rounded-full ${isLightAppearance ? "bg-sky-400/[0.14]" : "bg-blue-400/45"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 34px 12px rgba(59,130,246,0.16)"
+              ? "0 0 34px 12px rgba(56,189,248,0.18)"
               : "0 0 36px 12px rgba(59,130,246,0.25)",
           }}
         />
@@ -119,10 +121,10 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "2s" }}
       >
         <div
-          className={`w-10 h-10 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-white/45 border border-blue-300/25 backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
+          className={`w-10 h-10 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-[rgba(225,240,255,0.50)] border border-[rgba(100,160,230,0.32)] backdrop-blur-sm" : "bg-blue-500/15 border border-blue-400/20"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 22px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.6)"
+              ? "0 0 22px rgba(56,189,248,0.14), inset 0 1px 0 rgba(220,240,255,0.80)"
               : "0 0 20px rgba(59,130,246,0.12)",
           }}
         >
@@ -136,10 +138,10 @@ export default function WhoWeServeSection({
         style={{ animationDelay: "5s" }}
       >
         <div
-          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-indigo-400/30" : "bg-indigo-400/40"}`}
+          className={`w-4 h-4 rounded-full ${isLightAppearance ? "bg-amber-300/[0.10]" : "bg-indigo-400/40"}`}
           style={{
             boxShadow: isLightAppearance
-              ? "0 0 26px 9px rgba(99,102,241,0.15)"
+              ? "0 0 26px 9px rgba(200,165,100,0.12)"
               : "0 0 24px 8px rgba(99,102,241,0.22)",
           }}
         />
@@ -151,7 +153,7 @@ export default function WhoWeServeSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-blue-200/30 bg-white/40 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(100,160,230,0.30)] bg-[rgba(230,244,255,0.60)] text-sky-700 shadow-[inset_0_1px_0_rgba(220,240,255,0.8)]" : "border border-blue-400/20 bg-blue-500/10 text-blue-200"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Everyone Wins
@@ -164,6 +166,11 @@ export default function WhoWeServeSection({
         >
           <h3
             className={`text-3xl sm:text-4xl font-bold mb-3 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            style={{
+              textShadow: isLightAppearance
+                ? "0 1px 2px rgba(0,0,0,0.05)"
+                : "0 2px 8px rgba(0,0,0,0.3)",
+            }}
           >
             Who We Serve
           </h3>
@@ -178,14 +185,14 @@ export default function WhoWeServeSection({
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-slate-200/60 hover:border-blue-200/50" : "border border-blue-400/22 hover:border-blue-300/32"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-[rgba(100,160,230,0.28)] hover:border-[rgba(100,160,230,0.44)]" : "border border-blue-400/22 hover:border-blue-300/32"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.65) 0%, rgba(248, 250, 255, 0.55) 100%)"
+                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 253, 0.75) 100%)"
                   : "linear-gradient(180deg, rgba(15, 30, 60, 0.35) 0%, rgba(14, 22, 38, 0.75) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 0 1px rgba(148, 163, 184, 0.08)"
+                  ? "0 10px 38px rgba(0, 0, 0, 0.11), 0 2px 8px rgba(100, 160, 230, 0.12), inset 0 1px 0 rgba(220, 240, 255, 0.92), 0 0 0 1px rgba(100, 160, 230, 0.14)"
                   : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(96, 165, 250, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.06)",
               }}
             >
@@ -193,18 +200,16 @@ export default function WhoWeServeSection({
                 <div
                   className="inline-flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg shadow-sm"
                   style={{
-                    backgroundColor: isLightAppearance
-                      ? "rgba(59, 130, 246, 0.08)"
-                      : "rgba(59, 130, 246, 0.15)",
+                    backgroundColor: isLightAppearance ? `${card.iconBg}14` : `${card.iconBg}28`,
                     border: isLightAppearance
-                      ? "1px solid rgba(59, 130, 246, 0.15)"
-                      : "1px solid rgba(96, 165, 250, 0.25)",
+                      ? `1.5px solid ${card.iconBg}30`
+                      : `1.5px solid ${card.iconBg}45`,
                     boxShadow: isLightAppearance
-                      ? "0 0 10px rgba(59, 130, 246, 0.04)"
-                      : "0 0 12px rgba(59, 130, 246, 0.1)",
+                      ? `0 4px 16px ${card.iconBg}24, 0 0 22px ${card.iconBg}12`
+                      : `0 0 16px ${card.iconBg}22`,
                   }}
                 >
-                  <card.icon className="w-6 h-6 text-blue-400" />
+                  <card.icon className="w-6 h-6" style={{ color: card.iconBg }} />
                 </div>
               </div>
               <h4
@@ -215,7 +220,10 @@ export default function WhoWeServeSection({
               <ul className="space-y-2.5">
                 {card.items.map((item, i) => (
                   <li key={i} className="flex items-start">
-                    <CheckCircle2 className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 text-blue-400" />
+                    <CheckCircle2
+                      className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0"
+                      style={{ color: card.checkColor }}
+                    />
                     <span
                       className={`text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
                     >
@@ -240,10 +248,10 @@ export default function WhoWeServeSection({
           ].map((badge) => (
             <div
               key={badge.text}
-              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 ${isLightAppearance ? "border border-blue-200/30 bg-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]" : "border border-blue-400/25 bg-blue-500/10"}`}
+              className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 ${isLightAppearance ? "border border-[rgba(100,160,230,0.30)] bg-[rgba(230,244,255,0.60)] shadow-[inset_0_1px_0_rgba(220,240,255,0.8)]" : "border border-blue-400/25 bg-blue-500/10"}`}
             >
               <CheckCircle2
-                className={`w-3.5 h-3.5 ${isLightAppearance ? "text-blue-500" : "text-blue-400"}`}
+                className={`w-3.5 h-3.5 ${isLightAppearance ? "text-sky-500" : "text-blue-400"}`}
               />
               <span
                 className={`text-xs font-semibold ${isLightAppearance ? "text-slate-600" : "text-blue-200/70"}`}
@@ -254,6 +262,10 @@ export default function WhoWeServeSection({
           ))}
         </div>
       </div>
+      {/* Bottom transition — blends into About pure-white */}
+      <div
+        className={`absolute bottom-0 left-0 right-0 h-32 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#ffffff]" : "bg-gradient-to-b from-transparent to-[#081834]"}`}
+      />
     </section>
   );
 }

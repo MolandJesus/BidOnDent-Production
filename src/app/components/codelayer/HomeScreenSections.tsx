@@ -1,4 +1,4 @@
-import { type ActionItem, actionIconTones } from "./homeScreenData";
+import { type ActionItem, actionIconTones, actionIconTonesLight } from "./homeScreenData";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 export { HomeReportsList } from "./HomeReportsList";
@@ -98,7 +98,7 @@ export function HomeQuickActions({
               isLight ? "text-slate-500" : "text-blue-100/55"
             }`}
           >
-            Command Deck
+            Your Dashboard
           </p>
           <h2
             className={`text-sm font-semibold uppercase tracking-[0.18em] md:text-base md:normal-case md:tracking-normal ${isLight ? "text-slate-800" : "text-slate-100"}`}
@@ -120,13 +120,19 @@ export function HomeQuickActions({
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-2.5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 md:gap-3">
         {quickActions.map((action, index) => {
           const Icon = action.icon;
-          const iconTone = actionIconTones[index % actionIconTones.length];
+          const iconTone = isLight
+            ? actionIconTonesLight[index % actionIconTonesLight.length]
+            : actionIconTones[index % actionIconTones.length];
           return (
             <button
               key={action.title}
               onClick={action.onClick}
               className={`bd-dashboard-section bd-dashboard-section--interactive w-[min(15rem,72vw)] shrink-0 snap-start rounded-xl p-3 text-left font-medium transition-all duration-200 active:scale-[0.97] min-h-[124px] sm:min-h-[44px] sm:w-auto md:p-4 ${
                 actionSurfaceClasses[index % actionSurfaceClasses.length]
+              } ${
+                isLight
+                  ? "border-[rgba(200,180,150,0.24)] shadow-[0_10px_22px_rgba(15,23,42,0.07)] hover:shadow-[0_16px_30px_rgba(15,23,42,0.10)]"
+                  : ""
               }`}
             >
               <div

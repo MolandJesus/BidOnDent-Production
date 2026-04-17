@@ -16,15 +16,22 @@ export default function ReportHeader({
 }: ReportHeaderProps) {
   const isLightAppearance = appearanceMode === "light";
   const isCompleteStep = step > 5;
+  const stepSubtitles: Record<number, string> = {
+    1: "Pick the vehicle shops should quote against.",
+    2: "Mark the repair zone so bids start in the right place.",
+    3: "Place the report on the map for nearby shops.",
+    4: "Add clear damage photos to improve estimate quality.",
+    5: "Add the final context shops will read before bidding.",
+  };
   const headerSubtitle = isCompleteStep
     ? "Your request is live and shops can start reviewing it."
-    : "Tell us what happened and get bids faster";
+    : stepSubtitles[Math.max(1, Math.min(5, step))];
 
   return (
-    <div className="bd-report-header !rounded-none px-3 sm:px-4 md:px-6 py-3 sm:py-4 flex items-start sm:items-center gap-3">
-      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1">
+    <div className="bd-report-header rounded-t-[2rem] !rounded-b-none px-4 sm:px-5 md:px-6 py-3 sm:py-3.5 flex items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
         <div
-          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center shrink-0 ${
+          className={`h-9 w-9 sm:h-10 sm:w-10 rounded-2xl flex items-center justify-center shrink-0 ${
             isLightAppearance
               ? "bg-blue-500/12 text-blue-700 border border-blue-300/35"
               : "bg-blue-400/12 text-blue-100 border border-blue-300/20"
@@ -35,19 +42,19 @@ export default function ReportHeader({
               : "0 18px 28px rgba(2, 6, 23, 0.24), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}
         >
-          <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+          <FileText className="h-4 w-4 sm:h-[1.15rem] sm:w-[1.15rem]" />
         </div>
         <div className="min-w-0">
-          <span className="bd-report-eyebrow mb-2 hidden sm:inline-flex">Smart intake flow</span>
+          <span className="bd-report-eyebrow mb-1.5 hidden md:inline-flex">Damage Report</span>
           <h1
-            className={`font-semibold text-base sm:text-lg leading-tight ${
+            className={`font-semibold text-lg sm:text-[1.35rem] leading-tight ${
               isLightAppearance ? "text-slate-800" : "text-slate-100"
             }`}
           >
             Report Damage
           </h1>
           <p
-            className={`text-xs mt-0.5 sm:mt-1 ${
+            className={`mt-0.5 text-xs sm:text-sm ${
               isLightAppearance ? "text-slate-500" : "text-blue-100/75"
             }`}
           >
@@ -77,7 +84,7 @@ export default function ReportHeader({
         {showCancel && (
           <button
             onClick={onCancel}
-            className={`rounded-full px-3 py-2 text-sm font-semibold inline-flex items-center gap-1.5 transition-colors ${
+            className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold transition-colors ${
               isLightAppearance
                 ? "text-rose-600 hover:bg-rose-50"
                 : "text-rose-200 hover:bg-rose-500/10"
