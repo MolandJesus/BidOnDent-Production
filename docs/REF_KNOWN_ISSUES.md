@@ -2,9 +2,10 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-04-16
+**Last updated:** 2026-04-17
 
 **Update rules:**
+
 - Add new issues as discovered. Use next available ID.
 - When fixed, mark `Status: RESOLVED (date)` — do not delete.
 - Prune RESOLVED issues older than 3 months to `docs/archive/`.
@@ -40,7 +41,7 @@
 
 - **Impact:** Security issue. Rate limit key is derived from `url.searchParams.get('clerkUserId')` — a client-supplied value. A malicious client can pass a different userId to get a separate rate limit bucket, effectively bypassing rate limits.
 - **Location:** [server/index.ts:119](../supabase/functions/server/index.ts#L119) — `const identity = url.searchParams.get('clerkUserId') ?? url.searchParams.get('customerClerkUserId') ?? null`
-- **Current reality:** Rate limiting works for honest clients. Trivially bypassable by any client that varies the query param.
+- **Current reality:** Rate limiting works for honest clients. Easy to bypass by any client that varies the query param.
 - **Fix direction:** Extract identity from the verified Clerk JWT session (already parsed by `requireClerkSession`) rather than from query params. This requires restructuring the rate limit check to happen after (or during) auth verification, or extracting the JWT subject without full verification for rate-limit-only purposes.
 - **Status:** RESOLVED (2026-04-16) — `extractJwtSubject()` decodes the JWT `sub` claim from the Authorization header instead of trusting query params. Falls back to IP-only if no JWT present. Requires edge function redeploy.
 
@@ -168,3 +169,34 @@
 - **Current reality:** The "accept bid" action creates a job assignment with no enforcement, no escrow, no review system.
 - **Fix direction:** Post-launch: reviews/ratings, then dispute workflow, then payment with escrow.
 - **Status:** Open — P3 (deferred to post-launch)
+
+### KI-043: Non-shop sessions trigger shop service-area API noise in account flows
+
+- **Impact:** Customer/insurer account surface validation can emit avoidable `404/500` console noise tied to shop service-area fetch paths. This weakens runtime trust signals during QA and obscures real errors.
+- **Current reality:** RESOLVED. `useShopServiceAreas()` now supports explicit enable guards, `useDashboardData()` only fetches service areas for shop users, and `ServiceAreaEditorModal` only fetches when opened.
+- **Fix direction:** Keep shop-only service-area loading behind role- or modal-aware guards whenever new surfaces reuse this hook.
+- **Status:** RESOLVED (2026-04-17)
+
+### KI-044: Customer estimate request fetch can fail auth on dashboard reload
+
+- **Impact:** Customer dashboard reloads can emit `500` console errors and leave estimate-request state incomplete when the edge function rejects the current Clerk token issuer.
+- **Current reality:** Root cause was a startup race in the web client: some edge requests could fire before the Clerk token getter was registered, causing the request runtime to fall back to the Supabase anon key during dashboard hydration. That degraded into misleading Clerk issuer failures on the edge and noisy reload-time console errors.
+- **Fix direction:** Resolved code-side by making `buildSupabaseEdgeHeadersAsync()` wait briefly for Clerk token registration before falling back to anon auth.
+- **Validation:** Fresh browser reload captured `GET /functions/v1/server/estimate-requests?clerkUserId=...` returning `200` twice with no `Invalid Clerk token issuer` error. Remaining reload-time `500` noise is currently tied to `/functions/v1/server/navigation-session`, not estimate requests.
+- **Status:** RESOLVED (2026-04-17) — verified in browser against the live edge environment.
+
+### KI-045: Navigation session cloud sync depends on missing backend schema in the connected environment
+
+- **Impact:** Authenticated dashboard loads could emit `500` noise from `/functions/v1/server/navigation-session`, and navigation session cross-device continuity is unavailable while the connected Supabase environment lacks `public.navigation_sessions`.
+- **Current reality:** Live edge verification returned `{"error":"Could not find the table 'public.navigation_sessions' in the schema cache"}`. The client is now hardened to detect that specific failure, clear pending retries, and temporarily fall back to local session storage instead of repeatedly calling the broken cloud path.
+- **Fix direction:** Restore schema parity in the connected Supabase environment by deploying the `navigation_sessions` table. The client-side cooldown is a mitigation only; true cross-device sync resumes when the backend table exists.
+- **Validation:** After the hardening patch, a clean dashboard reload on a fresh page showed the normal edge hydration requests returning `200` and no `navigation-session` requests during the cooldown window.
+- **Status:** MITIGATED (2026-04-17) — runtime noise suppressed client-side; backend schema drift still exists.
+
+### KI-046: Browser geocoding flows depended on direct Nominatim requests
+
+- **Impact:** Smart Shop Map origin search, navigation address suggestions, and report coordinate fallback could fail in-browser when direct requests to `nominatim.openstreetmap.org` were blocked or noisy, which weakened the map program's reload/search trust path.
+- **Current reality:** Resolved. Shared browser geocoding callers now use the public `/functions/v1/server/geocode/search` route on the Supabase `server` function, which proxies the Nominatim request server-side.
+- **Fix direction:** Keep browser geocoding behind the shared edge proxy and reuse that route for future place-search/geocode flows instead of adding new direct provider fetches in UI-facing code.
+- **Validation:** Fresh desktop reload, live origin search (`Yonkers NY`), and mobile reload at `375x812` all returned `200` from `/functions/v1/server/geocode/search` with no direct browser requests to `nominatim.openstreetmap.org` observed.
+- **Status:** RESOLVED (2026-04-17) — deployed live on the connected Supabase project.

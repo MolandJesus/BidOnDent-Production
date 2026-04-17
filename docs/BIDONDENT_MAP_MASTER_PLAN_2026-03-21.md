@@ -8,10 +8,21 @@
 >
 > Exception: any map change that is required to close a Launch Scope Guardrail or support a Hardening Plan phase item is allowed under the Hardening Plan's scope, not this doc's.
 
-**Last updated:** April 14, 2026 (Hardening phase began — strategic vision retained, feature work paused)
+**Last updated:** April 17, 2026 (Hardening phase active — strategic vision retained, coverage-map access hardening documented)
 **Status:** Strategic vision (paused during hardening)
 
 > Implementation notes archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Per-pass delivery notes belong in the Map Tracker.
+
+---
+
+## 2026-04-17: Hardening-Safe Map Chrome Polish Note
+
+- Hardening-safe map UI polish is allowed when it improves trust, readability, navigation clarity, or mobile/desktop usability without expanding map feature scope.
+- On 2026-04-17, shared map chrome was tightened across two existing map families already in the product: the landing/fullscreen coverage browse flow and the dashboard Smart Shop Map stage.
+- This work stayed inside existing interaction models and focused on hierarchy, shell cohesion, pre-search empty states, and map-adjacent control clarity.
+- Browser-automation rules are now part of map operating discipline: Playwright-like agents must use the BidOnDent logo flow to return to landing surfaces while authenticated.
+- Coverage browse maps now require explicit opt-in before mounting shared report pins. This hardening guard prevents customer-facing coverage surfaces from accidentally calling marketplace-only report endpoints while leaving the shop-directory report-map path intact.
+- Strategic direction remains unchanged: premium, product-owned blue-system map UI with stronger trust signaling and clear cross-surface consistency.
 
 ---
 
@@ -67,7 +78,9 @@ Deliver a production-grade, map-first BidOnDent experience that is:
 6. Every map UI pass must be validated on both mobile and desktop.
 7. No map-facing silent failures: telemetry, fallback state, and user messaging must stay explicit.
 
-8. Navigation session persistence is now Supabase-backed: all navigation session state is stored in the `navigation_sessions` table in Supabase. localStorage is used only as a cache/recovery layer and never overrides cloud truth. Session state is hydrated from Supabase on boot and saved to Supabase on update. Cross-device continuity is now real. See "Cloud Navigation Persistence" card in Product Brain for full detail.
+8. Navigation session persistence is designed to be Supabase-backed through the `navigation_sessions` table. When that table exists in the connected backend, session state is hydrated from Supabase on boot and saved on update, with localStorage acting as cache/recovery. When the connected backend is missing `navigation_sessions`, the client now drops to a timed local-only fallback and suppresses repeat cloud sync calls until schema parity is restored.
+
+9. Browser geocoding for Smart Shop Map origin search, navigation address suggestions, and report-layer coordinate fallback now runs through the shared public `server` edge function route (`/geocode/search`) instead of direct browser calls to Nominatim. The provider remains Nominatim, but the runtime contract is now edge-proxied and deployed as part of the shared Supabase router.
 
 ## 2026-03-22: Map Overlay Intelligence Enrichment (Pass 18)
 
@@ -82,6 +95,18 @@ Deliver a production-grade, map-first BidOnDent experience that is:
 - **Scope:** Navigation session state is now persisted in Supabase (`navigation_sessions` table) with localStorage as cache. Session state is hydrated from Supabase on boot and saved to Supabase on update. Cross-device continuity is now real. No UI or unrelated code changed. All changes are minimal and scoped.
 - **Validation:** Build clean, spellcheck clean, diagnostics clean. Session persistence verified after reload and across devices. No errors found.
 - **Docs:** This change is documented in both the Master Plan and Tracker as required.
+
+## 2026-04-17: Navigation Session Cloud-Drift Fallback Hardening (Pass 884)
+
+- **Scope:** Hardened the navigation session sync runtime so environments missing `public.navigation_sessions` no longer keep emitting edge-route `500`s during dashboard hydration. The app now detects the missing-table failure, clears pending retries, and temporarily falls back to local session storage while backend schema parity is restored. No map UI redesign or route-flow logic changed.
+- **Validation:** Focused navigation/auth runtime tests passed, production build stayed clean, and a clean dashboard reload on a fresh page showed normal edge hydration traffic without `navigation-session` requests during the fallback cooldown.
+- **Docs:** Known Issues, the Product Brain, and both map docs were updated in the same change set.
+
+## 2026-04-17: Edge-Proxied Geocoding Transport Hardening (Pass 885)
+
+- **Scope:** Added a public `/geocode/search` route to the shared Supabase `server` edge function and moved shared map geocoding callers onto it. This keeps the real Nominatim provider in place while removing direct browser dependency on provider CORS behavior for Smart Shop Map origin search, navigation suggestions, and report coordinate fallback. No provider migration or map UI redesign changed in this pass.
+- **Validation:** Focused geocoding tests passed, production build stayed clean, the shared `server` edge function was deployed live, and fresh desktop/mobile reloads plus a live origin search all returned `200` from `/functions/v1/server/geocode/search` with no direct browser requests to `nominatim.openstreetmap.org`.
+- **Docs:** Known Issues, REF_SYSTEM_STATE, and both map docs were updated in the same change set.
 
 ## Architecture Direction
 
@@ -210,7 +235,7 @@ The themes above (1–6) capture a historical strategic snapshot from the 2026-0
 
 ### Future Theme C: Provider evolution
 
-**1. Current State:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (rendering) + OSRM public (routing) + Nominatim (geocoding) + Overpass (speed limits). The renderer migration is complete, and the stack remains free-tier and functional at current scale.
+**1. Current State:** MapLibre GL JS 5.21.1 + react-map-gl 8.1.0 (rendering) + OSRM public (routing) + Nominatim via shared Supabase edge proxy (geocoding) + Overpass (speed limits). The renderer migration is complete, and the stack remains free-tier and functional at current scale.
 
 **2. Productizing Stage:** No provider changes needed. Focus on reliability within the current stack (error handling, fallbacks, graceful degradation). Document the browser compatibility matrix.
 

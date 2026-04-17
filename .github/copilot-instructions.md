@@ -6,6 +6,13 @@ Read these docs before every session (in order):
 2. [`docs/LAW_HARDENING_PLAN.md`](../docs/LAW_HARDENING_PLAN.md) — current execution authority
 3. [`docs/REF_SYSTEM_STATE.md`](../docs/REF_SYSTEM_STATE.md) — current architecture truth (replaces old CLAUDE_AI_MASTER_CONTEXT.md)
 4. [`docs/REF_KNOWN_ISSUES.md`](../docs/REF_KNOWN_ISSUES.md) — known bugs and gaps
+5. [`docs/REF_AI_BROWSER_NAVIGATION.md`](../docs/REF_AI_BROWSER_NAVIGATION.md) — required browser automation navigation protocol (logo-first landing return)
+
+### Browser Audit Rule
+
+- Before any browser or Playwright-style audit work, re-read `docs/REF_AI_BROWSER_NAVIGATION.md`.
+- Logged-in landing return must use the BidOnDent logo flow documented there, not `page.goto("/")`.
+- If browser navigation behavior changes during a pass, update `docs/REF_AI_BROWSER_NAVIGATION.md` in that same pass.
 
 ---
 

@@ -8,12 +8,12 @@
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 
-**Last updated:** April 15, 2026 (Hardening phase — Pass 879 closed all 6 dependabot vulnerabilities)
+**Last updated:** April 17, 2026 (Hardening phase — Pass 885 edge-proxied geocoding transport hardening)
 **Status:** Historical pass log / audit trail during Soft Launch Hardening phase
-**Pass count:** 879 (hardening passes continue from 855+)
+**Pass count:** 885 (hardening passes continue from 855+)
 **Build:** 0 errors ✅
-**Tests:** 554/554 passing ✅
-**Branch:** BidOnDent-Horizon-Beta (in sync with origin, deploys pending user-side actions)
+**Tests:** Focused geocoding suites passing ✅ (35 tests); full suite not run this pass
+**Branch:** BidOnDent-Horizon-Beta (in sync with origin; shared `server` edge function redeployed live for Pass 885)
 
 ---
 
@@ -27,11 +27,11 @@
 - Estimate requests: full Supabase backend lifecycle (customer→shop→respond→accept/decline)
 - Turn-by-turn voice navigation (Web Speech API) with deviation detection and auto-reroute (fully wired via useNavigationReroute → useShopDirectoryNavigation)
 - Direct navigation to any place (not just marketplace shops) — NavigationDestination type system, adapters, QA drive panel with 45 Atlanta destinations (Passes 634–641)
-- Report geocoding (Nominatim address + ZIP centroid fallback), bid count badges on map pins
+- Report geocoding (edge-proxied Nominatim address + ZIP centroid fallback), bid count badges on map pins
 - Glass design system unified across landing + dashboard (bd-dashboard-\* CSS primitives, Pass 632)
 - Cloud-synced saved shops, watchlists, shortlists, website preferences (Supabase `website_relationships` table)
 - Provider-agnostic business profiles (shop + insurer) in Supabase
-- Navigation session cloud persistence (Supabase `navigation_sessions` table)
+- Navigation session cloud persistence code path (Supabase `navigation_sessions` table) with local-only fallback when the connected backend is missing that table
 - Real-time bid updates via Supabase Realtime (`useBidsForReport` hook subscribes to INSERT/UPDATE/DELETE on `bids` table)
 - Real-time customer bid notifications (`useCustomerBidNotifications` — toast + feed when shop submits bid, Pass 782)
 - Real-time shop bid status notifications (`useShopBidStatusNotifications` — toast when customer accepts/rejects, Pass 784)
@@ -59,7 +59,7 @@
 
 - Shop directory data is Supabase-backed but populated with seeded BidOnDent-branded hubs (3 seed shops), not real third-party shop signups
 - Marketplace loop requires manual discovery — no notification to shops when new reports appear in their area
-- Geocoding is Nominatim (free, rate-limited) — functional for dev, not production-scale
+- Geocoding uses a shared edge proxy to Nominatim (free, rate-limited) — functional for dev, not production-scale
 - Demo mode provides synthetic data to populate screens; real mode shows only seed data
 - Demo customer reports now include seed bids (3 bids across 2 seed reports, Pass 781)
 
@@ -86,6 +86,100 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 - (Estimate, shop, insurer services use their own service-specific channels — see Code Organization Audit)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Pass 885 — Edge-Proxied Geocoding Transport Hardening (2026-04-17)
+
+**Phase:** Soft Launch Hardening — map runtime trust / browser geocoding transport
+**Outcome:** Removed direct browser Nominatim traffic from the shared map geocoding flows by adding a public `/geocode/search` edge route under the shared `server` function and moving the address-search and report-geocoding helpers onto that route. Smart Shop Map reload and origin search now resolve through the deployed edge path with `200` responses on both desktop and mobile.
+
+### What changed
+
+- Added `handleGeocodeSearch` to the shared Supabase edge router so browser map flows can use a single public server-side Nominatim proxy instead of calling the provider directly.
+- Added a shared `geocodingClient` in the web app and switched `searchNavigationAddresses()`, `suggestNavigationAddresses()`, and `geocodeAddress()` to use the edge route.
+- Preserved the existing client contracts for navigation suggestions, origin search, and report-layer coordinate fallback so no map UI or hook API changed.
+- Added focused regression coverage proving the shared address-search path and shared map geocoder now call `/functions/v1/server/geocode/search`.
+- Deployed the updated `server` edge function live with `--no-verify-jwt` so the new route is active in the connected Supabase project.
+
+**Files touched:** `supabase/functions/server/handlers/geocoding.ts`, `supabase/functions/server/index.ts`, `src/app/services/supabase/runtime.ts`, `src/app/services/navigation/geocodingClient.ts`, `src/app/services/navigation/addressSearch.ts`, `src/app/services/supabase/map.ts`, `src/app/services/navigation/routeEngine.test.ts`, `src/app/services/supabase/map.test.ts`, `docs/REF_SYSTEM_STATE.md`, `docs/REF_KNOWN_ISSUES.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`.
+
+**Validation:** Focused tests passed (`routeEngine.test.ts`, `map.test.ts`) with 35/35 assertions. Production build stayed clean (`npm run build`, 3.67s). Live desktop reload and live origin search returned `200` responses from `/functions/v1/server/geocode/search` with no direct browser requests to `nominatim.openstreetmap.org`. Mobile reload at `375x812` showed the same edge-route behavior with `200` responses.
+
+---
+
+## Pass 884 — Navigation Session Cloud-Drift Fallback Hardening (2026-04-17)
+
+**Phase:** Soft Launch Hardening — map runtime trust / backend drift mitigation
+**Outcome:** Hardened navigation session sync so a missing `navigation_sessions` table no longer keeps hammering the edge route during dashboard hydration. The client now detects the missing-table failure, clears retry pressure, and temporarily falls back to local session storage while the backend schema is repaired.
+
+### What changed
+
+- Added missing-table detection to `navigationSessionCloudService` so the navigation sync path can distinguish backend schema drift from normal transient edge failures.
+- Added a 15-minute local cooldown that suppresses repeated cloud reads/writes after the app sees `public.navigation_sessions` missing in the connected backend.
+- Cleared pending retry writes when that schema-missing state is detected so the app does not keep retrying an unavailable navigation sync table.
+- Added focused regression tests covering local fallback, save behavior during cooldown, and automatic retry once the cooldown expires.
+- Updated Known Issues and map docs to reflect the real runtime state: client noise is mitigated, but backend schema parity still needs to be restored for true cross-device navigation sync.
+
+**Files touched:** `src/app/services/navigation/navigationSessionCloudService.ts`, `src/app/services/navigation/navigationSessionCloudService.test.ts`, `docs/REF_KNOWN_ISSUES.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/BIDONDENT_PRODUCT_BRAIN.md`.
+
+**Validation:** Focused tests passed (`navigationSessionCloudService.test.ts`, `runtime.test.ts`, `authSession.test.ts`). Production build stayed clean (`npm run build`). Live edge inspection confirmed the prior `500` body was `Could not find the table 'public.navigation_sessions' in the schema cache`. After the client hardening, a clean dashboard reload on a fresh page showed the normal edge hydration requests returning `200` with no `navigation-session` requests during the cooldown window.
+
+---
+
+## Pass 883 — Clerk Edge-Auth Readiness Hardening (2026-04-17)
+
+**Phase:** Soft Launch Hardening — runtime trust / auth startup stabilization
+**Outcome:** Hardened the shared Supabase edge-request runtime so dashboard hydration waits briefly for Clerk auth registration before falling back to anon auth. This closes the client-side startup race that could make customer estimate-request fetches hit the edge with the wrong bearer token during reload.
+
+### What changed
+
+- Added shared auth-session helpers so the app can detect whether a Clerk token getter is registered and briefly wait for it during startup.
+- Updated `buildSupabaseEdgeHeadersAsync()` to wait for Clerk token registration before defaulting to the Supabase anon key.
+- Added runtime regression coverage for the delayed Clerk-token registration path.
+- Updated KI-044 in Known Issues to reflect the resolved client-side cause and the remaining distinction between app timing and edge-environment configuration.
+
+**Files touched:** `src/app/services/supabase/authSession.ts`, `src/app/services/supabase/runtime.ts`, `src/app/services/supabase/runtime.test.ts`, `docs/REF_KNOWN_ISSUES.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`.
+
+**Validation:** Live token inspection showed the client receives a valid Clerk issuer (`https://joint-oarfish-23.clerk.accounts.dev`), which ruled out bad token minting and confirmed the race-condition fix direction. Focused tests passed (`runtime.test.ts`, `authSession.test.ts`). Production build stayed clean (`npm run build`). Fresh browser reload captured customer estimate-request fetches returning `200` with no `Invalid Clerk token issuer` error; the remaining reload-time `500` is on `navigation-session`, not `estimate-requests`.
+
+---
+
+## Pass 882 — Coverage Map Report-Layer Access Hardening (2026-04-17)
+
+**Phase:** Soft Launch Hardening — map runtime trust / access-boundary enforcement
+**Outcome:** Stopped the shared coverage-map browse surfaces from mounting the marketplace report layer unless a caller explicitly opts in. This prevents customer-facing coverage maps from accidentally hitting the marketplace-only reports edge route while preserving the existing shop-directory report map path that already injects safe report data.
+
+### What changed
+
+- Added an explicit `showReportLayer` prop to the shared coverage-map contract instead of implicitly mounting report pins on every non-navigation coverage surface.
+- Updated `MapLibreServiceCoverageMap` so the report marker interactive layer is only registered when the report layer is intentionally enabled.
+- Updated `MapLibreCoverageMapLayers` so customer-facing coverage browse/fullscreen map flows no longer instantiate `MapLibreReportLayer` by default.
+- Left `MapLibreShopDirectoryMapPane` unchanged; it still mounts `MapLibreReportLayer` with `initialReports`, report filters, and role-aware controls for the Smart Shop Map experience.
+
+**Files touched:** `src/app/components/maps/mapLibreServiceCoverageMapHelpers.ts`, `src/app/components/maps/MapLibreServiceCoverageMap.tsx`, `src/app/components/maps/MapLibreCoverageMapLayers.tsx`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`.
+
+**Validation:** Build clean (`npm run build`, 5.97s). Diagnostics clean on touched map files. Browser verification completed on the live Smart Shop Map path after the change; the shop-directory map continued rendering report context without the prior marketplace-access console symptom from the shared coverage-map path. Coverage-map browse surfaces were validated by direct code-path audit plus clean build/diagnostics in this pass.
+
+---
+
+## Pass 881 — Map Chrome Hardening Across Coverage + Smart-Shop Surfaces (2026-04-17)
+
+**Phase:** Soft Launch Hardening — map trust/readability polish within existing scope
+**Outcome:** Tightened the shared map chrome without adding new feature scope. Landing/fullscreen coverage browse surfaces now have stronger glass hierarchy, clearer tab headers, better empty states, and a cleaner mobile sheet. The dashboard Smart Shop Map stage now has a more cohesive shell, stronger headline rhythm, and cleaner search/filter controls. Added a browser-automation runbook so Playwright-like agents use logo-first landing return instead of brittle root navigation.
+
+### What changed
+
+- Strengthened shared light/dark map surface tokens in `mapSurfaceTheme.ts` for better depth, segmented-control clarity, and more intentional glass treatment.
+- Upgraded coverage browse desktop sidebar shell and mobile bottom sheet chrome.
+- Improved Search / Explore / Saved / Shops browse panels with stronger hierarchy and richer empty states.
+- Added a deliberate pre-search state for the Shops tab so it no longer collapses into sparse empty space.
+- Polished the Smart Shop Map stage shell, stage header, and stage search/filter shell to align with the premium map direction.
+- Added `REF_AI_BROWSER_NAVIGATION.md` and linked it into AI startup reading so browser agents use the required logo-first landing return flow.
+
+**Files touched:** `src/app/components/maps/mapSurfaceTheme.ts`, `src/app/components/maps/command-center/CoverageCommandCenterSidebar.tsx`, `src/app/components/landing/CoverageBrowseExperience.tsx`, `src/app/components/landing/MobileMapBottomSheet.tsx`, `src/app/components/landing/CoverageBrowseSidebarContent.tsx`, `src/app/components/landing/CoverageNearestShops.tsx`, `src/app/components/landing/coverageNearestShopsHelpers.ts`, `src/app/components/maps/navigation/NavigationBrowseDiscoveryPanel.tsx`, `src/app/components/maps/navigation/NavigationSavedPlacesPanel.tsx`, `src/app/components/shop/ShopDirectoryHybridStage.tsx`, `src/app/components/shop/ShopDirectoryHybridHeader.tsx`, `src/app/components/shop/ShopDirectorySearchPanel.tsx`, `docs/REF_AI_BROWSER_NAVIGATION.md`, `.github/copilot-instructions.md`, `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`, `docs/README.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`.
+
+**Validation:** Build clean (`npm run build`, 3.38s). Spellcheck clean on all touched UI files. Browser verification completed on the Smart Shop Map stage in the live dev build; coverage-browse surfaces validated structurally plus build-level verification after shared theme updates.
 
 ---
 

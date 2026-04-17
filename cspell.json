@@ -63,6 +63,7 @@
     "osrm",
     "Nominatim",
     "nominatim",
+    "openstreetmap",
     "recalc",
     "maxspeed",
     "maplibre",

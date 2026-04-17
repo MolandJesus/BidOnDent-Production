@@ -1,6 +1,6 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-04-16  
+**Last updated:** 2026-04-17  
 **Status:** Active documentation operating index  
 **Current phase:** Soft Launch Hardening (edge functions v40)
 
@@ -14,25 +14,26 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 
 ### LAW (governs all work)
 
-| Document | Purpose |
-|---|---|
-| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)** | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model. |
+| Document                                             | Purpose                                                                                                                                                |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **[`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md)**   | Permanent behavioral rules: product definition, 6 laws, product DNA, map investment rules, doc authority model.                                        |
 | **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** | Execution authority for the hardening phase. North Star, Launch Scope Guardrails, Locked Decisions, Execution Plan (Phases 0–6), Execution Discipline. |
 
 ### REFERENCE (current truth)
 
-| Document | Purpose |
-|---|---|
-| **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)** | How the system actually works now. Architecture, auth flow, state ownership, role reality, map stack, known bottlenecks. **Read this instead of the old CLAUDE_AI_MASTER_CONTEXT.md.** |
-| **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)** | Living inventory of known bugs, gaps, and structural issues with IDs, impact, and fix direction. |
-| [`BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`](BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md) | Module completion status (3 roles × 7 modules). To be rewritten as `REF_MODULE_STATUS.md`. |
+| Document                                                                                               | Purpose                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)**                                                       | How the system actually works now. Architecture, auth flow, state ownership, role reality, map stack, known bottlenecks. **Read this instead of the old CLAUDE_AI_MASTER_CONTEXT.md.** |
+| **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)**                                                       | Living inventory of known bugs, gaps, and structural issues with IDs, impact, and fix direction.                                                                                       |
+| **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)**                                     | Browser automation/navigation rules for AI agents, including the logo-first landing return protocol and map QA screenshot checklist.                                                   |
+| [`BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`](BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md) | Module completion status (3 roles × 7 modules). To be rewritten as `REF_MODULE_STATUS.md`.                                                                                             |
 
 ### PLAN (future direction — not current truth)
 
-| Document | Purpose |
-|---|---|
-| [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) | Deliberately deferred work with priority bands and triggers. Not a backlog. |
-| [`BIDONDENT_PRODUCT_BRAIN.md`](BIDONDENT_PRODUCT_BRAIN.md) | Strategic product vision. Paused during hardening. To be trimmed as `PLAN_PRODUCT_BRAIN.md`. |
+| Document                                                                                     | Purpose                                                                                      |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) | Deliberately deferred work with priority bands and triggers. Not a backlog.                  |
+| [`BIDONDENT_PRODUCT_BRAIN.md`](BIDONDENT_PRODUCT_BRAIN.md)                                   | Strategic product vision. Paused during hardening. To be trimmed as `PLAN_PRODUCT_BRAIN.md`. |
 
 **If any doc conflicts with LAW docs, LAW wins.** Flag the conflict and fix it.
 
@@ -46,7 +47,8 @@ Read in this order:
 2. **[`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md)** — what to do now, in what order.
 3. **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)** — how the system actually works (includes AI reading order by task type).
 4. **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)** — what's broken or missing.
-5. Then pick task-specific docs from the sections below.
+5. **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — required browser automation navigation protocol for Playwright-like tools.
+6. Then pick task-specific docs from the sections below.
 
 ---
 
@@ -136,4 +138,3 @@ Every pass that changes a load-bearing fact must also update the docs it contrad
 Silent doc drift during auto-execution is a discipline failure. If you cannot update the affected docs in the same pass, stop and escalate.
 
 ---
-

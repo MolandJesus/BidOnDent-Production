@@ -60,7 +60,7 @@ These cards are the **primary entry point** for future work. Read one card, unde
 
 ### CARD: Navigation Session Cloud Sync (Pass 19)
 
-- **STATE:** Tier 3 (Delivered). Navigation session state is now persisted in Supabase (`navigation_sessions` table) with localStorage as cache. Session state is hydrated from Supabase on boot and saved to Supabase on update. Cross-device continuity is now real. No UI or unrelated code changed. All changes are minimal and scoped.
+- **STATE:** Tier 3 (Delivered in code, backend-dependent in runtime). Navigation session state is designed to persist in Supabase (`navigation_sessions` table) with localStorage as cache. If the connected backend is missing `navigation_sessions`, the client now temporarily falls back to local-only session storage and suppresses repeat cloud sync calls until schema parity is restored.
 - **DELIVERED (2026-03-23):** Navigation session cloud sync, persistent session memory, and cross-device continuity. Build, diagnostics, and spellcheck all clean. Session persistence verified after reload and across devices.
 - **TOUCHES:** supabase/migrations/009_create_navigation_sessions.sql, src/app/services/navigation/navigationSessionCloudService.ts, src/app/features/navigation/useNavigationSession.ts, src/app/features/navigation/sessionTypes.ts
 - **DO NOT:** Change navigation UI to accommodate sync. Add sync indicators that distract from driving.
@@ -121,7 +121,7 @@ These cards are the **primary entry point** for future work. Read one card, unde
 
 ### CARD: Cloud Navigation Persistence
 
-- **STATE:** Tier 3 (Delivered, Pass 19). Navigation session state persisted in Supabase (`navigation_sessions` table) with localStorage as cache. Cross-device continuity is real. See updated card "Navigation Session Cloud Sync (Pass 19)" above.
+- **STATE:** Tier 3 (Delivered in code, guarded in runtime). Navigation session state persists through Supabase when `navigation_sessions` exists in the connected backend; otherwise the client now mitigates schema drift by falling back to local-only session storage until the backend table is restored. See updated card "Navigation Session Cloud Sync (Pass 19)" above.
 - **DELIVERED:** Supabase migration `009_create_navigation_sessions.sql`, `navigationSessionCloudService.ts`, session hydration from Supabase on boot, save on update.
 - **DO NOT:** Change navigation UI to accommodate sync. Add sync indicators that distract from driving.
 - **VERIFY:** Route session persists after closing browser. Same session loads on different device. localStorage remains as cache/fallback.
