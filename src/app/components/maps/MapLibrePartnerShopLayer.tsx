@@ -224,9 +224,7 @@ export default function MapLibrePartnerShopLayer({
                 </div>
                 {popupShop.dataMode === "demo" && (
                   <>
-                    <span
-                      className={`text-[11px] ${isLight ? "text-slate-300" : "text-white/20"}`}
-                    >
+                    <span className={`text-[11px] ${isLight ? "text-slate-300" : "text-white/20"}`}>
                       ·
                     </span>
                     <span

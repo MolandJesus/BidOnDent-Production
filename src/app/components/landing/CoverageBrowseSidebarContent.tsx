@@ -189,7 +189,12 @@ export default function CoverageBrowseSidebarContent({
             activeOriginLabel={navigation.activeOriginLabel}
             addressQuery={navigation.addressQuery}
             onAddressQueryChange={navigation.setAddressQuery}
-            onSearchAddresses={onSearchAddresses ?? (() => { void navigation.searchAddresses(); })}
+            onSearchAddresses={
+              onSearchAddresses ??
+              (() => {
+                void navigation.searchAddresses();
+              })
+            }
             addressResults={navigation.addressResults}
             selectedAddressResult={navigation.selectedAddressResult}
             isSearchingAddresses={navigation.isSearchingAddresses}
