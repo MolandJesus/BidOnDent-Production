@@ -8,12 +8,12 @@
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 
-**Last updated:** April 17, 2026 (Hardening phase — Pass 886 browser-verified cross-surface map chrome continuity)
+**Last updated:** April 17, 2026 (Hardening phase — Pass 887 remaining dependency vulnerability sweep)
 **Status:** Historical pass log / audit trail during Soft Launch Hardening phase
-**Pass count:** 886 (hardening passes continue from 855+)
+**Pass count:** 887 (hardening passes continue from 855+)
 **Build:** 0 errors ✅
-**Tests:** Automated unit suites not re-run this pass; diagnostics, spellcheck, production build, and live browser audit completed ✅
-**Branch:** BidOnDent-Horizon-Beta (working tree includes Pass 886 map chrome/docs changes; not pushed in this pass)
+**Tests:** 563/563 passing ✅
+**Branch:** BidOnDent-Horizon-Beta (working tree includes Pass 887 dependency + tracker changes; not pushed in this pass)
 
 ---
 
@@ -86,6 +86,27 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 - (Estimate, shop, insurer services use their own service-specific channels — see Code Organization Audit)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Pass 887 — Remaining Dependency Vulnerability Sweep (2026-04-17)
+
+**Phase:** Repo health / launch hygiene (parallel to Soft Launch Hardening)
+**Outcome:** Cleared the 2 remaining `npm audit` findings that still existed after the earlier security sweep: one critical Clerk advisory and one moderate protobuf-schema advisory. The fix stayed narrowly scoped to dependency metadata and lockfile refresh, with a clean audit, clean build, clean typecheck, full test pass, and a light browser smoke on the dev server.
+
+### What changed
+
+- Ran a live `npm audit` instead of trusting the planner snapshot. Current reality was 2 advisories, not 8: `@clerk/shared` (critical, via `@clerk/clerk-react`) and `protocol-buffers-schema` (moderate, via `maplibre-gl` -> `pbf` -> `resolve-protobuf-schema`).
+- Bumped `@clerk/clerk-react` from `^5.59.2` to `^5.61.5`, which pulls `@clerk/shared` `^3.47.4` and clears the Clerk route-protection advisory without a major-version jump.
+- Added a top-level override for `protocol-buffers-schema` `3.6.1`, which satisfies the existing `resolve-protobuf-schema` range and clears the transitive prototype-pollution advisory without forcing a broader MapLibre upgrade.
+- Added a local `typecheck` script (`tsc -p tsconfig.json --noEmit`) so the repo now has an explicit package-script validation path instead of relying on ad hoc terminal commands.
+- Refreshed `package-lock.json` and the installed tree with `npm install`.
+
+**Files touched:** `package.json`, `package-lock.json`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`.
+
+**Validation:** `npm audit` now reports `0` vulnerabilities. `npm run build` passed (3.33s, 60 precache entries). `npm run typecheck` passed cleanly. `npm test` passed cleanly (563/563). Browser smoke against `http://localhost:5174/` reloaded into the dashboard Smart Shop Map surface without a dependency-related crash, hydration overlay, or broken shell. Browser console still shows pre-existing environment/runtime warnings during local dev (Clerk development keys, Realtime unauthenticated warning, transient WebSocket close, one `404` resource fetch), but none were introduced by this pass.
+
+**Notes / scope honesty:** The planner prompt's dependency baseline was stale. This pass only addressed the two live advisories actually present in the checked-out repo. It did not widen into general package freshness or unrelated dependency upgrades.
 
 ---
 
