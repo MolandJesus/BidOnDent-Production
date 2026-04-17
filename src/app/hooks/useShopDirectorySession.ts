@@ -2,6 +2,7 @@ import { useDeferredValue, useEffect, useState } from "react";
 import type { ShopSortOption, WebsiteIdentity } from "../services/auth/websiteIdentity";
 import { loadWebsiteSessionMemory } from "../services/auth/websiteIdentity";
 import type { MarketUserType } from "../services/intelligence/marketIntelligence";
+import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
 import { buildRoleAwareRouteSummary } from "../services/intelligence/shopMapExperience";
 import type { NavigationAddressResult, NavigationAddressSuggestion } from "../types/navigation";
 import type {
@@ -45,6 +46,8 @@ type UseShopDirectorySessionArgs = {
   initialSearchHint?: string;
   /** Center the map on these coordinates on first mount (e.g. from a report). */
   initialMapCenter?: Coordinates;
+  /** Site-level appearance mode — syncs the map tile style to light/dark. */
+  appearanceMode?: DashboardAppearanceMode;
 };
 
 export function useShopDirectorySession({
@@ -54,6 +57,7 @@ export function useShopDirectorySession({
   reports,
   initialSearchHint,
   initialMapCenter,
+  appearanceMode,
 }: UseShopDirectorySessionArgs) {
   const { inventory } = useNetworkDirectory();
   const {
@@ -97,7 +101,18 @@ export function useShopDirectorySession({
   // Always start in hybrid — immersive is entered only by explicit user action
   // (directions button or full-screen toggle), never restored from saved state.
   const [mapViewMode, setMapViewMode] = useState<MapViewMode>("hybrid");
-  const [mapTheme, setMapTheme] = useState<MapTheme>(savedMemory.mapSession?.mapTheme || "light");
+  const [mapTheme, setMapTheme] = useState<MapTheme>(() => {
+    // Appearance mode wins on initial load; only fall back to saved memory
+    // when no appearance setting is available.
+    if (appearanceMode) return appearanceMode === "light" ? "light" : "dark";
+    return savedMemory.mapSession?.mapTheme || "light";
+  });
+
+  // Keep map tile in sync when the user toggles the site appearance mode.
+  useEffect(() => {
+    if (!appearanceMode) return;
+    setMapTheme(appearanceMode === "light" ? "light" : "dark");
+  }, [appearanceMode]);
 
   // Resolve "auto" mapTheme to dark/light based on OS preference
   const osPrefersDark = useOsPrefersDark();
@@ -135,7 +150,10 @@ export function useShopDirectorySession({
     setShopWatchlistIds,
     setInsurerShortlistIds,
     setMapViewMode,
-    setMapTheme,
+    // Appearance mode always wins — don't let session memory clobber it.
+    setMapTheme: appearanceMode
+      ? () => setMapTheme(appearanceMode === "light" ? "light" : "dark")
+      : setMapTheme,
     setSelectedRouteId,
     setMapCenter,
     setMapZoom,

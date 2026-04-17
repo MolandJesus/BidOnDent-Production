@@ -73,11 +73,7 @@ export default function ShopDirectoryHybridStage({
 }: ShopDirectoryHybridStageProps) {
   const isLight = appearanceMode === "light";
   const stageRoleLabel =
-    userType === "shop"
-      ? "Market watch"
-      : userType === "insurer"
-        ? "Partner scouting"
-        : "Repair routing";
+    userType === "shop" ? "Nearby shops" : userType === "insurer" ? "Partner shops" : "Find shops";
 
   const sortLabel =
     session.sortBy === "rating"
@@ -95,10 +91,10 @@ export default function ShopDirectoryHybridStage({
         : "Auto tiles";
 
   const stageShellClassName = isLight
-    ? "border-slate-200/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(226,232,240,0.74))] shadow-[0_30px_86px_rgba(15,23,42,0.12)]"
+    ? "border-slate-200/74 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),rgba(239,246,255,0.9)_28%,rgba(226,232,240,0.8)_100%)] shadow-[0_36px_100px_rgba(15,23,42,0.12)]"
     : "border-blue-300/14 bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.2),rgba(8,16,32,0.92)_34%,rgba(2,6,23,0.98)_100%)] shadow-[0_34px_90px_rgba(2,6,23,0.42)]";
   const stagePanelClassName = isLight
-    ? "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.88),rgba(226,232,240,0.76))]"
+    ? "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(241,245,249,0.82))]"
     : "border-white/[0.08] bg-[linear-gradient(180deg,rgba(9,18,36,0.84),rgba(6,13,26,0.92))]";
   const stageSummaryText = session.selectedShop
     ? `Focused on ${session.selectedShop.name}. The map stays live while the strongest recommended shops stay below for easy comparison.`
@@ -159,11 +155,11 @@ export default function ShopDirectoryHybridStage({
       <section className="mx-4">
         <div
           className={cn(
-            "mx-auto max-w-[1480px] overflow-hidden rounded-[2rem] border p-3 sm:p-4",
+            "mx-auto max-w-[1480px] overflow-hidden rounded-[2.15rem] border p-3 sm:p-4",
             stageShellClassName
           )}
         >
-          <div className={cn("rounded-[1.8rem] border p-4 sm:p-5", stagePanelClassName)}>
+          <div className={cn("rounded-[1.95rem] border p-4 sm:p-5", stagePanelClassName)}>
             <ShopDirectoryHybridHeader
               isLight={isLight}
               stageRoleLabel={stageRoleLabel}

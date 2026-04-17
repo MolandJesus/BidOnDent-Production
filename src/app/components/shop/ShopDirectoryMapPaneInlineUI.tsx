@@ -120,7 +120,7 @@ export function MapTilePicker({
       }`}
     >
       <div
-        className={`pointer-events-auto inline-flex items-center rounded-full border shadow-[0_16px_36px_rgba(15,23,42,0.14)] backdrop-blur-2xl transition-[background,border-color,box-shadow] duration-300 ${
+        className={`map-liquid-rail pointer-events-auto inline-flex items-center rounded-[1.35rem] border transition-[background,border-color,box-shadow] duration-300 ${
           compact ? "gap-0.5 p-[3px]" : "gap-1 p-1"
         } ${
           isDark
@@ -139,7 +139,7 @@ export function MapTilePicker({
               tileMode === key
                 ? isDark
                   ? "bg-[linear-gradient(180deg,#93c5fd,#60a5fa)] text-slate-950 shadow-[0_12px_24px_rgba(59,130,246,0.34)]"
-                  : "bg-sky-500/80 text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)]"
+                  : "bg-[linear-gradient(180deg,rgba(59,130,246,0.9),rgba(37,99,235,0.96))] text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)]"
                 : isDark
                   ? "text-slate-200 hover:bg-blue-500/15 hover:text-white"
                   : "text-slate-600 hover:bg-white/35 hover:text-slate-900"
@@ -160,9 +160,9 @@ export function MapTilePicker({
 export function MapEmptyState({ isDark, shopCount }: { isDark: boolean; shopCount: number }) {
   if (shopCount > 0) return null;
   return (
-    <div className="pointer-events-none absolute inset-0 z-[450] flex items-center justify-center">
+    <div className="pointer-events-none absolute inset-x-0 bottom-14 z-[450] flex justify-center px-3 sm:bottom-20">
       <div
-        className={`pointer-events-auto rounded-2xl border px-5 py-4 text-center shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur-2xl ${
+        className={`map-liquid-panel pointer-events-auto max-w-[320px] rounded-[1.35rem] border px-4 py-3 text-center shadow-[0_18px_40px_rgba(15,23,42,0.14)] backdrop-blur-2xl ${
           isDark
             ? "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))] text-white"
             : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.84),rgba(226,232,240,0.76))] text-slate-700"

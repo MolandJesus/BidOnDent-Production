@@ -148,10 +148,17 @@ export default function NavigationBrowseDiscoveryPanel({
   ].filter((guide): guide is GuideCard => Boolean(guide));
 
   return (
-    <div className={cn("space-y-3 rounded-[1.75rem] p-3", theme.panelStrongClassName)}>
+    <div className={cn("space-y-4 rounded-[1.85rem] p-4", theme.panelStrongClassName)}>
       <div>
         <div className="flex items-center justify-between gap-3">
-          <div className={theme.eyebrowClassName}>Explore Nearby</div>
+          <div>
+            <div className={theme.eyebrowClassName}>Explore Nearby</div>
+            <div className={cn("mt-2 text-sm font-semibold", theme.titleClassName)}>
+              {activeSearchTarget
+                ? `Live market view around ${activeSearchTarget.label}`
+                : "Search or enable GPS to start exploring"}
+            </div>
+          </div>
           {activeSearchTarget ? (
             <div
               className={cn(
@@ -208,21 +215,30 @@ export default function NavigationBrowseDiscoveryPanel({
           BidOnDent partner shops
         </div>
         {nearbyShops.length === 0 ? (
-          <div
-            className={cn(
-              "flex items-center gap-3 rounded-[1rem] p-3 text-sm",
-              theme.panelClassName
-            )}
-          >
-            <Compass
-              className={cn(
-                "h-5 w-5 shrink-0",
-                tone === "light" ? "text-sky-400" : "text-cyan-400/60"
-              )}
-            />
-            <span className={theme.secondaryTextClassName}>
-              Partner shops appear here once a ZIP or GPS origin is active.
-            </span>
+          <div className={cn("rounded-[1.15rem] border p-3.5 text-sm", theme.panelClassName)}>
+            <div className="flex items-start gap-3">
+              <div
+                className={cn(
+                  "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl",
+                  tone === "light" ? "bg-sky-100 text-sky-600" : "bg-cyan-400/12 text-cyan-300"
+                )}
+              >
+                <Compass className="h-4 w-4" />
+              </div>
+              <div>
+                <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+                  Partner shops appear after search focus is set
+                </div>
+                <div className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
+                  Start with a ZIP, address, or live GPS origin, then this area becomes a curated
+                  set of BidOnDent partner options.
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className={theme.softBadgeClassName}>ZIP or address</span>
+                  <span className={theme.softBadgeClassName}>Live GPS</span>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid gap-2">
@@ -317,7 +333,7 @@ export default function NavigationBrowseDiscoveryPanel({
               <div
                 key={guide.id}
                 className={cn(
-                  "overflow-hidden rounded-[1.25rem] border text-left shadow-[0_14px_32px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5",
+                  "overflow-hidden rounded-[1.35rem] border text-left shadow-[0_18px_40px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5",
                   tone === "light" ? "border-white/80" : "border-white/10"
                 )}
               >

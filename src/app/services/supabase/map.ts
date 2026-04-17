@@ -1,4 +1,5 @@
 import { supabase } from "./client";
+import { fetchGeocodeSearchResults } from "../navigation/geocodingClient";
 import type { PartnerShopMapRecord } from "./types";
 
 type Coordinates = {
@@ -107,25 +108,15 @@ export async function geocodeAddress(parts: {
   lastGeocodeFetch = Date.now();
 
   try {
-    const url = new URL("https://nominatim.openstreetmap.org/search");
-    url.searchParams.set("format", "jsonv2");
-    url.searchParams.set("limit", "1");
-    url.searchParams.set("countrycodes", "us");
-    url.searchParams.set("q", query);
-
-    const res = await fetch(url.toString(), {
-      headers: { Accept: "application/json" },
-    });
-    if (!res.ok) {
+    const results = await fetchGeocodeSearchResults({ limit: 1, query });
+    if (!results.length) {
       geocodeCache.set(key, null);
       return null;
     }
-    const data = (await res.json()) as Array<{ lat: string; lon: string }>;
-    if (!data.length) {
-      geocodeCache.set(key, null);
-      return null;
-    }
-    const coords: Coordinates = { lat: Number(data[0].lat), lng: Number(data[0].lon) };
+    const coords: Coordinates = {
+      lat: Number(results[0].lat),
+      lng: Number(results[0].lon),
+    };
     if (!Number.isFinite(coords.lat) || !Number.isFinite(coords.lng)) {
       geocodeCache.set(key, null);
       return null;

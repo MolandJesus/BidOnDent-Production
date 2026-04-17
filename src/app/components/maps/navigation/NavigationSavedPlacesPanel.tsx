@@ -109,12 +109,17 @@ export default function NavigationSavedPlacesPanel({
   const theme = getMapSurfaceTheme(tone, true);
 
   return (
-    <div className={cn("space-y-3 rounded-[1.75rem] p-3", theme.panelStrongClassName)}>
-      <div>
-        <div className={theme.eyebrowClassName}>Saved Places</div>
-        <div className={cn("mt-1.5 text-sm", theme.secondaryTextClassName)}>
-          Save favorite locations and mark where the car is parked.
+    <div className={cn("space-y-4 rounded-[1.85rem] p-4", theme.panelStrongClassName)}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className={theme.eyebrowClassName}>Saved Places</div>
+          <div className={cn("mt-1.5 text-sm", theme.secondaryTextClassName)}>
+            Save favorite locations and mark where the car is parked.
+          </div>
         </div>
+        <span className={theme.softBadgeClassName}>
+          {pinnedLocations.length + recentLocations.length} saved
+        </span>
       </div>
 
       <div className={cn("p-3", theme.panelClassName)}>
@@ -228,8 +233,24 @@ export default function NavigationSavedPlacesPanel({
           <div className={theme.metricLabelClassName}>Pinned places</div>
           <div className="mt-2.5 space-y-1.5">
             {pinnedLocations.length === 0 ? (
-              <div className={cn("text-sm", theme.secondaryTextClassName)}>
-                Save Home, Work, or custom places from the current origin.
+              <div className={cn("flex items-start gap-3", theme.listCardClassName)}>
+                <div
+                  className={cn(
+                    "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                    tone === "light" ? "bg-sky-100 text-sky-700" : "bg-cyan-400/12 text-cyan-200"
+                  )}
+                >
+                  <MapPinned className="h-4 w-4" />
+                </div>
+                <div>
+                  <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+                    No pinned places yet
+                  </div>
+                  <div className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
+                    Save Home, Work, or a custom place from the current origin to reuse it
+                    instantly.
+                  </div>
+                </div>
               </div>
             ) : (
               pinnedLocations.map((location) => {
@@ -293,8 +314,23 @@ export default function NavigationSavedPlacesPanel({
           <div className={theme.metricLabelClassName}>Recent places</div>
           <div className="mt-2.5 space-y-1.5">
             {recentLocations.length === 0 ? (
-              <div className={cn("text-sm", theme.secondaryTextClassName)}>
-                Recent destinations will appear here after use.
+              <div className={cn("flex items-start gap-3", theme.listCardClassName)}>
+                <div
+                  className={cn(
+                    "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                    tone === "light" ? "bg-slate-100 text-slate-700" : "bg-white/8 text-slate-100"
+                  )}
+                >
+                  <Clock3 className="h-4 w-4" />
+                </div>
+                <div>
+                  <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+                    No recent destinations yet
+                  </div>
+                  <div className={cn("mt-1 text-xs leading-5", theme.secondaryTextClassName)}>
+                    Recent origins and destinations will collect here after you browse and route.
+                  </div>
+                </div>
               </div>
             ) : (
               recentLocations.map((location) => {

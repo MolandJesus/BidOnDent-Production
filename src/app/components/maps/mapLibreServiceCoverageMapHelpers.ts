@@ -26,6 +26,7 @@ export type MapLibreServiceCoverageMapProps = {
   presentationMode?: "coverage" | "navigation";
   showSurfaceChrome?: boolean;
   showNavigationHud?: boolean;
+  showReportLayer?: boolean;
   followCurrentPosition?: boolean;
   followCurrentPositionRevision?: number;
   guidanceMode?: boolean;

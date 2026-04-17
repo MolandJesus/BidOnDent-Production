@@ -46,11 +46,32 @@ export default function CoverageCommandCenterSidebar({
   return (
     <aside
       className={cn(
-        "flex h-full flex-col border-t border-white/10 p-2.5 sm:p-3.5 xl:border-t-0",
-        dock === "left" ? "xl:border-r" : "xl:border-l"
+        "relative flex h-full flex-col p-2 sm:p-3",
+        dock === "left" ? "xl:pr-1" : "xl:pl-1"
       )}
     >
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-x-4 top-0 h-px",
+          tone === "light"
+            ? "bg-gradient-to-r from-transparent via-white/80 to-transparent"
+            : "bg-gradient-to-r from-transparent via-blue-200/20 to-transparent"
+        )}
+      />
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-0.5">
+        {!showOverviewCards ? (
+          <div
+            className={cn(
+              "map-liquid-card map-ui-enter flex flex-wrap items-center gap-2 p-3",
+              theme.panelClassName
+            )}
+          >
+            <span className={theme.softBadgeClassName}>Mode {viewModeLabel}</span>
+            <span className={theme.softBadgeClassName}>{regionCount} regions</span>
+            <span className={theme.softBadgeClassName}>{partnerShops.length} live shops</span>
+          </div>
+        ) : null}
+
         {showOverviewCards ? (
           <div
             className={cn(

@@ -16,6 +16,7 @@ import type { NavigationDiscoveryPlace } from "../../services/navigation/placeDi
 type MapLibreCoverageMapLayersProps = {
   tone: MapSurfaceTone;
   isNavigationPresentation: boolean;
+  showReportLayer: boolean;
   routeGeoJSON: GeoJSON | null;
   routeGeometry?: [number, number][];
   routeFitKey?: string | null;
@@ -39,6 +40,7 @@ type MapLibreCoverageMapLayersProps = {
 export default function MapLibreCoverageMapLayers({
   tone,
   isNavigationPresentation,
+  showReportLayer,
   routeGeoJSON,
   routeGeometry,
   routeFitKey,
@@ -149,7 +151,7 @@ export default function MapLibreCoverageMapLayers({
         onSelectShop={onSelectShop}
       />
 
-      {!isNavigationPresentation ? (
+      {!isNavigationPresentation && showReportLayer ? (
         <NavigationErrorBoundary>
           <MapLibreReportLayer />
         </NavigationErrorBoundary>

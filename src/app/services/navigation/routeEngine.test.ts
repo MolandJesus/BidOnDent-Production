@@ -257,6 +257,17 @@ describe("addressSearch", () => {
     expect(results[0].provider).toBe("nominatim");
   });
 
+  it("uses the shared edge geocoder route instead of direct browser Nominatim", async () => {
+    mockFetch(sampleNominatimResults);
+
+    await searchNavigationAddresses("White Plains NY " + Math.random());
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/functions/v1/server/geocode/search?"),
+      expect.objectContaining({ method: "GET" })
+    );
+  });
+
   it("filters out results with non-finite coordinates", async () => {
     mockFetch([
       ...sampleNominatimResults,

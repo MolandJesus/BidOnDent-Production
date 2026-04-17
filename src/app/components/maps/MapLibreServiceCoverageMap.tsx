@@ -54,6 +54,7 @@ export default function MapLibreServiceCoverageMap({
   presentationMode = "coverage",
   showSurfaceChrome = true,
   showNavigationHud = true,
+  showReportLayer = false,
   followCurrentPosition = false,
   followCurrentPositionRevision = 0,
   guidanceMode = false,
@@ -152,11 +153,13 @@ export default function MapLibreServiceCoverageMap({
   const interactiveLayerIds = useMemo(() => {
     const ids = [PARTNER_SHOPS_LAYER_ID];
     if (!isNavigationPresentation) {
-      ids.push(REPORT_MARKERS_LAYER_ID);
+      if (showReportLayer) {
+        ids.push(REPORT_MARKERS_LAYER_ID);
+      }
       if (discoveryPlaces.length > 0) ids.push(DISCOVERY_PLACES_LAYER_ID);
     }
     return ids;
-  }, [isNavigationPresentation, discoveryPlaces.length]);
+  }, [isNavigationPresentation, discoveryPlaces.length, showReportLayer]);
 
   return (
     <div
@@ -291,6 +294,7 @@ export default function MapLibreServiceCoverageMap({
           <MapLibreCoverageMapLayers
             tone={tone}
             isNavigationPresentation={isNavigationPresentation}
+            showReportLayer={showReportLayer}
             routeGeoJSON={routeGeoJSON}
             routeGeometry={routeGeometry}
             routeFitKey={routeFitKey}

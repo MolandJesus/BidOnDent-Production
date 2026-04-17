@@ -92,7 +92,7 @@ export default function ShopDirectoryGuidanceCard({
       style={{ bottom: "max(3.5rem, calc(env(safe-area-inset-bottom, 0px) + 2.4rem))" }}
     >
       <div
-        className={`rounded-[1.3rem] border shadow-2xl sm:rounded-2xl ${
+        className={`map-liquid-panel rounded-[1.3rem] border shadow-2xl sm:rounded-2xl ${
           isCompactDensity ? "p-2 sm:p-2.5" : "p-2.5 sm:p-3"
         } ${glassPanel}`}
       >
@@ -156,7 +156,7 @@ export default function ShopDirectoryGuidanceCard({
         {/* Turn-by-turn instruction */}
         {!hasArrived && nextInstruction ? (
           <div
-            className={`mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 ${
+            className={`map-liquid-card mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 ${
               isDark ? "border-blue-400/20 bg-blue-400/10" : "border-blue-200 bg-blue-50"
             }`}
           >
@@ -195,7 +195,7 @@ export default function ShopDirectoryGuidanceCard({
 
         {routeError ? (
           <div
-            className={`mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${
+            className={`map-liquid-card mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${
               isDark
                 ? "border-amber-400/20 bg-amber-400/10 text-amber-100"
                 : "border-amber-200 bg-amber-50 text-amber-700"
@@ -226,7 +226,7 @@ export default function ShopDirectoryGuidanceCard({
 
         {showGpsRecovery && gpsRecoveryMessage ? (
           <div
-            className={`mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${gpsRecoveryPanel}`}
+            className={`map-liquid-card mt-2 flex items-start gap-2 rounded-xl border px-3 py-2 text-xs ${gpsRecoveryPanel}`}
           >
             <LocateFixed className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             <div className="min-w-0 flex-1">

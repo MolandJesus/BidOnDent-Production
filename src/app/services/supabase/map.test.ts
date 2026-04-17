@@ -6,7 +6,7 @@ vi.mock("./client", () => ({
   },
 }));
 
-import { haversineMiles, resolveShopCoordinates, zipToCoordinates } from "./map";
+import { geocodeAddress, haversineMiles, resolveShopCoordinates, zipToCoordinates } from "./map";
 import type { PartnerShopMapRecord } from "./types";
 
 // ---------------------------------------------------------------------------
@@ -93,6 +93,42 @@ describe("haversineMiles", () => {
     const b = { lat: 34.0522, lng: -118.2437 };
 
     expect(haversineMiles(a, b)).toBeCloseTo(haversineMiles(b, a), 5);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// geocodeAddress
+// ---------------------------------------------------------------------------
+describe("geocodeAddress", () => {
+  it("uses the shared edge geocoder and returns the first coordinate match", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              results: [
+                {
+                  place_id: 1001,
+                  display_name: "125 Main St, White Plains, NY",
+                  lat: "41.0330",
+                  lon: "-73.7629",
+                },
+              ],
+            }),
+        } as Response)
+      )
+    );
+
+    await expect(
+      geocodeAddress({ address: "125 Main St", city: "White Plains", state: "NY" })
+    ).resolves.toEqual({ lat: 41.033, lng: -73.7629 });
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/functions/v1/server/geocode/search?"),
+      expect.objectContaining({ method: "GET" })
+    );
   });
 });
 

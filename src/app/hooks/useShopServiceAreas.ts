@@ -7,7 +7,11 @@ import { useCallback, useEffect, useState } from "react";
 
 import { getMyShopServiceAreas, type ShopServiceArea } from "../services/supabase/serviceAreas";
 
-export function useShopServiceAreas() {
+type UseShopServiceAreasOptions = {
+  enabled?: boolean;
+};
+
+export function useShopServiceAreas({ enabled = true }: UseShopServiceAreasOptions = {}) {
   const [serviceAreas, setServiceAreas] = useState<ShopServiceArea[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +22,13 @@ export function useShopServiceAreas() {
   }, []);
 
   useEffect(() => {
+    if (!enabled) {
+      setServiceAreas([]);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     let mounted = true;
     setIsLoading(true);
     setError(null);
@@ -39,7 +50,7 @@ export function useShopServiceAreas() {
     return () => {
       mounted = false;
     };
-  }, [retryNonce]);
+  }, [enabled, retryNonce]);
 
   return { serviceAreas, isLoading, error, retry };
 }

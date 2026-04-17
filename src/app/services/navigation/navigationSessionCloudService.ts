@@ -2,16 +2,23 @@
 // Service for Supabase-backed navigation session sync
 // with localStorage fallback + background retry
 
-import { requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "../supabase/runtime";
+import { EdgeFunctionError, requestSupabaseEdge, SUPABASE_EDGE_ROUTES } from "../supabase/runtime";
 import type { NavigationSession } from "../../features/navigation/sessionTypes";
 
 const LS_PREFIX = "bidondent_nav_session_";
 const ACTIVE_SESSION_PREFIX = "bidondent_nav_active_session_";
 const STALENESS_MS = 24 * 60 * 60 * 1000; // 24 hours
 const PENDING_QUEUE_KEY = "bidondent_nav_pending_writes";
+const CLOUD_UNAVAILABLE_KEY = "bidondent_nav_cloud_unavailable";
+const CLOUD_UNAVAILABLE_COOLDOWN_MS = 15 * 60 * 1000;
 
 type CloudOptions = {
   enableCloud?: boolean;
+};
+
+type CloudUnavailableState = {
+  detectedAt: number;
+  reason: "missing-table";
 };
 
 // ─── Retry queue (in-memory, non-blocking) ─────────────────────
@@ -30,6 +37,8 @@ const MAX_RETRY_ATTEMPTS = 4;
 const RETRY_DELAYS_MS = [5_000, 10_000, 20_000, 40_000] as const;
 // Track the latest write timestamp per session to skip stale retries
 const latestWriteTs = new Map<string, number>();
+let cloudSyncDisabledUntil = 0;
+let hasWarnedCloudUnavailable = false;
 
 function getRetryDelay(attempt: number): number {
   const index = Math.min(attempt - 1, RETRY_DELAYS_MS.length - 1);
@@ -38,6 +47,109 @@ function getRetryDelay(attempt: number): number {
 
 function writeKey(ownerKey: string, sessionId: string): string {
   return `${ownerKey}::${sessionId}`;
+}
+
+function readCloudUnavailableState(): CloudUnavailableState | null {
+  try {
+    const raw = localStorage.getItem(CLOUD_UNAVAILABLE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as Partial<CloudUnavailableState>;
+    if (parsed.reason !== "missing-table" || typeof parsed.detectedAt !== "number") {
+      localStorage.removeItem(CLOUD_UNAVAILABLE_KEY);
+      return null;
+    }
+
+    return {
+      detectedAt: parsed.detectedAt,
+      reason: parsed.reason,
+    };
+  } catch {
+    localStorage.removeItem(CLOUD_UNAVAILABLE_KEY);
+    return null;
+  }
+}
+
+function isCloudSyncTemporarilyUnavailable() {
+  const now = Date.now();
+  if (cloudSyncDisabledUntil > now) {
+    return true;
+  }
+
+  const state = readCloudUnavailableState();
+  if (!state) {
+    cloudSyncDisabledUntil = 0;
+    return false;
+  }
+
+  const disabledUntil = state.detectedAt + CLOUD_UNAVAILABLE_COOLDOWN_MS;
+  if (disabledUntil <= now) {
+    cloudSyncDisabledUntil = 0;
+    localStorage.removeItem(CLOUD_UNAVAILABLE_KEY);
+    return false;
+  }
+
+  cloudSyncDisabledUntil = disabledUntil;
+  return true;
+}
+
+function clearPendingWrites() {
+  pendingWrites.length = 0;
+  if (retryTimerId !== null) {
+    clearTimeout(retryTimerId);
+    retryTimerId = null;
+  }
+  persistPendingQueue();
+}
+
+function markCloudSyncUnavailable() {
+  const detectedAt = Date.now();
+  cloudSyncDisabledUntil = detectedAt + CLOUD_UNAVAILABLE_COOLDOWN_MS;
+  clearPendingWrites();
+
+  try {
+    localStorage.setItem(
+      CLOUD_UNAVAILABLE_KEY,
+      JSON.stringify({
+        detectedAt,
+        reason: "missing-table",
+      } satisfies CloudUnavailableState)
+    );
+  } catch {
+    // localStorage unavailable — keep the in-memory cooldown only
+  }
+
+  if (import.meta.env.DEV && !hasWarnedCloudUnavailable) {
+    hasWarnedCloudUnavailable = true;
+    console.warn(
+      "[NavigationSession] Cloud sync temporarily disabled because navigation_sessions is unavailable; local session storage remains active."
+    );
+  }
+}
+
+function isNavigationSessionsTableMissingError(error: unknown) {
+  if (!(error instanceof EdgeFunctionError) || error.status < 500) {
+    return false;
+  }
+
+  const message = error.message.toLowerCase();
+  return (
+    message.includes("navigation_sessions") &&
+    (message.includes("schema cache") ||
+      message.includes("could not find the table") ||
+      message.includes("does not exist"))
+  );
+}
+
+function handleCloudUnavailableError(error: unknown) {
+  if (!isNavigationSessionsTableMissingError(error)) {
+    return false;
+  }
+
+  markCloudSyncUnavailable();
+  return true;
 }
 
 // ─── Persistent queue (survives tab close / refresh) ───────────
@@ -211,13 +323,16 @@ async function writeToCloud(session: NavigationSession): Promise<boolean> {
       method: "POST",
     });
     return true;
-  } catch {
+  } catch (error) {
+    if (handleCloudUnavailableError(error)) {
+      return true;
+    }
     return false;
   }
 }
 
 function canUseCloudSync(options?: CloudOptions) {
-  return options?.enableCloud === true;
+  return options?.enableCloud === true && !isCloudSyncTemporarilyUnavailable();
 }
 
 // ─── Public API ────────────────────────────────────────────────
@@ -237,7 +352,10 @@ export async function fetchNavigationSession(
         saveToLocalStorage(ownerKey, data.session);
         return data.session;
       }
-    } catch {
+    } catch (error) {
+      if (handleCloudUnavailableError(error)) {
+        return loadFromLocalStorage(ownerKey);
+      }
       // Fall through to localStorage cache recovery
     }
   }
@@ -288,7 +406,10 @@ export async function deleteNavigationSessionFromCloud(
       method: "DELETE",
     });
     return true;
-  } catch {
+  } catch (error) {
+    if (handleCloudUnavailableError(error)) {
+      return true;
+    }
     return false;
   }
 }

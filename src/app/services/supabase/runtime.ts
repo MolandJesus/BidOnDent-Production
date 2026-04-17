@@ -1,4 +1,8 @@
-import { getClerkTokenForEdgeRequests } from "./authSession";
+import {
+  getClerkTokenForEdgeRequests,
+  hasClerkTokenGetter,
+  waitForClerkTokenGetter,
+} from "./authSession";
 
 // Read Supabase config from environment variables (.env)
 const envUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -64,6 +68,7 @@ export const SUPABASE_EDGE_ROUTES = {
   },
   bids: "/bids",
   estimateRequests: "/estimate-requests",
+  geocodeSearch: "/geocode/search",
   claimDecision: "/claim-decision",
   claimSubmission: "/claim-submission",
   cleanupOldReports: "/cleanup-old-reports",
@@ -145,6 +150,9 @@ export async function buildSupabaseEdgeHeadersAsync(options?: {
   const headers = new Headers(options?.headers);
 
   if (!headers.has("Authorization")) {
+    if (!hasClerkTokenGetter()) {
+      await waitForClerkTokenGetter();
+    }
     const accessToken = await getClerkTokenForEdgeRequests();
     headers.set("Authorization", `Bearer ${accessToken || SUPABASE_ANON_KEY}`);
   }

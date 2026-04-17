@@ -48,6 +48,7 @@ export default function ShopDirectoryScreen({
     reports,
     initialSearchHint,
     initialMapCenter,
+    appearanceMode,
   });
   const nav = useShopDirectoryNavigation({ session, identity, userType });
   const actions = useShopDirectoryActions({

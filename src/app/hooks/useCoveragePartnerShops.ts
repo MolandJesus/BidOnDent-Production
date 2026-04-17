@@ -71,8 +71,9 @@ export function useCoveragePartnerShops() {
 
   const mappedPartnerShops = useMemo(() => mapPartnerShopRecords(publicShops), [publicShops]);
   // Keep production backend-first while ensuring local demo/dev route flows remain testable.
+  // In DEV mode always allow fallback so the map has data to display during development.
   const explicitDemoFallback = import.meta.env.VITE_ENABLE_MAP_DEMO_FALLBACK === "true";
-  const allowDemoFallback = explicitDemoFallback || (DEMO_MODE && import.meta.env.DEV);
+  const allowDemoFallback = explicitDemoFallback || import.meta.env.DEV || DEMO_MODE;
   const usingDemoFallback = mappedPartnerShops.length === 0 && allowDemoFallback;
 
   return {

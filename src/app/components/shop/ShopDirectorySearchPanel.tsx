@@ -135,15 +135,15 @@ export default function ShopDirectorySearchPanel({
   ].join(" · ");
   const rootClassName = isStage
     ? isLight
-      ? "rounded-[1.75rem] border border-slate-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(241,245,249,0.72))] p-4 shadow-[0_20px_48px_rgba(15,23,42,0.08)] sm:p-4 lg:p-5"
+      ? "rounded-[1.9rem] border border-white/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(241,245,249,0.8))] p-4 shadow-[0_24px_56px_rgba(15,23,42,0.08)] sm:p-4 lg:p-5"
       : "rounded-[1.75rem] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(7,16,32,0.76),rgba(8,18,36,0.86))] p-4 shadow-[0_24px_52px_rgba(2,6,23,0.32)] backdrop-blur-2xl sm:p-4 lg:p-5"
     : isLight
       ? "bg-white/95 border-b border-slate-200/60 px-3 py-2.5 sm:px-4 sm:py-3"
       : "bd-glass-panel px-3 py-2.5 sm:px-4 sm:py-3";
   const searchInputClassName = isStage
-    ? `w-full min-w-0 rounded-[1.1rem] border py-3 pl-10 pr-4 text-sm outline-none transition-colors ${
+    ? `w-full min-w-0 rounded-[1.2rem] border py-3.5 pl-10 pr-4 text-sm outline-none transition-colors ${
         isLight
-          ? "border-slate-200/80 bg-white/88 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-sm"
+          ? "border-white/80 bg-white/92 text-slate-800 placeholder:text-slate-400 focus:border-blue-400/60 focus:bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_10px_24px_rgba(15,23,42,0.05)]"
           : "border-white/[0.12] bg-white/[0.06] text-slate-100 placeholder:text-slate-400/70 focus:border-blue-400/40 focus:bg-white/[0.08]"
       }`
     : `w-full min-w-0 rounded-full border py-2 pl-9 pr-3 text-xs outline-none transition-colors ${
@@ -177,7 +177,7 @@ export default function ShopDirectorySearchPanel({
             className={searchButtonClassName}
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-              boxShadow: "0 2px 8px rgba(37, 99, 235, 0.25)",
+              boxShadow: "0 10px 24px rgba(37, 99, 235, 0.24)",
             }}
             type="submit"
           >
@@ -186,7 +186,12 @@ export default function ShopDirectorySearchPanel({
           </button>
         </div>
 
-        <div className={cn("grid gap-2", isStage ? "xl:grid-cols-[minmax(0,1.12fr)_minmax(300px,0.88fr)]" : "xl:grid-cols-2")}>
+        <div
+          className={cn(
+            "grid gap-2",
+            isStage ? "xl:grid-cols-[minmax(0,1.12fr)_minmax(300px,0.88fr)]" : "xl:grid-cols-2"
+          )}
+        >
           <div className="space-y-1.5">
             <ShopDirectoryOriginSearch
               currentOriginIsSaved={currentOriginIsSaved}
@@ -213,7 +218,7 @@ export default function ShopDirectorySearchPanel({
 
           <div className="space-y-1.5">
             <div
-              className={`inline-flex w-full ${isStage ? "rounded-[1rem] p-1" : "rounded-xl p-0.5"} border ${
+              className={`inline-flex w-full ${isStage ? "rounded-[1.1rem] p-1" : "rounded-xl p-0.5"} border ${
                 isLight ? "border-slate-200/80 bg-white/75" : "border-white/[0.10] bg-white/[0.04]"
               }`}
             >
@@ -223,7 +228,7 @@ export default function ShopDirectorySearchPanel({
                   className={`${isStage ? "min-h-[38px] rounded-[0.85rem] px-3 py-2 text-sm" : "min-h-[32px] rounded-lg px-2 py-1 text-xs"} flex-1 font-semibold transition-colors ${
                     mapViewMode === option.value
                       ? isLight
-                        ? "bg-blue-50 text-blue-700 shadow-sm"
+                        ? "bg-[linear-gradient(180deg,#eff6ff,#dbeafe)] text-blue-700 shadow-[0_8px_18px_rgba(37,99,235,0.12)]"
                         : "bg-blue-500/18 text-white"
                       : isLight
                         ? "text-slate-500 hover:text-slate-700"
@@ -256,16 +261,16 @@ export default function ShopDirectorySearchPanel({
 
             <div className={mobileFiltersOpen ? "" : "hidden sm:block"}>
               <div
-                className={`flex flex-wrap ${isStage ? "gap-2 rounded-[1rem] p-2" : "gap-1.5 rounded-xl p-1.5"} border ${
+                className={`flex flex-wrap ${isStage ? "gap-2 rounded-[1.1rem] p-2" : "gap-1.5 rounded-xl p-1.5"} border ${
                   isLight
-                    ? "border-slate-200/80 bg-white/75"
+                    ? "border-white/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.72))]"
                     : "border-white/[0.10] bg-white/[0.04]"
                 }`}
               >
                 <select
                   className={`${isStage ? "min-h-[38px] rounded-[0.85rem] px-3 py-2 text-sm" : "min-h-[32px] rounded-lg px-2.5 py-1 text-xs"} flex-1 min-w-[120px] border outline-none ${
                     isLight
-                      ? "border-slate-200/80 bg-white text-slate-800"
+                      ? "border-white/80 bg-white text-slate-800 shadow-[0_6px_14px_rgba(15,23,42,0.04)]"
                       : "border-white/[0.12] bg-white/[0.06] text-slate-200"
                   }`}
                   onChange={(event) => onSortChange(event.target.value as ShopSortOption)}
@@ -290,8 +295,11 @@ export default function ShopDirectorySearchPanel({
                   }`}
                   onClick={() => onFilterRatingChange(filterRating === 4.5 ? 0 : 4.5)}
                   type="button"
+                  title={
+                    filterRating === 4.5 ? "Remove rating filter" : "Show only 4.5+ rated shops"
+                  }
                 >
-                  4.5+
+                  ★ 4.5+
                 </button>
 
                 <button

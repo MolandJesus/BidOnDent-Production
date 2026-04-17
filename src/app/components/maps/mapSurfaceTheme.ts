@@ -10,13 +10,13 @@ const baseTheme = {
   shellClassName:
     "ring-1 ring-inset backdrop-blur-2xl transition-[background,border-color,box-shadow] duration-300",
   panelClassName:
-    "rounded-[1.5rem] border backdrop-blur-2xl shadow-[0_18px_40px_rgba(15,23,42,0.14)] transition-[background,border-color,color,box-shadow] duration-300",
+    "rounded-[1.5rem] border backdrop-blur-2xl shadow-[0_22px_52px_rgba(15,23,42,0.14)] transition-[background,border-color,color,box-shadow] duration-300",
   panelStrongClassName:
-    "rounded-[1.5rem] border backdrop-blur-3xl shadow-[0_26px_64px_rgba(15,23,42,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
+    "rounded-[1.5rem] border backdrop-blur-3xl shadow-[0_30px_72px_rgba(15,23,42,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
   accentPanelClassName:
-    "rounded-[1.5rem] border backdrop-blur-3xl shadow-[0_24px_56px_rgba(59,130,246,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
+    "rounded-[1.5rem] border backdrop-blur-3xl shadow-[0_28px_64px_rgba(59,130,246,0.18)] transition-[background,border-color,color,box-shadow] duration-300",
   segmentedClassName:
-    "inline-flex items-center gap-1 rounded-full border p-1 backdrop-blur-2xl shadow-[0_16px_36px_rgba(15,23,42,0.14)] transition-[background,border-color,box-shadow] duration-300",
+    "inline-flex items-center gap-1 rounded-full border p-1 backdrop-blur-2xl shadow-[0_18px_42px_rgba(15,23,42,0.14)] transition-[background,border-color,box-shadow] duration-300",
   buttonBaseClassName:
     "inline-flex items-center justify-center gap-2 rounded-full border px-4 py-2.5 min-h-[44px] text-sm font-semibold backdrop-blur-xl transition-all duration-200 active:scale-[0.97]",
   compactButtonBaseClassName:
@@ -35,54 +35,55 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
     ambientOverlayClassName:
       "bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),transparent_36%),radial-gradient(circle_at_18%_20%,rgba(37,99,235,0.2),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(59,130,246,0.16),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(191,219,254,0.16))]",
     shellToneClassName:
-      "border-blue-100/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.8),rgba(219,234,254,0.66))] shadow-[0_34px_90px_rgba(30,58,138,0.16)]",
+      "border-blue-100/76 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.94),rgba(239,246,255,0.9)_34%,rgba(219,234,254,0.72)_100%)] shadow-[0_40px_110px_rgba(30,58,138,0.18)]",
     immersiveShellToneClassName:
-      "border-slate-200/72 bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.18),rgba(248,250,252,0.82)_28%,rgba(226,232,240,0.78)_100%)] shadow-[0_44px_120px_rgba(15,23,42,0.16)]",
+      "border-slate-200/72 bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.24),rgba(248,250,252,0.88)_26%,rgba(226,232,240,0.82)_100%)] shadow-[0_50px_140px_rgba(15,23,42,0.16)]",
     mapCanvasClassName: "bg-[#dce8f7]",
     panelToneClassName:
-      "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.82),rgba(226,232,240,0.74))]",
+      "border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.74))]",
     panelStrongToneClassName:
-      "border-slate-200/82 bg-[linear-gradient(180deg,rgba(248,250,252,0.88),rgba(226,232,240,0.78))]",
+      "border-white/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(241,245,249,0.8))]",
     accentPanelToneClassName:
-      "border-sky-200/70 bg-[linear-gradient(180deg,rgba(239,246,255,0.84),rgba(219,234,254,0.72))]",
+      "border-sky-200/66 bg-[linear-gradient(180deg,rgba(239,246,255,0.92),rgba(219,234,254,0.8))]",
     segmentedToneClassName:
-      "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(241,245,249,0.7))]",
-    activeSegmentClassName: "bg-sky-500/80 text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)]",
-    inactiveSegmentClassName: "text-slate-600 hover:bg-white/35 hover:text-slate-900",
+      "border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.72))]",
+    activeSegmentClassName:
+      "bg-[linear-gradient(180deg,rgba(56,189,248,0.95),rgba(37,99,235,0.95))] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)]",
+    inactiveSegmentClassName: "text-slate-600 hover:bg-white/50 hover:text-slate-900",
     primaryButtonToneClassName:
-      "border-blue-300/40 bg-[linear-gradient(180deg,rgba(59,130,246,0.82),rgba(29,78,216,0.88))] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)] hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(37,99,235,0.28)] hover:brightness-110",
+      "border-blue-300/42 bg-[linear-gradient(180deg,rgba(59,130,246,0.86),rgba(29,78,216,0.92))] text-white shadow-[0_12px_28px_rgba(37,99,235,0.24)] hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(37,99,235,0.28)] hover:brightness-110",
     secondaryButtonToneClassName:
-      "border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.76),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_8px_20px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/90 hover:text-slate-950",
+      "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(241,245,249,0.74))] text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/92 hover:text-slate-950",
     destructiveButtonToneClassName:
       "border-rose-200/50 bg-[linear-gradient(180deg,#fb7185,#e11d48)] text-white shadow-[0_14px_26px_rgba(244,63,94,0.22)] hover:-translate-y-0.5 hover:shadow-[0_18px_30px_rgba(244,63,94,0.28)]",
     tertiaryButtonToneClassName:
       "border-white/30 bg-white/20 text-slate-600 hover:bg-white/35 hover:text-slate-800",
     compactButtonToneClassName:
-      "border-slate-200/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.74),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_4px_12px_rgba(15,23,42,0.08)] hover:bg-white/88 hover:text-slate-950",
+      "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.8),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_6px_16px_rgba(15,23,42,0.08)] hover:bg-white/90 hover:text-slate-950",
     compactActiveButtonToneClassName:
       "border-sky-300/50 bg-sky-500/80 text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)]",
     iconButtonToneClassName:
-      "border-slate-200/82 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_12px_28px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:bg-white/92 hover:text-slate-950",
+      "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_14px_30px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:bg-white/94 hover:text-slate-950",
     compactIconButtonToneClassName:
-      "border-slate-200/82 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-white/92 hover:text-slate-950",
+      "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_10px_20px_rgba(15,23,42,0.08)] hover:bg-white/94 hover:text-slate-950",
     titleClassName: "text-slate-950",
     bodyClassName: "text-slate-700",
     secondaryTextClassName: "text-slate-500",
     badgeClassName: "border-blue-200/80 bg-blue-100/80 text-blue-900",
     softBadgeClassName:
-      "border-slate-200/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.72),rgba(241,245,249,0.68))] text-slate-600",
+      "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.68))] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]",
     listCardToneClassName:
-      "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.8),rgba(226,232,240,0.72))] hover:-translate-y-0.5 hover:bg-white/88",
+      "border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.72))] hover:-translate-y-0.5 hover:bg-white/92",
     selectedListCardToneClassName:
-      "border-sky-300/58 bg-[linear-gradient(180deg,rgba(239,246,255,0.86),rgba(219,234,254,0.78))] shadow-[0_18px_40px_rgba(37,99,235,0.12)]",
+      "border-sky-300/60 bg-[linear-gradient(180deg,rgba(239,246,255,0.92),rgba(219,234,254,0.82))] shadow-[0_20px_44px_rgba(37,99,235,0.12)]",
   },
   dark: {
     ambientOverlayClassName:
       "bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.28),transparent_30%),radial-gradient(circle_at_78%_12%,rgba(37,99,235,0.22),transparent_24%),linear-gradient(180deg,rgba(30,58,138,0.2),rgba(2,6,23,0.38))]",
     shellToneClassName:
-      "border-blue-300/15 bg-[linear-gradient(180deg,rgba(30,58,138,0.44),rgba(2,6,23,0.92))] shadow-[0_32px_88px_rgba(2,6,23,0.46)]",
+      "border-blue-300/15 bg-[linear-gradient(180deg,rgba(30,58,138,0.46),rgba(2,6,23,0.94))] shadow-[0_36px_96px_rgba(2,6,23,0.48)]",
     immersiveShellToneClassName:
-      "border-blue-200/12 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.24),rgba(15,23,42,0.92)_36%,rgba(2,6,23,0.96)_100%)] shadow-[0_40px_110px_rgba(2,6,23,0.52)]",
+      "border-blue-200/12 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.26),rgba(15,23,42,0.92)_34%,rgba(2,6,23,0.97)_100%)] shadow-[0_44px_116px_rgba(2,6,23,0.54)]",
     mapCanvasClassName: "bg-slate-950",
     panelToneClassName:
       "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))]",

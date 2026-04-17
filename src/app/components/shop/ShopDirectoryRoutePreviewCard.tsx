@@ -69,11 +69,11 @@ export default function ShopDirectoryRoutePreviewCard({
   const secondaryText = isDark ? "text-white/60" : "text-slate-500";
   const divider = isDark ? "border-white/10" : "border-black/8";
   const activeRoute = isDark
-    ? "bg-slate-950 font-semibold text-white"
-    : "bg-white font-semibold text-slate-800 shadow-sm";
+    ? "map-liquid-card bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(14,116,144,0.18))] font-semibold text-white"
+    : "map-liquid-card bg-white/96 font-semibold text-slate-800 shadow-sm";
   const inactiveRoute = isDark
-    ? "bg-white/[0.06] text-white/70 hover:bg-white/[0.1]"
-    : "bg-black/[0.04] text-slate-500 hover:bg-black/[0.08]";
+    ? "map-liquid-card bg-white/[0.06] text-white/70 hover:bg-white/[0.1]"
+    : "map-liquid-card bg-black/[0.04] text-slate-500 hover:bg-black/[0.08]";
   const routeSubtext = isDark ? "text-white/70" : "text-slate-500";
   const routeSubtextActive = isDark ? "text-white/70" : "text-slate-400";
 
@@ -115,7 +115,7 @@ export default function ShopDirectoryRoutePreviewCard({
       }}
     >
       <div
-        className={`rounded-2xl border shadow-2xl ${
+        className={`map-liquid-panel rounded-2xl border shadow-2xl ${
           isCompactDensity ? "p-2 sm:p-2.5" : "p-2 sm:p-2.5"
         } ${glassPanel}`}
       >
@@ -285,7 +285,9 @@ export default function ShopDirectoryRoutePreviewCard({
             {onRequestEstimate ? (
               <button
                 className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-                  isCompactDensity ? "min-h-[38px] px-2.5 py-2 text-[11px]" : "min-h-[44px] px-3 py-2 text-xs"
+                  isCompactDensity
+                    ? "min-h-[38px] px-2.5 py-2 text-[11px]"
+                    : "min-h-[44px] px-3 py-2 text-xs"
                 } ${
                   isDark
                     ? "bg-white/10 text-white hover:bg-white/20"
@@ -301,7 +303,9 @@ export default function ShopDirectoryRoutePreviewCard({
             {onStartNavigation ? (
               <button
                 className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-blue-600 font-semibold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-                  isCompactDensity ? "min-h-[38px] px-2.5 py-2 text-[11px]" : "min-h-[44px] px-3 py-2 text-xs"
+                  isCompactDensity
+                    ? "min-h-[38px] px-2.5 py-2 text-[11px]"
+                    : "min-h-[44px] px-3 py-2 text-xs"
                 }`}
                 onClick={onStartNavigation}
                 type="button"

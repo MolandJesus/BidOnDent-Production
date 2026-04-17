@@ -17,9 +17,9 @@ export const DARK_TILE_LAYER = {
 };
 
 export function getRoleLabel(userType: MarketUserType) {
-  if (userType === "shop") return "Competitive intelligence";
-  if (userType === "insurer") return "Network recruitment";
-  return "Repair routing";
+  if (userType === "shop") return "Nearby shops";
+  if (userType === "insurer") return "Partner shops";
+  return "Find shops";
 }
 
 type MapLibreViewportManagerProps = {

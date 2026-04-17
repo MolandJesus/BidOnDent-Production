@@ -18,13 +18,13 @@ type NavigationActionRailProps = {
 function actionButtonClassName(tone: MapSurfaceTone, active: boolean) {
   if (active) {
     return tone === "light"
-      ? "border-sky-300/85 bg-white/96 text-sky-700 shadow-[0_18px_34px_rgba(14,165,233,0.18)]"
-      : "border-cyan-300/35 bg-slate-900/92 text-cyan-100 shadow-[0_18px_36px_rgba(2,6,23,0.36)]";
+      ? "map-nav-icon-ring-pulse border-sky-300/85 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(224,242,254,0.92))] text-sky-700 shadow-[0_18px_34px_rgba(14,165,233,0.18)]"
+      : "map-nav-icon-ring-pulse border-cyan-300/35 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(8,47,73,0.92))] text-cyan-100 shadow-[0_18px_36px_rgba(2,6,23,0.36)]";
   }
 
   return tone === "light"
-    ? "border-white/80 bg-white/90 text-slate-700 shadow-[0_18px_34px_rgba(15,23,42,0.16)]"
-    : "border-white/12 bg-slate-950/88 text-slate-100 shadow-[0_18px_36px_rgba(2,6,23,0.38)]";
+    ? "border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(241,245,249,0.86))] text-slate-700 shadow-[0_18px_34px_rgba(15,23,42,0.16)]"
+    : "border-white/12 bg-[linear-gradient(180deg,rgba(15,23,42,0.92),rgba(2,6,23,0.84))] text-slate-100 shadow-[0_18px_36px_rgba(2,6,23,0.38)]";
 }
 
 export default function NavigationActionRail({
@@ -41,8 +41,8 @@ export default function NavigationActionRail({
 }: NavigationActionRailProps) {
   const railShellClassName =
     tone === "light"
-      ? "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.88),rgba(241,245,249,0.72))]"
-      : "border-white/15 bg-[linear-gradient(180deg,rgba(15,23,42,0.78),rgba(30,41,59,0.64))]";
+      ? "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(241,245,249,0.76))]"
+      : "border-white/15 bg-[linear-gradient(180deg,rgba(15,23,42,0.82),rgba(30,41,59,0.68))]";
 
   return (
     <div
@@ -53,7 +53,7 @@ export default function NavigationActionRail({
     >
       <div
         className={cn(
-          "map-liquid-rail pointer-events-auto relative flex flex-row gap-2 overflow-hidden rounded-[1.4rem] border p-1.5 backdrop-blur-2xl sm:flex-col sm:gap-2.5 sm:rounded-[1.7rem] sm:p-2",
+          "map-liquid-rail pointer-events-auto relative flex flex-row gap-2 overflow-hidden rounded-[1.45rem] border p-1.5 backdrop-blur-2xl sm:flex-col sm:gap-2.5 sm:rounded-[1.75rem] sm:p-2",
           railShellClassName
         )}
       >
@@ -67,7 +67,7 @@ export default function NavigationActionRail({
           type="button"
           onClick={onToggleTurnList}
           className={cn(
-            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+            "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
             actionButtonClassName(tone, turnListOpen)
           )}
           aria-pressed={turnListOpen}
@@ -80,7 +80,7 @@ export default function NavigationActionRail({
             type="button"
             onClick={onToggleVoiceControls}
             className={cn(
-              "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+              "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
               actionButtonClassName(tone, voiceControlsOpen)
             )}
             aria-pressed={voiceControlsOpen}
@@ -93,7 +93,7 @@ export default function NavigationActionRail({
           type="button"
           onClick={onToggleSettings}
           className={cn(
-            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+            "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
             actionButtonClassName(tone, settingsOpen)
           )}
           aria-pressed={settingsOpen}
@@ -105,7 +105,7 @@ export default function NavigationActionRail({
           type="button"
           onClick={onRecenter}
           className={cn(
-            "inline-flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
+            "relative z-10 inline-flex h-11 w-11 items-center justify-center rounded-[1rem] border transition-all duration-200 active:scale-[0.94] sm:h-11 sm:w-11",
             actionButtonClassName(tone, false)
           )}
           aria-label="Re-center map"

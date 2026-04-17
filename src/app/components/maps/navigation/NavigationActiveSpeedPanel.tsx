@@ -44,22 +44,30 @@ export default function NavigationActiveSpeedPanel({
 
   return (
     <div className="pointer-events-none absolute bottom-[calc(max(env(safe-area-inset-bottom),0.75rem)_+_10rem)] right-3 z-[560] flex max-w-[min(220px,calc(100%-1.5rem))] flex-col items-end gap-2 sm:gap-2.5 sm:right-4 md:right-[5rem] md:max-w-[248px]">
-      <div className="pointer-events-auto flex items-end gap-2 sm:gap-3">
-        <CurrentSpeedBadge
-          tone={tone}
-          currentSpeedMph={currentSpeedMph}
-          postedSpeedLimitMph={postedSpeedLimitMph}
-        />
-        <SpeedLimitBadge
-          postedSpeedLimitMph={postedSpeedLimitMph}
-          confidence={postedSpeedLimitConfidence}
-        />
+      <div
+        className={cn(
+          "map-liquid-rail pointer-events-auto relative overflow-hidden rounded-[1.45rem] border p-2 sm:p-2.5",
+          theme.panelStrongClassName
+        )}
+      >
+        <div className="map-liquid-sheen pointer-events-none absolute inset-0 opacity-60" />
+        <div className="relative z-10 flex items-end gap-2 sm:gap-3">
+          <CurrentSpeedBadge
+            tone={tone}
+            currentSpeedMph={currentSpeedMph}
+            postedSpeedLimitMph={postedSpeedLimitMph}
+          />
+          <SpeedLimitBadge
+            postedSpeedLimitMph={postedSpeedLimitMph}
+            confidence={postedSpeedLimitConfidence}
+          />
+        </div>
       </div>
 
       {import.meta.env.DEV ? (
         <div
           className={cn(
-            "map-liquid-card map-ui-enter map-ui-enter-delay-1 pointer-events-auto hidden max-w-[248px] px-3.5 py-3 md:block",
+            "map-liquid-panel map-ui-enter map-ui-enter-delay-1 pointer-events-auto hidden max-w-[248px] px-3.5 py-3 md:block",
             theme.panelClassName
           )}
         >

@@ -26,14 +26,19 @@ import {
   sanitizeZipInput,
 } from "../components/landing/coverageData";
 
-export function useOperatingRegionsCoverage() {
+export function useOperatingRegionsCoverage({
+  isLightAppearance = false,
+}: { isLightAppearance?: boolean } = {}) {
   const [savedCoverageState] = useState(loadSavedCoverageState);
   const [zipCode, setZipCode] = useState(() => savedCoverageState.zipCode || "");
   const [radiusMiles, setRadiusMiles] = useState(() => savedCoverageState.radiusMiles || "20");
   const [geoMessage, setGeoMessage] = useState("");
-  const [tileMode, setTileMode] = useState<MapTileMode>(
-    () => savedCoverageState.tileMode || "night"
-  );
+  const [tileMode, setTileMode] = useState<MapTileMode>(() => {
+    // Satellite is the only user choice we preserve across reloads.
+    // Light/dark tile always derives from the site's appearance mode.
+    if (savedCoverageState.tileMode === "satellite") return "satellite";
+    return isLightAppearance ? "roadmap" : "night";
+  });
   const [isMapExpanded, setIsMapExpanded] = useState(
     () => savedCoverageState.isMapExpanded || false
   );
@@ -163,6 +168,11 @@ export function useOperatingRegionsCoverage() {
   const routeGeometry =
     navigation.routePreview?.geometry.map(({ lat, lng }) => [lat, lng] as [number, number]) ||
     undefined;
+
+  // Keep appearance sync with the other effects so hot refresh does not shift later hooks.
+  useEffect(() => {
+    setTileMode((prev) => (prev === "satellite" ? prev : isLightAppearance ? "roadmap" : "night"));
+  }, [isLightAppearance]);
 
   useEffect(() => {
     if (nearbyShops.length > 0) {

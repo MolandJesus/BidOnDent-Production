@@ -42,6 +42,9 @@ export default function ImmersiveMapTopBar({
   const topGradient = isDark
     ? "bg-gradient-to-b from-[#0a1a38]/80 via-[#0d2244]/30 to-transparent"
     : "bg-gradient-to-b from-black/20 via-black/6 to-transparent";
+  const controlShell = isDark
+    ? "border-blue-400/[0.16] bg-[linear-gradient(180deg,rgba(9,18,36,0.84),rgba(12,25,41,0.68))] shadow-[0_16px_36px_rgba(2,6,23,0.34)]"
+    : "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.84),rgba(241,245,249,0.74))] shadow-[0_14px_28px_rgba(15,23,42,0.10)]";
   const iconBtn = isDark
     ? "border-blue-400/[0.18] bg-[rgba(12,25,41,0.82)] text-white shadow-[0_4px_20px_rgba(2,6,23,0.45),0_0_12px_rgba(37,99,235,0.06)] backdrop-blur-xl hover:bg-[rgba(12,25,41,0.92)]"
     : "border-black/10 bg-white/82 text-slate-800 shadow-xl backdrop-blur-md hover:bg-white/95";
@@ -92,46 +95,47 @@ export default function ImmersiveMapTopBar({
         {/* Spacer during guidance when search is hidden */}
         {isGuidanceMode && <div className="flex-1" />}
 
-        {/* Results drawer toggle */}
-        <button
-          className={`flex h-11 items-center gap-1.5 rounded-full border px-2.5 text-sm font-medium shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:gap-2 sm:px-3 ${drawerOpen ? listBtnActive : listBtnInactive}`}
-          onClick={onToggleDrawer}
-          type="button"
-          aria-expanded={drawerOpen}
-          aria-label="Toggle results drawer"
+        <div
+          className={`pointer-events-auto ml-auto inline-flex items-center gap-1 rounded-[1.35rem] border p-1 backdrop-blur-2xl ${controlShell}`}
         >
-          <List className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          <span className="hidden sm:inline">{shopCount}</span>
-        </button>
-
-        {/* Mode switch — hidden during guidance */}
-        {!isGuidanceMode && (
           <button
-            className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:w-auto sm:gap-2 sm:px-3 sm:text-sm sm:font-medium ${iconBtn}`}
-            onClick={onSwitchToSplit}
+            className={`flex h-11 items-center gap-1.5 rounded-full border px-2.5 text-sm font-medium shadow-none backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:gap-2 sm:px-3 ${drawerOpen ? listBtnActive : listBtnInactive}`}
+            onClick={onToggleDrawer}
             type="button"
-            aria-label="Switch to split view"
+            aria-expanded={drawerOpen}
+            aria-label="Toggle results drawer"
           >
-            <Layers3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">Split</span>
+            <List className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">{shopCount}</span>
           </button>
-        )}
 
-        {/* Tile mode cycle */}
-        <button
-          className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-xl backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
-          onClick={onCycleTileMode}
-          type="button"
-          aria-label={`${activeTileMode === "roadmap" ? "Map" : activeTileMode === "night" ? "Night" : "Satellite"} view — tap to change`}
-        >
-          {activeTileMode === "roadmap" ? (
-            <MapIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          ) : activeTileMode === "night" ? (
-            <MoonStar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          ) : (
-            <Satellite className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          {!isGuidanceMode && (
+            <button
+              className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-none backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 sm:w-auto sm:gap-2 sm:px-3 sm:text-sm sm:font-medium ${iconBtn}`}
+              onClick={onSwitchToSplit}
+              type="button"
+              aria-label="Switch to split view"
+            >
+              <Layers3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Split</span>
+            </button>
           )}
-        </button>
+
+          <button
+            className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-none backdrop-blur-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${iconBtn}`}
+            onClick={onCycleTileMode}
+            type="button"
+            aria-label={`${activeTileMode === "roadmap" ? "Map" : activeTileMode === "night" ? "Night" : "Satellite"} view — tap to change`}
+          >
+            {activeTileMode === "roadmap" ? (
+              <MapIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            ) : activeTileMode === "night" ? (
+              <MoonStar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            ) : (
+              <Satellite className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

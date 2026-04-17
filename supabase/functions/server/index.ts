@@ -16,6 +16,7 @@ import {
   submitInsurerInterest,
   submitShopInterest,
 } from './handlers/intake.ts'
+import { handleGeocodeSearch } from './handlers/geocoding.ts'
 import {
   deleteNavigationSession,
   getNavigationSession,
@@ -148,6 +149,10 @@ Deno.serve(async (req) => {
 
     if (path === '/intake/insurer-interest' && req.method === 'POST') {
       return await submitInsurerInterest(req, supabase, respond)
+    }
+
+    if (path === '/geocode/search' && req.method === 'GET') {
+      return await handleGeocodeSearch(req, supabase, respond)
     }
 
     if (path === '/navigation-session' && req.method === 'GET') {

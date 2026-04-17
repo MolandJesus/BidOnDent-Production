@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { setClerkTokenGetter } from "./authSession";
 import {
@@ -21,6 +21,7 @@ import {
 
 afterEach(() => {
   setClerkTokenGetter(null);
+  vi.useRealTimers();
 });
 
 describe("supabase runtime helpers", () => {
@@ -61,6 +62,21 @@ describe("supabase runtime helpers", () => {
     expect(headers.get("Authorization")).toBe("Bearer clerk-token");
     expect(headers.get("apikey")).toBe(SUPABASE_ANON_KEY);
     expect(headers.get("Content-Type")).toBe("application/json");
+  });
+
+  it("waits briefly for the Clerk token getter before falling back to anon auth", async () => {
+    vi.useFakeTimers();
+
+    const headersPromise = buildSupabaseEdgeHeadersAsync();
+
+    await vi.advanceTimersByTimeAsync(100);
+    setClerkTokenGetter(async () => "delayed-clerk-token");
+    await vi.advanceTimersByTimeAsync(50);
+
+    const headers = await headersPromise;
+
+    expect(headers.get("Authorization")).toBe("Bearer delayed-clerk-token");
+    expect(headers.get("apikey")).toBe(SUPABASE_ANON_KEY);
   });
 
   it("falls back to the anon key when the Clerk token getter returns null", async () => {
