@@ -90,6 +90,17 @@ function AppContent() {
   const { getToken, isLoaded: isClerkAuthLoaded } = useClerkAuth();
   const userProfile = user ? extractUserProfile(user) : null;
 
+  // Safety timeout: if Clerk hasn't loaded within 12s (network issues, wrong key,
+  // misconfigured domain), force past the loading gate so the landing page renders
+  // instead of hanging indefinitely. isUserLoaded will still be false so the user
+  // is treated as unauthenticated — they can still browse and sign in manually.
+  const [clerkLoadTimedOut, setClerkLoadTimedOut] = useState(false);
+  useEffect(() => {
+    if (isUserLoaded && isClerkAuthLoaded) return;
+    const t = setTimeout(() => setClerkLoadTimedOut(true), 12_000);
+    return () => clearTimeout(t);
+  }, [isUserLoaded, isClerkAuthLoaded]);
+
   useEffect(() => {
     if (!isClerkAuthLoaded) {
       return;
@@ -284,12 +295,15 @@ function AppContent() {
     );
   }
 
-  // Wait for Clerk to load
+  // Wait for Clerk to load — but never block indefinitely.
+  // clerkLoadTimedOut fires after 12s so a misconfigured domain or
+  // slow CDN falls through to the landing page instead of hanging forever.
   if (
-    !isUserLoaded ||
-    !isClerkAuthLoaded ||
-    (user && websiteIdentity && !isWebsiteSessionHydrated) ||
-    shouldWaitForBusinessProfile
+    !clerkLoadTimedOut &&
+    (!isUserLoaded ||
+      !isClerkAuthLoaded ||
+      (user && websiteIdentity && !isWebsiteSessionHydrated) ||
+      shouldWaitForBusinessProfile)
   ) {
     return <AppLoading />;
   }
