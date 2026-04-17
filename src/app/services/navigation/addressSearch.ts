@@ -1,5 +1,6 @@
 import type { CoverageSearchTarget } from "../../components/maps/serviceCoverageMapTypes";
 import type { NavigationAddressResult, NavigationAddressSuggestion } from "../../types/navigation";
+import { fetchGeocodeSearchResults, type NominatimSearchResult } from "./geocodingClient";
 import { isProviderCircuitOpen, runWithProviderHealth } from "./providerHealth";
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -7,22 +8,6 @@ const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 type CachedEntry<T> = { data: T; timestamp: number };
 
 const addressSearchCache = new Map<string, CachedEntry<NavigationAddressResult[]>>();
-
-type NominatimSearchResult = {
-  place_id: number;
-  display_name: string;
-  lat: string;
-  lon: string;
-  address?: {
-    house_number?: string;
-    road?: string;
-    city?: string;
-    town?: string;
-    village?: string;
-    county?: string;
-    state?: string;
-  };
-};
 
 function buildPrimaryLabel(result: NominatimSearchResult) {
   const houseNumber = result.address?.house_number;
@@ -61,33 +46,19 @@ export async function searchNavigationAddresses(
     throw new Error("Address lookup is temporarily overloaded. Try again in about 30 seconds.");
   }
 
-  const url = new URL("https://nominatim.openstreetmap.org/search");
-  url.searchParams.set("format", "jsonv2");
-  url.searchParams.set("limit", "5");
-  url.searchParams.set("countrycodes", "us");
-  url.searchParams.set("addressdetails", "1");
-  url.searchParams.set("q", normalizedQuery);
-
-  const response = await runWithProviderHealth("nominatim-search", () =>
-    fetch(url.toString(), {
-      headers: {
-        Accept: "application/json",
-      },
+  const data = await runWithProviderHealth("nominatim-search", () =>
+    fetchGeocodeSearchResults({
+      limit: 5,
+      query: normalizedQuery,
       signal,
     })
   );
-
-  if (!response.ok) {
-    throw new Error("Address lookup failed. Please try a different search or wait a moment.");
-  }
-
-  const data = (await response.json()) as NominatimSearchResult[];
   const results = data
     .map((result) => ({
       id: String(result.place_id),
-      label: result.display_name,
+      label: result.display_name ?? "Address result",
       primaryLabel:
-        buildPrimaryLabel(result) || result.display_name.split(",")[0] || "Address result",
+        buildPrimaryLabel(result) || result.display_name?.split(",")[0] || "Address result",
       secondaryLabel: buildSecondaryLabel(result) || result.display_name,
       lat: Number(result.lat),
       lng: Number(result.lon),
@@ -117,7 +88,7 @@ const addressSuggestionCache = new Map<string, CachedEntry<NavigationAddressSugg
 
 function toSuggestionConfidence(result: NominatimSearchResult, query: string): number {
   const normalizedQuery = query.trim().toLowerCase();
-  const normalizedName = result.display_name.toLowerCase();
+  const normalizedName = (result.display_name ?? "").toLowerCase();
   if (!normalizedQuery || normalizedName === normalizedQuery) return 100;
   if (normalizedName.startsWith(normalizedQuery)) return 92;
   if (normalizedName.includes(normalizedQuery)) return 80;
@@ -133,7 +104,7 @@ function resultToSuggestion(
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
   return {
     id: String(result.place_id),
-    title: buildPrimaryLabel(result) || result.display_name.split(",")[0] || "Address suggestion",
+    title: buildPrimaryLabel(result) || result.display_name?.split(",")[0] || "Address suggestion",
     subtitle: buildSecondaryLabel(result) || result.display_name,
     coordinate: { lat, lng },
     intent: "address",
@@ -161,35 +132,22 @@ export async function suggestNavigationAddresses(
     return cached.data;
   }
 
-  const url = new URL("https://nominatim.openstreetmap.org/search");
-  url.searchParams.set("format", "jsonv2");
-  url.searchParams.set("limit", "8");
-  url.searchParams.set("countrycodes", "us");
-  url.searchParams.set("addressdetails", "1");
-  url.searchParams.set("q", normalizedQuery);
-
-  let response: Response;
   try {
-    response = await runWithProviderHealth("nominatim-search", () =>
-      fetch(url.toString(), {
-        headers: { Accept: "application/json" },
+    const data = await runWithProviderHealth("nominatim-search", () =>
+      fetchGeocodeSearchResults({
+        limit: 8,
+        query: normalizedQuery,
         signal,
       })
     );
+    const suggestions = data
+      .map((result) => resultToSuggestion(result, normalizedQuery))
+      .filter((s): s is NavigationAddressSuggestion => s !== null)
+      .sort((a, b) => b.confidenceScore - a.confidenceScore);
+
+    addressSuggestionCache.set(cacheKey, { data: suggestions, timestamp: Date.now() });
+    return suggestions;
   } catch {
     return [];
   }
-
-  if (!response.ok) {
-    return [];
-  }
-
-  const data = (await response.json()) as NominatimSearchResult[];
-  const suggestions = data
-    .map((result) => resultToSuggestion(result, normalizedQuery))
-    .filter((s): s is NavigationAddressSuggestion => s !== null)
-    .sort((a, b) => b.confidenceScore - a.confidenceScore);
-
-  addressSuggestionCache.set(cacheKey, { data: suggestions, timestamp: Date.now() });
-  return suggestions;
 }
