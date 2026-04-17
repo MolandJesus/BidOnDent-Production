@@ -29,6 +29,7 @@ export type ProviderHealthSummary = {
 const providerHealthStorageKey = "bidondent.navigation.providerHealth.v1";
 const providerHealthStorageVersion = 2;
 const maxStoredEvents = 120;
+const maxEventAgeMs = 10 * 60 * 1000; // 10 minutes — discard stale events from prior sessions
 const providers: NavigationProviderHealthId[] = [
   "osrm-route",
   "overpass-speed-limit",
@@ -140,8 +141,13 @@ export function sanitizeProviderHealthEventsFromRaw(rawEvents: unknown): Provide
     .slice(-maxStoredEvents);
 }
 
+function pruneStaleEvents(events: ProviderHealthEvent[]): ProviderHealthEvent[] {
+  const cutoff = Date.now() - maxEventAgeMs;
+  return events.filter((e) => Date.parse(e.timestamp) >= cutoff);
+}
+
 function readProviderHealthEvents() {
-  return readPersistedState<ProviderHealthEvent[]>({
+  const events = readPersistedState<ProviderHealthEvent[]>({
     storageKey: providerHealthStorageKey,
     storageVersion: providerHealthStorageVersion,
     fallback: [],
@@ -150,6 +156,7 @@ function readProviderHealthEvents() {
     migrateLegacy: (legacyValue) =>
       Array.isArray(legacyValue) ? sanitizeProviderHealthEventsFromRaw(legacyValue) : null,
   });
+  return pruneStaleEvents(events);
 }
 
 function writeProviderHealthEvents(events: ProviderHealthEvent[]) {
