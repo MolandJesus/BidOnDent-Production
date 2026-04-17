@@ -475,7 +475,7 @@ export default function MapLibreShopDirectoryMapPane({
         />
       )}
 
-      <GeoErrorToast geoError={geoError} />
+      <GeoErrorToast geoError={geoError} isDark={isDark} />
 
       {/* Floating overlay children (route preview, intelligence, deviation prompt) */}
       {children}

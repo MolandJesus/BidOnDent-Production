@@ -148,6 +148,7 @@ export default function MapLibreCoverageMapLayers({
         partnerShops={partnerShops}
         selectedShopId={selectedShopId}
         isNavigationPresentation={isNavigationPresentation}
+        tone={tone}
         onSelectShop={onSelectShop}
       />
 

@@ -178,12 +178,28 @@ export function MapEmptyState({ isDark, shopCount }: { isDark: boolean; shopCoun
 }
 
 /* ── Geolocation error toast ── */
-export function GeoErrorToast({ geoError }: { geoError: string | null }) {
+export function GeoErrorToast({
+  geoError,
+  isDark = true,
+}: {
+  geoError: string | null;
+  isDark?: boolean;
+}) {
   if (!geoError) return null;
   return (
     <div className="pointer-events-none absolute right-3 top-14 z-[550] sm:top-16">
-      <div className="pointer-events-auto rounded-lg border border-amber-400/30 bg-slate-900/90 px-3 py-2 shadow-lg backdrop-blur-md">
-        <p className="text-xs font-medium text-amber-300">{geoError}</p>
+      <div
+        className={`pointer-events-auto rounded-xl border px-3 py-2 shadow-lg backdrop-blur-2xl ${
+          isDark
+            ? "border-amber-400/30 bg-slate-900/90"
+            : "border-amber-300/60 bg-white/90 shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+        }`}
+      >
+        <p
+          className={`text-xs font-medium ${isDark ? "text-amber-300" : "text-amber-700"}`}
+        >
+          {geoError}
+        </p>
       </div>
     </div>
   );

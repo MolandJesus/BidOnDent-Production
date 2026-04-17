@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Source, Layer, Popup, useMap } from "react-map-gl/maplibre";
 import type { MapLayerMouseEvent } from "react-map-gl/maplibre";
 import { MapPin, Star, X } from "lucide-react";
-import type { CoveragePartnerShop } from "./serviceCoverageMapTypes";
+import type { CoveragePartnerShop, MapSurfaceTone } from "./serviceCoverageMapTypes";
 
 type MapLibrePartnerShopLayerProps = {
   partnerShops: CoveragePartnerShop[];
   selectedShopId?: string;
   isNavigationPresentation: boolean;
+  tone?: MapSurfaceTone;
   onSelectShop?: (shopId: string) => void;
 };
 
@@ -50,8 +51,10 @@ export default function MapLibrePartnerShopLayer({
   partnerShops,
   selectedShopId,
   isNavigationPresentation,
+  tone = "dark",
   onSelectShop,
 }: MapLibrePartnerShopLayerProps) {
+  const isLight = tone === "light";
   const [popupShop, setPopupShop] = useState<CoveragePartnerShop | null>(null);
 
   const geojson = useMemo(
@@ -76,8 +79,8 @@ export default function MapLibrePartnerShopLayer({
           ["==", ["get", "isNavigation"], 1],
           "#fbbf24",
           ["==", ["get", "isSelected"], 1],
-          "#38bdf8",
-          "#1d4ed8",
+          isLight ? "#2563eb" : "#38bdf8",
+          isLight ? "#2563eb" : "#1d4ed8",
         ],
         "circle-opacity": ["case", ["==", ["get", "isSelected"], 1], 1, 0.9],
         "circle-stroke-width": [
@@ -86,18 +89,18 @@ export default function MapLibrePartnerShopLayer({
           5,
           ["==", ["get", "isSelected"], 1],
           3,
-          2,
+          2.5,
         ],
         "circle-stroke-color": [
           "case",
           ["==", ["get", "isNavigation"], 1],
           "#fef3c7",
           ["==", ["get", "isSelected"], 1],
-          "#dbeafe",
-          "#0f172a",
+          isLight ? "#bfdbfe" : "#dbeafe",
+          isLight ? "#ffffff" : "#0f172a",
         ],
       }) as Record<string, unknown>,
-    []
+    [isLight]
   );
 
   const handleClick = useCallback(
@@ -129,6 +132,26 @@ export default function MapLibrePartnerShopLayer({
     <>
       <Source id="partner-shops" type="geojson" data={geojson}>
         <Layer id={LAYER_ID} type="circle" paint={circlePaint} />
+        <Layer
+          id="partner-shops-rating-label"
+          type="symbol"
+          layout={
+            {
+              "text-field": ["get", "rating"],
+              "text-size": 9,
+              "text-font": ["Open Sans Bold"],
+              "text-allow-overlap": true,
+              "text-ignore-placement": true,
+            } as Record<string, unknown>
+          }
+          paint={
+            {
+              "text-color": "#ffffff",
+              "text-halo-color": "rgba(0,0,0,0.25)",
+              "text-halo-width": 0.5,
+            } as Record<string, unknown>
+          }
+        />
       </Source>
       {popupShop ? (
         <Popup
@@ -140,28 +163,49 @@ export default function MapLibrePartnerShopLayer({
           offset={24}
           style={{ padding: 0, background: "transparent", border: "none", boxShadow: "none" }}
         >
-          {/* Destination detail card — styled to match the app design language */}
           <div
             style={{ margin: 0 }}
-            className="w-[264px] overflow-hidden rounded-2xl shadow-[0_20px_56px_rgba(2,6,23,0.32),0_6px_18px_rgba(2,6,23,0.18)]"
+            className={`w-[264px] overflow-hidden rounded-2xl backdrop-blur-2xl ${
+              isLight
+                ? "shadow-[0_20px_56px_rgba(15,23,42,0.14),0_6px_18px_rgba(15,23,42,0.08)]"
+                : "shadow-[0_20px_56px_rgba(2,6,23,0.32),0_6px_18px_rgba(2,6,23,0.18)]"
+            }`}
           >
-            {/* Header — dark navy */}
-            <div className="bg-slate-900 px-4 py-3.5">
+            {/* Header */}
+            <div
+              className={`px-4 py-3.5 ${
+                isLight
+                  ? "bg-[linear-gradient(180deg,rgba(255,255,255,0.94),rgba(241,245,249,0.88))]"
+                  : "bg-slate-900"
+              }`}
+            >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="truncate font-semibold text-white text-[13px] leading-tight">
+                  <div
+                    className={`truncate font-semibold text-[13px] leading-tight ${
+                      isLight ? "text-slate-900" : "text-white"
+                    }`}
+                  >
                     {popupShop.name}
                   </div>
                   <div className="flex items-center gap-1.5 mt-1.5">
-                    <MapPin className="h-3 w-3 text-sky-400/80 shrink-0" />
-                    <span className="text-sky-300/80 text-[11px] truncate">
+                    <MapPin
+                      className={`h-3 w-3 shrink-0 ${isLight ? "text-blue-500/80" : "text-sky-400/80"}`}
+                    />
+                    <span
+                      className={`text-[11px] truncate ${isLight ? "text-blue-600/70" : "text-sky-300/80"}`}
+                    >
                       {popupShop.countyLabel}
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={() => setPopupShop(null)}
-                  className="shrink-0 mt-0.5 text-white/30 hover:text-white/70 transition-colors"
+                  className={`shrink-0 mt-0.5 transition-colors ${
+                    isLight
+                      ? "text-slate-400 hover:text-slate-600"
+                      : "text-white/30 hover:text-white/70"
+                  }`}
                   aria-label="Close"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -171,25 +215,49 @@ export default function MapLibrePartnerShopLayer({
               <div className="flex items-center gap-2 mt-2.5">
                 <div className="flex items-center gap-1">
                   <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
-                  <span className="text-amber-300 text-[11px] font-semibold">
+                  <span
+                    className={`text-[11px] font-semibold ${isLight ? "text-amber-600" : "text-amber-300"}`}
+                  >
                     {(popupShop.rating ?? 0).toFixed(1)}
                   </span>
                 </div>
                 {popupShop.dataMode === "demo" && (
                   <>
-                    <span className="text-white/20 text-[11px]">·</span>
-                    <span className="text-amber-400/70 text-[11px]">Preview location</span>
+                    <span
+                      className={`text-[11px] ${isLight ? "text-slate-300" : "text-white/20"}`}
+                    >
+                      ·
+                    </span>
+                    <span
+                      className={`text-[11px] ${isLight ? "text-amber-500/70" : "text-amber-400/70"}`}
+                    >
+                      Preview location
+                    </span>
                   </>
                 )}
               </div>
             </div>
 
-            {/* Body — white */}
-            <div className="bg-white px-4 py-3 space-y-2.5">
+            {/* Body */}
+            <div
+              className={`px-4 py-3 space-y-2.5 ${
+                isLight
+                  ? "bg-[linear-gradient(180deg,rgba(241,245,249,0.7),rgba(255,255,255,0.92))]"
+                  : "bg-[linear-gradient(180deg,rgba(15,23,42,0.88),rgba(15,23,42,0.76))]"
+              }`}
+            >
               {popupShop.addressLine ? (
-                <div className="text-slate-500 text-[11px] leading-4">{popupShop.addressLine}</div>
+                <div
+                  className={`text-[11px] leading-4 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                >
+                  {popupShop.addressLine}
+                </div>
               ) : popupShop.label ? (
-                <div className="text-slate-500 text-[11px] leading-4">{popupShop.label}</div>
+                <div
+                  className={`text-[11px] leading-4 ${isLight ? "text-slate-500" : "text-slate-400"}`}
+                >
+                  {popupShop.label}
+                </div>
               ) : null}
 
               {(popupShop.specialties ?? []).length > 0 && (
@@ -197,7 +265,11 @@ export default function MapLibrePartnerShopLayer({
                   {popupShop.specialties.slice(0, 2).map((s) => (
                     <span
                       key={s}
-                      className="bg-sky-50 text-sky-700 text-[10px] font-medium px-2 py-0.5 rounded-full border border-sky-100"
+                      className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${
+                        isLight
+                          ? "bg-sky-50 text-sky-700 border-sky-100"
+                          : "bg-sky-400/10 text-sky-300 border-sky-400/20"
+                      }`}
                     >
                       {s}
                     </span>
@@ -211,7 +283,11 @@ export default function MapLibrePartnerShopLayer({
                   if (onSelectShop) onSelectShop(shopId);
                   setPopupShop(null);
                 }}
-                className="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-[11px] font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(37,99,235,0.30)]"
+                className={`w-full active:scale-[0.98] text-[11px] font-semibold py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+                  isLight
+                    ? "bg-[linear-gradient(180deg,rgba(59,130,246,0.9),rgba(37,99,235,0.96))] text-white shadow-[0_8px_18px_rgba(37,99,235,0.22)] hover:brightness-110"
+                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-[0_4px_12px_rgba(37,99,235,0.30)]"
+                }`}
               >
                 View Shop Details
                 <span className="text-blue-200">→</span>
