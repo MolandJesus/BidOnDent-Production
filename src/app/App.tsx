@@ -8,7 +8,7 @@ import { ScreenErrorBoundary } from "./components/ScreenErrorBoundary";
 import { extractUserProfile } from "./services/clerkService";
 import { buildWebsiteIdentity } from "./services/auth/websiteIdentity";
 import { setClerkTokenGetter } from "./services/supabase/authSession";
-import { setSupabaseRealtimeAuth } from "./services/supabase/client";
+import { setSupabaseRealtimeAuth, hasMissingSupabaseConfig } from "./services/supabase/client";
 
 // Import custom hooks (for non-auth state management)
 import { useUserData } from "./hooks/useUserData";
@@ -444,8 +444,8 @@ function AppContent() {
 
 // Main App component wrapped with ClerkProvider
 export default function App() {
-  if (!hasValidClerkPublishableKey) {
-    return <AuthConfigFallback />;
+  if (hasMissingSupabaseConfig || !hasValidClerkPublishableKey) {
+    return <AuthConfigFallback missingSupabase={hasMissingSupabaseConfig} />;
   }
 
   return (
