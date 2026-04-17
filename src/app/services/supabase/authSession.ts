@@ -35,9 +35,7 @@ export async function getClerkTokenForEdgeRequests() {
   try {
     return await clerkTokenGetter();
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.error("Failed to resolve Clerk token for edge request:", error);
-    }
+    console.warn("[Auth] Failed to resolve Clerk token for edge request:", error);
     return null;
   }
 }

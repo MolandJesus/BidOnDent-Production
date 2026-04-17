@@ -45,7 +45,7 @@ export async function getProfile(
 
     return payload.profile || null;
   } catch (error) {
-    if (import.meta.env.DEV) console.error("Error in getProfile:", error);
+    console.error("[getProfile] Failed to fetch profile:", error);
     return null;
   }
 }
