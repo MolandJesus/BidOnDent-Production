@@ -292,14 +292,18 @@ Handler executes with authenticated clerkUserId
 
 ## 8. Build and Development
 
-| Command                    | Purpose                            |
-| -------------------------- | ---------------------------------- |
-| `npm run dev`              | Start Vite dev server              |
-| `npm run build`            | Production build (must = 0 errors) |
-| `supabase functions serve` | Local edge function server         |
-| `supabase start`           | Local Supabase Docker stack        |
+| Command                       | Purpose                                            |
+| ----------------------------- | -------------------------------------------------- |
+| `npm run dev`                 | Start Vite dev server                              |
+| `npm run dev:local-browser`   | Start Vite for same-origin local-browser mode      |
+| `npm run local-browser-proxy` | Start repo-owned browser proxy on `localhost:4174` |
+| `npm run build`               | Production build (must = 0 errors)                 |
+| `supabase functions serve`    | Local edge function server                         |
+| `supabase start`              | Local Supabase Docker stack                        |
 
 **Staging:** Supabase project `lhhdqycnhweaxqviwdqt` (created 2026-04-15).
+
+**Local browser audit path:** `npm run dev:local-browser` + `npm run local-browser-proxy` + `http://localhost:4174`. This repo-owned path exists because plain `npm run dev` on `5173` uses the `.env` Supabase host directly, while browser QA against the local Docker stack needs a stable same-origin target that proxies app assets to Vite and Supabase API families to `127.0.0.1:54321`.
 
 **Build health:** 0 TypeScript errors. 555/557 tests passing (2 pre-existing failures in `bids.test.ts` — network mock edge cases, not blocking).
 

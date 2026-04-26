@@ -722,25 +722,26 @@ Changes included:
 
 **Per-route authorization expectations (intent — to be re-verified live after edge function redeploy):**
 
-| Route | Method | Caller scenario | Expected status | Source of expectation |
-|-------|--------|------------------|------------------|------------------------|
-| `/job-assignments` | GET | No Authorization header | 401 | `requireAuthenticatedProfile` → `requireClerkSession` → "No Authorization header provided" |
-| `/job-assignments?shopClerkUserId=X` | GET | Authenticated as shop X | 200 | `isOwner` true |
-| `/job-assignments?shopClerkUserId=X` | GET | Authenticated as shop Y (≠ X), not admin | 403 | `!isOwner && !isAdmin` |
-| `/job-assignments?shopClerkUserId=X` | GET | Authenticated as admin | 200 | `isAdmin` true |
-| `/job-assignment` | POST | Body names customer C, caller is C | 201/200 | `isCustomer` true |
-| `/job-assignment` | POST | Body names customer C, caller is shop S (≠ C), not admin | 403 | `!isCustomer && !isAdmin` |
-| `/job-assignment/status` | POST | Caller is one of the parties on the row | 200 | `isParty` true |
-| `/job-assignment/status` | POST | Caller is logged in but not on the row, not admin | 403 | `!isParty && !isAdmin` |
-| `/job-assignment/status` | POST | Assignment ID does not exist | 404 | row pre-fetch returns null |
-| `/claim-submission` | POST | Caller is shop account | 403 | `requireInsurerContext` → "Insurer access required" |
-| `/claim-submission` | POST | Caller is insurer account | 200 | `isInsurerOrAdmin` true |
-| `/claim-decision` | POST | Caller is shop account | 403 | `requireInsurerContext` → "Insurer access required" |
-| `/claim-decision` | POST | Caller is insurer account | 200 | `isInsurerOrAdmin` true |
+| Route                                | Method | Caller scenario                                          | Expected status | Source of expectation                                                                      |
+| ------------------------------------ | ------ | -------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------ |
+| `/job-assignments`                   | GET    | No Authorization header                                  | 401             | `requireAuthenticatedProfile` → `requireClerkSession` → "No Authorization header provided" |
+| `/job-assignments?shopClerkUserId=X` | GET    | Authenticated as shop X                                  | 200             | `isOwner` true                                                                             |
+| `/job-assignments?shopClerkUserId=X` | GET    | Authenticated as shop Y (≠ X), not admin                 | 403             | `!isOwner && !isAdmin`                                                                     |
+| `/job-assignments?shopClerkUserId=X` | GET    | Authenticated as admin                                   | 200             | `isAdmin` true                                                                             |
+| `/job-assignment`                    | POST   | Body names customer C, caller is C                       | 201/200         | `isCustomer` true                                                                          |
+| `/job-assignment`                    | POST   | Body names customer C, caller is shop S (≠ C), not admin | 403             | `!isCustomer && !isAdmin`                                                                  |
+| `/job-assignment/status`             | POST   | Caller is one of the parties on the row                  | 200             | `isParty` true                                                                             |
+| `/job-assignment/status`             | POST   | Caller is logged in but not on the row, not admin        | 403             | `!isParty && !isAdmin`                                                                     |
+| `/job-assignment/status`             | POST   | Assignment ID does not exist                             | 404             | row pre-fetch returns null                                                                 |
+| `/claim-submission`                  | POST   | Caller is shop account                                   | 403             | `requireInsurerContext` → "Insurer access required"                                        |
+| `/claim-submission`                  | POST   | Caller is insurer account                                | 200             | `isInsurerOrAdmin` true                                                                    |
+| `/claim-decision`                    | POST   | Caller is shop account                                   | 403             | `requireInsurerContext` → "Insurer access required"                                        |
+| `/claim-decision`                    | POST   | Caller is insurer account                                | 200             | `isInsurerOrAdmin` true                                                                    |
 
 **Pre-existing client-side test coverage (still passing):** `src/app/services/supabase/workflow.test.ts` — `logWorkflowEvent`, `createJobAssignment`, `updateJobAssignmentStatus` request-shape and error propagation. No new handler-level test infrastructure introduced (none exists for any handler in the repo — convention preserved).
 
 **Owner action required for Pass 1 gate close:**
+
 1. Approve code changes (done in chat).
 2. Run `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`.
 3. Execute the per-route table above against the live edge environment (curl or browser). Record actual status codes alongside expected.
@@ -780,6 +781,65 @@ Secondary AI validation complete: Pass 2 local runtime verified, Pass 3 live vis
 After step 5, Phase 5.5 gate is closed and Phase 6 (Pre-launch Verification Gate) becomes unblocked.
 
 **Out-of-scope follow-up flagged 2026-04-26 by secondary AI:** Console noise on the demo-switcher reload path — `403` from website session sync calls and `500` from a service-area fetch. These did not block any Phase 5.5 verification step but are worth checking against existing KI entries (likely KI-043 territory) before launch.
+
+### Dev-environment hardening — KI-054 (2026-04-26)
+
+During the audit pass below, the dev-server CSP forced the audit AI to spin up an in-process proxy to make the local Supabase stack reachable from the browser. That proxy was a single point of failure: when its terminal died, the "dev server" appeared dead even though Vite was still running. Root-cause fix landed the same day:
+
+- Extended the dev-only CSP `connect-src` in `vite.config.ts` to allow `http://127.0.0.1:54321` / `http://localhost:54321` / `ws://...` (production CSP via Vercel headers is unaffected).
+- Simplified `scripts/dev-local-browser.mjs` to point Vite directly at the local API URL from `supabase status -o env` — no proxy hop.
+- Deleted `scripts/local-browser-proxy.mjs`, removed the `http-proxy` dev dep, removed the `local-browser-proxy` npm script.
+- Updated `docs/GETTING_STARTED.md` and `docs/REF_AI_BROWSER_NAVIGATION.md` to the simpler one-command flow.
+- Build green (3.79s, 0 errors); tests 568/568 passing.
+
+See KI-054 in `REF_KNOWN_ISSUES.md` for the full record. Future audit AIs should use `npm run dev:local-browser` and target `http://localhost:5173/` directly — no proxy required.
+
+### Phase 5.5 Audit Pass (2026-04-26)
+
+Local read-only visual + functional audit by secondary AI (GPT-5.4-high). Read the full output in chat history; below is the docs-side rollup.
+
+**Phase 5.5 verification (local):**
+
+- Pass 1 (workflow auth): **PASS** — owner shop reads `getJobAssignments` (200, enriched with linked completed report); mismatched `shopClerkUserId` returns 403. Per-route artifact table here remains expected-only until prod live verification fills actual statuses.
+- Pass 2 (completion propagation): **PARTIALLY VERIFIED** — server side wired correctly (`reports.ts` propagates, local DB shows expected `completed`/`completed` pairing). Customer-side click flow not exercised: no customer fixture in local DB.
+- Pass 3 (seed-fallback removed): **NOT REACHED** — authenticated shop landed in onboarding (no `shop_profiles` row), so the marketplace empty-state surfaces were not visited under a real authenticated session in this pass. Note: KI-050 itself is already fully RESOLVED — Pass 3 was previously verified end-to-end via network interception in the prior session.
+
+**New KIs filed:** KI-051 (CSP missing overpass-api.de — P1), KI-052 (route presentation invents travel time/distance for zero-distance demos — P4), KI-053 (map performance budget overruns — P4). See `REF_KNOWN_ISSUES.md`.
+
+**Tooling limits documented:**
+
+- VSCode integrated browser does not honor forced viewport changes — mobile coverage was not claimed in this pass.
+- Local DB fixtures are sparse (1 shop profile, 1 completed report, 1 completed job, 0 bids, 0 service areas, 0 `shop_profiles`, 0 `insurer_profiles`). The authenticated shop hits onboarding because `shop_profiles` is empty.
+- 2026-04-25 local-browser incident: the audit depended on `http://localhost:4174/`, but the repo had no owned startup path for that target. The cached 4174 tab eventually failed mid-audit (`ERR_CONNECTION_REFUSED` / dynamic import fetch failure), which forced the audit to stop. Recovery is now repo-owned: `npm run dev:local-browser` starts Vite with local Supabase env overrides, and `npm run local-browser-proxy` restores the same-origin browser target on `4174`.
+
+**Pre-known noise (not filed as KIs):**
+
+- 108 cspell hits across 12 files — concentrated in archived docs + NY geography + demo-seed vocabulary.
+- TypeScript `baseUrl` deprecation warning in `tsconfig.json` — pre-existing, surfaced in every audit since 2026-04-25.
+
+---
+
+### Post-Phase 5.5 — Visual Master Build (PLANNING, 2026-04-26)
+
+**Purpose:** A focused, multi-pass quality initiative that closes the gaps the 2026-04-26 audit surfaced, brings the authenticated surfaces up to the design identity standard, and adds the mobile coverage that current tooling can't provide. Distinct from Phase 5.5 (which is correctness-focused) — this is **trust + polish + truthfulness** focused.
+
+**Scope filter:** still bound by the LAW_PROJECT_RULES North Star ("does this serve the core transaction OR protect the product DNA"). Map-first identity, premium glass, blue system, and customer/shop marketplace core are the protect-always anchors. Nothing in this initiative should add new features.
+
+**Provisional pass list (to be locked when Phase 5.5 closes):**
+
+1. **VMB Pass 1 — Map command-center truthfulness + provider access (P1+P4 cluster).** Address KI-051 (CSP/Overpass) and KI-052 (route presentation floors) together, since both live on the strongest public product surface and one is a real functional gap. Prefer the edge-proxy shape for KI-051 to match the pattern set by KI-046. Single coherent pass.
+2. **VMB Pass 2 — Authenticated surface fixture seeding + Phase 5.5 follow-through.** Stand up minimal local fixtures (customer profile, second shop with `shop_profiles`, insurer profile, two reports with bids) so the authenticated dashboard, customer report flow, insurer claims flow, and Pass 2's customer-side click can all be exercised in-browser. Re-run the visual audit on those surfaces against the design identity.
+3. **VMB Pass 3 — Mobile coverage pass.** Tooling-dependent. Either (a) drive Playwright in headed mode with a real mobile viewport via standalone `npx playwright test` (not VSCode's integrated browser), or (b) spin a real device via the deployed Vercel preview URL. Cover the same surfaces as VMB Pass 2 at 375×812 and 414×896.
+4. **VMB Pass 4 — Map performance profile + targeted fix (KI-053).** Out-of-scope for pre-launch unless VMB Pass 1 reveals a cheap win on the same code paths. Likely lands as a focused post-launch polish pass.
+5. **VMB Pass 5 — Design identity sweep across all primary surfaces.** A focused pass to enforce `bd-*` utility usage, blue system consistency, glass surface adoption, and the dark-mode navy palette. Not a redesign — a polish pass with a concrete checklist per surface.
+
+**Sequencing rule:** VMB Pass 1 first because it directly affects the public product surface (and one of its findings is P1). VMB Pass 2 unblocks the rest of the authenticated audit. VMB Pass 3 depends on tooling decision. VMB Pass 4 depends on profiling result. VMB Pass 5 last, as a closeout polish.
+
+**Owner approval gate:** each pass requires explicit owner approval before code changes — same discipline as Phase 5.5. The audit work itself can run autonomously between passes.
+
+**Authority:** PLANNING tier — not yet locked. Will be promoted to active execution authority when Phase 5.5 closes (prod deploy + verification done) and the owner approves the pass list.
+
+---
 
 ### Validation pass (2026-04-25)
 

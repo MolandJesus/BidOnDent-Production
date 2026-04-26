@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-04-25
+**Last updated:** 2026-04-26
 
 **Update rules:**
 
@@ -225,6 +225,44 @@
 - **Fix:** Code-side complete (Pass 5.5 / Pass 3, 2026-04-25). `SEED_DAMAGE_REPORTS` import removed from `useDashboardData.ts`. `shopInsurerReports = liveMarketplaceReports` (direct passthrough). `usingSeedFallback = false`. Empty live data now renders the per-screen empty state already present on [ShopRequestsScreen.tsx:354-360](../src/app/components/shop/ShopRequestsScreen.tsx#L354) ("No repair requests yet"), [ShopActiveJobsScreen.tsx:392-401](../src/app/components/shop/ShopActiveJobsScreen.tsx#L392) ("No active jobs yet"), [InsurerClaimsScreen.tsx:347-359](../src/app/components/insurer/InsurerClaimsScreen.tsx#L347) ("No claims yet"). The amber `isSeedData` banners on all three screens are now unreachable but kept in code as harmless dead branches (cleanup deferred — out of pass scope). Seed-id mutation guards (`String(id).startsWith("seed-")`) preserved as belt-and-suspenders. `SEED_DAMAGE_REPORTS` constant stays exported for demo-mode use. No backend change. Build green (3.23s, 0 errors); tests 568/568 passing.
 - **Validation:** Live visual verification complete 2026-04-26 by secondary AI (GPT-5.4-high) on all three target screens (`ShopRequestsScreen`, `ShopActiveJobsScreen`, `InsurerClaimsScreen`) in both light and map-dark appearance modes. Empty state was forced via network interception of marketplace + job-assignment feeds rather than seed/demo records. All three screens rendered the expected empty copy ("No repair requests yet" / "No active jobs yet" / "No claims yet") with no example-data banner and no layout breakage. No new accounts required.
 - **Status:** RESOLVED (code-side + live visual verification complete 2026-04-26 — no further verification required for this KI; client-only change, no deploy needed).
+
+### KI-051: CSP missing overpass-api.de blocks public map place discovery
+
+- **Impact:** The fullscreen coverage command center promises address and point-of-interest search, but in-browser the connect-src CSP in `vite.config.ts` does not allow `overpass-api.de`, while `src/app/services/navigation/placeDiscovery.ts` and `src/app/services/navigation/speedLimit.ts` fetch that domain directly. Result: richer place-discovery behavior is broken when the public full map opens from `CoverageMapDialog.tsx` and from the search surface in `PlannerAddressSearch.tsx`. Static recommendations still render; live discovery does not.
+- **Location:** [vite.config.ts](../vite.config.ts) (CSP `connect-src`); [src/app/services/navigation/placeDiscovery.ts](../src/app/services/navigation/placeDiscovery.ts); [src/app/services/navigation/speedLimit.ts](../src/app/services/navigation/speedLimit.ts); consumers in [src/app/components/maps/command-center/PlannerAddressSearch.tsx](../src/app/components/maps/command-center/PlannerAddressSearch.tsx) and [src/app/components/landing/CoverageMapDialog.tsx](../src/app/components/landing/CoverageMapDialog.tsx).
+- **Current reality:** Detected during the 2026-04-26 local audit pass. Direct browser fetches to `overpass-api.de` are blocked by CSP. Discovery silently fails — UI shows static demo recommendations instead.
+- **Fix direction:** Two acceptable shapes — (a) route Overpass-dependent discovery through the existing shared edge proxy pattern (see KI-046's resolution: `/functions/v1/server/geocode/search` for Nominatim) by adding an Overpass proxy route to the `server` edge function; or (b) extend `connect-src` to allow `overpass-api.de` if direct browser access is preferred. Option (a) matches the pattern set by KI-046 and is the consistent choice. Either way, also audit any other direct provider fetches in UI-facing code per the KI-046 fix-direction rule.
+- **Status:** Open — P1 (public map functional gap; map-first product surface).
+
+### KI-052: Public map invents travel time/distance for zero-distance demo routes
+
+- **Impact:** The landing-page coverage command center showed `0.0 mi` plus `6–9 min` before route start and `50 ft` plus `1 min` after start, on a recommendation pinned to identical coordinates as its origin. Trust gap on the strongest public product surface — implies route metrics that do not exist.
+- **Location:** Root cause: minimum-distance / minimum-duration floors in [src/app/components/maps/mapRoutePresentation.ts](../src/app/components/maps/mapRoutePresentation.ts). Surfaced in [src/app/components/maps/command-center/PlannerRoutePreview.tsx](../src/app/components/maps/command-center/PlannerRoutePreview.tsx) and [src/app/components/landing/CoverageActiveNavigationLayout.tsx](../src/app/components/landing/CoverageActiveNavigationLayout.tsx) which consume the floored values directly. Demo data in [src/app/components/landing/coverageData.ts](../src/app/components/landing/coverageData.ts) pins ZIP `10601` to the same coordinates as `BidOnDent Metro Hub`, which is what triggers the zero-distance edge case in the live demo.
+- **Current reality:** Detected during the 2026-04-26 local audit pass. Build green. Issue only surfaces when origin and destination resolve to the same coordinates — but that exact case is reachable via the public demo path, so it is user-visible.
+- **Fix direction:** Remove the minimum-distance and minimum-duration floors in `mapRoutePresentation.ts` so zero-distance and arrival-adjacent states render as `0 mi` / `Arrived` / blank, instead of synthetic numbers. Cross-check the consuming components handle the new zero/null shape. Optionally also separate the two coordinate-identical demo entries in `coverageData.ts` so the demo flow tests a real route by default.
+- **Status:** Open — P4 (truthfulness polish on map-first product surface; pre-launch desirable, post-launch acceptable).
+
+### KI-054: Dev-server CSP did not allow local Supabase, forcing brittle in-process proxy workarounds for browser audits
+
+- **Impact:** The Vite dev-server CSP `connect-src` only allowed `https://*.supabase.co` (cloud), so any browser audit that pointed the app at the local Docker Supabase stack (`http://127.0.0.1:54321`) had every request blocked. The 2026-04-26 audit AI worked around this by spinning a same-origin Node proxy on port 4174, then later baking it into the repo as `scripts/local-browser-proxy.mjs` + an `http-proxy` dev dep + a second npm script. That proxy was a single point of failure: when its terminal was killed (or it OOM'd) the "dev server" appeared dead in-browser, even though Vite was still up.
+- **Location:** [vite.config.ts](../vite.config.ts) `server.headers["Content-Security-Policy"]` `connect-src` directive.
+- **Fix:** Code-side complete (2026-04-26).
+  - Extended dev-server CSP `connect-src` to include `http://127.0.0.1:54321`, `http://localhost:54321`, `ws://127.0.0.1:54321`, `ws://localhost:54321`. This header is emitted by Vite's dev server only — production CSP (Vercel headers) is unaffected.
+  - Simplified `scripts/dev-local-browser.mjs` to point Vite directly at the local Supabase API URL discovered via `supabase status -o env` (was previously pointing at the proxy origin). Now exposes `BIDONDENT_LOCAL_SUPABASE_URL` env override for the rare host/port deviation case.
+  - Deleted `scripts/local-browser-proxy.mjs` (no longer needed).
+  - Removed `http-proxy` dev dependency and the `local-browser-proxy` npm script from `package.json`.
+  - Updated `docs/GETTING_STARTED.md` and `docs/REF_AI_BROWSER_NAVIGATION.md` to reflect the simpler one-command flow targeting `localhost:5173` directly.
+  - Build green (3.79s, 0 errors); tests 568/568 passing.
+- **Why this matters beyond the immediate fix:** The proxy approach hid the real architecture from devs (browser thought Supabase lived at 4174) and added a fragile process to the audit hot path. Fixing CSP at the source means future audit AIs have one less moving piece to keep alive and one less thing that can crash mid-pass.
+- **Status:** RESOLVED (code-side, 2026-04-26 — no deploy needed; dev-only change).
+
+### KI-053: Map performance budget overruns on landing/fullscreen map
+
+- **Impact:** During the 2026-04-26 audit, `mapPerformance.ts` repeatedly logged pan/zoom samples exceeding the configured budgets (observed: 502ms, 520ms, 543ms, with one 2096ms burst against 380ms / 450ms budgets). The instrumentation already exists; the budgets are being missed. Performance impact on map-first UX, especially on lower-end devices.
+- **Location:** Instrumentation in [src/app/services/navigation/mapPerformance.ts](../src/app/services/navigation/mapPerformance.ts). Triggered during landing-page map and fullscreen `CoverageMapDialog.tsx` interactions.
+- **Current reality:** Detected during the 2026-04-26 local audit pass. Observability is in place — no data-collection work needed. The data shows the budgets are not being met today.
+- **Fix direction:** Investigate which layer/source/event handler is dominating frame time during pan/zoom (likely either the marker rendering path, the route geometry source, or un-throttled effects in the map controllers). Profile with Chrome DevTools performance panel before authoring any fix. Out of pre-launch scope unless investigation reveals a cheap win.
+- **Status:** Open — P4 (polish; observability already exists, fix needs profiling).
 
 ### KI-047: Supabase security advisor flagged public tables in staging and leads projects
 
