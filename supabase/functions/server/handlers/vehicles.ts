@@ -6,6 +6,7 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
   ensureClerkUserMatchesSession,
+  getAuthenticatedProfile,
   requireClerkSession,
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
@@ -126,17 +127,81 @@ export async function getVehicles(
   try {
     const url = new URL(req.url);
     const session = await requireClerkSession(req, { requireEmail: false });
-    const clerkUserId = ensureClerkUserMatchesSession(
+    const sessionClerkUserId = ensureClerkUserMatchesSession(
       session,
       url.searchParams.get('clerkUserId')
     );
 
-    const { data, error } = await supabase
+    // Resolve the user's profile to recover any historical clerk_user_id.
+    // Vehicles may have been saved under an older Clerk id (Clerk env switch,
+    // session rotation, account re-link). The profile is found by clerk_user_id
+    // OR email, so its stored clerk_user_id is the canonical link to legacy
+    // rows even when the current JWT carries a different id.
+    const profile = await getAuthenticatedProfile(supabase, session);
+    const candidateClerkUserIds = new Set<string>();
+    candidateClerkUserIds.add(sessionClerkUserId);
+    if (profile?.clerk_user_id) {
+      candidateClerkUserIds.add(profile.clerk_user_id);
+    }
+
+    const baseQuery = supabase
       .from('vehicles')
       .select('*')
-      .eq('clerk_user_id', clerkUserId)
       .is('deleted_at', null)
       .order('created_at', { ascending: false });
+
+    const filteredQuery =
+      candidateClerkUserIds.size === 1
+        ? baseQuery.eq('clerk_user_id', sessionClerkUserId)
+        : baseQuery.in('clerk_user_id', Array.from(candidateClerkUserIds));
+
+    let { data, error } = await filteredQuery;
+
+    // Final fallback: vehicles linked via legacy Supabase auth user_id when
+    // the profile carries a user_id but no historical clerk_user_id match.
+    if (!error && (!data || data.length === 0) && profile?.user_id) {
+      const userIdResult = await supabase
+        .from('vehicles')
+        .select('*')
+        .eq('user_id', profile.user_id)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false });
+      if (!userIdResult.error && userIdResult.data && userIdResult.data.length > 0) {
+        data = userIdResult.data;
+
+        // Self-heal: relink legacy rows to the current Clerk user id so future
+        // direct queries by clerk_user_id succeed without the fallback hop.
+        const legacyIds = userIdResult.data
+          .map((row: any) => row.id)
+          .filter((id: any) => typeof id === "string");
+        if (legacyIds.length > 0) {
+          await supabase
+            .from('vehicles')
+            .update({ clerk_user_id: sessionClerkUserId })
+            .in('id', legacyIds);
+        }
+      }
+    }
+
+    // Self-heal: if rows were found under a stale clerk_user_id, relink them
+    // to the current session's id so the fallback isn't needed next time.
+    if (
+      !error &&
+      data &&
+      data.length > 0 &&
+      candidateClerkUserIds.size > 1
+    ) {
+      const staleIds = data
+        .filter((row: any) => row.clerk_user_id && row.clerk_user_id !== sessionClerkUserId)
+        .map((row: any) => row.id)
+        .filter((id: any) => typeof id === "string");
+      if (staleIds.length > 0) {
+        await supabase
+          .from('vehicles')
+          .update({ clerk_user_id: sessionClerkUserId })
+          .in('id', staleIds);
+      }
+    }
 
     if (error) {
       console.error('Error fetching vehicles:', error);

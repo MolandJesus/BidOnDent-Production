@@ -197,7 +197,11 @@ export default function HomeScreen({
           </div>
         </section>
         {isNewUser && userType === "customer" ? (
-          <HomeOnboardingCard primaryColor={primaryColor} secondaryColor={secondaryColor} />
+          <HomeOnboardingCard
+            primaryColor={primaryColor}
+            secondaryColor={secondaryColor}
+            appearanceMode={appearanceMode}
+          />
         ) : null}
         {/* Quick Actions — role-specific navigation buttons */}
         <HomeQuickActions quickActions={quickActions} appearanceMode={appearanceMode} />
