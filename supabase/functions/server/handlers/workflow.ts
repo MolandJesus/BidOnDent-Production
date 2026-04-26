@@ -1,5 +1,9 @@
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { requireClerkSession, requireMarketplaceContext } from "../utils/authz.ts";
+import {
+  requireAuthenticatedProfile,
+  requireClerkSession,
+  requireInsurerContext,
+} from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 import { notifyCustomerClaimDecision } from "./notificationEmails.ts";
 
@@ -22,6 +26,13 @@ function getWorkflowErrorStatus(error: unknown) {
 
   if (message === "No Authorization header provided" || message.includes("Authorization header")) {
     return 401;
+  }
+
+  if (
+    message.includes("Marketplace access required") ||
+    message.includes("Insurer access required")
+  ) {
+    return 403;
   }
 
   return 500;
@@ -98,6 +109,16 @@ export async function getJobAssignments(
     const shopClerkUserId = url.searchParams.get("shopClerkUserId");
     if (!shopClerkUserId) {
       return respond({ error: "shopClerkUserId is required" }, 400);
+    }
+
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: false,
+    });
+
+    const isOwner = session.clerkUserId === shopClerkUserId;
+    const isAdmin = Boolean(profile?.is_admin);
+    if (!isOwner && !isAdmin) {
+      return respond({ error: "Forbidden" }, 403);
     }
 
     const { data: jobs, error } = await supabase
@@ -180,7 +201,9 @@ export async function createJobAssignment(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    const session = await requireClerkSession(req, { requireEmail: false });
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: false,
+    });
 
     let body: Record<string, unknown> = {};
     try {
@@ -207,6 +230,15 @@ export async function createJobAssignment(
       !VALID_JOB_STATUSES.has(payload.status)
     ) {
       return respond({ error: "Invalid job assignment payload" }, 400);
+    }
+
+    // Ownership: only the customer named in the assignment (or admin) may create it.
+    // The bid-accept flow in bids.ts handles the normal case server-side; this
+    // endpoint is the fallback for customer-driven creation.
+    const isCustomer = session.clerkUserId === payload.customer_clerk_user_id;
+    const isAdmin = Boolean(profile?.is_admin);
+    if (!isCustomer && !isAdmin) {
+      return respond({ error: "Forbidden" }, 403);
     }
 
     const { data, error } = await supabase
@@ -252,7 +284,9 @@ export async function updateJobAssignmentStatus(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    await requireClerkSession(req, { requireEmail: false });
+    const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+      requireEmail: false,
+    });
 
     let body: Record<string, unknown> = {};
     try {
@@ -266,6 +300,33 @@ export async function updateJobAssignmentStatus(
 
     if (!assignmentId || !VALID_JOB_STATUSES.has(status)) {
       return respond({ error: "Invalid job assignment status update" }, 400);
+    }
+
+    // Ownership: pre-fetch the assignment and require caller to be one of the
+    // named parties (shop / customer / insurer) or an admin.
+    const { data: existing, error: existingError } = await supabase
+      .from("job_assignments")
+      .select("id, shop_clerk_user_id, customer_clerk_user_id, insurer_clerk_user_id")
+      .eq("id", assignmentId)
+      .maybeSingle();
+
+    if (existingError) {
+      return respond({ error: sanitizeErrorMessage(existingError) }, 500);
+    }
+
+    if (!existing) {
+      return respond({ error: "Job assignment not found" }, 404);
+    }
+
+    const callerId = session.clerkUserId;
+    const isParty =
+      callerId === existing.shop_clerk_user_id ||
+      callerId === existing.customer_clerk_user_id ||
+      callerId === existing.insurer_clerk_user_id;
+    const isAdmin = Boolean(profile?.is_admin);
+
+    if (!isParty && !isAdmin) {
+      return respond({ error: "Forbidden" }, 403);
     }
 
     const { data, error } = await supabase
@@ -300,7 +361,7 @@ export async function submitInsuranceClaim(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    const { session } = await requireMarketplaceContext(req, supabase);
+    const { session } = await requireInsurerContext(req, supabase);
 
     let body: Record<string, unknown> = {};
     try {
@@ -377,11 +438,7 @@ export async function submitInsuranceClaim(
       success: true,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "";
-    const status = message.includes("Marketplace access required")
-      ? 403
-      : getWorkflowErrorStatus(error);
-    return respond({ error: sanitizeErrorMessage(error) }, status);
+    return respond({ error: sanitizeErrorMessage(error) }, getWorkflowErrorStatus(error));
   }
 }
 
@@ -391,7 +448,7 @@ export async function updateClaimDecision(
   respond: RespondFunction
 ): Promise<Response> {
   try {
-    const { session } = await requireMarketplaceContext(req, supabase);
+    const { session } = await requireInsurerContext(req, supabase);
 
     let body: Record<string, unknown> = {};
     try {
@@ -477,10 +534,6 @@ export async function updateClaimDecision(
       success: true,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "";
-    const status = message.includes("Marketplace access required")
-      ? 403
-      : getWorkflowErrorStatus(error);
-    return respond({ error: sanitizeErrorMessage(error) }, status);
+    return respond({ error: sanitizeErrorMessage(error) }, getWorkflowErrorStatus(error));
   }
 }

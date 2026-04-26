@@ -2,10 +2,13 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-04-16 (Pass 67)  
-**Build:** 0 TS errors, 555/557 tests passing, ~3.4s  
-**Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)  
-**Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`. Pending redeploy with: geo-filtered shop marketplace, JWT rate-limit identity, server-side atomic accept-bid, bid submission guard, email column fix. See LAW_HARDENING_PLAN.md "Edge function deploy handoff" for full list.
+**Last updated:** 2026-04-25 (Phase 5.5 validation)
+
+**Build:** 0 TS errors, 568/568 tests passing, ~3.4s
+
+**Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
+
+**Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`. Pending redeploy with: geo-filtered shop marketplace, JWT rate-limit identity, server-side atomic accept-bid, bid submission guard, email column fix. See LAW_HARDENING_PLAN.md "Edge function deploy handoff" for full list. Phase 5.5 Passes 1 and 2 will require additional redeploys.
 
 ---
 
@@ -191,7 +194,10 @@ Single `Deno.serve()` in [server/index.ts](../supabase/functions/server/index.ts
 ```
 Client: Clerk JWT → Authorization header
   ↓
-Edge Function: requireClerkSession() extracts session from JWT
+Supabase gateway: NOT verified (function deployed with --no-verify-jwt)
+  ↓
+Edge Function: requireClerkSession() cryptographically verifies the Clerk JWT
+                via JWKS in supabase/functions/server/utils/clerk.ts
   ↓
 ensureClerkUserMatchesSession() validates clerkUserId param matches session.sub
   ↓
@@ -200,6 +206,8 @@ Profile lookup: profiles.clerk_user_id = session.sub
   ↓
 Handler executes with authenticated clerkUserId
 ```
+
+**Critical deployment fact:** the `server` edge function is deployed with `--no-verify-jwt` because the Supabase gateway cannot verify Clerk-issued tokens. **All `server` routes are reachable from the open internet** — handler-level `requireClerkSession`/`requireMarketplaceContext`/`requireAdminContext` is the only authentication enforcement point. Combined with the service-role Supabase client at [config/clients.ts:13](../supabase/functions/server/config/clients.ts#L13) (which bypasses RLS), this means the handler is the **only** authorization enforcement point. Any handler that omits an auth check is publicly accessible. See KI-048.
 
 **Note:** Every API call passes `clerkUserId` as a parameter even though the JWT already contains it. This is a legacy pattern from the pre-Clerk auth system.
 

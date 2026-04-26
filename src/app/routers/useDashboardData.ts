@@ -10,7 +10,6 @@ import { useShopEstimateStatusNotifications } from "../hooks/useShopEstimateStat
 import { useCustomerEstimateResponseNotifications } from "../hooks/useCustomerEstimateResponseNotifications";
 import { useShopNearbyReportNotifications } from "../hooks/useShopNearbyReportNotifications";
 import { useShopServiceAreas } from "../hooks/useShopServiceAreas";
-import { SEED_DAMAGE_REPORTS } from "../constants";
 import { getShopSubmittedBids } from "../services/supabase/bids";
 import {
   getMyEstimateRequests,
@@ -118,8 +117,10 @@ export function useDashboardData({
     const rightDate = Date.parse(right.submittedAt || right.createdAt || "");
     return rightDate - leftDate;
   });
-  const usingSeedFallback = liveMarketplaceReports.length === 0;
-  const shopInsurerReports = usingSeedFallback ? SEED_DAMAGE_REPORTS : liveMarketplaceReports;
+  // Pass 5.5 / Pass 3 (KI-050): seed fallback removed from authenticated marketplace.
+  // Empty live data now renders the per-screen empty state instead of fake records.
+  const shopInsurerReports = liveMarketplaceReports;
+  const usingSeedFallback = false;
   const shopInsurerReportsLoading = marketplaceLoading && liveMarketplaceReports.length === 0;
 
   // Shop submitted bids

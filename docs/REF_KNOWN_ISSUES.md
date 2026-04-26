@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-04-17
+**Last updated:** 2026-04-25
 
 **Update rules:**
 
@@ -200,3 +200,35 @@
 - **Fix direction:** Keep browser geocoding behind the shared edge proxy and reuse that route for future place-search/geocode flows instead of adding new direct provider fetches in UI-facing code.
 - **Validation:** Fresh desktop reload, live origin search (`Yonkers NY`), and mobile reload at `375x812` all returned `200` from `/functions/v1/server/geocode/search` with no direct browser requests to `nominatim.openstreetmap.org` observed.
 - **Status:** RESOLVED (2026-04-17) — deployed live on the connected Supabase project.
+
+### KI-048: Workflow handlers leak data and allow cross-user mutation
+
+- **Impact:** `getJobAssignments` returns enriched job rows including customer name/email/phone with no auth check — public PII read by anyone who hits the route (the `server` edge function is deployed `--no-verify-jwt`, so the Supabase gateway does not block unauthenticated calls). `updateJobAssignmentStatus` and `createJobAssignment` require a Clerk session but perform no ownership check, so any authenticated user can flip any assignment's status by ID or author assignments naming arbitrary parties. `submitInsuranceClaim` and `updateClaimDecision` use `requireMarketplaceContext`, which permits shop accounts to author insurer-only claim decisions (privilege escalation into insurer authority).
+- **Location:** [supabase/functions/server/handlers/workflow.ts](../supabase/functions/server/handlers/workflow.ts); [utils/authz.ts](../supabase/functions/server/utils/authz.ts).
+- **Fix:** Code-side complete (Pass 5.5 / Pass 1, 2026-04-25). Added `requireInsurerContext` helper to `utils/authz.ts`. In `workflow.ts`: `getJobAssignments` now calls `requireAuthenticatedProfile` and rejects callers who are neither the named shop nor admin (403). `updateJobAssignmentStatus` pre-fetches the row and rejects callers not in `{shop, customer, insurer}_clerk_user_id` and not admin (403). `createJobAssignment` rejects callers who are not the named customer and not admin (403). `submitInsuranceClaim` and `updateClaimDecision` switched from `requireMarketplaceContext` to `requireInsurerContext` (insurer or admin only — verified UI callers are insurer-gated at [DashboardRouter.tsx:320-355](../src/app/routers/DashboardRouter.tsx#L320) and [DashboardSecondaryViews.tsx:286-310](../src/app/routers/DashboardSecondaryViews.tsx#L286), so no UI surface affected). `getWorkflowErrorStatus` updated to surface 403 for both `Marketplace access required` and `Insurer access required`. Build green (3.34s, 0 errors); tests 568/568 passing. Per-route verification artifacts captured in the pass log section of `LAW_HARDENING_PLAN.md`.
+- **Remaining (human-only):** Edge function redeploy required: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`. After deploy, run the per-route verification checklist against the live edge environment and capture the actual status codes.
+- **Status:** RESOLVED (code-side, 2026-04-25 — pending edge function redeploy + live verification).
+
+### KI-049: Customer completion does not propagate to job_assignments
+
+- **Impact:** When a customer confirms repair completion, `damage_reports.status` is set to `"completed"` but the linked `job_assignments` row is not touched. The shop's Active Jobs view reads from `job_assignments`, so the customer's completion is invisible to the shop indefinitely. Two source-of-truth rows on the same workflow disagree.
+- **Location:** [supabase/functions/server/handlers/reports.ts](../supabase/functions/server/handlers/reports.ts) `updateReport`.
+- **Fix:** Code-side complete (Pass 5.5 / Pass 2, 2026-04-25). `updateReport` now propagates: when the incoming `status` is `'completed'` and the report row update succeeds, the matching `job_assignments` row (status in `scheduled`/`in_progress`/`awaiting_parts`, not soft-deleted) is updated to `'completed'` in the same handler. A `repair_completed` activity event linking both IDs is emitted fire-and-forget. Propagation is non-fatal — assignment update failure is logged but does not roll back the report update. Note: the bid-accept "active vs accepted" label is **not** drift (adapter-reconciled by `normalizeReportStatus` per KI-021); the completion path was the only real lifecycle drift. Build green (3.22s, 0 errors); tests 568/568 passing.
+- **Validation:** Local runtime verified 2026-04-26 by secondary AI (GPT-5.4-high) against the served edge function — `updateReport` call completed, the linked `job_assignments` row moved to `completed`, and a `repair_completed` activity event was written. Prod live verification still pending deploy.
+- **Remaining (human-only):** Edge function redeploy (`supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`). Then customer flow → confirm completion → shop's Active Jobs view shows the assignment as `completed` after refetch.
+- **Status:** RESOLVED (code-side + local runtime verified 2026-04-26 — pending prod redeploy + prod live verification).
+
+### KI-050: Authenticated marketplace falls back to seed data on cold start
+
+- **Impact:** When live marketplace data is empty (cold-start with no live reports OR fetch failure), `useDashboardData` substituted `SEED_DAMAGE_REPORTS` for shop and insurer marketplace surfaces. An authenticated shop saw a populated marketplace and formed a false impression of platform liquidity. Contradicted the locked Hardening Plan Phase 4A.2 gate criterion ("Empty states no longer show fake shops").
+- **Location:** [src/app/routers/useDashboardData.ts](../src/app/routers/useDashboardData.ts).
+- **Fix:** Code-side complete (Pass 5.5 / Pass 3, 2026-04-25). `SEED_DAMAGE_REPORTS` import removed from `useDashboardData.ts`. `shopInsurerReports = liveMarketplaceReports` (direct passthrough). `usingSeedFallback = false`. Empty live data now renders the per-screen empty state already present on [ShopRequestsScreen.tsx:354-360](../src/app/components/shop/ShopRequestsScreen.tsx#L354) ("No repair requests yet"), [ShopActiveJobsScreen.tsx:392-401](../src/app/components/shop/ShopActiveJobsScreen.tsx#L392) ("No active jobs yet"), [InsurerClaimsScreen.tsx:347-359](../src/app/components/insurer/InsurerClaimsScreen.tsx#L347) ("No claims yet"). The amber `isSeedData` banners on all three screens are now unreachable but kept in code as harmless dead branches (cleanup deferred — out of pass scope). Seed-id mutation guards (`String(id).startsWith("seed-")`) preserved as belt-and-suspenders. `SEED_DAMAGE_REPORTS` constant stays exported for demo-mode use. No backend change. Build green (3.23s, 0 errors); tests 568/568 passing.
+- **Validation:** Live visual verification complete 2026-04-26 by secondary AI (GPT-5.4-high) on all three target screens (`ShopRequestsScreen`, `ShopActiveJobsScreen`, `InsurerClaimsScreen`) in both light and map-dark appearance modes. Empty state was forced via network interception of marketplace + job-assignment feeds rather than seed/demo records. All three screens rendered the expected empty copy ("No repair requests yet" / "No active jobs yet" / "No claims yet") with no example-data banner and no layout breakage. No new accounts required.
+- **Status:** RESOLVED (code-side + live visual verification complete 2026-04-26 — no further verification required for this KI; client-only change, no deploy needed).
+
+### KI-047: Supabase security advisor flagged public tables in staging and leads projects
+
+- **Impact:** Supabase security advisor reported `Table publicly accessible` on two separate hosted projects. In BidOnDent staging, six public-facing app tables had drifted away from their canonical RLS state. In the separate `bidondent-leads` Prisma project, `public."Lead"` and `public._prisma_migrations` were granted to `anon`/`authenticated` without RLS.
+- **Current reality:** RESOLVED. Staging project `lhhdqycnhweaxqviwdqt` had an orphan remote migration row `001` blocking schema operations; after repairing that history row, the targeted backfill migration `supabase/migrations/20260423000001_remote_rls_backfill.sql` was applied remotely. Leads project `yjbugpzarlyidgxbljjn` received a targeted remote migration that enables RLS on `public."Lead"` and `public._prisma_migrations` with no public policies.
+- **Validation:** `supabase migration list` now shows aligned local/remote history for both fix directories. Linked `supabase db dump --schema public` confirms `ENABLE ROW LEVEL SECURITY` on the leads tables and the expected staging policies for `shop_interest_submissions`, `insurer_interest_submissions`, `platform_activity_events`, `job_assignments`, `notification_preferences`, and `shop_service_areas`.
+- **Status:** RESOLVED (2026-04-23)

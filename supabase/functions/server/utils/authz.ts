@@ -263,3 +263,21 @@ export async function requireMarketplaceContext(req: Request, supabase: Supabase
     session,
   };
 }
+
+export async function requireInsurerContext(req: Request, supabase: SupabaseClient) {
+  const { profile, session } = await requireAuthenticatedProfile(req, supabase, {
+    requireEmail: false,
+  });
+
+  const isInsurerOrAdmin =
+    Boolean(profile?.is_admin) || profile?.account_type === "insurer";
+
+  if (!isInsurerOrAdmin) {
+    throw new Error("Insurer access required");
+  }
+
+  return {
+    profile,
+    session,
+  };
+}

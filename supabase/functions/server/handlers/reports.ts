@@ -328,6 +328,39 @@ export async function updateReport(
       return respond({ error: 'Report not found or access denied', success: false, report: null }, 404);
     }
 
+    // Pass 5.5 / Pass 2 (KI-049): when the customer marks the report as completed,
+    // propagate to the active job_assignments row so the shop's queue reflects truth.
+    // Soft propagation — never fatal to the report update itself.
+    if (payload.status === 'completed') {
+      const completedAt = new Date().toISOString();
+      const { data: assignment, error: assignErr } = await supabase
+        .from('job_assignments')
+        .update({ status: 'completed', updated_at: completedAt })
+        .eq('damage_report_id', reportId)
+        .in('status', ['scheduled', 'in_progress', 'awaiting_parts'])
+        .is('deleted_at', null)
+        .select('id')
+        .maybeSingle();
+
+      if (assignErr) {
+        console.error('[updateReport] completion propagation to job_assignments failed:', sanitizeErrorMessage(assignErr.message));
+      } else if (assignment?.id) {
+        // Fire-and-forget activity event linking both objects
+        supabase.from('platform_activity_events').insert({
+          event_type: 'repair_completed',
+          source: 'api',
+          actor_id: authenticatedClerkUserId,
+          object_id: assignment.id,
+          outcome: 'success',
+          payload: {
+            damage_report_id: reportId,
+            job_assignment_id: assignment.id,
+            initiated_by: 'customer',
+          },
+        }).then(null, () => {});
+      }
+    }
+
     return respond({
       success: true,
       report: await hydrateReport(data, supabase),
