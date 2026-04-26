@@ -52,7 +52,7 @@ export function useAppearanceMode(): [
   useEffect(() => {
     persistAppearanceMode(appearanceMode);
     document.documentElement.setAttribute("data-appearance-mode", appearanceMode);
-    document.documentElement.style.colorScheme = "dark";
+    document.documentElement.style.colorScheme = appearanceMode === "light" ? "light" : "dark";
   }, [appearanceMode]);
 
   // Sync across browser tabs via storage events

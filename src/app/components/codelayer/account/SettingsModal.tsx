@@ -59,7 +59,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
 
   if (!isOpen) return null;
 
-  const isLight = selectedAppearanceMode === "light";
+  const isLight = appearanceMode === "light";
 
   const modalContent = (
     <div
