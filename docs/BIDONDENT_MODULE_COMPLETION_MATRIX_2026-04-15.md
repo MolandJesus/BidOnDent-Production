@@ -1,10 +1,10 @@
 # BidOnDent Module Completion Matrix
 
 **Created:** 2026-04-15 (Phase 5.3)
-**Last verified:** 2026-04-16 (Pass 54 — hardening passes 46-54 complete)
+**Last verified:** 2026-04-27 (Pass 1.6 prod deploy + customer recovery verification)
 **Status:** Active — canonical module completion reference
-**Build baseline:** 3.36s, 0 errors, 60 PWA precache entries
-**Edge functions:** Deployed version 40 on `wmdcnjgtsppftrofaqqa`
+**Build baseline:** 3.28s, 0 errors, 60 PWA precache entries
+**Edge functions:** Deployed version 47 on `wmdcnjgtsppftrofaqqa`
 
 **Note on pass numbering:** The matrix was originally created during passes 868-873 (pre-hardening numbering). Current hardening work uses a separate pass sequence starting at Pass 40. Both reference the same codebase on `BidOnDent-Horizon-Beta`.
 
@@ -68,11 +68,12 @@
 
 ### Runtime verification log
 
-| Timestamp  | Role     | Scenario                    | Result                                                                                                                            |
-| ---------- | -------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-15 | Customer | Dashboard layout (demo OFF) | ✅ Full viewport, no double scrollbars, map widget visible. Header + sidebar + content fill viewport correctly.                   |
-| 2026-04-15 | Shop     | Dashboard layout (demo ON)  | ✅ DemoModeBanner renders as amber `role="status"` bar: "Demo Mode — Viewing as Shop · Press Esc to dismiss". Content scrolls OK. |
-| 2026-04-15 | All      | Waitlist RLS durability     | ✅ `WITH CHECK (true)` public INSERT confirmed in both `database_schema_sql_intake.ts` and `024_clerk_jwt_rls_policies.sql`.      |
+| Timestamp  | Role     | Scenario                    | Result                                                                                                                                                                                                            |
+| ---------- | -------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-15 | Customer | Dashboard layout (demo OFF) | ✅ Full viewport, no double scrollbars, map widget visible. Header + sidebar + content fill viewport correctly.                                                                                                   |
+| 2026-04-15 | Shop     | Dashboard layout (demo ON)  | ✅ DemoModeBanner renders as amber `role="status"` bar: "Demo Mode — Viewing as Shop · Press Esc to dismiss". Content scrolls OK.                                                                                 |
+| 2026-04-15 | All      | Waitlist RLS durability     | ✅ `WITH CHECK (true)` public INSERT confirmed in both `database_schema_sql_intake.ts` and `024_clerk_jwt_rls_policies.sql`.                                                                                      |
+| 2026-04-27 | Customer | Clerk ID rotation recovery  | ✅ Live prod verification after `server` v47 deploy: `Account > My Vehicles` showed 20 vehicles, report Step 1 showed `20 saved`, and prod SQL collapsed vehicle ownership to one current `clerk_user_id` bucket. |
 
 > **Note:** Insurer runtime verification not backfilled. Code-trace is sufficient for deferred cells per Phase 5 scope rules.
 
@@ -95,6 +96,7 @@
 
 ### Deployment status
 
+- **`server` edge function:** Version 47 live on production as of 2026-04-27 11:23:25 UTC. Includes customer ownership recovery for rotated/null Clerk IDs.
 - **`RESEND_API_KEY`:** Not deployed to Supabase edge function secrets.
 - **Manual step required:**
   ```bash

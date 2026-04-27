@@ -680,7 +680,7 @@ Same checklist, against the live prod URL. Everything must pass.
 | 53   | `hydrateReport` resilience (`.single()` → `.maybeSingle()` + try/catch) |
 | 54   | `notification-preferences` fix (`session.sub` → `session.clerkUserId`)  |
 
-**Edge functions deployed as version 40. Build: 3.36s, 0 errors.**
+**Historical deploy point:** Edge functions were at version 40 after these passes. Build: 3.36s, 0 errors.
 
 ### Open items
 
@@ -693,9 +693,9 @@ Same checklist, against the live prod URL. Everything must pass.
 
 ### Edge function deploy handoff (2026-04-16)
 
-**All server-side changes since version 40 require one deploy to take effect.**
+**Historical note:** This handoff was closed by the 2026-04-27 production deploy to `server` version 47. The bullets below are retained as the version-40 → version-47 change bundle for audit traceability, not as pending work.
 
-Command: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa`
+Command: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`
 
 Changes included:
 
@@ -705,6 +705,8 @@ Changes included:
 4. **Pass 66:** `createBid` server-side guard rejects bids on non-biddable reports (409)
 5. **KI-002 prep:** `getUserName` column fix (`full_name` → `name`), email template URL cleanup
 6. **KI-002 blocked:** Email delivery requires `supabase secrets set RESEND_API_KEY=re_xxx` before deploy. See KI-002 in REF_KNOWN_ISSUES.md for full steps.
+
+Deployment executed 2026-04-27. Current production metadata: `server` version 47, updated 2026-04-27 11:23:25 UTC.
 
 ### Change log addendum (2026-04-16)
 
@@ -770,13 +772,17 @@ Changes included:
 
 ### Phase 5.5 — owner action queue (updated 2026-04-26)
 
-Secondary AI validation complete: Pass 2 local runtime verified, Pass 3 live visual verified (both light + map-dark, all three target screens, via empty-feed interception). Pass 1 and Pass 2 still need prod live verification after deploy. Single deploy window closes the remaining gate:
+Secondary AI validation completed the code-side and local checks. The 2026-04-27 production deploy closed the deploy step and also carried KI-055 customer data recovery. Current status:
 
-1. Review the diff for all three passes (Phase 5.5 Pass 1/2/3 entries above).
-2. Deploy edge function: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt` (covers Pass 1 and Pass 2; Pass 3 is client-only and already live-verified).
-3. Live-verify Pass 1 per-route table against the deployed function — record actual status codes alongside expected.
-4. Live-verify Pass 2 customer→shop completion flow against prod.
-5. Drop the "pending prod redeploy + prod live verification" qualifier from KI-048 / KI-049. KI-050 is already fully RESOLVED.
+- Completed 2026-04-27: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`.
+- Completed 2026-04-27: production `server` metadata now reads version 47, updated 2026-04-27 11:23:25 UTC.
+- Completed 2026-04-27: KI-055 live verification passed — vehicle ownership for the affected customer collapsed from mixed `current + NULL` buckets to one current `clerk_user_id` bucket with 20 total rows; `Account > My Vehicles` showed 20 vehicles and report Step 1 showed `20 saved`.
+
+Remaining Phase 5.5 gate work:
+
+1. Live-verify Pass 1 per-route table against the deployed function — record actual status codes alongside expected.
+2. Live-verify Pass 2 customer→shop completion flow against prod.
+3. Drop the "pending prod redeploy + prod live verification" qualifier from KI-048 / KI-049. KI-050 and KI-055 are already fully RESOLVED.
 
 After step 5, Phase 5.5 gate is closed and Phase 6 (Pre-launch Verification Gate) becomes unblocked.
 

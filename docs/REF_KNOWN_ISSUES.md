@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-04-26
+**Last updated:** 2026-04-27
 
 **Update rules:**
 
@@ -255,6 +255,15 @@
   - Build green (3.79s, 0 errors); tests 568/568 passing.
 - **Why this matters beyond the immediate fix:** The proxy approach hid the real architecture from devs (browser thought Supabase lived at 4174) and added a fragile process to the audit hot path. Fixing CSP at the source means future audit AIs have one less moving piece to keep alive and one less thing that can crash mid-pass.
 - **Status:** RESOLVED (code-side, 2026-04-26 — no deploy needed; dev-only change).
+
+### KI-055: Customer-owned data could disappear after Clerk ID rotation
+
+- **Impact:** A returning customer could lose visibility of saved vehicles, report history, and customer-scoped bid access after a Clerk identity rotation or legacy `NULL` ownership state. The app header/profile still rendered because profile lookup fell back by email, but strict handler queries against the current `session.clerkUserId` could surface only a partial slice of the owned data.
+- **Location:** [vehicles.ts](../supabase/functions/server/handlers/vehicles.ts), [reports.ts](../supabase/functions/server/handlers/reports.ts), and the customer ownership branch in [bids.ts](../supabase/functions/server/handlers/bids.ts).
+- **Root cause:** Ownership rows existed under a mix of current `clerk_user_id`, historical `clerk_user_id`, and legacy `NULL` values linked by stable `user_id`. The previous recovery shape only ran the `user_id` fallback when the primary `clerk_user_id` query returned zero rows, which missed mixed accounts that had both current and legacy rows.
+- **Fix:** RESOLVED code-side and deployed live on 2026-04-27. All three handlers now always merge the candidate-`clerk_user_id` query with a `user_id` ownership sweep, dedupe by row id, sort the merged result, and self-heal stale or `NULL` `clerk_user_id` values to the current session ID. Live SQL verification on project `wmdcnjgtsppftrofaqqa` confirmed a single vehicle ownership bucket (`user_37l2aa5TqRLeLesZQIq5ibdXUul = 20`) with no remaining `NULL` rows after the deployed fetch path ran.
+- **Validation:** Local live UI verification after deploy showed `Account > My Vehicles` rendering `20 vehicles`, and the report intake step-1 saved-vehicle picker showed `20 saved` entries for the affected account.
+- **Status:** RESOLVED (2026-04-27, commit `a62d683e`) — deployed to production and live-verified.
 
 ### KI-053: Map performance budget overruns on landing/fullscreen map
 

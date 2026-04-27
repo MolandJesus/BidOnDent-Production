@@ -2,13 +2,13 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-04-25 (Phase 5.5 validation)
+**Last updated:** 2026-04-27 (Phase 5.5 prod deploy + KI-055 recovery verification)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
 **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
 
-**Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`. Pending redeploy with: geo-filtered shop marketplace, JWT rate-limit identity, server-side atomic accept-bid, bid submission guard, email column fix. See LAW_HARDENING_PLAN.md "Edge function deploy handoff" for full list. Phase 5.5 Passes 1 and 2 will require additional redeploys.
+**Edge functions:** Deployed version 47 on Supabase project `wmdcnjgtsppftrofaqqa` (updated 2026-04-27 11:23:25 UTC). The live prod bundle includes workflow authorization hardening, completion propagation, authenticated marketplace seed-fallback removal, and customer ownership recovery/self-heal for Clerk ID rotation. Email delivery remains blocked on `RESEND_API_KEY` deployment.
 
 ---
 
@@ -67,6 +67,7 @@ A **pre-launch React SPA** implementing a geo-native automotive repair marketpla
 - View bids on reports (live via Supabase Realtime subscription)
 - Accept/reject bids (confirmation dialog → server-side atomic: bid status, job_assignment, auto-reject competing bids)
 - Vehicle management (CRUD)
+- Customer-owned vehicles, reports, and customer bid lookups recover across Clerk ID rotation or legacy `NULL` ownership by merging current/historical `clerk_user_id` matches with a stable `user_id` sweep, then self-healing stale `clerk_user_id` values on read
 - Estimate requests to shops
 - **Not working:** Email notifications (API key not deployed — code-side complete, blocked on secret deployment).
 
