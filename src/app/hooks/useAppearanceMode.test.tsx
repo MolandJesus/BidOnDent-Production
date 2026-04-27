@@ -72,7 +72,7 @@ describe("useAppearanceMode", () => {
 
     expect(screen.getByTestId("appearance-mode").textContent).toBe("light");
     expect(document.documentElement.getAttribute("data-appearance-mode")).toBe("light");
-    expect(document.documentElement.style.colorScheme).toBe("dark");
+    expect(document.documentElement.style.colorScheme).toBe("light");
   });
 
   it("falls back to the system preference when nothing is saved", () => {
