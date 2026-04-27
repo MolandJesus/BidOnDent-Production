@@ -6,6 +6,7 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
   ensureClerkUserMatchesSession,
+  getAuthenticatedProfile,
   requireClerkSession,
   requireMarketplaceContext,
 } from "../utils/authz.ts";
@@ -248,26 +249,78 @@ export async function getReports(
   try {
     const url = new URL(req.url);
     const session = await requireClerkSession(req, { requireEmail: false });
-    const clerkUserId = ensureClerkUserMatchesSession(
+    const sessionClerkUserId = ensureClerkUserMatchesSession(
       session,
       url.searchParams.get('clerkUserId')
     );
+    const profile = await getAuthenticatedProfile(supabase, session);
 
     const limit = Math.min(Number(url.searchParams.get('limit') ?? 50), 200);
     const offset = Math.max(Number(url.searchParams.get('offset') ?? 0), 0);
 
-    const { data, error } = await supabase
+    const candidateClerkUserIds = new Set<string>();
+    candidateClerkUserIds.add(sessionClerkUserId);
+    if (profile?.clerk_user_id) {
+      candidateClerkUserIds.add(profile.clerk_user_id);
+    }
+
+    const baseQuery = supabase
       .from('damage_reports')
       .select('*')
-      .eq('clerk_user_id', clerkUserId)
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+      .is('deleted_at', null);
+
+    const filteredQuery =
+      candidateClerkUserIds.size === 1
+        ? baseQuery.eq('clerk_user_id', sessionClerkUserId)
+        : baseQuery.in('clerk_user_id', Array.from(candidateClerkUserIds));
+
+    const { data: primaryData, error } = await filteredQuery;
 
     if (error) {
       console.error('Error fetching damage reports:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
+
+    let viaUserId: any[] = [];
+    if (profile?.user_id) {
+      const userIdResult = await supabase
+        .from('damage_reports')
+        .select('*')
+        .eq('user_id', profile.user_id)
+        .is('deleted_at', null);
+
+      if (userIdResult.error) {
+        console.error('Error fetching damage reports by user_id:', userIdResult.error);
+        return respond({ error: sanitizeErrorMessage(userIdResult.error) }, 500);
+      }
+
+      viaUserId = userIdResult.data ?? [];
+    }
+
+    const mergedReportsById = new Map<string, any>();
+    for (const row of [...(primaryData ?? []), ...viaUserId]) {
+      if (typeof row?.id === 'string') {
+        mergedReportsById.set(row.id, row);
+      }
+    }
+
+    const mergedData = Array.from(mergedReportsById.values()).sort((left: any, right: any) =>
+      String(right?.created_at ?? '').localeCompare(String(left?.created_at ?? ''))
+    );
+
+    const staleIds = mergedData
+      .filter((row: any) => row.clerk_user_id !== sessionClerkUserId)
+      .map((row: any) => row.id)
+      .filter((id: any) => typeof id === 'string');
+
+    if (staleIds.length > 0) {
+      await supabase
+        .from('damage_reports')
+        .update({ clerk_user_id: sessionClerkUserId })
+        .in('id', staleIds);
+    }
+
+    const data = mergedData.slice(offset, offset + limit);
 
     return respond({
       reports: await Promise.all((data || []).map((record: any) => hydrateReport(record, supabase))),

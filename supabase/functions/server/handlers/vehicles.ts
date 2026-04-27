@@ -147,70 +147,62 @@ export async function getVehicles(
     const baseQuery = supabase
       .from('vehicles')
       .select('*')
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false });
+      .is('deleted_at', null);
 
     const filteredQuery =
       candidateClerkUserIds.size === 1
         ? baseQuery.eq('clerk_user_id', sessionClerkUserId)
         : baseQuery.in('clerk_user_id', Array.from(candidateClerkUserIds));
 
-    let { data, error } = await filteredQuery;
-
-    // Final fallback: vehicles linked via legacy Supabase auth user_id when
-    // the profile carries a user_id but no historical clerk_user_id match.
-    if (!error && (!data || data.length === 0) && profile?.user_id) {
-      const userIdResult = await supabase
-        .from('vehicles')
-        .select('*')
-        .eq('user_id', profile.user_id)
-        .is('deleted_at', null)
-        .order('created_at', { ascending: false });
-      if (!userIdResult.error && userIdResult.data && userIdResult.data.length > 0) {
-        data = userIdResult.data;
-
-        // Self-heal: relink legacy rows to the current Clerk user id so future
-        // direct queries by clerk_user_id succeed without the fallback hop.
-        const legacyIds = userIdResult.data
-          .map((row: any) => row.id)
-          .filter((id: any) => typeof id === "string");
-        if (legacyIds.length > 0) {
-          await supabase
-            .from('vehicles')
-            .update({ clerk_user_id: sessionClerkUserId })
-            .in('id', legacyIds);
-        }
-      }
-    }
-
-    // Self-heal: if rows were found under a stale clerk_user_id, relink them
-    // to the current session's id so the fallback isn't needed next time.
-    if (
-      !error &&
-      data &&
-      data.length > 0 &&
-      candidateClerkUserIds.size > 1
-    ) {
-      const staleIds = data
-        .filter((row: any) => row.clerk_user_id && row.clerk_user_id !== sessionClerkUserId)
-        .map((row: any) => row.id)
-        .filter((id: any) => typeof id === "string");
-      if (staleIds.length > 0) {
-        await supabase
-          .from('vehicles')
-          .update({ clerk_user_id: sessionClerkUserId })
-          .in('id', staleIds);
-      }
-    }
+    const { data: primaryData, error } = await filteredQuery;
 
     if (error) {
       console.error('Error fetching vehicles:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
+    let viaUserId: any[] = [];
+    if (profile?.user_id) {
+      const userIdResult = await supabase
+        .from('vehicles')
+        .select('*')
+        .eq('user_id', profile.user_id)
+        .is('deleted_at', null);
+
+      if (userIdResult.error) {
+        console.error('Error fetching vehicles by user_id:', userIdResult.error);
+        return respond({ error: sanitizeErrorMessage(userIdResult.error) }, 500);
+      }
+
+      viaUserId = userIdResult.data ?? [];
+    }
+
+    const mergedVehiclesById = new Map<string, any>();
+    for (const row of [...(primaryData ?? []), ...viaUserId]) {
+      if (typeof row?.id === 'string') {
+        mergedVehiclesById.set(row.id, row);
+      }
+    }
+
+    const data = Array.from(mergedVehiclesById.values()).sort((left: any, right: any) =>
+      String(right?.created_at ?? '').localeCompare(String(left?.created_at ?? ''))
+    );
+
+    const staleIds = data
+      .filter((row: any) => row.clerk_user_id !== sessionClerkUserId)
+      .map((row: any) => row.id)
+      .filter((id: any) => typeof id === "string");
+
+    if (staleIds.length > 0) {
+      await supabase
+        .from('vehicles')
+        .update({ clerk_user_id: sessionClerkUserId })
+        .in('id', staleIds);
+    }
+
     return respond({
       vehicles: await Promise.all(
-        (data || []).map(async (vehicle: any) => ({
+        data.map(async (vehicle: any) => ({
           ...vehicle,
           image_url: await hydrateSignedStorageUrl(
             supabase,
