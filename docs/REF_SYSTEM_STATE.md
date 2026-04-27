@@ -272,7 +272,7 @@ Handler executes with authenticated clerkUserId
 
 **Target aesthetic:** Apple Maps-inspired. Map is base layer. Everything floats above geography.
 
-**Appearance modes:** `"map-dark"` (default) | `"light"` — set via `data-appearance-mode` attribute. Both the pre-React HTML loader in [index.html](../index.html) and the React [AppLoading](../src/app/components/app/AppLoading.tsx) component read this attribute (set synchronously by the inline boot script before paint) so reload-time loading screens honor the saved mode — light mode renders a warm-ivory-on-soft-blue background with a gold spinner.
+**Appearance modes:** `"light"` (default) | `"map-dark"` — set via `data-appearance-mode` attribute. First-paint default is `"light"` for both the inline boot script in [index.html](../index.html) and the [useAppearanceMode](../src/app/hooks/useAppearanceMode.ts) hook; system `prefers-color-scheme` is intentionally ignored so a fresh deploy always lands in light mode. Both the pre-React HTML loader and the React [AppLoading](../src/app/components/app/AppLoading.tsx) component read `data-appearance-mode` (set synchronously before paint) so reload-time loading screens honor the saved mode — light mode renders a warm-ivory-on-soft-blue background with a gold spinner.
 
 **CSS utilities** (defined in [theme.css](../src/styles/theme.css), 2173 lines):
 

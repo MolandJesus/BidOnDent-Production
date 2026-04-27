@@ -75,9 +75,16 @@ describe("useAppearanceMode", () => {
     expect(document.documentElement.style.colorScheme).toBe("light");
   });
 
-  it("falls back to the system preference when nothing is saved", () => {
+  it("falls back to light when nothing is saved", () => {
+    render(<AppearanceModeHarness />);
+
+    expect(screen.getByTestId("appearance-mode").textContent).toBe("light");
+    expect(window.localStorage.getItem("bidondent.appearance-mode")).toBe("light");
+  });
+
+  it("ignores system prefers-color-scheme and still defaults to light", () => {
     window.matchMedia = vi.fn().mockImplementation(() => ({
-      matches: true,
+      matches: false,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       addListener: vi.fn(),
@@ -90,16 +97,15 @@ describe("useAppearanceMode", () => {
     render(<AppearanceModeHarness />);
 
     expect(screen.getByTestId("appearance-mode").textContent).toBe("light");
-    expect(window.localStorage.getItem("bidondent.appearance-mode")).toBe("light");
   });
 
-  it("clears invalid saved modes and falls back to map-dark", () => {
+  it("clears invalid saved modes and falls back to light", () => {
     window.localStorage.setItem("bidondent.appearance-mode", "purple");
 
     render(<AppearanceModeHarness />);
 
-    expect(screen.getByTestId("appearance-mode").textContent).toBe("map-dark");
-    expect(window.localStorage.getItem("bidondent.appearance-mode")).toBe("map-dark");
+    expect(screen.getByTestId("appearance-mode").textContent).toBe("light");
+    expect(window.localStorage.getItem("bidondent.appearance-mode")).toBe("light");
   });
 
   it("persists mode changes from the setter", () => {

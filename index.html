@@ -45,17 +45,12 @@
         try {
           var key = "bidondent.appearance-mode";
           var saved = localStorage.getItem(key);
-          var mode =
-            saved === "light" || saved === "map-dark"
-              ? saved
-              : window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches
-                ? "light"
-                : "map-dark";
+          var mode = saved === "light" || saved === "map-dark" ? saved : "light";
           document.documentElement.setAttribute("data-appearance-mode", mode);
           document.documentElement.style.colorScheme = mode === "light" ? "light" : "dark";
         } catch (_err) {
-          document.documentElement.setAttribute("data-appearance-mode", "map-dark");
-          document.documentElement.style.colorScheme = "dark";
+          document.documentElement.setAttribute("data-appearance-mode", "light");
+          document.documentElement.style.colorScheme = "light";
         }
       })();
     </script>

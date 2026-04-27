@@ -21,7 +21,7 @@ function clearSavedAppearanceMode() {
 }
 
 function readSavedAppearanceMode(): DashboardAppearanceMode {
-  if (typeof window === "undefined") return "map-dark";
+  if (typeof window === "undefined") return "light";
   try {
     const saved = window.localStorage.getItem(APPEARANCE_STORAGE_KEY);
     if (isAppearanceMode(saved)) return saved;
@@ -29,8 +29,7 @@ function readSavedAppearanceMode(): DashboardAppearanceMode {
   } catch (error) {
     if (import.meta.env.DEV) console.error("Error reading appearance mode:", error);
   }
-  if (window.matchMedia?.("(prefers-color-scheme: light)").matches) return "light";
-  return "map-dark";
+  return "light";
 }
 
 function persistAppearanceMode(mode: DashboardAppearanceMode) {
