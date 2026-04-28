@@ -125,7 +125,7 @@ export default function ShopActiveJobsScreen({
 
       return {
         id: String(report?.id ?? `job-${index}`),
-        customerName: report?.customerName || "Not provided",
+        customerName: report?.customerName || "Customer",
         customerEmail: report?.customerEmail || "Not provided",
         customerPhone: report?.customerPhone || "Not provided",
         vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",

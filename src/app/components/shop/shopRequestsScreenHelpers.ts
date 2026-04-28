@@ -41,7 +41,7 @@ export function transformReportToRequest(report: DamageReport, index: number): R
 
   return {
     id: String(report?.id ?? `request-${index}`),
-    customerName: report?.customerName || "Not provided",
+    customerName: report?.customerName || "Customer",
     customerEmail: report?.customerEmail || "Not provided",
     customerPhone: report?.customerPhone || "Not provided",
     vehicle: vehicleParts.length > 0 ? vehicleParts.join(" ") : "Vehicle details pending",

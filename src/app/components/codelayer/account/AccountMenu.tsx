@@ -265,24 +265,14 @@ export default function AccountMenu({
               Manage your account settings, preferences, and connected services.
             </p>
           </div>
-          <span
-            className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-white/80 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
-            }`}
-          >
-            3 zones
-          </span>
         </div>
 
         <div className="bd-dashboard-note rounded-2xl p-3">
-          <div className="mb-2 flex items-center justify-between px-1">
-            <p
-              className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
-            >
-              Preferences
-            </p>
-            <span className={`text-xs ${subduedLabelTone}`}>{preferenceRows.length} items</span>
-          </div>
+          <p
+            className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
+          >
+            Preferences
+          </p>
           <div className="space-y-2">
             {preferenceRows.map((row) => (
               <div key={row.label}>{renderRow(row)}</div>
@@ -291,14 +281,11 @@ export default function AccountMenu({
         </div>
 
         <div className="bd-dashboard-note bd-dashboard-note--deep rounded-2xl p-3">
-          <div className="mb-2 flex items-center justify-between px-1">
-            <p
-              className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
-            >
-              Profile Tools
-            </p>
-            <span className={`text-xs ${subduedLabelTone}`}>{profileRows.length} items</span>
-          </div>
+          <p
+            className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
+          >
+            Profile Tools
+          </p>
           <div className="space-y-2">
             {profileRows.map((row) => (
               <div key={row.label}>{renderRow(row)}</div>

@@ -106,8 +106,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                   : "border-blue-300/20 bg-blue-500/10 text-blue-100/80"
               }`}
             >
-              Appearance and notification changes save immediately. Privacy and language controls
-              are shown for upcoming account-settings wiring and do not save yet.
+              Appearance and notification changes save immediately.
             </div>
 
             <div
@@ -377,7 +376,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                       Light
                     </p>
                     <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
-                      Warmer frosted shell with amber glow accents.
+                      Warm frosted shell with soft blue accents.
                     </p>
                   </div>
                 </label>

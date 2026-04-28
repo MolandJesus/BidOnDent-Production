@@ -93,9 +93,7 @@ export function HomeOnboardingCard({
           Getting started
         </p>
         <h2 className="mb-2 text-lg font-semibold sm:text-xl">How BidOnDent Works</h2>
-        <p
-          className={`max-w-2xl text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}
-        >
+        <p className={`max-w-2xl text-sm ${isLight ? "text-slate-600" : "text-blue-100/70"}`}>
           A quick path from first damage photo to local bids and smart map navigation.
         </p>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:mt-4 sm:grid-cols-3 sm:gap-4">
@@ -123,9 +121,7 @@ export function HomeOnboardingCard({
                   {i + 1}
                 </div>
                 <div>
-                  <p
-                    className={`font-semibold ${isLight ? "text-slate-900" : "text-white"}`}
-                  >
+                  <p className={`font-semibold ${isLight ? "text-slate-900" : "text-white"}`}>
                     {step.label}
                   </p>
                   <p
@@ -184,13 +180,6 @@ export function HomeQuickActions({
             Fast routes into the most common dashboard tasks.
           </p>
         </div>
-        <span
-          className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-            isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
-          }`}
-        >
-          {quickActions.length} shortcuts
-        </span>
       </div>
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-2.5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 md:gap-3">
         {quickActions.map((action, index) => {

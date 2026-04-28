@@ -179,7 +179,9 @@ export default function OperatingRegionsSection({
                           stageTheme.softBadgeClassName
                         )}
                       >
-                        {coverage.nearbyShops.length} recommended
+                        {coverage.nearbyShops.length > 0
+                          ? `${coverage.nearbyShops.length} recommended`
+                          : "Set an origin to see shops"}
                       </span>
                       <span
                         className={cn(
