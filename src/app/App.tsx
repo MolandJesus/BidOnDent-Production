@@ -51,6 +51,8 @@ import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 import AppearanceToggle from "./components/dev/AppearanceToggle";
+import DevDemoCustomerApp from "./components/dev/DevDemoCustomerApp";
+import { readDevDemoMode } from "./utils/devDemoMode";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
 const AboutPage = lazyWithRetry(() => import("./components/landing/AboutPage"));
@@ -444,6 +446,12 @@ function AppContent() {
 
 // Main App component wrapped with ClerkProvider
 export default function App() {
+  // Dev-only: `?demo=customer` mounts a self-contained customer dashboard with
+  // synthesized data, bypassing Clerk + Supabase. Gated on `import.meta.env.DEV`.
+  if (readDevDemoMode() === "customer") {
+    return <DevDemoCustomerApp />;
+  }
+
   if (hasMissingSupabaseConfig || !hasValidClerkPublishableKey) {
     return <AuthConfigFallback missingSupabase={hasMissingSupabaseConfig} />;
   }
