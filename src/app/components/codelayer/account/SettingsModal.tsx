@@ -262,11 +262,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className={`mt-3 text-sm ${isLight ? "text-slate-400" : "text-blue-100/40"}`}>
-                  Unable to load preferences.
-                </div>
-              )}
+              ) : null}
             </div>
 
             <div

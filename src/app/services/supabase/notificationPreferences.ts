@@ -26,11 +26,23 @@ export interface NotificationPreferences {
  * Fetch the current user's notification preferences.
  * Auto-creates defaults on the server if none exist.
  */
+let cachedFailure: { until: number } | null = null;
+const FAILURE_BACKOFF_MS = 60_000;
+
 export async function getNotificationPreferences(): Promise<NotificationPreferences> {
-  const result = await requestSupabaseEdge<{
-    preferences: NotificationPreferences;
-  }>(SUPABASE_EDGE_ROUTES.notificationPreferences, { method: "GET" });
-  return result.preferences;
+  if (cachedFailure && Date.now() < cachedFailure.until) {
+    throw new Error("notification-preferences temporarily unavailable");
+  }
+  try {
+    const result = await requestSupabaseEdge<{
+      preferences: NotificationPreferences;
+    }>(SUPABASE_EDGE_ROUTES.notificationPreferences, { method: "GET" });
+    cachedFailure = null;
+    return result.preferences;
+  } catch (err) {
+    cachedFailure = { until: Date.now() + FAILURE_BACKOFF_MS };
+    throw err;
+  }
 }
 
 /**
