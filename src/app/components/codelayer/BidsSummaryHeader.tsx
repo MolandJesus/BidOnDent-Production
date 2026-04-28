@@ -26,6 +26,18 @@ export default function BidsSummaryHeader({
     "bd-dashboard-section--accent-cyan",
   ];
 
+  const stats =
+    bidCount <= 1
+      ? [
+          { label: "Bid Amount", value: `$${lowestPrice.toLocaleString()}` },
+          { label: "Fastest Timeline", value: `${fastestBidDays}-${fastestBidDays + 1} days` },
+        ]
+      : [
+          { label: "Lowest Bid", value: `$${lowestPrice.toLocaleString()}` },
+          { label: "Average Quote", value: `$${averagePrice.toLocaleString()}` },
+          { label: "Fastest Timeline", value: `${fastestBidDays}-${fastestBidDays + 1} days` },
+        ];
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 8 }}
@@ -106,14 +118,10 @@ export default function BidsSummaryHeader({
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-        {(
-          [
-            { label: "Lowest Bid", value: `$${lowestPrice.toLocaleString()}` },
-            { label: "Average Quote", value: `$${averagePrice.toLocaleString()}` },
-            { label: "Fastest Timeline", value: `${fastestBidDays}-${fastestBidDays + 1} days` },
-          ] as const
-        ).map((stat, index) => (
+      <div
+        className={`mt-4 grid grid-cols-1 gap-2.5 ${stats.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+      >
+        {stats.map((stat, index) => (
           <div
             key={stat.label}
             className={`bd-dashboard-section rounded-xl px-3 py-2.5 ${
