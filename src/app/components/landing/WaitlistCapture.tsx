@@ -50,11 +50,7 @@ export default function WaitlistCapture({ isLightAppearance = false }: WaitlistC
           setEmail(e.target.value);
           if (status === "error") setStatus("idle");
         }}
-        className={`flex-1 rounded-full px-4 py-2.5 text-sm outline-none min-h-[44px] ${
-          isLightAppearance
-            ? "bg-[rgba(255,251,245,0.92)] text-slate-800 placeholder:text-slate-400 border border-[rgba(200,180,150,0.25)]"
-            : "bg-white/10 text-white placeholder:text-blue-200/50 border border-blue-300/20 focus:border-blue-400/40"
-        }`}
+        className="bd-report-input flex-1 rounded-full px-4 py-2.5 text-sm outline-none min-h-[44px]"
       />
       <button
         type="submit"
