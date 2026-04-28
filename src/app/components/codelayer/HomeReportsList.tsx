@@ -178,7 +178,7 @@ export function HomeReportsList({
             return (
               <article
                 key={report.id}
-                className={`bd-dashboard-section p-4 transition-shadow ${cardToneClass} ${
+                className={`bd-dashboard-section group p-4 transition-shadow ${cardToneClass} ${
                   canOpenReport ? "bd-dashboard-section--interactive cursor-pointer" : ""
                 }`}
                 onClick={canOpenReport ? () => onOpenReport?.(String(report.id)) : undefined}
@@ -289,7 +289,7 @@ export function HomeReportsList({
                             alert("This report cannot be deleted — it may have an accepted bid.");
                           }
                         }}
-                        className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl transition-colors ${
+                        className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl transition-colors opacity-50 group-hover:opacity-100 focus:opacity-100 transition-opacity ${
                           isLightAppearance
                             ? "text-red-400 hover:bg-red-50 hover:text-red-600"
                             : "text-red-400/70 hover:bg-red-500/10 hover:text-red-300"
