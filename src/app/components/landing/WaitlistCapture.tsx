@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { supabase } from "../../services/supabase/client";
 
-interface WaitlistCaptureProps {
-  isLightAppearance?: boolean;
-}
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function WaitlistCapture({ isLightAppearance = false }: WaitlistCaptureProps) {
+export default function WaitlistCapture() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
