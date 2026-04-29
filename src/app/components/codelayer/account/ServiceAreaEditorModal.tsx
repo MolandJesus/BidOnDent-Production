@@ -14,6 +14,7 @@ import {
   type SaveServiceAreaInput,
   type ShopServiceArea,
 } from "../../../services/supabase/serviceAreas";
+import { friendlyEdgeError } from "../../../utils/edgeErrorMessage";
 
 type ServiceAreaEditorModalProps = {
   isOpen: boolean;
@@ -103,7 +104,7 @@ export default function ServiceAreaEditorModal({
       setEditing(null);
       retry();
     } catch (err) {
-      setActionError(err instanceof Error ? err.message : "Failed to save");
+      setActionError(friendlyEdgeError(err, "Failed to save service area"));
     } finally {
       setSaving(false);
     }
@@ -117,7 +118,7 @@ export default function ServiceAreaEditorModal({
         await deleteShopServiceArea("", areaId);
         retry();
       } catch (err) {
-        setActionError(err instanceof Error ? err.message : "Failed to delete");
+        setActionError(friendlyEdgeError(err, "Failed to delete service area"));
       } finally {
         setDeleting(null);
       }

@@ -76,7 +76,7 @@ export default defineConfig({
         // is emitted by Vite's dev server and never reaches production. Without it, the
         // browser blocks every call to the local stack and the app appears dead, which
         // forced an in-process proxy workaround during the 2026-04-26 audit. See KI-054.
-        "connect-src 'self' http://127.0.0.1:54321 http://localhost:54321 ws://127.0.0.1:54321 ws://localhost:54321 https://*.supabase.co wss://*.supabase.co https://*.clerk.accounts.dev https://*.clerk.com https://*.sentry.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://nominatim.openstreetmap.org https://router.project-osrm.org",
+        "connect-src 'self' http://127.0.0.1:54321 http://localhost:54321 ws://127.0.0.1:54321 ws://localhost:54321 https://*.supabase.co wss://*.supabase.co https://*.clerk.accounts.dev https://*.clerk.com https://*.sentry.io https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://nominatim.openstreetmap.org https://router.project-osrm.org https://overpass-api.de",
         "frame-src https://*.clerk.accounts.dev",
         "worker-src 'self' blob:",
       ].join("; "),

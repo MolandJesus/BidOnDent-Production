@@ -2,6 +2,7 @@ import { AlertCircle, CheckCircle, Loader2, Save, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
 import { unformatPhoneNumber } from "../../../utils/formatters";
+import { friendlyEdgeError } from "../../../utils/edgeErrorMessage";
 
 export type ShopProfileFormData = {
   shopName: string;
@@ -244,7 +245,7 @@ export default function ShopProfileModal({
                     onClose();
                   }, 1500);
                 } catch (err) {
-                  setSaveError(err instanceof Error ? err.message : "Failed to save profile");
+                  setSaveError(friendlyEdgeError(err, "Failed to save profile"));
                 } finally {
                   setSaving(false);
                 }
