@@ -22,7 +22,7 @@ export default function ShopActiveJobDetailModal({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
       <div
-        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto border ${isLight ? "bg-white border-slate-200/60 shadow-xl" : "border-blue-300/20"}`}
+        className={`rounded-t-2xl sm:rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col border ${isLight ? "bg-white border-slate-200/60 shadow-xl" : "border-blue-300/20"}`}
         style={
           isLight
             ? {}
@@ -33,7 +33,7 @@ export default function ShopActiveJobDetailModal({
               }
         }
       >
-        <div className="p-6">
+        <div className="p-6 flex-1 overflow-y-auto overscroll-contain">
           <div className="flex items-start justify-between mb-4">
             <div>
               <h2 className={`text-2xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}>
