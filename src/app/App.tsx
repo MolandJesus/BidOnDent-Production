@@ -52,6 +52,7 @@ import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 import AppearanceToggle from "./components/dev/AppearanceToggle";
 import DevDemoCustomerApp from "./components/dev/DevDemoCustomerApp";
+import DevDemoShopApp from "./components/dev/DevDemoShopApp";
 import { readDevDemoMode } from "./utils/devDemoMode";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
@@ -446,10 +447,14 @@ function AppContent() {
 
 // Main App component wrapped with ClerkProvider
 export default function App() {
-  // Dev-only: `?demo=customer` mounts a self-contained customer dashboard with
-  // synthesized data, bypassing Clerk + Supabase. Gated on `import.meta.env.DEV`.
-  if (readDevDemoMode() === "customer") {
+  // Dev-only: `?demo=customer` or `?demo=shop` mounts a self-contained dashboard
+  // with synthesized data, bypassing Clerk + Supabase. Gated on `import.meta.env.DEV`.
+  const demoMode = readDevDemoMode();
+  if (demoMode === "customer") {
     return <DevDemoCustomerApp />;
+  }
+  if (demoMode === "shop") {
+    return <DevDemoShopApp />;
   }
 
   if (hasMissingSupabaseConfig || !hasValidClerkPublishableKey) {
