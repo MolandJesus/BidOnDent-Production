@@ -63,21 +63,18 @@ export function useNotificationPreferences() {
       // Optimistic update — always applies locally
       setPreferences((prev) => (prev ? { ...prev, ...updates } : prev));
 
-      // If running on local defaults (edge function unavailable), skip remote save
-      if (!isRemote.current) return;
-
+      // Always attempt the remote save. The previous behavior gated on
+      // isRemote.current (set only by a successful initial GET), which meant
+      // any first-load 500 silently swallowed every subsequent save.
       setIsSaving(true);
       try {
         const updated = await updateNotificationPreferences(updates);
+        isRemote.current = true;
         setPreferences(updated);
+        setError(null);
       } catch (err) {
-        // Revert on failure — refetch
-        try {
-          const fresh = await getNotificationPreferences();
-          setPreferences(fresh);
-        } catch {
-          // ignore refetch error
-        }
+        // Preserve the optimistic local state — better to keep the user's
+        // intent visible than to revert to stale defaults.
         setError(err instanceof Error ? err.message : "Failed to save");
       } finally {
         setIsSaving(false);
