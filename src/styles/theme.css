@@ -457,7 +457,8 @@ body {
     background: rgba(59, 130, 246, 0.14) !important;
   }
 
-  /* Dark mode control groups */
+  /* Dark mode control groups — fires on explicit map-tone OR app-wide map-dark */
+  [data-appearance-mode="map-dark"] .maplibregl-ctrl-group,
   [data-map-tone="dark"] .maplibregl-ctrl-group,
   [data-map-theme="dark"] .maplibregl-ctrl-group {
     border-color: rgba(96, 165, 250, 0.24) !important;
@@ -468,12 +469,14 @@ body {
       inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
   }
 
+  [data-appearance-mode="map-dark"] .maplibregl-ctrl-group button,
   [data-map-tone="dark"] .maplibregl-ctrl-group button,
   [data-map-theme="dark"] .maplibregl-ctrl-group button {
     color: rgb(203 213 225);
     border-bottom-color: rgba(96, 165, 250, 0.12) !important;
   }
 
+  [data-appearance-mode="map-dark"] .maplibregl-ctrl-group button:hover,
   [data-map-tone="dark"] .maplibregl-ctrl-group button:hover,
   [data-map-theme="dark"] .maplibregl-ctrl-group button:hover {
     background: rgba(59, 130, 246, 0.15) !important;

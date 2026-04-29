@@ -78,7 +78,13 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
-        <div className="flex items-center justify-between border-b px-4 py-3 sm:px-5 sm:py-4 mb-0">
+        <div
+          className={`flex items-center justify-between border-b px-4 py-3 sm:px-5 sm:py-4 mb-0 ${
+            isLight
+              ? "border-slate-200/60 bg-white/40"
+              : "border-white/[0.08] bg-slate-950/60"
+          }`}
+        >
           <h2
             className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}
             id="settings-modal-title"

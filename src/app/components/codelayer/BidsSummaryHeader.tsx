@@ -23,7 +23,7 @@ export default function BidsSummaryHeader({
   const statToneClasses = [
     "bd-dashboard-section--accent-blue",
     "bd-dashboard-section--deep",
-    "bd-dashboard-section--accent-cyan",
+    "bd-dashboard-section--accent-blue",
   ];
 
   const stats =

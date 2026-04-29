@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { Expand, LocateFixed, Radar, Search, X } from "lucide-react";
+import { LocateFixed, Radar, Search, X } from "lucide-react";
 import { cn } from "../ui/utils";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
 import type { MapSurfaceTone } from "../maps/serviceCoverageMapTypes";
@@ -31,7 +31,6 @@ type CoverageSearchPanelProps = {
   onRadiusMilesChange: (value: string) => void;
   onCenterMap: () => void;
   onUseCurrentLocation: () => void;
-  onExpandMap: () => void;
   className?: string;
 };
 
@@ -60,7 +59,6 @@ export default function CoverageSearchPanel({
   onRadiusMilesChange,
   onCenterMap,
   onUseCurrentLocation,
-  onExpandMap,
   className,
 }: CoverageSearchPanelProps) {
   const theme = getMapSurfaceTheme(tone);
@@ -284,7 +282,7 @@ export default function CoverageSearchPanel({
             </div>
           </div>
 
-          <div className="grid auto-rows-max content-start grid-cols-2 gap-2 self-start sm:grid-cols-3 xl:grid-cols-1">
+          <div className="grid auto-rows-max content-start grid-cols-2 gap-2 self-start xl:grid-cols-1">
             <button
               type="button"
               onClick={onUseCurrentLocation}
@@ -312,18 +310,6 @@ export default function CoverageSearchPanel({
             >
               <LocateFixed className="h-3.5 w-3.5" />
               Center Map
-            </button>
-            <button
-              type="button"
-              onClick={onExpandMap}
-              className={cn(
-                theme.primaryButtonClassName,
-                actionButtonClassName,
-                "col-span-2 sm:col-span-1 xl:col-span-1"
-              )}
-            >
-              <Expand className="h-3.5 w-3.5" />
-              Full Map
             </button>
           </div>
         </div>

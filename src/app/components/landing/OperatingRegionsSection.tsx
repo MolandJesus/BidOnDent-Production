@@ -274,7 +274,6 @@ export default function OperatingRegionsSection({
                       );
                     }}
                     onUseCurrentLocation={coverage.handleUseCurrentLocation}
-                    onExpandMap={() => coverage.setIsMapExpanded(true)}
                   />
                   <div
                     className={cn(

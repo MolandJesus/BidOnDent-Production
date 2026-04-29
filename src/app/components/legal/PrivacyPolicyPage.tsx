@@ -12,7 +12,9 @@ export default function PrivacyPolicyPage({ onBackToHome }: PrivacyPolicyPagePro
   return (
     <main
       className={`min-h-screen py-14 px-4 ${
-        isLight ? "bg-gradient-to-b from-[#eef4fb] via-[#e6eef9] to-[#dde6f5]" : "bg-gradient-to-b from-[#08142b] via-[#0a1626] to-[#060d1c]"
+        isLight
+          ? "bg-gradient-to-b from-[#eef4fb] via-[#e6eef9] to-[#dde6f5]"
+          : "dark bg-gradient-to-b from-[#08142b] via-[#0a1626] to-[#060d1c]"
       }`}
     >
       <div className="max-w-3xl mx-auto bd-glass-card p-8 md:p-10">

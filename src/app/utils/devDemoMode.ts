@@ -17,7 +17,7 @@ import type {
   UserInfo,
   Vehicle,
 } from "../types";
-import { SEED_DAMAGE_REPORTS, SEED_DEMO_BIDS, LANDING_PAGE_IMAGES } from "../constants";
+import { SEED_DAMAGE_REPORTS, SEED_DEMO_BIDS } from "../constants";
 import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
 
 const DEMO_QUERY_KEY = "demo";
@@ -78,7 +78,7 @@ export const DEMO_USER_PROFILE: UserProfile = {
 export const DEMO_USER_INFO: UserInfo = {
   name: DEMO_USER_PROFILE.name,
   email: DEMO_USER_PROFILE.email,
-  profileImage: LANDING_PAGE_IMAGES.DEFAULT_PROFILE,
+  profileImage: "",
 };
 
 export const DEMO_WEBSITE_IDENTITY: WebsiteIdentity = {
