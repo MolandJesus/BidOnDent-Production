@@ -128,9 +128,17 @@ export async function resolveWebsiteUserKeyForSession(
 ) {
   const normalizedRequestedWebsiteUserKey = normalizeWebsiteUserKey(requestedWebsiteUserKey);
   const storedWebsiteUserKey = await getStoredWebsiteUserKeyForSession(supabase, session);
-  const derivedWebsiteUserKey = buildWebsiteUserKey({
+  const emailBasedKey = buildWebsiteUserKey({
     clerkUserId: session.clerkUserId,
     email: session.email,
+  });
+  // Clerk-id-only seed acts as a fallback when the edge runtime can't resolve
+  // the user's email (e.g. CLERK_SECRET_KEY isn't configured for fetchClerkEmail).
+  // The frontend may have computed its key with EITHER seed depending on whether
+  // email was available client-side at request time, so accept either as a match.
+  const clerkIdBasedKey = buildWebsiteUserKey({
+    clerkUserId: session.clerkUserId,
+    email: null,
   });
 
   if (normalizedRequestedWebsiteUserKey) {
@@ -139,20 +147,17 @@ export async function resolveWebsiteUserKeyForSession(
     if (storedWebsiteUserKey) {
       allowedWebsiteUserKeys.add(storedWebsiteUserKey);
     }
-
+    allowedWebsiteUserKeys.add(clerkIdBasedKey);
     if (normalizeEmail(session.email)) {
-      allowedWebsiteUserKeys.add(derivedWebsiteUserKey);
+      allowedWebsiteUserKeys.add(emailBasedKey);
     }
 
-    if (
-      allowedWebsiteUserKeys.size > 0 &&
-      !allowedWebsiteUserKeys.has(normalizedRequestedWebsiteUserKey)
-    ) {
+    if (!allowedWebsiteUserKeys.has(normalizedRequestedWebsiteUserKey)) {
       throw new Error("Authenticated website identity mismatch");
     }
   }
 
-  return storedWebsiteUserKey || derivedWebsiteUserKey;
+  return storedWebsiteUserKey || emailBasedKey;
 }
 
 export async function getAuthenticatedProfile(
