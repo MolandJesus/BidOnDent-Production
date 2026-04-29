@@ -89,7 +89,10 @@ export default function ShopRequestsScreen({
         req.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         req.vehicle.toLowerCase().includes(searchQuery.toLowerCase()) ||
         req.damageType.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = filterStatus === "all" || req.status === filterStatus;
+      // Once this shop submits a bid on a request, treat its status as "bidding"
+      // for filter purposes — the underlying report status doesn't always update.
+      const effectiveStatus = submittedBidIds.has(req.id) ? "bidding" : req.status;
+      const matchesFilter = filterStatus === "all" || effectiveStatus === filterStatus;
       return matchesSearch && matchesFilter;
     })
     // Sort: 0-bid requests first (most urgent), then newest by submission date
