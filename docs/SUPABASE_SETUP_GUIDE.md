@@ -9,6 +9,7 @@
 > - **Phase 3.2 (Event capture)** — COMPLETE. `platform_activity_events` now has `actor_id`, `object_id`, `outcome` columns. All launch-critical write flows (report create, bid create, bid accept/reject, job assignment create) emit structured events. Migration: `025_event_capture_columns.sql`.
 > - **Phase 3.3 (Idempotency)** — COMPLETE. Unique partial indexes on `bids(damage_report_id, clerk_shop_user_id)` and `job_assignments(damage_report_id)` prevent duplicate submissions. Damage report POST now uses `(clerk_user_id, client_request_id)` dedupe for repeated request replays, and bid acceptance uses an atomic `pending → accepted/rejected` update so concurrent retries cannot double-send shop notifications. Migrations: `026_idempotency_guards.sql`, `20260416000002_report_submission_idempotency.sql`.
 > - **Phase 3.4 (Soft delete)** — COMPLETE. `deleted_at TIMESTAMPTZ` added to damage_reports, bids, job_assignments, vehicles. All delete handlers now set `deleted_at` instead of hard deleting. All query handlers filter `deleted_at IS NULL`. RLS policies filter deleted rows. Migration: `027_soft_delete.sql`. Account deletion in auth.ts still uses hard deletes (GDPR compliance).
+> - **Phase 5.5 / 2026-04-27 prod deploy** — LIVE. Production `server` is now version 47 on project `wmdcnjgtsppftrofaqqa`. The deployed bundle includes workflow authorization hardening, completion propagation, authenticated marketplace seed-fallback removal, and customer ownership recovery/self-heal for Clerk ID rotation (KI-055). Remaining Pass 1/2 verification follow-through stays tracked in `LAW_HARDENING_PLAN.md`.
 > - **Section 13 (Edge Function Deployment)** still documents the `make-server-9f243523` legacy alias. That alias is a live backward-compatibility layer deferred to [Post-Launch Roadmap item L1](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md). Keep the current deploy command until L1 fires; do not remove it prematurely.
 >
 > During the hardening phase, execution law is the [Hardening Plan (LAW)](LAW_HARDENING_PLAN.md).
@@ -17,7 +18,7 @@
 >
 > Clerk Dashboard **must** have a JWT template named **`supabase`** configured and signed with the Supabase project's JWT secret (`SUPABASE_JWT_SECRET`). Without this template, all Clerk-JWT RLS policies (`requesting_clerk_user_id()`) will return `NULL` and deny every authenticated request. Runtime verification is deferred to deployment smoke test.
 
-Last updated: April 15, 2026 (Phase 3.1–3.4 complete — RLS, event capture, idempotency, soft delete)
+Last updated: April 27, 2026 (prod `server` v47 live; Clerk-rotation recovery verified)
 Status: Active — comprehensive backend reference for current and future backend migration
 
 BidOnDent uses **Clerk** for authentication/identity and **Supabase** for application data, file storage, and edge-function-backed API services. This document is the single source of truth for the entire backend architecture. If the project migrates to a different backend, this document defines every contract that must be replicated.
@@ -26,14 +27,14 @@ BidOnDent uses **Clerk** for authentication/identity and **Supabase** for applic
 
 ## 1. Production Environment
 
-| Key                          | Value                                       |
-| ---------------------------- | ------------------------------------------- |
-| Supabase project ref         | `wmdcnjgtsppftrofaqqa`                      |
-| Canonical edge function slug | `server`                                    |
-| Legacy edge function slug    | `make-server-9f243523` (compatibility only) |
-| Live edge build version      | `2026-03-21-v10`                            |
-| Edge function runtime        | Deno (Supabase Edge Functions)              |
-| Auth provider                | Clerk (JWT-based, verified server-side)     |
+| Key                          | Value                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| Supabase project ref         | `wmdcnjgtsppftrofaqqa`                                                          |
+| Canonical edge function slug | `server`                                                                        |
+| Legacy edge function slug    | `make-server-9f243523` (compatibility only)                                     |
+| Live edge function version   | `47` (updated 2026-04-27 11:23:25 UTC)                                          |
+| Edge function runtime        | Deno (Supabase Edge Functions)                                                  |
+| Auth provider                | Clerk (JWT-based, verified inside edge handlers; deploys use `--no-verify-jwt`) |
 
 ---
 
@@ -101,7 +102,7 @@ CLERK_PUBLISHABLE_KEY          # For Clerk API calls
 
 ### Entry point: `supabase/functions/server/index.ts`
 
-The single Deno edge function (`server`) handles all API routes via path-based dispatch inside `Deno.serve()`. On cold start it runs `initializeDatabaseTables()` and `initializeStorageBuckets()`.
+The single Deno edge function (`server`) handles all API routes via path-based dispatch inside `Deno.serve()`. On cold start it runs `initializeDatabaseTables()` (validation-only safety net at this stage, not broad schema creation) and `initializeStorageBuckets()`.
 
 ### Config files
 
@@ -257,6 +258,13 @@ All service files live in `src/app/services/supabase/`. Each wraps `requestSupab
 | `vehicles`       | `id` UUID PK, `user_id` FK, `clerk_user_id`, `make`, `model`, `year`, `vin`, `image_url`                                                                                                  | RLS: own vehicles only.                                  |
 | `damage_reports` | `id` UUID PK, `user_id` FK, `clerk_user_id`, `vehicle_id` FK, `damage_type`, `damage_severity`, `address`, `zip_code`, `photo_urls` TEXT[], `status`, `claim_decision`, `approved_amount` | RLS: customers own, shops/insurers read all marketplace. |
 
+### Customer ownership recovery rule (2026-04-27)
+
+- `profiles`, `vehicles`, and `damage_reports` intentionally retain both `user_id` and `clerk_user_id` during the current Clerk-first launch phase.
+- `getAuthenticatedProfile()` resolves by `clerk_user_id` first, then normalized email. That makes profile resolution tolerant of Clerk ID rotation when the email remains stable.
+- `getVehicles()`, `getReports()`, and the customer-ownership branch of `getBids()` now merge candidate `clerk_user_id` matches with a `user_id` sweep, dedupe by row id, and self-heal stale or `NULL` `clerk_user_id` values to the active Clerk session on read.
+- This recovery path is customer-only. Shop ownership checks, insurer checks, and workflow authorization remain strict.
+
 ### Marketplace tables
 
 | Table               | Key columns                                                                                                                                                                           | Notes                                 |
@@ -383,11 +391,13 @@ Future schema changes land as new files alongside the baseline, using a timestam
 | Function                                              | Purpose                                                                      |
 | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
 | `requireClerkSession(req)`                            | Extracts + verifies Clerk JWT from Authorization header                      |
+| `getAuthenticatedProfile(supabase, session)`          | Loads profile by `clerk_user_id`, then falls back to normalized email        |
 | `ensureClerkUserMatchesSession(session, clerkUserId)` | Validates request clerkUserId matches JWT subject                            |
 | `ensureWebsiteUserKeyMatchesSession(session, key)`    | Validates website user key matches session                                   |
 | `buildWebsiteUserKey(email, clerkId)`                 | Derives stable identity key from email + Clerk ID                            |
 | `normalizeEmail(email)`                               | Lowercases and trims email                                                   |
 | `requireAuthenticatedProfile(req, supabase, opts)`    | Full auth: verify JWT → load profile from DB → return `{ profile, session }` |
+| `requireInsurerContext(req, supabase)`                | Full auth + verify insurer/admin authority for claim workflows               |
 | `requireAdminContext(req, supabase)`                  | Full auth + verify `is_admin === true` on profile                            |
 
 ### JWT verification (`utils/clerk.ts`)
@@ -442,11 +452,15 @@ All user-scoped buckets have RLS enabled (migration 013).
 
 ```bash
 # Deploy canonical edge function
-supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa
+supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt
 
 # Deploy legacy alias (compatibility only — remove when fully migrated)
-supabase functions deploy make-server-9f243523 --project-ref wmdcnjgtsppftrofaqqa
+supabase functions deploy make-server-9f243523 --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt
 ```
+
+Current production metadata (2026-04-27): `server` version 47, updated 2026-04-27 11:23:25 UTC.
+
+`--no-verify-jwt` is required because the Supabase gateway does not validate Clerk-issued bearer tokens. The actual auth boundary is handler-level verification via `requireClerkSession()` and the higher-level auth/context helpers in `utils/authz.ts`.
 
 ### URL pattern
 

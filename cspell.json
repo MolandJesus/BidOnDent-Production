@@ -222,11 +222,17 @@
     "dedupe",
     "idempotently",
     "lhhdqycnhweaxqviwdqt",
+    "regclass",
     "postgis",
+    "yjbugpzarlyidgxbljjn",
     "Krog",
     "krog",
     "murphys",
     "mcdonalds",
-    "Riverdale"
+    "Riverdale",
+    "basemaps",
+    "arcgisonline",
+    "nosniff",
+    "SAMEORIGIN"
   ]
 }

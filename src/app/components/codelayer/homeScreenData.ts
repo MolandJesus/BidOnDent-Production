@@ -52,16 +52,16 @@ export const statusClassesLight: Record<string, string> = {
 
 export const actionIconTones = [
   "bg-blue-400/15 text-blue-200 shadow-sm",
-  "bg-emerald-400/15 text-emerald-300 shadow-sm",
-  "bg-amber-400/15 text-amber-300 shadow-sm",
-  "bg-violet-100/80 text-violet-700 shadow-sm",
+  "bg-blue-400/15 text-blue-200 shadow-sm",
+  "bg-blue-400/15 text-blue-200 shadow-sm",
+  "bg-blue-400/15 text-blue-200 shadow-sm",
 ];
 
 export const actionIconTonesLight = [
   "border border-blue-200/70 bg-blue-50 text-blue-700 shadow-[0_6px_16px_rgba(37,99,235,0.12)]",
-  "border border-emerald-200/70 bg-emerald-50 text-emerald-700 shadow-[0_6px_16px_rgba(16,185,129,0.10)]",
-  "border border-amber-200/70 bg-amber-50 text-amber-700 shadow-[0_6px_16px_rgba(245,158,11,0.10)]",
-  "border border-indigo-200/70 bg-indigo-50 text-indigo-700 shadow-[0_6px_16px_rgba(99,102,241,0.10)]",
+  "border border-blue-200/70 bg-blue-50 text-blue-700 shadow-[0_6px_16px_rgba(37,99,235,0.12)]",
+  "border border-blue-200/70 bg-blue-50 text-blue-700 shadow-[0_6px_16px_rgba(37,99,235,0.12)]",
+  "border border-blue-200/70 bg-blue-50 text-blue-700 shadow-[0_6px_16px_rgba(37,99,235,0.12)]",
 ];
 
 export function buildStats(

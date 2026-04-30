@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-04-17
+**Last updated:** 2026-04-27
 
 **Update rules:**
 
@@ -200,3 +200,109 @@
 - **Fix direction:** Keep browser geocoding behind the shared edge proxy and reuse that route for future place-search/geocode flows instead of adding new direct provider fetches in UI-facing code.
 - **Validation:** Fresh desktop reload, live origin search (`Yonkers NY`), and mobile reload at `375x812` all returned `200` from `/functions/v1/server/geocode/search` with no direct browser requests to `nominatim.openstreetmap.org` observed.
 - **Status:** RESOLVED (2026-04-17) — deployed live on the connected Supabase project.
+
+### KI-048: Workflow handlers leak data and allow cross-user mutation
+
+- **Impact:** `getJobAssignments` returns enriched job rows including customer name/email/phone with no auth check — public PII read by anyone who hits the route (the `server` edge function is deployed `--no-verify-jwt`, so the Supabase gateway does not block unauthenticated calls). `updateJobAssignmentStatus` and `createJobAssignment` require a Clerk session but perform no ownership check, so any authenticated user can flip any assignment's status by ID or author assignments naming arbitrary parties. `submitInsuranceClaim` and `updateClaimDecision` use `requireMarketplaceContext`, which permits shop accounts to author insurer-only claim decisions (privilege escalation into insurer authority).
+- **Location:** [supabase/functions/server/handlers/workflow.ts](../supabase/functions/server/handlers/workflow.ts); [utils/authz.ts](../supabase/functions/server/utils/authz.ts).
+- **Fix:** Code-side complete (Pass 5.5 / Pass 1, 2026-04-25). Added `requireInsurerContext` helper to `utils/authz.ts`. In `workflow.ts`: `getJobAssignments` now calls `requireAuthenticatedProfile` and rejects callers who are neither the named shop nor admin (403). `updateJobAssignmentStatus` pre-fetches the row and rejects callers not in `{shop, customer, insurer}_clerk_user_id` and not admin (403). `createJobAssignment` rejects callers who are not the named customer and not admin (403). `submitInsuranceClaim` and `updateClaimDecision` switched from `requireMarketplaceContext` to `requireInsurerContext` (insurer or admin only — verified UI callers are insurer-gated at [DashboardRouter.tsx:320-355](../src/app/routers/DashboardRouter.tsx#L320) and [DashboardSecondaryViews.tsx:286-310](../src/app/routers/DashboardSecondaryViews.tsx#L286), so no UI surface affected). `getWorkflowErrorStatus` updated to surface 403 for both `Marketplace access required` and `Insurer access required`. Build green (3.34s, 0 errors); tests 568/568 passing. Per-route verification artifacts captured in the pass log section of `LAW_HARDENING_PLAN.md`.
+- **Remaining (human-only):** Edge function redeploy required: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`. After deploy, run the per-route verification checklist against the live edge environment and capture the actual status codes.
+- **Status:** RESOLVED (code-side, 2026-04-25 — pending edge function redeploy + live verification).
+
+### KI-049: Customer completion does not propagate to job_assignments
+
+- **Impact:** When a customer confirms repair completion, `damage_reports.status` is set to `"completed"` but the linked `job_assignments` row is not touched. The shop's Active Jobs view reads from `job_assignments`, so the customer's completion is invisible to the shop indefinitely. Two source-of-truth rows on the same workflow disagree.
+- **Location:** [supabase/functions/server/handlers/reports.ts](../supabase/functions/server/handlers/reports.ts) `updateReport`.
+- **Fix:** Code-side complete (Pass 5.5 / Pass 2, 2026-04-25). `updateReport` now propagates: when the incoming `status` is `'completed'` and the report row update succeeds, the matching `job_assignments` row (status in `scheduled`/`in_progress`/`awaiting_parts`, not soft-deleted) is updated to `'completed'` in the same handler. A `repair_completed` activity event linking both IDs is emitted fire-and-forget. Propagation is non-fatal — assignment update failure is logged but does not roll back the report update. Note: the bid-accept "active vs accepted" label is **not** drift (adapter-reconciled by `normalizeReportStatus` per KI-021); the completion path was the only real lifecycle drift. Build green (3.22s, 0 errors); tests 568/568 passing.
+- **Validation:** Local runtime verified 2026-04-26 by secondary AI (GPT-5.4-high) against the served edge function — `updateReport` call completed, the linked `job_assignments` row moved to `completed`, and a `repair_completed` activity event was written. Prod live verification still pending deploy.
+- **Remaining (human-only):** Edge function redeploy (`supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`). Then customer flow → confirm completion → shop's Active Jobs view shows the assignment as `completed` after refetch.
+- **Status:** RESOLVED (code-side + local runtime verified 2026-04-26 — pending prod redeploy + prod live verification).
+
+### KI-050: Authenticated marketplace falls back to seed data on cold start
+
+- **Impact:** When live marketplace data is empty (cold-start with no live reports OR fetch failure), `useDashboardData` substituted `SEED_DAMAGE_REPORTS` for shop and insurer marketplace surfaces. An authenticated shop saw a populated marketplace and formed a false impression of platform liquidity. Contradicted the locked Hardening Plan Phase 4A.2 gate criterion ("Empty states no longer show fake shops").
+- **Location:** [src/app/routers/useDashboardData.ts](../src/app/routers/useDashboardData.ts).
+- **Fix:** Code-side complete (Pass 5.5 / Pass 3, 2026-04-25). `SEED_DAMAGE_REPORTS` import removed from `useDashboardData.ts`. `shopInsurerReports = liveMarketplaceReports` (direct passthrough). `usingSeedFallback = false`. Empty live data now renders the per-screen empty state already present on [ShopRequestsScreen.tsx:354-360](../src/app/components/shop/ShopRequestsScreen.tsx#L354) ("No repair requests yet"), [ShopActiveJobsScreen.tsx:392-401](../src/app/components/shop/ShopActiveJobsScreen.tsx#L392) ("No active jobs yet"), [InsurerClaimsScreen.tsx:347-359](../src/app/components/insurer/InsurerClaimsScreen.tsx#L347) ("No claims yet"). The amber `isSeedData` banners on all three screens are now unreachable but kept in code as harmless dead branches (cleanup deferred — out of pass scope). Seed-id mutation guards (`String(id).startsWith("seed-")`) preserved as belt-and-suspenders. `SEED_DAMAGE_REPORTS` constant stays exported for demo-mode use. No backend change. Build green (3.23s, 0 errors); tests 568/568 passing.
+- **Validation:** Live visual verification complete 2026-04-26 by secondary AI (GPT-5.4-high) on all three target screens (`ShopRequestsScreen`, `ShopActiveJobsScreen`, `InsurerClaimsScreen`) in both light and map-dark appearance modes. Empty state was forced via network interception of marketplace + job-assignment feeds rather than seed/demo records. All three screens rendered the expected empty copy ("No repair requests yet" / "No active jobs yet" / "No claims yet") with no example-data banner and no layout breakage. No new accounts required.
+- **Status:** RESOLVED (code-side + live visual verification complete 2026-04-26 — no further verification required for this KI; client-only change, no deploy needed).
+
+### KI-051: CSP missing overpass-api.de blocks public map place discovery
+
+- **Impact:** The fullscreen coverage command center promises address and point-of-interest search, but in-browser the connect-src CSP in `vite.config.ts` does not allow `overpass-api.de`, while `src/app/services/navigation/placeDiscovery.ts` and `src/app/services/navigation/speedLimit.ts` fetch that domain directly. Result: richer place-discovery behavior is broken when the public full map opens from `CoverageMapDialog.tsx` and from the search surface in `PlannerAddressSearch.tsx`. Static recommendations still render; live discovery does not.
+- **Location:** [vite.config.ts](../vite.config.ts) (CSP `connect-src`); [src/app/services/navigation/placeDiscovery.ts](../src/app/services/navigation/placeDiscovery.ts); [src/app/services/navigation/speedLimit.ts](../src/app/services/navigation/speedLimit.ts); consumers in [src/app/components/maps/command-center/PlannerAddressSearch.tsx](../src/app/components/maps/command-center/PlannerAddressSearch.tsx) and [src/app/components/landing/CoverageMapDialog.tsx](../src/app/components/landing/CoverageMapDialog.tsx).
+- **Current reality:** Detected during the 2026-04-26 local audit pass. Direct browser fetches to `overpass-api.de` are blocked by CSP. Discovery silently fails — UI shows static demo recommendations instead.
+- **Fix direction:** Two acceptable shapes — (a) route Overpass-dependent discovery through the existing shared edge proxy pattern (see KI-046's resolution: `/functions/v1/server/geocode/search` for Nominatim) by adding an Overpass proxy route to the `server` edge function; or (b) extend `connect-src` to allow `overpass-api.de` if direct browser access is preferred. Option (a) matches the pattern set by KI-046 and is the consistent choice. Either way, also audit any other direct provider fetches in UI-facing code per the KI-046 fix-direction rule.
+- **Status:** Open — P1 (public map functional gap; map-first product surface).
+
+### KI-052: Public map invents travel time/distance for zero-distance demo routes
+
+- **Impact:** The landing-page coverage command center showed `0.0 mi` plus `6–9 min` before route start and `50 ft` plus `1 min` after start, on a recommendation pinned to identical coordinates as its origin. Trust gap on the strongest public product surface — implies route metrics that do not exist.
+- **Location:** Root cause: minimum-distance / minimum-duration floors in [src/app/components/maps/mapRoutePresentation.ts](../src/app/components/maps/mapRoutePresentation.ts). Surfaced in [src/app/components/maps/command-center/PlannerRoutePreview.tsx](../src/app/components/maps/command-center/PlannerRoutePreview.tsx) and [src/app/components/landing/CoverageActiveNavigationLayout.tsx](../src/app/components/landing/CoverageActiveNavigationLayout.tsx) which consume the floored values directly. Demo data in [src/app/components/landing/coverageData.ts](../src/app/components/landing/coverageData.ts) pins ZIP `10601` to the same coordinates as `BidOnDent Metro Hub`, which is what triggers the zero-distance edge case in the live demo.
+- **Current reality:** Detected during the 2026-04-26 local audit pass. Build green. Issue only surfaces when origin and destination resolve to the same coordinates — but that exact case is reachable via the public demo path, so it is user-visible.
+- **Fix direction:** Remove the minimum-distance and minimum-duration floors in `mapRoutePresentation.ts` so zero-distance and arrival-adjacent states render as `0 mi` / `Arrived` / blank, instead of synthetic numbers. Cross-check the consuming components handle the new zero/null shape. Optionally also separate the two coordinate-identical demo entries in `coverageData.ts` so the demo flow tests a real route by default.
+- **Status:** Open — P4 (truthfulness polish on map-first product surface; pre-launch desirable, post-launch acceptable).
+
+### KI-054: Dev-server CSP did not allow local Supabase, forcing brittle in-process proxy workarounds for browser audits
+
+- **Impact:** The Vite dev-server CSP `connect-src` only allowed `https://*.supabase.co` (cloud), so any browser audit that pointed the app at the local Docker Supabase stack (`http://127.0.0.1:54321`) had every request blocked. The 2026-04-26 audit AI worked around this by spinning a same-origin Node proxy on port 4174, then later baking it into the repo as `scripts/local-browser-proxy.mjs` + an `http-proxy` dev dep + a second npm script. That proxy was a single point of failure: when its terminal was killed (or it OOM'd) the "dev server" appeared dead in-browser, even though Vite was still up.
+- **Location:** [vite.config.ts](../vite.config.ts) `server.headers["Content-Security-Policy"]` `connect-src` directive.
+- **Fix:** Code-side complete (2026-04-26).
+  - Extended dev-server CSP `connect-src` to include `http://127.0.0.1:54321`, `http://localhost:54321`, `ws://127.0.0.1:54321`, `ws://localhost:54321`. This header is emitted by Vite's dev server only — production CSP (Vercel headers) is unaffected.
+  - Simplified `scripts/dev-local-browser.mjs` to point Vite directly at the local Supabase API URL discovered via `supabase status -o env` (was previously pointing at the proxy origin). Now exposes `BIDONDENT_LOCAL_SUPABASE_URL` env override for the rare host/port deviation case.
+  - Deleted `scripts/local-browser-proxy.mjs` (no longer needed).
+  - Removed `http-proxy` dev dependency and the `local-browser-proxy` npm script from `package.json`.
+  - Updated `docs/GETTING_STARTED.md` and `docs/REF_AI_BROWSER_NAVIGATION.md` to reflect the simpler one-command flow targeting `localhost:5173` directly.
+  - Build green (3.79s, 0 errors); tests 568/568 passing.
+- **Why this matters beyond the immediate fix:** The proxy approach hid the real architecture from devs (browser thought Supabase lived at 4174) and added a fragile process to the audit hot path. Fixing CSP at the source means future audit AIs have one less moving piece to keep alive and one less thing that can crash mid-pass.
+- **Status:** RESOLVED (code-side, 2026-04-26 — no deploy needed; dev-only change).
+
+### KI-055: Customer-owned data could disappear after Clerk ID rotation
+
+- **Impact:** A returning customer could lose visibility of saved vehicles, report history, and customer-scoped bid access after a Clerk identity rotation or legacy `NULL` ownership state. The app header/profile still rendered because profile lookup fell back by email, but strict handler queries against the current `session.clerkUserId` could surface only a partial slice of the owned data.
+- **Location:** [vehicles.ts](../supabase/functions/server/handlers/vehicles.ts), [reports.ts](../supabase/functions/server/handlers/reports.ts), and the customer ownership branch in [bids.ts](../supabase/functions/server/handlers/bids.ts).
+- **Root cause:** Ownership rows existed under a mix of current `clerk_user_id`, historical `clerk_user_id`, and legacy `NULL` values linked by stable `user_id`. The previous recovery shape only ran the `user_id` fallback when the primary `clerk_user_id` query returned zero rows, which missed mixed accounts that had both current and legacy rows.
+- **Fix:** RESOLVED code-side and deployed live on 2026-04-27. All three handlers now always merge the candidate-`clerk_user_id` query with a `user_id` ownership sweep, dedupe by row id, sort the merged result, and self-heal stale or `NULL` `clerk_user_id` values to the current session ID. Live SQL verification on project `wmdcnjgtsppftrofaqqa` confirmed a single vehicle ownership bucket (`user_37l2aa5TqRLeLesZQIq5ibdXUul = 20`) with no remaining `NULL` rows after the deployed fetch path ran.
+- **Validation:** Local live UI verification after deploy showed `Account > My Vehicles` rendering `20 vehicles`, and the report intake step-1 saved-vehicle picker showed `20 saved` entries for the affected account.
+- **Status:** RESOLVED (2026-04-27, commit `a62d683e`) — deployed to production and live-verified.
+
+### KI-053: Map performance budget overruns on landing/fullscreen map
+
+- **Impact:** During the 2026-04-26 audit, `mapPerformance.ts` repeatedly logged pan/zoom samples exceeding the configured budgets (observed: 502ms, 520ms, 543ms, with one 2096ms burst against 380ms / 450ms budgets). The instrumentation already exists; the budgets are being missed. Performance impact on map-first UX, especially on lower-end devices.
+- **Location:** Instrumentation in [src/app/services/navigation/mapPerformance.ts](../src/app/services/navigation/mapPerformance.ts). Triggered during landing-page map and fullscreen `CoverageMapDialog.tsx` interactions.
+- **Current reality:** Detected during the 2026-04-26 local audit pass. Observability is in place — no data-collection work needed. The data shows the budgets are not being met today.
+- **Fix direction:** Investigate which layer/source/event handler is dominating frame time during pan/zoom (likely either the marker rendering path, the route geometry source, or un-throttled effects in the map controllers). Profile with Chrome DevTools performance panel before authoring any fix. Out of pre-launch scope unless investigation reveals a cheap win.
+- **Status:** Open — P4 (polish; observability already exists, fix needs profiling).
+
+### KI-056: Realtime live updates not flowing for Clerk-authenticated channels
+
+- **Impact:** Authenticated subscribers (browser-side, Clerk-issued JWT) successfully connected to Supabase Realtime but `postgres_changes` events never delivered. Customer Bids tab and shop Active Jobs tab silently failed to update on cross-account writes; the only way to see new bids was to refresh the page.
+- **Location:** `src/app/services/supabase/client.ts` (Realtime auth wiring); `src/app/App.tsx` (refresh interval); `supabase/migrations/20260429000001_realtime_publication.sql` (publication membership).
+- **Root cause (compound):**
+  1. The frontend injected a Clerk JWT into Realtime via a one-time `setAuth(token)` call on Clerk-load. After the token's short lifetime expired, every subsequent `channel.subscribe` silently failed against the cached stale token, and the modern `accessToken` callback option wasn't configured.
+  2. The local Supabase `supabase_realtime` publication had zero tables — Realtime only forwards `postgres_changes` events for tables that are publication members. Production (`wmdcnjgtsppftrofaqqa`) already had the right tables, but local was missing them, and any fresh staging would have hit the same gap.
+  3. RLS policies on the affected tables were already correct: they use `requesting_clerk_user_id()` (the JWT-`sub` helper at `20251230000001_full_schema.sql:31`), not `auth.uid()`-based comparisons. No policy rewrite was applied.
+- **Fix (commit `1c34e44f` plus follow-up):**
+  1. `client.ts`: pass an async `accessToken` callback to `createClient` that fetches a fresh `getToken({ template: "supabase" })` from Clerk at channel-join time. Eliminates the token-expiry race on initial subscribe.
+  2. `client.ts`: convert `setSupabaseRealtimeAuth()` to a no-op (kept for backward compat).
+  3. `client.ts`: add `refreshRealtimeAuth()` which fetches a fresh Clerk JWT and calls `realtime.setAuth(token)` to broadcast it to every live channel — needed for long-lived channels because the `accessToken` callback only fires at channel-join, not on heartbeat.
+  4. `App.tsx`: drop the now-redundant initial `setSupabaseRealtimeAuth` call; add a 50s `refreshRealtimeAuth()` interval in the Clerk-load effect (cleared on unmount).
+  5. `useBidsForReport.ts`: defensive retry-once (2s delay) on `CHANNEL_ERROR` for the case where Clerk session is mid-refresh at subscribe time.
+  6. `migrations/20260429000001_realtime_publication.sql`: idempotent DO block that adds `bids`, `damage_reports`, and `estimate_requests` to `supabase_realtime`. Tolerates the publication not existing and skips already-member tables.
+- **Validation:** Phase 3 audit (2026-04-30) against production: WebSocket connected with Clerk JWT, `phx_reply status:"ok"` received for all subscribed bid channels, live INSERT against `bids` delivered to a customer-side subscriber after a token refresh on a near-expiry JWT.
+- **Status:** RESOLVED — frontend code changes committed; production publication already had the necessary tables. No production schema changes were applied directly.
+
+### KI-057: Realtime channel cycling in React StrictMode (dev only)
+
+- **Impact:** In development, React StrictMode double-invokes effects. `useBidsForReport` creates channels, StrictMode cleanup removes them, then mounts again. This causes `phx_join → phx_leave → phx_join` cycling on every Bids tab open. Channels do eventually settle with `phx_reply status:"ok"` but the cycling produces misleading "WebSocket closed before connection established" console warnings.
+- **Location:** `src/app/hooks/useBidsForReport.ts` + `src/app/services/realtime/RealtimeBidService.ts`.
+- **Current reality:** Cosmetic in dev. StrictMode is disabled in production builds (Vite's `npm run build` removes double-invoke behavior). Phase 3 live test (2026-04-30) confirmed channels reach `SUBSCRIBED` state and receive INSERT events in production-equivalent conditions. No fix needed for prod.
+- **Fix direction:** If dev DX becomes painful, add an unmount guard using `AbortController` or move subscription to a non-StrictMode-affected location. Not worth the complexity until it causes a real dev workflow issue.
+- **Note:** A near-expiry JWT at channel-creation time can cause the first join to use the anon role. The 50s `refreshRealtimeAuth()` interval mitigates this — calling `rt.setAuth(freshToken)` updates all channel auth and delivers any queued events.
+- **Status:** Open — P7 (tech debt, cosmetic in dev, non-blocking in production)
+
+### KI-047: Supabase security advisor flagged public tables in staging and leads projects
+
+- **Impact:** Supabase security advisor reported `Table publicly accessible` on two separate hosted projects. In BidOnDent staging, six public-facing app tables had drifted away from their canonical RLS state. In the separate `bidondent-leads` Prisma project, `public."Lead"` and `public._prisma_migrations` were granted to `anon`/`authenticated` without RLS.
+- **Current reality:** RESOLVED. Staging project `lhhdqycnhweaxqviwdqt` had an orphan remote migration row `001` blocking schema operations; after repairing that history row, the targeted backfill migration `supabase/migrations/20260423000001_remote_rls_backfill.sql` was applied remotely. Leads project `yjbugpzarlyidgxbljjn` received a targeted remote migration that enables RLS on `public."Lead"` and `public._prisma_migrations` with no public policies.
+- **Validation:** `supabase migration list` now shows aligned local/remote history for both fix directories. Linked `supabase db dump --schema public` confirms `ENABLE ROW LEVEL SECURITY` on the leads tables and the expected staging policies for `shop_interest_submissions`, `insurer_interest_submissions`, `platform_activity_events`, `job_assignments`, `notification_preferences`, and `shop_service_areas`.
+- **Status:** RESOLVED (2026-04-23)

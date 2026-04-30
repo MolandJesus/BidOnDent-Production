@@ -1,6 +1,6 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { requireClerkSession } from "../utils/authz.ts";
-import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { respondFromError, sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (
   body: unknown,
@@ -57,9 +57,7 @@ export async function getNotificationPreferences(
 
     return respond({ preferences: data }, 200);
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("getNotificationPreferences:", sanitizeErrorMessage(msg));
-    return respond({ error: "Failed to fetch preferences" }, 500);
+    return respondFromError(respond, "getNotificationPreferences", err, "Failed to fetch preferences");
   }
 }
 
@@ -131,8 +129,6 @@ export async function updateNotificationPreferences(
 
     return respond({ preferences: data }, 200);
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("updateNotificationPreferences:", sanitizeErrorMessage(msg));
-    return respond({ error: "Failed to save preferences" }, 500);
+    return respondFromError(respond, "updateNotificationPreferences", err, "Failed to save preferences");
   }
 }

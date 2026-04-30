@@ -121,9 +121,15 @@ export default function DashboardRouter({
     photoStorage,
   });
 
-  // Scroll to top whenever view changes
+  // Scroll to top whenever view changes. The dashboard's scrollable region is
+  // <main>, not the document — window.scrollTo had no effect, which left
+  // newly-mounted screens looking "slid down" mid-page.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const mainEl = document.querySelector("main");
+    if (mainEl) {
+      mainEl.scrollTo({ top: 0, behavior: "auto" });
+    }
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, [viewMode, currentTab]);
 
   const hasRouteMatch =

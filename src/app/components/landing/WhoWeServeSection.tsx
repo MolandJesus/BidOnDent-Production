@@ -17,12 +17,14 @@ export default function WhoWeServeSection({
     {
       icon: Car,
       iconBg: primaryColor,
+      iconBgDark: "#60a5fa",
       title: "For Customers",
       borderHover: "hover:border-blue-300",
       gradientFrom: "from-blue-50",
       hoverBg: primaryColor,
       borderColor: `${primaryColor}30`,
       checkColor: primaryColor,
+      checkColorDark: "#60a5fa",
       items: [
         "Submit damage reports with photos",
         "Compare multiple repair quotes",
@@ -33,12 +35,14 @@ export default function WhoWeServeSection({
     {
       icon: Wrench,
       iconBg: secondaryColor,
+      iconBgDark: "#22d3ee",
       title: "For Repair Shops",
       borderHover: "hover:border-sky-300",
       gradientFrom: "from-sky-50",
       hoverBg: secondaryColor,
       borderColor: `${secondaryColor}30`,
       checkColor: secondaryColor,
+      checkColorDark: "#22d3ee",
       items: [
         "Access new customer leads",
         "Submit competitive bids",
@@ -49,12 +53,14 @@ export default function WhoWeServeSection({
     {
       icon: Shield,
       iconBg: "#1e3a5f",
+      iconBgDark: "#93c5fd",
       title: "For Insurers",
       borderHover: "hover:border-blue-300",
       gradientFrom: "from-blue-50",
       hoverBg: "#1e3a5f",
       borderColor: "#bfdbfe",
       checkColor: "#1e3a5f",
+      checkColorDark: "#93c5fd",
       items: [
         "Streamline claims processing",
         "Access network of shops",
@@ -200,16 +206,21 @@ export default function WhoWeServeSection({
                 <div
                   className="inline-flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg shadow-sm"
                   style={{
-                    backgroundColor: isLightAppearance ? `${card.iconBg}14` : `${card.iconBg}28`,
+                    backgroundColor: isLightAppearance
+                      ? `${card.iconBg}14`
+                      : `${card.iconBgDark}28`,
                     border: isLightAppearance
                       ? `1.5px solid ${card.iconBg}30`
-                      : `1.5px solid ${card.iconBg}45`,
+                      : `1.5px solid ${card.iconBgDark}55`,
                     boxShadow: isLightAppearance
                       ? `0 4px 16px ${card.iconBg}24, 0 0 22px ${card.iconBg}12`
-                      : `0 0 16px ${card.iconBg}22`,
+                      : `0 0 16px ${card.iconBgDark}33`,
                   }}
                 >
-                  <card.icon className="w-6 h-6" style={{ color: card.iconBg }} />
+                  <card.icon
+                    className="w-6 h-6"
+                    style={{ color: isLightAppearance ? card.iconBg : card.iconBgDark }}
+                  />
                 </div>
               </div>
               <h4
@@ -222,7 +233,7 @@ export default function WhoWeServeSection({
                   <li key={i} className="flex items-start">
                     <CheckCircle2
                       className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0"
-                      style={{ color: card.checkColor }}
+                      style={{ color: isLightAppearance ? card.checkColor : card.checkColorDark }}
                     />
                     <span
                       className={`text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}

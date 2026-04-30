@@ -105,36 +105,57 @@ export function useBidsForReport(reportId?: string | null) {
       return;
     }
 
-    const unsubscribe = realtimeBidService.subscribeToReportBids(
-      reportId,
-      // onNewBid
-      (bid: Bid) => {
-        if (reportIdRef.current !== reportId) return;
-        const mapped = mapBid(bid, reportId);
-        setBids((prev) => {
-          if (prev.some((b) => b.id === mapped.id)) return prev;
-          return [...prev, mapped];
-        });
-      },
-      // onUpdateBid
-      (bid: Bid) => {
-        if (reportIdRef.current !== reportId) return;
-        const mapped = mapBid(bid, reportId);
-        setBids((prev) => prev.map((b) => (b.id === mapped.id ? mapped : b)));
-      },
-      // onDeleteBid
-      (bidId: string) => {
-        if (reportIdRef.current !== reportId) return;
-        setBids((prev) => prev.filter((b) => b.id !== bidId));
-      },
-      // onConnectionStatus
-      (status) => {
-        setConnectionStatus(status);
-      }
-    );
+    let mounted = true;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+    let currentUnsubscribe: (() => void) | null = null;
+
+    function doSubscribe() {
+      currentUnsubscribe = realtimeBidService.subscribeToReportBids(
+        reportId!,
+        // onNewBid
+        (bid: Bid) => {
+          if (!mounted || reportIdRef.current !== reportId) return;
+          const mapped = mapBid(bid, reportId!);
+          setBids((prev) => {
+            if (prev.some((b) => b.id === mapped.id)) return prev;
+            return [...prev, mapped];
+          });
+        },
+        // onUpdateBid
+        (bid: Bid) => {
+          if (!mounted || reportIdRef.current !== reportId) return;
+          const mapped = mapBid(bid, reportId!);
+          setBids((prev) => prev.map((b) => (b.id === mapped.id ? mapped : b)));
+        },
+        // onDeleteBid
+        (bidId: string) => {
+          if (!mounted || reportIdRef.current !== reportId) return;
+          setBids((prev) => prev.filter((b) => b.id !== bidId));
+        },
+        // onConnectionStatus — retry once on error (JWT may not be ready yet)
+        (status) => {
+          setConnectionStatus(status);
+          if (status === "error" && mounted && !retryTimer) {
+            retryTimer = setTimeout(() => {
+              retryTimer = null;
+              if (!mounted) return;
+              if (currentUnsubscribe) {
+                currentUnsubscribe();
+                currentUnsubscribe = null;
+              }
+              doSubscribe();
+            }, 2000);
+          }
+        }
+      );
+    }
+
+    doSubscribe();
 
     return () => {
-      unsubscribe();
+      mounted = false;
+      if (retryTimer) clearTimeout(retryTimer);
+      if (currentUnsubscribe) currentUnsubscribe();
       setConnectionStatus("idle");
     };
   }, [reportId]);

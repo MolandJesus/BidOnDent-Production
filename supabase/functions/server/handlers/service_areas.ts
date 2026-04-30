@@ -9,7 +9,7 @@ import {
   ensureClerkUserMatchesSession,
   requireClerkSession,
 } from "../utils/authz.ts";
-import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { respondFromError, sanitizeErrorMessage } from "../utils/helpers.ts";
 
 type RespondFunction = (
   body: unknown,
@@ -80,15 +80,15 @@ export async function getShopServiceAreas(
       .order("created_at", { ascending: true });
 
     if (error) {
-      console.error("getShopServiceAreas error:", sanitizeErrorMessage(error.message));
-      return respond({ error: "Failed to load service areas" }, 500);
+      // Degrade gracefully — if the table is missing on this environment
+      // (migration drift), return an empty list instead of 500ing the screen.
+      console.warn("getShopServiceAreas: degrading to empty —", sanitizeErrorMessage(error.message));
+      return respond({ serviceAreas: [] });
     }
 
     return respond({ serviceAreas: data ?? [] });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("getShopServiceAreas catch:", sanitizeErrorMessage(msg));
-    return respond({ error: "Failed to load service areas" }, 500);
+    return respondFromError(respond, "getShopServiceAreas", err, "Failed to load service areas");
   }
 }
 
@@ -111,15 +111,32 @@ export async function saveShopServiceArea(
       clerkUserId || null
     );
 
-    // Resolve shop profile for authenticated user
+    // Resolve shop profile for authenticated user. If the row is missing,
+    // surface a 409 with a code the UI can branch on so it can route the
+    // shop into onboarding instead of showing a generic "save failed".
     const { data: shopProfile, error: profileError } = await supabase
       .from("shop_profiles")
       .select("id")
       .eq("clerk_user_id", authenticatedClerkUserId)
       .maybeSingle();
 
-    if (profileError || !shopProfile) {
-      return respond({ error: "Shop profile not found" }, 404);
+    if (profileError) {
+      return respondFromError(
+        respond,
+        "saveShopServiceArea: shop_profiles lookup",
+        profileError,
+        "Failed to save service area"
+      );
+    }
+
+    if (!shopProfile) {
+      return respond(
+        {
+          error: "Complete your shop profile before adding service areas.",
+          code: "SHOP_PROFILE_REQUIRED",
+        },
+        409
+      );
     }
 
     // Validate area_type-specific fields
@@ -192,14 +209,12 @@ export async function saveShopServiceArea(
 
     if (error) {
       console.error("saveShopServiceArea error:", sanitizeErrorMessage(error.message));
-      return respond({ error: "Failed to save service area" }, 500);
+      return respond({ error: sanitizeErrorMessage(error.message) || "Failed to save service area" }, 500);
     }
 
     return respond({ serviceArea: data }, isUpdate ? 200 : 201);
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("saveShopServiceArea catch:", sanitizeErrorMessage(msg));
-    return respond({ error: "Failed to save service area" }, 500);
+    return respondFromError(respond, "saveShopServiceArea", err, "Failed to save service area");
   }
 }
 
@@ -245,13 +260,11 @@ export async function deleteShopServiceArea(
 
     if (error) {
       console.error("deleteShopServiceArea error:", sanitizeErrorMessage(error.message));
-      return respond({ error: "Failed to delete service area" }, 500);
+      return respond({ error: sanitizeErrorMessage(error.message) || "Failed to delete service area" }, 500);
     }
 
     return respond({ success: true });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    console.error("deleteShopServiceArea catch:", sanitizeErrorMessage(msg));
-    return respond({ error: "Failed to delete service area" }, 500);
+    return respondFromError(respond, "deleteShopServiceArea", err, "Failed to delete service area");
   }
 }

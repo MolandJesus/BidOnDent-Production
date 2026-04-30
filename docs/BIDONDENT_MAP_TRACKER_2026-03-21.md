@@ -8,12 +8,12 @@
 >
 > Any doc change or architectural decision made during a hardening pass must be summarized as a pass entry below so the audit trail remains continuous.
 
-**Last updated:** April 17, 2026 (Hardening phase — Pass 888 submitted address search commit hardening)
+**Last updated:** April 30, 2026 (Pass O — Realtime + Demo Verification Audit)
 **Status:** Historical pass log / audit trail during Soft Launch Hardening phase
-**Pass count:** 888 (hardening passes continue from 855+)
+**Pass count:** 889 (Pass O appended)
 **Build:** 0 errors ✅
 **Tests:** 568/568 passing ✅
-**Branch:** BidOnDent-Horizon-Beta (working tree includes Pass 888 search-submit hardening changes; not pushed in this pass)
+**Branch:** BidOnDent-Horizon-Beta
 
 ---
 
@@ -86,6 +86,43 @@ To prevent conflicts, each Supabase Realtime subscription uses a dedicated chann
 - (Estimate, shop, insurer services use their own service-specific channels — see Code Organization Audit)
 
 **Historical passes (1–499):** Archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`
+
+---
+
+## Pass O — Realtime + Demo Verification Audit (2026-04-29/30)
+
+**Phase:** Soft Launch Hardening — Realtime infrastructure verification
+**Outcome:** Full verification-only audit. No code changes. Confirmed that production Supabase Realtime is working end-to-end. All Phase 4 and Phase 5 demo-mode checks passed. Test data cleaned.
+
+### What changed (verification findings, no code edits)
+
+**Phase 3 — Live Realtime (CONFIRMED ✅)**
+
+- WebSocket connects to `wss://wmdcnjgtsppftrofaqqa.supabase.co/realtime/v1/websocket`
+- `phx_reply status:"ok"` received for all 5 channels (3 bid channels + damage_reports + estimate_requests)
+- Live INSERT event (`amount: $555, id: 78a2f18c`) delivered via Realtime after token refresh
+- RLS `requesting_clerk_user_id()` function working; Clerk JWTs pass policies correctly
+- 4 test bids cleaned from production DB
+- StrictMode channel cycling (dev-only): documented as KI-057, deferred P7
+
+**Phase 4 — Demo shop Service Areas (PASS ✅)**
+
+- `?demo=shop` → Account → Service Areas → Save: "Failed to save service area" shown in-form (expected; demo JWT mismatch)
+
+**Phase 5 — Misc UX (ALL PASS ✅)**
+
+- Privacy policy dark mode: white/light text on `bd-glass-card`, readable at `#privacy-policy`
+- "Fastest Timeline" tile: `text-slate-100` dark / `text-slate-800` light — readable
+- Account phone field: shows `(845) 490-8919` correctly
+- Active Jobs modal scroll: `overflow-y-auto overscroll-contain` in `max-h-[90vh] flex-col` container
+
+**Files touched:** `docs/REF_SYSTEM_STATE.md`, `docs/REF_KNOWN_ISSUES.md`, `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+
+**Validation:** Build: ✓ 3.38s, 0 errors. No code changes to validate.
+
+**Problem taxonomy:** P0:0 P1:0 P2:0 P3:0 P4:0 P5:1 (fixed: REF doc stale entries) P6:0 P7:1 (deferred: KI-057)
+
+**Best next pass:** Deploy edge function to production to push KI-048/049 fixes live, then run per-route smoke test against production edge environment.
 
 ---
 

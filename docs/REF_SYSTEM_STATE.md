@@ -2,10 +2,13 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-04-16 (Pass 67)  
-**Build:** 0 TS errors, 555/557 tests passing, ~3.4s  
-**Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)  
-**Edge functions:** Deployed version 40 on Supabase project `wmdcnjgtsppftrofaqqa`. Pending redeploy with: geo-filtered shop marketplace, JWT rate-limit identity, server-side atomic accept-bid, bid submission guard, email column fix. See LAW_HARDENING_PLAN.md "Edge function deploy handoff" for full list.
+**Last updated:** 2026-04-30 (Pass O — Realtime infrastructure verified in production)
+
+**Build:** 0 TS errors, 568/568 tests passing, ~3.4s
+
+**Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
+
+**Edge functions:** Deployed version 47 on Supabase project `wmdcnjgtsppftrofaqqa` (updated 2026-04-27 11:23:25 UTC). The live prod bundle includes workflow authorization hardening, completion propagation, authenticated marketplace seed-fallback removal, and customer ownership recovery/self-heal for Clerk ID rotation. Email delivery remains blocked on `RESEND_API_KEY` deployment.
 
 ---
 
@@ -64,6 +67,7 @@ A **pre-launch React SPA** implementing a geo-native automotive repair marketpla
 - View bids on reports (live via Supabase Realtime subscription)
 - Accept/reject bids (confirmation dialog → server-side atomic: bid status, job_assignment, auto-reject competing bids)
 - Vehicle management (CRUD)
+- Customer-owned vehicles, reports, and customer bid lookups recover across Clerk ID rotation or legacy `NULL` ownership by merging current/historical `clerk_user_id` matches with a stable `user_id` sweep, then self-healing stale `clerk_user_id` values on read
 - Estimate requests to shops
 - **Not working:** Email notifications (API key not deployed — code-side complete, blocked on secret deployment).
 
@@ -142,17 +146,17 @@ App.tsx → buildDashboardRouterProps() → DashboardRouter → Screen Component
 
 ### State Ownership
 
-| Domain              | Owner                                    | Source of Truth              | Sync                                                 |
-| ------------------- | ---------------------------------------- | ---------------------------- | ---------------------------------------------------- |
-| Auth/session        | Clerk SDK                                | Clerk                        | Real-time via hooks                                  |
-| Navigation          | useNavigation                            | React state                  | localStorage persist + history.pushState             |
-| User profile        | useUserData                              | Supabase (cloud-first)       | Fetched on mount, Clerk→local sync via useAppEffects |
-| Reports             | useUserData.reports                      | Supabase                     | Fetched on mount, manual refetch after mutations     |
-| Bids (stale)        | useUserData.bids                         | Supabase                     | Fetched once on mount                                |
-| Bids (live)         | useBidsForReport                         | Supabase Realtime            | Real-time subscription per report                    |
-| Marketplace reports | useDashboardData → useMarketplaceReports | Supabase                     | Fetched on mount for shop/insurer                    |
-| Vehicles            | useUserData.vehicles                     | Supabase                     | Fetched on mount, optimistic updates                 |
-| Appearance mode     | AppearanceModeContext                    | React context + localStorage | Cross-tab sync                                       |
+| Domain              | Owner                                    | Source of Truth              | Sync                                                                                                                                                                                                                                     |
+| ------------------- | ---------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Auth/session        | Clerk SDK                                | Clerk                        | Real-time via hooks                                                                                                                                                                                                                      |
+| Navigation          | useNavigation                            | React state                  | localStorage persist + history.pushState                                                                                                                                                                                                 |
+| User profile        | useUserData                              | Supabase (cloud-first)       | Fetched on mount, Clerk→local sync via useAppEffects                                                                                                                                                                                     |
+| Reports             | useUserData.reports                      | Supabase                     | Fetched on mount, manual refetch after mutations                                                                                                                                                                                         |
+| Bids (stale)        | useUserData.bids                         | Supabase                     | Fetched once on mount                                                                                                                                                                                                                    |
+| Bids (live)         | useBidsForReport                         | Supabase Realtime            | Real-time subscription per report — **production-verified 2026-04-30**: phx_reply status:ok, INSERT event delivered. Auth via `accessToken` async callback + 50s periodic `refreshRealtimeAuth()`. See KI-057 for dev-mode cycling note. |
+| Marketplace reports | useDashboardData → useMarketplaceReports | Supabase                     | Fetched on mount for shop/insurer                                                                                                                                                                                                        |
+| Vehicles            | useUserData.vehicles                     | Supabase                     | Fetched on mount, optimistic updates                                                                                                                                                                                                     |
+| Appearance mode     | AppearanceModeContext                    | React context + localStorage | Cross-tab sync                                                                                                                                                                                                                           |
 
 **Split state warning:** Bids have dual ownership. See KI-012.
 
@@ -191,7 +195,10 @@ Single `Deno.serve()` in [server/index.ts](../supabase/functions/server/index.ts
 ```
 Client: Clerk JWT → Authorization header
   ↓
-Edge Function: requireClerkSession() extracts session from JWT
+Supabase gateway: NOT verified (function deployed with --no-verify-jwt)
+  ↓
+Edge Function: requireClerkSession() cryptographically verifies the Clerk JWT
+                via JWKS in supabase/functions/server/utils/clerk.ts
   ↓
 ensureClerkUserMatchesSession() validates clerkUserId param matches session.sub
   ↓
@@ -200,6 +207,8 @@ Profile lookup: profiles.clerk_user_id = session.sub
   ↓
 Handler executes with authenticated clerkUserId
 ```
+
+**Critical deployment fact:** the `server` edge function is deployed with `--no-verify-jwt` because the Supabase gateway cannot verify Clerk-issued tokens. **All `server` routes are reachable from the open internet** — handler-level `requireClerkSession`/`requireMarketplaceContext`/`requireAdminContext` is the only authentication enforcement point. Combined with the service-role Supabase client at [config/clients.ts:13](../supabase/functions/server/config/clients.ts#L13) (which bypasses RLS), this means the handler is the **only** authorization enforcement point. Any handler that omits an auth check is publicly accessible. See KI-048.
 
 **Note:** Every API call passes `clerkUserId` as a parameter even though the JWT already contains it. This is a legacy pattern from the pre-Clerk auth system.
 
@@ -213,7 +222,7 @@ Handler executes with authenticated clerkUserId
 
 **PostGIS:** Geography columns on `shop_profiles` and `damage_reports`. `shop_service_areas` stores polygon geometries.
 
-**RLS:** Enabled on launch-critical tables (hardened in Phase 3). Edge function uses service role key — RLS is bypassed by edge functions, enforced on direct client access (Realtime).
+**RLS:** Enabled on launch-critical tables (hardened in Phase 3). Edge function uses service role key — RLS is bypassed by edge functions, enforced on direct client access (Realtime). `requesting_clerk_user_id()` SQL helper (`SELECT nullif(current_setting('request.jwt.claims', true),'')::json->>'sub'`) reads the Clerk JWT `sub` claim for RLS policies — required because Clerk user IDs are text (`user_xxx` format), not UUIDs, so `auth.uid()` casts would fail. All `bids`, `damage_reports`, `profiles`, and `shop_profiles` policies use this helper. See KI-056.
 
 ### Data Boundary (Type Translation)
 
@@ -263,7 +272,7 @@ Handler executes with authenticated clerkUserId
 
 **Target aesthetic:** Apple Maps-inspired. Map is base layer. Everything floats above geography.
 
-**Appearance modes:** `"map-dark"` (default) | `"light"` — set via `data-appearance-mode` attribute.
+**Appearance modes:** `"light"` (default) | `"map-dark"` — set via `data-appearance-mode` attribute. First-paint default is `"light"` for both the inline boot script in [index.html](../index.html) and the [useAppearanceMode](../src/app/hooks/useAppearanceMode.ts) hook; system `prefers-color-scheme` is intentionally ignored so a fresh deploy always lands in light mode. Both the pre-React HTML loader and the React [AppLoading](../src/app/components/app/AppLoading.tsx) component read `data-appearance-mode` (set synchronously before paint) so reload-time loading screens honor the saved mode — light mode renders a warm-ivory-on-soft-blue background with a gold spinner.
 
 **CSS utilities** (defined in [theme.css](../src/styles/theme.css), 2173 lines):
 
@@ -284,14 +293,17 @@ Handler executes with authenticated clerkUserId
 
 ## 8. Build and Development
 
-| Command                    | Purpose                            |
-| -------------------------- | ---------------------------------- |
-| `npm run dev`              | Start Vite dev server              |
-| `npm run build`            | Production build (must = 0 errors) |
-| `supabase functions serve` | Local edge function server         |
-| `supabase start`           | Local Supabase Docker stack        |
+| Command                     | Purpose                                                          |
+| --------------------------- | ---------------------------------------------------------------- |
+| `npm run dev`               | Start Vite dev server (points at `.env` Supabase host)           |
+| `npm run dev:local-browser` | Start Vite for local-browser mode (points at local Docker stack) |
+| `npm run build`             | Production build (must = 0 errors)                               |
+| `supabase functions serve`  | Local edge function server                                       |
+| `supabase start`            | Local Supabase Docker stack                                      |
 
 **Staging:** Supabase project `lhhdqycnhweaxqviwdqt` (created 2026-04-15).
+
+**Local browser audit path:** `npm run dev:local-browser` + `http://localhost:5173`. The dev-server CSP `connect-src` allows `http://127.0.0.1:54321` and `http://localhost:54321` (added KI-054 fix), so the local Docker Supabase stack is directly reachable. No proxy needed. See KI-054.
 
 **Build health:** 0 TypeScript errors. 555/557 tests passing (2 pre-existing failures in `bids.test.ts` — network mock edge cases, not blocking).
 

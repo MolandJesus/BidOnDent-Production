@@ -166,7 +166,7 @@ export default function CTASection({
               <p className="mt-6 text-xs text-blue-200/40">
                 or stay in the loop — enter your email for updates
               </p>
-              <WaitlistCapture isLightAppearance={isLightAppearance} />
+              <WaitlistCapture />
             </div>
           )}
         </div>

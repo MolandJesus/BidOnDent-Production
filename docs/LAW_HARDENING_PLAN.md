@@ -62,7 +62,7 @@ These items were identified during a four-pass deep system audit and are added a
 
 - **Geographic filtering for shop marketplace view.** `useMarketplaceReports` currently fetches ALL damage reports with no pagination and no geographic filtering. Shops in Austin see reports from Miami. This makes the marketplace UX broken at any real scale. **Action:** Wire `getReportsInServiceArea` (already built) to filter shop reports by service area. As interim minimum, add `limit(100)` to the marketplace query. See `REF_KNOWN_ISSUES.md` KI-001.
 
-- **Rate limiter identity from JWT, not query params.** The rate limit key is currently derived from `url.searchParams.get('clerkUserId')` — a client-supplied value that is trivially spoofable. **Action:** Extract identity from the verified Clerk JWT session for rate limiting purposes. See `REF_KNOWN_ISSUES.md` KI-003.
+- **Rate limiter identity from JWT, not query params.** The rate limit key is currently derived from `url.searchParams.get('clerkUserId')` — a client-supplied value that is easy to spoof. **Action:** Extract identity from the verified Clerk JWT session for rate limiting purposes. See `REF_KNOWN_ISSUES.md` KI-003.
 
 - **Bid acceptance confirmation dialog.** Accepting a bid is a financial commitment but currently fires immediately on click with no confirmation step. Accidental mobile taps could accept unintentionally. **Action:** Add a confirmation dialog/bottom sheet before `onAcceptBid` fires. See `REF_KNOWN_ISSUES.md` KI-004.
 
@@ -520,6 +520,67 @@ Work items:
 
 ---
 
+### Phase 5.5 — Validated Launch-Critical Hardening Passes (2026-04-25) 🛑 Checkpoint gate
+
+**Purpose:** Three contained, validated passes from the 2026-04-25 verification + execution-brief mode review against the deep audit's three highest-severity findings. Each pass is small, launch-relevant, and execution-ready. Pass 1 is a P0 launch blocker; Passes 2 and 3 are P1 pre-launch fixes. Execute strictly in order with owner approval at each gate — Pass 1 in particular is auth-touching and must not be applied silently.
+
+**Verification context (verified 2026-04-25):**
+
+- Build green (`npm run build` 3.42s); tests 568/568 passing.
+- Edge function `server` is deployed with `--no-verify-jwt` (verified in `docs/archive/MAP_TRACKER_PASSES_1_499.md:1011` and required by the Clerk JWT auth model — Supabase gateway cannot verify Clerk-issued tokens). All `server` routes are reachable from the open internet; handler-level auth is the only enforcement point.
+- Service-role Supabase client at [supabase/functions/server/config/clients.ts:13](../supabase/functions/server/config/clients.ts#L13) bypasses RLS — handler authorization is load-bearing.
+- Validation cross-checked by ChatGPT spot-read; the one open caveat (`--no-verify-jwt` deployment dependency) was resolved against repo evidence.
+
+**Pass 1 — Workflow handler authorization (P0 launch blocker)**
+
+See **KI-048** in `REF_KNOWN_ISSUES.md` for the full evidence and misuse paths.
+
+- File: `supabase/functions/server/handlers/workflow.ts` (plus optional `requireInsurerContext` helper in `supabase/functions/server/utils/authz.ts`).
+- Changes:
+  - `getJobAssignments`: add `requireClerkSession` + assert `session.clerkUserId === shopClerkUserId` OR admin.
+  - `updateJobAssignmentStatus`: pre-fetch the assignment, assert caller is one of `shop/customer/insurer_clerk_user_id` OR admin.
+  - `createJobAssignment`: assert `session.clerkUserId === payload.customer_clerk_user_id` OR admin (note: post-KI-022, the server-side accept-bid flow in `bids.ts` is the primary creator — this endpoint is the fallback).
+  - `submitInsuranceClaim` and `updateClaimDecision`: replace `requireMarketplaceContext` with insurer-only check (`profile.account_type === "insurer" || profile.is_admin`). UI callers are insurer-only verified — no UI surface affected.
+- Required artifacts (per the Phase 3 discipline): for each of the five routes, save `route → caller role → expected status → actual status` evidence in the pass log.
+- Tests: add Vitest coverage for the four authorization cases (unauthenticated, cross-shop read, cross-user mutation, shop-on-claim-decision).
+- Requires edge function redeploy.
+
+**Pass 2 — Customer completion lifecycle propagation (P1)**
+
+See **KI-049** in `REF_KNOWN_ISSUES.md`.
+
+- File: `supabase/functions/server/handlers/reports.ts` (server). Optional minor refetch in `src/app/utils/buildDashboardRouterProps.ts` (client).
+- Change: when `updateReport` sets `status = "completed"`, also update the active `job_assignments` row (status in `scheduled`/`in_progress`/`awaiting_parts`) to `completed`. Emit a `repair_completed` activity event referencing both IDs.
+- Must remain unchanged: bid-accept atomic flow in `bids.ts`; the bid-accept "active vs accepted" label (adapter-reconciled, not drift); shop-driven status updates from Active Jobs.
+- Tests: handler test for `updateReport` covering completion propagation and non-completion no-op.
+- Requires edge function redeploy.
+
+**Pass 3 — Remove SEED fallback from authenticated marketplace (P1)**
+
+See **KI-050** in `REF_KNOWN_ISSUES.md`.
+
+- File: `src/app/routers/useDashboardData.ts` (single hook change). Three small prop simplifications in shop/insurer screens become optional cleanup (banner blocks become unreachable but harmless).
+- Change: replace [lines 121-122](../src/app/routers/useDashboardData.ts#L121-L122) with `const shopInsurerReports = liveMarketplaceReports; const usingSeedFallback = false;`. Drop `SEED_DAMAGE_REPORTS` import. `SEED_DAMAGE_REPORTS` constant stays defined for demo-mode use.
+- Must remain unchanged: seed-id mutation guards (belt-and-suspenders); `useMarketplaceReports` hook contract; the toast on fetch-failure.
+- Tests: update any Vitest assertions that check `isSeedData = true` or seed-record counts on these screens.
+- No backend change, no edge function redeploy.
+
+**Sequencing rule:** Pass 1 lands and is verified against its per-route artifact checklist before Pass 2 begins. Pass 2 lands and is verified end-to-end (customer confirms completion → shop sees `completed` in Active Jobs) before Pass 3 begins. Each pass is its own commit; Passes 1 and 2 require an edge function deploy.
+
+**Gate criteria:** All three passes complete. Pass 1 produces per-route authorization artifacts for the five routes. Pass 2 verified end-to-end on a real customer→shop flow. Pass 3 verified on a brand-new shop account (empty state renders, no seed records visible). All three KIs (KI-048, KI-049, KI-050) marked RESOLVED in the same pass that fixes them.
+
+---
+
+### AI Role Split for Phase 5.5 (Group 2a reaffirmation)
+
+For the three-pass execution:
+
+- **Primary (Opus):** Owns each pass end-to-end — code change, tests, manual verification artifacts, doc updates in the same pass per the doc-sync rule. Does not start Pass N+1 until Pass N is approved at the gate.
+- **Secondary (Sonnet):** Targeted support after each Opus pass — runs `npm run build && npm test`, surfaces any TypeScript drift or test regressions, performs a focused visual smoke check on the three primary surfaces (`ShopRequestsScreen`, `ShopActiveJobsScreen`, `InsurerClaimsScreen`) in light + map-dark modes after Pass 3. Does not author new code unless explicitly handed a fix list.
+- **Owner approval gate:** MolandJesus reviews each pass at the gate before the next begins. Pass 1 in particular is auth-touching and must not be applied silently — explicit approval required before merge and before edge function redeploy.
+
+---
+
 ### Phase 6 — Pre-launch Verification Gate 🛑 Final checkpoint before launch
 
 **Purpose:** Last line of defense. Group 7d smoke-test checklist run against staging, then against prod after deploy.
@@ -619,7 +680,7 @@ Same checklist, against the live prod URL. Everything must pass.
 | 53   | `hydrateReport` resilience (`.single()` → `.maybeSingle()` + try/catch) |
 | 54   | `notification-preferences` fix (`session.sub` → `session.clerkUserId`)  |
 
-**Edge functions deployed as version 40. Build: 3.36s, 0 errors.**
+**Historical deploy point:** Edge functions were at version 40 after these passes. Build: 3.36s, 0 errors.
 
 ### Open items
 
@@ -632,9 +693,9 @@ Same checklist, against the live prod URL. Everything must pass.
 
 ### Edge function deploy handoff (2026-04-16)
 
-**All server-side changes since version 40 require one deploy to take effect.**
+**Historical note:** This handoff was closed by the 2026-04-27 production deploy to `server` version 47. The bullets below are retained as the version-40 → version-47 change bundle for audit traceability, not as pending work.
 
-Command: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa`
+Command: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`
 
 Changes included:
 
@@ -645,6 +706,8 @@ Changes included:
 5. **KI-002 prep:** `getUserName` column fix (`full_name` → `name`), email template URL cleanup
 6. **KI-002 blocked:** Email delivery requires `supabase secrets set RESEND_API_KEY=re_xxx` before deploy. See KI-002 in REF_KNOWN_ISSUES.md for full steps.
 
+Deployment executed 2026-04-27. Current production metadata: `server` version 47, updated 2026-04-27 11:23:25 UTC.
+
 ### Change log addendum (2026-04-16)
 
 - Promoted to LAW tier. Previous version archived as `BIDONDENT_SOFT_LAUNCH_HARDENING_PLAN_2026-04-14_archived_2026-04-16.md`.
@@ -652,3 +715,145 @@ Changes included:
 - Four new P0/P1 items added from deep planning audit: geo filtering, rate limit security, bid confirmation, error visibility.
 - Companion docs created: `LAW_PROJECT_RULES.md`, `REF_KNOWN_ISSUES.md`, `REF_SYSTEM_STATE.md`.
 - Old `CLAUDE_AI_MASTER_CONTEXT.md` superseded by `REF_SYSTEM_STATE.md` and archived.
+
+### Phase 5.5 Pass 1 — code-side complete (2026-04-25)
+
+**Scope:** Workflow handler authorization (KI-048). Single-handler change in `supabase/functions/server/handlers/workflow.ts` plus new `requireInsurerContext` helper in `supabase/functions/server/utils/authz.ts`.
+
+**Build/tests:** `npm run build` 3.34s, 0 errors. `npm test` 568/568 passing. No regressions.
+
+**Per-route authorization expectations (intent — to be re-verified live after edge function redeploy):**
+
+| Route                                | Method | Caller scenario                                          | Expected status | Source of expectation                                                                      |
+| ------------------------------------ | ------ | -------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------ |
+| `/job-assignments`                   | GET    | No Authorization header                                  | 401             | `requireAuthenticatedProfile` → `requireClerkSession` → "No Authorization header provided" |
+| `/job-assignments?shopClerkUserId=X` | GET    | Authenticated as shop X                                  | 200             | `isOwner` true                                                                             |
+| `/job-assignments?shopClerkUserId=X` | GET    | Authenticated as shop Y (≠ X), not admin                 | 403             | `!isOwner && !isAdmin`                                                                     |
+| `/job-assignments?shopClerkUserId=X` | GET    | Authenticated as admin                                   | 200             | `isAdmin` true                                                                             |
+| `/job-assignment`                    | POST   | Body names customer C, caller is C                       | 201/200         | `isCustomer` true                                                                          |
+| `/job-assignment`                    | POST   | Body names customer C, caller is shop S (≠ C), not admin | 403             | `!isCustomer && !isAdmin`                                                                  |
+| `/job-assignment/status`             | POST   | Caller is one of the parties on the row                  | 200             | `isParty` true                                                                             |
+| `/job-assignment/status`             | POST   | Caller is logged in but not on the row, not admin        | 403             | `!isParty && !isAdmin`                                                                     |
+| `/job-assignment/status`             | POST   | Assignment ID does not exist                             | 404             | row pre-fetch returns null                                                                 |
+| `/claim-submission`                  | POST   | Caller is shop account                                   | 403             | `requireInsurerContext` → "Insurer access required"                                        |
+| `/claim-submission`                  | POST   | Caller is insurer account                                | 200             | `isInsurerOrAdmin` true                                                                    |
+| `/claim-decision`                    | POST   | Caller is shop account                                   | 403             | `requireInsurerContext` → "Insurer access required"                                        |
+| `/claim-decision`                    | POST   | Caller is insurer account                                | 200             | `isInsurerOrAdmin` true                                                                    |
+
+**Pre-existing client-side test coverage (still passing):** `src/app/services/supabase/workflow.test.ts` — `logWorkflowEvent`, `createJobAssignment`, `updateJobAssignmentStatus` request-shape and error propagation. No new handler-level test infrastructure introduced (none exists for any handler in the repo — convention preserved).
+
+**Owner action required for Pass 1 gate close:**
+
+1. Approve code changes (done in chat).
+2. Run `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`.
+3. Execute the per-route table above against the live edge environment (curl or browser). Record actual status codes alongside expected.
+
+**Sequencing exception (logged 2026-04-25):** Owner explicitly approved continuing to Pass 2 and Pass 3 with the live-verification step for Pass 1 deferred to the next deployment window. Cross-verified by GPT-5.4-high secondary AI: Pass 1 code-side clean, no build/test regressions, table populated with expected (not yet live actual). Deferral is acceptable because Passes 2 and 3 are independent code surfaces and the live-verification step is a redeploy-bound step that batches naturally with the other two passes.
+
+### Phase 5.5 Pass 2 — code-side complete (2026-04-25)
+
+**Scope:** Customer completion lifecycle propagation (KI-049). Single-handler change in `supabase/functions/server/handlers/reports.ts`.
+
+**Behavior added:** When `updateReport` succeeds with `payload.status === 'completed'`, the handler immediately runs an UPDATE on `job_assignments` matching `damage_report_id` with status in `('scheduled','in_progress','awaiting_parts')` and `deleted_at IS NULL`, setting `status = 'completed'` and `updated_at = now()`. On success, fires a `repair_completed` activity event referencing both `damage_report_id` and `job_assignment_id` with `initiated_by: 'customer'`. Propagation is non-fatal — assignment failure is logged but does not roll back the report update. The report row update remains owner-locked via `clerk_user_id = authenticatedClerkUserId` (existing behavior preserved).
+
+**Build/tests:** `npm run build` 3.22s, 0 errors. `npm test` 568/568 passing.
+
+**Live verification expected:** Customer accepts a bid → confirms completion → shop reloads Active Jobs → assignment shows `completed` and disappears from non-completed filters. To be run after deploy.
+
+### Phase 5.5 Pass 3 — code-side complete (2026-04-25)
+
+**Scope:** Remove SEED fallback from authenticated marketplace (KI-050). Single hook change in `src/app/routers/useDashboardData.ts`.
+
+**Behavior changed:** `SEED_DAMAGE_REPORTS` import removed. `shopInsurerReports` is now a direct passthrough of `liveMarketplaceReports`. `usingSeedFallback` is hard-coded `false`. Empty marketplace renders the existing per-screen empty state ("No repair requests yet" / "No active jobs yet" / "No claims yet"). Amber `isSeedData` banner blocks on the three screens are now unreachable; left in code as harmless dead branches (cleanup out of pass scope). Seed-id mutation guards on bid/claim submission paths preserved. `SEED_DAMAGE_REPORTS` constant stays exported in `src/app/constants` for demo-mode use.
+
+**Build/tests:** `npm run build` 3.23s, 0 errors. `npm test` 568/568 passing. No test asserted seed-record presence on these surfaces, so no test updates required.
+
+**Live verification expected:** Brand-new shop account, no live reports in DB → empty state renders, no seed records visible. To be run after merge.
+
+### Phase 5.5 — owner action queue (updated 2026-04-26)
+
+Secondary AI validation completed the code-side and local checks. The 2026-04-27 production deploy closed the deploy step and also carried KI-055 customer data recovery. Current status:
+
+- Completed 2026-04-27: `supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt`.
+- Completed 2026-04-27: production `server` metadata now reads version 47, updated 2026-04-27 11:23:25 UTC.
+- Completed 2026-04-27: KI-055 live verification passed — vehicle ownership for the affected customer collapsed from mixed `current + NULL` buckets to one current `clerk_user_id` bucket with 20 total rows; `Account > My Vehicles` showed 20 vehicles and report Step 1 showed `20 saved`.
+
+Remaining Phase 5.5 gate work:
+
+1. Live-verify Pass 1 per-route table against the deployed function — record actual status codes alongside expected.
+2. Live-verify Pass 2 customer→shop completion flow against prod.
+3. Drop the "pending prod redeploy + prod live verification" qualifier from KI-048 / KI-049. KI-050 and KI-055 are already fully RESOLVED.
+
+After step 5, Phase 5.5 gate is closed and Phase 6 (Pre-launch Verification Gate) becomes unblocked.
+
+**Out-of-scope follow-up flagged 2026-04-26 by secondary AI:** Console noise on the demo-switcher reload path — `403` from website session sync calls and `500` from a service-area fetch. These did not block any Phase 5.5 verification step but are worth checking against existing KI entries (likely KI-043 territory) before launch.
+
+### Dev-environment hardening — KI-054 (2026-04-26)
+
+During the audit pass below, the dev-server CSP forced the audit AI to spin up an in-process proxy to make the local Supabase stack reachable from the browser. That proxy was a single point of failure: when its terminal died, the "dev server" appeared dead even though Vite was still running. Root-cause fix landed the same day:
+
+- Extended the dev-only CSP `connect-src` in `vite.config.ts` to allow `http://127.0.0.1:54321` / `http://localhost:54321` / `ws://...` (production CSP via Vercel headers is unaffected).
+- Simplified `scripts/dev-local-browser.mjs` to point Vite directly at the local API URL from `supabase status -o env` — no proxy hop.
+- Deleted `scripts/local-browser-proxy.mjs`, removed the `http-proxy` dev dep, removed the `local-browser-proxy` npm script.
+- Updated `docs/GETTING_STARTED.md` and `docs/REF_AI_BROWSER_NAVIGATION.md` to the simpler one-command flow.
+- Build green (3.79s, 0 errors); tests 568/568 passing.
+
+See KI-054 in `REF_KNOWN_ISSUES.md` for the full record. Future audit AIs should use `npm run dev:local-browser` and target `http://localhost:5173/` directly — no proxy required.
+
+### Phase 5.5 Audit Pass (2026-04-26)
+
+Local read-only visual + functional audit by secondary AI (GPT-5.4-high). Read the full output in chat history; below is the docs-side rollup.
+
+**Phase 5.5 verification (local):**
+
+- Pass 1 (workflow auth): **PASS** — owner shop reads `getJobAssignments` (200, enriched with linked completed report); mismatched `shopClerkUserId` returns 403. Per-route artifact table here remains expected-only until prod live verification fills actual statuses.
+- Pass 2 (completion propagation): **PARTIALLY VERIFIED** — server side wired correctly (`reports.ts` propagates, local DB shows expected `completed`/`completed` pairing). Customer-side click flow not exercised: no customer fixture in local DB.
+- Pass 3 (seed-fallback removed): **NOT REACHED** — authenticated shop landed in onboarding (no `shop_profiles` row), so the marketplace empty-state surfaces were not visited under a real authenticated session in this pass. Note: KI-050 itself is already fully RESOLVED — Pass 3 was previously verified end-to-end via network interception in the prior session.
+
+**New KIs filed:** KI-051 (CSP missing overpass-api.de — P1), KI-052 (route presentation invents travel time/distance for zero-distance demos — P4), KI-053 (map performance budget overruns — P4). See `REF_KNOWN_ISSUES.md`.
+
+**Tooling limits documented:**
+
+- VSCode integrated browser does not honor forced viewport changes — mobile coverage was not claimed in this pass.
+- Local DB fixtures are sparse (1 shop profile, 1 completed report, 1 completed job, 0 bids, 0 service areas, 0 `shop_profiles`, 0 `insurer_profiles`). The authenticated shop hits onboarding because `shop_profiles` is empty.
+- 2026-04-25 local-browser incident: the audit depended on `http://localhost:4174/`, but the repo had no owned startup path for that target. The cached 4174 tab eventually failed mid-audit (`ERR_CONNECTION_REFUSED` / dynamic import fetch failure), which forced the audit to stop. Recovery is now repo-owned: `npm run dev:local-browser` starts Vite with local Supabase env overrides, and `npm run local-browser-proxy` restores the same-origin browser target on `4174`.
+
+**Pre-known noise (not filed as KIs):**
+
+- 108 cspell hits across 12 files — concentrated in archived docs + NY geography + demo-seed vocabulary.
+- TypeScript `baseUrl` deprecation warning in `tsconfig.json` — pre-existing, surfaced in every audit since 2026-04-25.
+
+---
+
+### Post-Phase 5.5 — Visual Master Build (PLANNING, 2026-04-26)
+
+**Purpose:** A focused, multi-pass quality initiative that closes the gaps the 2026-04-26 audit surfaced, brings the authenticated surfaces up to the design identity standard, and adds the mobile coverage that current tooling can't provide. Distinct from Phase 5.5 (which is correctness-focused) — this is **trust + polish + truthfulness** focused.
+
+**Scope filter:** still bound by the LAW_PROJECT_RULES North Star ("does this serve the core transaction OR protect the product DNA"). Map-first identity, premium glass, blue system, and customer/shop marketplace core are the protect-always anchors. Nothing in this initiative should add new features.
+
+**Provisional pass list (to be locked when Phase 5.5 closes):**
+
+1. **VMB Pass 1 — Map command-center truthfulness + provider access (P1+P4 cluster).** Address KI-051 (CSP/Overpass) and KI-052 (route presentation floors) together, since both live on the strongest public product surface and one is a real functional gap. Prefer the edge-proxy shape for KI-051 to match the pattern set by KI-046. Single coherent pass.
+2. **VMB Pass 2 — Authenticated surface fixture seeding + Phase 5.5 follow-through.** Stand up minimal local fixtures (customer profile, second shop with `shop_profiles`, insurer profile, two reports with bids) so the authenticated dashboard, customer report flow, insurer claims flow, and Pass 2's customer-side click can all be exercised in-browser. Re-run the visual audit on those surfaces against the design identity.
+3. **VMB Pass 3 — Mobile coverage pass.** Tooling-dependent. Either (a) drive Playwright in headed mode with a real mobile viewport via standalone `npx playwright test` (not VSCode's integrated browser), or (b) spin a real device via the deployed Vercel preview URL. Cover the same surfaces as VMB Pass 2 at 375×812 and 414×896.
+4. **VMB Pass 4 — Map performance profile + targeted fix (KI-053).** Out-of-scope for pre-launch unless VMB Pass 1 reveals a cheap win on the same code paths. Likely lands as a focused post-launch polish pass.
+5. **VMB Pass 5 — Design identity sweep across all primary surfaces.** A focused pass to enforce `bd-*` utility usage, blue system consistency, glass surface adoption, and the dark-mode navy palette. Not a redesign — a polish pass with a concrete checklist per surface.
+
+**Sequencing rule:** VMB Pass 1 first because it directly affects the public product surface (and one of its findings is P1). VMB Pass 2 unblocks the rest of the authenticated audit. VMB Pass 3 depends on tooling decision. VMB Pass 4 depends on profiling result. VMB Pass 5 last, as a closeout polish.
+
+**Owner approval gate:** each pass requires explicit owner approval before code changes — same discipline as Phase 5.5. The audit work itself can run autonomously between passes.
+
+**Authority:** PLANNING tier — not yet locked. Will be promoted to active execution authority when Phase 5.5 closes (prod deploy + verification done) and the owner approves the pass list.
+
+---
+
+### Validation pass (2026-04-25)
+
+- Read-only validation + execution-brief mode review of the three highest-severity findings from the 2026-04-25 deep audit.
+- **Seam 1 — Workflow-edge authorization:** CONFIRMED (and broader than headlined). `getJobAssignments` is unauthenticated PII leak; `updateJobAssignmentStatus`/`createJobAssignment` accept any authenticated cross-user mutation; claim routes accept shop callers. Filed as KI-048. P0 launch blocker.
+- **Seam 2 — Authenticated marketplace seed/fallback:** PARTIALLY CONFIRMED. Banner mitigates and seed-id mutation guards intact, but trust signal wrong on cold-start. Filed as KI-050. P1.
+- **Seam 3 — Bid/job/report lifecycle:** PARTIALLY CONFIRMED. Bid-accept "active vs accepted" label is OVERSTATED — adapter-reconciled by `normalizeReportStatus` (KI-021). Customer-completion drift is REAL — `damage_reports.status=completed` does not propagate to `job_assignments`. Filed as KI-049. P1.
+- Three contained passes locked as Phase 5.5 (above). Sequencing: Pass 1 → owner approval → Pass 2 → owner approval → Pass 3 → Phase 6.
+- Cross-checked by ChatGPT spot-read; one open caveat (deployment dependency on `--no-verify-jwt`) resolved against repo evidence.
+- Caller verification 2026-04-25: claim handlers (`submitInsuranceClaim`, `updateClaimDecision`) are insurer-only at the UI layer ([DashboardRouter.tsx:320-355](../src/app/routers/DashboardRouter.tsx#L320), [DashboardSecondaryViews.tsx:286-310](../src/app/routers/DashboardSecondaryViews.tsx#L286)) — handler tightening to insurer-only is safe.
+- AI role split for Phase 5.5 reaffirmed (Opus primary, Sonnet secondary, owner approval gate per pass).

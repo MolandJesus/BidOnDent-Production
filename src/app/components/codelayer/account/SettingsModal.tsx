@@ -59,7 +59,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
 
   if (!isOpen) return null;
 
-  const isLight = selectedAppearanceMode === "light";
+  const isLight = appearanceMode === "light";
 
   const modalContent = (
     <div
@@ -78,7 +78,11 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
-        <div className="flex items-center justify-between border-b px-4 py-3 sm:px-5 sm:py-4 mb-0">
+        <div
+          className={`flex items-center justify-between border-b px-4 py-3 sm:px-5 sm:py-4 mb-0 ${
+            isLight ? "border-slate-200/60 bg-white/40" : "border-white/[0.08] bg-slate-950/60"
+          }`}
+        >
           <h2
             className={`text-xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}
             id="settings-modal-title"
@@ -106,8 +110,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                   : "border-blue-300/20 bg-blue-500/10 text-blue-100/80"
               }`}
             >
-              Appearance and notification changes save immediately. Privacy and language controls
-              are shown for upcoming account-settings wiring and do not save yet.
+              Appearance and notification changes save immediately.
             </div>
 
             <div
@@ -263,11 +266,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                     </div>
                   </div>
                 </div>
-              ) : (
-                <div className={`mt-3 text-sm ${isLight ? "text-slate-400" : "text-blue-100/40"}`}>
-                  Unable to load preferences.
-                </div>
-              )}
+              ) : null}
             </div>
 
             <div
@@ -377,7 +376,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                       Light
                     </p>
                     <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
-                      Warmer frosted shell with amber glow accents.
+                      Warm frosted shell with soft blue accents.
                     </p>
                   </div>
                 </label>

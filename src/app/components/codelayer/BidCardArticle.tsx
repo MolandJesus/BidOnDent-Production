@@ -202,27 +202,41 @@ export default function BidCardArticle({
               </p>
 
               <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={onAccept}
-                  disabled={isAccepted}
-                  className="bd-dashboard-primary-button rounded-xl px-4 py-2.5 text-white font-medium disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
-                  }}
-                >
-                  {isAccepted ? "Accepted" : "Accept Bid"}
-                </button>
-                {!isAccepted && onReject && (
-                  <button
-                    onClick={onReject}
-                    className={`bd-dashboard-secondary-button rounded-xl px-4 py-2.5 font-medium ${
+                {isAccepted ? (
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold ${
                       isLight
-                        ? "text-rose-600 hover:text-rose-700"
-                        : "text-rose-300 hover:text-rose-200"
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : "bg-emerald-500/15 text-emerald-300 border border-emerald-400/25"
                     }`}
                   >
-                    Decline
-                  </button>
+                    <BadgeCheck className="w-4 h-4" />
+                    Accepted
+                  </span>
+                ) : (
+                  <>
+                    <button
+                      onClick={onAccept}
+                      className="bd-dashboard-primary-button rounded-xl px-4 py-2.5 text-white font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                      style={{
+                        background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
+                      }}
+                    >
+                      Accept Bid
+                    </button>
+                    {onReject && (
+                      <button
+                        onClick={onReject}
+                        className={`bd-dashboard-secondary-button rounded-xl px-4 py-2.5 font-medium ${
+                          isLight
+                            ? "text-rose-600 hover:text-rose-700"
+                            : "text-rose-300 hover:text-rose-200"
+                        }`}
+                      >
+                        Decline
+                      </button>
+                    )}
+                  </>
                 )}
                 <button
                   aria-label="Call shop"

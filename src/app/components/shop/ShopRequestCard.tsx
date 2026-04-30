@@ -235,7 +235,9 @@ export default function ShopRequestCard({
             <ImageIcon
               className={`w-4 h-4 mr-1 ${isLight ? "text-slate-400" : "text-blue-200/60"}`}
             />
-            <span>{request.photoCount} photos</span>
+            <span>
+              {request.photoCount} {request.photoCount === 1 ? "photo" : "photos"}
+            </span>
           </div>
           {request.insuranceClaim && (
             <div className="flex items-center text-sm text-blue-200 bg-blue-500/10 border border-blue-400/20 px-3 py-1 rounded-full">

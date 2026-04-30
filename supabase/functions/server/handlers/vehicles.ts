@@ -6,6 +6,7 @@
 import { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import {
   ensureClerkUserMatchesSession,
+  getAuthenticatedProfile,
   requireClerkSession,
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
@@ -126,26 +127,82 @@ export async function getVehicles(
   try {
     const url = new URL(req.url);
     const session = await requireClerkSession(req, { requireEmail: false });
-    const clerkUserId = ensureClerkUserMatchesSession(
+    const sessionClerkUserId = ensureClerkUserMatchesSession(
       session,
       url.searchParams.get('clerkUserId')
     );
 
-    const { data, error } = await supabase
+    // Resolve the user's profile to recover any historical clerk_user_id.
+    // Vehicles may have been saved under an older Clerk id (Clerk env switch,
+    // session rotation, account re-link). The profile is found by clerk_user_id
+    // OR email, so its stored clerk_user_id is the canonical link to legacy
+    // rows even when the current JWT carries a different id.
+    const profile = await getAuthenticatedProfile(supabase, session);
+    const candidateClerkUserIds = new Set<string>();
+    candidateClerkUserIds.add(sessionClerkUserId);
+    if (profile?.clerk_user_id) {
+      candidateClerkUserIds.add(profile.clerk_user_id);
+    }
+
+    const baseQuery = supabase
       .from('vehicles')
       .select('*')
-      .eq('clerk_user_id', clerkUserId)
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false });
+      .is('deleted_at', null);
+
+    const filteredQuery =
+      candidateClerkUserIds.size === 1
+        ? baseQuery.eq('clerk_user_id', sessionClerkUserId)
+        : baseQuery.in('clerk_user_id', Array.from(candidateClerkUserIds));
+
+    const { data: primaryData, error } = await filteredQuery;
 
     if (error) {
       console.error('Error fetching vehicles:', error);
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
+    let viaUserId: any[] = [];
+    if (profile?.user_id) {
+      const userIdResult = await supabase
+        .from('vehicles')
+        .select('*')
+        .eq('user_id', profile.user_id)
+        .is('deleted_at', null);
+
+      if (userIdResult.error) {
+        console.error('Error fetching vehicles by user_id:', userIdResult.error);
+        return respond({ error: sanitizeErrorMessage(userIdResult.error) }, 500);
+      }
+
+      viaUserId = userIdResult.data ?? [];
+    }
+
+    const mergedVehiclesById = new Map<string, any>();
+    for (const row of [...(primaryData ?? []), ...viaUserId]) {
+      if (typeof row?.id === 'string') {
+        mergedVehiclesById.set(row.id, row);
+      }
+    }
+
+    const data = Array.from(mergedVehiclesById.values()).sort((left: any, right: any) =>
+      String(right?.created_at ?? '').localeCompare(String(left?.created_at ?? ''))
+    );
+
+    const staleIds = data
+      .filter((row: any) => row.clerk_user_id !== sessionClerkUserId)
+      .map((row: any) => row.id)
+      .filter((id: any) => typeof id === "string");
+
+    if (staleIds.length > 0) {
+      await supabase
+        .from('vehicles')
+        .update({ clerk_user_id: sessionClerkUserId })
+        .in('id', staleIds);
+    }
+
     return respond({
       vehicles: await Promise.all(
-        (data || []).map(async (vehicle: any) => ({
+        data.map(async (vehicle: any) => ({
           ...vehicle,
           image_url: await hydrateSignedStorageUrl(
             supabase,

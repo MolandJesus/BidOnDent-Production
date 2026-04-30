@@ -1,7 +1,7 @@
 # REF_AI_BROWSER_NAVIGATION
 
-**Last updated:** 2026-04-17  
-**Status:** Active reference  
+**Last updated:** 2026-04-26
+**Status:** Active reference
 **Scope:** Browser automation behavior for Playwright-like tools in BidOnDent
 
 ---
@@ -11,6 +11,8 @@
 This document defines the required navigation protocol for AI/browser agents.
 
 Goal: avoid route drift, redirect loops, and repeated failures when moving between dashboard and landing surfaces.
+
+For local Docker browser audits, the expected target is `http://localhost:5173/`, started with `npm run dev:local-browser` (no proxy required — the dev-server CSP allow-lists local Supabase URLs directly). Do not run a plain `npm run dev` for these audits unless the pass explicitly wants the cloud Supabase project; `dev:local-browser` is the helper that auto-wires Vite to the running local Docker stack via `supabase status -o env`.
 
 Every AI/browser audit pass must read this file before taking browser actions on BidOnDent.
 

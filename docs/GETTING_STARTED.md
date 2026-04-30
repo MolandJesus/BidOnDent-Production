@@ -79,6 +79,23 @@ npm run dev
 
 Open: http://localhost:5173
 
+### Local browser audit mode (browser hits the local Docker Supabase stack)
+
+When the browser needs to exercise the local Docker Supabase stack instead of the cloud project, use the repo-owned helper. It auto-discovers the local API URL and anon key — no copy/paste of secrets, no proxy hop.
+
+```bash
+supabase start            # if the local stack isn't already running
+npm run dev:local-browser
+```
+
+Open: http://localhost:5173
+
+Notes:
+
+- `npm run dev:local-browser` runs `supabase status -o env` to read the local Docker `API_URL` and `ANON_KEY`, then starts Vite with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` set to those values for that process only. Your `.env` is not modified.
+- The dev-server CSP in `vite.config.ts` allow-lists `http://127.0.0.1:54321` and `http://localhost:54321` for dev only, so the browser can call the local stack directly. The production CSP (set via Vercel headers) is unaffected.
+- Override the discovered URL only if needed: `BIDONDENT_LOCAL_SUPABASE_URL=http://127.0.0.1:54321 npm run dev:local-browser`.
+
 ## 5) First login
 
 Regular user:
@@ -97,6 +114,7 @@ Regular user:
 ## Common issues
 
 - Missing keys: verify `.env` has `VITE_CLERK_PUBLISHABLE_KEY`, `VITE_SUPABASE_URL`, and `VITE_SUPABASE_ANON_KEY` set.
+- Local browser audit can't reach Supabase: confirm `supabase start` is running and `npm run dev:local-browser` printed the local API URL on startup. The dev-server CSP allows local Supabase on `127.0.0.1:54321` / `localhost:54321` only — if you point `BIDONDENT_LOCAL_SUPABASE_URL` at a different host or port, extend the CSP `connect-src` in `vite.config.ts` (dev block only).
 - Auth UI not loading: verify Clerk key starts with `pk_`.
 - Database errors: confirm migrations ran in order.
 - Photos not uploading: confirm the canonical media buckets exist and the `server` edge function is deployed.

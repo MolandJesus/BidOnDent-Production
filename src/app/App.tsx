@@ -8,7 +8,11 @@ import { ScreenErrorBoundary } from "./components/ScreenErrorBoundary";
 import { extractUserProfile } from "./services/clerkService";
 import { buildWebsiteIdentity } from "./services/auth/websiteIdentity";
 import { setClerkTokenGetter } from "./services/supabase/authSession";
-import { setSupabaseRealtimeAuth, hasMissingSupabaseConfig } from "./services/supabase/client";
+import {
+  setSupabaseRealtimeAuth,
+  refreshRealtimeAuth,
+  hasMissingSupabaseConfig,
+} from "./services/supabase/client";
 
 // Import custom hooks (for non-auth state management)
 import { useUserData } from "./hooks/useUserData";
@@ -51,6 +55,9 @@ import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
 import AppearanceToggle from "./components/dev/AppearanceToggle";
+import DevDemoCustomerApp from "./components/dev/DevDemoCustomerApp";
+import DevDemoShopApp from "./components/dev/DevDemoShopApp";
+import { readDevDemoMode } from "./utils/devDemoMode";
 
 // Standalone pages (lazy-loaded — only fetched when hash route is visited)
 const AboutPage = lazyWithRetry(() => import("./components/landing/AboutPage"));
@@ -108,18 +115,15 @@ function AppContent() {
 
     setClerkTokenGetter(() => getToken());
 
-    // Inject Clerk-issued Supabase JWT into Realtime so RLS policies work
-    // for live subscriptions. Requires a "supabase" JWT template in Clerk
-    // Dashboard signed with Supabase's JWT secret.
-    getToken({ template: "supabase" })
-      .then((token) => setSupabaseRealtimeAuth(token))
-      .catch(() => {
-        // Template not configured — Realtime stays unauthenticated (existing behavior)
-        if (import.meta.env.DEV)
-          console.warn("Clerk 'supabase' JWT template not configured — Realtime unauthenticated");
-      });
+    // Supabase Realtime auth is handled by the accessToken callback (client.ts)
+    // for initial connection. JWT expiry (~60s in dev) requires periodic refresh
+    // so channels stay authenticated. Refresh every 50s to stay ahead of expiry.
+    const refreshRealtime = () => void refreshRealtimeAuth();
+    refreshRealtime(); // immediate refresh on auth load
+    const realtimeRefreshInterval = setInterval(refreshRealtime, 50_000);
 
     return () => {
+      clearInterval(realtimeRefreshInterval);
       setClerkTokenGetter(null);
     };
   }, [getToken, isClerkAuthLoaded]);
@@ -444,6 +448,16 @@ function AppContent() {
 
 // Main App component wrapped with ClerkProvider
 export default function App() {
+  // Dev-only: `?demo=customer` or `?demo=shop` mounts a self-contained dashboard
+  // with synthesized data, bypassing Clerk + Supabase. Gated on `import.meta.env.DEV`.
+  const demoMode = readDevDemoMode();
+  if (demoMode === "customer") {
+    return <DevDemoCustomerApp />;
+  }
+  if (demoMode === "shop") {
+    return <DevDemoShopApp />;
+  }
+
   if (hasMissingSupabaseConfig || !hasValidClerkPublishableKey) {
     return <AuthConfigFallback missingSupabase={hasMissingSupabaseConfig} />;
   }

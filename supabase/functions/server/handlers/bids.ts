@@ -213,16 +213,73 @@ export async function getBids(
     }
 
     if (customerClerkUserId) {
-      ensureClerkUserMatchesSession(session, customerClerkUserId);
+      const sessionCustomerClerkUserId = ensureClerkUserMatchesSession(
+        session,
+        customerClerkUserId
+      );
 
-      const { data: reports, error: reportsError } = await supabase
+      const candidateClerkUserIds = new Set<string>();
+      candidateClerkUserIds.add(sessionCustomerClerkUserId);
+      if (profile?.clerk_user_id) {
+        candidateClerkUserIds.add(profile.clerk_user_id);
+      }
+
+      const baseReportsQuery = supabase
         .from("damage_reports")
-        .select("id")
-        .eq("clerk_user_id", customerClerkUserId);
+        .select("id, clerk_user_id, user_id")
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false });
+
+      const filteredReportsQuery =
+        candidateClerkUserIds.size === 1
+          ? baseReportsQuery.eq("clerk_user_id", sessionCustomerClerkUserId)
+          : baseReportsQuery.in("clerk_user_id", Array.from(candidateClerkUserIds));
+
+      const { data: primaryReports, error: reportsError } = await filteredReportsQuery;
 
       if (reportsError) {
         console.error("Error fetching customer reports for bids:", reportsError);
         return respond({ error: sanitizeErrorMessage(reportsError) }, 500);
+      }
+
+      let viaUserId: any[] = [];
+      if (profile?.user_id) {
+        const userIdResult = await supabase
+          .from("damage_reports")
+          .select("id, clerk_user_id, user_id, created_at")
+          .eq("user_id", profile.user_id)
+          .is("deleted_at", null)
+          .order("created_at", { ascending: false });
+
+        if (userIdResult.error) {
+          console.error("Error fetching customer reports by user_id for bids:", userIdResult.error);
+          return respond({ error: sanitizeErrorMessage(userIdResult.error) }, 500);
+        }
+
+        viaUserId = userIdResult.data ?? [];
+      }
+
+      const mergedReportsById = new Map<string, any>();
+      for (const row of [...(primaryReports ?? []), ...viaUserId]) {
+        if (typeof row?.id === "string") {
+          mergedReportsById.set(row.id, row);
+        }
+      }
+
+      const reports = Array.from(mergedReportsById.values()).sort((left: any, right: any) =>
+        String(right?.created_at ?? '').localeCompare(String(left?.created_at ?? ''))
+      );
+
+      const staleIds = reports
+        .filter((row: any) => row.clerk_user_id !== sessionCustomerClerkUserId)
+        .map((row: any) => row.id)
+        .filter((id: any) => typeof id === "string");
+
+      if (staleIds.length > 0) {
+        await supabase
+          .from("damage_reports")
+          .update({ clerk_user_id: sessionCustomerClerkUserId })
+          .in("id", staleIds);
       }
 
       if (!reports || reports.length === 0) {

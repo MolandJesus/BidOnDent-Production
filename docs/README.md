@@ -1,8 +1,8 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-04-17  
+**Last updated:** 2026-04-27
 **Status:** Active documentation operating index  
-**Current phase:** Soft Launch Hardening (edge functions v40)
+**Current phase:** Soft Launch Hardening (edge functions v47)
 
 BidOnDent is a **geo-native, map-first automotive repair marketplace**. Three user types (customer, shop, insurer) interact through a spatial bidding loop backed by Supabase and PostGIS.
 

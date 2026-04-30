@@ -40,6 +40,45 @@ export function sanitizeErrorMessage(error: any): string {
 }
 
 /**
+ * Recognize Clerk-auth-related errors so handlers can return 401 instead of 500.
+ * Pattern-matches messages thrown from utils/clerk.ts (no Authorization header,
+ * malformed JWT, untrusted issuer, etc.) and broader Clerk SDK errors.
+ */
+export function isAuthError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : typeof error === 'string' ? error : '';
+  if (!message) return false;
+  return /no authorization header|bearer token|clerk (?:bearer )?token|clerk token issuer|clerk (?:authorized party|user id) |missing clerk|untrusted clerk|clerk session|jwt|jose|signature|expired|audience|authenticated user mismatch|website identity mismatch/i.test(
+    message
+  );
+}
+
+/**
+ * Categorize a thrown error and respond with the right status code + useful
+ * (but sanitized) message. Auth failures → 401, identity-mismatch / RLS-style
+ * forbidden → 403, everything else → 500. Always logs the full original message
+ * server-side via console.error so deployment logs retain it.
+ */
+export function respondFromError(
+  respond: (body: unknown, status?: number, headers?: Record<string, string>) => Response,
+  context: string,
+  error: unknown,
+  fallbackMessage = 'Internal server error'
+): Response {
+  const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Unknown error';
+  console.error(`${context}:`, message);
+
+  if (/website identity mismatch|authenticated user mismatch/i.test(message)) {
+    return respond({ error: sanitizeErrorMessage(message), code: EdgeErrorCode.FORBIDDEN }, 403);
+  }
+
+  if (isAuthError(error)) {
+    return respond({ error: sanitizeErrorMessage(message), code: EdgeErrorCode.UNAUTHORIZED }, 401);
+  }
+
+  return respond({ error: sanitizeErrorMessage(message) || fallbackMessage }, 500);
+}
+
+/**
  * Strip Supabase function prefix from request paths
  * Handles both cloud deployment and local testing paths
  * @param pathname Raw pathname from request URL

@@ -54,7 +54,7 @@ export default function AccountInfoCard({
     {
       label: "Phone",
       value: userInfo.phone || "-",
-      toneClass: "bd-dashboard-section--accent-cyan",
+      toneClass: "bd-dashboard-section--deep",
     },
     {
       label: "Email",

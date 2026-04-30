@@ -9,7 +9,7 @@ import {
   requireClerkSession,
   resolveWebsiteUserKeyForSession,
 } from "../utils/authz.ts";
-import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { respondFromError, sanitizeErrorMessage } from "../utils/helpers.ts";
 import { hydrateSignedStorageUrl } from "../utils/storage.ts";
 
 type RespondFunction = (body: any, status?: number, headers?: Record<string, string>) => Response;
@@ -113,16 +113,8 @@ export async function getShopProfile(
         : null,
       success: true,
     });
-  } catch (error: any) {
-    console.error("Error in get shop profile endpoint:", error);
-    const status =
-      error?.message === "No Authorization header provided" ||
-      error?.message?.includes("Authorization header")
-        ? 401
-        : error?.message?.includes("website identity mismatch")
-          ? 403
-          : 500;
-    return respond({ error: sanitizeErrorMessage(error) }, status);
+  } catch (error: unknown) {
+    return respondFromError(respond, "getShopProfile", error);
   }
 }
 
@@ -187,16 +179,8 @@ export async function saveShopProfile(
       },
       success: true,
     });
-  } catch (error: any) {
-    console.error("Error in save shop profile endpoint:", error);
-    const status =
-      error?.message === "No Authorization header provided" ||
-      error?.message?.includes("Authorization header")
-        ? 401
-        : error?.message?.includes("website identity mismatch")
-          ? 403
-          : 500;
-    return respond({ error: sanitizeErrorMessage(error) }, status);
+  } catch (error: unknown) {
+    return respondFromError(respond, "saveShopProfile", error);
   }
 }
 
@@ -237,16 +221,8 @@ export async function getInsurerProfile(
         : null,
       success: true,
     });
-  } catch (error: any) {
-    console.error("Error in get insurer profile endpoint:", error);
-    const status =
-      error?.message === "No Authorization header provided" ||
-      error?.message?.includes("Authorization header")
-        ? 401
-        : error?.message?.includes("website identity mismatch")
-          ? 403
-          : 500;
-    return respond({ error: sanitizeErrorMessage(error) }, status);
+  } catch (error: unknown) {
+    return respondFromError(respond, "getInsurerProfile", error);
   }
 }
 
@@ -311,16 +287,8 @@ export async function saveInsurerProfile(
       },
       success: true,
     });
-  } catch (error: any) {
-    console.error("Error in save insurer profile endpoint:", error);
-    const status =
-      error?.message === "No Authorization header provided" ||
-      error?.message?.includes("Authorization header")
-        ? 401
-        : error?.message?.includes("website identity mismatch")
-          ? 403
-          : 500;
-    return respond({ error: sanitizeErrorMessage(error) }, status);
+  } catch (error: unknown) {
+    return respondFromError(respond, "saveInsurerProfile", error);
   }
 }
 
