@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-04-27 (Phase 5.5 prod deploy + KI-055 recovery verification)
+**Last updated:** 2026-04-30 (Pass O — Realtime infrastructure verified in production)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
@@ -146,17 +146,17 @@ App.tsx → buildDashboardRouterProps() → DashboardRouter → Screen Component
 
 ### State Ownership
 
-| Domain              | Owner                                    | Source of Truth              | Sync                                                 |
-| ------------------- | ---------------------------------------- | ---------------------------- | ---------------------------------------------------- |
-| Auth/session        | Clerk SDK                                | Clerk                        | Real-time via hooks                                  |
-| Navigation          | useNavigation                            | React state                  | localStorage persist + history.pushState             |
-| User profile        | useUserData                              | Supabase (cloud-first)       | Fetched on mount, Clerk→local sync via useAppEffects |
-| Reports             | useUserData.reports                      | Supabase                     | Fetched on mount, manual refetch after mutations     |
-| Bids (stale)        | useUserData.bids                         | Supabase                     | Fetched once on mount                                |
-| Bids (live)         | useBidsForReport                         | Supabase Realtime            | Real-time subscription per report                    |
-| Marketplace reports | useDashboardData → useMarketplaceReports | Supabase                     | Fetched on mount for shop/insurer                    |
-| Vehicles            | useUserData.vehicles                     | Supabase                     | Fetched on mount, optimistic updates                 |
-| Appearance mode     | AppearanceModeContext                    | React context + localStorage | Cross-tab sync                                       |
+| Domain              | Owner                                    | Source of Truth              | Sync                                                                                                                                                                                                                                     |
+| ------------------- | ---------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Auth/session        | Clerk SDK                                | Clerk                        | Real-time via hooks                                                                                                                                                                                                                      |
+| Navigation          | useNavigation                            | React state                  | localStorage persist + history.pushState                                                                                                                                                                                                 |
+| User profile        | useUserData                              | Supabase (cloud-first)       | Fetched on mount, Clerk→local sync via useAppEffects                                                                                                                                                                                     |
+| Reports             | useUserData.reports                      | Supabase                     | Fetched on mount, manual refetch after mutations                                                                                                                                                                                         |
+| Bids (stale)        | useUserData.bids                         | Supabase                     | Fetched once on mount                                                                                                                                                                                                                    |
+| Bids (live)         | useBidsForReport                         | Supabase Realtime            | Real-time subscription per report — **production-verified 2026-04-30**: phx_reply status:ok, INSERT event delivered. Auth via `accessToken` async callback + 50s periodic `refreshRealtimeAuth()`. See KI-057 for dev-mode cycling note. |
+| Marketplace reports | useDashboardData → useMarketplaceReports | Supabase                     | Fetched on mount for shop/insurer                                                                                                                                                                                                        |
+| Vehicles            | useUserData.vehicles                     | Supabase                     | Fetched on mount, optimistic updates                                                                                                                                                                                                     |
+| Appearance mode     | AppearanceModeContext                    | React context + localStorage | Cross-tab sync                                                                                                                                                                                                                           |
 
 **Split state warning:** Bids have dual ownership. See KI-012.
 
@@ -222,7 +222,7 @@ Handler executes with authenticated clerkUserId
 
 **PostGIS:** Geography columns on `shop_profiles` and `damage_reports`. `shop_service_areas` stores polygon geometries.
 
-**RLS:** Enabled on launch-critical tables (hardened in Phase 3). Edge function uses service role key — RLS is bypassed by edge functions, enforced on direct client access (Realtime).
+**RLS:** Enabled on launch-critical tables (hardened in Phase 3). Edge function uses service role key — RLS is bypassed by edge functions, enforced on direct client access (Realtime). `requesting_clerk_user_id()` SQL helper (`SELECT nullif(current_setting('request.jwt.claims', true),'')::json->>'sub'`) reads the Clerk JWT `sub` claim for RLS policies — required because Clerk user IDs are text (`user_xxx` format), not UUIDs, so `auth.uid()` casts would fail. All `bids`, `damage_reports`, `profiles`, and `shop_profiles` policies use this helper. See KI-056.
 
 ### Data Boundary (Type Translation)
 
@@ -293,18 +293,17 @@ Handler executes with authenticated clerkUserId
 
 ## 8. Build and Development
 
-| Command                       | Purpose                                            |
-| ----------------------------- | -------------------------------------------------- |
-| `npm run dev`                 | Start Vite dev server                              |
-| `npm run dev:local-browser`   | Start Vite for same-origin local-browser mode      |
-| `npm run local-browser-proxy` | Start repo-owned browser proxy on `localhost:4174` |
-| `npm run build`               | Production build (must = 0 errors)                 |
-| `supabase functions serve`    | Local edge function server                         |
-| `supabase start`              | Local Supabase Docker stack                        |
+| Command                     | Purpose                                                          |
+| --------------------------- | ---------------------------------------------------------------- |
+| `npm run dev`               | Start Vite dev server (points at `.env` Supabase host)           |
+| `npm run dev:local-browser` | Start Vite for local-browser mode (points at local Docker stack) |
+| `npm run build`             | Production build (must = 0 errors)                               |
+| `supabase functions serve`  | Local edge function server                                       |
+| `supabase start`            | Local Supabase Docker stack                                      |
 
 **Staging:** Supabase project `lhhdqycnhweaxqviwdqt` (created 2026-04-15).
 
-**Local browser audit path:** `npm run dev:local-browser` + `npm run local-browser-proxy` + `http://localhost:4174`. This repo-owned path exists because plain `npm run dev` on `5173` uses the `.env` Supabase host directly, while browser QA against the local Docker stack needs a stable same-origin target that proxies app assets to Vite and Supabase API families to `127.0.0.1:54321`.
+**Local browser audit path:** `npm run dev:local-browser` + `http://localhost:5173`. The dev-server CSP `connect-src` allows `http://127.0.0.1:54321` and `http://localhost:54321` (added KI-054 fix), so the local Docker Supabase stack is directly reachable. No proxy needed. See KI-054.
 
 **Build health:** 0 TypeScript errors. 555/557 tests passing (2 pre-existing failures in `bids.test.ts` — network mock edge cases, not blocking).
 

@@ -273,6 +273,33 @@
 - **Fix direction:** Investigate which layer/source/event handler is dominating frame time during pan/zoom (likely either the marker rendering path, the route geometry source, or un-throttled effects in the map controllers). Profile with Chrome DevTools performance panel before authoring any fix. Out of pre-launch scope unless investigation reveals a cheap win.
 - **Status:** Open — P4 (polish; observability already exists, fix needs profiling).
 
+### KI-056: Realtime live updates not flowing for Clerk-authenticated channels
+
+- **Impact:** Authenticated subscribers (browser-side, Clerk-issued JWT) successfully connected to Supabase Realtime but `postgres_changes` events never delivered. Customer Bids tab and shop Active Jobs tab silently failed to update on cross-account writes; the only way to see new bids was to refresh the page.
+- **Location:** `src/app/services/supabase/client.ts` (Realtime auth wiring); `src/app/App.tsx` (refresh interval); `supabase/migrations/20260429000001_realtime_publication.sql` (publication membership).
+- **Root cause (compound):**
+  1. The frontend injected a Clerk JWT into Realtime via a one-time `setAuth(token)` call on Clerk-load. After the token's short lifetime expired, every subsequent `channel.subscribe` silently failed against the cached stale token, and the modern `accessToken` callback option wasn't configured.
+  2. The local Supabase `supabase_realtime` publication had zero tables — Realtime only forwards `postgres_changes` events for tables that are publication members. Production (`wmdcnjgtsppftrofaqqa`) already had the right tables, but local was missing them, and any fresh staging would have hit the same gap.
+  3. RLS policies on the affected tables were already correct: they use `requesting_clerk_user_id()` (the JWT-`sub` helper at `20251230000001_full_schema.sql:31`), not `auth.uid()`-based comparisons. No policy rewrite was applied.
+- **Fix (commit `1c34e44f` plus follow-up):**
+  1. `client.ts`: pass an async `accessToken` callback to `createClient` that fetches a fresh `getToken({ template: "supabase" })` from Clerk at channel-join time. Eliminates the token-expiry race on initial subscribe.
+  2. `client.ts`: convert `setSupabaseRealtimeAuth()` to a no-op (kept for backward compat).
+  3. `client.ts`: add `refreshRealtimeAuth()` which fetches a fresh Clerk JWT and calls `realtime.setAuth(token)` to broadcast it to every live channel — needed for long-lived channels because the `accessToken` callback only fires at channel-join, not on heartbeat.
+  4. `App.tsx`: drop the now-redundant initial `setSupabaseRealtimeAuth` call; add a 50s `refreshRealtimeAuth()` interval in the Clerk-load effect (cleared on unmount).
+  5. `useBidsForReport.ts`: defensive retry-once (2s delay) on `CHANNEL_ERROR` for the case where Clerk session is mid-refresh at subscribe time.
+  6. `migrations/20260429000001_realtime_publication.sql`: idempotent DO block that adds `bids`, `damage_reports`, and `estimate_requests` to `supabase_realtime`. Tolerates the publication not existing and skips already-member tables.
+- **Validation:** Phase 3 audit (2026-04-30) against production: WebSocket connected with Clerk JWT, `phx_reply status:"ok"` received for all subscribed bid channels, live INSERT against `bids` delivered to a customer-side subscriber after a token refresh on a near-expiry JWT.
+- **Status:** RESOLVED — frontend code changes committed; production publication already had the necessary tables. No production schema changes were applied directly.
+
+### KI-057: Realtime channel cycling in React StrictMode (dev only)
+
+- **Impact:** In development, React StrictMode double-invokes effects. `useBidsForReport` creates channels, StrictMode cleanup removes them, then mounts again. This causes `phx_join → phx_leave → phx_join` cycling on every Bids tab open. Channels do eventually settle with `phx_reply status:"ok"` but the cycling produces misleading "WebSocket closed before connection established" console warnings.
+- **Location:** `src/app/hooks/useBidsForReport.ts` + `src/app/services/realtime/RealtimeBidService.ts`.
+- **Current reality:** Cosmetic in dev. StrictMode is disabled in production builds (Vite's `npm run build` removes double-invoke behavior). Phase 3 live test (2026-04-30) confirmed channels reach `SUBSCRIBED` state and receive INSERT events in production-equivalent conditions. No fix needed for prod.
+- **Fix direction:** If dev DX becomes painful, add an unmount guard using `AbortController` or move subscription to a non-StrictMode-affected location. Not worth the complexity until it causes a real dev workflow issue.
+- **Note:** A near-expiry JWT at channel-creation time can cause the first join to use the anon role. The 50s `refreshRealtimeAuth()` interval mitigates this — calling `rt.setAuth(freshToken)` updates all channel auth and delivers any queued events.
+- **Status:** Open — P7 (tech debt, cosmetic in dev, non-blocking in production)
+
 ### KI-047: Supabase security advisor flagged public tables in staging and leads projects
 
 - **Impact:** Supabase security advisor reported `Table publicly accessible` on two separate hosted projects. In BidOnDent staging, six public-facing app tables had drifted away from their canonical RLS state. In the separate `bidondent-leads` Prisma project, `public."Lead"` and `public._prisma_migrations` were granted to `anon`/`authenticated` without RLS.
