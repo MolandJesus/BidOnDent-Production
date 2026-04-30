@@ -105,11 +105,7 @@
            Mirrors the app's light theme so reload doesn't flash dark. */
         [data-appearance-mode="light"] #pre-mount-loader {
           background:
-            radial-gradient(
-              ellipse 80% 60% at 50% 0%,
-              rgba(255, 248, 235, 0.55),
-              transparent 70%
-            ),
+            radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 248, 235, 0.55), transparent 70%),
             linear-gradient(180deg, #eaf2ff 0%, #dce8fb 60%, #cfdef7 100%);
         }
         [data-appearance-mode="light"] #pre-mount-loader .pml-spinner {
@@ -135,9 +131,7 @@
           <p class="pml-label">Loading BidOnDent...</p>
           <div id="pre-mount-recovery" style="display: none; margin-top: 24px">
             <p class="pml-recovery-text">Taking longer than expected.</p>
-            <a href="javascript:void(location.reload())" class="pml-recovery-link"
-              >Tap to reload</a
-            >
+            <a href="javascript:void(location.reload())" class="pml-recovery-link">Tap to reload</a>
           </div>
         </div>
       </div>

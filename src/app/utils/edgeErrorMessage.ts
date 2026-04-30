@@ -25,11 +25,20 @@ const FRIENDLY_BY_PATTERN: Array<[RegExp, string]> = [
   [/zip_codes array required/i, "Add at least one ZIP code before saving."],
   [/center_latitude.*required|center_longitude.*required/i, "Pick a location on the map first."],
   [/radius_miles must be between/i, "Pick a radius between 1 and 200 miles."],
-  [/no authorization header|bearer token|jwt|expired/i, "Your session expired — please sign in again."],
-  [/website identity mismatch|authenticated user mismatch/i, "Something went wrong with your session — please sign out and back in."],
+  [
+    /no authorization header|bearer token|jwt|expired/i,
+    "Your session expired — please sign in again.",
+  ],
+  [
+    /website identity mismatch|authenticated user mismatch/i,
+    "Something went wrong with your session — please sign out and back in.",
+  ],
   [/data conflict|duplicate key|unique/i, "That entry already exists."],
   [/permission denied|row-level security/i, "You don't have permission to do that."],
-  [/network|failed to fetch|load failed/i, "Couldn't reach the server. Check your connection and try again."],
+  [
+    /network|failed to fetch|load failed/i,
+    "Couldn't reach the server. Check your connection and try again.",
+  ],
 ];
 
 /**
@@ -45,8 +54,7 @@ export function friendlyEdgeError(
     return FRIENDLY_BY_CODE[err.code];
   }
 
-  const message =
-    err instanceof Error ? err.message : typeof err === "string" ? err : "";
+  const message = err instanceof Error ? err.message : typeof err === "string" ? err : "";
 
   if (message) {
     for (const [pattern, friendly] of FRIENDLY_BY_PATTERN) {

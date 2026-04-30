@@ -11,13 +11,7 @@
  */
 import type { UserProfile } from "../services/clerkService";
 import type { WebsiteIdentity } from "../services/auth/websiteIdentity";
-import type {
-  Bid,
-  DamageReport,
-  Notification,
-  UserInfo,
-  Vehicle,
-} from "../types";
+import type { Bid, DamageReport, Notification, UserInfo, Vehicle } from "../types";
 import { SEED_DAMAGE_REPORTS, SEED_DEMO_BIDS } from "../constants";
 import type { DashboardAppearanceMode } from "../routers/dashboard-router-types";
 
@@ -302,7 +296,8 @@ export const DEMO_SHOP_BIDS: Bid[] = [
     shopEmail: "shop@bidondent.local",
     amount: 1450,
     estimatedDays: 4,
-    description: "Quarter panel re-shape, blend paint, clear coat. 6-month warranty on workmanship.",
+    description:
+      "Quarter panel re-shape, blend paint, clear coat. 6-month warranty on workmanship.",
     status: "pending",
     createdAt: HOURS_AGO(6),
     shopRating: 4.7,

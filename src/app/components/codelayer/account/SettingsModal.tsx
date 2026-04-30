@@ -80,9 +80,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
       >
         <div
           className={`flex items-center justify-between border-b px-4 py-3 sm:px-5 sm:py-4 mb-0 ${
-            isLight
-              ? "border-slate-200/60 bg-white/40"
-              : "border-white/[0.08] bg-slate-950/60"
+            isLight ? "border-slate-200/60 bg-white/40" : "border-white/[0.08] bg-slate-950/60"
           }`}
         >
           <h2

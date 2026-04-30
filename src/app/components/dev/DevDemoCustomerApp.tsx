@@ -9,14 +9,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { LogOut } from "lucide-react";
 import { useNavigation } from "../../hooks/useNavigation";
-import {
-  AppearanceModeProvider,
-  useAppearanceModeCtx,
-} from "../../hooks/AppearanceModeContext";
-import {
-  NotificationProvider,
-  useNotificationEvents,
-} from "../../features/notifications";
+import { AppearanceModeProvider, useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
+import { NotificationProvider, useNotificationEvents } from "../../features/notifications";
 import {
   DEMO_BIDS,
   DEMO_NOTIFICATIONS,
@@ -32,14 +26,7 @@ import { CUSTOMER_NAV_TABS, PRIMARY_COLOR, SECONDARY_COLOR } from "../../constan
 import DashboardLayout from "../app/DashboardLayout";
 import NotificationToast from "../ui/NotificationToast";
 import AppearanceToggle from "./AppearanceToggle";
-import type {
-  Bid,
-  DamageReport,
-  Notification,
-  UserInfo,
-  Vehicle,
-  ViewMode,
-} from "../../types";
+import type { Bid, DamageReport, Notification, UserInfo, Vehicle, ViewMode } from "../../types";
 import type {
   DashboardAppearanceMode,
   DashboardRouterProps,
@@ -211,9 +198,7 @@ function DevDemoCustomerInner() {
         notifications={notifications}
         notificationSyncActive={false}
         onMarkNotificationRead={(id) => {
-          setNotifications((prev) =>
-            prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-          );
+          setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
         }}
         onMarkAllNotificationsRead={() => {
           setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
@@ -224,9 +209,7 @@ function DevDemoCustomerInner() {
         onLogoClick={exitDevDemoMode}
         onTabClick={handleTabClick}
         onMobileMenuTabClick={handleTabClick}
-        onProfileToggle={() =>
-          navigation.setShowProfileDropdown((current) => !current)
-        }
+        onProfileToggle={() => navigation.setShowProfileDropdown((current) => !current)}
         demoMode
         demoAccountType="customer"
         profileDropdownData={profileDropdownData}

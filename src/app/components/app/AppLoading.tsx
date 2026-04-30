@@ -41,8 +41,7 @@ export default function AppLoading({ message = "Loading..." }: AppLoadingProps) 
     ? {
         borderColor: "rgba(212, 175, 55, 0.22)",
         borderBottomColor: "#d4af37",
-        boxShadow:
-          "0 0 18px rgba(212, 175, 55, 0.28), 0 0 6px rgba(212, 175, 55, 0.18)",
+        boxShadow: "0 0 18px rgba(212, 175, 55, 0.28), 0 0 6px rgba(212, 175, 55, 0.18)",
       }
     : {
         borderColor: "rgba(96, 165, 250, 0.24)",
@@ -62,10 +61,7 @@ export default function AppLoading({ message = "Loading..." }: AppLoadingProps) 
     : { color: "#60a5fa" };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={containerStyle}
-    >
+    <div className="min-h-screen flex items-center justify-center" style={containerStyle}>
       <div className="text-center" aria-busy="true" aria-live="polite" role="status">
         <div
           aria-hidden="true"

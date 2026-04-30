@@ -206,7 +206,9 @@ export default function WhoWeServeSection({
                 <div
                   className="inline-flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg shadow-sm"
                   style={{
-                    backgroundColor: isLightAppearance ? `${card.iconBg}14` : `${card.iconBgDark}28`,
+                    backgroundColor: isLightAppearance
+                      ? `${card.iconBg}14`
+                      : `${card.iconBgDark}28`,
                     border: isLightAppearance
                       ? `1.5px solid ${card.iconBg}30`
                       : `1.5px solid ${card.iconBgDark}55`,
