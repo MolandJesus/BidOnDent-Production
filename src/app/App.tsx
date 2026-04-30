@@ -111,16 +111,8 @@ function AppContent() {
 
     setClerkTokenGetter(() => getToken());
 
-    // Inject Clerk-issued Supabase JWT into Realtime so RLS policies work
-    // for live subscriptions. Requires a "supabase" JWT template in Clerk
-    // Dashboard signed with Supabase's JWT secret.
-    getToken({ template: "supabase" })
-      .then((token) => setSupabaseRealtimeAuth(token))
-      .catch(() => {
-        // Template not configured — Realtime stays unauthenticated (existing behavior)
-        if (import.meta.env.DEV)
-          console.warn("Clerk 'supabase' JWT template not configured — Realtime unauthenticated");
-      });
+    // Supabase Realtime auth is now handled by the accessToken callback
+    // in client.ts — no manual token injection needed here.
 
     return () => {
       setClerkTokenGetter(null);

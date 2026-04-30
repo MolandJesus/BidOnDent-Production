@@ -46,6 +46,25 @@ function getSupabaseClient(): SupabaseClient {
             "X-Client-Info": "bidondent-app",
           },
         },
+        realtime: {
+          // Fetch a fresh Clerk-issued JWT at channel-join time so Realtime
+          // subscriptions are always authenticated regardless of the token
+          // arrival timing relative to component mount.
+          accessToken: async () => {
+            try {
+              const w = window as unknown as {
+                Clerk?: {
+                  session?: {
+                    getToken: (opts: { template: string }) => Promise<string | null>;
+                  };
+                };
+              };
+              return (await w.Clerk?.session?.getToken({ template: "supabase" })) ?? null;
+            } catch {
+              return null;
+            }
+          },
+        },
       }
     );
 
@@ -59,15 +78,11 @@ function getSupabaseClient(): SupabaseClient {
 export const supabase = getSupabaseClient();
 
 /**
- * Inject a Clerk-issued JWT (signed with Supabase's JWT secret via a "supabase"
- * template) into the Supabase Realtime client so that RLS policies referencing
- * `request.jwt.claims->>'sub'` resolve correctly for live subscriptions.
- *
- * Call this whenever the Clerk session token refreshes. Passing `null` clears
- * the token (e.g., on sign-out).
+ * Previously injected a one-time Clerk JWT into Realtime via setAuth().
+ * Now a no-op: the Supabase client is initialized with an `accessToken` async
+ * callback that fetches a fresh Clerk JWT at channel-join time, eliminating
+ * the token-expiry race condition. Kept for backward compatibility.
  */
-export function setSupabaseRealtimeAuth(token: string | null) {
-  if (token) {
-    supabase.realtime.setAuth(token);
-  }
+export function setSupabaseRealtimeAuth(_token: string | null) {
+  // no-op — handled by accessToken callback in createClient options
 }
