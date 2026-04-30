@@ -8,7 +8,11 @@ import { ScreenErrorBoundary } from "./components/ScreenErrorBoundary";
 import { extractUserProfile } from "./services/clerkService";
 import { buildWebsiteIdentity } from "./services/auth/websiteIdentity";
 import { setClerkTokenGetter } from "./services/supabase/authSession";
-import { setSupabaseRealtimeAuth, hasMissingSupabaseConfig } from "./services/supabase/client";
+import {
+  setSupabaseRealtimeAuth,
+  refreshRealtimeAuth,
+  hasMissingSupabaseConfig,
+} from "./services/supabase/client";
 
 // Import custom hooks (for non-auth state management)
 import { useUserData } from "./hooks/useUserData";
@@ -111,10 +115,15 @@ function AppContent() {
 
     setClerkTokenGetter(() => getToken());
 
-    // Supabase Realtime auth is now handled by the accessToken callback
-    // in client.ts — no manual token injection needed here.
+    // Supabase Realtime auth is handled by the accessToken callback (client.ts)
+    // for initial connection. JWT expiry (~60s in dev) requires periodic refresh
+    // so channels stay authenticated. Refresh every 50s to stay ahead of expiry.
+    const refreshRealtime = () => void refreshRealtimeAuth();
+    refreshRealtime(); // immediate refresh on auth load
+    const realtimeRefreshInterval = setInterval(refreshRealtime, 50_000);
 
     return () => {
+      clearInterval(realtimeRefreshInterval);
       setClerkTokenGetter(null);
     };
   }, [getToken, isClerkAuthLoaded]);

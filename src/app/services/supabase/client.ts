@@ -86,3 +86,31 @@ export const supabase = getSupabaseClient();
 export function setSupabaseRealtimeAuth(_token: string | null) {
   // no-op — handled by accessToken callback in createClient options
 }
+
+/**
+ * Refresh the Realtime auth token. Call periodically (every 50s) to keep
+ * subscriptions alive past the JWT's short expiry — Clerk session tokens
+ * are short-lived, so without a refresh interval long-lived channels go
+ * stale and the next event delivery silently fails.
+ *
+ * Fetches a fresh Clerk JWT via the configured `supabase` template and
+ * broadcasts it to every active channel. Mirrors the `rt.setAuth(token)`
+ * pattern that was Phase-3-verified against production.
+ */
+export async function refreshRealtimeAuth(): Promise<void> {
+  try {
+    const w = window as unknown as {
+      Clerk?: {
+        session?: {
+          getToken: (opts: { template: string }) => Promise<string | null>;
+        };
+      };
+    };
+    const token = await w.Clerk?.session?.getToken({ template: "supabase" });
+    if (token) {
+      await supabase.realtime.setAuth(token);
+    }
+  } catch {
+    // Non-fatal — channels will retry on their own CHANNEL_ERROR
+  }
+}
