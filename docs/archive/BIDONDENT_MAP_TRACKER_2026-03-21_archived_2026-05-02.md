@@ -1413,7 +1413,7 @@ Additional findings: Rate limiter covers all endpoints (global pre-dispatch). Le
   - **MAP_TRACKER rebuilt** (5,947 → 729 lines): Passes 1–499 archived to `docs/archive/MAP_TRACKER_PASSES_1_499.md`. Added Quick State Summary with verified product claims. Kept passes 500–536 + Active Risks/Vision/Roadmap.
   - **PRODUCT_BRAIN trimmed** (2,117 → 1,392 lines): Experience Maps (458 lines) archived to `docs/archive/PRODUCT_BRAIN_EXPERIENCE_MAPS.md`. Role-Specific Future Map Intel + Nav Roadmap (232 lines) archived to `docs/archive/PRODUCT_BRAIN_FUTURE_MAP_INTEL.md`. Screenshot Reality Check removed (stale since Pass 185).
   - **MAP_MASTER_PLAN trimmed** (1,675 → 288 lines): 1,325 lines of per-pass implementation notes + old pass summaries archived to `docs/archive/MAP_MASTER_PLAN_IMPL_NOTES.md`. Kept only strategic content: Mission, Non-Negotiables, Architecture, Themes, Future Direction, Definition of Done.
-  - **MOLANDJEUS_DESIGN_DECISIONS trimmed** (761 → 540 lines): Atmospheric depth hex values, gradient maps, orb system details archived to `docs/archive/DESIGN_DECISIONS_IMPL_DETAILS.md`.
+  - **MOLANDJESUS_DESIGN_DECISIONS trimmed** (761 → 540 lines): Atmospheric depth hex values, gradient maps, orb system details archived to `docs/archive/DESIGN_DECISIONS_IMPL_DETAILS.md`.
   - **CODE_ORGANIZATION_AUDIT trimmed** (380 → 353 lines): Removed stale Documentation Governance section referencing retired files.
   - **README.md updated**: New doc architecture (12 active + 24+ archived), removed references to archived docs, updated archive manifest.
   - **CLAUDE_AI_MASTER_CONTEXT.md updated**: Section 13 now lists all 12 active docs + MAP_EXPERIENCE_ARCHITECTURE. Updated metadata.
@@ -1425,7 +1425,7 @@ Additional findings: Rate limiter covers all endpoints (global pre-dispatch). Le
   - Estimate request backend: ✅ TRUE (full bidirectional flow)
   - Report-to-map pin accuracy: ✅ TRUE (geocoded + ZIP centroid fallback)
 
-- **Files touched:** docs/BIDONDENT_MAP_TRACKER_2026-03-21.md, docs/BIDONDENT_PRODUCT_BRAIN.md, docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md, docs/MOLANDJEUS_DESIGN_DECISIONS.md, docs/CODE_ORGANIZATION_AUDIT.md, docs/README.md, docs/CLAUDE_AI_MASTER_CONTEXT.md, docs/archive/ (8 new archive files)
+- **Files touched:** docs/BIDONDENT_MAP_TRACKER_2026-03-21.md, docs/BIDONDENT_PRODUCT_BRAIN.md, docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md, docs/MOLANDJESUS_DESIGN_DECISIONS.md, docs/CODE_ORGANIZATION_AUDIT.md, docs/README.md, docs/CLAUDE_AI_MASTER_CONTEXT.md, docs/archive/ (8 new archive files)
 - **Validation:** Build: pending. Diagnostics: docs-only pass, no src changes. Spellcheck: docs-only.
 - **Problem taxonomy:** P0:0 P1:0 P2:0 P3:0 P4:0 P5:7-fixed P6:0 P7:0
 - **Architecture decisions:** 12-doc active system with tiered reading path. All verbose content archived (not deleted). MAP_EXPERIENCE_ARCHITECTURE.md kept as standalone reference (was originally slated for archive, kept after code audit).

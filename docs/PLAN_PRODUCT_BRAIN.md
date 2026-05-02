@@ -29,7 +29,7 @@ All of the above is **future planning** and not yet implemented unless otherwise
 >
 > During the Soft Launch Hardening phase, execution follows [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md). This doc remains the reference for product reasoning, role architecture, and long-horizon vision — but no new features or Phase 4 product work lands until the hardening plan is complete and the "one real transaction happens cleanly" milestone is met.
 >
-> Deferred Phase 4 items (payments, push, advanced analytics, offline mode) live in [`BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) with explicit triggers. Do not reactivate without a fired trigger.
+> Deferred Phase 4 items (payments, push, advanced analytics, offline mode) live in [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) with explicit triggers. Do not reactivate without a fired trigger.
 
 Last updated: April 14, 2026 (Hardening phase began — strategic vision retained, feature work paused)
 Status: Strategic reference (paused during hardening)
@@ -974,8 +974,8 @@ This section exists so that any agent, human, or cross-reference doc can quickly
 
 This Product Brain should be read alongside:
 
-- `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md` — strategic themes, non-negotiables, and future direction
-- `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — granular delivery history, active risks, and staged roadmap
+- `docs/PLAN_MAP_MASTER.md` — strategic themes, non-negotiables, and future direction
+- `docs/archive/BIDONDENT_MAP_TRACKER_2026-03-21_archived_2026-05-02.md` — granular delivery history, active risks, and staged roadmap
 - `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` — architecture truth table and Phase 3 direction
 
 Any decision about map features, providers, or design language should cross-check all four docs to avoid contradictions.

@@ -5,6 +5,7 @@ import {
   requireInsurerContext,
 } from "../utils/authz.ts";
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
+import { hydrateSignedStorageUrls } from "../utils/storage.ts";
 import { notifyCustomerClaimDecision } from "./notificationEmails.ts";
 
 type RespondFunction = (
@@ -168,18 +169,25 @@ export async function getJobAssignments(
     }
 
     const reportMap = new Map(
-      (reportResult.data || []).map((r: any) => {
-        const profile = r.clerk_user_id ? profileMap.get(r.clerk_user_id) : null;
-        return [
-          r.id,
-          {
-            ...r,
-            customer_name: profile?.name || null,
-            customer_email: profile?.email || null,
-            customer_phone: profile?.phone || null,
-          },
-        ];
-      })
+      await Promise.all(
+        (reportResult.data || []).map(async (r: any) => {
+          const profile = r.clerk_user_id ? profileMap.get(r.clerk_user_id) : null;
+          const photo_urls = await hydrateSignedStorageUrls(
+            supabase,
+            Array.isArray(r?.photo_urls) ? r.photo_urls : []
+          );
+          return [
+            r.id,
+            {
+              ...r,
+              photo_urls,
+              customer_name: profile?.name || null,
+              customer_email: profile?.email || null,
+              customer_phone: profile?.phone || null,
+            },
+          ] as const;
+        })
+      )
     );
     const bidMap = new Map((bidResult.data || []).map((b: any) => [b.id, b]));
 

@@ -67,8 +67,8 @@ Status: Active strategic reference
 
 This plan should be read alongside:
 
-- `docs/BIDONDENT_PRODUCT_BRAIN.md` — overall product architecture, role model, and design system direction
-- `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md` — granular delivery history and active risks
+- `docs/PLAN_PRODUCT_BRAIN.md` — overall product architecture, role model, and design system direction
+- `docs/archive/BIDONDENT_MAP_TRACKER_2026-03-21_archived_2026-05-02.md` — granular delivery history and active risks
 - `docs/PHASE_2_PLATFORM_RECOMMENDATION_2026-03-20.md` — architecture truth table and module plan
 
 Any map decision should cross-check all four docs to avoid contradictions.
@@ -89,8 +89,8 @@ Deliver a production-grade, map-first BidOnDent experience that is:
 3. Real providers are required for routing/place/search in production user paths.
 4. Demo map data must remain clearly labeled and isolated to demo-only paths.
 5. Every map-related change must update both map docs in the same change set:
-   - `docs/BIDONDENT_MAP_MASTER_PLAN_2026-03-21.md`
-   - `docs/BIDONDENT_MAP_TRACKER_2026-03-21.md`
+   - `docs/PLAN_MAP_MASTER.md`
+   - `docs/archive/BIDONDENT_MAP_TRACKER_2026-03-21_archived_2026-05-02.md`
 6. Every map UI pass must be validated on both mobile and desktop.
 7. No map-facing silent failures: telemetry, fallback state, and user messaging must stay explicit.
 

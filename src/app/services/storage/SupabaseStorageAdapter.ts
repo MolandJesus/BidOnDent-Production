@@ -68,20 +68,14 @@ export class SupabaseStorageAdapter implements IStorageProvider {
           };
         }
 
-        const signedUrlResult = await this.getSignedUrl({
-          bucket,
-          path: uploadedPhoto.path,
-          expiresIn: 60 * 60 * 24,
-        });
-        const publicUrl =
-          signedUrlResult.signedUrl ||
-          uploadedPhoto.publicUrl ||
-          this.getPublicUrl(bucket, uploadedPhoto.path);
+        // Persist a durable storage pointer (storage://bucket/path) — never a signed URL.
+        // Signed URLs are minted at render time via getSignedUrl().
+        const pointerUrl = uploadedPhoto.publicUrl || this.getPublicUrl(bucket, uploadedPhoto.path);
 
         return {
           success: true,
-          url: publicUrl,
-          publicUrl,
+          url: pointerUrl,
+          publicUrl: pointerUrl,
           path: uploadedPhoto.path,
         };
       }
@@ -103,17 +97,14 @@ export class SupabaseStorageAdapter implements IStorageProvider {
         };
       }
 
-      const signedUrlResult = await this.getSignedUrl({
-        bucket,
-        path: normalizedPath,
-        expiresIn: 60 * 60 * 24,
-      });
-      const publicUrl = signedUrlResult.signedUrl || this.getPublicUrl(bucket, normalizedPath);
+      // Persist a durable URL — pointer for our supported buckets, public URL otherwise.
+      // Signed URLs are minted at render time via getSignedUrl().
+      const publicUrl = this.getPublicUrl(bucket, normalizedPath);
 
       return {
         success: true,
         url: publicUrl,
-        publicUrl: publicUrl,
+        publicUrl,
         path: data.path,
       };
     } catch (error: unknown) {

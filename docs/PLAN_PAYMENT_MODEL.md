@@ -2,7 +2,7 @@
 
 > ### ⛔ DEFERRED (2026-04-14)
 >
-> **Payments are deferred to post-launch** per the [Hardening Plan (LAW)](LAW_HARDENING_PLAN.md) and tracked as item **F1** in the [Post-Launch Roadmap](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md).
+> **Payments are deferred to post-launch** per the [Hardening Plan (LAW)](LAW_HARDENING_PLAN.md) and tracked as item **F1** in the [Post-Launch Roadmap](PLAN_POST_LAUNCH_ROADMAP.md).
 >
 > The soft launch is a **free marketplace**. Adding payments before proving the loop works is premature. Implementation is gated on:
 >

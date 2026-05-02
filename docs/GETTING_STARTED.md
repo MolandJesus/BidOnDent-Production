@@ -1,11 +1,13 @@
 # Getting Started
 
-Last updated: April 14, 2026 (Phase 1.5 .env migration complete)
+Last updated: 2026-05-02 (storage pointer pattern + verify_jwt:false documented)
 Status: Active onboarding guide
 
 Get BidOnDent running locally with Clerk + Supabase in about 10 minutes.
 
-Scope note: This guide is for local setup and first-run flow. For current execution truth during hardening, read [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), then [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) and [`README.md`](README.md).
+**Scope note:** This guide is for local setup and first-run flow. For current execution truth during hardening, read [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), then [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) and [`README.md`](README.md).
+
+**AI agents:** read [`../AGENTS.md`](../AGENTS.md) (or [`../CLAUDE.md`](../CLAUDE.md)) at the repo root before starting any work. It points to the load-bearing rules and skill set.
 
 ## Prerequisites
 
@@ -118,6 +120,8 @@ Regular user:
 - Auth UI not loading: verify Clerk key starts with `pk_`.
 - Database errors: confirm migrations ran in order.
 - Photos not uploading: confirm the canonical media buckets exist and the `server` edge function is deployed.
+- Photos uploaded but not rendering after a day: storage pointer pattern issue. See [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §16 — DB should hold `storage://…` pointers, never raw signed URLs.
+- Signed-in users see empty dashboards / 401s on every API call: gateway `verify_jwt` was flipped back to `true`. See [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §17 to fix.
 
 ## Next docs
 
