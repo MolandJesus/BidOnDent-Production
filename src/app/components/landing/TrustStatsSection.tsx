@@ -49,6 +49,18 @@ export default function TrustStatsSection({
             : "linear-gradient(to right, transparent, rgba(96, 165, 250, 0.22) 22%, rgba(220, 150, 60, 0.32) 50%, rgba(96, 165, 250, 0.22) 78%, transparent)",
         }}
       />
+      {/* Pass 10 — atmospheric bloom-bridge at AboutOpportunity→TrustStats warm transition.
+          Subtle warm-gold luminance at the top edge so the cool→warm register shift
+          reads as a lighting change, not a hard cut. */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(220,160,80,0.18), transparent 70%)"
+            : "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(200,140,50,0.22), transparent 70%)",
+        }}
+      />
       {/* Decorative background elements — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
         {/* Pass 6 — Direction C luminance accent: warm gold, top-left (warm Direction B section) */}
