@@ -187,28 +187,54 @@ export default function BenefitsSection({
           className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3
-            className={`text-3xl sm:text-4xl font-bold mb-3 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-            style={{
-              textShadow: isLightAppearance
-                ? "0 1px 2px rgba(0,0,0,0.05)"
-                : "0 2px 8px rgba(0,0,0,0.3)",
-            }}
-          >
-            Why Choose{" "}
+          {/* Pass 13 — metallic-gold flanking accent extended to Benefits H3.
+              Benefits is the second warm Direction B section in the locked
+              palette (TrustStats got the same treatment in Pass 12). Cool
+              sections do not get gold per the locked Direction C palette
+              (gold belongs only to warm-register sections).
+              Hidden below sm: to avoid clutter on mobile. */}
+          <div className="flex items-center justify-center gap-3 sm:gap-5 mb-3">
             <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
-                background: `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.10) 25%, rgba(218,165,32,0.85) 60%, rgba(184,134,11,0.55) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(180,140,40,0.20) 25%, rgba(253,224,124,0.90) 60%, rgba(218,165,32,0.55) 85%, transparent 100%)",
+              }}
+            />
+            <h3
+              className={`text-3xl sm:text-4xl font-bold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+              style={{
+                textShadow: isLightAppearance
+                  ? "0 1px 2px rgba(0,0,0,0.05)"
+                  : "0 2px 8px rgba(0,0,0,0.3)",
               }}
             >
-              Bid
-            </span>
-            <span className="text-blue-500">On</span>
-            <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>Dent</span>?
-          </h3>
+              Why Choose{" "}
+              <span
+                style={{
+                  background: `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Bid
+              </span>
+              <span className="text-blue-500">On</span>
+              <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>Dent</span>?
+            </h3>
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
+              style={{
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.55) 15%, rgba(218,165,32,0.85) 40%, rgba(184,134,11,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(218,165,32,0.55) 15%, rgba(253,224,124,0.90) 40%, rgba(180,140,40,0.20) 75%, transparent 100%)",
+              }}
+            />
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-5 md:gap-6">
