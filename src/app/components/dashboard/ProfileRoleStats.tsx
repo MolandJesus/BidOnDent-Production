@@ -39,15 +39,15 @@ export default function ProfileRoleStats({
   isLightAppearance = false,
 }: ProfileRoleStatsProps) {
   const containerCls = isLightAppearance
-    ? "px-4 py-3 bg-slate-50/80 border-b border-slate-200/50"
-    : "px-4 py-3 bg-slate-800/30 border-b border-blue-200/15";
+    ? "px-4 py-3 bg-[linear-gradient(180deg,rgba(238,247,255,0.65)_0%,rgba(219,234,254,0.40)_100%)] border-b border-blue-200/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]"
+    : "px-4 py-3 bg-[linear-gradient(180deg,rgba(15,30,55,0.55)_0%,rgba(11,23,47,0.45)_100%)] border-b border-blue-400/15 shadow-[inset_0_1px_0_rgba(147,197,253,0.10)]";
   const valueCls = isLightAppearance
     ? "font-bold text-lg text-slate-800"
     : "font-bold text-lg text-slate-100";
   const labelCls = isLightAppearance ? "text-xs text-slate-500" : "text-xs text-blue-200/60";
   const footerBorderCls = isLightAppearance
-    ? "border-t border-slate-200/50"
-    : "border-t border-blue-200/15";
+    ? "border-t border-blue-200/35"
+    : "border-t border-blue-400/15";
   const footerTextCls = isLightAppearance ? "text-slate-500" : "text-blue-200/60";
   const footerValueCls = isLightAppearance
     ? "font-semibold text-slate-700"

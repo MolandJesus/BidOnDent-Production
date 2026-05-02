@@ -2,7 +2,7 @@
 
 **Authority:** PLAN-tier — future direction, not current truth. Each pass activates only when the owner greenlights it.
 **Last updated:** 2026-05-02
-**Status:** Pass D1 shipped (foundation: `bd-glass-card--dashboard` variant + `bd-section-eyebrow` + `bd-dashboard-atmosphere`). All 6 open questions answered/locked. Pass D2 gated on owner visual review of D1 on Vercel.
+**Status:** Pass D2 shipped (Tier 1 chrome material lift — header, sidebar, profile dropdown, notification center, role stats, market indicator, mobile bottom nav). Pass D3 gated on owner visual review of D2 on Vercel.
 **Scope:** All authenticated dashboard surfaces across all four roles (customer, shop, insurer, admin) — visible primary screens, hidden deep pages, modals, overlays, and onboarding. Auth screens (login modal) included since they're first-impression chrome.
 **Companion docs:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §9 inheritance rule, [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md) STATUS COMPLETE (the source quality bar this plan inherits without violating boundaries), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md), [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) for component map.
 
@@ -447,8 +447,8 @@ From [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md),
 - [x] Plan written 2026-05-02
 - [x] Owner reviews this plan, answers open questions (all 6 locked 2026-05-02), greenlights Pass D1
 - [x] **Pass D1 — Foundation shipped 2026-05-02** (commit pending; this commit). Three additions in [`src/styles/theme.css`](../src/styles/theme.css): `bd-glass-card--dashboard` variant (light + dark + hover), `bd-section-eyebrow` utility (light + dark), `bd-dashboard-atmosphere` overlay class (light + dark, no motion). One application: [`DashboardLayout.tsx`](../src/app/components/app/DashboardLayout.tsx) root gets the atmosphere overlay as a single absolute child behind content. Co-update: [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §7 now documents the three-tier card hierarchy + dashboard ambient layer + section eyebrow utility. **No page components touched (Tier 1+ is D2's job).**
-- [ ] **Pass D2 GATED on owner visual review of D1 on Vercel.** Tier 1 chrome (header + sidebar + dropdowns + notifications) — owner must visually verify D1 reads correctly in both light and dark before D2 starts.
-- [ ] Pass D3 — Customer HomeScreen + Report intake polish
+- [x] **Pass D2 — Tier 1 Chrome Material Lift shipped 2026-05-02** (commit pending; this commit). Seven chrome surfaces lifted: [`DashboardHeader.tsx`](../src/app/components/app/DashboardHeader.tsx) (search input amber→cool-blue, premium dropdowns, focus rings), [`DashboardSidebar.tsx`](../src/app/components/app/DashboardSidebar.tsx) (warm-cream light surface→cool-blue calm-workspace, lit-glass active nav state), [`ProfileDropdown.tsx`](../src/app/components/dashboard/ProfileDropdown.tsx) (panel material aligned to dashboard glass tier, cool-blue dividers), [`NotificationCenter.tsx`](../src/app/components/dashboard/NotificationCenter.tsx) (warm-cream panel→cool-blue dashboard glass, amber empty-state→lit-glass cool-blue plate), [`ProfileRoleStats.tsx`](../src/app/components/dashboard/ProfileRoleStats.tsx) (cool-blue gradient + inset highlight), [`MarketStatusIndicator.tsx`](../src/app/components/dashboard/MarketStatusIndicator.tsx) (small material polish), [`MobileBottomNav.tsx`](../src/app/components/dashboard/MobileBottomNav.tsx) (active state matched to sidebar quality bar). One co-update in [`theme.css`](../src/styles/theme.css) `bd-shell-header--light` (warm-cream inset→cool-blue inset). **Dead code skipped:** `dashboard/DesktopNavTabs.tsx` and `dashboard/DashboardHeader.tsx` confirmed unused (only barrel exports + stale comment). **No page components touched (D3+).** Build clean (`npx vite build` 3.30s).
+- [ ] **Pass D3 GATED on owner visual review of D2 on Vercel.** Customer HomeScreen + Report intake polish — including converting the orphaned amber/orange Report-intake pills ("Damage Report", "Damage zone", "Service radius", "Photo evidence") to cool-blue dashboard family per locked Q3.
 - [ ] Pass D4 — Customer Bids + Account + modals
 - [ ] Pass D5 — Shop Requests + Active Jobs + Onboarding
 - [ ] Pass D6 — Shop Directory + immersive map (largest pass; may split D6a/D6b)
@@ -472,4 +472,4 @@ When the dashboard premium lift is complete, mark this doc STATUS COMPLETE and a
 
 This plan respects the locked dashboard inheritance rule (no automotive register), inherits the landing's *quality* bar without imitating its *identity*, and scopes the work into safe incremental passes the owner can greenlight, review, and revert pass-by-pass.
 
-**Pre-execution. Awaiting owner direction on open questions + Pass D1 greenlight.**
+**D2 shipped. Awaiting owner visual review on Vercel before D3 greenlight.**

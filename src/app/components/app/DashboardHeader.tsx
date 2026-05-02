@@ -206,7 +206,7 @@ export default function DashboardHeader({
       ref={headerRef}
       className={`bd-shell-header sticky top-0 z-40 mx-1.5 mt-1.5 rounded-3xl border sm:mx-2 sm:mt-2 md:mx-3 md:mt-3 md:rounded-[2rem] ${
         isLightAppearance
-          ? "bd-shell-header--light border-[rgba(188,176,154,0.36)]"
+          ? "bd-shell-header--light border-[rgba(147,197,253,0.36)]"
           : "bd-shell-header--dark border-blue-400/[0.12]"
       }`}
     >
@@ -251,10 +251,10 @@ export default function DashboardHeader({
               className={`flex items-center gap-2 px-3 py-2 min-w-[260px] rounded-xl border transition-colors ${
                 searchOpen
                   ? isLightAppearance
-                    ? "border-amber-400/50 bg-white ring-2 ring-amber-300/25"
-                    : "border-blue-400/30 bg-white/[0.08] ring-2 ring-blue-400/15"
+                    ? "border-blue-400/50 bg-white ring-2 ring-blue-300/22 shadow-[0_2px_8px_rgba(59,130,246,0.10),inset_0_1px_0_rgba(255,255,255,0.85)]"
+                    : "border-blue-400/35 bg-white/[0.08] ring-2 ring-blue-400/18"
                   : isLightAppearance
-                    ? "border-stone-200/70 bg-amber-50/60 cursor-pointer hover:bg-amber-50/90"
+                    ? "border-blue-200/55 bg-white/72 cursor-pointer hover:bg-white/90 hover:border-blue-300/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]"
                     : "bd-glass-control--utility cursor-pointer"
               }`}
               onClick={() => {
@@ -312,10 +312,10 @@ export default function DashboardHeader({
             {/* Search results dropdown */}
             {searchOpen && searchQuery.length >= 2 && (
               <div
-                className={`absolute left-0 right-0 top-full mt-1 rounded-xl border shadow-xl overflow-hidden z-50 ${
+                className={`absolute left-0 right-0 top-full mt-1.5 rounded-xl overflow-hidden z-50 ${
                   isLightAppearance
-                    ? "border-slate-200/80 bg-white"
-                    : "border-blue-400/15 bg-[#0d1f35]"
+                    ? "border border-blue-200/45 bg-white/97 shadow-[0_18px_44px_rgba(15,23,42,0.12),0_4px_10px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,255,255,0.85)]"
+                    : "border border-blue-400/20 bg-[#0d1f35]/95 shadow-[0_18px_44px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.10)]"
                 }`}
               >
                 {searchResults.length === 0 ? (
@@ -367,7 +367,7 @@ export default function DashboardHeader({
                 setShowNotifications((current) => !current);
                 setShowTopProfileMenu(false);
               }}
-              className={`relative flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border transition-all ${isLightAppearance ? "border-slate-200/70 bg-white/60 hover:bg-white/80 hover:border-slate-300/60" : "border-blue-400/[0.10] bg-white/[0.04] hover:bg-white/[0.08] hover:border-blue-400/[0.18]"}`}
+              className={`relative flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 ${isLightAppearance ? "border-blue-200/55 bg-white/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] hover:bg-white/92 hover:border-blue-300/65" : "border-blue-400/[0.14] bg-white/[0.05] hover:bg-white/[0.09] hover:border-blue-400/[0.22] shadow-[inset_0_1px_0_rgba(147,197,253,0.06)]"}`}
               aria-label={
                 showNotifications
                   ? "Close notifications"
@@ -425,7 +425,7 @@ export default function DashboardHeader({
               aria-expanded={showTopProfileMenu}
               aria-haspopup="menu"
               aria-label={showTopProfileMenu ? "Close user profile menu" : "Open user profile menu"}
-              className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-full p-1 transition-colors hover:bg-blue-500/10 md:gap-2 md:pl-1.5 md:pr-2 md:py-1.5"
+              className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-full p-1 transition-colors hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 md:gap-2 md:pl-1.5 md:pr-2 md:py-1.5"
               type="button"
             >
               {userImageUrl ? (
@@ -463,10 +463,10 @@ export default function DashboardHeader({
                 id="dashboard-user-profile-menu"
                 role="menu"
                 aria-label="User profile menu"
-                className={`absolute right-0 mt-2 w-60 z-50 overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl ${isLightAppearance ? "bg-white/97 border-slate-200/70 shadow-slate-200/50" : "bd-glass-floating"}`}
+                className={`absolute right-0 mt-2 w-60 z-50 overflow-hidden rounded-2xl border backdrop-blur-xl ${isLightAppearance ? "border-blue-200/45 bg-white/97 shadow-[0_18px_44px_rgba(15,23,42,0.14),0_4px_10px_rgba(30,58,138,0.07),inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.20)]" : "border-blue-400/22 bg-[linear-gradient(180deg,rgba(11,23,47,0.94)_0%,rgba(8,18,38,0.90)_100%)] shadow-[0_22px_56px_rgba(2,6,23,0.50),inset_0_1px_0_rgba(147,197,253,0.14),0_0_0_1px_rgba(96,165,250,0.18)]"}`}
               >
                 <div
-                  className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-slate-200/70" : "border-blue-400/15"}`}
+                  className={`px-3 py-2.5 border-b ${isLightAppearance ? "border-blue-200/35" : "border-blue-400/15"}`}
                 >
                   <p
                     className={`text-sm font-semibold truncate ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}

@@ -70,14 +70,14 @@ export default function MobileBottomNav({
                 isActive
                   ? {
                       background: isLightAppearance
-                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.10) 0%, rgba(59, 130, 246, 0.06) 100%)"
+                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(96, 165, 250, 0.09) 100%)"
                         : "linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(59, 130, 246, 0.14) 100%)",
                       boxShadow: isLightAppearance
-                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.5)"
-                        : "inset 0 1px 0 rgba(148, 197, 255, 0.10)",
+                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.80), inset 0 -1px 0 rgba(147, 197, 253, 0.16), 0 4px 12px rgba(59, 130, 246, 0.10)"
+                        : "inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 4px 14px rgba(37, 99, 235, 0.16)",
                       border: isLightAppearance
-                        ? "1px solid rgba(37, 99, 235, 0.12)"
-                        : "1px solid rgba(96, 165, 250, 0.18)",
+                        ? "1px solid rgba(147, 197, 253, 0.32)"
+                        : "1px solid rgba(96, 165, 250, 0.22)",
                     }
                   : {}
               }
