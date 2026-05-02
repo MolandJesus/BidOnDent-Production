@@ -325,29 +325,35 @@ export default function HeroSection({
                     <span>{statement}</span>
                   </p>
                 ))}
-                {/* Carousel dots */}
-                <div className="absolute bottom-0 left-8 flex gap-1">
+                {/* Carousel dots — Pass 8 polish: larger, glow on active, clearer affordance */}
+                <div className="absolute bottom-0 left-8 flex gap-1.5">
                   {VALUE_STATEMENTS.map((_, i) => (
                     <button
                       key={i}
                       type="button"
                       aria-label={`Value ${i + 1}`}
-                      className="flex h-10 w-7 items-center justify-center"
+                      className="flex h-10 w-8 items-center justify-center"
                       onClick={() => setActiveValue(i)}
                     >
                       <span
                         className="rounded-full transition-all duration-300"
                         style={{
-                          width: activeValue === i ? "20px" : "7px",
-                          height: "7px",
+                          width: activeValue === i ? "24px" : "8px",
+                          height: "8px",
                           backgroundColor:
                             activeValue === i
                               ? isLightAppearance
                                 ? primaryColor
                                 : "#60a5fa"
                               : isLightAppearance
-                                ? "rgba(59,130,246,0.22)"
-                                : "rgba(96,165,250,0.28)",
+                                ? "rgba(59,130,246,0.40)"
+                                : "rgba(96,165,250,0.45)",
+                          boxShadow:
+                            activeValue === i
+                              ? isLightAppearance
+                                ? `0 0 12px ${primaryColor}66, 0 0 4px ${primaryColor}88`
+                                : "0 0 14px rgba(96,165,250,0.55), 0 0 6px rgba(96,165,250,0.35)"
+                              : "none",
                         }}
                       />
                     </button>
