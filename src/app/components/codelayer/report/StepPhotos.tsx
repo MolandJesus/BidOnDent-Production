@@ -82,7 +82,7 @@ export default function StepPhotos({
       {photos.length === 0 && (
         <div className="bd-report-section mb-4 sm:mb-6 px-3 py-6 sm:px-4 sm:py-10 text-center">
           <ImagePlus
-            className={`w-7 h-7 sm:w-8 sm:h-8 mx-auto mb-2 ${isLightAppearance ? "text-amber-500/70" : "text-blue-400/70"}`}
+            className={`w-7 h-7 sm:w-8 sm:h-8 mx-auto mb-2 ${isLightAppearance ? "text-blue-500/70" : "text-blue-400/70"}`}
           />
           <p
             className={`font-medium text-sm sm:text-base ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
@@ -144,7 +144,7 @@ export default function StepPhotos({
             className="bd-report-choice py-3 sm:py-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200"
           >
             <Camera
-              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
             />
             <span
               className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}
@@ -158,7 +158,7 @@ export default function StepPhotos({
             className="bd-report-choice py-3 sm:py-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200"
           >
             <Upload
-              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
+              className={`w-6 h-6 mb-1 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
             />
             <span
               className={`text-xs sm:text-sm font-medium ${isLightAppearance ? "text-slate-700" : "text-white/80"}`}

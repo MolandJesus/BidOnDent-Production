@@ -137,13 +137,7 @@ export default function HomeScreen({
             />
           )}
           <div className="min-w-0">
-            <p
-              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-                isLightAppearance ? "text-blue-700/70" : "text-blue-100/58"
-              }`}
-            >
-              {welcomeEyebrow}
-            </p>
+            <p className="bd-section-eyebrow mb-1.5">{welcomeEyebrow}</p>
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${

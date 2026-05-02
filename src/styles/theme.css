@@ -1844,71 +1844,72 @@ body {
   /* Page-level navy so frosted glass has a blue surface to blur over */
   background: radial-gradient(130% 90% at 30% 8%, #1e3660 0%, #182d52 52%, #122242 100%);
 
-  --bd-report-text-strong: #1a1510;
-  --bd-report-text-secondary: #504838;
-  --bd-report-text-tertiary: #78705e;
+  /* D3: cool-blue calm-workspace family (locked Q3 — converted from amber/cream) */
+  --bd-report-text-strong: #0f172a;
+  --bd-report-text-secondary: #334155;
+  --bd-report-text-tertiary: #64748b;
   --bd-report-shell-bg: linear-gradient(
     180deg,
-    rgba(255, 253, 248, 0.78) 0%,
-    rgba(250, 247, 240, 0.7) 100%
+    rgba(250, 252, 255, 0.84) 0%,
+    rgba(238, 247, 255, 0.74) 100%
   );
-  --bd-report-shell-border: rgba(200, 180, 150, 0.22);
+  --bd-report-shell-border: rgba(147, 197, 253, 0.32);
   --bd-report-shell-shadow:
-    0 24px 56px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(255, 225, 180, 0.16),
-    inset 0 1px 0 rgba(255, 255, 252, 0.96);
+    0 24px 56px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
   --bd-report-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(255, 215, 165, 0.07), transparent 65%),
-    linear-gradient(180deg, rgba(255, 253, 248, 0.72) 0%, rgba(250, 247, 240, 0.62) 100%);
-  --bd-report-panel-border: rgba(200, 180, 150, 0.18);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(96, 165, 250, 0.07), transparent 65%),
+    linear-gradient(180deg, rgba(250, 252, 255, 0.78) 0%, rgba(238, 247, 255, 0.66) 100%);
+  --bd-report-panel-border: rgba(147, 197, 253, 0.30);
   --bd-report-panel-shadow:
-    0 16px 34px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 252, 0.96),
-    0 0 0 1px rgba(255, 225, 180, 0.12), 0 0 40px rgba(255, 191, 105, 0.04);
+    0 16px 34px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.88),
+    0 0 0 1px rgba(191, 219, 254, 0.18), 0 0 40px rgba(59, 130, 246, 0.06);
   --bd-report-input-bg: linear-gradient(
     180deg,
-    rgba(255, 254, 250, 0.96) 0%,
-    rgba(252, 250, 244, 0.93) 100%
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(248, 251, 255, 0.93) 100%
   );
-  --bd-report-input-border: rgba(200, 180, 150, 0.35);
-  --bd-report-input-border-hover: rgba(200, 140, 60, 0.55);
-  --bd-report-input-placeholder: rgba(120, 105, 80, 0.5);
+  --bd-report-input-border: rgba(147, 197, 253, 0.42);
+  --bd-report-input-border-hover: rgba(59, 130, 246, 0.55);
+  --bd-report-input-placeholder: rgba(100, 116, 139, 0.55);
   --bd-report-input-shadow:
-    inset 0 1px 0 rgba(255, 255, 252, 0.98), inset 0 -10px 18px rgba(255, 235, 200, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -10px 18px rgba(191, 219, 254, 0.08),
     0 6px 16px rgba(15, 23, 42, 0.07);
   --bd-report-choice-bg: linear-gradient(
     180deg,
-    rgba(255, 253, 248, 0.94) 0%,
-    rgba(250, 247, 240, 0.9) 100%
+    rgba(250, 252, 255, 0.94) 0%,
+    rgba(238, 247, 255, 0.88) 100%
   );
-  --bd-report-choice-border: rgba(200, 180, 150, 0.28);
+  --bd-report-choice-border: rgba(147, 197, 253, 0.34);
   --bd-report-choice-active-bg: linear-gradient(
     180deg,
-    rgba(255, 243, 218, 0.96) 0%,
-    rgba(250, 235, 205, 0.93) 100%
+    rgba(219, 234, 254, 0.95) 0%,
+    rgba(191, 219, 254, 0.85) 100%
   );
-  --bd-report-choice-active-border: rgba(200, 140, 60, 0.55);
+  --bd-report-choice-active-border: rgba(59, 130, 246, 0.55);
   --bd-report-note-bg: linear-gradient(
     180deg,
-    rgba(255, 248, 235, 0.94) 0%,
-    rgba(248, 240, 222, 0.9) 100%
+    rgba(238, 247, 255, 0.92) 0%,
+    rgba(219, 234, 254, 0.82) 100%
   );
-  --bd-report-note-border: rgba(220, 175, 100, 0.32);
+  --bd-report-note-border: rgba(96, 165, 250, 0.36);
   --bd-report-pill-bg: linear-gradient(
     180deg,
-    rgba(255, 248, 235, 0.72) 0%,
-    rgba(248, 240, 222, 0.6) 100%
+    rgba(219, 234, 254, 0.78) 0%,
+    rgba(191, 219, 254, 0.62) 100%
   );
-  --bd-report-pill-border: rgba(230, 190, 130, 0.2);
-  --bd-report-pill-text: #6b4a1f;
-  --bd-report-divider: rgba(200, 180, 150, 0.16);
+  --bd-report-pill-border: rgba(96, 165, 250, 0.36);
+  --bd-report-pill-text: #1e3a8a;
+  --bd-report-divider: rgba(147, 197, 253, 0.26);
   --bd-report-secondary-bg: linear-gradient(
     180deg,
-    rgba(255, 253, 248, 0.76) 0%,
-    rgba(250, 247, 240, 0.68) 100%
+    rgba(250, 252, 255, 0.82) 0%,
+    rgba(238, 247, 255, 0.72) 100%
   );
-  --bd-report-secondary-border: rgba(200, 180, 150, 0.2);
-  --bd-report-secondary-text: #2a200e;
+  --bd-report-secondary-border: rgba(147, 197, 253, 0.30);
+  --bd-report-secondary-text: #0f172a;
   --bd-report-secondary-shadow:
-    0 12px 26px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 252, 0.96);
+    0 12px 26px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 .bd-report-header,
@@ -1958,19 +1959,19 @@ body {
 
 [data-appearance-mode="light"] .bd-report-header {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 215, 165, 0.06), transparent 70%),
-    linear-gradient(180deg, rgba(255, 253, 248, 0.78) 0%, rgba(250, 247, 240, 0.72) 100%);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(96, 165, 250, 0.07), transparent 70%),
+    linear-gradient(180deg, rgba(250, 252, 255, 0.84) 0%, rgba(238, 247, 255, 0.76) 100%);
   backdrop-filter: blur(28px) saturate(1.4);
   -webkit-backdrop-filter: blur(28px) saturate(1.4);
   box-shadow:
-    0 16px 42px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 252, 0.96),
-    0 0 0 1px rgba(255, 225, 180, 0.12);
+    0 16px 42px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 0 0 1px rgba(191, 219, 254, 0.22);
 }
 
 [data-appearance-mode="light"] .bd-report-header::before,
 [data-appearance-mode="light"] .bd-report-progress::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 220, 170, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.55), transparent);
 }
 
 [data-appearance-mode="light"] .bd-report-header::after,
@@ -1978,14 +1979,14 @@ body {
   opacity: 0;
 }
 
-/* Warm highlight line for sections in light mode */
+/* Cool-blue highlight line for sections in light mode (D3: was warm amber) */
 [data-appearance-mode="light"] .bd-report-section::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 215, 165, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.55), transparent);
 }
 
-/* Warm radial glow blob for sections in light mode */
+/* Cool-blue radial glow blob for sections in light mode (D3: was warm amber) */
 [data-appearance-mode="light"] .bd-report-section::after {
-  background: radial-gradient(circle, rgba(255, 200, 130, 0.1) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.10) 0%, transparent 72%);
 }
 
 .bd-report-progress {
@@ -1996,10 +1997,10 @@ body {
 }
 
 [data-appearance-mode="light"] .bd-report-progress {
-  background: linear-gradient(180deg, rgba(255, 253, 248, 0.74) 0%, rgba(250, 247, 240, 0.68) 100%);
+  background: linear-gradient(180deg, rgba(250, 252, 255, 0.80) 0%, rgba(238, 247, 255, 0.72) 100%);
   backdrop-filter: blur(28px) saturate(1.4);
   -webkit-backdrop-filter: blur(28px) saturate(1.4);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 252, 0.9);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
 }
 
 .bd-report-shell {
@@ -2056,7 +2057,7 @@ body {
   box-shadow:
     0 16px 30px rgba(2, 6, 23, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 0 24px rgba(180, 120, 40, 0.08);
+    0 0 24px rgba(59, 130, 246, 0.10);
 }
 
 .bd-report-choice--active {
@@ -2065,8 +2066,8 @@ body {
   box-shadow:
     0 20px 34px rgba(2, 6, 23, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 1px rgba(200, 140, 60, 0.22),
-    0 0 28px rgba(180, 120, 40, 0.1);
+    0 0 0 1px rgba(96, 165, 250, 0.28),
+    0 0 28px rgba(59, 130, 246, 0.14);
 }
 
 .bd-report-input {
