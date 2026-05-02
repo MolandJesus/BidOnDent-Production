@@ -961,6 +961,64 @@ body {
   border-color: rgba(147, 197, 253, 0.85);
 }
 
+/* Dashboard variant — calm-workspace card. Stronger material than base bd-glass-card
+   so light-mode dashboard surfaces stop reading as washed-out, but quieter than
+   --landing (no premium-marketing-anchor energy). Smaller hover lift (2px vs 6px)
+   because workspace cards are not marketing CTAs. Dark variant lives in dark block. */
+.bd-glass-card--dashboard {
+  border-color: rgba(147, 197, 253, 0.42);
+  background: linear-gradient(180deg, rgba(250, 252, 255, 0.84) 0%, rgba(238, 247, 255, 0.62) 100%);
+  box-shadow:
+    0 14px 32px rgba(15, 23, 42, 0.10),
+    0 4px 10px rgba(30, 58, 138, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.10),
+    0 0 0 1px rgba(191, 219, 254, 0.20),
+    0 0 28px rgba(59, 130, 246, 0.06);
+}
+
+.bd-glass-card--dashboard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(147, 197, 253, 0.65);
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.12),
+    0 6px 14px rgba(30, 58, 138, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.14),
+    0 0 0 1px rgba(147, 197, 253, 0.32),
+    0 0 36px rgba(59, 130, 246, 0.10);
+}
+
+/* Section eyebrow — small-caps tracked label for dashboard section anchors
+   ("REPAIR OVERVIEW", "YOUR DASHBOARD", "REPAIR ACTIVITY"). Editorial typography,
+   no flanking strokes (those are landing-only Pass 12-15). Apply to span/div
+   directly above the section heading. */
+.bd-section-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(29, 78, 216);
+  display: inline-block;
+}
+
+/* Dashboard ambient layer — single subtle top-anchored radial glow. Apply as a
+   positioned child div inside a relative container. Lighter than landing's
+   bd-bloom-atmosphere; no motion, no scroll-entry, no section alternation.
+   Adds workspace dimensional feel, not decoration. 5-7% peak opacity by design. */
+.bd-dashboard-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      rgba(96, 165, 250, 0.05) 0%,
+      transparent 70%
+    );
+  z-index: 0;
+}
+
 /* Atmosphere bloom — opacity + scale transition driven by useScrollAnimation.
    Wrap a section's existing atmosphere layers in <div class="bd-bloom-atmosphere is-hidden">
    and toggle to is-visible when the section enters the viewport.
@@ -1304,6 +1362,55 @@ body {
     inset 0 -1px 0 rgba(180, 100, 30, 0.16),
     0 0 0 1px rgba(253, 200, 130, 0.42),
     0 0 56px rgba(220, 130, 50, 0.30);
+}
+
+/* Dashboard variant — dark mode. Follows the canonical Dark Shell pattern documented
+   in MOLANDJESUS_DESIGN_DECISIONS.md "Established Dark Glass Pattern" section
+   (linear-gradient navy 0.82-0.84 → 0.78-0.80, blue-300 borders at 0.18-0.24).
+   Stronger inset highlight + ambient blue glow than base bd-glass-card; calmer
+   than --landing (no premium marketing-anchor glow tier). */
+.dark .bd-glass-card--dashboard,
+[data-theme="dark"] .bd-glass-card--dashboard {
+  border-color: rgba(96, 165, 250, 0.26);
+  background: linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.78) 100%);
+  box-shadow:
+    0 14px 32px rgba(2, 6, 23, 0.36),
+    inset 0 1px 0 rgba(147, 197, 253, 0.14),
+    inset 0 -1px 0 rgba(59, 130, 246, 0.06),
+    0 0 0 1px rgba(96, 165, 250, 0.22),
+    0 0 28px rgba(37, 99, 235, 0.10);
+}
+
+.dark .bd-glass-card--dashboard:hover,
+[data-theme="dark"] .bd-glass-card--dashboard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(147, 197, 253, 0.40);
+  box-shadow:
+    0 18px 40px rgba(2, 6, 23, 0.46),
+    inset 0 1px 0 rgba(147, 197, 253, 0.20),
+    inset 0 -1px 0 rgba(59, 130, 246, 0.08),
+    0 0 0 1px rgba(147, 197, 253, 0.32),
+    0 0 36px rgba(37, 99, 235, 0.16);
+}
+
+/* Section eyebrow — dark mode. Soft blue tint that reads against dark navy without
+   competing with section headings. */
+.dark .bd-section-eyebrow,
+[data-theme="dark"] .bd-section-eyebrow {
+  color: rgb(147, 197, 253);
+}
+
+/* Dashboard ambient layer — dark mode. Slightly higher opacity (7% vs light 5%) so
+   the top-anchored glow registers against deeper navy. Still well below landing's
+   atmosphere strength. */
+.dark .bd-dashboard-atmosphere,
+[data-theme="dark"] .bd-dashboard-atmosphere {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% 0%,
+      rgba(59, 130, 246, 0.07) 0%,
+      transparent 70%
+    );
 }
 
 .dark .bd-glass-badge,

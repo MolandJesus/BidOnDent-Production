@@ -2,7 +2,7 @@
 
 **Authority:** PLAN-tier — future direction, not current truth. Each pass activates only when the owner greenlights it.
 **Last updated:** 2026-05-02
-**Status:** Plan drafted; awaiting owner greenlight on Pass 1.
+**Status:** Pass D1 shipped (foundation: `bd-glass-card--dashboard` variant + `bd-section-eyebrow` + `bd-dashboard-atmosphere`). All 6 open questions answered/locked. Pass D2 gated on owner visual review of D1 on Vercel.
 **Scope:** All authenticated dashboard surfaces across all four roles (customer, shop, insurer, admin) — visible primary screens, hidden deep pages, modals, overlays, and onboarding. Auth screens (login modal) included since they're first-impression chrome.
 **Companion docs:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §9 inheritance rule, [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md) STATUS COMPLETE (the source quality bar this plan inherits without violating boundaries), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md), [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) for component map.
 
@@ -410,19 +410,21 @@ Per [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) § Co-Update Rules:
 
 ---
 
-## Open Questions (gate specific passes)
+## Open Questions — ALL ANSWERED / LOCKED (2026-05-02, owner-authorized)
 
-1. **Should the dashboard get its own subtle atmospheric base layer at all, or stay solid?** Landing taught us atmosphere creates premium perception. But dashboard is workspace — atmosphere could feel decorative. Recommendation: ship Pass D1 with very-low-opacity (5–7%) atmospheric base; if it reads as decoration, dial to 0 in D12 polish. **Owner gate before D2.**
+All six gating questions are resolved. Answers are binding on every subsequent pass; do not re-litigate.
 
-2. **Should `bd-glass-card--dashboard` be a separate variant or just refine `bd-glass-card` base?** Recommendation: separate variant (parallel to `--landing`). Keeps the base class quiet for non-dashboard dashboard-equivalents (modals on landing, etc.). **Owner gate before D1.**
+1. **Atmospheric base layer:** ✅ YES at **5–7% peak opacity**. Subtle radial, cool-blue, top-anchored. No motion. No section alternation. Shipped in D1 as `bd-dashboard-atmosphere` utility class applied at `DashboardLayout` root, sitting atop the existing layered `DashboardAtmosphere` component. If it reads decorative in D12, dial to 0 then — not before.
 
-3. **Should the Report intake "Damage Report" / "Damage zone" / amber pill colors be cool-bluefamily, OR are they intentionally amber to evoke "this is the damage section, warm = warning"?** Recommendation: cool-blue family for consistency, with the cool-blue active state on the zone selector being clearly distinct. The amber feels orphaned because nothing else in the dashboard uses it. **Owner gate before D3.**
+2. **`bd-glass-card--dashboard` variant strategy:** ✅ SEPARATE variant (do NOT mutate base `bd-glass-card`). Parallel to `--landing` and `--landing-warm`. Three-tier card hierarchy now documented in `MOLANDJESUS_DESIGN_DECISIONS.md` §7. Shipped in D1.
 
-4. **Should the Shop Directory immersive map get the Coverage Map Dialog quality bar from landing?** That dialog is landing's signature surface. The shop directory is a separate map experience. Recommendation: yes match the *quality* bar (premium glass shell, atmospheric overlays at low opacity, refined controls), but not the *automotive* identity (no topographic rings, etc.). **Owner gate before D6.**
+3. **Report-intake amber/orange pills** ("Damage Report", "Damage zone", "Service radius", "Photo evidence"): ✅ Convert to **cool-blue dashboard family**. Amber is landing-only register and feels orphaned in the dashboard. **Scope: D3, NOT D1.** Do not touch in D1.
 
-5. **Mobile vs desktop scope per pass?** Landing was desktop-first with mobile as a verification gate. Dashboard mobile is more complex (mobile bottom nav, immersive map mobile drawer, etc.). Recommendation: every pass touches both modes; D12 is a dedicated mobile-breakpoint sweep. **Confirm before D1.**
+4. **Shop Directory immersive map quality bar:** ✅ YES match Coverage Map Dialog *quality* tier. Quality, not identity. No automotive cues, no topographic rings, no warm garage lighting transferred. **Scope: D6, NOT D1.**
 
-6. **Does the user want a separate "audit doc" alongside this plan**, or is this plan + the screenshots audit enough? Landing had a separate `landing_design_audit_2026-05-02.md`. Recommendation: this plan's Audit Findings section is enough — no separate doc needed for dashboard. **Confirm before D1.**
+5. **Mobile + desktop scope per pass:** ✅ Every pass touches both. D12 is a dedicated breakpoint sweep, but mobile cannot wait until the end because dashboard mobile is too interaction-heavy.
+
+6. **Separate audit doc:** ✅ NO. This plan's Audit Findings section is sufficient. No separate audit doc to be created for dashboard.
 
 ---
 
@@ -442,10 +444,10 @@ From [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md),
 
 ## Status / First Action
 
-- [ ] Plan written 2026-05-02
-- [ ] Owner reviews this plan, answers open questions, greenlights Pass D1
-- [ ] Pass D1 — Foundation (`bd-glass-card--dashboard` variant + atmospheric base + section eyebrow utility)
-- [ ] Pass D2 — Tier 1 chrome (header + sidebar + dropdowns + notifications)
+- [x] Plan written 2026-05-02
+- [x] Owner reviews this plan, answers open questions (all 6 locked 2026-05-02), greenlights Pass D1
+- [x] **Pass D1 — Foundation shipped 2026-05-02** (commit pending; this commit). Three additions in [`src/styles/theme.css`](../src/styles/theme.css): `bd-glass-card--dashboard` variant (light + dark + hover), `bd-section-eyebrow` utility (light + dark), `bd-dashboard-atmosphere` overlay class (light + dark, no motion). One application: [`DashboardLayout.tsx`](../src/app/components/app/DashboardLayout.tsx) root gets the atmosphere overlay as a single absolute child behind content. Co-update: [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §7 now documents the three-tier card hierarchy + dashboard ambient layer + section eyebrow utility. **No page components touched (Tier 1+ is D2's job).**
+- [ ] **Pass D2 GATED on owner visual review of D1 on Vercel.** Tier 1 chrome (header + sidebar + dropdowns + notifications) — owner must visually verify D1 reads correctly in both light and dark before D2 starts.
 - [ ] Pass D3 — Customer HomeScreen + Report intake polish
 - [ ] Pass D4 — Customer Bids + Account + modals
 - [ ] Pass D5 — Shop Requests + Active Jobs + Onboarding
