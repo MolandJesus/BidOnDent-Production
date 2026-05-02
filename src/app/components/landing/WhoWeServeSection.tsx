@@ -217,21 +217,21 @@ export default function WhoWeServeSection({
             >
               <div className="mb-4">
                 <div
-                  className="inline-flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg shadow-sm"
+                  className="inline-flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg"
                   style={{
                     backgroundColor: isLightAppearance
-                      ? `${card.iconBg}14`
-                      : `${card.iconBgDark}28`,
+                      ? `${card.iconBg}1A`
+                      : `${card.iconBgDark}33`,
                     border: isLightAppearance
-                      ? `1.5px solid ${card.iconBg}30`
-                      : `1.5px solid ${card.iconBgDark}55`,
+                      ? `1.5px solid ${card.iconBg}3D`
+                      : `1.5px solid ${card.iconBgDark}66`,
                     boxShadow: isLightAppearance
-                      ? `0 4px 16px ${card.iconBg}24, 0 0 22px ${card.iconBg}12`
-                      : `0 0 16px ${card.iconBgDark}33`,
+                      ? `0 6px 22px ${card.iconBg}30, 0 0 30px ${card.iconBg}1A, inset 0 1px 0 rgba(255,255,255,0.65)`
+                      : `0 0 24px ${card.iconBgDark}55, inset 0 1px 0 ${card.iconBgDark}33, inset 0 -1px 0 rgba(2,6,23,0.30)`,
                   }}
                 >
                   <card.icon
-                    className="w-6 h-6"
+                    className="w-7 h-7"
                     style={{ color: isLightAppearance ? card.iconBg : card.iconBgDark }}
                   />
                 </div>
@@ -241,15 +241,25 @@ export default function WhoWeServeSection({
               >
                 {card.title}
               </h4>
-              <ul className="space-y-2.5">
+              <ul className="space-y-2">
                 {card.items.map((item, i) => (
-                  <li key={i} className="flex items-start">
-                    <CheckCircle2
-                      className="w-4 h-4 mr-2 mt-0.5 flex-shrink-0"
-                      style={{ color: isLightAppearance ? card.checkColor : card.checkColorDark }}
+                  <li
+                    key={i}
+                    className={`flex items-start gap-2 rounded-lg px-2 py-1.5 -mx-2 transition-colors duration-200 ${isLightAppearance ? "hover:bg-[rgba(56,189,248,0.06)]" : "hover:bg-[rgba(96,165,250,0.06)]"}`}
+                  >
+                    <span
+                      className="flex-shrink-0 mt-1 w-2 h-2 rounded-full"
+                      style={{
+                        backgroundColor: isLightAppearance
+                          ? card.checkColor
+                          : card.checkColorDark,
+                        boxShadow: isLightAppearance
+                          ? `0 0 8px ${card.checkColor}66`
+                          : `0 0 10px ${card.checkColorDark}88`,
+                      }}
                     />
                     <span
-                      className={`text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
+                      className={`text-sm leading-snug ${isLightAppearance ? "text-slate-600" : "text-blue-100/75"}`}
                     >
                       {item}
                     </span>

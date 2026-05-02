@@ -701,8 +701,8 @@ The order below is binding. Atmosphere consistency comes before color identity c
 - [x] Pass 5 — Restrained Premium Motion (committed `4e58a929`, scroll-driven parallax on large blur pools)
 - [x] Pass 6 — Automotive Identity + Direction C Luminance Accents (committed `79b5441a`)
 - [x] Pass 7 — Polish-then-sign-off cleanup (committed `28ae7a52`, merged to main `79ad21b7`)
-- [x] Pass 8 — Branch B activation + hero carousel polish (code complete 2026-05-02, this commit)
-- [ ] Pass 9 — Section card material strength (WhoWeServe role cards + AboutOpportunity dark accordion cards + TrustStats migration to warm variant)
+- [x] Pass 8 — Branch B activation + hero carousel polish (committed `9b9477d0`, merged to main `be2d78d9`)
+- [x] Pass 9 — Section card material strength (code complete 2026-05-02, this commit)
 - [ ] Pass 10 — Section transition fade strips at warm/cool boundaries (HowItWorks→Benefits, AboutOpportunity→TrustStats, TrustStats→Coverage)
 - [ ] Pass 11 — Marketing density polish (BusinessInquiry visual weight, Coverage section calm-preview mode, "No shops within 20 miles" empty state upgrade)
 - [ ] Bug investigation (separate from polish): "Real nearby places: Load failed" in CoverageMapDialog Explore view — likely placeDiscovery API issue, not design
@@ -741,12 +741,40 @@ Activates the deferred Branch B and polishes the hero carousel.
 - **Benefits photo cards swapped to `--landing-warm`.** Now read as warm-cream lit-glass on warm-ivory section in light mode, and warm-amber lit-glass on the warm Direction B register in dark mode. Resolves the most visible weak spot in light mode.
 - **Hero carousel dot polish.** Active dot expands to 24×8px pill with subtle royal-blue glow shadow. Inactive dots: 8×8px circle at 40% opacity (was 7×7px at 22-28%). Larger touch target preserved. Visible navigation affordance restored.
 
+### Pass 9 outcome notes (this commit)
+
+Triggered by post-Pass-8 owner walk endorsement ("Pass 9 go") via two-pass ChatGPT review. Tightly scoped to **section card material strength** without adding content or imagery. Three changes:
+
+- **WhoWeServe role cards** — strengthened the icon plates and made the checklist rows feel intentional:
+  - Icon plate `w-12 h-12 rounded-xl` → `w-14 h-14 rounded-2xl`; icon `w-6` → `w-7`. Stronger box-shadow (light: `0 6px 22px / 0 0 30px` glow, was `0 4px 16px / 0 0 22px`; dark: `0 0 24px` glow up from `0 0 16px`). Added inset highlight `inset 0 1px 0 rgba(255,255,255,0.65)` (light) / `inset 0 1px 0 ${iconBgDark}33, inset 0 -1px 0 rgba(2,6,23,0.30)` (dark) so plates read as lit-glass tiles, not flat fills.
+  - Checklist rows now use a 2px filled circle bullet with brand-color glow (`box-shadow 0 0 8-10px ${color}66-88`) instead of the outlined `CheckCircle2` icon. Rows have subtle hover backdrop `rgba(56,189,248,0.06)` (light) / `rgba(96,165,250,0.06)` (dark) to reinforce that they're a structured list, not plain text. Tighter `gap-2` + `rounded-lg` row chrome.
+  - Stronger text: row text `text-slate-500` → `text-slate-600` (light), `text-blue-100/65` → `text-blue-100/75` (dark) for legibility.
+- **AboutOpportunity accordion cards** — added a dark-mode "lit from within" treatment:
+  - New inset radial highlight div as first child of each card: `radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96,165,250,0.06-0.10), transparent 70%)`. Visible behind content via `relative z-` + `pointer-events-none`. Reads as a soft top-down lit-glass surface in dark mode (and gentle on light).
+  - Icon plate scaled up: `w-12 h-12 rounded-[1rem]` → `w-14 h-14 rounded-2xl`; icon `w-6` → `w-7`. Stronger glow + inset highlight matching WhoWeServe pattern (so the two sections share the same icon-plate confidence).
+  - Existing cards already used `bd-glass-card bd-glass-card--landing`; this pass strengthens the inner surface so the `--landing` glass plate is fully expressed instead of feeling outlined.
+- **TrustStats class migration to `bd-glass-card--landing-warm`** — architectural cleanup. Inline gradient/shadow/hover preserve from Pass 7 still wins (no visual change), but the class marker now correctly indicates the warm Direction B register. Future agents grepping for `bd-glass-card--landing-warm` will find both Benefits and TrustStats — the two warm-register sections — together. Per ChatGPT guardrail "if migration weakens it, do not force the migration": no visual weakening, just marker accuracy.
+
+What Pass 9 deliberately did NOT do (per ChatGPT scope discipline):
+
+- No imagery, no new content, no structural refactors
+- Coverage section untouched (separate UX pass per Pass 11)
+- Benefits cards untouched (Pass 8 already landed warm variant)
+- HowItWorks untouched (already strong)
+- No new global CSS variants (Pass 8's `--landing-warm` is enough; resisted creating `--landing-rich` etc.)
+
+Build verified clean: vite production build, no errors. Pre-existing CSS warnings on duplicate `[data-appearance-mode="light"]` selectors remain unchanged tech debt.
+
 ### Outstanding items / future passes
 
-- Pass 9 — section card material strength
-- Pass 10 — section transition fade strips
-- Pass 11 — marketing density polish
-- Investigation — "Real nearby places: Load failed" in CoverageMapDialog (separate from design)
+- Pass 10 — section transition fade strips at warm/cool boundaries (HowItWorks→Benefits, Benefits→WhoWeServe, AboutOpportunity→TrustStats, TrustStats→Coverage)
+- Pass 11 — marketing density polish:
+  - BusinessInquiry visual weight (the two action rows feel underdeveloped for the importance of shop/insurer onboarding)
+  - Coverage section marketing relief (long flagship demo is OK; needs less "dashboard dropped in" feel — possibly tiny trust labels or clearer empty-state framing)
+  - "No shops within 20 miles" empty-state visual upgrade
+  - Coverage WebGL fallback verification post-Pass 7 fix
+  - Light mode richness pass (warmer, more dimensional, while staying soft/sunny — never loud)
+- Investigation (separate from design) — "Real nearby places: Load failed" in CoverageMapDialog Explore view; treat as reliability bug, not visual polish
 
 
 ### Pass 7 outcome notes (code-complete, awaiting owner walk)
