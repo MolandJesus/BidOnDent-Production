@@ -233,7 +233,9 @@ export default function CoverageMapDialog({
       >
         <DialogClose
           className={cn(
-            "absolute right-3 top-[calc(env(safe-area-inset-top,0px)+0.75rem)] z-[590] inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95 sm:right-4 sm:top-4 sm:h-11 sm:w-11",
+            // z-[620] keeps the close X above the mobile bottom sheet (z-[610])
+            // so it stays tappable even when the sheet is at its FULL snap.
+            "absolute right-3 top-[calc(env(safe-area-inset-top,0px)+0.75rem)] z-[620] inline-flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-xl transition-all hover:scale-105 active:scale-95 sm:right-4 sm:top-4 sm:h-11 sm:w-11",
             tone === "light"
               ? "border-white/80 bg-white/90 text-slate-700 shadow-[0_8px_24px_rgba(15,23,42,0.18)]"
               : "border-white/15 bg-slate-950/85 text-white shadow-[0_8px_24px_rgba(2,6,23,0.38)]"
@@ -309,6 +311,7 @@ export default function CoverageMapDialog({
             onExportDirections={onExportDirections}
             onStartNavigation={handleStartNavigation}
             onRetryPartnerShops={onRetryPartnerShops}
+            onCloseDialog={() => onOpenChange(false)}
           />
         )}
       </DialogContent>

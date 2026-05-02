@@ -57,6 +57,7 @@ export default function CoverageBrowseExperience({
   onOpenBidOnDentNavigation,
   onStartNavigation,
   onRetryPartnerShops,
+  onCloseDialog,
 }: CoverageBrowseExperienceProps) {
   const theme = getMapSurfaceTheme(tone, true);
   const savedNavigation = useSavedNavigationLocations();
@@ -449,7 +450,9 @@ export default function CoverageBrowseExperience({
       </div>
 
       {!isDesktop ? (
-        <MobileMapBottomSheet tone={tone}>{sidebarContent}</MobileMapBottomSheet>
+        <MobileMapBottomSheet tone={tone} onCloseMap={onCloseDialog}>
+          {sidebarContent}
+        </MobileMapBottomSheet>
       ) : null}
     </div>
   );

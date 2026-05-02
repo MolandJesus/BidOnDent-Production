@@ -43,6 +43,9 @@ export type CoverageBrowseExperienceProps = {
   onExportDirections: (shop: CoveragePartnerShop) => void;
   onStartNavigation: () => void;
   onRetryPartnerShops?: () => void;
+  /** Closes the parent map dialog. Passed through to MobileMapBottomSheet so
+   *  the user has a discoverable exit when the sheet covers the dialog's X. */
+  onCloseDialog?: () => void;
 };
 
 export function resolveInitialSidebarView({
