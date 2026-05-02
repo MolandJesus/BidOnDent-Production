@@ -130,19 +130,19 @@ If a user requests work that conflicts with LAW → AI must flag the conflict
 
 ## Co-Update Rules
 
-| Trigger                                  | Must update together                                                                                |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| New migration applied                    | `REF_SYSTEM_STATE.md` (if architecture-affecting)                                                   |
-| New endpoint added                       | `REF_SYSTEM_STATE.md`                                                                               |
-| Module completed                         | `REF_MODULE_STATUS.md`                                                                              |
-| Bug found                                | `REF_KNOWN_ISSUES.md`                                                                               |
-| Bug fixed                                | `REF_KNOWN_ISSUES.md` (mark resolved)                                                               |
-| Architecture changed                     | `REF_SYSTEM_STATE.md` + `LAW_PROJECT_RULES.md` (if a rule changes)                                  |
-| Design system changed                    | `REF_SYSTEM_STATE.md` § Design System                                                               |
-| New persisted media URL column added     | Hydrate via `hydrateSignedStorageUrl()` and document in `SUPABASE_SETUP_GUIDE.md` §16               |
-| Edge function deploy                     | Verify `verify_jwt: false` is preserved (see `SUPABASE_SETUP_GUIDE.md` §17). Never use `--verify-jwt` |
-| New reusable AI pattern surfaced         | Add as a skill in `~/.claude/skills/` and reference from `AGENTS.md` / `CLAUDE.md`                  |
-| Document superseded                      | Move old doc to `docs/archive/` with date suffix                                                    |
+| Trigger                              | Must update together                                                                                  |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| New migration applied                | `REF_SYSTEM_STATE.md` (if architecture-affecting)                                                     |
+| New endpoint added                   | `REF_SYSTEM_STATE.md`                                                                                 |
+| Module completed                     | `REF_MODULE_STATUS.md`                                                                                |
+| Bug found                            | `REF_KNOWN_ISSUES.md`                                                                                 |
+| Bug fixed                            | `REF_KNOWN_ISSUES.md` (mark resolved)                                                                 |
+| Architecture changed                 | `REF_SYSTEM_STATE.md` + `LAW_PROJECT_RULES.md` (if a rule changes)                                    |
+| Design system changed                | `REF_SYSTEM_STATE.md` § Design System                                                                 |
+| New persisted media URL column added | Hydrate via `hydrateSignedStorageUrl()` and document in `SUPABASE_SETUP_GUIDE.md` §16                 |
+| Edge function deploy                 | Verify `verify_jwt: false` is preserved (see `SUPABASE_SETUP_GUIDE.md` §17). Never use `--verify-jwt` |
+| New reusable AI pattern surfaced     | Add as a skill in `~/.claude/skills/` and reference from `AGENTS.md` / `CLAUDE.md`                    |
+| Document superseded                  | Move old doc to `docs/archive/` with date suffix                                                      |
 
 ---
 

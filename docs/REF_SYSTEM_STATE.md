@@ -20,13 +20,13 @@
 
 Before starting work, read docs in this order based on task type:
 
-| Task                                | Reading order                                                                                                      |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **Bug fix**                         | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code                                                   |
-| **Feature (within hardening plan)** | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code                                                 |
+| Task                                | Reading order                                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Bug fix**                         | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code                                   |
+| **Feature (within hardening plan)** | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code                                 |
 | **Architecture change**             | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `PLAN_POST_LAUNCH_ROADMAP.md` → code |
-| **Planning session**                | All LAW → all REF → all PLAN → code as needed                                                                      |
-| **UI/design work**                  | `LAW_PROJECT_RULES.md` → this doc → `theme.css` → code                                                             |
+| **Planning session**                | All LAW → all REF → all PLAN → code as needed                                                      |
+| **UI/design work**                  | `LAW_PROJECT_RULES.md` → this doc → `theme.css` → code                                             |
 
 **If this doc and `LAW_HARDENING_PLAN.md` disagree, the Hardening Plan wins.** Flag the conflict.
 
@@ -357,13 +357,13 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 ## 10. Authoritative Documents After This Rewrite
 
-| Document                                                | Authority                                            | Use when                                                  |
-| ------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------- |
-| `docs/LAW_PROJECT_RULES.md`                             | Permanent behavioral rules                           | Every session — governs what to do and not do             |
-| `docs/LAW_HARDENING_PLAN.md`                            | Execution authority for hardening phase              | Every execution session — governs current work            |
-| `docs/REF_SYSTEM_STATE.md` (this doc)                   | Current system truth                                 | Understanding architecture before making changes          |
-| `docs/REF_KNOWN_ISSUES.md`                              | Known bugs and gaps                                  | Before starting work on any area — check for known issues |
-| `docs/REF_MODULE_STATUS.md` | Module status (to be rewritten as REF_MODULE_STATUS) | Checking what's done                                      |
-| `docs/PLAN_POST_LAUNCH_ROADMAP.md`      | Deferred work (to be moved to PLAN tier)             | Checking if something is deferred                         |
+| Document                              | Authority                                            | Use when                                                  |
+| ------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------- |
+| `docs/LAW_PROJECT_RULES.md`           | Permanent behavioral rules                           | Every session — governs what to do and not do             |
+| `docs/LAW_HARDENING_PLAN.md`          | Execution authority for hardening phase              | Every execution session — governs current work            |
+| `docs/REF_SYSTEM_STATE.md` (this doc) | Current system truth                                 | Understanding architecture before making changes          |
+| `docs/REF_KNOWN_ISSUES.md`            | Known bugs and gaps                                  | Before starting work on any area — check for known issues |
+| `docs/REF_MODULE_STATUS.md`           | Module status (to be rewritten as REF_MODULE_STATUS) | Checking what's done                                      |
+| `docs/PLAN_POST_LAUNCH_ROADMAP.md`    | Deferred work (to be moved to PLAN tier)             | Checking if something is deferred                         |
 
 **Superseded:** `docs/CLAUDE_AI_MASTER_CONTEXT.md` → archived to `docs/archive/`. This doc replaces it.

@@ -30,7 +30,7 @@ BidOnDent uses **Clerk** for authentication/identity and **Supabase** for applic
 
 | Key                          | Value                                                                                                                |
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Supabase project ref         | `wmdcnjgtsppftrofaqqa` (us-east-2, **Micro** compute as of 2026-05-02; was Medium)                                  |
+| Supabase project ref         | `wmdcnjgtsppftrofaqqa` (us-east-2, **Micro** compute as of 2026-05-02; was Medium)                                   |
 | Canonical edge function slug | `server`                                                                                                             |
 | Legacy edge function slug    | `make-server-9f243523` (compatibility only — see KI for cleanup)                                                     |
 | Live edge function version   | `50` (deployed 2026-05-02)                                                                                           |
@@ -608,12 +608,12 @@ Persisted signed URLs expire after 24h (Supabase max). Storing them in the DB is
 
 ### The pattern
 
-| Step | Where | What it stores |
-|---|---|---|
-| 1. Upload | `handleUploadPhoto` (edge fn) | Returns `storage://<bucket>/<path>` pointer (NOT a signed URL) |
-| 2. Persist | `damage_reports.photo_urls`, `*.profile_image_url`, `vehicles.image_url` | The pointer string, never the signed URL |
-| 3. Read | Server handlers (`getReports`, `getVehicles`, `getUserProfile`, etc.) | Call `hydrateSignedStorageUrl()` / `hydrateSignedStorageUrls()` per request to mint a fresh signed URL |
-| 4. Render | Client | Treats the response as a normal `https://…signed…` URL — no client-side awareness of pointers |
+| Step       | Where                                                                    | What it stores                                                                                         |
+| ---------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| 1. Upload  | `handleUploadPhoto` (edge fn)                                            | Returns `storage://<bucket>/<path>` pointer (NOT a signed URL)                                         |
+| 2. Persist | `damage_reports.photo_urls`, `*.profile_image_url`, `vehicles.image_url` | The pointer string, never the signed URL                                                               |
+| 3. Read    | Server handlers (`getReports`, `getVehicles`, `getUserProfile`, etc.)    | Call `hydrateSignedStorageUrl()` / `hydrateSignedStorageUrls()` per request to mint a fresh signed URL |
+| 4. Render  | Client                                                                   | Treats the response as a normal `https://…signed…` URL — no client-side awareness of pointers          |
 
 ### Implementation files
 
@@ -668,15 +668,15 @@ Public endpoints like `/health` and `/intake/*` skip auth on purpose.
 
 ### Symptom map
 
-| Response code | Meaning |
-|---|---|
-| `401 UNAUTHORIZED_NO_AUTH_HEADER` (gateway) | No `Authorization` header. Frontend bug or unauth endpoint accidentally protected |
-| `401 UNAUTHORIZED_LEGACY_JWT` (gateway) | `verify_jwt: true` re-enabled and a non-Supabase JWT was sent. **Re-disable verify_jwt** |
-| `401 UNAUTHORIZED_INVALID_JWT_FORMAT` (gateway) | `verify_jwt: true` and the bearer is not a JWT format string |
-| `401 {"error":"No Authorization header provided"}` (function) | Frontend not attaching token; check Clerk getter wiring |
-| `401 {"error":"Authorization header must use Bearer token"}` (function) | Frontend sending wrong header format |
-| `500 {"error":"Invalid Clerk token issuer"}` (function) | Frontend sent the Supabase anon key as Bearer — Clerk getter returned null |
-| `500 {"error":"Untrusted Clerk issuer"}` (function) | Token issuer doesn't match Clerk's hostname suffixes — wrong Clerk env, or Clerk config change |
+| Response code                                                           | Meaning                                                                                        |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `401 UNAUTHORIZED_NO_AUTH_HEADER` (gateway)                             | No `Authorization` header. Frontend bug or unauth endpoint accidentally protected              |
+| `401 UNAUTHORIZED_LEGACY_JWT` (gateway)                                 | `verify_jwt: true` re-enabled and a non-Supabase JWT was sent. **Re-disable verify_jwt**       |
+| `401 UNAUTHORIZED_INVALID_JWT_FORMAT` (gateway)                         | `verify_jwt: true` and the bearer is not a JWT format string                                   |
+| `401 {"error":"No Authorization header provided"}` (function)           | Frontend not attaching token; check Clerk getter wiring                                        |
+| `401 {"error":"Authorization header must use Bearer token"}` (function) | Frontend sending wrong header format                                                           |
+| `500 {"error":"Invalid Clerk token issuer"}` (function)                 | Frontend sent the Supabase anon key as Bearer — Clerk getter returned null                     |
+| `500 {"error":"Untrusted Clerk issuer"}` (function)                     | Token issuer doesn't match Clerk's hostname suffixes — wrong Clerk env, or Clerk config change |
 
 The `(gateway)` rows are returned by Supabase's edge runtime before the function runs and have a `code:` field; the `(function)` rows come from the function's own catch blocks and have an `error:` field.
 

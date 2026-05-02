@@ -71,12 +71,12 @@ Form fields, cards, and buttons should use the `bd-*` utility set in [`src/style
 
 These live at `~/.claude/skills/` (per-user, available in every project):
 
-| Skill | Trigger | What it covers |
-|---|---|---|
-| **`supabase-clerk-edge-function`** | Any Supabase edge function with Clerk auth | `verify_jwt: false` + `requireClerkSession()` pattern, JWKS verification, the `UNAUTHORIZED_LEGACY_JWT` symptom, `config.toml` pin |
-| **`supabase-storage-signed-urls`** | Persisting media URLs in any Supabase project | Pointer-on-write / sign-on-read pattern, hydrate utilities, idempotent backfill SQL template |
-| **`supabase-pro-cost-control`** | Anything about Supabase pricing / compute / projects | Per-project compute cost model, deny-pause-on-Pro reality, downgrade vs delete decision |
-| **`bd-design-identity`** | UI/visual work in BidOnDent or future similar apps | Calm/premium/map-first identity, blue color system, what to avoid |
+| Skill                              | Trigger                                              | What it covers                                                                                                                     |
+| ---------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **`supabase-clerk-edge-function`** | Any Supabase edge function with Clerk auth           | `verify_jwt: false` + `requireClerkSession()` pattern, JWKS verification, the `UNAUTHORIZED_LEGACY_JWT` symptom, `config.toml` pin |
+| **`supabase-storage-signed-urls`** | Persisting media URLs in any Supabase project        | Pointer-on-write / sign-on-read pattern, hydrate utilities, idempotent backfill SQL template                                       |
+| **`supabase-pro-cost-control`**    | Anything about Supabase pricing / compute / projects | Per-project compute cost model, deny-pause-on-Pro reality, downgrade vs delete decision                                            |
+| **`bd-design-identity`**           | UI/visual work in BidOnDent or future similar apps   | Calm/premium/map-first identity, blue color system, what to avoid                                                                  |
 
 When you apply a skill, mention it by name in commit messages and pass logs so future agents can find it. Example: `fix(storage): persist pointers per supabase-storage-signed-urls skill`.
 
@@ -100,16 +100,16 @@ If LAW and any other doc disagree, **LAW wins**. Flag the conflict and fix the l
 
 When you change a load-bearing fact, you must update the docs it contradicts **in the same pass**. The full list is in `docs/LAW_PROJECT_RULES.md` § Co-Update Rules. Highlights:
 
-| Trigger | Must update |
-|---|---|
-| New migration applied | `REF_SYSTEM_STATE.md` |
-| New edge endpoint | `REF_SYSTEM_STATE.md` + `SUPABASE_SETUP_GUIDE.md` route map |
-| Bug found | `REF_KNOWN_ISSUES.md` (next free KI-### id) |
-| Bug fixed | `REF_KNOWN_ISSUES.md` mark RESOLVED with date |
-| New persisted media URL column | Hydrate via `hydrateSignedStorageUrl()` and document in `SUPABASE_SETUP_GUIDE.md` §16 |
-| Edge function deploy | Verify `verify_jwt: false` preserved. Never use `--verify-jwt` |
-| New reusable AI pattern surfaced | Add a skill in `~/.claude/skills/` and reference here |
-| Doc superseded | Move to `docs/archive/` with date suffix; update cross-refs in same pass |
+| Trigger                          | Must update                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
+| New migration applied            | `REF_SYSTEM_STATE.md`                                                                 |
+| New edge endpoint                | `REF_SYSTEM_STATE.md` + `SUPABASE_SETUP_GUIDE.md` route map                           |
+| Bug found                        | `REF_KNOWN_ISSUES.md` (next free KI-### id)                                           |
+| Bug fixed                        | `REF_KNOWN_ISSUES.md` mark RESOLVED with date                                         |
+| New persisted media URL column   | Hydrate via `hydrateSignedStorageUrl()` and document in `SUPABASE_SETUP_GUIDE.md` §16 |
+| Edge function deploy             | Verify `verify_jwt: false` preserved. Never use `--verify-jwt`                        |
+| New reusable AI pattern surfaced | Add a skill in `~/.claude/skills/` and reference here                                 |
+| Doc superseded                   | Move to `docs/archive/` with date suffix; update cross-refs in same pass              |
 
 ---
 

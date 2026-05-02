@@ -23,22 +23,22 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 
 ### REFERENCE (current truth)
 
-| Document                                                                                               | Purpose                                                                                                                                                                                |
-| ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)**                                                       | How the system actually works now. Architecture, auth flow, state ownership, role reality, map stack, known bottlenecks. **Read this instead of the old CLAUDE_AI_MASTER_CONTEXT.md.** |
-| **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)**                                                       | Living inventory of known bugs, gaps, and structural issues with IDs, impact, and fix direction.                                                                                       |
-| **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)**                                     | Browser automation/navigation rules for AI agents, including the logo-first landing return protocol and map QA screenshot checklist.                                                   |
-| [`REF_MODULE_STATUS.md`](REF_MODULE_STATUS.md)                     | Module completion status (3 roles × 7 modules).                                                                                      |
-| [`REF_CODE_ORGANIZATION.md`](REF_CODE_ORGANIZATION.md)             | Codebase structure, safe seams, extraction boundaries.                                                                               |
+| Document                                                           | Purpose                                                                                                                                                                                |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)**                   | How the system actually works now. Architecture, auth flow, state ownership, role reality, map stack, known bottlenecks. **Read this instead of the old CLAUDE_AI_MASTER_CONTEXT.md.** |
+| **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)**                   | Living inventory of known bugs, gaps, and structural issues with IDs, impact, and fix direction.                                                                                       |
+| **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** | Browser automation/navigation rules for AI agents, including the logo-first landing return protocol and map QA screenshot checklist.                                                   |
+| [`REF_MODULE_STATUS.md`](REF_MODULE_STATUS.md)                     | Module completion status (3 roles × 7 modules).                                                                                                                                        |
+| [`REF_CODE_ORGANIZATION.md`](REF_CODE_ORGANIZATION.md)             | Codebase structure, safe seams, extraction boundaries.                                                                                                                                 |
 
 ### PLAN (future direction — not current truth)
 
-| Document                                                       | Purpose                                                                              |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md)   | Deliberately deferred work with priority bands and triggers. Not a backlog.          |
-| [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)               | Strategic product vision. Paused during hardening.                                   |
-| [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                     | Map strategy and product law. Feature-level map work paused; strategic vision intact. |
-| [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)               | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger. |
+| Document                                                     | Purpose                                                                                           |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) | Deliberately deferred work with priority bands and triggers. Not a backlog.                       |
+| [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)             | Strategic product vision. Paused during hardening.                                                |
+| [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.             |
+| [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger. |
 
 **If any doc conflicts with LAW docs, LAW wins.** Flag the conflict and fix it.
 

@@ -70,8 +70,7 @@ export class SupabaseStorageAdapter implements IStorageProvider {
 
         // Persist a durable storage pointer (storage://bucket/path) — never a signed URL.
         // Signed URLs are minted at render time via getSignedUrl().
-        const pointerUrl =
-          uploadedPhoto.publicUrl || this.getPublicUrl(bucket, uploadedPhoto.path);
+        const pointerUrl = uploadedPhoto.publicUrl || this.getPublicUrl(bucket, uploadedPhoto.path);
 
         return {
           success: true,
