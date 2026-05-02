@@ -215,8 +215,8 @@ export default function BusinessInquirySection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(71,85,105,0.10) 25%, rgba(71,85,105,0.75) 60%, rgba(71,85,105,0.45) 85%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(148,163,184,0.20) 25%, rgba(148,163,184,0.85) 60%, rgba(148,163,184,0.50) 85%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(71,85,105,0.10) 25%, rgba(71,85,105,0.90) 60%, rgba(71,85,105,0.60) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(148,163,184,0.20) 25%, rgba(148,163,184,0.92) 60%, rgba(148,163,184,0.50) 85%, transparent 100%)",
               }}
             />
             <h3
@@ -229,8 +229,8 @@ export default function BusinessInquirySection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(71,85,105,0.45) 15%, rgba(71,85,105,0.75) 40%, rgba(71,85,105,0.10) 75%, transparent 100%)"
-                  : "linear-gradient(90deg, transparent 0%, rgba(148,163,184,0.50) 15%, rgba(148,163,184,0.85) 40%, rgba(148,163,184,0.20) 75%, transparent 100%)",
+                  ? "linear-gradient(90deg, transparent 0%, rgba(71,85,105,0.60) 15%, rgba(71,85,105,0.90) 40%, rgba(71,85,105,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(148,163,184,0.50) 15%, rgba(148,163,184,0.92) 40%, rgba(148,163,184,0.20) 75%, transparent 100%)",
               }}
             />
           </div>
