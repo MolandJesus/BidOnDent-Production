@@ -217,6 +217,31 @@ export default function BusinessInquirySection({
             Submit your information to join the BidOnDent network. Every request is reviewed and
             confirmed by our team.
           </p>
+          {/* Pass 11 — process-truth pills. Honest claims (verified review, no fee, direct
+              follow-up) — no fake stats. Adds visual weight and trust signal between heading
+              and gateway card. */}
+          <div className="mt-5 flex flex-wrap justify-center gap-2.5 sm:gap-3">
+            {[
+              { label: "Verified team review" },
+              { label: "No fee to apply" },
+              { label: "Direct human follow-up" },
+            ].map((pill) => (
+              <span
+                key={pill.label}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs sm:text-sm ${isLightAppearance ? "border border-[rgba(200,180,150,0.32)] bg-[rgba(255,251,245,0.55)] text-slate-600 shadow-[inset_0_1px_0_rgba(255,250,240,0.85),0_2px_8px_rgba(30,58,138,0.06)]" : "border border-blue-400/22 bg-blue-500/10 text-blue-200/85"}`}
+              >
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${isLightAppearance ? "bg-blue-500" : "bg-blue-400"}`}
+                  style={{
+                    boxShadow: isLightAppearance
+                      ? "0 0 8px rgba(59,130,246,0.45)"
+                      : "0 0 10px rgba(96,165,250,0.65)",
+                  }}
+                />
+                {pill.label}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div
