@@ -1,5 +1,7 @@
 import { MapPin } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
+import { useParallaxOffset } from "../../hooks/useParallaxOffset";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useOperatingRegionsCoverage } from "../../hooks/useOperatingRegionsCoverage";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
@@ -22,6 +24,8 @@ export default function OperatingRegionsSection({
 }: OperatingRegionsSectionProps) {
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
   const coverage = useOperatingRegionsCoverage({ isLightAppearance });
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const parallaxY = useParallaxOffset(isMobile ? 0.06 : 0.12);
 
   // In light appearance mode, force panel tone to "light" regardless of tile mode
   const inlinePanelTone: MapSurfaceTone = isLightAppearance ? "light" : coverage.surfaceTone;
@@ -72,17 +76,35 @@ export default function OperatingRegionsSection({
         {isLightAppearance ? (
           <>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgba(59,130,246,0.14),transparent_60%)]" />
-            <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-400/[0.14] rounded-full blur-[120px]" />
-            <div className="absolute bottom-10 left-[15%] w-64 h-64 bg-indigo-300/[0.12] rounded-full blur-[100px]" />
+            <div
+              className="absolute top-0 right-1/4 w-80 h-80 bg-blue-400/[0.14] rounded-full blur-[120px]"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-10 left-[15%] w-64 h-64 bg-indigo-300/[0.12] rounded-full blur-[100px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
             <div className="absolute inset-0 bg-[radial-gradient(circle_2px_at_20px_20px,rgba(59,130,246,0.07)_1px,transparent_0)] bg-[length:40px_40px] opacity-80" />
           </>
         ) : (
           <>
             <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_59px,rgba(59,130,246,0.07)_59px,rgba(59,130,246,0.07)_60px),repeating-linear-gradient(90deg,transparent,transparent_79px,rgba(59,130,246,0.05)_79px,rgba(59,130,246,0.05)_80px)] opacity-80" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(37,99,235,0.18),transparent_55%)]" />
-            <div className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.18] rounded-full blur-3xl" />
-            <div className="absolute bottom-10 left-[10%] w-72 h-72 bg-blue-400/[0.14] rounded-full blur-[120px]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500/[0.12] rounded-full blur-[140px]" />
+            <div
+              className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.18] rounded-full blur-3xl"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-10 left-[10%] w-72 h-72 bg-blue-400/[0.14] rounded-full blur-[120px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute top-1/2 left-1/2 w-80 h-80 bg-indigo-500/[0.12] rounded-full blur-[140px]"
+              style={{
+                transform: `translate(-50%, calc(-50% + ${parallaxY * 0.4}px))`,
+                willChange: "transform",
+              }}
+            />
           </>
         )}
       </div>

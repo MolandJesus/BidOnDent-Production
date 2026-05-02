@@ -2,6 +2,8 @@ import { ChevronRight, CheckCircle, Play, Car } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useParallaxOffset } from "../../hooks/useParallaxOffset";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 const VALUE_STATEMENTS = [
   "Connect with trusted local auto body collision repair shops",
@@ -35,6 +37,8 @@ export default function HeroSection({
   const [loaded, setLoaded] = useState(false);
   const [activeValue, setActiveValue] = useState(0);
   const prefersReducedMotion = useRef(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const parallaxY = useParallaxOffset(isMobile ? 0.06 : 0.12);
 
   useEffect(() => {
     prefersReducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -81,10 +85,19 @@ export default function HeroSection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(230,180,110,0.32),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(220,160,80,0.28),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(240,195,130,0.24),transparent_50%)]" />
-            {/* Large ambient blur pools — deeper amber color + higher opacity */}
-            <div className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-300/[0.36] rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-200/[0.22] rounded-full blur-[140px]" />
-            <div className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-200/[0.32] rounded-full blur-[160px]" />
+            {/* Large ambient blur pools — deeper amber color + higher opacity. Parallax (Pass 5). */}
+            <div
+              className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-300/[0.36] rounded-full blur-[120px]"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-200/[0.22] rounded-full blur-[140px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-200/[0.32] rounded-full blur-[160px]"
+              style={{ transform: `translateY(${parallaxY * 0.4}px)`, willChange: "transform" }}
+            />
           </>
         ) : (
           <>
@@ -93,8 +106,14 @@ export default function HeroSection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.26),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.18),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.14),transparent_45%)]" />
-            <div className="absolute top-16 right-10 w-[28rem] h-[28rem] bg-blue-500/[0.22] rounded-full blur-[140px]" />
-            <div className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.14] rounded-full blur-[160px]" />
+            <div
+              className="absolute top-16 right-10 w-[28rem] h-[28rem] bg-blue-500/[0.22] rounded-full blur-[140px]"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.14] rounded-full blur-[160px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
           </>
         )}
       </div>
