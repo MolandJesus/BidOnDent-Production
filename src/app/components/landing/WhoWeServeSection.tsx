@@ -201,16 +201,38 @@ export default function WhoWeServeSection({
           className={`text-center mb-8 md:mb-12 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={{ transitionDelay: "0.15s" }}
         >
-          <h3
-            className={`text-3xl sm:text-4xl font-bold mb-3 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-            style={{
-              textShadow: isLightAppearance
-                ? "0 1px 2px rgba(0,0,0,0.05)"
-                : "0 2px 8px rgba(0,0,0,0.3)",
-            }}
-          >
-            Who We Serve
-          </h3>
+          {/* Pass 14 — Direction C flanking accent: royal blue (WhoWeServe's
+              assigned color in the locked palette). */}
+          <div className="flex items-center justify-center gap-3 sm:gap-5 mb-3">
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
+              style={{
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(37,99,235,0.10) 25%, rgba(37,99,235,0.85) 60%, rgba(37,99,235,0.55) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(96,165,250,0.20) 25%, rgba(96,165,250,0.90) 60%, rgba(96,165,250,0.55) 85%, transparent 100%)",
+              }}
+            />
+            <h3
+              className={`text-3xl sm:text-4xl font-bold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+              style={{
+                textShadow: isLightAppearance
+                  ? "0 1px 2px rgba(0,0,0,0.05)"
+                  : "0 2px 8px rgba(0,0,0,0.3)",
+              }}
+            >
+              Who We Serve
+            </h3>
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
+              style={{
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(37,99,235,0.55) 15%, rgba(37,99,235,0.85) 40%, rgba(37,99,235,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(96,165,250,0.55) 15%, rgba(96,165,250,0.90) 40%, rgba(96,165,250,0.20) 75%, transparent 100%)",
+              }}
+            />
+          </div>
           <p
             className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
           >

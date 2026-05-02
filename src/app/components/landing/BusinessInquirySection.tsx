@@ -206,11 +206,34 @@ export default function BusinessInquirySection({
             <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             Growth &amp; Partnerships
           </span>
-          <h3
-            className={`text-2xl sm:text-4xl font-bold mt-4 mb-2.5 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-          >
-            Shop Signup and Insurer Partnerships
-          </h3>
+          {/* Pass 14 — Direction C flanking accent: slate-blue (BusinessInquiry's
+              assigned color in the locked palette). Slate is a quieter hue, so
+              the strokes register as subtle anchoring rather than feature color. */}
+          <div className="flex items-center justify-center gap-3 sm:gap-5 mt-4 mb-2.5">
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
+              style={{
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(71,85,105,0.10) 25%, rgba(71,85,105,0.75) 60%, rgba(71,85,105,0.45) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(148,163,184,0.20) 25%, rgba(148,163,184,0.85) 60%, rgba(148,163,184,0.50) 85%, transparent 100%)",
+              }}
+            />
+            <h3
+              className={`text-2xl sm:text-4xl font-bold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+            >
+              Shop Signup and Insurer Partnerships
+            </h3>
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
+              style={{
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(71,85,105,0.45) 15%, rgba(71,85,105,0.75) 40%, rgba(71,85,105,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(148,163,184,0.50) 15%, rgba(148,163,184,0.85) 40%, rgba(148,163,184,0.20) 75%, transparent 100%)",
+              }}
+            />
+          </div>
           <p
             className={`text-base sm:text-lg leading-relaxed max-w-3xl mx-auto ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
           >
