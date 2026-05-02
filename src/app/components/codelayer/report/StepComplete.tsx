@@ -73,22 +73,22 @@ export default function StepComplete({
           className={`font-bold mb-4 inline-flex items-center gap-2 ${isLightAppearance ? "text-slate-800" : "text-white/90"}`}
         >
           <ListChecks
-            className={`w-4 h-4 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
+            className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
           />
           What happens next
         </h3>
         <div className="space-y-3">
           <div className="flex items-start gap-3">
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-amber-500/15" : "bg-blue-500/15"}`}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 bg-blue-500/15`}
               style={{
                 boxShadow: isLightAppearance
-                  ? "0 0 12px rgba(180, 120, 40, 0.10)"
+                  ? "0 0 12px rgba(59, 130, 246, 0.10)"
                   : "0 0 12px rgba(59, 130, 246, 0.08)",
               }}
             >
               <Wrench
-                className={`w-4 h-4 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
+                className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
               />
             </div>
             <div>
@@ -104,15 +104,15 @@ export default function StepComplete({
           </div>
           <div className="flex items-start gap-3">
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-amber-500/15" : "bg-blue-500/15"}`}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 bg-blue-500/15`}
               style={{
                 boxShadow: isLightAppearance
-                  ? "0 0 12px rgba(180, 120, 40, 0.10)"
+                  ? "0 0 12px rgba(59, 130, 246, 0.10)"
                   : "0 0 12px rgba(59, 130, 246, 0.08)",
               }}
             >
               <MessageSquare
-                className={`w-4 h-4 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
+                className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
               />
             </div>
             <div>
@@ -128,15 +128,15 @@ export default function StepComplete({
           </div>
           <div className="flex items-start gap-3">
             <div
-              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${isLightAppearance ? "bg-amber-500/15" : "bg-blue-500/15"}`}
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 bg-blue-500/15`}
               style={{
                 boxShadow: isLightAppearance
-                  ? "0 0 12px rgba(180, 120, 40, 0.10)"
+                  ? "0 0 12px rgba(59, 130, 246, 0.10)"
                   : "0 0 12px rgba(59, 130, 246, 0.08)",
               }}
             >
               <Clock
-                className={`w-4 h-4 ${isLightAppearance ? "text-amber-600" : "text-blue-400"}`}
+                className={`w-4 h-4 ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
               />
             </div>
             <div>

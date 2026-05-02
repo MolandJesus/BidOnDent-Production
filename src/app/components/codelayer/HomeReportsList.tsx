@@ -71,13 +71,7 @@ export function HomeReportsList({
     <div className="bd-dashboard-panel bd-dashboard-panel--deep rounded-2xl p-4 sm:p-5">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p
-            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-              isLightAppearance ? "text-slate-500" : "text-blue-100/55"
-            }`}
-          >
-            Repair Activity
-          </p>
+          <p className="bd-section-eyebrow mb-1.5">Repair Activity</p>
           <h2
             className={`text-base font-semibold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
           >

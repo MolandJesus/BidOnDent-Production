@@ -183,13 +183,7 @@ export default function CustomerMapWidget({
       <div className="bd-dashboard-panel bd-dashboard-panel--accent-cyan relative z-10 mt-2 rounded-2xl px-3 py-3 sm:px-4">
         <div className="mb-3 flex items-start justify-between gap-3">
           <div>
-            <p
-              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-                isLight ? "text-slate-500" : "text-cyan-100/58"
-              }`}
-            >
-              Smart Map Tools
-            </p>
+            <p className="bd-section-eyebrow mb-1.5">Smart Map Tools</p>
             <p className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
               Compare routing, matching, and bid context
             </p>
@@ -247,13 +241,7 @@ export default function CustomerMapWidget({
       <div className="bd-dashboard-panel bd-dashboard-panel--deep relative z-10 mt-2 rounded-2xl px-3 py-3 sm:px-4 md:px-5">
         <div className="mb-3 flex items-start justify-between gap-3">
           <div>
-            <p
-              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-                isLight ? "text-slate-500" : "text-blue-100/55"
-              }`}
-            >
-              Nearby Matches
-            </p>
+            <p className="bd-section-eyebrow mb-1.5">Nearby Matches</p>
             <p className={`text-sm font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}>
               Local shops around your current report area
             </p>

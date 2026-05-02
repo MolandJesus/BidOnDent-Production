@@ -178,7 +178,7 @@ export default function StepServiceLocation({
             <div className="bd-report-note mt-5 flex items-start gap-2.5 rounded-[1.5rem] px-4 py-3.5">
               <MapPin
                 className={`mt-0.5 h-4 w-4 flex-shrink-0 ${
-                  isLightAppearance ? "text-amber-700" : "text-blue-400"
+                  isLightAppearance ? "text-blue-700" : "text-blue-400"
                 }`}
               />
               <p
@@ -222,7 +222,7 @@ export default function StepServiceLocation({
                       : "bg-white/5 text-blue-100/70"
                   }`}
                 >
-                  <span className="h-2 w-2 shrink-0 rounded-full bg-amber-400" />
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-blue-400" />
                   Shops will see your request anchored at this location on the map.
                 </div>
               </div>

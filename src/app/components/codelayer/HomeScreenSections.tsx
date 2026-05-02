@@ -164,13 +164,7 @@ export function HomeQuickActions({
     <section className="bd-dashboard-panel bd-dashboard-panel--deep rounded-2xl p-4 md:p-5">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <p
-            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-              isLight ? "text-slate-500" : "text-blue-100/55"
-            }`}
-          >
-            Your Dashboard
-          </p>
+          <p className="bd-section-eyebrow mb-1.5">Your Dashboard</p>
           <h2
             className={`text-sm font-semibold uppercase tracking-[0.18em] md:text-base md:normal-case md:tracking-normal ${isLight ? "text-slate-800" : "text-slate-100"}`}
           >
@@ -191,12 +185,12 @@ export function HomeQuickActions({
             <button
               key={action.title}
               onClick={action.onClick}
-              className={`bd-dashboard-section bd-dashboard-section--interactive w-[min(15rem,72vw)] shrink-0 snap-start rounded-xl p-3 text-left font-medium transition-all duration-200 active:scale-[0.97] min-h-[124px] sm:min-h-[44px] sm:w-auto md:p-4 ${
+              className={`bd-dashboard-section bd-dashboard-section--interactive w-[min(15rem,72vw)] shrink-0 snap-start rounded-xl p-3 text-left font-medium transition-all duration-200 active:scale-[0.97] min-h-[124px] sm:min-h-[44px] sm:w-auto md:p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/45 ${
                 actionSurfaceClasses[index % actionSurfaceClasses.length]
               } ${
                 isLight
-                  ? "border-[rgba(200,180,150,0.24)] shadow-[0_10px_22px_rgba(15,23,42,0.07)] hover:shadow-[0_16px_30px_rgba(15,23,42,0.10)]"
-                  : ""
+                  ? "border-[rgba(147,197,253,0.32)] shadow-[0_10px_22px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.18)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.92),0_0_0_1px_rgba(147,197,253,0.32),0_0_24px_rgba(59,130,246,0.10)] hover:-translate-y-0.5"
+                  : "hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(2,6,23,0.40),inset_0_1px_0_rgba(147,197,253,0.16),0_0_0_1px_rgba(96,165,250,0.26),0_0_30px_rgba(37,99,235,0.14)]"
               }`}
             >
               <div
