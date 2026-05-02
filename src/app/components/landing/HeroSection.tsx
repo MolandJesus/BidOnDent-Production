@@ -71,31 +71,33 @@ export default function HeroSection({
           : "linear-gradient(180deg, #0a1a38 0%, #0d2244 40%, #091832 100%)",
       }}
     >
-      {/* Atmospheric radiance */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle mesh texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.025)_1px,transparent_1px)] [background-size:32px_32px] opacity-40" />
-          {/* Color atmosphere */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(210,180,130,0.12),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(200,165,100,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(220,185,115,0.09),transparent_50%)]" />
-          {/* Large ambient blur pools */}
-          <div className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-200/[0.18] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-100/[0.04] rounded-full blur-[140px]" />
-          <div className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-100/[0.10] rounded-full blur-[160px]" />
-        </>
-      ) : (
-        <>
-          {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.035)_1px,transparent_1px)] [background-size:32px_32px] opacity-35" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.18),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.06),transparent_45%)]" />
-          <div className="absolute top-16 right-10 w-[28rem] h-[28rem] bg-blue-500/[0.12] rounded-full blur-[140px]" />
-          <div className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.06] rounded-full blur-[160px]" />
-        </>
-      )}
+      {/* Atmospheric radiance — wrapped in bloom for entry animation */}
+      <div className={`bd-bloom-atmosphere ${loaded ? "is-visible" : "is-hidden"}`}>
+        {isLightAppearance ? (
+          <>
+            {/* Subtle mesh texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:32px_32px] opacity-80" />
+            {/* Color atmosphere */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(210,180,130,0.20),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(200,165,100,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(220,185,115,0.16),transparent_50%)]" />
+            {/* Large ambient blur pools */}
+            <div className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-200/[0.28] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-100/[0.12] rounded-full blur-[140px]" />
+            <div className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-100/[0.20] rounded-full blur-[160px]" />
+          </>
+        ) : (
+          <>
+            {/* Subtle dot grid texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.06)_1px,transparent_1px)] [background-size:32px_32px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.26),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.14),transparent_45%)]" />
+            <div className="absolute top-16 right-10 w-[28rem] h-[28rem] bg-blue-500/[0.22] rounded-full blur-[140px]" />
+            <div className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.14] rounded-full blur-[160px]" />
+          </>
+        )}
+      </div>
 
       {/* Bottom edge fade for smooth transition to next section */}
       <div

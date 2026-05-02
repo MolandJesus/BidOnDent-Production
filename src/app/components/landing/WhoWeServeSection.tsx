@@ -85,28 +85,30 @@ export default function WhoWeServeSection({
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-sky-300/30" : "via-blue-400/25"} to-transparent`}
       />
-      {/* Atmospheric depth */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.025)_1px,transparent_1px)] [background-size:36px_36px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(210,180,130,0.10),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(200,165,100,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(220,185,115,0.08),transparent_50%)]" />
-          <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-amber-200/[0.10] rounded-full blur-[110px]" />
-          <div className="absolute top-10 left-[15%] w-48 h-48 bg-amber-100/[0.08] rounded-full blur-[120px]" />
-          <div className="absolute -top-10 right-[0%] w-[30rem] h-[30rem] bg-sky-400/[0.10] rounded-full blur-[130px]" />
-          <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-blue-300/[0.07] rounded-full blur-[120px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.04)_1px,transparent_1px)] [background-size:36px_36px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_50%_at_50%_-5%,rgba(59,130,246,0.12),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_55%_at_15%_75%,rgba(99,102,241,0.08),transparent_55%)]" />
-          <div className="absolute top-1/4 right-0 w-96 h-96 bg-blue-400/[0.07] rounded-full blur-[120px]" />
-          <div className="absolute -bottom-10 left-1/4 w-80 h-80 bg-indigo-400/[0.05] rounded-full blur-[110px]" />
-        </>
-      )}
+      {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {isLightAppearance ? (
+          <>
+            {/* Subtle dot grid texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:36px_36px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_0%,rgba(210,180,130,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_50%_at_15%_70%,rgba(200,165,100,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_60%,rgba(220,185,115,0.14),transparent_50%)]" />
+            <div className="absolute bottom-0 right-[20%] w-64 h-64 bg-amber-200/[0.18] rounded-full blur-[110px]" />
+            <div className="absolute top-10 left-[15%] w-48 h-48 bg-amber-100/[0.14] rounded-full blur-[120px]" />
+            <div className="absolute -top-10 right-[0%] w-[30rem] h-[30rem] bg-sky-400/[0.18] rounded-full blur-[130px]" />
+            <div className="absolute bottom-0 left-[10%] w-80 h-80 bg-blue-300/[0.14] rounded-full blur-[120px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.07)_1px,transparent_1px)] [background-size:36px_36px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_50%_at_50%_-5%,rgba(59,130,246,0.20),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_55%_at_15%_75%,rgba(99,102,241,0.14),transparent_55%)]" />
+            <div className="absolute top-1/4 right-0 w-96 h-96 bg-blue-400/[0.16] rounded-full blur-[120px]" />
+            <div className="absolute -bottom-10 left-1/4 w-80 h-80 bg-indigo-400/[0.12] rounded-full blur-[110px]" />
+          </>
+        )}
+      </div>
 
       {/* Decorative floating orbs */}
       <div
@@ -191,15 +193,9 @@ export default function WhoWeServeSection({
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`rounded-2xl p-5 sm:p-6 hover:shadow-xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-[rgba(100,160,230,0.28)] hover:border-[rgba(100,160,230,0.44)]" : "border border-blue-400/22 hover:border-blue-300/32"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card bd-glass-card--landing p-5 sm:p-6 transition-all duration-500 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
-                background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 253, 0.75) 100%)"
-                  : "linear-gradient(180deg, rgba(15, 30, 60, 0.35) 0%, rgba(14, 22, 38, 0.75) 100%)",
-                boxShadow: isLightAppearance
-                  ? "0 10px 38px rgba(0, 0, 0, 0.11), 0 2px 8px rgba(100, 160, 230, 0.12), inset 0 1px 0 rgba(220, 240, 255, 0.92), 0 0 0 1px rgba(100, 160, 230, 0.14)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(96, 165, 250, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.06)",
               }}
             >
               <div className="mb-4">

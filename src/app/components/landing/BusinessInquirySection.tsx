@@ -116,26 +116,28 @@ export default function BusinessInquirySection({
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
       />
-      {/* Atmospheric depth */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.02)_1px,transparent_1px)] [background-size:28px_28px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(210,180,130,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(200,165,100,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(220,185,115,0.07),transparent_50%)]" />
-          <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-amber-200/[0.14] rounded-full blur-[110px]" />
-          <div className="absolute top-10 right-[20%] w-48 h-48 bg-amber-100/[0.10] rounded-full blur-[120px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.025)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_60%_-5%,rgba(59,130,246,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(37,99,235,0.05),transparent_55%)]" />
-          <div className="absolute top-0 right-1/3 w-64 h-64 bg-blue-500/[0.05] rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-blue-400/[0.03] rounded-full blur-[100px]" />
-        </>
-      )}
+      {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {isLightAppearance ? (
+          <>
+            {/* Subtle dot grid texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:28px_28px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(210,180,130,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(200,165,100,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(220,185,115,0.13),transparent_50%)]" />
+            <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-amber-200/[0.22] rounded-full blur-[110px]" />
+            <div className="absolute top-10 right-[20%] w-48 h-48 bg-amber-100/[0.18] rounded-full blur-[120px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.06)_1px,transparent_1px)] [background-size:28px_28px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_60%_-5%,rgba(59,130,246,0.16),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(37,99,235,0.12),transparent_55%)]" />
+            <div className="absolute top-0 right-1/3 w-64 h-64 bg-blue-500/[0.15] rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-blue-400/[0.12] rounded-full blur-[100px]" />
+          </>
+        )}
+      </div>
 
       {/* Decorative floating orbs */}
       <div

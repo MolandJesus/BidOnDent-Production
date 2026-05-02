@@ -27,7 +27,7 @@ export default function FooterSection({
     >
       {/* Top edge fade */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/20" : "via-blue-400/10"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
       />
       {/* Atmospheric depth */}
       {isLightAppearance ? (

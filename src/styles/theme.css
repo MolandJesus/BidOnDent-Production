@@ -892,6 +892,68 @@ body {
   border-color: rgba(191, 219, 254, 0.75);
 }
 
+/* Landing variant — heavier shadow + richer top inset highlight + bigger hover lift.
+   Use on marketing/landing cards where visible presence matters more than dashboard calm.
+   Dark variant lives below in the dark-mode override block. */
+.bd-glass-card--landing {
+  border-color: rgba(191, 219, 254, 0.7);
+  background: linear-gradient(180deg, rgba(252, 253, 255, 0.9) 0%, rgba(241, 247, 255, 0.74) 100%);
+  box-shadow:
+    0 18px 48px rgba(15, 23, 42, 0.13),
+    0 6px 16px rgba(30, 58, 138, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.14),
+    0 0 0 1px rgba(191, 219, 254, 0.22),
+    var(--bd-glow-medium);
+}
+
+.bd-glass-card--landing:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 28px 64px rgba(15, 23, 42, 0.16),
+    0 10px 24px rgba(30, 58, 138, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.18),
+    0 0 0 1px rgba(147, 197, 253, 0.45),
+    var(--bd-glow-strong);
+  border-color: rgba(147, 197, 253, 0.85);
+}
+
+/* Atmosphere bloom — opacity + scale transition driven by useScrollAnimation.
+   Wrap a section's existing atmosphere layers in <div class="bd-bloom-atmosphere is-hidden">
+   and toggle to is-visible when the section enters the viewport.
+   Reduced-motion users get the full opacity instantly with no scale. */
+.bd-bloom-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition:
+    transform 1400ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 1100ms ease-out;
+  will-change: transform, opacity;
+}
+
+.bd-bloom-atmosphere.is-hidden {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+.bd-bloom-atmosphere.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-bloom-atmosphere,
+  .bd-bloom-atmosphere.is-hidden,
+  .bd-bloom-atmosphere.is-visible {
+    transition: none;
+    transform: none;
+    opacity: 1;
+    will-change: auto;
+  }
+}
+
 .bd-glass-badge {
   border: 1px solid rgba(191, 219, 254, 0.6);
   background: linear-gradient(180deg, rgba(224, 242, 254, 0.78) 0%, rgba(219, 234, 254, 0.68) 100%);
@@ -1148,6 +1210,31 @@ body {
     inset 0 -1px 0 rgba(59, 130, 246, 0.04),
     0 0 1px rgba(96, 165, 250, 0.25),
     0 0 20px rgba(37, 99, 235, 0.05);
+}
+
+.dark .bd-glass-card--landing,
+[data-theme="dark"] .bd-glass-card--landing {
+  border-color: rgba(96, 165, 250, 0.32);
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.22) 0%, rgba(12, 25, 41, 0.78) 100%);
+  box-shadow:
+    0 18px 48px rgba(2, 6, 23, 0.5),
+    0 6px 16px rgba(30, 58, 138, 0.32),
+    inset 0 1px 0 rgba(147, 197, 253, 0.22),
+    inset 0 -1px 0 rgba(37, 99, 235, 0.08),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 36px rgba(37, 99, 235, 0.18);
+}
+
+.dark .bd-glass-card--landing:hover,
+[data-theme="dark"] .bd-glass-card--landing:hover {
+  border-color: rgba(147, 197, 253, 0.55);
+  box-shadow:
+    0 28px 68px rgba(2, 6, 23, 0.62),
+    0 10px 24px rgba(30, 58, 138, 0.38),
+    inset 0 1px 0 rgba(147, 197, 253, 0.32),
+    inset 0 -1px 0 rgba(37, 99, 235, 0.12),
+    0 0 0 1px rgba(147, 197, 253, 0.4),
+    0 0 56px rgba(37, 99, 235, 0.28);
 }
 
 .dark .bd-glass-badge,

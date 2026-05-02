@@ -190,7 +190,7 @@ export default function AboutOpportunitySection({
                 <button
                   type="button"
                   onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                  className={`mt-4 inline-flex items-center gap-1.5 text-sm font-semibold transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700" : "text-blue-400 hover:text-blue-300"}`}
+                  className={`mt-4 inline-flex items-center gap-1.5 text-sm font-semibold min-h-[44px] py-2 transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700" : "text-blue-400 hover:text-blue-300"}`}
                 >
                   {isExpanded ? "Show less" : "Learn more"}
                   <ChevronDown

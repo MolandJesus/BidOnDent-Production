@@ -39,6 +39,7 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 | [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)             | Strategic product vision. Paused during hardening.                                                |
 | [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.             |
 | [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger. |
+| [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md)       | Landing-page redesign plan (6 passes + Pass 1.5). Direction B + selective C accents. Pass 1 active 2026-05-02. |
 
 **If any doc conflicts with LAW docs, LAW wins.** Flag the conflict and fix it.
 

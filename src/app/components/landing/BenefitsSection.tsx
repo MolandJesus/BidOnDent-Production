@@ -69,27 +69,29 @@ export default function BenefitsSection({
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-indigo-400/30"} to-transparent`}
       />
-      {/* Atmospheric depth */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle cross-hatch texture */}
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.02)_34px,rgba(99,102,241,0.02)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.02)_34px,rgba(99,102,241,0.02)_35px)] opacity-50" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(220,185,115,0.09),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(200,170,110,0.10),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(200,165,100,0.06),transparent_55%)]" />
-          <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-200/[0.16] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-100/[0.12] rounded-full blur-[130px]" />
-          <div className="absolute top-1/2 right-[30%] w-80 h-80 bg-amber-300/[0.08] rounded-full blur-[140px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.035)_34px,rgba(99,102,241,0.035)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.035)_34px,rgba(99,102,241,0.035)_35px)] opacity-60" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_30%_-10%,rgba(99,102,241,0.14),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_75%_85%,rgba(79,70,229,0.09),transparent_55%)]" />
-          <div className="absolute -top-10 left-1/3 w-[26rem] h-[26rem] bg-indigo-500/[0.09] rounded-full blur-[140px]" />
-          <div className="absolute bottom-0 right-[10%] w-80 h-80 bg-indigo-400/[0.06] rounded-full blur-[120px]" />
-        </>
-      )}
+      {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {isLightAppearance ? (
+          <>
+            {/* Subtle cross-hatch texture */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.04)_34px,rgba(99,102,241,0.04)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.04)_34px,rgba(99,102,241,0.04)_35px)] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(220,185,115,0.16),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(200,170,110,0.18),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(200,165,100,0.12),transparent_55%)]" />
+            <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-200/[0.26] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-100/[0.20] rounded-full blur-[130px]" />
+            <div className="absolute top-1/2 right-[30%] w-80 h-80 bg-amber-300/[0.16] rounded-full blur-[140px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px)] opacity-90" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_30%_-10%,rgba(99,102,241,0.22),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_75%_85%,rgba(79,70,229,0.16),transparent_55%)]" />
+            <div className="absolute -top-10 left-1/3 w-[26rem] h-[26rem] bg-indigo-500/[0.18] rounded-full blur-[140px]" />
+            <div className="absolute bottom-0 right-[10%] w-80 h-80 bg-indigo-400/[0.14] rounded-full blur-[120px]" />
+          </>
+        )}
+      </div>
 
       {/* Decorative floating orbs */}
       <div
@@ -164,15 +166,9 @@ export default function BenefitsSection({
           {benefits.map((benefit, index) => (
             <div
               key={benefit.title}
-              className={`rounded-2xl p-4 sm:p-5 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-[rgba(200,180,150,0.3)]" : "border border-indigo-300/22"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card bd-glass-card--landing p-4 sm:p-5 transition-all duration-500 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
-                background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 253, 0.75) 100%)"
-                  : "linear-gradient(180deg, rgba(30, 27, 75, 0.30) 0%, rgba(15, 14, 40, 0.75) 100%)",
-                boxShadow: isLightAppearance
-                  ? "0 10px 38px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(200, 180, 150, 0.14), inset 0 1px 0 rgba(255, 250, 240, 0.90), 0 0 0 1px rgba(200, 180, 150, 0.16)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(129, 140, 248, 0.14), 0 0 0 1px rgba(129, 140, 248, 0.06)",
               }}
             >
               <div className="mb-3 overflow-hidden rounded-lg relative h-56 flex items-center justify-center">
