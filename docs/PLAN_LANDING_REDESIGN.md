@@ -689,14 +689,30 @@ The order below is binding. Atmosphere consistency comes before color identity c
 ## Status / First Action
 
 - [x] Plan written and owner-approved (2026-05-02)
-- [x] Pass 1 — Foundation Fixes (code complete 2026-05-02, committed jointly with Pass 1R)
-- [x] Pass 1R — Visible Landing Presence (owner-reviewed checkpoint 2026-05-02 — improvement, not done)
-- [~] Pass 1R-extension — Core complete (AboutOpportunity / TrustStats / Coverage / CTA / Footer atmosphere bumped + bloom-wrapped 2026-05-02); awaiting owner visual review for Branch A (light-mode second tier) and Branch B (`bd-glass-card--landing-warm`) decisions
-- [ ] Pass 1.5 — Appearance Toggle Exposure (after 1R-extension finalized)
-- [ ] Pass 2 — Atmosphere Visibility
-- [ ] Pass 3 — Direction B (Amber-Lit Garage)
-- [ ] Pass 4 — Premium Glass Consolidation
-- [ ] Pass 5 — Restrained Premium Motion
-- [ ] Pass 6 — Automotive Identity + Direction C Luminance Accents
+- [x] Pass 1 — Foundation Fixes (committed `084ca27f`, jointly with Pass 1R)
+- [x] Pass 1R — Visible Landing Presence (committed `084ca27f`, owner-reviewed checkpoint)
+- [x] Pass 1R-extension Core — atmosphere + bloom across remaining 5 sections (committed `548e2ab7`)
+- [x] Pass 1R-extension Branch A — light-mode second tier deeper amber + glow halos (committed `a37f3e61`)
+- [ ] Pass 1R-extension Branch B — `bd-glass-card--landing-warm` variant (deferred; owner not flagged warm-section card mismatch in review)
+- [x] Pass 1.5 — Appearance Toggle Exposure (committed `086cc27e`, Sun/Moon glass-control in header)
+- [x] Pass 2 — folded into Pass 1R + Pass 1R-extension (atmosphere visibility delivered earlier than planned)
+- [x] Pass 3 — Direction B Amber-Lit Garage (committed `bf0ffbfe`, warm/cool register split in dark mode)
+- [x] Pass 4 — Premium Glass Consolidation (committed `2c77be58`, AboutOpportunity / CTA / BusinessInquiry rows + CTA lamp bloom)
+- [x] Pass 5 — Restrained Premium Motion (committed `4e58a929`, scroll-driven parallax on large blur pools)
+- [x] Pass 6 — Automotive Identity + Direction C Luminance Accents (code complete 2026-05-02, this commit; awaits owner visual review)
 
-When the redesign is complete, mark this doc STATUS COMPLETE and archive [`landing_design_audit_2026-05-02.md`](landing_design_audit_2026-05-02.md).
+### Pass 6 outcome notes (code-complete, awaiting owner sign-off)
+
+- **Hero car silhouette** — sedan SVG path (body + windows + wheels + spoke detail) at 7% (light) / 10% (dark) opacity, top-right of hero, behind hero image, hidden below `md:`. Warm navy-blue stroke in light mode; cool sky-blue in dark.
+- **Hero → HowItWorks road dashes** — three horizontal dashed segments at hero bottom, evoking lane markings. Amber gradient in light, blue gradient in dark. `sm:` and up.
+- **Coverage topographic rings** — five concentric SVG circles centered on the section, two outer rings dashed (radar / topographic feel). 6% (light) / 8% (dark). Behind atmosphere, behind map.
+- **Per-section corner luminance glows (Direction C light)** — applied to Hero / HowItWorks / Benefits / WhoWeServe / AboutOpportunity / TrustStats / BusinessInquiry. Coverage skipped (map IS the atmosphere). CTA already has its lamp from Pass 4. Footer skipped (near-black close). Sizes 600–800px, opacity 15–22% per the spec table. Each glow positioned at its unique corner per section identity.
+
+### Outstanding items / not in this pass
+
+- Footer social links — skipped per spec ("only if real accounts exist"). Not pursued.
+- Premium dark-mode-specific hero photography — TODO carried forward (cosmetic, not code).
+- WCAG AA contrast verification — luminance is behind content so unlikely affected, but owner should spot-check Benefits / TrustStats text on warm-section luminance.
+- Audit doc resolution — after owner sign-off on Pass 6, archive [`landing_design_audit_2026-05-02.md`](landing_design_audit_2026-05-02.md) to `docs/archive/` and mark this doc STATUS COMPLETE.
+
+When the owner approves Pass 6, mark this doc STATUS COMPLETE and archive the audit.

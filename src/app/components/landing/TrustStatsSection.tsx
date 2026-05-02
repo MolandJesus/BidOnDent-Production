@@ -51,6 +51,17 @@ export default function TrustStatsSection({
       />
       {/* Decorative background elements — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: warm gold, top-left (warm Direction B section) */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "800px",
+            height: "800px",
+            top: "-200px",
+            left: "-200px",
+            background: "radial-gradient(circle, rgba(180,140,40,0.22), transparent 65%)",
+          }}
+        />
         {isLightAppearance ? (
           <>
             {/* Dot grid (Branch A: deeper amber) */}

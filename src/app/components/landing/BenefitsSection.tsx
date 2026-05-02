@@ -76,6 +76,17 @@ export default function BenefitsSection({
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: warm amber, bottom-left corner (warm Direction B section) */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "750px",
+            height: "750px",
+            bottom: "-200px",
+            left: "-200px",
+            background: "radial-gradient(circle, rgba(200,120,30,0.20), transparent 65%)",
+          }}
+        />
         {isLightAppearance ? (
           <>
             {/* Cross-hatch (Branch A: deeper indigo) */}

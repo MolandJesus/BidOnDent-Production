@@ -77,6 +77,17 @@ export default function HeroSection({
     >
       {/* Atmospheric radiance — wrapped in bloom for entry animation */}
       <div className={`bd-bloom-atmosphere ${loaded ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: electric blue, top-left corner */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "800px",
+            height: "800px",
+            top: "-220px",
+            left: "-220px",
+            background: "radial-gradient(circle, rgba(37,99,235,0.22), transparent 65%)",
+          }}
+        />
         {isLightAppearance ? (
           <>
             {/* Deeper-amber mesh texture (Branch A: light-mode second tier) */}
@@ -116,6 +127,61 @@ export default function HeroSection({
             />
           </>
         )}
+      </div>
+
+      {/* Pass 6 — Automotive identity: sedan silhouette watermark, top-right of hero,
+          behind hero image. Low opacity, pointer-events-none. */}
+      <svg
+        aria-hidden="true"
+        className="hidden md:block absolute top-16 right-0 w-[420px] h-[140px] pointer-events-none"
+        viewBox="0 0 400 120"
+        style={{
+          opacity: isLightAppearance ? 0.07 : 0.10,
+          color: isLightAppearance ? "#1e3a8a" : "#60a5fa",
+        }}
+        fill="currentColor"
+      >
+        {/* Sedan side profile — body + windows + wheels (simple silhouette) */}
+        <path d="M 28 92 L 50 92 L 60 72 Q 92 36 158 32 L 248 32 Q 304 35 342 72 L 366 92 L 380 92 L 28 92 Z" />
+        <path d="M 110 60 L 150 38 L 232 38 L 256 60 Z" opacity="0.55" />
+        <circle cx="92" cy="92" r="22" />
+        <circle cx="312" cy="92" r="22" />
+        {/* Wheel spoke detail (very subtle) */}
+        <circle cx="92" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        <circle cx="312" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+      </svg>
+
+      {/* Pass 6 — Automotive identity: road-lane dashes at the Hero→HowItWorks transition.
+          Three horizontal segments evoking lane markings; sits above the bottom fade. */}
+      <div
+        aria-hidden="true"
+        className="hidden sm:flex absolute bottom-10 left-1/2 -translate-x-1/2 items-center gap-4 pointer-events-none"
+        style={{ opacity: isLightAppearance ? 0.32 : 0.42 }}
+      >
+        <div
+          className="h-[3px] w-12 rounded-full"
+          style={{
+            background: isLightAppearance
+              ? "linear-gradient(to right, transparent, rgba(200,165,90,0.7), transparent)"
+              : "linear-gradient(to right, transparent, rgba(96,165,250,0.7), transparent)",
+          }}
+        />
+        <div
+          className="h-[3px] w-12 rounded-full"
+          style={{
+            background: isLightAppearance
+              ? "linear-gradient(to right, transparent, rgba(200,165,90,0.7), transparent)"
+              : "linear-gradient(to right, transparent, rgba(96,165,250,0.7), transparent)",
+          }}
+        />
+        <div
+          className="h-[3px] w-12 rounded-full"
+          style={{
+            background: isLightAppearance
+              ? "linear-gradient(to right, transparent, rgba(200,165,90,0.7), transparent)"
+              : "linear-gradient(to right, transparent, rgba(96,165,250,0.7), transparent)",
+          }}
+        />
       </div>
 
       {/* Bottom edge fade for smooth transition to next section */}

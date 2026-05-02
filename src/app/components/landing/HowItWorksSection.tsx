@@ -55,6 +55,17 @@ export default function HowItWorksSection({
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: sky teal, top-right corner */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "700px",
+            height: "700px",
+            top: "-180px",
+            right: "-180px",
+            background: "radial-gradient(circle, rgba(14,165,233,0.18), transparent 65%)",
+          }}
+        />
         {isLightAppearance ? (
           <>
             {/* Subtle mesh texture */}

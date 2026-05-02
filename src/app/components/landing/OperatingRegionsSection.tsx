@@ -73,6 +73,25 @@ export default function OperatingRegionsSection({
       />
       {/* Atmospheric depth — topographic contour feel, wrapped in bloom for scroll entry */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Automotive identity: concentric topographic rings behind the map.
+            Reads as topographic / radar / map character. Centered, low opacity. */}
+        <svg
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          width="900"
+          height="900"
+          viewBox="0 0 900 900"
+          style={{ opacity: isLightAppearance ? 0.06 : 0.08 }}
+          fill="none"
+          stroke={isLightAppearance ? "#1e3a8a" : "#60a5fa"}
+          strokeWidth="1"
+        >
+          <circle cx="450" cy="450" r="120" />
+          <circle cx="450" cy="450" r="200" />
+          <circle cx="450" cy="450" r="290" />
+          <circle cx="450" cy="450" r="380" strokeDasharray="3 6" />
+          <circle cx="450" cy="450" r="430" strokeDasharray="2 8" opacity="0.7" />
+        </svg>
         {isLightAppearance ? (
           <>
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgba(59,130,246,0.14),transparent_60%)]" />

@@ -51,6 +51,17 @@ export default function AboutOpportunitySection({
       />
       {/* Decorative depth elements — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: cobalt, bottom-right corner */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "700px",
+            height: "700px",
+            bottom: "-180px",
+            right: "-180px",
+            background: "radial-gradient(circle, rgba(30,58,138,0.18), transparent 65%)",
+          }}
+        />
         {isLightAppearance ? (
           <>
             {/* Subtle diagonal stripe texture */}

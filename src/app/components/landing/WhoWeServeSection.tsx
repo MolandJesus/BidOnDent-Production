@@ -92,6 +92,18 @@ export default function WhoWeServeSection({
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: royal blue, top-center */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "800px",
+            height: "800px",
+            top: "-220px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "radial-gradient(circle, rgba(37,99,235,0.16), transparent 65%)",
+          }}
+        />
         {isLightAppearance ? (
           <>
             {/* Subtle dot grid texture */}

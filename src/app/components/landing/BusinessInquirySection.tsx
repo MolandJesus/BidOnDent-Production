@@ -118,6 +118,18 @@ export default function BusinessInquirySection({
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: slate-blue, bottom-center */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "600px",
+            height: "600px",
+            bottom: "-150px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "radial-gradient(circle, rgba(71,85,105,0.15), transparent 65%)",
+          }}
+        />
         {isLightAppearance ? (
           <>
             {/* Subtle dot grid texture */}
