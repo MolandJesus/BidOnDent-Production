@@ -16,6 +16,7 @@ import {
 import { sanitizeErrorMessage } from "../utils/helpers.ts";
 import {
   buildScopedUploadPath,
+  buildStoragePointerUrl,
   createSignedStorageUrl,
   extractStorageObjectTarget,
   isUserScopedStoragePath,
@@ -169,16 +170,14 @@ export async function handleUploadPhoto(
       return respond({ error: sanitizeErrorMessage(error) }, 500);
     }
 
-    const signedUrl = await createSignedStorageUrl(
-      supabase,
-      { bucket, path: data.path },
-      60 * 60 * 24
-    );
+    // Persist the durable storage pointer (storage://bucket/path), not a signed URL.
+    // Signed URLs expire (24h max). Callers re-sign on read via handleGetSignedStorageUrl.
+    const pointerUrl = buildStoragePointerUrl({ bucket, path: data.path });
 
     return respond({
       bucket,
       path: data.path,
-      publicUrl: signedUrl,
+      publicUrl: pointerUrl,
       success: true,
     });
   } catch (error: any) {
