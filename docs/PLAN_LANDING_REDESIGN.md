@@ -699,7 +699,33 @@ The order below is binding. Atmosphere consistency comes before color identity c
 - [x] Pass 3 — Direction B Amber-Lit Garage (committed `bf0ffbfe`, warm/cool register split in dark mode)
 - [x] Pass 4 — Premium Glass Consolidation (committed `2c77be58`, AboutOpportunity / CTA / BusinessInquiry rows + CTA lamp bloom)
 - [x] Pass 5 — Restrained Premium Motion (committed `4e58a929`, scroll-driven parallax on large blur pools)
-- [x] Pass 6 — Automotive Identity + Direction C Luminance Accents (code complete 2026-05-02, this commit; awaits owner visual review)
+- [x] Pass 6 — Automotive Identity + Direction C Luminance Accents (committed `79b5441a`)
+- [x] Pass 7 — Polish-then-sign-off cleanup (code complete 2026-05-02, this commit; awaits owner walk on Vercel)
+
+### Pass 7 outcome notes (code-complete, awaiting owner walk)
+
+Triggered by the post-Pass-6 visual audit (`docs/landing_design_audit_post_pass_6_2026-05-02.md`). Four narrowly-scoped polish items, none introducing new direction.
+
+- **Coverage map WebGL fallback** — added `backgroundColor: "#071830"` (dark) / `"#e8eef7"` (light) to the map shell so a failed/loading WebGL canvas blends with the page rather than rendering as a 1810px black void in low-GPU contexts. File: [`src/app/components/landing/OperatingRegionsSection.tsx`](../src/app/components/landing/OperatingRegionsSection.tsx).
+- **Dual-tone amber→blue separator at Benefits↔WhoWeServe (light mode only)** — dark mode was already correct (audit was wrong about it). Light mode now mirrors the dark pattern: amber at 22%/78%, sky blue at 50%. File: [`src/app/components/landing/WhoWeServeSection.tsx`](../src/app/components/landing/WhoWeServeSection.tsx).
+- **TrustStats commitment cards** — added `bd-glass-card bd-glass-card--landing` class markers. Inline gradient/shadow/hover left in place to preserve the deliberate cool-glass-on-warm-section visual; class markers exist now for design-system enforcement and future-agent grepability. File: [`src/app/components/landing/TrustStatsSection.tsx`](../src/app/components/landing/TrustStatsSection.tsx).
+- **BusinessInquiry action rows** — added `bd-glass-card` class marker on both Shop and Insurer action rows. Same minimal-scope philosophy. File: [`src/app/components/landing/BusinessInquirySection.tsx`](../src/app/components/landing/BusinessInquirySection.tsx).
+
+### Audit-flagged questions resolved during Pass 7
+
+- **Q1 (TrustStats commitment card count):** verified — exactly 4 commitments in source. Audit's "8 card-sized elements" was a Copilot DOM-counting artifact (counted wrappers + cards).
+- **Q3 (Coverage sticky heading):** non-issue. No `sticky` in Coverage source. Was a Playwright capture artifact.
+- **Q2 (Branch B / Benefits warm-card variant in light mode):** deferred — accepted as known gap. Trigger to revisit: if owner reports Benefits photo cards reading cold/wrong on warm-ivory section in production.
+- **Q4 (Topographic ring visibility in Coverage light mode):** deferred to live verification. If rings are sub-perceptual on light map tiles, fix is a single opacity bump; not pursued in Pass 7.
+
+### Outstanding before STATUS COMPLETE
+
+- Owner walks the live Vercel site (post-merge) in light + dark, end-to-end on desktop + mobile.
+- On owner sign-off:
+  - Move [`landing_design_audit_2026-05-02.md`](landing_design_audit_2026-05-02.md) → `docs/archive/` with date suffix.
+  - Move [`landing_design_audit_post_pass_6_2026-05-02.md`](landing_design_audit_post_pass_6_2026-05-02.md) → `docs/archive/` with date suffix.
+  - Mark this doc STATUS COMPLETE.
+  - Update [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) for any redesign-related KIs flipped to RESOLVED with commit hashes.
 
 ### Pass 6 outcome notes (code-complete, awaiting owner sign-off)
 
