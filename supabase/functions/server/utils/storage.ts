@@ -162,11 +162,25 @@ export async function hydrateSignedStorageUrl(
 
   const target = extractStorageObjectTarget(rawUrl);
   if (!target) {
+    // Not a Supabase Storage URL we recognize (e.g. external https, data: URI).
+    // Pass through so the client can render it directly.
     return rawUrl;
   }
 
   const signedUrl = await createSignedStorageUrl(supabase, target, expiresIn);
-  return signedUrl || rawUrl;
+  if (signedUrl) {
+    return signedUrl;
+  }
+
+  // We recognized a storage target but could not mint a signed URL for it
+  // (file deleted, RLS rejection, transient signing-key issue). Returning the
+  // original would surface storage://… or an expired sign URL that the
+  // browser can't render. Return null so callers fall back to a placeholder.
+  console.warn(
+    "[hydrateSignedStorageUrl] failed to mint signed URL",
+    { bucket: target.bucket, path: target.path }
+  );
+  return null;
 }
 
 export async function hydrateSignedStorageUrls(
@@ -178,7 +192,11 @@ export async function hydrateSignedStorageUrls(
     return Array.isArray(rawUrls) ? rawUrls : [];
   }
 
-  return await Promise.all(
+  const hydrated = await Promise.all(
     rawUrls.map((rawUrl) => hydrateSignedStorageUrl(supabase, rawUrl, expiresIn))
   );
+
+  // Drop nulls (signing failures) so clients never see empty/broken slots in
+  // photo arrays. Preserve order for the URLs that did sign successfully.
+  return hydrated.filter((url): url is string => typeof url === "string");
 }

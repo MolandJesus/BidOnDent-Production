@@ -397,6 +397,14 @@ s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
 
+# The `server` edge function does its own Clerk JWT verification via
+# requireClerkSession(). The Supabase gateway's verify_jwt only accepts
+# Supabase-signed JWTs and would reject Clerk JWTs at the gateway, so it must
+# stay disabled. `supabase functions deploy server` reads this config — do not
+# remove without a matching auth strategy in handlers.
+[functions.server]
+verify_jwt = false
+
 # [experimental.pgdelta]
 # When enabled, pg-delta becomes the active engine for supported schema flows.
 # enabled = false
