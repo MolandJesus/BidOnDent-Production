@@ -66,7 +66,7 @@ These are explicit "do not" rules to keep us from drifting:
 
 ## v3 Audit Findings → Pass Mapping
 
-Full audit at [`landing_design_audit_2026-05-02.md`](landing_design_audit_2026-05-02.md).
+Full audit archived at [`docs/archive/landing_design_audit_2026-05-02_archived_2026-05-02.md`](archive/landing_design_audit_2026-05-02_archived_2026-05-02.md). Post-Pass-6 audit also archived at [`docs/archive/landing_design_audit_post_pass_6_2026-05-02_archived_2026-05-02.md`](archive/landing_design_audit_post_pass_6_2026-05-02_archived_2026-05-02.md).
 
 | ID | Severity | Finding | Pass |
 |---|---|---|---|
