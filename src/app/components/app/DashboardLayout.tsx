@@ -130,6 +130,7 @@ export default function DashboardLayout({
       style={{ background: surfaceTheme.background }}
     >
       <DashboardAtmosphere isLightAppearance={isLightAppearance} />
+      <div aria-hidden className="bd-dashboard-atmosphere" />
 
       {demoMode && <DemoModeBanner demoAccountType={demoAccountType} />}
 

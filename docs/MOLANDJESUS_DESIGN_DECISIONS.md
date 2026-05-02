@@ -425,6 +425,40 @@ A single radial luminance accent per section, 600–800px diameter, 15–22% opa
 
 These render as automotive **atmosphere**, not iconography. They support the product story without making the page look like a parts catalog or a mechanic shop website.
 
+### Dashboard Material Tier (Calm Workspace — Locked 2026-05-02, Pass D1)
+
+The dashboard inherits the cool-blue glass shell only. Per §9 item 9, no automotive register, no warm amber, no Direction C accents, no editorial flanking strokes. The dashboard has its own card material variant so it can read more premium without borrowing landing's identity.
+
+**Three-tier glass card hierarchy (post-D1):**
+
+| Class | Use case | Energy |
+|---|---|---|
+| `bd-glass-card` | Generic glass surfaces (modals on landing, default) | Quiet base |
+| `bd-glass-card--dashboard` | All authenticated workspace surfaces (all 4 roles) | Calm-workspace |
+| `bd-glass-card--landing` | Landing premium-marketing anchor cards | High-presence marketing |
+| `bd-glass-card--landing-warm` | Landing Direction B warm-amber sections only | Warm Direction B |
+
+`--dashboard` material spec (light): heavier shadow than base (`0 14px 32px` vs `0 10px 24px`), stronger inset top highlight (`rgba(255,255,255,0.85)` vs `0.65`), brighter border (`rgba(147,197,253,0.42)` vs `bd-glass-border-light`), subtle ambient blue glow (`0 0 28px rgba(59,130,246,0.06)`), 2px hover lift (vs `--landing`'s 6px). Workspace, not marketing.
+
+`--dashboard` material spec (dark): follows the canonical Dark Shell pattern (`linear-gradient(180deg, rgba(11,23,47,0.84) 0%, rgba(8,18,38,0.78) 100%)`, `rgba(96,165,250,0.22–0.26)` borders) with stronger inset highlight + 28px ambient blue glow at `rgba(37,99,235,0.10)`. Calmer than `--landing` (no marketing-anchor glow tier).
+
+**Dashboard ambient layer — `bd-dashboard-atmosphere`:**
+
+Single absolute-positioned utility class. Top-anchored radial glow, 5% peak opacity (light) / 7% peak (dark), cool-blue family. No motion. No section alternation. No `bd-bloom-atmosphere` scroll-entry — workspace surfaces should not bloom on entry. Applied at `DashboardLayout` root behind content.
+
+```css
+background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96,165,250,0.05) 0%, transparent 70%);
+/* dark: rgba(59,130,246,0.07) */
+```
+
+This sits on top of the existing layered `<DashboardAtmosphere>` component which paints the deep navy / blue-bloom orb base. The new utility adds a light top-anchored content-area glow so working sections feel dimensional.
+
+**Section eyebrow — `bd-section-eyebrow`:**
+
+Editorial typography utility for dashboard section anchors ("REPAIR OVERVIEW", "YOUR DASHBOARD", "REPAIR ACTIVITY"). 11px, weight 600, `letter-spacing: 0.18em`, uppercase, blue-700 (light) / blue-300 (dark). **No flanking strokes** — those are landing-only (Pass 12-15). Refined typography only.
+
+**Locked: dashboard does NOT use `--landing-warm`.** Warm glass is landing-only register. Mixing dilutes both identities.
+
 ---
 
 ## 8. Roadmap for Design Improvement Passes
