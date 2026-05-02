@@ -149,35 +149,46 @@ export default function AboutOpportunitySection({
             return (
               <div
                 key={item.title}
-                className={`bd-glass-card bd-glass-card--landing p-5 transition-all duration-700 group relative ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                className={`bd-glass-card bd-glass-card--landing p-5 transition-all duration-700 group relative overflow-hidden ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{ transitionDelay: `${0.2 + index * 0.1}s` }}
               >
+                {/* Pass 9 — inner lit highlight: gives card surface a subtle "lit from within"
+                    feel in dark mode so it reads as glass plate, not outlined panel. */}
                 <div
-                  className={`w-12 h-12 rounded-[1rem] flex items-center justify-center mb-4 ${isLightAppearance ? "bg-blue-500/[0.08] border border-blue-300/[0.15]" : "bg-blue-500/[0.08] border border-blue-400/[0.15]"}`}
+                  aria-hidden="true"
+                  className="absolute inset-0 pointer-events-none rounded-[inherit]"
+                  style={{
+                    background: isLightAppearance
+                      ? "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96,165,250,0.06), transparent 70%)"
+                      : "radial-gradient(ellipse 90% 65% at 50% 0%, rgba(96,165,250,0.10), transparent 70%)",
+                  }}
+                />
+                <div
+                  className={`relative w-14 h-14 rounded-2xl flex items-center justify-center mb-4 ${isLightAppearance ? "bg-blue-500/[0.10] border border-blue-300/[0.22]" : "bg-blue-500/[0.14] border border-blue-400/[0.28]"}`}
                   style={{
                     boxShadow: isLightAppearance
-                      ? "0 4px 18px rgba(59,130,246,0.12), 0 0 26px rgba(59,130,246,0.07)"
-                      : "0 4px 18px rgba(59,130,246,0.18), 0 0 28px rgba(59,130,246,0.12)",
+                      ? "0 6px 22px rgba(59,130,246,0.16), 0 0 30px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.60)"
+                      : "0 6px 22px rgba(59,130,246,0.26), 0 0 32px rgba(59,130,246,0.18), inset 0 1px 0 rgba(147,197,253,0.28), inset 0 -1px 0 rgba(2,6,23,0.30)",
                   }}
                 >
                   <item.icon
-                    className={`w-6 h-6 ${isLightAppearance ? "text-blue-500" : "text-blue-300"}`}
+                    className={`w-7 h-7 ${isLightAppearance ? "text-blue-500" : "text-blue-300"}`}
                   />
                 </div>
                 <h4
-                  className={`text-xl font-bold mb-2 ${isLightAppearance ? "text-slate-800" : "text-white"}`}
+                  className={`relative text-xl font-bold mb-2 ${isLightAppearance ? "text-slate-800" : "text-white"}`}
                 >
                   {item.title}
                 </h4>
                 <p
-                  className={`leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-slate-300/80"}`}
+                  className={`relative leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-slate-300/80"}`}
                 >
                   {item.text}
                 </p>
 
                 {/* Expanded detail */}
                 <div
-                  className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                  className={`relative overflow-hidden transition-all duration-500 ease-in-out ${
                     isExpanded ? "max-h-48 opacity-100 mt-4" : "max-h-0 opacity-0"
                   }`}
                 >
@@ -191,7 +202,7 @@ export default function AboutOpportunitySection({
                 <button
                   type="button"
                   onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                  className={`mt-4 inline-flex items-center gap-1.5 text-sm font-semibold min-h-[44px] py-2 transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700" : "text-blue-400 hover:text-blue-300"}`}
+                  className={`relative mt-4 inline-flex items-center gap-1.5 text-sm font-semibold min-h-[44px] py-2 transition-colors ${isLightAppearance ? "text-blue-600 hover:text-blue-700" : "text-blue-400 hover:text-blue-300"}`}
                 >
                   {isExpanded ? "Show less" : "Learn more"}
                   <ChevronDown
