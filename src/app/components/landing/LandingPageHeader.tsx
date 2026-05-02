@@ -1,8 +1,9 @@
-import { Home, LogOut, Menu, Settings, User, X } from "lucide-react";
+import { Home, LogOut, Menu, Moon, Settings, Sun, User, X } from "lucide-react";
 import { SignInButton, SignUpButton, useClerk, useUser } from "@clerk/clerk-react";
 import { useState, useEffect, useRef } from "react";
 import SettingsModal from "../codelayer/account/SettingsModal";
 import BrandLogo from "../app/BrandLogo";
+import { useAppearanceModeCtx } from "../../hooks/AppearanceModeContext";
 
 interface LandingPageHeaderProps {
   isLoggedIn: boolean;
@@ -29,6 +30,10 @@ export default function LandingPageHeader({
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const { signOut, openUserProfile } = useClerk();
   const { user } = useUser();
+  const [, setAppearanceMode] = useAppearanceModeCtx();
+  const toggleAppearanceMode = () => {
+    setAppearanceMode(isLightAppearance ? "map-dark" : "light");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -150,6 +155,20 @@ export default function LandingPageHeader({
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          {/* Appearance toggle (Pass 1.5) — desktop visible, mobile in drawer */}
+          <button
+            type="button"
+            onClick={toggleAppearanceMode}
+            aria-label={
+              isLightAppearance ? "Switch to dark appearance" : "Switch to light appearance"
+            }
+            aria-pressed={!isLightAppearance}
+            title={isLightAppearance ? "Switch to dark mode" : "Switch to light mode"}
+            className={`hidden md:inline-flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-2xl border backdrop-blur-xl transition-all ${isLightAppearance ? "border-[rgba(200,180,150,0.28)] bg-[rgba(255,251,245,0.65)] text-amber-600 shadow-[0_8px_18px_rgba(15,23,42,0.08),0_0_18px_rgba(251,191,36,0.18)] hover:bg-[rgba(255,251,245,0.82)] hover:text-amber-500" : "border-blue-300/28 bg-white/[0.05] text-blue-200 shadow-[0_10px_22px_rgba(2,6,23,0.32),0_0_22px_rgba(96,165,250,0.18)] hover:bg-white/[0.10] hover:text-blue-100"}`}
+          >
+            {isLightAppearance ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+
           {/* Mobile menu toggle */}
           <button
             type="button"
@@ -360,6 +379,32 @@ export default function LandingPageHeader({
             className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${isLightAppearance ? "text-slate-700 hover:bg-[rgba(255,248,235,0.6)] active:bg-[rgba(255,240,215,0.6)]" : "text-blue-100 hover:bg-white/8 active:bg-white/12"}`}
           >
             About
+          </button>
+          {/* Appearance toggle (Pass 1.5) — mobile drawer entry */}
+          <button
+            type="button"
+            onClick={() => {
+              toggleAppearanceMode();
+              setMobileMenuOpen(false);
+            }}
+            aria-label={
+              isLightAppearance ? "Switch to dark appearance" : "Switch to light appearance"
+            }
+            className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors flex items-center justify-between ${isLightAppearance ? "text-slate-700 hover:bg-[rgba(255,248,235,0.6)] active:bg-[rgba(255,240,215,0.6)]" : "text-blue-100 hover:bg-white/8 active:bg-white/12"}`}
+          >
+            <span className="flex items-center gap-2.5">
+              {isLightAppearance ? (
+                <Sun className="h-4 w-4 text-amber-600" />
+              ) : (
+                <Moon className="h-4 w-4 text-blue-300" />
+              )}
+              {isLightAppearance ? "Switch to Dark mode" : "Switch to Light mode"}
+            </span>
+            <span
+              className={`text-xs font-semibold tracking-wide uppercase ${isLightAppearance ? "text-amber-600/70" : "text-blue-300/70"}`}
+            >
+              {isLightAppearance ? "Light" : "Dark"}
+            </span>
           </button>
           {!isLoggedIn && (
             <div

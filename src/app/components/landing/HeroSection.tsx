@@ -2,6 +2,8 @@ import { ChevronRight, CheckCircle, Play, Car } from "lucide-react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { ImageErrorBoundary } from "../ImageErrorBoundary";
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useParallaxOffset } from "../../hooks/useParallaxOffset";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 const VALUE_STATEMENTS = [
   "Connect with trusted local auto body collision repair shops",
@@ -35,6 +37,8 @@ export default function HeroSection({
   const [loaded, setLoaded] = useState(false);
   const [activeValue, setActiveValue] = useState(0);
   const prefersReducedMotion = useRef(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const parallaxY = useParallaxOffset(isMobile ? 0.06 : 0.12);
 
   useEffect(() => {
     prefersReducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -71,31 +75,114 @@ export default function HeroSection({
           : "linear-gradient(180deg, #0a1a38 0%, #0d2244 40%, #091832 100%)",
       }}
     >
-      {/* Atmospheric radiance */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle mesh texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.025)_1px,transparent_1px)] [background-size:32px_32px] opacity-40" />
-          {/* Color atmosphere */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(210,180,130,0.12),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(200,165,100,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(220,185,115,0.09),transparent_50%)]" />
-          {/* Large ambient blur pools */}
-          <div className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-200/[0.18] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-100/[0.04] rounded-full blur-[140px]" />
-          <div className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-100/[0.10] rounded-full blur-[160px]" />
-        </>
-      ) : (
-        <>
-          {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.035)_1px,transparent_1px)] [background-size:32px_32px] opacity-35" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.18),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.06),transparent_45%)]" />
-          <div className="absolute top-16 right-10 w-[28rem] h-[28rem] bg-blue-500/[0.12] rounded-full blur-[140px]" />
-          <div className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.06] rounded-full blur-[160px]" />
-        </>
-      )}
+      {/* Atmospheric radiance — wrapped in bloom for entry animation */}
+      <div className={`bd-bloom-atmosphere ${loaded ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: electric blue, top-left corner */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "800px",
+            height: "800px",
+            top: "-220px",
+            left: "-220px",
+            background: "radial-gradient(circle, rgba(37,99,235,0.22), transparent 65%)",
+          }}
+        />
+        {isLightAppearance ? (
+          <>
+            {/* Deeper-amber mesh texture (Branch A: light-mode second tier) */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(210,165,90,0.08)_1px,transparent_1px)] [background-size:32px_32px] opacity-90" />
+            {/* Color atmosphere — deeper warm tones, more visible saturation */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(230,180,110,0.32),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(220,160,80,0.28),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(240,195,130,0.24),transparent_50%)]" />
+            {/* Large ambient blur pools — deeper amber color + higher opacity. Parallax (Pass 5). */}
+            <div
+              className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-300/[0.36] rounded-full blur-[120px]"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-200/[0.22] rounded-full blur-[140px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-200/[0.32] rounded-full blur-[160px]"
+              style={{ transform: `translateY(${parallaxY * 0.4}px)`, willChange: "transform" }}
+            />
+          </>
+        ) : (
+          <>
+            {/* Subtle dot grid texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.06)_1px,transparent_1px)] [background-size:32px_32px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.26),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.14),transparent_45%)]" />
+            <div
+              className="absolute top-16 right-10 w-[28rem] h-[28rem] bg-blue-500/[0.22] rounded-full blur-[140px]"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.14] rounded-full blur-[160px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
+          </>
+        )}
+      </div>
+
+      {/* Pass 6 — Automotive identity: sedan silhouette watermark, top-right of hero,
+          behind hero image. Low opacity, pointer-events-none. */}
+      <svg
+        aria-hidden="true"
+        className="hidden md:block absolute top-16 right-0 w-[420px] h-[140px] pointer-events-none"
+        viewBox="0 0 400 120"
+        style={{
+          opacity: isLightAppearance ? 0.07 : 0.10,
+          color: isLightAppearance ? "#1e3a8a" : "#60a5fa",
+        }}
+        fill="currentColor"
+      >
+        {/* Sedan side profile — body + windows + wheels (simple silhouette) */}
+        <path d="M 28 92 L 50 92 L 60 72 Q 92 36 158 32 L 248 32 Q 304 35 342 72 L 366 92 L 380 92 L 28 92 Z" />
+        <path d="M 110 60 L 150 38 L 232 38 L 256 60 Z" opacity="0.55" />
+        <circle cx="92" cy="92" r="22" />
+        <circle cx="312" cy="92" r="22" />
+        {/* Wheel spoke detail (very subtle) */}
+        <circle cx="92" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        <circle cx="312" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+      </svg>
+
+      {/* Pass 6 — Automotive identity: road-lane dashes at the Hero→HowItWorks transition.
+          Three horizontal segments evoking lane markings; sits above the bottom fade. */}
+      <div
+        aria-hidden="true"
+        className="hidden sm:flex absolute bottom-10 left-1/2 -translate-x-1/2 items-center gap-4 pointer-events-none"
+        style={{ opacity: isLightAppearance ? 0.32 : 0.42 }}
+      >
+        <div
+          className="h-[3px] w-12 rounded-full"
+          style={{
+            background: isLightAppearance
+              ? "linear-gradient(to right, transparent, rgba(200,165,90,0.7), transparent)"
+              : "linear-gradient(to right, transparent, rgba(96,165,250,0.7), transparent)",
+          }}
+        />
+        <div
+          className="h-[3px] w-12 rounded-full"
+          style={{
+            background: isLightAppearance
+              ? "linear-gradient(to right, transparent, rgba(200,165,90,0.7), transparent)"
+              : "linear-gradient(to right, transparent, rgba(96,165,250,0.7), transparent)",
+          }}
+        />
+        <div
+          className="h-[3px] w-12 rounded-full"
+          style={{
+            background: isLightAppearance
+              ? "linear-gradient(to right, transparent, rgba(200,165,90,0.7), transparent)"
+              : "linear-gradient(to right, transparent, rgba(96,165,250,0.7), transparent)",
+          }}
+        />
+      </div>
 
       {/* Bottom edge fade for smooth transition to next section */}
       <div
@@ -362,8 +449,8 @@ export default function HeroSection({
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 14px 48px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92)"
-                  : "0 10px 32px rgba(2, 6, 23, 0.38), 0 0 1px rgba(96, 165, 250, 0.25)",
+                  ? "0 14px 48px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 32px rgba(59, 130, 246, 0.22), 0 0 12px rgba(96, 165, 250, 0.28)"
+                  : "0 10px 32px rgba(2, 6, 23, 0.38), 0 0 1px rgba(96, 165, 250, 0.25), 0 0 36px rgba(59, 130, 246, 0.34), 0 0 14px rgba(96, 165, 250, 0.40)",
               }}
             >
               <div
@@ -399,8 +486,8 @@ export default function HeroSection({
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92)"
-                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
+                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 36px rgba(59, 130, 246, 0.24), 0 0 14px rgba(96, 165, 250, 0.30)"
+                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3), 0 0 40px rgba(59, 130, 246, 0.36), 0 0 16px rgba(96, 165, 250, 0.42)",
               }}
             >
               <div
@@ -426,8 +513,8 @@ export default function HeroSection({
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92)"
-                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
+                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 32px rgba(16, 185, 129, 0.22), 0 0 12px rgba(52, 211, 153, 0.28)"
+                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3), 0 0 36px rgba(16, 185, 129, 0.30), 0 0 14px rgba(52, 211, 153, 0.36)",
               }}
             >
               <div

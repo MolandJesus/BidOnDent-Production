@@ -1,5 +1,7 @@
 import { MapPin } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
+import { useParallaxOffset } from "../../hooks/useParallaxOffset";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useOperatingRegionsCoverage } from "../../hooks/useOperatingRegionsCoverage";
 import type { NavigationDiscoveryRole } from "../../services/navigation/placeDiscovery";
 import { getMapSurfaceTheme } from "../maps/mapSurfaceTheme";
@@ -22,6 +24,8 @@ export default function OperatingRegionsSection({
 }: OperatingRegionsSectionProps) {
   const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
   const coverage = useOperatingRegionsCoverage({ isLightAppearance });
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const parallaxY = useParallaxOffset(isMobile ? 0.06 : 0.12);
 
   // In light appearance mode, force panel tone to "light" regardless of tile mode
   const inlinePanelTone: MapSurfaceTone = isLightAppearance ? "light" : coverage.surfaceTone;
@@ -57,28 +61,72 @@ export default function OperatingRegionsSection({
         className={`absolute top-0 left-0 right-0 h-16 pointer-events-none z-10 ${isLightAppearance ? "bg-gradient-to-b from-[#f0f4f8]/0 to-transparent" : "bg-gradient-to-b from-[#0a1628]/0 to-transparent"}`}
       />
       <div
-        className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-400/10" : "via-blue-400/20"} to-transparent`}
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(96, 165, 250, 0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(220, 150, 60, 0.28) 22%, rgba(96, 165, 250, 0.30) 50%, rgba(220, 150, 60, 0.28) 78%, transparent)",
+        }}
       />
       <div
         className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-400/8" : "via-blue-400/15"} to-transparent`}
       />
-      {/* Atmospheric depth — topographic contour feel */}
-      {isLightAppearance ? (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgba(59,130,246,0.06),transparent_60%)]" />
-          <div className="absolute top-0 right-1/4 w-80 h-80 bg-blue-400/[0.05] rounded-full blur-[120px]" />
-          <div className="absolute bottom-10 left-[15%] w-64 h-64 bg-indigo-300/[0.04] rounded-full blur-[100px]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_2px_at_20px_20px,rgba(59,130,246,0.04)_1px,transparent_0)] bg-[length:40px_40px] opacity-40" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_59px,rgba(59,130,246,0.04)_59px,rgba(59,130,246,0.04)_60px),repeating-linear-gradient(90deg,transparent,transparent_79px,rgba(59,130,246,0.025)_79px,rgba(59,130,246,0.025)_80px)] opacity-45" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(37,99,235,0.10),transparent_55%)]" />
-          <div className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.08] rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-[10%] w-72 h-72 bg-blue-400/[0.06] rounded-full blur-[120px]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500/[0.04] rounded-full blur-[140px]" />
-        </>
-      )}
+      {/* Atmospheric depth — topographic contour feel, wrapped in bloom for scroll entry */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Automotive identity: concentric topographic rings behind the map.
+            Reads as topographic / radar / map character. Centered, low opacity. */}
+        <svg
+          aria-hidden="true"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          width="900"
+          height="900"
+          viewBox="0 0 900 900"
+          style={{ opacity: isLightAppearance ? 0.06 : 0.08 }}
+          fill="none"
+          stroke={isLightAppearance ? "#1e3a8a" : "#60a5fa"}
+          strokeWidth="1"
+        >
+          <circle cx="450" cy="450" r="120" />
+          <circle cx="450" cy="450" r="200" />
+          <circle cx="450" cy="450" r="290" />
+          <circle cx="450" cy="450" r="380" strokeDasharray="3 6" />
+          <circle cx="450" cy="450" r="430" strokeDasharray="2 8" opacity="0.7" />
+        </svg>
+        {isLightAppearance ? (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgba(59,130,246,0.14),transparent_60%)]" />
+            <div
+              className="absolute top-0 right-1/4 w-80 h-80 bg-blue-400/[0.14] rounded-full blur-[120px]"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-10 left-[15%] w-64 h-64 bg-indigo-300/[0.12] rounded-full blur-[100px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_2px_at_20px_20px,rgba(59,130,246,0.07)_1px,transparent_0)] bg-[length:40px_40px] opacity-80" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_59px,rgba(59,130,246,0.07)_59px,rgba(59,130,246,0.07)_60px),repeating-linear-gradient(90deg,transparent,transparent_79px,rgba(59,130,246,0.05)_79px,rgba(59,130,246,0.05)_80px)] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_50%_50%,rgba(37,99,235,0.18),transparent_55%)]" />
+            <div
+              className="absolute top-0 right-1/3 w-96 h-96 bg-blue-500/[0.18] rounded-full blur-3xl"
+              style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute bottom-10 left-[10%] w-72 h-72 bg-blue-400/[0.14] rounded-full blur-[120px]"
+              style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
+            <div
+              className="absolute top-1/2 left-1/2 w-80 h-80 bg-indigo-500/[0.12] rounded-full blur-[140px]"
+              style={{
+                transform: `translate(-50%, calc(-50% + ${parallaxY * 0.4}px))`,
+                willChange: "transform",
+              }}
+            />
+          </>
+        )}
+      </div>
       <div className="container mx-auto max-w-7xl px-4 relative">
         <div
           className={`transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}

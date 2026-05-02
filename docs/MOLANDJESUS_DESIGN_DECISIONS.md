@@ -390,6 +390,41 @@ Dark mode should feel like **night sky over ocean**, not darkness.
 Future aspiration:
 The maps product should eventually support **automatic day/night mode switching** for active navigation when time-of-day calls for it, similar to iOS Maps. This is a future-direction design target and should be documented as part of the intended end-state experience.
 
+### Automotive Identity Layer (Landing — Locked 2026-05-02, Pass 6)
+
+The landing page introduces a deliberate automotive identity register that the dashboard does NOT inherit. It applies to landing surfaces only.
+
+**Two-register dark mode (Direction B — Amber-Lit Garage):**
+
+Light mode oscillates warm cream ↔ cool sky. Dark mode mirrors this with a warm amber-black register on **Benefits** and **TrustStats** sections, against the cold navy register on the rest. Mood: auto body shop at night under sodium-vapor work-lights, with cold map/nav tech surrounding it.
+
+- Warm dark sections (Benefits, TrustStats): `#1a0c06 → #231408 → #1a0a04` with amber atmosphere ellipses (`rgba(200,120,30,0.18–0.28)`) and warm-amber blur pools
+- Cold dark sections (everything else): the navy/indigo system already documented above
+
+**Direction C luminance accents (per-section corner glows):**
+
+A single radial luminance accent per section, 600–800px diameter, 15–22% opacity, positioned at the section's signature corner. Reads as architectural spotlight / Apple-event editorial lighting — NOT cyber/neon. Locked palette (any new section must pick from or extend this table):
+
+| Color | Use case | Example sections |
+|---|---|---|
+| Electric blue `rgba(37,99,235,0.22)` | Hero anchor, brand identity | Hero |
+| Sky teal `rgba(14,165,233,0.18)` | Guidance, freshness | HowItWorks |
+| Royal blue `rgba(37,99,235,0.16)` | Action / centered emphasis | WhoWeServe |
+| Cobalt `rgba(30,58,138,0.18)` | Depth, confidence | AboutOpportunity |
+| Slate-blue `rgba(71,85,105,0.15)` | Quiet anchoring | BusinessInquiry |
+| White-cream `rgba(248,250,252,0.18)` | "Lamp under glass" — conversion moment only | CTA |
+| Warm amber `rgba(200,120,30,0.20)` | Reserved for warm Direction B sections | Benefits |
+| Warm gold `rgba(180,140,40,0.22)` | Reserved for warm Direction B sections | TrustStats |
+
+**Subtle car cues — what is allowed:**
+
+- Sedan silhouette watermark (low opacity, behind hero image, never as a focal element)
+- Topographic / radar-style concentric rings behind the map (≤ 8% opacity)
+- Road-lane dashes at section transitions (gradient color matches separator)
+- Headlight bokeh / route lines / topographic rings / painted-metal sheen (future)
+
+These render as automotive **atmosphere**, not iconography. They support the product story without making the page look like a parts catalog or a mechanic shop website.
+
 ---
 
 ## 8. Roadmap for Design Improvement Passes
@@ -455,6 +490,22 @@ These temptations arise in every design project. Record them here to avoid rehas
    reusable patterns that appear 2+ times.
 5. **Do not change the map glass system just to try something new**. The liquid-glass system is
    production-quality and consistent. Any change needs a design reason, not an experiment.
+6. **Do not add racing/kitsch automotive decoration**. No racing stripes, chrome wheels,
+   spark/explosion graphics, tire-track motifs, gear/wrench iconography as page chrome,
+   speedometer dashboards as decoration, or "fast & furious" energy. Subtle automotive
+   atmosphere only — silhouette watermarks, topographic rings, road-lane dashes. The product
+   is a calm marketplace, not a tuner shop.
+7. **Do not homage Apple Maps directly**. Inspiration from its calm/spatial language is
+   welcome and documented above; literal reproduction of its tile palette, control shape,
+   or marker styling is not. BidOnDent's blue-first identity must remain its own.
+8. **Do not extend Direction C luminance accents past the locked palette**. New sections
+   pick a color from the §7 Direction C table or extend it via owner-approved decision —
+   not by sampling whichever blue feels right at the time. One luminance per section. No
+   stacking. No rainbow gradient effects.
+9. **Do not apply the landing-page automotive identity layer to dashboard surfaces**. The
+   dashboard inherits the calm-map / glass-shell system documented under Dark Shell Design
+   System; the automotive register (sedan silhouettes, lane dashes, warm amber atmosphere,
+   Direction C luminance) is a landing-only signature. Mixing them dilutes both.
 
 ---
 

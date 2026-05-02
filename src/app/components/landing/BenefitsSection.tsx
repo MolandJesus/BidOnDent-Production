@@ -61,35 +61,74 @@ export default function BenefitsSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(182deg, #faf9f6 0%, #f5f4f0 42%, #f0eeea 100%)"
-          : "linear-gradient(182deg, #0e1838 0%, #14204c 42%, #0c1634 100%)",
+          : "linear-gradient(182deg, var(--bd-warm-dark-amber-start) 0%, var(--bd-warm-dark-amber-mid) 42%, var(--bd-warm-dark-amber-end) 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-indigo-400/30"} to-transparent`}
+        className="absolute -top-px left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(217, 119, 6, 0.25) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(96, 165, 250, 0.22) 22%, rgba(220, 150, 60, 0.32) 50%, rgba(96, 165, 250, 0.22) 78%, transparent)",
+        }}
       />
-      {/* Atmospheric depth */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle cross-hatch texture */}
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.02)_34px,rgba(99,102,241,0.02)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.02)_34px,rgba(99,102,241,0.02)_35px)] opacity-50" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(220,185,115,0.09),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(200,170,110,0.10),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(200,165,100,0.06),transparent_55%)]" />
-          <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-200/[0.16] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-100/[0.12] rounded-full blur-[130px]" />
-          <div className="absolute top-1/2 right-[30%] w-80 h-80 bg-amber-300/[0.08] rounded-full blur-[140px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.035)_34px,rgba(99,102,241,0.035)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.035)_34px,rgba(99,102,241,0.035)_35px)] opacity-60" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_30%_-10%,rgba(99,102,241,0.14),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_75%_85%,rgba(79,70,229,0.09),transparent_55%)]" />
-          <div className="absolute -top-10 left-1/3 w-[26rem] h-[26rem] bg-indigo-500/[0.09] rounded-full blur-[140px]" />
-          <div className="absolute bottom-0 right-[10%] w-80 h-80 bg-indigo-400/[0.06] rounded-full blur-[120px]" />
-        </>
-      )}
+      {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: warm amber, bottom-left corner (warm Direction B section) */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "750px",
+            height: "750px",
+            bottom: "-200px",
+            left: "-200px",
+            background: "radial-gradient(circle, rgba(200,120,30,0.20), transparent 65%)",
+          }}
+        />
+        {isLightAppearance ? (
+          <>
+            {/* Cross-hatch (Branch A: deeper indigo) */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px)] opacity-90" />
+            {/* Color atmosphere — deeper warm amber */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(230,180,100,0.26),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(220,160,80,0.28),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(220,165,90,0.18),transparent_55%)]" />
+            {/* Larger amber pools, deeper saturation */}
+            <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-300/[0.38] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-200/[0.30] rounded-full blur-[130px]" />
+            <div className="absolute top-1/2 right-[30%] w-80 h-80 bg-amber-300/[0.24] rounded-full blur-[140px]" />
+          </>
+        ) : (
+          <>
+            {/* Direction B — Amber-Lit Garage: warm-dark amber atmosphere replaces indigo */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(200,130,40,0.07)_34px,rgba(200,130,40,0.07)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(200,130,40,0.07)_34px,rgba(200,130,40,0.07)_35px)] opacity-90" />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 60% 55% at 30% -10%, var(--bd-warm-dark-amber-ellipse-top), transparent 60%)",
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 50% 50% at 75% 85%, var(--bd-warm-dark-amber-ellipse-bottom), transparent 55%)",
+              }}
+            />
+            <div
+              className="absolute -top-10 left-1/3 w-[26rem] h-[26rem] rounded-full blur-[140px]"
+              style={{ background: "var(--bd-warm-dark-amber-pool)" }}
+            />
+            <div
+              className="absolute bottom-0 right-[10%] w-80 h-80 rounded-full blur-[120px]"
+              style={{ background: "var(--bd-warm-dark-amber-pool-soft)" }}
+            />
+          </>
+        )}
+      </div>
 
       {/* Decorative floating orbs */}
       <div
@@ -125,7 +164,7 @@ export default function BenefitsSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-indigo-400/25 bg-indigo-500/10 text-indigo-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-amber-400/25 bg-amber-500/10 text-amber-200"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-amber-400" />
             Built for Real Repairs
@@ -164,15 +203,9 @@ export default function BenefitsSection({
           {benefits.map((benefit, index) => (
             <div
               key={benefit.title}
-              className={`rounded-2xl p-4 sm:p-5 hover:shadow-2xl transition-all duration-500 group hover:-translate-y-1 ${isLightAppearance ? "border border-[rgba(200,180,150,0.3)]" : "border border-indigo-300/22"} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card bd-glass-card--landing p-4 sm:p-5 transition-all duration-500 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
-                background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 253, 0.75) 100%)"
-                  : "linear-gradient(180deg, rgba(30, 27, 75, 0.30) 0%, rgba(15, 14, 40, 0.75) 100%)",
-                boxShadow: isLightAppearance
-                  ? "0 10px 38px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(200, 180, 150, 0.14), inset 0 1px 0 rgba(255, 250, 240, 0.90), 0 0 0 1px rgba(200, 180, 150, 0.16)"
-                  : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(129, 140, 248, 0.14), 0 0 0 1px rgba(129, 140, 248, 0.06)",
               }}
             >
               <div className="mb-3 overflow-hidden rounded-lg relative h-56 flex items-center justify-center">

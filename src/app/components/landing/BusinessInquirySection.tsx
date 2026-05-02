@@ -116,26 +116,40 @@ export default function BusinessInquirySection({
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
       />
-      {/* Atmospheric depth */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.02)_1px,transparent_1px)] [background-size:28px_28px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(210,180,130,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(200,165,100,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(220,185,115,0.07),transparent_50%)]" />
-          <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-amber-200/[0.14] rounded-full blur-[110px]" />
-          <div className="absolute top-10 right-[20%] w-48 h-48 bg-amber-100/[0.10] rounded-full blur-[120px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.025)_1px,transparent_1px)] [background-size:28px_28px] opacity-30" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_60%_-5%,rgba(59,130,246,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(37,99,235,0.05),transparent_55%)]" />
-          <div className="absolute top-0 right-1/3 w-64 h-64 bg-blue-500/[0.05] rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-blue-400/[0.03] rounded-full blur-[100px]" />
-        </>
-      )}
+      {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {/* Pass 6 — Direction C luminance accent: slate-blue, bottom-center */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: "600px",
+            height: "600px",
+            bottom: "-150px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "radial-gradient(circle, rgba(71,85,105,0.15), transparent 65%)",
+          }}
+        />
+        {isLightAppearance ? (
+          <>
+            {/* Subtle dot grid texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:28px_28px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_60%_-5%,rgba(210,180,130,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_80%,rgba(200,165,100,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_45%_50%,rgba(220,185,115,0.13),transparent_50%)]" />
+            <div className="absolute bottom-0 left-[30%] w-60 h-60 bg-amber-200/[0.22] rounded-full blur-[110px]" />
+            <div className="absolute top-10 right-[20%] w-48 h-48 bg-amber-100/[0.18] rounded-full blur-[120px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.06)_1px,transparent_1px)] [background-size:28px_28px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_45%_at_60%_-5%,rgba(59,130,246,0.16),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(37,99,235,0.12),transparent_55%)]" />
+            <div className="absolute top-0 right-1/3 w-64 h-64 bg-blue-500/[0.15] rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-blue-400/[0.12] rounded-full blur-[100px]" />
+          </>
+        )}
+      </div>
 
       {/* Decorative floating orbs */}
       <div
@@ -240,7 +254,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.35)] hover:bg-[rgba(255,251,245,0.55)] hover:border-[rgba(200,180,150,0.3)] backdrop-blur-sm shadow-[0_6px_22px_rgba(0,0,0,0.09),0_2px_6px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,250,240,0.65)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] backdrop-blur-md ${isLightAppearance ? "border-[rgba(200,180,150,0.30)] bg-[rgba(255,251,245,0.55)] hover:bg-[rgba(255,251,245,0.72)] hover:border-[rgba(200,180,150,0.4)] shadow-[0_8px_24px_rgba(0,0,0,0.10),0_2px_8px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,250,240,0.85),0_0_24px_rgba(59,130,246,0.10)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.14),0_0_32px_rgba(59,130,246,0.16)]" : "border-blue-400/30 bg-[rgba(20,42,92,0.32)] hover:bg-[rgba(28,52,108,0.42)] hover:border-blue-400/55 shadow-[0_10px_28px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.16),0_0_28px_rgba(59,130,246,0.18)] hover:shadow-[0_14px_36px_rgba(2,6,23,0.55),0_0_40px_rgba(59,130,246,0.32)]"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-blue-600" : "bg-[#003d82]"}`}
@@ -271,7 +285,7 @@ export default function BusinessInquirySection({
                     setFormOpen(true);
                     setSubmitMessage("");
                   }}
-                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] ${isLightAppearance ? "border-[rgba(200,180,150,0.25)] bg-[rgba(255,251,245,0.35)] hover:bg-[rgba(255,251,245,0.55)] hover:border-[rgba(200,180,150,0.3)] backdrop-blur-sm shadow-[0_6px_22px_rgba(0,0,0,0.09),0_2px_6px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,250,240,0.65)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.12)]" : "border-blue-400/20 bg-white/5 hover:bg-white/10 hover:border-blue-400/40"}`}
+                  className={`group relative flex items-center gap-4 rounded-2xl px-6 py-5 text-left border transition-all duration-200 sm:min-w-[260px] backdrop-blur-md ${isLightAppearance ? "border-[rgba(200,180,150,0.30)] bg-[rgba(255,251,245,0.55)] hover:bg-[rgba(255,251,245,0.72)] hover:border-[rgba(200,180,150,0.4)] shadow-[0_8px_24px_rgba(0,0,0,0.10),0_2px_8px_rgba(30,58,138,0.06),inset_0_1px_0_rgba(255,250,240,0.85),0_0_24px_rgba(59,130,246,0.10)] hover:shadow-[0_14px_36px_rgba(0,0,0,0.14),0_0_32px_rgba(59,130,246,0.16)]" : "border-blue-400/30 bg-[rgba(20,42,92,0.32)] hover:bg-[rgba(28,52,108,0.42)] hover:border-blue-400/55 shadow-[0_10px_28px_rgba(2,6,23,0.45),inset_0_1px_0_rgba(147,197,253,0.16),0_0_28px_rgba(59,130,246,0.18)] hover:shadow-[0_14px_36px_rgba(2,6,23,0.55),0_0_40px_rgba(59,130,246,0.32)]"}`}
                 >
                   <div
                     className={`flex-shrink-0 w-12 h-12 rounded-[1rem] flex items-center justify-center ${isLightAppearance ? "bg-indigo-600" : "bg-[#1e3a5f]"}`}

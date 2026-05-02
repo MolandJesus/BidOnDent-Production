@@ -27,27 +27,29 @@ export default function FooterSection({
     >
       {/* Top edge fade */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/20" : "via-blue-400/10"} to-transparent`}
+        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
       />
-      {/* Atmospheric depth */}
-      {isLightAppearance ? (
-        <>
-          {/* Fine dot texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.015)_1px,transparent_1px)] [background-size:18px_18px] opacity-35" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_80%,rgba(200,165,100,0.06),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_70%_20%,rgba(210,180,130,0.04),transparent_55%)]" />
-          <div className="absolute bottom-0 left-[15%] w-56 h-56 bg-amber-100/[0.10] rounded-full blur-[110px]" />
-          <div className="absolute top-0 right-[20%] w-80 h-80 bg-sky-300/[0.08] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-[10%] w-64 h-64 bg-blue-300/[0.06] rounded-full blur-[100px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.02)_1px,transparent_1px)] [background-size:18px_18px] opacity-25" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_30%_80%,rgba(59,130,246,0.06),transparent_55%)]" />
-          <div className="absolute bottom-0 right-1/3 w-72 h-72 bg-blue-500/[0.05] rounded-full blur-[100px]" />
-          <div className="absolute top-10 left-1/4 w-56 h-56 bg-indigo-400/[0.04] rounded-full blur-[90px]" />
-        </>
-      )}
+      {/* Atmospheric depth — wrapped in bloom (gentler bumps; footer is the page's farewell, not a feature moment) */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {isLightAppearance ? (
+          <>
+            {/* Fine dot texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.04)_1px,transparent_1px)] [background-size:18px_18px] opacity-70" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_80%,rgba(200,165,100,0.12),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_70%_20%,rgba(210,180,130,0.10),transparent_55%)]" />
+            <div className="absolute bottom-0 left-[15%] w-56 h-56 bg-amber-100/[0.18] rounded-full blur-[110px]" />
+            <div className="absolute top-0 right-[20%] w-80 h-80 bg-sky-300/[0.16] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 right-[10%] w-64 h-64 bg-blue-300/[0.13] rounded-full blur-[100px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:18px_18px] opacity-70" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_30%_80%,rgba(59,130,246,0.14),transparent_55%)]" />
+            <div className="absolute bottom-0 right-1/3 w-72 h-72 bg-blue-500/[0.12] rounded-full blur-[100px]" />
+            <div className="absolute top-10 left-1/4 w-56 h-56 bg-indigo-400/[0.10] rounded-full blur-[90px]" />
+          </>
+        )}
+      </div>
       <div className="container mx-auto px-4 max-w-7xl relative">
         <div
           className={`grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-8 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}

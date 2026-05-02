@@ -31,44 +31,63 @@ export default function CTASection({
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-slate-300/20" : "via-blue-400/25"} to-transparent`}
       />
-      {/* Atmospheric depth */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle radial dot pattern */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.02)_1px,transparent_1px)] [background-size:24px_24px] opacity-45" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(210,180,130,0.10),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(200,165,100,0.08),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(220,185,115,0.07),transparent_50%)]" />
-          <div className="absolute top-0 right-[25%] w-64 h-64 bg-amber-200/[0.06] rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.04] rounded-full blur-[120px]" />
-          <div className="absolute -top-10 left-[10%] w-[44rem] h-[44rem] bg-sky-400/[0.07] rounded-full blur-[220px]" />
-          <div className="absolute bottom-0 right-[8%] w-[30rem] h-[30rem] bg-blue-400/[0.05] rounded-full blur-[210px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(37,99,235,0.14),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_30%_20%,rgba(99,102,241,0.08),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_80%,rgba(37,99,235,0.06),transparent_50%)]" />
-        </>
-      )}
+      {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {isLightAppearance ? (
+          <>
+            {/* Subtle radial dot pattern */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:24px_24px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_50%_50%,rgba(210,180,130,0.18),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_20%,rgba(200,165,100,0.14),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_35%_at_65%_70%,rgba(220,185,115,0.13),transparent_50%)]" />
+            <div className="absolute top-0 right-[25%] w-64 h-64 bg-amber-200/[0.14] rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.12] rounded-full blur-[120px]" />
+            <div className="absolute -top-10 left-[10%] w-[44rem] h-[44rem] bg-sky-400/[0.16] rounded-full blur-[220px]" />
+            <div className="absolute bottom-0 right-[8%] w-[30rem] h-[30rem] bg-blue-400/[0.14] rounded-full blur-[210px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(37,99,235,0.22),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_30%_20%,rgba(99,102,241,0.16),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_35%_35%_at_70%_80%,rgba(37,99,235,0.14),transparent_50%)]" />
+          </>
+        )}
+      </div>
       <div className="container mx-auto px-4 max-w-6xl text-center relative">
+        {/* Lamp bloom — large radial behind the CTA card so backdrop-blur has
+            saturation to blur through. Pass 4. */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[140%] pointer-events-none"
+          style={{
+            background: isLightAppearance
+              ? "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.18), transparent 60%)"
+              : "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.28), transparent 60%)",
+            filter: "blur(80px)",
+            zIndex: 0,
+          }}
+        />
         <div
           className={`relative mx-auto max-w-4xl px-5 sm:px-8 md:px-14 py-8 sm:py-10 md:py-14 rounded-3xl border transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={
             isLightAppearance
               ? {
                   background:
-                    "linear-gradient(180deg, rgba(20, 42, 92, 0.88) 0%, rgba(12, 30, 68, 0.86) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.30)",
+                    "linear-gradient(180deg, rgba(20, 42, 92, 0.74) 0%, rgba(12, 30, 68, 0.70) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.36)",
+                  backdropFilter: "blur(28px) saturate(1.6)",
+                  WebkitBackdropFilter: "blur(28px) saturate(1.6)",
                   boxShadow:
-                    "0 40px 80px rgba(2, 6, 20, 0.62), 0 14px 40px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(147, 197, 253, 0.20), 0 0 120px rgba(37, 99, 235, 0.12)",
+                    "0 44px 88px rgba(2, 6, 20, 0.62), 0 16px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(147, 197, 253, 0.32), 0 0 130px rgba(37, 99, 235, 0.20), 0 0 60px rgba(96, 165, 250, 0.20)",
                 }
               : {
                   background:
-                    "linear-gradient(180deg, rgba(20, 42, 92, 0.92) 0%, rgba(12, 30, 68, 0.90) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.35)",
+                    "linear-gradient(180deg, rgba(20, 42, 92, 0.72) 0%, rgba(12, 30, 68, 0.68) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.42)",
+                  backdropFilter: "blur(28px) saturate(1.8)",
+                  WebkitBackdropFilter: "blur(28px) saturate(1.8)",
                   boxShadow:
-                    "0 24px 56px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(147, 197, 253, 0.18), 0 0 80px rgba(37, 99, 235, 0.08)",
+                    "0 28px 64px rgba(3, 10, 24, 0.58), inset 0 1px 0 rgba(147, 197, 253, 0.30), 0 0 100px rgba(37, 99, 235, 0.18), 0 0 56px rgba(96, 165, 250, 0.22)",
                 }
           }
         >

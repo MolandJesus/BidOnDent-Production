@@ -62,11 +62,11 @@ export default function LandingPageLayout({
 
   return (
     <div
-      className={`min-h-screen ${isLightAppearance ? "" : "dark"}`}
+      className={`min-h-screen overflow-x-hidden ${isLightAppearance ? "" : "dark"}`}
       data-theme={isLightAppearance ? "light" : "dark"}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, #f7f9fc 0%, #f2f5f9 100%)"
+          ? "linear-gradient(180deg, #fdfcf9 0%, #f8f8f5 100%)"
           : "radial-gradient(130% 90% at 30% 8%, rgba(12, 28, 58, 0.99) 0%, rgba(6, 14, 32, 0.99) 58%, #040a18 100%)",
       }}
     >
