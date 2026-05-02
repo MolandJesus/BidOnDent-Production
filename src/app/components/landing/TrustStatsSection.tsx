@@ -156,16 +156,41 @@ export default function TrustStatsSection({
             <span className="w-2 h-2 rounded-full mr-2 bg-amber-400" />
             Our Commitments
           </span>
-          <h3
-            className={`text-3xl sm:text-4xl font-bold mb-3 ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
-            style={{
-              textShadow: isLightAppearance
-                ? "0 1px 2px rgba(0,0,0,0.05)"
-                : "0 2px 8px rgba(0,0,0,0.3)",
-            }}
-          >
-            Built on Transparency
-          </h3>
+          {/* Pass 12 (calibrated test, 2026-05-02): metallic-gold flanking accent.
+              Restrained editorial typography treatment — thin gradient strokes
+              flanking the H3 only on sm: and up. Mode-aware: warmer/darker gold
+              in light, brighter gold in dark. Hidden on mobile to avoid clutter.
+              Scoped to TrustStats only as a visual test before any extension. */}
+          <div className="flex items-center justify-center gap-3 sm:gap-5 mb-3">
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full"
+              style={{
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.10) 25%, rgba(218,165,32,0.85) 60%, rgba(184,134,11,0.55) 85%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(180,140,40,0.20) 25%, rgba(253,224,124,0.90) 60%, rgba(218,165,32,0.55) 85%, transparent 100%)",
+              }}
+            />
+            <h3
+              className={`text-3xl sm:text-4xl font-bold ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
+              style={{
+                textShadow: isLightAppearance
+                  ? "0 1px 2px rgba(0,0,0,0.05)"
+                  : "0 2px 8px rgba(0,0,0,0.3)",
+              }}
+            >
+              Built on Transparency
+            </h3>
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full"
+              style={{
+                background: isLightAppearance
+                  ? "linear-gradient(90deg, transparent 0%, rgba(184,134,11,0.55) 15%, rgba(218,165,32,0.85) 40%, rgba(184,134,11,0.10) 75%, transparent 100%)"
+                  : "linear-gradient(90deg, transparent 0%, rgba(218,165,32,0.55) 15%, rgba(253,224,124,0.90) 40%, rgba(180,140,40,0.20) 75%, transparent 100%)",
+              }}
+            />
+          </div>
           <p
             className={`text-base sm:text-lg leading-relaxed max-w-2xl mx-auto ${
               isLightAppearance ? "text-slate-500" : "text-blue-100/70"
