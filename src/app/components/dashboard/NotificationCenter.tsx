@@ -164,14 +164,14 @@ export default function NotificationCenter({
               style={{
                 ...panelPositionStyle,
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255,253,248,0.90) 0%, rgba(250,247,240,0.84) 100%)"
-                  : "linear-gradient(180deg, rgba(10, 20, 40, 0.88) 0%, rgba(7, 15, 32, 0.82) 100%)",
+                  ? "linear-gradient(180deg, rgba(250, 252, 255, 0.94) 0%, rgba(238, 247, 255, 0.88) 100%)"
+                  : "linear-gradient(180deg, rgba(11, 23, 47, 0.90) 0%, rgba(8, 18, 38, 0.84) 100%)",
                 borderColor: isLightAppearance
-                  ? "rgba(200,180,150,0.25)"
-                  : "rgba(96, 165, 250, 0.16)",
+                  ? "rgba(147, 197, 253, 0.42)"
+                  : "rgba(96, 165, 250, 0.22)",
                 boxShadow: isLightAppearance
-                  ? "0 20px 60px rgba(15,23,42,0.14), inset 0 1px 0 rgba(255,250,240,0.7)"
-                  : "0 20px 64px rgba(0, 0, 0, 0.50), 0 0 0 1px rgba(96, 165, 250, 0.06), inset 0 1px 0 rgba(147, 197, 253, 0.08)",
+                  ? "0 20px 60px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(30, 58, 138, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(191, 219, 254, 0.22)"
+                  : "0 20px 64px rgba(2, 6, 23, 0.50), 0 0 0 1px rgba(96, 165, 250, 0.18), inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 36px rgba(37, 99, 235, 0.10)",
                 backdropFilter: isLightAppearance
                   ? "blur(26px) saturate(1.22)"
                   : "blur(28px) saturate(1.28)",
@@ -184,8 +184,8 @@ export default function NotificationCenter({
               <div
                 className={`px-4 py-3 ${
                   isLightAppearance
-                    ? "border-b border-[rgba(200,180,150,0.18)]"
-                    : "border-b border-[rgba(96,165,250,0.10)]"
+                    ? "border-b border-[rgba(147,197,253,0.28)]"
+                    : "border-b border-[rgba(96,165,250,0.14)]"
                 }`}
               >
                 {/* Top row: title + unread count + close */}
@@ -272,12 +272,14 @@ export default function NotificationCenter({
                 {notifications.length === 0 ? (
                   <div className="px-5 py-10 text-center">
                     <div
-                      className={`mx-auto flex h-10 w-10 items-center justify-center rounded-xl ${
-                        isLightAppearance ? "bg-amber-50" : "bg-blue-500/10"
+                      className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${
+                        isLightAppearance
+                          ? "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10)]"
+                          : "bg-[linear-gradient(135deg,rgba(37,99,235,0.18)_0%,rgba(59,130,246,0.10)_100%)] shadow-[inset_0_1px_0_rgba(147,197,253,0.18),0_0_0_1px_rgba(96,165,250,0.22),0_4px_18px_rgba(37,99,235,0.18)]"
                       }`}
                     >
                       <Bell
-                        className={`h-4.5 w-4.5 ${isLightAppearance ? "text-amber-500" : "text-blue-400/60"}`}
+                        className={`h-4.5 w-4.5 ${isLightAppearance ? "text-blue-600" : "text-blue-300"}`}
                       />
                     </div>
                     <p
@@ -285,9 +287,7 @@ export default function NotificationCenter({
                     >
                       No notifications yet
                     </p>
-                    <p
-                      className={`mt-1 text-xs ${isLightAppearance ? "text-slate-400" : "text-slate-500"}`}
-                    >
+                    <p className="mt-1 text-xs text-slate-500">
                       Activity from your account will appear here.
                     </p>
                   </div>
@@ -306,8 +306,8 @@ export default function NotificationCenter({
                           className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors ${
                             !isLast
                               ? isLightAppearance
-                                ? "border-b border-[rgba(200,180,150,0.12)]"
-                                : "border-b border-[rgba(96,165,250,0.06)]"
+                                ? "border-b border-[rgba(147,197,253,0.18)]"
+                                : "border-b border-[rgba(96,165,250,0.10)]"
                               : ""
                           } ${
                             notification.read

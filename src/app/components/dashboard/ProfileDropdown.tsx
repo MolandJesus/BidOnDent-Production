@@ -150,17 +150,17 @@ export default function ProfileDropdown({
       role="region"
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(248, 250, 252, 0.95) 100%)"
-          : "linear-gradient(180deg, rgba(18, 36, 60, 0.97) 0%, rgba(12, 25, 41, 0.93) 100%)",
-        borderColor: isLightAppearance ? "rgba(148, 163, 184, 0.35)" : "rgba(96, 165, 250, 0.24)",
+          ? "linear-gradient(180deg, rgba(250, 252, 255, 0.97) 0%, rgba(238, 247, 255, 0.94) 100%)"
+          : "linear-gradient(180deg, rgba(11, 23, 47, 0.94) 0%, rgba(8, 18, 38, 0.90) 100%)",
+        borderColor: isLightAppearance ? "rgba(147, 197, 253, 0.42)" : "rgba(96, 165, 250, 0.26)",
         boxShadow: isLightAppearance
-          ? "0 24px 56px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 1px rgba(148, 163, 184, 0.4)"
-          : "0 24px 56px rgba(2, 6, 23, 0.5), 0 4px 12px rgba(2, 6, 23, 0.3), 0 0 1px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(147, 197, 253, 0.1), 0 0 40px rgba(37, 99, 235, 0.08)",
+          ? "0 24px 56px rgba(15, 23, 42, 0.13), 0 4px 12px rgba(30, 58, 138, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(191, 219, 254, 0.22)"
+          : "0 24px 56px rgba(2, 6, 23, 0.50), 0 4px 12px rgba(2, 6, 23, 0.30), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 36px rgba(37, 99, 235, 0.10)",
       }}
     >
       {/* Profile Header */}
       <div
-        className={`p-4 border-b ${isLightAppearance ? "border-slate-200/60" : "border-slate-200/40"}`}
+        className={`p-4 border-b ${isLightAppearance ? "border-blue-200/35" : "border-blue-400/15"}`}
       >
         <div className="flex items-center space-x-3">
           {/* Profile Picture */}
@@ -210,10 +210,10 @@ export default function ProfileDropdown({
 
       {/* Notifications Section */}
       <div
-        className={`border-b ${isLightAppearance ? "border-slate-200/60" : "border-slate-200/40"}`}
+        className={`border-b ${isLightAppearance ? "border-blue-200/35" : "border-blue-400/15"}`}
       >
         <div
-          className={`px-4 py-2 font-semibold text-sm flex items-center justify-between ${isLightAppearance ? "bg-slate-50/80" : "bg-white/5"}`}
+          className={`px-4 py-2 font-semibold text-sm flex items-center justify-between ${isLightAppearance ? "bg-blue-50/55" : "bg-white/5"}`}
         >
           <div className="flex items-center gap-2">
             <span className={isLightAppearance ? "text-slate-700" : "text-slate-200"}>

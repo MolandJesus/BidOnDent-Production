@@ -52,12 +52,12 @@ export default function DashboardSidebar({
       aria-label="Dashboard sidebar"
       className={`hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r ${
         isLightAppearance
-          ? "bd-light-surface md:border-[rgba(200,180,150,0.30)]"
+          ? "bd-light-surface md:border-[rgba(147,197,253,0.32)]"
           : "md:border-blue-400/[0.12]"
       }`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.66) 0%, rgba(249, 246, 239, 0.58) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.10) 46%, transparent 78%)"
+          ? "linear-gradient(180deg, rgba(248, 251, 255, 0.74) 0%, rgba(238, 247, 255, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 255, 0.56) 0%, rgba(220, 235, 255, 0.10) 46%, transparent 78%)"
           : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%)",
         backdropFilter: isLightAppearance
           ? "blur(34px) saturate(1.64)"
@@ -66,12 +66,12 @@ export default function DashboardSidebar({
           ? "blur(34px) saturate(1.64)"
           : "blur(28px) saturate(1.5)",
         boxShadow: isLightAppearance
-          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.08), inset -1px 0 0 rgba(200, 180, 150, 0.20), inset 0 1px 0 rgba(255, 255, 255, 0.76)"
+          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.10), inset -1px 0 0 rgba(147, 197, 253, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.82)"
           : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(59, 130, 246, 0.08)",
       }}
     >
       <div
-        className={`px-5 py-5 border-b ${isLightAppearance ? "border-[rgba(200,180,150,0.20)]" : "border-blue-400/[0.10]"}`}
+        className={`px-5 py-5 border-b ${isLightAppearance ? "border-[rgba(147,197,253,0.22)]" : "border-blue-400/[0.10]"}`}
       >
         <button
           onClick={onLogoClick}
@@ -116,19 +116,23 @@ export default function DashboardSidebar({
               key={tab.id}
               aria-current={isActive ? "page" : undefined}
               onClick={() => onTabClick(tab.id)}
-              className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 relative ${
-                isActive ? "" : "hover:bg-slate-500/[0.07]"
+              className={`group w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/45 ${
+                isActive
+                  ? ""
+                  : isLightAppearance
+                    ? "hover:bg-blue-500/[0.06]"
+                    : "hover:bg-blue-500/[0.08]"
               }`}
               type="button"
               style={
                 isActive
                   ? {
                       background: isLightAppearance
-                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%)"
-                        : "linear-gradient(135deg, rgba(37, 99, 235, 0.18) 0%, rgba(59, 130, 246, 0.10) 100%)",
+                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(96, 165, 250, 0.09) 100%)"
+                        : "linear-gradient(135deg, rgba(37, 99, 235, 0.20) 0%, rgba(59, 130, 246, 0.11) 100%)",
                       boxShadow: isLightAppearance
-                        ? "inset 0 1px 0 rgba(147, 197, 253, 0.10)"
-                        : "inset 0 1px 0 rgba(147, 197, 253, 0.08)",
+                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.80), inset 0 -1px 0 rgba(147, 197, 253, 0.16), 0 0 0 1px rgba(147, 197, 253, 0.18), 0 4px 12px rgba(59, 130, 246, 0.10)"
+                        : "inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.20), 0 4px 14px rgba(37, 99, 235, 0.16)",
                     }
                   : {}
               }
@@ -193,7 +197,7 @@ export default function DashboardSidebar({
         })}
         {onOpenDemoMode && (
           <div
-            className={`pt-2 mt-1 border-t ${isLightAppearance ? "border-slate-200/60" : "border-blue-400/[0.08]"}`}
+            className={`pt-2 mt-1 border-t ${isLightAppearance ? "border-blue-200/40" : "border-blue-400/[0.08]"}`}
           >
             <button
               aria-label="Open demo mode"
@@ -240,7 +244,7 @@ export default function DashboardSidebar({
       </nav>
 
       <div
-        className={`p-3 border-t ${isLightAppearance ? "border-slate-200/70" : "border-blue-400/[0.10]"}`}
+        className={`p-3 border-t ${isLightAppearance ? "border-blue-200/40" : "border-blue-400/[0.10]"}`}
       >
         <button
           onClick={() => {
@@ -250,7 +254,7 @@ export default function DashboardSidebar({
           aria-controls="dashboard-sidebar-profile-panel"
           aria-expanded={showSidebarProfilePanel}
           aria-label={showSidebarProfilePanel ? "Close profile panel" : "Open profile panel"}
-          className="group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 hover:bg-blue-500/[0.06]"
+          className="group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 hover:bg-blue-500/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/45"
           type="button"
         >
           {userImageUrl ? (
