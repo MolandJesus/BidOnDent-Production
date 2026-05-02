@@ -2,7 +2,7 @@
 
 **Authority:** PLAN-tier — historical execution record. Redesign is complete and signed off.
 **Last updated:** 2026-05-02
-**Status:** **STATUS COMPLETE** — Passes 1 through 11 shipped. Both audit docs archived under `docs/archive/`. Owner authorized full-autopilot completion 2026-05-02.
+**Status:** **STATUS COMPLETE** — Passes 1 through 16 shipped (Passes 12–15 added editorial flanking accents to section H3s; Pass 16 lifted the two sub-pages, AboutPage + InsurerPartnershipPage, to the landing-tier glass system). Both audit docs archived under `docs/archive/`. Owner authorized full-autopilot completion 2026-05-02.
 **Scope:** Landing page surfaces only — 10 sections + header + footer + appearance toggle. No dashboard, no auth, no backend.
 **Companion docs:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §7 (locked design system), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md). Source audits archived: [`docs/archive/`](archive/).
 
