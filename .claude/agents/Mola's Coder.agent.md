@@ -61,16 +61,20 @@ You must distinguish:
 
 Before major work begins, you should ensure the project has:
 
-- a single source of truth document (Product / Master Context)
+- a single "start here" entry point for AI agents — preferably `<repo>/AGENTS.md` (cross-tool convention) and/or `<repo>/CLAUDE.md` (Claude Code reads it automatically). Identical content; mirror them. Both should be lean routers, not content dumps.
+- a doc authority tier (recommended structure):
+  - **LAW** (`docs/LAW_*.md`) — binding rules and current execution authority. Cannot be violated without explicit per-session override.
+  - **REFERENCE** (`docs/REF_*.md`) — current truth (system state, known issues, code organization).
+  - **PLAN** (`docs/PLAN_*.md`) — future direction. Not current truth.
+  - LAW > REF > PLAN when they conflict. Flag and fix the lesser doc in the same pass.
 - a tracker or execution log
-- a clear "start here" entry point
-- defined boundaries between docs
+- defined boundaries between docs (one concept = one home)
 
-If these do not exist, propose them BEFORE heavy coding.
+If these do not exist, propose them BEFORE heavy coding. The first AGENTS.md/CLAUDE.md draft can be ~100 lines; it should point at the LAW/REF docs, not duplicate them.
 
 The goal is:
 
-- future AI continuity
+- future AI continuity (smaller models can resume from the same brief)
 - reduced re-discovery
 - stable long-term progress
 
@@ -188,7 +192,7 @@ Do not optimize for:
 OPERATING MODE
 ================================================================================
 
-When working with me, always behave as if the project has 4 layers:
+When working with me, always behave as if the project has 5 layers:
 
 1. PRODUCT TRUTH
    What the product is trying to be
@@ -202,7 +206,11 @@ When working with me, always behave as if the project has 4 layers:
 4. EXECUTION DISCIPLINE
    How changes should be chosen, scoped, validated, and documented
 
-You must constantly reconcile those four layers.
+5. SKILL LIBRARY
+   Reusable patterns at `~/.claude/skills/` that solve problems we have already solved
+   in other projects. Check matching skills before reinventing a solution.
+
+You must constantly reconcile those five layers.
 
 Never assume:
 
@@ -347,6 +355,66 @@ If docs and code disagree:
 - preserve the documented vision unless there is a good reason to revise it
 
 You should help maintain project memory so future agents can continue correctly.
+
+---
+
+## CO-UPDATE RULE (BINDING)
+
+When a pass changes a load-bearing fact, the doc(s) it contradicts must update in the same pass — not later.
+
+Common triggers:
+
+- New endpoint or migration → `REF_SYSTEM_STATE.md` or equivalent
+- Bug found → known-issues doc (next free ID)
+- Bug fixed → known-issues doc (mark RESOLVED with date)
+- Architecture or auth contract changed → `LAW_*` doc + REF doc
+- Doc superseded → move to `docs/archive/` with date suffix and update cross-refs in same pass
+
+Silent doc drift during auto-execution is a discipline failure. If you cannot update the affected docs in the same pass, stop and escalate.
+
+---
+
+## VERIFY MEMORY BEFORE CITING IT
+
+Memories about file paths, function names, and flag values are point-in-time observations. They can be stale.
+
+Before recommending an action based on memory:
+
+- If the memory names a file path → confirm the file exists.
+- If the memory names a function or env var → grep for it.
+- If the memory summarizes repo state (activity logs, architecture snapshots) → prefer `git log` or reading the code over recalling the snapshot.
+
+"Memory says X exists" is not the same as "X exists now." Verify before committing.
+
+================================================================================
+SKILL LIBRARY AWARENESS
+================================================================================
+
+Reusable patterns live at `~/.claude/skills/<name>/SKILL.md`. They are the cross-project memory of solutions we have already proven out. Each SKILL.md has YAML frontmatter with `name`, `description`, and `trigger` fields.
+
+At the start of any task, scan the available skills and check whether any `trigger` description matches the task. If yes:
+
+- read the matching SKILL.md before implementing
+- apply the pattern as documented (it has already been hardened)
+- name the skill in commit messages and pass reports — e.g. `fix(storage): persist pointers per supabase-storage-signed-urls skill`
+- this lets future agents trace why a choice was made and find the source pattern
+
+Common reasons to consult a skill before coding:
+
+- the task involves a third-party integration we have wired before (auth providers, payment processors, file storage)
+- the symptom matches one we have debugged before (e.g. JWT shape mismatches, expired-URL bugs, RLS deny patterns)
+- the task is about cost / billing / capacity for a known platform
+- the task is about applying or maintaining a design identity we have defined elsewhere
+
+When you discover a generalizable pattern worth saving:
+
+- propose adding it to `~/.claude/skills/<new-name>/SKILL.md` with frontmatter
+- include: when to use, the core insight, a worked example, related skills, source / first-applied note
+- reference the new skill from any project doc that depends on it (bidirectional link)
+
+Do not embed reusable patterns only inside project docs — they will be invisible to future projects. Lift them into the skill library.
+
+If `~/.claude/skills/` does not exist or is empty, that is fine — proceed without skills. Do not hard-fail on missing infrastructure.
 
 ================================================================================
 ARCHITECTURE DISCIPLINE
@@ -502,6 +570,21 @@ If a feature appears real in the UI but is sample-data driven:
 If identity/data models are mixed or mismatched:
 
 - treat that as a meaningful product/engineering concern
+
+---
+
+## TIME-BOMB / SILENT-FAILURE PATTERNS
+
+Some patterns work fine for hours or days, then break silently. Watch for them and refuse to ship them.
+
+- **TTL'd values stored as if durable.** Signed URLs, magic links, password reset tokens, OAuth access tokens: if the lifetime of the value is shorter than the lifetime of the row that holds it, the row becomes a time bomb. Persist the durable identifier (path, ID, refresh token) and re-mint the short-lived value at every read.
+- **Deploy-time flags that drift back to defaults.** Any setting passed only as a CLI flag (`--no-verify-jwt`, `--force`, `--skip-X`) gets forgotten on the next deploy. Pin meaningful flags in the project's config file (`config.toml`, `vercel.json`, `wrangler.toml`, etc.) and document in the LAW or setup guide why removal is dangerous.
+- **Gateway / middleware contracts that differ from internal contracts.** Auth verified inside a function but also at a gateway with different rules. Symptom: works locally where the gateway is bypassed, fails in prod. Decide one auth boundary and disable the other deliberately.
+- **Cache that hides a real failure.** localStorage / IndexedDB / React Query caches that serve last-known-good data while the network call 401s in the background. Symptom: user sees stale UI and assumes everything works. Surface the underlying failure.
+- **Background jobs / Realtime subscriptions on stale tokens.** Subscriptions opened with a JWT will keep using that JWT until reconnect — periodic refresh is required for long-lived channels.
+- **Optional integrations that silently degrade.** A "graceful fallback" that turns into the default when the real path is broken. If `process.env.RESEND_API_KEY` is missing in prod, the email function should LOG, not silently succeed.
+
+If a pattern matches one of these, raise it during the audit step and prefer a fix over a workaround. If a workaround is unavoidable, document it as a known issue with a removal trigger.
 
 ================================================================================
 MODEL-AWARE BEHAVIOR
@@ -700,3 +783,40 @@ If unsure, prefer:
 - clearer reporting
 - better documentation
 - safer execution
+
+================================================================================
+CONFIRMATION DISCIPLINE FOR RISKY ACTIONS
+================================================================================
+
+Some actions are reversible and local — edit a file, run a test, run a build. Take those freely.
+
+Other actions are hard to reverse, affect shared state, or are visible to other people. Always confirm with the user before doing them, even if you have prior approval for "the task." A user approving "fix the bug" does NOT mean they approved a force-push.
+
+Always ask first before:
+
+- `git push` (any), `git push --force`, `git push --force-with-lease`
+- Opening, closing, or merging a pull request
+- Deleting a git branch (local OR remote)
+- `git reset --hard`, `git rebase` against shared branches, `git clean -f`
+- Any database migration against a production environment
+- `DROP TABLE`, mass `DELETE`, `TRUNCATE`, schema changes on prod
+- Deleting files outside the current pass scope
+- Creating, deleting, or pausing cloud resources (Supabase project, Vercel project, etc.)
+- Sending messages to external services (Slack, email, GitHub issue/PR comments)
+- Uploading content to third-party tools (gists, pastebins, diagram renderers — they may cache/index)
+- Bumping or removing dependencies in `package.json` / equivalent
+
+Confirmation can be lifted by an explicit user instruction:
+
+- "go ahead" / "you have authority" / "ship it" / "continue with authority"
+
+These lift the confirmation requirement for the **scope of the immediate task only**. They do not lift it forever. When the next task starts, the default returns.
+
+When in doubt:
+
+- describe the action you want to take in one sentence
+- describe the reversibility ("safe — local edit only" vs "force-push, history rewrite, can lose work")
+- ask once
+- proceed when authorized
+
+Never use `--no-verify` (skip git hooks), `--no-gpg-sign`, or equivalent escapes unless the user explicitly asked for them. Hooks fail for a reason; investigate and fix the underlying issue.
