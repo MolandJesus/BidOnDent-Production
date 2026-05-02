@@ -2,13 +2,17 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-04-30 (Pass O — Realtime infrastructure verified in production)
+**Last updated:** 2026-05-02 (storage pointer pattern + verify_jwt:false hardening shipped)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
 **Branch:** `BidOnDent-Horizon-Beta` (working) → `main` (stable)
 
-**Edge functions:** Deployed version 47 on Supabase project `wmdcnjgtsppftrofaqqa` (updated 2026-04-27 11:23:25 UTC). The live prod bundle includes workflow authorization hardening, completion propagation, authenticated marketplace seed-fallback removal, and customer ownership recovery/self-heal for Clerk ID rotation. Email delivery remains blocked on `RESEND_API_KEY` deployment.
+**Edge functions:** Deployed **version 50** on Supabase project `wmdcnjgtsppftrofaqqa` (deployed 2026-05-02). Gateway `verify_jwt: false` (pinned in `supabase/config.toml`). Live bundle adds: durable `storage://<bucket>/<path>` pointer pattern for persisted media URLs, `hydrateSignedStorageUrl()` failure handling that returns null instead of leaking pointers, hydration of the `getJobAssignments` embedded report (was a bypass). All four prod `damage_reports.photo_urls` rows backfilled from expired signed URLs to pointers via migration `20260501000001_storage_pointer_backfill.sql`. Email delivery still blocked on `RESEND_API_KEY` deployment (KI-002).
+
+**Compute:** Production project on **Micro** tier as of 2026-05-02 (was Medium — downgraded after invoice review). See [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §1.
+
+**Org footprint:** 3 projects on the Pro org. `wmdcnjgtsppftrofaqqa` (production), `lhhdqycnhweaxqviwdqt` (MolandJesus-Staging — Phase 5 hardening, kept running), `yjbugpzarlyidgxbljjn` (bidondent-leads — empty Prisma DB, candidate for deletion). Pause is unavailable on Pro projects; deletion is the only way to drop compute cost on idle ones.
 
 ---
 
@@ -20,7 +24,7 @@ Before starting work, read docs in this order based on task type:
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **Bug fix**                         | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code                                                   |
 | **Feature (within hardening plan)** | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code                                                 |
-| **Architecture change**             | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md` → code |
+| **Architecture change**             | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `PLAN_POST_LAUNCH_ROADMAP.md` → code |
 | **Planning session**                | All LAW → all REF → all PLAN → code as needed                                                                      |
 | **UI/design work**                  | `LAW_PROJECT_RULES.md` → this doc → `theme.css` → code                                                             |
 
@@ -195,7 +199,8 @@ Single `Deno.serve()` in [server/index.ts](../supabase/functions/server/index.ts
 ```
 Client: Clerk JWT → Authorization header
   ↓
-Supabase gateway: NOT verified (function deployed with --no-verify-jwt)
+Supabase gateway: NOT verified — `verify_jwt: false` pinned in
+                  supabase/config.toml [functions.server]
   ↓
 Edge Function: requireClerkSession() cryptographically verifies the Clerk JWT
                 via JWKS in supabase/functions/server/utils/clerk.ts
@@ -208,7 +213,11 @@ Profile lookup: profiles.clerk_user_id = session.sub
 Handler executes with authenticated clerkUserId
 ```
 
-**Critical deployment fact:** the `server` edge function is deployed with `--no-verify-jwt` because the Supabase gateway cannot verify Clerk-issued tokens. **All `server` routes are reachable from the open internet** — handler-level `requireClerkSession`/`requireMarketplaceContext`/`requireAdminContext` is the only authentication enforcement point. Combined with the service-role Supabase client at [config/clients.ts:13](../supabase/functions/server/config/clients.ts#L13) (which bypasses RLS), this means the handler is the **only** authorization enforcement point. Any handler that omits an auth check is publicly accessible. See KI-048.
+**Critical deployment fact:** `verify_jwt: false` is required and pinned in `supabase/config.toml`. The Supabase gateway only validates JWTs signed by Supabase's own key — it cannot verify Clerk JWTs and would 401 every authenticated request at `UNAUTHORIZED_LEGACY_JWT` if `verify_jwt: true` were re-enabled. **All `server` routes are reachable from the open internet** — handler-level `requireClerkSession`/`requireMarketplaceContext`/`requireAdminContext` is the only authentication enforcement point. Combined with the service-role Supabase client at [config/clients.ts:13](../supabase/functions/server/config/clients.ts#L13) (which bypasses RLS), this means the handler is the **only** authorization enforcement point. Any handler that omits an auth check is publicly accessible. See KI-048. Full deployment + symptom-mapping reference: [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §17.
+
+### Storage URL Pattern
+
+Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_url`, and `vehicles.image_url` are stored as **`storage://<bucket>/<path>` pointers**, not signed URLs. Read paths re-sign on every request via `hydrateSignedStorageUrl()` / `hydrateSignedStorageUrls()`. This avoids the 24h signed-URL TTL trap. Hydration coverage is comprehensive across `getReports`, `getMarketplaceReports`, `getJobAssignments`, `getVehicles`, `saveVehicle`, `getUserProfile`, `saveUserProfile`, `getShopProfile`/`getInsurerProfile` and `getDirectoryInventory`. Skill: `~/.claude/skills/supabase-storage-signed-urls/`. Full pattern: [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §16.
 
 **Note:** Every API call passes `clerkUserId` as a parameter even though the JWT already contains it. This is a legacy pattern from the pre-Clerk auth system.
 
@@ -354,7 +363,7 @@ Handler executes with authenticated clerkUserId
 | `docs/LAW_HARDENING_PLAN.md`                            | Execution authority for hardening phase              | Every execution session — governs current work            |
 | `docs/REF_SYSTEM_STATE.md` (this doc)                   | Current system truth                                 | Understanding architecture before making changes          |
 | `docs/REF_KNOWN_ISSUES.md`                              | Known bugs and gaps                                  | Before starting work on any area — check for known issues |
-| `docs/BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md` | Module status (to be rewritten as REF_MODULE_STATUS) | Checking what's done                                      |
-| `docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md`      | Deferred work (to be moved to PLAN tier)             | Checking if something is deferred                         |
+| `docs/REF_MODULE_STATUS.md` | Module status (to be rewritten as REF_MODULE_STATUS) | Checking what's done                                      |
+| `docs/PLAN_POST_LAUNCH_ROADMAP.md`      | Deferred work (to be moved to PLAN tier)             | Checking if something is deferred                         |
 
 **Superseded:** `docs/CLAUDE_AI_MASTER_CONTEXT.md` → archived to `docs/archive/`. This doc replaces it.

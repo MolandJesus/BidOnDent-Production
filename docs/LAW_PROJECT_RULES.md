@@ -2,7 +2,7 @@
 
 **Authority level:** LAW — governs all work. Cannot be violated without explicit per-session override from the project owner.
 
-**Last updated:** 2026-04-16
+**Last updated:** 2026-05-02
 
 ---
 
@@ -130,13 +130,27 @@ If a user requests work that conflicts with LAW → AI must flag the conflict
 
 ## Co-Update Rules
 
-| Trigger               | Must update together                                                                    |
-| --------------------- | --------------------------------------------------------------------------------------- |
-| New migration applied | `REF_SYSTEM_STATE.md` (if architecture-affecting)                                       |
-| New endpoint added    | `REF_SYSTEM_STATE.md`                                                                   |
-| Module completed      | Module Completion Matrix (currently `BIDONDENT_MODULE_COMPLETION_MATRIX_2026-04-15.md`) |
-| Bug found             | `REF_KNOWN_ISSUES.md`                                                                   |
-| Bug fixed             | `REF_KNOWN_ISSUES.md` (mark resolved)                                                   |
-| Architecture changed  | `REF_SYSTEM_STATE.md` + `LAW_PROJECT_RULES.md` (if a rule changes)                      |
-| Design system changed | `REF_SYSTEM_STATE.md` § Design System                                                   |
-| Document superseded   | Move old doc to `docs/archive/` with date suffix                                        |
+| Trigger                                  | Must update together                                                                                |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| New migration applied                    | `REF_SYSTEM_STATE.md` (if architecture-affecting)                                                   |
+| New endpoint added                       | `REF_SYSTEM_STATE.md`                                                                               |
+| Module completed                         | `REF_MODULE_STATUS.md`                                                                              |
+| Bug found                                | `REF_KNOWN_ISSUES.md`                                                                               |
+| Bug fixed                                | `REF_KNOWN_ISSUES.md` (mark resolved)                                                               |
+| Architecture changed                     | `REF_SYSTEM_STATE.md` + `LAW_PROJECT_RULES.md` (if a rule changes)                                  |
+| Design system changed                    | `REF_SYSTEM_STATE.md` § Design System                                                               |
+| New persisted media URL column added     | Hydrate via `hydrateSignedStorageUrl()` and document in `SUPABASE_SETUP_GUIDE.md` §16               |
+| Edge function deploy                     | Verify `verify_jwt: false` is preserved (see `SUPABASE_SETUP_GUIDE.md` §17). Never use `--verify-jwt` |
+| New reusable AI pattern surfaced         | Add as a skill in `~/.claude/skills/` and reference from `AGENTS.md` / `CLAUDE.md`                  |
+| Document superseded                      | Move old doc to `docs/archive/` with date suffix                                                    |
+
+---
+
+## Storage + Auth Invariants (added 2026-05-02 — non-negotiable)
+
+These are durable architectural rules. Violating them silently breaks production.
+
+1. **Never persist a Supabase signed URL.** Signed URLs expire after 24h. Always store the `storage://<bucket>/<path>` pointer (returned by `handleUploadPhoto`) and re-sign at read time via `hydrateSignedStorageUrl()`. See `SUPABASE_SETUP_GUIDE.md` §16. Skill: `supabase-storage-signed-urls`.
+2. **Never set `verify_jwt: true` on the `server` edge function.** The Supabase gateway only validates Supabase-signed JWTs and would 401 every Clerk-authed request. The function does its own Clerk verification via `requireClerkSession()`. The flag is pinned in `supabase/config.toml` `[functions.server]`. See `SUPABASE_SETUP_GUIDE.md` §17. Skill: `supabase-clerk-edge-function`.
+3. **Never add new Supabase projects to the org without considering compute cost.** Each Pro project bills compute (~$10/mo Micro, ~$60/mo Medium). Pause is unavailable on Pro — only deletion drops cost. Skill: `supabase-pro-cost-control`.
+4. **Never return raw `select('*')` `damage_reports` rows from a new edge handler.** Always pass through `hydrateReport()` (or at minimum `hydrateSignedStorageUrls()` on the `photo_urls` column) before responding. The bypass at `getJobAssignments` was the canonical example of this trap.

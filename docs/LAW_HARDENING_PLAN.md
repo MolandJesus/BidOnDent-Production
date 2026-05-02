@@ -82,7 +82,7 @@ These items were identified during a four-pass deep system audit and are added a
 
 ### Group 2 — Dev Workflow Going Forward ✅
 
-**2a. Development model:** Main AI on auto-pilot executing a pre-agreed plan, with a smaller AI handling code cleanup / type error corrections as a support role. MolandJeus approves at checkpoints.
+**2a. Development model:** Main AI on auto-pilot executing a pre-agreed plan, with a smaller AI handling code cleanup / type error corrections as a support role. MolandJesus approves at checkpoints.
 
 **2b. Progress tracking:** Switch primary "where are we" tool to the **Module Completion Matrix** (per-module: backend % / frontend % / tests / real data / prod-ready). Pass log continues from 855+ as historical audit trail only — no longer the primary tracker.
 
@@ -269,7 +269,7 @@ _All 7 groups locked as of 2026-04-14. No open questions. Any new ambiguity surf
 
 ## Execution Plan
 
-**Purpose:** Ordered, concrete work for the main AI on auto. Each phase is a work block with explicit dependencies, parallel-safe markers, and a checkpoint gate where MolandJeus reviews before the next block begins. Do not reorder phases. Do not merge phases. If execution discovers a blocker, stop at the current phase and bring it back to the open questions section for an explicit lock before continuing.
+**Purpose:** Ordered, concrete work for the main AI on auto. Each phase is a work block with explicit dependencies, parallel-safe markers, and a checkpoint gate where MolandJesus reviews before the next block begins. Do not reorder phases. Do not merge phases. If execution discovers a blocker, stop at the current phase and bring it back to the open questions section for an explicit lock before continuing.
 
 **Pass numbering:** Continue from pass 855+. Each pass follows the existing "one coherent change per pass" discipline. Pass log remains the historical audit trail; the Module Completion Matrix (built in Phase 5) is the primary "where are we" tool going forward.
 
@@ -296,7 +296,7 @@ Work items:
 5. Re-verify Group 6 orphaned-component and devtools import counts are still zero.
 6. Produce a concrete **Pre-flight Report** documenting findings and the resulting punch list going into Phase 1.
 
-**Gate criteria:** Pre-flight Report must explicitly mark each Launch Scope Guardrail as one of: **already satisfied**, **missing**, or **needs verification fix**, with file/line or runtime evidence for each. No Phase 1 start until every guardrail has an owner action attached. MolandJeus reviews the report; any surprising findings (e.g., guardrails unexpectedly met, or load-bearing claims changed) must be reconciled before Phase 1 begins.
+**Gate criteria:** Pre-flight Report must explicitly mark each Launch Scope Guardrail as one of: **already satisfied**, **missing**, or **needs verification fix**, with file/line or runtime evidence for each. No Phase 1 start until every guardrail has an owner action attached. MolandJesus reviews the report; any surprising findings (e.g., guardrails unexpectedly met, or load-bearing claims changed) must be reconciled before Phase 1 begins.
 
 ---
 
@@ -381,7 +381,7 @@ Work items:
 - Identify the launch-critical tables (the ones that will have RLS policies in Phase 3). At minimum: `damage_reports`, `bids`, `job_assignments`, `vehicles`, `shop_profiles`, `insurer_profiles`, `notification_preferences`, `shop_service_areas`, `estimate_requests`, `platform_activity_events`.
 - For each, normalize to `clerk_user_id` (TEXT) as the primary identity column. Write migrations.
 - Update all service-layer code to use `clerk_user_id` consistently.
-- **Launch-first pragmatism:** if scope expands beyond these tables, stop, document the remaining work in [BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) under A3, and proceed to Phase 3. Do NOT let identity cleanup block RLS rollout.
+- **Launch-first pragmatism:** if scope expands beyond these tables, stop, document the remaining work in [PLAN_POST_LAUNCH_ROADMAP.md](PLAN_POST_LAUNCH_ROADMAP.md) under A3, and proceed to Phase 3. Do NOT let identity cleanup block RLS rollout.
 - ~~Schema sync execution rule~~ — **Superseded by Pass 871.** Migrations folder is the sole authority; `database_schema_sql_*.ts` helpers are dead code. See Execution Discipline rule 4.
 
 **Gate criteria:** Launch-critical flows have **no verified DB-type leaks into UI code**, adapter functions exist for each launch-critical model, and a grep/typecheck review confirms no new snake_case DB types are consumed directly in components/hooks for those flows. Launch-critical tables all use `clerk_user_id`. Full test suite still passing (543+/555 baseline, do not regress). No runtime errors in preview env.
@@ -510,7 +510,7 @@ Work items:
 
 **5.3 Group 2b — Module Completion Matrix, first populated version**
 
-- Build the Module Completion Matrix as a new doc (or section of an existing doc): `docs/BIDONDENT_MODULE_COMPLETION_MATRIX.md`.
+- Build the Module Completion Matrix as a new doc (or section of an existing doc): `docs/REF_MODULE_STATUS.md`.
 - Columns per module: Backend %, Frontend %, Tests, Real Data, RLS Status, Prod-Ready %.
 - Populate from current state of each module after all prior phases complete.
 - **Keep the first version minimal and evidence-based.** Do not turn the matrix into a second planning system. It exists to reflect reality, not to prescribe work.
@@ -623,7 +623,7 @@ Same checklist, against the live prod URL. Everything must pass.
 3. **No scope expansion.** If a pass needs work beyond its stated scope, stop and document the addition as a new planned pass. Do not silently expand.
 4. **Schema source of truth (Group 4b, updated Pass 871).** `supabase/migrations/` is the single authoritative schema source. Every schema-affecting change goes in a new migration file. `database_init.tsx` is a legacy cold-start safety net only — no new schema logic there. `database_schema_sql_*.ts` helpers are reference-only dead code.
 5. **Launch Scope Guardrails are inviolable.** If execution wants to defer one, it must be explicitly reclassified with written justification in the Change Log. Otherwise they ship.
-6. **Checkpoint gates are hard stops.** Do not begin the next phase until MolandJeus has reviewed the prior phase's gate criteria.
+6. **Checkpoint gates are hard stops.** Do not begin the next phase until MolandJesus has reviewed the prior phase's gate criteria.
 
 ---
 
@@ -857,3 +857,32 @@ Local read-only visual + functional audit by secondary AI (GPT-5.4-high). Read t
 - Cross-checked by ChatGPT spot-read; one open caveat (deployment dependency on `--no-verify-jwt`) resolved against repo evidence.
 - Caller verification 2026-04-25: claim handlers (`submitInsuranceClaim`, `updateClaimDecision`) are insurer-only at the UI layer ([DashboardRouter.tsx:320-355](../src/app/routers/DashboardRouter.tsx#L320), [DashboardSecondaryViews.tsx:286-310](../src/app/routers/DashboardSecondaryViews.tsx#L286)) — handler tightening to insurer-only is safe.
 - AI role split for Phase 5.5 reaffirmed (Opus primary, Sonnet secondary, owner approval gate per pass).
+
+### Storage + auth hardening (2026-05-02)
+
+**Triggered by:** Customer dashboard images failing to load. Investigation surfaced two compound issues plus an unrelated cost finding.
+
+**Closed:**
+
+- **KI-058 — Persisted signed URLs expire after 24h.** Storage pointer pattern shipped: `handleUploadPhoto` now returns `storage://<bucket>/<path>`, all read paths re-sign via `hydrateSignedStorageUrl()`. Backfill migration `20260501000001_storage_pointer_backfill.sql` converted 4 prod rows. `workflow.getJobAssignments` bypass closed (was returning raw `select('*')` rows without hydration). Failure-handling tightened: hydrate now returns null instead of leaking the pointer when signing fails; array variant filters nulls.
+- **KI-059 — Gateway `verify_jwt: true` blocks Clerk JWTs.** Re-deployed `server` with `verify_jwt: false`, then **pinned** the flag in `supabase/config.toml` `[functions.server]` so no future deploy silently flips it back. Symptom map and full deployment guidance: `SUPABASE_SETUP_GUIDE.md` §17.
+- **KI-061 — Production over-provisioned.** Compute downgraded from Medium → Micro (saves ~$50/mo). Tracked in `REF_KNOWN_ISSUES.md`.
+
+**Production state:**
+
+- `server` edge function: v48 → **v50** (deployed 2026-05-02), `verify_jwt: false`.
+- `damage_reports.photo_urls`: all 4 rows now hold pointers; zero `/object/sign/` strings remain.
+- Storage RLS: confirmed deny-by-default (RLS enabled, zero policies, all buckets private). Access only via service-role-from-edge-function or signed URLs minted there.
+
+**New skills (reusable across future projects):**
+
+- `~/.claude/skills/supabase-clerk-edge-function/` — verify_jwt:false + requireClerkSession pattern
+- `~/.claude/skills/supabase-storage-signed-urls/` — pointer-on-write, sign-on-read; backfill template
+- `~/.claude/skills/supabase-pro-cost-control/` — per-project compute cost model + remediation
+
+**Doc deltas in this session:**
+
+- `SUPABASE_SETUP_GUIDE.md` §16 (Storage Pointer Pattern) + §17 (verify_jwt = false) added.
+- `REF_SYSTEM_STATE.md` Auth Flow + Storage URL Pattern updated; production env table refreshed to v50/Micro.
+- `REF_KNOWN_ISSUES.md` KI-058/059/060/061 added.
+- `MOLANDJEUS_DESIGN_DECISIONS.md` renamed to `MOLANDJESUS_DESIGN_DECISIONS.md` (typo fix); `MolandJeus` → `MolandJesus` in active prose.

@@ -1,16 +1,17 @@
 # Supabase Setup Guide — Full Backend Reference
 
-> ### ⚠️ HARDENING PHASE NOTICE (2026-04-14)
+> ### ⚠️ HARDENING PHASE NOTICE (last refreshed 2026-05-02)
 >
-> This guide remains the canonical backend reference, but several sections will be updated by hardening passes:
+> This guide remains the canonical backend reference. Key milestones (most recent first):
 >
+> - **2026-05-02 storage + auth hardening** — LIVE. Production `server` is now **version 50** on project `wmdcnjgtsppftrofaqqa`, **`verify_jwt: false`** (pinned in `supabase/config.toml`). Persisted-signed-URL bug closed: `damage_reports.photo_urls`, `*.profile_image_url`, and `vehicles.image_url` now store durable `storage://<bucket>/<path>` pointers; signed URLs are minted on every read via `hydrateSignedStorageUrl()`. Backfill migration `20260501000001_storage_pointer_backfill.sql` converted 4 prod rows. Storage RLS audited: `storage.objects` is RLS-enabled with **zero policies** = deny by default; all access is via service-role inside the edge function or via signed URLs minted by it. See **§16 Storage Pointer Pattern**, **§17 Edge Function Auth (verify_jwt = false)**, and the **`supabase-clerk-edge-function`** + **`supabase-storage-signed-urls`** skills.
 > - **Phase 1.5 (.env migration)** — COMPLETE. Clerk and Supabase keys now read from `.env` via `import.meta.env`. The old `utils/clerk/info.tsx` and `utils/supabase/info.tsx` files have been deleted.
 > - **Phase 3.1 (RLS rollout)** — COMPLETE. All 10 launch-critical tables now have Clerk JWT-based RLS policies using `requesting_clerk_user_id()` SQL helper (extracts `sub` from `request.jwt.claims`). Policies use dual-path: Clerk JWT primary, `auth.uid()` fallback for backward compat. Prerequisite: Clerk JWT template "supabase" must be configured in Clerk Dashboard, signed with Supabase's JWT secret, for Realtime auth. Migration: `024_clerk_jwt_rls_policies.sql`.
 > - **Phase 3.2 (Event capture)** — COMPLETE. `platform_activity_events` now has `actor_id`, `object_id`, `outcome` columns. All launch-critical write flows (report create, bid create, bid accept/reject, job assignment create) emit structured events. Migration: `025_event_capture_columns.sql`.
 > - **Phase 3.3 (Idempotency)** — COMPLETE. Unique partial indexes on `bids(damage_report_id, clerk_shop_user_id)` and `job_assignments(damage_report_id)` prevent duplicate submissions. Damage report POST now uses `(clerk_user_id, client_request_id)` dedupe for repeated request replays, and bid acceptance uses an atomic `pending → accepted/rejected` update so concurrent retries cannot double-send shop notifications. Migrations: `026_idempotency_guards.sql`, `20260416000002_report_submission_idempotency.sql`.
 > - **Phase 3.4 (Soft delete)** — COMPLETE. `deleted_at TIMESTAMPTZ` added to damage_reports, bids, job_assignments, vehicles. All delete handlers now set `deleted_at` instead of hard deleting. All query handlers filter `deleted_at IS NULL`. RLS policies filter deleted rows. Migration: `027_soft_delete.sql`. Account deletion in auth.ts still uses hard deletes (GDPR compliance).
-> - **Phase 5.5 / 2026-04-27 prod deploy** — LIVE. Production `server` is now version 47 on project `wmdcnjgtsppftrofaqqa`. The deployed bundle includes workflow authorization hardening, completion propagation, authenticated marketplace seed-fallback removal, and customer ownership recovery/self-heal for Clerk ID rotation (KI-055). Remaining Pass 1/2 verification follow-through stays tracked in `LAW_HARDENING_PLAN.md`.
-> - **Section 13 (Edge Function Deployment)** still documents the `make-server-9f243523` legacy alias. That alias is a live backward-compatibility layer deferred to [Post-Launch Roadmap item L1](BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md). Keep the current deploy command until L1 fires; do not remove it prematurely.
+> - **Phase 5.5 / 2026-04-27 prod deploy** — superseded by 2026-05-02 above (server v47 → v50).
+> - **Section 13 (Edge Function Deployment)** still documents the `make-server-9f243523` legacy alias. That alias is a live backward-compatibility layer deferred to [Post-Launch Roadmap item L1](PLAN_POST_LAUNCH_ROADMAP.md). Keep the current deploy command until L1 fires; do not remove it prematurely.
 >
 > During the hardening phase, execution law is the [Hardening Plan (LAW)](LAW_HARDENING_PLAN.md).
 
@@ -18,7 +19,7 @@
 >
 > Clerk Dashboard **must** have a JWT template named **`supabase`** configured and signed with the Supabase project's JWT secret (`SUPABASE_JWT_SECRET`). Without this template, all Clerk-JWT RLS policies (`requesting_clerk_user_id()`) will return `NULL` and deny every authenticated request. Runtime verification is deferred to deployment smoke test.
 
-Last updated: April 27, 2026 (prod `server` v47 live; Clerk-rotation recovery verified)
+Last updated: 2026-05-02 (prod `server` v50; storage pointer pattern + verify_jwt:false)
 Status: Active — comprehensive backend reference for current and future backend migration
 
 BidOnDent uses **Clerk** for authentication/identity and **Supabase** for application data, file storage, and edge-function-backed API services. This document is the single source of truth for the entire backend architecture. If the project migrates to a different backend, this document defines every contract that must be replicated.
@@ -27,14 +28,16 @@ BidOnDent uses **Clerk** for authentication/identity and **Supabase** for applic
 
 ## 1. Production Environment
 
-| Key                          | Value                                                                           |
-| ---------------------------- | ------------------------------------------------------------------------------- |
-| Supabase project ref         | `wmdcnjgtsppftrofaqqa`                                                          |
-| Canonical edge function slug | `server`                                                                        |
-| Legacy edge function slug    | `make-server-9f243523` (compatibility only)                                     |
-| Live edge function version   | `47` (updated 2026-04-27 11:23:25 UTC)                                          |
-| Edge function runtime        | Deno (Supabase Edge Functions)                                                  |
-| Auth provider                | Clerk (JWT-based, verified inside edge handlers; deploys use `--no-verify-jwt`) |
+| Key                          | Value                                                                                                                |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Supabase project ref         | `wmdcnjgtsppftrofaqqa` (us-east-2, **Micro** compute as of 2026-05-02; was Medium)                                  |
+| Canonical edge function slug | `server`                                                                                                             |
+| Legacy edge function slug    | `make-server-9f243523` (compatibility only — see KI for cleanup)                                                     |
+| Live edge function version   | `50` (deployed 2026-05-02)                                                                                           |
+| Edge function runtime        | Deno (Supabase Edge Functions)                                                                                       |
+| Gateway `verify_jwt`         | **`false`** — pinned in `supabase/config.toml` `[functions.server]`. See §17                                         |
+| Auth provider                | Clerk (JWT-based, verified inside edge handlers via `requireClerkSession()`; gateway does NOT validate the JWT)      |
+| Other org projects           | `bidondent-leads` (empty Prisma DB, candidate for deletion); `MolandJesus-Staging` (Phase 5 hardening, kept running) |
 
 ---
 
@@ -444,23 +447,30 @@ Implemented in `utils/rateLimiter.ts` — in-memory, per-warm-instance.
 | `vehicles`          | `bidondent-vehicles`            | Old vehicle images       |
 | `landingPageImages` | `bidondent-landing-page-images` | Removed (was empty)      |
 
-All user-scoped buckets have RLS enabled (migration 013).
+All user-scoped buckets are private (`public: false`).
+
+**RLS posture (audited 2026-05-02):** `storage.objects` has RLS enabled with **zero policies** = deny by default. Same for `storage.buckets`. This is intentional. The only access paths are:
+
+1. **Service-role inside the edge function** (`handleUploadPhoto`, `handleGetSignedStorageUrl`, etc.) — bypasses RLS and gates on Clerk JWT via `requireClerkSession()`
+2. **Signed URLs** minted by the edge function — short-lived (24h max), scoped to a specific path
+
+Direct client uploads via the anon key are blocked by RLS. **Do not add storage policies unless you're also adding direct-from-client upload/read flows** — the current deny-by-default + edge-function-mediation pattern is more secure.
 
 ---
 
 ## 13. Edge Function Deployment
 
 ```bash
-# Deploy canonical edge function
-supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt
+# Deploy canonical edge function (verify_jwt is read from supabase/config.toml — no flag needed)
+supabase functions deploy server --project-ref wmdcnjgtsppftrofaqqa
 
 # Deploy legacy alias (compatibility only — remove when fully migrated)
 supabase functions deploy make-server-9f243523 --project-ref wmdcnjgtsppftrofaqqa --no-verify-jwt
 ```
 
-Current production metadata (2026-04-27): `server` version 47, updated 2026-04-27 11:23:25 UTC.
+Current production metadata (2026-05-02): `server` **version 50**, `verify_jwt: false`.
 
-`--no-verify-jwt` is required because the Supabase gateway does not validate Clerk-issued bearer tokens. The actual auth boundary is handler-level verification via `requireClerkSession()` and the higher-level auth/context helpers in `utils/authz.ts`.
+The `[functions.server]` block in `supabase/config.toml` pins `verify_jwt = false` so future deploys don't silently flip the gateway flag back on. **Do not remove that block.** See §17 for why.
 
 ### URL pattern
 
@@ -585,3 +595,97 @@ The frontend should use:
 - `src/app/services/auth/websiteRelationshipsSync.ts`
 
 Avoid hardcoding function URLs or bucket names directly in components.
+
+---
+
+## 16. Storage Pointer Pattern (added 2026-05-02)
+
+> **AI agents:** when uploading or reading user files, follow this pattern. See the **`supabase-storage-signed-urls`** skill in `~/.claude/skills/` for a portable version of this recipe.
+
+### Why
+
+Persisted signed URLs expire after 24h (Supabase max). Storing them in the DB is a time bomb — it works for a day, then breaks silently when the browser hits a 400 on the expired token.
+
+### The pattern
+
+| Step | Where | What it stores |
+|---|---|---|
+| 1. Upload | `handleUploadPhoto` (edge fn) | Returns `storage://<bucket>/<path>` pointer (NOT a signed URL) |
+| 2. Persist | `damage_reports.photo_urls`, `*.profile_image_url`, `vehicles.image_url` | The pointer string, never the signed URL |
+| 3. Read | Server handlers (`getReports`, `getVehicles`, `getUserProfile`, etc.) | Call `hydrateSignedStorageUrl()` / `hydrateSignedStorageUrls()` per request to mint a fresh signed URL |
+| 4. Render | Client | Treats the response as a normal `https://…signed…` URL — no client-side awareness of pointers |
+
+### Implementation files
+
+- **Pointer construction:** `supabase/functions/server/utils/storage.ts` → `buildStoragePointerUrl()`
+- **Pointer parsing:** same file → `extractStorageObjectTarget()` (handles `storage://`, public, sign, authenticated URL forms)
+- **Hydrate at read:** same file → `hydrateSignedStorageUrl()` (single), `hydrateSignedStorageUrls()` (array; drops nulls)
+- **Used by:** `reports.ts:hydrateReport`, `workflow.ts:getJobAssignments`, `vehicles.ts:saveVehicle/getVehicles`, `profiles.ts`, `network_profiles.ts`
+
+### Read-path bypass risk
+
+Any new handler that does `select('*').from('damage_reports')` and returns rows directly to the client **bypasses hydration** and will leak `storage://…` strings the browser can't render. Always pass through `hydrateReport()` (for damage_reports) or `hydrateSignedStorageUrl()` (for single-text columns) before responding.
+
+### Backfill recipe
+
+If older code persisted signed URLs (this happened pre-2026-05-02), use the idempotent backfill template at `supabase/migrations/20260501000001_storage_pointer_backfill.sql`. The migration:
+
+1. Defines a `pg_temp.to_storage_pointer(text)` function that converts any `/storage/v1/object/{sign,public,authenticated}/<bucket>/<path>?token=…` URL into `storage://<bucket>/<path>` (idempotent — leaves pointers and unrelated URLs alone).
+2. Updates `damage_reports.photo_urls` (text[]), `profiles.profile_image_url`, `shop_profiles.profile_image_url`, `insurer_profiles.profile_image_url`, `vehicles.image_url`.
+3. Asserts post-migration that no rows still contain `/object/sign/`.
+
+### Failure handling
+
+`hydrateSignedStorageUrl()` returns `null` (not the raw pointer) when a recognized storage target fails to sign — file deleted, RLS rejection, or a transient signing-key issue. `hydrateSignedStorageUrls()` filters those nulls out so photo arrays never contain unrenderable slots. Callers should treat null as "no image" and render a placeholder.
+
+---
+
+## 17. Edge Function Auth (`verify_jwt = false`) — added 2026-05-02
+
+> **AI agents:** if you change anything about how `server` deploys, read this section. The skill is at `~/.claude/skills/supabase-clerk-edge-function/`.
+
+### TL;DR
+
+The `server` edge function uses `verify_jwt: false` and does its own Clerk JWT verification inside `requireClerkSession()`. Setting `verify_jwt: true` will break every authenticated request because the Supabase gateway only accepts JWTs signed by Supabase's own JWT secret — not Clerk-issued JWTs.
+
+### How we got here
+
+On 2026-05-02 a re-deploy flipped `verify_jwt` back to `true`. Result: every Clerk-authed request returned `401 UNAUTHORIZED_LEGACY_JWT` from the Supabase gateway, never reaching the function. Symptoms: empty dashboards, unrenderable photos, "logged in but nothing loads." Fixed by:
+
+1. Re-deploying with `--no-verify-jwt`
+2. **Pinning** `verify_jwt = false` under `[functions.server]` in `supabase/config.toml` so future deploys read it from config and don't need the flag
+
+### What the function does instead
+
+`requireClerkSession()` (in `utils/authz.ts` → `utils/clerk.ts`) verifies the bearer JWT in the request:
+
+1. Tries `verifyToken()` from `@clerk/backend` with `CLERK_SECRET_KEY`
+2. Falls back to remote JWKS verification against Clerk's `.well-known/jwks.json`
+3. Validates `azp` (authorized party) against the request `Origin`
+4. Validates `iss` (issuer) is a trusted Clerk host (`*.clerk.accounts.dev`, `*.clerk.com`, or the configured custom host)
+
+Public endpoints like `/health` and `/intake/*` skip auth on purpose.
+
+### Symptom map
+
+| Response code | Meaning |
+|---|---|
+| `401 UNAUTHORIZED_NO_AUTH_HEADER` (gateway) | No `Authorization` header. Frontend bug or unauth endpoint accidentally protected |
+| `401 UNAUTHORIZED_LEGACY_JWT` (gateway) | `verify_jwt: true` re-enabled and a non-Supabase JWT was sent. **Re-disable verify_jwt** |
+| `401 UNAUTHORIZED_INVALID_JWT_FORMAT` (gateway) | `verify_jwt: true` and the bearer is not a JWT format string |
+| `401 {"error":"No Authorization header provided"}` (function) | Frontend not attaching token; check Clerk getter wiring |
+| `401 {"error":"Authorization header must use Bearer token"}` (function) | Frontend sending wrong header format |
+| `500 {"error":"Invalid Clerk token issuer"}` (function) | Frontend sent the Supabase anon key as Bearer — Clerk getter returned null |
+| `500 {"error":"Untrusted Clerk issuer"}` (function) | Token issuer doesn't match Clerk's hostname suffixes — wrong Clerk env, or Clerk config change |
+
+The `(gateway)` rows are returned by Supabase's edge runtime before the function runs and have a `code:` field; the `(function)` rows come from the function's own catch blocks and have an `error:` field.
+
+### Don't undo this
+
+Three places where this can silently revert:
+
+1. Removing the `[functions.server]` block from `supabase/config.toml`
+2. Adding `--verify-jwt` to a deploy command
+3. Manually toggling **Verify JWT** in the dashboard for the `server` function
+
+If any of these happen, the dashboard goes blank for every signed-in user. The fix is always: re-deploy with `--no-verify-jwt` and re-add the config block.

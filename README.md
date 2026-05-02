@@ -200,16 +200,18 @@ Archived branches (`archive/*`) are preserved for history but inactive.
 
 **Current phase:** Soft Launch Hardening. Docs follow a **LAW > REFERENCE > PLAN** authority model. LAW docs govern all work.
 
-| Document                                                                | Purpose                                                                                   |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [**LAW: Project Rules**](docs/LAW_PROJECT_RULES.md)                     | Permanent behavioral rules, product definition, 6 laws                                    |
-| [**LAW: Hardening Plan**](docs/LAW_HARDENING_PLAN.md)                   | Execution authority. Launch Scope Guardrails, phased Execution Plan, Execution Discipline |
-| [**REF: System State**](docs/REF_SYSTEM_STATE.md)                       | Current architecture truth. Auth flow, state ownership, role reality, known bottlenecks   |
-| [**REF: Known Issues**](docs/REF_KNOWN_ISSUES.md)                       | Living inventory of bugs, gaps, and structural issues                                     |
-| [Docs Operating Index](docs/README.md)                                  | Full navigation of active docs + archive pointers                                         |
-| [Post-Launch Roadmap](docs/BIDONDENT_POST_LAUNCH_ROADMAP_2026-04-14.md) | Deferred work with priority bands + triggers                                              |
-| [Getting Started](docs/GETTING_STARTED.md)                              | Local setup guide                                                                         |
-| [Supabase Setup](docs/SUPABASE_SETUP_GUIDE.md)                          | Database + edge function reference                                                        |
+**AI agents:** start at [AGENTS.md](AGENTS.md) (Claude Code reads [CLAUDE.md](CLAUDE.md) automatically — they have identical content). Both link out to the docs below.
+
+| Document                                                            | Purpose                                                                                   |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [**LAW: Project Rules**](docs/LAW_PROJECT_RULES.md)                 | Permanent behavioral rules, product definition, 6 laws, storage + auth invariants         |
+| [**LAW: Hardening Plan**](docs/LAW_HARDENING_PLAN.md)               | Execution authority. Launch Scope Guardrails, phased Execution Plan, Execution Discipline |
+| [**REF: System State**](docs/REF_SYSTEM_STATE.md)                   | Current architecture truth. Auth flow, state ownership, role reality, known bottlenecks   |
+| [**REF: Known Issues**](docs/REF_KNOWN_ISSUES.md)                   | Living inventory of bugs, gaps, and structural issues                                     |
+| [Docs Operating Index](docs/README.md)                              | Full navigation of active docs + archive pointers                                         |
+| [Post-Launch Roadmap](docs/PLAN_POST_LAUNCH_ROADMAP.md)             | Deferred work with priority bands + triggers                                              |
+| [Getting Started](docs/GETTING_STARTED.md)                          | Local setup guide                                                                         |
+| [Supabase Setup](docs/SUPABASE_SETUP_GUIDE.md)                      | Database + edge function reference (incl. storage pointer pattern + verify_jwt rules)     |
 
 ---
 

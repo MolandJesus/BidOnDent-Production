@@ -458,7 +458,7 @@ These temptations arise in every design project. Record them here to avoid rehas
 
 ---
 
-_This document lives in `/docs/MOLANDJEUS_DESIGN_DECISIONS.md` and should be updated whenever
+_This document lives in `/docs/MOLANDJESUS_DESIGN_DECISIONS.md` and should be updated whenever
 a significant design decision is made — agreed upon by both Mola and Jesus._
 
 ---

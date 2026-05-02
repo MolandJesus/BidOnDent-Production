@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-04-27
+**Last updated:** 2026-05-02
 
 **Update rules:**
 
@@ -306,3 +306,33 @@
 - **Current reality:** RESOLVED. Staging project `lhhdqycnhweaxqviwdqt` had an orphan remote migration row `001` blocking schema operations; after repairing that history row, the targeted backfill migration `supabase/migrations/20260423000001_remote_rls_backfill.sql` was applied remotely. Leads project `yjbugpzarlyidgxbljjn` received a targeted remote migration that enables RLS on `public."Lead"` and `public._prisma_migrations` with no public policies.
 - **Validation:** `supabase migration list` now shows aligned local/remote history for both fix directories. Linked `supabase db dump --schema public` confirms `ENABLE ROW LEVEL SECURITY` on the leads tables and the expected staging policies for `shop_interest_submissions`, `insurer_interest_submissions`, `platform_activity_events`, `job_assignments`, `notification_preferences`, and `shop_service_areas`.
 - **Status:** RESOLVED (2026-04-23)
+
+### KI-058: Persisted signed URLs in damage_reports.photo_urls expire after 24h
+
+- **Impact:** Damage report photos broke ~24h after upload. The dashboard rendered placeholder icons instead of photos. Users had to refresh hopelessly — refreshing didn't help because the persisted URL itself was dead.
+- **Location:** [supabase/functions/server/handlers/storage.ts](../supabase/functions/server/handlers/storage.ts) `handleUploadPhoto` was returning a 24h signed URL as `publicUrl`; the client persisted that into `damage_reports.photo_urls` (text[]).
+- **Root cause:** Conflated upload-time signing (one-shot, 24h max) with persistence-suitable URLs. Read paths via `hydrateReport` would have re-signed correctly, but they were operating on already-expired URL strings the next day.
+- **Fix (2026-05-02):** Storage pointer pattern. Upload returns `storage://<bucket>/<path>` pointer. DB stores pointers. Read paths re-sign at every request via `hydrateSignedStorageUrl()` / `hydrateSignedStorageUrls()`. Backfill migration `20260501000001_storage_pointer_backfill.sql` converted 4 prod rows. See [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §16 and the `supabase-storage-signed-urls` skill.
+- **Status:** RESOLVED (2026-05-02). All hydrate read paths audited (`reports.ts`, `workflow.ts`, `vehicles.ts`, `profiles.ts`, `network_profiles.ts`); only `getJobAssignments` had a bypass which was fixed in the same commit.
+
+### KI-059: Gateway `verify_jwt: true` breaks Clerk JWT auth
+
+- **Impact:** When `verify_jwt: true` is configured for the `server` edge function, the Supabase gateway returns `401 UNAUTHORIZED_LEGACY_JWT` for every Clerk-authenticated request before the function runs. Symptom: signed-in users see empty dashboards and unrenderable photos.
+- **Location:** Function `verify_jwt` flag + `supabase/config.toml` `[functions.server]` block.
+- **Root cause:** The Supabase gateway only validates JWTs signed by Supabase's own JWT secret. Clerk JWTs (signed by Clerk) cannot pass gateway validation. The function does its own Clerk verification via `requireClerkSession()`, which only runs if the gateway lets the request through.
+- **Fix (2026-05-02):** Set `verify_jwt: false` and pin it in `supabase/config.toml` `[functions.server]` so future deploys read it from config and don't need `--no-verify-jwt` on every command. Symptom-mapping table at [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §17.
+- **Status:** RESOLVED (2026-05-02). Skill: `supabase-clerk-edge-function`.
+
+### KI-060: Two legacy edge functions still deployed and unused
+
+- **Impact:** `make-server-9f243523` (v70) and `make-server-85e96b22` (v2) remain ACTIVE on `wmdcnjgtsppftrofaqqa` but no current code path calls them. They consume no compute when idle but add log/dashboard noise and confuse new contributors.
+- **Location:** Edge function listing for project `wmdcnjgtsppftrofaqqa`. Frontend code calls only `/server/<route>`.
+- **Fix direction:** Verify zero traffic to either via `get_logs`. Delete via Dashboard → Edge Functions → three-dot → Delete. `make-server-9f243523` is referenced in `SUPABASE_SETUP_GUIDE.md` §13 as a "legacy alias for compatibility" — that note can also be removed when the function is deleted. Tracked as Post-Launch L1 (per the existing roadmap reference in §13).
+- **Status:** Open — low priority. Nothing breaks if left in place; deletion is housekeeping.
+
+### KI-061: Production compute over-provisioned for current data footprint
+
+- **Impact:** `wmdcnjgtsppftrofaqqa` was running on **Medium** compute (~$60/mo) for 16 MB of database content and 2 auth users. Bill was ~$100/mo across the org. Compute downgrade is reversible at any time.
+- **Location:** Supabase Dashboard → project → Settings → Compute and Disk.
+- **Fix (2026-05-02):** Downgraded production to **Micro** (~$10/mo). Saves ~$50/mo. Will need to revisit when real traffic begins; Micro can hit shared_buffers/connection limits earlier than Medium under load.
+- **Status:** RESOLVED (2026-05-02). Skill: `supabase-pro-cost-control`.

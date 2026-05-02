@@ -121,7 +121,7 @@ Revisit this roadmap **immediately after soft launch is declared stable**, then 
 
 - **Deferred from:** Group 1b (chose harden-and-activate over Phase 4)
 - **Why deferred:** Payments are Phase 4. The soft launch is a free marketplace. Adding payments before proving the loop works is premature.
-- **Target state:** Customers pay shops through the platform. Planning doc exists at `docs/PAYMENT_MODEL_DESIGN.md` (if still current — verify before executing).
+- **Target state:** Customers pay shops through the platform. Planning doc exists at `docs/PLAN_PAYMENT_MODEL.md` (if still current — verify before executing).
 - **Trigger:** After real transactions have flowed through the free loop AND the market has signaled willingness to pay. The Coming Soon waitlist captures from Group 3c are the signal channel.
 
 ### F2. Push notifications — **Later / only if triggered**
