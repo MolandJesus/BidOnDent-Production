@@ -73,14 +73,16 @@ export default function BenefitsSection({
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
         {isLightAppearance ? (
           <>
-            {/* Subtle cross-hatch texture */}
-            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.04)_34px,rgba(99,102,241,0.04)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.04)_34px,rgba(99,102,241,0.04)_35px)] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(220,185,115,0.16),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(200,170,110,0.18),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(200,165,100,0.12),transparent_55%)]" />
-            <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-200/[0.26] rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-100/[0.20] rounded-full blur-[130px]" />
-            <div className="absolute top-1/2 right-[30%] w-80 h-80 bg-amber-300/[0.16] rounded-full blur-[140px]" />
+            {/* Cross-hatch (Branch A: deeper indigo) */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px)] opacity-90" />
+            {/* Color atmosphere — deeper warm amber */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(230,180,100,0.26),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(220,160,80,0.28),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(220,165,90,0.18),transparent_55%)]" />
+            {/* Larger amber pools, deeper saturation */}
+            <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-300/[0.38] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-200/[0.30] rounded-full blur-[130px]" />
+            <div className="absolute top-1/2 right-[30%] w-80 h-80 bg-amber-300/[0.24] rounded-full blur-[140px]" />
           </>
         ) : (
           <>

@@ -48,14 +48,14 @@ export default function TrustStatsSection({
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
         {isLightAppearance ? (
           <>
-            {/* Subtle dot grid texture */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(180,150,100,0.05)_1px,transparent_1px)] [background-size:20px_20px] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(210,175,120,0.18),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(200,160,80,0.14),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(220,185,115,0.16),transparent_50%)]" />
-            <div className="absolute top-0 right-[30%] w-64 h-64 bg-amber-200/[0.28] rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.22] rounded-full blur-[120px]" />
-            <div className="absolute top-0 left-[8%] w-80 h-80 bg-amber-300/[0.18] rounded-full blur-[130px]" />
+            {/* Dot grid (Branch A: deeper amber) */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(180,130,60,0.07)_1px,transparent_1px)] [background-size:20px_20px] opacity-90" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(220,165,90,0.26),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(210,155,70,0.22),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(230,175,100,0.24),transparent_50%)]" />
+            <div className="absolute top-0 right-[30%] w-64 h-64 bg-amber-300/[0.38] rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-200/[0.32] rounded-full blur-[120px]" />
+            <div className="absolute top-0 left-[8%] w-80 h-80 bg-amber-300/[0.26] rounded-full blur-[130px]" />
           </>
         ) : (
           <>

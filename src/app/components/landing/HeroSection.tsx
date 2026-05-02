@@ -75,16 +75,16 @@ export default function HeroSection({
       <div className={`bd-bloom-atmosphere ${loaded ? "is-visible" : "is-hidden"}`}>
         {isLightAppearance ? (
           <>
-            {/* Subtle mesh texture */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(200,170,110,0.05)_1px,transparent_1px)] [background-size:32px_32px] opacity-80" />
-            {/* Color atmosphere */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(210,180,130,0.20),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(200,165,100,0.18),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(220,185,115,0.16),transparent_50%)]" />
-            {/* Large ambient blur pools */}
-            <div className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-200/[0.28] rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-100/[0.12] rounded-full blur-[140px]" />
-            <div className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-100/[0.20] rounded-full blur-[160px]" />
+            {/* Deeper-amber mesh texture (Branch A: light-mode second tier) */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(210,165,90,0.08)_1px,transparent_1px)] [background-size:32px_32px] opacity-90" />
+            {/* Color atmosphere — deeper warm tones, more visible saturation */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(230,180,110,0.32),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(220,160,80,0.28),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(240,195,130,0.24),transparent_50%)]" />
+            {/* Large ambient blur pools — deeper amber color + higher opacity */}
+            <div className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-300/[0.36] rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-200/[0.22] rounded-full blur-[140px]" />
+            <div className="absolute top-1/2 left-1/3 w-[20rem] h-[20rem] bg-amber-200/[0.32] rounded-full blur-[160px]" />
           </>
         ) : (
           <>
@@ -364,8 +364,8 @@ export default function HeroSection({
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 14px 48px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92)"
-                  : "0 10px 32px rgba(2, 6, 23, 0.38), 0 0 1px rgba(96, 165, 250, 0.25)",
+                  ? "0 14px 48px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 32px rgba(59, 130, 246, 0.22), 0 0 12px rgba(96, 165, 250, 0.28)"
+                  : "0 10px 32px rgba(2, 6, 23, 0.38), 0 0 1px rgba(96, 165, 250, 0.25), 0 0 36px rgba(59, 130, 246, 0.34), 0 0 14px rgba(96, 165, 250, 0.40)",
               }}
             >
               <div
@@ -401,8 +401,8 @@ export default function HeroSection({
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92)"
-                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
+                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 36px rgba(59, 130, 246, 0.24), 0 0 14px rgba(96, 165, 250, 0.30)"
+                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3), 0 0 40px rgba(59, 130, 246, 0.36), 0 0 16px rgba(96, 165, 250, 0.42)",
               }}
             >
               <div
@@ -428,8 +428,8 @@ export default function HeroSection({
                   ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92)"
-                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3)",
+                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 32px rgba(16, 185, 129, 0.22), 0 0 12px rgba(52, 211, 153, 0.28)"
+                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3), 0 0 36px rgba(16, 185, 129, 0.30), 0 0 14px rgba(52, 211, 153, 0.36)",
               }}
             >
               <div

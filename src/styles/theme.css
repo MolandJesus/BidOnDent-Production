@@ -955,8 +955,8 @@ body {
 }
 
 .bd-glass-badge {
-  border: 1px solid rgba(191, 219, 254, 0.6);
-  background: linear-gradient(180deg, rgba(224, 242, 254, 0.78) 0%, rgba(219, 234, 254, 0.68) 100%);
+  border: 1px solid rgba(191, 219, 254, 0.7);
+  background: linear-gradient(180deg, rgba(224, 242, 254, 0.82) 0%, rgba(219, 234, 254, 0.72) 100%);
   color: var(--bd-royal-blue-strong);
   border-radius: var(--bd-radius-badge);
   padding: 0.2rem 0.55rem;
@@ -965,8 +965,9 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 0 8px rgba(59, 130, 246, 0.04);
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 0 18px rgba(59, 130, 246, 0.18),
+    0 4px 14px rgba(59, 130, 246, 0.10);
 }
 
 .bd-glass-control {
