@@ -122,15 +122,42 @@ export default function CTASection({
               Start Your Repair Journey
             </span>
           </div>
-          <h3
-            className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-5 transition-all duration-700 text-slate-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-            style={{
-              transitionDelay: "0.15s",
-              textShadow: "0 2px 12px rgba(0,0,0,0.25)",
-            }}
+          {/* Pass 15 — Direction C flanking accent: white-cream "lamp" hue
+              for CTA, completing the editorial typography system across all
+              eligible sections. White-cream is the locked Direction C palette
+              color for CTA (the lamp-bloom shipped in Pass 4). The card itself
+              remains decoratively dense (lamp + corner squares + sphere) — the
+              flanking strokes operate at the heading layer, not the card
+              decoration layer, so they don't compete. */}
+          <div
+            className={`flex items-center justify-center gap-3 sm:gap-5 mb-5 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+            style={{ transitionDelay: "0.15s" }}
           >
-            Ready to Get Started?
-          </h3>
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent 0%, rgba(248,250,252,0.20) 25%, rgba(248,250,252,0.92) 60%, rgba(248,250,252,0.55) 85%, transparent 100%)",
+              }}
+            />
+            <h3
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-slate-100"
+              style={{
+                textShadow: "0 2px 12px rgba(0,0,0,0.25)",
+              }}
+            >
+              Ready to Get Started?
+            </h3>
+            <span
+              aria-hidden="true"
+              className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, transparent 0%, rgba(248,250,252,0.55) 15%, rgba(248,250,252,0.92) 40%, rgba(248,250,252,0.20) 75%, transparent 100%)",
+              }}
+            />
+          </div>
           <p
             className={`mx-auto max-w-2xl text-base sm:text-lg md:text-xl leading-relaxed mb-8 transition-all duration-700 text-blue-100/75 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
             style={{ transitionDelay: "0.3s" }}

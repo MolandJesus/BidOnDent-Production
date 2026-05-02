@@ -125,17 +125,18 @@ export default function AboutOpportunitySection({
             <span className="w-2 h-2 rounded-full mr-2 bg-blue-400" />
             About BidOnDent
           </span>
-          {/* Pass 14 — Direction C flanking accent: cobalt (AboutOpportunity's
-              assigned color). Cobalt at full saturation (rgba(30,58,138)) is
-              very dark, so dark mode uses a lighter blue (rgba(96,165,250)) for
-              visibility on the deep navy section background. */}
+          {/* Pass 14/15 — Direction C flanking accent: cobalt-family for
+              AboutOpportunity. Pass 15 light-mode tuning: swapped from cobalt
+              rgba(30,58,138) (too dark to register on white) to royal blue
+              rgba(37,99,235) — same cool family, brighter saturation,
+              actually visible on cream/white bg. Dark mode unchanged. */}
           <div className="flex items-center justify-center gap-3 sm:gap-5 mt-5 mb-4">
             <span
               aria-hidden="true"
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(30,58,138,0.10) 25%, rgba(30,58,138,0.80) 60%, rgba(30,58,138,0.50) 85%, transparent 100%)"
+                  ? "linear-gradient(90deg, transparent 0%, rgba(37,99,235,0.10) 25%, rgba(37,99,235,0.85) 60%, rgba(37,99,235,0.55) 85%, transparent 100%)"
                   : "linear-gradient(90deg, transparent 0%, rgba(96,165,250,0.20) 25%, rgba(96,165,250,0.85) 60%, rgba(96,165,250,0.50) 85%, transparent 100%)",
               }}
             />
@@ -154,7 +155,7 @@ export default function AboutOpportunitySection({
               className="hidden sm:block h-[2px] w-20 lg:w-28 rounded-full flex-shrink-0"
               style={{
                 background: isLightAppearance
-                  ? "linear-gradient(90deg, transparent 0%, rgba(30,58,138,0.50) 15%, rgba(30,58,138,0.80) 40%, rgba(30,58,138,0.10) 75%, transparent 100%)"
+                  ? "linear-gradient(90deg, transparent 0%, rgba(37,99,235,0.55) 15%, rgba(37,99,235,0.85) 40%, rgba(37,99,235,0.10) 75%, transparent 100%)"
                   : "linear-gradient(90deg, transparent 0%, rgba(96,165,250,0.50) 15%, rgba(96,165,250,0.85) 40%, rgba(96,165,250,0.20) 75%, transparent 100%)",
               }}
             />
