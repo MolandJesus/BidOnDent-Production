@@ -173,10 +173,15 @@ export default function OperatingRegionsSection({
               style={
                 isLightAppearance
                   ? {
+                      backgroundColor: "#e8eef7",
                       boxShadow:
                         "0 32px_80px_rgba(15,23,42,0.14), 0 10px 30px rgba(59,130,246,0.08), 0 0 0 1px rgba(147,197,253,0.30)",
                     }
-                  : { boxShadow: "0 36px 90px rgba(2,6,23,0.50), 0 12px 32px rgba(37,99,235,0.12)" }
+                  : {
+                      backgroundColor: "#071830",
+                      boxShadow:
+                        "0 36px 90px rgba(2,6,23,0.50), 0 12px 32px rgba(37,99,235,0.12)",
+                    }
               }
             >
               <div

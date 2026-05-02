@@ -86,7 +86,7 @@ export default function WhoWeServeSection({
         className="absolute -top-px left-0 right-0 h-px"
         style={{
           background: isLightAppearance
-            ? "linear-gradient(to right, transparent, rgba(56, 189, 248, 0.30) 50%, transparent)"
+            ? "linear-gradient(to right, transparent, rgba(220, 150, 60, 0.28) 22%, rgba(56, 189, 248, 0.30) 50%, rgba(220, 150, 60, 0.28) 78%, transparent)"
             : "linear-gradient(to right, transparent, rgba(220, 150, 60, 0.28) 22%, rgba(96, 165, 250, 0.30) 50%, rgba(220, 150, 60, 0.28) 78%, transparent)",
         }}
       />

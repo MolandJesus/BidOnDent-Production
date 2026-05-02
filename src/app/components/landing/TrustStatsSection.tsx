@@ -168,7 +168,7 @@ export default function TrustStatsSection({
           {commitments.map((item, index) => (
             <div
               key={item.label}
-              className={`group h-full rounded-[1.75rem] border px-5 py-6 text-left backdrop-blur-xl transition-all duration-300 sm:px-6 sm:py-7 md:text-center ${isLightAppearance ? "border-[rgba(220,205,180,0.65)] bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(248,250,254,0.72))] shadow-[0_20px_48px_rgba(15,23,42,0.13)] hover:-translate-y-1 hover:shadow-[0_28px_56px_rgba(15,23,42,0.18)] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,253,248,0.85))]" : "border-blue-300/16 bg-[linear-gradient(180deg,rgba(10,22,44,0.78),rgba(8,18,36,0.68))] shadow-[0_18px_38px_rgba(2,8,24,0.26)] hover:-translate-y-1 hover:border-blue-300/24 hover:bg-[linear-gradient(180deg,rgba(15,30,58,0.84),rgba(9,20,40,0.74))]"}`}
+              className={`bd-glass-card bd-glass-card--landing group h-full rounded-[1.75rem] border px-5 py-6 text-left backdrop-blur-xl transition-all duration-300 sm:px-6 sm:py-7 md:text-center ${isLightAppearance ? "border-[rgba(220,205,180,0.65)] bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(248,250,254,0.72))] shadow-[0_20px_48px_rgba(15,23,42,0.13)] hover:-translate-y-1 hover:shadow-[0_28px_56px_rgba(15,23,42,0.18)] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,253,248,0.85))]" : "border-blue-300/16 bg-[linear-gradient(180deg,rgba(10,22,44,0.78),rgba(8,18,36,0.68))] shadow-[0_18px_38px_rgba(2,8,24,0.26)] hover:-translate-y-1 hover:border-blue-300/24 hover:bg-[linear-gradient(180deg,rgba(15,30,58,0.84),rgba(9,20,40,0.74))]"}`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
