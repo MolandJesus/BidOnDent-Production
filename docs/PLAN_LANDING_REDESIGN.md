@@ -704,9 +704,40 @@ The order below is binding. Atmosphere consistency comes before color identity c
 - [x] Pass 8 — Branch B activation + hero carousel polish (committed `9b9477d0`, merged to main `be2d78d9`)
 - [x] Pass 9 — Section card material strength (committed `0263f008`, merged to main `1bc86af4`)
 - [x] Pass 10 — Section transition atmospheric bloom-bridges (committed `c313e3eb`, merged to main `021e4987`)
-- [x] Pass 11 — Marketing density polish + light mode richness (code complete 2026-05-02, this commit)
-- [x] **STATUS COMPLETE** — sign-off committed in same session; both audit docs archived
-- [ ] Bug investigation (separate from polish): "Real nearby places: Load failed" in CoverageMapDialog Explore view — likely placeDiscovery API issue, not design
+- [x] Pass 11 — Marketing density polish + light mode richness (committed `26b4dc8b`, merged to main `b6e4733c`)
+- [x] **STATUS COMPLETE — initial redesign signed off 2026-05-02** (commit `e1cd4ebf`); both audit docs archived under [`docs/archive/`](archive/).
+
+### Post-signoff visual refinement passes (2026-05-02)
+
+After STATUS COMPLETE was committed, the owner authorized a small editorial-typography refinement layer. These passes are **post-signoff visual refinement, not a reopened redesign plan** — the redesign itself remains closed at Pass 11. The locked Direction C palette in [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §7 was extended with editorial flanking-stroke accents per section, using each section's already-assigned palette color. No new direction, no scope creep — system completion via the existing palette.
+
+- [x] Pass 12 — TrustStats H3 metallic-gold flanking accent (committed `4ea8b028`, merged to main `5e63f572`)
+- [x] Pass 13 — Benefits H3 gold flanking accent (committed `ef3a5a0c`, merged to main `0ad778d5`)
+- [x] Pass 14 — Cool-section H3 flanking accents — sky teal (HowItWorks), royal blue (WhoWeServe), cobalt (AboutOpportunity), slate-blue (BusinessInquiry) (committed `7487da59`, merged to main `9de520d9`)
+- [x] Pass 15 — Visibility tuning (AboutOpportunity light cobalt → royal blue for visibility, BusinessInquiry slate-blue peak bumped) + CTA white-cream flanking accent for system completion (committed `80cde776`, merged to main **`fdcff97f`**)
+
+Final accent map across the 10 landing sections (post Pass 12–15):
+
+| Section | Editorial flanking accent | Notes |
+| --- | --- | --- |
+| Hero | — | Skipped: H2 is multi-line + left-aligned; gradient text already does the heading-anchor work |
+| HowItWorks | sky teal | Pass 14 |
+| Benefits (warm Direction B) | warm gold | Pass 13 |
+| WhoWeServe | royal blue | Pass 14 |
+| AboutOpportunity | royal blue (light) / lighter blue (dark) | Pass 14 + Pass 15 light-visibility tune |
+| TrustStats (warm Direction B) | warm gold | Pass 12 |
+| Coverage | — | Skipped: locked palette excludes — map IS the atmosphere |
+| BusinessInquiry | slate-blue | Pass 14 + Pass 15 visibility bump |
+| CTA | white-cream lamp | Pass 15 (completes the system) |
+| Footer | — | Skipped: locked palette excludes — near-black close |
+
+7 of 10 sections accented; 3 skipped on principle (composition, locked palette). The skips are deliberate — forcing accents onto Hero / Coverage / Footer for symmetry would violate the design system's restraint rules.
+
+### Open / not-design items
+
+- [ ] Bug investigation (separate from any design pass): "Real nearby places: Load failed" in CoverageMapDialog Explore view — provider-reliability issue (Overpass rate-limit / outage / Safari native error), CSP already fixed (KI-051 RESOLVED). File a new KI scoped to provider-reliability if persistent.
+- [ ] Mobile X-button tap targets (40×40 below WCAG 44×44 on mobile) — pre-existing pattern across DialogClose + bottom sheet X. One-line `h-11 w-11` fix in two files. Not bundled with anything.
+- [ ] Owner phone walk on real iOS Safari to validate runtime behavior (drag-down dismiss, scroll trapping, appearance toggle persistence, BusinessInquiry forms).
 
 ### Owner visual review notes (2026-05-02, post-Pass-7 deploy)
 

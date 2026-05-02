@@ -39,7 +39,7 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 | [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)             | Strategic product vision. Paused during hardening.                                                |
 | [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.             |
 | [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger. |
-| [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md)       | Landing-page redesign plan — **STATUS COMPLETE 2026-05-02**. Passes 1–11 shipped (Direction B Amber-Lit Garage, Direction C luminance, automotive identity, atmospheric bloom-bridges). Source audits archived under `docs/archive/`. |
+| [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md)       | Landing-page redesign plan — **STATUS COMPLETE 2026-05-02**. Passes 1–11 shipped the redesign (Direction B Amber-Lit Garage, Direction C luminance, automotive identity, atmospheric bloom-bridges). Passes 12–15 are post-signoff editorial-typography refinement — flanking accents on 7 of 10 section H3s using each section's locked Direction C color (gold for warm sections, sky/royal/cobalt/slate for cool, white-cream for CTA). Latest main: `fdcff97f`. Source audits archived under `docs/archive/`. |
 
 **If any doc conflicts with LAW docs, LAW wins.** Flag the conflict and fix it.
 
