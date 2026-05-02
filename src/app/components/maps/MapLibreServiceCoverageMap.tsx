@@ -271,6 +271,12 @@ export default function MapLibreServiceCoverageMap({
                 ]
               : undefined
           }
+          // Cooperative gestures on the embedded preview only — single-finger
+          // touch scrolls the page, two-finger drag pans the map. Without this
+          // the preview map captured all touches and the landing page could
+          // not scroll past it on mobile. The fullscreen dialog keeps the
+          // standard "single-finger pans the map" behavior.
+          cooperativeGestures={!immersiveFullscreen}
           interactiveLayerIds={interactiveLayerIds}
           onZoomStart={onZoomStart}
           onZoomEnd={onZoomEnd}
