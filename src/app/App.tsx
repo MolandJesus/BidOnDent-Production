@@ -54,7 +54,6 @@ import DashboardLayout from "./components/app/DashboardLayout";
 import ClerkAccountTypeSelector from "./components/auth/ClerkAccountTypeSelector";
 import ShopOnboarding from "./components/shop/ShopOnboarding";
 import InsurerOnboarding from "./components/insurer/InsurerOnboarding";
-import AppearanceToggle from "./components/dev/AppearanceToggle";
 import DevDemoCustomerApp from "./components/dev/DevDemoCustomerApp";
 import DevDemoShopApp from "./components/dev/DevDemoShopApp";
 import { readDevDemoMode } from "./utils/devDemoMode";
@@ -503,7 +502,6 @@ function AppWithToast() {
     <AppearanceModeProvider>
       <NotificationProvider value={notificationActions}>
         <AppContent />
-        {import.meta.env.DEV && <AppearanceToggle />}
         <NotificationToast
           toast={notificationActions.activeToast}
           onDismiss={notificationActions.dismissToast}
