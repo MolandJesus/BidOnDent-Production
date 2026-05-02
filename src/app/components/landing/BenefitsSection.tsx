@@ -61,13 +61,18 @@ export default function BenefitsSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(182deg, #faf9f6 0%, #f5f4f0 42%, #f0eeea 100%)"
-          : "linear-gradient(182deg, #0e1838 0%, #14204c 42%, #0c1634 100%)",
+          : "linear-gradient(182deg, var(--bd-warm-dark-amber-start) 0%, var(--bd-warm-dark-amber-mid) 42%, var(--bd-warm-dark-amber-end) 100%)",
       }}
       ref={sectionRef}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-indigo-400/30"} to-transparent`}
+        className="absolute -top-px left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(217, 119, 6, 0.25) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(96, 165, 250, 0.22) 22%, rgba(220, 150, 60, 0.32) 50%, rgba(96, 165, 250, 0.22) 78%, transparent)",
+        }}
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
@@ -86,11 +91,30 @@ export default function BenefitsSection({
           </>
         ) : (
           <>
-            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(99,102,241,0.06)_34px,rgba(99,102,241,0.06)_35px)] opacity-90" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_55%_at_30%_-10%,rgba(99,102,241,0.22),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_75%_85%,rgba(79,70,229,0.16),transparent_55%)]" />
-            <div className="absolute -top-10 left-1/3 w-[26rem] h-[26rem] bg-indigo-500/[0.18] rounded-full blur-[140px]" />
-            <div className="absolute bottom-0 right-[10%] w-80 h-80 bg-indigo-400/[0.14] rounded-full blur-[120px]" />
+            {/* Direction B — Amber-Lit Garage: warm-dark amber atmosphere replaces indigo */}
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_34px,rgba(200,130,40,0.07)_34px,rgba(200,130,40,0.07)_35px),repeating-linear-gradient(-45deg,transparent,transparent_34px,rgba(200,130,40,0.07)_34px,rgba(200,130,40,0.07)_35px)] opacity-90" />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 60% 55% at 30% -10%, var(--bd-warm-dark-amber-ellipse-top), transparent 60%)",
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 50% 50% at 75% 85%, var(--bd-warm-dark-amber-ellipse-bottom), transparent 55%)",
+              }}
+            />
+            <div
+              className="absolute -top-10 left-1/3 w-[26rem] h-[26rem] rounded-full blur-[140px]"
+              style={{ background: "var(--bd-warm-dark-amber-pool)" }}
+            />
+            <div
+              className="absolute bottom-0 right-[10%] w-80 h-80 rounded-full blur-[120px]"
+              style={{ background: "var(--bd-warm-dark-amber-pool-soft)" }}
+            />
           </>
         )}
       </div>
@@ -129,7 +153,7 @@ export default function BenefitsSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-indigo-400/25 bg-indigo-500/10 text-indigo-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-amber-400/25 bg-amber-500/10 text-amber-200"}`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-amber-400" />
             Built for Real Repairs

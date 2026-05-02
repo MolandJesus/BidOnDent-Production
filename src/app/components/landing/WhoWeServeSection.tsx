@@ -83,7 +83,12 @@ export default function WhoWeServeSection({
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-sky-300/30" : "via-blue-400/25"} to-transparent`}
+        className="absolute -top-px left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(56, 189, 248, 0.30) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(220, 150, 60, 0.28) 22%, rgba(96, 165, 250, 0.30) 50%, rgba(220, 150, 60, 0.28) 78%, transparent)",
+        }}
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>

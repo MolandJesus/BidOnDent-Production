@@ -845,6 +845,20 @@ body {
   /* Brand colors */
   --bd-royal-blue-strong: #1e40af;
   --bd-royal-blue-soft: #93c5fd;
+
+  /* Direction B — Amber-Lit Garage warm dark register
+     Used in dark mode for Benefits + TrustStats sections (warm sections
+     in the light register get warm dark amber treatment). Mirrors light
+     mode's warm/cool rhythm into the dark mode. Reversible — change these
+     6 values to roll back to cold navy for warm sections. */
+  --bd-warm-dark-amber-start: #1a0c06;
+  --bd-warm-dark-amber-mid: #231408;
+  --bd-warm-dark-amber-end: #1a0a04;
+  --bd-warm-dark-amber-ellipse-top: rgba(200, 120, 30, 0.22);
+  --bd-warm-dark-amber-ellipse-bottom: rgba(180, 100, 20, 0.18);
+  --bd-warm-dark-amber-pool: rgba(200, 130, 40, 0.32);
+  --bd-warm-dark-amber-pool-soft: rgba(180, 110, 30, 0.22);
+  --bd-warm-dark-amber-glow: rgba(220, 150, 60, 0.20);
 }
 
 /* ============================================================

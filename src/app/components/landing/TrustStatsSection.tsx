@@ -37,12 +37,17 @@ export default function TrustStatsSection({
       style={{
         background: isLightAppearance
           ? "linear-gradient(176deg, #faf8f4 0%, #f7f5ef 40%, #f2efe8 70%, #ece8df 100%)"
-          : "linear-gradient(176deg, #0e2448 0%, #152e58 50%, #102850 100%)",
+          : "linear-gradient(176deg, #221006 0%, #2e1608 40%, #2a1407 70%, #1e0c04 100%)",
       }}
     >
       {/* Edge blend */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
+        className="absolute -top-px left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(217, 119, 6, 0.25) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(96, 165, 250, 0.22) 22%, rgba(220, 150, 60, 0.32) 50%, rgba(96, 165, 250, 0.22) 78%, transparent)",
+        }}
       />
       {/* Decorative background elements — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
@@ -59,11 +64,30 @@ export default function TrustStatsSection({
           </>
         ) : (
           <>
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.10)_1px,transparent_1px)] [background-size:20px_20px] opacity-80" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(59,130,246,0.26),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_20%_20%,rgba(99,102,241,0.22),transparent_50%)]" />
-            <div className="absolute top-0 left-1/4 w-80 h-80 bg-blue-500/[0.22] rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-indigo-400/[0.18] rounded-full blur-3xl" />
+            {/* Direction B — Amber-Lit Garage: warm-dark amber atmosphere */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(220,170,90,0.10)_1px,transparent_1px)] [background-size:20px_20px] opacity-80" />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 65% 55% at 50% 50%, var(--bd-warm-dark-amber-ellipse-top), transparent 55%)",
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse 45% 45% at 20% 20%, var(--bd-warm-dark-amber-ellipse-bottom), transparent 50%)",
+              }}
+            />
+            <div
+              className="absolute top-0 left-1/4 w-80 h-80 rounded-full blur-3xl"
+              style={{ background: "var(--bd-warm-dark-amber-pool)" }}
+            />
+            <div
+              className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full blur-3xl"
+              style={{ background: "var(--bd-warm-dark-amber-pool-soft)" }}
+            />
           </>
         )}
       </div>
@@ -103,7 +127,7 @@ export default function TrustStatsSection({
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium mb-5 ${
               isLightAppearance
                 ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]"
-                : "border border-blue-400/25 bg-blue-500/10 text-blue-200"
+                : "border border-amber-400/25 bg-amber-500/10 text-amber-200"
             }`}
           >
             <span className="w-2 h-2 rounded-full mr-2 bg-amber-400" />
@@ -137,7 +161,7 @@ export default function TrustStatsSection({
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
-                className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-300 group-hover:scale-105 ${isLightAppearance ? "bg-[rgba(251,242,222,0.72)] border-[rgba(200,155,70,0.30)] group-hover:bg-[rgba(253,246,228,0.88)]" : "bg-white/10 border-white/[0.07] group-hover:bg-white/15"}`}
+                className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border backdrop-blur-sm transition-all duration-300 group-hover:scale-105 ${isLightAppearance ? "bg-[rgba(251,242,222,0.72)] border-[rgba(200,155,70,0.30)] group-hover:bg-[rgba(253,246,228,0.88)]" : "bg-[rgba(220,150,60,0.18)] border-[rgba(220,150,60,0.32)] group-hover:bg-[rgba(220,150,60,0.26)]"}`}
                 style={
                   isLightAppearance
                     ? {
@@ -151,7 +175,7 @@ export default function TrustStatsSection({
                 }
               >
                 <item.icon
-                  className={`w-6 h-6 ${isLightAppearance ? "text-amber-600" : "text-blue-300"}`}
+                  className={`w-6 h-6 ${isLightAppearance ? "text-amber-600" : "text-amber-300"}`}
                 />
               </div>
               <div

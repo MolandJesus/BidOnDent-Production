@@ -57,7 +57,12 @@ export default function OperatingRegionsSection({
         className={`absolute top-0 left-0 right-0 h-16 pointer-events-none z-10 ${isLightAppearance ? "bg-gradient-to-b from-[#f0f4f8]/0 to-transparent" : "bg-gradient-to-b from-[#0a1628]/0 to-transparent"}`}
       />
       <div
-        className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-400/10" : "via-blue-400/20"} to-transparent`}
+        className="absolute top-0 left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(96, 165, 250, 0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(220, 150, 60, 0.28) 22%, rgba(96, 165, 250, 0.30) 50%, rgba(220, 150, 60, 0.28) 78%, transparent)",
+        }}
       />
       <div
         className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-400/8" : "via-blue-400/15"} to-transparent`}
