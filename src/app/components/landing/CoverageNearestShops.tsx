@@ -307,14 +307,33 @@ export default function CoverageNearestShops({
             tone === "light" ? "border-slate-200/60 bg-slate-50/60" : "border-white/8 bg-white/4"
           )}
         >
-          <MapPinned
-            className={cn("h-8 w-8", tone === "light" ? "text-slate-300" : "text-slate-500")}
-          />
-          <div className={cn("text-sm font-medium", theme.titleClassName)}>
-            No shops within {radiusMiles} miles
+          <div
+            className={cn(
+              "flex h-12 w-12 items-center justify-center rounded-2xl",
+              tone === "light"
+                ? "border border-blue-200/60 bg-blue-50/60"
+                : "border border-blue-400/20 bg-blue-500/10"
+            )}
+            style={{
+              boxShadow:
+                tone === "light"
+                  ? "0 6px 20px rgba(59,130,246,0.14), inset 0 1px 0 rgba(255,255,255,0.65)"
+                  : "0 0 22px rgba(59,130,246,0.22), inset 0 1px 0 rgba(147,197,253,0.20)",
+            }}
+          >
+            <MapPinned
+              className={cn(
+                "h-5 w-5",
+                tone === "light" ? "text-blue-500" : "text-blue-300"
+              )}
+            />
           </div>
-          <div className={cn("text-xs leading-relaxed", theme.secondaryTextClassName)}>
-            Try expanding your search radius or searching a different area.
+          <div className={cn("text-sm font-semibold", theme.titleClassName)}>
+            Coverage is expanding
+          </div>
+          <div className={cn("text-xs leading-relaxed max-w-sm", theme.secondaryTextClassName)}>
+            No partner shops within {radiusMiles} miles yet. Try a wider radius, a different ZIP, or
+            check back as our network grows across NY.
           </div>
         </div>
       ) : (

@@ -153,13 +153,15 @@ export default function AboutOpportunitySection({
                 style={{ transitionDelay: `${0.2 + index * 0.1}s` }}
               >
                 {/* Pass 9 — inner lit highlight: gives card surface a subtle "lit from within"
-                    feel in dark mode so it reads as glass plate, not outlined panel. */}
+                    feel so it reads as glass plate, not outlined panel.
+                    Pass 11 — bumped light-mode highlight from 0.06 to 0.10 for richer
+                    dimensional feel without becoming loud. */}
                 <div
                   aria-hidden="true"
                   className="absolute inset-0 pointer-events-none rounded-[inherit]"
                   style={{
                     background: isLightAppearance
-                      ? "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96,165,250,0.06), transparent 70%)"
+                      ? "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96,165,250,0.10), transparent 70%)"
                       : "radial-gradient(ellipse 90% 65% at 50% 0%, rgba(96,165,250,0.10), transparent 70%)",
                   }}
                 />

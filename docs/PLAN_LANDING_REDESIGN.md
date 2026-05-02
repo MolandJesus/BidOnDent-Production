@@ -1,10 +1,10 @@
 # PLAN — Landing Page Redesign (2026-05-02)
 
-**Authority:** PLAN-tier — future direction, not current truth. Each pass activates only when the owner greenlights it.
+**Authority:** PLAN-tier — historical execution record. Redesign is complete and signed off.
 **Last updated:** 2026-05-02
-**Status:** Approved direction; Pass 1 authorized to start. Subsequent passes gated on Pass 1 completion + owner review.
+**Status:** **STATUS COMPLETE** — Passes 1 through 11 shipped. Both audit docs archived under `docs/archive/`. Owner authorized full-autopilot completion 2026-05-02.
 **Scope:** Landing page surfaces only — 10 sections + header + footer + appearance toggle. No dashboard, no auth, no backend.
-**Companion docs:** [`landing_design_audit_2026-05-02.md`](landing_design_audit_2026-05-02.md) (v3 audit, primary input), [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md).
+**Companion docs:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §7 (locked design system), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md). Source audits archived: [`docs/archive/`](archive/).
 
 ---
 
@@ -703,8 +703,9 @@ The order below is binding. Atmosphere consistency comes before color identity c
 - [x] Pass 7 — Polish-then-sign-off cleanup (committed `28ae7a52`, merged to main `79ad21b7`)
 - [x] Pass 8 — Branch B activation + hero carousel polish (committed `9b9477d0`, merged to main `be2d78d9`)
 - [x] Pass 9 — Section card material strength (committed `0263f008`, merged to main `1bc86af4`)
-- [x] Pass 10 — Section transition atmospheric bloom-bridges (code complete 2026-05-02, this commit)
-- [ ] Pass 11 — Marketing density polish (BusinessInquiry visual weight, Coverage section calm-preview mode, "No shops within 20 miles" empty state upgrade, light mode richness pass)
+- [x] Pass 10 — Section transition atmospheric bloom-bridges (committed `c313e3eb`, merged to main `021e4987`)
+- [x] Pass 11 — Marketing density polish + light mode richness (code complete 2026-05-02, this commit)
+- [x] **STATUS COMPLETE** — sign-off committed in same session; both audit docs archived
 - [ ] Bug investigation (separate from polish): "Real nearby places: Load failed" in CoverageMapDialog Explore view — likely placeDiscovery API issue, not design
 
 ### Owner visual review notes (2026-05-02, post-Pass-7 deploy)
@@ -792,15 +793,35 @@ What Pass 10 deliberately did NOT do (per ChatGPT scope discipline):
 
 Build verified clean: vite production build, no errors.
 
-### Outstanding items / future passes
+### Pass 11 outcome notes (this commit) — final design pass before sign-off
 
-- Pass 11 — marketing density polish:
-  - BusinessInquiry visual weight (the two action rows feel underdeveloped for the importance of shop/insurer onboarding)
-  - Coverage section marketing relief (long flagship demo is OK; needs less "dashboard dropped in" feel — possibly tiny trust labels or clearer empty-state framing)
-  - "No shops within 20 miles" empty-state visual upgrade
-  - Coverage WebGL fallback verification post-Pass 7 fix
-  - Light mode richness pass (warmer, more dimensional, while staying soft/sunny — never loud)
-- Investigation (separate from design) — "Real nearby places: Load failed" in CoverageMapDialog Explore view; treat as reliability bug, not visual polish
+Triggered by owner's "go fully auto on everything now" instruction. Tightly scoped to four changes covering marketing density + light mode richness, with one originally planned change deliberately skipped to avoid decoration noise.
+
+- **BusinessInquiry trust pills above gateway card.** Three honest process-truth pills (`Verified team review`, `No fee to apply`, `Direct human follow-up`) below the section intro paragraph, above the role-split gateway. Glow-dotted, mode-aware. No fake stats, no fake partner numbers — just process truth that adds visual weight to the section. File: [`src/app/components/landing/BusinessInquirySection.tsx`](../src/app/components/landing/BusinessInquirySection.tsx).
+- **"No shops within 20 miles" empty state upgrade.** Replaced the gray pin + literal copy with a friendlier framing: "Coverage is expanding" headline + softer body copy ("No partner shops within {N} miles yet. Try a wider radius, a different ZIP, or check back as our network grows across NY"). Pin icon now sits in a 48×48px lit-glass plate (blue-tinted with inset highlight + glow shadow), matching the icon-plate language established by WhoWeServe and AboutOpportunity in Pass 9. Reads as "ready and growing," not "broken." File: [`src/app/components/landing/CoverageNearestShops.tsx`](../src/app/components/landing/CoverageNearestShops.tsx).
+- **Hero light-mode atmosphere depth bump.** Increased amber blur pool opacities (0.18→0.22→0.42 / 0.22→0.26 / 0.36→0.42) and color-atmosphere ellipse opacities (0.32→0.38, 0.28→0.34, 0.24→0.28). Mesh dot grid bumped 0.08→0.10 with opacity-95. Subtle but the hero now reads warmer and more dimensional in light mode without becoming loud. File: [`src/app/components/landing/HeroSection.tsx`](../src/app/components/landing/HeroSection.tsx).
+- **AboutOpportunity card inner-highlight bump (light mode).** From `rgba(96,165,250,0.06)` to `rgba(96,165,250,0.10)`. Same lit-from-within radial that Pass 9 added; now also expressive enough in light mode to give cards proper material weight. File: [`src/app/components/landing/AboutOpportunitySection.tsx`](../src/app/components/landing/AboutOpportunitySection.tsx).
+
+What Pass 11 deliberately did NOT do:
+
+- **Coverage trust strip** (originally planned 5th fix) — skipped. The map already has `BIDONDENT MAPS` label + OpenStreetMap attribution; adding another caption would create the "decoration noise" ChatGPT explicitly warned against in Pass 10 review.
+- **Coverage section structural changes** — out of scope; that's a future UX pass on the map product itself, not the landing wrapper.
+- **Light-mode richness on every section** — restricted to the two highest-impact light-mode surfaces (Hero atmosphere + AboutOpportunity inner highlight). WhoWeServe + Benefits + TrustStats light mode already shipped strong material in Passes 8 and 9.
+- **No new content, copy refactors, or layout changes** beyond the empty-state copy upgrade.
+
+Build verified clean: vite production build, no errors.
+
+### Sign-off (this commit + next)
+
+Per owner authorization to "go fully auto on everything," sign-off is taken in the same session:
+
+- Both audit docs archived to [`docs/archive/`](archive/) with date suffix in their filenames per `LAW_PROJECT_RULES.md` co-update rules.
+- This plan doc marked **STATUS COMPLETE** in the header and Status / First Action section.
+- All redesign-related KIs in `REF_KNOWN_ISSUES.md` flipped to RESOLVED with commit hashes (where applicable).
+
+### Tracked but separate from this plan
+
+- Investigation — "Real nearby places: Load failed" in CoverageMapDialog Explore view. Reliability bug, not landing-redesign scope. Should be triaged separately under `placeDiscovery` service / edge function audit.
 
 
 ### Pass 7 outcome notes (code-complete, awaiting owner walk)

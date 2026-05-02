@@ -90,19 +90,19 @@ export default function HeroSection({
         />
         {isLightAppearance ? (
           <>
-            {/* Deeper-amber mesh texture (Branch A: light-mode second tier) */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(210,165,90,0.08)_1px,transparent_1px)] [background-size:32px_32px] opacity-90" />
-            {/* Color atmosphere — deeper warm tones, more visible saturation */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(230,180,110,0.32),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(220,160,80,0.28),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(240,195,130,0.24),transparent_50%)]" />
-            {/* Large ambient blur pools — deeper amber color + higher opacity. Parallax (Pass 5). */}
+            {/* Deeper-amber mesh texture (Branch A: light-mode second tier; Pass 11: deeper) */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(210,165,90,0.10)_1px,transparent_1px)] [background-size:32px_32px] opacity-95" />
+            {/* Color atmosphere — Pass 11: deeper warm tones for richer light-mode dimension */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_-10%,rgba(230,180,110,0.38),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_85%_80%,rgba(220,160,80,0.34),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_40%_at_50%_100%,rgba(240,195,130,0.28),transparent_50%)]" />
+            {/* Large ambient blur pools — Pass 11: deeper saturation. Parallax (Pass 5). */}
             <div
-              className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-300/[0.36] rounded-full blur-[120px]"
+              className="absolute top-10 right-[10%] w-[22rem] h-[22rem] bg-amber-300/[0.42] rounded-full blur-[120px]"
               style={{ transform: `translateY(${parallaxY}px)`, willChange: "transform" }}
             />
             <div
-              className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-200/[0.22] rounded-full blur-[140px]"
+              className="absolute bottom-0 left-[8%] w-[18rem] h-[18rem] bg-amber-200/[0.26] rounded-full blur-[140px]"
               style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
             />
             <div
