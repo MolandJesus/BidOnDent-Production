@@ -57,8 +57,18 @@ export default function OperatingRegionsSection({
       ref={sectionRef}
     >
       {/* Smooth transition edges — top/bottom gradient fades */}
+      {/* Pass 10 — atmospheric bloom-bridge at TrustStats→Coverage cool transition.
+          Replaces the previous transparent-to-transparent placeholder strip with a
+          subtle cool-blue luminance so the warm→cool register shift reads as a
+          lighting change, not a hard cut. */}
       <div
-        className={`absolute top-0 left-0 right-0 h-16 pointer-events-none z-10 ${isLightAppearance ? "bg-gradient-to-b from-[#f0f4f8]/0 to-transparent" : "bg-gradient-to-b from-[#0a1628]/0 to-transparent"}`}
+        aria-hidden="true"
+        className="absolute top-0 left-0 right-0 h-32 pointer-events-none z-10"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(96,165,250,0.10), transparent 70%)"
+            : "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(59,130,246,0.14), transparent 70%)",
+        }}
       />
       <div
         className="absolute top-0 left-0 right-0 h-px"

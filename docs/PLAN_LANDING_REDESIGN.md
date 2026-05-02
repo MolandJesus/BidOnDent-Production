@@ -702,9 +702,9 @@ The order below is binding. Atmosphere consistency comes before color identity c
 - [x] Pass 6 — Automotive Identity + Direction C Luminance Accents (committed `79b5441a`)
 - [x] Pass 7 — Polish-then-sign-off cleanup (committed `28ae7a52`, merged to main `79ad21b7`)
 - [x] Pass 8 — Branch B activation + hero carousel polish (committed `9b9477d0`, merged to main `be2d78d9`)
-- [x] Pass 9 — Section card material strength (code complete 2026-05-02, this commit)
-- [ ] Pass 10 — Section transition fade strips at warm/cool boundaries (HowItWorks→Benefits, AboutOpportunity→TrustStats, TrustStats→Coverage)
-- [ ] Pass 11 — Marketing density polish (BusinessInquiry visual weight, Coverage section calm-preview mode, "No shops within 20 miles" empty state upgrade)
+- [x] Pass 9 — Section card material strength (committed `0263f008`, merged to main `1bc86af4`)
+- [x] Pass 10 — Section transition atmospheric bloom-bridges (code complete 2026-05-02, this commit)
+- [ ] Pass 11 — Marketing density polish (BusinessInquiry visual weight, Coverage section calm-preview mode, "No shops within 20 miles" empty state upgrade, light mode richness pass)
 - [ ] Bug investigation (separate from polish): "Real nearby places: Load failed" in CoverageMapDialog Explore view — likely placeDiscovery API issue, not design
 
 ### Owner visual review notes (2026-05-02, post-Pass-7 deploy)
@@ -765,9 +765,35 @@ What Pass 9 deliberately did NOT do (per ChatGPT scope discipline):
 
 Build verified clean: vite production build, no errors. Pre-existing CSS warnings on duplicate `[data-appearance-mode="light"]` selectors remain unchanged tech debt.
 
+### Pass 10 outcome notes (this commit)
+
+Triggered by post-Pass-9 owner walk endorsement ("Pass 10 go") via ChatGPT review with the explicit guardrail "subtle, like lighting changes, not section dividers." Pass 10 adds **atmospheric bloom-bridges** at all four warm/cool register transitions on the page.
+
+Before Pass 10: each section had a 1px gradient separator at its top edge. In dark mode these were already dual-tone amber↔blue (audit's "cool only" finding was incorrect). In light mode the separators were single-tone except at WhoWeServe top (Pass 7 fix). The audible problem wasn't the line — it was the absence of a soft luminance bridge between two tonally different sections.
+
+What Pass 10 added — a single absolute-positioned div per transitional section, immediately after the existing 1px separator, holding a low-opacity radial gradient bloom centered at the top edge:
+
+| Transition | Section top | Bloom color (light / dark) | Height |
+|---|---|---|---|
+| HowItWorks → Benefits (cool→warm) | Benefits | amber `rgba(220,140,50,0.16)` / `rgba(180,90,30,0.20)` | 128px |
+| Benefits → WhoWeServe (warm→cool) | WhoWeServe | sky `rgba(56,189,248,0.12)` / `rgba(96,165,250,0.14)` | 96px |
+| AboutOpportunity → TrustStats (cool→warm) | TrustStats | gold `rgba(220,160,80,0.18)` / `rgba(200,140,50,0.22)` | 128px |
+| TrustStats → Coverage (warm→cool) | Coverage (replaced placeholder strip) | blue `rgba(96,165,250,0.10)` / `rgba(59,130,246,0.14)` | 128px |
+
+Each bloom is `radial-gradient(ellipse 90% 100% at 50% 0%, [color], transparent 70%)` with `pointer-events: none` and z-index that sits behind content but above section bg. Coverage's existing `bg-gradient-to-b from-[#f0f4f8]/0 to-transparent` placeholder (which was rendering as transparent-to-transparent — i.e., invisible) was replaced with the tinted bloom.
+
+What Pass 10 deliberately did NOT do (per ChatGPT scope discipline):
+
+- No new "fade strips" or hard dividers
+- No reinforced 1px separator changes (existing dual-tone in dark / amber-fix in light from Pass 7 are correct)
+- No transitions added at cool→cool or warm→warm boundaries (Hero→HowItWorks, WhoWeServe→AboutOpportunity, Coverage→BusinessInquiry, etc. — those don't need register-shift treatment)
+- No content, copy, or layout changes
+- Light mode richness pass deferred to Pass 11
+
+Build verified clean: vite production build, no errors.
+
 ### Outstanding items / future passes
 
-- Pass 10 — section transition fade strips at warm/cool boundaries (HowItWorks→Benefits, Benefits→WhoWeServe, AboutOpportunity→TrustStats, TrustStats→Coverage)
 - Pass 11 — marketing density polish:
   - BusinessInquiry visual weight (the two action rows feel underdeveloped for the importance of shop/insurer onboarding)
   - Coverage section marketing relief (long flagship demo is OK; needs less "dashboard dropped in" feel — possibly tiny trust labels or clearer empty-state framing)

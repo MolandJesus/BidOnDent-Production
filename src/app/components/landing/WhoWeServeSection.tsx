@@ -90,6 +90,18 @@ export default function WhoWeServeSection({
             : "linear-gradient(to right, transparent, rgba(220, 150, 60, 0.28) 22%, rgba(96, 165, 250, 0.30) 50%, rgba(220, 150, 60, 0.28) 78%, transparent)",
         }}
       />
+      {/* Pass 10 — atmospheric bloom-bridge at Benefits→WhoWeServe cool transition.
+          Subtle sky-blue luminance at the top edge so the warm→cool register shift
+          reads as a lighting change, not a hard cut. */}
+      <div
+        aria-hidden="true"
+        className="absolute top-0 left-0 right-0 h-24 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(56,189,248,0.12), transparent 70%)"
+            : "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(96,165,250,0.14), transparent 70%)",
+        }}
+      />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
         {/* Pass 6 — Direction C luminance accent: royal blue, top-center */}
