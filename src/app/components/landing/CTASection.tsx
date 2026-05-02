@@ -54,23 +54,40 @@ export default function CTASection({
         )}
       </div>
       <div className="container mx-auto px-4 max-w-6xl text-center relative">
+        {/* Lamp bloom — large radial behind the CTA card so backdrop-blur has
+            saturation to blur through. Pass 4. */}
+        <div
+          aria-hidden="true"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[140%] pointer-events-none"
+          style={{
+            background: isLightAppearance
+              ? "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.18), transparent 60%)"
+              : "radial-gradient(ellipse at center, rgba(37, 99, 235, 0.28), transparent 60%)",
+            filter: "blur(80px)",
+            zIndex: 0,
+          }}
+        />
         <div
           className={`relative mx-auto max-w-4xl px-5 sm:px-8 md:px-14 py-8 sm:py-10 md:py-14 rounded-3xl border transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
           style={
             isLightAppearance
               ? {
                   background:
-                    "linear-gradient(180deg, rgba(20, 42, 92, 0.88) 0%, rgba(12, 30, 68, 0.86) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.30)",
+                    "linear-gradient(180deg, rgba(20, 42, 92, 0.74) 0%, rgba(12, 30, 68, 0.70) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.36)",
+                  backdropFilter: "blur(28px) saturate(1.6)",
+                  WebkitBackdropFilter: "blur(28px) saturate(1.6)",
                   boxShadow:
-                    "0 40px 80px rgba(2, 6, 20, 0.62), 0 14px 40px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(147, 197, 253, 0.20), 0 0 120px rgba(37, 99, 235, 0.12)",
+                    "0 44px 88px rgba(2, 6, 20, 0.62), 0 16px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(147, 197, 253, 0.32), 0 0 130px rgba(37, 99, 235, 0.20), 0 0 60px rgba(96, 165, 250, 0.20)",
                 }
               : {
                   background:
-                    "linear-gradient(180deg, rgba(20, 42, 92, 0.92) 0%, rgba(12, 30, 68, 0.90) 100%)",
-                  borderColor: "rgba(96, 165, 250, 0.35)",
+                    "linear-gradient(180deg, rgba(20, 42, 92, 0.72) 0%, rgba(12, 30, 68, 0.68) 100%)",
+                  borderColor: "rgba(96, 165, 250, 0.42)",
+                  backdropFilter: "blur(28px) saturate(1.8)",
+                  WebkitBackdropFilter: "blur(28px) saturate(1.8)",
                   boxShadow:
-                    "0 24px 56px rgba(3, 10, 24, 0.55), inset 0 1px 0 rgba(147, 197, 253, 0.18), 0 0 80px rgba(37, 99, 235, 0.08)",
+                    "0 28px 64px rgba(3, 10, 24, 0.58), inset 0 1px 0 rgba(147, 197, 253, 0.30), 0 0 100px rgba(37, 99, 235, 0.18), 0 0 56px rgba(96, 165, 250, 0.22)",
                 }
           }
         >

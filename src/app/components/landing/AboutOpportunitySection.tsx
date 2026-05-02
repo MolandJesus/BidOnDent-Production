@@ -138,20 +138,8 @@ export default function AboutOpportunitySection({
             return (
               <div
                 key={item.title}
-                className={`rounded-2xl p-5 transition-all duration-700 hover:shadow-lg hover:-translate-y-1 ${
-                  isLightAppearance
-                    ? "border border-[rgba(180,195,215,0.35)] backdrop-blur-sm"
-                    : "border border-blue-400/22 backdrop-blur-sm"
-                } ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-                style={{
-                  transitionDelay: `${0.2 + index * 0.1}s`,
-                  background: isLightAppearance
-                    ? "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 253, 0.75) 100%)"
-                    : "linear-gradient(180deg, rgba(15, 25, 50, 0.30) 0%, rgba(10, 14, 30, 0.75) 100%)",
-                  boxShadow: isLightAppearance
-                    ? "0 8px 34px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 0 0 1px rgba(180, 195, 215, 0.18)"
-                    : "0 8px 32px rgba(2, 6, 23, 0.50), inset 0 1px 0 rgba(96, 165, 250, 0.13), 0 0 0 1px rgba(96, 165, 250, 0.06)",
-                }}
+                className={`bd-glass-card bd-glass-card--landing p-5 transition-all duration-700 group relative ${isExpanded ? "shadow-md" : ""} ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+                style={{ transitionDelay: `${0.2 + index * 0.1}s` }}
               >
                 <div
                   className={`w-12 h-12 rounded-[1rem] flex items-center justify-center mb-4 ${isLightAppearance ? "bg-blue-500/[0.08] border border-blue-300/[0.15]" : "bg-blue-500/[0.08] border border-blue-400/[0.15]"}`}
