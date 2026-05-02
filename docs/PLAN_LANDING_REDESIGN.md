@@ -691,8 +691,8 @@ The order below is binding. Atmosphere consistency comes before color identity c
 - [x] Plan written and owner-approved (2026-05-02)
 - [x] Pass 1 — Foundation Fixes (code complete 2026-05-02, committed jointly with Pass 1R)
 - [x] Pass 1R — Visible Landing Presence (owner-reviewed checkpoint 2026-05-02 — improvement, not done)
-- [ ] Pass 1R-extension — Carry visible-presence logic through remaining 5 sections + conditional light-tier + warm-variant branches (queued, NEXT)
-- [ ] Pass 1.5 — Appearance Toggle Exposure (after 1R-extension)
+- [~] Pass 1R-extension — Core complete (AboutOpportunity / TrustStats / Coverage / CTA / Footer atmosphere bumped + bloom-wrapped 2026-05-02); awaiting owner visual review for Branch A (light-mode second tier) and Branch B (`bd-glass-card--landing-warm`) decisions
+- [ ] Pass 1.5 — Appearance Toggle Exposure (after 1R-extension finalized)
 - [ ] Pass 2 — Atmosphere Visibility
 - [ ] Pass 3 — Direction B (Amber-Lit Garage)
 - [ ] Pass 4 — Premium Glass Consolidation

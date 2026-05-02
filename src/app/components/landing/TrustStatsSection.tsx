@@ -1,10 +1,12 @@
 import { CheckCircle2, Clock3, ShieldCheck, Workflow } from "lucide-react";
+import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 
 export default function TrustStatsSection({
   isLightAppearance = false,
 }: {
   isLightAppearance?: boolean;
 }) {
+  const { ref: sectionRef, isVisible } = useScrollAnimation(0.1);
   const commitments = [
     {
       value: "Structured Intake",
@@ -30,6 +32,7 @@ export default function TrustStatsSection({
 
   return (
     <section
+      ref={sectionRef}
       className={`py-12 sm:py-16 md:py-20 relative overflow-hidden ${isLightAppearance ? "" : "text-white"}`}
       style={{
         background: isLightAppearance
@@ -41,27 +44,29 @@ export default function TrustStatsSection({
       <div
         className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
       />
-      {/* Decorative background elements */}
-      {isLightAppearance ? (
-        <>
-          {/* Subtle dot grid texture */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(180,150,100,0.025)_1px,transparent_1px)] [background-size:20px_20px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(210,175,120,0.10),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(200,160,80,0.08),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(220,185,115,0.09),transparent_50%)]" />
-          <div className="absolute top-0 right-[30%] w-64 h-64 bg-amber-200/[0.18] rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.14] rounded-full blur-[120px]" />
-          <div className="absolute top-0 left-[8%] w-80 h-80 bg-amber-300/[0.10] rounded-full blur-[130px]" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:20px_20px] opacity-40" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(59,130,246,0.18),transparent_55%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_20%_20%,rgba(99,102,241,0.14),transparent_50%)]" />
-          <div className="absolute top-0 left-1/4 w-80 h-80 bg-blue-500/[0.14] rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-indigo-400/[0.10] rounded-full blur-3xl" />
-        </>
-      )}
+      {/* Decorative background elements — wrapped in bloom for scroll-entry animation */}
+      <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
+        {isLightAppearance ? (
+          <>
+            {/* Subtle dot grid texture */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(180,150,100,0.05)_1px,transparent_1px)] [background-size:20px_20px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(210,175,120,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(200,160,80,0.14),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(220,185,115,0.16),transparent_50%)]" />
+            <div className="absolute top-0 right-[30%] w-64 h-64 bg-amber-200/[0.28] rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 left-[20%] w-48 h-48 bg-amber-100/[0.22] rounded-full blur-[120px]" />
+            <div className="absolute top-0 left-[8%] w-80 h-80 bg-amber-300/[0.18] rounded-full blur-[130px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.10)_1px,transparent_1px)] [background-size:20px_20px] opacity-80" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_55%_at_50%_50%,rgba(59,130,246,0.26),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_20%_20%,rgba(99,102,241,0.22),transparent_50%)]" />
+            <div className="absolute top-0 left-1/4 w-80 h-80 bg-blue-500/[0.22] rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-indigo-400/[0.18] rounded-full blur-3xl" />
+          </>
+        )}
+      </div>
 
       {/* Decorative floating orbs */}
       <div
