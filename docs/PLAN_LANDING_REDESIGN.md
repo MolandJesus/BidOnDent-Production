@@ -693,14 +693,61 @@ The order below is binding. Atmosphere consistency comes before color identity c
 - [x] Pass 1R — Visible Landing Presence (committed `084ca27f`, owner-reviewed checkpoint)
 - [x] Pass 1R-extension Core — atmosphere + bloom across remaining 5 sections (committed `548e2ab7`)
 - [x] Pass 1R-extension Branch A — light-mode second tier deeper amber + glow halos (committed `a37f3e61`)
-- [ ] Pass 1R-extension Branch B — `bd-glass-card--landing-warm` variant (deferred; owner not flagged warm-section card mismatch in review)
+- [x] Pass 1R-extension Branch B — activated and folded into Pass 8 below (visual review on Vercel 2026-05-02 confirmed warm-section card mismatch)
 - [x] Pass 1.5 — Appearance Toggle Exposure (committed `086cc27e`, Sun/Moon glass-control in header)
 - [x] Pass 2 — folded into Pass 1R + Pass 1R-extension (atmosphere visibility delivered earlier than planned)
 - [x] Pass 3 — Direction B Amber-Lit Garage (committed `bf0ffbfe`, warm/cool register split in dark mode)
 - [x] Pass 4 — Premium Glass Consolidation (committed `2c77be58`, AboutOpportunity / CTA / BusinessInquiry rows + CTA lamp bloom)
 - [x] Pass 5 — Restrained Premium Motion (committed `4e58a929`, scroll-driven parallax on large blur pools)
 - [x] Pass 6 — Automotive Identity + Direction C Luminance Accents (committed `79b5441a`)
-- [x] Pass 7 — Polish-then-sign-off cleanup (code complete 2026-05-02, this commit; awaits owner walk on Vercel)
+- [x] Pass 7 — Polish-then-sign-off cleanup (committed `28ae7a52`, merged to main `79ad21b7`)
+- [x] Pass 8 — Branch B activation + hero carousel polish (code complete 2026-05-02, this commit)
+- [ ] Pass 9 — Section card material strength (WhoWeServe role cards + AboutOpportunity dark accordion cards + TrustStats migration to warm variant)
+- [ ] Pass 10 — Section transition fade strips at warm/cool boundaries (HowItWorks→Benefits, AboutOpportunity→TrustStats, TrustStats→Coverage)
+- [ ] Pass 11 — Marketing density polish (BusinessInquiry visual weight, Coverage section calm-preview mode, "No shops within 20 miles" empty state upgrade)
+- [ ] Bug investigation (separate from polish): "Real nearby places: Load failed" in CoverageMapDialog Explore view — likely placeDiscovery API issue, not design
+
+### Owner visual review notes (2026-05-02, post-Pass-7 deploy)
+
+Owner walked the live Vercel site in light + dark on desktop. Verdict: **major progress visible, but several real design issues surfaced that block STATUS COMPLETE**. Audit doc archival deferred until Pass 8–11 ships.
+
+**Strong (don't break):**
+
+- Direction B amber-black register on Benefits + TrustStats (dark) reads beautifully — strongest visual deliverable of the redesign so far.
+- Hero composition (photo + 3 floating chips) is premium in both modes.
+- Coverage Map Dialog "Mode Midnight" command center is the highest-craft surface on the page. Becomes the explicit quality bar for future polish.
+- Light-mode TrustStats cards (with Pass 7 inline preserve) read as magazine-clean.
+- CTA in dark with Pass 4 lamp bloom + decorative geometry feels finished.
+
+**Weak (Pass 8–11 scope):**
+
+| Issue | Mode | Pass |
+|---|---|---|
+| Benefits photo cards in LIGHT mode read as nearly invisible against warm-ivory section. Cool-blue `bd-glass-card--landing` variant clashes/recedes on warm bg. **Branch B problem now visually confirmed.** | light | 8 |
+| Hero carousel dots are tiny (7×7px inactive) — hard to perceive as navigation | both | 8 |
+| WhoWeServe role cards lack visual weight in both modes — no images, undersized icons, faint borders | both | 9 |
+| AboutOpportunity accordion cards in dark feel outlined, not lit — borders dominate, surface recedes | dark | 9 |
+| TrustStats migration to warm variant (currently uses cool `--landing` + inline overrides; should use `--landing-warm` natively) | both | 9 |
+| Section transitions at warm/cool boundaries still abrupt despite Pass 7 amber separator | dark | 10 |
+| BusinessInquiry section feels empty — just two action rows in a wide section | both | 11 |
+| Coverage section is dense / dashboard-y as a marketing surface | both | 11 |
+| Empty state ("No shops within 20 miles") functional but bare — could feel "ready" not "broken" | both | 11 |
+
+### Pass 8 outcome notes (this commit)
+
+Activates the deferred Branch B and polishes the hero carousel.
+
+- **`bd-glass-card--landing-warm` variant added to theme.css.** Light: warm cream-ivory tint (`rgba(255, 252, 245, 0.92) → rgba(252, 246, 235, 0.78)`) with amber-tinted border + warm-amber glow. Dark: warm-amber tinted glass (`rgba(180, 100, 30, 0.18) → rgba(20, 14, 8, 0.78)`) for native fit on Direction B amber-black sections. Heavy shadow + 6px hover lift parity with `--landing`.
+- **Benefits photo cards swapped to `--landing-warm`.** Now read as warm-cream lit-glass on warm-ivory section in light mode, and warm-amber lit-glass on the warm Direction B register in dark mode. Resolves the most visible weak spot in light mode.
+- **Hero carousel dot polish.** Active dot expands to 24×8px pill with subtle royal-blue glow shadow. Inactive dots: 8×8px circle at 40% opacity (was 7×7px at 22-28%). Larger touch target preserved. Visible navigation affordance restored.
+
+### Outstanding items / future passes
+
+- Pass 9 — section card material strength
+- Pass 10 — section transition fade strips
+- Pass 11 — marketing density polish
+- Investigation — "Real nearby places: Load failed" in CoverageMapDialog (separate from design)
+
 
 ### Pass 7 outcome notes (code-complete, awaiting owner walk)
 

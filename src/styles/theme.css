@@ -921,6 +921,34 @@ body {
     var(--bd-glow-medium);
 }
 
+/* Warm variant — for warm-ivory and Direction B amber-black sections.
+   Same heavy shadow + lift as --landing, but warm-cream tint on light and
+   warm-amber tint on dark, so cards feel native to the section register.
+   Use on Benefits photo cards and TrustStats commitment cards (warm Direction B). */
+.bd-glass-card--landing-warm {
+  border-color: rgba(220, 180, 110, 0.42);
+  background: linear-gradient(180deg, rgba(255, 252, 245, 0.92) 0%, rgba(252, 246, 235, 0.78) 100%);
+  box-shadow:
+    0 18px 48px rgba(60, 40, 15, 0.13),
+    0 6px 16px rgba(180, 130, 50, 0.10),
+    inset 0 1px 0 rgba(255, 250, 235, 0.95),
+    inset 0 -1px 0 rgba(220, 180, 110, 0.16),
+    0 0 0 1px rgba(220, 180, 110, 0.22),
+    0 0 36px rgba(220, 165, 90, 0.10);
+}
+
+.bd-glass-card--landing-warm:hover {
+  transform: translateY(-6px);
+  border-color: rgba(220, 180, 110, 0.65);
+  box-shadow:
+    0 28px 64px rgba(60, 40, 15, 0.18),
+    0 10px 24px rgba(180, 130, 50, 0.14),
+    inset 0 1px 0 rgba(255, 252, 240, 1),
+    inset 0 -1px 0 rgba(220, 180, 110, 0.22),
+    0 0 0 1px rgba(220, 180, 110, 0.42),
+    0 0 56px rgba(220, 165, 90, 0.18);
+}
+
 .bd-glass-card--landing:hover {
   transform: translateY(-6px);
   box-shadow:
@@ -1250,6 +1278,32 @@ body {
     inset 0 -1px 0 rgba(37, 99, 235, 0.12),
     0 0 0 1px rgba(147, 197, 253, 0.4),
     0 0 56px rgba(37, 99, 235, 0.28);
+}
+
+/* Warm variant — dark mode. Amber-tinted glass for Direction B sections. */
+.dark .bd-glass-card--landing-warm,
+[data-theme="dark"] .bd-glass-card--landing-warm {
+  border-color: rgba(220, 165, 90, 0.36);
+  background: linear-gradient(180deg, rgba(180, 100, 30, 0.18) 0%, rgba(20, 14, 8, 0.78) 100%);
+  box-shadow:
+    0 18px 48px rgba(2, 2, 2, 0.55),
+    0 6px 16px rgba(120, 70, 20, 0.32),
+    inset 0 1px 0 rgba(253, 220, 160, 0.20),
+    inset 0 -1px 0 rgba(180, 100, 30, 0.10),
+    0 0 0 1px rgba(220, 165, 90, 0.20),
+    0 0 36px rgba(220, 130, 50, 0.20);
+}
+
+.dark .bd-glass-card--landing-warm:hover,
+[data-theme="dark"] .bd-glass-card--landing-warm:hover {
+  border-color: rgba(253, 200, 130, 0.58);
+  box-shadow:
+    0 28px 68px rgba(2, 2, 2, 0.65),
+    0 10px 24px rgba(120, 70, 20, 0.40),
+    inset 0 1px 0 rgba(253, 220, 160, 0.30),
+    inset 0 -1px 0 rgba(180, 100, 30, 0.16),
+    0 0 0 1px rgba(253, 200, 130, 0.42),
+    0 0 56px rgba(220, 130, 50, 0.30);
 }
 
 .dark .bd-glass-badge,

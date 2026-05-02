@@ -203,7 +203,7 @@ export default function BenefitsSection({
           {benefits.map((benefit, index) => (
             <div
               key={benefit.title}
-              className={`bd-glass-card bd-glass-card--landing p-4 sm:p-5 transition-all duration-500 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card bd-glass-card--landing-warm p-4 sm:p-5 transition-all duration-500 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
               }}
