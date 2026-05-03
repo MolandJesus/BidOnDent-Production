@@ -114,6 +114,13 @@ export default function HeroSection({
           <>
             {/* Subtle dot grid texture */}
             <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(59,130,246,0.06)_1px,transparent_1px)] [background-size:32px_32px] opacity-80" />
+            {/* Gold lamp-from-above wash (Pass G 2026-05-03) — adopts the
+                dashboard's navy-lit-by-gold-lamp identity. Wide warm radial
+                from top, fading by mid-hero. Layered FIRST so the cool blue
+                radials below render on top in the body of the hero; the top
+                edge reads warm-lit, the body stays cool. */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_95%_45%_at_50%_-12%,rgba(220,165,90,0.26),transparent_65%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_-6%,rgba(235,180,105,0.18),transparent_70%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.26),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.18),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_65%_40%_at_50%_100%,rgba(30,58,138,0.14),transparent_45%)]" />
@@ -124,6 +131,14 @@ export default function HeroSection({
             <div
               className="absolute bottom-20 -left-10 w-[32rem] h-[32rem] bg-indigo-500/[0.14] rounded-full blur-[160px]"
               style={{ transform: `translateY(${parallaxY * -0.6}px)`, willChange: "transform" }}
+            />
+            {/* Gold lamp orb (Pass G 2026-05-03) — warm pool centered above
+                the hero, completing the dashboard navy-lit-by-gold-lamp
+                identity at the top of landing. Slow parallax with the blue
+                orb so it tracks the same cinematic motion. */}
+            <div
+              className="absolute -top-24 left-1/2 -translate-x-1/2 w-[42rem] h-[24rem] bg-amber-400/[0.10] rounded-full blur-[160px]"
+              style={{ transform: `translate(-50%, ${parallaxY * 0.3}px)`, willChange: "transform" }}
             />
           </>
         )}
