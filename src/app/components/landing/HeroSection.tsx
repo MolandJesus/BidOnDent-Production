@@ -367,13 +367,18 @@ export default function HeroSection({
               className={`flex flex-col sm:flex-row gap-3 pt-2 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
               style={{ transitionDelay: "0.65s" }}
             >
+              {/* L1 (2026-05-03): adopts bd-dashboard-primary-button so the
+                  hero primary inherits the D10 system — rounded-2xl radius,
+                  gold-lamp trim, premium hover/active/focus states. The 3-stop
+                  cool-blue gradient is preserved via inline `background` per
+                  the system's shell+consumer-bg pattern (see ShopDirectoryResultCard
+                  for the canonical example). Hand-rolled hover/active classes
+                  removed — system equivalents are tuned tighter. */}
               <button
                 onClick={onGetStarted}
-                className="inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 rounded-[1.75rem] border border-white/15 px-7 py-4 text-sm font-semibold text-white transition-all hover:-translate-y-1 hover:brightness-110 hover:shadow-xl active:scale-[0.97] sm:w-auto sm:rounded-2xl sm:py-3.5 sm:text-base"
+                className="bd-dashboard-primary-button inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 px-7 py-4 text-sm font-semibold text-white sm:w-auto sm:py-3.5 sm:text-base"
                 style={{
                   background: `linear-gradient(135deg, ${primaryColor} 0%, #3b82f6 50%, #2563eb 100%)`,
-                  boxShadow:
-                    "0 12px 40px rgba(37, 99, 235, 0.50), 0 4px 16px rgba(37, 99, 235, 0.26), inset 0 1px 0 rgba(255,255,255,0.20), 0 0 72px rgba(59, 130, 246, 0.14)",
                 }}
                 type="button"
               >
