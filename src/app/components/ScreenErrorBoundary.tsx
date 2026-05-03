@@ -86,7 +86,7 @@ export class ScreenErrorBoundary extends Component<Props, State> {
         <button
           type="button"
           onClick={this.handleRetry}
-          className="mt-5 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+          className="bd-dashboard-primary-button mt-5 inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
           style={{ background: "linear-gradient(135deg, #003d82 0%, #00a0e9 100%)" }}
         >
           {this.state.isChunkError ? "Reload Page" : "Try Again"}

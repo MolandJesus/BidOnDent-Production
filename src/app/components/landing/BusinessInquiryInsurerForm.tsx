@@ -79,7 +79,7 @@ export default function BusinessInquiryInsurerForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-colors disabled:opacity-60 text-white shadow-lg ${isLightAppearance ? "shadow-blue-200/30" : ""}`}
+          className="bd-dashboard-primary-button w-full md:w-auto px-6 h-11 inline-flex items-center justify-center gap-2 font-semibold disabled:opacity-60 text-white"
           style={{ background: "linear-gradient(135deg, #003d82 0%, #0ea5e9 100%)" }}
         >
           Submit Partnership Request
