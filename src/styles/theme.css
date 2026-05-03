@@ -2723,23 +2723,24 @@ body {
    - 1px accent ring (where applicable)      → cool action identity
    - Tight outer halo                        → ambient warmth */
 
-/* HERO — accent-blue: rich warm cream-gold liquid glass, the page's only
-   warm-dominant panel. Used on welcome banner. */
+/* HERO — accent-blue: rich premium gold liquid glass, the page's only
+   warm-dominant panel. Tone is bronze/champagne-leaning, NOT yellow.
+   Used on welcome banner. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-blue {
   background:
-    radial-gradient(ellipse 100% 70% at 50% 0%, rgba(220, 165, 90, 0.22), transparent 70%),
-    linear-gradient(180deg, rgba(250, 232, 192, 0.94) 0%, rgba(240, 218, 168, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.52);
+    radial-gradient(ellipse 100% 70% at 50% 0%, rgba(196, 144, 65, 0.24), transparent 70%),
+    linear-gradient(180deg, rgba(244, 222, 178, 0.94) 0%, rgba(228, 198, 144, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.55);
   box-shadow:
     0 1px 2px rgba(15, 30, 60, 0.10),
     0 8px 18px rgba(15, 30, 60, 0.16),
     0 30px 60px rgba(15, 30, 60, 0.22),
-    inset 0 1px 0 rgba(254, 248, 220, 0.96),
-    inset 0 -2px 4px rgba(120, 78, 18, 0.10),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.44),
-    0 0 0 1px rgba(160, 95, 25, 0.36),
+    inset 0 1px 0 rgba(252, 240, 208, 0.94),
+    inset 0 -2px 4px rgba(110, 70, 18, 0.12),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.46),
+    0 0 0 1px rgba(140, 82, 22, 0.38),
     0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 22px rgba(220, 140, 50, 0.18);
+    0 0 22px rgba(196, 130, 45, 0.20);
 }
 
 /* MAIN — deep: cool blue/ivory liquid glass with gold lamp lighting. Used
@@ -2748,60 +2749,60 @@ body {
    canvas and reads as lit-from-above premium glass. */
 [data-appearance-mode="light"] .bd-dashboard-panel--deep {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(220, 165, 90, 0.18), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.10), transparent 70%),
     linear-gradient(180deg, rgba(232, 242, 254, 0.94) 0%, rgba(204, 222, 246, 0.88) 100%);
-  border-color: rgba(160, 95, 25, 0.42);
+  border-color: rgba(140, 82, 22, 0.44);
   box-shadow:
     0 1px 2px rgba(15, 30, 60, 0.10),
     0 6px 16px rgba(15, 30, 60, 0.18),
     0 26px 54px rgba(15, 30, 60, 0.24),
-    inset 0 1px 0 rgba(254, 248, 220, 0.78),
+    inset 0 1px 0 rgba(252, 238, 204, 0.76),
     inset 0 -2px 4px rgba(15, 30, 60, 0.08),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.34),
-    0 0 0 1px rgba(160, 95, 25, 0.30),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.36),
+    0 0 0 1px rgba(140, 82, 22, 0.32),
     0 0 0 1px rgba(96, 165, 250, 0.22),
-    0 0 24px rgba(220, 140, 50, 0.18);
+    0 0 24px rgba(196, 130, 45, 0.20);
 }
 
 /* SUPPORTING — accent-cyan: cool cyan/teal liquid glass with gold lamp.
    Map widgets, cards with teal identity. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-cyan {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(220, 165, 90, 0.18), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(220, 240, 246, 0.94) 0%, rgba(190, 226, 238, 0.88) 100%);
-  border-color: rgba(160, 95, 25, 0.40);
+  border-color: rgba(140, 82, 22, 0.42);
   box-shadow:
     0 1px 2px rgba(8, 51, 68, 0.12),
     0 6px 16px rgba(8, 51, 68, 0.18),
     0 26px 54px rgba(8, 51, 68, 0.24),
-    inset 0 1px 0 rgba(254, 248, 220, 0.74),
+    inset 0 1px 0 rgba(252, 238, 204, 0.72),
     inset 0 -2px 4px rgba(8, 51, 68, 0.08),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
-    0 0 0 1px rgba(160, 95, 25, 0.28),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.34),
+    0 0 0 1px rgba(140, 82, 22, 0.30),
     0 0 0 1px rgba(34, 211, 238, 0.32),
-    0 0 24px rgba(220, 140, 50, 0.16);
+    0 0 24px rgba(196, 130, 45, 0.18);
 }
 
 /* SUPPORTING — accent-indigo: DARKER cool indigo liquid glass with gold
    lamp. Used on Repair Activity, Help & Support, anything needing depth. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-indigo {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(220, 165, 90, 0.20), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.16), transparent 70%),
     linear-gradient(180deg, rgba(212, 222, 246, 0.94) 0%, rgba(184, 198, 238, 0.88) 100%);
-  border-color: rgba(160, 95, 25, 0.44);
+  border-color: rgba(140, 82, 22, 0.46);
   box-shadow:
     0 1px 2px rgba(28, 25, 80, 0.14),
     0 8px 18px rgba(28, 25, 80, 0.20),
     0 28px 58px rgba(28, 25, 80, 0.26),
-    inset 0 1px 0 rgba(254, 248, 220, 0.74),
+    inset 0 1px 0 rgba(252, 238, 204, 0.72),
     inset 0 -2px 4px rgba(28, 25, 80, 0.10),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
-    0 0 0 1px rgba(160, 95, 25, 0.30),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.34),
+    0 0 0 1px rgba(140, 82, 22, 0.32),
     0 0 0 1px rgba(99, 102, 241, 0.36),
-    0 0 28px rgba(220, 140, 50, 0.18);
+    0 0 28px rgba(196, 130, 45, 0.20);
 }
 
 .bd-dashboard-section {
@@ -2897,79 +2898,79 @@ body {
    surfaces use the 3D liquid glass shadow stack pattern. No pure white.
    See LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
 
-/* deep — neutral ivory liquid glass with gold lamp (calm canvas tile) */
+/* deep — neutral ivory liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--deep {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(220, 165, 90, 0.16), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.18), transparent 70%),
     linear-gradient(180deg, rgba(238, 246, 254, 0.94) 0%, rgba(216, 230, 248, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.36);
+  border-color: rgba(140, 82, 22, 0.38);
   box-shadow:
     0 1px 2px rgba(15, 30, 60, 0.08),
     0 4px 10px rgba(15, 30, 60, 0.14),
     0 18px 38px rgba(15, 30, 60, 0.18),
-    inset 0 1px 0 rgba(254, 248, 220, 0.72),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
     inset 0 -1px 2px rgba(15, 30, 60, 0.06),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.28),
-    0 0 0 1px rgba(160, 95, 25, 0.24),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.26),
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 18px rgba(220, 140, 50, 0.14);
+    0 0 18px rgba(196, 130, 45, 0.16);
 }
 
-/* accent-blue — medium cool blue liquid glass with gold lamp */
+/* accent-blue — medium cool blue liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-blue {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(220, 165, 90, 0.18), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(220, 236, 252, 0.94) 0%, rgba(196, 218, 246, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.38);
+  border-color: rgba(140, 82, 22, 0.40);
   box-shadow:
     0 1px 2px rgba(15, 30, 60, 0.10),
     0 4px 10px rgba(15, 30, 60, 0.16),
     0 18px 38px rgba(15, 30, 60, 0.22),
-    inset 0 1px 0 rgba(254, 248, 220, 0.72),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
     inset 0 -1px 2px rgba(15, 30, 60, 0.08),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.28),
-    0 0 0 1px rgba(160, 95, 25, 0.24),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.26),
     0 0 0 1px rgba(96, 165, 250, 0.32),
-    0 0 18px rgba(220, 140, 50, 0.14);
+    0 0 18px rgba(196, 130, 45, 0.16);
 }
 
-/* accent-cyan — medium cool cyan liquid glass with gold lamp */
+/* accent-cyan — medium cool cyan liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-cyan {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(220, 165, 90, 0.18), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.14), transparent 70%),
     linear-gradient(180deg, rgba(216, 240, 244, 0.94) 0%, rgba(188, 226, 232, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.38);
+  border-color: rgba(140, 82, 22, 0.40);
   box-shadow:
     0 1px 2px rgba(8, 51, 68, 0.10),
     0 4px 10px rgba(8, 51, 68, 0.16),
     0 18px 38px rgba(8, 51, 68, 0.22),
-    inset 0 1px 0 rgba(254, 248, 220, 0.72),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
     inset 0 -1px 2px rgba(8, 51, 68, 0.08),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.28),
-    0 0 0 1px rgba(160, 95, 25, 0.24),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.26),
     0 0 0 1px rgba(34, 211, 238, 0.34),
-    0 0 18px rgba(220, 140, 50, 0.14);
+    0 0 18px rgba(196, 130, 45, 0.16);
 }
 
-/* accent-indigo — darker cool indigo liquid glass with gold lamp */
+/* accent-indigo — darker cool indigo liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-indigo {
   background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(220, 165, 90, 0.20), transparent 70%),
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.16), transparent 70%),
     linear-gradient(180deg, rgba(214, 220, 246, 0.94) 0%, rgba(188, 198, 238, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.40);
+  border-color: rgba(140, 82, 22, 0.42);
   box-shadow:
     0 1px 2px rgba(28, 25, 80, 0.12),
     0 4px 10px rgba(28, 25, 80, 0.18),
     0 18px 38px rgba(28, 25, 80, 0.24),
-    inset 0 1px 0 rgba(254, 248, 220, 0.72),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
     inset 0 -1px 2px rgba(28, 25, 80, 0.10),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.28),
-    0 0 0 1px rgba(160, 95, 25, 0.26),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.28),
     0 0 0 1px rgba(99, 102, 241, 0.36),
-    0 0 22px rgba(220, 140, 50, 0.16);
+    0 0 22px rgba(196, 130, 45, 0.18);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-rose {
@@ -2984,38 +2985,38 @@ body {
     0 0 32px rgba(220, 140, 50, 0.22);
 }
 
-/* accent-gold — deep champagne liquid glass, warm pop tile */
+/* accent-gold — premium champagne liquid glass, warm pop tile */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-gold {
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(220, 165, 90, 0.20), transparent 70%),
-    linear-gradient(180deg, rgba(250, 232, 192, 0.96) 0%, rgba(238, 210, 160, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.52);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
+    linear-gradient(180deg, rgba(244, 222, 178, 0.96) 0%, rgba(228, 198, 144, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.55);
   box-shadow:
-    0 1px 2px rgba(120, 78, 18, 0.12),
-    0 4px 10px rgba(120, 78, 18, 0.16),
-    0 18px 38px rgba(120, 78, 18, 0.20),
-    inset 0 1px 0 rgba(254, 248, 220, 0.94),
-    inset 0 -2px 4px rgba(120, 78, 18, 0.10),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.46),
-    0 0 0 1px rgba(160, 95, 25, 0.40),
-    0 0 22px rgba(180, 100, 30, 0.22);
+    0 1px 2px rgba(110, 70, 18, 0.14),
+    0 4px 10px rgba(110, 70, 18, 0.18),
+    0 18px 38px rgba(110, 70, 18, 0.22),
+    inset 0 1px 0 rgba(252, 240, 208, 0.92),
+    inset 0 -2px 4px rgba(110, 70, 18, 0.12),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.48),
+    0 0 0 1px rgba(140, 82, 22, 0.42),
+    0 0 22px rgba(170, 95, 28, 0.22);
 }
 
-/* accent-champagne — lighter ivory champagne liquid glass, warm pop tile */
+/* accent-champagne — lighter premium champagne liquid glass, warm pop tile */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-champagne {
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(220, 165, 90, 0.14), transparent 70%),
-    linear-gradient(180deg, rgba(254, 244, 220, 0.96) 0%, rgba(246, 228, 198, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.42);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 144, 65, 0.16), transparent 70%),
+    linear-gradient(180deg, rgba(250, 234, 198, 0.96) 0%, rgba(240, 220, 178, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.44);
   box-shadow:
-    0 1px 2px rgba(120, 78, 18, 0.10),
-    0 4px 10px rgba(120, 78, 18, 0.14),
-    0 18px 38px rgba(120, 78, 18, 0.16),
-    inset 0 1px 0 rgba(254, 248, 232, 0.94),
-    inset 0 -2px 4px rgba(120, 78, 18, 0.08),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.38),
-    0 0 0 1px rgba(160, 95, 25, 0.30),
-    0 0 18px rgba(180, 100, 30, 0.18);
+    0 1px 2px rgba(110, 70, 18, 0.12),
+    0 4px 10px rgba(110, 70, 18, 0.16),
+    0 18px 38px rgba(110, 70, 18, 0.18),
+    inset 0 1px 0 rgba(252, 240, 212, 0.92),
+    inset 0 -2px 4px rgba(110, 70, 18, 0.10),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.40),
+    0 0 0 1px rgba(140, 82, 22, 0.32),
+    0 0 18px rgba(170, 95, 28, 0.18);
 }
 
 .bd-dashboard-section--interactive {
