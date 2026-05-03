@@ -271,11 +271,14 @@ export default function NotificationCenter({
               <div className="max-h-[22rem] overflow-y-auto overscroll-contain max-md:max-h-[min(55vh,22rem)]">
                 {notifications.length === 0 ? (
                   <div className="px-5 py-10 text-center">
+                    {/* D9: empty-state icon plate carries gold-lamp identity to
+                        match the sibling ProfileDropdown empty state (D8). Cool
+                        blue body unchanged; warm inset bottom + warm halo only. */}
                     <div
                       className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${
                         isLightAppearance
-                          ? "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10)]"
-                          : "bg-[linear-gradient(135deg,rgba(37,99,235,0.18)_0%,rgba(59,130,246,0.10)_100%)] shadow-[inset_0_1px_0_rgba(147,197,253,0.18),0_0_0_1px_rgba(96,165,250,0.22),0_4px_18px_rgba(37,99,235,0.18)]"
+                          ? "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),inset_0_-1px_0_rgba(220,165,90,0.18),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10),0_0_20px_rgba(220,140,50,0.14)]"
+                          : "bg-[linear-gradient(135deg,rgba(37,99,235,0.18)_0%,rgba(59,130,246,0.10)_100%)] shadow-[inset_0_1px_0_rgba(147,197,253,0.18),inset_0_-1px_0_rgba(220,165,90,0.18),0_0_0_1px_rgba(96,165,250,0.22),0_4px_18px_rgba(37,99,235,0.18),0_0_22px_rgba(220,140,50,0.18)]"
                       }`}
                     >
                       <Bell
