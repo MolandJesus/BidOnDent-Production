@@ -305,35 +305,41 @@ export default function HeroSection({
                   on Your{" "}
                 </span>
                 <br className="hidden sm:block" />
-                {/* V2 dark contrast: gradient start raised from primaryColor
-                    (#003d82) to #3b82f6 in dark mode so the line lifts off the
-                    navy hero atmosphere instead of receding into it. End stop
-                    pushed to #93c5fd for a visibly brighter terminus. Light
-                    mode unchanged.
-
-                    textShadow override (2026-05-03 trust pass): the parent h2
-                    applies a textShadow (heavier in dark mode). Sibling spans
-                    ("Get the", "Best Price", "on Your") have solid fills that
-                    occlude the shadow. This span uses
-                    WebkitTextFillColor: transparent for gradient clipping,
-                    so the parent's inherited text-shadow paints through the
-                    transparent fill — visible as a soft halo around the
-                    gradient letters that reads as a blurred raster. Killing
-                    text-shadow on this span only restores crisp glyph edges
-                    without affecting the rest of the headline. */}
-                <span
-                  style={{
-                    background: isLightAppearance
-                      ? `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`
-                      : "linear-gradient(135deg, #3b82f6 0%, #93c5fd 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    textShadow: "none",
-                  }}
-                >
-                  Auto Body Repair
-                </span>
+                {/* Phase 1 hero typography fix (2026-05-03 P1):
+                    Dark mode keeps showing the gradient span as visibly softer
+                    than its solid-fill siblings ("Get the", "Best Price",
+                    "on Your") despite prior textShadow + transition-scope
+                    fixes. Two compounding causes remain in dark mode only:
+                    (1) WebkitBackgroundClip:text + transparent fill subpixel-
+                    rasterizes differently than solid color, so glyph edges
+                    read fractionally hazier even with shadow killed; (2) the
+                    gradient began at #3b82f6 (blue-500) which has low contrast
+                    against the #0a1a38 navy hero, so the top-left of letters
+                    fade before the gradient brightens.
+                    Decision per brief ("if gradient clipping keeps failing,
+                    replace that line with a solid or simpler blue treatment"):
+                    drop the gradient in dark mode, use a solid bright blue
+                    (#bfdbfe / blue-200) — uniform brightness, crisp glyph
+                    rendering identical to siblings, strong contrast against
+                    navy, blue identity preserved. Light mode keeps its
+                    gradient (works there per owner verification). */}
+                {isLightAppearance ? (
+                  <span
+                    style={{
+                      background: `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      textShadow: "none",
+                    }}
+                  >
+                    Auto Body Repair
+                  </span>
+                ) : (
+                  <span style={{ color: "#bfdbfe" }}>
+                    Auto Body Repair
+                  </span>
+                )}
               </h2>
               <p
                 className={`text-base sm:text-lg leading-relaxed max-w-lg transition-all duration-700 ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"} ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
