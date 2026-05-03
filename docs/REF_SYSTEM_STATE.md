@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-03 (visual system pointer to `REF_VISUAL_SYSTEM.md`; landing visual plans archived; gold-lamp identity at top of landing in dark mode shipped; AI collaboration protocol added)
+**Last updated:** 2026-05-03 (visual system pointer to `REF_VISUAL_SYSTEM.md`; superseded visual handoffs archived; active Opus master prompt + polish queue added; gold-lamp identity and mobile map-first doctrine locked)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
@@ -27,6 +27,7 @@ Before starting work, read docs in this order based on task type:
 | **Architecture change**                | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `PLAN_POST_LAUNCH_ROADMAP.md` → code                    |
 | **Planning session**                   | All LAW → all REF → all PLAN → code as needed                                                                         |
 | **UI/design work**                     | `LAW_PROJECT_RULES.md` → `REF_VISUAL_SYSTEM.md` → `MOLANDJESUS_DESIGN_DECISIONS.md` → this doc → `theme.css` → code   |
+| **Major visual polish handoff**        | `LAW_PROJECT_RULES.md` → `REF_AI_COLLABORATION_PROTOCOL.md` → `REF_VISUAL_SYSTEM.md` → `PLAN_VISUAL_MASTER_2026-05-03.md` → `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md` → `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md` |
 | **Multi-AI transcript / relay prompt** | `LAW_PROJECT_RULES.md` → `REF_AI_COLLABORATION_PROTOCOL.md` → task-specific docs → code only if execution is approved |
 
 **If this doc and `LAW_HARDENING_PLAN.md` disagree, the Hardening Plan wins.** Flag the conflict.

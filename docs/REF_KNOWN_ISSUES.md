@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes current known gaps, bugs, and structural issues.
 
-**Last updated:** 2026-05-02
+**Last updated:** 2026-05-03
 
 **Update rules:**
 
@@ -409,3 +409,17 @@
 - **Fix direction (next pass):** the cleanest move is to wrap each of these in the codelayer `ImageWithFallback` (matches the dashboard report-card treatment from V1 — premium glass placeholder on `storage://` / empty / load-error). Minimal-surface alternative: add a tiny `isRenderableMediaUrl` shared util and gate each conditional like the three sites fixed in this pass. Either way, low risk; the surfaces above all already render hydrated URLs in normal flow.
 - **Root-cause alternative:** instead of patching ~8 frontend sites, consider tightening the server hydration catch path so it returns `null` (or empty array) rather than the raw `storage://` string. That makes downstream rendering uniformly safe — `<img src="">` falls back via the standard onError path, and `null` skips the conditional entirely. Tradeoff: loses the ability to present a "soft" hydration failure (showing the raw record) in dev/debug.
 - **Status:** RESOLVED 2026-05-03 (commit `01c3f300`). Phase 3 of the merge-readiness autopilot pass swept all eight remaining sites in the inventory above and replaced the raw `<img>` with `ImageWithFallback` (which already guards `storage://` and onError). Server hydrate catch-path can no longer leak a broken image to any user-media surface in the app — every render path now lands on either a real signed URL or the premium glass-tile fallback. Architecture-side root-cause fix (server hydrate returning `null` instead of raw `storage://`) deferred — defensive coverage on the client is now complete and uniform, removing the urgency. Skill: `supabase-storage-signed-urls`.
+
+### KI-066: Visual LAW palette drift remains in selected dashboard shadow stacks
+
+- **Impact:** The locked 2026-05-03 LAW palette forbids the older yellow-amber register (`rgba(220,165,90,*)`, `rgba(220,140,50,*)`, `rgba(160,95,25,*)`, `rgba(254,248,220,*)`) and pure-white inset highlights on premium surfaces. A targeted planning sweep found remaining dashboard overlay/panel shadow stacks still using those values. New polish layered on top would inherit the drift and make the gold language harder to control.
+- **Location:** `src/app/components/dashboard/ProfileDropdown.tsx` inline `boxShadow`; `src/app/components/dashboard/NotificationCenter.tsx` empty-state icon plate shadow; `src/styles/theme.css` light-mode `.bd-dashboard-panel::before` / `.bd-dashboard-section::before` and corner-lamp `::after` rules. Full file/line queue is in `docs/PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md` P0.
+- **Fix direction:** Run the P0 grep sweep from `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md` before adding any new visual polish. Replace stale yellow-amber values with the locked bronze/champagne values from `LAW_PROJECT_RULES.md` § Premium Gold Palette. Replace load-bearing pure-white insets with champagne/cream or cool ice-blue insets as appropriate.
+- **Status:** Open — P0 for the next visual implementation pass. This is a LAW alignment correction, not a redesign.
+
+### KI-067: Mobile fullscreen coverage map opens too sheet-first for a map-first product
+
+- **Impact:** Mobile screenshots show the full coverage map experience dominated by the command sheet/panel on open, with the map mostly hidden. That undercuts BidOnDent's map-first identity and makes the fullscreen interaction feel like a form drawer instead of an immersive spatial browser. Some screenshots also suggest close affordance duplication/confusion.
+- **Location:** `src/app/components/landing/MobileMapBottomSheet.tsx`, `src/app/components/landing/CoverageMapDialog.tsx`, `src/app/components/landing/CoverageBrowseExperience.tsx`, and `src/app/components/landing/CoverageBrowseSidebarContent.tsx`.
+- **Fix direction:** Default mobile fullscreen map to a compact/peek sheet state so the map remains visible, then allow deliberate expansion. Preserve the owner-approved double-tap/double-click gate from the hero map. Keep one obvious close path, protect bottom safe-area spacing, and verify Search/Explore/Saved/Shops modes in light and dark.
+- **Status:** Open — P1 mobile UX/design hardening; included in the active Opus master prompt and polish queue.

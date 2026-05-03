@@ -189,9 +189,9 @@ box-shadow:
   0 18-30px 38-60px rgba(<navy>, 0.14-0.22),/* far ambient — atmospheric ground */
   inset 0 1px 0 rgba(<bright cream/ice>, 0.92-0.96),  /* top highlight — reflected light */
   inset 0 -1-2px 2-4px rgba(<navy>, 0.05-0.10),       /* bottom shadow — glass thickness */
-  inset 0 -1px 0 rgba(160, 95, 25, 0.18-0.46),        /* bronze inset rim */
+  inset 0 -1px 0 rgba(140, 82, 22, 0.18-0.46),         /* bronze inset rim */
   0 0 0 1px rgba(<accent color>, 0.18-0.40),          /* accent ring (cool action identity) */
-  0 0 0 1px rgba(160, 95, 25, 0.12-0.40),             /* bronze ring (warm material trim) */
+  0 0 0 1px rgba(140, 82, 22, 0.12-0.40),             /* bronze ring (warm material trim) */
   0 0 14-22px rgba(<accent or warm>, 0.08-0.22);      /* tight outer halo */
 ```
 
@@ -203,15 +203,15 @@ Backdrop filter on `.bd-dashboard-panel` and `.bd-dashboard-section` must be `bl
 
 1. **No pure-white surfaces.** `rgba(255, 255, 255, *)` and `#fff` are banned for any panel, section, card, or shell background. Default warm cream base: `linear-gradient(180deg, rgba(254, 248, 232, 0.94) 0%, rgba(248, 238, 215, 0.86) 100%)`. Variants vary cream depth (deeper champagne, lighter ivory) but never reach pure white.
 2. **No pure-white inset highlights.** `inset 0 1px 0 rgba(255, 255, 255, *)` is banned. Top-edge highlights must be warm cream `rgba(254, 247, 232, 0.88-0.92)` so the panel top doesn't read white.
-3. **No gold-on-cream halo with no contrast.** A warm halo (`rgba(220, 140, 50, *)`) over a warm cream panel disappears. Edge definition comes from a **deeper bronze border** (`rgba(160, 95, 25, 0.36-0.50)`) and a **navy/dark drop shadow** (`rgba(40, 28, 8, 0.14-0.22)`). The diffuse halo stays subtle and tighter (`0 0 22px`, not `0 0 44px`).
+3. **No gold-on-cream halo with no contrast.** An older yellow-orange halo (`rgba(220, 140, 50, *)`) over a warm cream panel disappears. Edge definition comes from a **deeper bronze border** (`rgba(140, 82, 22, 0.36-0.50)`) and a **navy/dark drop shadow** (`rgba(40, 28, 8, 0.14-0.22)`). The diffuse halo stays subtle, atmospheric, and tuned to the locked palette (`rgba(196, 130, 45, *)`).
 4. **No flat single-tone painting.** Light mode is **multi-tone**: warm cream variants (`--accent-gold`, `--accent-champagne`, `--deep`) sit alongside cool-tinted-cream variants (`--accent-blue`, `--accent-cyan`, `--accent-indigo`). The page should have rhythm — cool/warm/cool/warm — not uniform cream wash.
 
 **Required identity:**
 
-- **Surface:** warm cream off-white as the dominant family, with selective cool tints (pale blue/cyan/indigo) on accent-blue/cyan/indigo variants for variation.
-- **Trim:** deeper bronze (`rgb(160, 95, 25)` family at 0.30-0.50 opacity) for borders and inset bottoms — gives crisp edges against cream.
+- **Surface:** cool misty blue-gray page canvas with cream/champagne and cool-tinted blue/cyan/indigo liquid-glass panels for variation.
+- **Trim:** deeper bronze (`rgb(140, 82, 22)` family at 0.30-0.50 opacity) for borders and inset bottoms — gives crisp edges against cream.
 - **Lift:** dark warm drop shadow (`rgba(40, 28, 8, 0.14-0.22)`) so panels feel lifted off the page background.
-- **Glow:** subtle, tight warm halo (`0 0 18-22px rgba(180, 100, 30, 0.12-0.20)`) — a hint of lamp light, not a wash.
+- **Glow:** subtle, tight warm halo (`0 0 18-22px rgba(196, 130, 45, 0.12-0.20)`) — a hint of lamp light, not a wash.
 
 **Where this is enforced in code:** `src/styles/theme.css` `[data-appearance-mode="light"]` blocks for `--bd-dashboard-panel-*`, `--bd-dashboard-section-*`, `--bd-report-shell-*`, and the `.bd-dashboard-panel--{deep,accent-blue,accent-cyan,accent-indigo}` + `.bd-dashboard-section--{deep,accent-blue,accent-cyan,accent-indigo,accent-gold,accent-champagne}` overrides. All carry `LAW` comments referencing this section.
 

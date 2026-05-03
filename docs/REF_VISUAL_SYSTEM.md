@@ -36,7 +36,8 @@ Light mode is **not** a white SaaS palette. Per LAW, premium surfaces in light m
 
 The owner-approved warm palette is bronze/champagne leaning:
 
-- Top lamp halo: `rgba(196, 144, 65, ...)`
+- Top/corner lamp halo: `rgba(196, 144, 65, ...)`
+- Deeper outer/far warm halo: `rgba(196, 130, 45, ...)`
 - Bronze trim: `rgba(140, 82, 22, ...)`
 - Cream/champagne inset light: `rgba(252, 238-240, 204-208, ...)`
 - Warm-tile inner depth: `rgba(110, 70, 18, ...)`
@@ -60,6 +61,8 @@ The current premium baseline includes:
 - Full landing `CoverageMapDialog` shells retuned to premium gold + cool blue in both light and dark.
 
 Future agents should treat these as shipped wins. Improve them only by adding depth, polish, viewport correctness, and material consistency.
+
+The active next-pass docs are `PLAN_VISUAL_MASTER_2026-05-03.md`, `PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`, and `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`. Earlier Sonnet/Opus visual audit handoffs are archived under `docs/archive/2026-05-03-visual-handoffs/` and should not be treated as current instructions.
 
 ### Mobile Viewport Doctrine
 

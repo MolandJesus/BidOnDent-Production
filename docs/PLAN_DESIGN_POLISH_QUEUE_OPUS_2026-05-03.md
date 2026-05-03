@@ -8,7 +8,7 @@ preserves:
   - REF_VISUAL_SYSTEM.md current baseline
   - All shipped passes: V1/V2/V3 visual hardening, sidebar/header/search gold-language, atmospheric shadow falloff, hero-map double-tap, full-map dialog premium gold treatment, hydrateReport fail-closed
 companion:
-  - HANDOFF_VISUAL_NEXT_PASS_PROMPT_OPUS_2026-05-03.md (Codex's mission + reading list)
+  - HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md (Codex's current mission + reading list)
   - This doc — the itemized polish queue with file:line targets
 ---
 
@@ -16,13 +16,13 @@ companion:
 
 This is a polish *queue*, not a redesign brief. Every item is additive or corrective-toward-LAW. Nothing here removes premium identity. Nothing here whitens, flattens, or pulls toward generic SaaS.
 
-Codex's master prompt covers mission + reading list + preserve list. This doc gives the next Opus a concrete checklist with file pointers, current-state evidence, and proposed polish — so the pass can be surgical instead of exploratory.
+Codex's current master prompt covers mission + reading list + preserve list. This doc gives the next Opus a concrete checklist with file pointers, current-state evidence, and proposed polish — so the pass can be surgical instead of exploratory.
 
 ---
 
 ## Absolute preserve list (mirrors the master prompt)
 
-- Locked bronze/champagne premium gold palette: top halo `rgba(196, 144, 65, *)`, bronze trim `rgba(140, 82, 22, *)`, cream insets `rgba(252, 238–240, 204–208, *)`.
+- Locked bronze/champagne premium gold palette: top/corner halo `rgba(196, 144, 65, *)`, deeper outer/far halo `rgba(196, 130, 45, *)`, bronze trim `rgba(140, 82, 22, *)`, cream insets `rgba(252, 238–240, 204–208, *)`.
 - Cool blue-gray canvas + warm gold lamp lighting in light mode.
 - Navy-lit-by-gold-lamp identity in dark mode.
 - Landing solid gold story bands (theatrical).
@@ -42,14 +42,14 @@ The locked LAW palette is bronze/champagne. Several load-bearing files still shi
 Inline `boxShadow` for both light and dark mode uses:
 - `rgba(220, 165, 90, 0.22)` inset bottom rim — **forbidden**, replace with `rgba(140, 82, 22, 0.30)` (bronze) or `rgba(196, 144, 65, 0.22)` (gold halo).
 - `rgba(220, 165, 90, 0.14)` ring — replace with `rgba(140, 82, 22, 0.20)`.
-- `rgba(220, 140, 50, 0.16)` outer halo — replace with `rgba(196, 144, 65, 0.18)`.
+- `rgba(220, 140, 50, 0.16)` outer halo — replace with `rgba(196, 130, 45, 0.16-0.18)`. If the layer is a top/corner lamp rather than a far halo, use `rgba(196, 144, 65, 0.18-0.22)`.
 - Light mode: `inset 0 1px 0 rgba(255, 255, 255, 0.92)` — **forbidden white inset**, replace with `rgba(252, 240, 208, 0.88)`.
 
 ### P0.2 — `src/app/components/dashboard/NotificationCenter.tsx` lines 284–285
 
 Empty-state icon plate ships:
 - `rgba(220, 165, 90, 0.18)` inset rim — **forbidden**, swap to `rgba(140, 82, 22, 0.26)`.
-- `rgba(220, 140, 50, 0.14–0.18)` halo — swap to `rgba(196, 144, 65, 0.16–0.20)`.
+- `rgba(220, 140, 50, 0.14–0.18)` halo — swap to `rgba(196, 130, 45, 0.14–0.18)` for outer/far halo layers, or `rgba(196, 144, 65, 0.16–0.20)` when it is visually a top/corner lamp.
 - Light mode: `rgba(255, 255, 255, 0.85)` inset — **forbidden**, swap to `rgba(252, 240, 208, 0.82)`.
 
 ### P0.3 — `src/styles/theme.css` line 2612
@@ -58,7 +58,7 @@ Empty-state icon plate ships:
 
 ### P0.4 — `src/styles/theme.css` line 2616
 
-Light-mode `.bd-dashboard-panel::after` corner lamp uses `rgba(220, 140, 50, 0.3)` — **forbidden**. Replace with `rgba(196, 144, 65, 0.32)`.
+Light-mode `.bd-dashboard-panel::after` corner lamp uses `rgba(220, 140, 50, 0.3)` — **forbidden**. Replace with `rgba(196, 144, 65, 0.26-0.32)` when it behaves as a top/corner lamp. Reserve `rgba(196, 130, 45, *)` for deeper outer/far halo layers.
 
 ### P0.5 — Repository-wide audit
 

@@ -42,6 +42,8 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 | [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.                                                                                                                                                                                                                                                                                                                                            |
 | [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger.                                                                                                                                                                                                                                                                                                                                |
 | [`PLAN_DASHBOARD_REDESIGN.md`](PLAN_DASHBOARD_REDESIGN.md)   | Dashboard premium-lift plan (2026-05-02) — **PRE-EXECUTION**. Brings landing's _quality_ bar to all 4 roles' dashboard surfaces (~139 component files across customer/shop/insurer/admin) without violating the §9 inheritance rule (no automotive register, no warm amber atmosphere, no Direction C accents on dashboard). 12 owner-gated passes proposed (D1–D12). 6 open questions to answer before D1. Awaiting greenlight. |
+| [`PLAN_VISUAL_MASTER_2026-05-03.md`](PLAN_VISUAL_MASTER_2026-05-03.md) | Active visual master ledger after V1/V2/V3 and later shell/shadow/map work. Use for pass history and issue context, not as a reset. |
+| [`PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`](PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md) | Surgical polish queue for the next Opus pass, including P0 LAW palette drift correction and mobile map-first UX buckets. |
 
 > **Landing-page plans archived 2026-05-03.** The original 16-pass landing redesign and the follow-up Liquid Map Intelligence / dark-mode parity / button-system passes all shipped. They live under `docs/archive/` for historical decision context. Current landing visual state lives in **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**.
 
@@ -73,9 +75,9 @@ These are the primary governing documents. Always start here.
 
 - **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)** — current visual system state. Read first for any design work.
 - **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — long-form design philosophy and historical decisions. The "why behind the system."
-- **[`VISUAL_AUDIT_PREP_2026-05-03.md`](VISUAL_AUDIT_PREP_2026-05-03.md)** — strengths/risks/audit targets snapshot prepared for the upcoming Sonnet visual audit.
-- **[`HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`](HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md)** — copy-paste-ready prompt for Sonnet's deep visual audit pass.
-- **[`HANDOFF_VISUAL_NEXT_PASS_PROMPT_OPUS_2026-05-03.md`](HANDOFF_VISUAL_NEXT_PASS_PROMPT_OPUS_2026-05-03.md)** — copy-paste-ready prompt for the later Opus visual next-pass planning/build chat after screenshots and, ideally, the Sonnet audit.
+- **[`PLAN_VISUAL_MASTER_2026-05-03.md`](PLAN_VISUAL_MASTER_2026-05-03.md)** — active visual master ledger. V1/V2/V3 shipped; use as pass history and issue context, not as a fresh redesign mandate.
+- **[`PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md`](PLAN_DESIGN_POLISH_QUEUE_OPUS_2026-05-03.md)** — surgical next-pass queue with file/line targets, including the P0 LAW-vs-CSS old-yellow/white-inset drift sweep.
+- **[`HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`](HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md)** — current copy-paste master prompt for a fresh Opus 4.7 design/build chat. This supersedes the earlier Sonnet/Opus one-off visual handoffs.
 
 ### AI Collaboration / Handoffs
 
@@ -113,8 +115,9 @@ Everything under [`docs/archive/`](archive/) is historical reference, retained f
 
 Most recent archive moves (2026-05-03):
 
+- `2026-05-03-visual-handoffs/` — superseded Sonnet audit prep/prompt/report and earlier Opus visual handoff docs. Current visual handoff is `HANDOFF_VISUAL_MASTER_PROMPT_OPUS_4_7_2026-05-03.md`.
 - `PLAN_LANDING_REDESIGN.md` → archive — 16-pass landing redesign, STATUS COMPLETE 2026-05-02.
-- `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` → archive — Passes A–G shipped; Pass H (verification) handed off to Sonnet via `HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`.
+- `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` → archive — Passes A–G shipped; Pass H verification completed through the archived Sonnet audit handoff in `archive/2026-05-03-visual-handoffs/`.
 - `PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md` → archive — cross-app primary-CTA shell adoption, SHIPPED 2026-05-03.
 - `PLAN_LANDING_DARK_MODE_PARITY.md` → archive — superseded twice, then absorbed into the gold-lamp landing pass shipped 2026-05-03.
 - `landing_dark_audit_2026-05-03.md`, `landing_signature_audit_2026-05-03.md`, `landing_visual_audit_2026-05-03.md` → archive — pre-fix audit snapshots; issues addressed by subsequent hero polish + gold-lamp passes.
