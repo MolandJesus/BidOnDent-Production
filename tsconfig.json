@@ -20,9 +20,10 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path aliases */
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
+    /* Path aliases — `paths` resolves relative to this tsconfig dir,
+       so no `baseUrl` is needed. Avoids the TS 7.0 baseUrl deprecation
+       and removes the version-mismatch headache between the IDE's TS
+       and the project-installed tsc. */
     "paths": {
       "@/*": ["./src/*"]
     },
