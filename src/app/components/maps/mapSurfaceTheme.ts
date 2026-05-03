@@ -32,19 +32,27 @@ const baseTheme = {
 
 const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
   light: {
+    /* Premium gold lamp + cool blue dominant, locked 2026-05-03. The
+       immersive shell is the fullscreen coverage map dialog — it now reads
+       as the same liquid-glass family as the dashboard panels: cool blue
+       canvas, bronze trim, gold lamp halo from the top, soft atmospheric
+       falloff via wide low-opacity drops. NOT pure white. */
     ambientOverlayClassName:
-      "bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),transparent_36%),radial-gradient(circle_at_18%_20%,rgba(37,99,235,0.2),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(59,130,246,0.16),transparent_22%),linear-gradient(180deg,rgba(255,255,255,0.16),rgba(191,219,254,0.16))]",
+      "bg-[radial-gradient(circle_at_top,rgba(196,144,65,0.22),transparent_42%),radial-gradient(circle_at_18%_20%,rgba(37,99,235,0.20),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(59,130,246,0.18),transparent_24%),linear-gradient(180deg,rgba(232,242,254,0.22),rgba(204,222,246,0.18))]",
     shellToneClassName:
-      "border-blue-100/76 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.94),rgba(239,246,255,0.9)_34%,rgba(219,234,254,0.72)_100%)] shadow-[0_40px_110px_rgba(30,58,138,0.18)]",
+      "border-[rgba(140,82,22,0.30)] bg-[radial-gradient(circle_at_top,rgba(196,144,65,0.20),rgba(232,242,254,0.92)_30%,rgba(214,230,248,0.86)_100%)] shadow-[0_40px_110px_rgba(15,30,60,0.18),0_70px_160px_rgba(15,30,60,0.10),0_0_0_1px_rgba(140,82,22,0.26),inset_0_1px_0_rgba(252,238,204,0.78),inset_0_-1px_0_rgba(140,82,22,0.30),0_0_80px_rgba(196,130,45,0.10)]",
     immersiveShellToneClassName:
-      "border-slate-200/72 bg-[radial-gradient(circle_at_top,rgba(147,197,253,0.24),rgba(248,250,252,0.88)_26%,rgba(226,232,240,0.82)_100%)] shadow-[0_50px_140px_rgba(15,23,42,0.16)]",
+      "border-[rgba(140,82,22,0.30)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.22),transparent_60%),radial-gradient(circle_at_top,rgba(96,165,250,0.18),rgba(232,242,254,0.92)_28%,rgba(204,222,246,0.86)_100%)] shadow-[0_50px_140px_rgba(15,30,60,0.18),0_80px_180px_rgba(15,30,60,0.10),0_0_0_1px_rgba(140,82,22,0.24),inset_0_1px_0_rgba(252,238,204,0.74),inset_0_-1px_0_rgba(140,82,22,0.28),0_0_100px_rgba(196,130,45,0.10)]",
     mapCanvasClassName: "bg-[#dce8f7]",
+    /* Side/floating panels inside the map dialog — cool frosted blue with
+       gold lamp halo + bronze trim; pure white surfaces are forbidden per
+       LAW. Strong + accent variants increase the trim weight. */
     panelToneClassName:
-      "border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.74))]",
+      "border-[rgba(140,82,22,0.26)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.16),transparent_70%),linear-gradient(180deg,rgba(232,242,254,0.86),rgba(214,230,248,0.78))]",
     panelStrongToneClassName:
-      "border-white/76 bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(241,245,249,0.8))]",
+      "border-[rgba(140,82,22,0.32)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.20),transparent_70%),linear-gradient(180deg,rgba(232,242,254,0.92),rgba(204,222,246,0.86))]",
     accentPanelToneClassName:
-      "border-sky-200/66 bg-[linear-gradient(180deg,rgba(239,246,255,0.92),rgba(219,234,254,0.8))]",
+      "border-[rgba(140,82,22,0.36)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.22),transparent_70%),linear-gradient(180deg,rgba(244,222,178,0.92),rgba(228,198,144,0.84))]",
     segmentedToneClassName:
       "border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.72))]",
     activeSegmentClassName:
@@ -78,19 +86,24 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
       "border-sky-300/60 bg-[linear-gradient(180deg,rgba(239,246,255,0.92),rgba(219,234,254,0.82))] shadow-[0_20px_44px_rgba(37,99,235,0.12)]",
   },
   dark: {
+    /* Premium gold lamp + navy dominant, locked 2026-05-03. Dark dialog
+       shell now matches the dashboard's navy-lit-by-gold-lamp identity:
+       gold halo from the top, bronze trim, soft atmospheric falloff. */
     ambientOverlayClassName:
-      "bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.28),transparent_30%),radial-gradient(circle_at_78%_12%,rgba(37,99,235,0.22),transparent_24%),linear-gradient(180deg,rgba(30,58,138,0.2),rgba(2,6,23,0.38))]",
+      "bg-[radial-gradient(circle_at_top,rgba(228,140,55,0.22),transparent_36%),radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.26),transparent_28%),radial-gradient(circle_at_78%_12%,rgba(37,99,235,0.22),transparent_24%),linear-gradient(180deg,rgba(30,58,138,0.18),rgba(2,6,23,0.42))]",
     shellToneClassName:
-      "border-blue-300/15 bg-[linear-gradient(180deg,rgba(30,58,138,0.46),rgba(2,6,23,0.94))] shadow-[0_36px_96px_rgba(2,6,23,0.48)]",
+      "border-[rgba(228,175,100,0.22)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.20),transparent_60%),linear-gradient(180deg,rgba(16,32,62,0.92),rgba(6,14,32,0.96))] shadow-[0_36px_96px_rgba(2,6,23,0.48),0_70px_180px_rgba(2,6,23,0.20),0_0_0_1px_rgba(228,175,100,0.16),inset_0_1px_0_rgba(255,228,175,0.18),0_0_44px_rgba(228,140,55,0.22),0_0_140px_rgba(228,140,55,0.10)]",
     immersiveShellToneClassName:
-      "border-blue-200/12 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.26),rgba(15,23,42,0.92)_34%,rgba(2,6,23,0.97)_100%)] shadow-[0_44px_116px_rgba(2,6,23,0.54)]",
+      "border-[rgba(228,175,100,0.20)] bg-[radial-gradient(ellipse_95%_55%_at_50%_0%,rgba(228,140,55,0.20),transparent_60%),radial-gradient(circle_at_top,rgba(59,130,246,0.20),rgba(15,23,42,0.92)_30%,rgba(2,6,23,0.96)_100%)] shadow-[0_44px_116px_rgba(2,6,23,0.54),0_80px_200px_rgba(2,6,23,0.22),0_0_0_1px_rgba(228,175,100,0.14),inset_0_1px_0_rgba(255,228,175,0.16),0_0_60px_rgba(228,140,55,0.22),0_0_160px_rgba(228,140,55,0.10)]",
     mapCanvasClassName: "bg-slate-950",
+    /* Side panels inside the dark map dialog — navy glass with gold lamp
+       halo + bronze trim, matching the dashboard panel system. */
     panelToneClassName:
-      "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.84),rgba(15,23,42,0.76))]",
+      "border-[rgba(228,175,100,0.22)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.16),transparent_70%),linear-gradient(180deg,rgba(15,23,42,0.84),rgba(8,16,33,0.80))]",
     panelStrongToneClassName:
-      "border-blue-200/22 bg-[linear-gradient(180deg,rgba(30,58,138,0.34),rgba(15,23,42,0.82))]",
+      "border-[rgba(228,175,100,0.28)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.20),transparent_70%),linear-gradient(180deg,rgba(20,38,72,0.84),rgba(10,22,45,0.86))]",
     accentPanelToneClassName:
-      "border-blue-300/30 bg-[linear-gradient(180deg,rgba(37,99,235,0.36),rgba(15,23,42,0.92))]",
+      "border-[rgba(228,175,100,0.36)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(228,140,55,0.26),transparent_70%),linear-gradient(180deg,rgba(34,58,118,0.50),rgba(15,30,60,0.84))]",
     segmentedToneClassName:
       "border-blue-300/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.86),rgba(15,23,42,0.8))]",
     activeSegmentClassName:

@@ -50,6 +50,26 @@ export default function HeroSection({
     setActiveValue((prev) => (prev + 1) % VALUE_STATEMENTS.length);
   }, []);
 
+  // Hero-map double-tap → open landing fullscreen coverage map. Mouse uses
+  // native dblclick; touch synthesises double-tap via two taps within 320ms
+  // (browsers fire two `click`s back-to-back without a real `dblclick` on
+  // touch devices). Single tap remains a no-op so the map can host other
+  // affordances later (pan/zoom on a real map, hover tooltips, etc).
+  const lastHeroMapTapRef = useRef(0);
+  const openFullCoverageMap = useCallback(() => {
+    window.dispatchEvent(new CustomEvent("bd:open-landing-coverage-map"));
+    document.getElementById("coverage")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+  const handleHeroMapTap = useCallback(() => {
+    const now = Date.now();
+    if (now - lastHeroMapTapRef.current < 320) {
+      lastHeroMapTapRef.current = 0;
+      openFullCoverageMap();
+      return;
+    }
+    lastHeroMapTapRef.current = now;
+  }, [openFullCoverageMap]);
+
   useEffect(() => {
     if (prefersReducedMotion.current) return;
     const interval = setInterval(advanceCarousel, 3800);
@@ -561,17 +581,19 @@ export default function HeroSection({
                 MapLibre instance, no fake shop claims, no operational copy.
                 Tap target scrolls to the coverage section. Hidden at lg+ where
                 the desktop right column takes over. */}
-            <a
-              href="#coverage"
-              aria-label="Browse our NY service area on the coverage map"
-              className={`group block lg:hidden mt-5 rounded-2xl relative overflow-hidden transition-all duration-700 active:scale-[0.985] ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+            <button
+              type="button"
+              aria-label="Double-tap to open the full coverage map. Single-tap to scroll to coverage."
+              onClick={handleHeroMapTap}
+              onDoubleClick={openFullCoverageMap}
+              className={`group block lg:hidden mt-5 rounded-2xl relative overflow-hidden transition-all duration-700 active:scale-[0.985] w-full text-left ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{
                 transitionDelay: "1.05s",
                 height: "200px",
                 background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                 boxShadow: isLightAppearance
-                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(220,165,90,0.18)"
-                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(220,165,90,0.16)",
+                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 40px 90px rgba(15, 30, 60, 0.08), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(140,82,22,0.20), 0 0 80px rgba(196,130,45,0.05)"
+                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(220,165,90,0.16), 0 0 100px rgba(228,140,55,0.08)",
               }}
             >
               {/* Outer ambient bloom — bleeds the strip into the hero atmosphere */}
@@ -703,10 +725,10 @@ export default function HeroSection({
                     : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
                   color: "#ffffff",
                   boxShadow:
-                    "0 6px 18px rgba(37,99,235,0.36), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(220,165,90,0.20)",
+                    "0 6px 18px rgba(37,99,235,0.36), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(140,82,22,0.20)",
                 }}
               >
-                Browse coverage
+                Double-tap for full map
                 <ChevronRight className="w-3.5 h-3.5" />
               </div>
 
@@ -718,7 +740,7 @@ export default function HeroSection({
                     : "bg-gradient-to-t from-[#0a1628]/40 via-transparent to-transparent"
                 }`}
               />
-            </a>
+            </button>
           </div>
 
           {/* Right column — product story visual.
@@ -937,6 +959,42 @@ export default function HeroSection({
                       : "bg-gradient-to-t from-[#0a1628]/30 via-transparent to-transparent"
                   }`}
                 />
+
+                {/* Double-tap target — covers the middle 70% of the map stage
+                    so the floating chips on the corners stay independently
+                    interactive in future. Single click = silent state bump,
+                    second click within 320ms (or native dblclick) opens the
+                    full landing coverage map dialog. */}
+                <button
+                  type="button"
+                  aria-label="Double-tap to open the full landing coverage map"
+                  onClick={handleHeroMapTap}
+                  onDoubleClick={openFullCoverageMap}
+                  className="absolute inset-x-[15%] inset-y-[18%] cursor-zoom-in rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/60"
+                  style={{
+                    background: "transparent",
+                  }}
+                />
+
+                {/* Hint pill — top-right, light/dark aware. Reads as a quiet
+                    affordance, not a competing focal point. */}
+                <div
+                  className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md pointer-events-none"
+                  style={{
+                    background: isLightAppearance
+                      ? "rgba(252,238,204,0.78)"
+                      : "rgba(8,18,38,0.74)",
+                    borderColor: isLightAppearance
+                      ? "rgba(140,82,22,0.32)"
+                      : "rgba(196,144,65,0.36)",
+                    color: isLightAppearance ? "#7c4a16" : "#fde6c0",
+                    boxShadow: isLightAppearance
+                      ? "inset 0 1px 0 rgba(252,240,212,0.92), 0 2px 10px rgba(15,30,60,0.10)"
+                      : "inset 0 1px 0 rgba(228,175,100,0.22), 0 2px 12px rgba(2,6,23,0.34)",
+                  }}
+                >
+                  Double-tap for full map
+                </div>
               </div>
             </div>
 
