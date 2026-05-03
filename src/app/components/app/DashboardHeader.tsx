@@ -206,7 +206,7 @@ export default function DashboardHeader({
       ref={headerRef}
       className={`bd-shell-header sticky top-0 z-40 mx-1.5 mt-1.5 rounded-3xl border sm:mx-2 sm:mt-2 md:mx-3 md:mt-3 md:rounded-[2rem] ${
         isLightAppearance
-          ? "bd-shell-header--light border-[rgba(147,197,253,0.36)]"
+          ? "bd-shell-header--light border-[rgba(140,82,22,0.32)]"
           : "bd-shell-header--dark border-blue-400/[0.12]"
       }`}
     >
@@ -237,7 +237,7 @@ export default function DashboardHeader({
           {onOpenDemoMode && (
             <button
               onClick={onOpenDemoMode}
-              className={`flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border backdrop-blur-xl transition-all md:hidden ${isLightAppearance ? "border-slate-200/70 bg-white/72 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-white/90" : "border-blue-300/18 bg-white/[0.05] shadow-[0_10px_22px_rgba(2,6,23,0.26)] hover:bg-white/[0.08]"}`}
+              className={`flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border backdrop-blur-xl transition-all md:hidden ${isLightAppearance ? "border-[rgba(140,82,22,0.30)] bg-blue-50/72 shadow-[0_8px_18px_rgba(15,30,60,0.10),inset_0_1px_0_rgba(252,238,204,0.70)] hover:bg-blue-50/90" : "border-blue-300/18 bg-white/[0.05] shadow-[0_10px_22px_rgba(2,6,23,0.26)] hover:bg-white/[0.08]"}`}
               aria-label="Open demo mode"
               type="button"
             >
@@ -251,10 +251,10 @@ export default function DashboardHeader({
               className={`flex items-center gap-2 px-3 py-2 min-w-[260px] rounded-xl border transition-colors ${
                 searchOpen
                   ? isLightAppearance
-                    ? "border-blue-400/50 bg-white ring-2 ring-blue-300/22 shadow-[0_2px_8px_rgba(59,130,246,0.10),inset_0_1px_0_rgba(255,255,255,0.85)]"
+                    ? "border-blue-400/55 bg-blue-50/85 ring-2 ring-blue-300/25 shadow-[0_2px_8px_rgba(15,30,60,0.12),inset_0_1px_0_rgba(252,238,204,0.78)]"
                     : "border-blue-400/35 bg-white/[0.08] ring-2 ring-blue-400/18"
                   : isLightAppearance
-                    ? "border-blue-200/55 bg-white/72 cursor-pointer hover:bg-white/90 hover:border-blue-300/65 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]"
+                    ? "border-[rgba(140,82,22,0.30)] bg-blue-50/72 cursor-pointer hover:bg-blue-50/90 hover:border-[rgba(140,82,22,0.42)] shadow-[inset_0_1px_0_rgba(252,238,204,0.72),0_2px_6px_rgba(15,30,60,0.08)]"
                     : "bd-glass-control--utility cursor-pointer"
               }`}
               onClick={() => {
