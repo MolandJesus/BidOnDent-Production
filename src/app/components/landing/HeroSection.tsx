@@ -309,7 +309,18 @@ export default function HeroSection({
                     (#003d82) to #3b82f6 in dark mode so the line lifts off the
                     navy hero atmosphere instead of receding into it. End stop
                     pushed to #93c5fd for a visibly brighter terminus. Light
-                    mode unchanged. */}
+                    mode unchanged.
+
+                    textShadow override (2026-05-03 trust pass): the parent h2
+                    applies a textShadow (heavier in dark mode). Sibling spans
+                    ("Get the", "Best Price", "on Your") have solid fills that
+                    occlude the shadow. This span uses
+                    WebkitTextFillColor: transparent for gradient clipping,
+                    so the parent's inherited text-shadow paints through the
+                    transparent fill — visible as a soft halo around the
+                    gradient letters that reads as a blurred raster. Killing
+                    text-shadow on this span only restores crisp glyph edges
+                    without affecting the rest of the headline. */}
                 <span
                   style={{
                     background: isLightAppearance
@@ -318,6 +329,7 @@ export default function HeroSection({
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
+                    textShadow: "none",
                   }}
                 >
                   Auto Body Repair
