@@ -5,7 +5,11 @@ import {
   loadReportDraft,
   saveReportDraft,
 } from "./report/reportDraftStorage";
-import { uploadReportPhoto, isBase64Photo, retryUploadBase64 } from "./report/reportPhotoUpload";
+import {
+  uploadReportPhoto,
+  retryUploadBase64,
+  type ReportPhotoDraft,
+} from "./report/reportPhotoUpload";
 import type { DamageReport, Vehicle } from "../../types";
 
 interface UseReportFormArgs {
@@ -28,7 +32,7 @@ export function useReportForm({
   setShowPhotoGuide,
 }: UseReportFormArgs) {
   const [step, setStep] = useState(1);
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<ReportPhotoDraft[]>([]);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
   const [vehicle, setVehicle] = useState<{
@@ -108,13 +112,13 @@ export function useReportForm({
         if (!mountedRef.current) return;
         const file = files[i];
         setUploadProgress(`Uploading photo ${i + 1} of ${files.length}...`);
-        const uploadedPhoto = await uploadReportPhoto(file);
+        const draft = await uploadReportPhoto(file);
         if (!mountedRef.current) return;
-        setPhotos((prev) => [...prev, uploadedPhoto]);
-        if (isBase64Photo(uploadedPhoto)) {
-          fallbackCount++;
-        } else {
+        setPhotos((prev) => [...prev, draft]);
+        if (draft.storagePointer) {
           cloudCount++;
+        } else {
+          fallbackCount++;
         }
       }
 
@@ -238,24 +242,30 @@ export function useReportForm({
     setPhotoUploadWarning(null);
     try {
       let finalPhotos = photos;
-      const pendingBase64 = photos.filter(isBase64Photo);
-      if (pendingBase64.length > 0) {
+      const pendingCount = photos.filter((p) => !p.storagePointer).length;
+      if (pendingCount > 0) {
         if (import.meta.env.DEV)
-          console.log(`Retrying upload for ${pendingBase64.length} base64 photo(s)...`);
+          console.log(`Retrying upload for ${pendingCount} pending photo(s)...`);
         const retried = await Promise.all(
-          photos.map((p) => (isBase64Photo(p) ? retryUploadBase64(p) : Promise.resolve(p)))
+          photos.map(async (p): Promise<ReportPhotoDraft> => {
+            if (p.storagePointer) return p;
+            const pointer = await retryUploadBase64(p.previewUrl);
+            return { previewUrl: p.previewUrl, storagePointer: pointer };
+          })
         );
         finalPhotos = retried;
         setPhotos(retried);
       }
 
-      const uploadedPhotos = finalPhotos.filter((p) => !isBase64Photo(p));
-      const failedCount = finalPhotos.length - uploadedPhotos.length;
+      const uploadedPointers = finalPhotos
+        .map((p) => p.storagePointer)
+        .filter((p): p is string => Boolean(p));
+      const failedCount = finalPhotos.length - uploadedPointers.length;
       if (failedCount > 0 && import.meta.env.DEV) {
         console.warn(`${failedCount} photo(s) could not be uploaded and will be excluded`);
       }
 
-      if (failedCount > 0 && uploadedPhotos.length === 0) {
+      if (failedCount > 0 && uploadedPointers.length === 0) {
         setSubmitError(
           `All ${failedCount} photo(s) failed to upload. Please check your connection and try adding photos again.`
         );
@@ -295,7 +305,7 @@ export function useReportForm({
           address,
           latitude: reportCoords?.lat ?? null,
           longitude: reportCoords?.lng ?? null,
-          photos: uploadedPhotos,
+          photos: uploadedPointers,
           description: trimmedDescription,
           status: "pending" as const,
           createdAt: submittedAt,

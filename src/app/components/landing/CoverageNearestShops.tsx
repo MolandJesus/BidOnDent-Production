@@ -45,19 +45,23 @@ export default function CoverageNearestShops({
                 theme.titleClassName
               )}
             >
-              {activeSearchTarget
-                ? `${nearbyShops.length} nearby repair options`
-                : "Search an area to unlock shop recommendations"}
+              {!activeSearchTarget
+                ? "Search an area to unlock shop recommendations"
+                : isOutsideServiceArea
+                  ? "Outside our current NY service region"
+                  : `${nearbyShops.length} nearby repair options`}
             </h5>
             <p className={cn("mt-1 text-sm leading-6", theme.secondaryTextClassName)}>
-              {activeSearchTarget
-                ? `Compare rating, distance, and live routing around ${activeSearchTarget.label}.`
-                : "Set an origin above and the strongest partner shops will populate below the map."}
+              {!activeSearchTarget
+                ? "Set an origin above and the strongest partner shops will populate below the map."
+                : isOutsideServiceArea
+                  ? "BidOnDent is focused on Rockland, Dutchess, Westchester, Nassau, Orange, and Putnam — browse the regions above to see where we're live."
+                  : `Compare rating and distance to partner shops near ${activeSearchTarget.label}.`}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {activeSearchTarget ? (
+            {activeSearchTarget && !isOutsideServiceArea ? (
               <span
                 className={cn(
                   "rounded-full px-3 py-1.5 text-[11px] font-semibold",

@@ -277,8 +277,16 @@ export default function HeroSection({
 
             {/* Main Content */}
             <div className="space-y-4 sm:space-y-5">
+              {/*
+                Transition is scoped to opacity + transform (entry animation
+                only). Using `transition-all` here caused the inner gradient
+                span (WebkitBackgroundClip: text) to interpolate its
+                background-image when isLightAppearance flipped, which paints
+                a smeared/blurred raster of "Auto Body Repair" that some
+                browsers retain after the transition settles.
+              */}
               <h2
-                className={`text-[1.75rem] sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-bold leading-[1.15] tracking-tight transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                className={`text-[1.75rem] sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-bold leading-[1.15] tracking-tight transition-[opacity,transform] duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 style={{
                   transitionDelay: "0.2s",
                   textShadow: isLightAppearance

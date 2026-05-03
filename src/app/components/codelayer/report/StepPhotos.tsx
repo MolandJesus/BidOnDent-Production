@@ -1,11 +1,12 @@
 import { type RefObject } from "react";
 import { Camera, Cloud, ImagePlus, Info, Trash2, Upload } from "lucide-react";
 import type { DashboardAppearanceMode } from "../../../routers/dashboard-router-types";
+import type { ReportPhotoDraft } from "./reportPhotoUpload";
 
 type StepPhotosProps = {
   primaryColor: string;
   appearanceMode?: DashboardAppearanceMode;
-  photos: string[];
+  photos: ReportPhotoDraft[];
   uploadingPhoto: boolean;
   uploadProgress: string;
   fileInputRef: RefObject<HTMLInputElement>;
@@ -99,12 +100,12 @@ export default function StepPhotos({
 
       <div className="grid sm:grid-cols-2 gap-2 sm:gap-3 mb-4 sm:mb-6">
         {photos.map((photo, index) => {
-          const isBase64 = photo.startsWith("data:");
+          const isCloud = Boolean(photo.storagePointer);
           return (
             <div key={`photo-${index}`} className="bd-report-section relative p-2.5">
               <div className="w-full aspect-video bg-white/[0.08] rounded-lg overflow-hidden mb-2">
                 <img
-                  src={photo}
+                  src={photo.previewUrl}
                   alt={`Damage photo ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -119,7 +120,7 @@ export default function StepPhotos({
                   <p
                     className={`text-xs ${isLightAppearance ? "text-slate-400" : "text-blue-200/60"}`}
                   >
-                    {isBase64 ? "Local photo" : "Cloud photo"}
+                    {isCloud ? "Cloud photo" : "Local photo"}
                   </p>
                 </div>
                 <button

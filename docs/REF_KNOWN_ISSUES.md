@@ -354,3 +354,29 @@
 - **Status:** RESOLVED 2026-05-03 — both subparts now closed:
   - Anti-Goal #9 copy: Card 1 "Bids Received / Avg. response < 48 hrs" → "Sample quote / $1,240 estimate" (circle "3" → "$"); Card 3 "Repair Completed! / Bid selected and scheduled through platform" → "Estimated ETA / ~4 days for sample repair".
   - Decision #2 card count: NY / Active Service Region badge removed from hero scene — count now 2, matching plan spec. Same NY content stays communicated via hero eyebrow ("Now serving New York"), trust chip ("Now available in NY"), and Coverage section region chips, so no factual loss to landing.
+
+### KI-064: Honda Accord dashboard thumbnail renders as a solid red rectangle
+
+- **Impact:** The 2023 Honda Accord report card on the customer dashboard shows a solid red rectangle in place of the damage photo. Trust break — looks broken at first glance and contradicts the "premium glass fallback for missing media" guarantee added in V1.
+- **Location:** `src/app/components/codelayer/HomeReportsList.tsx` reads `report.photos[0]` and pipes it through `ImageWithFallback`. The hydration path on the server (`supabase/functions/server/handlers/reports.ts:98`) calls `hydrateSignedStorageUrls`, so under normal flow `photo_urls[0]` reaches the client as a signed HTTPS URL. `ImageWithFallback` only triggers its fallback on (a) empty/non-string src, (b) `storage://` literal, or (c) `<img>` `onerror`.
+- **Root cause hypothesis (read-only investigation only — not confirmed against production data):** the persisted `photo_urls[0]` for this specific record points to an image whose **content** is a red rectangle (e.g. a 1×1 placeholder JPEG, a corrupt upload, or a legacy seed/fixture). Hydration succeeds, the signed URL fetches a real image, the browser renders it cleanly — and the image just happens to be red. The V1 fallback can't catch this because nothing is "broken" from the renderer's perspective.
+- **Why architecture is unlikely to be the root cause:** Other report thumbnails on the same dashboard render correctly (e.g. the 2021 Toyota Camry damage photo loads fine). If hydration were globally broken, all photos would fail the same way. The Camry path proves the read+adapter+`ImageWithFallback` chain works end-to-end.
+- **Diagnostic the owner can run (production data, read-only):**
+  ```sql
+  SELECT id, vehicle_make, vehicle_model, vehicle_year, photo_urls
+  FROM damage_reports
+  WHERE vehicle_make ILIKE 'Honda%'
+    AND vehicle_model ILIKE 'Accord%'
+    AND vehicle_year = 2023
+  ORDER BY created_at DESC
+  LIMIT 5;
+  ```
+  Three possible outcomes:
+  - `photo_urls[0]` is a `storage://` literal → hydration is failing for this record specifically; debug `hydrateReport` catch path.
+  - `photo_urls[0]` is empty/null → record has no photo, `ImageWithFallback`'s fallback should fire; if it isn't, that's a bug to chase.
+  - `photo_urls[0]` is a `storage://` pointer pointing to a real object whose bytes are a red placeholder → confirmed data, not code; correct via owner-approved record fix or re-upload.
+- **Fix direction:**
+  - If data: re-upload a real damage photo for that report, or null out `photo_urls` so the fallback fires. No production mutation without explicit owner approval.
+  - If hydration: file-specific fix in the `hydrateReport` catch path or in the storage util.
+- **Status:** Open — diagnostic recommended next session; do not mutate production data without owner sign-off. Defensive `ImageWithFallback` from V1 still works as designed for `storage://` and load-error cases.
+
