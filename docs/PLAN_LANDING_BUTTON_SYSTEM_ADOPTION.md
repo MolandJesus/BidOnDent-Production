@@ -1,9 +1,15 @@
 # PLAN — Landing Button-System Adoption (Pass G follow-up)
 
-**Status:** EXECUTING (L2 authorized; L3–L5 NO-GO with documented reasoning)
+**Status:** SHIPPED (L1, L2, L3 adopted; L4 + L5 NO-GO with hard structural reasoning)
 **Owner:** MolandJesus
 **Created:** 2026-05-03
 **Triggered by:** Pass G dark-mode audit (commit `32b6701d`) flagging landing CTAs hand-rolling button styles instead of consuming D10's `bd-dashboard-primary-button` system.
+
+## Update — L3 reversed from NO-GO to GO
+
+Initial L3 NO-GO reasoning conflated "system shell" with "system bg." Inspection of the system CSS (`theme.css:2869-2883`) shows `bd-dashboard-primary-button` supplies *only* shell — radius (1rem), gold-lit shadow with warm halo, 180ms tuned motion, and the `::before` sheen. Background, border-color, and text-color are entirely consumer-supplied (same pattern L1 + L2 use to preserve their blue gradients).
+
+This means hero secondary's warm-cream light bg + blue-glass dark bg can be preserved inline as `style={{ background, borderColor }}` while still inheriting the system shell. Net effect: **stronger** register-alignment, not weaker — system gold-lit shadow now harmonizes with the warm bloom in light mode and the gold-accent dark navy in dark mode.
 
 ## North Star
 
@@ -16,10 +22,10 @@ The audit framed this as one undifferentiated gap. Inspection reveals it's actua
 | # | CTA | File:line | Current shape | Decision | Reasoning |
 |---|---|---|---|---|---|
 | L1 | Hero primary "Start New Report" | `HeroSection.tsx:370` | DONE — system adopted | ✅ SHIPPED | Commit `819b7320`. 3-stop gradient preserved inline. |
-| **L2** | **CTASection "Go to Dashboard" + "Get Started Now"** | **`CTASection.tsx:177, 191`** | **`rounded-full` pill, blue-tinted shadow, hand-rolled motion** | **🟢 GO** | **See L2 detail below.** |
-| L3 | Hero secondary "Learn More" | `HeroSection.tsx:388` | Warm-cream light bg, blue-glass dark bg | 🔴 NO-GO | Light bg is intentionally register-aligned with hero warm bloom. System secondary is blue-tinted → would push out of register. Not a defect; system has no warm-secondary variant. |
-| L4 | WaitlistCapture "Get Updates" | `WaitlistCapture.tsx:51` | `rounded-full` inline form-submit, paired with `rounded-full` email input | 🔴 NO-GO | Wrong pattern. This is an inline form-submit paired with an input — pill matches the input's pill. System primary at 16px would mismatch the input. |
-| L5 | BusinessInquiry "Join as a Shop" / "Partner as Insurer" | `BusinessInquirySection.tsx:298, 329` | `bd-glass-card`, `rounded-2xl`, icon-tile + heading + sublabel + arrow | 🔴 NO-GO | Already uses `bd-glass-card` system class. These are launcher-cards, not primary CTA buttons. Different pattern. Already in spec. |
+| L2 | CTASection "Go to Dashboard" + "Get Started Now" | `CTASection.tsx:177, 191` | DONE — system adopted | ✅ SHIPPED | Commit `cecf1647`. Both CTAs adopt `bd-dashboard-primary-button`; 2-stop blue gradient preserved inline. |
+| L3 | Hero secondary "Learn More" | `HeroSection.tsx:388` | DONE — system shell adopted, warm-cream light + blue-glass dark bgs preserved inline | ✅ SHIPPED | See "Update — L3 reversed" above. Reversed from NO-GO when shell-vs-bg distinction surfaced. |
+| L4 | WaitlistCapture "Get Updates" | `WaitlistCapture.tsx:51` | `rounded-full` inline form-submit, paired with `rounded-full` email input | 🔴 NO-GO | Hard structural reason: it's paired with `bd-report-input` which is also `rounded-full`. Forcing the button to system 1rem radius would create a pill-input + rectangle-button mismatch. Adopting system here requires also redesigning the input pair → out of scope. Re-evaluate if `bd-report-input` ever moves off `rounded-full`. |
+| L5 | BusinessInquiry "Join as a Shop" / "Partner as Insurer" | `BusinessInquirySection.tsx:298, 329` | Already `bd-glass-card`, `rounded-2xl`, icon-tile + heading + sublabel + arrow | 🟢 ALREADY IN SPEC | Already uses `bd-glass-card` system class. Launcher-card pattern, not primary CTA pattern. No work needed. |
 
 ## L2 detail — why this is a clean adoption (not a regression)
 
