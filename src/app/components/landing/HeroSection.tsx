@@ -289,15 +289,24 @@ export default function HeroSection({
                 <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
                   Get the{" "}
                 </span>
-                <span className="text-blue-500">Best Price</span>
+                <span className={isLightAppearance ? "text-blue-500" : "text-sky-300"}>
+                  Best Price
+                </span>
                 <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
                   {" "}
                   on Your{" "}
                 </span>
                 <br className="hidden sm:block" />
+                {/* V2 dark contrast: gradient start raised from primaryColor
+                    (#003d82) to #3b82f6 in dark mode so the line lifts off the
+                    navy hero atmosphere instead of receding into it. End stop
+                    pushed to #93c5fd for a visibly brighter terminus. Light
+                    mode unchanged. */}
                 <span
                   style={{
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`,
+                    background: isLightAppearance
+                      ? `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`
+                      : "linear-gradient(135deg, #3b82f6 0%, #93c5fd 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
@@ -442,6 +451,173 @@ export default function HeroSection({
                 )
               )}
             </div>
+
+            {/* V2 — Mobile hero map intelligence strip.
+                Lightweight presentational SVG scene that gives mobile users the
+                map-first identity that desktop carries in the right column.
+                Reuses Liquid Map Intelligence language (contour, route lines,
+                pin pulse, gold flow/sheen) at compact 200px height. No second
+                MapLibre instance, no fake shop claims, no operational copy.
+                Tap target scrolls to the coverage section. Hidden at lg+ where
+                the desktop right column takes over. */}
+            <a
+              href="#coverage"
+              aria-label="Browse our NY service area on the coverage map"
+              className={`group block lg:hidden mt-5 rounded-2xl relative overflow-hidden transition-all duration-700 active:scale-[0.985] ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              style={{
+                transitionDelay: "1.05s",
+                height: "200px",
+                background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
+                boxShadow: isLightAppearance
+                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(220,165,90,0.18)"
+                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(220,165,90,0.16)",
+              }}
+            >
+              {/* Outer ambient bloom — bleeds the strip into the hero atmosphere */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-6 rounded-[2rem] blur-2xl pointer-events-none -z-10"
+                style={{
+                  background: isLightAppearance
+                    ? "radial-gradient(ellipse 70% 65% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
+                    : "radial-gradient(ellipse 75% 70% at 50% 50%, rgba(59,130,246,0.16), transparent 72%)",
+                }}
+              />
+
+              {/* Layer 1 — stylized road network (mobile scale) */}
+              <svg
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full"
+                viewBox="0 0 600 200"
+                preserveAspectRatio="xMidYMid slice"
+              >
+                <rect width="600" height="200" fill={isLightAppearance ? "#eef4fb" : "#0d1d3a"} />
+                <path
+                  d="M 0,80 Q 150,90 300,75 T 600,90"
+                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  strokeWidth="2.5"
+                  fill="none"
+                  opacity="0.85"
+                />
+                <path
+                  d="M 0,140 Q 200,120 400,135 T 600,130"
+                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  strokeWidth="2"
+                  fill="none"
+                  opacity="0.65"
+                />
+                <path
+                  d="M 160,0 Q 175,100 165,200"
+                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  strokeWidth="1.5"
+                  fill="none"
+                  opacity="0.55"
+                />
+                <path
+                  d="M 440,0 Q 460,110 435,200"
+                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  strokeWidth="1.5"
+                  fill="none"
+                  opacity="0.5"
+                />
+              </svg>
+
+              {/* Layer 2 — topographic contour grid */}
+              <div
+                className={
+                  isLightAppearance ? "bd-map-contour" : "bd-map-contour bd-map-contour--dark"
+                }
+              />
+
+              {/* Layer 3 — drifting liquid gold (marketplace energy ambient) */}
+              <div
+                className={`bd-liquid-gold-flow ${
+                  isLightAppearance ? "bd-liquid-gold-flow--light" : "bd-liquid-gold-flow--dark"
+                }`}
+              />
+
+              {/* Layer 4 — route lines from pin */}
+              <svg
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="0 0 600 200"
+                preserveAspectRatio="xMidYMid slice"
+              >
+                <path d="M 180,100 Q 100,70 30,30" className="bd-route-line" />
+                <path
+                  d="M 180,100 Q 320,110 560,75"
+                  className="bd-route-line"
+                  style={{ animationDelay: "0.8s" }}
+                />
+                <path
+                  d="M 180,100 Q 250,150 350,180"
+                  className="bd-route-line"
+                  style={{ animationDelay: "1.4s" }}
+                />
+              </svg>
+
+              {/* Layer 5 — report pin with pulse */}
+              <div
+                className="absolute"
+                style={{ top: "50%", left: "30%", transform: "translate(-50%, -50%)" }}
+              >
+                <div className="relative w-3.5 h-3.5">
+                  <div className="absolute -inset-2 bd-pin-pulse" />
+                  <div
+                    className="relative w-3.5 h-3.5 rounded-full"
+                    style={{
+                      background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                      boxShadow:
+                        "0 0 14px rgba(59,130,246,0.7), 0 0 4px rgba(96,165,250,0.95), inset 0 1px 0 rgba(255,255,255,0.45)",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Layer 6 — gold activity sheen */}
+              <div className="bd-liquid-gold-sheen" />
+
+              {/* Layer 7 — top eyebrow + bottom CTA hint as a glass overlay */}
+              <div
+                className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md"
+                style={{
+                  background: isLightAppearance ? "rgba(255,255,255,0.78)" : "rgba(8,18,38,0.78)",
+                  borderColor: isLightAppearance
+                    ? "rgba(190,210,235,0.55)"
+                    : "rgba(96,165,250,0.30)",
+                  color: isLightAppearance ? "#1e3a8a" : "#bfdbfe",
+                  boxShadow: isLightAppearance
+                    ? "inset 0 1px 0 rgba(220,165,90,0.20), 0 2px 8px rgba(15,30,60,0.08)"
+                    : "inset 0 1px 0 rgba(220,165,90,0.22), 0 2px 12px rgba(2,6,23,0.30)",
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                NY Coverage
+              </div>
+              <div
+                className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold backdrop-blur-md transition-transform group-active:scale-95"
+                style={{
+                  background: isLightAppearance
+                    ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                    : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                  color: "#ffffff",
+                  boxShadow:
+                    "0 6px 18px rgba(37,99,235,0.36), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(220,165,90,0.20)",
+                }}
+              >
+                Browse coverage
+                <ChevronRight className="w-3.5 h-3.5" />
+              </div>
+
+              {/* Layer 8 — top + bottom depth gradients */}
+              <div
+                className={`absolute inset-0 pointer-events-none ${
+                  isLightAppearance
+                    ? "bg-gradient-to-t from-[#1e293b]/14 via-transparent to-transparent"
+                    : "bg-gradient-to-t from-[#0a1628]/40 via-transparent to-transparent"
+                }`}
+              />
+            </a>
           </div>
 
           {/* Right column — product story visual.
@@ -456,24 +632,39 @@ export default function HeroSection({
           >
             {/* Liquid Map Intelligence scene (Pass C 2026-05-03)
                 Replaces the prior photo. Layered presentational mock per
-                locked Decision #1 (no 2nd MapLibre instance). */}
+                locked Decision #1 (no 2nd MapLibre instance).
+                V2 (2026-05-03): map stage immersion — outer ambient bloom
+                deepened with a second cool layer + faint gold lamp halo
+                so the field bleeds into the hero atmosphere instead of
+                reading as a pasted rectangle. Frame inset 1px outline
+                removed; replaced with a champagne top bezel + amber
+                bottom-edge lamp inset that catches the hero's gold-from-
+                above wash. */}
             <div className="relative" aria-hidden="true">
-              {/* Outer ambient bloom — Pass G 2026-05-03: replaces the heavy
-                  card drop-shadow so the map field reads as part of the hero
-                  atmosphere, not a pasted-on rectangle. */}
+              {/* Outer ambient bloom — multi-layer cool + warm */}
               <div
-                className="absolute -inset-10 rounded-[2.5rem] blur-3xl pointer-events-none"
+                className="absolute -inset-12 rounded-[2.75rem] blur-3xl pointer-events-none"
                 style={{
                   background: isLightAppearance
-                    ? "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
-                    : "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(59,130,246,0.14), transparent 72%)",
+                    ? "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(59,130,246,0.14), transparent 70%)"
+                    : "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(59,130,246,0.18), transparent 72%)",
+                }}
+              />
+              {/* Outer gold lamp halo — gold-as-light, very low alpha */}
+              <div
+                className="absolute -inset-16 rounded-[3rem] blur-3xl pointer-events-none"
+                style={{
+                  background: isLightAppearance
+                    ? "radial-gradient(ellipse 80% 70% at 50% 30%, rgba(220,165,90,0.10), transparent 65%)"
+                    : "radial-gradient(ellipse 80% 70% at 50% 25%, rgba(220,165,90,0.14), transparent 65%)",
                 }}
               />
 
-              {/* Map stage — embedded map-window feel (Pass G 2026-05-03):
-                  removed the hard 1px border, replaced with a glassy inset
-                  highlight + softer ambient bloom so the frame reads as a
-                  hero map field rather than a floating mock card. */}
+              {/* Map stage — embedded map-window feel.
+                  V2 frame: outline ring removed in favor of a dual-edge
+                  inset (champagne top bezel + amber lamp at bottom) so the
+                  glass reads as a lit object catching the lamp wash from
+                  above, not a stamped rectangle. */}
               <div
                 className="relative rounded-2xl w-full overflow-hidden"
                 style={{
@@ -481,8 +672,8 @@ export default function HeroSection({
                   maxHeight: "520px",
                   background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                   boxShadow: isLightAppearance
-                    ? "0 14px 48px rgba(15, 30, 60, 0.08), 0 0 60px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.18)"
-                    : "0 16px 56px rgba(2, 6, 23, 0.35), 0 0 70px rgba(37, 99, 235, 0.10), inset 0 1px 0 rgba(96, 165, 250, 0.12), inset 0 0 0 1px rgba(96, 165, 250, 0.10)",
+                    ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(220,165,90,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(220,165,90,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
+                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(220,165,90,0.10), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 -1px 0 rgba(220,165,90,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
                 }}
               >
                 {/* Layer 1 — stylized map base. Faint road network via SVG curves. */}

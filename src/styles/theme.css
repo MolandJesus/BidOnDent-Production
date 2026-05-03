@@ -3164,10 +3164,71 @@ body {
 }
 
 /* Bid card float — subtle Y drift. Reuses mapGlassFloat keyframe.
-   Compose with bd-glass-card--landing for the surface itself. */
+   Compose with bd-glass-card--landing for the surface itself.
+
+   V2 (2026-05-03): hover state adds a one-shot champagne sheen sweep
+   across the chip and a paused-drift "lock" so the chip reads as a
+   premium hover affordance. The outer drop halo is a pseudo-element
+   (::after) so it does not collide with the chip's inline box-shadow.
+   Sheen is contained via overflow:hidden — chip already has rounded
+   corners so the sheen respects the rounded boundary. */
 .bd-bid-card-float {
   animation: mapGlassFloat 6s var(--bd-flow-ease) infinite;
   will-change: transform;
+  overflow: hidden;
+  transition: transform 220ms ease-out;
+}
+
+/* Champagne sheen layer — hidden until hover.
+   mix-blend-mode: screen so the sheen reads as light catching the
+   glass surface, never as a film that obscures the chip content. */
+.bd-bid-card-float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(220, 165, 90, 0.32) 48%,
+    rgba(255, 235, 195, 0.45) 52%,
+    rgba(220, 165, 90, 0.32) 56%,
+    transparent 74%
+  );
+  mix-blend-mode: screen;
+  transform: translateX(-130%);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: 2;
+}
+
+/* Outer gold halo — separate from inline box-shadow */
+.bd-bid-card-float::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(220, 165, 90, 0), 0 0 24px rgba(220, 165, 90, 0);
+  transition:
+    box-shadow 260ms ease-out,
+    inset 260ms ease-out;
+  z-index: 0;
+}
+
+.bd-bid-card-float:hover {
+  animation-play-state: paused;
+  transform: translateY(-1px);
+}
+
+.bd-bid-card-float:hover::before {
+  animation: bdGoldSheenOneShot 900ms ease-out forwards;
+}
+
+.bd-bid-card-float:hover::after {
+  box-shadow:
+    0 0 0 1px rgba(220, 165, 90, 0.32),
+    0 0 26px rgba(220, 165, 90, 0.26);
 }
 
 /* Map contour — faint topographic-style line pattern.
@@ -3208,6 +3269,12 @@ body {
     opacity: 0 !important;
   }
   .group:hover .bd-gold-sheen-hover {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  /* V2 hero chip hover sheen — disable the one-shot animation but keep
+     the static gold halo affordance so hover still reads. */
+  .bd-bid-card-float:hover::before {
     animation: none !important;
     opacity: 0 !important;
   }
