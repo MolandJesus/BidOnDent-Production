@@ -256,6 +256,9 @@ export default function BenefitsSection({
                 </ImageErrorBoundary>
                 {/* Bottom gradient fade on image */}
                 <div className="absolute inset-x-0 bottom-0 h-16 rounded-b-lg bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+                {/* Pass E — one-shot gold sheen on hover. Sweeps once per
+                    hover then resets; reduced-motion-safe via theme.css guard. */}
+                <span aria-hidden="true" className="bd-gold-sheen-hover rounded-lg" />
                 {/* Floating badge on image */}
                 <span className="absolute top-3 right-3 backdrop-blur-md text-xs font-semibold px-3 py-1.5 rounded-full shadow-md animate-float-slow border bg-blue-600/80 text-white border-blue-500/50">
                   {benefit.badge}
@@ -266,7 +269,7 @@ export default function BenefitsSection({
               >
                 {benefit.title}
               </h4>
-              <p className={isLightAppearance ? "text-slate-500" : "text-blue-100/65"}>
+              <p className={isLightAppearance ? "text-slate-600" : "text-blue-100/65"}>
                 {benefit.description}
               </p>
             </div>

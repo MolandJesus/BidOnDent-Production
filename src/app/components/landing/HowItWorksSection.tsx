@@ -186,30 +186,51 @@ export default function HowItWorksSection({
             />
           </div>
           <p
-            className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+            className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
           >
             Get your car repaired in three simple steps
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-4 md:gap-6 relative">
-          {/* Dashed connectors between cards (desktop only) */}
-          <div
-            className="hidden md:block absolute top-[3.5rem] left-[33%] w-[10%] border-t-2"
-            style={{
-              borderStyle: "dashed",
-              transform: "translateX(-50%)",
-              borderColor: isLightAppearance ? "rgba(100,160,230,0.40)" : "rgba(96,165,250,0.28)",
-            }}
-          />
-          <div
-            className="hidden md:block absolute top-[3.5rem] left-[67%] w-[10%] border-t-2"
-            style={{
-              borderStyle: "dashed",
-              transform: "translateX(-50%)",
-              borderColor: isLightAppearance ? "rgba(100,160,230,0.40)" : "rgba(96,165,250,0.28)",
-            }}
-          />
+          {/* Pass E — Liquid route shimmer between steps. Replaces the prior
+              static dashed div connectors; uses bd-route-line so dashes flow
+              left-to-right at a slow shimmer (6s linear infinite). Mobile-budget
+              guard already disables this below 768px via theme.css. */}
+          <svg
+            aria-hidden="true"
+            className="hidden md:block absolute top-[3.5rem] left-[33%] -translate-x-1/2 pointer-events-none"
+            width="10%"
+            height="2"
+            viewBox="0 0 100 2"
+            preserveAspectRatio="none"
+          >
+            <line
+              x1="0"
+              y1="1"
+              x2="100"
+              y2="1"
+              className="bd-route-line"
+              style={{ stroke: isLightAppearance ? "rgba(100,160,230,0.55)" : "rgba(96,165,250,0.40)" }}
+            />
+          </svg>
+          <svg
+            aria-hidden="true"
+            className="hidden md:block absolute top-[3.5rem] left-[67%] -translate-x-1/2 pointer-events-none"
+            width="10%"
+            height="2"
+            viewBox="0 0 100 2"
+            preserveAspectRatio="none"
+          >
+            <line
+              x1="0"
+              y1="1"
+              x2="100"
+              y2="1"
+              className="bd-route-line"
+              style={{ stroke: isLightAppearance ? "rgba(100,160,230,0.55)" : "rgba(96,165,250,0.40)" }}
+            />
+          </svg>
 
           {steps.map((step, index) => (
             <div
@@ -256,7 +277,7 @@ export default function HowItWorksSection({
                 {step.title}
               </h4>
               <p
-                className={`text-sm sm:text-base leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
+                className={`text-sm sm:text-base leading-relaxed ${isLightAppearance ? "text-slate-600" : "text-blue-100/65"}`}
               >
                 {step.description}
               </p>

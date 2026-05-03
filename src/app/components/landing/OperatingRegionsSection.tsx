@@ -81,6 +81,14 @@ export default function OperatingRegionsSection({
       <div
         className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-blue-400/8" : "via-blue-400/15"} to-transparent`}
       />
+      {/* Pass D — Liquid Map Intelligence ambient marketplace energy.
+          Slow gold drift sits behind everything; reads as ambient activity,
+          never as decoration. Uses existing bd-liquid-gold-flow tokens. */}
+      <div
+        aria-hidden="true"
+        className={`bd-liquid-gold-flow ${isLightAppearance ? "bd-liquid-gold-flow--light" : "bd-liquid-gold-flow--dark"} pointer-events-none`}
+        style={{ opacity: isLightAppearance ? 0.55 : 0.7 }}
+      />
       {/* Atmospheric depth — topographic contour feel, wrapped in bloom for scroll entry */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
         {/* Pass 6 — Automotive identity: concentric topographic rings behind the map.
@@ -150,7 +158,9 @@ export default function OperatingRegionsSection({
                     : "border-blue-400/30 bg-blue-500/12 text-blue-200"
                 }`}
               >
-                <MapPin className="h-3 w-3" />
+                <span className="bd-pin-pulse bd-pin-pulse--soft inline-flex h-3 w-3 items-center justify-center">
+                  <MapPin className="h-3 w-3" />
+                </span>
                 Live Coverage
               </span>
             </div>
