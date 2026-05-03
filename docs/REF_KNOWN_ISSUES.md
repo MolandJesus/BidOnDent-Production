@@ -315,6 +315,7 @@
 - **Root cause:** Conflated upload-time signing (one-shot, 24h max) with persistence-suitable URLs. Read paths via `hydrateReport` would have re-signed correctly, but they were operating on already-expired URL strings the next day.
 - **Fix (2026-05-02):** Storage pointer pattern. Upload returns `storage://<bucket>/<path>` pointer. DB stores pointers. Read paths re-sign at every request via `hydrateSignedStorageUrl()` / `hydrateSignedStorageUrls()`. Backfill migration `20260501000001_storage_pointer_backfill.sql` converted 4 prod rows. See [`SUPABASE_SETUP_GUIDE.md`](SUPABASE_SETUP_GUIDE.md) §16 and the `supabase-storage-signed-urls` skill.
 - **Status:** RESOLVED (2026-05-02). All hydrate read paths audited (`reports.ts`, `workflow.ts`, `vehicles.ts`, `profiles.ts`, `network_profiles.ts`); only `getJobAssignments` had a bypass which was fixed in the same commit.
+- **2026-05-03 follow-up:** re-audit confirmed the read paths are still clean. One narrow gap closed in the same pass: `hydrateReport` in `reports.ts` had a catch-block fallback that returned the raw `record.photo_urls` (storage:// pointers) when hydration threw, which would leak unhydrated pointers to the client. Fallback now returns an empty array — fails closed instead of leaking. Requires edge function redeploy to take effect in production.
 
 ### KI-059: Gateway `verify_jwt: true` breaks Clerk JWT auth
 

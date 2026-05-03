@@ -136,12 +136,17 @@ async function hydrateReport(record: any, supabase: SupabaseClient) {
       bids_count,
     };
   } catch (err) {
-    // If hydration fails for a single report, return it with defaults
-    // rather than crashing the entire batch
+    // If hydration fails for a single report, return it with safe defaults
+    // rather than crashing the entire batch.
+    //
+    // photo_urls fail closed: returning the raw `record.photo_urls` here
+    // would leak `storage://...` pointers to the client (LAW #4 violation —
+    // the browser cannot render those, and they bypass signed-URL access
+    // control). Empty array is the only safe fallback.
     console.error('[hydrateReport] Error hydrating report', record?.id, ':', err);
     return {
       ...record,
-      photo_urls: Array.isArray(record?.photo_urls) ? record.photo_urls : [],
+      photo_urls: [],
       customer_name: null,
       customer_email: null,
       customer_phone: null,
