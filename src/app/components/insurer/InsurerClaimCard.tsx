@@ -380,7 +380,7 @@ export default function InsurerClaimCard({
             </button>
             <button
               onClick={() => onOpenApproval(claim)}
-              className="flex-[2] py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+              className="bd-dashboard-primary-button flex-[2] py-3 min-h-[44px] text-white font-semibold flex items-center justify-center gap-2"
               style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)` }}
             >
               <CheckCircle className="w-5 h-5" />

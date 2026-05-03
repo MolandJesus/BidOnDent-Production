@@ -165,7 +165,7 @@ export default function ShopBidModal({
                 !estimatedDays ||
                 parseInt(estimatedDays, 10) <= 0
               }
-              className="flex-1 py-3 min-h-[44px] rounded-xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
+              className="bd-dashboard-primary-button flex-1 py-3 min-h-[44px] text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
               }}
