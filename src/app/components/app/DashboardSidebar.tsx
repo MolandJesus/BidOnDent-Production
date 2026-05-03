@@ -57,8 +57,8 @@ export default function DashboardSidebar({
       }`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.74) 0%, rgba(250, 247, 240, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 252, 0.56) 0%, rgba(245, 240, 230, 0.10) 46%, transparent 78%)"
-          : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%)",
+          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.74) 0%, rgba(250, 247, 240, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 252, 0.56) 0%, rgba(245, 240, 230, 0.10) 46%, transparent 78%), radial-gradient(ellipse 72% 28% at 50% 0%, rgba(220, 165, 90, 0.12) 0%, transparent 70%)"
+          : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%), radial-gradient(ellipse 78% 30% at 50% 0%, rgba(220, 150, 60, 0.14) 0%, transparent 72%)",
         backdropFilter: isLightAppearance
           ? "blur(34px) saturate(1.64)"
           : "blur(28px) saturate(1.5)",
@@ -66,8 +66,8 @@ export default function DashboardSidebar({
           ? "blur(34px) saturate(1.64)"
           : "blur(28px) saturate(1.5)",
         boxShadow: isLightAppearance
-          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.08), inset -1px 0 0 rgba(147, 197, 253, 0.22), inset 0 1px 0 rgba(255, 255, 252, 0.96)"
-          : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(59, 130, 246, 0.08)",
+          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.08), inset -1px 0 0 rgba(220, 165, 90, 0.20), inset 0 1px 0 rgba(255, 255, 252, 0.96), 0 0 60px rgba(220, 140, 50, 0.14)"
+          : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(220, 165, 90, 0.18), 0 0 64px rgba(220, 140, 50, 0.18)",
       }}
     >
       <div
@@ -131,8 +131,8 @@ export default function DashboardSidebar({
                         ? "linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(96, 165, 250, 0.09) 100%)"
                         : "linear-gradient(135deg, rgba(37, 99, 235, 0.20) 0%, rgba(59, 130, 246, 0.11) 100%)",
                       boxShadow: isLightAppearance
-                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.80), inset 0 -1px 0 rgba(147, 197, 253, 0.16), 0 0 0 1px rgba(147, 197, 253, 0.18), 0 4px 12px rgba(59, 130, 246, 0.10)"
-                        : "inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.20), 0 4px 14px rgba(37, 99, 235, 0.16)",
+                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.80), inset 0 -1px 0 rgba(220, 165, 90, 0.20), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(147, 197, 253, 0.18), 0 4px 12px rgba(59, 130, 246, 0.10), 0 0 24px rgba(220, 140, 50, 0.14)"
+                        : "inset 0 1px 0 rgba(147, 197, 253, 0.14), inset 0 -1px 0 rgba(220, 165, 90, 0.18), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.20), 0 4px 14px rgba(37, 99, 235, 0.16), 0 0 28px rgba(220, 140, 50, 0.16)",
                     }
                   : {}
               }

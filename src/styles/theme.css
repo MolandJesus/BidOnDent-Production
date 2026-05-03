@@ -910,14 +910,19 @@ body {
    Use on marketing/landing cards where visible presence matters more than dashboard calm.
    Dark variant lives below in the dark-mode override block. */
 .bd-glass-card--landing {
+  /* D5 enhancement: cool blue body + subtle gold lamp trim so cool landing
+     cards read as same family as warm cards and dashboard panels. Gold is
+     subtle here (0.12-0.14 vs dashboard's 0.20-0.26) — landing rhythm. */
   border-color: rgba(191, 219, 254, 0.7);
   background: linear-gradient(180deg, rgba(252, 253, 255, 0.9) 0%, rgba(241, 247, 255, 0.74) 100%);
   box-shadow:
     0 18px 48px rgba(15, 23, 42, 0.13),
     0 6px 16px rgba(30, 58, 138, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(191, 219, 254, 0.14),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.14),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
     0 0 0 1px rgba(191, 219, 254, 0.22),
+    0 0 32px rgba(220, 140, 50, 0.12),
     var(--bd-glow-medium);
 }
 
@@ -955,8 +960,10 @@ body {
     0 28px 64px rgba(15, 23, 42, 0.16),
     0 10px 24px rgba(30, 58, 138, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(191, 219, 254, 0.18),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.20),
+    0 0 0 1px rgba(220, 165, 90, 0.16),
     0 0 0 1px rgba(147, 197, 253, 0.45),
+    0 0 44px rgba(220, 140, 50, 0.18),
     var(--bd-glow-strong);
   border-color: rgba(147, 197, 253, 0.85);
 }
@@ -1191,11 +1198,15 @@ body {
     rgba(246, 249, 254, 0.24) 58%,
     rgba(241, 246, 254, 0.18) 100%
   );
+  /* D5 enhancement: gold-lamp identity carried into topbar — subtle warm trim
+     on bottom edge + warm outer halo so it reads as same family as panels. */
   box-shadow:
     0 18px 40px rgba(15, 23, 42, 0.13),
     0 5px 14px rgba(59, 130, 246, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    inset 0 -1px 0 rgba(147, 197, 253, 0.20);
+    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
+    0 0 0 1px rgba(220, 165, 90, 0.12),
+    0 0 36px rgba(220, 140, 50, 0.16);
 }
 
 .bd-shell-header--light::before {
@@ -1230,20 +1241,25 @@ body {
   backdrop-filter: blur(32px) saturate(1.8);
   -webkit-backdrop-filter: blur(32px) saturate(1.8);
   background: linear-gradient(180deg, rgba(6, 14, 36, 0.78) 0%, rgba(5, 12, 30, 0.7) 100%);
+  /* D5 enhancement: gold-lamp identity carried into topbar — warm trim
+     on bottom edge + warm outer halo so navy reads as lit by gold lamp. */
   box-shadow:
     0 8px 28px rgba(2, 8, 24, 0.5),
-    inset 0 -1px 0 rgba(59, 130, 246, 0.14);
+    inset 0 -1px 0 rgba(220, 165, 90, 0.20),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
+    0 0 40px rgba(220, 140, 50, 0.18);
 }
 
 .bd-shell-header--dark::before {
   background:
     radial-gradient(ellipse 84% 42% at 50% -30%, rgba(59, 130, 246, 0.18) 0%, transparent 74%),
+    radial-gradient(ellipse 60% 36% at 88% 120%, rgba(220, 150, 60, 0.18) 0%, transparent 70%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 26%);
 }
 
 .bd-shell-header--dark::after {
-  background: linear-gradient(180deg, rgba(147, 197, 253, 0.2) 0%, transparent 30%);
-  opacity: 0.22;
+  background: linear-gradient(180deg, rgba(220, 175, 110, 0.16) 0%, transparent 30%);
+  opacity: 0.36;
 }
 
 /* Dark-tone variants — underwater royal navy atmosphere */
@@ -1335,15 +1351,19 @@ body {
 
 .dark .bd-glass-card--landing,
 [data-theme="dark"] .bd-glass-card--landing {
+  /* D5 enhancement: cool blue body retained, subtle warm gold accent so
+     navy landing cards feel lit by same gold lamp as dashboard panels. */
   border-color: rgba(96, 165, 250, 0.32);
   background: linear-gradient(180deg, rgba(37, 99, 235, 0.22) 0%, rgba(12, 25, 41, 0.78) 100%);
   box-shadow:
     0 18px 48px rgba(2, 6, 23, 0.5),
     0 6px 16px rgba(30, 58, 138, 0.32),
     inset 0 1px 0 rgba(147, 197, 253, 0.22),
-    inset 0 -1px 0 rgba(37, 99, 235, 0.08),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.14),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 36px rgba(37, 99, 235, 0.18);
+    0 0 36px rgba(37, 99, 235, 0.18),
+    0 0 40px rgba(220, 140, 50, 0.14);
 }
 
 .dark .bd-glass-card--landing:hover,
@@ -1353,9 +1373,11 @@ body {
     0 28px 68px rgba(2, 6, 23, 0.62),
     0 10px 24px rgba(30, 58, 138, 0.38),
     inset 0 1px 0 rgba(147, 197, 253, 0.32),
-    inset 0 -1px 0 rgba(37, 99, 235, 0.12),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.20),
+    0 0 0 1px rgba(220, 165, 90, 0.16),
     0 0 0 1px rgba(147, 197, 253, 0.4),
-    0 0 56px rgba(37, 99, 235, 0.28);
+    0 0 56px rgba(37, 99, 235, 0.28),
+    0 0 52px rgba(220, 140, 50, 0.22);
 }
 
 /* Warm variant — dark mode. Amber-tinted glass for Direction B sections. */
