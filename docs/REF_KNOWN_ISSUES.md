@@ -378,7 +378,7 @@
 - **Fix direction:**
   - If data: re-upload a real damage photo for that report, or null out `photo_urls` so the fallback fires. No production mutation without explicit owner approval.
   - If hydration: file-specific fix in the `hydrateReport` catch path or in the storage util.
-- **Status:** Open — diagnostic recommended next session; do not mutate production data without owner sign-off. Defensive `ImageWithFallback` from V1 still works as designed for `storage://` and load-error cases.
+- **Status:** Open — diagnostic still pending owner SQL run against production data; do not mutate production data without owner sign-off. Phase 3 (2026-05-03) verified that `HomeReportsList.tsx:206` already pipes `report.photos[0]` through `ImageWithFallback`, and KI-065's defense-in-depth gap (every other raw `<img>` user-media site) is now resolved (commit `01c3f300`). The red rectangle therefore cannot be a `storage://` leak or onError fallback miss on this surface — it has to be the underlying image bytes (the diagnostic's third outcome). Code-level safe: confirmed. Awaiting owner data action.
 
 ### KI-065: Defense-in-depth gap — multiple raw `<img>` sites can render `storage://` if server hydration catch-clause fires
 
@@ -398,5 +398,5 @@
   - `src/app/components/insurer/InsurerPartnerShopCard.tsx:65` — insurer partner-shop image
 - **Fix direction (next pass):** the cleanest move is to wrap each of these in the codelayer `ImageWithFallback` (matches the dashboard report-card treatment from V1 — premium glass placeholder on `storage://` / empty / load-error). Minimal-surface alternative: add a tiny `isRenderableMediaUrl` shared util and gate each conditional like the three sites fixed in this pass. Either way, low risk; the surfaces above all already render hydrated URLs in normal flow.
 - **Root-cause alternative:** instead of patching ~8 frontend sites, consider tightening the server hydration catch path so it returns `null` (or empty array) rather than the raw `storage://` string. That makes downstream rendering uniformly safe — `<img src="">` falls back via the standard onError path, and `null` skips the conditional entirely. Tradeoff: loses the ability to present a "soft" hydration failure (showing the raw record) in dev/debug.
-- **Status:** Open — defensive hardening shipped for the highest-visibility chrome (sidebar avatar, top-bar avatar, profile-edit modal). Inventory above tracks what remains. Skill: `supabase-storage-signed-urls`.
+- **Status:** RESOLVED 2026-05-03 (commit `01c3f300`). Phase 3 of the merge-readiness autopilot pass swept all eight remaining sites in the inventory above and replaced the raw `<img>` with `ImageWithFallback` (which already guards `storage://` and onError). Server hydrate catch-path can no longer leak a broken image to any user-media surface in the app — every render path now lands on either a real signed URL or the premium glass-tile fallback. Architecture-side root-cause fix (server hydrate returning `null` instead of raw `storage://`) deferred — defensive coverage on the client is now complete and uniform, removing the urgency. Skill: `supabase-storage-signed-urls`.
 
