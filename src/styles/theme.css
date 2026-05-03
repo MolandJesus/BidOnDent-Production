@@ -852,13 +852,13 @@ body {
      mode's warm/cool rhythm into the dark mode. Reversible — change these
      6 values to roll back to cold navy for warm sections. */
   --bd-warm-dark-amber-start: #1a0c06;
-  --bd-warm-dark-amber-mid: #231408;
-  --bd-warm-dark-amber-end: #1a0a04;
-  --bd-warm-dark-amber-ellipse-top: rgba(200, 120, 30, 0.22);
-  --bd-warm-dark-amber-ellipse-bottom: rgba(180, 100, 20, 0.18);
-  --bd-warm-dark-amber-pool: rgba(200, 130, 40, 0.32);
-  --bd-warm-dark-amber-pool-soft: rgba(180, 110, 30, 0.22);
-  --bd-warm-dark-amber-glow: rgba(220, 150, 60, 0.20);
+  --bd-warm-dark-amber-mid: #251608;
+  --bd-warm-dark-amber-end: #1c0c05;
+  --bd-warm-dark-amber-ellipse-top: rgba(220, 140, 40, 0.30);
+  --bd-warm-dark-amber-ellipse-bottom: rgba(200, 115, 25, 0.24);
+  --bd-warm-dark-amber-pool: rgba(220, 145, 50, 0.42);
+  --bd-warm-dark-amber-pool-soft: rgba(200, 125, 35, 0.30);
+  --bd-warm-dark-amber-glow: rgba(240, 170, 70, 0.28);
 
   /* Liquid Map Intelligence — landing signature motion tokens (Pass B 2026-05-03).
      Consumed by .bd-liquid-gold-flow / .bd-liquid-gold-sheen / .bd-route-line /
@@ -1527,30 +1527,35 @@ body {
     0 0 52px rgba(220, 140, 50, 0.22);
 }
 
-/* Warm variant — dark mode. Amber-tinted glass for Direction B sections. */
+/* Warm variant — dark mode. Amber-tinted glass for Direction B sections.
+   2026-05-03 v3 owner direction: "landing page should POP, not be subtle"
+   — boosted gold drama on idle so Benefits + TrustStats sections feel
+   premium gold-lit at first glance, not just on hover. Gold rim, ambient
+   glow, and inner highlight all up ~35-50%. Hover state keeps the same
+   delta over idle so the lift on interaction stays distinct. */
 .dark .bd-glass-card--landing-warm,
 [data-theme="dark"] .bd-glass-card--landing-warm {
-  border-color: rgba(220, 165, 90, 0.36);
-  background: linear-gradient(180deg, rgba(180, 100, 30, 0.18) 0%, rgba(20, 14, 8, 0.78) 100%);
+  border-color: rgba(238, 184, 110, 0.52);
+  background: linear-gradient(180deg, rgba(200, 115, 35, 0.24) 0%, rgba(22, 14, 8, 0.78) 100%);
   box-shadow:
-    0 18px 48px rgba(2, 2, 2, 0.55),
-    0 6px 16px rgba(120, 70, 20, 0.32),
-    inset 0 1px 0 rgba(253, 220, 160, 0.20),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.10),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 36px rgba(220, 130, 50, 0.20);
+    0 20px 52px rgba(2, 2, 2, 0.58),
+    0 8px 18px rgba(140, 80, 25, 0.42),
+    inset 0 1px 0 rgba(255, 230, 175, 0.32),
+    inset 0 -1px 0 rgba(200, 115, 35, 0.16),
+    0 0 0 1px rgba(238, 184, 110, 0.34),
+    0 0 48px rgba(240, 150, 60, 0.32);
 }
 
 .dark .bd-glass-card--landing-warm:hover,
 [data-theme="dark"] .bd-glass-card--landing-warm:hover {
-  border-color: rgba(253, 200, 130, 0.58);
+  border-color: rgba(255, 215, 150, 0.72);
   box-shadow:
-    0 28px 68px rgba(2, 2, 2, 0.65),
-    0 10px 24px rgba(120, 70, 20, 0.40),
-    inset 0 1px 0 rgba(253, 220, 160, 0.30),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.16),
-    0 0 0 1px rgba(253, 200, 130, 0.42),
-    0 0 56px rgba(220, 130, 50, 0.30);
+    0 30px 72px rgba(2, 2, 2, 0.66),
+    0 12px 26px rgba(140, 80, 25, 0.50),
+    inset 0 1px 0 rgba(255, 232, 180, 0.42),
+    inset 0 -1px 0 rgba(200, 115, 35, 0.22),
+    0 0 0 1px rgba(255, 215, 150, 0.55),
+    0 0 72px rgba(240, 150, 60, 0.46);
 }
 
 /* Dashboard variant — dark mode. D4 (final v2): NAVY infill + heavy GOLD trim
@@ -1560,26 +1565,26 @@ body {
    trim — so the card reads navy-glass-lit-by-gold-lamp like the landing register. */
 .dark .bd-glass-card--dashboard,
 [data-theme="dark"] .bd-glass-card--dashboard {
-  border-color: rgba(220, 165, 90, 0.42);
+  border-color: rgba(228, 175, 100, 0.50);
   background: linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.80) 100%);
   box-shadow:
-    0 16px 36px rgba(2, 6, 23, 0.46),
-    inset 0 1px 0 rgba(253, 220, 160, 0.22),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.10),
-    0 0 0 1px rgba(220, 165, 90, 0.26),
-    0 0 36px rgba(220, 130, 50, 0.22);
+    0 18px 40px rgba(2, 6, 23, 0.50),
+    inset 0 1px 0 rgba(255, 228, 175, 0.28),
+    inset 0 -1px 0 rgba(190, 105, 35, 0.14),
+    0 0 0 1px rgba(228, 175, 100, 0.32),
+    0 0 44px rgba(228, 140, 55, 0.28);
 }
 
 .dark .bd-glass-card--dashboard:hover,
 [data-theme="dark"] .bd-glass-card--dashboard:hover {
   transform: translateY(-2px);
-  border-color: rgba(253, 200, 130, 0.62);
+  border-color: rgba(255, 215, 150, 0.68);
   box-shadow:
-    0 22px 48px rgba(2, 6, 23, 0.54),
-    inset 0 1px 0 rgba(253, 220, 160, 0.32),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.14),
-    0 0 0 1px rgba(253, 200, 130, 0.46),
-    0 0 52px rgba(220, 130, 50, 0.32);
+    0 24px 52px rgba(2, 6, 23, 0.58),
+    inset 0 1px 0 rgba(255, 230, 180, 0.36),
+    inset 0 -1px 0 rgba(190, 105, 35, 0.18),
+    0 0 0 1px rgba(255, 215, 150, 0.52),
+    0 0 60px rgba(228, 140, 55, 0.40);
 }
 
 /* Section eyebrow — dark mode. Soft blue tint that reads against dark navy without
@@ -2478,28 +2483,28 @@ body {
     rgba(10, 22, 45, 0.92) 0%,
     rgba(7, 16, 33, 0.88) 100%
   );
-  --bd-dashboard-panel-border: rgba(220, 165, 90, 0.32);
+  --bd-dashboard-panel-border: rgba(228, 175, 100, 0.40);
   --bd-dashboard-panel-shadow:
-    0 22px 48px rgba(2, 6, 23, 0.42),
-    inset 0 1px 0 rgba(253, 220, 160, 0.16),
-    0 0 0 1px rgba(220, 165, 90, 0.14),
-    0 0 36px rgba(220, 130, 50, 0.20);
+    0 22px 48px rgba(2, 6, 23, 0.46),
+    inset 0 1px 0 rgba(255, 228, 175, 0.22),
+    0 0 0 1px rgba(228, 175, 100, 0.20),
+    0 0 44px rgba(228, 140, 55, 0.26);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(16, 31, 60, 0.88) 0%,
     rgba(11, 22, 43, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(220, 165, 90, 0.26);
+  --bd-dashboard-section-border: rgba(228, 175, 100, 0.32);
   --bd-dashboard-section-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.30),
-    inset 0 1px 0 rgba(253, 220, 160, 0.12),
-    0 0 0 1px rgba(220, 165, 90, 0.10),
-    0 0 22px rgba(220, 130, 50, 0.14);
+    0 16px 30px rgba(2, 6, 23, 0.34),
+    inset 0 1px 0 rgba(255, 228, 175, 0.16),
+    0 0 0 1px rgba(228, 175, 100, 0.14),
+    0 0 28px rgba(228, 140, 55, 0.18);
   --bd-dashboard-section-hover-shadow:
-    0 22px 38px rgba(2, 6, 23, 0.38),
-    inset 0 1px 0 rgba(253, 220, 160, 0.18),
-    0 0 0 1px rgba(253, 200, 130, 0.30),
-    0 0 32px rgba(220, 130, 50, 0.26);
+    0 22px 38px rgba(2, 6, 23, 0.42),
+    inset 0 1px 0 rgba(255, 230, 180, 0.24),
+    0 0 0 1px rgba(255, 215, 150, 0.38),
+    0 0 38px rgba(228, 140, 55, 0.32);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(34, 74, 156, 0.40) 0%,

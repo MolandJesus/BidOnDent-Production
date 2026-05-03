@@ -49,9 +49,17 @@ export default function HowItWorksSection({
       }}
       ref={sectionRef}
     >
-      {/* Edge blend */}
+      {/* Edge blend — light keeps sky thread; dark gets a subtle gold whisper
+          at center to thread the gold identity from warm sections into the
+          cool register without overpowering. Owner: "bring subtle dashboard
+          gold trims to landing sections that are dark-blue-on-dark-blue". */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-sky-300/30" : "via-blue-400/30"} to-transparent`}
+        className="absolute -top-px left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(56,189,248,0.30) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(96,165,250,0.30) 22%, rgba(220,150,60,0.22) 50%, rgba(96,165,250,0.30) 78%, transparent)",
+        }}
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
@@ -85,6 +93,11 @@ export default function HowItWorksSection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_20%_85%,rgba(37,99,235,0.16),transparent_55%)]" />
             <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/[0.18] rounded-full blur-[120px]" />
             <div className="absolute -bottom-10 left-[15%] w-72 h-72 bg-indigo-400/[0.14] rounded-full blur-[110px]" />
+            {/* Subtle gold lamp accent — single warm light source in the cool
+                navy section, ties the cool register to the warm sections
+                without becoming amber-dominant. Owner: thread gold subtly
+                into dark-blue-on-dark-blue sections. */}
+            <div className="absolute -top-16 left-[55%] w-80 h-80 rounded-full blur-[140px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.16), transparent 65%)" }} />
           </>
         )}
       </div>
