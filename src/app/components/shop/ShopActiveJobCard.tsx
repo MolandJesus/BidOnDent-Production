@@ -311,7 +311,7 @@ export default function ShopActiveJobCard({
 
         <button
           onClick={() => onViewDetails(job)}
-          className="w-full py-3 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+          className="bd-dashboard-primary-button w-full py-3 min-h-[44px] text-white font-semibold flex items-center justify-center gap-2"
           style={{
             background: `linear-gradient(135deg, ${primaryColor} 0%, #0f8fd7 100%)`,
           }}

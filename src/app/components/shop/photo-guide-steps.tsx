@@ -333,7 +333,7 @@ export function buildPhotoGuideSteps({
 
           <button
             onClick={onComplete}
-            className="w-full py-5 px-6 rounded-xl text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center space-x-3 group"
+            className="bd-dashboard-primary-button w-full py-5 px-6 text-white font-bold text-lg flex items-center justify-center space-x-3 group"
             style={{
               background: `linear-gradient(135deg, ${primaryColor} 0%, #00a0e9 100%)`,
             }}

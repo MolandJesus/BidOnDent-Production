@@ -81,7 +81,7 @@ export default function PrivacyPolicyPage({ onBackToHome }: PrivacyPolicyPagePro
           </a>
           <button
             onClick={onBackToHome}
-            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-white font-semibold shadow-lg"
+            className="bd-dashboard-primary-button inline-flex items-center justify-center px-4 py-2.5 text-white font-semibold"
             style={{ background: "linear-gradient(135deg, #003d82 0%, #0ea5e9 100%)" }}
           >
             Back to BidOnDent

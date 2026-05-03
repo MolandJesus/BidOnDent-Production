@@ -145,7 +145,7 @@ export default function InsurerClaimDenialModal({
             <button
               onClick={() => onDeny(finalReason)}
               disabled={!finalReason.trim()}
-              className="flex-1 py-3 min-h-[44px] rounded-xl text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity bg-gradient-to-r from-rose-600 to-rose-500"
+              className="bd-dashboard-primary-button flex-1 py-3 min-h-[44px] text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-rose-600 to-rose-500"
             >
               Deny Claim
             </button>
