@@ -57,8 +57,8 @@ export default function DashboardSidebar({
       }`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.74) 0%, rgba(250, 247, 240, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 252, 0.56) 0%, rgba(245, 240, 230, 0.10) 46%, transparent 78%), radial-gradient(ellipse 72% 28% at 50% 0%, rgba(220, 165, 90, 0.12) 0%, transparent 70%)"
-          : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%), radial-gradient(ellipse 78% 30% at 50% 0%, rgba(220, 150, 60, 0.14) 0%, transparent 72%)",
+          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.74) 0%, rgba(250, 247, 240, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 252, 0.56) 0%, rgba(245, 240, 230, 0.10) 46%, transparent 78%), radial-gradient(ellipse 72% 28% at 50% 0%, rgba(220, 165, 90, 0.12) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 50% 50%, rgba(220, 165, 90, 0.05) 0%, transparent 75%)"
+          : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%), radial-gradient(ellipse 78% 30% at 50% 0%, rgba(220, 150, 60, 0.14) 0%, transparent 72%), radial-gradient(ellipse 65% 55% at 50% 52%, rgba(220, 150, 60, 0.06) 0%, transparent 76%)",
         backdropFilter: isLightAppearance
           ? "blur(34px) saturate(1.64)"
           : "blur(28px) saturate(1.5)",
