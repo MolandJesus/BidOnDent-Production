@@ -431,26 +431,31 @@ export default function HeroSection({
                 Replaces the prior photo. Layered presentational mock per
                 locked Decision #1 (no 2nd MapLibre instance). */}
             <div className="relative" aria-hidden="true">
-              {/* Blue glow behind map card — preserved from prior photo card */}
+              {/* Outer ambient bloom — Pass G 2026-05-03: replaces the heavy
+                  card drop-shadow so the map field reads as part of the hero
+                  atmosphere, not a pasted-on rectangle. */}
               <div
-                className="absolute -inset-6 rounded-[2rem] blur-2xl"
+                className="absolute -inset-10 rounded-[2.5rem] blur-3xl pointer-events-none"
                 style={{
                   background: isLightAppearance
-                    ? "radial-gradient(ellipse 80% 70% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
-                    : "linear-gradient(135deg, rgba(59,130,246,0.18) 0%, transparent 60%, rgba(59,130,246,0.10) 100%)",
+                    ? "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
+                    : "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(59,130,246,0.14), transparent 72%)",
                 }}
               />
 
-              {/* Map card — stage for the marketplace scene */}
+              {/* Map stage — embedded map-window feel (Pass G 2026-05-03):
+                  removed the hard 1px border, replaced with a glassy inset
+                  highlight + softer ambient bloom so the frame reads as a
+                  hero map field rather than a floating mock card. */}
               <div
-                className="relative rounded-2xl w-full overflow-hidden border border-blue-300/15"
+                className="relative rounded-2xl w-full overflow-hidden"
                 style={{
                   aspectRatio: "16/10",
                   maxHeight: "520px",
                   background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                   boxShadow: isLightAppearance
-                    ? "0 24px 80px rgba(0, 0, 0, 0.12), 0 0 50px rgba(37, 99, 235, 0.06)"
-                    : "0 24px 80px rgba(2, 6, 23, 0.5), 0 0 60px rgba(37, 99, 235, 0.12)",
+                    ? "0 14px 48px rgba(15, 30, 60, 0.08), 0 0 60px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.18)"
+                    : "0 16px 56px rgba(2, 6, 23, 0.35), 0 0 70px rgba(37, 99, 235, 0.10), inset 0 1px 0 rgba(96, 165, 250, 0.12), inset 0 0 0 1px rgba(96, 165, 250, 0.10)",
                 }}
               >
                 {/* Layer 1 — stylized map base. Faint road network via SVG curves. */}
@@ -586,19 +591,24 @@ export default function HeroSection({
               </div>
             </div>
 
-            {/* Floating "Bids Active" badge — top-left of image */}
+            {/* Floating "Sample quote" chip — Pass G 2026-05-03:
+                  - Hidden < md: fixes mobile overflow regression where the
+                    chip covered the Learn More CTA + trust row.
+                  - Glow halos restrained: pin pulse + routes are the visual
+                    anchor; chip should read as a quiet artifact, not a
+                    competing focal point. */}
             <div
-              className={`absolute top-2 left-1 sm:top-4 sm:left-0 lg:top-8 lg:-left-6 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 flex items-center gap-2 sm:gap-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              className={`absolute top-2 left-1 sm:top-4 sm:left-0 lg:top-8 lg:-left-6 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 hidden md:flex items-center gap-2 sm:gap-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
               style={{
                 transitionDelay: "2s",
                 animationDelay: "2.5s",
-                borderColor: isLightAppearance ? "rgba(190,205,230,0.30)" : "rgba(96,165,250,0.22)",
+                borderColor: isLightAppearance ? "rgba(190,205,230,0.28)" : "rgba(96,165,250,0.18)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
+                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(248, 250, 253, 0.78) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 14px 48px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 32px rgba(59, 130, 246, 0.22), 0 0 12px rgba(96, 165, 250, 0.28)"
-                  : "0 10px 32px rgba(2, 6, 23, 0.38), 0 0 1px rgba(96, 165, 250, 0.25), 0 0 36px rgba(59, 130, 246, 0.34), 0 0 14px rgba(96, 165, 250, 0.40)",
+                  ? "0 12px 36px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 24px rgba(59, 130, 246, 0.10)"
+                  : "0 10px 32px rgba(2, 6, 23, 0.34), inset 0 1px 0 rgba(96, 165, 250, 0.10), 0 0 28px rgba(59, 130, 246, 0.14)",
               }}
             >
               <div
@@ -630,19 +640,22 @@ export default function HeroSection({
                 "Now serving New York", trust chip "Now available in NY",
                 Coverage section region chips — no factual loss. */}
 
-            {/* Floating notification card — dark glass */}
+            {/* Floating "Estimated ETA" chip — Pass G 2026-05-03:
+                  Same restraint pass as the quote chip. Hidden < md to fix
+                  mobile overflow; glow halos toned down so the chip reads
+                  as a quiet result artifact, not a competing focal point. */}
             <div
-              className={`absolute bottom-2 left-1 sm:bottom-6 sm:-left-4 lg:-left-6 lg:bottom-8 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-2.5 py-2 sm:px-4 sm:py-3 flex items-center gap-2 sm:gap-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              className={`absolute bottom-2 left-1 sm:bottom-6 sm:-left-4 lg:-left-6 lg:bottom-8 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-2.5 py-2 sm:px-4 sm:py-3 hidden md:flex items-center gap-2 sm:gap-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
               style={{
                 transitionDelay: "1.6s",
                 animationDelay: "1.5s",
-                borderColor: isLightAppearance ? "rgba(190,205,230,0.28)" : "rgba(96,165,250,0.2)",
+                borderColor: isLightAppearance ? "rgba(190,205,230,0.26)" : "rgba(96,165,250,0.18)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
+                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(248, 250, 253, 0.78) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 32px rgba(16, 185, 129, 0.22), 0 0 12px rgba(52, 211, 153, 0.28)"
-                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3), 0 0 36px rgba(16, 185, 129, 0.30), 0 0 14px rgba(52, 211, 153, 0.36)",
+                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 24px rgba(16, 185, 129, 0.10)"
+                  : "0 12px 36px rgba(2, 6, 23, 0.36), inset 0 1px 0 rgba(96, 165, 250, 0.10), 0 0 28px rgba(16, 185, 129, 0.14)",
               }}
             >
               <div
