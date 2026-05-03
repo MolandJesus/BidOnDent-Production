@@ -262,8 +262,8 @@ export default function InsurerNewClaimScreen({
                         policyNumber: customer.policyNumber,
                       }));
                     }}
-                    className="w-full py-3 rounded-lg text-white font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
-                    style={{ backgroundColor: primaryColor }}
+                    className="bd-dashboard-primary-button w-full py-3 text-white font-semibold flex items-center justify-center gap-2"
+                    style={{ background: primaryColor }}
                     type="button"
                   >
                     <Plus className="w-5 h-5" />
