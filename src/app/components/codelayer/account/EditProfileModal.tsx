@@ -179,7 +179,7 @@ export default function EditProfileModal({
                   value={editableName}
                   onChange={(e) => onChangeName(e.target.value)}
                   onBlur={() => setTouched((p) => ({ ...p, name: true }))}
-                  className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${touched.name && validation.name ? "border-rose-400" : isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+                  className={`bd-report-input w-full pl-10 pr-3 py-2.5 rounded-xl outline-none text-sm ${touched.name && validation.name ? "border-rose-400" : ""}`}
                   placeholder="Enter your name"
                 />
               </div>
@@ -231,7 +231,7 @@ export default function EditProfileModal({
                   onBlur={() => setTouched((p) => ({ ...p, phone: true }))}
                   placeholder="Phone number"
                   maxLength={14}
-                  className={`w-full pl-10 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm ${touched.phone && validation.phone ? "border-rose-400" : isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+                  className={`bd-report-input w-full pl-10 pr-3 py-2.5 rounded-xl outline-none text-sm ${touched.phone && validation.phone ? "border-rose-400" : ""}`}
                 />
               </div>
               {touched.phone && validation.phone && (

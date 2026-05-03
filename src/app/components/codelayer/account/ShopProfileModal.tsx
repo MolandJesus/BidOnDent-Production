@@ -143,7 +143,7 @@ export default function ShopProfileModal({
               value={shopName}
               onChange={(e) => onShopNameChange(e.target.value)}
               onBlur={() => setTouched((p) => ({ ...p, shopName: true }))}
-              className={`w-full p-2 border rounded ${touched.shopName && validation.shopName ? "border-rose-400" : isLight ? "border-slate-200 bg-white text-slate-800" : "border-white/[0.12]"}`}
+              className={`bd-report-input w-full px-3 py-2.5 rounded-xl outline-none ${touched.shopName && validation.shopName ? "border-rose-400" : ""}`}
             />
             {touched.shopName && validation.shopName && (
               <p className="mt-1 text-xs text-rose-400">{validation.shopName}</p>
