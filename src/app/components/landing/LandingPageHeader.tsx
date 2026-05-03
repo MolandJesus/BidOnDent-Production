@@ -188,7 +188,15 @@ export default function LandingPageHeader({
                 <button
                   onClick={onViewDashboard}
                   aria-label="Open dashboard"
-                  className={`inline-flex h-11 w-11 min-h-[44px] items-center justify-center gap-2 rounded-2xl border font-medium backdrop-blur-md transition-all sm:w-auto sm:px-3.5 sm:py-2 ${isLightAppearance ? "border-[rgba(200,180,150,0.28)] bg-[rgba(255,251,245,0.65)] text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:bg-[rgba(255,251,245,0.8)]" : "border-blue-300/28 bg-[linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))] text-blue-100 shadow-[0_10px_22px_rgba(2,6,23,0.32)] hover:bg-[linear-gradient(180deg,rgba(59,130,246,0.28),rgba(15,23,42,0.78))]"}`}
+                  className={`bd-dashboard-primary-button inline-flex h-11 w-11 min-h-[44px] items-center justify-center gap-2 font-medium backdrop-blur-md sm:w-auto sm:px-3.5 sm:py-2 ${isLightAppearance ? "text-slate-700" : "text-blue-100"}`}
+                  style={{
+                    background: isLightAppearance
+                      ? "rgba(255,251,245,0.65)"
+                      : "linear-gradient(180deg,rgba(37,99,235,0.22),rgba(15,23,42,0.7))",
+                    borderColor: isLightAppearance
+                      ? "rgba(200,180,150,0.28)"
+                      : "rgba(147,197,253,0.28)",
+                  }}
                   type="button"
                 >
                   <Home

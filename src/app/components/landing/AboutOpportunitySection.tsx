@@ -247,7 +247,15 @@ export default function AboutOpportunitySection({
         <div className="mt-10 text-center">
           <a
             href="#/about"
-            className={`inline-flex items-center justify-center font-semibold px-6 py-3 rounded-xl transition-all duration-300 text-sm sm:text-base border backdrop-blur-sm ${isLightAppearance ? "border-[rgba(200,180,150,0.3)] bg-[rgba(255,251,245,0.5)] text-blue-700 hover:bg-[rgba(255,251,245,0.7)] hover:border-[rgba(200,180,150,0.35)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/40"}`}
+            className={`bd-dashboard-primary-button inline-flex items-center justify-center font-semibold px-6 py-3 text-sm sm:text-base backdrop-blur-sm ${isLightAppearance ? "text-blue-700" : "text-blue-200"}`}
+            style={{
+              background: isLightAppearance
+                ? "rgba(255,251,245,0.5)"
+                : "rgba(59,130,246,0.10)",
+              borderColor: isLightAppearance
+                ? "rgba(200,180,150,0.30)"
+                : "rgba(96,165,250,0.25)",
+            }}
           >
             Read Full About Overview
           </a>
