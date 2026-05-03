@@ -200,7 +200,7 @@ export default function PhotoGuide({
         >
           <button
             onClick={onComplete}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold text-sm transition-all active:scale-[0.98] min-h-[48px] shadow-lg"
+            className="bd-dashboard-primary-button w-full flex items-center justify-center gap-2 py-3 text-white font-semibold text-sm min-h-[48px]"
             style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, #0ea5e9 100%)` }}
           >
             <Camera className="w-4.5 h-4.5" />
