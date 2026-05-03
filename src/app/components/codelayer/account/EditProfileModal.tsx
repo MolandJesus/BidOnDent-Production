@@ -130,7 +130,7 @@ export default function EditProfileModal({
           <div className="flex flex-col items-center">
             <div className="relative">
               <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg">
-                {profileImage ? (
+                {profileImage && !profileImage.startsWith("storage://") ? (
                   <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <img

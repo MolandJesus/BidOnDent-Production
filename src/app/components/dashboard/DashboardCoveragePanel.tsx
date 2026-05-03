@@ -163,8 +163,8 @@ export default function DashboardCoveragePanel({
             </div>
             <h2 className="mt-3 text-2xl font-semibold text-slate-100">Coverage command center</h2>
             <p className="mt-2 text-sm text-slate-300/80">
-              Open the live NY coverage map from the dashboard, review partner density, and jump to
-              the full search flow when you need ZIP and radius lookup.
+              Open the NY coverage map from the dashboard, review partner density as the network
+              grows, and jump to the full search flow when you need ZIP and radius lookup.
             </p>
           </div>
 
@@ -239,7 +239,7 @@ export default function DashboardCoveragePanel({
 
         {isLoadingShops ? (
           <p className="mt-3 text-xs text-slate-500">
-            Syncing live partner shop markers for the command center...
+            Syncing partner shop markers for the command center...
           </p>
         ) : null}
       </section>

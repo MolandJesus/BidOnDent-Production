@@ -380,3 +380,23 @@
   - If hydration: file-specific fix in the `hydrateReport` catch path or in the storage util.
 - **Status:** Open — diagnostic recommended next session; do not mutate production data without owner sign-off. Defensive `ImageWithFallback` from V1 still works as designed for `storage://` and load-error cases.
 
+### KI-065: Defense-in-depth gap — multiple raw `<img>` sites can render `storage://` if server hydration catch-clause fires
+
+- **Impact:** The server-side hydration path (`supabase/functions/server/handlers/reports.ts:95-150`, `vehicles.ts`, `profiles.ts`, `network_profiles.ts`) wraps `hydrateSignedStorageUrl(s)` in a try/catch that returns the raw `photo_urls` / `image_url` / `profile_image_url` if hydration throws. That catch-fallback can leak `storage://` pointers to the client. Several frontend render sites bind those URLs directly to `<img src=...>` without using either `ImageWithFallback` wrapper, so a hydration failure produces an invisible/broken image rather than a designed fallback. Theoretical exposure under normal flow; real exposure if hydration throws (e.g. Storage outage, RLS edit, expired service-role token, missing object).
+- **What was hardened in this pass (commit-level fixes, not a full sweep):**
+  - `src/app/components/figma/ImageWithFallback.tsx` now mirrors the codelayer `ImageWithFallback` `storage://` guard, so its 4 existing callsites (`BenefitsSection`, `dashboard/DashboardHeader`, `dashboard/ProfileDropdown`, `account/AccountHeader`) are protected zero-cost.
+  - `src/app/components/app/DashboardSidebar.tsx:265` and `src/app/components/app/DashboardHeader.tsx:431` profile-image conditionals now drop through to the initials avatar (designed fallback) when `userImageUrl` starts with `storage://`.
+  - `src/app/components/codelayer/account/EditProfileModal.tsx:133` profile-image conditional now drops through to the default profile image when `profileImage` starts with `storage://`.
+- **Sites still rendering raw `<img>` with user/DB-sourced URLs (no fallback wrapper):**
+  - `src/app/components/reports/ReportDetailScreen.tsx:447` — full-size selected report photo
+  - `src/app/components/reports/PhotoGalleryLightbox.tsx:69, 128` — main lightbox image + thumbnail strip
+  - `src/app/components/maps/ReportDetailDrawer.tsx:176` — drawer photo strip
+  - `src/app/components/maps/ReportLayerPopup.tsx:41` — map popup preview thumbnail
+  - `src/app/components/shop/ShopRequestCard.tsx:204` — shop-side request preview
+  - `src/app/components/shop/ShopDetailSheet.tsx:109` — shop record image
+  - `src/app/components/insurer/InsurerClaimCard.tsx:136` — insurer claim preview
+  - `src/app/components/insurer/InsurerPartnerShopCard.tsx:65` — insurer partner-shop image
+- **Fix direction (next pass):** the cleanest move is to wrap each of these in the codelayer `ImageWithFallback` (matches the dashboard report-card treatment from V1 — premium glass placeholder on `storage://` / empty / load-error). Minimal-surface alternative: add a tiny `isRenderableMediaUrl` shared util and gate each conditional like the three sites fixed in this pass. Either way, low risk; the surfaces above all already render hydrated URLs in normal flow.
+- **Root-cause alternative:** instead of patching ~8 frontend sites, consider tightening the server hydration catch path so it returns `null` (or empty array) rather than the raw `storage://` string. That makes downstream rendering uniformly safe — `<img src="">` falls back via the standard onError path, and `null` skips the conditional entirely. Tradeoff: loses the ability to present a "soft" hydration failure (showing the raw record) in dev/debug.
+- **Status:** Open — defensive hardening shipped for the highest-visibility chrome (sidebar avatar, top-bar avatar, profile-edit modal). Inventory above tracks what remains. Skill: `supabase-storage-signed-urls`.
+

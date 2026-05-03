@@ -247,7 +247,7 @@ export default function CoverageMapDialog({
         <DialogHeader className="sr-only">
           <DialogTitle>Coverage command center</DialogTitle>
           <DialogDescription>
-            Inspect live partner coverage and launch real directions from the fullscreen map.
+            Inspect partner coverage and launch real directions from the fullscreen map.
           </DialogDescription>
         </DialogHeader>
 

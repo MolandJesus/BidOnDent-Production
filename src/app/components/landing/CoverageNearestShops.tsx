@@ -141,8 +141,8 @@ export default function CoverageNearestShops({
               </div>
               <div className="mt-1 text-xs leading-relaxed">
                 {usingDemoFallback
-                  ? "Live partner-shop data is temporarily unavailable. Showing demo hubs while the backend recovers."
-                  : "Live partner-shop data could not be loaded. Retry to refresh shops from Supabase."}
+                  ? "Partner-shop data is temporarily unavailable. Showing demo hubs while the backend recovers."
+                  : "Partner-shop data could not be loaded. Retry to refresh shops from Supabase."}
               </div>
             </div>
           </div>
@@ -295,8 +295,8 @@ export default function CoverageNearestShops({
             Unable to load nearby partner shops
           </div>
           <div className={cn("text-xs leading-relaxed", theme.secondaryTextClassName)}>
-            The search origin is ready, but the live partner-shop feed did not return. Retry the
-            backend call and try again.
+            The search origin is ready, but the partner-shop feed did not return. Retry the backend
+            call and try again.
           </div>
           {onRetryShops ? (
             <button type="button" onClick={onRetryShops} className={theme.secondaryButtonClassName}>
