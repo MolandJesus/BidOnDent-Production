@@ -25,6 +25,10 @@ export default function WhoWeServeSection({
       borderColor: `${primaryColor}30`,
       checkColor: primaryColor,
       checkColorDark: "#60a5fa",
+      // Pass E — role accent rim glow (alpha ≤ 0.15 per plan).
+      // Customer = blue (matches user/action identity).
+      accentRimLight: "inset 0 0 0 1px rgba(37,99,235,0.12), 0 8px 24px rgba(37,99,235,0.08)",
+      accentRimDark: "inset 0 0 0 1px rgba(96,165,250,0.14), 0 10px 28px rgba(59,130,246,0.10)",
       items: [
         "Submit damage reports with photos",
         "Compare multiple repair quotes",
@@ -43,6 +47,9 @@ export default function WhoWeServeSection({
       borderColor: `${secondaryColor}30`,
       checkColor: secondaryColor,
       checkColorDark: "#22d3ee",
+      // Shops = teal (matches service/skill identity).
+      accentRimLight: "inset 0 0 0 1px rgba(0,160,233,0.12), 0 8px 24px rgba(0,160,233,0.08)",
+      accentRimDark: "inset 0 0 0 1px rgba(34,211,238,0.14), 0 10px 28px rgba(34,211,238,0.10)",
       items: [
         "Access new customer leads",
         "Submit competitive bids",
@@ -61,6 +68,9 @@ export default function WhoWeServeSection({
       borderColor: "#bfdbfe",
       checkColor: "#1e3a5f",
       checkColorDark: "#93c5fd",
+      // Insurer = subtle gold (trust/oversight, but restrained per plan).
+      accentRimLight: "inset 0 0 0 1px rgba(220,150,60,0.13), 0 8px 24px rgba(220,150,60,0.08)",
+      accentRimDark: "inset 0 0 0 1px rgba(220,150,60,0.15), 0 10px 28px rgba(220,150,60,0.10)",
       items: [
         "Streamline claims processing",
         "Access network of shops",
@@ -244,11 +254,20 @@ export default function WhoWeServeSection({
           {cards.map((card, index) => (
             <div
               key={card.title}
-              className={`bd-glass-card bd-glass-card--landing p-5 sm:p-6 transition-all duration-500 group ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              className={`bd-glass-card bd-glass-card--landing p-5 sm:p-6 transition-all duration-500 group relative ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{
                 transitionDelay: `${0.3 + index * 0.15}s`,
               }}
             >
+              {/* Pass E — role accent rim. Non-destructive overlay so the
+                  bd-glass-card boxShadow stays intact. Inherits parent radius. */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 rounded-[inherit]"
+                style={{
+                  boxShadow: isLightAppearance ? card.accentRimLight : card.accentRimDark,
+                }}
+              />
               <div className="mb-4">
                 <div
                   className="inline-flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg"
