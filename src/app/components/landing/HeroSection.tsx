@@ -68,7 +68,7 @@ export default function HeroSection({
 
   return (
     <section
-      className="pt-20 sm:pt-32 pb-16 sm:pb-24 overflow-hidden relative"
+      className="pt-20 sm:pt-32 pb-10 sm:pb-24 overflow-hidden relative"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #fdfcf9 0%, #f8f8f5 40%, #f4f5f8 100%)"
@@ -400,16 +400,23 @@ export default function HeroSection({
                 {getButtonText()}
                 <ChevronRight className="ml-1 w-4 h-4" />
               </button>
+              {/* V1 mobile contrast fix: dark mode background bumped from
+                   rgba(59,130,246,0.10) → 0.20 and border alpha 0.25 → 0.45.
+                   At mobile dark, the previous values blended into the navy
+                   atmosphere, making the secondary CTA effectively invisible. */}
               <button
                 onClick={onLearnMore}
-                className={`bd-dashboard-primary-button inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 px-7 py-4 text-sm font-semibold backdrop-blur-md sm:w-auto sm:py-3.5 sm:text-base ${isLightAppearance ? "text-slate-700" : "text-blue-200"}`}
+                className={`bd-dashboard-primary-button inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 px-7 py-4 text-sm font-semibold backdrop-blur-md sm:w-auto sm:py-3.5 sm:text-base ${isLightAppearance ? "text-slate-700" : "text-blue-100"}`}
                 style={{
                   background: isLightAppearance
                     ? "rgba(255,251,245,0.55)"
-                    : "rgba(59,130,246,0.10)",
+                    : "rgba(59,130,246,0.20)",
                   borderColor: isLightAppearance
                     ? "rgba(200,180,150,0.30)"
-                    : "rgba(96,165,250,0.25)",
+                    : "rgba(147,197,253,0.45)",
+                  boxShadow: isLightAppearance
+                    ? undefined
+                    : "inset 0 1px 0 rgba(220,165,90,0.18), inset 0 0 0 1px rgba(96,165,250,0.18)",
                 }}
                 type="button"
               >
@@ -437,9 +444,14 @@ export default function HeroSection({
             </div>
           </div>
 
-          {/* Right column — product story visual */}
+          {/* Right column — product story visual.
+              V1 mobile fix: hidden below lg. The Liquid Map Intelligence scene
+              was reserving ~16:10 of full mobile width as an empty-feeling slot
+              (chips already correctly hidden < md per KI-062), creating ~200px
+              of dead space between trust chips and HowItWorks. V2 will replace
+              this slot at mobile with a compact 220px map intelligence strip. */}
           <div
-            className={`lg:w-[52%] relative transition-all duration-1000 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            className={`hidden lg:block lg:w-[52%] relative transition-all duration-1000 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
             style={{ transitionDelay: "0.3s" }}
           >
             {/* Liquid Map Intelligence scene (Pass C 2026-05-03)

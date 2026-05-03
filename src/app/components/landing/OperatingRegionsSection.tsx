@@ -158,10 +158,10 @@ export default function OperatingRegionsSection({
                     : "border-blue-400/30 bg-blue-500/12 text-blue-200"
                 }`}
               >
-                <span className="bd-pin-pulse bd-pin-pulse--soft inline-flex h-3 w-3 items-center justify-center">
+                <span className="inline-flex h-3 w-3 items-center justify-center">
                   <MapPin className="h-3 w-3" />
                 </span>
-                Live Coverage
+                Coverage Map
               </span>
             </div>
             <h3
@@ -171,7 +171,7 @@ export default function OperatingRegionsSection({
                   : "bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent"
               }`}
             >
-              Find shops near you,
+              Browse our NY service area,
               <br className="hidden sm:block" /> right on the map.
             </h3>
             <p
@@ -179,8 +179,8 @@ export default function OperatingRegionsSection({
                 isLightAppearance ? "text-slate-500" : "text-blue-100/70"
               }`}
             >
-              Enter a ZIP, address, or tap your live location — the map focuses instantly and shows
-              the nearest partner shops ranked by distance.
+              Enter a ZIP, address, or tap your location — the map focuses on our New York service
+              region and lists any partner shops as they come online.
             </p>
           </div>
 
@@ -300,12 +300,22 @@ export default function OperatingRegionsSection({
                         </span>
                       ))}
                     </div>
+                    {/* V1 mobile fix: fade colors aligned with the actual card
+                         background (#e8eef7 light / #071830 dark) so the row
+                         end reads as a clean scroll affordance instead of a
+                         color step. Champagne hairline added to read as
+                         premium light catching the glass edge. */}
                     <div
-                      className={`pointer-events-none absolute right-0 top-0 bottom-0 w-10 sm:hidden ${
+                      className={`pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:hidden ${
                         isLightAppearance
-                          ? "bg-gradient-to-l from-[#eef3f8] to-transparent"
-                          : "bg-gradient-to-l from-[#091a30] to-transparent"
+                          ? "bg-gradient-to-l from-[#e8eef7] via-[#e8eef7]/85 to-transparent"
+                          : "bg-gradient-to-l from-[#071830] via-[#071830]/85 to-transparent"
                       }`}
+                      style={{
+                        boxShadow: isLightAppearance
+                          ? "inset 1px 0 0 rgba(220,165,90,0.18)"
+                          : "inset 1px 0 0 rgba(220,165,90,0.22)",
+                      }}
                     />
                   </div>
 
@@ -457,6 +467,7 @@ export default function OperatingRegionsSection({
               onSelectShop={(shop) => coverage.handleSelectShop(shop, { centerMap: true })}
               onOpenDirections={coverage.handleOpenBidOnDentNavigation}
               onRetryShops={coverage.retryCoveragePartnerShops}
+              isOutsideServiceArea={Boolean(coverage.listSearchTarget) && !coverage.hasCoverageSignal}
             />
           </div>
         </div>

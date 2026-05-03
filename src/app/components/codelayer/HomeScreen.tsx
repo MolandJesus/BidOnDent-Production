@@ -83,6 +83,13 @@ export default function HomeScreen({
   const listHeader =
     userType === "customer" ? "Your Reports" : userType === "shop" ? "Incoming Requests" : "Claims";
   const sortedReports = Array.isArray(reports) ? reports : [];
+  // V1 trust: "Live activity" chip is only honest when there's actual live work
+  // (an active / in-repair report). Otherwise the chip shows a calmer, accurate
+  // label so we never imply realtime activity that doesn't exist.
+  const hasLiveActivity = sortedReports.some((report) => {
+    const status = String(report?.status ?? "").toLowerCase().replace(/[_\s-]+/g, " ");
+    return status === "active" || status === "in repair";
+  });
   const listViewAllAction = onViewAllReports;
   const primaryAction = buildPrimaryAction(
     userType,
@@ -100,7 +107,9 @@ export default function HomeScreen({
     userType === "customer"
       ? isNewUser
         ? "Ready to start"
-        : "Live activity"
+        : hasLiveActivity
+          ? "Live activity"
+          : "Summary"
       : userType === "shop"
         ? "Work queue"
         : "Claims desk";

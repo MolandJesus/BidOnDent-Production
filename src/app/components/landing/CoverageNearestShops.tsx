@@ -23,6 +23,7 @@ export default function CoverageNearestShops({
   className,
   variant = "default",
   selectedShopName,
+  isOutsideServiceArea = false,
 }: CoverageNearestShopsProps) {
   const theme = getMapSurfaceTheme(tone, true);
   const showBackendFailureState = Boolean(fetchError) && !usingDemoFallback;
@@ -329,11 +330,14 @@ export default function CoverageNearestShops({
             />
           </div>
           <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-            Coverage is expanding
+            {isOutsideServiceArea
+              ? "You're outside our current NY service region"
+              : "Service area is expanding"}
           </div>
           <div className={cn("text-xs leading-relaxed max-w-sm", theme.secondaryTextClassName)}>
-            No partner shops within {radiusMiles} miles yet. Try a wider radius, a different ZIP, or
-            check back as our network grows across NY.
+            {isOutsideServiceArea
+              ? "BidOnDent is currently focused on NY counties — Rockland, Dutchess, Westchester, Nassau, Orange, and Putnam. Browse the regions above to see where we're live."
+              : `No partner shops within ${radiusMiles} miles yet. Try a wider radius, a different NY ZIP, or check back as our network grows across NY.`}
           </div>
         </div>
       ) : (

@@ -93,11 +93,11 @@ export default function CoverageSearchPanel({
     activeOriginMode === "address"
       ? `Routes and recommendations now follow ${activeOriginLabel}.`
       : activeOriginMode === "geolocation"
-        ? geoMessage || "Using live location to search nearby partner shops."
+        ? geoMessage || "Using your location to focus the map on the nearest service area."
         : normalizedZip.length > 0
           ? hasCoverageSignal
-            ? `${normalizedZip} lands inside ${coverageCounty || "active coverage"} and is ready for partner-shop search.`
-            : `${normalizedZip} sits outside the strongest live coverage signal, but you can still review nearby partner shops.`
+            ? `${normalizedZip} lands inside ${coverageCounty || "our NY service area"}. Partner shops will list here as they come online.`
+            : `${normalizedZip} sits outside our current NY service region — we're focused on NY counties for now.`
           : "Start with a ZIP, full address, or live location to focus the map.";
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
