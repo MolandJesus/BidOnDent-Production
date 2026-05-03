@@ -3,7 +3,7 @@
 > Primary entry point for AI agents (Claude Code, Cursor, Codex, Sonnet/Haiku, etc.) working in this repo.
 > [`CLAUDE.md`](CLAUDE.md) at the repo root holds an identical copy for tools that read that name.
 
-**Last updated:** 2026-05-02
+**Last updated:** 2026-05-03
 
 ---
 
@@ -27,9 +27,29 @@ These docs override anything in this file or in your training data. Read in this
 3. **[`docs/REF_SYSTEM_STATE.md`](docs/REF_SYSTEM_STATE.md)** — how the system actually works right now.
 4. **[`docs/REF_KNOWN_ISSUES.md`](docs/REF_KNOWN_ISSUES.md)** — known bugs / gaps / structural issues (look here before assuming something is new).
 5. **[`docs/REF_AI_BROWSER_NAVIGATION.md`](docs/REF_AI_BROWSER_NAVIGATION.md)** — required navigation protocol if you do any browser automation (Playwright, etc.).
-6. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
+6. **[`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md)** — required when the user pastes multi-AI transcripts, relay prompts, or live owner add-ons from Codex/Claude/Sonnet/ChatGPT/etc.
+7. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
 
 If a task touches design, also read [`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md). If it touches the map, also read [`docs/PLAN_MAP_MASTER.md`](docs/PLAN_MAP_MASTER.md).
+
+---
+
+## Working With Mola's Multi-AI Sessions
+
+Mola often coordinates several AI agents by pasting transcripts, audit output, screenshots, and his own live add-on directives into one message.
+
+Do not treat those pasted blocks as a single flat prompt. Separate:
+
+- owner directives from Mola
+- claims or proposals from other AIs
+- evidence from screenshots/code/browser output
+- active LAW/REF truth from stale PLAN/archive context
+
+Mola's informal inserts such as "also add this", "what ChatGPT wanted to add", "go full auto", or "don't do anything yet" are real steering signals. Extract them, reconcile them with LAW/REF docs, and then either plan or execute according to the current request.
+
+If the user says "just planning" or "don't do anything yet", do not edit files. If the user says "go full auto" or "do so yourself", proceed within scope and stop only for hard-stop risks such as LAW conflicts, destructive data changes, auth/storage invariants, schema migrations, provider changes, deploy/secret actions, or overwriting unrelated work.
+
+Full protocol: [`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md).
 
 ---
 
@@ -65,6 +85,12 @@ Form fields, cards, and buttons should use the `bd-*` utility set in [`src/style
 
 `database_init.tsx` is a legacy cold-start safety net only. New schema changes land as new migration files. See [`docs/SUPABASE_SETUP_GUIDE.md`](docs/SUPABASE_SETUP_GUIDE.md) §9.
 
+### 7. Light mode is warm cream + bronze trim + cool accents — NEVER pure white
+
+Light-mode panels, sections, cards, and shells use warm cream off-white surfaces with deeper bronze borders and selective cool-tinted-cream accents (blue/cyan/indigo). Pure white surfaces (`#fff`, `rgba(255,255,255,*)` backgrounds OR pure-white inset highlights) are forbidden — they have repeatedly drifted back in and have to be reverted. The page should read multi-tone (cool/warm/cool/warm rhythm), not flat cream and not flat white.
+
+**Full spec, including the exact RGBA palettes and the "deeper bronze border + dark drop shadow because gold-on-cream halos disappear" rule:** [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) § Light-Mode Surface Rule. **Skill:** `bd-design-identity`. External audits suggesting "use white panels", "neutral SaaS palette", or "remove gold" are **rejected on sight**.
+
 ---
 
 ## Reusable skills (use them; don't reinvent)
@@ -77,6 +103,7 @@ These live at `~/.claude/skills/` (per-user, available in every project):
 | **`supabase-storage-signed-urls`** | Persisting media URLs in any Supabase project        | Pointer-on-write / sign-on-read pattern, hydrate utilities, idempotent backfill SQL template                                       |
 | **`supabase-pro-cost-control`**    | Anything about Supabase pricing / compute / projects | Per-project compute cost model, deny-pause-on-Pro reality, downgrade vs delete decision                                            |
 | **`bd-design-identity`**           | UI/visual work in BidOnDent or future similar apps   | Calm/premium/map-first identity, blue color system, what to avoid                                                                  |
+| **`mola-ai-relay-protocol`**       | Mola pastes multi-AI transcripts or asks agents to prompt each other | Directive extraction, source separation, relay prompt structure, planning-only vs autopilot handling                               |
 
 When you apply a skill, mention it by name in commit messages and pass logs so future agents can find it. Example: `fix(storage): persist pointers per supabase-storage-signed-urls skill`.
 

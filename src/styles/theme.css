@@ -2063,24 +2063,30 @@ body {
   --bd-report-text-strong: #1a1510;
   --bd-report-text-secondary: #475569;
   --bd-report-text-tertiary: #64748b;
+  /* LAW: light-mode cream surface with gold trim. Insets must be warm cream,
+     never pure white. See LAW_PROJECT_RULES.md "Light-mode surface rule". */
   --bd-report-shell-bg: linear-gradient(
     180deg,
-    rgba(255, 253, 248, 0.84) 0%,
-    rgba(250, 247, 240, 0.74) 100%
+    rgba(254, 248, 232, 0.92) 0%,
+    rgba(248, 240, 218, 0.82) 100%
   );
-  --bd-report-shell-border: rgba(147, 197, 253, 0.32);
-  /* D4 (final v2): amber lamp glow stacked over cream — matches dashboard gold halo. */
+  --bd-report-shell-border: rgba(202, 138, 47, 0.32);
   --bd-report-shell-shadow:
-    0 24px 56px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.20),
-    inset 0 1px 0 rgba(255, 255, 252, 0.96), 0 0 0 1px rgba(220, 165, 90, 0.10),
-    0 0 36px rgba(220, 140, 50, 0.10);
+    0 24px 56px rgba(120, 78, 18, 0.16),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(202, 138, 47, 0.30),
+    0 0 0 1px rgba(202, 138, 47, 0.24),
+    0 0 36px rgba(220, 140, 50, 0.22);
   --bd-report-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.06), transparent 65%),
-    linear-gradient(180deg, rgba(255, 253, 248, 0.78) 0%, rgba(250, 247, 240, 0.66) 100%);
-  --bd-report-panel-border: rgba(147, 197, 253, 0.30);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.12), transparent 65%),
+    linear-gradient(180deg, rgba(254, 247, 230, 0.90) 0%, rgba(247, 235, 210, 0.80) 100%);
+  --bd-report-panel-border: rgba(202, 138, 47, 0.30);
   --bd-report-panel-shadow:
-    0 16px 34px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 252, 0.96),
-    0 0 0 1px rgba(220, 165, 90, 0.10), 0 0 32px rgba(220, 140, 50, 0.10);
+    0 16px 34px rgba(120, 78, 18, 0.12),
+    inset 0 1px 0 rgba(254, 247, 232, 0.88),
+    inset 0 -1px 0 rgba(202, 138, 47, 0.28),
+    0 0 0 1px rgba(202, 138, 47, 0.22),
+    0 0 32px rgba(220, 140, 50, 0.20);
   --bd-report-input-bg: linear-gradient(
     180deg,
     rgba(255, 254, 250, 0.96) 0%,
@@ -2538,43 +2544,41 @@ body {
 }
 
 [data-appearance-mode="light"] {
-  /* D4 (final v3.2) + D6 crispness: soft off-white liquid glass + more gold +
-     slightly stronger panel border + deeper drop shadow for premium edge
-     definition (light mode was reading slightly washy on stacked panels). */
+  /* LAW (do not break): light-mode surfaces are warm cream off-white with
+     visible bronze trim. Pure-white surfaces and pure-white inset highlights
+     are forbidden — they erase the calm/premium identity and read as a
+     generic SaaS dashboard. The trim must CONTRAST the cream surface (deeper
+     bronze border + navy drop shadow), not match it — a gold-on-cream halo
+     disappears. See LAW_PROJECT_RULES.md "Light-mode surface rule". */
   --bd-dashboard-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.14), transparent 65%),
-    linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.86) 100%);
-  --bd-dashboard-panel-border: rgba(147, 197, 253, 0.44);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.16), transparent 65%),
+    linear-gradient(180deg, rgba(254, 248, 232, 0.94) 0%, rgba(248, 238, 215, 0.86) 100%);
+  --bd-dashboard-panel-border: rgba(160, 95, 25, 0.48);
   --bd-dashboard-panel-shadow:
-    0 26px 56px rgba(15, 42, 92, 0.16),
-    0 6px 14px rgba(30, 58, 138, 0.08),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(191, 219, 254, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.30),
-    0 0 28px rgba(59, 130, 246, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.28);
+    0 26px 56px rgba(40, 28, 8, 0.22),
+    0 6px 14px rgba(40, 28, 8, 0.10),
+    0 0 0 1px rgba(160, 95, 25, 0.32),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
+    0 0 22px rgba(180, 100, 30, 0.18);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
-    rgba(238, 246, 254, 0.94) 0%,
-    rgba(220, 234, 250, 0.84) 100%
+    rgba(254, 247, 230, 0.94) 0%,
+    rgba(247, 235, 210, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(147, 197, 253, 0.32);
+  --bd-dashboard-section-border: rgba(160, 95, 25, 0.42);
   --bd-dashboard-section-shadow:
-    0 16px 36px rgba(15, 42, 92, 0.10),
-    0 0 0 1px rgba(220, 165, 90, 0.18),
-    0 0 0 1px rgba(191, 219, 254, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.24),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 16px 36px rgba(40, 28, 8, 0.16),
+    0 0 0 1px rgba(160, 95, 25, 0.28),
+    inset 0 1px 0 rgba(254, 247, 232, 0.88),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
+    0 0 18px rgba(180, 100, 30, 0.14);
   --bd-dashboard-section-hover-shadow:
-    0 22px 44px rgba(15, 42, 92, 0.14),
-    0 0 0 1px rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(147, 197, 253, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.32),
-    0 0 24px rgba(59, 130, 246, 0.12),
-    0 0 40px rgba(220, 140, 50, 0.30);
+    0 22px 44px rgba(40, 28, 8, 0.20),
+    0 0 0 1px rgba(160, 95, 25, 0.40),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.44),
+    0 0 22px rgba(180, 100, 30, 0.18);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(224, 238, 255, 0.96) 0%,
@@ -2701,60 +2705,64 @@ body {
     0 0 24px rgba(129, 140, 248, 0.10);
 }
 
-/* D4 (final v3.2): soft off-white liquid glass + more gold. Bg pulled back to
-   pale cool-blue-tinted off-white (the calm liquid-glass register from the
-   pre-revert dashboard) + amber inset/glow/ring all bumped notably stronger
-   so the gold lamp reads dominant against the softer surface. */
+/* LAW: light-mode panels keep cream surface but vary depth across variants
+   for page rhythm. Each accent restores a *whisper* of its cool tone (in the
+   inner ring + outer halo) so identity isn't flat. Border is deeper bronze
+   so cream surface gets crisp edge definition (gold-on-cream halo without
+   contrast disappears). See LAW_PROJECT_RULES.md "Light-mode surface rule". */
+
+/* deep — calm canvas, mid cream */
 [data-appearance-mode="light"] .bd-dashboard-panel--deep {
-  background: linear-gradient(180deg, rgba(240, 247, 254, 0.94) 0%, rgba(222, 235, 250, 0.86) 100%);
-  border-color: rgba(96, 165, 250, 0.34);
+  background: linear-gradient(180deg, rgba(252, 244, 222, 0.94) 0%, rgba(244, 232, 200, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.46);
   box-shadow:
-    0 22px 50px rgba(15, 42, 92, 0.13),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 28px rgba(59, 130, 246, 0.08),
-    0 0 44px rgba(220, 140, 50, 0.26);
+    0 22px 50px rgba(40, 28, 8, 0.20),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
+    0 0 0 1px rgba(160, 95, 25, 0.30),
+    0 0 22px rgba(180, 100, 30, 0.16);
 }
 
+/* accent-blue — lightest ivory, faint cool blue whisper */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-blue {
-  background: linear-gradient(180deg, rgba(236, 244, 254, 0.94) 0%, rgba(216, 230, 250, 0.86) 100%);
-  border-color: rgba(59, 130, 246, 0.36);
+  background: linear-gradient(180deg, rgba(254, 250, 238, 0.94) 0%, rgba(248, 240, 222, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.42);
   box-shadow:
-    0 22px 50px rgba(15, 42, 92, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
+    0 22px 50px rgba(40, 28, 8, 0.18),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
+    0 0 0 1px rgba(160, 95, 25, 0.26),
     0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 28px rgba(59, 130, 246, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.28);
+    0 0 22px rgba(180, 100, 30, 0.14),
+    0 0 18px rgba(59, 130, 246, 0.08);
 }
 
+/* accent-cyan — neutral cream with cool cyan whisper */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-cyan {
-  background: linear-gradient(180deg, rgba(232, 246, 250, 0.94) 0%, rgba(208, 234, 240, 0.86) 100%);
-  border-color: rgba(20, 184, 166, 0.34);
+  background: linear-gradient(180deg, rgba(250, 246, 232, 0.94) 0%, rgba(238, 236, 218, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.42);
   box-shadow:
-    0 22px 50px rgba(8, 51, 68, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(34, 211, 238, 0.16),
-    0 0 28px rgba(13, 148, 136, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.26);
+    0 22px 50px rgba(40, 28, 8, 0.18),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
+    0 0 0 1px rgba(160, 95, 25, 0.26),
+    0 0 0 1px rgba(34, 211, 238, 0.20),
+    0 0 22px rgba(180, 100, 30, 0.14),
+    0 0 18px rgba(13, 148, 136, 0.10);
 }
 
+/* accent-indigo — richer champagne with cool indigo whisper */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-indigo {
-  background: linear-gradient(180deg, rgba(238, 240, 252, 0.94) 0%, rgba(220, 224, 248, 0.86) 100%);
-  border-color: rgba(129, 140, 248, 0.34);
+  background: linear-gradient(180deg, rgba(252, 246, 224, 0.94) 0%, rgba(244, 230, 200, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.46);
   box-shadow:
-    0 22px 50px rgba(28, 25, 80, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(129, 140, 248, 0.16),
-    0 0 28px rgba(99, 102, 241, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.26);
+    0 22px 50px rgba(40, 28, 8, 0.20),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
+    0 0 0 1px rgba(160, 95, 25, 0.30),
+    0 0 0 1px rgba(129, 140, 248, 0.18),
+    0 0 22px rgba(180, 100, 30, 0.16),
+    0 0 18px rgba(99, 102, 241, 0.10);
 }
 
 .bd-dashboard-section {
@@ -2844,53 +2852,60 @@ body {
 }
 
 /* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
+/* LAW: section accents are full-spectrum in light mode — cool tints (blue,
+   cyan, indigo) sit alongside warm tints (gold, champagne, deep) so the
+   page has real color rhythm. No pure white. Bronze trim ties everything
+   together. See LAW_PROJECT_RULES.md "Light-mode surface rule". */
+
+/* deep — neutral cream calm-canvas */
 [data-appearance-mode="light"] .bd-dashboard-section--deep {
-  background: linear-gradient(180deg, rgba(238, 246, 254, 0.94) 0%, rgba(220, 234, 250, 0.84) 100%);
-  border-color: rgba(96, 165, 250, 0.32);
+  background: linear-gradient(180deg, rgba(254, 247, 230, 0.94) 0%, rgba(247, 235, 210, 0.84) 100%);
+  border-color: rgba(160, 95, 25, 0.36);
   box-shadow:
-    0 16px 36px rgba(15, 42, 92, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.24),
-    0 0 0 1px rgba(220, 165, 90, 0.18),
-    0 0 0 1px rgba(96, 165, 250, 0.14),
-    0 0 18px rgba(59, 130, 246, 0.06),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 16px 36px rgba(40, 28, 8, 0.14),
+    inset 0 1px 0 rgba(254, 247, 232, 0.88),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.34),
+    0 0 0 1px rgba(160, 95, 25, 0.24),
+    0 0 18px rgba(180, 100, 30, 0.12);
 }
 
+/* accent-blue — cool blue cream with bronze trim */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-blue {
-  background: linear-gradient(180deg, rgba(234, 244, 254, 0.94) 0%, rgba(214, 230, 250, 0.84) 100%);
-  border-color: rgba(59, 130, 246, 0.34);
+  background: linear-gradient(180deg, rgba(232, 242, 252, 0.94) 0%, rgba(208, 224, 246, 0.84) 100%);
+  border-color: rgba(160, 95, 25, 0.36);
   box-shadow:
-    0 16px 36px rgba(15, 42, 92, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 18px rgba(59, 130, 246, 0.08),
-    0 0 32px rgba(220, 140, 50, 0.24);
+    0 16px 36px rgba(40, 28, 8, 0.14),
+    inset 0 1px 0 rgba(244, 250, 254, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
+    0 0 0 1px rgba(160, 95, 25, 0.22),
+    0 0 0 1px rgba(96, 165, 250, 0.30),
+    0 0 18px rgba(59, 130, 246, 0.14);
 }
 
+/* accent-cyan — cool cyan cream with bronze trim */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-cyan {
-  background: linear-gradient(180deg, rgba(228, 244, 248, 0.94) 0%, rgba(206, 232, 240, 0.84) 100%);
-  border-color: rgba(20, 184, 166, 0.32);
+  background: linear-gradient(180deg, rgba(228, 244, 246, 0.94) 0%, rgba(204, 232, 234, 0.84) 100%);
+  border-color: rgba(160, 95, 25, 0.36);
   box-shadow:
-    0 16px 36px rgba(8, 51, 68, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 18px rgba(13, 148, 136, 0.08),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 16px 36px rgba(40, 28, 8, 0.14),
+    inset 0 1px 0 rgba(242, 252, 252, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
+    0 0 0 1px rgba(160, 95, 25, 0.22),
+    0 0 0 1px rgba(34, 211, 238, 0.30),
+    0 0 18px rgba(13, 148, 136, 0.14);
 }
 
+/* accent-indigo — cool indigo cream with bronze trim */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-indigo {
-  background: linear-gradient(180deg, rgba(236, 238, 252, 0.94) 0%, rgba(218, 222, 248, 0.84) 100%);
-  border-color: rgba(129, 140, 248, 0.32);
+  background: linear-gradient(180deg, rgba(234, 234, 250, 0.94) 0%, rgba(214, 216, 244, 0.84) 100%);
+  border-color: rgba(160, 95, 25, 0.36);
   box-shadow:
-    0 16px 36px rgba(28, 25, 80, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 18px rgba(99, 102, 241, 0.08),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 16px 36px rgba(40, 28, 8, 0.14),
+    inset 0 1px 0 rgba(246, 246, 254, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
+    0 0 0 1px rgba(160, 95, 25, 0.22),
+    0 0 0 1px rgba(129, 140, 248, 0.30),
+    0 0 18px rgba(99, 102, 241, 0.14);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-rose {
@@ -2905,33 +2920,28 @@ body {
     0 0 32px rgba(220, 140, 50, 0.22);
 }
 
-/* Deeper champagne tile in light mode — warm wash + visible gold border so
-   the Quick Actions row breaks out of the off-white blue cool block and gets
-   real gold POP without going amber-loud. */
+/* accent-gold — deepest champagne, full bronze trim */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-gold {
-  background: linear-gradient(180deg, rgba(252, 240, 218, 0.96) 0%, rgba(244, 222, 184, 0.86) 100%);
-  border-color: rgba(202, 138, 47, 0.42);
+  background: linear-gradient(180deg, rgba(250, 232, 192, 0.96) 0%, rgba(238, 210, 160, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.50);
   box-shadow:
-    0 16px 36px rgba(120, 78, 18, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(202, 138, 47, 0.36),
-    0 0 0 1px rgba(202, 138, 47, 0.26),
-    0 0 18px rgba(220, 140, 50, 0.14),
-    0 0 36px rgba(220, 140, 50, 0.30);
+    0 16px 36px rgba(40, 28, 8, 0.18),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.44),
+    0 0 0 1px rgba(160, 95, 25, 0.36),
+    0 0 22px rgba(180, 100, 30, 0.20);
 }
 
-/* Lighter champagne tile in light mode — softer warm wash, warmer than the
-   blue tiles but lighter than --accent-gold. Gives the row two gold values. */
+/* accent-champagne — lighter ivory champagne, paler bronze trim */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-champagne {
-  background: linear-gradient(180deg, rgba(254, 247, 232, 0.96) 0%, rgba(248, 234, 208, 0.86) 100%);
-  border-color: rgba(220, 165, 90, 0.32);
+  background: linear-gradient(180deg, rgba(254, 244, 220, 0.96) 0%, rgba(246, 228, 198, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.40);
   box-shadow:
-    0 16px 36px rgba(120, 78, 18, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.30),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 18px rgba(220, 165, 90, 0.10),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 16px 36px rgba(40, 28, 8, 0.14),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
+    0 0 0 1px rgba(160, 95, 25, 0.26),
+    0 0 18px rgba(180, 100, 30, 0.16);
 }
 
 .bd-dashboard-section--interactive {
