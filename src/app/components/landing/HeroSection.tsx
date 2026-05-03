@@ -139,7 +139,7 @@ export default function HeroSection({
                 from top, fading by mid-hero. Layered FIRST so the cool blue
                 radials below render on top in the body of the hero; the top
                 edge reads warm-lit, the body stays cool. */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_95%_45%_at_50%_-12%,rgba(220,165,90,0.26),transparent_65%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_95%_45%_at_50%_-12%,rgba(196, 144, 65,0.26),transparent_65%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_-6%,rgba(235,180,105,0.18),transparent_70%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_75%_55%_at_15%_-10%,rgba(59,130,246,0.26),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_55%_at_85%_90%,rgba(37,99,235,0.18),transparent_55%)]" />
@@ -543,7 +543,7 @@ export default function HeroSection({
                     : "rgba(147,197,253,0.45)",
                   boxShadow: isLightAppearance
                     ? undefined
-                    : "inset 0 1px 0 rgba(220,165,90,0.18), inset 0 0 0 1px rgba(96,165,250,0.18)",
+                    : "inset 0 1px 0 rgba(196, 144, 65,0.18), inset 0 0 0 1px rgba(96,165,250,0.18)",
                 }}
                 type="button"
               >
@@ -590,7 +590,7 @@ export default function HeroSection({
                 background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                 boxShadow: isLightAppearance
                   ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 40px 90px rgba(15, 30, 60, 0.08), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(140,82,22,0.20), 0 0 80px rgba(196,130,45,0.05)"
-                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(220,165,90,0.16), 0 0 100px rgba(228,140,55,0.08)",
+                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 50px 110px rgba(2, 6, 23, 0.18), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(196, 144, 65,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 100px rgba(228,140,55,0.08)",
               }}
             >
               {/* Outer ambient bloom — bleeds the strip into the hero atmosphere */}
@@ -701,14 +701,14 @@ export default function HeroSection({
               <div
                 className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md"
                 style={{
-                  background: isLightAppearance ? "rgba(255,255,255,0.78)" : "rgba(8,18,38,0.78)",
+                  background: isLightAppearance ? "rgba(238,247,255,0.86)" : "rgba(8,18,38,0.78)",
                   borderColor: isLightAppearance
                     ? "rgba(190,210,235,0.55)"
                     : "rgba(96,165,250,0.30)",
                   color: isLightAppearance ? "#1e3a8a" : "#bfdbfe",
                   boxShadow: isLightAppearance
-                    ? "inset 0 1px 0 rgba(220,165,90,0.20), 0 2px 8px rgba(15,30,60,0.08)"
-                    : "inset 0 1px 0 rgba(220,165,90,0.22), 0 2px 12px rgba(2,6,23,0.30)",
+                    ? "inset 0 1px 0 rgba(196, 144, 65,0.20), 0 2px 8px rgba(15,30,60,0.08)"
+                    : "inset 0 1px 0 rgba(196, 144, 65,0.22), 0 2px 12px rgba(2,6,23,0.30)",
                 }}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -781,8 +781,8 @@ export default function HeroSection({
                 className="absolute -inset-24 rounded-[3.25rem] blur-3xl pointer-events-none"
                 style={{
                   background: isLightAppearance
-                    ? "radial-gradient(ellipse 85% 75% at 50% 30%, rgba(220,165,90,0.14), transparent 68%)"
-                    : "radial-gradient(ellipse 85% 75% at 50% 25%, rgba(220,165,90,0.18), transparent 68%)",
+                    ? "radial-gradient(ellipse 85% 75% at 50% 30%, rgba(196, 144, 65,0.14), transparent 68%)"
+                    : "radial-gradient(ellipse 85% 75% at 50% 25%, rgba(196, 144, 65,0.18), transparent 68%)",
                 }}
               />
               {/* Inner edge bleed — sits flush around the card, bridging
@@ -818,8 +818,8 @@ export default function HeroSection({
                   maxHeight: "520px",
                   background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                   boxShadow: isLightAppearance
-                    ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(220,165,90,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(220,165,90,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
-                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(220,165,90,0.10), inset 0 1px 0 rgba(220,165,90,0.18), inset 0 -1px 0 rgba(220,165,90,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
+                    ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(196, 144, 65,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(196, 144, 65,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
+                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(196, 144, 65,0.10), inset 0 1px 0 rgba(196, 144, 65,0.18), inset 0 -1px 0 rgba(196, 144, 65,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
                   WebkitMaskImage:
                     "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
                   maskImage:
@@ -1002,10 +1002,11 @@ export default function HeroSection({
                 animationDelay: "2.5s",
                 borderColor: isLightAppearance ? "rgba(190,205,230,0.28)" : "rgba(96,165,250,0.18)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(248, 250, 253, 0.78) 100%)"
+                  ? // Cool blue-cream glass replaces near-white surface (LAW).
+                    "linear-gradient(180deg, rgba(238, 247, 255, 0.92) 0%, rgba(219, 234, 254, 0.84) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 12px 36px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 24px rgba(59, 130, 246, 0.10)"
+                  ? "0 12px 36px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(252, 240, 208, 0.92), 0 0 24px rgba(59, 130, 246, 0.10)"
                   : "0 10px 32px rgba(2, 6, 23, 0.34), inset 0 1px 0 rgba(96, 165, 250, 0.10), 0 0 28px rgba(59, 130, 246, 0.14)",
               }}
             >
@@ -1049,10 +1050,11 @@ export default function HeroSection({
                 animationDelay: "1.5s",
                 borderColor: isLightAppearance ? "rgba(190,205,230,0.26)" : "rgba(96,165,250,0.18)",
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(248, 250, 253, 0.78) 100%)"
+                  ? // Cool blue-cream glass replaces near-white surface (LAW).
+                    "linear-gradient(180deg, rgba(238, 247, 255, 0.92) 0%, rgba(219, 234, 254, 0.84) 100%)"
                   : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
                 boxShadow: isLightAppearance
-                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 24px rgba(16, 185, 129, 0.10)"
+                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(252, 240, 208, 0.92), 0 0 24px rgba(16, 185, 129, 0.10)"
                   : "0 12px 36px rgba(2, 6, 23, 0.36), inset 0 1px 0 rgba(96, 165, 250, 0.10), 0 0 28px rgba(16, 185, 129, 0.14)",
               }}
             >

@@ -80,7 +80,7 @@ export default function CTASection({
                   /* D6: navy CTA card now picks up gold lamp identity — warm
                      inset bottom + warm outer halo, matching dashboard family. */
                   boxShadow:
-                    "0 44px 88px rgba(2, 6, 20, 0.62), 0 16px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(147, 197, 253, 0.32), inset 0 -1px 0 rgba(220, 165, 90, 0.20), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 130px rgba(37, 99, 235, 0.20), 0 0 60px rgba(96, 165, 250, 0.20), 0 0 80px rgba(220, 140, 50, 0.16)",
+                    "0 44px 88px rgba(2, 6, 20, 0.62), 0 16px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(147, 197, 253, 0.32), inset 0 -1px 0 rgba(196, 144, 65, 0.20), 0 0 0 1px rgba(196, 144, 65, 0.14), 0 0 130px rgba(37, 99, 235, 0.20), 0 0 60px rgba(96, 165, 250, 0.20), 0 0 80px rgba(196, 130, 45, 0.16)",
                 }
               : {
                   background:
@@ -91,7 +91,7 @@ export default function CTASection({
                   /* D6: navy CTA card now picks up gold lamp identity — warm
                      inset bottom + warm outer halo, matching dashboard family. */
                   boxShadow:
-                    "0 28px 64px rgba(3, 10, 24, 0.58), inset 0 1px 0 rgba(147, 197, 253, 0.30), inset 0 -1px 0 rgba(220, 165, 90, 0.22), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 100px rgba(37, 99, 235, 0.18), 0 0 56px rgba(96, 165, 250, 0.22), 0 0 80px rgba(220, 140, 50, 0.18)",
+                    "0 28px 64px rgba(3, 10, 24, 0.58), inset 0 1px 0 rgba(147, 197, 253, 0.30), inset 0 -1px 0 rgba(196, 144, 65, 0.22), 0 0 0 1px rgba(196, 144, 65, 0.14), 0 0 100px rgba(37, 99, 235, 0.18), 0 0 56px rgba(96, 165, 250, 0.22), 0 0 80px rgba(196, 130, 45, 0.18)",
                 }
           }
         >

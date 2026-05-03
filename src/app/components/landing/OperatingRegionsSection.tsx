@@ -322,8 +322,8 @@ export default function OperatingRegionsSection({
                       }`}
                       style={{
                         boxShadow: isLightAppearance
-                          ? "inset 1px 0 0 rgba(220,165,90,0.18)"
-                          : "inset 1px 0 0 rgba(220,165,90,0.22)",
+                          ? "inset 1px 0 0 rgba(196, 144, 65,0.18)"
+                          : "inset 1px 0 0 rgba(196, 144, 65,0.22)",
                       }}
                     />
                   </div>

@@ -213,8 +213,8 @@ export default function AboutOpportunitySection({
                        plate joins the gold-lamp family. Cool blue dominance
                        preserved (cool drop + cool halo unchanged). */
                     boxShadow: isLightAppearance
-                      ? "0 6px 22px rgba(59,130,246,0.16), 0 0 30px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(220,165,90,0.16), 0 0 22px rgba(220,140,50,0.12)"
-                      : "0 6px 22px rgba(59,130,246,0.26), 0 0 32px rgba(59,130,246,0.18), inset 0 1px 0 rgba(147,197,253,0.28), inset 0 -1px 0 rgba(220,165,90,0.18), 0 0 26px rgba(220,140,50,0.16)",
+                      ? "0 6px 22px rgba(59,130,246,0.16), 0 0 30px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(196, 144, 65,0.16), 0 0 22px rgba(196, 130, 45,0.12)"
+                      : "0 6px 22px rgba(59,130,246,0.26), 0 0 32px rgba(59,130,246,0.18), inset 0 1px 0 rgba(147,197,253,0.28), inset 0 -1px 0 rgba(196, 144, 65,0.18), 0 0 26px rgba(196, 130, 45,0.16)",
                   }}
                 >
                   <item.icon

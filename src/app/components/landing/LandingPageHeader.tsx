@@ -95,7 +95,7 @@ export default function LandingPageHeader({
             : // Dark scrolled — adopts dashboard navy-lit-by-gold-lamp identity:
               // inset gold trim line at bottom + gold ambient glow, layered
               // over the existing cool-blue shadow.
-              "backdrop-blur-2xl border-b border-blue-400/15 shadow-[0_4px_24px_rgba(2,6,23,0.3),inset_0_-1px_0_rgba(220,165,90,0.20),0_0_28px_rgba(220,140,50,0.16)]"
+              "backdrop-blur-2xl border-b border-blue-400/15 shadow-[0_4px_24px_rgba(2,6,23,0.3),inset_0_-1px_0_rgba(196, 144, 65,0.20),0_0_28px_rgba(196, 130, 45,0.16)]"
           : "backdrop-blur-md border-b border-transparent"
       }`}
       style={{

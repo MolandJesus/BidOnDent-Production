@@ -82,7 +82,7 @@ export default function BenefitsSection({
         className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(220,140,50,0.16), transparent 70%)"
+            ? "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(196, 130, 45,0.16), transparent 70%)"
             : "radial-gradient(ellipse 90% 100% at 50% 0%, rgba(180,90,30,0.20), transparent 70%)",
         }}
       />
@@ -106,7 +106,7 @@ export default function BenefitsSection({
             {/* Color atmosphere — deeper warm amber */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_25%_80%,rgba(230,180,100,0.26),transparent_60%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_45%_at_80%_20%,rgba(220,160,80,0.28),transparent_50%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(220,165,90,0.18),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_40%_at_50%_50%,rgba(196, 144, 65,0.18),transparent_55%)]" />
             {/* Larger amber pools, deeper saturation */}
             <div className="absolute -top-10 right-[15%] w-72 h-72 bg-amber-300/[0.38] rounded-full blur-[120px]" />
             <div className="absolute bottom-0 left-[10%] w-56 h-56 bg-amber-200/[0.30] rounded-full blur-[130px]" />
@@ -345,8 +345,8 @@ export default function BenefitsSection({
         className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
-            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+            ? "linear-gradient(to right, transparent, rgba(196, 144, 65,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(196, 144, 65,0.28) 50%, transparent)",
         }}
       />
     </section>

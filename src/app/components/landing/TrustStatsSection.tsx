@@ -78,7 +78,7 @@ export default function TrustStatsSection({
           <>
             {/* Dot grid (Branch A: deeper amber) */}
             <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(180,130,60,0.07)_1px,transparent_1px)] [background-size:20px_20px] opacity-90" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(220,165,90,0.26),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_20%_20%,rgba(196, 144, 65,0.26),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_80%_80%,rgba(210,155,70,0.22),transparent_50%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_30%_at_50%_50%,rgba(230,175,100,0.24),transparent_50%)]" />
             <div className="absolute top-0 right-[30%] w-64 h-64 bg-amber-300/[0.38] rounded-full blur-[100px]" />
@@ -205,7 +205,7 @@ export default function TrustStatsSection({
           {commitments.map((item, index) => (
             <div
               key={item.label}
-              className={`bd-glass-card bd-glass-card--landing-warm group h-full rounded-[1.75rem] border px-5 py-6 text-left backdrop-blur-xl transition-all duration-300 sm:px-6 sm:py-7 md:text-center ${isLightAppearance ? "border-[rgba(220,205,180,0.65)] bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(248,250,254,0.72))] shadow-[0_20px_48px_rgba(15,23,42,0.13)] hover:-translate-y-1 hover:shadow-[0_28px_56px_rgba(15,23,42,0.18)] hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,253,248,0.85))]" : "border-blue-300/16 bg-[linear-gradient(180deg,rgba(10,22,44,0.78),rgba(8,18,36,0.68))] shadow-[0_18px_38px_rgba(2,8,24,0.26)] hover:-translate-y-1 hover:border-blue-300/24 hover:bg-[linear-gradient(180deg,rgba(15,30,58,0.84),rgba(9,20,40,0.74))]"}`}
+              className={`bd-glass-card bd-glass-card--landing-warm group h-full rounded-[1.75rem] border px-5 py-6 text-left backdrop-blur-xl transition-all duration-300 sm:px-6 sm:py-7 md:text-center ${isLightAppearance ? "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(252,240,208,0.82),rgba(247,232,194,0.72))] shadow-[0_20px_48px_rgba(110,70,18,0.18)] hover:-translate-y-1 hover:shadow-[0_28px_56px_rgba(110,70,18,0.24)] hover:bg-[linear-gradient(180deg,rgba(252,240,208,0.92),rgba(247,232,194,0.85))]" : "border-blue-300/16 bg-[linear-gradient(180deg,rgba(10,22,44,0.78),rgba(8,18,36,0.68))] shadow-[0_18px_38px_rgba(2,8,24,0.26)] hover:-translate-y-1 hover:border-blue-300/24 hover:bg-[linear-gradient(180deg,rgba(15,30,58,0.84),rgba(9,20,40,0.74))]"}`}
               style={{ animationDelay: `${index * 0.15}s` }}
             >
               <div
@@ -259,8 +259,8 @@ export default function TrustStatsSection({
         className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
         style={{
           background: isLightAppearance
-            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
-            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+            ? "linear-gradient(to right, transparent, rgba(196, 144, 65,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(196, 144, 65,0.28) 50%, transparent)",
         }}
       />
     </section>

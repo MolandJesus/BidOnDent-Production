@@ -55,7 +55,7 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
           className={`bd-glass-card bd-glass-card--landing p-8 md:p-10 mb-6 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
           <p
-            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border backdrop-blur-md ${isLight ? "bg-blue-50/80 border-blue-200/60 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.30)]" : "bg-blue-500/15 border-blue-400/30 text-blue-300 shadow-[inset_0_1px_0_rgba(147,197,253,0.18),0_0_0_1px_rgba(96,165,250,0.20)]"}`}
+            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border backdrop-blur-md ${isLight ? "bg-blue-50/80 border-blue-200/60 text-blue-700 shadow-[inset_0_1px_0_rgba(252, 240, 208, 0.85),0_0_0_1px_rgba(191,219,254,0.30)]" : "bg-blue-500/15 border-blue-400/30 text-blue-300 shadow-[inset_0_1px_0_rgba(147,197,253,0.18),0_0_0_1px_rgba(96,165,250,0.20)]"}`}
           >
             Insurer Partnership
           </p>
@@ -97,7 +97,7 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
               <div
                 className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${
                   isLight
-                    ? "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10)]"
+                    ? "bg-[linear-gradient(135deg,rgba(219,234,254,0.85)_0%,rgba(191,219,254,0.55)_100%)] shadow-[inset_0_1px_0_rgba(252, 240, 208, 0.85),0_0_0_1px_rgba(147,197,253,0.30),0_4px_14px_rgba(59,130,246,0.10)]"
                     : "bg-[linear-gradient(135deg,rgba(37,99,235,0.18)_0%,rgba(59,130,246,0.10)_100%)] shadow-[inset_0_1px_0_rgba(147,197,253,0.18),0_0_0_1px_rgba(96,165,250,0.22),0_4px_18px_rgba(37,99,235,0.18)]"
                 }`}
               >
