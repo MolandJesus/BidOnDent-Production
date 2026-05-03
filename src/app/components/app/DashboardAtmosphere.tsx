@@ -111,6 +111,17 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
             : "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(220, 150, 60, 0.14) 0%, transparent 60%)",
         }}
       />
+      {/* ── D7: subtle warm bottom-center halo — completes the 4-corner
+            ambient lamp lighting (top from atmosphere ribbon, sides from D6
+            gutters, now bottom). Very low alpha — premium not loud. ── */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(220, 165, 90, 0.08) 0%, transparent 70%)"
+            : "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(220, 150, 60, 0.12) 0%, transparent 68%)",
+        }}
+      />
     </>
   );
 }
