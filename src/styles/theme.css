@@ -2164,11 +2164,13 @@ body {
     0 0 0 1px rgba(191, 219, 254, 0.2);
 }
 
-/* D4 (final v2): warm-amber highlight + glow on light report header/progress —
-   matches dashboard gold lamp identity instead of D3's cool-blue accents. */
+/* Premium gold lamp identity on light report header/progress/section —
+   tuned to the locked 2026-05-03 palette (KI-066): top trim uses
+   top/corner lamp light rgba(196, 144, 65, *), corner lamp blob uses
+   the same. The older yellow-amber register is forbidden. */
 [data-appearance-mode="light"] .bd-report-header::before,
 [data-appearance-mode="light"] .bd-report-progress::before {
-  background: linear-gradient(90deg, transparent, rgba(220, 165, 90, 0.46), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.46), transparent);
 }
 
 [data-appearance-mode="light"] .bd-report-header::after,
@@ -2177,11 +2179,11 @@ body {
 }
 
 [data-appearance-mode="light"] .bd-report-section::before {
-  background: linear-gradient(90deg, transparent, rgba(220, 165, 90, 0.46), transparent);
+  background: linear-gradient(90deg, transparent, rgba(196, 144, 65, 0.46), transparent);
 }
 
 [data-appearance-mode="light"] .bd-report-section::after {
-  background: radial-gradient(circle, rgba(220, 140, 50, 0.14) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(196, 144, 65, 0.16) 0%, transparent 72%);
 }
 
 .bd-report-progress {
