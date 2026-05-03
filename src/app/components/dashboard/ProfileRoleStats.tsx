@@ -44,7 +44,8 @@ export default function ProfileRoleStats({
   // replaces white, bronze rim + deep outer halo replace forbidden warm yellows.
   const containerCls = isLightAppearance
     ? "px-4 py-3 bg-[linear-gradient(180deg,rgba(238,247,255,0.65)_0%,rgba(219,234,254,0.40)_100%)] border-b border-blue-200/35 shadow-[inset_0_1px_0_rgba(252,240,208,0.78),inset_0_-1px_0_rgba(140,82,22,0.26),0_0_24px_rgba(196,130,45,0.12)]"
-    : "px-4 py-3 bg-[linear-gradient(180deg,rgba(15,30,55,0.55)_0%,rgba(11,23,47,0.45)_100%)] border-b border-blue-400/15 shadow-[inset_0_1px_0_rgba(147,197,253,0.10),inset_0_-1px_0_rgba(220,165,90,0.16),0_0_28px_rgba(220,140,50,0.14)]";
+    : // Dark role-stats container aligned to locked palette (KI-066).
+      "px-4 py-3 bg-[linear-gradient(180deg,rgba(15,30,55,0.55)_0%,rgba(11,23,47,0.45)_100%)] border-b border-blue-400/15 shadow-[inset_0_1px_0_rgba(147,197,253,0.10),inset_0_-1px_0_rgba(140,82,22,0.30),0_0_28px_rgba(196,130,45,0.16)]";
   const valueCls = isLightAppearance
     ? "font-bold text-lg text-slate-800"
     : "font-bold text-lg text-slate-100";

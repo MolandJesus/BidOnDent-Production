@@ -67,7 +67,9 @@ export default function DashboardSidebar({
           : "blur(28px) saturate(1.5)",
         boxShadow: isLightAppearance
           ? "8px 0 36px rgba(15, 30, 60, 0.16), 2px 0 10px rgba(15, 30, 60, 0.10), inset -1px 0 0 rgba(140, 82, 22, 0.30), inset 0 1px 0 rgba(252, 238, 204, 0.72), 0 0 40px rgba(196, 130, 45, 0.12)"
-          : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(220, 165, 90, 0.18), 0 0 64px rgba(220, 140, 50, 0.18)",
+          : // Dark sidebar shell aligned to locked palette (KI-066): bronze
+            // trim inset replaces yellow-amber, deep outer halo tuned.
+            "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(140, 82, 22, 0.34), 0 0 64px rgba(196, 130, 45, 0.20)",
       }}
     >
       <div
@@ -132,7 +134,8 @@ export default function DashboardSidebar({
                         : "linear-gradient(135deg, rgba(37, 99, 235, 0.20) 0%, rgba(59, 130, 246, 0.11) 100%)",
                       boxShadow: isLightAppearance
                         ? "inset 0 1px 0 rgba(252, 238, 204, 0.78), inset 0 -1px 0 rgba(140, 82, 22, 0.28), 0 0 0 1px rgba(140, 82, 22, 0.22), 0 0 0 1px rgba(96, 165, 250, 0.30), 0 4px 12px rgba(15, 30, 60, 0.12), 0 0 18px rgba(196, 130, 45, 0.14)"
-                        : "inset 0 1px 0 rgba(147, 197, 253, 0.14), inset 0 -1px 0 rgba(220, 165, 90, 0.18), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.20), 0 4px 14px rgba(37, 99, 235, 0.16), 0 0 28px rgba(220, 140, 50, 0.16)",
+                        : // Dark active tab aligned to locked palette (KI-066).
+                          "inset 0 1px 0 rgba(147, 197, 253, 0.14), inset 0 -1px 0 rgba(140, 82, 22, 0.32), 0 0 0 1px rgba(140, 82, 22, 0.20), 0 0 0 1px rgba(96, 165, 250, 0.20), 0 4px 14px rgba(37, 99, 235, 0.16), 0 0 28px rgba(196, 130, 45, 0.18)",
                     }
                   : {}
               }
@@ -244,13 +247,15 @@ export default function DashboardSidebar({
       </nav>
 
       <div
-        className={`p-3 border-t ${isLightAppearance ? "border-[rgba(140,82,22,0.26)]" : "border-[rgba(220,165,90,0.16)]"}`}
+        className={`p-3 border-t ${isLightAppearance ? "border-[rgba(140,82,22,0.26)]" : "border-[rgba(140,82,22,0.30)]"}`}
         style={{
           boxShadow: isLightAppearance
             ? // Light footer mini-card aligned to locked 2026-05-03 palette
               // (KI-066): cream inset + deep outer warm halo.
               "inset 0 1px 0 rgba(252, 240, 208, 0.85), 0 -8px 22px rgba(196, 130, 45, 0.08)"
-            : "inset 0 1px 0 rgba(220, 175, 110, 0.10), 0 -8px 22px rgba(220, 140, 50, 0.10)",
+            : // Dark footer mini-card aligned to locked palette (KI-066):
+              // top/corner lamp inset + deep outer halo.
+              "inset 0 1px 0 rgba(196, 144, 65, 0.14), 0 -8px 22px rgba(196, 130, 45, 0.12)",
         }}
       >
         <button
@@ -273,7 +278,8 @@ export default function DashboardSidebar({
                 boxShadow: isLightAppearance
                   ? // Light avatar ring — bronze trim + deep outer halo (KI-066).
                     "0 0 0 1px rgba(140, 82, 22, 0.30), 0 0 18px rgba(196, 130, 45, 0.20)"
-                  : "0 0 0 1px rgba(220, 165, 90, 0.20), 0 0 22px rgba(220, 140, 50, 0.22)",
+                  : // Dark avatar ring aligned to locked palette (KI-066).
+                    "0 0 0 1px rgba(140, 82, 22, 0.34), 0 0 22px rgba(196, 130, 45, 0.22)",
               }}
             />
           ) : (
@@ -284,7 +290,8 @@ export default function DashboardSidebar({
                 boxShadow: isLightAppearance
                   ? // Light avatar ring — bronze trim + deep outer halo (KI-066).
                     "0 0 0 1px rgba(140, 82, 22, 0.30), 0 0 18px rgba(196, 130, 45, 0.20)"
-                  : "0 0 0 1px rgba(220, 165, 90, 0.20), 0 0 22px rgba(220, 140, 50, 0.22)",
+                  : // Dark avatar ring aligned to locked palette (KI-066).
+                    "0 0 0 1px rgba(140, 82, 22, 0.34), 0 0 22px rgba(196, 130, 45, 0.22)",
               }}
             >
               {(userProfile.name || "U").charAt(0).toUpperCase()}

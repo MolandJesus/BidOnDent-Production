@@ -108,7 +108,8 @@ export default function MobileBottomNav({
                       background: isLightAppearance
                         ? // Top/corner lamp halo per locked palette (KI-066).
                           "linear-gradient(90deg, transparent, rgba(196,144,65,0.55) 50%, transparent)"
-                        : "linear-gradient(90deg, transparent, rgba(220,165,90,0.65) 50%, transparent)",
+                        : // Dark active gold underline aligned to locked palette (KI-066).
+                          "linear-gradient(90deg, transparent, rgba(196,144,65,0.65) 50%, transparent)",
                     }}
                   />
                 </>

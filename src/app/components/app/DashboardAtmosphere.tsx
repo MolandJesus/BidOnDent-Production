@@ -99,7 +99,7 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
           background: isLightAppearance
             ? // Diffuse far-halo gutter wash — locked palette (KI-066).
               "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(196, 130, 45, 0.10) 0%, transparent 62%)"
-            : "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(220, 150, 60, 0.16) 0%, transparent 60%)",
+            : "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(196, 130, 45, 0.18) 0%, transparent 60%)",
         }}
       />
       {/* ── D6: warm gold gutter wash, right edge — same as left but opposite
@@ -110,7 +110,7 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
           background: isLightAppearance
             ? // Diffuse far-halo gutter wash — locked palette (KI-066).
               "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(196, 130, 45, 0.09) 0%, transparent 62%)"
-            : "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(220, 150, 60, 0.14) 0%, transparent 60%)",
+            : "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(196, 130, 45, 0.15) 0%, transparent 60%)",
         }}
       />
       {/* ── D7: subtle warm bottom-center halo — completes the 4-corner
@@ -122,7 +122,7 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
           background: isLightAppearance
             ? // Diffuse far-halo bottom wash — locked palette (KI-066).
               "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(196, 130, 45, 0.08) 0%, transparent 70%)"
-            : "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(220, 150, 60, 0.12) 0%, transparent 68%)",
+            : "radial-gradient(ellipse 56% 22% at 50% 100%, rgba(196, 130, 45, 0.13) 0%, transparent 68%)",
         }}
       />
     </>
