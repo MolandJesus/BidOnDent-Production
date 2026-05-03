@@ -144,26 +144,101 @@ export default function HeroSection({
         )}
       </div>
 
-      {/* Pass 6 — Automotive identity: sedan silhouette watermark, top-right of hero,
-          behind hero image. Low opacity, pointer-events-none. */}
+      {/* Hero polish 2026-05-03 — repair-blueprint accent (replaces prior
+          filled-sedan silhouette which read as a cartoon blob). Thin
+          stroke-only contour with dent hotspot + diagnostic crosshair +
+          dashed bid-route signal connecting the diagnosis to the
+          marketplace map card on the left. Low opacity, watermark-tier,
+          behind everything. */}
       <svg
         aria-hidden="true"
-        className="hidden md:block absolute top-16 right-0 w-[420px] h-[140px] pointer-events-none"
-        viewBox="0 0 400 120"
-        style={{
-          opacity: isLightAppearance ? 0.07 : 0.10,
-          color: isLightAppearance ? "#1e3a8a" : "#60a5fa",
-        }}
-        fill="currentColor"
+        className="hidden md:block absolute top-12 right-0 w-[480px] h-[200px] pointer-events-none"
+        viewBox="0 0 480 200"
+        fill="none"
+        stroke={isLightAppearance ? "#1e3a8a" : "#60a5fa"}
+        style={{ opacity: isLightAppearance ? 0.18 : 0.28 }}
       >
-        {/* Sedan side profile — body + windows + wheels (simple silhouette) */}
-        <path d="M 28 92 L 50 92 L 60 72 Q 92 36 158 32 L 248 32 Q 304 35 342 72 L 366 92 L 380 92 L 28 92 Z" />
-        <path d="M 110 60 L 150 38 L 232 38 L 256 60 Z" opacity="0.55" />
-        <circle cx="92" cy="92" r="22" />
-        <circle cx="312" cy="92" r="22" />
-        {/* Wheel spoke detail (very subtle) */}
-        <circle cx="92" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-        <circle cx="312" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        {/* Faint horizontal blueprint guide */}
+        <line
+          x1="0"
+          y1="118"
+          x2="480"
+          y2="118"
+          strokeWidth="0.5"
+          strokeDasharray="2 6"
+          opacity="0.35"
+        />
+
+        {/* Vehicle body outline — thin stroke quarter+door+roof */}
+        <path
+          d="M 36 130 Q 70 132 92 118 L 116 88 Q 150 62 200 60 L 300 60 Q 342 64 376 92 L 402 118 Q 432 132 460 130"
+          strokeWidth="1.2"
+          opacity="0.55"
+        />
+
+        {/* Greenhouse / window line */}
+        <path
+          d="M 138 90 L 200 66 L 300 66 L 350 90"
+          strokeWidth="0.85"
+          opacity="0.40"
+        />
+
+        {/* Belt line / panel separation */}
+        <line x1="116" y1="98" x2="402" y2="98" strokeWidth="0.6" opacity="0.32" />
+
+        {/* Door cut */}
+        <line x1="220" y1="68" x2="220" y2="120" strokeWidth="0.55" opacity="0.32" />
+        <line x1="280" y1="68" x2="280" y2="120" strokeWidth="0.55" opacity="0.32" />
+
+        {/* Dent hotspot — door panel area, with concentric pulse rings */}
+        <circle
+          cx="244"
+          cy="96"
+          r="4"
+          fill={isLightAppearance ? "#3b82f6" : "#93c5fd"}
+          stroke="none"
+          opacity="0.85"
+        />
+        <circle cx="244" cy="96" r="9" strokeWidth="0.8" opacity="0.55" />
+        <circle cx="244" cy="96" r="15" strokeWidth="0.5" opacity="0.30" />
+
+        {/* Diagnostic crosshair around dent */}
+        <line x1="244" y1="76" x2="244" y2="84" strokeWidth="0.85" opacity="0.6" />
+        <line x1="244" y1="108" x2="244" y2="116" strokeWidth="0.85" opacity="0.6" />
+        <line x1="224" y1="96" x2="232" y2="96" strokeWidth="0.85" opacity="0.6" />
+        <line x1="256" y1="96" x2="264" y2="96" strokeWidth="0.85" opacity="0.6" />
+
+        {/* Bid-route signal — dashed curve from dent toward the marketplace */}
+        <path
+          d="M 244 96 Q 180 130 110 158"
+          strokeWidth="0.9"
+          strokeDasharray="3 4"
+          opacity="0.42"
+        />
+        {/* Marketplace endpoint pin (echoes the map card's report-pin language) */}
+        <circle
+          cx="110"
+          cy="158"
+          r="2.6"
+          fill={isLightAppearance ? "#60a5fa" : "#93c5fd"}
+          stroke="none"
+          opacity="0.65"
+        />
+        <circle cx="110" cy="158" r="6" strokeWidth="0.5" opacity="0.35" />
+
+        {/* Subtle annotation tick on the rear quarter — extra blueprint feel */}
+        <line x1="376" y1="78" x2="392" y2="68" strokeWidth="0.55" opacity="0.30" />
+        <text
+          x="396"
+          y="66"
+          fontSize="7"
+          fill={isLightAppearance ? "#1e3a8a" : "#60a5fa"}
+          stroke="none"
+          opacity="0.45"
+          fontFamily="ui-monospace, monospace"
+        >
+          R-Q.PANEL
+        </text>
       </svg>
 
       {/* Pass 6 — Automotive identity: road-lane dashes at the Hero→HowItWorks transition.
@@ -667,22 +742,40 @@ export default function HeroSection({
                 bottom-edge lamp inset that catches the hero's gold-from-
                 above wash. */}
             <div className="relative" aria-hidden="true">
-              {/* Outer ambient bloom — multi-layer cool + warm */}
+              {/* Hero polish 2026-05-03 — outer bloom expanded so the map
+                  card dissolves into the hero atmosphere instead of reading
+                  as a discrete rectangle pasted on top. Three layers now:
+                  (1) widened cool ambient pool, (2) widened gold lamp halo,
+                  (3) new tight inner bleed that bridges the card edge to
+                  hero color so the rim light reads as light catching glass
+                  inside the same atmosphere — not a frame around an island. */}
               <div
-                className="absolute -inset-12 rounded-[2.75rem] blur-3xl pointer-events-none"
+                className="absolute -inset-20 rounded-[3rem] blur-3xl pointer-events-none"
                 style={{
                   background: isLightAppearance
-                    ? "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(59,130,246,0.14), transparent 70%)"
-                    : "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(59,130,246,0.18), transparent 72%)",
+                    ? "radial-gradient(ellipse 78% 68% at 50% 50%, rgba(59,130,246,0.20), transparent 72%)"
+                    : "radial-gradient(ellipse 82% 72% at 50% 50%, rgba(59,130,246,0.26), transparent 74%)",
                 }}
               />
-              {/* Outer gold lamp halo — gold-as-light, very low alpha */}
+              {/* Outer gold lamp halo — gold-as-light, expanded reach */}
               <div
-                className="absolute -inset-16 rounded-[3rem] blur-3xl pointer-events-none"
+                className="absolute -inset-24 rounded-[3.25rem] blur-3xl pointer-events-none"
                 style={{
                   background: isLightAppearance
-                    ? "radial-gradient(ellipse 80% 70% at 50% 30%, rgba(220,165,90,0.10), transparent 65%)"
-                    : "radial-gradient(ellipse 80% 70% at 50% 25%, rgba(220,165,90,0.14), transparent 65%)",
+                    ? "radial-gradient(ellipse 85% 75% at 50% 30%, rgba(220,165,90,0.14), transparent 68%)"
+                    : "radial-gradient(ellipse 85% 75% at 50% 25%, rgba(220,165,90,0.18), transparent 68%)",
+                }}
+              />
+              {/* Inner edge bleed — sits flush around the card, bridging
+                  the rim light to the surrounding atmosphere so the card
+                  edge reads as a soft glass meniscus instead of a hard
+                  perimeter. */}
+              <div
+                className="absolute -inset-3 rounded-[2.4rem] blur-2xl pointer-events-none"
+                style={{
+                  background: isLightAppearance
+                    ? "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(96,165,250,0.10), transparent 75%)"
+                    : "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(59,130,246,0.16), transparent 75%)",
                 }}
               />
 
@@ -690,7 +783,16 @@ export default function HeroSection({
                   V2 frame: outline ring removed in favor of a dual-edge
                   inset (champagne top bezel + amber lamp at bottom) so the
                   glass reads as a lit object catching the lamp wash from
-                  above, not a stamped rectangle. */}
+                  above, not a stamped rectangle.
+
+                  Hero polish 2026-05-03 — `mask-image` softens the top edge
+                  of the entire map stage into the hero atmosphere. The top
+                  ~10% fades to transparent so the rim light, road network,
+                  and contour grid bleed into the surrounding navy/cream
+                  rather than terminating at a hard rectangle. Bottom keeps
+                  full definition because it transitions to the next
+                  section. Owner directive ("become even more apart of the
+                  hero section with a gradient fade"). */}
               <div
                 className="relative rounded-2xl w-full overflow-hidden"
                 style={{
@@ -700,6 +802,10 @@ export default function HeroSection({
                   boxShadow: isLightAppearance
                     ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(220,165,90,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(220,165,90,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
                     : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(220,165,90,0.10), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 -1px 0 rgba(220,165,90,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
+                  WebkitMaskImage:
+                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
+                  maskImage:
+                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
                 }}
               >
                 {/* Layer 1 — stylized map base. Faint road network via SVG curves. */}
