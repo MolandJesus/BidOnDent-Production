@@ -1,10 +1,12 @@
-# PLAN — Landing Page Redesign (2026-05-02)
+# PLAN — Landing Page Redesign (2026-05-02) — ARCHIVED 2026-05-03
+
+> **ARCHIVED 2026-05-03.** This is the historical execution record of the original 16-pass landing redesign. After sign-off, follow-up work expanded into the Liquid Map Intelligence layer (Passes A–G), the cross-app button-system adoption, and the form-input unification — all now also archived. **For current visual system state, read `docs/REF_VISUAL_SYSTEM.md`.** For dashboard plans, see `docs/PLAN_DASHBOARD_REDESIGN.md`.
 
 **Authority:** PLAN-tier — historical execution record. Redesign is complete and signed off.
 **Last updated:** 2026-05-02
 **Status:** **STATUS COMPLETE** — Passes 1 through 16 shipped (Passes 12–15 added editorial flanking accents to section H3s; Pass 16 lifted the two sub-pages, AboutPage + InsurerPartnershipPage, to the landing-tier glass system). Both audit docs archived under `docs/archive/`. Owner authorized full-autopilot completion 2026-05-02.
 **Scope:** Landing page surfaces only — 10 sections + header + footer + appearance toggle. No dashboard, no auth, no backend.
-**Companion docs:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §7 (locked design system), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md). Source audits archived: [`docs/archive/`](archive/).
+**Companion docs:** [`../MOLANDJESUS_DESIGN_DECISIONS.md`](../MOLANDJESUS_DESIGN_DECISIONS.md) §7 (locked design system), [`../LAW_PROJECT_RULES.md`](../LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md). Source audits also archived in this folder.
 
 ---
 

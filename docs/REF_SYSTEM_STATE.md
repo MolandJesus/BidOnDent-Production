@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-02 (storage pointer pattern + verify_jwt:false hardening shipped)
+**Last updated:** 2026-05-03 (visual system pointer to `REF_VISUAL_SYSTEM.md`; landing visual plans archived; gold-lamp identity at top of landing in dark mode shipped)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
@@ -279,22 +279,29 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 ## 7. Design System
 
-**Target aesthetic:** Apple Maps-inspired. Map is base layer. Everything floats above geography.
+> **Single source of truth:** `docs/REF_VISUAL_SYSTEM.md` (current visual identity, full `bd-*` utility inventory, cross-app adoption status, intentionally separate sibling systems). The summary below stays for orientation; for any design work, read `REF_VISUAL_SYSTEM.md` first.
+
+**Target identity (one sentence):** Cool blue glass surfaces lit by warm gold studio-lamp atmosphere, on a map-first product world.
 
 **Appearance modes:** `"light"` (default) | `"map-dark"` — set via `data-appearance-mode` attribute. First-paint default is `"light"` for both the inline boot script in [index.html](../index.html) and the [useAppearanceMode](../src/app/hooks/useAppearanceMode.ts) hook; system `prefers-color-scheme` is intentionally ignored so a fresh deploy always lands in light mode. Both the pre-React HTML loader and the React [AppLoading](../src/app/components/app/AppLoading.tsx) component read `data-appearance-mode` (set synchronously before paint) so reload-time loading screens honor the saved mode — light mode renders a warm-ivory-on-soft-blue background with a gold spinner.
 
-**CSS utilities** (defined in [theme.css](../src/styles/theme.css), 2173 lines):
+**Major utility families** (defined in [theme.css](../src/styles/theme.css)):
 
-- Dashboard: `bd-dashboard-panel`, `bd-dashboard-section`, `bd-dashboard-chip`, `bd-dashboard-primary-button`, `bd-dashboard-secondary-button`, `bd-dashboard-ghost-button`
-- Accent modifiers: `--accent-blue`, `--accent-cyan`, `--accent-indigo`, `--deep`, `--interactive`
-- Landing: `bd-glass-panel`, `bd-glass-card`, `bd-glass-control`, `bd-glass-badge`, `bd-glass-floating`
-- Light mode: `bd-light-surface` class for white backgrounds with dark text
+- **Buttons:** `bd-dashboard-primary-button` (canonical primary CTA shell, adopted across landing/dashboard/auth/onboarding/legal/error-boundary), `bd-report-primary-button`, `bd-glass-control--*`.
+- **Inputs:** `bd-report-input` (canonical text/email/tel/textarea, adopted across report flow + auth + landing inquiry forms + onboarding + account modals).
+- **Cards:** `bd-glass-card`, `bd-glass-card--landing`, `bd-glass-card--landing-warm`, `bd-glass-card--dashboard`, `bd-glass-panel`, `bd-glass-floating`, `bd-glass-badge`.
+- **Atmosphere/shell:** `bd-bloom-atmosphere`, `bd-dashboard-atmosphere`, `bd-shell-header`, `bd-section-eyebrow`.
+- **Liquid Map Intelligence (hero scene):** `bd-map-contour`, `bd-liquid-gold-flow`, `bd-liquid-gold-sheen`, `bd-route-line`, `bd-pin-pulse`, `bd-bid-card-float`, `bd-gold-sheen-hover`. All have reduced-motion + mobile motion-budget guards.
+- **Map controls (intentional sibling system):** `bd-map-control-pill`, `bd-map-overlay-card` — stronger contrast than generic glass to read against MapLibre tiles.
 
 **Color system:**
 
-- Royal blue `#003d82` — primary identity / CTAs
+- Royal blue `#003d82` — primary identity / CTAs / route / selection
 - Sky blue `#00a0e9` — secondary / gradients
 - Navy — depth / night background
+- Gold/amber (alpha 0.10–0.25 only) — lighting, halo, rim trim, marketplace energy. **Never primary button infill.**
+
+**Identity continuity (Pass G shipped 2026-05-03):** the dashboard's navy-lit-by-gold-lamp shadow stack now mirrors at the top of landing in dark mode (scrolled header inset gold trim + ambient gold glow + lamp wash on hero atmosphere + amber lamp orb). Landing → dashboard navigation in dark mode reads as the same room.
 
 **Note:** `primaryColor` and `secondaryColor` are threaded as props through the component tree. These are constants that never change. They should be CSS custom properties but this refactor is deferred.
 

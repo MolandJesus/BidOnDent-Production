@@ -1,16 +1,24 @@
 ---
 title: PLAN — Landing Page Signature Polish (Liquid Map Intelligence)
-authority: PLAN
-status: DRAFT — awaiting owner sign-off on decisions before Pass A
+authority: PLAN (ARCHIVED 2026-05-03)
+status: COMPLETE — Passes A–G shipped; Pass H (verification) deferred to a deep visual audit by Sonnet
+archived: 2026-05-03
 last_updated: 2026-05-03
 supersedes: none — additive on top of completed PLAN_LANDING_REDESIGN.md
 companion_docs:
   - docs/LAW_PROJECT_RULES.md
   - docs/LAW_HARDENING_PLAN.md
   - docs/MOLANDJESUS_DESIGN_DECISIONS.md
-  - docs/PLAN_LANDING_REDESIGN.md (historical execution record, STATUS COMPLETE)
+  - docs/archive/PLAN_LANDING_REDESIGN_archived_2026-05-03.md (historical execution record, STATUS COMPLETE)
+  - docs/REF_VISUAL_SYSTEM.md (current visual system + utility inventory)
+  - docs/HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md (Pass H — Sonnet audit handoff)
   - skill: bd-design-identity
 ---
+
+> **ARCHIVED 2026-05-03.** Passes A (audit) / B (tokens) / C (hero scene) / D (map-first anchor) / E (section continuity) / F (light-mode depth) / G (dark-mode landing parity — gold-lamp identity at top of landing) all shipped.
+> Pass H (verification) is being handled out-of-band by a deep Sonnet visual audit — see `HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`. Any Pass-H follow-up that needs new code work will live in a fresh plan, not here.
+> Read this doc only for historical decision context. Current visual system state lives in `REF_VISUAL_SYSTEM.md`.
+
 
 # PLAN — Landing Page Signature Polish (Liquid Map Intelligence)
 

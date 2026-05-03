@@ -1,14 +1,15 @@
 ---
-title: PLAN — Landing Dark-Mode Parity (Liquid Map Intelligence Pass G)
-status: SUPERSEDED by audit — see Outcome notes
+title: PLAN — Landing Dark-Mode Parity (Liquid Map Intelligence Pass G) — ARCHIVED 2026-05-03
+status: SUPERSEDED by audit + later gold-lamp pass at top of landing
+archived: 2026-05-03
 last_updated: 2026-05-03
-parent: docs/PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md
-audit: docs/landing_dark_audit_2026-05-03.md
+parent: docs/archive/PLAN_LANDING_LIQUID_MAP_INTELLIGENCE_archived_2026-05-03.md
+audit: docs/archive/landing_dark_audit_2026-05-03.md
 authority: PLAN tier (under LAW_PROJECT_RULES + LAW_HARDENING_PLAN)
 owner: MolandJesus
 ---
 
-> **Update 2026-05-03:** the audit walk (pre-work item #1) found landing dark mode is already at parity with the dashboard's gold-lamp identity via D5/D7/Pass B-C-D-E work. Original Pass G1 surfaces token-swap scope is **no-op**. The only remaining material gap is landing CTAs hand-rolling button styles instead of consuming the D10 system — but that's a refactor, not a token-swap, and is its own future initiative. Sections below are kept for historical context only.
+> **ARCHIVED 2026-05-03.** This plan was superseded twice: first by the pre-work audit which found landing surfaces already at parity, then by the actual landing-top gold-lamp pass that shipped on 2026-05-03 (gold inset trim on the scrolled header + lamp-from-above radial wash + amber lamp orb on the hero atmosphere, dark mode only). For current state, read `docs/REF_VISUAL_SYSTEM.md`. Sections below are historical context only.
 
 # PLAN — Landing Dark-Mode Parity
 
