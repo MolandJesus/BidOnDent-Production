@@ -351,8 +351,6 @@
 - **Impact:** Anti-Goal #9 in `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` requires bid card text to be "obviously sample/illustrative or use generic labels." Current labels: "Avg. response < 48 hrs", "Repair Completed! / Bid selected and scheduled through platform" read as live operational claims. The plan specified 2 chips with labels "Quote • $1,240" and "ETA 4 days." A third chip ("NY Active Service Region") is also present beyond the plan spec.
 - **Location:** `src/app/components/landing/HeroSection.tsx` — hero scene bid card elements.
 - **Fix direction:** Reduce to 2 cards. Update labels to be clearly sample/illustrative (e.g., "Quote • $1,240", "ETA 4 days") per plan spec.
-- **Status:** PARTIAL RESOLUTION 2026-05-03 — operational copy violations fixed (Anti-Goal #9 cleared):
-  - Card 1: "Bids Received / Avg. response < 48 hrs" → "Sample quote / $1,240 estimate" (circle indicator "3" → "$")
-  - Card 3: "Repair Completed! / Bid selected and scheduled through platform" → "Estimated ETA / ~4 days for sample repair"
-  - Card 2 (NY / Active Service Region): unchanged — factual content (project memory: "Now serving NY"), not a fake bid claim.
-  - Card count remains at 3 (plan Decision #2 specified 2). Reducing count would delete the pre-existing factual NY badge — owner decision, not auto-applicable. Owner can authorize NY badge removal in a follow-up if strict 2-card adherence is preferred.
+- **Status:** RESOLVED 2026-05-03 — both subparts now closed:
+  - Anti-Goal #9 copy: Card 1 "Bids Received / Avg. response < 48 hrs" → "Sample quote / $1,240 estimate" (circle "3" → "$"); Card 3 "Repair Completed! / Bid selected and scheduled through platform" → "Estimated ETA / ~4 days for sample repair".
+  - Decision #2 card count: NY / Active Service Region badge removed from hero scene — count now 2, matching plan spec. Same NY content stays communicated via hero eyebrow ("Now serving New York"), trust chip ("Now available in NY"), and Coverage section region chips, so no factual loss to landing.

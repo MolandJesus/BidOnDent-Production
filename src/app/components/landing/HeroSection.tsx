@@ -611,31 +611,11 @@ export default function HeroSection({
               </div>
             </div>
 
-            {/* Floating "NY" region badge — dark glass */}
-            <div
-              className={`absolute -top-1 right-2 sm:-top-2 sm:right-0 lg:top-4 lg:-right-4 rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
-              style={{
-                transitionDelay: "1.2s",
-                borderColor: isLightAppearance ? "rgba(190,205,230,0.30)" : "rgba(96,165,250,0.25)",
-                background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 253, 0.74) 100%)"
-                  : "linear-gradient(180deg, rgba(18, 36, 60, 0.92) 0%, rgba(12, 25, 41, 0.88) 100%)",
-                boxShadow: isLightAppearance
-                  ? "0 16px 50px rgba(0, 0, 0, 0.14), 0 4px 16px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.92), 0 0 36px rgba(59, 130, 246, 0.24), 0 0 14px rgba(96, 165, 250, 0.30)"
-                  : "0 12px 40px rgba(2, 6, 23, 0.4), 0 0 1px rgba(96, 165, 250, 0.3), 0 0 40px rgba(59, 130, 246, 0.36), 0 0 16px rgba(96, 165, 250, 0.42)",
-              }}
-            >
-              <div
-                className={`text-lg sm:text-xl font-bold ${isLightAppearance ? "text-blue-600" : "text-blue-400"}`}
-              >
-                NY
-              </div>
-              <div
-                className={`text-[10px] sm:text-xs font-medium ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
-              >
-                Active Service Region
-              </div>
-            </div>
+            {/* KI-063 final fix (2026-05-03): NY region badge removed to land
+                on plan Decision #2 spec (2 floating cards, not 3). Same NY
+                content remains communicated 3 other places: hero eyebrow
+                "Now serving New York", trust chip "Now available in NY",
+                Coverage section region chips — no factual loss. */}
 
             {/* Floating notification card — dark glass */}
             <div
