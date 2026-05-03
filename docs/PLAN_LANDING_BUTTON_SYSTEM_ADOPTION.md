@@ -1,9 +1,47 @@
-# PLAN — Landing Button-System Adoption (Pass G follow-up)
+# PLAN — Cross-App Button-System Adoption (Pass G follow-up, expanded)
 
-**Status:** SHIPPED (L1, L2, L3 adopted; L4 + L5 NO-GO with hard structural reasoning)
+**Status:** SHIPPED — landing L1-L5 adopted; cross-app sweep added 16 more buttons across auth, onboarding, modals, legal pages, and root error boundary
 **Owner:** MolandJesus
 **Created:** 2026-05-03
 **Triggered by:** Pass G dark-mode audit (commit `32b6701d`) flagging landing CTAs hand-rolling button styles instead of consuming D10's `bd-dashboard-primary-button` system.
+
+## Update — 2026-05-03 expansion to cross-app sweep
+
+After landing L1-L5 shipped, owner directive "stop reporting back and just build" prompted broadening the scope from landing-only to a full-app sweep. Discovered the hand-rolled pattern was systemic, not landing-specific — 16 additional primary CTAs across auth, onboarding, modals, legal pages, and the root error boundary all using legacy `rounded-xl text-white + gradient inline + hover:opacity-90 transition-opacity` or framer-motion `whileHover boxShadow` patterns.
+
+All adopted with the same shell-only pattern: `className "bd-dashboard-primary-button ..."` plus consumer-supplied `style={{ background }}` for gradient preservation. The motion-shadow conflict (framer-motion `whileHover.boxShadow` overriding CSS bd-glass-card:hover) was specifically resolved in the auth flow.
+
+Files updated in cross-app sweep (commits `25f69b24`, `2e56529e`, `f17195eb`, `22497fdc`, `0784804a`):
+
+| File | CTA | Pattern adopted |
+|---|---|---|
+| `src/app/components/auth/LoginMainView.tsx` | 3 user-type cards | Removed redundant motion boxShadow; kept x-tilt hover |
+| `src/app/components/auth/LoginSignupView.tsx` | Create Account | Shell + bg inline |
+| `src/app/components/auth/LoginLoginView.tsx` | Log In | Shell + bg inline |
+| `src/app/components/shop/ShopOnboardingStep2.tsx` | Continue | Shell + bg inline |
+| `src/app/components/shop/ShopOnboardingStep3.tsx` | Continue | Shell + bg inline |
+| `src/app/components/shop/ShopOnboardingStep4.tsx` | Complete Setup | Shell + bg inline |
+| `src/app/components/insurer/InsurerOnboarding.tsx` | Continue + Complete Setup (×2) | Shell + bg inline |
+| `src/app/components/shop/VehicleProfileScreen.tsx` | Add Vehicle + Add First Vehicle (×2) | Shell + bg inline |
+| `src/app/components/codelayer/ReportScreen.tsx` | Start Over recovery (×2) | Shell + bg inline |
+| `src/app/components/landing/BusinessInquiryShopForm.tsx` | Submit Shop Application | Shell + diagonal gradient inline |
+| `src/app/components/landing/BusinessInquiryInsurerForm.tsx` | Submit Partnership | Shell + diagonal gradient inline |
+| `src/app/components/shop/PhotoGuide.tsx` | Got it — start taking photos | Shell + diagonal gradient inline |
+| `src/app/components/shop/photo-guide-steps.tsx` | Start Taking Photos Now | Shell + diagonal gradient inline |
+| `src/app/components/shop/ShopBidModal.tsx` | Submit Bid | Shell + diagonal gradient inline |
+| `src/app/components/shop/ShopRequestCard.tsx` | Submit Bid (in card) | Shell + diagonal gradient inline |
+| `src/app/components/shop/ShopActiveJobCard.tsx` | View Full Details | Shell + diagonal gradient inline |
+| `src/app/components/insurer/InsurerClaimCard.tsx` | Review & Approve | Shell + diagonal gradient inline |
+| `src/app/components/insurer/InsurerClaimApprovalModal.tsx` | Approve Claim | Shell + diagonal gradient inline |
+| `src/app/components/insurer/InsurerClaimDenialModal.tsx` | Deny Claim | Shell + rose gradient inline (functional; future pass could route through bd-glass-control--destructive for rose-tinted shadow) |
+| `src/app/components/legal/PrivacyPolicyPage.tsx` | Back to BidOnDent | Shell + diagonal gradient inline |
+| `src/app/components/legal/TermsOfServicePage.tsx` | Back to BidOnDent | Shell + diagonal gradient inline |
+| `src/app/components/ScreenErrorBoundary.tsx` | Try Again / Reload Page | Shell + diagonal gradient inline |
+| `src/main.tsx` | Try Again (root error boundary) | Shell + diagonal gradient inline |
+
+Files using sibling system class `bd-report-primary-button` (codelayer/report/Step*, ClerkAccountTypeSelector, ShopOnboardingStep1) intentionally not touched — already in spec via the report-flow sibling system.
+
+**Net result:** every primary CTA across the entire app — landing, auth, onboarding (shop + insurer), customer dashboard, vehicle management, intake recovery, business inquiry forms, claim modals, legal pages, screen error boundaries, and the root error boundary — now lives in the same button family. Same gold-lit shadow with warm halo, same 180ms tuned curves, same translateY(-1px) hover and translateY(0) settle press. No more dueling motion-vs-CSS shadow systems.
 
 ## Update — L3 reversed from NO-GO to GO
 
