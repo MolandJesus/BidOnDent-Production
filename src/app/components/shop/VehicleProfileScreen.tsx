@@ -202,8 +202,8 @@ export default function VehicleProfileScreen({
             {!showAddForm && (
               <button
                 onClick={() => setShowAddForm(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-md text-white font-medium"
-                style={{ backgroundColor: primaryColor }}
+                className="bd-dashboard-primary-button flex items-center gap-2 px-4 py-2 text-white font-medium"
+                style={{ background: primaryColor }}
               >
                 <Plus className="w-4 h-4" />
                 Add Vehicle
@@ -335,8 +335,8 @@ export default function VehicleProfileScreen({
               </p>
               <button
                 onClick={() => setShowAddForm(true)}
-                className="px-4 py-2 rounded-md text-white font-medium"
-                style={{ backgroundColor: primaryColor }}
+                className="bd-dashboard-primary-button px-4 py-2 text-white font-medium"
+                style={{ background: primaryColor }}
               >
                 Add Your First Vehicle
               </button>

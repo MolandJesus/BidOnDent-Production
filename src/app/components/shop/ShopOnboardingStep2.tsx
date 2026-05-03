@@ -73,10 +73,8 @@ export default function ShopOnboardingStep2({
         </motion.button>
         <motion.button
           onClick={onNext}
-          className="flex-1 py-3 px-4 min-h-[44px] rounded-xl text-white font-semibold flex items-center justify-center"
-          style={{ backgroundColor: primaryColor }}
-          whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
-          whileTap={{ scale: 0.98 }}
+          className="bd-dashboard-primary-button flex-1 py-3 px-4 min-h-[44px] text-white font-semibold flex items-center justify-center"
+          style={{ background: primaryColor }}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3, delay: 0.15 }}

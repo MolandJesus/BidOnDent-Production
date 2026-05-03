@@ -176,8 +176,8 @@ export default function ReportScreen({
             <p className="text-slate-300/80">Error: Invalid step {form.step}</p>
             <button
               onClick={() => form.setStep(1)}
-              className="mt-4 py-2 px-4 rounded-md text-white font-medium"
-              style={{ backgroundColor: primaryColor }}
+              className="bd-dashboard-primary-button mt-4 py-2 px-4 text-white font-medium"
+              style={{ background: primaryColor }}
             >
               Start Over
             </button>
