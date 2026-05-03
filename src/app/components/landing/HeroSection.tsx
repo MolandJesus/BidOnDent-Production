@@ -595,18 +595,18 @@ export default function HeroSection({
                     : "bg-blue-500/20 border-blue-400/30"
                 }`}
               >
-                <span className="text-blue-400 font-bold text-xs">3</span>
+                <span className="text-blue-400 font-bold text-xs">$</span>
               </div>
               <div>
                 <div
                   className={`font-semibold text-xs sm:text-sm ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
                 >
-                  Bids Received
+                  Sample quote
                 </div>
                 <div
                   className={`text-[10px] sm:text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/50"}`}
                 >
-                  Avg. response &lt; 48 hrs
+                  $1,240 estimate
                 </div>
               </div>
             </div>
@@ -661,12 +661,12 @@ export default function HeroSection({
                 <div
                   className={`font-semibold text-xs sm:text-sm ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
                 >
-                  Repair Completed!
+                  Estimated ETA
                 </div>
                 <div
                   className={`text-[10px] sm:text-xs ${isLightAppearance ? "text-slate-500" : "text-blue-200/50"}`}
                 >
-                  Bid selected and scheduled through platform
+                  ~4 days for sample repair
                 </div>
               </div>
             </div>
