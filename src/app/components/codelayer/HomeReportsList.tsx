@@ -89,7 +89,7 @@ export function HomeReportsList({
           <span
             className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
               isLightAppearance
-                ? "bg-white/85 text-blue-700"
+                ? "border border-blue-200/55 bg-blue-50/85 text-blue-700"
                 : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
@@ -193,7 +193,7 @@ export function HomeReportsList({
                   <div
                     className={`relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 ${
                       isLightAppearance
-                        ? "bg-[linear-gradient(135deg,rgba(255,255,255,0.85)_0%,rgba(241,245,250,0.85)_100%)]"
+                        ? "bg-[linear-gradient(135deg,rgba(254,248,232,0.92)_0%,rgba(244,232,208,0.88)_100%)]"
                         : "bg-[linear-gradient(135deg,rgba(15,30,55,0.85)_0%,rgba(8,16,32,0.85)_100%)]"
                     }`}
                     style={{

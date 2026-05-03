@@ -151,7 +151,7 @@ export default function HomeScreen({
               <span
                 className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
                   isLightAppearance
-                    ? "bg-white/85 text-blue-700"
+                    ? "border border-blue-200/55 bg-blue-50/85 text-blue-700"
                     : "border-blue-200/20 bg-white/10 text-blue-50"
                 }`}
               >
@@ -190,7 +190,7 @@ export default function HomeScreen({
                 onClick={onExitDemoMode}
                 className={`bd-dashboard-secondary-button min-h-[44px] w-full rounded-xl px-3 py-2 text-sm font-medium sm:w-auto ${
                   isLightAppearance
-                    ? "border-slate-200/80 bg-white/90 text-slate-700"
+                    ? "border-blue-200/60 bg-blue-50/85 text-blue-700"
                     : "border-blue-200/18 bg-slate-950/55 text-blue-50"
                 }`}
               >
@@ -239,7 +239,7 @@ export default function HomeScreen({
               <span
                 className={`bd-dashboard-chip shrink-0 px-2 py-1 text-xs font-medium ${
                   isLightAppearance
-                    ? "bg-white/85 text-indigo-700"
+                    ? "border border-indigo-200/55 bg-indigo-50/85 text-indigo-700"
                     : "border-indigo-200/18 bg-white/10 text-indigo-50"
                 }`}
               >

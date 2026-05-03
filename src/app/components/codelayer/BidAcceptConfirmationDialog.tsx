@@ -38,7 +38,7 @@ export default function BidAcceptConfirmationDialog({
       <AlertDialogContent
         className={`rounded-2xl border ${
           isLight
-            ? "border-slate-200 bg-white text-slate-900"
+            ? "border-amber-700/25 bg-[linear-gradient(180deg,rgba(254,248,232,0.96)_0%,rgba(248,238,215,0.92)_100%)] text-slate-900 shadow-[0_26px_56px_rgba(15,30,60,0.22)]"
             : "border-blue-200/15 bg-[#0f1d2e] text-slate-100"
         }`}
       >
@@ -89,7 +89,7 @@ export default function BidAcceptConfirmationDialog({
           <AlertDialogCancel
             className={`min-h-[44px] rounded-xl border font-medium ${
               isLight
-                ? "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                ? "border-amber-700/25 bg-amber-50/85 text-slate-700 hover:bg-amber-100/70"
                 : "border-blue-200/15 bg-white/5 text-slate-300 hover:bg-white/10"
             }`}
           >

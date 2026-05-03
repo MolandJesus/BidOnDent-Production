@@ -380,6 +380,15 @@
   - If hydration: file-specific fix in the `hydrateReport` catch path or in the storage util.
 - **Status:** Open — diagnostic still pending owner SQL run against production data; do not mutate production data without owner sign-off. Phase 3 (2026-05-03) verified that `HomeReportsList.tsx:206` already pipes `report.photos[0]` through `ImageWithFallback`, and KI-065's defense-in-depth gap (every other raw `<img>` user-media site) is now resolved (commit `01c3f300`). The red rectangle therefore cannot be a `storage://` leak or onError fallback miss on this surface — it has to be the underlying image bytes (the diagnostic's third outcome). Code-level safe: confirmed. Awaiting owner data action.
 
+- **Symptom update (2026-05-03, dev server):** Owner reports the Honda Accord card now shows the **generic image-placeholder icon** (mountain/landscape glyph), not a red rectangle. This means `ImageWithFallback` is now successfully *firing its fallback* on this surface — three possible triggers, all benign code-side:
+  1. `report.photos[0]` is empty/null → empty-src fallback fires (designed behavior).
+  2. `report.photos[0]` is a `storage://` literal → storage-pointer fallback fires (designed; would mean dev hydration is failing for this record only).
+  3. `report.photos[0]` resolves but the image bytes are tiny/broken/blank → new generic small-image fallback added in commit `992b728f` fires (designed).
+  Owner action on **dev/staging** (safe to mutate non-prod):
+  - Easiest: open the report in the dashboard and re-upload a real damage photo. Confirms (1) or (2) was the cause and clears it.
+  - SQL inspection (against the dev/staging Supabase project): run the SELECT from the previous bullet to see whether `photo_urls` is empty, a `storage://` pointer, or a hydrated URL.
+  - Production: still no mutation without explicit owner sign-off.
+
 ### KI-065: Defense-in-depth gap — multiple raw `<img>` sites can render `storage://` if server hydration catch-clause fires
 
 - **Impact:** The server-side hydration path (`supabase/functions/server/handlers/reports.ts:95-150`, `vehicles.ts`, `profiles.ts`, `network_profiles.ts`) wraps `hydrateSignedStorageUrl(s)` in a try/catch that returns the raw `photo_urls` / `image_url` / `profile_image_url` if hydration throws. That catch-fallback can leak `storage://` pointers to the client. Several frontend render sites bind those URLs directly to `<img src=...>` without using either `ImageWithFallback` wrapper, so a hydration failure produces an invisible/broken image rather than a designed fallback. Theoretical exposure under normal flow; real exposure if hydration throws (e.g. Storage outage, RLS edit, expired service-role token, missing object).

@@ -159,7 +159,45 @@ These are durable architectural rules. Violating them silently breaks production
 
 ## Light-Mode Surface Rule (added 2026-05-03 — non-negotiable)
 
-Light mode is **warm cream off-white with bronze trim and selective cool accents**. It is NOT "all white" or "white + gold only". Multiple repeated regressions confirmed this needs to be a LAW, not a preference.
+**Mantra: variation, not whitening.** Cream/gold is the material language. Cool blue/cyan keeps the app from turning into one beige sheet. Repeated regressions confirmed this needs to be a LAW, not a preference.
+
+Light mode is **a cool blue-gray canvas + a layered hierarchy of warm cream/champagne panels with bronze trim + selective cool blue/cyan/indigo supporting panels and chips**. It is NOT "all white", NOT "white + gold only", and NOT "every surface painted the same cream wash".
+
+### Page hierarchy (top to bottom)
+
+The page is **cool blue dominant with a single warm hero panel and warm pop tiles**. Cool panels balance the warm hero so the eye lands there. NEVER paint every panel cream — that flattens the hierarchy.
+
+| Layer | Tone | Where it lives | Why |
+|---|---|---|---|
+| **Canvas / page background** | Cool misty blue-gray (`#c8d8ec → #b4c8e2`) | `globalSurfaceTheme.ts` `light` background | App stays a workspace/map product, not a beige sheet |
+| **Hero panel** (welcome banner — ONE per screen) | Richest cream-gold liquid glass with radial gold halo at top | `.bd-dashboard-panel--accent-blue` (light) | The only warm-dominant panel; pulls focus |
+| **Main panel** (Quick Actions wrapper, Account Identity, primary content) | Lighter cool blue/ivory liquid glass with bronze hairline | `.bd-dashboard-panel--deep` (light) | Calm cool canvas — balances the warm hero so it pops |
+| **Supporting panel — depth** (Repair Activity, Help & Support, list-holding) | Darker cool indigo liquid glass with bronze hairline | `.bd-dashboard-panel--accent-indigo` (light) | Provides darker-blue depth in the hierarchy |
+| **Supporting panel — teal** (map widgets, geo cards) | Medium cool cyan liquid glass with bronze hairline | `.bd-dashboard-panel--accent-cyan` (light) | Teal identity for map-adjacent surfaces |
+| **Action tiles row** (Quick Actions) | Alternating blue → deep gold → cyan → champagne | `bd-dashboard-section--accent-{blue,gold,cyan,champagne}` | Visible cool/warm/cool/warm rhythm — gold + champagne are the only warm pops at this scale |
+| **Inner sections / list rows** | Cool ivory / blue / cyan / indigo liquid glass | `bd-dashboard-section--{deep,accent-blue,accent-cyan,accent-indigo}` | Cool family for everyday content; gold + champagne reserved for emphasis |
+| **Chips / active states / pills** | Cool frosted blue (`bg-blue-50/85` + `border-blue-200/55`) | Inline in components — never `bg-white/*` | Blue is action; cool chip = clear hierarchy |
+
+### 3D liquid glass shadow stack (panels + sections, light mode)
+
+Premium liquid glass requires **stacked multi-depth shadows + bright inner highlight + subtle inner thickness shadow + dual ring (bronze + accent)**. A single shadow reads flat. The pattern:
+
+```
+box-shadow:
+  0 1-2px 2-4px  rgba(<navy>, 0.06-0.12),   /* close drop — immediate lift */
+  0 4-8px 10-18px rgba(<navy>, 0.10-0.16),  /* mid drop — object on surface */
+  0 18-30px 38-60px rgba(<navy>, 0.14-0.22),/* far ambient — atmospheric ground */
+  inset 0 1px 0 rgba(<bright cream/ice>, 0.92-0.96),  /* top highlight — reflected light */
+  inset 0 -1-2px 2-4px rgba(<navy>, 0.05-0.10),       /* bottom shadow — glass thickness */
+  inset 0 -1px 0 rgba(160, 95, 25, 0.18-0.46),        /* bronze inset rim */
+  0 0 0 1px rgba(<accent color>, 0.18-0.40),          /* accent ring (cool action identity) */
+  0 0 0 1px rgba(160, 95, 25, 0.12-0.40),             /* bronze ring (warm material trim) */
+  0 0 14-22px rgba(<accent or warm>, 0.08-0.22);      /* tight outer halo */
+```
+
+`<navy>` = `15, 30, 60` for cool panels, `28, 25, 80` for indigo, `120, 78, 18` for warm gold panels.
+
+Backdrop filter on `.bd-dashboard-panel` and `.bd-dashboard-section` must be `blur(20px) saturate(1.4) brightness(1.02)` — blur for translucency, saturate for shimmer, brightness boost to feel illuminated.
 
 **Forbidden in light mode:**
 

@@ -89,7 +89,7 @@ export default function BidsSummaryHeader({
             <div
               className={`bd-dashboard-chip rounded-full px-2.5 py-1 text-xs font-medium ${
                 isLight
-                  ? "bg-white/85 text-blue-700"
+                  ? "border border-blue-200/55 bg-blue-50/85 text-blue-700"
                   : "border-blue-200/18 bg-white/10 text-blue-50"
               }`}
             >
@@ -104,7 +104,7 @@ export default function BidsSummaryHeader({
           </div>
           <div
             className={`bd-dashboard-chip rounded-full px-3 py-1.5 text-sm font-medium ${
-              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+              isLight ? "border border-blue-200/55 bg-blue-50/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
             {bidCount} offers

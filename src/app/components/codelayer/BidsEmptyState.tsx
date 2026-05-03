@@ -64,7 +64,7 @@ export default function BidsEmptyState({
         <div className="mb-3 flex justify-center">
           <span
             className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "bg-white/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+              isLight ? "border border-blue-200/55 bg-blue-50/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
             Awaiting responses

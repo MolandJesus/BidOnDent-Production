@@ -102,7 +102,7 @@ export default function AccountHeader({
           <button
             className={`bd-dashboard-secondary-button absolute -bottom-2 -right-2 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-0 shadow-md transition-transform hover:scale-105 ${
               isLight
-                ? "border-blue-200/70 bg-white/85 text-blue-700"
+                ? "border-blue-200/70 bg-blue-50/90 text-blue-700"
                 : "border-blue-300/30 bg-slate-950/55 text-blue-100"
             }`}
             onClick={onProfileImageClick}

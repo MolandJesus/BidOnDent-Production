@@ -2544,41 +2544,41 @@ body {
 }
 
 [data-appearance-mode="light"] {
-  /* LAW (do not break): light-mode surfaces are warm cream off-white with
-     visible bronze trim. Pure-white surfaces and pure-white inset highlights
-     are forbidden — they erase the calm/premium identity and read as a
-     generic SaaS dashboard. The trim must CONTRAST the cream surface (deeper
-     bronze border + navy drop shadow), not match it — a gold-on-cream halo
-     disappears. See LAW_PROJECT_RULES.md "Light-mode surface rule". */
+  /* LAW (do not break): light-mode surfaces are warm ivory/champagne with
+     visible bronze trim, riding on a cool blue-gray canvas. Variation, not
+     whitening. Pure-white surfaces and pure-white inset highlights are
+     forbidden. Shadows are NAVY-COOL so warm cream lifts off the cool
+     canvas; halos stay tight because cream-on-cream halos disappear. See
+     LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
   --bd-dashboard-panel-bg:
     radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.16), transparent 65%),
     linear-gradient(180deg, rgba(254, 248, 232, 0.94) 0%, rgba(248, 238, 215, 0.86) 100%);
-  --bd-dashboard-panel-border: rgba(160, 95, 25, 0.48);
+  --bd-dashboard-panel-border: rgba(160, 95, 25, 0.46);
   --bd-dashboard-panel-shadow:
-    0 26px 56px rgba(40, 28, 8, 0.22),
-    0 6px 14px rgba(40, 28, 8, 0.10),
-    0 0 0 1px rgba(160, 95, 25, 0.32),
+    0 26px 56px rgba(15, 30, 60, 0.22),
+    0 6px 14px rgba(15, 30, 60, 0.10),
+    0 0 0 1px rgba(160, 95, 25, 0.30),
     inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
-    0 0 22px rgba(180, 100, 30, 0.18);
+    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
+    0 0 18px rgba(180, 100, 30, 0.14);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(254, 247, 230, 0.94) 0%,
     rgba(247, 235, 210, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(160, 95, 25, 0.42);
+  --bd-dashboard-section-border: rgba(160, 95, 25, 0.40);
   --bd-dashboard-section-shadow:
-    0 16px 36px rgba(40, 28, 8, 0.16),
-    0 0 0 1px rgba(160, 95, 25, 0.28),
+    0 16px 36px rgba(15, 30, 60, 0.18),
+    0 0 0 1px rgba(160, 95, 25, 0.26),
     inset 0 1px 0 rgba(254, 247, 232, 0.88),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
-    0 0 18px rgba(180, 100, 30, 0.14);
+    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
+    0 0 14px rgba(180, 100, 30, 0.10);
   --bd-dashboard-section-hover-shadow:
-    0 22px 44px rgba(40, 28, 8, 0.20),
-    0 0 0 1px rgba(160, 95, 25, 0.40),
+    0 22px 44px rgba(15, 30, 60, 0.22),
+    0 0 0 1px rgba(160, 95, 25, 0.38),
     inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.44),
-    0 0 22px rgba(180, 100, 30, 0.18);
+    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
+    0 0 18px rgba(180, 100, 30, 0.14);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(224, 238, 255, 0.96) 0%,
@@ -2612,8 +2612,10 @@ body {
 .bd-dashboard-section {
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  /* Liquid glass: blur for translucency + saturate for shimmer + slight
+     brightness boost to make the glass feel illuminated, not flat. */
+  backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
 }
 
 .bd-dashboard-panel::before,
@@ -2705,64 +2707,98 @@ body {
     0 0 24px rgba(129, 140, 248, 0.10);
 }
 
-/* LAW: light-mode panels keep cream surface but vary depth across variants
-   for page rhythm. Each accent restores a *whisper* of its cool tone (in the
-   inner ring + outer halo) so identity isn't flat. Border is deeper bronze
-   so cream surface gets crisp edge definition (gold-on-cream halo without
-   contrast disappears). See LAW_PROJECT_RULES.md "Light-mode surface rule". */
+/* LAW: light-mode panels are a layered hierarchy — hero (richest cream-gold)
+   > main (warm ivory) > supporting (cooler frosted blue/ivory). Variation,
+   not whitening. Cool/navy shadows lift cream off the cool blue canvas;
+   bronze border defines edge (gold-on-cream halo disappears). See
+   LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
 
-/* deep — calm canvas, mid cream */
-[data-appearance-mode="light"] .bd-dashboard-panel--deep {
-  background: linear-gradient(180deg, rgba(252, 244, 222, 0.94) 0%, rgba(244, 232, 200, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.46);
-  box-shadow:
-    0 22px 50px rgba(40, 28, 8, 0.20),
-    inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
-    0 0 0 1px rgba(160, 95, 25, 0.30),
-    0 0 22px rgba(180, 100, 30, 0.16);
-}
+/* 3D liquid glass shadow stack pattern (light mode):
+   - Close drop (1-2px / 4-8px blur)        → immediate lift off canvas
+   - Mid drop (6-10px / 14-20px blur)       → object-on-surface depth
+   - Far ambient (24-30px / 50-70px blur)   → atmospheric grounding
+   - Bright inner top highlight              → reflected light on glass top
+   - Subtle inner bottom shadow              → glass thickness
+   - 1px bronze ring                         → warm material trim
+   - 1px accent ring (where applicable)      → cool action identity
+   - Tight outer halo                        → ambient warmth */
 
-/* accent-blue — lightest ivory, faint cool blue whisper */
+/* HERO — accent-blue: rich warm cream-gold liquid glass, the page's only
+   warm-dominant panel. Used on welcome banner. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-blue {
-  background: linear-gradient(180deg, rgba(254, 250, 238, 0.94) 0%, rgba(248, 240, 222, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.42);
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%, rgba(220, 165, 90, 0.22), transparent 70%),
+    linear-gradient(180deg, rgba(250, 232, 192, 0.94) 0%, rgba(240, 218, 168, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.52);
   box-shadow:
-    0 22px 50px rgba(40, 28, 8, 0.18),
-    inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
-    0 0 0 1px rgba(160, 95, 25, 0.26),
-    0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 22px rgba(180, 100, 30, 0.14),
-    0 0 18px rgba(59, 130, 246, 0.08);
+    0 1px 2px rgba(15, 30, 60, 0.10),
+    0 8px 18px rgba(15, 30, 60, 0.16),
+    0 30px 60px rgba(15, 30, 60, 0.22),
+    inset 0 1px 0 rgba(254, 248, 220, 0.96),
+    inset 0 -2px 4px rgba(120, 78, 18, 0.10),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.44),
+    0 0 0 1px rgba(160, 95, 25, 0.36),
+    0 0 0 1px rgba(96, 165, 250, 0.16),
+    0 0 22px rgba(220, 140, 50, 0.18);
 }
 
-/* accent-cyan — neutral cream with cool cyan whisper */
+/* MAIN — deep: LIGHTER cool blue/ivory liquid glass. Calm canvas used on
+   Quick Actions wrapper, Account panels. Cool so warm hero + gold tiles
+   pop; bronze hairline keeps premium identity. */
+[data-appearance-mode="light"] .bd-dashboard-panel--deep {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.10), transparent 70%),
+    linear-gradient(180deg, rgba(238, 246, 254, 0.94) 0%, rgba(214, 230, 248, 0.86) 100%);
+  border-color: rgba(96, 165, 250, 0.36);
+  box-shadow:
+    0 1px 2px rgba(15, 30, 60, 0.08),
+    0 6px 16px rgba(15, 30, 60, 0.14),
+    0 26px 54px rgba(15, 30, 60, 0.18),
+    inset 0 1px 0 rgba(252, 254, 255, 0.94),
+    inset 0 -2px 4px rgba(15, 30, 60, 0.06),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.22),
+    0 0 0 1px rgba(96, 165, 250, 0.24),
+    0 0 0 1px rgba(160, 95, 25, 0.16),
+    0 0 18px rgba(59, 130, 246, 0.10);
+}
+
+/* SUPPORTING — accent-cyan: medium cool cyan/teal liquid glass. Map
+   widgets, cards with teal identity. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-cyan {
-  background: linear-gradient(180deg, rgba(250, 246, 232, 0.94) 0%, rgba(238, 236, 218, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.42);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.10), transparent 70%),
+    linear-gradient(180deg, rgba(228, 244, 248, 0.94) 0%, rgba(200, 230, 240, 0.86) 100%);
+  border-color: rgba(34, 211, 238, 0.38);
   box-shadow:
-    0 22px 50px rgba(40, 28, 8, 0.18),
-    inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
-    0 0 0 1px rgba(160, 95, 25, 0.26),
-    0 0 0 1px rgba(34, 211, 238, 0.20),
-    0 0 22px rgba(180, 100, 30, 0.14),
-    0 0 18px rgba(13, 148, 136, 0.10);
+    0 1px 2px rgba(8, 51, 68, 0.10),
+    0 6px 16px rgba(8, 51, 68, 0.14),
+    0 26px 54px rgba(8, 51, 68, 0.18),
+    inset 0 1px 0 rgba(248, 254, 254, 0.94),
+    inset 0 -2px 4px rgba(8, 51, 68, 0.06),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.22),
+    0 0 0 1px rgba(34, 211, 238, 0.30),
+    0 0 0 1px rgba(160, 95, 25, 0.16),
+    0 0 18px rgba(13, 148, 136, 0.12);
 }
 
-/* accent-indigo — richer champagne with cool indigo whisper */
+/* SUPPORTING — accent-indigo: DARKER cool indigo liquid glass. Used on
+   Repair Activity, Help & Support, anything needing visual depth and
+   a darker blue identity to balance the warm hero. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-indigo {
-  background: linear-gradient(180deg, rgba(252, 246, 224, 0.94) 0%, rgba(244, 230, 200, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.46);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.14), transparent 70%),
+    linear-gradient(180deg, rgba(218, 226, 246, 0.94) 0%, rgba(192, 204, 238, 0.86) 100%);
+  border-color: rgba(99, 102, 241, 0.42);
   box-shadow:
-    0 22px 50px rgba(40, 28, 8, 0.20),
-    inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
-    0 0 0 1px rgba(160, 95, 25, 0.30),
-    0 0 0 1px rgba(129, 140, 248, 0.18),
-    0 0 22px rgba(180, 100, 30, 0.16),
-    0 0 18px rgba(99, 102, 241, 0.10);
+    0 1px 2px rgba(28, 25, 80, 0.12),
+    0 8px 18px rgba(28, 25, 80, 0.16),
+    0 28px 58px rgba(28, 25, 80, 0.22),
+    inset 0 1px 0 rgba(244, 248, 254, 0.92),
+    inset 0 -2px 4px rgba(28, 25, 80, 0.08),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.20),
+    0 0 0 1px rgba(99, 102, 241, 0.34),
+    0 0 0 1px rgba(160, 95, 25, 0.16),
+    0 0 22px rgba(99, 102, 241, 0.16);
 }
 
 .bd-dashboard-section {
@@ -2852,60 +2888,80 @@ body {
 }
 
 /* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
-/* LAW: section accents are full-spectrum in light mode — cool tints (blue,
-   cyan, indigo) sit alongside warm tints (gold, champagne, deep) so the
-   page has real color rhythm. No pure white. Bronze trim ties everything
-   together. See LAW_PROJECT_RULES.md "Light-mode surface rule". */
+/* LAW: section accents are full-spectrum in light mode with COOL dominant.
+   Cool blue/cyan/indigo + neutral ivory rotate as the everyday tones; warm
+   gold/champagne are the pop tones reserved for hero action tiles. All
+   surfaces use the 3D liquid glass shadow stack pattern. No pure white.
+   See LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
 
-/* deep — neutral cream calm-canvas */
+/* deep — light neutral ivory liquid glass (calm canvas tile) */
 [data-appearance-mode="light"] .bd-dashboard-section--deep {
-  background: linear-gradient(180deg, rgba(254, 247, 230, 0.94) 0%, rgba(247, 235, 210, 0.84) 100%);
-  border-color: rgba(160, 95, 25, 0.36);
+  background: linear-gradient(180deg, rgba(244, 248, 254, 0.94) 0%, rgba(224, 234, 248, 0.84) 100%);
+  border-color: rgba(96, 165, 250, 0.30);
   box-shadow:
-    0 16px 36px rgba(40, 28, 8, 0.14),
-    inset 0 1px 0 rgba(254, 247, 232, 0.88),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.34),
-    0 0 0 1px rgba(160, 95, 25, 0.24),
-    0 0 18px rgba(180, 100, 30, 0.12);
+    0 1px 2px rgba(15, 30, 60, 0.06),
+    0 4px 10px rgba(15, 30, 60, 0.10),
+    0 18px 38px rgba(15, 30, 60, 0.14),
+    inset 0 1px 0 rgba(252, 254, 255, 0.92),
+    inset 0 -1px 2px rgba(15, 30, 60, 0.05),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.18),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 0 1px rgba(160, 95, 25, 0.12),
+    0 0 14px rgba(59, 130, 246, 0.08);
 }
 
-/* accent-blue — cool blue cream with bronze trim */
+/* accent-blue — medium cool blue liquid glass */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-blue {
-  background: linear-gradient(180deg, rgba(232, 242, 252, 0.94) 0%, rgba(208, 224, 246, 0.84) 100%);
-  border-color: rgba(160, 95, 25, 0.36);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.10), transparent 70%),
+    linear-gradient(180deg, rgba(228, 240, 252, 0.94) 0%, rgba(204, 222, 246, 0.84) 100%);
+  border-color: rgba(96, 165, 250, 0.40);
   box-shadow:
-    0 16px 36px rgba(40, 28, 8, 0.14),
-    inset 0 1px 0 rgba(244, 250, 254, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
-    0 0 0 1px rgba(160, 95, 25, 0.22),
+    0 1px 2px rgba(15, 30, 60, 0.08),
+    0 4px 10px rgba(15, 30, 60, 0.12),
+    0 18px 38px rgba(15, 30, 60, 0.16),
+    inset 0 1px 0 rgba(248, 252, 255, 0.92),
+    inset 0 -1px 2px rgba(15, 30, 60, 0.06),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.18),
     0 0 0 1px rgba(96, 165, 250, 0.30),
-    0 0 18px rgba(59, 130, 246, 0.14);
+    0 0 0 1px rgba(160, 95, 25, 0.12),
+    0 0 14px rgba(59, 130, 246, 0.14);
 }
 
-/* accent-cyan — cool cyan cream with bronze trim */
+/* accent-cyan — medium cool cyan liquid glass */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-cyan {
-  background: linear-gradient(180deg, rgba(228, 244, 246, 0.94) 0%, rgba(204, 232, 234, 0.84) 100%);
-  border-color: rgba(160, 95, 25, 0.36);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(224, 244, 246, 0.94) 0%, rgba(196, 230, 234, 0.84) 100%);
+  border-color: rgba(34, 211, 238, 0.42);
   box-shadow:
-    0 16px 36px rgba(40, 28, 8, 0.14),
-    inset 0 1px 0 rgba(242, 252, 252, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
-    0 0 0 1px rgba(160, 95, 25, 0.22),
-    0 0 0 1px rgba(34, 211, 238, 0.30),
-    0 0 18px rgba(13, 148, 136, 0.14);
+    0 1px 2px rgba(8, 51, 68, 0.08),
+    0 4px 10px rgba(8, 51, 68, 0.12),
+    0 18px 38px rgba(8, 51, 68, 0.16),
+    inset 0 1px 0 rgba(244, 252, 254, 0.92),
+    inset 0 -1px 2px rgba(8, 51, 68, 0.06),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.18),
+    0 0 0 1px rgba(34, 211, 238, 0.32),
+    0 0 0 1px rgba(160, 95, 25, 0.12),
+    0 0 14px rgba(13, 148, 136, 0.14);
 }
 
-/* accent-indigo — cool indigo cream with bronze trim */
+/* accent-indigo — darker cool indigo liquid glass */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-indigo {
-  background: linear-gradient(180deg, rgba(234, 234, 250, 0.94) 0%, rgba(214, 216, 244, 0.84) 100%);
-  border-color: rgba(160, 95, 25, 0.36);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.14), transparent 70%),
+    linear-gradient(180deg, rgba(220, 224, 248, 0.94) 0%, rgba(196, 202, 240, 0.84) 100%);
+  border-color: rgba(99, 102, 241, 0.44);
   box-shadow:
-    0 16px 36px rgba(40, 28, 8, 0.14),
-    inset 0 1px 0 rgba(246, 246, 254, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
-    0 0 0 1px rgba(160, 95, 25, 0.22),
-    0 0 0 1px rgba(129, 140, 248, 0.30),
-    0 0 18px rgba(99, 102, 241, 0.14);
+    0 1px 2px rgba(28, 25, 80, 0.10),
+    0 4px 10px rgba(28, 25, 80, 0.14),
+    0 18px 38px rgba(28, 25, 80, 0.18),
+    inset 0 1px 0 rgba(244, 248, 254, 0.92),
+    inset 0 -1px 2px rgba(28, 25, 80, 0.08),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.18),
+    0 0 0 1px rgba(99, 102, 241, 0.34),
+    0 0 0 1px rgba(160, 95, 25, 0.12),
+    0 0 14px rgba(99, 102, 241, 0.16);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-rose {
@@ -2920,28 +2976,38 @@ body {
     0 0 32px rgba(220, 140, 50, 0.22);
 }
 
-/* accent-gold — deepest champagne, full bronze trim */
+/* accent-gold — deep champagne liquid glass, warm pop tile */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-gold {
-  background: linear-gradient(180deg, rgba(250, 232, 192, 0.96) 0%, rgba(238, 210, 160, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.50);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(220, 165, 90, 0.20), transparent 70%),
+    linear-gradient(180deg, rgba(250, 232, 192, 0.96) 0%, rgba(238, 210, 160, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.52);
   box-shadow:
-    0 16px 36px rgba(40, 28, 8, 0.18),
-    inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.44),
-    0 0 0 1px rgba(160, 95, 25, 0.36),
-    0 0 22px rgba(180, 100, 30, 0.20);
+    0 1px 2px rgba(120, 78, 18, 0.12),
+    0 4px 10px rgba(120, 78, 18, 0.16),
+    0 18px 38px rgba(120, 78, 18, 0.20),
+    inset 0 1px 0 rgba(254, 248, 220, 0.94),
+    inset 0 -2px 4px rgba(120, 78, 18, 0.10),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.46),
+    0 0 0 1px rgba(160, 95, 25, 0.40),
+    0 0 22px rgba(180, 100, 30, 0.22);
 }
 
-/* accent-champagne — lighter ivory champagne, paler bronze trim */
+/* accent-champagne — lighter ivory champagne liquid glass, warm pop tile */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-champagne {
-  background: linear-gradient(180deg, rgba(254, 244, 220, 0.96) 0%, rgba(246, 228, 198, 0.86) 100%);
-  border-color: rgba(160, 95, 25, 0.40);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(220, 165, 90, 0.14), transparent 70%),
+    linear-gradient(180deg, rgba(254, 244, 220, 0.96) 0%, rgba(246, 228, 198, 0.86) 100%);
+  border-color: rgba(160, 95, 25, 0.42);
   box-shadow:
-    0 16px 36px rgba(40, 28, 8, 0.14),
-    inset 0 1px 0 rgba(254, 247, 232, 0.92),
-    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
-    0 0 0 1px rgba(160, 95, 25, 0.26),
-    0 0 18px rgba(180, 100, 30, 0.16);
+    0 1px 2px rgba(120, 78, 18, 0.10),
+    0 4px 10px rgba(120, 78, 18, 0.14),
+    0 18px 38px rgba(120, 78, 18, 0.16),
+    inset 0 1px 0 rgba(254, 248, 232, 0.94),
+    inset 0 -2px 4px rgba(120, 78, 18, 0.08),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.38),
+    0 0 0 1px rgba(160, 95, 25, 0.30),
+    0 0 18px rgba(180, 100, 30, 0.18);
 }
 
 .bd-dashboard-section--interactive {
