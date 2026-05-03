@@ -973,18 +973,20 @@ body {
    --landing (no premium-marketing-anchor energy). Smaller hover lift (2px vs 6px)
    because workspace cards are not marketing CTAs. Dark variant lives in dark block. */
 .bd-glass-card--dashboard {
-  /* D4 (final v3.2): soft off-white liquid glass + more gold. */
-  border-color: rgba(147, 197, 253, 0.46);
+  /* D4 (final v3.2) + D6 crispness: soft off-white liquid glass + more gold +
+     slightly tighter edge definition (border 0.46 → 0.54, blue ring 0.24 → 0.30,
+     deeper drop shadow), so light-mode cards stop reading washy without darkening. */
+  border-color: rgba(147, 197, 253, 0.54);
   background: linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.86) 100%);
   box-shadow:
-    0 18px 44px rgba(15, 42, 92, 0.12),
-    0 4px 12px rgba(30, 58, 138, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 0 1px rgba(191, 219, 254, 0.24),
-    0 0 28px rgba(59, 130, 246, 0.08),
-    0 0 44px rgba(220, 140, 50, 0.26);
+    0 22px 52px rgba(15, 42, 92, 0.16),
+    0 6px 14px rgba(30, 58, 138, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.30),
+    0 0 0 1px rgba(220, 165, 90, 0.22),
+    0 0 0 1px rgba(191, 219, 254, 0.30),
+    0 0 28px rgba(59, 130, 246, 0.10),
+    0 0 44px rgba(220, 140, 50, 0.28);
 }
 
 .bd-glass-card--dashboard:hover {
@@ -2383,19 +2385,22 @@ body {
 }
 
 [data-appearance-mode="light"] {
-  /* D4 (final v3.2): soft off-white liquid glass + more gold. */
+  /* D4 (final v3.2) + D6 crispness: soft off-white liquid glass + more gold +
+     slightly stronger panel border + deeper drop shadow for premium edge
+     definition (light mode was reading slightly washy on stacked panels). */
   --bd-dashboard-panel-bg:
     radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.14), transparent 65%),
     linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.86) 100%);
-  --bd-dashboard-panel-border: rgba(147, 197, 253, 0.36);
+  --bd-dashboard-panel-border: rgba(147, 197, 253, 0.44);
   --bd-dashboard-panel-shadow:
-    0 22px 50px rgba(15, 42, 92, 0.13),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 0 1px rgba(191, 219, 254, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 28px rgba(59, 130, 246, 0.08),
-    0 0 44px rgba(220, 140, 50, 0.26);
+    0 26px 56px rgba(15, 42, 92, 0.16),
+    0 6px 14px rgba(30, 58, 138, 0.08),
+    0 0 0 1px rgba(220, 165, 90, 0.22),
+    0 0 0 1px rgba(191, 219, 254, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.30),
+    0 0 28px rgba(59, 130, 246, 0.10),
+    0 0 44px rgba(220, 140, 50, 0.28);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(238, 246, 254, 0.94) 0%,
