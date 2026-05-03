@@ -3214,9 +3214,18 @@ body {
 }
 
 /* Mobile motion budget per Decision #4 — gold drift only.
-   Bid card float, route shimmer, and pin pulse disabled below 768px. */
+   Bid card float, route shimmer, and pin pulse disabled below 768px.
+
+   KI-062 fix (2026-05-03): bd-bid-card-float must also be REMOVED FROM
+   LAYOUT below 768px, not just animation-disabled. The hero badges this
+   class is applied to are absolute-positioned relative to the right-side
+   hero scene; on mobile (single-column) they collapse onto the left
+   column and overlap the CTAs and trust chips. display:none pulls them
+   out of layout flow entirely. Safe because bd-bid-card-float is pinned
+   to hero-scene context only (Pass B note) — no other consumers. */
 @media (max-width: 767px) {
   .bd-bid-card-float {
+    display: none !important;
     animation: none !important;
     transform: none !important;
   }

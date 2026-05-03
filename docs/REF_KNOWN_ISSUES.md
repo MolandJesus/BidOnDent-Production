@@ -337,3 +337,22 @@
 - **Location:** Supabase Dashboard → project → Settings → Compute and Disk.
 - **Fix (2026-05-02):** Downgraded production to **Micro** (~$10/mo). Saves ~$50/mo. Will need to revisit when real traffic begins; Micro can hit shared_buffers/connection limits earlier than Medium under load.
 - **Status:** RESOLVED (2026-05-02). Skill: `supabase-pro-cost-control`.
+
+### KI-062: Hero scene bid cards not hidden on mobile — layout overflow regression
+
+- **Impact:** At ≤767px viewport width the hero right-column scene (3 `bd-bid-card-float` elements) remains in the DOM and overflows into the left column. The "Repair Completed!" card covers the "Learn More" secondary CTA and the trust chip row. Observed at 375px and 680px in both light and dark modes. Plan Decision #4 requires hiding the entire right-side scene on mobile.
+- **Location:** `src/app/components/landing/HeroSection.tsx` — bid card elements use absolute positioning with no `hidden md:block` or `md:hidden`-guarded wrapper class on the scene container.
+- **Root cause:** Pass C added the hero scene; the mobile CSS motion budget guard (`@media (max-width: 767px)`) only disables `animation` on `bd-bid-card-float` — it does not set `display: none` on the scene container or bid card elements.
+- **Fix direction:** Wrap the hero right-column scene in a `hidden md:flex` (or `md:block`) container so it collapses on mobile, or add `display: none` to the mobile CSS block for `bd-bid-card-float` elements.
+- **Status:** RESOLVED 2026-05-03 — added `display: none !important` to the existing `@media (max-width: 767px) .bd-bid-card-float` rule in `theme.css`. System-level guard, safe because `bd-bid-card-float` is pinned to hero-scene context only (Pass B). Visible at 375/680px in both modes confirmed fixed.
+
+### KI-063: Hero scene has 3 floating bid chip cards (plan spec: 2); card labels imply real operational data
+
+- **Impact:** Anti-Goal #9 in `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` requires bid card text to be "obviously sample/illustrative or use generic labels." Current labels: "Avg. response < 48 hrs", "Repair Completed! / Bid selected and scheduled through platform" read as live operational claims. The plan specified 2 chips with labels "Quote • $1,240" and "ETA 4 days." A third chip ("NY Active Service Region") is also present beyond the plan spec.
+- **Location:** `src/app/components/landing/HeroSection.tsx` — hero scene bid card elements.
+- **Fix direction:** Reduce to 2 cards. Update labels to be clearly sample/illustrative (e.g., "Quote • $1,240", "ETA 4 days") per plan spec.
+- **Status:** PARTIAL RESOLUTION 2026-05-03 — operational copy violations fixed (Anti-Goal #9 cleared):
+  - Card 1: "Bids Received / Avg. response < 48 hrs" → "Sample quote / $1,240 estimate" (circle indicator "3" → "$")
+  - Card 3: "Repair Completed! / Bid selected and scheduled through platform" → "Estimated ETA / ~4 days for sample repair"
+  - Card 2 (NY / Active Service Region): unchanged — factual content (project memory: "Now serving NY"), not a fake bid claim.
+  - Card count remains at 3 (plan Decision #2 specified 2). Reducing count would delete the pre-existing factual NY badge — owner decision, not auto-applicable. Owner can authorize NY badge removal in a follow-up if strict 2-card adherence is preferred.
