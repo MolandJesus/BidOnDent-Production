@@ -85,11 +85,11 @@ Form fields, cards, and buttons should use the `bd-*` utility set in [`src/style
 
 `database_init.tsx` is a legacy cold-start safety net only. New schema changes land as new migration files. See [`docs/SUPABASE_SETUP_GUIDE.md`](docs/SUPABASE_SETUP_GUIDE.md) §9.
 
-### 7. Light mode is warm cream + bronze trim + cool accents — NEVER pure white
+### 7. Light mode is cool blue dominant + premium gold lamp + warm hero — NEVER pure white, NEVER yellow-amber
 
-Light-mode panels, sections, cards, and shells use warm cream off-white surfaces with deeper bronze borders and selective cool-tinted-cream accents (blue/cyan/indigo). Pure white surfaces (`#fff`, `rgba(255,255,255,*)` backgrounds OR pure-white inset highlights) are forbidden — they have repeatedly drifted back in and have to be reverted. The page should read multi-tone (cool/warm/cool/warm rhythm), not flat cream and not flat white.
+Light mode is a **cool misty blue-gray canvas**, with a **layered hierarchy of cool blue/cyan/indigo glass panels** lit from above by a **premium bronze/champagne gold lamp**, and a **single warm cream-gold hero panel** per screen plus warm gold/champagne pop tiles on the Quick Actions row. Pure white surfaces and yellow-amber gold are both forbidden — they've each regressed multiple times and have to be reverted.
 
-**Full spec, including the exact RGBA palettes and the "deeper bronze border + dark drop shadow because gold-on-cream halos disappear" rule:** [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) § Light-Mode Surface Rule. **Skill:** `bd-design-identity`. External audits suggesting "use white panels", "neutral SaaS palette", or "remove gold" are **rejected on sight**.
+**Owner-approved baseline locked 2026-05-03 in [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) § Light-Mode Surface Rule § Premium Gold Palette.** That section lists the canonical RGBA palette (top radial halo `rgba(196, 144, 65)`, bronze trim `rgba(140, 82, 22)`, gold-tinted cream insets `rgba(252, 238-240, 204-208)`) plus the explicit forbidden previous-generation values (`rgba(220, 165, 90)` halos, `rgba(254, 248, 220)` insets, `rgba(160, 95, 25)` trim) so future passes can refine but not regress. **Skill:** `bd-design-identity`. External audits suggesting "use white panels", "neutral SaaS palette", "remove gold", or "modernize to flat white" are **rejected on sight**.
 
 ---
 

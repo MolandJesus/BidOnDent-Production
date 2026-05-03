@@ -218,3 +218,34 @@ Backdrop filter on `.bd-dashboard-panel` and `.bd-dashboard-section` must be `bl
 **Where this is enforced in agent context:** [`CLAUDE.md`](../CLAUDE.md) load-bearing facts, the `bd-design-identity` skill (`~/.claude/skills/bd-design-identity/SKILL.md`), and project memory `feedback_design_identity.md`.
 
 **External audits suggesting "lighten to white", "remove gold", "use neutral white panels", or "modernize to flat white SaaS palette" are REJECTED on sight.** Apply only layout/runtime fixes from those audits, never the white-surface advice. See `feedback_external_audit_handling.md`.
+
+---
+
+### Premium Gold Palette — LOCKED 2026-05-03 (owner-approved baseline)
+
+This palette was approved by the owner ("wow, just wow. it looks so premium and good in lightmode now"). Future agents may **refine** these values (subtle saturation/opacity tuning) but may NOT revert to the previous yellow-amber range. The palette is bronze/copper/champagne-leaning — premium gold, not yellow-gold.
+
+**Canonical warm-tone values (DO NOT regress):**
+
+| Token role | Value | Used in |
+|---|---|---|
+| Top radial gold halo | `rgba(196, 144, 65, 0.16-0.24)` | Every panel + section variant top-edge gradient stack |
+| Gold-tinted top inset highlight | `rgba(252, 238-240, 204-208, 0.70-0.94)` | Inset 0 1px 0 (the "reflected lamp light" highlight) |
+| Bronze trim border + inset rim | `rgba(140, 82, 22, 0.28-0.55)` | `border-color`, inset 0 -1px 0, 0 0 0 1px ring |
+| Deep bronze inner-thickness shadow | `rgba(110, 70, 18, 0.10-0.22)` | inset 0 -2px 4px, mid/far drop shadows on warm tiles |
+| Outer warm halo | `rgba(196, 130, 45, 0.16-0.22)` | 0 0 N px outer glow |
+| Hero panel surface | `rgba(244, 222, 178, 0.94) → rgba(228, 198, 144, 0.86)` | `.bd-dashboard-panel--accent-blue` light gradient |
+| Action gold tile | `rgba(244, 222, 178, 0.96) → rgba(228, 198, 144, 0.86)` | `.bd-dashboard-section--accent-gold` light gradient |
+| Action champagne tile | `rgba(250, 234, 198, 0.96) → rgba(240, 220, 178, 0.86)` | `.bd-dashboard-section--accent-champagne` light gradient |
+
+**Forbidden warm-tone values (the previous yellow-amber palette — do NOT bring these back):**
+
+| Replaced value | What it produced |
+|---|---|
+| `rgba(220, 165, 90, *)` for halos | Read as yellow-amber instead of premium gold |
+| `rgba(254, 248, 220, *)` for insets | Pale yellow highlight, not warm reflected lamp |
+| `rgba(160, 95, 25, *)` for trim | Slightly orange-brown, not refined bronze |
+| `rgba(220, 140, 50, *)` for outer halo | Pumpkin-orange, not premium copper |
+| `rgba(250, 232, 192) → rgba(240, 218, 168)` for hero | Pale yellow cream, not deep premium champagne |
+
+**Improvement direction (allowed):** finer saturation tuning, micro-adjustments to opacity/spread, additional 3D depth refinements that respect the palette. Anything that **shifts the warm tone back toward yellow** or **makes the cool surfaces white** requires explicit owner override (per the rule above).
