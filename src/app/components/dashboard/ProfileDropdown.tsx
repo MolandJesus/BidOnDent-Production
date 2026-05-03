@@ -240,8 +240,23 @@ export default function ProfileDropdown({
         <div className="max-h-48 overflow-y-auto">
           {notifications.length === 0 ? (
             <div
-              className={`px-4 py-3 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
+              className={`px-4 py-5 text-sm flex flex-col items-center text-center gap-2 ${isLightAppearance ? "text-slate-500" : "text-blue-200/60"}`}
             >
+              {/* D8: lit-glass icon plate so the empty state reads as designed
+                  surface, not plain text. Cool blue body + warm halo trim. */}
+              <div
+                aria-hidden="true"
+                className={`w-9 h-9 rounded-2xl flex items-center justify-center ${isLightAppearance ? "bg-blue-500/[0.08] border border-blue-300/[0.28]" : "bg-blue-500/[0.10] border border-blue-400/[0.24]"}`}
+                style={{
+                  boxShadow: isLightAppearance
+                    ? "inset 0 1px 0 rgba(255,255,255,0.78), inset 0 -1px 0 rgba(220,165,90,0.18), 0 0 18px rgba(220,140,50,0.14)"
+                    : "inset 0 1px 0 rgba(147,197,253,0.20), inset 0 -1px 0 rgba(220,165,90,0.16), 0 0 20px rgba(220,140,50,0.18)",
+                }}
+              >
+                <Bell
+                  className={`w-4 h-4 ${isLightAppearance ? "text-blue-500/70" : "text-blue-200/70"}`}
+                />
+              </div>
               {getEmptyStateMessage()}
             </div>
           ) : (

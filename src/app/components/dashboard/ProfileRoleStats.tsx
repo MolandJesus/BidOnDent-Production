@@ -38,9 +38,11 @@ export default function ProfileRoleStats({
   insurerBidCount,
   isLightAppearance = false,
 }: ProfileRoleStatsProps) {
+  // D8: stats container reads as lit-glass plate — warm inset bottom + warm
+  // halo bring it into the gold-lamp family. Cool blue body preserved.
   const containerCls = isLightAppearance
-    ? "px-4 py-3 bg-[linear-gradient(180deg,rgba(238,247,255,0.65)_0%,rgba(219,234,254,0.40)_100%)] border-b border-blue-200/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.78)]"
-    : "px-4 py-3 bg-[linear-gradient(180deg,rgba(15,30,55,0.55)_0%,rgba(11,23,47,0.45)_100%)] border-b border-blue-400/15 shadow-[inset_0_1px_0_rgba(147,197,253,0.10)]";
+    ? "px-4 py-3 bg-[linear-gradient(180deg,rgba(238,247,255,0.65)_0%,rgba(219,234,254,0.40)_100%)] border-b border-blue-200/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.78),inset_0_-1px_0_rgba(220,165,90,0.18),0_0_24px_rgba(220,140,50,0.10)]"
+    : "px-4 py-3 bg-[linear-gradient(180deg,rgba(15,30,55,0.55)_0%,rgba(11,23,47,0.45)_100%)] border-b border-blue-400/15 shadow-[inset_0_1px_0_rgba(147,197,253,0.10),inset_0_-1px_0_rgba(220,165,90,0.16),0_0_28px_rgba(220,140,50,0.14)]";
   const valueCls = isLightAppearance
     ? "font-bold text-lg text-slate-800"
     : "font-bold text-lg text-slate-100";
