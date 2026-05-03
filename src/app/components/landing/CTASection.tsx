@@ -176,11 +176,9 @@ export default function CTASection({
             {isSignedIn ? (
               <button
                 onClick={onNavigateToDashboard}
-                className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-white font-semibold text-base sm:text-lg leading-none transition-all duration-300 inline-flex items-center min-h-[48px] shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-[0.97] border border-white/15"
+                className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
                 style={{
                   background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
-                  boxShadow:
-                    "0 12px 42px rgba(37, 99, 235, 0.58), 0 4px 16px rgba(37, 99, 235, 0.30), inset 0 1px 0 rgba(255,255,255,0.22), 0 0 80px rgba(59, 130, 246, 0.20)",
                 }}
               >
                 Go to Dashboard
@@ -189,11 +187,9 @@ export default function CTASection({
             ) : (
               <SignUpButton mode="modal">
                 <button
-                  className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-white font-semibold text-base sm:text-lg leading-none transition-all duration-300 inline-flex items-center min-h-[48px] shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-[0.97] border border-white/15"
+                  className="bd-dashboard-primary-button px-6 sm:px-8 py-3 sm:py-3.5 text-white font-semibold text-base sm:text-lg leading-none inline-flex items-center min-h-[48px]"
                   style={{
                     background: `linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(30, 64, 175, 0.98) 100%)`,
-                    boxShadow:
-                      "0 12px 42px rgba(37, 99, 235, 0.58), 0 4px 16px rgba(37, 99, 235, 0.30), inset 0 1px 0 rgba(255,255,255,0.22), 0 0 80px rgba(59, 130, 246, 0.20)",
                   }}
                 >
                   Get Started Now
