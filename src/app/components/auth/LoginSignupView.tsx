@@ -49,7 +49,7 @@ export function LoginSignupView({
           value={name}
           onChange={(e) => onNameChange(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onSignup()}
-          className="w-full px-3 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
+          className="bd-report-input w-full px-3 py-2 rounded-xl outline-none"
           placeholder="Enter your full name"
         />
       </div>
@@ -63,7 +63,7 @@ export function LoginSignupView({
             value={formatPhoneNumber(phone)}
             onChange={(e) => onPhoneChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onSignup()}
-            className="w-full pl-10 pr-3 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
+            className="bd-report-input w-full pl-10 pr-3 py-2 rounded-xl outline-none"
             placeholder="Phone number"
             autoComplete="tel"
           />
@@ -79,7 +79,7 @@ export function LoginSignupView({
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onSignup()}
-            className="w-full pl-10 pr-3 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
+            className="bd-report-input w-full pl-10 pr-3 py-2 rounded-xl outline-none"
             placeholder="you@example.com"
             autoComplete="email"
           />
@@ -95,7 +95,7 @@ export function LoginSignupView({
             value={password}
             onChange={(e) => onPasswordChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onSignup()}
-            className="w-full pl-10 pr-10 py-2 border border-white/[0.12] rounded-md bg-white/[0.06] text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2"
+            className="bd-report-input w-full pl-10 pr-10 py-2 rounded-xl outline-none"
             placeholder="••••••••"
             autoComplete="new-password"
           />
