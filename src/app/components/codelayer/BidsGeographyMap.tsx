@@ -69,7 +69,7 @@ export default function BidsGeographyMap({
             </span>
             {reportPins.length > 0 ? (
               <span className="bd-dashboard-chip inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium">
-                <span className="h-2 w-2 rounded-full bg-amber-400" />
+                <span className="h-2 w-2 rounded-full bg-blue-500" />
                 Your report
               </span>
             ) : null}

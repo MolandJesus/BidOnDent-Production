@@ -2,7 +2,7 @@
 
 **Authority:** PLAN-tier — future direction, not current truth. Each pass activates only when the owner greenlights it.
 **Last updated:** 2026-05-02
-**Status:** Pass D3 shipped (Customer-side surfaces — Report intake light-mode amber→cool-blue palette conversion + HomeScreen section eyebrows). Pass D4 gated on owner visual review of D3 on Vercel.
+**Status:** Pass D4 (final v2) shipped — **owner-authorized reversal of the original "no warm amber on dashboard" lock**. Dashboard now reads as **navy-lit-by-gold-lamp** (dark) / gold-cream-with-cool-ring (light) globally. Gold lives in trim (borders), lighting (inset highlight + outer ambient glow), and atmospheric overlays — *not* in box backgrounds. Report flow surfaces also lifted with matching amber accents to keep the system coherent. Pure CSS pass: `src/styles/theme.css` only. See "Identity reversal" subsection below.
 **Scope:** All authenticated dashboard surfaces across all four roles (customer, shop, insurer, admin) — visible primary screens, hidden deep pages, modals, overlays, and onboarding. Auth screens (login modal) included since they're first-impression chrome.
 **Companion docs:** [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §9 inheritance rule, [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md) STATUS COMPLETE (the source quality bar this plan inherits without violating boundaries), [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md), [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md), [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) for component map.
 
@@ -14,13 +14,15 @@ Per [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), the project is in Soft Lau
 
 ---
 
-## Locked Boundary — Dashboard Inheritance Rule
+## Locked Boundary — Dashboard Inheritance Rule (amended 2026-05-02 Pass D4 final v2)
 
-[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §9 item 9 states:
+> **Identity reversal — owner-authorized 2026-05-02 (Pass D4 final v2):** the original "no warm amber atmosphere on dashboard" lock has been explicitly overridden by the owner. Through three iteration cycles (cool-blue D3 → gold off-white D4 → navy + gold trim D4 final v2), the agreed final identity is **navy infill (dark) / gold-cream infill (light) with amber as trim, inset lighting, outer ambient glow, and atmospheric overlay**. Gold is the dashboard's *lighting register*, not its background. Sedan silhouettes, lane dashes, warm-amber *box infill*, Direction C luminance, and editorial flanking strokes remain forbidden on dashboard surfaces. [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §9 item 9 is amended to match.
 
-> Do not apply the landing-page automotive identity layer to dashboard surfaces. The dashboard inherits the calm-map / glass-shell system documented under Dark Shell Design System; the automotive register (sedan silhouettes, lane dashes, warm amber atmosphere, Direction C luminance) is a landing-only signature. Mixing them dilutes both.
+[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §9 item 9 (post-amendment) now reads:
 
-**This plan respects that rule absolutely.** The dashboard premium lift will use:
+> Do not apply the landing-page automotive identity layer to dashboard surfaces (sedan silhouettes, lane dashes, road-line patterns, Direction C luminance, editorial flanking strokes, or warm-amber *box infill*). Warm-amber *trim* and *lamp-glow lighting* (borders, inset highlights, outer glow, atmospheric overlays) is permitted as the dashboard's lighting register.
+
+**Active rules (post-D4 final v2):**
 
 ✅ **Allowed (transferable from landing):**
 - The `bd-glass-card` and `bd-glass-card--landing` glass system architecture (the *class system*, not the warm variant)
@@ -31,15 +33,20 @@ Per [`LAW_HARDENING_PLAN.md`](LAW_HARDENING_PLAN.md), the project is in Soft Lau
 - Refined section eyebrow typography (small caps, tracking) — no flanking strokes
 - Premium modal glass with stronger `backdrop-filter` + inset highlight
 
-❌ **Forbidden (landing-only signature):**
+❌ **Forbidden (landing-only signature, post-D4 final v2):**
 - ⛔ NO sedan silhouettes, lane dashes, road-line patterns, automotive iconography
-- ⛔ NO warm amber atmosphere (Direction B is a landing-only register split)
-- ⛔ NO warm gold flanking accents (Pass 12/13 is landing-only)
+- ⛔ NO warm-amber **box infill** (cards/panels/sections must read navy in dark or gold-cream off-white in light — gold is trim/lighting only, never the dominant background)
 - ⛔ NO sky teal / royal / cobalt / slate flanking strokes (Pass 14 is landing-only editorial typography)
 - ⛔ NO white-cream lamp accents (Pass 15 CTA-specific)
 - ⛔ NO topographic concentric rings (landing Coverage-only)
-- ⛔ NO atmospheric corner luminance accents per section (Pass 6 Direction C)
-- ⛔ NO `bd-glass-card--landing-warm` variant on any dashboard surface
+- ⛔ NO Direction C luminance accents per section (Pass 6 landing-only)
+- ⛔ NO direct use of `bd-glass-card--landing-warm` variant on any dashboard surface (dashboard has its own variants that apply a parallel gold-trim treatment)
+
+✅ **Allowed (post-D4 final v2 — owner-authorized):**
+- Warm-amber *trim* (borders) on dashboard panels, sections, and cards
+- Warm-amber *inset highlights* (top edge sheen) and *outer ambient glow* (lamp halo)
+- Warm-amber *atmospheric overlay* (page-level radial gradients) at moderate opacity
+- Warm-amber pseudo-element decorations (`::before` highlight strip, `::after` corner radial blob) on `bd-dashboard-panel` / `bd-dashboard-section` / `bd-report-shell` / `bd-report-section` / etc.
 
 The dashboard's job is **calm focused workspace**, not cinematic narrative. Decoration density should be ~30–50% of landing.
 
@@ -451,8 +458,8 @@ From [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md),
 - [x] **Pass D3 — Customer Surfaces shipped 2026-05-02** (commit pending; this commit). Two major surfaces:
   - **Report intake (5-step wizard) light-mode palette converted** — full `[data-appearance-mode="light"] .bd-report-flow` CSS variable block rewritten from warm cream/amber to cool-blue calm-workspace (locked Q3). Variables converted: shell, panel, input, choice (idle + active), note, pill, divider, secondary. The orphaned amber pills ("Damage Report", "Damage zone", "Service radius", "Photo evidence") now read cool-blue. `bd-report-header`/`bd-report-progress`/`bd-report-section` light-mode backgrounds + `::before`/`::after` warm overlays converted. `bd-report-choice:hover` + `:--active` glow recolored from amber `rgba(180,120,40,...)` to cool-blue `rgba(59,130,246,...)`. Inline `text-amber-*` cleaned across [`StepPhotos.tsx`](../src/app/components/codelayer/report/StepPhotos.tsx), [`StepComplete.tsx`](../src/app/components/codelayer/report/StepComplete.tsx), [`StepServiceLocation.tsx`](../src/app/components/codelayer/report/StepServiceLocation.tsx). Semantic warning amber preserved (validation states like missing ZIP).
   - **HomeScreen section eyebrows** — applied `bd-section-eyebrow` utility (D1) to all five customer-home eyebrows: REPAIR OVERVIEW (welcome bar), YOUR DASHBOARD (Quick Actions), REPAIR ACTIVITY (Reports list), SMART MAP TOOLS, NEARBY MATCHES. Warm-cream Quick Action card border (200,180,150) → cool-blue (147,197,253) with stronger inset highlight + ambient glow on hover + focus rings.
-- [ ] **Pass D4 GATED on owner visual review of D3 on Vercel.** Customer Bids + Account screens + content modals.
-- [ ] Pass D4 — Customer Bids + Account + modals
+- [x] **Pass D4 (final v2) — Identity reversal: navy-lit-by-gold-lamp shipped 2026-05-02** (commit pending; this commit). Pure CSS pass, [`src/styles/theme.css`](../src/styles/theme.css) only. Owner direction across three iteration cycles: D3 cool-blue felt flat → first D4 attempt swapped infill to amber (overshot — too gold) → final v2 keeps navy/cream infill but applies amber as **trim and lamp-glow lighting** globally. Edits: `bd-glass-card--dashboard` light + dark, `bd-dashboard-atmosphere` dark (3-stop gold radial), root `--bd-dashboard-{panel,section,chip,note,secondary}-*` dark vars (gold trim on navy bg), all `bd-dashboard-panel--{deep,accent-blue,accent-cyan,accent-indigo}` dark + light overrides, all `bd-dashboard-section--{deep,accent-blue,accent-cyan,accent-indigo,accent-rose}` dark + light overrides, `bd-dashboard-panel/section::before` (gold highlight strip) + `::after` (gold corner radial), `bd-report-flow` shell + panel shadows (amber outer glow + faint amber ring stacked alongside cool-blue ring), all `.bd-report-header/progress/shell/section::before/::after` (amber instead of cyan, light + dark). Co-update: [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) §7 Dashboard Material Tier + §9 item 9 amended to permit warm-amber trim + lamp-glow lighting on dashboard surfaces while keeping warm-amber *infill* forbidden. Build clean (`npx vite build` 3.49s).
+- [ ] Pass D4 — Customer Bids + Account + modals (deferred from original plan; the v2 reversal effectively re-baselines the visual identity, so D4-original page-component touches will be re-scoped if still needed after owner reviews D4 final v2 in production)
 - [ ] Pass D5 — Shop Requests + Active Jobs + Onboarding
 - [ ] Pass D6 — Shop Directory + immersive map (largest pass; may split D6a/D6b)
 - [ ] Pass D7 — Insurer all screens
@@ -475,4 +482,4 @@ When the dashboard premium lift is complete, mark this doc STATUS COMPLETE and a
 
 This plan respects the locked dashboard inheritance rule (no automotive register), inherits the landing's *quality* bar without imitating its *identity*, and scopes the work into safe incremental passes the owner can greenlight, review, and revert pass-by-pass.
 
-**D3 shipped. Awaiting owner visual review on Vercel before D4 greenlight.**
+**D4 (final v2) shipped — owner-confirmed "amazing" on local dev. The locked "no warm amber on dashboard" rule has been explicitly reversed; gold is now the dashboard's lighting register. Awaiting owner visual review on Vercel and decision on whether D4-D12 page-component passes are still needed given the new baseline.**

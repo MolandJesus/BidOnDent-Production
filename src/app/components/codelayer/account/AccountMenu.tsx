@@ -62,7 +62,6 @@ export default function AccountMenu({
     "bd-dashboard-section bd-dashboard-section--interactive flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left transition-colors";
   const labelTone = isLight ? "text-slate-700" : "text-slate-100";
   const subduedLabelTone = isLight ? "text-slate-500" : "text-blue-100/62";
-  const sectionEyebrowTone = isLight ? "text-slate-500" : "text-blue-100/50";
 
   const rowToneClass: Record<RowTone, string> = {
     deep: "bd-dashboard-section--deep",
@@ -251,11 +250,7 @@ export default function AccountMenu({
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p
-              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${sectionEyebrowTone}`}
-            >
-              Settings
-            </p>
+            <p className="bd-section-eyebrow mb-1.5">Settings</p>
             <h2
               className={`text-xl font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
             >
@@ -268,11 +263,7 @@ export default function AccountMenu({
         </div>
 
         <div className="bd-dashboard-note rounded-2xl p-3">
-          <p
-            className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
-          >
-            Preferences
-          </p>
+          <p className="bd-section-eyebrow mb-2">Preferences</p>
           <div className="space-y-2">
             {preferenceRows.map((row) => (
               <div key={row.label}>{renderRow(row)}</div>
@@ -281,11 +272,7 @@ export default function AccountMenu({
         </div>
 
         <div className="bd-dashboard-note bd-dashboard-note--deep rounded-2xl p-3">
-          <p
-            className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
-          >
-            Profile Tools
-          </p>
+          <p className="bd-section-eyebrow mb-2">Profile Tools</p>
           <div className="space-y-2">
             {profileRows.map((row) => (
               <div key={row.label}>{renderRow(row)}</div>
@@ -295,11 +282,7 @@ export default function AccountMenu({
 
         <div className="bd-dashboard-note rounded-2xl p-3">
           <div className="mb-2 flex items-center justify-between px-1">
-            <p
-              className={`text-[11px] font-semibold uppercase tracking-[0.2em] ${sectionEyebrowTone}`}
-            >
-              Session
-            </p>
+            <p className="bd-section-eyebrow">Session</p>
             <span className={`text-xs ${subduedLabelTone}`}>Sensitive actions</span>
           </div>
           <div className="space-y-2">

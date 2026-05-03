@@ -35,13 +35,7 @@ export default function BidsEmptyState({
             </button>
           )}
           <div className="flex-1">
-            <p
-              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-                isLight ? "text-blue-700/70" : "text-blue-100/58"
-              }`}
-            >
-              Bid Queue
-            </p>
+            <p className="bd-section-eyebrow mb-1.5">Bid Queue</p>
             <h1
               className={`font-semibold text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
             >

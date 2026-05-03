@@ -72,13 +72,7 @@ export default function BidsSummaryHeader({
           </button>
         )}
         <div className="flex-1">
-          <p
-            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-              isLight ? "text-blue-700/70" : "text-blue-100/58"
-            }`}
-          >
-            Bid Comparison
-          </p>
+          <p className="bd-section-eyebrow mb-1.5">Bid Comparison</p>
           <h1
             className={`text-xl font-semibold sm:text-2xl ${isLight ? "text-slate-800" : "text-slate-100"}`}
           >

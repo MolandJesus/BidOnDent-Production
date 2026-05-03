@@ -966,27 +966,31 @@ body {
    --landing (no premium-marketing-anchor energy). Smaller hover lift (2px vs 6px)
    because workspace cards are not marketing CTAs. Dark variant lives in dark block. */
 .bd-glass-card--dashboard {
-  border-color: rgba(147, 197, 253, 0.42);
-  background: linear-gradient(180deg, rgba(250, 252, 255, 0.84) 0%, rgba(238, 247, 255, 0.62) 100%);
+  /* D4 (final): gold off-white surface matched to bd-report-flow material.
+     Owner direction: the report page reads correct; dashboard surfaces should
+     look the same. Cool-blue lives in the ring + faint ambient, not the
+     background. Same recipe as --bd-report-shell-bg / --bd-report-shell-shadow. */
+  border-color: rgba(147, 197, 253, 0.36);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 247, 240, 0.82) 100%);
   box-shadow:
-    0 14px 32px rgba(15, 23, 42, 0.10),
-    0 4px 10px rgba(30, 58, 138, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 24px 56px rgba(15, 23, 42, 0.14),
+    0 4px 12px rgba(60, 50, 30, 0.06),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98),
     inset 0 -1px 0 rgba(191, 219, 254, 0.10),
-    0 0 0 1px rgba(191, 219, 254, 0.20),
-    0 0 28px rgba(59, 130, 246, 0.06);
+    0 0 0 1px rgba(191, 219, 254, 0.22),
+    0 0 36px rgba(59, 130, 246, 0.06);
 }
 
 .bd-glass-card--dashboard:hover {
   transform: translateY(-2px);
-  border-color: rgba(147, 197, 253, 0.65);
+  border-color: rgba(147, 197, 253, 0.58);
   box-shadow:
-    0 18px 40px rgba(15, 23, 42, 0.12),
-    0 6px 14px rgba(30, 58, 138, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 30px 64px rgba(15, 23, 42, 0.18),
+    0 6px 16px rgba(60, 50, 30, 0.08),
+    inset 0 1px 0 rgba(255, 255, 252, 1),
     inset 0 -1px 0 rgba(191, 219, 254, 0.14),
-    0 0 0 1px rgba(147, 197, 253, 0.32),
-    0 0 36px rgba(59, 130, 246, 0.10);
+    0 0 0 1px rgba(147, 197, 253, 0.36),
+    0 0 44px rgba(59, 130, 246, 0.10);
 }
 
 /* Section eyebrow — small-caps tracked label for dashboard section anchors
@@ -1364,33 +1368,33 @@ body {
     0 0 56px rgba(220, 130, 50, 0.30);
 }
 
-/* Dashboard variant — dark mode. Follows the canonical Dark Shell pattern documented
-   in MOLANDJESUS_DESIGN_DECISIONS.md "Established Dark Glass Pattern" section
-   (linear-gradient navy 0.82-0.84 → 0.78-0.80, blue-300 borders at 0.18-0.24).
-   Stronger inset highlight + ambient blue glow than base bd-glass-card; calmer
-   than --landing (no premium marketing-anchor glow tier). */
+/* Dashboard variant — dark mode. D4 (final v2): NAVY infill + heavy GOLD trim
+   and lighting. Owner direction: gold should be trim + lamp glow, not primary
+   bg color. Background returns to deep navy (the user-approved dark blue),
+   but border/inset/outer-glow are amber and stronger than the original cool-blue
+   trim — so the card reads navy-glass-lit-by-gold-lamp like the landing register. */
 .dark .bd-glass-card--dashboard,
 [data-theme="dark"] .bd-glass-card--dashboard {
-  border-color: rgba(96, 165, 250, 0.26);
-  background: linear-gradient(180deg, rgba(11, 23, 47, 0.84) 0%, rgba(8, 18, 38, 0.78) 100%);
+  border-color: rgba(220, 165, 90, 0.42);
+  background: linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.80) 100%);
   box-shadow:
-    0 14px 32px rgba(2, 6, 23, 0.36),
-    inset 0 1px 0 rgba(147, 197, 253, 0.14),
-    inset 0 -1px 0 rgba(59, 130, 246, 0.06),
-    0 0 0 1px rgba(96, 165, 250, 0.22),
-    0 0 28px rgba(37, 99, 235, 0.10);
+    0 16px 36px rgba(2, 6, 23, 0.46),
+    inset 0 1px 0 rgba(253, 220, 160, 0.22),
+    inset 0 -1px 0 rgba(180, 100, 30, 0.10),
+    0 0 0 1px rgba(220, 165, 90, 0.26),
+    0 0 36px rgba(220, 130, 50, 0.22);
 }
 
 .dark .bd-glass-card--dashboard:hover,
 [data-theme="dark"] .bd-glass-card--dashboard:hover {
   transform: translateY(-2px);
-  border-color: rgba(147, 197, 253, 0.40);
+  border-color: rgba(253, 200, 130, 0.62);
   box-shadow:
-    0 18px 40px rgba(2, 6, 23, 0.46),
-    inset 0 1px 0 rgba(147, 197, 253, 0.20),
-    inset 0 -1px 0 rgba(59, 130, 246, 0.08),
-    0 0 0 1px rgba(147, 197, 253, 0.32),
-    0 0 36px rgba(37, 99, 235, 0.16);
+    0 22px 48px rgba(2, 6, 23, 0.54),
+    inset 0 1px 0 rgba(253, 220, 160, 0.32),
+    inset 0 -1px 0 rgba(180, 100, 30, 0.14),
+    0 0 0 1px rgba(253, 200, 130, 0.46),
+    0 0 52px rgba(220, 130, 50, 0.32);
 }
 
 /* Section eyebrow — dark mode. Soft blue tint that reads against dark navy without
@@ -1400,15 +1404,25 @@ body {
   color: rgb(147, 197, 253);
 }
 
-/* Dashboard ambient layer — dark mode. Slightly higher opacity (7% vs light 5%) so
-   the top-anchored glow registers against deeper navy. Still well below landing's
-   atmosphere strength. */
+/* Dashboard ambient layer — dark mode. D4 (final v2): stronger gold lamp glow
+   over the navy surfaces. Three-stop overlay (top + bottom + side cinematic
+   side-bias) so the navy boxes read as "lit by a warm lamp from above." */
 .dark .bd-dashboard-atmosphere,
 [data-theme="dark"] .bd-dashboard-atmosphere {
   background:
     radial-gradient(
       ellipse 80% 60% at 50% 0%,
-      rgba(59, 130, 246, 0.07) 0%,
+      rgba(220, 140, 40, 0.26) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 90% 55% at 50% 100%,
+      rgba(200, 110, 25, 0.18) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 60% 80% at 100% 50%,
+      rgba(220, 150, 60, 0.14) 0%,
       transparent 70%
     );
 }
@@ -1780,9 +1794,12 @@ body {
     rgba(7, 16, 33, 0.92) 100%
   );
   --bd-report-shell-border: rgba(96, 165, 250, 0.24);
+  /* D4 (final v2): amber lamp glow + faint amber ring stacked alongside the
+     cool-blue ring so the report shell reads gold-lit like the dashboard. */
   --bd-report-shell-shadow:
     0 30px 80px rgba(2, 6, 23, 0.48), 0 0 0 1px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(191, 219, 254, 0.08), 0 0 40px rgba(37, 99, 235, 0.08);
+    inset 0 1px 0 rgba(253, 220, 160, 0.14), 0 0 40px rgba(37, 99, 235, 0.08),
+    0 0 32px rgba(220, 130, 50, 0.16);
   --bd-report-panel-bg: linear-gradient(
     180deg,
     rgba(18, 33, 65, 0.88) 0%,
@@ -1790,8 +1807,8 @@ body {
   );
   --bd-report-panel-border: rgba(96, 165, 250, 0.2);
   --bd-report-panel-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 0 0 1px rgba(59, 130, 246, 0.04);
+    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(253, 220, 160, 0.10),
+    0 0 0 1px rgba(59, 130, 246, 0.04), 0 0 26px rgba(220, 130, 50, 0.14);
   --bd-report-input-bg: linear-gradient(
     180deg,
     rgba(7, 17, 35, 0.92) 0%,
@@ -1844,41 +1861,46 @@ body {
   /* Page-level navy so frosted glass has a blue surface to blur over */
   background: radial-gradient(130% 90% at 30% 8%, #1e3660 0%, #182d52 52%, #122242 100%);
 
-  /* D3: cool-blue calm-workspace family (locked Q3 — converted from amber/cream) */
-  --bd-report-text-strong: #0f172a;
-  --bd-report-text-secondary: #334155;
+  /* D4 hybrid: gold off-white BACKGROUNDS (calm warm surfaces) + cool-blue
+     INTERACTION (borders, active states, focus accents). The amber identity
+     pills/orange decorations from the original Direction B are still gone —
+     this is the calm warm-cream surface that the owner asked to bring back. */
+  --bd-report-text-strong: #1a1510;
+  --bd-report-text-secondary: #475569;
   --bd-report-text-tertiary: #64748b;
   --bd-report-shell-bg: linear-gradient(
     180deg,
-    rgba(250, 252, 255, 0.84) 0%,
-    rgba(238, 247, 255, 0.74) 100%
+    rgba(255, 253, 248, 0.84) 0%,
+    rgba(250, 247, 240, 0.74) 100%
   );
   --bd-report-shell-border: rgba(147, 197, 253, 0.32);
+  /* D4 (final v2): amber lamp glow stacked over cream — matches dashboard gold halo. */
   --bd-report-shell-shadow:
-    0 24px 56px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+    0 24px 56px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.20),
+    inset 0 1px 0 rgba(255, 255, 252, 0.96), 0 0 0 1px rgba(220, 165, 90, 0.10),
+    0 0 36px rgba(220, 140, 50, 0.10);
   --bd-report-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(96, 165, 250, 0.07), transparent 65%),
-    linear-gradient(180deg, rgba(250, 252, 255, 0.78) 0%, rgba(238, 247, 255, 0.66) 100%);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.06), transparent 65%),
+    linear-gradient(180deg, rgba(255, 253, 248, 0.78) 0%, rgba(250, 247, 240, 0.66) 100%);
   --bd-report-panel-border: rgba(147, 197, 253, 0.30);
   --bd-report-panel-shadow:
-    0 16px 34px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.88),
-    0 0 0 1px rgba(191, 219, 254, 0.18), 0 0 40px rgba(59, 130, 246, 0.06);
+    0 16px 34px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    0 0 0 1px rgba(220, 165, 90, 0.10), 0 0 32px rgba(220, 140, 50, 0.10);
   --bd-report-input-bg: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.96) 0%,
-    rgba(248, 251, 255, 0.93) 100%
+    rgba(255, 254, 250, 0.96) 0%,
+    rgba(252, 250, 244, 0.93) 100%
   );
   --bd-report-input-border: rgba(147, 197, 253, 0.42);
   --bd-report-input-border-hover: rgba(59, 130, 246, 0.55);
   --bd-report-input-placeholder: rgba(100, 116, 139, 0.55);
   --bd-report-input-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -10px 18px rgba(191, 219, 254, 0.08),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98), inset 0 -10px 18px rgba(191, 219, 254, 0.06),
     0 6px 16px rgba(15, 23, 42, 0.07);
   --bd-report-choice-bg: linear-gradient(
     180deg,
-    rgba(250, 252, 255, 0.94) 0%,
-    rgba(238, 247, 255, 0.88) 100%
+    rgba(255, 253, 248, 0.94) 0%,
+    rgba(250, 247, 240, 0.88) 100%
   );
   --bd-report-choice-border: rgba(147, 197, 253, 0.34);
   --bd-report-choice-active-bg: linear-gradient(
@@ -1889,10 +1911,10 @@ body {
   --bd-report-choice-active-border: rgba(59, 130, 246, 0.55);
   --bd-report-note-bg: linear-gradient(
     180deg,
-    rgba(238, 247, 255, 0.92) 0%,
-    rgba(219, 234, 254, 0.82) 100%
+    rgba(255, 251, 244, 0.92) 0%,
+    rgba(248, 244, 234, 0.82) 100%
   );
-  --bd-report-note-border: rgba(96, 165, 250, 0.36);
+  --bd-report-note-border: rgba(96, 165, 250, 0.34);
   --bd-report-pill-bg: linear-gradient(
     180deg,
     rgba(219, 234, 254, 0.78) 0%,
@@ -1903,13 +1925,13 @@ body {
   --bd-report-divider: rgba(147, 197, 253, 0.26);
   --bd-report-secondary-bg: linear-gradient(
     180deg,
-    rgba(250, 252, 255, 0.82) 0%,
-    rgba(238, 247, 255, 0.72) 100%
+    rgba(255, 253, 248, 0.82) 0%,
+    rgba(250, 247, 240, 0.72) 100%
   );
   --bd-report-secondary-border: rgba(147, 197, 253, 0.30);
-  --bd-report-secondary-text: #0f172a;
+  --bd-report-secondary-text: #1a1510;
   --bd-report-secondary-shadow:
-    0 12px 26px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+    0 12px 26px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 252, 0.96);
 }
 
 .bd-report-header,
@@ -1929,7 +1951,8 @@ body {
   inset-inline: 1.25rem;
   top: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.72), transparent);
+  /* D4 (final v2): warm-amber top highlight strip — matches dashboard gold lamp identity. */
+  background: linear-gradient(90deg, transparent, rgba(253, 200, 130, 0.62), transparent);
   pointer-events: none;
 }
 
@@ -1944,7 +1967,8 @@ body {
   width: 42%;
   aspect-ratio: 1;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.14) 0%, transparent 72%);
+  /* D4 (final v2): warm-amber corner lamp glow — matches dashboard gold halo. */
+  background: radial-gradient(circle, rgba(220, 140, 50, 0.22) 0%, transparent 72%);
   pointer-events: none;
 }
 
@@ -1959,19 +1983,21 @@ body {
 
 [data-appearance-mode="light"] .bd-report-header {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(96, 165, 250, 0.07), transparent 70%),
-    linear-gradient(180deg, rgba(250, 252, 255, 0.84) 0%, rgba(238, 247, 255, 0.76) 100%);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(96, 165, 250, 0.06), transparent 70%),
+    linear-gradient(180deg, rgba(255, 253, 248, 0.84) 0%, rgba(250, 247, 240, 0.76) 100%);
   backdrop-filter: blur(28px) saturate(1.4);
   -webkit-backdrop-filter: blur(28px) saturate(1.4);
   box-shadow:
     0 16px 42px rgba(15, 23, 42, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 0 0 1px rgba(191, 219, 254, 0.22);
+    inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    0 0 0 1px rgba(191, 219, 254, 0.20);
 }
 
+/* D4 (final v2): warm-amber highlight + glow on light report header/progress —
+   matches dashboard gold lamp identity instead of D3's cool-blue accents. */
 [data-appearance-mode="light"] .bd-report-header::before,
 [data-appearance-mode="light"] .bd-report-progress::before {
-  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(220, 165, 90, 0.46), transparent);
 }
 
 [data-appearance-mode="light"] .bd-report-header::after,
@@ -1979,14 +2005,12 @@ body {
   opacity: 0;
 }
 
-/* Cool-blue highlight line for sections in light mode (D3: was warm amber) */
 [data-appearance-mode="light"] .bd-report-section::before {
-  background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(220, 165, 90, 0.46), transparent);
 }
 
-/* Cool-blue radial glow blob for sections in light mode (D3: was warm amber) */
 [data-appearance-mode="light"] .bd-report-section::after {
-  background: radial-gradient(circle, rgba(96, 165, 250, 0.10) 0%, transparent 72%);
+  background: radial-gradient(circle, rgba(220, 140, 50, 0.14) 0%, transparent 72%);
 }
 
 .bd-report-progress {
@@ -1997,10 +2021,10 @@ body {
 }
 
 [data-appearance-mode="light"] .bd-report-progress {
-  background: linear-gradient(180deg, rgba(250, 252, 255, 0.80) 0%, rgba(238, 247, 255, 0.72) 100%);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.80) 0%, rgba(250, 247, 240, 0.72) 100%);
   backdrop-filter: blur(28px) saturate(1.4);
   -webkit-backdrop-filter: blur(28px) saturate(1.4);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 252, 0.94);
 }
 
 .bd-report-shell {
@@ -2258,104 +2282,123 @@ body {
    ============================================================ */
 
 :root {
+  /* D4 (final v2): NAVY dashboard surfaces in dark with GOLD trim + lamp glow.
+     Backgrounds stay deep navy (the user-approved dark blue base); amber is
+     the trim (border) + lighting (inset highlight + outer glow + atmosphere).
+     Reads as "navy glass lit by a gold lamp" — landing register, workspace calm. */
   --bd-dashboard-panel-bg: linear-gradient(
     180deg,
-    rgba(10, 22, 45, 0.9) 0%,
-    rgba(7, 16, 33, 0.86) 100%
+    rgba(10, 22, 45, 0.92) 0%,
+    rgba(7, 16, 33, 0.88) 100%
   );
-  --bd-dashboard-panel-border: rgba(96, 165, 250, 0.22);
+  --bd-dashboard-panel-border: rgba(220, 165, 90, 0.32);
   --bd-dashboard-panel-shadow:
-    0 22px 48px rgba(2, 6, 23, 0.34), inset 0 1px 0 rgba(191, 219, 254, 0.08),
-    0 0 0 1px rgba(59, 130, 246, 0.04), 0 0 30px rgba(37, 99, 235, 0.07);
+    0 22px 48px rgba(2, 6, 23, 0.42),
+    inset 0 1px 0 rgba(253, 220, 160, 0.16),
+    0 0 0 1px rgba(220, 165, 90, 0.14),
+    0 0 36px rgba(220, 130, 50, 0.20);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(16, 31, 60, 0.88) 0%,
-    rgba(11, 22, 43, 0.82) 100%
+    rgba(11, 22, 43, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(96, 165, 250, 0.18);
+  --bd-dashboard-section-border: rgba(220, 165, 90, 0.26);
   --bd-dashboard-section-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 0 0 1px rgba(59, 130, 246, 0.03);
+    0 16px 30px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(253, 220, 160, 0.12),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
+    0 0 22px rgba(220, 130, 50, 0.14);
   --bd-dashboard-section-hover-shadow:
-    0 22px 38px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 0 24px rgba(59, 130, 246, 0.1);
+    0 22px 38px rgba(2, 6, 23, 0.38),
+    inset 0 1px 0 rgba(253, 220, 160, 0.18),
+    0 0 0 1px rgba(253, 200, 130, 0.30),
+    0 0 32px rgba(220, 130, 50, 0.26);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
-    rgba(34, 74, 156, 0.34) 0%,
-    rgba(17, 46, 104, 0.26) 100%
+    rgba(34, 74, 156, 0.40) 0%,
+    rgba(17, 46, 104, 0.30) 100%
   );
-  --bd-dashboard-section-selected-border: rgba(96, 165, 250, 0.46);
+  --bd-dashboard-section-selected-border: rgba(253, 200, 130, 0.50);
   --bd-dashboard-chip-bg: linear-gradient(
     180deg,
-    rgba(17, 43, 92, 0.56) 0%,
-    rgba(10, 26, 56, 0.4) 100%
+    rgba(17, 43, 92, 0.62) 0%,
+    rgba(10, 26, 56, 0.46) 100%
   );
-  --bd-dashboard-chip-border: rgba(125, 211, 252, 0.24);
-  --bd-dashboard-chip-text: #dbeafe;
+  --bd-dashboard-chip-border: rgba(253, 200, 130, 0.30);
+  --bd-dashboard-chip-text: #fde6c0;
   --bd-dashboard-note-bg: linear-gradient(
     180deg,
-    rgba(17, 43, 92, 0.24) 0%,
-    rgba(10, 26, 56, 0.16) 100%
+    rgba(17, 43, 92, 0.28) 0%,
+    rgba(10, 26, 56, 0.20) 100%
   );
-  --bd-dashboard-note-border: rgba(96, 165, 250, 0.14);
+  --bd-dashboard-note-border: rgba(220, 165, 90, 0.20);
   --bd-dashboard-secondary-bg: linear-gradient(
     180deg,
     rgba(18, 33, 65, 0.94) 0%,
-    rgba(12, 23, 46, 0.9) 100%
+    rgba(12, 23, 46, 0.90) 100%
   );
-  --bd-dashboard-secondary-border: rgba(96, 165, 250, 0.2);
-  --bd-dashboard-secondary-text: #dbeafe;
-  --bd-dashboard-ghost-text: rgba(191, 219, 254, 0.9);
+  --bd-dashboard-secondary-border: rgba(220, 165, 90, 0.26);
+  --bd-dashboard-secondary-text: #fde6c0;
+  --bd-dashboard-ghost-text: rgba(253, 220, 160, 0.90);
 }
 
 [data-appearance-mode="light"] {
-  /* Cooler frosted glass for stronger contrast against the sky-blue atmosphere */
-  --bd-dashboard-panel-bg: linear-gradient(
-    180deg,
-    rgba(248, 252, 255, 0.94) 0%,
-    rgba(236, 245, 255, 0.9) 100%
-  );
-  --bd-dashboard-panel-border: rgba(148, 163, 184, 0.26);
+  /* D4 (final): gold off-white surfaces matched to bd-report-flow depth.
+     Owner direction: report page reads correct, dashboard/bids/account
+     should match. Cream gradient + cool-blue ring + strong inner sheen +
+     deep shadow recreate the report flow's premium material across the
+     whole dashboard. Cool-blue stays in borders + selected/hover only. */
+  --bd-dashboard-panel-bg:
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(96, 165, 250, 0.05), transparent 65%),
+    linear-gradient(180deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 247, 240, 0.82) 100%);
+  --bd-dashboard-panel-border: rgba(147, 197, 253, 0.36);
   --bd-dashboard-panel-shadow:
-    0 16px 34px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.98),
-    0 0 0 1px rgba(148, 163, 184, 0.12);
+    0 24px 56px rgba(15, 23, 42, 0.14),
+    0 0 0 1px rgba(191, 219, 254, 0.22),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.10),
+    0 0 36px rgba(59, 130, 246, 0.06);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
-    rgba(245, 250, 255, 0.94) 0%,
-    rgba(233, 243, 255, 0.88) 100%
+    rgba(255, 253, 248, 0.90) 0%,
+    rgba(250, 247, 240, 0.78) 100%
   );
-  --bd-dashboard-section-border: rgba(148, 163, 184, 0.24);
+  --bd-dashboard-section-border: rgba(147, 197, 253, 0.32);
   --bd-dashboard-section-shadow:
-    0 12px 28px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.98),
-    0 0 0 1px rgba(148, 163, 184, 0.1);
+    0 16px 36px rgba(15, 23, 42, 0.10),
+    0 0 0 1px rgba(191, 219, 254, 0.16),
+    inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.08);
   --bd-dashboard-section-hover-shadow:
-    0 20px 38px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 1),
-    0 0 20px rgba(59, 130, 246, 0.1);
+    0 22px 44px rgba(15, 23, 42, 0.14),
+    0 0 0 1px rgba(147, 197, 253, 0.30),
+    inset 0 1px 0 rgba(255, 255, 252, 1),
+    0 0 24px rgba(59, 130, 246, 0.14);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
-    rgba(224, 238, 255, 0.98) 0%,
-    rgba(209, 228, 252, 0.92) 100%
+    rgba(224, 238, 255, 0.96) 0%,
+    rgba(206, 224, 252, 0.90) 100%
   );
-  --bd-dashboard-section-selected-border: rgba(59, 130, 246, 0.42);
+  --bd-dashboard-section-selected-border: rgba(59, 130, 246, 0.5);
   --bd-dashboard-chip-bg: linear-gradient(
     180deg,
-    rgba(242, 248, 255, 0.98) 0%,
-    rgba(229, 240, 255, 0.92) 100%
+    rgba(255, 253, 248, 0.94) 0%,
+    rgba(250, 247, 240, 0.86) 100%
   );
-  --bd-dashboard-chip-border: rgba(148, 163, 184, 0.24);
+  --bd-dashboard-chip-border: rgba(147, 197, 253, 0.36);
   --bd-dashboard-chip-text: #1d4ed8;
   --bd-dashboard-note-bg: linear-gradient(
     180deg,
-    rgba(239, 247, 255, 0.92) 0%,
-    rgba(227, 239, 255, 0.84) 100%
+    rgba(255, 253, 248, 0.88) 0%,
+    rgba(250, 247, 240, 0.78) 100%
   );
-  --bd-dashboard-note-border: rgba(148, 163, 184, 0.18);
+  --bd-dashboard-note-border: rgba(147, 197, 253, 0.26);
   --bd-dashboard-secondary-bg: linear-gradient(
     180deg,
-    rgba(245, 251, 255, 0.96) 0%,
-    rgba(233, 245, 255, 0.92) 100%
+    rgba(255, 253, 248, 0.94) 0%,
+    rgba(250, 247, 240, 0.86) 100%
   );
-  --bd-dashboard-secondary-border: rgba(148, 163, 184, 0.24);
+  --bd-dashboard-secondary-border: rgba(147, 197, 253, 0.34);
   --bd-dashboard-secondary-text: #1e3a8a;
   --bd-dashboard-ghost-text: #1d4ed8;
 }
@@ -2375,7 +2418,8 @@ body {
   inset-inline: 1.25rem;
   top: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.52), transparent);
+  /* D4 (final v2): stronger warm-amber top highlight line — the gold trim lamp. */
+  background: linear-gradient(90deg, transparent, rgba(253, 200, 130, 0.62), transparent);
   pointer-events: none;
 }
 
@@ -2384,14 +2428,16 @@ body {
   position: absolute;
   right: -12%;
   top: -28%;
-  width: 34%;
+  width: 38%;
   aspect-ratio: 1;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 72%);
+  /* D4 (final v2): stronger warm-amber corner lamp glow over navy infill. */
+  background: radial-gradient(circle, rgba(220, 140, 50, 0.30) 0%, transparent 72%);
   pointer-events: none;
 }
 
-/* Light mode: subtle warm highlight line + glow for light blue bg */
+/* Light mode: cool-blue highlight + glow stays — gold off-white base + cool-blue
+   interaction is the report-flow recipe. */
 [data-appearance-mode="light"] .bd-dashboard-panel::before,
 [data-appearance-mode="light"] .bd-dashboard-section::before {
   background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.26), transparent);
@@ -2408,76 +2454,98 @@ body {
   border-radius: 1.5rem;
 }
 
+/* D4 (final v2): NAVY infill on each accent variant + GOLD trim/lighting.
+   Accent identity lives in a subtle navy-tonal shift; gold dominates the trim
+   (border) and lighting (inset highlight + outer glow). All variants get the
+   same gold lamp treatment so the dashboard reads cohesively gold-lit. */
 .bd-dashboard-panel--deep {
   background: linear-gradient(180deg, rgba(7, 16, 33, 0.96) 0%, rgba(5, 12, 26, 0.92) 100%);
-  border-color: rgba(96, 165, 250, 0.18);
+  border-color: rgba(220, 165, 90, 0.28);
   box-shadow:
-    0 24px 46px rgba(2, 6, 23, 0.38),
-    inset 0 1px 0 rgba(191, 219, 254, 0.06),
-    0 0 26px rgba(37, 99, 235, 0.08);
-}
-
-[data-appearance-mode="light"] .bd-dashboard-panel--deep {
-  background: linear-gradient(180deg, rgba(255, 253, 248, 0.95) 0%, rgba(250, 247, 240, 0.92) 100%);
-  border-color: rgba(200, 180, 150, 0.22);
-  box-shadow:
-    0 10px 32px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 250, 0.96),
-    0 0 16px rgba(59, 130, 246, 0.03);
+    0 24px 46px rgba(2, 6, 23, 0.42),
+    inset 0 1px 0 rgba(253, 220, 160, 0.14),
+    0 0 0 1px rgba(220, 165, 90, 0.12),
+    0 0 32px rgba(220, 130, 50, 0.20);
 }
 
 .bd-dashboard-panel--accent-blue {
-  background: linear-gradient(180deg, rgba(12, 35, 74, 0.94) 0%, rgba(9, 24, 52, 0.9) 100%);
-  border-color: rgba(96, 165, 250, 0.24);
+  background: linear-gradient(180deg, rgba(12, 35, 74, 0.94) 0%, rgba(9, 24, 52, 0.90) 100%);
+  border-color: rgba(220, 165, 90, 0.36);
   box-shadow:
-    0 22px 42px rgba(2, 6, 23, 0.34),
-    inset 0 1px 0 rgba(191, 219, 254, 0.08),
-    0 0 28px rgba(37, 99, 235, 0.1);
+    0 22px 42px rgba(2, 6, 23, 0.40),
+    inset 0 1px 0 rgba(253, 220, 160, 0.18),
+    0 0 0 1px rgba(220, 165, 90, 0.16),
+    0 0 32px rgba(220, 130, 50, 0.22),
+    0 0 24px rgba(96, 165, 250, 0.10);
 }
 
 .bd-dashboard-panel--accent-cyan {
-  background: linear-gradient(180deg, rgba(8, 37, 58, 0.94) 0%, rgba(7, 22, 36, 0.9) 100%);
-  border-color: rgba(34, 211, 238, 0.2);
+  background: linear-gradient(180deg, rgba(8, 37, 58, 0.94) 0%, rgba(7, 22, 36, 0.90) 100%);
+  border-color: rgba(220, 165, 90, 0.34);
   box-shadow:
-    0 22px 42px rgba(2, 6, 23, 0.32),
-    inset 0 1px 0 rgba(165, 243, 252, 0.07),
-    0 0 24px rgba(6, 182, 212, 0.08);
+    0 22px 42px rgba(2, 6, 23, 0.38),
+    inset 0 1px 0 rgba(253, 220, 160, 0.18),
+    0 0 0 1px rgba(220, 165, 90, 0.14),
+    0 0 32px rgba(220, 130, 50, 0.20),
+    0 0 24px rgba(34, 211, 238, 0.10);
 }
 
 .bd-dashboard-panel--accent-indigo {
-  background: linear-gradient(180deg, rgba(20, 27, 69, 0.94) 0%, rgba(13, 18, 45, 0.9) 100%);
-  border-color: rgba(129, 140, 248, 0.2);
+  background: linear-gradient(180deg, rgba(20, 27, 69, 0.94) 0%, rgba(13, 18, 45, 0.90) 100%);
+  border-color: rgba(220, 165, 90, 0.34);
   box-shadow:
-    0 22px 42px rgba(2, 6, 23, 0.34),
-    inset 0 1px 0 rgba(224, 231, 255, 0.07),
-    0 0 24px rgba(99, 102, 241, 0.08);
+    0 22px 42px rgba(2, 6, 23, 0.40),
+    inset 0 1px 0 rgba(253, 220, 160, 0.18),
+    0 0 0 1px rgba(220, 165, 90, 0.14),
+    0 0 32px rgba(220, 130, 50, 0.20),
+    0 0 24px rgba(129, 140, 248, 0.10);
+}
+
+/* D4 (final): gold off-white base everywhere. Accent identity now lives in
+   the ring color + ambient glow only — backgrounds stay warm-cream so the
+   whole dashboard inherits the report-flow material the owner approved. */
+[data-appearance-mode="light"] .bd-dashboard-panel--deep {
+  background: linear-gradient(180deg, rgba(252, 248, 240, 0.94) 0%, rgba(246, 240, 228, 0.88) 100%);
+  border-color: rgba(96, 165, 250, 0.34);
+  box-shadow:
+    0 24px 50px rgba(15, 23, 42, 0.14),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.10),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 30px rgba(59, 130, 246, 0.08);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-blue {
-  background: linear-gradient(180deg, rgba(239, 246, 255, 0.98) 0%, rgba(224, 236, 253, 0.94) 100%);
-  border-color: rgba(96, 165, 250, 0.22);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 247, 240, 0.82) 100%);
+  border-color: rgba(59, 130, 246, 0.36);
   box-shadow:
-    0 18px 36px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.98),
-    0 0 18px rgba(59, 130, 246, 0.06);
+    0 24px 52px rgba(15, 23, 42, 0.14),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.12),
+    0 0 0 1px rgba(96, 165, 250, 0.20),
+    0 0 32px rgba(59, 130, 246, 0.12);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-cyan {
-  background: linear-gradient(180deg, rgba(240, 252, 248, 0.98) 0%, rgba(224, 246, 239, 0.94) 100%);
-  border-color: rgba(20, 184, 166, 0.18);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 247, 240, 0.82) 100%);
+  border-color: rgba(20, 184, 166, 0.34);
   box-shadow:
-    0 18px 36px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.98),
-    0 0 18px rgba(13, 148, 136, 0.05);
+    0 24px 52px rgba(15, 23, 42, 0.13),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98),
+    inset 0 -1px 0 rgba(165, 243, 252, 0.12),
+    0 0 0 1px rgba(34, 211, 238, 0.18),
+    0 0 32px rgba(13, 148, 136, 0.10);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-indigo {
-  background: linear-gradient(180deg, rgba(243, 244, 255, 0.98) 0%, rgba(231, 234, 252, 0.94) 100%);
-  border-color: rgba(129, 140, 248, 0.18);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.92) 0%, rgba(250, 247, 240, 0.82) 100%);
+  border-color: rgba(129, 140, 248, 0.34);
   box-shadow:
-    0 18px 36px rgba(15, 23, 42, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.98),
-    0 0 18px rgba(99, 102, 241, 0.05);
+    0 24px 52px rgba(15, 23, 42, 0.13),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98),
+    inset 0 -1px 0 rgba(224, 231, 255, 0.12),
+    0 0 0 1px rgba(129, 140, 248, 0.18),
+    0 0 32px rgba(99, 102, 241, 0.10);
 }
 
 .bd-dashboard-section {
@@ -2488,77 +2556,114 @@ body {
 }
 
 .bd-dashboard-section--deep {
-  background: linear-gradient(180deg, rgba(8, 18, 39, 0.95) 0%, rgba(7, 15, 31, 0.9) 100%);
-  border-color: rgba(96, 165, 250, 0.16);
+  background: linear-gradient(180deg, rgba(8, 18, 39, 0.95) 0%, rgba(7, 15, 31, 0.92) 100%);
+  border-color: rgba(220, 165, 90, 0.22);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(191, 219, 254, 0.05),
-    0 0 18px rgba(37, 99, 235, 0.04);
+    0 16px 30px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(253, 220, 160, 0.10),
+    0 0 0 1px rgba(220, 165, 90, 0.08),
+    0 0 22px rgba(220, 130, 50, 0.16);
 }
 
 .bd-dashboard-section--accent-blue {
   background: linear-gradient(180deg, rgba(16, 42, 84, 0.92) 0%, rgba(11, 29, 59, 0.88) 100%);
-  border-color: rgba(96, 165, 250, 0.26);
+  border-color: rgba(220, 165, 90, 0.32);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(191, 219, 254, 0.08),
-    0 0 22px rgba(37, 99, 235, 0.08);
+    0 16px 30px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(253, 220, 160, 0.14),
+    0 0 0 1px rgba(220, 165, 90, 0.12),
+    0 0 24px rgba(220, 130, 50, 0.18),
+    0 0 18px rgba(96, 165, 250, 0.10);
 }
 
 .bd-dashboard-section--accent-cyan {
   background: linear-gradient(180deg, rgba(10, 49, 74, 0.92) 0%, rgba(8, 30, 47, 0.88) 100%);
-  border-color: rgba(34, 211, 238, 0.22);
+  border-color: rgba(220, 165, 90, 0.30);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(165, 243, 252, 0.07),
-    0 0 20px rgba(6, 182, 212, 0.06);
+    0 16px 30px rgba(2, 6, 23, 0.28),
+    inset 0 1px 0 rgba(253, 220, 160, 0.14),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
+    0 0 24px rgba(220, 130, 50, 0.16),
+    0 0 18px rgba(34, 211, 238, 0.10);
 }
 
 .bd-dashboard-section--accent-indigo {
-  background: linear-gradient(180deg, rgba(29, 34, 82, 0.9) 0%, rgba(17, 21, 54, 0.86) 100%);
-  border-color: rgba(129, 140, 248, 0.2);
+  background: linear-gradient(180deg, rgba(29, 34, 82, 0.92) 0%, rgba(17, 21, 54, 0.88) 100%);
+  border-color: rgba(220, 165, 90, 0.30);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.24),
-    inset 0 1px 0 rgba(224, 231, 255, 0.06),
-    0 0 18px rgba(99, 102, 241, 0.07);
+    0 16px 30px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(253, 220, 160, 0.14),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
+    0 0 24px rgba(220, 130, 50, 0.16),
+    0 0 18px rgba(129, 140, 248, 0.10);
 }
 
 .bd-dashboard-section--accent-rose {
-  background: linear-gradient(180deg, rgba(63, 22, 44, 0.84) 0%, rgba(39, 14, 28, 0.8) 100%);
-  border-color: rgba(251, 113, 133, 0.2);
+  background: linear-gradient(180deg, rgba(63, 22, 44, 0.86) 0%, rgba(39, 14, 28, 0.82) 100%);
+  border-color: rgba(220, 165, 90, 0.28);
   box-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(254, 205, 211, 0.05),
-    0 0 18px rgba(244, 63, 94, 0.05);
+    0 16px 30px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(253, 220, 160, 0.12),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
+    0 0 22px rgba(220, 130, 50, 0.16),
+    0 0 18px rgba(244, 63, 94, 0.10);
 }
 
+/* D4 (final): gold off-white base on every section variant, accent identity
+   in ring + ambient only. Matches the report-flow material the owner approved. */
 [data-appearance-mode="light"] .bd-dashboard-section--deep {
-  background: linear-gradient(180deg, rgba(241, 246, 253, 0.98) 0%, rgba(232, 239, 250, 0.94) 100%);
-  border-color: rgba(148, 163, 184, 0.22);
+  background: linear-gradient(180deg, rgba(252, 248, 240, 0.94) 0%, rgba(246, 240, 228, 0.88) 100%);
+  border-color: rgba(96, 165, 250, 0.30);
   box-shadow:
-    0 14px 28px rgba(15, 23, 42, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.98),
-    0 0 14px rgba(59, 130, 246, 0.04);
+    0 16px 36px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.08),
+    0 0 0 1px rgba(96, 165, 250, 0.16),
+    0 0 20px rgba(59, 130, 246, 0.06);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-blue {
-  background: linear-gradient(180deg, rgba(233, 243, 255, 0.98) 0%, rgba(220, 234, 251, 0.94) 100%);
-  border-color: rgba(96, 165, 250, 0.24);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.90) 0%, rgba(250, 247, 240, 0.78) 100%);
+  border-color: rgba(59, 130, 246, 0.34);
+  box-shadow:
+    0 16px 36px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.10),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 20px rgba(59, 130, 246, 0.10);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-cyan {
-  background: linear-gradient(180deg, rgba(237, 249, 245, 0.98) 0%, rgba(222, 243, 236, 0.94) 100%);
-  border-color: rgba(20, 184, 166, 0.2);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.90) 0%, rgba(250, 247, 240, 0.78) 100%);
+  border-color: rgba(20, 184, 166, 0.32);
+  box-shadow:
+    0 16px 36px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    inset 0 -1px 0 rgba(165, 243, 252, 0.10),
+    0 0 0 1px rgba(34, 211, 238, 0.16),
+    0 0 20px rgba(13, 148, 136, 0.08);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-indigo {
-  background: linear-gradient(180deg, rgba(238, 239, 255, 0.98) 0%, rgba(227, 230, 252, 0.94) 100%);
-  border-color: rgba(129, 140, 248, 0.2);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.90) 0%, rgba(250, 247, 240, 0.78) 100%);
+  border-color: rgba(129, 140, 248, 0.32);
+  box-shadow:
+    0 16px 36px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    inset 0 -1px 0 rgba(224, 231, 255, 0.10),
+    0 0 0 1px rgba(129, 140, 248, 0.16),
+    0 0 20px rgba(99, 102, 241, 0.08);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-rose {
-  background: linear-gradient(180deg, rgba(255, 241, 244, 0.98) 0%, rgba(253, 229, 235, 0.94) 100%);
-  border-color: rgba(251, 113, 133, 0.2);
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.90) 0%, rgba(250, 247, 240, 0.78) 100%);
+  border-color: rgba(251, 113, 133, 0.32);
+  box-shadow:
+    0 16px 36px rgba(15, 23, 42, 0.10),
+    inset 0 1px 0 rgba(255, 255, 252, 0.96),
+    inset 0 -1px 0 rgba(254, 205, 211, 0.10),
+    0 0 0 1px rgba(251, 113, 133, 0.18),
+    0 0 20px rgba(244, 63, 94, 0.08);
 }
 
 .bd-dashboard-section--interactive {
