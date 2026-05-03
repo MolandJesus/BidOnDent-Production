@@ -168,9 +168,14 @@ export function MapEmptyState({ isDark, shopCount }: { isDark: boolean; shopCoun
             : "border-slate-200/78 bg-[linear-gradient(180deg,rgba(248,250,252,0.84),rgba(226,232,240,0.76))] text-slate-700"
         }`}
       >
-        <p className="text-sm font-semibold">No shops in this area</p>
+        {/* Phase 7 honesty (2026-05-03 P7): default empty-state copy now
+            calls out the NY service region directly so out-of-state GPS
+            users see the soft-launch boundary instead of the prior generic
+            "broaden your filters" line that implied shops would appear if
+            the user adjusted the radius. */}
+        <p className="text-sm font-semibold">No partner shops in this area</p>
         <p className={`mt-1 text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-          Try a different location or broaden your filters
+          We're live across NY — try a NY ZIP, address, or one of the region quick-pick chips above.
         </p>
       </div>
     </div>

@@ -134,6 +134,34 @@ const prefixFallbackCoordinates: Record<string, CoverageLookup> = {
 
 export const defaultCoverageCenter: [number, number] = [41.22, -73.88];
 
+/**
+ * Phase 2 honesty (2026-05-03 P2): a target is considered inside the NY
+ * service region if it sits within ~60mi of any of our six NY county centers.
+ * This corrects the prior `isOutsideServiceArea = !hasCoverageSignal` heuristic
+ * which only checked ZIP coverage and so falsely flagged a real NY user using
+ * live GPS (no ZIP typed) as outside-region.
+ *
+ * 60mi was chosen as a forgiving radius that covers the union of our six
+ * counties plus a buffer so neighbors like the Bronx or Bergen NJ — places a
+ * NY-area user might actually be — don't trip the out-of-region UX. Anything
+ * meaningfully further (e.g. Atlanta, Chicago, LA) reads as outside.
+ */
+export function isTargetInsideNyServiceRegion(lat: number, lng: number): boolean {
+  const NY_REGION_RADIUS_MILES = 60;
+  for (const center of countyCenters) {
+    const dLat = ((center.lat - lat) * Math.PI) / 180;
+    const dLng = ((center.lng - lng) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos((lat * Math.PI) / 180) *
+        Math.cos((center.lat * Math.PI) / 180) *
+        Math.sin(dLng / 2) ** 2;
+    const distanceMiles = 7917.5 * Math.asin(Math.sqrt(a));
+    if (distanceMiles <= NY_REGION_RADIUS_MILES) return true;
+  }
+  return false;
+}
+
 export function sanitizeZipInput(value: string) {
   return value.replace(/[^0-9]/g, "").slice(0, 5);
 }

@@ -149,13 +149,25 @@ export default function ProfileDropdown({
       className={`${containerClasses} ${isLightAppearance ? "text-slate-800" : "text-slate-200"}`}
       role="region"
       style={{
+        // V3c (2026-05-03): body alpha lowered so the dashboard gold-lamp
+        // atmosphere reads through the glass — was 0.97/0.94 (effectively
+        // opaque, no glass identity in light mode per Sonnet's audit). Now
+        // 0.86/0.80 light, 0.86/0.80 dark with backdrop-blur kept saturated.
+        // Champagne top bezel + amber bottom-edge inset added so the panel
+        // catches light at its boundaries (gold-as-light, not gold-paint).
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(250, 252, 255, 0.97) 0%, rgba(238, 247, 255, 0.94) 100%)"
-          : "linear-gradient(180deg, rgba(11, 23, 47, 0.94) 0%, rgba(8, 18, 38, 0.90) 100%)",
+          ? "linear-gradient(180deg, rgba(250, 252, 255, 0.86) 0%, rgba(238, 247, 255, 0.80) 100%)"
+          : "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.80) 100%)",
         borderColor: isLightAppearance ? "rgba(147, 197, 253, 0.42)" : "rgba(96, 165, 250, 0.26)",
+        backdropFilter: isLightAppearance
+          ? "blur(26px) saturate(1.5)"
+          : "blur(28px) saturate(1.5)",
+        WebkitBackdropFilter: isLightAppearance
+          ? "blur(26px) saturate(1.5)"
+          : "blur(28px) saturate(1.5)",
         boxShadow: isLightAppearance
-          ? "0 24px 56px rgba(15, 23, 42, 0.13), 0 4px 12px rgba(30, 58, 138, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(191, 219, 254, 0.22)"
-          : "0 24px 56px rgba(2, 6, 23, 0.50), 0 4px 12px rgba(2, 6, 23, 0.30), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 36px rgba(37, 99, 235, 0.10)",
+          ? "0 24px 56px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(220, 165, 90, 0.22), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(220, 140, 50, 0.16)"
+          : "0 24px 56px rgba(2, 6, 23, 0.52), 0 4px 12px rgba(2, 6, 23, 0.32), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(220, 165, 90, 0.22), inset 0 -1px 0 rgba(220, 165, 90, 0.18), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(220, 140, 50, 0.16)",
       }}
     >
       {/* Profile Header */}

@@ -91,7 +91,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
           </h2>
           <button
             aria-label="Close appearance settings"
-            className={`rounded-lg p-1 transition-colors ${isLight ? "text-slate-500 hover:bg-slate-100 hover:text-slate-700" : "text-blue-200/60 hover:bg-white/10 hover:text-blue-100"}`}
+            className={`rounded-lg p-1 transition-colors ${isLight ? "text-slate-500 hover:bg-slate-100 hover:text-slate-700" : "text-blue-200/78 hover:bg-white/10 hover:text-blue-100"}`}
             onClick={onClose}
             type="button"
           >
@@ -123,7 +123,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                   >
                     Notifications
                   </h3>
-                  <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
+                  <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/75"}`}>
                     Control how you receive updates.
                   </p>
                 </div>
@@ -141,7 +141,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                 <div className="mt-3 space-y-3">
                   <div>
                     <p
-                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}
+                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/72"}`}
                     >
                       In-App
                     </p>
@@ -174,7 +174,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
 
                   <div>
                     <p
-                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}
+                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/72"}`}
                     >
                       Email
                     </p>
@@ -204,7 +204,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                         ).map(([key, label]) => (
                           <label key={key} className="flex items-center justify-between pl-3">
                             <span
-                              className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}
+                              className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/75"}`}
                             >
                               {label}
                             </span>
@@ -222,7 +222,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
 
                   <div>
                     <p
-                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/50"}`}
+                      className={`text-xs font-medium mb-1.5 ${isLight ? "text-slate-500" : "text-blue-100/72"}`}
                     >
                       SMS
                     </p>
@@ -250,7 +250,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                         ).map(([key, label]) => (
                           <label key={key} className="flex items-center justify-between pl-3">
                             <span
-                              className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/55"}`}
+                              className={`text-sm ${isLight ? "text-slate-500" : "text-blue-100/75"}`}
                             >
                               {label}
                             </span>
@@ -279,7 +279,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                   >
                     Privacy
                   </h3>
-                  <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
+                  <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/75"}`}>
                     Control how your data is shared.
                   </p>
                 </div>
@@ -318,7 +318,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
               <h3 className={`font-semibold mb-2 ${isLight ? "text-slate-900" : "text-slate-100"}`}>
                 Appearance
               </h3>
-              <p className={`text-sm mb-3 ${isLight ? "text-slate-600" : "text-blue-100/55"}`}>
+              <p className={`text-sm mb-3 ${isLight ? "text-slate-600" : "text-blue-100/75"}`}>
                 Choose how BidOnDent surfaces render across landing and dashboard.
               </p>
               <div className="space-y-2">
@@ -346,7 +346,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                     >
                       Map Dark
                     </p>
-                    <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
+                    <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/75"}`}>
                       Default immersive shell for map-first workflows.
                     </p>
                   </div>
@@ -375,7 +375,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                     >
                       Light
                     </p>
-                    <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
+                    <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/75"}`}>
                       Warm frosted shell with soft blue accents.
                     </p>
                   </div>
@@ -391,7 +391,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
                   >
                     Language
                   </h3>
-                  <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/55"}`}>
+                  <p className={`text-xs ${isLight ? "text-slate-500" : "text-blue-100/75"}`}>
                     Preview only for now.
                   </p>
                 </div>
@@ -416,7 +416,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
           </div>
         </div>
         <div
-          className={`flex justify-end gap-2 border-t px-4 py-3 sm:px-5 sm:py-4 ${isLight ? "border-slate-200/60 bg-white/85" : "border-white/[0.08] bg-slate-950/75"}`}
+          className={`flex justify-end gap-2 border-t px-4 py-3 sm:px-5 sm:py-4 ${isLight ? "border-amber-700/15 bg-amber-50/85" : "border-white/[0.08] bg-slate-950/75"}`}
         >
           <button
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isLight ? "text-slate-600 hover:bg-slate-100 hover:text-slate-800" : "text-blue-200/80 hover:bg-white/10 hover:text-blue-100"}`}

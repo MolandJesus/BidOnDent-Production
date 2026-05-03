@@ -68,7 +68,7 @@ export default function HeroSection({
 
   return (
     <section
-      className="pt-20 sm:pt-32 pb-16 sm:pb-24 overflow-hidden relative"
+      className="pt-20 sm:pt-32 pb-10 sm:pb-24 overflow-hidden relative"
       style={{
         background: isLightAppearance
           ? "linear-gradient(180deg, #fdfcf9 0%, #f8f8f5 40%, #f4f5f8 100%)"
@@ -144,26 +144,101 @@ export default function HeroSection({
         )}
       </div>
 
-      {/* Pass 6 — Automotive identity: sedan silhouette watermark, top-right of hero,
-          behind hero image. Low opacity, pointer-events-none. */}
+      {/* Hero polish 2026-05-03 — repair-blueprint accent (replaces prior
+          filled-sedan silhouette which read as a cartoon blob). Thin
+          stroke-only contour with dent hotspot + diagnostic crosshair +
+          dashed bid-route signal connecting the diagnosis to the
+          marketplace map card on the left. Low opacity, watermark-tier,
+          behind everything. */}
       <svg
         aria-hidden="true"
-        className="hidden md:block absolute top-16 right-0 w-[420px] h-[140px] pointer-events-none"
-        viewBox="0 0 400 120"
-        style={{
-          opacity: isLightAppearance ? 0.07 : 0.10,
-          color: isLightAppearance ? "#1e3a8a" : "#60a5fa",
-        }}
-        fill="currentColor"
+        className="hidden md:block absolute top-12 right-0 w-[480px] h-[200px] pointer-events-none"
+        viewBox="0 0 480 200"
+        fill="none"
+        stroke={isLightAppearance ? "#1e3a8a" : "#60a5fa"}
+        style={{ opacity: isLightAppearance ? 0.18 : 0.28 }}
       >
-        {/* Sedan side profile — body + windows + wheels (simple silhouette) */}
-        <path d="M 28 92 L 50 92 L 60 72 Q 92 36 158 32 L 248 32 Q 304 35 342 72 L 366 92 L 380 92 L 28 92 Z" />
-        <path d="M 110 60 L 150 38 L 232 38 L 256 60 Z" opacity="0.55" />
-        <circle cx="92" cy="92" r="22" />
-        <circle cx="312" cy="92" r="22" />
-        {/* Wheel spoke detail (very subtle) */}
-        <circle cx="92" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-        <circle cx="312" cy="92" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
+        {/* Faint horizontal blueprint guide */}
+        <line
+          x1="0"
+          y1="118"
+          x2="480"
+          y2="118"
+          strokeWidth="0.5"
+          strokeDasharray="2 6"
+          opacity="0.35"
+        />
+
+        {/* Vehicle body outline — thin stroke quarter+door+roof */}
+        <path
+          d="M 36 130 Q 70 132 92 118 L 116 88 Q 150 62 200 60 L 300 60 Q 342 64 376 92 L 402 118 Q 432 132 460 130"
+          strokeWidth="1.2"
+          opacity="0.55"
+        />
+
+        {/* Greenhouse / window line */}
+        <path
+          d="M 138 90 L 200 66 L 300 66 L 350 90"
+          strokeWidth="0.85"
+          opacity="0.40"
+        />
+
+        {/* Belt line / panel separation */}
+        <line x1="116" y1="98" x2="402" y2="98" strokeWidth="0.6" opacity="0.32" />
+
+        {/* Door cut */}
+        <line x1="220" y1="68" x2="220" y2="120" strokeWidth="0.55" opacity="0.32" />
+        <line x1="280" y1="68" x2="280" y2="120" strokeWidth="0.55" opacity="0.32" />
+
+        {/* Dent hotspot — door panel area, with concentric pulse rings */}
+        <circle
+          cx="244"
+          cy="96"
+          r="4"
+          fill={isLightAppearance ? "#3b82f6" : "#93c5fd"}
+          stroke="none"
+          opacity="0.85"
+        />
+        <circle cx="244" cy="96" r="9" strokeWidth="0.8" opacity="0.55" />
+        <circle cx="244" cy="96" r="15" strokeWidth="0.5" opacity="0.30" />
+
+        {/* Diagnostic crosshair around dent */}
+        <line x1="244" y1="76" x2="244" y2="84" strokeWidth="0.85" opacity="0.6" />
+        <line x1="244" y1="108" x2="244" y2="116" strokeWidth="0.85" opacity="0.6" />
+        <line x1="224" y1="96" x2="232" y2="96" strokeWidth="0.85" opacity="0.6" />
+        <line x1="256" y1="96" x2="264" y2="96" strokeWidth="0.85" opacity="0.6" />
+
+        {/* Bid-route signal — dashed curve from dent toward the marketplace */}
+        <path
+          d="M 244 96 Q 180 130 110 158"
+          strokeWidth="0.9"
+          strokeDasharray="3 4"
+          opacity="0.42"
+        />
+        {/* Marketplace endpoint pin (echoes the map card's report-pin language) */}
+        <circle
+          cx="110"
+          cy="158"
+          r="2.6"
+          fill={isLightAppearance ? "#60a5fa" : "#93c5fd"}
+          stroke="none"
+          opacity="0.65"
+        />
+        <circle cx="110" cy="158" r="6" strokeWidth="0.5" opacity="0.35" />
+
+        {/* Subtle annotation tick on the rear quarter — extra blueprint feel */}
+        <line x1="376" y1="78" x2="392" y2="68" strokeWidth="0.55" opacity="0.30" />
+        <text
+          x="396"
+          y="66"
+          fontSize="7"
+          fill={isLightAppearance ? "#1e3a8a" : "#60a5fa"}
+          stroke="none"
+          opacity="0.45"
+          fontFamily="ui-monospace, monospace"
+        >
+          R-Q.PANEL
+        </text>
       </svg>
 
       {/* Pass 6 — Automotive identity: road-lane dashes at the Hero→HowItWorks transition.
@@ -277,8 +352,16 @@ export default function HeroSection({
 
             {/* Main Content */}
             <div className="space-y-4 sm:space-y-5">
+              {/*
+                Transition is scoped to opacity + transform (entry animation
+                only). Using `transition-all` here caused the inner gradient
+                span (WebkitBackgroundClip: text) to interpolate its
+                background-image when isLightAppearance flipped, which paints
+                a smeared/blurred raster of "Auto Body Repair" that some
+                browsers retain after the transition settles.
+              */}
               <h2
-                className={`text-[1.75rem] sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-bold leading-[1.15] tracking-tight transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                className={`text-[1.75rem] sm:text-4xl lg:text-[2.75rem] xl:text-5xl font-bold leading-[1.15] tracking-tight transition-[opacity,transform] duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 style={{
                   transitionDelay: "0.2s",
                   textShadow: isLightAppearance
@@ -289,22 +372,49 @@ export default function HeroSection({
                 <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
                   Get the{" "}
                 </span>
-                <span className="text-blue-500">Best Price</span>
+                <span className={isLightAppearance ? "text-blue-500" : "text-sky-300"}>
+                  Best Price
+                </span>
                 <span className={isLightAppearance ? "text-slate-800" : "text-slate-100"}>
                   {" "}
                   on Your{" "}
                 </span>
                 <br className="hidden sm:block" />
-                <span
-                  style={{
-                    background: `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }}
-                >
-                  Auto Body Repair
-                </span>
+                {/* Phase 1 hero typography fix (2026-05-03 P1):
+                    Dark mode keeps showing the gradient span as visibly softer
+                    than its solid-fill siblings ("Get the", "Best Price",
+                    "on Your") despite prior textShadow + transition-scope
+                    fixes. Two compounding causes remain in dark mode only:
+                    (1) WebkitBackgroundClip:text + transparent fill subpixel-
+                    rasterizes differently than solid color, so glyph edges
+                    read fractionally hazier even with shadow killed; (2) the
+                    gradient began at #3b82f6 (blue-500) which has low contrast
+                    against the #0a1a38 navy hero, so the top-left of letters
+                    fade before the gradient brightens.
+                    Decision per brief ("if gradient clipping keeps failing,
+                    replace that line with a solid or simpler blue treatment"):
+                    drop the gradient in dark mode, use a solid bright blue
+                    (#bfdbfe / blue-200) — uniform brightness, crisp glyph
+                    rendering identical to siblings, strong contrast against
+                    navy, blue identity preserved. Light mode keeps its
+                    gradient (works there per owner verification). */}
+                {isLightAppearance ? (
+                  <span
+                    style={{
+                      background: `linear-gradient(135deg, ${primaryColor} 0%, #60a5fa 100%)`,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      textShadow: "none",
+                    }}
+                  >
+                    Auto Body Repair
+                  </span>
+                ) : (
+                  <span style={{ color: "#bfdbfe" }}>
+                    Auto Body Repair
+                  </span>
+                )}
               </h2>
               <p
                 className={`text-base sm:text-lg leading-relaxed max-w-lg transition-all duration-700 ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"} ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
@@ -400,16 +510,23 @@ export default function HeroSection({
                 {getButtonText()}
                 <ChevronRight className="ml-1 w-4 h-4" />
               </button>
+              {/* V1 mobile contrast fix: dark mode background bumped from
+                   rgba(59,130,246,0.10) → 0.20 and border alpha 0.25 → 0.45.
+                   At mobile dark, the previous values blended into the navy
+                   atmosphere, making the secondary CTA effectively invisible. */}
               <button
                 onClick={onLearnMore}
-                className={`bd-dashboard-primary-button inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 px-7 py-4 text-sm font-semibold backdrop-blur-md sm:w-auto sm:py-3.5 sm:text-base ${isLightAppearance ? "text-slate-700" : "text-blue-200"}`}
+                className={`bd-dashboard-primary-button inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 px-7 py-4 text-sm font-semibold backdrop-blur-md sm:w-auto sm:py-3.5 sm:text-base ${isLightAppearance ? "text-slate-700" : "text-blue-100"}`}
                 style={{
                   background: isLightAppearance
                     ? "rgba(255,251,245,0.55)"
-                    : "rgba(59,130,246,0.10)",
+                    : "rgba(59,130,246,0.20)",
                   borderColor: isLightAppearance
                     ? "rgba(200,180,150,0.30)"
-                    : "rgba(96,165,250,0.25)",
+                    : "rgba(147,197,253,0.45)",
+                  boxShadow: isLightAppearance
+                    ? undefined
+                    : "inset 0 1px 0 rgba(220,165,90,0.18), inset 0 0 0 1px rgba(96,165,250,0.18)",
                 }}
                 type="button"
               >
@@ -435,33 +552,246 @@ export default function HeroSection({
                 )
               )}
             </div>
+
+            {/* V2 — Mobile hero map intelligence strip.
+                Lightweight presentational SVG scene that gives mobile users the
+                map-first identity that desktop carries in the right column.
+                Reuses Liquid Map Intelligence language (contour, route lines,
+                pin pulse, gold flow/sheen) at compact 200px height. No second
+                MapLibre instance, no fake shop claims, no operational copy.
+                Tap target scrolls to the coverage section. Hidden at lg+ where
+                the desktop right column takes over. */}
+            <a
+              href="#coverage"
+              aria-label="Browse our NY service area on the coverage map"
+              className={`group block lg:hidden mt-5 rounded-2xl relative overflow-hidden transition-all duration-700 active:scale-[0.985] ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              style={{
+                transitionDelay: "1.05s",
+                height: "200px",
+                background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
+                boxShadow: isLightAppearance
+                  ? "0 14px 40px rgba(15, 30, 60, 0.10), 0 0 50px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.22), inset 0 -1px 0 rgba(220,165,90,0.18)"
+                  : "0 16px 48px rgba(2, 6, 23, 0.40), 0 0 60px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96, 165, 250, 0.14), inset 0 -1px 0 rgba(220,165,90,0.16)",
+              }}
+            >
+              {/* Outer ambient bloom — bleeds the strip into the hero atmosphere */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-6 rounded-[2rem] blur-2xl pointer-events-none -z-10"
+                style={{
+                  background: isLightAppearance
+                    ? "radial-gradient(ellipse 70% 65% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
+                    : "radial-gradient(ellipse 75% 70% at 50% 50%, rgba(59,130,246,0.16), transparent 72%)",
+                }}
+              />
+
+              {/* Layer 1 — stylized road network (mobile scale) */}
+              <svg
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full"
+                viewBox="0 0 600 200"
+                preserveAspectRatio="xMidYMid slice"
+              >
+                <rect width="600" height="200" fill={isLightAppearance ? "#eef4fb" : "#0d1d3a"} />
+                <path
+                  d="M 0,80 Q 150,90 300,75 T 600,90"
+                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  strokeWidth="2.5"
+                  fill="none"
+                  opacity="0.85"
+                />
+                <path
+                  d="M 0,140 Q 200,120 400,135 T 600,130"
+                  stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                  strokeWidth="2"
+                  fill="none"
+                  opacity="0.65"
+                />
+                <path
+                  d="M 160,0 Q 175,100 165,200"
+                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  strokeWidth="1.5"
+                  fill="none"
+                  opacity="0.55"
+                />
+                <path
+                  d="M 440,0 Q 460,110 435,200"
+                  stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                  strokeWidth="1.5"
+                  fill="none"
+                  opacity="0.5"
+                />
+              </svg>
+
+              {/* Layer 2 — topographic contour grid */}
+              <div
+                className={
+                  isLightAppearance ? "bd-map-contour" : "bd-map-contour bd-map-contour--dark"
+                }
+              />
+
+              {/* Layer 3 — drifting liquid gold (marketplace energy ambient) */}
+              <div
+                className={`bd-liquid-gold-flow ${
+                  isLightAppearance ? "bd-liquid-gold-flow--light" : "bd-liquid-gold-flow--dark"
+                }`}
+              />
+
+              {/* Layer 4 — route lines from pin */}
+              <svg
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="0 0 600 200"
+                preserveAspectRatio="xMidYMid slice"
+              >
+                <path d="M 180,100 Q 100,70 30,30" className="bd-route-line" />
+                <path
+                  d="M 180,100 Q 320,110 560,75"
+                  className="bd-route-line"
+                  style={{ animationDelay: "0.8s" }}
+                />
+                <path
+                  d="M 180,100 Q 250,150 350,180"
+                  className="bd-route-line"
+                  style={{ animationDelay: "1.4s" }}
+                />
+              </svg>
+
+              {/* Layer 5 — report pin with pulse */}
+              <div
+                className="absolute"
+                style={{ top: "50%", left: "30%", transform: "translate(-50%, -50%)" }}
+              >
+                <div className="relative w-3.5 h-3.5">
+                  <div className="absolute -inset-2 bd-pin-pulse" />
+                  <div
+                    className="relative w-3.5 h-3.5 rounded-full"
+                    style={{
+                      background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                      boxShadow:
+                        "0 0 14px rgba(59,130,246,0.7), 0 0 4px rgba(96,165,250,0.95), inset 0 1px 0 rgba(255,255,255,0.45)",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Layer 6 — gold activity sheen */}
+              <div className="bd-liquid-gold-sheen" />
+
+              {/* Layer 7 — top eyebrow + bottom CTA hint as a glass overlay */}
+              <div
+                className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md"
+                style={{
+                  background: isLightAppearance ? "rgba(255,255,255,0.78)" : "rgba(8,18,38,0.78)",
+                  borderColor: isLightAppearance
+                    ? "rgba(190,210,235,0.55)"
+                    : "rgba(96,165,250,0.30)",
+                  color: isLightAppearance ? "#1e3a8a" : "#bfdbfe",
+                  boxShadow: isLightAppearance
+                    ? "inset 0 1px 0 rgba(220,165,90,0.20), 0 2px 8px rgba(15,30,60,0.08)"
+                    : "inset 0 1px 0 rgba(220,165,90,0.22), 0 2px 12px rgba(2,6,23,0.30)",
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                NY Coverage
+              </div>
+              <div
+                className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold backdrop-blur-md transition-transform group-active:scale-95"
+                style={{
+                  background: isLightAppearance
+                    ? "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)"
+                    : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                  color: "#ffffff",
+                  boxShadow:
+                    "0 6px 18px rgba(37,99,235,0.36), inset 0 1px 0 rgba(255,255,255,0.18), inset 0 -1px 0 rgba(220,165,90,0.20)",
+                }}
+              >
+                Browse coverage
+                <ChevronRight className="w-3.5 h-3.5" />
+              </div>
+
+              {/* Layer 8 — top + bottom depth gradients */}
+              <div
+                className={`absolute inset-0 pointer-events-none ${
+                  isLightAppearance
+                    ? "bg-gradient-to-t from-[#1e293b]/14 via-transparent to-transparent"
+                    : "bg-gradient-to-t from-[#0a1628]/40 via-transparent to-transparent"
+                }`}
+              />
+            </a>
           </div>
 
-          {/* Right column — product story visual */}
+          {/* Right column — product story visual.
+              V1 mobile fix: hidden below lg. The Liquid Map Intelligence scene
+              was reserving ~16:10 of full mobile width as an empty-feeling slot
+              (chips already correctly hidden < md per KI-062), creating ~200px
+              of dead space between trust chips and HowItWorks. V2 will replace
+              this slot at mobile with a compact 220px map intelligence strip. */}
           <div
-            className={`lg:w-[52%] relative transition-all duration-1000 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            className={`hidden lg:block lg:w-[52%] relative transition-all duration-1000 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
             style={{ transitionDelay: "0.3s" }}
           >
             {/* Liquid Map Intelligence scene (Pass C 2026-05-03)
                 Replaces the prior photo. Layered presentational mock per
-                locked Decision #1 (no 2nd MapLibre instance). */}
+                locked Decision #1 (no 2nd MapLibre instance).
+                V2 (2026-05-03): map stage immersion — outer ambient bloom
+                deepened with a second cool layer + faint gold lamp halo
+                so the field bleeds into the hero atmosphere instead of
+                reading as a pasted rectangle. Frame inset 1px outline
+                removed; replaced with a champagne top bezel + amber
+                bottom-edge lamp inset that catches the hero's gold-from-
+                above wash. */}
             <div className="relative" aria-hidden="true">
-              {/* Outer ambient bloom — Pass G 2026-05-03: replaces the heavy
-                  card drop-shadow so the map field reads as part of the hero
-                  atmosphere, not a pasted-on rectangle. */}
+              {/* Hero polish 2026-05-03 — outer bloom expanded so the map
+                  card dissolves into the hero atmosphere instead of reading
+                  as a discrete rectangle pasted on top. Three layers now:
+                  (1) widened cool ambient pool, (2) widened gold lamp halo,
+                  (3) new tight inner bleed that bridges the card edge to
+                  hero color so the rim light reads as light catching glass
+                  inside the same atmosphere — not a frame around an island. */}
               <div
-                className="absolute -inset-10 rounded-[2.5rem] blur-3xl pointer-events-none"
+                className="absolute -inset-20 rounded-[3rem] blur-3xl pointer-events-none"
                 style={{
                   background: isLightAppearance
-                    ? "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
-                    : "radial-gradient(ellipse 75% 65% at 50% 50%, rgba(59,130,246,0.14), transparent 72%)",
+                    ? "radial-gradient(ellipse 78% 68% at 50% 50%, rgba(59,130,246,0.20), transparent 72%)"
+                    : "radial-gradient(ellipse 82% 72% at 50% 50%, rgba(59,130,246,0.26), transparent 74%)",
+                }}
+              />
+              {/* Outer gold lamp halo — gold-as-light, expanded reach */}
+              <div
+                className="absolute -inset-24 rounded-[3.25rem] blur-3xl pointer-events-none"
+                style={{
+                  background: isLightAppearance
+                    ? "radial-gradient(ellipse 85% 75% at 50% 30%, rgba(220,165,90,0.14), transparent 68%)"
+                    : "radial-gradient(ellipse 85% 75% at 50% 25%, rgba(220,165,90,0.18), transparent 68%)",
+                }}
+              />
+              {/* Inner edge bleed — sits flush around the card, bridging
+                  the rim light to the surrounding atmosphere so the card
+                  edge reads as a soft glass meniscus instead of a hard
+                  perimeter. */}
+              <div
+                className="absolute -inset-3 rounded-[2.4rem] blur-2xl pointer-events-none"
+                style={{
+                  background: isLightAppearance
+                    ? "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(96,165,250,0.10), transparent 75%)"
+                    : "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(59,130,246,0.16), transparent 75%)",
                 }}
               />
 
-              {/* Map stage — embedded map-window feel (Pass G 2026-05-03):
-                  removed the hard 1px border, replaced with a glassy inset
-                  highlight + softer ambient bloom so the frame reads as a
-                  hero map field rather than a floating mock card. */}
+              {/* Map stage — embedded map-window feel.
+                  Frame: outline ring removed in favor of a dual-edge
+                  inset (champagne top bezel + amber lamp at bottom) so
+                  the glass reads as a lit object catching the lamp wash
+                  from above, not a stamped rectangle.
+
+                  Top-edge mask softens the rim light, road network and
+                  contour grid into the hero atmosphere (4%→11% taper).
+                  Bottom + sides keep full definition so the map content
+                  remains visible — earlier four-edge variant ghosted the
+                  card too aggressively (navy-on-navy in dark mode left
+                  the card almost imperceptible). Owner taste call:
+                  preserve the v1 dissolve-at-top, don't over-fade. */}
               <div
                 className="relative rounded-2xl w-full overflow-hidden"
                 style={{
@@ -469,8 +799,12 @@ export default function HeroSection({
                   maxHeight: "520px",
                   background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                   boxShadow: isLightAppearance
-                    ? "0 14px 48px rgba(15, 30, 60, 0.08), 0 0 60px rgba(37, 99, 235, 0.06), inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 0 1px rgba(190,210,235,0.18)"
-                    : "0 16px 56px rgba(2, 6, 23, 0.35), 0 0 70px rgba(37, 99, 235, 0.10), inset 0 1px 0 rgba(96, 165, 250, 0.12), inset 0 0 0 1px rgba(96, 165, 250, 0.10)",
+                    ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(220,165,90,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(220,165,90,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
+                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(220,165,90,0.10), inset 0 1px 0 rgba(220,165,90,0.18), inset 0 -1px 0 rgba(220,165,90,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
+                  WebkitMaskImage:
+                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
+                  maskImage:
+                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
                 }}
               >
                 {/* Layer 1 — stylized map base. Faint road network via SVG curves. */}

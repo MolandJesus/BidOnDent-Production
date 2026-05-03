@@ -112,9 +112,15 @@ export default function BusinessInquirySection({
       }}
       ref={sectionRef}
     >
-      {/* Edge blend */}
+      {/* Edge blend — light keeps amber; dark gets a tri-stop with gold
+          whisper at center to thread gold identity into the cool register. */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
+        className="absolute -top-px left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(252, 211, 77, 0.25) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(96,165,250,0.25) 22%, rgba(220,150,60,0.22) 50%, rgba(96,165,250,0.25) 78%, transparent)",
+        }}
       />
       {/* Atmospheric depth — wrapped in bloom for scroll-entry animation */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
@@ -147,6 +153,9 @@ export default function BusinessInquirySection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_50%_at_25%_85%,rgba(37,99,235,0.12),transparent_55%)]" />
             <div className="absolute top-0 right-1/3 w-64 h-64 bg-blue-500/[0.15] rounded-full blur-[100px]" />
             <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-blue-400/[0.12] rounded-full blur-[100px]" />
+            {/* Subtle gold lamp accent — single warm light source threading
+                gold identity through the cool register. */}
+            <div className="absolute top-1/4 right-[6%] w-72 h-72 rounded-full blur-[130px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.14), transparent 65%)" }} />
           </>
         )}
       </div>

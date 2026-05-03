@@ -1,5 +1,21 @@
 import { uploadImageToSupabase } from "../../../services/supabaseService";
 
+/**
+ * Draft photo carried through the report flow.
+ *
+ * `previewUrl` is always renderable in an <img> tag (base64 data URL).
+ * `storagePointer` is the durable `storage://<bucket>/<path>` reference
+ * persisted to the database, or null if upload hasn't succeeded yet.
+ *
+ * Per the storage law (docs/SUPABASE_SETUP_GUIDE.md §16, skill
+ * `supabase-storage-signed-urls`): never persist signed URLs. Pointers
+ * are written; signed URLs are minted on every read by the edge function.
+ */
+export type ReportPhotoDraft = {
+  previewUrl: string;
+  storagePointer: string | null;
+};
+
 export async function compressImageToBase64(file: File): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -65,29 +81,40 @@ export function isBase64Photo(photo: string): boolean {
   return photo.startsWith("data:");
 }
 
-export async function retryUploadBase64(base64: string): Promise<string> {
+function buildUploadPath(): string {
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(7);
-  const imagePath = `damage-reports/${timestamp}-${random}.jpg`;
-
-  const uploadedUrl = await uploadImageToSupabase(base64, imagePath);
-  return uploadedUrl || base64;
+  return `damage-reports/${timestamp}-${random}.jpg`;
 }
 
-export async function uploadReportPhoto(file: File): Promise<string> {
+/**
+ * Retry a base64 preview against Supabase Storage. Returns the durable
+ * `storage://...` pointer if upload succeeds; otherwise null.
+ */
+export async function retryUploadBase64(base64: string): Promise<string | null> {
+  const uploadedPointer = await uploadImageToSupabase(base64, buildUploadPath());
+  if (uploadedPointer && !isBase64Photo(uploadedPointer)) {
+    return uploadedPointer;
+  }
+  return null;
+}
+
+/**
+ * Compress + upload a single photo. Always returns a renderable base64
+ * preview; storagePointer is the durable pointer if upload succeeded,
+ * or null if the request failed (caller may retry on submit).
+ */
+export async function uploadReportPhoto(file: File): Promise<ReportPhotoDraft> {
   const compressedBase64 = await compressImageToBase64(file);
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(7);
-  const imagePath = `damage-reports/${timestamp}-${random}.jpg`;
 
   if (import.meta.env.DEV) console.log("Attempting Supabase upload...");
-  const uploadedUrl = await uploadImageToSupabase(compressedBase64, imagePath);
+  const uploadedPointer = await uploadImageToSupabase(compressedBase64, buildUploadPath());
 
-  if (uploadedUrl) {
-    if (import.meta.env.DEV) console.log("Photo uploaded to Supabase:", uploadedUrl);
-    return uploadedUrl;
+  if (uploadedPointer && !isBase64Photo(uploadedPointer)) {
+    if (import.meta.env.DEV) console.log("Photo uploaded to Supabase:", uploadedPointer);
+    return { previewUrl: compressedBase64, storagePointer: uploadedPointer };
   }
 
-  if (import.meta.env.DEV) console.warn("Supabase upload failed, using base64 fallback");
-  return compressedBase64;
+  if (import.meta.env.DEV) console.warn("Supabase upload failed, holding base64 preview locally");
+  return { previewUrl: compressedBase64, storagePointer: null };
 }

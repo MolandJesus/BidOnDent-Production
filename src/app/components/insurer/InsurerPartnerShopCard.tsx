@@ -1,5 +1,6 @@
 import { Award, CheckCircle, Compass, Mail, MapPin, Phone, Shield, TrendingUp } from "lucide-react";
 import { toggleRoleCollectionShopId } from "../../services/intelligence/shopMapExperience";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
 type MappedPartnerShop = {
@@ -62,7 +63,7 @@ export default function InsurerPartnerShopCard({
       className={`overflow-hidden rounded-[26px] bd-glass-card transition-shadow${focused ? " ring-2 ring-blue-400/60 shadow-lg" : ""}${isLight ? " bd-light-surface" : ""}`}
     >
       <div className="relative h-44 w-full overflow-hidden bg-white/[0.08]">
-        <img
+        <ImageWithFallback
           src={entry.image}
           alt={entry.name}
           className="h-full w-full object-cover"

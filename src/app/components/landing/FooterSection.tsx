@@ -25,9 +25,16 @@ export default function FooterSection({
       }}
       ref={footerRef}
     >
-      {/* Top edge fade */}
+      {/* Top edge fade — light keeps amber thread; dark gets tri-stop with
+          gold whisper at center so the footer has a continuous gold thread
+          tying to the rest of the page. */}
       <div
-        className={`absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent ${isLightAppearance ? "via-amber-300/25" : "via-blue-400/25"} to-transparent`}
+        className="absolute -top-px left-0 right-0 h-px"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(252, 211, 77, 0.25) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(96,165,250,0.25) 22%, rgba(220,150,60,0.22) 50%, rgba(96,165,250,0.25) 78%, transparent)",
+        }}
       />
       {/* Atmospheric depth — wrapped in bloom (gentler bumps; footer is the page's farewell, not a feature moment) */}
       <div className={`bd-bloom-atmosphere ${isVisible ? "is-visible" : "is-hidden"}`}>
@@ -47,6 +54,10 @@ export default function FooterSection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_30%_80%,rgba(59,130,246,0.14),transparent_55%)]" />
             <div className="absolute bottom-0 right-1/3 w-72 h-72 bg-blue-500/[0.12] rounded-full blur-[100px]" />
             <div className="absolute top-10 left-1/4 w-56 h-56 bg-indigo-400/[0.10] rounded-full blur-[90px]" />
+            {/* Subtle gold lamp accent — gentle warm light source so the
+                page's farewell still carries the gold thread without
+                competing with the CTA card glow above. */}
+            <div className="absolute top-0 right-[12%] w-64 h-64 rounded-full blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.12), transparent 65%)" }} />
           </>
         )}
       </div>

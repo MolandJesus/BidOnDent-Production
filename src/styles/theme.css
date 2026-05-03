@@ -852,13 +852,13 @@ body {
      mode's warm/cool rhythm into the dark mode. Reversible — change these
      6 values to roll back to cold navy for warm sections. */
   --bd-warm-dark-amber-start: #1a0c06;
-  --bd-warm-dark-amber-mid: #231408;
-  --bd-warm-dark-amber-end: #1a0a04;
-  --bd-warm-dark-amber-ellipse-top: rgba(200, 120, 30, 0.22);
-  --bd-warm-dark-amber-ellipse-bottom: rgba(180, 100, 20, 0.18);
-  --bd-warm-dark-amber-pool: rgba(200, 130, 40, 0.32);
-  --bd-warm-dark-amber-pool-soft: rgba(180, 110, 30, 0.22);
-  --bd-warm-dark-amber-glow: rgba(220, 150, 60, 0.20);
+  --bd-warm-dark-amber-mid: #251608;
+  --bd-warm-dark-amber-end: #1c0c05;
+  --bd-warm-dark-amber-ellipse-top: rgba(220, 140, 40, 0.30);
+  --bd-warm-dark-amber-ellipse-bottom: rgba(200, 115, 25, 0.24);
+  --bd-warm-dark-amber-pool: rgba(220, 145, 50, 0.42);
+  --bd-warm-dark-amber-pool-soft: rgba(200, 125, 35, 0.30);
+  --bd-warm-dark-amber-glow: rgba(240, 170, 70, 0.28);
 
   /* Liquid Map Intelligence — landing signature motion tokens (Pass B 2026-05-03).
      Consumed by .bd-liquid-gold-flow / .bd-liquid-gold-sheen / .bd-route-line /
@@ -898,10 +898,13 @@ body {
 }
 
 .bd-glass-card {
+  position: relative;
   border: 1px solid var(--bd-glass-border-light);
   background: linear-gradient(180deg, rgba(248, 251, 255, 0.72) 0%, rgba(235, 245, 255, 0.52) 100%);
-  backdrop-filter: blur(var(--bd-glass-blur));
-  -webkit-backdrop-filter: blur(var(--bd-glass-blur));
+  /* V3 liquid-glass thickness: saturate boost so the atmosphere reads richer
+     through the glass body. Cross-cutting treatment per master plan §1.5. */
+  backdrop-filter: blur(var(--bd-glass-blur)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-glass-blur)) saturate(1.4);
   border-radius: var(--bd-radius-card);
   box-shadow:
     0 10px 24px rgba(15, 23, 42, 0.08),
@@ -989,6 +992,56 @@ body {
   border-color: rgba(147, 197, 253, 0.85);
 }
 
+/* V3 champagne hover sheen — landing + warm-landing cards.
+   One-shot diagonal sweep that reads as light catching glass on hover.
+   Uses mix-blend-mode: screen so the sheen lifts the underlying surface
+   instead of overlaying a film. Drift-paused via existing transition.
+   Containment: requires position: relative + overflow-hidden on the card.
+   Cards are <div>s with content children — the sheen sits at z-index:1
+   under content (which paints normally without z-index). Card content
+   does not need updating because mix-blend-mode preserves contrast. */
+.bd-glass-card--landing,
+.bd-glass-card--landing-warm {
+  position: relative;
+  overflow: hidden;
+}
+
+.bd-glass-card--landing::before,
+.bd-glass-card--landing-warm::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(220, 165, 90, 0.20) 48%,
+    rgba(255, 235, 195, 0.30) 52%,
+    rgba(220, 165, 90, 0.20) 56%,
+    transparent 74%
+  );
+  mix-blend-mode: screen;
+  transform: translateX(-130%);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+@media (hover: hover) {
+  .bd-glass-card--landing:hover::before,
+  .bd-glass-card--landing-warm:hover::before {
+    animation: bdGoldSheenOneShot 1100ms ease-out forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-glass-card--landing:hover::before,
+  .bd-glass-card--landing-warm:hover::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
 /* Dashboard variant — calm-workspace card. Stronger material than base bd-glass-card
    so light-mode dashboard surfaces stop reading as washed-out, but quieter than
    --landing (no premium-marketing-anchor energy). Smaller hover lift (2px vs 6px)
@@ -996,7 +1049,12 @@ body {
 .bd-glass-card--dashboard {
   /* D4 (final v3.2) + D6 crispness: soft off-white liquid glass + more gold +
      slightly tighter edge definition (border 0.46 → 0.54, blue ring 0.24 → 0.30,
-     deeper drop shadow), so light-mode cards stop reading washy without darkening. */
+     deeper drop shadow), so light-mode cards stop reading washy without darkening.
+     V3 (2026-05-03): position:relative + overflow:hidden enable a hover sheen
+     pseudo-element shared with landing cards. backdrop-filter inherits the
+     saturate boost from .bd-glass-card. */
+  position: relative;
+  overflow: hidden;
   border-color: rgba(147, 197, 253, 0.54);
   background: linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.86) 100%);
   box-shadow:
@@ -1008,6 +1066,39 @@ body {
     0 0 0 1px rgba(191, 219, 254, 0.30),
     0 0 28px rgba(59, 130, 246, 0.10),
     0 0 44px rgba(220, 140, 50, 0.28);
+}
+
+.bd-glass-card--dashboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(220, 165, 90, 0.16) 49%,
+    rgba(255, 235, 195, 0.24) 52%,
+    rgba(220, 165, 90, 0.16) 55%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  transform: translateX(-130%);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+@media (hover: hover) {
+  .bd-glass-card--dashboard:hover::before {
+    animation: bdGoldSheenOneShot 1000ms ease-out forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-glass-card--dashboard:hover::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
 }
 
 .bd-glass-card--dashboard:hover {
@@ -1189,18 +1280,24 @@ body {
 .bd-glass-floating {
   /* D7: floating modals adopt gold-lamp identity — warm inset bottom + warm
      outer halo, so dropdowns/dialogs match dashboard panel family. Cool blue
-     base preserved; gold is trim only. */
+     base preserved; gold is trim only.
+     V3c (2026-05-03): body alpha lowered (0.94/0.88 → 0.86/0.78) so the blur
+     reads through richer (gold-lamp atmosphere now visible behind the panel
+     instead of hiding behind a near-opaque card). Saturate boost added to the
+     backdrop-filter so the warm dashboard atmosphere reads through with full
+     champagne color, not desaturated. Top inset highlight added for thickness. */
   border: 1px solid rgba(191, 219, 254, 0.5);
-  background: linear-gradient(180deg, rgba(248, 252, 255, 0.94) 0%, rgba(240, 248, 255, 0.88) 100%);
+  background: linear-gradient(180deg, rgba(248, 252, 255, 0.86) 0%, rgba(240, 248, 255, 0.78) 100%);
   color: #0f172a;
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
   border-radius: var(--bd-radius-panel);
   box-shadow:
     var(--bd-glass-shadow-floating),
     var(--bd-glow-medium),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.20),
-    0 0 0 1px rgba(220, 165, 90, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
+    0 0 0 1px rgba(220, 165, 90, 0.14),
     0 0 36px rgba(220, 140, 50, 0.18);
   transition:
     transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -1430,30 +1527,35 @@ body {
     0 0 52px rgba(220, 140, 50, 0.22);
 }
 
-/* Warm variant — dark mode. Amber-tinted glass for Direction B sections. */
+/* Warm variant — dark mode. Amber-tinted glass for Direction B sections.
+   2026-05-03 v3 owner direction: "landing page should POP, not be subtle"
+   — boosted gold drama on idle so Benefits + TrustStats sections feel
+   premium gold-lit at first glance, not just on hover. Gold rim, ambient
+   glow, and inner highlight all up ~35-50%. Hover state keeps the same
+   delta over idle so the lift on interaction stays distinct. */
 .dark .bd-glass-card--landing-warm,
 [data-theme="dark"] .bd-glass-card--landing-warm {
-  border-color: rgba(220, 165, 90, 0.36);
-  background: linear-gradient(180deg, rgba(180, 100, 30, 0.18) 0%, rgba(20, 14, 8, 0.78) 100%);
+  border-color: rgba(238, 184, 110, 0.52);
+  background: linear-gradient(180deg, rgba(200, 115, 35, 0.24) 0%, rgba(22, 14, 8, 0.78) 100%);
   box-shadow:
-    0 18px 48px rgba(2, 2, 2, 0.55),
-    0 6px 16px rgba(120, 70, 20, 0.32),
-    inset 0 1px 0 rgba(253, 220, 160, 0.20),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.10),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 36px rgba(220, 130, 50, 0.20);
+    0 20px 52px rgba(2, 2, 2, 0.58),
+    0 8px 18px rgba(140, 80, 25, 0.42),
+    inset 0 1px 0 rgba(255, 230, 175, 0.32),
+    inset 0 -1px 0 rgba(200, 115, 35, 0.16),
+    0 0 0 1px rgba(238, 184, 110, 0.34),
+    0 0 48px rgba(240, 150, 60, 0.32);
 }
 
 .dark .bd-glass-card--landing-warm:hover,
 [data-theme="dark"] .bd-glass-card--landing-warm:hover {
-  border-color: rgba(253, 200, 130, 0.58);
+  border-color: rgba(255, 215, 150, 0.72);
   box-shadow:
-    0 28px 68px rgba(2, 2, 2, 0.65),
-    0 10px 24px rgba(120, 70, 20, 0.40),
-    inset 0 1px 0 rgba(253, 220, 160, 0.30),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.16),
-    0 0 0 1px rgba(253, 200, 130, 0.42),
-    0 0 56px rgba(220, 130, 50, 0.30);
+    0 30px 72px rgba(2, 2, 2, 0.66),
+    0 12px 26px rgba(140, 80, 25, 0.50),
+    inset 0 1px 0 rgba(255, 232, 180, 0.42),
+    inset 0 -1px 0 rgba(200, 115, 35, 0.22),
+    0 0 0 1px rgba(255, 215, 150, 0.55),
+    0 0 72px rgba(240, 150, 60, 0.46);
 }
 
 /* Dashboard variant — dark mode. D4 (final v2): NAVY infill + heavy GOLD trim
@@ -1463,26 +1565,26 @@ body {
    trim — so the card reads navy-glass-lit-by-gold-lamp like the landing register. */
 .dark .bd-glass-card--dashboard,
 [data-theme="dark"] .bd-glass-card--dashboard {
-  border-color: rgba(220, 165, 90, 0.42);
+  border-color: rgba(228, 175, 100, 0.50);
   background: linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.80) 100%);
   box-shadow:
-    0 16px 36px rgba(2, 6, 23, 0.46),
-    inset 0 1px 0 rgba(253, 220, 160, 0.22),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.10),
-    0 0 0 1px rgba(220, 165, 90, 0.26),
-    0 0 36px rgba(220, 130, 50, 0.22);
+    0 18px 40px rgba(2, 6, 23, 0.50),
+    inset 0 1px 0 rgba(255, 228, 175, 0.28),
+    inset 0 -1px 0 rgba(190, 105, 35, 0.14),
+    0 0 0 1px rgba(228, 175, 100, 0.32),
+    0 0 44px rgba(228, 140, 55, 0.28);
 }
 
 .dark .bd-glass-card--dashboard:hover,
 [data-theme="dark"] .bd-glass-card--dashboard:hover {
   transform: translateY(-2px);
-  border-color: rgba(253, 200, 130, 0.62);
+  border-color: rgba(255, 215, 150, 0.68);
   box-shadow:
-    0 22px 48px rgba(2, 6, 23, 0.54),
-    inset 0 1px 0 rgba(253, 220, 160, 0.32),
-    inset 0 -1px 0 rgba(180, 100, 30, 0.14),
-    0 0 0 1px rgba(253, 200, 130, 0.46),
-    0 0 52px rgba(220, 130, 50, 0.32);
+    0 24px 52px rgba(2, 6, 23, 0.58),
+    inset 0 1px 0 rgba(255, 230, 180, 0.36),
+    inset 0 -1px 0 rgba(190, 105, 35, 0.18),
+    0 0 0 1px rgba(255, 215, 150, 0.52),
+    0 0 60px rgba(228, 140, 55, 0.40);
 }
 
 /* Section eyebrow — dark mode. Soft blue tint that reads against dark navy without
@@ -1884,12 +1986,14 @@ body {
     rgba(7, 16, 33, 0.92) 100%
   );
   --bd-report-shell-border: rgba(96, 165, 250, 0.24);
-  /* D4 (final v2): amber lamp glow + faint amber ring stacked alongside the
-     cool-blue ring so the report shell reads gold-lit like the dashboard. */
+  /* Navy-lit-by-gold-lamp: keep the cool-blue interaction ring but push the
+     gold inset + outer halo so the report shell reads navy+gold-trim like the
+     dashboard panels. Owner direction: bring report flow into dashboard
+     identity. */
   --bd-report-shell-shadow:
-    0 30px 80px rgba(2, 6, 23, 0.48), 0 0 0 1px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(253, 220, 160, 0.14), 0 0 40px rgba(37, 99, 235, 0.08),
-    0 0 32px rgba(220, 130, 50, 0.16);
+    0 30px 80px rgba(2, 6, 23, 0.48), 0 0 0 1px rgba(59, 130, 246, 0.10),
+    inset 0 1px 0 rgba(253, 220, 160, 0.20), 0 0 40px rgba(37, 99, 235, 0.08),
+    0 0 0 1px rgba(220, 165, 90, 0.12), 0 0 36px rgba(220, 130, 50, 0.24);
   --bd-report-panel-bg: linear-gradient(
     180deg,
     rgba(18, 33, 65, 0.88) 0%,
@@ -1897,8 +2001,9 @@ body {
   );
   --bd-report-panel-border: rgba(96, 165, 250, 0.2);
   --bd-report-panel-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(253, 220, 160, 0.10),
-    0 0 0 1px rgba(59, 130, 246, 0.04), 0 0 26px rgba(220, 130, 50, 0.14);
+    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(253, 220, 160, 0.16),
+    0 0 0 1px rgba(220, 165, 90, 0.10), 0 0 0 1px rgba(59, 130, 246, 0.04),
+    0 0 28px rgba(220, 130, 50, 0.20);
   --bd-report-input-bg: linear-gradient(
     180deg,
     rgba(7, 17, 35, 0.92) 0%,
@@ -1958,24 +2063,30 @@ body {
   --bd-report-text-strong: #1a1510;
   --bd-report-text-secondary: #475569;
   --bd-report-text-tertiary: #64748b;
+  /* LAW: light-mode cream surface with gold trim. Insets must be warm cream,
+     never pure white. See LAW_PROJECT_RULES.md "Light-mode surface rule". */
   --bd-report-shell-bg: linear-gradient(
     180deg,
-    rgba(255, 253, 248, 0.84) 0%,
-    rgba(250, 247, 240, 0.74) 100%
+    rgba(254, 248, 232, 0.92) 0%,
+    rgba(248, 240, 218, 0.82) 100%
   );
-  --bd-report-shell-border: rgba(147, 197, 253, 0.32);
-  /* D4 (final v2): amber lamp glow stacked over cream — matches dashboard gold halo. */
+  --bd-report-shell-border: rgba(202, 138, 47, 0.32);
   --bd-report-shell-shadow:
-    0 24px 56px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.20),
-    inset 0 1px 0 rgba(255, 255, 252, 0.96), 0 0 0 1px rgba(220, 165, 90, 0.10),
-    0 0 36px rgba(220, 140, 50, 0.10);
+    0 24px 56px rgba(120, 78, 18, 0.16),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(202, 138, 47, 0.30),
+    0 0 0 1px rgba(202, 138, 47, 0.24),
+    0 0 36px rgba(220, 140, 50, 0.22);
   --bd-report-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.06), transparent 65%),
-    linear-gradient(180deg, rgba(255, 253, 248, 0.78) 0%, rgba(250, 247, 240, 0.66) 100%);
-  --bd-report-panel-border: rgba(147, 197, 253, 0.30);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.12), transparent 65%),
+    linear-gradient(180deg, rgba(254, 247, 230, 0.90) 0%, rgba(247, 235, 210, 0.80) 100%);
+  --bd-report-panel-border: rgba(202, 138, 47, 0.30);
   --bd-report-panel-shadow:
-    0 16px 34px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255, 255, 252, 0.96),
-    0 0 0 1px rgba(220, 165, 90, 0.10), 0 0 32px rgba(220, 140, 50, 0.10);
+    0 16px 34px rgba(120, 78, 18, 0.12),
+    inset 0 1px 0 rgba(254, 247, 232, 0.88),
+    inset 0 -1px 0 rgba(202, 138, 47, 0.28),
+    0 0 0 1px rgba(202, 138, 47, 0.22),
+    0 0 32px rgba(220, 140, 50, 0.20);
   --bd-report-input-bg: linear-gradient(
     180deg,
     rgba(255, 254, 250, 0.96) 0%,
@@ -2381,28 +2492,28 @@ body {
     rgba(10, 22, 45, 0.92) 0%,
     rgba(7, 16, 33, 0.88) 100%
   );
-  --bd-dashboard-panel-border: rgba(220, 165, 90, 0.32);
+  --bd-dashboard-panel-border: rgba(228, 175, 100, 0.40);
   --bd-dashboard-panel-shadow:
-    0 22px 48px rgba(2, 6, 23, 0.42),
-    inset 0 1px 0 rgba(253, 220, 160, 0.16),
-    0 0 0 1px rgba(220, 165, 90, 0.14),
-    0 0 36px rgba(220, 130, 50, 0.20);
+    0 22px 48px rgba(2, 6, 23, 0.46),
+    inset 0 1px 0 rgba(255, 228, 175, 0.22),
+    0 0 0 1px rgba(228, 175, 100, 0.20),
+    0 0 44px rgba(228, 140, 55, 0.26);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
     rgba(16, 31, 60, 0.88) 0%,
     rgba(11, 22, 43, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(220, 165, 90, 0.26);
+  --bd-dashboard-section-border: rgba(228, 175, 100, 0.32);
   --bd-dashboard-section-shadow:
-    0 16px 30px rgba(2, 6, 23, 0.30),
-    inset 0 1px 0 rgba(253, 220, 160, 0.12),
-    0 0 0 1px rgba(220, 165, 90, 0.10),
-    0 0 22px rgba(220, 130, 50, 0.14);
+    0 16px 30px rgba(2, 6, 23, 0.34),
+    inset 0 1px 0 rgba(255, 228, 175, 0.16),
+    0 0 0 1px rgba(228, 175, 100, 0.14),
+    0 0 28px rgba(228, 140, 55, 0.18);
   --bd-dashboard-section-hover-shadow:
-    0 22px 38px rgba(2, 6, 23, 0.38),
-    inset 0 1px 0 rgba(253, 220, 160, 0.18),
-    0 0 0 1px rgba(253, 200, 130, 0.30),
-    0 0 32px rgba(220, 130, 50, 0.26);
+    0 22px 38px rgba(2, 6, 23, 0.42),
+    inset 0 1px 0 rgba(255, 230, 180, 0.24),
+    0 0 0 1px rgba(255, 215, 150, 0.38),
+    0 0 38px rgba(228, 140, 55, 0.32);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(34, 74, 156, 0.40) 0%,
@@ -2433,43 +2544,41 @@ body {
 }
 
 [data-appearance-mode="light"] {
-  /* D4 (final v3.2) + D6 crispness: soft off-white liquid glass + more gold +
-     slightly stronger panel border + deeper drop shadow for premium edge
-     definition (light mode was reading slightly washy on stacked panels). */
+  /* LAW (do not break): light-mode surfaces are warm ivory/champagne with
+     visible bronze trim, riding on a cool blue-gray canvas. Variation, not
+     whitening. Pure-white surfaces and pure-white inset highlights are
+     forbidden. Shadows are NAVY-COOL so warm cream lifts off the cool
+     canvas; halos stay tight because cream-on-cream halos disappear. See
+     LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
   --bd-dashboard-panel-bg:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.14), transparent 65%),
-    linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.86) 100%);
-  --bd-dashboard-panel-border: rgba(147, 197, 253, 0.44);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(220, 165, 90, 0.16), transparent 65%),
+    linear-gradient(180deg, rgba(254, 248, 232, 0.94) 0%, rgba(248, 238, 215, 0.86) 100%);
+  --bd-dashboard-panel-border: rgba(160, 95, 25, 0.46);
   --bd-dashboard-panel-shadow:
-    0 26px 56px rgba(15, 42, 92, 0.16),
-    0 6px 14px rgba(30, 58, 138, 0.08),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(191, 219, 254, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.30),
-    0 0 28px rgba(59, 130, 246, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.28);
+    0 26px 56px rgba(15, 30, 60, 0.22),
+    0 6px 14px rgba(15, 30, 60, 0.10),
+    0 0 0 1px rgba(160, 95, 25, 0.30),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.36),
+    0 0 18px rgba(180, 100, 30, 0.14);
   --bd-dashboard-section-bg: linear-gradient(
     180deg,
-    rgba(238, 246, 254, 0.94) 0%,
-    rgba(220, 234, 250, 0.84) 100%
+    rgba(254, 247, 230, 0.94) 0%,
+    rgba(247, 235, 210, 0.84) 100%
   );
-  --bd-dashboard-section-border: rgba(147, 197, 253, 0.32);
+  --bd-dashboard-section-border: rgba(160, 95, 25, 0.40);
   --bd-dashboard-section-shadow:
-    0 16px 36px rgba(15, 42, 92, 0.10),
-    0 0 0 1px rgba(220, 165, 90, 0.18),
-    0 0 0 1px rgba(191, 219, 254, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.24),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 16px 36px rgba(15, 30, 60, 0.18),
+    0 0 0 1px rgba(160, 95, 25, 0.26),
+    inset 0 1px 0 rgba(254, 247, 232, 0.88),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.32),
+    0 0 14px rgba(180, 100, 30, 0.10);
   --bd-dashboard-section-hover-shadow:
-    0 22px 44px rgba(15, 42, 92, 0.14),
-    0 0 0 1px rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(147, 197, 253, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.32),
-    0 0 24px rgba(59, 130, 246, 0.12),
-    0 0 40px rgba(220, 140, 50, 0.30);
+    0 22px 44px rgba(15, 30, 60, 0.22),
+    0 0 0 1px rgba(160, 95, 25, 0.38),
+    inset 0 1px 0 rgba(254, 247, 232, 0.92),
+    inset 0 -1px 0 rgba(160, 95, 25, 0.40),
+    0 0 18px rgba(180, 100, 30, 0.14);
   --bd-dashboard-section-selected-bg: linear-gradient(
     180deg,
     rgba(224, 238, 255, 0.96) 0%,
@@ -2503,8 +2612,10 @@ body {
 .bd-dashboard-section {
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  /* Liquid glass: blur for translucency + saturate for shimmer + slight
+     brightness boost to make the glass feel illuminated, not flat. */
+  backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4) brightness(1.02);
 }
 
 .bd-dashboard-panel::before,
@@ -2596,60 +2707,102 @@ body {
     0 0 24px rgba(129, 140, 248, 0.10);
 }
 
-/* D4 (final v3.2): soft off-white liquid glass + more gold. Bg pulled back to
-   pale cool-blue-tinted off-white (the calm liquid-glass register from the
-   pre-revert dashboard) + amber inset/glow/ring all bumped notably stronger
-   so the gold lamp reads dominant against the softer surface. */
-[data-appearance-mode="light"] .bd-dashboard-panel--deep {
-  background: linear-gradient(180deg, rgba(240, 247, 254, 0.94) 0%, rgba(222, 235, 250, 0.86) 100%);
-  border-color: rgba(96, 165, 250, 0.34);
-  box-shadow:
-    0 22px 50px rgba(15, 42, 92, 0.13),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 0 1px rgba(96, 165, 250, 0.16),
-    0 0 28px rgba(59, 130, 246, 0.08),
-    0 0 44px rgba(220, 140, 50, 0.26);
-}
+/* LAW: light-mode panels are a layered hierarchy — hero (richest cream-gold)
+   > main (warm ivory) > supporting (cooler frosted blue/ivory). Variation,
+   not whitening. Cool/navy shadows lift cream off the cool blue canvas;
+   bronze border defines edge (gold-on-cream halo disappears). See
+   LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
 
+/* 3D liquid glass shadow stack pattern (light mode):
+   - Close drop (1-2px / 4-8px blur)        → immediate lift off canvas
+   - Mid drop (6-10px / 14-20px blur)       → object-on-surface depth
+   - Far ambient (24-30px / 50-70px blur)   → atmospheric grounding
+   - Bright inner top highlight              → reflected light on glass top
+   - Subtle inner bottom shadow              → glass thickness
+   - 1px bronze ring                         → warm material trim
+   - 1px accent ring (where applicable)      → cool action identity
+   - Tight outer halo                        → ambient warmth */
+
+/* HERO — accent-blue: rich premium gold liquid glass, the page's only
+   warm-dominant panel. Tone is bronze/champagne-leaning, NOT yellow.
+   Used on welcome banner. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-blue {
-  background: linear-gradient(180deg, rgba(236, 244, 254, 0.94) 0%, rgba(216, 230, 250, 0.86) 100%);
-  border-color: rgba(59, 130, 246, 0.36);
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%, rgba(196, 144, 65, 0.24), transparent 70%),
+    linear-gradient(180deg, rgba(244, 222, 178, 0.94) 0%, rgba(228, 198, 144, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.55);
   box-shadow:
-    0 22px 50px rgba(15, 42, 92, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(96, 165, 250, 0.18),
-    0 0 28px rgba(59, 130, 246, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.28);
+    0 1px 2px rgba(15, 30, 60, 0.10),
+    0 8px 18px rgba(15, 30, 60, 0.16),
+    0 30px 60px rgba(15, 30, 60, 0.22),
+    inset 0 1px 0 rgba(252, 240, 208, 0.94),
+    inset 0 -2px 4px rgba(110, 70, 18, 0.12),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.46),
+    0 0 0 1px rgba(140, 82, 22, 0.38),
+    0 0 0 1px rgba(96, 165, 250, 0.16),
+    0 0 22px rgba(196, 130, 45, 0.20);
 }
 
+/* MAIN — deep: cool blue/ivory liquid glass with gold lamp lighting. Used
+   on Quick Actions wrapper, Account panels, primary content. Stronger
+   bronze trim + gold top-radial halo so the panel lifts off the cool
+   canvas and reads as lit-from-above premium glass. */
+[data-appearance-mode="light"] .bd-dashboard-panel--deep {
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.10), transparent 70%),
+    linear-gradient(180deg, rgba(232, 242, 254, 0.94) 0%, rgba(204, 222, 246, 0.88) 100%);
+  border-color: rgba(140, 82, 22, 0.44);
+  box-shadow:
+    0 1px 2px rgba(15, 30, 60, 0.10),
+    0 6px 16px rgba(15, 30, 60, 0.18),
+    0 26px 54px rgba(15, 30, 60, 0.24),
+    inset 0 1px 0 rgba(252, 238, 204, 0.76),
+    inset 0 -2px 4px rgba(15, 30, 60, 0.08),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.36),
+    0 0 0 1px rgba(140, 82, 22, 0.32),
+    0 0 0 1px rgba(96, 165, 250, 0.22),
+    0 0 24px rgba(196, 130, 45, 0.20);
+}
+
+/* SUPPORTING — accent-cyan: cool cyan/teal liquid glass with gold lamp.
+   Map widgets, cards with teal identity. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-cyan {
-  background: linear-gradient(180deg, rgba(232, 246, 250, 0.94) 0%, rgba(208, 234, 240, 0.86) 100%);
-  border-color: rgba(20, 184, 166, 0.34);
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(220, 240, 246, 0.94) 0%, rgba(190, 226, 238, 0.88) 100%);
+  border-color: rgba(140, 82, 22, 0.42);
   box-shadow:
-    0 22px 50px rgba(8, 51, 68, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(34, 211, 238, 0.16),
-    0 0 28px rgba(13, 148, 136, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.26);
+    0 1px 2px rgba(8, 51, 68, 0.12),
+    0 6px 16px rgba(8, 51, 68, 0.18),
+    0 26px 54px rgba(8, 51, 68, 0.24),
+    inset 0 1px 0 rgba(252, 238, 204, 0.72),
+    inset 0 -2px 4px rgba(8, 51, 68, 0.08),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.34),
+    0 0 0 1px rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(34, 211, 238, 0.32),
+    0 0 24px rgba(196, 130, 45, 0.18);
 }
 
+/* SUPPORTING — accent-indigo: DARKER cool indigo liquid glass with gold
+   lamp. Used on Repair Activity, Help & Support, anything needing depth. */
 [data-appearance-mode="light"] .bd-dashboard-panel--accent-indigo {
-  background: linear-gradient(180deg, rgba(238, 240, 252, 0.94) 0%, rgba(220, 224, 248, 0.86) 100%);
-  border-color: rgba(129, 140, 248, 0.34);
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.16), transparent 70%),
+    linear-gradient(180deg, rgba(212, 222, 246, 0.94) 0%, rgba(184, 198, 238, 0.88) 100%);
+  border-color: rgba(140, 82, 22, 0.46);
   box-shadow:
-    0 22px 50px rgba(28, 25, 80, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.96),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.28),
-    0 0 0 1px rgba(220, 165, 90, 0.22),
-    0 0 0 1px rgba(129, 140, 248, 0.16),
-    0 0 28px rgba(99, 102, 241, 0.10),
-    0 0 44px rgba(220, 140, 50, 0.26);
+    0 1px 2px rgba(28, 25, 80, 0.14),
+    0 8px 18px rgba(28, 25, 80, 0.20),
+    0 28px 58px rgba(28, 25, 80, 0.26),
+    inset 0 1px 0 rgba(252, 238, 204, 0.72),
+    inset 0 -2px 4px rgba(28, 25, 80, 0.10),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.34),
+    0 0 0 1px rgba(140, 82, 22, 0.32),
+    0 0 0 1px rgba(99, 102, 241, 0.36),
+    0 0 28px rgba(196, 130, 45, 0.20);
 }
 
 .bd-dashboard-section {
@@ -2713,54 +2866,111 @@ body {
     0 0 18px rgba(244, 63, 94, 0.10);
 }
 
-/* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
-[data-appearance-mode="light"] .bd-dashboard-section--deep {
-  background: linear-gradient(180deg, rgba(238, 246, 254, 0.94) 0%, rgba(220, 234, 250, 0.84) 100%);
-  border-color: rgba(96, 165, 250, 0.32);
+/* Deeper-gold tile: navy base, stronger champagne inner glow + halo. Pairs
+   with --accent-champagne for a cool/warm/cool/warm Quick Actions rhythm. */
+.bd-dashboard-section--accent-gold {
+  background: linear-gradient(180deg, rgba(38, 28, 12, 0.92) 0%, rgba(22, 16, 6, 0.88) 100%);
+  border-color: rgba(220, 165, 90, 0.42);
   box-shadow:
-    0 16px 36px rgba(15, 42, 92, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.24),
+    0 16px 30px rgba(2, 6, 23, 0.32),
+    inset 0 1px 0 rgba(253, 220, 160, 0.22),
     0 0 0 1px rgba(220, 165, 90, 0.18),
-    0 0 0 1px rgba(96, 165, 250, 0.14),
-    0 0 18px rgba(59, 130, 246, 0.06),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 0 28px rgba(220, 140, 50, 0.28),
+    0 0 18px rgba(253, 200, 110, 0.14);
 }
 
+/* Lighter champagne tile: still navy base but a softer warm wash; reads
+   adjacent-but-distinct from the deeper gold tile. */
+.bd-dashboard-section--accent-champagne {
+  background: linear-gradient(180deg, rgba(28, 24, 14, 0.90) 0%, rgba(16, 14, 8, 0.86) 100%);
+  border-color: rgba(220, 165, 90, 0.32);
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(253, 220, 160, 0.16),
+    0 0 0 1px rgba(220, 165, 90, 0.12),
+    0 0 22px rgba(220, 130, 50, 0.18);
+}
+
+/* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
+/* LAW: section accents are full-spectrum in light mode with COOL dominant.
+   Cool blue/cyan/indigo + neutral ivory rotate as the everyday tones; warm
+   gold/champagne are the pop tones reserved for hero action tiles. All
+   surfaces use the 3D liquid glass shadow stack pattern. No pure white.
+   See LAW_PROJECT_RULES.md § Light-Mode Surface Rule. */
+
+/* deep — neutral ivory liquid glass with premium gold lamp */
+[data-appearance-mode="light"] .bd-dashboard-section--deep {
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.18), transparent 70%),
+    linear-gradient(180deg, rgba(238, 246, 254, 0.94) 0%, rgba(216, 230, 248, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.38);
+  box-shadow:
+    0 1px 2px rgba(15, 30, 60, 0.08),
+    0 4px 10px rgba(15, 30, 60, 0.14),
+    0 18px 38px rgba(15, 30, 60, 0.18),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
+    inset 0 -1px 2px rgba(15, 30, 60, 0.06),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.26),
+    0 0 0 1px rgba(96, 165, 250, 0.18),
+    0 0 18px rgba(196, 130, 45, 0.16);
+}
+
+/* accent-blue — medium cool blue liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-blue {
-  background: linear-gradient(180deg, rgba(234, 244, 254, 0.94) 0%, rgba(214, 230, 250, 0.84) 100%);
-  border-color: rgba(59, 130, 246, 0.34);
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96, 165, 250, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(220, 236, 252, 0.94) 0%, rgba(196, 218, 246, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.40);
   box-shadow:
-    0 16px 36px rgba(15, 42, 92, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 18px rgba(59, 130, 246, 0.08),
-    0 0 32px rgba(220, 140, 50, 0.24);
+    0 1px 2px rgba(15, 30, 60, 0.10),
+    0 4px 10px rgba(15, 30, 60, 0.16),
+    0 18px 38px rgba(15, 30, 60, 0.22),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
+    inset 0 -1px 2px rgba(15, 30, 60, 0.08),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.26),
+    0 0 0 1px rgba(96, 165, 250, 0.32),
+    0 0 18px rgba(196, 130, 45, 0.16);
 }
 
+/* accent-cyan — medium cool cyan liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-cyan {
-  background: linear-gradient(180deg, rgba(228, 244, 248, 0.94) 0%, rgba(206, 232, 240, 0.84) 100%);
-  border-color: rgba(20, 184, 166, 0.32);
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.20), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34, 211, 238, 0.14), transparent 70%),
+    linear-gradient(180deg, rgba(216, 240, 244, 0.94) 0%, rgba(188, 226, 232, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.40);
   box-shadow:
-    0 16px 36px rgba(8, 51, 68, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 18px rgba(13, 148, 136, 0.08),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 1px 2px rgba(8, 51, 68, 0.10),
+    0 4px 10px rgba(8, 51, 68, 0.16),
+    0 18px 38px rgba(8, 51, 68, 0.22),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
+    inset 0 -1px 2px rgba(8, 51, 68, 0.08),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.26),
+    0 0 0 1px rgba(34, 211, 238, 0.34),
+    0 0 18px rgba(196, 130, 45, 0.16);
 }
 
+/* accent-indigo — darker cool indigo liquid glass with premium gold lamp */
 [data-appearance-mode="light"] .bd-dashboard-section--accent-indigo {
-  background: linear-gradient(180deg, rgba(236, 238, 252, 0.94) 0%, rgba(218, 222, 248, 0.84) 100%);
-  border-color: rgba(129, 140, 248, 0.32);
+  background:
+    radial-gradient(ellipse 90% 50% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.16), transparent 70%),
+    linear-gradient(180deg, rgba(214, 220, 246, 0.94) 0%, rgba(188, 198, 238, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.42);
   box-shadow:
-    0 16px 36px rgba(28, 25, 80, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.26),
-    0 0 0 1px rgba(220, 165, 90, 0.20),
-    0 0 18px rgba(99, 102, 241, 0.08),
-    0 0 32px rgba(220, 140, 50, 0.22);
+    0 1px 2px rgba(28, 25, 80, 0.12),
+    0 4px 10px rgba(28, 25, 80, 0.18),
+    0 18px 38px rgba(28, 25, 80, 0.24),
+    inset 0 1px 0 rgba(252, 238, 204, 0.70),
+    inset 0 -1px 2px rgba(28, 25, 80, 0.10),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.30),
+    0 0 0 1px rgba(140, 82, 22, 0.28),
+    0 0 0 1px rgba(99, 102, 241, 0.36),
+    0 0 22px rgba(196, 130, 45, 0.18);
 }
 
 [data-appearance-mode="light"] .bd-dashboard-section--accent-rose {
@@ -2773,6 +2983,40 @@ body {
     0 0 0 1px rgba(220, 165, 90, 0.18),
     0 0 18px rgba(244, 63, 94, 0.08),
     0 0 32px rgba(220, 140, 50, 0.22);
+}
+
+/* accent-gold — premium champagne liquid glass, warm pop tile */
+[data-appearance-mode="light"] .bd-dashboard-section--accent-gold {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 144, 65, 0.22), transparent 70%),
+    linear-gradient(180deg, rgba(244, 222, 178, 0.96) 0%, rgba(228, 198, 144, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.55);
+  box-shadow:
+    0 1px 2px rgba(110, 70, 18, 0.14),
+    0 4px 10px rgba(110, 70, 18, 0.18),
+    0 18px 38px rgba(110, 70, 18, 0.22),
+    inset 0 1px 0 rgba(252, 240, 208, 0.92),
+    inset 0 -2px 4px rgba(110, 70, 18, 0.12),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.48),
+    0 0 0 1px rgba(140, 82, 22, 0.42),
+    0 0 22px rgba(170, 95, 28, 0.22);
+}
+
+/* accent-champagne — lighter premium champagne liquid glass, warm pop tile */
+[data-appearance-mode="light"] .bd-dashboard-section--accent-champagne {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196, 144, 65, 0.16), transparent 70%),
+    linear-gradient(180deg, rgba(250, 234, 198, 0.96) 0%, rgba(240, 220, 178, 0.86) 100%);
+  border-color: rgba(140, 82, 22, 0.44);
+  box-shadow:
+    0 1px 2px rgba(110, 70, 18, 0.12),
+    0 4px 10px rgba(110, 70, 18, 0.16),
+    0 18px 38px rgba(110, 70, 18, 0.18),
+    inset 0 1px 0 rgba(252, 240, 212, 0.92),
+    inset 0 -2px 4px rgba(110, 70, 18, 0.10),
+    inset 0 -1px 0 rgba(140, 82, 22, 0.40),
+    0 0 0 1px rgba(140, 82, 22, 0.32),
+    0 0 18px rgba(170, 95, 28, 0.18);
 }
 
 .bd-dashboard-section--interactive {
@@ -3164,10 +3408,71 @@ body {
 }
 
 /* Bid card float — subtle Y drift. Reuses mapGlassFloat keyframe.
-   Compose with bd-glass-card--landing for the surface itself. */
+   Compose with bd-glass-card--landing for the surface itself.
+
+   V2 (2026-05-03): hover state adds a one-shot champagne sheen sweep
+   across the chip and a paused-drift "lock" so the chip reads as a
+   premium hover affordance. The outer drop halo is a pseudo-element
+   (::after) so it does not collide with the chip's inline box-shadow.
+   Sheen is contained via overflow:hidden — chip already has rounded
+   corners so the sheen respects the rounded boundary. */
 .bd-bid-card-float {
   animation: mapGlassFloat 6s var(--bd-flow-ease) infinite;
   will-change: transform;
+  overflow: hidden;
+  transition: transform 220ms ease-out;
+}
+
+/* Champagne sheen layer — hidden until hover.
+   mix-blend-mode: screen so the sheen reads as light catching the
+   glass surface, never as a film that obscures the chip content. */
+.bd-bid-card-float::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(220, 165, 90, 0.32) 48%,
+    rgba(255, 235, 195, 0.45) 52%,
+    rgba(220, 165, 90, 0.32) 56%,
+    transparent 74%
+  );
+  mix-blend-mode: screen;
+  transform: translateX(-130%);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: 2;
+}
+
+/* Outer gold halo — separate from inline box-shadow */
+.bd-bid-card-float::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgba(220, 165, 90, 0), 0 0 24px rgba(220, 165, 90, 0);
+  transition:
+    box-shadow 260ms ease-out,
+    inset 260ms ease-out;
+  z-index: 0;
+}
+
+.bd-bid-card-float:hover {
+  animation-play-state: paused;
+  transform: translateY(-1px);
+}
+
+.bd-bid-card-float:hover::before {
+  animation: bdGoldSheenOneShot 900ms ease-out forwards;
+}
+
+.bd-bid-card-float:hover::after {
+  box-shadow:
+    0 0 0 1px rgba(220, 165, 90, 0.32),
+    0 0 26px rgba(220, 165, 90, 0.26);
 }
 
 /* Map contour — faint topographic-style line pattern.
@@ -3208,6 +3513,12 @@ body {
     opacity: 0 !important;
   }
   .group:hover .bd-gold-sheen-hover {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  /* V2 hero chip hover sheen — disable the one-shot animation but keep
+     the static gold halo affordance so hover still reads. */
+  .bd-bid-card-float:hover::before {
     animation: none !important;
     opacity: 0 !important;
   }

@@ -23,6 +23,7 @@ export default function CoverageNearestShops({
   className,
   variant = "default",
   selectedShopName,
+  isOutsideServiceArea = false,
 }: CoverageNearestShopsProps) {
   const theme = getMapSurfaceTheme(tone, true);
   const showBackendFailureState = Boolean(fetchError) && !usingDemoFallback;
@@ -44,19 +45,23 @@ export default function CoverageNearestShops({
                 theme.titleClassName
               )}
             >
-              {activeSearchTarget
-                ? `${nearbyShops.length} nearby repair options`
-                : "Search an area to unlock shop recommendations"}
+              {!activeSearchTarget
+                ? "Search an area to unlock shop recommendations"
+                : isOutsideServiceArea
+                  ? "Outside our current NY service region"
+                  : `${nearbyShops.length} nearby repair options`}
             </h5>
             <p className={cn("mt-1 text-sm leading-6", theme.secondaryTextClassName)}>
-              {activeSearchTarget
-                ? `Compare rating, distance, and live routing around ${activeSearchTarget.label}.`
-                : "Set an origin above and the strongest partner shops will populate below the map."}
+              {!activeSearchTarget
+                ? "Set an origin above and the strongest partner shops will populate below the map."
+                : isOutsideServiceArea
+                  ? "BidOnDent is focused on Rockland, Dutchess, Westchester, Nassau, Orange, and Putnam — browse the regions above to see where we're live."
+                  : `Compare rating and distance to partner shops near ${activeSearchTarget.label}.`}
             </p>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {activeSearchTarget ? (
+            {activeSearchTarget && !isOutsideServiceArea ? (
               <span
                 className={cn(
                   "rounded-full px-3 py-1.5 text-[11px] font-semibold",
@@ -136,8 +141,8 @@ export default function CoverageNearestShops({
               </div>
               <div className="mt-1 text-xs leading-relaxed">
                 {usingDemoFallback
-                  ? "Live partner-shop data is temporarily unavailable. Showing demo hubs while the backend recovers."
-                  : "Live partner-shop data could not be loaded. Retry to refresh shops from Supabase."}
+                  ? "Partner-shop data is temporarily unavailable. Showing demo hubs while the backend recovers."
+                  : "Partner-shop data could not be loaded. Retry to refresh shops from Supabase."}
               </div>
             </div>
           </div>
@@ -290,8 +295,8 @@ export default function CoverageNearestShops({
             Unable to load nearby partner shops
           </div>
           <div className={cn("text-xs leading-relaxed", theme.secondaryTextClassName)}>
-            The search origin is ready, but the live partner-shop feed did not return. Retry the
-            backend call and try again.
+            The search origin is ready, but the partner-shop feed did not return. Retry the backend
+            call and try again.
           </div>
           {onRetryShops ? (
             <button type="button" onClick={onRetryShops} className={theme.secondaryButtonClassName}>
@@ -329,11 +334,14 @@ export default function CoverageNearestShops({
             />
           </div>
           <div className={cn("text-sm font-semibold", theme.titleClassName)}>
-            Coverage is expanding
+            {isOutsideServiceArea
+              ? "You're outside our current NY service region"
+              : "Service area is expanding"}
           </div>
           <div className={cn("text-xs leading-relaxed max-w-sm", theme.secondaryTextClassName)}>
-            No partner shops within {radiusMiles} miles yet. Try a wider radius, a different ZIP, or
-            check back as our network grows across NY.
+            {isOutsideServiceArea
+              ? "BidOnDent is currently focused on NY counties — Rockland, Dutchess, Westchester, Nassau, Orange, and Putnam. Browse the regions above to see where we're live."
+              : `No partner shops within ${radiusMiles} miles yet. Try a wider radius, a different NY ZIP, or check back as our network grows across NY.`}
           </div>
         </div>
       ) : (

@@ -20,6 +20,7 @@ export type CoverageNearestShopsProps = {
   className?: string;
   variant?: "default" | "landing-showcase";
   selectedShopName?: string | null;
+  isOutsideServiceArea?: boolean;
 };
 
 export const LANDING_INSTRUCTION_CARDS = [

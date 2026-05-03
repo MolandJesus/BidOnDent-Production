@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import RepairLifecycleTimeline from "../workflow/RepairLifecycleTimeline";
 import { insurerLifecycle } from "../workflow/lifecycle-presets";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 import { type ClaimData, getStatusColor, getPriorityColor } from "./insurerClaimsUtils";
 import type { DashboardAppearanceMode } from "../../routers/dashboard-router-types";
 
@@ -133,7 +134,7 @@ export default function InsurerClaimCard({
             }`}
           >
             {claim.previewPhoto ? (
-              <img
+              <ImageWithFallback
                 src={claim.previewPhoto}
                 alt={`${claim.damageType} preview`}
                 className="h-full w-full object-cover"

@@ -89,7 +89,7 @@ export function HomeReportsList({
           <span
             className={`bd-dashboard-chip px-2.5 py-1 text-[11px] font-medium ${
               isLightAppearance
-                ? "bg-white/85 text-blue-700"
+                ? "border border-blue-200/55 bg-blue-50/85 text-blue-700"
                 : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
@@ -191,7 +191,16 @@ export function HomeReportsList({
               >
                 <div className="flex items-start gap-4">
                   <div
-                    className={`w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 border ${isLightAppearance ? "bg-slate-100 border-slate-200/70" : "bg-slate-800/40 border-white/10"}`}
+                    className={`relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 ${
+                      isLightAppearance
+                        ? "bg-[linear-gradient(135deg,rgba(254,248,232,0.92)_0%,rgba(244,232,208,0.88)_100%)]"
+                        : "bg-[linear-gradient(135deg,rgba(15,30,55,0.85)_0%,rgba(8,16,32,0.85)_100%)]"
+                    }`}
+                    style={{
+                      boxShadow: isLightAppearance
+                        ? "inset 0 1px 0 rgba(220,165,90,0.18), inset 0 0 0 1px rgba(147,197,253,0.30), inset 0 -1px 0 rgba(2,6,23,0.06), 0 1px 2px rgba(2,6,23,0.04)"
+                        : "inset 0 1px 0 rgba(220,165,90,0.20), inset 0 0 0 1px rgba(96,165,250,0.18), inset 0 -1px 0 rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.20)",
+                    }}
                   >
                     {hasPhoto ? (
                       <ImageWithFallback
@@ -201,9 +210,9 @@ export function HomeReportsList({
                       />
                     ) : (
                       <div
-                        className={`w-full h-full flex items-center justify-center ${isLightAppearance ? "text-blue-400/60" : "text-blue-400/50"}`}
+                        className={`w-full h-full flex items-center justify-center ${isLightAppearance ? "text-blue-400/65" : "text-blue-300/55"}`}
                       >
-                        <Camera className="w-7 h-7" />
+                        <Camera className="w-7 h-7" strokeWidth={1.6} />
                       </div>
                     )}
                   </div>

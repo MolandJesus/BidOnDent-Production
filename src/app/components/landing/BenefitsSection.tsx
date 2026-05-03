@@ -176,9 +176,9 @@ export default function BenefitsSection({
           className={`text-center mb-6 transition-all duration-600 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
         >
           <span
-            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-amber-400/25 bg-amber-500/10 text-amber-200"}`}
+            className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium ${isLightAppearance ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]" : "border border-amber-400/45 bg-amber-500/[0.16] text-amber-100 shadow-[inset_0_1px_0_rgba(255,232,180,0.18),0_0_24px_rgba(240,170,70,0.18)]"}`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-amber-400" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-amber-300 shadow-[0_0_10px_rgba(253,224,124,0.85)]" />
             Built for Real Repairs
           </span>
         </div>
@@ -325,9 +325,29 @@ export default function BenefitsSection({
           </div>
         </div>
       </div>
-      {/* Bottom transition — blends into WhoWeServe periwinkle */}
+      {/* V3a — Section seam gradient bridge (Benefits → WhoWeServe).
+          The warm Direction B floor fades through a desaturated mid-stop
+          before resolving into the cool periwinkle/navy of WhoWeServe so
+          the temperature shift reads as a lighting change, not a hard cut.
+          A faint champagne hairline at the very edge catches light against
+          the lower bezel of the section. */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-32 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#f2f8ff]" : "bg-gradient-to-b from-transparent to-[#0c1c34]"}`}
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to bottom, transparent 0%, rgba(232,228,220,0.55) 35%, rgba(228,232,242,0.85) 70%, #f2f8ff 100%)"
+            : "linear-gradient(to bottom, transparent 0%, rgba(28,30,42,0.55) 32%, rgba(15,24,46,0.85) 70%, #0c1c34 100%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+        }}
       />
     </section>
   );

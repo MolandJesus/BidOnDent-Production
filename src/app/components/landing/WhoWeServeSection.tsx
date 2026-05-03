@@ -145,6 +145,9 @@ export default function WhoWeServeSection({
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_45%_55%_at_15%_75%,rgba(99,102,241,0.14),transparent_55%)]" />
             <div className="absolute top-1/4 right-0 w-96 h-96 bg-blue-400/[0.16] rounded-full blur-[120px]" />
             <div className="absolute -bottom-10 left-1/4 w-80 h-80 bg-indigo-400/[0.12] rounded-full blur-[110px]" />
+            {/* Subtle gold lamp accent — single warm light source threading
+                gold identity through the cool register. */}
+            <div className="absolute top-1/3 left-[10%] w-72 h-72 rounded-full blur-[130px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.13), transparent 65%)" }} />
           </>
         )}
       </div>

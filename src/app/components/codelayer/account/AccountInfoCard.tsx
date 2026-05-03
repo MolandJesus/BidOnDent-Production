@@ -106,7 +106,7 @@ export default function AccountInfoCard({
             Account Information
           </h2>
           <p
-            className={`mt-1 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/68"}`}
+            className={`mt-1 text-sm ${isLightAppearance ? "text-slate-500" : "text-blue-100/82"}`}
           >
             Core details, contact info, and saved profile data.
           </p>
@@ -157,7 +157,7 @@ export default function AccountInfoCard({
             }`}
           >
             <p
-              className={`text-xs uppercase tracking-wide ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+              className={`text-xs uppercase tracking-wide ${isLightAppearance ? "text-slate-500" : "text-blue-100/82"}`}
             >
               {field.label}
             </p>
@@ -172,7 +172,7 @@ export default function AccountInfoCard({
           <div className="bd-dashboard-section bd-dashboard-section--accent-blue rounded-xl p-3.5 sm:col-span-2">
             <div className="flex items-center justify-between gap-3">
               <p
-                className={`text-xs uppercase tracking-wide ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+                className={`text-xs uppercase tracking-wide ${isLightAppearance ? "text-slate-500" : "text-blue-100/82"}`}
               >
                 Vehicles
               </p>

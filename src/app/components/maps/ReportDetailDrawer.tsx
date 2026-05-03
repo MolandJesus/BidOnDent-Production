@@ -8,6 +8,7 @@ import {
   DrawerClose,
 } from "../ui/drawer";
 import { cn } from "../ui/utils";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 import type { DamageReport } from "../../types";
 import type { MapTheme } from "../../types/mapDomain";
 
@@ -173,7 +174,7 @@ export function ReportDetailDrawer({
           {photos.length > 0 && (
             <div className="flex gap-2 overflow-x-auto mb-2.5">
               {photos.map((src: string, i: number) => (
-                <img
+                <ImageWithFallback
                   key={i}
                   src={src}
                   alt="Damage photo"

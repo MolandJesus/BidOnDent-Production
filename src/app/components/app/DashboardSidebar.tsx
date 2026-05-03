@@ -262,7 +262,7 @@ export default function DashboardSidebar({
           className="group w-full flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 hover:bg-blue-500/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/45"
           type="button"
         >
-          {userImageUrl ? (
+          {userImageUrl && !userImageUrl.startsWith("storage://") ? (
             <img
               src={userImageUrl}
               alt="Profile"

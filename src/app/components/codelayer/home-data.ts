@@ -168,7 +168,7 @@ export function buildQuickActions(userType: string, handlers: HomeActionHandlers
     },
     {
       title: "Coverage Updates",
-      description: "Open live coverage and service map",
+      description: "Open the coverage and service map",
       icon: Wrench,
       onClick: handlers.onViewCoverage,
     },

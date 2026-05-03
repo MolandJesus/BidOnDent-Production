@@ -23,6 +23,7 @@ import {
   Wrench,
   X,
 } from "lucide-react";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 import {
   type ShopDetailSheetProps,
   RatingBar,
@@ -106,7 +107,7 @@ export default function ShopDetailSheet({
             </div>
             <div className="flex shrink-0 items-start gap-3 px-4 pb-3 pt-2">
               {shop.image ? (
-                <img
+                <ImageWithFallback
                   src={shop.image}
                   alt={shop.name}
                   className="h-14 w-14 shrink-0 rounded-xl border border-inherit object-cover"

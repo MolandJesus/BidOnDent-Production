@@ -428,7 +428,7 @@ export default function DashboardHeader({
               className="flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-full p-1 transition-colors hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/40 md:gap-2 md:pl-1.5 md:pr-2 md:py-1.5"
               type="button"
             >
-              {userImageUrl ? (
+              {userImageUrl && !userImageUrl.startsWith("storage://") ? (
                 <img
                   src={userImageUrl}
                   alt="Profile"

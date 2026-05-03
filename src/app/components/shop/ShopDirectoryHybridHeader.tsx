@@ -65,14 +65,20 @@ export default function ShopDirectoryHybridHeader({
         </span>
       </div>
 
+      {/* Phase 7 honesty (2026-05-03 P7): title + subtitle now mention NY
+          explicitly so out-of-state GPS users (e.g. Atlanta in current
+          owner screenshots) understand the search is bounded to our
+          soft-launch counties — Rockland, Dutchess, Westchester, Nassau,
+          Orange, Putnam — not a national marketplace. */}
       <h2
         className={`mt-3 max-w-3xl text-[2rem] font-semibold tracking-tight leading-[1.06] sm:text-[2.25rem] ${titleClassName}`}
       >
-        Search partner coverage near you
+        Search our NY partner network
       </h2>
       <p className={`mt-3 max-w-[46rem] text-sm leading-6 sm:text-[15px] ${mutedClassName}`}>
-        Enter a ZIP, address, or live location to focus the map, then compare the strongest nearby
-        repair options below.
+        Enter a NY ZIP, address, or live location to focus the map. We're currently live across
+        Rockland, Dutchess, Westchester, Nassau, Orange, and Putnam — partner shops listed below as
+        they come online.
       </p>
     </div>
   );

@@ -150,10 +150,10 @@ export default function TrustStatsSection({
             className={`inline-flex items-center px-4 py-1.5 rounded-full backdrop-blur-sm text-sm font-medium mb-5 ${
               isLightAppearance
                 ? "border border-[rgba(200,165,80,0.30)] bg-[rgba(255,248,235,0.55)] text-amber-700 shadow-[inset_0_1px_0_rgba(255,250,235,0.7)]"
-                : "border border-amber-400/25 bg-amber-500/10 text-amber-200"
+                : "border border-amber-400/45 bg-amber-500/[0.16] text-amber-100 shadow-[inset_0_1px_0_rgba(255,232,180,0.18),0_0_24px_rgba(240,170,70,0.18)]"
             }`}
           >
-            <span className="w-2 h-2 rounded-full mr-2 bg-amber-400" />
+            <span className="w-2 h-2 rounded-full mr-2 bg-amber-300 shadow-[0_0_10px_rgba(253,224,124,0.85)]" />
             Our Commitments
           </span>
           {/* Pass 12 (calibrated test, 2026-05-02): metallic-gold flanking accent.
@@ -240,9 +240,28 @@ export default function TrustStatsSection({
           ))}
         </div>
       </div>
-      {/* Bottom transition — blends into Coverage Map cool blue-gray */}
+      {/* V3a — Section seam gradient bridge (TrustStats → Coverage Map).
+          Same temperature-bridging pattern as the Benefits→WhoWeServe seam:
+          warm Direction B floor passes through a desaturated mid-stop into
+          the cool blue-gray of the Coverage Map section, with a champagne
+          hairline at the boundary catching light against the lower bezel. */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-28 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#f2f5f9]" : "bg-gradient-to-b from-transparent to-[#071830]"}`}
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to bottom, transparent 0%, rgba(232,228,220,0.55) 35%, rgba(228,232,242,0.85) 70%, #f2f5f9 100%)"
+            : "linear-gradient(to bottom, transparent 0%, rgba(28,30,42,0.55) 32%, rgba(15,24,46,0.85) 70%, #071830 100%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+        }}
       />
     </section>
   );
