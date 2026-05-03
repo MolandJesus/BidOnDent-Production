@@ -91,6 +91,26 @@ export default function DashboardAtmosphere({ isLightAppearance }: { isLightAppe
           opacity: isLightAppearance ? 0.3 : 1,
         }}
       />
+      {/* ── D6: warm gold gutter wash, left edge — balances cool atmosphere
+            so far-left rail of the page reads as lit, not empty. Subtle. ── */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(220, 165, 90, 0.10) 0%, transparent 62%)"
+            : "radial-gradient(ellipse 32% 70% at 0% 38%, rgba(220, 150, 60, 0.16) 0%, transparent 60%)",
+        }}
+      />
+      {/* ── D6: warm gold gutter wash, right edge — same as left but opposite
+            corner, so the two rails balance and the page feels lamp-lit. ── */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(220, 165, 90, 0.09) 0%, transparent 62%)"
+            : "radial-gradient(ellipse 30% 65% at 100% 62%, rgba(220, 150, 60, 0.14) 0%, transparent 60%)",
+        }}
+      />
     </>
   );
 }

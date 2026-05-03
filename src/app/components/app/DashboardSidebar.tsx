@@ -244,7 +244,12 @@ export default function DashboardSidebar({
       </nav>
 
       <div
-        className={`p-3 border-t ${isLightAppearance ? "border-blue-200/40" : "border-blue-400/[0.10]"}`}
+        className={`p-3 border-t ${isLightAppearance ? "border-[rgba(220,165,90,0.18)]" : "border-[rgba(220,165,90,0.16)]"}`}
+        style={{
+          boxShadow: isLightAppearance
+            ? "inset 0 1px 0 rgba(255, 252, 245, 0.85), 0 -8px 22px rgba(220, 140, 50, 0.06)"
+            : "inset 0 1px 0 rgba(220, 175, 110, 0.10), 0 -8px 22px rgba(220, 140, 50, 0.10)",
+        }}
       >
         <button
           onClick={() => {
@@ -262,12 +267,20 @@ export default function DashboardSidebar({
               src={userImageUrl}
               alt="Profile"
               className="w-10 h-10 rounded-full object-cover ring-2 ring-blue-500/20"
+              style={{
+                boxShadow: isLightAppearance
+                  ? "0 0 0 1px rgba(220, 165, 90, 0.22), 0 0 18px rgba(220, 140, 50, 0.18)"
+                  : "0 0 0 1px rgba(220, 165, 90, 0.20), 0 0 22px rgba(220, 140, 50, 0.22)",
+              }}
             />
           ) : (
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm"
               style={{
                 background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
+                boxShadow: isLightAppearance
+                  ? "0 0 0 1px rgba(220, 165, 90, 0.22), 0 0 18px rgba(220, 140, 50, 0.18)"
+                  : "0 0 0 1px rgba(220, 165, 90, 0.20), 0 0 22px rgba(220, 140, 50, 0.22)",
               }}
             >
               {(userProfile.name || "U").charAt(0).toUpperCase()}
