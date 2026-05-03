@@ -153,11 +153,15 @@ export function HomeQuickActions({
   appearanceMode?: DashboardAppearanceMode;
 }) {
   const isLight = appearanceMode === "light";
+  // Quick Actions tile rotation: alternate cool/warm/cool/warm so the row
+  // gets two gold values mixed in with the blue tiles. Owner direction:
+  // dashboard light mode was reading too off-white; needs gold mix without
+  // becoming landing-loud.
   const actionSurfaceClasses = [
     "bd-dashboard-section--accent-blue",
-    "bd-dashboard-section--deep",
+    "bd-dashboard-section--accent-gold",
     "bd-dashboard-section--accent-cyan",
-    "bd-dashboard-section--accent-indigo",
+    "bd-dashboard-section--accent-champagne",
   ];
   if (quickActions.length === 0) return null;
   return (

@@ -1986,12 +1986,14 @@ body {
     rgba(7, 16, 33, 0.92) 100%
   );
   --bd-report-shell-border: rgba(96, 165, 250, 0.24);
-  /* D4 (final v2): amber lamp glow + faint amber ring stacked alongside the
-     cool-blue ring so the report shell reads gold-lit like the dashboard. */
+  /* Navy-lit-by-gold-lamp: keep the cool-blue interaction ring but push the
+     gold inset + outer halo so the report shell reads navy+gold-trim like the
+     dashboard panels. Owner direction: bring report flow into dashboard
+     identity. */
   --bd-report-shell-shadow:
-    0 30px 80px rgba(2, 6, 23, 0.48), 0 0 0 1px rgba(59, 130, 246, 0.08),
-    inset 0 1px 0 rgba(253, 220, 160, 0.14), 0 0 40px rgba(37, 99, 235, 0.08),
-    0 0 32px rgba(220, 130, 50, 0.16);
+    0 30px 80px rgba(2, 6, 23, 0.48), 0 0 0 1px rgba(59, 130, 246, 0.10),
+    inset 0 1px 0 rgba(253, 220, 160, 0.20), 0 0 40px rgba(37, 99, 235, 0.08),
+    0 0 0 1px rgba(220, 165, 90, 0.12), 0 0 36px rgba(220, 130, 50, 0.24);
   --bd-report-panel-bg: linear-gradient(
     180deg,
     rgba(18, 33, 65, 0.88) 0%,
@@ -1999,8 +2001,9 @@ body {
   );
   --bd-report-panel-border: rgba(96, 165, 250, 0.2);
   --bd-report-panel-shadow:
-    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(253, 220, 160, 0.10),
-    0 0 0 1px rgba(59, 130, 246, 0.04), 0 0 26px rgba(220, 130, 50, 0.14);
+    0 18px 36px rgba(2, 6, 23, 0.28), inset 0 1px 0 rgba(253, 220, 160, 0.16),
+    0 0 0 1px rgba(220, 165, 90, 0.10), 0 0 0 1px rgba(59, 130, 246, 0.04),
+    0 0 28px rgba(220, 130, 50, 0.20);
   --bd-report-input-bg: linear-gradient(
     180deg,
     rgba(7, 17, 35, 0.92) 0%,
@@ -2815,6 +2818,31 @@ body {
     0 0 18px rgba(244, 63, 94, 0.10);
 }
 
+/* Deeper-gold tile: navy base, stronger champagne inner glow + halo. Pairs
+   with --accent-champagne for a cool/warm/cool/warm Quick Actions rhythm. */
+.bd-dashboard-section--accent-gold {
+  background: linear-gradient(180deg, rgba(38, 28, 12, 0.92) 0%, rgba(22, 16, 6, 0.88) 100%);
+  border-color: rgba(220, 165, 90, 0.42);
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.32),
+    inset 0 1px 0 rgba(253, 220, 160, 0.22),
+    0 0 0 1px rgba(220, 165, 90, 0.18),
+    0 0 28px rgba(220, 140, 50, 0.28),
+    0 0 18px rgba(253, 200, 110, 0.14);
+}
+
+/* Lighter champagne tile: still navy base but a softer warm wash; reads
+   adjacent-but-distinct from the deeper gold tile. */
+.bd-dashboard-section--accent-champagne {
+  background: linear-gradient(180deg, rgba(28, 24, 14, 0.90) 0%, rgba(16, 14, 8, 0.86) 100%);
+  border-color: rgba(220, 165, 90, 0.32);
+  box-shadow:
+    0 16px 30px rgba(2, 6, 23, 0.30),
+    inset 0 1px 0 rgba(253, 220, 160, 0.16),
+    0 0 0 1px rgba(220, 165, 90, 0.12),
+    0 0 22px rgba(220, 130, 50, 0.18);
+}
+
 /* D4 (final v3.2): soft off-white liquid glass + more gold on every section. */
 [data-appearance-mode="light"] .bd-dashboard-section--deep {
   background: linear-gradient(180deg, rgba(238, 246, 254, 0.94) 0%, rgba(220, 234, 250, 0.84) 100%);
@@ -2874,6 +2902,35 @@ body {
     inset 0 -1px 0 rgba(220, 165, 90, 0.24),
     0 0 0 1px rgba(220, 165, 90, 0.18),
     0 0 18px rgba(244, 63, 94, 0.08),
+    0 0 32px rgba(220, 140, 50, 0.22);
+}
+
+/* Deeper champagne tile in light mode — warm wash + visible gold border so
+   the Quick Actions row breaks out of the off-white blue cool block and gets
+   real gold POP without going amber-loud. */
+[data-appearance-mode="light"] .bd-dashboard-section--accent-gold {
+  background: linear-gradient(180deg, rgba(252, 240, 218, 0.96) 0%, rgba(244, 222, 184, 0.86) 100%);
+  border-color: rgba(202, 138, 47, 0.42);
+  box-shadow:
+    0 16px 36px rgba(120, 78, 18, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 -1px 0 rgba(202, 138, 47, 0.36),
+    0 0 0 1px rgba(202, 138, 47, 0.26),
+    0 0 18px rgba(220, 140, 50, 0.14),
+    0 0 36px rgba(220, 140, 50, 0.30);
+}
+
+/* Lighter champagne tile in light mode — softer warm wash, warmer than the
+   blue tiles but lighter than --accent-gold. Gives the row two gold values. */
+[data-appearance-mode="light"] .bd-dashboard-section--accent-champagne {
+  background: linear-gradient(180deg, rgba(254, 247, 232, 0.96) 0%, rgba(248, 234, 208, 0.86) 100%);
+  border-color: rgba(220, 165, 90, 0.32);
+  box-shadow:
+    0 16px 36px rgba(120, 78, 18, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.30),
+    0 0 0 1px rgba(220, 165, 90, 0.20),
+    0 0 18px rgba(220, 165, 90, 0.10),
     0 0 32px rgba(220, 140, 50, 0.22);
 }
 
