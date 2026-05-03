@@ -159,9 +159,7 @@ export default function ProfileDropdown({
           ? "linear-gradient(180deg, rgba(250, 252, 255, 0.86) 0%, rgba(238, 247, 255, 0.80) 100%)"
           : "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.80) 100%)",
         borderColor: isLightAppearance ? "rgba(147, 197, 253, 0.42)" : "rgba(96, 165, 250, 0.26)",
-        backdropFilter: isLightAppearance
-          ? "blur(26px) saturate(1.5)"
-          : "blur(28px) saturate(1.5)",
+        backdropFilter: isLightAppearance ? "blur(26px) saturate(1.5)" : "blur(28px) saturate(1.5)",
         WebkitBackdropFilter: isLightAppearance
           ? "blur(26px) saturate(1.5)"
           : "blur(28px) saturate(1.5)",

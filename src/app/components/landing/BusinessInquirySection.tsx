@@ -155,7 +155,12 @@ export default function BusinessInquirySection({
             <div className="absolute bottom-0 left-[20%] w-56 h-56 bg-blue-400/[0.12] rounded-full blur-[100px]" />
             {/* Subtle gold lamp accent — single warm light source threading
                 gold identity through the cool register. */}
-            <div className="absolute top-1/4 right-[6%] w-72 h-72 rounded-full blur-[130px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.14), transparent 65%)" }} />
+            <div
+              className="absolute top-1/4 right-[6%] w-72 h-72 rounded-full blur-[130px] pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(220,150,60,0.14), transparent 65%)",
+              }}
+            />
           </>
         )}
       </div>

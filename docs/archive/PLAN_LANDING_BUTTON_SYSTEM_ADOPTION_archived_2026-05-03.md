@@ -15,39 +15,39 @@ All adopted with the same shell-only pattern: `className "bd-dashboard-primary-b
 
 Files updated in cross-app sweep (commits `25f69b24`, `2e56529e`, `f17195eb`, `22497fdc`, `0784804a`):
 
-| File | CTA | Pattern adopted |
-|---|---|---|
-| `src/app/components/auth/LoginMainView.tsx` | 3 user-type cards | Removed redundant motion boxShadow; kept x-tilt hover |
-| `src/app/components/auth/LoginSignupView.tsx` | Create Account | Shell + bg inline |
-| `src/app/components/auth/LoginLoginView.tsx` | Log In | Shell + bg inline |
-| `src/app/components/shop/ShopOnboardingStep2.tsx` | Continue | Shell + bg inline |
-| `src/app/components/shop/ShopOnboardingStep3.tsx` | Continue | Shell + bg inline |
-| `src/app/components/shop/ShopOnboardingStep4.tsx` | Complete Setup | Shell + bg inline |
-| `src/app/components/insurer/InsurerOnboarding.tsx` | Continue + Complete Setup (×2) | Shell + bg inline |
-| `src/app/components/shop/VehicleProfileScreen.tsx` | Add Vehicle + Add First Vehicle (×2) | Shell + bg inline |
-| `src/app/components/codelayer/ReportScreen.tsx` | Start Over recovery (×2) | Shell + bg inline |
-| `src/app/components/landing/BusinessInquiryShopForm.tsx` | Submit Shop Application | Shell + diagonal gradient inline |
-| `src/app/components/landing/BusinessInquiryInsurerForm.tsx` | Submit Partnership | Shell + diagonal gradient inline |
-| `src/app/components/shop/PhotoGuide.tsx` | Got it — start taking photos | Shell + diagonal gradient inline |
-| `src/app/components/shop/photo-guide-steps.tsx` | Start Taking Photos Now | Shell + diagonal gradient inline |
-| `src/app/components/shop/ShopBidModal.tsx` | Submit Bid | Shell + diagonal gradient inline |
-| `src/app/components/shop/ShopRequestCard.tsx` | Submit Bid (in card) | Shell + diagonal gradient inline |
-| `src/app/components/shop/ShopActiveJobCard.tsx` | View Full Details | Shell + diagonal gradient inline |
-| `src/app/components/insurer/InsurerClaimCard.tsx` | Review & Approve | Shell + diagonal gradient inline |
-| `src/app/components/insurer/InsurerClaimApprovalModal.tsx` | Approve Claim | Shell + diagonal gradient inline |
-| `src/app/components/insurer/InsurerClaimDenialModal.tsx` | Deny Claim | Shell + rose gradient inline (functional; future pass could route through bd-glass-control--destructive for rose-tinted shadow) |
-| `src/app/components/legal/PrivacyPolicyPage.tsx` | Back to BidOnDent | Shell + diagonal gradient inline |
-| `src/app/components/legal/TermsOfServicePage.tsx` | Back to BidOnDent | Shell + diagonal gradient inline |
-| `src/app/components/ScreenErrorBoundary.tsx` | Try Again / Reload Page | Shell + diagonal gradient inline |
-| `src/main.tsx` | Try Again (root error boundary) | Shell + diagonal gradient inline |
+| File                                                        | CTA                                  | Pattern adopted                                                                                                                 |
+| ----------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/components/auth/LoginMainView.tsx`                 | 3 user-type cards                    | Removed redundant motion boxShadow; kept x-tilt hover                                                                           |
+| `src/app/components/auth/LoginSignupView.tsx`               | Create Account                       | Shell + bg inline                                                                                                               |
+| `src/app/components/auth/LoginLoginView.tsx`                | Log In                               | Shell + bg inline                                                                                                               |
+| `src/app/components/shop/ShopOnboardingStep2.tsx`           | Continue                             | Shell + bg inline                                                                                                               |
+| `src/app/components/shop/ShopOnboardingStep3.tsx`           | Continue                             | Shell + bg inline                                                                                                               |
+| `src/app/components/shop/ShopOnboardingStep4.tsx`           | Complete Setup                       | Shell + bg inline                                                                                                               |
+| `src/app/components/insurer/InsurerOnboarding.tsx`          | Continue + Complete Setup (×2)       | Shell + bg inline                                                                                                               |
+| `src/app/components/shop/VehicleProfileScreen.tsx`          | Add Vehicle + Add First Vehicle (×2) | Shell + bg inline                                                                                                               |
+| `src/app/components/codelayer/ReportScreen.tsx`             | Start Over recovery (×2)             | Shell + bg inline                                                                                                               |
+| `src/app/components/landing/BusinessInquiryShopForm.tsx`    | Submit Shop Application              | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/landing/BusinessInquiryInsurerForm.tsx` | Submit Partnership                   | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/shop/PhotoGuide.tsx`                    | Got it — start taking photos         | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/shop/photo-guide-steps.tsx`             | Start Taking Photos Now              | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/shop/ShopBidModal.tsx`                  | Submit Bid                           | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/shop/ShopRequestCard.tsx`               | Submit Bid (in card)                 | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/shop/ShopActiveJobCard.tsx`             | View Full Details                    | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/insurer/InsurerClaimCard.tsx`           | Review & Approve                     | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/insurer/InsurerClaimApprovalModal.tsx`  | Approve Claim                        | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/insurer/InsurerClaimDenialModal.tsx`    | Deny Claim                           | Shell + rose gradient inline (functional; future pass could route through bd-glass-control--destructive for rose-tinted shadow) |
+| `src/app/components/legal/PrivacyPolicyPage.tsx`            | Back to BidOnDent                    | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/legal/TermsOfServicePage.tsx`           | Back to BidOnDent                    | Shell + diagonal gradient inline                                                                                                |
+| `src/app/components/ScreenErrorBoundary.tsx`                | Try Again / Reload Page              | Shell + diagonal gradient inline                                                                                                |
+| `src/main.tsx`                                              | Try Again (root error boundary)      | Shell + diagonal gradient inline                                                                                                |
 
-Files using sibling system class `bd-report-primary-button` (codelayer/report/Step*, ClerkAccountTypeSelector, ShopOnboardingStep1) intentionally not touched — already in spec via the report-flow sibling system.
+Files using sibling system class `bd-report-primary-button` (codelayer/report/Step\*, ClerkAccountTypeSelector, ShopOnboardingStep1) intentionally not touched — already in spec via the report-flow sibling system.
 
 **Net result:** every primary CTA across the entire app — landing, auth, onboarding (shop + insurer), customer dashboard, vehicle management, intake recovery, business inquiry forms, claim modals, legal pages, screen error boundaries, and the root error boundary — now lives in the same button family. Same gold-lit shadow with warm halo, same 180ms tuned curves, same translateY(-1px) hover and translateY(0) settle press. No more dueling motion-vs-CSS shadow systems.
 
 ## Update — L3 reversed from NO-GO to GO
 
-Initial L3 NO-GO reasoning conflated "system shell" with "system bg." Inspection of the system CSS (`theme.css:2869-2883`) shows `bd-dashboard-primary-button` supplies *only* shell — radius (1rem), gold-lit shadow with warm halo, 180ms tuned motion, and the `::before` sheen. Background, border-color, and text-color are entirely consumer-supplied (same pattern L1 + L2 use to preserve their blue gradients).
+Initial L3 NO-GO reasoning conflated "system shell" with "system bg." Inspection of the system CSS (`theme.css:2869-2883`) shows `bd-dashboard-primary-button` supplies _only_ shell — radius (1rem), gold-lit shadow with warm halo, 180ms tuned motion, and the `::before` sheen. Background, border-color, and text-color are entirely consumer-supplied (same pattern L1 + L2 use to preserve their blue gradients).
 
 This means hero secondary's warm-cream light bg + blue-glass dark bg can be preserved inline as `style={{ background, borderColor }}` while still inheriting the system shell. Net effect: **stronger** register-alignment, not weaker — system gold-lit shadow now harmonizes with the warm bloom in light mode and the gold-accent dark navy in dark mode.
 
@@ -59,13 +59,13 @@ The audit framed this as one undifferentiated gap. Inspection reveals it's actua
 
 ## Inventory & decisions
 
-| # | CTA | File:line | Current shape | Decision | Reasoning |
-|---|---|---|---|---|---|
-| L1 | Hero primary "Start New Report" | `HeroSection.tsx:370` | DONE — system adopted | ✅ SHIPPED | Commit `819b7320`. 3-stop gradient preserved inline. |
-| L2 | CTASection "Go to Dashboard" + "Get Started Now" | `CTASection.tsx:177, 191` | DONE — system adopted | ✅ SHIPPED | Commit `cecf1647`. Both CTAs adopt `bd-dashboard-primary-button`; 2-stop blue gradient preserved inline. |
-| L3 | Hero secondary "Learn More" | `HeroSection.tsx:388` | DONE — system shell adopted, warm-cream light + blue-glass dark bgs preserved inline | ✅ SHIPPED | See "Update — L3 reversed" above. Reversed from NO-GO when shell-vs-bg distinction surfaced. |
-| L4 | WaitlistCapture "Get Updates" | `WaitlistCapture.tsx:51` | `rounded-full` inline form-submit, paired with `rounded-full` email input | 🔴 NO-GO | Hard structural reason: it's paired with `bd-report-input` which is also `rounded-full`. Forcing the button to system 1rem radius would create a pill-input + rectangle-button mismatch. Adopting system here requires also redesigning the input pair → out of scope. Re-evaluate if `bd-report-input` ever moves off `rounded-full`. |
-| L5 | BusinessInquiry "Join as a Shop" / "Partner as Insurer" | `BusinessInquirySection.tsx:298, 329` | Already `bd-glass-card`, `rounded-2xl`, icon-tile + heading + sublabel + arrow | 🟢 ALREADY IN SPEC | Already uses `bd-glass-card` system class. Launcher-card pattern, not primary CTA pattern. No work needed. |
+| #   | CTA                                                     | File:line                             | Current shape                                                                        | Decision           | Reasoning                                                                                                                                                                                                                                                                                                                              |
+| --- | ------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| L1  | Hero primary "Start New Report"                         | `HeroSection.tsx:370`                 | DONE — system adopted                                                                | ✅ SHIPPED         | Commit `819b7320`. 3-stop gradient preserved inline.                                                                                                                                                                                                                                                                                   |
+| L2  | CTASection "Go to Dashboard" + "Get Started Now"        | `CTASection.tsx:177, 191`             | DONE — system adopted                                                                | ✅ SHIPPED         | Commit `cecf1647`. Both CTAs adopt `bd-dashboard-primary-button`; 2-stop blue gradient preserved inline.                                                                                                                                                                                                                               |
+| L3  | Hero secondary "Learn More"                             | `HeroSection.tsx:388`                 | DONE — system shell adopted, warm-cream light + blue-glass dark bgs preserved inline | ✅ SHIPPED         | See "Update — L3 reversed" above. Reversed from NO-GO when shell-vs-bg distinction surfaced.                                                                                                                                                                                                                                           |
+| L4  | WaitlistCapture "Get Updates"                           | `WaitlistCapture.tsx:51`              | `rounded-full` inline form-submit, paired with `rounded-full` email input            | 🔴 NO-GO           | Hard structural reason: it's paired with `bd-report-input` which is also `rounded-full`. Forcing the button to system 1rem radius would create a pill-input + rectangle-button mismatch. Adopting system here requires also redesigning the input pair → out of scope. Re-evaluate if `bd-report-input` ever moves off `rounded-full`. |
+| L5  | BusinessInquiry "Join as a Shop" / "Partner as Insurer" | `BusinessInquirySection.tsx:298, 329` | Already `bd-glass-card`, `rounded-2xl`, icon-tile + heading + sublabel + arrow       | 🟢 ALREADY IN SPEC | Already uses `bd-glass-card` system class. Launcher-card pattern, not primary CTA pattern. No work needed.                                                                                                                                                                                                                             |
 
 ## L2 detail — why this is a clean adoption (not a regression)
 
@@ -85,7 +85,7 @@ style={{
 
 2. **`rounded-full` (24px+ on a 48px-tall button) inside a `rounded-3xl` (24px) card creates parallel-curvature mismatch.** A 16px-radius button (system) inside a 24px-radius card reads as **nested**, structural — the same relationship dashboard primary buttons have inside their cards. Pill→rectangle here is a coherence gain, not a softness loss.
 
-3. **The hero primary (L1, just shipped) is now 16px system. The CTASection primary is the next-most-prominent CTA on the same page.** Leaving it pill creates inconsistency *within the landing page itself* — hero CTA at 16px, end-of-page CTA at 24px+, both the "primary action of their section." Adopting closes that internal inconsistency.
+3. **The hero primary (L1, just shipped) is now 16px system. The CTASection primary is the next-most-prominent CTA on the same page.** Leaving it pill creates inconsistency _within the landing page itself_ — hero CTA at 16px, end-of-page CTA at 24px+, both the "primary action of their section." Adopting closes that internal inconsistency.
 
 **Mechanical change:**
 
@@ -99,6 +99,7 @@ style={{
 ```
 
 **What system supplies (replacing what we delete):**
+
 - Radius: 1rem (16px) — was `rounded-full`
 - Border: 1px inset white + gold trim — was `border-white/15`
 - BoxShadow: gold-lit shadow with inset white highlight + warm halo — was blue-tinted
@@ -107,6 +108,7 @@ style={{
 - Active: translateY(0) with 80ms — was scale-[0.97]
 
 **What we keep inline:**
+
 - 2-stop blue gradient (`linear-gradient(180deg, ...)`) — consumer bg
 - Layout: `px-6 sm:px-8 py-3 sm:py-3.5 min-h-[48px] inline-flex items-center`
 - Text styling: `text-white font-semibold text-base sm:text-lg leading-none`

@@ -56,13 +56,13 @@ These are explicit "do not" rules to keep us from drifting:
 
 ## Owner Decisions (locked 2026-05-02)
 
-| # | Decision | Owner answer |
-|---|---|---|
-| 1 | Direction | **Direction B + selective Direction C accents.** Amber-Lit Garage as identity foundation; subtle Apple-event-style light blooms for premium depth. NOT full cyber/neon. |
-| 2 | Coverage section height | **Keep long as flagship product demo.** Map IS the product. **Audit scroll fatigue post-redesign as a separate review.** |
-| 3 | Appearance toggle | **Expose to users, premium feel.** Header right-side or polished compact control via `bd-glass-control`. Done as **Pass 1.5** (small dedicated pass after Pass 1) to keep Pass 1 cleanly scoped to bug fixes. |
-| 4 | Hero photography | **Keep current image for now.** Pass 6 carries a TODO for a better/dark-mode-specific hero image. Do not block foundation work. |
-| 5 | Mobile sticky "Start Repair" CTA | **Defer entirely.** Decide later as a separate conversion/UX pass after the visual system feels right. |
+| #   | Decision                         | Owner answer                                                                                                                                                                                                  |
+| --- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Direction                        | **Direction B + selective Direction C accents.** Amber-Lit Garage as identity foundation; subtle Apple-event-style light blooms for premium depth. NOT full cyber/neon.                                       |
+| 2   | Coverage section height          | **Keep long as flagship product demo.** Map IS the product. **Audit scroll fatigue post-redesign as a separate review.**                                                                                      |
+| 3   | Appearance toggle                | **Expose to users, premium feel.** Header right-side or polished compact control via `bd-glass-control`. Done as **Pass 1.5** (small dedicated pass after Pass 1) to keep Pass 1 cleanly scoped to bug fixes. |
+| 4   | Hero photography                 | **Keep current image for now.** Pass 6 carries a TODO for a better/dark-mode-specific hero image. Do not block foundation work.                                                                               |
+| 5   | Mobile sticky "Start Repair" CTA | **Defer entirely.** Decide later as a separate conversion/UX pass after the visual system feels right.                                                                                                        |
 
 ---
 
@@ -70,20 +70,20 @@ These are explicit "do not" rules to keep us from drifting:
 
 Full audit archived at [`docs/archive/landing_design_audit_2026-05-02_archived_2026-05-02.md`](archive/landing_design_audit_2026-05-02_archived_2026-05-02.md). Post-Pass-6 audit also archived at [`docs/archive/landing_design_audit_post_pass_6_2026-05-02_archived_2026-05-02.md`](archive/landing_design_audit_post_pass_6_2026-05-02_archived_2026-05-02.md).
 
-| ID | Severity | Finding | Pass |
-|---|---|---|---|
-| P0-1 | P0 | Dark mode = single-temperature cold-blue. 4-section cluster at B=52–56. | Pass 3 |
-| P1-2 | P1 | HowItWorks/WhoWeServe/Benefits cards have inline gradient but no `backdrop-blur` (v3 corrected from v2). | Pass 1 |
-| P1-3 | P1 | All decorations 1–3% effective opacity (sub-perception threshold). | Pass 2 |
-| P1-4 | P1 | "Learn more" buttons 20px height — fails 44px WCAG 2.5.5. | Pass 1 |
-| P2-5 | P2 | All 8 separators identical 1px blue lines, invisible in dark. | Pass 3 |
-| P2-6 | P2 | CTA card has zero backdrop-blur on the conversion card. | Pass 4 |
-| P2-7 | P2 | BusinessInquiry atmosphere 0.75% effective ("dead zone"). | Pass 2 |
-| P2-8 | P2 | Coverage section 24% of total page height. | **Owner decision: keep long; audit fatigue post-redesign.** Not in plan passes. |
-| P2-9 | P2 | No automotive identity elements anywhere. | Pass 6 |
-| P3-10 | P3 | Wrapper light gradient `#f7f9fc` mismatches hero `#fdfcf9`. | Pass 1 |
-| — | — | Footer separator dimmer than rest (`/10` vs `/25`). | Pass 1 |
-| — | — | Header appearance toggle is `display: none`. | **Pass 1.5** |
+| ID    | Severity | Finding                                                                                                  | Pass                                                                            |
+| ----- | -------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| P0-1  | P0       | Dark mode = single-temperature cold-blue. 4-section cluster at B=52–56.                                  | Pass 3                                                                          |
+| P1-2  | P1       | HowItWorks/WhoWeServe/Benefits cards have inline gradient but no `backdrop-blur` (v3 corrected from v2). | Pass 1                                                                          |
+| P1-3  | P1       | All decorations 1–3% effective opacity (sub-perception threshold).                                       | Pass 2                                                                          |
+| P1-4  | P1       | "Learn more" buttons 20px height — fails 44px WCAG 2.5.5.                                                | Pass 1                                                                          |
+| P2-5  | P2       | All 8 separators identical 1px blue lines, invisible in dark.                                            | Pass 3                                                                          |
+| P2-6  | P2       | CTA card has zero backdrop-blur on the conversion card.                                                  | Pass 4                                                                          |
+| P2-7  | P2       | BusinessInquiry atmosphere 0.75% effective ("dead zone").                                                | Pass 2                                                                          |
+| P2-8  | P2       | Coverage section 24% of total page height.                                                               | **Owner decision: keep long; audit fatigue post-redesign.** Not in plan passes. |
+| P2-9  | P2       | No automotive identity elements anywhere.                                                                | Pass 6                                                                          |
+| P3-10 | P3       | Wrapper light gradient `#f7f9fc` mismatches hero `#fdfcf9`.                                              | Pass 1                                                                          |
+| —     | —        | Footer separator dimmer than rest (`/10` vs `/25`).                                                      | Pass 1                                                                          |
+| —     | —        | Header appearance toggle is `display: none`.                                                             | **Pass 1.5**                                                                    |
 
 ---
 
@@ -164,6 +164,7 @@ Full audit archived at [`docs/archive/landing_design_audit_2026-05-02_archived_2
 3. **Scroll-entry atmosphere bloom.** Added `.bd-bloom-atmosphere` class to `theme.css` (1.4s scale 0.94→1.0 + opacity 0→1, ease-out, `prefers-reduced-motion` guarded). Each of the 5 sections wraps its atmospheric block in `<div class="bd-bloom-atmosphere is-visible|is-hidden">`, gated on `useScrollAnimation.isVisible` (or `loaded` for Hero). Sections materialize as the user scrolls into them.
 
 **What Pass 1R deliberately does NOT touch (deferred):**
+
 - Direction B amber color rhythm — locked for Pass 3
 - Premium glass for AboutOpportunity / CTA / BusinessInquiry rows — Pass 4
 - Parallax orbs — Pass 5b
@@ -174,6 +175,7 @@ Full audit archived at [`docs/archive/landing_design_audit_2026-05-02_archived_2
 **Regression risk to watch during visual review:** Benefits light-mode cards used a neutral white gradient (`rgba(255,255,255,...)`); the new `bd-glass-card--landing` is slightly cool-blue tinted at top (`rgba(252,253,255,0.9)`). On Benefits' warm-ivory section background (`#faf9f6`), this could read as slightly cooler than before. If Benefits light feels colder or less premium than the original screenshot, the fix is a `bd-glass-card--landing-warm` variant in `theme.css` that swaps the cool-blue tint for warm-cream — NOT a hand-rolled inline override.
 
 **Files touched in Pass 1R:**
+
 - [src/styles/theme.css](../src/styles/theme.css) — `.bd-glass-card--landing` (light + dark variants + hover) + `.bd-bloom-atmosphere`
 - [HowItWorksSection.tsx](../src/app/components/landing/HowItWorksSection.tsx) — variant + atmosphere bumps + bloom wrap
 - [WhoWeServeSection.tsx](../src/app/components/landing/WhoWeServeSection.tsx) — same
@@ -183,6 +185,7 @@ Full audit archived at [`docs/archive/landing_design_audit_2026-05-02_archived_2
 
 **Validation standard (revised, owner-mandated):**
 Pass 1R is NOT complete on TypeScript/build pass alone. It's complete only when **owner can visibly see the difference in both modes:**
+
 - Cards feel more dimensional
 - Sections feel less washed out
 - Scrolling feels more alive
@@ -255,6 +258,7 @@ These are the load-bearing realizations from the Pass 1R correction sprint. Futu
 **Conditional branch A — Light-mode second-tier atmosphere tuning:**
 
 Per Pass 1R Lesson #1 (light/dark contrast asymmetry), if after the core changes light mode still reads too subtle in owner review, apply a second tier of bumps **light-mode only**:
+
 - Light dot grids: another ~1.5× rgba alpha (e.g., `0.05` → `0.07–0.08`)
 - Light atmospheric ellipses: shift toward stronger warm tones (deeper amber, deeper sky) rather than just higher opacity
 - Light blur pools: increase warm-pool saturation, not just opacity
@@ -378,14 +382,16 @@ This branch is OWNER-DECISION GATED — apply only if Benefits cards still read 
 **Changes:**
 
 1. **Add new CSS custom properties to [theme.css](../src/styles/theme.css)** for warm dark amber:
+
    ```css
    --bd-warm-dark-amber-start: #1a0c06;
    --bd-warm-dark-amber-mid: #231408;
    --bd-warm-dark-amber-end: #1a0a04;
-   --bd-warm-dark-amber-ellipse-top: rgba(200, 120, 30, 0.20);
+   --bd-warm-dark-amber-ellipse-top: rgba(200, 120, 30, 0.2);
    --bd-warm-dark-amber-ellipse-bottom: rgba(180, 100, 20, 0.15);
    --bd-warm-dark-amber-pool: rgba(200, 120, 30, 0.22);
    ```
+
    **Critical:** All warm amber values MUST be defined as CSS custom properties, not hardcoded in component files. This is so we can roll back to cold navy by changing 6 variable values, not by touching 10 component files.
 
 2. **Apply warm dark amber to two sections in dark mode only:**
@@ -397,9 +403,11 @@ This branch is OWNER-DECISION GATED — apply only if Benefits cards still read 
    - B-channel raised slightly in the cluster (currently B=52–56) to give a 6–8 point spread between adjacent cold sections.
 
 4. **Separators at warm/cool transitions** — replace the current uniform 1px blue separator with a dual-tone gradient at major transitions:
+
    ```
    from-blue-400/22 via-amber-400/22 to-blue-400/22
    ```
+
    Applied at: Hero→HowItWorks, HowItWorks→Benefits, Benefits→WhoWeServe, AboutOpportunity→TrustStats, TrustStats→Coverage. Minor transitions (1px / 25%) remain as in Pass 1.
 
 5. **WCAG QA on all text in warm amber sections** — the warm amber backgrounds change the contrast equation. Every text element in Benefits + TrustStats must verify AA (4.5:1) against the new background. Run axe-core via Playwright.
@@ -447,6 +455,7 @@ This branch is OWNER-DECISION GATED — apply only if Benefits cards still read 
 2. **CTA card (1) — the conversion moment** — migrate to `bd-glass-floating` (heaviest glass utility, 28 px blur, premium elevation). This is the most important card on the page.
 
 3. **Lamp bloom behind CTA card** — add a radial bloom div as the section's z=0 layer so `backdrop-blur` has something to blur THROUGH:
+
    ```css
    .cta-lamp-bloom {
      position: absolute;
@@ -457,6 +466,7 @@ This branch is OWNER-DECISION GATED — apply only if Benefits cards still read 
      z-index: 0;
    }
    ```
+
    In dark mode, increase the bloom to `rgba(37, 99, 235, 0.20)` for stronger lit-glass effect. CTA card sits at z=1.
 
 4. **BusinessInquiry action rows (×2)** — current `white/5%` flat background is barely visible in dark. Migrate to `bd-glass-card` lite styling: increase background opacity to `white/12%` and add `backdrop-blur(8px)`. Or use a new `bd-glass-card--lite` variant if the canonical `bd-glass-card` is too heavy for action rows.
@@ -558,18 +568,18 @@ This branch is OWNER-DECISION GATED — apply only if Benefits cards still read 
 
 4. **Per-section corner radial luminance glows (Direction C light)** — 16–22% opacity, behind the content via CSS pseudo-element. Each section gets one unique glow:
 
-   | Section | Color | Corner | Blur | Opacity |
-   |---|---|---|---|---|
-   | Hero | Electric blue `rgba(37,99,235,0.22)` | Top-left | 800px | 22% |
-   | HowItWorks | Sky teal `rgba(14,165,233,0.18)` | Top-right | 700px | 18% |
-   | Benefits (warm) | Warm amber `rgba(200,120,30,0.20)` | Bottom-left | 750px | 20% |
-   | WhoWeServe | Royal blue `rgba(37,99,235,0.16)` | Top-center | 800px | 16% |
-   | AboutOpportunity | Cobalt `rgba(30,58,138,0.18)` | Bottom-right | 700px | 18% |
-   | TrustStats (warm) | Warm gold `rgba(180,140,40,0.22)` | Top-left | 800px | 22% |
-   | Coverage | (skip — map IS the atmosphere) | — | — | — |
-   | BusinessInquiry | Slate-blue `rgba(71,85,105,0.15)` | Bottom-center | 600px | 15% |
-   | CTA | White-cream `rgba(248,250,252,0.18)` "lamp" | Center (already added in Pass 4) | 700px | 18% |
-   | Footer | (skip — near-black close) | — | — | — |
+   | Section           | Color                                       | Corner                           | Blur  | Opacity |
+   | ----------------- | ------------------------------------------- | -------------------------------- | ----- | ------- |
+   | Hero              | Electric blue `rgba(37,99,235,0.22)`        | Top-left                         | 800px | 22%     |
+   | HowItWorks        | Sky teal `rgba(14,165,233,0.18)`            | Top-right                        | 700px | 18%     |
+   | Benefits (warm)   | Warm amber `rgba(200,120,30,0.20)`          | Bottom-left                      | 750px | 20%     |
+   | WhoWeServe        | Royal blue `rgba(37,99,235,0.16)`           | Top-center                       | 800px | 16%     |
+   | AboutOpportunity  | Cobalt `rgba(30,58,138,0.18)`               | Bottom-right                     | 700px | 18%     |
+   | TrustStats (warm) | Warm gold `rgba(180,140,40,0.22)`           | Top-left                         | 800px | 22%     |
+   | Coverage          | (skip — map IS the atmosphere)              | —                                | —     | —       |
+   | BusinessInquiry   | Slate-blue `rgba(71,85,105,0.15)`           | Bottom-center                    | 600px | 15%     |
+   | CTA               | White-cream `rgba(248,250,252,0.18)` "lamp" | Center (already added in Pass 4) | 700px | 18%     |
+   | Footer            | (skip — near-black close)                   | —                                | —     | —       |
 
 5. **Footer trust anchors (only if real data exists)** — add LinkedIn / social link in the brand column of the footer ONLY if the account exists. Do not link to nonexistent profiles. If beta-user count is meaningful, add a "Trusted by N early users" line at `text-xs text-blue-200/40`. Skip both if unverifiable.
 
@@ -624,13 +634,13 @@ From [`bd-design-identity` skill](~/.claude/skills/bd-design-identity/SKILL.md),
 
 Per [`LAW_PROJECT_RULES.md`](LAW_PROJECT_RULES.md) § Co-Update Rules:
 
-| Trigger | Doc to update | Pass |
-|---|---|---|
-| Audit issue resolved | [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) (mark RESOLVED with commit hash) | 1, 2, 3, 4 |
-| Design system changed | [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) § Design System + [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) | 3, 4, 5, 6 |
-| New variant added to `theme.css` | [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) § Design System | 3, 4 |
-| New reusable hook (atmosphere bloom, parallax) | [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) § 5 | 5 |
-| Audit doc fully resolved | Move [`landing_design_audit_2026-05-02.md`](landing_design_audit_2026-05-02.md) to `docs/archive/` after Pass 6 sign-off; update this PLAN doc to STATUS COMPLETE | After Pass 6 |
+| Trigger                                        | Doc to update                                                                                                                                                     | Pass         |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Audit issue resolved                           | [`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md) (mark RESOLVED with commit hash)                                                                                     | 1, 2, 3, 4   |
+| Design system changed                          | [`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md) § Design System + [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)                               | 3, 4, 5, 6   |
+| New variant added to `theme.css`               | [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) § Design System                                                                              | 3, 4         |
+| New reusable hook (atmosphere bloom, parallax) | [`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md) § 5                                                                                          | 5            |
+| Audit doc fully resolved                       | Move [`landing_design_audit_2026-05-02.md`](landing_design_audit_2026-05-02.md) to `docs/archive/` after Pass 6 sign-off; update this PLAN doc to STATUS COMPLETE | After Pass 6 |
 
 Each pass's commit message must reference the relevant `bd-design-identity` skill and the audit issue IDs being resolved.
 
@@ -655,6 +665,7 @@ These came up during planning but are explicitly out of scope:
 - **No mixing passes.** If Pass 1 surfaces a need for atmosphere or animation work, write it down as a follow-up to the right pass; don't carry it into Pass 1.
 - **No "while-I'm-here" cleanup.** Per autopilot discipline rules. Touch only what each pass authorizes.
 - **Commit messages**: include skill name + audit IDs. Example for Pass 1:
+
   ```
   polish(landing): consolidate marketing cards to bd-glass-card per bd-design-identity skill
 
@@ -674,15 +685,15 @@ These came up during planning but are explicitly out of scope:
 
 The order below is binding. Atmosphere consistency comes before color identity comes before motion comes before car identity. Each pass produces a visible-to-owner improvement; system correctness alone is never sufficient.
 
-| Order | Pass | Why this position |
-|---|---|---|
-| 1 ✓ | Pass 1 + Pass 1R | Foundation + visible-presence baseline. Committed 2026-05-02 as a checkpoint. |
-| 2 | **Pass 1R-extension** | Atmosphere consistency across the remaining 5 sections. Without this, the page feels uneven (polished first half, flat second half). Most important next step. |
-| 3 | Pass 1.5 — Appearance toggle | Surfaces an existing feature once the visible baseline is solid. Toggle doesn't improve emotional feel; defer until the page IS visibly improved. |
-| 4 | Pass 3 — Direction B (Amber-Lit Garage) | Warm/cool register split needs an atmospheric base to layer onto. Doing this before atmosphere consistency wastes the warm amber on a still-flat page. |
-| 5 | Pass 4 — Premium glass consolidation | CTA + AboutOpportunity + BusinessInquiry rows. Direction B sets the temperature; Pass 4 propagates the canonical glass to the remaining surfaces. |
-| 6 | Pass 5 — Restrained premium motion | Parallax orbs + mobile edge-strip separators. The system must be visually consolidated first; animating a flat page just decorates the flatness. (Atmosphere bloom is already in Pass 1R.) |
-| 7 | Pass 6 — Automotive identity + Direction C luminance accents | Cinematic top-coat — car silhouette, road-line separators, per-section luminance glows. Needs everything underneath to land properly. |
+| Order | Pass                                                         | Why this position                                                                                                                                                                          |
+| ----- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1 ✓   | Pass 1 + Pass 1R                                             | Foundation + visible-presence baseline. Committed 2026-05-02 as a checkpoint.                                                                                                              |
+| 2     | **Pass 1R-extension**                                        | Atmosphere consistency across the remaining 5 sections. Without this, the page feels uneven (polished first half, flat second half). Most important next step.                             |
+| 3     | Pass 1.5 — Appearance toggle                                 | Surfaces an existing feature once the visible baseline is solid. Toggle doesn't improve emotional feel; defer until the page IS visibly improved.                                          |
+| 4     | Pass 3 — Direction B (Amber-Lit Garage)                      | Warm/cool register split needs an atmospheric base to layer onto. Doing this before atmosphere consistency wastes the warm amber on a still-flat page.                                     |
+| 5     | Pass 4 — Premium glass consolidation                         | CTA + AboutOpportunity + BusinessInquiry rows. Direction B sets the temperature; Pass 4 propagates the canonical glass to the remaining surfaces.                                          |
+| 6     | Pass 5 — Restrained premium motion                           | Parallax orbs + mobile edge-strip separators. The system must be visually consolidated first; animating a flat page just decorates the flatness. (Atmosphere bloom is already in Pass 1R.) |
+| 7     | Pass 6 — Automotive identity + Direction C luminance accents | Cinematic top-coat — car silhouette, road-line separators, per-section luminance glows. Needs everything underneath to land properly.                                                      |
 
 **Never run out of order.** If a pass surfaces work that belongs in a later pass, write it down as a follow-up — don't carry it forward into the current pass.
 
@@ -720,18 +731,18 @@ After STATUS COMPLETE was committed, the owner authorized a small editorial-typo
 
 Final accent map across the 10 landing sections (post Pass 12–15):
 
-| Section | Editorial flanking accent | Notes |
-| --- | --- | --- |
-| Hero | — | Skipped: H2 is multi-line + left-aligned; gradient text already does the heading-anchor work |
-| HowItWorks | sky teal | Pass 14 |
-| Benefits (warm Direction B) | warm gold | Pass 13 |
-| WhoWeServe | royal blue | Pass 14 |
-| AboutOpportunity | royal blue (light) / lighter blue (dark) | Pass 14 + Pass 15 light-visibility tune |
-| TrustStats (warm Direction B) | warm gold | Pass 12 |
-| Coverage | — | Skipped: locked palette excludes — map IS the atmosphere |
-| BusinessInquiry | slate-blue | Pass 14 + Pass 15 visibility bump |
-| CTA | white-cream lamp | Pass 15 (completes the system) |
-| Footer | — | Skipped: locked palette excludes — near-black close |
+| Section                       | Editorial flanking accent                | Notes                                                                                        |
+| ----------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Hero                          | —                                        | Skipped: H2 is multi-line + left-aligned; gradient text already does the heading-anchor work |
+| HowItWorks                    | sky teal                                 | Pass 14                                                                                      |
+| Benefits (warm Direction B)   | warm gold                                | Pass 13                                                                                      |
+| WhoWeServe                    | royal blue                               | Pass 14                                                                                      |
+| AboutOpportunity              | royal blue (light) / lighter blue (dark) | Pass 14 + Pass 15 light-visibility tune                                                      |
+| TrustStats (warm Direction B) | warm gold                                | Pass 12                                                                                      |
+| Coverage                      | —                                        | Skipped: locked palette excludes — map IS the atmosphere                                     |
+| BusinessInquiry               | slate-blue                               | Pass 14 + Pass 15 visibility bump                                                            |
+| CTA                           | white-cream lamp                         | Pass 15 (completes the system)                                                               |
+| Footer                        | —                                        | Skipped: locked palette excludes — near-black close                                          |
 
 7 of 10 sections accented; 3 skipped on principle (composition, locked palette). The skips are deliberate — forcing accents onto Hero / Coverage / Footer for symmetry would violate the design system's restraint rules.
 
@@ -755,17 +766,17 @@ Owner walked the live Vercel site in light + dark on desktop. Verdict: **major p
 
 **Weak (Pass 8–11 scope):**
 
-| Issue | Mode | Pass |
-|---|---|---|
-| Benefits photo cards in LIGHT mode read as nearly invisible against warm-ivory section. Cool-blue `bd-glass-card--landing` variant clashes/recedes on warm bg. **Branch B problem now visually confirmed.** | light | 8 |
-| Hero carousel dots are tiny (7×7px inactive) — hard to perceive as navigation | both | 8 |
-| WhoWeServe role cards lack visual weight in both modes — no images, undersized icons, faint borders | both | 9 |
-| AboutOpportunity accordion cards in dark feel outlined, not lit — borders dominate, surface recedes | dark | 9 |
-| TrustStats migration to warm variant (currently uses cool `--landing` + inline overrides; should use `--landing-warm` natively) | both | 9 |
-| Section transitions at warm/cool boundaries still abrupt despite Pass 7 amber separator | dark | 10 |
-| BusinessInquiry section feels empty — just two action rows in a wide section | both | 11 |
-| Coverage section is dense / dashboard-y as a marketing surface | both | 11 |
-| Empty state ("No shops within 20 miles") functional but bare — could feel "ready" not "broken" | both | 11 |
+| Issue                                                                                                                                                                                                       | Mode  | Pass |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----- | ---- |
+| Benefits photo cards in LIGHT mode read as nearly invisible against warm-ivory section. Cool-blue `bd-glass-card--landing` variant clashes/recedes on warm bg. **Branch B problem now visually confirmed.** | light | 8    |
+| Hero carousel dots are tiny (7×7px inactive) — hard to perceive as navigation                                                                                                                               | both  | 8    |
+| WhoWeServe role cards lack visual weight in both modes — no images, undersized icons, faint borders                                                                                                         | both  | 9    |
+| AboutOpportunity accordion cards in dark feel outlined, not lit — borders dominate, surface recedes                                                                                                         | dark  | 9    |
+| TrustStats migration to warm variant (currently uses cool `--landing` + inline overrides; should use `--landing-warm` natively)                                                                             | both  | 9    |
+| Section transitions at warm/cool boundaries still abrupt despite Pass 7 amber separator                                                                                                                     | dark  | 10   |
+| BusinessInquiry section feels empty — just two action rows in a wide section                                                                                                                                | both  | 11   |
+| Coverage section is dense / dashboard-y as a marketing surface                                                                                                                                              | both  | 11   |
+| Empty state ("No shops within 20 miles") functional but bare — could feel "ready" not "broken"                                                                                                              | both  | 11   |
 
 ### Pass 8 outcome notes (this commit)
 
@@ -807,12 +818,12 @@ Before Pass 10: each section had a 1px gradient separator at its top edge. In da
 
 What Pass 10 added — a single absolute-positioned div per transitional section, immediately after the existing 1px separator, holding a low-opacity radial gradient bloom centered at the top edge:
 
-| Transition | Section top | Bloom color (light / dark) | Height |
-|---|---|---|---|
-| HowItWorks → Benefits (cool→warm) | Benefits | amber `rgba(220,140,50,0.16)` / `rgba(180,90,30,0.20)` | 128px |
-| Benefits → WhoWeServe (warm→cool) | WhoWeServe | sky `rgba(56,189,248,0.12)` / `rgba(96,165,250,0.14)` | 96px |
-| AboutOpportunity → TrustStats (cool→warm) | TrustStats | gold `rgba(220,160,80,0.18)` / `rgba(200,140,50,0.22)` | 128px |
-| TrustStats → Coverage (warm→cool) | Coverage (replaced placeholder strip) | blue `rgba(96,165,250,0.10)` / `rgba(59,130,246,0.14)` | 128px |
+| Transition                                | Section top                           | Bloom color (light / dark)                             | Height |
+| ----------------------------------------- | ------------------------------------- | ------------------------------------------------------ | ------ |
+| HowItWorks → Benefits (cool→warm)         | Benefits                              | amber `rgba(220,140,50,0.16)` / `rgba(180,90,30,0.20)` | 128px  |
+| Benefits → WhoWeServe (warm→cool)         | WhoWeServe                            | sky `rgba(56,189,248,0.12)` / `rgba(96,165,250,0.14)`  | 96px   |
+| AboutOpportunity → TrustStats (cool→warm) | TrustStats                            | gold `rgba(220,160,80,0.18)` / `rgba(200,140,50,0.22)` | 128px  |
+| TrustStats → Coverage (warm→cool)         | Coverage (replaced placeholder strip) | blue `rgba(96,165,250,0.10)` / `rgba(59,130,246,0.14)` | 128px  |
 
 Each bloom is `radial-gradient(ellipse 90% 100% at 50% 0%, [color], transparent 70%)` with `pointer-events: none` and z-index that sits behind content but above section bg. Coverage's existing `bg-gradient-to-b from-[#f0f4f8]/0 to-transparent` placeholder (which was rendering as transparent-to-transparent — i.e., invisible) was replaced with the tinted bloom.
 
@@ -855,7 +866,6 @@ Per owner authorization to "go fully auto on everything," sign-off is taken in t
 ### Tracked but separate from this plan
 
 - Investigation — "Real nearby places: Load failed" in CoverageMapDialog Explore view. Reliability bug, not landing-redesign scope. Should be triaged separately under `placeDiscovery` service / edge function audit.
-
 
 ### Pass 7 outcome notes (code-complete, awaiting owner walk)
 

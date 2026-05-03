@@ -187,43 +187,43 @@ export function HomeQuickActions({
            over. */}
       <div className="relative -mx-1 sm:mx-0">
         <div className="flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-2 sm:gap-2.5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 md:gap-3">
-        {quickActions.map((action, index) => {
-          const Icon = action.icon;
-          const iconTone = isLight
-            ? actionIconTonesLight[index % actionIconTonesLight.length]
-            : actionIconTones[index % actionIconTones.length];
-          return (
-            <button
-              key={action.title}
-              onClick={action.onClick}
-              className={`bd-dashboard-section bd-dashboard-section--interactive w-[min(15rem,72vw)] shrink-0 snap-start rounded-xl p-3 text-left font-medium transition-all duration-200 active:scale-[0.97] min-h-[124px] sm:min-h-[44px] sm:w-auto md:p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/45 ${
-                actionSurfaceClasses[index % actionSurfaceClasses.length]
-              } ${
-                isLight
-                  ? "border-[rgba(147,197,253,0.32)] shadow-[0_10px_22px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.18)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.92),0_0_0_1px_rgba(147,197,253,0.32),0_0_24px_rgba(59,130,246,0.10)] hover:-translate-y-0.5"
-                  : "hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(2,6,23,0.40),inset_0_1px_0_rgba(147,197,253,0.16),0_0_0_1px_rgba(96,165,250,0.26),0_0_30px_rgba(37,99,235,0.14)]"
-              }`}
-            >
-              <div
-                className={`mb-2 flex h-9 w-9 items-center justify-center rounded-xl md:mb-2.5 md:h-10 md:w-10 ${iconTone}`}
-              >
-                <Icon className="h-4.5 w-4.5 md:h-5 md:w-5" />
-              </div>
-              <h3
-                className={`font-semibold text-sm leading-tight ${isLight ? "text-slate-800" : "text-slate-100"}`}
-              >
-                {action.title}
-              </h3>
-              <p
-                className={`mt-1 line-clamp-2 text-[11px] leading-snug md:text-xs ${
-                  isLight ? "text-slate-500" : "text-blue-100/58"
+          {quickActions.map((action, index) => {
+            const Icon = action.icon;
+            const iconTone = isLight
+              ? actionIconTonesLight[index % actionIconTonesLight.length]
+              : actionIconTones[index % actionIconTones.length];
+            return (
+              <button
+                key={action.title}
+                onClick={action.onClick}
+                className={`bd-dashboard-section bd-dashboard-section--interactive w-[min(15rem,72vw)] shrink-0 snap-start rounded-xl p-3 text-left font-medium transition-all duration-200 active:scale-[0.97] min-h-[124px] sm:min-h-[44px] sm:w-auto md:p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/45 ${
+                  actionSurfaceClasses[index % actionSurfaceClasses.length]
+                } ${
+                  isLight
+                    ? "border-[rgba(147,197,253,0.32)] shadow-[0_10px_22px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,0.85),0_0_0_1px_rgba(191,219,254,0.18)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.92),0_0_0_1px_rgba(147,197,253,0.32),0_0_24px_rgba(59,130,246,0.10)] hover:-translate-y-0.5"
+                    : "hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(2,6,23,0.40),inset_0_1px_0_rgba(147,197,253,0.16),0_0_0_1px_rgba(96,165,250,0.26),0_0_30px_rgba(37,99,235,0.14)]"
                 }`}
               >
-                {action.description}
-              </p>
-            </button>
-          );
-        })}
+                <div
+                  className={`mb-2 flex h-9 w-9 items-center justify-center rounded-xl md:mb-2.5 md:h-10 md:w-10 ${iconTone}`}
+                >
+                  <Icon className="h-4.5 w-4.5 md:h-5 md:w-5" />
+                </div>
+                <h3
+                  className={`font-semibold text-sm leading-tight ${isLight ? "text-slate-800" : "text-slate-100"}`}
+                >
+                  {action.title}
+                </h3>
+                <p
+                  className={`mt-1 line-clamp-2 text-[11px] leading-snug md:text-xs ${
+                    isLight ? "text-slate-500" : "text-blue-100/58"
+                  }`}
+                >
+                  {action.description}
+                </p>
+              </button>
+            );
+          })}
         </div>
         {/* Right-edge fade affordance — mobile only, hides at sm+ */}
         <div

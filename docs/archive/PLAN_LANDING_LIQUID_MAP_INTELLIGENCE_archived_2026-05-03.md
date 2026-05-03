@@ -19,7 +19,6 @@ companion_docs:
 > Pass H (verification) is being handled out-of-band by a deep Sonnet visual audit — see `HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`. Any Pass-H follow-up that needs new code work will live in a fresh plan, not here.
 > Read this doc only for historical decision context. Current visual system state lives in `REF_VISUAL_SYSTEM.md`.
 
-
 # PLAN — Landing Page Signature Polish (Liquid Map Intelligence)
 
 > **Read this first.** [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md) is the completed structural pass (Passes 1–16, sign-off 2026-05-02). It established the calm/premium foundation, the warm/cool register rhythm, the bd-glass system migration, and the gold-lamp atmosphere. **This plan is the next layer on top: signature motion + product storytelling, not redesign.**
@@ -71,15 +70,15 @@ These were settled across the prior 16 passes and the `bd-design-identity` skill
 
 Owner directive: "go fully auto on max." Recommended set adopted verbatim.
 
-| # | Decision | Locked answer |
-|---|---|---|
-| 1 | Hero right-side approach | **Mock** — layered HTML/CSS/SVG over a stylized map pattern. No 2nd MapLibre instance. |
-| 2 | Hero scene content | **Map + report pin + 2 bid cards.** Photo demoted/removed from hero right side. |
-| 3 | Hero subline copy | **No copy change.** Voice is owner-owned. |
-| 4 | Mobile motion budget | **Reduced on mobile.** Gold drift only. No bid-card float, no route shimmer, no pulse. |
-| 5 | Dark mode landing parity | **Plan only this round.** Pass G stays a doc deliverable. |
-| 6 | Coverage section motion | **Subtle pulse on existing pins only.** No new route rings, no service-radius halo. |
-| 7 | Hero data source | **Fully presentational.** Static labels. Coverage section keeps real seeded data. |
+| #   | Decision                 | Locked answer                                                                          |
+| --- | ------------------------ | -------------------------------------------------------------------------------------- |
+| 1   | Hero right-side approach | **Mock** — layered HTML/CSS/SVG over a stylized map pattern. No 2nd MapLibre instance. |
+| 2   | Hero scene content       | **Map + report pin + 2 bid cards.** Photo demoted/removed from hero right side.        |
+| 3   | Hero subline copy        | **No copy change.** Voice is owner-owned.                                              |
+| 4   | Mobile motion budget     | **Reduced on mobile.** Gold drift only. No bid-card float, no route shimmer, no pulse. |
+| 5   | Dark mode landing parity | **Plan only this round.** Pass G stays a doc deliverable.                              |
+| 6   | Coverage section motion  | **Subtle pulse on existing pins only.** No new route rings, no service-radius halo.    |
+| 7   | Hero data source         | **Fully presentational.** Static labels. Coverage section keeps real seeded data.      |
 
 Subsequent passes treat these as binding. Don't relitigate without explicit owner override.
 
@@ -89,15 +88,15 @@ Subsequent passes treat these as binding. Don't relitigate without explicit owne
 
 The brief moves fast through several decisions that materially change scope. Lock these before the new chat begins implementation, otherwise it will drift.
 
-| # | Decision | Default if owner doesn't decide | Why it matters |
-|---|---|---|---|
-| 1 | **Hero right-side approach: layered presentational mock, OR a real mini-MapLibre scene with seeded pins?** | Presentational mock (HTML/CSS/SVG layered cards over a static map image). | Real MapLibre = 2nd map instance on the page (Coverage already has one), GPU + memory cost, mobile risk. Mock = predictable perf, fewer moving parts, no race with Coverage map's WebGL context. |
-| 2 | **Hero scene content: damage-report photo + bid cards, OR map + report pin + bid cards (no photo)?** | Map + report pin + 2 bid cards (matches "Liquid Map Intelligence" most directly). | Photo path keeps the existing hero asset relevant. Map path is more on-message but means the hero photo gets demoted or removed. |
-| 3 | **Copy change in hero subline?** Brief proposes: *"Submit your damage report once. Nearby shops can review it, send bids, and help you compare price, timing, and repair fit before you choose."* | **No copy changes.** Voice is owner-owned per prior anti-goal. | Affects whether Pass C touches any text content or only visual layers. |
-| 4 | **Mobile motion budget.** Full motion / reduced motion / disabled? | Reduced motion on mobile (gold drift only, no bid-card float, no route shimmer). | Mobile GPU + battery + thermals. Hero is the first paint — jank here costs more than anywhere else on the site. |
-| 5 | **Dark mode landing parity scope: plan only, or implement?** | **Plan only in this round (Pass G as design doc).** | Dark mode landing was last touched in Passes 9–11. Doing motion + dark parity in the same round risks regressions on both. |
-| 6 | **Coverage section motion ambition: subtle pulse on existing pins, OR add new "service-radius halo" + animated route rings?** | Subtle pulse on existing pins only. | Coverage map is already a live MapLibre instance. Heavy overlay motion stacks on existing GPU cost. Owner can upgrade later if subtle version reads "underdone." |
-| 7 | **Reuse seeded shop data, or fully presentational?** | Fully presentational static labels in the hero scene. Coverage section keeps real seeded data. | Reusing real data leaks the "is this real coverage?" question into hero — the Pass 11 empty-state copy ("Coverage is expanding") was carefully tuned to handle that elsewhere. Hero shouldn't reopen it. |
+| #   | Decision                                                                                                                                                                                          | Default if owner doesn't decide                                                                | Why it matters                                                                                                                                                                                           |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Hero right-side approach: layered presentational mock, OR a real mini-MapLibre scene with seeded pins?**                                                                                        | Presentational mock (HTML/CSS/SVG layered cards over a static map image).                      | Real MapLibre = 2nd map instance on the page (Coverage already has one), GPU + memory cost, mobile risk. Mock = predictable perf, fewer moving parts, no race with Coverage map's WebGL context.         |
+| 2   | **Hero scene content: damage-report photo + bid cards, OR map + report pin + bid cards (no photo)?**                                                                                              | Map + report pin + 2 bid cards (matches "Liquid Map Intelligence" most directly).              | Photo path keeps the existing hero asset relevant. Map path is more on-message but means the hero photo gets demoted or removed.                                                                         |
+| 3   | **Copy change in hero subline?** Brief proposes: _"Submit your damage report once. Nearby shops can review it, send bids, and help you compare price, timing, and repair fit before you choose."_ | **No copy changes.** Voice is owner-owned per prior anti-goal.                                 | Affects whether Pass C touches any text content or only visual layers.                                                                                                                                   |
+| 4   | **Mobile motion budget.** Full motion / reduced motion / disabled?                                                                                                                                | Reduced motion on mobile (gold drift only, no bid-card float, no route shimmer).               | Mobile GPU + battery + thermals. Hero is the first paint — jank here costs more than anywhere else on the site.                                                                                          |
+| 5   | **Dark mode landing parity scope: plan only, or implement?**                                                                                                                                      | **Plan only in this round (Pass G as design doc).**                                            | Dark mode landing was last touched in Passes 9–11. Doing motion + dark parity in the same round risks regressions on both.                                                                               |
+| 6   | **Coverage section motion ambition: subtle pulse on existing pins, OR add new "service-radius halo" + animated route rings?**                                                                     | Subtle pulse on existing pins only.                                                            | Coverage map is already a live MapLibre instance. Heavy overlay motion stacks on existing GPU cost. Owner can upgrade later if subtle version reads "underdone."                                         |
+| 7   | **Reuse seeded shop data, or fully presentational?**                                                                                                                                              | Fully presentational static labels in the hero scene. Coverage section keeps real seeded data. | Reusing real data leaks the "is this real coverage?" question into hero — the Pass 11 empty-state copy ("Coverage is expanding") was carefully tuned to handle that elsewhere. Hero shouldn't reopen it. |
 
 **Recommended owner answers (my read of the brief, easy to override):** 1 = Mock, 2 = Map+pin+bids (no photo), 3 = No copy change, 4 = Reduced on mobile, 5 = Plan only, 6 = Subtle pulse only, 7 = Presentational.
 
@@ -112,7 +111,7 @@ These are the guardrails that any new motion / layer must respect. They exist be
 ### Performance budgets
 
 - **No new layout / paint thrash.** Animate `transform` and `opacity` only. Forbidden: animating `width`, `height`, `top`, `left`, `background-color`, `box-shadow` size, `filter` blur radius. (`filter: blur` is OK as a static property on a layer that doesn't itself animate.)
-- **`will-change` discipline.** Apply `will-change: transform` only on layers that are *currently* animating. Do not blanket-apply across the page — it forces extra GPU layers and tanks low-end devices.
+- **`will-change` discipline.** Apply `will-change: transform` only on layers that are _currently_ animating. Do not blanket-apply across the page — it forces extra GPU layers and tanks low-end devices.
 - **GPU layer count.** Hero scene composite: aim for ≤6 promoted layers (1 background, 1 gold drift, 1 map base, 1 pin pulse, 2 bid cards). More than 8 starts to degrade scroll on mid-tier Android.
 - **Bundle delta.** Net JS added by this pass: < 8 KB gzipped. CSS delta: < 12 KB. If a pass exceeds either, stop and re-scope.
 - **No additional fonts.** Existing font stack stays.
@@ -158,6 +157,7 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
 - Light/dark mode appearance handling: [`renderLandingPage.tsx`](../src/app/utils/renderLandingPage.tsx), `LandingPageHeader.tsx`, the `isLightAppearance` prop drilling pattern.
 
 **Deliverable:** Short audit (≤ 200 lines) committed as `docs/landing_signature_audit_2026-05-XX.md` listing:
+
 - Where each new motion type can safely live.
 - Which existing layers conflict with proposed additions (so we extend, not duplicate).
 - One-line risk note per landing section.
@@ -176,43 +176,43 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
 ```css
 :root {
   /* Liquid gold — light mode marketplace energy */
-  --bd-liquid-gold-light:        rgba(220, 165, 90, 0.16);
-  --bd-liquid-gold-light-soft:   rgba(220, 165, 90, 0.08);
-  --bd-liquid-gold-light-edge:   rgba(220, 165, 90, 0.04);
+  --bd-liquid-gold-light: rgba(220, 165, 90, 0.16);
+  --bd-liquid-gold-light-soft: rgba(220, 165, 90, 0.08);
+  --bd-liquid-gold-light-edge: rgba(220, 165, 90, 0.04);
 
   /* Liquid gold — dark mode marketplace energy (warmer + slightly more saturated for navy backdrop) */
-  --bd-liquid-gold-dark:         rgba(200, 140, 50, 0.22);
-  --bd-liquid-gold-dark-soft:    rgba(200, 140, 50, 0.12);
-  --bd-liquid-gold-dark-edge:    rgba(200, 140, 50, 0.06);
+  --bd-liquid-gold-dark: rgba(200, 140, 50, 0.22);
+  --bd-liquid-gold-dark-soft: rgba(200, 140, 50, 0.12);
+  --bd-liquid-gold-dark-edge: rgba(200, 140, 50, 0.06);
 
   /* Blue route energy */
-  --bd-route-blue:               rgba(96, 165, 250, 0.55);
-  --bd-route-blue-soft:          rgba(96, 165, 250, 0.20);
-  --bd-route-blue-glow:          rgba(59, 130, 246, 0.35);
+  --bd-route-blue: rgba(96, 165, 250, 0.55);
+  --bd-route-blue-soft: rgba(96, 165, 250, 0.2);
+  --bd-route-blue-glow: rgba(59, 130, 246, 0.35);
 
   /* Map contour line */
-  --bd-map-contour-light:        rgba(80, 120, 180, 0.10);
-  --bd-map-contour-dark:         rgba(150, 180, 220, 0.10);
+  --bd-map-contour-light: rgba(80, 120, 180, 0.1);
+  --bd-map-contour-dark: rgba(150, 180, 220, 0.1);
 
   /* Motion timing */
-  --bd-flow-loop-slow:           28s;   /* gold drift, sheen */
-  --bd-flow-loop-med:            18s;   /* contour drift */
-  --bd-flow-loop-fast:           4.2s;  /* pin pulse */
-  --bd-flow-ease:                cubic-bezier(0.4, 0, 0.2, 1);
+  --bd-flow-loop-slow: 28s; /* gold drift, sheen */
+  --bd-flow-loop-med: 18s; /* contour drift */
+  --bd-flow-loop-fast: 4.2s; /* pin pulse */
+  --bd-flow-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 ```
 
 **New classes (proposed names — finalize in Pass A audit):**
 
-| Class | Purpose | Where used |
-|---|---|---|
-| `bd-liquid-gold-flow` | Slow-drifting radial gold gradient using `background-position` animation. Light/dark aware via tokens. | Hero background, optional Benefits/TrustStats backdrop |
-| `bd-liquid-gold-sheen` | Diagonal sheen sweep across a glass surface (similar to `mapLiquidSheenDrift` at theme.css line 603 — **reuse existing keyframe if compatible**, don't duplicate). | Hero scene glass card, CTA card |
-| `bd-route-line` | SVG-friendly stroke utility with `stroke-dasharray` + animated `stroke-dashoffset` for "draw-on" effect. | Hero scene route between pin and bid card; HowItWorks step connector (optional, Pass E) |
-| `bd-pin-pulse` | Concentric ring pulse around a fixed point. Pure CSS (transform: scale + opacity fade). | Hero scene report pin; Coverage map pins (Pass D, optional per Decision #6) |
-| `bd-bid-card-float` | Subtle Y-axis drift (±4px) + opacity 0.92 ↔ 1.0 over 6s loop. **Pinned to hero scene context only**, not exposed as a global utility. | Hero scene bid cards |
-| `bd-section-glow-divider` | Already exists as bloom-bridges from Pass 10 — extend only if needed. | (no new use unless audit identifies a gap) |
-| `bd-map-contour` | Faint repeating-linear-gradient or SVG pattern for "topographic" feel. **Reuse Pass 6's Coverage topographic rings pattern if shape-compatible.** | Hero scene background; HowItWorks subtle backdrop (optional) |
+| Class                     | Purpose                                                                                                                                                            | Where used                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `bd-liquid-gold-flow`     | Slow-drifting radial gold gradient using `background-position` animation. Light/dark aware via tokens.                                                             | Hero background, optional Benefits/TrustStats backdrop                                  |
+| `bd-liquid-gold-sheen`    | Diagonal sheen sweep across a glass surface (similar to `mapLiquidSheenDrift` at theme.css line 603 — **reuse existing keyframe if compatible**, don't duplicate). | Hero scene glass card, CTA card                                                         |
+| `bd-route-line`           | SVG-friendly stroke utility with `stroke-dasharray` + animated `stroke-dashoffset` for "draw-on" effect.                                                           | Hero scene route between pin and bid card; HowItWorks step connector (optional, Pass E) |
+| `bd-pin-pulse`            | Concentric ring pulse around a fixed point. Pure CSS (transform: scale + opacity fade).                                                                            | Hero scene report pin; Coverage map pins (Pass D, optional per Decision #6)             |
+| `bd-bid-card-float`       | Subtle Y-axis drift (±4px) + opacity 0.92 ↔ 1.0 over 6s loop. **Pinned to hero scene context only**, not exposed as a global utility.                             | Hero scene bid cards                                                                    |
+| `bd-section-glow-divider` | Already exists as bloom-bridges from Pass 10 — extend only if needed.                                                                                              | (no new use unless audit identifies a gap)                                              |
+| `bd-map-contour`          | Faint repeating-linear-gradient or SVG pattern for "topographic" feel. **Reuse Pass 6's Coverage topographic rings pattern if shape-compatible.**                  | Hero scene background; HowItWorks subtle backdrop (optional)                            |
 
 **Reduced-motion guard (mandatory at end of every keyframe block):**
 
@@ -228,8 +228,13 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
   }
   /* Pin each layer to a sensible static frame */
   .bd-pin-pulse::before,
-  .bd-pin-pulse::after { opacity: 0; }
-  .bd-bid-card-float { transform: none; opacity: 1; }
+  .bd-pin-pulse::after {
+    opacity: 0;
+  }
+  .bd-bid-card-float {
+    transform: none;
+    opacity: 1;
+  }
 }
 ```
 
@@ -260,12 +265,14 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
 **Left side (text):** Untouched per Decision #3 default. If Decision #3 flips: update `VALUE_STATEMENTS` array at [HeroSection.tsx:8](../src/app/components/landing/HeroSection.tsx#L8) and the visible subline. **Do not touch the carousel rotation logic.**
 
 **What this preserves:**
+
 - Existing `useParallaxOffset` parallax on background pools.
 - Existing atmospheric radiance ([HeroSection.tsx:79-119](../src/app/components/landing/HeroSection.tsx#L79-L119)).
 - The `bd-bloom-atmosphere` entrance animation.
 - All CTA hierarchy (primary blue glass-control, secondary calm).
 
 **Risks:**
+
 - The current hero already has 3 amber blur pools at deepened opacity (Pass 11). Adding `bd-liquid-gold-flow` on top could push warm dominance over the cool-action identity. **Mitigation:** consume the same gold tokens; don't stack new amber on existing amber.
 - The right-side glass card with backdrop-blur will need careful positioning so the parallax pools behind it remain visible (otherwise the card just becomes a flat panel).
 
@@ -288,6 +295,7 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
 - These are GPU-expensive on top of an active MapLibre canvas; defer to a separate post-launch pass.
 
 **Don't:**
+
 - Add new MapLibre layers/sources without verifying memory + paint cost.
 - Touch the WebGL fallback `backgroundColor` — that was Pass 7's fix.
 - Redesign the section structure.
@@ -306,6 +314,7 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
 - **AboutOpportunity:** No motion. Glass + spacing already correct from Pass 9.
 
 **Don't:**
+
 - Rebuild any card.
 - Add motion to text-heavy areas without contrast guard.
 - Touch the bloom-bridges between sections (Pass 10 work).
@@ -324,6 +333,7 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
 - **Champagne wash control:** Hero already has deepened amber (Pass 11). Don't add more there. Apply gentle champagne radial only to TrustStats (warm) and CTA (warm) light mode if the audit shows them flat.
 
 **Don't:**
+
 - Make light mode beige.
 - Make all cards yellow / amber-tinted.
 - Reduce blue contrast.
@@ -369,17 +379,17 @@ Order is intentional. **Don't run Pass C before Pass B is in place** — buildin
 
 ## Risks (read before starting)
 
-| # | Risk | Mitigation |
-|---|---|---|
-| R1 | **Motion stacked on existing motion = jank.** Hero already has parallax pools, bloom-atmosphere entrance, value-statement carousel. Adding 5+ new motion layers compounds. | Pass A audits motion layer count before Pass C designs any addition. Hard cap: ≤ 8 simultaneous animated layers in viewport at any scroll position. |
-| R2 | **Gold over-saturation.** Three amber pools (Pass 11) + new `bd-liquid-gold-flow` + `bd-liquid-gold-sheen` could push hero from "warm-lit" to "yellow." | Tokens centralize gold values. If hero reads too warm post-Pass C, dial token alpha down — don't add more layers. |
-| R3 | **Mobile thermal / battery cost.** Persistent motion on a phone tab in background drains battery. | `prefers-reduced-motion` + viewport-pause hook (only animate when section is in viewport). Use `IntersectionObserver` to gate animation play state. |
-| R4 | **Coverage section second-MapLibre temptation.** If Decision #1 flips to "real mini-map," we'll have two MapLibre instances on first paint. | Hard rule: if Decision #1 = real map, hero map must `lazy-init` after first interaction or after hero scrolls into viewport (not on page load). |
-| R5 | **Cascade conflicts with prior un-layered overrides.** Theme.css has multiple un-layered sections (lines 1547+). New tokens at the bottom should not collide. | Add new tokens / classes as a clearly-marked block at the end of theme.css with a header comment. Don't insert mid-file. |
-| R6 | **Copy change creep.** ChatGPT brief proposes hero subline rewrite. Once that's on the table, scope expands to other section copy. | Decision #3 must be answered explicitly. Default = no copy change. |
-| R7 | **Dashboard / app-shell collateral damage.** New utility classes added to theme.css affect all consumers, not just landing. | Pass B classes use the `bd-liquid-*` and `bd-route-*` prefixes — no overlap with existing `bd-glass-*` / `bd-dashboard-*`. Verify no name collision before commit. |
-| R8 | **"Living marketplace" reads as "fake activity" / dishonest.** Floating bid cards with prices could read as misrepresenting actual marketplace state during soft launch. | Use clearly illustrative labels ("Sample quote", "Example ETA") OR icon-only cards with no numbers. Owner sign-off on copy required. |
-| R9 | **Over-promising on map-first identity.** Coverage section is a real map but limited to seeded NY data. Aggressive marketing language risks the same "no shops within 20 miles" empty-state issue Pass 11 fixed. | Don't add new copy that implies broader real coverage. Keep Pass 11's "expanding network" framing. |
+| #   | Risk                                                                                                                                                                                                             | Mitigation                                                                                                                                                         |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| R1  | **Motion stacked on existing motion = jank.** Hero already has parallax pools, bloom-atmosphere entrance, value-statement carousel. Adding 5+ new motion layers compounds.                                       | Pass A audits motion layer count before Pass C designs any addition. Hard cap: ≤ 8 simultaneous animated layers in viewport at any scroll position.                |
+| R2  | **Gold over-saturation.** Three amber pools (Pass 11) + new `bd-liquid-gold-flow` + `bd-liquid-gold-sheen` could push hero from "warm-lit" to "yellow."                                                          | Tokens centralize gold values. If hero reads too warm post-Pass C, dial token alpha down — don't add more layers.                                                  |
+| R3  | **Mobile thermal / battery cost.** Persistent motion on a phone tab in background drains battery.                                                                                                                | `prefers-reduced-motion` + viewport-pause hook (only animate when section is in viewport). Use `IntersectionObserver` to gate animation play state.                |
+| R4  | **Coverage section second-MapLibre temptation.** If Decision #1 flips to "real mini-map," we'll have two MapLibre instances on first paint.                                                                      | Hard rule: if Decision #1 = real map, hero map must `lazy-init` after first interaction or after hero scrolls into viewport (not on page load).                    |
+| R5  | **Cascade conflicts with prior un-layered overrides.** Theme.css has multiple un-layered sections (lines 1547+). New tokens at the bottom should not collide.                                                    | Add new tokens / classes as a clearly-marked block at the end of theme.css with a header comment. Don't insert mid-file.                                           |
+| R6  | **Copy change creep.** ChatGPT brief proposes hero subline rewrite. Once that's on the table, scope expands to other section copy.                                                                               | Decision #3 must be answered explicitly. Default = no copy change.                                                                                                 |
+| R7  | **Dashboard / app-shell collateral damage.** New utility classes added to theme.css affect all consumers, not just landing.                                                                                      | Pass B classes use the `bd-liquid-*` and `bd-route-*` prefixes — no overlap with existing `bd-glass-*` / `bd-dashboard-*`. Verify no name collision before commit. |
+| R8  | **"Living marketplace" reads as "fake activity" / dishonest.** Floating bid cards with prices could read as misrepresenting actual marketplace state during soft launch.                                         | Use clearly illustrative labels ("Sample quote", "Example ETA") OR icon-only cards with no numbers. Owner sign-off on copy required.                               |
+| R9  | **Over-promising on map-first identity.** Coverage section is a real map but limited to seeded NY data. Aggressive marketing language risks the same "no shops within 20 miles" empty-state issue Pass 11 fixed. | Don't add new copy that implies broader real coverage. Keep Pass 11's "expanding network" framing.                                                                 |
 
 ---
 
@@ -424,6 +434,7 @@ Two subtle additions to `OperatingRegionsSection`: `bd-liquid-gold-flow` ambient
 ### Pass E outcome notes
 
 Three section edits, each scoped:
+
 - HowItWorks: replaced static dashed div connectors with SVG `bd-route-line` paths that shimmer left-to-right at 6s (reads as repair-journey flow, not decoration). Stroke alpha tuned to existing connector weight, mobile guard preserved.
 - WhoWeServe: non-destructive role-color rim glow per card (Customer blue / Shops teal / Insurer subtle gold, all alpha ≤ 0.15). Implemented as overlay span so `bd-glass-card` boxShadow stays intact.
 - Benefits: new `bd-gold-sheen-hover` utility (1.4s ease-out forwards, hover-only one-shot, distinct from infinite ambient sheen). Wired into photo containers; reduced-motion guard added.

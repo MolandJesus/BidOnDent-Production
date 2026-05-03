@@ -405,16 +405,16 @@ Light mode oscillates warm cream ↔ cool sky. Dark mode mirrors this with a war
 
 A single radial luminance accent per section, 600–800px diameter, 15–22% opacity, positioned at the section's signature corner. Reads as architectural spotlight / Apple-event editorial lighting — NOT cyber/neon. Locked palette (any new section must pick from or extend this table):
 
-| Color | Use case | Example sections |
-|---|---|---|
-| Electric blue `rgba(37,99,235,0.22)` | Hero anchor, brand identity | Hero |
-| Sky teal `rgba(14,165,233,0.18)` | Guidance, freshness | HowItWorks |
-| Royal blue `rgba(37,99,235,0.16)` | Action / centered emphasis | WhoWeServe |
-| Cobalt `rgba(30,58,138,0.18)` | Depth, confidence | AboutOpportunity |
-| Slate-blue `rgba(71,85,105,0.15)` | Quiet anchoring | BusinessInquiry |
-| White-cream `rgba(248,250,252,0.18)` | "Lamp under glass" — conversion moment only | CTA |
-| Warm amber `rgba(200,120,30,0.20)` | Reserved for warm Direction B sections | Benefits |
-| Warm gold `rgba(180,140,40,0.22)` | Reserved for warm Direction B sections | TrustStats |
+| Color                                | Use case                                    | Example sections |
+| ------------------------------------ | ------------------------------------------- | ---------------- |
+| Electric blue `rgba(37,99,235,0.22)` | Hero anchor, brand identity                 | Hero             |
+| Sky teal `rgba(14,165,233,0.18)`     | Guidance, freshness                         | HowItWorks       |
+| Royal blue `rgba(37,99,235,0.16)`    | Action / centered emphasis                  | WhoWeServe       |
+| Cobalt `rgba(30,58,138,0.18)`        | Depth, confidence                           | AboutOpportunity |
+| Slate-blue `rgba(71,85,105,0.15)`    | Quiet anchoring                             | BusinessInquiry  |
+| White-cream `rgba(248,250,252,0.18)` | "Lamp under glass" — conversion moment only | CTA              |
+| Warm amber `rgba(200,120,30,0.20)`   | Reserved for warm Direction B sections      | Benefits         |
+| Warm gold `rgba(180,140,40,0.22)`    | Reserved for warm Direction B sections      | TrustStats       |
 
 **Subtle car cues — what is allowed:**
 
@@ -433,12 +433,12 @@ The dashboard inherits the cool-blue glass shell as the structural base, with **
 
 **Three-tier glass card hierarchy (post-D1):**
 
-| Class | Use case | Energy |
-|---|---|---|
-| `bd-glass-card` | Generic glass surfaces (modals on landing, default) | Quiet base |
-| `bd-glass-card--dashboard` | All authenticated workspace surfaces (all 4 roles) | Calm-workspace |
-| `bd-glass-card--landing` | Landing premium-marketing anchor cards | High-presence marketing |
-| `bd-glass-card--landing-warm` | Landing Direction B warm-amber sections only | Warm Direction B |
+| Class                         | Use case                                            | Energy                  |
+| ----------------------------- | --------------------------------------------------- | ----------------------- |
+| `bd-glass-card`               | Generic glass surfaces (modals on landing, default) | Quiet base              |
+| `bd-glass-card--dashboard`    | All authenticated workspace surfaces (all 4 roles)  | Calm-workspace          |
+| `bd-glass-card--landing`      | Landing premium-marketing anchor cards              | High-presence marketing |
+| `bd-glass-card--landing-warm` | Landing Direction B warm-amber sections only        | Warm Direction B        |
 
 `--dashboard` material spec (light): heavier shadow than base (`0 14px 32px` vs `0 10px 24px`), stronger inset top highlight (`rgba(255,255,255,0.85)` vs `0.65`), brighter border (`rgba(147,197,253,0.42)` vs `bd-glass-border-light`), subtle ambient blue glow (`0 0 28px rgba(59,130,246,0.06)`), 2px hover lift (vs `--landing`'s 6px). Workspace, not marketing.
 
@@ -449,7 +449,11 @@ The dashboard inherits the cool-blue glass shell as the structural base, with **
 Single absolute-positioned utility class. Top-anchored radial glow, 5% peak opacity (light) / 7% peak (dark), cool-blue family. No motion. No section alternation. No `bd-bloom-atmosphere` scroll-entry — workspace surfaces should not bloom on entry. Applied at `DashboardLayout` root behind content.
 
 ```css
-background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(96,165,250,0.05) 0%, transparent 70%);
+background: radial-gradient(
+  ellipse 80% 60% at 50% 0%,
+  rgba(96, 165, 250, 0.05) 0%,
+  transparent 70%
+);
 /* dark: rgba(59,130,246,0.07) */
 ```
 
@@ -459,7 +463,7 @@ This sits on top of the existing layered `<DashboardAtmosphere>` component which
 
 Editorial typography utility for dashboard section anchors ("REPAIR OVERVIEW", "YOUR DASHBOARD", "REPAIR ACTIVITY"). 11px, weight 600, `letter-spacing: 0.18em`, uppercase, blue-700 (light) / blue-300 (dark). **No flanking strokes** — those are landing-only (Pass 12-15). Refined typography only.
 
-**Updated D4 final v2 (2026-05-02):** dashboard does **not directly use `--landing-warm`**, but the dashboard's own variants now apply a parallel gold-amber trim + lamp-glow treatment (matching landing-warm's *lighting* register without copying its full warm-cream infill). The boundary remains: dashboard surfaces stay navy/cream-infill; gold is trim only. `--landing-warm` itself stays exclusive to landing Direction B sections.
+**Updated D4 final v2 (2026-05-02):** dashboard does **not directly use `--landing-warm`**, but the dashboard's own variants now apply a parallel gold-amber trim + lamp-glow treatment (matching landing-warm's _lighting_ register without copying its full warm-cream infill). The boundary remains: dashboard surfaces stay navy/cream-infill; gold is trim only. `--landing-warm` itself stays exclusive to landing Direction B sections.
 
 ---
 
@@ -542,10 +546,10 @@ These temptations arise in every design project. Record them here to avoid rehas
    dashboard inherits the calm-map / glass-shell system documented under Dark Shell Design
    System; the automotive register (sedan silhouettes, lane dashes, Direction C luminance)
    is a landing-only signature. Mixing them dilutes both. **Amended 2026-05-02 (Pass D4
-   final v2):** warm-amber *trim* and *lamp-glow lighting* (borders, inset highlights, outer
+   final v2):** warm-amber _trim_ and _lamp-glow lighting_ (borders, inset highlights, outer
    glow, atmospheric overlays) is now permitted on dashboard surfaces by explicit owner
    authorization — gold reads as the dashboard's lighting register. What stays forbidden:
-   sedan silhouettes, lane dashes, road-line patterns, warm-amber *infill* (cards still
+   sedan silhouettes, lane dashes, road-line patterns, warm-amber _infill_ (cards still
    read navy/cream backgrounds; only trim + lighting is gold), Direction C luminance, and
    editorial flanking strokes.
 

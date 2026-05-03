@@ -57,7 +57,12 @@ export default function FooterSection({
             {/* Subtle gold lamp accent — gentle warm light source so the
                 page's farewell still carries the gold thread without
                 competing with the CTA card glow above. */}
-            <div className="absolute top-0 right-[12%] w-64 h-64 rounded-full blur-[120px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.12), transparent 65%)" }} />
+            <div
+              className="absolute top-0 right-[12%] w-64 h-64 rounded-full blur-[120px] pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(220,150,60,0.12), transparent 65%)",
+              }}
+            />
           </>
         )}
       </div>

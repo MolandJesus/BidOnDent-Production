@@ -89,7 +89,12 @@ export default function AboutOpportunitySection({
             <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-indigo-400/[0.14] rounded-full blur-3xl" />
             {/* Subtle gold lamp accent — single warm light source in the cool
                 navy section, threads gold into dark-blue-on-dark-blue. */}
-            <div className="absolute top-1/3 right-[8%] w-72 h-72 rounded-full blur-[130px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.14), transparent 65%)" }} />
+            <div
+              className="absolute top-1/3 right-[8%] w-72 h-72 rounded-full blur-[130px] pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(220,150,60,0.14), transparent 65%)",
+              }}
+            />
           </>
         )}
       </div>
@@ -260,12 +265,8 @@ export default function AboutOpportunitySection({
             href="#/about"
             className={`bd-dashboard-primary-button inline-flex items-center justify-center font-semibold px-6 py-3 text-sm sm:text-base backdrop-blur-sm ${isLightAppearance ? "text-blue-700" : "text-blue-200"}`}
             style={{
-              background: isLightAppearance
-                ? "rgba(255,251,245,0.5)"
-                : "rgba(59,130,246,0.10)",
-              borderColor: isLightAppearance
-                ? "rgba(200,180,150,0.30)"
-                : "rgba(96,165,250,0.25)",
+              background: isLightAppearance ? "rgba(255,251,245,0.5)" : "rgba(59,130,246,0.10)",
+              borderColor: isLightAppearance ? "rgba(200,180,150,0.30)" : "rgba(96,165,250,0.25)",
             }}
           >
             Read Full About Overview

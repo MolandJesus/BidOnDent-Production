@@ -327,10 +327,7 @@ export default function CoverageNearestShops({
             }}
           >
             <MapPinned
-              className={cn(
-                "h-5 w-5",
-                tone === "light" ? "text-blue-500" : "text-blue-300"
-              )}
+              className={cn("h-5 w-5", tone === "light" ? "text-blue-500" : "text-blue-300")}
             />
           </div>
           <div className={cn("text-sm font-semibold", theme.titleClassName)}>

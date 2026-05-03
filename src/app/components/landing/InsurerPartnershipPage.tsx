@@ -65,9 +65,7 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
             <h1
               className={`text-2xl sm:text-4xl font-bold ${isLight ? "text-slate-900" : "text-slate-100"}`}
               style={{
-                textShadow: isLight
-                  ? "0 1px 2px rgba(0,0,0,0.04)"
-                  : "0 2px 8px rgba(0,0,0,0.3)",
+                textShadow: isLight ? "0 1px 2px rgba(0,0,0,0.04)" : "0 2px 8px rgba(0,0,0,0.3)",
               }}
             >
               Partner With BidOnDent

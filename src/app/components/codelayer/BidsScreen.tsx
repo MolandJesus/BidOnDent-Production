@@ -243,7 +243,9 @@ export default function BidsScreen({
           </div>
           <span
             className={`bd-dashboard-chip shrink-0 px-2.5 py-1 text-[11px] font-medium ${
-              isLight ? "border border-blue-200/55 bg-blue-50/85 text-blue-700" : "border-blue-200/18 bg-white/10 text-blue-50"
+              isLight
+                ? "border border-blue-200/55 bg-blue-50/85 text-blue-700"
+                : "border-blue-200/18 bg-white/10 text-blue-50"
             }`}
           >
             {filteredBids.length} visible

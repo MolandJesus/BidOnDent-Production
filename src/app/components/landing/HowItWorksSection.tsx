@@ -97,7 +97,12 @@ export default function HowItWorksSection({
                 navy section, ties the cool register to the warm sections
                 without becoming amber-dominant. Owner: thread gold subtly
                 into dark-blue-on-dark-blue sections. */}
-            <div className="absolute -top-16 left-[55%] w-80 h-80 rounded-full blur-[140px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.16), transparent 65%)" }} />
+            <div
+              className="absolute -top-16 left-[55%] w-80 h-80 rounded-full blur-[140px] pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(220,150,60,0.16), transparent 65%)",
+              }}
+            />
           </>
         )}
       </div>
@@ -224,7 +229,9 @@ export default function HowItWorksSection({
               x2="100"
               y2="1"
               className="bd-route-line"
-              style={{ stroke: isLightAppearance ? "rgba(100,160,230,0.55)" : "rgba(96,165,250,0.40)" }}
+              style={{
+                stroke: isLightAppearance ? "rgba(100,160,230,0.55)" : "rgba(96,165,250,0.40)",
+              }}
             />
           </svg>
           <svg
@@ -241,7 +248,9 @@ export default function HowItWorksSection({
               x2="100"
               y2="1"
               className="bd-route-line"
-              style={{ stroke: isLightAppearance ? "rgba(100,160,230,0.55)" : "rgba(96,165,250,0.40)" }}
+              style={{
+                stroke: isLightAppearance ? "rgba(100,160,230,0.55)" : "rgba(96,165,250,0.40)",
+              }}
             />
           </svg>
 

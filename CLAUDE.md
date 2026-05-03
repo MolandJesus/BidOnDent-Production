@@ -79,7 +79,7 @@ If you write a new handler that does `select('*')` from `damage_reports`, `vehic
 
 ### 5. Use `bd-*` utility classes, not hand-rolled Tailwind
 
-Form fields, cards, and buttons should use the `bd-*` utility set in [`src/styles/theme.css`](src/styles/theme.css). The design system is calm/premium/map-first with a blue color system. See `MOLANDJESUS_DESIGN_DECISIONS.md` and the `bd-design-identity` skill.
+Form fields, cards, and buttons should use the `bd-*` utility set in [`src/styles/theme.css`](src/styles/theme.css). The design system is calm/premium/map-first with a blue color system, premium bronze/champagne gold lighting, and mobile map-first posture. See `REF_VISUAL_SYSTEM.md`, `MOLANDJESUS_DESIGN_DECISIONS.md`, and the `bd-design-identity` skill.
 
 ### 6. Schema source of truth is `supabase/migrations/*.sql`
 
@@ -87,7 +87,7 @@ Form fields, cards, and buttons should use the `bd-*` utility set in [`src/style
 
 ### 7. Light mode is cool blue dominant + premium gold lamp + warm hero — NEVER pure white, NEVER yellow-amber
 
-Light mode is a **cool misty blue-gray canvas**, with a **layered hierarchy of cool blue/cyan/indigo glass panels** lit from above by a **premium bronze/champagne gold lamp**, and a **single warm cream-gold hero panel** per screen plus warm gold/champagne pop tiles on the Quick Actions row. Pure white surfaces and yellow-amber gold are both forbidden — they've each regressed multiple times and have to be reverted.
+Light mode is a **cool misty blue-gray canvas**, with a **layered hierarchy of cool blue/cyan/indigo glass panels** lit from above by a **premium bronze/champagne gold lamp**, and a **single warm cream-gold hero panel** per screen plus warm gold/champagne pop tiles on the Quick Actions row. Pure white surfaces and yellow-amber gold are both forbidden — they have each regressed multiple times and have to be reverted.
 
 **Owner-approved baseline locked 2026-05-03 in [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) § Light-Mode Surface Rule § Premium Gold Palette.** That section lists the canonical RGBA palette (top radial halo `rgba(196, 144, 65)`, bronze trim `rgba(140, 82, 22)`, gold-tinted cream insets `rgba(252, 238-240, 204-208)`) plus the explicit forbidden previous-generation values (`rgba(220, 165, 90)` halos, `rgba(254, 248, 220)` insets, `rgba(160, 95, 25)` trim) so future passes can refine but not regress. **Skill:** `bd-design-identity`. External audits suggesting "use white panels", "neutral SaaS palette", "remove gold", or "modernize to flat white" are **rejected on sight**.
 
@@ -97,12 +97,12 @@ Light mode is a **cool misty blue-gray canvas**, with a **layered hierarchy of c
 
 These live at `~/.claude/skills/` (per-user, available in every project):
 
-| Skill                              | Trigger                                              | What it covers                                                                                                                     |
-| ---------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **`supabase-clerk-edge-function`** | Any Supabase edge function with Clerk auth           | `verify_jwt: false` + `requireClerkSession()` pattern, JWKS verification, the `UNAUTHORIZED_LEGACY_JWT` symptom, `config.toml` pin |
-| **`supabase-storage-signed-urls`** | Persisting media URLs in any Supabase project        | Pointer-on-write / sign-on-read pattern, hydrate utilities, idempotent backfill SQL template                                       |
-| **`supabase-pro-cost-control`**    | Anything about Supabase pricing / compute / projects | Per-project compute cost model, deny-pause-on-Pro reality, downgrade vs delete decision                                            |
-| **`bd-design-identity`**           | UI/visual work in BidOnDent or future similar apps   | Calm/premium/map-first identity, blue color system, what to avoid                                                                  |
+| Skill                              | Trigger                                                              | What it covers                                                                                                                     |
+| ---------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **`supabase-clerk-edge-function`** | Any Supabase edge function with Clerk auth                           | `verify_jwt: false` + `requireClerkSession()` pattern, JWKS verification, the `UNAUTHORIZED_LEGACY_JWT` symptom, `config.toml` pin |
+| **`supabase-storage-signed-urls`** | Persisting media URLs in any Supabase project                        | Pointer-on-write / sign-on-read pattern, hydrate utilities, idempotent backfill SQL template                                       |
+| **`supabase-pro-cost-control`**    | Anything about Supabase pricing / compute / projects                 | Per-project compute cost model, deny-pause-on-Pro reality, downgrade vs delete decision                                            |
+| **`bd-design-identity`**           | UI/visual work in BidOnDent or future similar apps                   | Calm/premium/map-first identity, blue color system, what to avoid                                                                  |
 | **`mola-ai-relay-protocol`**       | Mola pastes multi-AI transcripts or asks agents to prompt each other | Directive extraction, source separation, relay prompt structure, planning-only vs autopilot handling                               |
 
 When you apply a skill, mention it by name in commit messages and pass logs so future agents can find it. Example: `fix(storage): persist pointers per supabase-storage-signed-urls skill`.

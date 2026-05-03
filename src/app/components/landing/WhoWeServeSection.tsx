@@ -147,7 +147,12 @@ export default function WhoWeServeSection({
             <div className="absolute -bottom-10 left-1/4 w-80 h-80 bg-indigo-400/[0.12] rounded-full blur-[110px]" />
             {/* Subtle gold lamp accent — single warm light source threading
                 gold identity through the cool register. */}
-            <div className="absolute top-1/3 left-[10%] w-72 h-72 rounded-full blur-[130px] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(220,150,60,0.13), transparent 65%)" }} />
+            <div
+              className="absolute top-1/3 left-[10%] w-72 h-72 rounded-full blur-[130px] pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(220,150,60,0.13), transparent 65%)",
+              }}
+            />
           </>
         )}
       </div>
@@ -306,9 +311,7 @@ export default function WhoWeServeSection({
                     <span
                       className="flex-shrink-0 mt-1 w-2 h-2 rounded-full"
                       style={{
-                        backgroundColor: isLightAppearance
-                          ? card.checkColor
-                          : card.checkColorDark,
+                        backgroundColor: isLightAppearance ? card.checkColor : card.checkColorDark,
                         boxShadow: isLightAppearance
                           ? `0 0 8px ${card.checkColor}66`
                           : `0 0 10px ${card.checkColorDark}88`,
