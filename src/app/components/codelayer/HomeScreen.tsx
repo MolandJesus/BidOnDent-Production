@@ -87,7 +87,9 @@ export default function HomeScreen({
   // (an active / in-repair report). Otherwise the chip shows a calmer, accurate
   // label so we never imply realtime activity that doesn't exist.
   const hasLiveActivity = sortedReports.some((report) => {
-    const status = String(report?.status ?? "").toLowerCase().replace(/[_\s-]+/g, " ");
+    const status = String(report?.status ?? "")
+      .toLowerCase()
+      .replace(/[_\s-]+/g, " ");
     return status === "active" || status === "in repair";
   });
   const listViewAllAction = onViewAllReports;

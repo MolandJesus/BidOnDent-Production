@@ -24,12 +24,14 @@ The result: today the landing dark mode is internally coherent (Passes 8–11 ma
 ## What "parity" means here (and what it does NOT mean)
 
 **Parity does mean:**
+
 - Same gold-lamp atmosphere identity (warm rim trims at 0.10–0.22 alpha, not infill).
 - Same rounded button system (D10's rounded-2xl on `bd-dashboard-primary-button` + the warm-trim hover/active states).
 - Same secondary-button visual hierarchy (calmer than primary, same active sink).
 - Same focus-ring family (blue product ring + warm outer wash on keyboard focus).
 
 **Parity does NOT mean:**
+
 - Landing dark = a copy of dashboard dark. Marketing surfaces breathe more, have larger atmosphere pools, and use Direction B amber-lit-garage register on warm sections (TrustStats, Benefits) per the Pass 11 lock. The dashboard does not.
 - Stripping landing's signature motion. The Liquid Map Intelligence layer (Passes B–E) already carries identity — it should pick up dark-mode parity, not be replaced.
 - Reverting to the cold-navy-only register that Direction A flirted with. The owner explicitly approved Direction B (warm-amber dark register on TrustStats + Benefits) per `feedback_external_audit_handling.md`.
@@ -57,15 +59,15 @@ Compare the tokens currently consumed in landing dark surfaces vs the tokens con
 
 Likely candidates (to be confirmed by the walk, not assumed):
 
-| Surface | Likely gap |
-|---|---|
-| `bd-glass-card--landing` dark variant | Already has gold rim from D5 — verify alpha range matches D7/D8 dashboard cards |
-| `bd-glass-card--landing-warm` dark variant | Direction B amber-lit; verify warm rim alpha matches dashboard's 0.20–0.26 |
-| `HowItWorksSection` step cards in dark | Last touched Pass 9 — likely cool blue without gold-lamp warmth |
-| `WhoWeServeSection` role cards in dark | Pass E added role-rim glow; works in both modes — verify alpha balance feels native to dashboard |
-| `OperatingRegionsSection` map shell in dark | Cool navy + WebGL — verify the new gold-flow ambient layer reads correctly behind the canvas |
-| Hero right-side scene in dark | Pass C built it light + dark aware via `--bd-liquid-gold-dark/-soft/-edge`; verify the bid card chips feel native to dark dashboard panels |
-| All landing CTAs (`bd-dashboard-primary-button` consumers in landing) | D10 was system-level so should be picked up — verify in walk |
+| Surface                                                               | Likely gap                                                                                                                                 |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `bd-glass-card--landing` dark variant                                 | Already has gold rim from D5 — verify alpha range matches D7/D8 dashboard cards                                                            |
+| `bd-glass-card--landing-warm` dark variant                            | Direction B amber-lit; verify warm rim alpha matches dashboard's 0.20–0.26                                                                 |
+| `HowItWorksSection` step cards in dark                                | Last touched Pass 9 — likely cool blue without gold-lamp warmth                                                                            |
+| `WhoWeServeSection` role cards in dark                                | Pass E added role-rim glow; works in both modes — verify alpha balance feels native to dashboard                                           |
+| `OperatingRegionsSection` map shell in dark                           | Cool navy + WebGL — verify the new gold-flow ambient layer reads correctly behind the canvas                                               |
+| Hero right-side scene in dark                                         | Pass C built it light + dark aware via `--bd-liquid-gold-dark/-soft/-edge`; verify the bid card chips feel native to dark dashboard panels |
+| All landing CTAs (`bd-dashboard-primary-button` consumers in landing) | D10 was system-level so should be picked up — verify in walk                                                                               |
 
 ### 3. Hero scene dedicated dark variant decision
 

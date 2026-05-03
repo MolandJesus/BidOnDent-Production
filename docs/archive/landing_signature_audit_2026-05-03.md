@@ -15,15 +15,15 @@ Inventory of the current landing surface before introducing the Liquid Map Intel
 
 31 files in [`src/app/components/landing/`](../src/app/components/landing/). The 7 that compose the public landing page (in render order):
 
-| Section | File | Existing motion | Pass-C-onward budget |
-|---|---|---|---|
-| Hero | `HeroSection.tsx` (549 lines) | `useParallaxOffset` (3 amber pools), value carousel (3.8s), 3 floating glass badges with `animate-float-slow`, `animate-orb-drift/float/rotate`, `bd-bloom-atmosphere` entry | **High** — primary signature scene target. Right column to be replaced (Pass C). |
-| HowItWorks | `HowItWorksSection.tsx` (273 lines) | `useScrollAnimation(0.1)` entry only | Low — keep calm. Optional connector line (Pass E, deferred). |
-| Benefits | `BenefitsSection.tsx` (331 lines) | `useScrollAnimation(0.1)` entry | Low — hover sheen (Pass E, deferred). |
-| WhoWeServe | `WhoWeServeSection.tsx` (339 lines) | none surfaced | Low — role-color rim accent (Pass E, deferred). |
-| AboutOpportunity | `AboutOpportunitySection.tsx` | `useScrollAnimation(0.1)` entry | None — already correct (Pass 9). |
-| OperatingRegions | `OperatingRegionsSection.tsx` (497 lines) | hosts MapLibre via `ServiceCoverageMap` | **Subtle only** (Decision #6) — pin pulse only, deferred. |
-| CTA | `CTASection.tsx` (230 lines) | `useScrollAnimation(0.15)` entry | Low — subtle gold sheen sweep (Pass E, deferred). |
+| Section          | File                                      | Existing motion                                                                                                                                                              | Pass-C-onward budget                                                             |
+| ---------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Hero             | `HeroSection.tsx` (549 lines)             | `useParallaxOffset` (3 amber pools), value carousel (3.8s), 3 floating glass badges with `animate-float-slow`, `animate-orb-drift/float/rotate`, `bd-bloom-atmosphere` entry | **High** — primary signature scene target. Right column to be replaced (Pass C). |
+| HowItWorks       | `HowItWorksSection.tsx` (273 lines)       | `useScrollAnimation(0.1)` entry only                                                                                                                                         | Low — keep calm. Optional connector line (Pass E, deferred).                     |
+| Benefits         | `BenefitsSection.tsx` (331 lines)         | `useScrollAnimation(0.1)` entry                                                                                                                                              | Low — hover sheen (Pass E, deferred).                                            |
+| WhoWeServe       | `WhoWeServeSection.tsx` (339 lines)       | none surfaced                                                                                                                                                                | Low — role-color rim accent (Pass E, deferred).                                  |
+| AboutOpportunity | `AboutOpportunitySection.tsx`             | `useScrollAnimation(0.1)` entry                                                                                                                                              | None — already correct (Pass 9).                                                 |
+| OperatingRegions | `OperatingRegionsSection.tsx` (497 lines) | hosts MapLibre via `ServiceCoverageMap`                                                                                                                                      | **Subtle only** (Decision #6) — pin pulse only, deferred.                        |
+| CTA              | `CTASection.tsx` (230 lines)              | `useScrollAnimation(0.15)` entry                                                                                                                                             | Low — subtle gold sheen sweep (Pass E, deferred).                                |
 
 `isLightAppearance` propagation: 344 references across landing files — every section already branches light/dark. New tokens must follow the same prop-drilled pattern.
 
@@ -33,17 +33,17 @@ Inventory of the current landing surface before introducing the Liquid Map Intel
 
 From `src/styles/theme.css`:
 
-| Keyframe | Line | What it does | Reuse for Pass B/C? |
-|---|---|---|---|
-| `slide-in-right` | 311 | Generic slide entry | No — purpose mismatch |
-| `mapLiquidSheenDrift` | 603 | Diagonal sheen sweep across glass | **YES** — alias as `bd-liquid-gold-sheen`; same shape, light/dark token swap |
-| `mapUiEnter` | 615 | Map UI panel entrance | No — already used by maps |
-| `mapNavIconPulse` | 626 | Nav-icon pulse | **Reference only** — copy timing for `bd-pin-pulse` but new keyframe (different scale curve) |
-| `mapGlassFloat` | 640 | Glass card subtle Y drift | **YES** — alias as `bd-bid-card-float`; reuse keyframe directly |
-| `mapPopupEnter` | 713 | Map popup entrance | No |
-| `animate-orb-drift/float/rotate` | tailwind | Floating orbs in hero | Keep — already in production |
-| `animate-float-slow` | tailwind | Hero badge float | Keep — Pass C bid cards reuse |
-| `animate-pulse` | tailwind | Trust badge dot | Keep |
+| Keyframe                         | Line     | What it does                      | Reuse for Pass B/C?                                                                          |
+| -------------------------------- | -------- | --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `slide-in-right`                 | 311      | Generic slide entry               | No — purpose mismatch                                                                        |
+| `mapLiquidSheenDrift`            | 603      | Diagonal sheen sweep across glass | **YES** — alias as `bd-liquid-gold-sheen`; same shape, light/dark token swap                 |
+| `mapUiEnter`                     | 615      | Map UI panel entrance             | No — already used by maps                                                                    |
+| `mapNavIconPulse`                | 626      | Nav-icon pulse                    | **Reference only** — copy timing for `bd-pin-pulse` but new keyframe (different scale curve) |
+| `mapGlassFloat`                  | 640      | Glass card subtle Y drift         | **YES** — alias as `bd-bid-card-float`; reuse keyframe directly                              |
+| `mapPopupEnter`                  | 713      | Map popup entrance                | No                                                                                           |
+| `animate-orb-drift/float/rotate` | tailwind | Floating orbs in hero             | Keep — already in production                                                                 |
+| `animate-float-slow`             | tailwind | Hero badge float                  | Keep — Pass C bid cards reuse                                                                |
+| `animate-pulse`                  | tailwind | Trust badge dot                   | Keep                                                                                         |
 
 **Net new keyframes needed in Pass B:** 2 (`bd-liquid-gold-flow` background-position drift, `bd-pin-pulse` ring expansion). All other Pass B classes alias existing keyframes.
 
@@ -73,14 +73,14 @@ All gated by `prefers-reduced-motion: reduce` block at the bottom (mandatory per
 
 ## 4. Conflicts and overlaps
 
-| Concern | Existing | Proposed | Resolution |
-|---|---|---|---|
-| Hero amber atmosphere | 3 amber blur pools at 0.42 / 0.26 / 0.32 alpha (Pass 11) | `bd-liquid-gold-flow` adds another gold layer | **Don't stack.** Pass C scene contains its own gold layer; the existing amber pools sit BEHIND the right-column scene, not inside it. Verify in Pass C: scene's gold tokens at lower alpha than existing pools (0.16 vs 0.42) so it doesn't dominate. |
-| Hero badges (NY / Bids Received / Repair Completed) | Currently sit on top of hero photo | Pass C removes the photo per Decision #2 | **Reuse the badges.** Badges are the existing "bid cards" — Pass C re-poses them as the floating bid cards in the new map scene. No content invention needed. |
-| Glass card system | `bd-glass-card--landing` already provides depth + shadow | Bid cards in scene need `bd-glass-card--landing` + `bd-bid-card-float` | Compose, don't replace. |
-| MapLibre GPU cost | Coverage section initializes WebGL canvas | Decision #1 LOCKED to mock; no 2nd WebGL context | No conflict. SVG/CSS only in hero scene. |
-| Reduced-motion | `bd-bloom-atmosphere` already disables on `prefers-reduced-motion` | New keyframes need same guard | Pass B reduced-motion block at end of Pass B CSS section is mandatory. |
-| Cascade precedence | Tailwind utilities at `@layer utilities` | New classes must override Tailwind `rounded-*`, `opacity-*` | Place new classes UN-LAYERED (per `theme.css:1547` comment). Same pattern D10 used for button radius. |
+| Concern                                             | Existing                                                           | Proposed                                                               | Resolution                                                                                                                                                                                                                                            |
+| --------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hero amber atmosphere                               | 3 amber blur pools at 0.42 / 0.26 / 0.32 alpha (Pass 11)           | `bd-liquid-gold-flow` adds another gold layer                          | **Don't stack.** Pass C scene contains its own gold layer; the existing amber pools sit BEHIND the right-column scene, not inside it. Verify in Pass C: scene's gold tokens at lower alpha than existing pools (0.16 vs 0.42) so it doesn't dominate. |
+| Hero badges (NY / Bids Received / Repair Completed) | Currently sit on top of hero photo                                 | Pass C removes the photo per Decision #2                               | **Reuse the badges.** Badges are the existing "bid cards" — Pass C re-poses them as the floating bid cards in the new map scene. No content invention needed.                                                                                         |
+| Glass card system                                   | `bd-glass-card--landing` already provides depth + shadow           | Bid cards in scene need `bd-glass-card--landing` + `bd-bid-card-float` | Compose, don't replace.                                                                                                                                                                                                                               |
+| MapLibre GPU cost                                   | Coverage section initializes WebGL canvas                          | Decision #1 LOCKED to mock; no 2nd WebGL context                       | No conflict. SVG/CSS only in hero scene.                                                                                                                                                                                                              |
+| Reduced-motion                                      | `bd-bloom-atmosphere` already disables on `prefers-reduced-motion` | New keyframes need same guard                                          | Pass B reduced-motion block at end of Pass B CSS section is mandatory.                                                                                                                                                                                |
+| Cascade precedence                                  | Tailwind utilities at `@layer utilities`                           | New classes must override Tailwind `rounded-*`, `opacity-*`            | Place new classes UN-LAYERED (per `theme.css:1547` comment). Same pattern D10 used for button radius.                                                                                                                                                 |
 
 ---
 

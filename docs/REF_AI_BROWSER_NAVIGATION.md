@@ -1,6 +1,6 @@
 # REF_AI_BROWSER_NAVIGATION
 
-**Last updated:** 2026-04-26
+**Last updated:** 2026-05-03
 **Status:** Active reference
 **Scope:** Browser automation behavior for Playwright-like tools in BidOnDent
 
@@ -11,6 +11,8 @@
 This document defines the required navigation protocol for AI/browser agents.
 
 Goal: avoid route drift, redirect loops, and repeated failures when moving between dashboard and landing surfaces.
+
+If the browser task is part of a pasted multi-AI transcript, handoff prompt, or owner relay, first read [`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md) to separate Mola's live directives from prior AI/browser output.
 
 For local Docker browser audits, the expected target is `http://localhost:5173/`, started with `npm run dev:local-browser` (no proxy required — the dev-server CSP allow-lists local Supabase URLs directly). Do not run a plain `npm run dev` for these audits unless the pass explicitly wants the cloud Supabase project; `dev:local-browser` is the helper that auto-wires Vite to the running local Docker stack via `supabase status -o env`.
 
@@ -166,6 +168,20 @@ For each pass that changes map UI:
 10. If changed: pin popup/destination card screenshot
 
 Do not mark design passes complete without this screenshot set.
+
+### Mobile add-on checklist
+
+For any map or visual pass that touches landing, dashboard, dialogs, sheets, or mobile layout, also capture at least:
+
+1. Mobile landing hero in light + dark, including the map strip and the "Double-tap for full map" affordance.
+2. Mobile landing coverage section in light + dark, with coverage pills visible and not clipped.
+3. Mobile full `CoverageMapDialog` in Search, Explore, Saved, and Shops states. Verify the map remains visible and the sheet does not hide nearly the entire viewport at rest.
+4. Mobile dashboard home top in light + dark, including the fixed header and bottom tab bar.
+5. Mobile dashboard Smart Map Tools / Nearby Matches in light + dark.
+6. Mobile report flow step 1 and step 3 in light + dark; verify progress/header height does not bury the active form below the fold.
+7. Mobile notification popover and profile menu in light + dark; verify overlays fit within the viewport and respect bottom safe area.
+
+Use a narrow viewport comparable to the owner's screenshots (`~390px` CSS width, iPhone-style browser chrome) in addition to a wider mobile breakpoint (`487px`). The user-visible Safari/browser toolbar is part of the design constraint, not noise.
 
 ---
 

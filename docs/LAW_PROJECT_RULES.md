@@ -167,16 +167,16 @@ Light mode is **a cool blue-gray canvas + a layered hierarchy of warm cream/cham
 
 The page is **cool blue dominant with a single warm hero panel and warm pop tiles**. Cool panels balance the warm hero so the eye lands there. NEVER paint every panel cream — that flattens the hierarchy.
 
-| Layer | Tone | Where it lives | Why |
-|---|---|---|---|
-| **Canvas / page background** | Cool misty blue-gray (`#c8d8ec → #b4c8e2`) | `globalSurfaceTheme.ts` `light` background | App stays a workspace/map product, not a beige sheet |
-| **Hero panel** (welcome banner — ONE per screen) | Richest cream-gold liquid glass with radial gold halo at top | `.bd-dashboard-panel--accent-blue` (light) | The only warm-dominant panel; pulls focus |
-| **Main panel** (Quick Actions wrapper, Account Identity, primary content) | Lighter cool blue/ivory liquid glass with bronze hairline | `.bd-dashboard-panel--deep` (light) | Calm cool canvas — balances the warm hero so it pops |
-| **Supporting panel — depth** (Repair Activity, Help & Support, list-holding) | Darker cool indigo liquid glass with bronze hairline | `.bd-dashboard-panel--accent-indigo` (light) | Provides darker-blue depth in the hierarchy |
-| **Supporting panel — teal** (map widgets, geo cards) | Medium cool cyan liquid glass with bronze hairline | `.bd-dashboard-panel--accent-cyan` (light) | Teal identity for map-adjacent surfaces |
-| **Action tiles row** (Quick Actions) | Alternating blue → deep gold → cyan → champagne | `bd-dashboard-section--accent-{blue,gold,cyan,champagne}` | Visible cool/warm/cool/warm rhythm — gold + champagne are the only warm pops at this scale |
-| **Inner sections / list rows** | Cool ivory / blue / cyan / indigo liquid glass | `bd-dashboard-section--{deep,accent-blue,accent-cyan,accent-indigo}` | Cool family for everyday content; gold + champagne reserved for emphasis |
-| **Chips / active states / pills** | Cool frosted blue (`bg-blue-50/85` + `border-blue-200/55`) | Inline in components — never `bg-white/*` | Blue is action; cool chip = clear hierarchy |
+| Layer                                                                        | Tone                                                         | Where it lives                                                       | Why                                                                                        |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Canvas / page background**                                                 | Cool misty blue-gray (`#c8d8ec → #b4c8e2`)                   | `globalSurfaceTheme.ts` `light` background                           | App stays a workspace/map product, not a beige sheet                                       |
+| **Hero panel** (welcome banner — ONE per screen)                             | Richest cream-gold liquid glass with radial gold halo at top | `.bd-dashboard-panel--accent-blue` (light)                           | The only warm-dominant panel; pulls focus                                                  |
+| **Main panel** (Quick Actions wrapper, Account Identity, primary content)    | Lighter cool blue/ivory liquid glass with bronze hairline    | `.bd-dashboard-panel--deep` (light)                                  | Calm cool canvas — balances the warm hero so it pops                                       |
+| **Supporting panel — depth** (Repair Activity, Help & Support, list-holding) | Darker cool indigo liquid glass with bronze hairline         | `.bd-dashboard-panel--accent-indigo` (light)                         | Provides darker-blue depth in the hierarchy                                                |
+| **Supporting panel — teal** (map widgets, geo cards)                         | Medium cool cyan liquid glass with bronze hairline           | `.bd-dashboard-panel--accent-cyan` (light)                           | Teal identity for map-adjacent surfaces                                                    |
+| **Action tiles row** (Quick Actions)                                         | Alternating blue → deep gold → cyan → champagne              | `bd-dashboard-section--accent-{blue,gold,cyan,champagne}`            | Visible cool/warm/cool/warm rhythm — gold + champagne are the only warm pops at this scale |
+| **Inner sections / list rows**                                               | Cool ivory / blue / cyan / indigo liquid glass               | `bd-dashboard-section--{deep,accent-blue,accent-cyan,accent-indigo}` | Cool family for everyday content; gold + champagne reserved for emphasis                   |
+| **Chips / active states / pills**                                            | Cool frosted blue (`bg-blue-50/85` + `border-blue-200/55`)   | Inline in components — never `bg-white/*`                            | Blue is action; cool chip = clear hierarchy                                                |
 
 ### 3D liquid glass shadow stack (panels + sections, light mode)
 
@@ -227,25 +227,25 @@ This palette was approved by the owner ("wow, just wow. it looks so premium and 
 
 **Canonical warm-tone values (DO NOT regress):**
 
-| Token role | Value | Used in |
-|---|---|---|
-| Top radial gold halo | `rgba(196, 144, 65, 0.16-0.24)` | Every panel + section variant top-edge gradient stack |
-| Gold-tinted top inset highlight | `rgba(252, 238-240, 204-208, 0.70-0.94)` | Inset 0 1px 0 (the "reflected lamp light" highlight) |
-| Bronze trim border + inset rim | `rgba(140, 82, 22, 0.28-0.55)` | `border-color`, inset 0 -1px 0, 0 0 0 1px ring |
-| Deep bronze inner-thickness shadow | `rgba(110, 70, 18, 0.10-0.22)` | inset 0 -2px 4px, mid/far drop shadows on warm tiles |
-| Outer warm halo | `rgba(196, 130, 45, 0.16-0.22)` | 0 0 N px outer glow |
-| Hero panel surface | `rgba(244, 222, 178, 0.94) → rgba(228, 198, 144, 0.86)` | `.bd-dashboard-panel--accent-blue` light gradient |
-| Action gold tile | `rgba(244, 222, 178, 0.96) → rgba(228, 198, 144, 0.86)` | `.bd-dashboard-section--accent-gold` light gradient |
-| Action champagne tile | `rgba(250, 234, 198, 0.96) → rgba(240, 220, 178, 0.86)` | `.bd-dashboard-section--accent-champagne` light gradient |
+| Token role                         | Value                                                   | Used in                                                  |
+| ---------------------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
+| Top radial gold halo               | `rgba(196, 144, 65, 0.16-0.24)`                         | Every panel + section variant top-edge gradient stack    |
+| Gold-tinted top inset highlight    | `rgba(252, 238-240, 204-208, 0.70-0.94)`                | Inset 0 1px 0 (the "reflected lamp light" highlight)     |
+| Bronze trim border + inset rim     | `rgba(140, 82, 22, 0.28-0.55)`                          | `border-color`, inset 0 -1px 0, 0 0 0 1px ring           |
+| Deep bronze inner-thickness shadow | `rgba(110, 70, 18, 0.10-0.22)`                          | inset 0 -2px 4px, mid/far drop shadows on warm tiles     |
+| Outer warm halo                    | `rgba(196, 130, 45, 0.16-0.22)`                         | 0 0 N px outer glow                                      |
+| Hero panel surface                 | `rgba(244, 222, 178, 0.94) → rgba(228, 198, 144, 0.86)` | `.bd-dashboard-panel--accent-blue` light gradient        |
+| Action gold tile                   | `rgba(244, 222, 178, 0.96) → rgba(228, 198, 144, 0.86)` | `.bd-dashboard-section--accent-gold` light gradient      |
+| Action champagne tile              | `rgba(250, 234, 198, 0.96) → rgba(240, 220, 178, 0.86)` | `.bd-dashboard-section--accent-champagne` light gradient |
 
 **Forbidden warm-tone values (the previous yellow-amber palette — do NOT bring these back):**
 
-| Replaced value | What it produced |
-|---|---|
-| `rgba(220, 165, 90, *)` for halos | Read as yellow-amber instead of premium gold |
-| `rgba(254, 248, 220, *)` for insets | Pale yellow highlight, not warm reflected lamp |
-| `rgba(160, 95, 25, *)` for trim | Slightly orange-brown, not refined bronze |
-| `rgba(220, 140, 50, *)` for outer halo | Pumpkin-orange, not premium copper |
-| `rgba(250, 232, 192) → rgba(240, 218, 168)` for hero | Pale yellow cream, not deep premium champagne |
+| Replaced value                                       | What it produced                               |
+| ---------------------------------------------------- | ---------------------------------------------- |
+| `rgba(220, 165, 90, *)` for halos                    | Read as yellow-amber instead of premium gold   |
+| `rgba(254, 248, 220, *)` for insets                  | Pale yellow highlight, not warm reflected lamp |
+| `rgba(160, 95, 25, *)` for trim                      | Slightly orange-brown, not refined bronze      |
+| `rgba(220, 140, 50, *)` for outer halo               | Pumpkin-orange, not premium copper             |
+| `rgba(250, 232, 192) → rgba(240, 218, 168)` for hero | Pale yellow cream, not deep premium champagne  |
 
 **Improvement direction (allowed):** finer saturation tuning, micro-adjustments to opacity/spread, additional 3D depth refinements that respect the palette. Anything that **shifts the warm tone back toward yellow** or **makes the cool surfaces white** requires explicit owner override (per the rule above).

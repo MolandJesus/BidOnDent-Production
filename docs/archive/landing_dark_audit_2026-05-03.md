@@ -16,6 +16,7 @@ Walked every landing surface in dark mode. Compared against the dashboard's gold
 **State:** At parity (intentionally lighter than dashboard).
 
 D5/D7 already added gold-lamp trim:
+
 - Inset bottom warm: `rgba(220, 165, 90, 0.18)`
 - Warm ring: `rgba(220, 165, 90, 0.13)`
 - Warm outer halo: `rgba(220, 140, 50, 0.20)`
@@ -69,6 +70,7 @@ Primary CTA (line 370–382) hand-rolls `rounded-[1.75rem]` + 3-stop gradient + 
 Secondary CTA (line 383–390) likewise hand-rolls.
 
 The gap is real. The fix is not. To pick up the system would require either:
+
 - Replacing the entire className with `bd-dashboard-primary-button`, which would lose the 3-stop hero gradient (visible regression risk on a marketing-anchor CTA).
 - Forking the `bd-dashboard-primary-button` system to add a hero-gradient variant (defeats D10's "system-level discipline, no per-component overrides" rule from `feedback_autopilot_rules.md`-adjacent prior decisions).
 

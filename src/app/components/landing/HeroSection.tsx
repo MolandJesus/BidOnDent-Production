@@ -158,7 +158,10 @@ export default function HeroSection({
                 orb so it tracks the same cinematic motion. */}
             <div
               className="absolute -top-24 left-1/2 -translate-x-1/2 w-[42rem] h-[24rem] bg-amber-400/[0.10] rounded-full blur-[160px]"
-              style={{ transform: `translate(-50%, ${parallaxY * 0.3}px)`, willChange: "transform" }}
+              style={{
+                transform: `translate(-50%, ${parallaxY * 0.3}px)`,
+                willChange: "transform",
+              }}
             />
           </>
         )}
@@ -197,11 +200,7 @@ export default function HeroSection({
         />
 
         {/* Greenhouse / window line */}
-        <path
-          d="M 138 90 L 200 66 L 300 66 L 350 90"
-          strokeWidth="0.85"
-          opacity="0.40"
-        />
+        <path d="M 138 90 L 200 66 L 300 66 L 350 90" strokeWidth="0.85" opacity="0.40" />
 
         {/* Belt line / panel separation */}
         <line x1="116" y1="98" x2="402" y2="98" strokeWidth="0.6" opacity="0.32" />
@@ -431,9 +430,7 @@ export default function HeroSection({
                     Auto Body Repair
                   </span>
                 ) : (
-                  <span style={{ color: "#bfdbfe" }}>
-                    Auto Body Repair
-                  </span>
+                  <span style={{ color: "#bfdbfe" }}>Auto Body Repair</span>
                 )}
               </h2>
               <p
@@ -887,18 +884,14 @@ export default function HeroSection({
                 {/* Layer 2 — topographic contour grid */}
                 <div
                   className={
-                    isLightAppearance
-                      ? "bd-map-contour"
-                      : "bd-map-contour bd-map-contour--dark"
+                    isLightAppearance ? "bd-map-contour" : "bd-map-contour bd-map-contour--dark"
                   }
                 />
 
                 {/* Layer 3 — drifting liquid gold (marketplace energy) */}
                 <div
                   className={`bd-liquid-gold-flow ${
-                    isLightAppearance
-                      ? "bd-liquid-gold-flow--light"
-                      : "bd-liquid-gold-flow--dark"
+                    isLightAppearance ? "bd-liquid-gold-flow--light" : "bd-liquid-gold-flow--dark"
                   }`}
                 />
 
@@ -981,9 +974,7 @@ export default function HeroSection({
                 <div
                   className="absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md pointer-events-none"
                   style={{
-                    background: isLightAppearance
-                      ? "rgba(252,238,204,0.78)"
-                      : "rgba(8,18,38,0.74)",
+                    background: isLightAppearance ? "rgba(252,238,204,0.78)" : "rgba(8,18,38,0.74)",
                     borderColor: isLightAppearance
                       ? "rgba(140,82,22,0.32)"
                       : "rgba(196,144,65,0.36)",

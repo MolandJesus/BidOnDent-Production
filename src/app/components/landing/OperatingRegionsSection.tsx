@@ -209,8 +209,7 @@ export default function OperatingRegionsSection({
                     }
                   : {
                       backgroundColor: "#071830",
-                      boxShadow:
-                        "0 36px 90px rgba(2,6,23,0.50), 0 12px 32px rgba(37,99,235,0.12)",
+                      boxShadow: "0 36px 90px rgba(2,6,23,0.50), 0 12px 32px rgba(37,99,235,0.12)",
                     }
               }
             >

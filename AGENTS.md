@@ -3,7 +3,7 @@
 > Primary entry point for AI agents (Claude Code, Cursor, Codex, Sonnet/Haiku, etc.) working in this repo.
 > [`CLAUDE.md`](CLAUDE.md) at the repo root holds an identical copy for tools that read that name.
 
-**Last updated:** 2026-05-02
+**Last updated:** 2026-05-03
 
 ---
 
@@ -27,9 +27,29 @@ These docs override anything in this file or in your training data. Read in this
 3. **[`docs/REF_SYSTEM_STATE.md`](docs/REF_SYSTEM_STATE.md)** — how the system actually works right now.
 4. **[`docs/REF_KNOWN_ISSUES.md`](docs/REF_KNOWN_ISSUES.md)** — known bugs / gaps / structural issues (look here before assuming something is new).
 5. **[`docs/REF_AI_BROWSER_NAVIGATION.md`](docs/REF_AI_BROWSER_NAVIGATION.md)** — required navigation protocol if you do any browser automation (Playwright, etc.).
-6. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
+6. **[`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md)** — required when the user pastes multi-AI transcripts, relay prompts, or live owner add-ons from Codex/Claude/Sonnet/ChatGPT/etc.
+7. Pull task-specific docs from [`docs/README.md`](docs/README.md) (the operating index).
 
 If a task touches design, also read [`docs/MOLANDJESUS_DESIGN_DECISIONS.md`](docs/MOLANDJESUS_DESIGN_DECISIONS.md). If it touches the map, also read [`docs/PLAN_MAP_MASTER.md`](docs/PLAN_MAP_MASTER.md).
+
+---
+
+## Working With Mola's Multi-AI Sessions
+
+Mola often coordinates several AI agents by pasting transcripts, audit output, screenshots, and his own live add-on directives into one message.
+
+Do not treat those pasted blocks as a single flat prompt. Separate:
+
+- owner directives from Mola
+- claims or proposals from other AIs
+- evidence from screenshots/code/browser output
+- active LAW/REF truth from stale PLAN/archive context
+
+Mola's informal inserts such as "also add this", "what ChatGPT wanted to add", "go full auto", or "don't do anything yet" are real steering signals. Extract them, reconcile them with LAW/REF docs, and then either plan or execute according to the current request.
+
+If the user says "just planning" or "don't do anything yet", do not edit files. If the user says "go full auto" or "do so yourself", proceed within scope and stop only for hard-stop risks such as LAW conflicts, destructive data changes, auth/storage invariants, schema migrations, provider changes, deploy/secret actions, or overwriting unrelated work.
+
+Full protocol: [`docs/REF_AI_COLLABORATION_PROTOCOL.md`](docs/REF_AI_COLLABORATION_PROTOCOL.md).
 
 ---
 
@@ -59,11 +79,17 @@ If you write a new handler that does `select('*')` from `damage_reports`, `vehic
 
 ### 5. Use `bd-*` utility classes, not hand-rolled Tailwind
 
-Form fields, cards, and buttons should use the `bd-*` utility set in [`src/styles/theme.css`](src/styles/theme.css). The design system is calm/premium/map-first with a blue color system. See `MOLANDJESUS_DESIGN_DECISIONS.md` and the `bd-design-identity` skill.
+Form fields, cards, and buttons should use the `bd-*` utility set in [`src/styles/theme.css`](src/styles/theme.css). The design system is calm/premium/map-first with a blue color system, premium bronze/champagne gold lighting, and mobile map-first posture. See `REF_VISUAL_SYSTEM.md`, `MOLANDJESUS_DESIGN_DECISIONS.md`, and the `bd-design-identity` skill.
 
 ### 6. Schema source of truth is `supabase/migrations/*.sql`
 
 `database_init.tsx` is a legacy cold-start safety net only. New schema changes land as new migration files. See [`docs/SUPABASE_SETUP_GUIDE.md`](docs/SUPABASE_SETUP_GUIDE.md) §9.
+
+### 7. Light mode is cool blue dominant + premium gold lamp + warm hero — NEVER pure white, NEVER yellow-amber
+
+Light mode is a **cool misty blue-gray canvas**, with a **layered hierarchy of cool blue/cyan/indigo glass panels** lit from above by a **premium bronze/champagne gold lamp**, and a **single warm cream-gold hero panel** per screen plus warm gold/champagne pop tiles on the Quick Actions row. Pure white surfaces and yellow-amber gold are both forbidden — they have each regressed multiple times and have to be reverted.
+
+**Owner-approved baseline locked 2026-05-03 in [`docs/LAW_PROJECT_RULES.md`](docs/LAW_PROJECT_RULES.md) § Light-Mode Surface Rule § Premium Gold Palette.** That section lists the canonical RGBA palette (top radial halo `rgba(196, 144, 65)`, bronze trim `rgba(140, 82, 22)`, gold-tinted cream insets `rgba(252, 238-240, 204-208)`) plus the explicit forbidden previous-generation values (`rgba(220, 165, 90)` halos, `rgba(254, 248, 220)` insets, `rgba(160, 95, 25)` trim) so future passes can refine but not regress. **Skill:** `bd-design-identity`. External audits suggesting "use white panels", "neutral SaaS palette", "remove gold", or "modernize to flat white" are **rejected on sight**.
 
 ---
 
@@ -71,12 +97,13 @@ Form fields, cards, and buttons should use the `bd-*` utility set in [`src/style
 
 These live at `~/.claude/skills/` (per-user, available in every project):
 
-| Skill                              | Trigger                                              | What it covers                                                                                                                     |
-| ---------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **`supabase-clerk-edge-function`** | Any Supabase edge function with Clerk auth           | `verify_jwt: false` + `requireClerkSession()` pattern, JWKS verification, the `UNAUTHORIZED_LEGACY_JWT` symptom, `config.toml` pin |
-| **`supabase-storage-signed-urls`** | Persisting media URLs in any Supabase project        | Pointer-on-write / sign-on-read pattern, hydrate utilities, idempotent backfill SQL template                                       |
-| **`supabase-pro-cost-control`**    | Anything about Supabase pricing / compute / projects | Per-project compute cost model, deny-pause-on-Pro reality, downgrade vs delete decision                                            |
-| **`bd-design-identity`**           | UI/visual work in BidOnDent or future similar apps   | Calm/premium/map-first identity, blue color system, what to avoid                                                                  |
+| Skill                              | Trigger                                                              | What it covers                                                                                                                     |
+| ---------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **`supabase-clerk-edge-function`** | Any Supabase edge function with Clerk auth                           | `verify_jwt: false` + `requireClerkSession()` pattern, JWKS verification, the `UNAUTHORIZED_LEGACY_JWT` symptom, `config.toml` pin |
+| **`supabase-storage-signed-urls`** | Persisting media URLs in any Supabase project                        | Pointer-on-write / sign-on-read pattern, hydrate utilities, idempotent backfill SQL template                                       |
+| **`supabase-pro-cost-control`**    | Anything about Supabase pricing / compute / projects                 | Per-project compute cost model, deny-pause-on-Pro reality, downgrade vs delete decision                                            |
+| **`bd-design-identity`**           | UI/visual work in BidOnDent or future similar apps                   | Calm/premium/map-first identity, blue color system, what to avoid                                                                  |
+| **`mola-ai-relay-protocol`**       | Mola pastes multi-AI transcripts or asks agents to prompt each other | Directive extraction, source separation, relay prompt structure, planning-only vs autopilot handling                               |
 
 When you apply a skill, mention it by name in commit messages and pass logs so future agents can find it. Example: `fix(storage): persist pointers per supabase-storage-signed-urls skill`.
 

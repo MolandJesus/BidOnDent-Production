@@ -1,6 +1,6 @@
 # BidOnDent Docs Operating Index
 
-**Last updated:** 2026-05-02
+**Last updated:** 2026-05-03
 **Status:** Active documentation operating index
 **Current phase:** Soft Launch Hardening (edge functions v50, `verify_jwt: false`, storage pointer pattern)
 
@@ -23,24 +23,25 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 
 ### REFERENCE (current truth)
 
-| Document                                                           | Purpose                                                                                                                                                                                |
-| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)**                   | How the system actually works now. Architecture, auth flow, state ownership, role reality, map stack, known bottlenecks. **Read this instead of the old CLAUDE_AI_MASTER_CONTEXT.md.** |
-| **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)**                   | Living inventory of known bugs, gaps, and structural issues with IDs, impact, and fix direction.                                                                                       |
-| **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** | Browser automation/navigation rules for AI agents, including the logo-first landing return protocol and map QA screenshot checklist.                                                   |
-| **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**                 | Current visual system: identity, `bd-*` utility inventory, cross-app adoption status, intentionally separate sibling systems. Single source of truth for design state across landing + dashboard + app surfaces. |
-| [`REF_MODULE_STATUS.md`](REF_MODULE_STATUS.md)                     | Module completion status (3 roles × 7 modules).                                                                                                                                        |
-| [`REF_CODE_ORGANIZATION.md`](REF_CODE_ORGANIZATION.md)             | Codebase structure, safe seams, extraction boundaries.                                                                                                                                 |
+| Document                                                                   | Purpose                                                                                                                                                                                                          |
+| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)**                           | How the system actually works now. Architecture, auth flow, state ownership, role reality, map stack, known bottlenecks. **Read this instead of the old CLAUDE_AI_MASTER_CONTEXT.md.**                           |
+| **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)**                           | Living inventory of known bugs, gaps, and structural issues with IDs, impact, and fix direction.                                                                                                                 |
+| **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)**         | Browser automation/navigation rules for AI agents, including the logo-first landing return protocol and map QA screenshot checklist.                                                                             |
+| **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** | Multi-AI collaboration rules: how to parse Mola's pasted AI transcripts, embedded owner directives, relay prompts, planning-only cues, and autopilot permissions.                                                |
+| **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**                         | Current visual system: identity, `bd-*` utility inventory, cross-app adoption status, intentionally separate sibling systems. Single source of truth for design state across landing + dashboard + app surfaces. |
+| [`REF_MODULE_STATUS.md`](REF_MODULE_STATUS.md)                             | Module completion status (3 roles × 7 modules).                                                                                                                                                                  |
+| [`REF_CODE_ORGANIZATION.md`](REF_CODE_ORGANIZATION.md)                     | Codebase structure, safe seams, extraction boundaries.                                                                                                                                                           |
 
 ### PLAN (future direction — not current truth)
 
-| Document                                                     | Purpose                                                                                           |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) | Deliberately deferred work with priority bands and triggers. Not a backlog.                       |
-| [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)             | Strategic product vision. Paused during hardening.                                                |
-| [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.             |
-| [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger. |
-| [`PLAN_DASHBOARD_REDESIGN.md`](PLAN_DASHBOARD_REDESIGN.md)   | Dashboard premium-lift plan (2026-05-02) — **PRE-EXECUTION**. Brings landing's *quality* bar to all 4 roles' dashboard surfaces (~139 component files across customer/shop/insurer/admin) without violating the §9 inheritance rule (no automotive register, no warm amber atmosphere, no Direction C accents on dashboard). 12 owner-gated passes proposed (D1–D12). 6 open questions to answer before D1. Awaiting greenlight. |
+| Document                                                     | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`PLAN_POST_LAUNCH_ROADMAP.md`](PLAN_POST_LAUNCH_ROADMAP.md) | Deliberately deferred work with priority bands and triggers. Not a backlog.                                                                                                                                                                                                                                                                                                                                                      |
+| [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)             | Strategic product vision. Paused during hardening.                                                                                                                                                                                                                                                                                                                                                                               |
+| [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.                                                                                                                                                                                                                                                                                                                                            |
+| [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger.                                                                                                                                                                                                                                                                                                                                |
+| [`PLAN_DASHBOARD_REDESIGN.md`](PLAN_DASHBOARD_REDESIGN.md)   | Dashboard premium-lift plan (2026-05-02) — **PRE-EXECUTION**. Brings landing's _quality_ bar to all 4 roles' dashboard surfaces (~139 component files across customer/shop/insurer/admin) without violating the §9 inheritance rule (no automotive register, no warm amber atmosphere, no Direction C accents on dashboard). 12 owner-gated passes proposed (D1–D12). 6 open questions to answer before D1. Awaiting greenlight. |
 
 > **Landing-page plans archived 2026-05-03.** The original 16-pass landing redesign and the follow-up Liquid Map Intelligence / dark-mode parity / button-system passes all shipped. They live under `docs/archive/` for historical decision context. Current landing visual state lives in **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**.
 
@@ -57,7 +58,8 @@ Read in this order:
 3. **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)** — how the system actually works (includes AI reading order by task type).
 4. **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)** — what's broken or missing.
 5. **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — required browser automation navigation protocol for Playwright-like tools.
-6. Then pick task-specific docs from the sections below.
+6. **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — required when Mola pastes multi-AI transcripts, relay prompts, or live add-on directives.
+7. Then pick task-specific docs from the sections below.
 
 ---
 
@@ -73,6 +75,12 @@ These are the primary governing documents. Always start here.
 - **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — long-form design philosophy and historical decisions. The "why behind the system."
 - **[`VISUAL_AUDIT_PREP_2026-05-03.md`](VISUAL_AUDIT_PREP_2026-05-03.md)** — strengths/risks/audit targets snapshot prepared for the upcoming Sonnet visual audit.
 - **[`HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`](HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md)** — copy-paste-ready prompt for Sonnet's deep visual audit pass.
+- **[`HANDOFF_VISUAL_NEXT_PASS_PROMPT_OPUS_2026-05-03.md`](HANDOFF_VISUAL_NEXT_PASS_PROMPT_OPUS_2026-05-03.md)** — copy-paste-ready prompt for the later Opus visual next-pass planning/build chat after screenshots and, ideally, the Sonnet audit.
+
+### AI Collaboration / Handoffs
+
+- **[`REF_AI_COLLABORATION_PROTOCOL.md`](REF_AI_COLLABORATION_PROTOCOL.md)** — canonical rules for Mola's multi-AI workflow. Read when a message includes pasted AI output, screenshots/logs from another tool, live owner add-ons, or instructions to plan-only vs go full autopilot.
+- **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** — canonical rules for browser automation and route recovery.
 
 ### Phase / Audit Docs (open-ended)
 
@@ -97,6 +105,7 @@ Project-specific patterns that future projects can reuse live under `~/.claude/s
 - `supabase-storage-signed-urls` — pointer-on-write, sign-on-read; backfill template (covers KI-058)
 - `supabase-pro-cost-control` — per-project compute cost model (covers KI-061)
 - `bd-design-identity` — calm/premium/map-first / blue-system rules (companion to `MOLANDJESUS_DESIGN_DECISIONS.md`)
+- `mola-ai-relay-protocol` — directive extraction and safe multi-AI relay/autopilot handling for Mola's pasted transcripts and handoffs
 
 ### Archive
 
@@ -133,6 +142,7 @@ Use the smallest doc set that answers the task. `REF_SYSTEM_STATE.md` contains a
 - **Bug fix:** add `REF_KNOWN_ISSUES.md` (check if it's already known).
 - **Refactor or extraction:** add `REF_CODE_ORGANIZATION.md`.
 - **Map strategy (strategic, not feature-level):** add `PLAN_MAP_MASTER.md`.
+- **Multi-AI transcript / handoff prompt:** add `REF_AI_COLLABORATION_PROTOCOL.md`.
 - **Setup / auth / storage work:** add `SUPABASE_SETUP_GUIDE.md` (esp. §16 + §17) — and confirm the change respects Launch Scope Guardrails. Use the relevant skill (`supabase-clerk-edge-function`, `supabase-storage-signed-urls`).
 - **Cost / billing question:** `SUPABASE_SETUP_GUIDE.md` §1 + the `supabase-pro-cost-control` skill.
 - **Considering a deferred item:** read the Post-Launch Roadmap entry first; do not reactivate without a fired trigger.

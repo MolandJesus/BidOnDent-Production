@@ -2,7 +2,7 @@
 
 **Authority level:** REFERENCE — describes the current system as it actually works. Not a vision doc. Not a roadmap.
 
-**Last updated:** 2026-05-03 (visual system pointer to `REF_VISUAL_SYSTEM.md`; landing visual plans archived; gold-lamp identity at top of landing in dark mode shipped)
+**Last updated:** 2026-05-03 (visual system pointer to `REF_VISUAL_SYSTEM.md`; landing visual plans archived; gold-lamp identity at top of landing in dark mode shipped; AI collaboration protocol added)
 
 **Build:** 0 TS errors, 568/568 tests passing, ~3.4s
 
@@ -20,13 +20,14 @@
 
 Before starting work, read docs in this order based on task type:
 
-| Task                                | Reading order                                                                                      |
-| ----------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **Bug fix**                         | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code                                   |
-| **Feature (within hardening plan)** | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code                                 |
-| **Architecture change**             | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `PLAN_POST_LAUNCH_ROADMAP.md` → code |
-| **Planning session**                | All LAW → all REF → all PLAN → code as needed                                                      |
-| **UI/design work**                  | `LAW_PROJECT_RULES.md` → this doc → `theme.css` → code                                             |
+| Task                                   | Reading order                                                                                                         |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **Bug fix**                            | `LAW_PROJECT_RULES.md` → `REF_KNOWN_ISSUES.md` → this doc → code                                                      |
+| **Feature (within hardening plan)**    | `LAW_HARDENING_PLAN.md` → `LAW_PROJECT_RULES.md` → this doc → code                                                    |
+| **Architecture change**                | `LAW_PROJECT_RULES.md` → `LAW_HARDENING_PLAN.md` → this doc → `PLAN_POST_LAUNCH_ROADMAP.md` → code                    |
+| **Planning session**                   | All LAW → all REF → all PLAN → code as needed                                                                         |
+| **UI/design work**                     | `LAW_PROJECT_RULES.md` → `REF_VISUAL_SYSTEM.md` → `MOLANDJESUS_DESIGN_DECISIONS.md` → this doc → `theme.css` → code   |
+| **Multi-AI transcript / relay prompt** | `LAW_PROJECT_RULES.md` → `REF_AI_COLLABORATION_PROTOCOL.md` → task-specific docs → code only if execution is approved |
 
 **If this doc and `LAW_HARDENING_PLAN.md` disagree, the Hardening Plan wins.** Flag the conflict.
 
@@ -252,17 +253,17 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 
 ### Active and Foundational
 
-| Component                                            | Purpose                                                          | Status                                |
-| ---------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------- |
-| MapLibre GL JS + react-map-gl                        | WebGL map rendering                                              | Active, stable                        |
-| CustomerMapWidget / ShopMapWidget / InsurerMapWidget | Dashboard home map previews                                      | Active                                |
-| ShopDirectoryScreen + MapLibreShopDirectoryMapPane   | Full interactive shop discovery                                  | Active                                |
-| Shared `server` geocode route                        | Browser-safe Nominatim proxy for address/origin/report geocoding | Active                                |
-| PostGIS geography columns                            | Spatial data storage                                             | Active                                |
-| getNearbyShops endpoint                              | Find shops near a location                                       | Built, **not wired to customer flow** |
-| getReportsInServiceArea endpoint                     | Filter reports by shop service area                              | Built, **not wired to shop flow**     |
-| shop_service_areas table + CRUD                      | Shop service area polygons                                       | Active, CRUD works                    |
-| Tile caching (service worker, 7-day TTL)             | Performance                                                      | Active                                |
+| Component                                            | Purpose                                                          | Status                                                                  |
+| ---------------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| MapLibre GL JS + react-map-gl                        | WebGL map rendering                                              | Active, stable                                                          |
+| CustomerMapWidget / ShopMapWidget / InsurerMapWidget | Dashboard home map previews                                      | Active                                                                  |
+| ShopDirectoryScreen + MapLibreShopDirectoryMapPane   | Full interactive shop discovery                                  | Active                                                                  |
+| Shared `server` geocode route                        | Browser-safe Nominatim proxy for address/origin/report geocoding | Active                                                                  |
+| PostGIS geography columns                            | Spatial data storage                                             | Active                                                                  |
+| getNearbyShops endpoint                              | Find shops near a location                                       | Built, **not wired to customer flow**                                   |
+| getReportsInServiceArea endpoint                     | Filter reports by shop service area                              | Active — wired into shop marketplace via PostGIS service-area filtering |
+| shop_service_areas table + CRUD                      | Shop service area polygons                                       | Active, CRUD works                                                      |
+| Tile caching (service worker, 7-day TTL)             | Performance                                                      | Active                                                                  |
 
 ### Built but Frozen
 
@@ -301,7 +302,11 @@ Persisted media URLs in `damage_reports.photo_urls` (text[]), `*.profile_image_u
 - Navy — depth / night background
 - Gold/amber (alpha 0.10–0.25 only) — lighting, halo, rim trim, marketplace energy. **Never primary button infill.**
 
-**Identity continuity (Pass G shipped 2026-05-03):** the dashboard's navy-lit-by-gold-lamp shadow stack now mirrors at the top of landing in dark mode (scrolled header inset gold trim + ambient gold glow + lamp wash on hero atmosphere + amber lamp orb). Landing → dashboard navigation in dark mode reads as the same room.
+**Identity continuity (2026-05-03):** the dashboard's navy-lit-by-gold-lamp shadow stack now mirrors at the top of landing in dark mode (scrolled header inset gold trim + ambient gold glow + lamp wash on hero atmosphere + amber lamp orb). Light mode is LAW-locked as cool blue-gray canvas + bronze/champagne lamp-light + warm hero, not white SaaS. Landing → dashboard navigation should read as one product world.
+
+**Current post-V3 visual state (2026-05-03):** landing and dashboard already carry the premium gold/liquid-glass register across both modes. Recent shipped passes include V1/V2/V3 visual hardening, sidebar/header/search gold-language polish, atmospheric shadow falloff on panels/sections, hero-map double-tap/full-map dispatch, and full landing `CoverageMapDialog` shell retuned to premium gold + cool blue. Future visual work must improve these wins, not reset them.
+
+**Mobile visual watchlist:** mobile dashboard bottom tabs are the correct pattern and should stay. The mobile landing/dashboard experience now needs viewport-economy polish: safe-area spacing, compact report-flow headers/progress, stronger map focus, no bottom-browser-toolbar overlap, and map dialogs that keep the map visible instead of letting a large sheet dominate the viewport.
 
 **Note:** `primaryColor` and `secondaryColor` are threaded as props through the component tree. These are constants that never change. They should be CSS custom properties but this refactor is deferred.
 
