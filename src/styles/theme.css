@@ -1293,16 +1293,19 @@ body {
   transform: scale(0.97);
 }
 
+/* D4 final v2 modal panel — dark: navy infill + amber trim/lamp-glow lighting.
+   Mirrors bd-glass-card--dashboard dark, premium-floating shadow tier. */
 .dark .bd-glass-floating,
 [data-theme="dark"] .bd-glass-floating {
-  border-color: rgba(96, 165, 250, 0.24);
-  background: linear-gradient(180deg, rgba(18, 36, 60, 0.96) 0%, rgba(12, 25, 41, 0.92) 100%);
+  border-color: rgba(220, 165, 90, 0.36);
+  background: linear-gradient(180deg, rgba(11, 23, 47, 0.94) 0%, rgba(8, 18, 38, 0.90) 100%);
   box-shadow:
-    0 24px 56px rgba(2, 6, 23, 0.5),
-    0 4px 12px rgba(2, 6, 23, 0.3),
-    0 0 1px rgba(96, 165, 250, 0.35),
-    inset 0 1px 0 rgba(147, 197, 253, 0.1),
-    0 0 40px rgba(37, 99, 235, 0.08);
+    0 24px 56px rgba(2, 6, 23, 0.50),
+    0 4px 12px rgba(2, 6, 23, 0.28),
+    inset 0 1px 0 rgba(253, 220, 160, 0.20),
+    inset 0 -1px 0 rgba(180, 100, 30, 0.10),
+    0 0 0 1px rgba(220, 165, 90, 0.22),
+    0 0 44px rgba(220, 130, 50, 0.22);
 }
 
 .dark .bd-glass-card,
@@ -1722,20 +1725,24 @@ body {
   color: #0f172a;
 }
 
-/* Frosted floating — elevated warm ivory glass panel on navy */
+/* Frosted floating — D4 final v2 modal panel: gold off-white surface + cool-blue
+   primary ring stacked with faint amber secondary ring + amber lamp glow. Same
+   recipe family as bd-glass-card--dashboard light, premium-floating shadow tier. */
 [data-appearance-mode="light"] .bd-glass-floating {
-  border-color: rgba(200, 180, 150, 0.26);
+  border-color: rgba(147, 197, 253, 0.34);
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 248, 235, 0.1), transparent 70%),
-    linear-gradient(180deg, rgba(255, 253, 248, 0.94) 0%, rgba(250, 247, 240, 0.9) 100%);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(220, 165, 90, 0.06), transparent 70%),
+    linear-gradient(180deg, rgba(255, 253, 248, 0.94) 0%, rgba(250, 247, 240, 0.90) 100%);
   color: #1e293b;
   backdrop-filter: blur(28px) saturate(1.5);
   -webkit-backdrop-filter: blur(28px) saturate(1.5);
   box-shadow:
-    0 16px 48px rgba(15, 23, 42, 0.12),
-    0 0 0 1px rgba(200, 180, 150, 0.14),
-    inset 0 1px 0 rgba(255, 255, 250, 0.98),
-    0 0 32px rgba(59, 130, 246, 0.04);
+    0 18px 52px rgba(15, 23, 42, 0.14),
+    0 0 0 1px rgba(191, 219, 254, 0.22),
+    0 0 0 1px rgba(220, 165, 90, 0.10),
+    inset 0 1px 0 rgba(255, 255, 252, 0.98),
+    inset 0 -1px 0 rgba(191, 219, 254, 0.10),
+    0 0 36px rgba(220, 140, 50, 0.10);
 }
 
 /* Frosted warm glow utilities */

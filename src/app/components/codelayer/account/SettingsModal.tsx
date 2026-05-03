@@ -74,7 +74,7 @@ export default function SettingsModal({ isOpen, primaryColor, onClose }: Setting
       <div
         aria-labelledby="settings-modal-title"
         aria-modal="true"
-        className={`bd-glass-floating mx-auto my-3 sm:my-6 w-full max-w-md rounded-2xl border shadow-2xl sm:my-10 max-h-[calc(100dvh-1.5rem)] sm:max-h-[90vh] overflow-hidden flex flex-col ${isLight ? "bd-light-surface border-slate-200/70 bg-white/98" : "border-blue-300/20 bg-slate-950/96"}`}
+        className={`bd-glass-floating mx-auto my-3 sm:my-6 w-full max-w-md rounded-2xl shadow-2xl sm:my-10 max-h-[calc(100dvh-1.5rem)] sm:max-h-[90vh] overflow-hidden flex flex-col${isLight ? " bd-light-surface" : ""}`}
         onMouseDown={(event) => event.stopPropagation()}
         role="dialog"
       >
