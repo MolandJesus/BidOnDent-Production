@@ -310,8 +310,8 @@ export default function VehicleProfileScreen({
                 </button>
                 <button
                   onClick={handleSave}
-                  className="flex-1 px-4 py-2 text-white rounded-md font-medium"
-                  style={{ backgroundColor: primaryColor }}
+                  className="bd-dashboard-primary-button flex-1 px-4 py-2 text-white font-medium"
+                  style={{ background: primaryColor }}
                 >
                   Save Vehicle
                 </button>
