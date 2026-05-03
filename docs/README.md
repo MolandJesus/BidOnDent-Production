@@ -28,6 +28,7 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 | **[`REF_SYSTEM_STATE.md`](REF_SYSTEM_STATE.md)**                   | How the system actually works now. Architecture, auth flow, state ownership, role reality, map stack, known bottlenecks. **Read this instead of the old CLAUDE_AI_MASTER_CONTEXT.md.** |
 | **[`REF_KNOWN_ISSUES.md`](REF_KNOWN_ISSUES.md)**                   | Living inventory of known bugs, gaps, and structural issues with IDs, impact, and fix direction.                                                                                       |
 | **[`REF_AI_BROWSER_NAVIGATION.md`](REF_AI_BROWSER_NAVIGATION.md)** | Browser automation/navigation rules for AI agents, including the logo-first landing return protocol and map QA screenshot checklist.                                                   |
+| **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**                 | Current visual system: identity, `bd-*` utility inventory, cross-app adoption status, intentionally separate sibling systems. Single source of truth for design state across landing + dashboard + app surfaces. |
 | [`REF_MODULE_STATUS.md`](REF_MODULE_STATUS.md)                     | Module completion status (3 roles × 7 modules).                                                                                                                                        |
 | [`REF_CODE_ORGANIZATION.md`](REF_CODE_ORGANIZATION.md)             | Codebase structure, safe seams, extraction boundaries.                                                                                                                                 |
 
@@ -39,8 +40,9 @@ Documents are organized in three tiers: **LAW > REFERENCE > PLAN**. LAW docs ove
 | [`PLAN_PRODUCT_BRAIN.md`](PLAN_PRODUCT_BRAIN.md)             | Strategic product vision. Paused during hardening.                                                |
 | [`PLAN_MAP_MASTER.md`](PLAN_MAP_MASTER.md)                   | Map strategy and product law. Feature-level map work paused; strategic vision intact.             |
 | [`PLAN_PAYMENT_MODEL.md`](PLAN_PAYMENT_MODEL.md)             | Payment model. **Deferred** per Post-Launch Roadmap F1. Do not implement without a fired trigger. |
-| [`PLAN_LANDING_REDESIGN.md`](PLAN_LANDING_REDESIGN.md)       | Landing-page redesign plan — **STATUS COMPLETE 2026-05-02**. Passes 1–11 shipped the redesign (Direction B Amber-Lit Garage, Direction C luminance, automotive identity, atmospheric bloom-bridges). Passes 12–15 are post-signoff editorial-typography refinement — flanking accents on 7 of 10 section H3s using each section's locked Direction C color (gold for warm sections, sky/royal/cobalt/slate for cool, white-cream for CTA). Latest main: `fdcff97f`. Source audits archived under `docs/archive/`. |
 | [`PLAN_DASHBOARD_REDESIGN.md`](PLAN_DASHBOARD_REDESIGN.md)   | Dashboard premium-lift plan (2026-05-02) — **PRE-EXECUTION**. Brings landing's *quality* bar to all 4 roles' dashboard surfaces (~139 component files across customer/shop/insurer/admin) without violating the §9 inheritance rule (no automotive register, no warm amber atmosphere, no Direction C accents on dashboard). 12 owner-gated passes proposed (D1–D12). 6 open questions to answer before D1. Awaiting greenlight. |
+
+> **Landing-page plans archived 2026-05-03.** The original 16-pass landing redesign and the follow-up Liquid Map Intelligence / dark-mode parity / button-system passes all shipped. They live under `docs/archive/` for historical decision context. Current landing visual state lives in **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)**.
 
 **If any doc conflicts with LAW docs, LAW wins.** Flag the conflict and fix it.
 
@@ -67,7 +69,10 @@ These are the primary governing documents. Always start here.
 
 ### Design
 
-- **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — design philosophy and visual hierarchy. Aesthetic work frozen during hardening except where required by Phase 4 trust surfaces.
+- **[`REF_VISUAL_SYSTEM.md`](REF_VISUAL_SYSTEM.md)** — current visual system state. Read first for any design work.
+- **[`MOLANDJESUS_DESIGN_DECISIONS.md`](MOLANDJESUS_DESIGN_DECISIONS.md)** — long-form design philosophy and historical decisions. The "why behind the system."
+- **[`VISUAL_AUDIT_PREP_2026-05-03.md`](VISUAL_AUDIT_PREP_2026-05-03.md)** — strengths/risks/audit targets snapshot prepared for the upcoming Sonnet visual audit.
+- **[`HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`](HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md)** — copy-paste-ready prompt for Sonnet's deep visual audit pass.
 
 ### Phase / Audit Docs (open-ended)
 
@@ -97,7 +102,15 @@ Project-specific patterns that future projects can reuse live under `~/.claude/s
 
 Everything under [`docs/archive/`](archive/) is historical reference, retained for traceability. Not active operating surface.
 
-Most recent archive moves (2026-05-02):
+Most recent archive moves (2026-05-03):
+
+- `PLAN_LANDING_REDESIGN.md` → archive — 16-pass landing redesign, STATUS COMPLETE 2026-05-02.
+- `PLAN_LANDING_LIQUID_MAP_INTELLIGENCE.md` → archive — Passes A–G shipped; Pass H (verification) handed off to Sonnet via `HANDOFF_VISUAL_AUDIT_PROMPT_SONNET_2026-05-03.md`.
+- `PLAN_LANDING_BUTTON_SYSTEM_ADOPTION.md` → archive — cross-app primary-CTA shell adoption, SHIPPED 2026-05-03.
+- `PLAN_LANDING_DARK_MODE_PARITY.md` → archive — superseded twice, then absorbed into the gold-lamp landing pass shipped 2026-05-03.
+- `landing_dark_audit_2026-05-03.md`, `landing_signature_audit_2026-05-03.md`, `landing_visual_audit_2026-05-03.md` → archive — pre-fix audit snapshots; issues addressed by subsequent hero polish + gold-lamp passes.
+
+Earlier archive moves (2026-05-02):
 
 - `BIDONDENT_MAP_TRACKER_2026-03-21.md` → archive — 2127-line pass log, superseded by `REF_MODULE_STATUS.md`. Preserved as audit trail.
 - `AUDIT_FIX_PLAN_2026-04-27.md` → archive — Pass A-O completed (commits b860062f, 4f077536); residual items moved to `REF_KNOWN_ISSUES.md` if any.

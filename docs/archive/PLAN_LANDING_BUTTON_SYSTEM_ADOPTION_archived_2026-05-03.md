@@ -1,4 +1,6 @@
-# PLAN — Cross-App Button-System Adoption (Pass G follow-up, expanded)
+# PLAN — Cross-App Button-System Adoption (Pass G follow-up, expanded) — ARCHIVED 2026-05-03
+
+> **ARCHIVED 2026-05-03.** All work in this plan shipped. Subsequent input-system unification (`bd-report-input` adopted across auth, landing inquiry forms, account modals) is recorded in `docs/REF_VISUAL_SYSTEM.md` rather than a separate plan. Read this doc only for historical decision context.
 
 **Status:** SHIPPED — landing L1-L5 adopted; cross-app sweep added 16 more buttons across auth, onboarding, modals, legal pages, and root error boundary
 **Owner:** MolandJesus
