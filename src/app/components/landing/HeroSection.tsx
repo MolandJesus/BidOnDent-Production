@@ -1,6 +1,4 @@
 import { ChevronRight, CheckCircle, Play, Car } from "lucide-react";
-import { ImageWithFallback } from "../figma/ImageWithFallback";
-import { ImageErrorBoundary } from "../ImageErrorBoundary";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParallaxOffset } from "../../hooks/useParallaxOffset";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
@@ -24,7 +22,9 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection({
-  heroImage,
+  // heroImage retained in HeroSectionProps for parent compatibility but
+  // no longer rendered (Pass C 2026-05-03 — Liquid Map Intelligence scene
+  // replaced the photo on the right column).
   primaryColor,
   secondaryColor,
   ctaButtonText,
@@ -414,39 +414,168 @@ export default function HeroSection({
             className={`lg:w-[52%] relative transition-all duration-1000 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
             style={{ transitionDelay: "0.3s" }}
           >
-            <ImageErrorBoundary>
-              <div className="relative">
-                {/* Blue glow behind image */}
+            {/* Liquid Map Intelligence scene (Pass C 2026-05-03)
+                Replaces the prior photo. Layered presentational mock per
+                locked Decision #1 (no 2nd MapLibre instance). */}
+            <div className="relative" aria-hidden="true">
+              {/* Blue glow behind map card — preserved from prior photo card */}
+              <div
+                className="absolute -inset-6 rounded-[2rem] blur-2xl"
+                style={{
+                  background: isLightAppearance
+                    ? "radial-gradient(ellipse 80% 70% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
+                    : "linear-gradient(135deg, rgba(59,130,246,0.18) 0%, transparent 60%, rgba(59,130,246,0.10) 100%)",
+                }}
+              />
+
+              {/* Map card — stage for the marketplace scene */}
+              <div
+                className="relative rounded-2xl w-full overflow-hidden border border-blue-300/15"
+                style={{
+                  aspectRatio: "16/10",
+                  maxHeight: "520px",
+                  background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
+                  boxShadow: isLightAppearance
+                    ? "0 24px 80px rgba(0, 0, 0, 0.12), 0 0 50px rgba(37, 99, 235, 0.06)"
+                    : "0 24px 80px rgba(2, 6, 23, 0.5), 0 0 60px rgba(37, 99, 235, 0.12)",
+                }}
+              >
+                {/* Layer 1 — stylized map base. Faint road network via SVG curves. */}
+                <svg
+                  className="absolute inset-0 w-full h-full"
+                  viewBox="0 0 800 500"
+                  preserveAspectRatio="xMidYMid slice"
+                  aria-hidden="true"
+                >
+                  <rect width="800" height="500" fill={isLightAppearance ? "#eef4fb" : "#0d1d3a"} />
+                  {/* Major arteries */}
+                  <path
+                    d="M 0,180 Q 200,200 400,170 T 800,200"
+                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    strokeWidth="3.5"
+                    fill="none"
+                    opacity="0.85"
+                  />
+                  <path
+                    d="M 0,330 Q 250,290 500,320 T 800,310"
+                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    strokeWidth="3"
+                    fill="none"
+                    opacity="0.7"
+                  />
+                  {/* Vertical secondary roads */}
+                  <path
+                    d="M 200,0 Q 230,200 210,500"
+                    stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                    strokeWidth="2"
+                    fill="none"
+                    opacity="0.6"
+                  />
+                  <path
+                    d="M 580,0 Q 620,250 560,500"
+                    stroke={isLightAppearance ? "#dde6f0" : "#293449"}
+                    strokeWidth="2"
+                    fill="none"
+                    opacity="0.55"
+                  />
+                  {/* Small connector accents */}
+                  <path
+                    d="M 380,80 Q 420,90 470,75"
+                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    strokeWidth="1.5"
+                    fill="none"
+                    opacity="0.4"
+                  />
+                  <path
+                    d="M 100,420 Q 140,410 180,425"
+                    stroke={isLightAppearance ? "#cbd5e1" : "#334155"}
+                    strokeWidth="1.5"
+                    fill="none"
+                    opacity="0.4"
+                  />
+                </svg>
+
+                {/* Layer 2 — topographic contour grid */}
                 <div
-                  className="absolute -inset-6 rounded-[2rem] blur-2xl"
-                  style={{
-                    background: isLightAppearance
-                      ? "radial-gradient(ellipse 80% 70% at 50% 50%, rgba(59,130,246,0.10), transparent 70%)"
-                      : "linear-gradient(135deg, rgba(59,130,246,0.18) 0%, transparent 60%, rgba(59,130,246,0.10) 100%)",
-                  }}
+                  className={
+                    isLightAppearance
+                      ? "bd-map-contour"
+                      : "bd-map-contour bd-map-contour--dark"
+                  }
                 />
-                <ImageWithFallback
-                  src={heroImage}
-                  alt="Professional auto body repair service - Precision dent removal and paintless dent repair"
-                  className="relative rounded-2xl w-full h-auto object-cover border border-blue-300/15"
-                  style={{
-                    boxShadow: isLightAppearance
-                      ? "0 24px 80px rgba(0, 0, 0, 0.12), 0 0 50px rgba(37, 99, 235, 0.06)"
-                      : "0 24px 80px rgba(2, 6, 23, 0.5), 0 0 60px rgba(37, 99, 235, 0.12)",
-                    aspectRatio: "16/10",
-                    maxHeight: "520px",
-                  }}
-                />
-                {/* Depth overlay on hero image */}
+
+                {/* Layer 3 — drifting liquid gold (marketplace energy) */}
                 <div
-                  className={`absolute inset-0 rounded-2xl pointer-events-none ${isLightAppearance ? "bg-gradient-to-t from-[#1e293b]/20 via-transparent to-transparent" : "bg-gradient-to-t from-[#0a1628]/40 via-transparent to-transparent"}`}
+                  className={`bd-liquid-gold-flow ${
+                    isLightAppearance
+                      ? "bd-liquid-gold-flow--light"
+                      : "bd-liquid-gold-flow--dark"
+                  }`}
+                />
+
+                {/* Layer 4 — route lines from report pin toward bid cards */}
+                <svg
+                  className="absolute inset-0 w-full h-full"
+                  viewBox="0 0 800 500"
+                  preserveAspectRatio="xMidYMid slice"
+                  style={{ pointerEvents: "none" }}
+                  aria-hidden="true"
+                >
+                  {/* Pin sits at (220, 240) in viewBox space */}
+                  <path d="M 220,240 Q 130,180 50,90" className="bd-route-line" />
+                  <path
+                    d="M 220,240 Q 180,330 70,420"
+                    className="bd-route-line"
+                    style={{ animationDelay: "1.5s" }}
+                  />
+                  <path
+                    d="M 220,240 Q 460,260 740,170"
+                    className="bd-route-line"
+                    style={{ animationDelay: "0.7s" }}
+                  />
+                </svg>
+
+                {/* Layer 5 — report pin (blue product color) with concentric pulse */}
+                <div
+                  className="absolute"
+                  style={{
+                    top: "48%",
+                    left: "27.5%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <div className="relative w-4 h-4">
+                    {/* Pulse ring (expands behind the dot) */}
+                    <div className="absolute -inset-2 bd-pin-pulse" />
+                    {/* Pin core */}
+                    <div
+                      className="relative w-4 h-4 rounded-full"
+                      style={{
+                        background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
+                        boxShadow:
+                          "0 0 16px rgba(59,130,246,0.7), 0 0 4px rgba(96,165,250,0.95), inset 0 1px 0 rgba(255,255,255,0.45)",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Layer 6 — gold activity sweep across the glass */}
+                <div className="bd-liquid-gold-sheen" />
+
+                {/* Layer 7 — top depth gradient (preserved from prior card) */}
+                <div
+                  className={`absolute inset-0 pointer-events-none ${
+                    isLightAppearance
+                      ? "bg-gradient-to-t from-[#1e293b]/12 via-transparent to-transparent"
+                      : "bg-gradient-to-t from-[#0a1628]/30 via-transparent to-transparent"
+                  }`}
                 />
               </div>
-            </ImageErrorBoundary>
+            </div>
 
             {/* Floating "Bids Active" badge — top-left of image */}
             <div
-              className={`absolute top-2 left-1 sm:top-4 sm:left-0 lg:top-8 lg:-left-6 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 flex items-center gap-2 sm:gap-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              className={`absolute top-2 left-1 sm:top-4 sm:left-0 lg:top-8 lg:-left-6 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 flex items-center gap-2 sm:gap-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
               style={{
                 transitionDelay: "2s",
                 animationDelay: "2.5s",
@@ -484,7 +613,7 @@ export default function HeroSection({
 
             {/* Floating "NY" region badge — dark glass */}
             <div
-              className={`absolute -top-1 right-2 sm:-top-2 sm:right-0 lg:top-4 lg:-right-4 rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              className={`absolute -top-1 right-2 sm:-top-2 sm:right-0 lg:top-4 lg:-right-4 rounded-2xl border backdrop-blur-xl px-3 py-2 sm:px-3.5 sm:py-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
               style={{
                 transitionDelay: "1.2s",
                 borderColor: isLightAppearance ? "rgba(190,205,230,0.30)" : "rgba(96,165,250,0.25)",
@@ -510,7 +639,7 @@ export default function HeroSection({
 
             {/* Floating notification card — dark glass */}
             <div
-              className={`absolute bottom-2 left-1 sm:bottom-6 sm:-left-4 lg:-left-6 lg:bottom-8 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-2.5 py-2 sm:px-4 sm:py-3 flex items-center gap-2 sm:gap-2.5 animate-float-slow transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+              className={`absolute bottom-2 left-1 sm:bottom-6 sm:-left-4 lg:-left-6 lg:bottom-8 rounded-xl sm:rounded-2xl border backdrop-blur-xl px-2.5 py-2 sm:px-4 sm:py-3 flex items-center gap-2 sm:gap-2.5 bd-bid-card-float transition-all duration-700 ${loaded ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
               style={{
                 transitionDelay: "1.6s",
                 animationDelay: "1.5s",
