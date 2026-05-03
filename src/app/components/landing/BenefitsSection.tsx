@@ -269,7 +269,7 @@ export default function BenefitsSection({
               >
                 {benefit.title}
               </h4>
-              <p className={isLightAppearance ? "text-slate-500" : "text-blue-100/65"}>
+              <p className={isLightAppearance ? "text-slate-600" : "text-blue-100/65"}>
                 {benefit.description}
               </p>
             </div>

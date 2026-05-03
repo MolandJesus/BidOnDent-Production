@@ -244,7 +244,7 @@ export default function WhoWeServeSection({
             />
           </div>
           <p
-            className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+            className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
           >
             Solutions for everyone in the auto repair ecosystem
           </p>

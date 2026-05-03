@@ -186,7 +186,7 @@ export default function HowItWorksSection({
             />
           </div>
           <p
-            className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-blue-100/70"}`}
+            className={`text-base sm:text-xl leading-relaxed ${isLightAppearance ? "text-slate-600" : "text-blue-100/70"}`}
           >
             Get your car repaired in three simple steps
           </p>
@@ -277,7 +277,7 @@ export default function HowItWorksSection({
                 {step.title}
               </h4>
               <p
-                className={`text-sm sm:text-base leading-relaxed ${isLightAppearance ? "text-slate-500" : "text-blue-100/65"}`}
+                className={`text-sm sm:text-base leading-relaxed ${isLightAppearance ? "text-slate-600" : "text-blue-100/65"}`}
               >
                 {step.description}
               </p>
