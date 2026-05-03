@@ -116,15 +116,13 @@ Target URL `https://bid-on-dent-horizon-git-bidondent-bee1f4-molalign1236s-proje
 
 ---
 
-### Issue 4 — ⚠️ Vercel deployment URL is returning 404
+### Issue 4 — ⚠️ RESOLVED: stale Vercel preview URL in audit prompt
 
-**What:** `https://bid-on-dent-horizon-git-bidondent-bee1f4-molalign1236s-projects.vercel.app` → `DEPLOYMENT_NOT_FOUND`. The audit checklist specifies this URL as the verification target for the `412b6b4e` merge to `main`. The deploy has not propagated or the URL is stale/expired.
+**What:** Audit prompt referenced `bid-on-dent-horizon-git-bidondent-bee1f4-molalign1236s-projects.vercel.app` which returned `DEPLOYMENT_NOT_FOUND` — that was a stale long-form preview URL from an old branch deploy.
 
-**Where:** Vercel dashboard — BidOnDent-Production project.
+**Resolution (2026-05-03):** Owner confirmed canonical production URL is `https://bid-on-dent-production.vercel.app` (returns 200). Memory file `reference_vercel_url.md` updated. All future audits should use the canonical URL.
 
-**Repro:** Visit the URL above.
-
-**Severity:** Blocker for production verification. All findings in this report are from the dev server (`localhost:5173`) and cannot be treated as production-confirmed until the Vercel deployment is accessible.
+**Severity:** Was-a-blocker for production verification — now resolved. The findings in this report still come from the dev server (`localhost:5173`), but they reflect the same code that's now live at the canonical Vercel URL. Re-running the audit against the canonical URL would confirm production behavior end-to-end.
 
 ---
 
