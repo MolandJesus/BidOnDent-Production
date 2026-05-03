@@ -1102,6 +1102,9 @@ body {
 }
 
 .bd-glass-control {
+  /* D10: landing primary pill — already 999px, just adopts the gold-lamp
+     trim so it's part of the same family as dashboard primary buttons.
+     Cool blue body unchanged; gold is rim only. */
   border: none;
   border-radius: 999px;
   padding: 0.45em 1.35em;
@@ -1110,8 +1113,10 @@ body {
   background: linear-gradient(180deg, #0f1f5c 0%, #1e3a8a 62%, #1d4ed8 100%);
   color: #fff;
   box-shadow:
-    0 2px 8px rgba(30, 58, 138, 0.07),
-    0 1.5px 0.5px 0 rgba(255, 255, 255, 0.18) inset;
+    0 2px 8px rgba(30, 58, 138, 0.10),
+    0 1.5px 0.5px 0 rgba(255, 255, 255, 0.20) inset,
+    inset 0 -1px 0 rgba(220, 165, 90, 0.18),
+    0 0 18px rgba(220, 140, 50, 0.14);
   position: relative;
   overflow: hidden;
   transition:
@@ -1135,20 +1140,27 @@ body {
 }
 
 .bd-glass-control:hover {
+  /* D10: hover gains warm halo expansion for premium tactile feedback. */
   background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 58%, #1e40af 100%);
   color: #f8fafc;
   box-shadow:
-    0 6px 18px rgba(30, 58, 138, 0.13),
-    0 1.5px 0.5px 0 rgba(255, 255, 255, 0.18) inset;
+    0 6px 18px rgba(30, 58, 138, 0.16),
+    0 1.5px 0.5px 0 rgba(255, 255, 255, 0.20) inset,
+    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
+    0 0 26px rgba(220, 140, 50, 0.20);
   filter: none;
 }
 
 .bd-glass-control:active {
+  /* D10: pressed state — sinks + halo tightens (consistent with dashboard
+     primary button active behavior). */
   background: linear-gradient(180deg, #172554 0%, #1e3a8a 62%, #1e40af 100%);
   color: #eff6ff;
   box-shadow:
-    0 1px 4px rgba(30, 58, 138, 0.08),
-    0 0.5px 0.5px 0 rgba(255, 255, 255, 0.12) inset;
+    0 1px 4px rgba(30, 58, 138, 0.10),
+    0 0.5px 0.5px 0 rgba(255, 255, 255, 0.14) inset,
+    inset 0 -1px 0 rgba(220, 165, 90, 0.14),
+    0 0 12px rgba(220, 140, 50, 0.12);
   filter: brightness(0.98);
   transform: scale(0.97);
 }
@@ -2834,20 +2846,33 @@ body {
 }
 
 .bd-dashboard-primary-button {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* D10: rounder + premium-er. Border-radius lifted to 1rem (matches
+     rounded-2xl / overrides Tailwind rounded-xl via cascade specificity).
+     Subtle warm gold trim added (inset bottom + warm halo) so the action
+     button reads as part of the gold-lit family. Cool blue dominance
+     preserved — gold is rim only, not infill. */
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow:
-    0 18px 34px rgba(2, 6, 23, 0.24),
-    0 0 24px rgba(59, 130, 246, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    0 18px 34px rgba(2, 6, 23, 0.26),
+    0 0 24px rgba(59, 130, 246, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.18),
+    0 0 22px rgba(220, 140, 50, 0.14);
 }
 
 .bd-dashboard-secondary-button {
+  /* D10: matching rounder + premium-er. Same radius bump for consistency
+     with primary. Softer warm trim — secondary should sit calmer than primary. */
+  border-radius: 1rem;
   border: 1px solid var(--bd-dashboard-secondary-border);
   background: var(--bd-dashboard-secondary-bg);
   color: var(--bd-dashboard-secondary-text);
   box-shadow:
     0 14px 28px rgba(2, 6, 23, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.12),
+    0 0 18px rgba(220, 140, 50, 0.10);
 }
 
 .bd-dashboard-secondary-button--compact {
@@ -2887,14 +2912,45 @@ body {
   transform: translateY(-1px);
 }
 
+/* D10: hover lifts + gold halo expands subtly (primary only — secondary
+   stays calmer per the visual hierarchy). */
+.bd-dashboard-primary-button:hover:not(:disabled) {
+  box-shadow:
+    0 22px 40px rgba(2, 6, 23, 0.30),
+    0 0 28px rgba(59, 130, 246, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
+    0 0 32px rgba(220, 140, 50, 0.20);
+}
+
+/* D10: pressed state — button sinks slightly + halo tightens, so the
+   tactile feedback feels expensive instead of bouncy. */
+.bd-dashboard-primary-button:active:not(:disabled),
+.bd-dashboard-secondary-button:active:not(:disabled) {
+  transform: translateY(0);
+  transition-duration: 80ms;
+}
+
+.bd-dashboard-primary-button:active:not(:disabled) {
+  box-shadow:
+    0 10px 20px rgba(2, 6, 23, 0.30),
+    0 0 16px rgba(59, 130, 246, 0.10),
+    inset 0 1px 2px rgba(2, 6, 23, 0.18),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.16),
+    0 0 18px rgba(220, 140, 50, 0.12);
+}
+
 .bd-dashboard-primary-button:focus-visible,
 .bd-dashboard-secondary-button:focus-visible,
 .bd-dashboard-ghost-button:focus-visible,
 .bd-dashboard-filter-button:focus-visible {
+  /* D10: focus ring keeps blue product identity but gains warm outer wash
+     so the keyboard-focus state belongs to the same gold-lit family. */
   outline: none;
   box-shadow:
     0 0 0 2px rgba(241, 245, 249, 0.95),
-    0 0 0 5px rgba(59, 130, 246, 0.26);
+    0 0 0 5px rgba(59, 130, 246, 0.30),
+    0 0 28px rgba(220, 140, 50, 0.20);
 }
 
 .bd-dashboard-secondary-button:hover:not(:disabled),
