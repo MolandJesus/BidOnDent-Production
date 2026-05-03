@@ -387,7 +387,15 @@ export default function HeroSection({
               </button>
               <button
                 onClick={onLearnMore}
-                className={`inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 rounded-[1.75rem] border px-7 py-4 text-sm font-semibold backdrop-blur-md transition-all hover:-translate-y-0.5 active:scale-[0.97] sm:w-auto sm:rounded-2xl sm:py-3.5 sm:text-base ${isLightAppearance ? "border-[rgba(200,180,150,0.30)] bg-[rgba(255,251,245,0.55)] text-slate-700 shadow-[0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,250,240,0.8)] hover:bg-[rgba(255,251,245,0.72)] hover:border-[rgba(200,180,150,0.40)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.08),inset_0_1px_0_rgba(255,250,240,0.9)]" : "border-blue-400/25 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/40"}`}
+                className={`bd-dashboard-primary-button inline-flex min-h-[52px] w-full items-center justify-center gap-1.5 px-7 py-4 text-sm font-semibold backdrop-blur-md sm:w-auto sm:py-3.5 sm:text-base ${isLightAppearance ? "text-slate-700" : "text-blue-200"}`}
+                style={{
+                  background: isLightAppearance
+                    ? "rgba(255,251,245,0.55)"
+                    : "rgba(59,130,246,0.10)",
+                  borderColor: isLightAppearance
+                    ? "rgba(200,180,150,0.30)"
+                    : "rgba(96,165,250,0.25)",
+                }}
                 type="button"
               >
                 <Play className="w-3.5 h-3.5 fill-current" />
