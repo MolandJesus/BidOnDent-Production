@@ -859,6 +859,27 @@ body {
   --bd-warm-dark-amber-pool: rgba(200, 130, 40, 0.32);
   --bd-warm-dark-amber-pool-soft: rgba(180, 110, 30, 0.22);
   --bd-warm-dark-amber-glow: rgba(220, 150, 60, 0.20);
+
+  /* Liquid Map Intelligence — landing signature motion tokens (Pass B 2026-05-03).
+     Consumed by .bd-liquid-gold-flow / .bd-liquid-gold-sheen / .bd-route-line /
+     .bd-pin-pulse / .bd-bid-card-float / .bd-map-contour at end of file.
+     Identity: cool blue is product/action; gold is atmosphere only.
+     Alpha caps: 0.22 dark / 0.16 light so motion never out-shouts existing pools. */
+  --bd-liquid-gold-light:        rgba(220, 165, 90, 0.16);
+  --bd-liquid-gold-light-soft:   rgba(220, 165, 90, 0.08);
+  --bd-liquid-gold-light-edge:   rgba(220, 165, 90, 0.04);
+  --bd-liquid-gold-dark:         rgba(200, 140, 50, 0.22);
+  --bd-liquid-gold-dark-soft:    rgba(200, 140, 50, 0.12);
+  --bd-liquid-gold-dark-edge:    rgba(200, 140, 50, 0.06);
+  --bd-route-blue:               rgba(96, 165, 250, 0.55);
+  --bd-route-blue-soft:          rgba(96, 165, 250, 0.20);
+  --bd-route-blue-glow:          rgba(59, 130, 246, 0.35);
+  --bd-map-contour-light:        rgba(80, 120, 180, 0.10);
+  --bd-map-contour-dark:         rgba(150, 180, 220, 0.10);
+  --bd-flow-loop-slow:           28s;
+  --bd-flow-loop-med:            18s;
+  --bd-flow-loop-fast:           4.2s;
+  --bd-flow-ease:                cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================================
@@ -2966,4 +2987,204 @@ body {
   opacity: 0.55;
   box-shadow: none;
   transform: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Liquid Map Intelligence — landing signature motion system
+   ─────────────────────────────────────────────────────────────────────────
+   Pass B (2026-05-03). Tokens + utility classes for the landing-page
+   signature scene. Un-layered so Tailwind utilities can override at the
+   class level (cascade-precedence pattern documented at theme.css:1547).
+
+   Reduced-motion: every animating class is disabled in the
+   prefers-reduced-motion guard at the bottom of this block. Static
+   variants pin to a sensible final frame.
+
+   Identity: cool blue is product/action; gold is atmosphere only.
+   Alpha ranges intentional — gold tokens cap at 0.22 (dark) / 0.16 (light)
+   so the new motion never out-shouts the existing amber pools or the
+   blue CTA hierarchy.
+
+   Tokens for this system live with the other CSS variables in :root at
+   theme.css:821 (folded in to keep one canonical :root). Consumed by
+   HeroSection.tsx in Pass C; do not consume in this pass.
+   ───────────────────────────────────────────────────────────────────── */
+
+/* Keyframes — only 2 net new (sheen and float reuse map* keyframes,
+   keyframe names are global regardless of @layer scope). */
+
+@keyframes bdLiquidGoldFlow {
+  /* Slow drifting radial — animates background-position only (cheap, GPU). */
+  0%,
+  100% {
+    background-position: 0% 50%, 100% 50%;
+  }
+  50% {
+    background-position: 100% 50%, 0% 50%;
+  }
+}
+
+@keyframes bdPinPulse {
+  /* Concentric ring expansion — pure transform + opacity, no box-shadow size animation. */
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* Liquid gold flow — drifting radial gradient backdrop.
+   Consumer sets variant (--light or --dark) based on isLightAppearance. */
+.bd-liquid-gold-flow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Two stacked radial gradients drifting in opposite directions */
+  background-image:
+    radial-gradient(ellipse 60% 80% at 0% 0%, var(--bd-flow-color, var(--bd-liquid-gold-light)), transparent 60%),
+    radial-gradient(ellipse 70% 90% at 100% 100%, var(--bd-flow-color-soft, var(--bd-liquid-gold-light-soft)), transparent 65%);
+  background-size: 200% 200%, 200% 200%;
+  background-position: 0% 50%, 100% 50%;
+  animation: bdLiquidGoldFlow var(--bd-flow-loop-slow) var(--bd-flow-ease) infinite;
+  will-change: background-position;
+}
+
+.bd-liquid-gold-flow--light {
+  --bd-flow-color: var(--bd-liquid-gold-light);
+  --bd-flow-color-soft: var(--bd-liquid-gold-light-soft);
+}
+
+.bd-liquid-gold-flow--dark {
+  --bd-flow-color: var(--bd-liquid-gold-dark);
+  --bd-flow-color-soft: var(--bd-liquid-gold-dark-soft);
+}
+
+/* Liquid gold sheen — diagonal sweep across glass surface.
+   Reuses mapLiquidSheenDrift keyframe (defined in @layer components). */
+.bd-liquid-gold-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    var(--bd-flow-color-soft, var(--bd-liquid-gold-light-soft)) 50%,
+    transparent 70%
+  );
+  animation: mapLiquidSheenDrift var(--bd-flow-loop-slow) var(--bd-flow-ease) infinite;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+/* Route line — SVG stroke draw-on effect.
+   Apply to <path> or <line> with stroke-dasharray set inline. */
+.bd-route-line {
+  stroke: var(--bd-route-blue);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px var(--bd-route-blue-glow));
+  stroke-dasharray: 4 4;
+  stroke-dashoffset: 8;
+  animation: bdRouteShimmer 6s linear infinite;
+  will-change: stroke-dashoffset;
+}
+
+@keyframes bdRouteShimmer {
+  0% { stroke-dashoffset: 8; }
+  100% { stroke-dashoffset: 0; }
+}
+
+/* Pin pulse — concentric ring expansion behind a fixed pin.
+   Apply to a wrapper; ring elements use ::before / ::after. */
+.bd-pin-pulse {
+  position: relative;
+}
+
+.bd-pin-pulse::before,
+.bd-pin-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid var(--bd-route-blue);
+  pointer-events: none;
+  animation: bdPinPulse var(--bd-flow-loop-fast) var(--bd-flow-ease) infinite;
+  will-change: transform, opacity;
+}
+
+.bd-pin-pulse::after {
+  animation-delay: calc(var(--bd-flow-loop-fast) / 2);
+  border-color: var(--bd-route-blue-soft);
+}
+
+/* Bid card float — subtle Y drift. Reuses mapGlassFloat keyframe.
+   Compose with bd-glass-card--landing for the surface itself. */
+.bd-bid-card-float {
+  animation: mapGlassFloat 6s var(--bd-flow-ease) infinite;
+  will-change: transform;
+}
+
+/* Map contour — faint topographic-style line pattern.
+   Static (no animation). Compose into hero scene background. */
+.bd-map-contour {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(0deg, transparent 49.5%, var(--bd-map-contour-light) 50%, transparent 50.5%),
+    linear-gradient(90deg, transparent 49.5%, var(--bd-map-contour-light) 50%, transparent 50.5%);
+  background-size: 80px 80px, 80px 80px;
+  opacity: 0.6;
+}
+
+.bd-map-contour--dark {
+  background-image:
+    linear-gradient(0deg, transparent 49.5%, var(--bd-map-contour-dark) 50%, transparent 50.5%),
+    linear-gradient(90deg, transparent 49.5%, var(--bd-map-contour-dark) 50%, transparent 50.5%);
+}
+
+/* Reduced-motion guard — mandatory per plan Engineering Constraints.
+   Pin every layer to a sensible static frame; do not just slow the animations. */
+@media (prefers-reduced-motion: reduce) {
+  .bd-liquid-gold-flow,
+  .bd-liquid-gold-sheen,
+  .bd-bid-card-float {
+    animation: none !important;
+    transition: none !important;
+  }
+  .bd-route-line {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .bd-pin-pulse::before,
+  .bd-pin-pulse::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Mobile motion budget per Decision #4 — gold drift only.
+   Bid card float, route shimmer, and pin pulse disabled below 768px. */
+@media (max-width: 767px) {
+  .bd-bid-card-float {
+    animation: none !important;
+    transform: none !important;
+  }
+  .bd-route-line {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .bd-pin-pulse::before,
+  .bd-pin-pulse::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
 }
