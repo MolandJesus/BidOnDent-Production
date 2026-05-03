@@ -61,7 +61,7 @@ export default function AccountMenu({
   const rowBaseClass =
     "bd-dashboard-section bd-dashboard-section--interactive flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left transition-colors";
   const labelTone = isLight ? "text-slate-700" : "text-slate-100";
-  const subduedLabelTone = isLight ? "text-slate-500" : "text-blue-100/62";
+  const subduedLabelTone = isLight ? "text-slate-500" : "text-blue-100/80";
 
   const rowToneClass: Record<RowTone, string> = {
     deep: "bd-dashboard-section--deep",
@@ -105,12 +105,16 @@ export default function AccountMenu({
     rose: isLight ? "text-rose-700" : "text-rose-200",
   };
 
+  /* Phase 5 dashboard polish (2026-05-03 P5): description tone alphas
+     bumped from /68-/72 to /82-/85 in dark mode so account-menu row
+     descriptions read clearly on the navy background. Light mode
+     unchanged (already crisp on the cream surface). */
   const descriptionToneClass: Record<RowTone, string> = {
     deep: subduedLabelTone,
-    blue: isLight ? "text-blue-600/75" : "text-blue-100/68",
-    cyan: isLight ? "text-cyan-700/75" : "text-cyan-100/68",
-    indigo: isLight ? "text-indigo-700/70" : "text-indigo-100/68",
-    rose: isLight ? "text-rose-700/72" : "text-rose-100/72",
+    blue: isLight ? "text-blue-600/75" : "text-blue-100/82",
+    cyan: isLight ? "text-cyan-700/75" : "text-cyan-100/82",
+    indigo: isLight ? "text-indigo-700/70" : "text-indigo-100/82",
+    rose: isLight ? "text-rose-700/72" : "text-rose-100/85",
   };
 
   const preferenceRows: MenuRow[] = [
