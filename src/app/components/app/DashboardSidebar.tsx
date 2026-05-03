@@ -52,26 +52,26 @@ export default function DashboardSidebar({
       aria-label="Dashboard sidebar"
       className={`hidden md:flex md:w-72 md:flex-col md:sticky md:top-0 md:h-screen bd-glass-panel md:rounded-none md:border-0 md:border-r ${
         isLightAppearance
-          ? "bd-light-surface md:border-[rgba(147,197,253,0.32)]"
+          ? "bd-light-surface md:border-[rgba(140,82,22,0.30)]"
           : "md:border-blue-400/[0.12]"
       }`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.74) 0%, rgba(250, 247, 240, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 252, 0.56) 0%, rgba(245, 240, 230, 0.10) 46%, transparent 78%), radial-gradient(ellipse 72% 28% at 50% 0%, rgba(220, 165, 90, 0.12) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 50% 50%, rgba(220, 165, 90, 0.05) 0%, transparent 75%)"
+          ? "linear-gradient(180deg, rgba(232, 242, 254, 0.78) 0%, rgba(214, 230, 248, 0.72) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(196, 144, 65, 0.10) 0%, transparent 70%), radial-gradient(ellipse 72% 28% at 50% 0%, rgba(96, 165, 250, 0.10) 0%, transparent 70%)"
           : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%), radial-gradient(ellipse 78% 30% at 50% 0%, rgba(220, 150, 60, 0.14) 0%, transparent 72%), radial-gradient(ellipse 65% 55% at 50% 52%, rgba(220, 150, 60, 0.06) 0%, transparent 76%)",
         backdropFilter: isLightAppearance
-          ? "blur(34px) saturate(1.64)"
+          ? "blur(28px) saturate(1.4) brightness(1.02)"
           : "blur(28px) saturate(1.5)",
         WebkitBackdropFilter: isLightAppearance
-          ? "blur(34px) saturate(1.64)"
+          ? "blur(28px) saturate(1.4) brightness(1.02)"
           : "blur(28px) saturate(1.5)",
         boxShadow: isLightAppearance
-          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.08), inset -1px 0 0 rgba(220, 165, 90, 0.20), inset 0 1px 0 rgba(255, 255, 252, 0.96), 0 0 60px rgba(220, 140, 50, 0.14)"
+          ? "8px 0 36px rgba(15, 30, 60, 0.16), 2px 0 10px rgba(15, 30, 60, 0.10), inset -1px 0 0 rgba(140, 82, 22, 0.30), inset 0 1px 0 rgba(252, 238, 204, 0.72), 0 0 40px rgba(196, 130, 45, 0.12)"
           : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(220, 165, 90, 0.18), 0 0 64px rgba(220, 140, 50, 0.18)",
       }}
     >
       <div
-        className={`px-5 py-5 border-b ${isLightAppearance ? "border-[rgba(147,197,253,0.22)]" : "border-blue-400/[0.10]"}`}
+        className={`px-5 py-5 border-b ${isLightAppearance ? "border-[rgba(140,82,22,0.22)]" : "border-blue-400/[0.10]"}`}
       >
         <button
           onClick={onLogoClick}
@@ -128,10 +128,10 @@ export default function DashboardSidebar({
                 isActive
                   ? {
                       background: isLightAppearance
-                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(96, 165, 250, 0.09) 100%)"
+                        ? "linear-gradient(135deg, rgba(37, 99, 235, 0.20) 0%, rgba(96, 165, 250, 0.12) 100%)"
                         : "linear-gradient(135deg, rgba(37, 99, 235, 0.20) 0%, rgba(59, 130, 246, 0.11) 100%)",
                       boxShadow: isLightAppearance
-                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.80), inset 0 -1px 0 rgba(220, 165, 90, 0.20), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(147, 197, 253, 0.18), 0 4px 12px rgba(59, 130, 246, 0.10), 0 0 24px rgba(220, 140, 50, 0.14)"
+                        ? "inset 0 1px 0 rgba(252, 238, 204, 0.78), inset 0 -1px 0 rgba(140, 82, 22, 0.28), 0 0 0 1px rgba(140, 82, 22, 0.22), 0 0 0 1px rgba(96, 165, 250, 0.30), 0 4px 12px rgba(15, 30, 60, 0.12), 0 0 18px rgba(196, 130, 45, 0.14)"
                         : "inset 0 1px 0 rgba(147, 197, 253, 0.14), inset 0 -1px 0 rgba(220, 165, 90, 0.18), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(96, 165, 250, 0.20), 0 4px 14px rgba(37, 99, 235, 0.16), 0 0 28px rgba(220, 140, 50, 0.16)",
                     }
                   : {}
