@@ -25,6 +25,7 @@ import {
 import {
   countyCenters,
   defaultCoverageCenter,
+  isTargetInsideNyServiceRegion,
   resolveCoverageLookup,
   sanitizeZipInput,
 } from "../components/landing/coverageData";
@@ -140,6 +141,24 @@ export function useOperatingRegionsCoverage({
       : activeOriginMode === "address"
         ? manualSearchTarget
         : zipMapTarget);
+
+  /*
+   * Phase 2 honesty (2026-05-03 P2): replace the prior
+   * `Boolean(listSearchTarget) && !hasCoverageSignal` heuristic — that only
+   * checked ZIP coverage, so a real NY user using live GPS (no ZIP typed)
+   * was incorrectly flagged as outside the service region. Now the flag is
+   * driven by actual geographic distance to our six NY county centers.
+   *
+   * `isOutsideServiceRegion` is true only when there's an active origin AND
+   * that origin sits more than 60mi from every NY county center. ZIP origins
+   * still respect their lookup result so the existing in-coverage messaging
+   * keeps working for known NY ZIPs.
+   */
+  const isOutsideServiceRegion = useMemo(() => {
+    if (!listSearchTarget) return false;
+    if (activeOriginMode === "zip" && hasCoverageSignal) return false;
+    return !isTargetInsideNyServiceRegion(listSearchTarget.lat, listSearchTarget.lng);
+  }, [listSearchTarget, activeOriginMode, hasCoverageSignal]);
 
   const nearbyShops = useMemo<CoverageNearbyShop[]>(() => {
     if (!listSearchTarget) return [];
@@ -459,6 +478,7 @@ export function useOperatingRegionsCoverage({
     usingDemoFallback,
     mapFocusTarget,
     listSearchTarget,
+    isOutsideServiceRegion,
     nearbyShops,
     selectedShopId,
     selectedShop,

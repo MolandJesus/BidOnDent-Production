@@ -12,6 +12,11 @@ type CoverageSearchPanelProps = {
   radiusMiles: string;
   normalizedZip: string;
   hasCoverageSignal: boolean;
+  /** Phase 2 honesty (2026-05-03 P2): true when the active origin sits more
+   * than 60mi from any NY county center. Drives explicit out-of-region copy
+   * for GPS/address origins instead of the misleading
+   * "the nearest service area" fallback. */
+  isOutsideServiceRegion?: boolean;
   coverageCounty?: string;
   activeOriginMode: "zip" | "geolocation" | "address";
   activeOriginLabel: string;
@@ -40,6 +45,7 @@ export default function CoverageSearchPanel({
   radiusMiles,
   normalizedZip,
   hasCoverageSignal,
+  isOutsideServiceRegion = false,
   coverageCounty,
   activeOriginMode,
   activeOriginLabel,
@@ -79,21 +85,43 @@ export default function CoverageSearchPanel({
         : normalizedZip.length >= 5
           ? "ZIP search"
           : "Regional view";
+  /*
+   * Phase 2 honesty (2026-05-03 P2): origin badge color follows the live
+   * origin state. Out-of-region GPS/address origins switch to amber so the
+   * visual cue matches the "outside our NY service region" copy below —
+   * green-emerald on an out-of-region origin read as a successful match.
+   */
   const originBadgeClassName =
-    activeOriginMode === "geolocation"
+    isOutsideServiceRegion && activeOriginMode !== "zip"
       ? tone === "light"
-        ? "border-emerald-200/80 bg-emerald-50 text-emerald-800"
-        : "border-emerald-400/25 bg-emerald-500/15 text-emerald-200"
-      : activeOriginMode === "address"
+        ? "border-amber-200/80 bg-amber-50 text-amber-800"
+        : "border-amber-400/25 bg-amber-500/15 text-amber-200"
+      : activeOriginMode === "geolocation"
         ? tone === "light"
-          ? "border-sky-200/80 bg-sky-50 text-sky-800"
-          : "border-sky-400/25 bg-sky-500/15 text-sky-200"
-        : theme.softBadgeClassName;
+          ? "border-emerald-200/80 bg-emerald-50 text-emerald-800"
+          : "border-emerald-400/25 bg-emerald-500/15 text-emerald-200"
+        : activeOriginMode === "address"
+          ? tone === "light"
+            ? "border-sky-200/80 bg-sky-50 text-sky-800"
+            : "border-sky-400/25 bg-sky-500/15 text-sky-200"
+          : theme.softBadgeClassName;
+  /*
+   * Phase 2 honesty (2026-05-03 P2): GPS/address origins now route through
+   * `isOutsideServiceRegion` so a user who taps "My Location" from outside NY
+   * (Atlanta, etc.) sees explicit out-of-region copy instead of the prior
+   * "the nearest service area" fallback — which implied a service area
+   * existed near them when our soft-launch coverage is NY counties only.
+   */
   const originSummary =
     activeOriginMode === "address"
-      ? `Routes and recommendations now follow ${activeOriginLabel}.`
+      ? isOutsideServiceRegion
+        ? `${activeOriginLabel} sits outside our current NY service region. Try a NY ZIP or address, or browse the regions above.`
+        : `Routes and recommendations now follow ${activeOriginLabel}.`
       : activeOriginMode === "geolocation"
-        ? geoMessage || "Using your location to focus the map on the nearest service area."
+        ? isOutsideServiceRegion
+          ? "Your live location is outside our current NY service region. Use a NY ZIP or address to see partner shops, or browse the regions above."
+          : geoMessage ||
+            "Using your live location to focus the map on the nearest NY partner shops."
         : normalizedZip.length > 0
           ? hasCoverageSignal
             ? `${normalizedZip} lands inside ${coverageCounty || "our NY service area"}. Partner shops will list here as they come online.`

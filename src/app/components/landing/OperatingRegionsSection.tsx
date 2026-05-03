@@ -235,13 +235,13 @@ export default function OperatingRegionsSection({
                           stageTheme.titleClassName
                         )}
                       >
-                        Search and compare shops right on the map.
+                        Search NY coverage and partner shops.
                       </h4>
                       <p
                         className={cn("mt-2 text-sm leading-6", stageTheme.secondaryTextClassName)}
                       >
-                        Focus the map quickly, scan the strongest nearby repair shops below, and use
-                        the full browse view when you need more room.
+                        Focus the map on a NY ZIP, address, or live location — partner shops will
+                        list below as they come online in our service counties.
                       </p>
                     </div>
 
@@ -327,6 +327,7 @@ export default function OperatingRegionsSection({
                     radiusMiles={coverage.radiusMiles}
                     normalizedZip={coverage.normalizedZip}
                     hasCoverageSignal={coverage.hasCoverageSignal}
+                    isOutsideServiceRegion={coverage.isOutsideServiceRegion}
                     coverageCounty={coverage.coverageCounty}
                     activeOriginMode={coverage.activeOriginMode}
                     activeOriginLabel={coverage.activeOriginLabel}
@@ -467,7 +468,7 @@ export default function OperatingRegionsSection({
               onSelectShop={(shop) => coverage.handleSelectShop(shop, { centerMap: true })}
               onOpenDirections={coverage.handleOpenBidOnDentNavigation}
               onRetryShops={coverage.retryCoveragePartnerShops}
-              isOutsideServiceArea={Boolean(coverage.listSearchTarget) && !coverage.hasCoverageSignal}
+              isOutsideServiceArea={coverage.isOutsideServiceRegion}
             />
           </div>
         </div>
