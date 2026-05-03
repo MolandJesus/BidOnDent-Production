@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 import { useParallaxOffset } from "../../hooks/useParallaxOffset";
@@ -26,6 +27,15 @@ export default function OperatingRegionsSection({
   const coverage = useOperatingRegionsCoverage({ isLightAppearance });
   const isMobile = useMediaQuery("(max-width: 767px)");
   const parallaxY = useParallaxOffset(isMobile ? 0.06 : 0.12);
+
+  // Cross-component opener: hero map double-taps dispatch this event so the
+  // landing dialog state stays owned here (where the coverage hook lives) but
+  // can be triggered from the hero without prop-drilling the setter.
+  useEffect(() => {
+    const open = () => coverage.setIsMapExpanded(true);
+    window.addEventListener("bd:open-landing-coverage-map", open);
+    return () => window.removeEventListener("bd:open-landing-coverage-map", open);
+  }, [coverage]);
 
   // In light appearance mode, force panel tone to "light" regardless of tile mode
   const inlinePanelTone: MapSurfaceTone = isLightAppearance ? "light" : coverage.surfaceTone;
