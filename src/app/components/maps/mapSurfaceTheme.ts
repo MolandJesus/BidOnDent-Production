@@ -53,35 +53,40 @@ const toneThemes: Record<MapSurfaceTone, MapSurfaceToneVariant> = {
       "border-[rgba(140,82,22,0.32)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.20),transparent_70%),linear-gradient(180deg,rgba(232,242,254,0.92),rgba(204,222,246,0.86))]",
     accentPanelToneClassName:
       "border-[rgba(140,82,22,0.36)] bg-[radial-gradient(ellipse_90%_50%_at_50%_0%,rgba(196,144,65,0.22),transparent_70%),linear-gradient(180deg,rgba(244,222,178,0.92),rgba(228,198,144,0.84))]",
+    /* LAW correction (KI-066): map control bodies in light mode now use
+       the cool blue-cream glass family instead of forbidden near-white.
+       Cream insets replace white insets per locked palette. Legibility
+       over map tiles is preserved by keeping alphas ≥ 0.78. */
     segmentedToneClassName:
-      "border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.72))]",
+      "border-[rgba(140,82,22,0.30)] bg-[linear-gradient(180deg,rgba(238,247,255,0.86),rgba(219,234,254,0.78))]",
     activeSegmentClassName:
       "bg-[linear-gradient(180deg,rgba(56,189,248,0.95),rgba(37,99,235,0.95))] text-white shadow-[0_10px_24px_rgba(37,99,235,0.22)]",
-    inactiveSegmentClassName: "text-slate-600 hover:bg-white/50 hover:text-slate-900",
+    inactiveSegmentClassName:
+      "text-slate-600 hover:bg-[rgba(232,242,254,0.65)] hover:text-slate-900",
     primaryButtonToneClassName:
       "border-blue-300/42 bg-[linear-gradient(180deg,rgba(59,130,246,0.86),rgba(29,78,216,0.92))] text-white shadow-[0_12px_28px_rgba(37,99,235,0.24)] hover:-translate-y-0.5 hover:shadow-[0_16px_32px_rgba(37,99,235,0.28)] hover:brightness-110",
     secondaryButtonToneClassName:
-      "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(241,245,249,0.74))] text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-white/92 hover:text-slate-950",
+      "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(238,247,255,0.92),rgba(219,234,254,0.84))] text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)] hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(238,247,255,0.96),rgba(219,234,254,0.90))] hover:text-slate-950",
     destructiveButtonToneClassName:
       "border-rose-200/50 bg-[linear-gradient(180deg,#fb7185,#e11d48)] text-white shadow-[0_14px_26px_rgba(244,63,94,0.22)] hover:-translate-y-0.5 hover:shadow-[0_18px_30px_rgba(244,63,94,0.28)]",
     tertiaryButtonToneClassName:
-      "border-white/30 bg-white/20 text-slate-600 hover:bg-white/35 hover:text-slate-800",
+      "border-[rgba(147,197,253,0.40)] bg-[rgba(232,242,254,0.55)] text-slate-600 hover:bg-[rgba(232,242,254,0.78)] hover:text-slate-800",
     compactButtonToneClassName:
-      "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.8),rgba(241,245,249,0.72))] text-slate-700 shadow-[0_6px_16px_rgba(15,23,42,0.08)] hover:bg-white/90 hover:text-slate-950",
+      "border-[rgba(140,82,22,0.30)] bg-[linear-gradient(180deg,rgba(238,247,255,0.88),rgba(219,234,254,0.80))] text-slate-700 shadow-[0_6px_16px_rgba(15,23,42,0.08)] hover:bg-[linear-gradient(180deg,rgba(238,247,255,0.96),rgba(219,234,254,0.88))] hover:text-slate-950",
     compactActiveButtonToneClassName:
       "border-sky-300/50 bg-sky-500/80 text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)]",
     iconButtonToneClassName:
-      "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_14px_30px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:bg-white/94 hover:text-slate-950",
+      "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(238,247,255,0.92),rgba(219,234,254,0.86))] text-slate-700 shadow-[0_14px_30px_rgba(15,23,42,0.1)] hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(238,247,255,0.96),rgba(219,234,254,0.92))] hover:text-slate-950",
     compactIconButtonToneClassName:
-      "border-white/74 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(241,245,249,0.76))] text-slate-700 shadow-[0_10px_20px_rgba(15,23,42,0.08)] hover:bg-white/94 hover:text-slate-950",
+      "border-[rgba(140,82,22,0.32)] bg-[linear-gradient(180deg,rgba(238,247,255,0.92),rgba(219,234,254,0.86))] text-slate-700 shadow-[0_10px_20px_rgba(15,23,42,0.08)] hover:bg-[linear-gradient(180deg,rgba(238,247,255,0.96),rgba(219,234,254,0.92))] hover:text-slate-950",
     titleClassName: "text-slate-950",
     bodyClassName: "text-slate-700",
     secondaryTextClassName: "text-slate-500",
     badgeClassName: "border-blue-200/80 bg-blue-100/80 text-blue-900",
     softBadgeClassName:
-      "border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.68))] text-slate-600 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]",
+      "border-[rgba(140,82,22,0.28)] bg-[linear-gradient(180deg,rgba(238,247,255,0.86),rgba(219,234,254,0.78))] text-slate-600 shadow-[inset_0_1px_0_rgba(252,240,208,0.75)]",
     listCardToneClassName:
-      "border-white/72 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(241,245,249,0.72))] hover:-translate-y-0.5 hover:bg-white/92",
+      "border-[rgba(140,82,22,0.30)] bg-[linear-gradient(180deg,rgba(238,247,255,0.86),rgba(219,234,254,0.78))] hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,rgba(238,247,255,0.96),rgba(219,234,254,0.90))]",
     selectedListCardToneClassName:
       "border-sky-300/60 bg-[linear-gradient(180deg,rgba(239,246,255,0.92),rgba(219,234,254,0.82))] shadow-[0_20px_44px_rgba(37,99,235,0.12)]",
   },
