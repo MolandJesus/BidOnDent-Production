@@ -99,11 +99,9 @@ export function LoginLoginView({
 
       <motion.button
         onClick={onLogin}
-        className="w-full py-3 rounded-md text-white font-medium hover:opacity-90 transition-opacity"
-        style={{ backgroundColor: primaryColor }}
+        className="bd-dashboard-primary-button w-full py-3 text-white font-medium"
+        style={{ background: primaryColor }}
         type="button"
-        whileHover={{ scale: 1.02, boxShadow: "0 10px 30px rgba(0, 61, 130, 0.3)" }}
-        whileTap={{ scale: 0.98 }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}

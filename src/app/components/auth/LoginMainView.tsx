@@ -25,8 +25,7 @@ export function LoginMainView({
         className="bd-glass-card w-full py-3 px-4 border-2 border-transparent font-medium hover:border-blue-200/40 transition-colors text-left flex items-center justify-between"
         style={{ borderColor: primaryColor }}
         type="button"
-        whileHover={{ scale: 1.02, x: 5, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ x: 4 }}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.1 }}
@@ -49,8 +48,7 @@ export function LoginMainView({
         className="bd-glass-card w-full py-3 px-4 border-2 border-transparent font-medium hover:border-blue-200/40 transition-colors text-left flex items-center justify-between"
         style={{ borderColor: primaryColor }}
         type="button"
-        whileHover={{ scale: 1.02, x: 5, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ x: 4 }}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
@@ -73,8 +71,7 @@ export function LoginMainView({
         className="bd-glass-card w-full py-3 px-4 border-2 border-transparent font-medium hover:border-blue-200/40 transition-colors text-left flex items-center justify-between"
         style={{ borderColor: primaryColor }}
         type="button"
-        whileHover={{ scale: 1.02, x: 5, boxShadow: "0 8px 25px rgba(0, 61, 130, 0.15)" }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ x: 4 }}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.3 }}
