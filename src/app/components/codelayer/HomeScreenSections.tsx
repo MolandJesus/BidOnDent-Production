@@ -175,7 +175,14 @@ export function HomeQuickActions({
           </p>
         </div>
       </div>
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-2.5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 md:gap-3">
+      {/* V3e mobile fix: scroll container wrapped in relative for the
+           right-edge fade affordance. Quick Actions correctly horizontal-
+           scroll on mobile (Codex confirmed: not hidden, just
+           undiscoverable). The fade + champagne hairline tell the user
+           there's more to the right. Hidden at sm+ where the grid takes
+           over. */}
+      <div className="relative -mx-1 sm:mx-0">
+        <div className="flex gap-2 overflow-x-auto px-1 pb-1 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-2 sm:gap-2.5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-4 md:gap-3">
         {quickActions.map((action, index) => {
           const Icon = action.icon;
           const iconTone = isLight
@@ -213,6 +220,20 @@ export function HomeQuickActions({
             </button>
           );
         })}
+        </div>
+        {/* Right-edge fade affordance — mobile only, hides at sm+ */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:hidden"
+          style={{
+            background: isLight
+              ? "linear-gradient(to left, rgba(244,250,254,0.96), rgba(244,250,254,0.85) 35%, transparent)"
+              : "linear-gradient(to left, rgba(8,18,38,0.96), rgba(8,18,38,0.85) 35%, transparent)",
+            boxShadow: isLight
+              ? "inset 1px 0 0 rgba(220,165,90,0.20)"
+              : "inset 1px 0 0 rgba(220,165,90,0.24)",
+          }}
+        />
       </div>
     </section>
   );

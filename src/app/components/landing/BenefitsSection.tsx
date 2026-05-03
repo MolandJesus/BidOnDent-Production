@@ -325,9 +325,29 @@ export default function BenefitsSection({
           </div>
         </div>
       </div>
-      {/* Bottom transition — blends into WhoWeServe periwinkle */}
+      {/* V3a — Section seam gradient bridge (Benefits → WhoWeServe).
+          The warm Direction B floor fades through a desaturated mid-stop
+          before resolving into the cool periwinkle/navy of WhoWeServe so
+          the temperature shift reads as a lighting change, not a hard cut.
+          A faint champagne hairline at the very edge catches light against
+          the lower bezel of the section. */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-32 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#f2f8ff]" : "bg-gradient-to-b from-transparent to-[#0c1c34]"}`}
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to bottom, transparent 0%, rgba(232,228,220,0.55) 35%, rgba(228,232,242,0.85) 70%, #f2f8ff 100%)"
+            : "linear-gradient(to bottom, transparent 0%, rgba(28,30,42,0.55) 32%, rgba(15,24,46,0.85) 70%, #0c1c34 100%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+        }}
       />
     </section>
   );

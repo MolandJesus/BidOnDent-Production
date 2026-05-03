@@ -240,9 +240,28 @@ export default function TrustStatsSection({
           ))}
         </div>
       </div>
-      {/* Bottom transition — blends into Coverage Map cool blue-gray */}
+      {/* V3a — Section seam gradient bridge (TrustStats → Coverage Map).
+          Same temperature-bridging pattern as the Benefits→WhoWeServe seam:
+          warm Direction B floor passes through a desaturated mid-stop into
+          the cool blue-gray of the Coverage Map section, with a champagne
+          hairline at the boundary catching light against the lower bezel. */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-28 pointer-events-none ${isLightAppearance ? "bg-gradient-to-b from-transparent to-[#f2f5f9]" : "bg-gradient-to-b from-transparent to-[#071830]"}`}
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to bottom, transparent 0%, rgba(232,228,220,0.55) 35%, rgba(228,232,242,0.85) 70%, #f2f5f9 100%)"
+            : "linear-gradient(to bottom, transparent 0%, rgba(28,30,42,0.55) 32%, rgba(15,24,46,0.85) 70%, #071830 100%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+        style={{
+          background: isLightAppearance
+            ? "linear-gradient(to right, transparent, rgba(220,165,90,0.22) 50%, transparent)"
+            : "linear-gradient(to right, transparent, rgba(220,165,90,0.28) 50%, transparent)",
+        }}
       />
     </section>
   );

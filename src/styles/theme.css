@@ -898,10 +898,13 @@ body {
 }
 
 .bd-glass-card {
+  position: relative;
   border: 1px solid var(--bd-glass-border-light);
   background: linear-gradient(180deg, rgba(248, 251, 255, 0.72) 0%, rgba(235, 245, 255, 0.52) 100%);
-  backdrop-filter: blur(var(--bd-glass-blur));
-  -webkit-backdrop-filter: blur(var(--bd-glass-blur));
+  /* V3 liquid-glass thickness: saturate boost so the atmosphere reads richer
+     through the glass body. Cross-cutting treatment per master plan §1.5. */
+  backdrop-filter: blur(var(--bd-glass-blur)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--bd-glass-blur)) saturate(1.4);
   border-radius: var(--bd-radius-card);
   box-shadow:
     0 10px 24px rgba(15, 23, 42, 0.08),
@@ -989,6 +992,56 @@ body {
   border-color: rgba(147, 197, 253, 0.85);
 }
 
+/* V3 champagne hover sheen — landing + warm-landing cards.
+   One-shot diagonal sweep that reads as light catching glass on hover.
+   Uses mix-blend-mode: screen so the sheen lifts the underlying surface
+   instead of overlaying a film. Drift-paused via existing transition.
+   Containment: requires position: relative + overflow-hidden on the card.
+   Cards are <div>s with content children — the sheen sits at z-index:1
+   under content (which paints normally without z-index). Card content
+   does not need updating because mix-blend-mode preserves contrast. */
+.bd-glass-card--landing,
+.bd-glass-card--landing-warm {
+  position: relative;
+  overflow: hidden;
+}
+
+.bd-glass-card--landing::before,
+.bd-glass-card--landing-warm::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(220, 165, 90, 0.20) 48%,
+    rgba(255, 235, 195, 0.30) 52%,
+    rgba(220, 165, 90, 0.20) 56%,
+    transparent 74%
+  );
+  mix-blend-mode: screen;
+  transform: translateX(-130%);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+@media (hover: hover) {
+  .bd-glass-card--landing:hover::before,
+  .bd-glass-card--landing-warm:hover::before {
+    animation: bdGoldSheenOneShot 1100ms ease-out forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-glass-card--landing:hover::before,
+  .bd-glass-card--landing-warm:hover::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
 /* Dashboard variant — calm-workspace card. Stronger material than base bd-glass-card
    so light-mode dashboard surfaces stop reading as washed-out, but quieter than
    --landing (no premium-marketing-anchor energy). Smaller hover lift (2px vs 6px)
@@ -996,7 +1049,12 @@ body {
 .bd-glass-card--dashboard {
   /* D4 (final v3.2) + D6 crispness: soft off-white liquid glass + more gold +
      slightly tighter edge definition (border 0.46 → 0.54, blue ring 0.24 → 0.30,
-     deeper drop shadow), so light-mode cards stop reading washy without darkening. */
+     deeper drop shadow), so light-mode cards stop reading washy without darkening.
+     V3 (2026-05-03): position:relative + overflow:hidden enable a hover sheen
+     pseudo-element shared with landing cards. backdrop-filter inherits the
+     saturate boost from .bd-glass-card. */
+  position: relative;
+  overflow: hidden;
   border-color: rgba(147, 197, 253, 0.54);
   background: linear-gradient(180deg, rgba(244, 250, 254, 0.94) 0%, rgba(226, 238, 252, 0.86) 100%);
   box-shadow:
@@ -1008,6 +1066,39 @@ body {
     0 0 0 1px rgba(191, 219, 254, 0.30),
     0 0 28px rgba(59, 130, 246, 0.10),
     0 0 44px rgba(220, 140, 50, 0.28);
+}
+
+.bd-glass-card--dashboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(220, 165, 90, 0.16) 49%,
+    rgba(255, 235, 195, 0.24) 52%,
+    rgba(220, 165, 90, 0.16) 55%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  transform: translateX(-130%);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+@media (hover: hover) {
+  .bd-glass-card--dashboard:hover::before {
+    animation: bdGoldSheenOneShot 1000ms ease-out forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-glass-card--dashboard:hover::before {
+    animation: none !important;
+    opacity: 0 !important;
+  }
 }
 
 .bd-glass-card--dashboard:hover {
@@ -1189,18 +1280,24 @@ body {
 .bd-glass-floating {
   /* D7: floating modals adopt gold-lamp identity — warm inset bottom + warm
      outer halo, so dropdowns/dialogs match dashboard panel family. Cool blue
-     base preserved; gold is trim only. */
+     base preserved; gold is trim only.
+     V3c (2026-05-03): body alpha lowered (0.94/0.88 → 0.86/0.78) so the blur
+     reads through richer (gold-lamp atmosphere now visible behind the panel
+     instead of hiding behind a near-opaque card). Saturate boost added to the
+     backdrop-filter so the warm dashboard atmosphere reads through with full
+     champagne color, not desaturated. Top inset highlight added for thickness. */
   border: 1px solid rgba(191, 219, 254, 0.5);
-  background: linear-gradient(180deg, rgba(248, 252, 255, 0.94) 0%, rgba(240, 248, 255, 0.88) 100%);
+  background: linear-gradient(180deg, rgba(248, 252, 255, 0.86) 0%, rgba(240, 248, 255, 0.78) 100%);
   color: #0f172a;
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px) saturate(1.5);
+  -webkit-backdrop-filter: blur(28px) saturate(1.5);
   border-radius: var(--bd-radius-panel);
   box-shadow:
     var(--bd-glass-shadow-floating),
     var(--bd-glow-medium),
-    inset 0 -1px 0 rgba(220, 165, 90, 0.20),
-    0 0 0 1px rgba(220, 165, 90, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(220, 165, 90, 0.22),
+    0 0 0 1px rgba(220, 165, 90, 0.14),
     0 0 36px rgba(220, 140, 50, 0.18);
   transition:
     transform 300ms cubic-bezier(0.4, 0, 0.2, 1),

@@ -82,17 +82,32 @@ export default function MobileBottomNav({
                   : {}
               }
             >
-              {/* Active top bar indicator */}
+              {/* Active top bar indicator + V3e gold-as-light underline.
+                  Active tab gets the existing blue top bar (product/action
+                  signal preserved) and a thin champagne underline beneath
+                  the label that catches the dashboard's gold-lamp wash. */}
               {isActive && (
-                <span
-                  className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-5 h-[2.5px] rounded-b-full"
-                  style={{
-                    background: isLightAppearance
-                      ? "linear-gradient(90deg, #2563eb, #0ea5e9)"
-                      : "linear-gradient(90deg, #3b82f6, #60a5fa)",
-                    boxShadow: "0 2px 6px rgba(37, 99, 235, 0.3)",
-                  }}
-                />
+                <>
+                  <span
+                    className="absolute -top-[1px] left-1/2 -translate-x-1/2 w-5 h-[2.5px] rounded-b-full"
+                    style={{
+                      background: isLightAppearance
+                        ? "linear-gradient(90deg, #2563eb, #0ea5e9)"
+                        : "linear-gradient(90deg, #3b82f6, #60a5fa)",
+                      boxShadow: "0 2px 6px rgba(37, 99, 235, 0.3)",
+                    }}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute bottom-1 left-1/2 -translate-x-1/2 h-px"
+                    style={{
+                      width: "40%",
+                      background: isLightAppearance
+                        ? "linear-gradient(90deg, transparent, rgba(220,165,90,0.55) 50%, transparent)"
+                        : "linear-gradient(90deg, transparent, rgba(220,165,90,0.65) 50%, transparent)",
+                    }}
+                  />
+                </>
               )}
               <Icon
                 className={`w-5 h-5 ${isActive ? (isLightAppearance ? "text-blue-600" : "text-blue-100") : ""}`}

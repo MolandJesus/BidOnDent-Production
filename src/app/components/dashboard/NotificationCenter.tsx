@@ -163,21 +163,25 @@ export default function NotificationCenter({
               tabIndex={-1}
               style={{
                 ...panelPositionStyle,
+                // V3c parity with ProfileDropdown: alpha lowered + saturate
+                // raised so the dashboard gold-lamp atmosphere reads through
+                // the panel. Gold-as-light catchlights added on top + bottom
+                // bezel inset so the panel feels lit, not painted.
                 background: isLightAppearance
-                  ? "linear-gradient(180deg, rgba(250, 252, 255, 0.94) 0%, rgba(238, 247, 255, 0.88) 100%)"
-                  : "linear-gradient(180deg, rgba(11, 23, 47, 0.90) 0%, rgba(8, 18, 38, 0.84) 100%)",
+                  ? "linear-gradient(180deg, rgba(250, 252, 255, 0.86) 0%, rgba(238, 247, 255, 0.80) 100%)"
+                  : "linear-gradient(180deg, rgba(11, 23, 47, 0.86) 0%, rgba(8, 18, 38, 0.80) 100%)",
                 borderColor: isLightAppearance
                   ? "rgba(147, 197, 253, 0.42)"
                   : "rgba(96, 165, 250, 0.22)",
                 boxShadow: isLightAppearance
-                  ? "0 20px 60px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(30, 58, 138, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(191, 219, 254, 0.22)"
-                  : "0 20px 64px rgba(2, 6, 23, 0.50), 0 0 0 1px rgba(96, 165, 250, 0.18), inset 0 1px 0 rgba(147, 197, 253, 0.14), 0 0 36px rgba(37, 99, 235, 0.10)",
+                  ? "0 20px 60px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(30, 58, 138, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.92), inset 0 -1px 0 rgba(220, 165, 90, 0.22), 0 0 0 1px rgba(220, 165, 90, 0.14), 0 0 0 1px rgba(191, 219, 254, 0.30), 0 0 36px rgba(220, 140, 50, 0.16)"
+                  : "0 20px 64px rgba(2, 6, 23, 0.52), 0 0 0 1px rgba(96, 165, 250, 0.20), inset 0 1px 0 rgba(220, 165, 90, 0.22), inset 0 -1px 0 rgba(220, 165, 90, 0.18), 0 0 36px rgba(37, 99, 235, 0.12), 0 0 50px rgba(220, 140, 50, 0.16)",
                 backdropFilter: isLightAppearance
-                  ? "blur(26px) saturate(1.22)"
-                  : "blur(28px) saturate(1.28)",
+                  ? "blur(26px) saturate(1.5)"
+                  : "blur(28px) saturate(1.5)",
                 WebkitBackdropFilter: isLightAppearance
-                  ? "blur(26px) saturate(1.22)"
-                  : "blur(28px) saturate(1.28)",
+                  ? "blur(26px) saturate(1.5)"
+                  : "blur(28px) saturate(1.5)",
               }}
             >
               {/* ── Header ── */}
