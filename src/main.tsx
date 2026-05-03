@@ -100,7 +100,7 @@ class GlobalErrorBoundary extends Component<{ children: ReactNode }, GlobalError
               <button
                 type="button"
                 onClick={this.handleRetry}
-                className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:opacity-90"
+                className="bd-dashboard-primary-button inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-medium text-white"
                 style={{
                   background: "linear-gradient(135deg, #003d82 0%, #00a0e9 100%)",
                 }}
