@@ -3125,6 +3125,17 @@ body {
   border-color: var(--bd-route-blue-soft);
 }
 
+/* Coverage section eyebrow variant — single ring, slower 6s loop, lower
+   opacity. Pass D: hints "live" without competing with the MapLibre canvas. */
+.bd-pin-pulse--soft::before {
+  animation-duration: 6s;
+  border-width: 1.5px;
+  opacity: 0.55;
+}
+.bd-pin-pulse--soft::after {
+  display: none;
+}
+
 /* Bid card float — subtle Y drift. Reuses mapGlassFloat keyframe.
    Compose with bd-glass-card--landing for the surface itself. */
 .bd-bid-card-float {
