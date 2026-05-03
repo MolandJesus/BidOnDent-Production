@@ -150,8 +150,7 @@ export default function ServiceAreaEditorModal({
 
   if (!isOpen) return null;
 
-  const bg = isLight ? "bg-white" : "bg-slate-900";
-  const border = isLight ? "border-slate-200" : "border-slate-700";
+  const border = isLight ? "border-slate-200/60" : "border-blue-300/16";
   const text = isLight ? "text-slate-900" : "text-white";
   const textMuted = isLight ? "text-slate-500" : "text-slate-400";
   const inputBg = isLight ? "bg-slate-50 border-slate-300" : "bg-slate-800 border-slate-600";
@@ -163,11 +162,11 @@ export default function ServiceAreaEditorModal({
         onClick={saving ? undefined : onClose}
       />
       <div
-        className={`relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl ${bg} ${border} border shadow-2xl`}
+        className={`bd-glass-floating relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl shadow-2xl${isLight ? " bd-light-surface" : ""}`}
       >
         {/* Header */}
         <div
-          className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b ${border} ${bg}`}
+          className={`sticky top-0 z-10 flex items-center justify-between p-4 border-b ${border}`}
         >
           <div className="flex items-center gap-2">
             <MapPin size={18} style={{ color: primaryColor }} />

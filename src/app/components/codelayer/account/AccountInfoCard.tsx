@@ -90,22 +90,16 @@ export default function AccountInfoCard({
       transition={{ duration: 0.25, delay: 0.05 }}
       className="bd-dashboard-panel bd-dashboard-panel--deep relative mb-5 overflow-hidden rounded-2xl p-5"
     >
-      {/* Subtle decorative orb */}
+      {/* Subtle decorative orb — D4: cool-blue tint instead of warm-cream */}
       <div
         className="absolute -right-12 -top-12 w-32 h-32 rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(180,160,100,0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(96,165,250,0.10) 0%, transparent 70%)",
         }}
       />
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p
-            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-              isLightAppearance ? "text-blue-700/65" : "text-blue-100/55"
-            }`}
-          >
-            Identity
-          </p>
+          <p className="bd-section-eyebrow mb-1.5">Identity</p>
           <h2
             className={`font-semibold text-xl ${isLightAppearance ? "text-slate-800" : "text-slate-100"}`}
           >

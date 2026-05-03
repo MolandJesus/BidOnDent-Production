@@ -57,7 +57,7 @@ export default function DashboardSidebar({
       }`}
       style={{
         background: isLightAppearance
-          ? "linear-gradient(180deg, rgba(248, 251, 255, 0.74) 0%, rgba(238, 247, 255, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 255, 0.56) 0%, rgba(220, 235, 255, 0.10) 46%, transparent 78%)"
+          ? "linear-gradient(180deg, rgba(255, 253, 248, 0.74) 0%, rgba(250, 247, 240, 0.66) 100%), radial-gradient(ellipse 86% 34% at 42% 4%, rgba(255, 255, 252, 0.56) 0%, rgba(245, 240, 230, 0.10) 46%, transparent 78%)"
           : "linear-gradient(180deg, rgba(6, 14, 36, 0.72) 0%, rgba(5, 11, 28, 0.65) 100%)",
         backdropFilter: isLightAppearance
           ? "blur(34px) saturate(1.64)"
@@ -66,7 +66,7 @@ export default function DashboardSidebar({
           ? "blur(34px) saturate(1.64)"
           : "blur(28px) saturate(1.5)",
         boxShadow: isLightAppearance
-          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.10), inset -1px 0 0 rgba(147, 197, 253, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.82)"
+          ? "8px 0 36px rgba(15, 23, 42, 0.12), 2px 0 10px rgba(59, 130, 246, 0.08), inset -1px 0 0 rgba(147, 197, 253, 0.22), inset 0 1px 0 rgba(255, 255, 252, 0.96)"
           : "2px 0 32px rgba(2, 6, 23, 0.50), inset -1px 0 0 rgba(59, 130, 246, 0.08)",
       }}
     >

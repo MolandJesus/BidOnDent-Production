@@ -114,13 +114,7 @@ export default function AccountHeader({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p
-            className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-              isLight ? "text-blue-700/70" : "text-blue-100/60"
-            }`}
-          >
-            Account Hub
-          </p>
+          <p className="bd-section-eyebrow mb-1.5">Account Hub</p>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="min-w-0 truncate text-xl font-semibold tracking-tight md:text-2xl">
               {userInfo.name}

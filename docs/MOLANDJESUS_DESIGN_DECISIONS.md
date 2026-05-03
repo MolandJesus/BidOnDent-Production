@@ -425,9 +425,11 @@ A single radial luminance accent per section, 600–800px diameter, 15–22% opa
 
 These render as automotive **atmosphere**, not iconography. They support the product story without making the page look like a parts catalog or a mechanic shop website.
 
-### Dashboard Material Tier (Calm Workspace — Locked 2026-05-02, Pass D1)
+### Dashboard Material Tier (Calm Workspace — Locked 2026-05-02, Pass D1; updated D4 final v2 2026-05-02)
 
-The dashboard inherits the cool-blue glass shell only. Per §9 item 9, no automotive register, no warm amber, no Direction C accents, no editorial flanking strokes. The dashboard has its own card material variant so it can read more premium without borrowing landing's identity.
+> **Owner-authorized reversal (2026-05-02, Pass D4 final v2):** the original "no warm amber on dashboard" rule has been explicitly overridden by the owner. The dashboard now adopts the **navy-lit-by-gold-lamp** identity: navy infill (dark) / gold off-white surfaces (light), with **amber as trim and lighting only** — borders, inset highlights, outer ambient glow, and atmospheric overlays. Box backgrounds remain navy in dark and warm cream in light; gold is decoration material, not infill. This brings the dashboard onto the same gold-lit register as the landing's Direction B surfaces while preserving the calm-workspace energy. Item 9 in §9 below is amended accordingly.
+
+The dashboard inherits the cool-blue glass shell as the structural base, with **gold-amber trim + lamp-glow lighting layered on top** (D4 final v2). Direction C luminance accents and editorial flanking strokes remain landing-only.
 
 **Three-tier glass card hierarchy (post-D1):**
 
@@ -457,7 +459,7 @@ This sits on top of the existing layered `<DashboardAtmosphere>` component which
 
 Editorial typography utility for dashboard section anchors ("REPAIR OVERVIEW", "YOUR DASHBOARD", "REPAIR ACTIVITY"). 11px, weight 600, `letter-spacing: 0.18em`, uppercase, blue-700 (light) / blue-300 (dark). **No flanking strokes** — those are landing-only (Pass 12-15). Refined typography only.
 
-**Locked: dashboard does NOT use `--landing-warm`.** Warm glass is landing-only register. Mixing dilutes both identities.
+**Updated D4 final v2 (2026-05-02):** dashboard does **not directly use `--landing-warm`**, but the dashboard's own variants now apply a parallel gold-amber trim + lamp-glow treatment (matching landing-warm's *lighting* register without copying its full warm-cream infill). The boundary remains: dashboard surfaces stay navy/cream-infill; gold is trim only. `--landing-warm` itself stays exclusive to landing Direction B sections.
 
 ---
 
@@ -538,8 +540,14 @@ These temptations arise in every design project. Record them here to avoid rehas
    stacking. No rainbow gradient effects.
 9. **Do not apply the landing-page automotive identity layer to dashboard surfaces**. The
    dashboard inherits the calm-map / glass-shell system documented under Dark Shell Design
-   System; the automotive register (sedan silhouettes, lane dashes, warm amber atmosphere,
-   Direction C luminance) is a landing-only signature. Mixing them dilutes both.
+   System; the automotive register (sedan silhouettes, lane dashes, Direction C luminance)
+   is a landing-only signature. Mixing them dilutes both. **Amended 2026-05-02 (Pass D4
+   final v2):** warm-amber *trim* and *lamp-glow lighting* (borders, inset highlights, outer
+   glow, atmospheric overlays) is now permitted on dashboard surfaces by explicit owner
+   authorization — gold reads as the dashboard's lighting register. What stays forbidden:
+   sedan silhouettes, lane dashes, road-line patterns, warm-amber *infill* (cards still
+   read navy/cream backgrounds; only trim + lighting is gold), Direction C luminance, and
+   editorial flanking strokes.
 
 ---
 

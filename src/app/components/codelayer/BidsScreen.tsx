@@ -236,13 +236,7 @@ export default function BidsScreen({
       >
         <div className="mb-3 flex items-start justify-between gap-3 px-1">
           <div>
-            <p
-              className={`mb-1 text-[11px] font-semibold uppercase tracking-[0.22em] ${
-                isLight ? "text-slate-500" : "text-blue-100/55"
-              }`}
-            >
-              Sort & Compare
-            </p>
+            <p className="bd-section-eyebrow mb-1.5">Sort & Compare</p>
             <p className={`text-sm ${isLight ? "text-slate-600" : "text-blue-100/66"}`}>
               Switch between price, speed, and rating to find the best bid.
             </p>
@@ -359,7 +353,7 @@ export default function BidsScreen({
             className="bd-dashboard-panel bd-dashboard-panel--accent-indigo p-5 text-center"
           >
             <div className="bd-dashboard-note bd-dashboard-note--deep mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full">
-              <MapPin className={`h-5 w-5 ${isLight ? "text-amber-500" : "text-amber-200"}`} />
+              <MapPin className={`h-5 w-5 ${isLight ? "text-blue-600" : "text-blue-300"}`} />
             </div>
             <h3
               className={`text-base font-semibold ${isLight ? "text-slate-800" : "text-slate-100"}`}
