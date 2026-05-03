@@ -397,35 +397,42 @@ When starting fresh, paste this into the new conversation. It loads the new agen
 
 ## Outcome notes
 
-(Empty — populated as each pass completes.)
-
 ### Pass A outcome notes
 
-_Pending._
+Audit doc at `docs/landing_signature_audit_2026-05-03.md`. Key findings: 5 of 6 proposed motion classes alias existing keyframes (only 2 net new keyframes needed), existing hero badges become Pass C floating bid cards (no new content invented), Decision #1 lock (mock not MapLibre) avoids GPU contention with the Coverage WebGL canvas. Greenlit Pass B scope.
 
 ### Pass B outcome notes
 
-_Pending._
+Token system landed in `theme.css` only — visual diff zero (no consumers). 13 net new CSS variables consolidated into the existing `:root` at line 821, 6 reusable utility classes (`bd-liquid-gold-flow`, `bd-liquid-gold-sheen`, `bd-route-line`, `bd-pin-pulse`, `bd-bid-card-float`, `bd-map-contour`), 2 net new keyframes (others reuse `mapLiquidSheenDrift` and `mapGlassFloat`). Reduced-motion + mobile-budget guards mandatory at end of block. Build clean.
 
 ### Pass C outcome notes
 
-_Pending._
+Hero right column replaced. Presentational mock per Decision #1: SVG map contour + report pin with `bd-pin-pulse` + 2 floating bid cards repurposing existing badges + ambient gold-flow + diagonal sheen. Animate-float-slow → bd-bid-card-float swap on the 3 hero badges (BenefitsSection's `animate-float-slow` usage left untouched — checked by grep). Build clean. Merged to main at `892111f1`.
 
 ### Pass D outcome notes
 
-_Pending._
+Two subtle additions to `OperatingRegionsSection`: `bd-liquid-gold-flow` ambient layer behind the bloom atmosphere (light at 0.55, dark at 0.70) and a `bd-pin-pulse--soft` modifier (single ring, 6s loop, lower contrast) on the "Live Coverage" eyebrow MapPin. Aggressive options (route lines between pins, radar sweeps) deferred per plan — they'd be GPU-expensive on top of the active MapLibre canvas. Zero MapLibre layer/source changes per "Don't" list. Mobile pulse already guarded by Pass B media query. Build clean.
 
 ### Pass E outcome notes
 
-_Pending._
+Three section edits, each scoped:
+- HowItWorks: replaced static dashed div connectors with SVG `bd-route-line` paths that shimmer left-to-right at 6s (reads as repair-journey flow, not decoration). Stroke alpha tuned to existing connector weight, mobile guard preserved.
+- WhoWeServe: non-destructive role-color rim glow per card (Customer blue / Shops teal / Insurer subtle gold, all alpha ≤ 0.15). Implemented as overlay span so `bd-glass-card` boxShadow stays intact.
+- Benefits: new `bd-gold-sheen-hover` utility (1.4s ease-out forwards, hover-only one-shot, distinct from infinite ambient sheen). Wired into photo containers; reduced-motion guard added.
+
+Build clean.
 
 ### Pass F outcome notes
 
-_Pending._
+Audit-driven, surgical. Most plan items already addressed in prior passes (border 0.55→0.7 in D5, inner highlight 0.95 in D5, atmosphere depth in Pass 6/Pass E rim glows, TrustStats champagne in Pass 6). Only remaining gap: subtitle slate-500 over warm bloom — bumped to slate-600 in HowItWorks header + per-step descriptions, WhoWeServe header, Benefits per-card descriptions. Stayed at slate-600 (not slate-700) to avoid editorial-heavy beige drift. Body copy inside cards retained — they sit against near-white surfaces. Build clean.
 
 ### Pass G outcome notes (plan only)
 
-_Pending._
+Dark-mode parity plan written at `docs/PLAN_LANDING_DARK_MODE_PARITY.md`. Plan-only per Decision #5 lock. Captures: parity-vs-distinct boundaries, mandatory pre-work (fresh dark walk + token inventory diff + hero composition decision), likely G1/G2/G3 phase split, risks (Direction B owner-locked, Passes 8–11 atmosphere already heavy, D10 must remain system-level), kickoff prompt for the next chat when authorized.
+
+### Pass H outcome notes
+
+All 4 deferred passes (D + E + F + G-plan) merged together: 4 commits on `BidOnDent-Horizon-Beta` (`a8306911`, `6e3fd6d9`, `fd578d15`, `c3fa9126`), build clean (3.24s), typecheck clean (override `--ignoreDeprecations 5.0` for pre-existing tsconfig issue). Merged to `main`.
 
 ### Pass H outcome notes
 
