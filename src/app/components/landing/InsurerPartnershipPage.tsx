@@ -139,11 +139,9 @@ export default function InsurerPartnershipPage({ onBackToHome }: InsurerPartners
             <button
               onClick={onBackToHome}
               type="button"
-              className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-white font-semibold transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/60 min-h-[44px]"
+              className="bd-dashboard-primary-button inline-flex items-center justify-center px-5 py-2.5 text-white font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/60 min-h-[44px]"
               style={{
                 background: "linear-gradient(135deg, #003d82 0%, #0ea5e9 100%)",
-                boxShadow:
-                  "0 8px 22px rgba(37, 99, 235, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 0 0 1px rgba(96, 165, 250, 0.22)",
               }}
             >
               Back to Home
