@@ -780,25 +780,18 @@ export default function HeroSection({
               />
 
               {/* Map stage — embedded map-window feel.
-                  V2 frame: outline ring removed in favor of a dual-edge
-                  inset (champagne top bezel + amber lamp at bottom) so the
-                  glass reads as a lit object catching the lamp wash from
-                  above, not a stamped rectangle.
+                  Frame: outline ring removed in favor of a dual-edge
+                  inset (champagne top bezel + amber lamp at bottom) so
+                  the glass reads as a lit object catching the lamp wash
+                  from above, not a stamped rectangle.
 
-                  Hero polish v2 2026-05-03 — owner follow-up extends the
-                  fade from top-edge-only to all four edges so the map
-                  dissolves into the hero atmosphere on every side rather
-                  than terminating at a defined bezel on three of four. The
-                  mask is now two perpendicular linear-gradients composited
-                  via `mask-composite: intersect` (spec) /
-                  `-webkit-mask-composite: source-in` (legacy webkit). Top
-                  taper preserved at 4%/11% per the v1 tuning; bottom
-                  asymmetric 92%→97%→100% so the map content stays readable
-                  but the rim dissolves into the lower bloom; left/right
-                  3%→8% / 92%→97% (tighter because horizontal real estate
-                  is narrower). Bezel inset alphas dropped in tandem so the
-                  champagne/amber hairlines don't read as floating lines
-                  inside the faded zones. */}
+                  Top-edge mask softens the rim light, road network and
+                  contour grid into the hero atmosphere (4%→11% taper).
+                  Bottom + sides keep full definition so the map content
+                  remains visible — earlier four-edge variant ghosted the
+                  card too aggressively (navy-on-navy in dark mode left
+                  the card almost imperceptible). Owner taste call:
+                  preserve the v1 dissolve-at-top, don't over-fade. */}
               <div
                 className="relative rounded-2xl w-full overflow-hidden"
                 style={{
@@ -807,15 +800,11 @@ export default function HeroSection({
                   background: isLightAppearance ? "#eef4fb" : "#0d1d3a",
                   boxShadow: isLightAppearance
                     ? "0 18px 60px rgba(15, 30, 60, 0.10), 0 0 80px rgba(37, 99, 235, 0.10), 0 0 140px rgba(220,165,90,0.08), inset 0 1px 0 rgba(255,255,255,0.62), inset 0 -1px 0 rgba(220,165,90,0.18), inset 0 2px 12px rgba(255,255,255,0.20)"
-                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(220,165,90,0.10), inset 0 1px 0 rgba(220,165,90,0.10), inset 0 -1px 0 rgba(220,165,90,0.08), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
+                    : "0 22px 70px rgba(2, 6, 23, 0.42), 0 0 90px rgba(37, 99, 235, 0.14), 0 0 160px rgba(220,165,90,0.10), inset 0 1px 0 rgba(220,165,90,0.18), inset 0 -1px 0 rgba(220,165,90,0.16), inset 0 2px 12px rgba(96, 165, 250, 0.10)",
                   WebkitMaskImage:
-                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 92%, rgba(0,0,0,0.55) 97%, transparent 100%), " +
-                    "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 3%, #000 8%, #000 92%, rgba(0,0,0,0.55) 97%, transparent 100%)",
+                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
                   maskImage:
-                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 92%, rgba(0,0,0,0.55) 97%, transparent 100%), " +
-                    "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 3%, #000 8%, #000 92%, rgba(0,0,0,0.55) 97%, transparent 100%)",
-                  WebkitMaskComposite: "source-in",
-                  maskComposite: "intersect",
+                    "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 4%, #000 11%, #000 100%)",
                 }}
               >
                 {/* Layer 1 — stylized map base. Faint road network via SVG curves. */}
