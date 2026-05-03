@@ -193,9 +193,12 @@ export default function AboutOpportunitySection({
                 <div
                   className={`relative w-14 h-14 rounded-2xl flex items-center justify-center mb-4 ${isLightAppearance ? "bg-blue-500/[0.10] border border-blue-300/[0.22]" : "bg-blue-500/[0.14] border border-blue-400/[0.28]"}`}
                   style={{
+                    /* D8: subtle warm gold inset bottom + warm halo so the icon
+                       plate joins the gold-lamp family. Cool blue dominance
+                       preserved (cool drop + cool halo unchanged). */
                     boxShadow: isLightAppearance
-                      ? "0 6px 22px rgba(59,130,246,0.16), 0 0 30px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.60)"
-                      : "0 6px 22px rgba(59,130,246,0.26), 0 0 32px rgba(59,130,246,0.18), inset 0 1px 0 rgba(147,197,253,0.28), inset 0 -1px 0 rgba(2,6,23,0.30)",
+                      ? "0 6px 22px rgba(59,130,246,0.16), 0 0 30px rgba(59,130,246,0.10), inset 0 1px 0 rgba(255,255,255,0.60), inset 0 -1px 0 rgba(220,165,90,0.16), 0 0 22px rgba(220,140,50,0.12)"
+                      : "0 6px 22px rgba(59,130,246,0.26), 0 0 32px rgba(59,130,246,0.18), inset 0 1px 0 rgba(147,197,253,0.28), inset 0 -1px 0 rgba(220,165,90,0.18), 0 0 26px rgba(220,140,50,0.16)",
                   }}
                 >
                   <item.icon
