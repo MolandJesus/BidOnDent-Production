@@ -3,6 +3,7 @@
  * Extracted from MapLibreReportLayer to enforce file-size limits.
  */
 import { Popup } from "react-map-gl/maplibre";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 import type { DamageReport } from "../../types";
 
 type ReportLayerPopupProps = {
@@ -38,7 +39,7 @@ export default function ReportLayerPopup({
           Your Report
         </div>
         {Array.isArray(report.photos) && report.photos.length > 0 && (
-          <img
+          <ImageWithFallback
             src={report.photos[0]}
             alt="Damage"
             className="h-16 w-full rounded-md object-cover"

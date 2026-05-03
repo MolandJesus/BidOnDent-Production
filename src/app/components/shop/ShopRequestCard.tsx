@@ -16,6 +16,7 @@ import {
   BadgeCheck,
   Zap,
 } from "lucide-react";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 import { timeAgo } from "./shopEstimateInboxHelpers";
 
 export type RepairRequest = {
@@ -201,7 +202,7 @@ export default function ShopRequestCard({
             }`}
           >
             {request.previewPhoto ? (
-              <img
+              <ImageWithFallback
                 src={request.previewPhoto}
                 alt={`${request.damageType} preview`}
                 className="h-full w-full object-cover"

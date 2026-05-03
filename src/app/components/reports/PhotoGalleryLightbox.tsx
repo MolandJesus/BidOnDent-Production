@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import ImageWithFallback from "../codelayer/ImageWithFallback";
 
 type PhotoGalleryLightboxProps = {
   photos: string[];
@@ -66,7 +67,10 @@ export default function PhotoGalleryLightbox({ photos, onClose }: PhotoGalleryLi
           }
         }}
       >
-        <img
+        {/* Phase 3 media trust (2026-05-03 P3): ImageWithFallback prevents
+            a leaked storage:// pointer from rendering a broken full-screen
+            image — fallback shows the premium glass tile in its place. */}
+        <ImageWithFallback
           src={photos[currentPhotoIndex]}
           alt={`Photo ${currentPhotoIndex + 1}`}
           className="max-w-full max-h-full object-contain transition-transform duration-300"
@@ -125,7 +129,7 @@ export default function PhotoGalleryLightbox({ photos, onClose }: PhotoGalleryLi
                   setZoomLevel(1);
                 }}
               >
-                <img
+                <ImageWithFallback
                   src={photo}
                   alt={`Thumbnail ${idx + 1}`}
                   className="w-full h-full object-cover"

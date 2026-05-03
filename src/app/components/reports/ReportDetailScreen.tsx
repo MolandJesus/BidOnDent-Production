@@ -444,7 +444,11 @@ export default function ReportDetailScreen({
           >
             ×
           </button>
-          <img
+          {/* Phase 3 media trust (2026-05-03 P3): swap to ImageWithFallback
+              so any storage:// pointer that leaks past server hydration
+              renders the premium glass tile instead of a broken full-screen
+              `<img>`. */}
+          <ImageWithFallback
             src={selectedPhoto}
             alt="Full size"
             className="max-w-full max-h-full object-contain"
